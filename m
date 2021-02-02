@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19F730C969
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F234230C9A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238435AbhBBSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:17:20 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34316 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233310AbhBBSPL (ORCPT
+        id S237562AbhBBSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:24:09 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:57100 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238420AbhBBSVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:15:11 -0500
-Received: by mail-oi1-f178.google.com with SMTP id h192so23779190oib.1;
-        Tue, 02 Feb 2021 10:14:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ESu9qocOeJ67z2OHdnWOiQklfbvu6intt3N2b/O4T2E=;
-        b=hi7Sp6TZ1J54Lup5UcO9GcV+7qFChvzdlp1V6teSJ3bJU/om/vCmrtDZzgZRPj2MnP
-         CWHAe+K4xs/GQ4GpTYyZEOBrEpxTAqvYzRa1pJl/a4KPRHgim3M52gJL8t/r+sk66HzM
-         4gjmxvNyAOHgBx6kgaeScWDNwcXN1vsPGu5QmWkSPYz+t8fhOD9UQhbQBD4EcjYVUD0A
-         CchEIhkINDQn+yhVrcBPT1May55R9kzxKF/bJJKZ5q4W7Ou8bjXRL2kq6POQjppKPVPA
-         E1uyLCS27KJ/pM4VO4aaJ/t9yk7l6YsUvqpEvJrvzLz6g1S0G62TZlWiiIdAxwZD2eQl
-         Dvcw==
-X-Gm-Message-State: AOAM531zS3hPGLjXkV7zTGCfT6TvhrdDrnW3P77Q6zVz23qvQjARpfdU
-        XN3kh+OfdU80Rv9VS4Y4lQ1xY1HzKQ==
-X-Google-Smtp-Source: ABdhPJy9KzWuD4sI+4nuXCmVu/ITJu+fqI2M2n6z+ZmyhAeAa22PZCmdGMbZ2jZAXV6BfCf8OAforw==
-X-Received: by 2002:aca:d908:: with SMTP id q8mr3507672oig.67.1612289669762;
-        Tue, 02 Feb 2021 10:14:29 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id k20sm4733387otr.34.2021.02.02.10.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:14:28 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Auchter <michael.auchter@ni.com>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH] dt-bindings: iio: dac: Add missing ad5686 compatible strings
-Date:   Tue,  2 Feb 2021 12:14:27 -0600
-Message-Id: <20210202181427.3934218-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 2 Feb 2021 13:21:24 -0500
+Received: from 89-64-80-193.dynamic.chello.pl (89.64.80.193) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 637ff068aa18e73b; Tue, 2 Feb 2021 19:19:56 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v2 1/5] ACPI: AC: Clean up printing messages
+Date:   Tue, 02 Feb 2021 19:14:55 +0100
+Message-ID: <5584914.5WsbVgmIkf@kreacher>
+In-Reply-To: <1991501.dpTHplkurC@kreacher>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The example uses 'adi,ad5686', but the schema fails to document it. Given
-the filename and there is a similar part AD5686, let's just add the
-compatible strings including the 'r' variant.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Michael Auchter <michael.auchter@ni.com>
-Cc: linux-iio@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
+in ac.c with acpi_handle_debug() and acpi_handle_info() calls,
+respectively, which among other things causes the excessive log
+level of the messages previously printed via ACPI_EXCEPTION() to
+be more adequate.
+
+Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+used any more, drop the no longer needed ACPI_AC_COMPONENT definition
+from the headers and update the documentation accordingly.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-index 8065228e5df8..190919291828 100644
---- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-@@ -19,6 +19,8 @@ properties:
-       - adi,ad5338r
-       - adi,ad5671r
-       - adi,ad5675r
-+      - adi,ad5686
-+      - adi,ad5686r
-       - adi,ad5691r
-       - adi,ad5692r
-       - adi,ad5693
--- 
-2.27.0
+v1 -> v2: Changelog update
+
+---
+ Documentation/firmware-guide/acpi/debug.rst |    1 -
+ drivers/acpi/ac.c                           |   12 +++++-------
+ drivers/acpi/sysfs.c                        |    1 -
+ include/acpi/acpi_drivers.h                 |    1 -
+ 4 files changed, 5 insertions(+), 10 deletions(-)
+
+Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+===================================================================
+--- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
++++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+@@ -52,7 +52,6 @@ shows the supported mask values, current
+     ACPI_CA_DISASSEMBLER            0x00000800
+     ACPI_COMPILER                   0x00001000
+     ACPI_TOOLS                      0x00002000
+-    ACPI_AC_COMPONENT               0x00020000
+     ACPI_BATTERY_COMPONENT          0x00040000
+     ACPI_BUTTON_COMPONENT           0x00080000
+     ACPI_SBS_COMPONENT              0x00100000
+Index: linux-pm/drivers/acpi/ac.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/ac.c
++++ linux-pm/drivers/acpi/ac.c
+@@ -28,9 +28,6 @@
+ #define ACPI_AC_STATUS_ONLINE		0x01
+ #define ACPI_AC_STATUS_UNKNOWN		0xFF
+ 
+-#define _COMPONENT		ACPI_AC_COMPONENT
+-ACPI_MODULE_NAME("ac");
+-
+ MODULE_AUTHOR("Paul Diefenbaugh");
+ MODULE_DESCRIPTION("ACPI AC Adapter Driver");
+ MODULE_LICENSE("GPL");
+@@ -102,8 +99,9 @@ static int acpi_ac_get_state(struct acpi
+ 	status = acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
+ 				       &ac->state);
+ 	if (ACPI_FAILURE(status)) {
+-		ACPI_EXCEPTION((AE_INFO, status,
+-				"Error reading AC Adapter state"));
++		acpi_handle_info(ac->device->handle,
++				"Error reading AC Adapter state: %s\n",
++				acpi_format_exception(status));
+ 		ac->state = ACPI_AC_STATUS_UNKNOWN;
+ 		return -ENODEV;
+ 	}
+@@ -153,8 +151,8 @@ static void acpi_ac_notify(struct acpi_d
+ 
+ 	switch (event) {
+ 	default:
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+-				  "Unsupported event [0x%x]\n", event));
++		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
++				  event);
+ 		fallthrough;
+ 	case ACPI_AC_NOTIFY_STATUS:
+ 	case ACPI_NOTIFY_BUS_CHECK:
+Index: linux-pm/drivers/acpi/sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/sysfs.c
++++ linux-pm/drivers/acpi/sysfs.c
+@@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
+ 	ACPI_DEBUG_INIT(ACPI_COMPILER),
+ 	ACPI_DEBUG_INIT(ACPI_TOOLS),
+ 
+-	ACPI_DEBUG_INIT(ACPI_AC_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+Index: linux-pm/include/acpi/acpi_drivers.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_drivers.h
++++ linux-pm/include/acpi/acpi_drivers.h
+@@ -15,7 +15,6 @@
+  * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
+  * if you add to this list.
+  */
+-#define ACPI_AC_COMPONENT		0x00020000
+ #define ACPI_BATTERY_COMPONENT		0x00040000
+ #define ACPI_BUTTON_COMPONENT		0x00080000
+ #define ACPI_SBS_COMPONENT		0x00100000
+
+
 
