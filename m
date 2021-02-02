@@ -2,37 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E7830B817
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2618D30B824
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhBBGzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:55:53 -0500
-Received: from verein.lst.de ([213.95.11.211]:44369 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232042AbhBBGzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:55:51 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2D0776736F; Tue,  2 Feb 2021 07:55:08 +0100 (CET)
-Date:   Tue, 2 Feb 2021 07:55:08 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.cz>,
-        Christoph Hellwig <hch@lst.de>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: Re: linux-next: build failure after merge of the block tree
-Message-ID: <20210202065508.GB10640@lst.de>
-References: <20210202135714.6470f476@canb.auug.org.au> <20210202141618.4a3a9470@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202141618.4a3a9470@canb.auug.org.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S232307AbhBBG47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:56:59 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:51842 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232168AbhBBG4M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 01:56:12 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNeszCN_1612248925;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNeszCN_1612248925)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Feb 2021 14:55:25 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     myungjoo.ham@samsung.com
+Cc:     kyungmin.park@samsung.com, cw00.choi@samsung.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] PM / devfreq: remove unneeded semicolon
+Date:   Tue,  2 Feb 2021 14:55:24 +0800
+Message-Id: <1612248924-54419-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both fixups look good to me, thanks.
+Eliminate the following coccicheck warning:
+./drivers/devfreq/rk3399_dmc.c:403:2-3: Unneeded semicolon
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/devfreq/rk3399_dmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
+index 2e91216..9e9d3b4c 100644
+--- a/drivers/devfreq/rk3399_dmc.c
++++ b/drivers/devfreq/rk3399_dmc.c
+@@ -400,7 +400,7 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
+ 	default:
+ 		ret = -EINVAL;
+ 		goto err_edev;
+-	};
++	}
+ 
+ no_pmu:
+ 	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, 0, 0,
+-- 
+1.8.3.1
+
