@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AF630B7DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34AB30B7E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhBBGas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:30:48 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:25673 "EHLO so15.mailgun.net"
+        id S232147AbhBBGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:32:08 -0500
+Received: from mga03.intel.com ([134.134.136.65]:13447 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231888AbhBBGan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:30:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612247420; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=4KlQGFrN5Le7PICSqsAOoAQBLupf944xN1JaRxy8alw=; b=XLMzoFahTpIdSsBUkalcN84ZNh0VUTYLPaSewG4ToiXLQmmIqQbMxCaRWH3khO1IsQrU1FyN
- keMyNXKsJ+/0/jDBDrFlvHfwIMe8ZOaeeI5AFEeBapfQMdG/HMOg0QA+UwhRbt+/tfxe9U4O
- f/nCoH8ibIO1t4Rn6c+WoeVNg+c=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6018f159ab96aecb9fcdb017 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:29:45
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8A1BBC433C6; Tue,  2 Feb 2021 06:29:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 984D5C433ED;
-        Tue,  2 Feb 2021 06:29:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 984D5C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Tony Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list\:REALTEK WIRELESS DRIVER \(rtw88\)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list\:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Huang <tehuang@realtek.com>
-Subject: Re: [PATCH] rtw88: 8821c: Add RFE 2 support
-References: <20200805084559.30092-1-kai.heng.feng@canonical.com>
-        <c0c336d806584361992d4b52665fbb82@realtek.com>
-        <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
-        <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
-Date:   Tue, 02 Feb 2021 08:29:40 +0200
-In-Reply-To: <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
-        (Kai-Heng Feng's message of "Thu, 7 Jan 2021 14:38:42 +0800")
-Message-ID: <871rdz7zjf.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S232130AbhBBGcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 01:32:05 -0500
+IronPort-SDR: CCs6/JuOJrw1cDAfJV0nTTLqAzF1beYT+iWVG0TDzFw5MJOCCf1xrznMxu2WVaqcdVZ41hqpxO
+ hXsGh3j06daQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180881759"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="180881759"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 22:31:22 -0800
+IronPort-SDR: 8FniOqrO9Ivctu1xSYW+UdZ43i4NKweCiSiHG/IBLoH1S/pWXtf0qgBaD4enTrobJ/TDM5JFrh
+ CLfR5ltdoGtA==
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="370379554"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 22:31:18 -0800
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
+ inject it to guest
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+ <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
+ <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+ <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
+ <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+ <ed5b16cb-30c7-dab7-92c3-b70ba8483d1e@linux.intel.com>
+ <YA6vy509FT8IUddS@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <22b30bc7-84d2-b251-e558-1d8095c76187@intel.com>
+Date:   Tue, 2 Feb 2021 14:31:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YA6vy509FT8IUddS@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
-
-> On Wed, Aug 5, 2020 at 7:24 PM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
->>
->> Hi Tony,
->>
->> > On Aug 5, 2020, at 19:18, Tony Chuang <yhchuang@realtek.com> wrote:
->> >
->> >> 8821CE with RFE 2 isn't supported:
->> >> [   12.404834] rtw_8821ce 0000:02:00.0: rfe 2 isn't supported
->> >> [   12.404937] rtw_8821ce 0000:02:00.0: failed to setup chip efuse info
->> >> [   12.404939] rtw_8821ce 0000:02:00.0: failed to setup chip information
->> >>
->> >
->> > NACK
->> >
->> > The RFE type 2 should be working with some additional fixes.
->> > Did you tested connecting to AP with BT paired?
->>
->> No, I only tested WiFi.
->>
->> > The antenna configuration is different with RFE type 0.
->> > I will ask someone else to fix them.
->> > Then the RFE type 2 modules can be supported.
->>
->> Good to know that, I'll be patient and wait for a real fix.
+On 2021/1/25 19:47, Peter Zijlstra wrote:
+> On Mon, Jan 25, 2021 at 04:26:22PM +0800, Like Xu wrote:
 >
-> It's been quite some time, is support for RFE type 2 ready now?
+>> In the host and guest PEBS both enabled case,
+>> we'll get a crazy dmesg *bombing* about spurious PMI warning
+>> if we pass the host PEBS PMI "harmlessly" to the guest:
+>>
+>> [11261.502536] Uhhuh. NMI received for unknown reason 2c on CPU 36.
+>> [11261.502539] Do you have a strange power saving mode enabled?
+>> [11261.502541] Dazed and confused, but trying to continue
+> How? AFAICT handle_pmi_common() will increment handled when
+> GLOBAL_STATUS_BUFFER_OVF_BIT is set, irrespective of DS containing
+> data.
 
-It looks like this patch should add it:
+Thanks for this comment, and it's enlightening.
 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210202055012.8296-4-pkshih@realtek.com/
+For the case that both host and guest PEBS are enabled,
+the host PEBS PMI will be injected into the guest only when
+GLOBAL_STATUS_BUFFER_OVF_BIT is not set in the guest global_status.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
