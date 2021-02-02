@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0032F30BDB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FB430BDBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhBBMHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:07:40 -0500
-Received: from mail-ed1-f46.google.com ([209.85.208.46]:35049 "EHLO
-        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhBBMHa (ORCPT
+        id S231157AbhBBMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229815AbhBBMIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:07:30 -0500
-Received: by mail-ed1-f46.google.com with SMTP id g10so4331571eds.2;
-        Tue, 02 Feb 2021 04:07:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6abidnGHa15Gx8W1zIwgQF+KmfT0LbfR/yfssT4cxWE=;
-        b=NGf1hp6ucqaSt5ECYJn2R6cxSNC5tZfHBByfxPfUkYJlFCcWRcBRkw2gVzNwEv0/pN
-         8gSNtPqIdvVGPmCLMiXQlOOi/brAACbkQ7i7SrZ6ExLHoR+hvdDGSTsLLkUITWmrwMAu
-         Sf4fOqi9yvrI5unfDXrZlQPQ1LohcdzO8GLzMkgZRm9SFECHl11CPjXjX+iwm66yl/Ex
-         b2+0T7LZa88FVscnZa0W4pjfJ6JmPUs7mwqPBBxiL5AfHJydgLE+hARcxL9gZiDYHtOI
-         bJKqdLBYrivZ01qv4Zsc9ZUiq8YYV0wrEUab9BGvkJTxpvTStm+Jr9eGDwVqyi9sUNbx
-         OIkQ==
-X-Gm-Message-State: AOAM533YAeXNTISAP8f+J2trqMiPlCkdUxFBasJ3OmsGSYL67Olv6W7c
-        Zq66ZK1RkbZfPWuRjlSA/t8=
-X-Google-Smtp-Source: ABdhPJx9A0SsibYdZdG1ZhPfG9XOPzZNowtWMTPTptLNvfi1m/j7ob0OgHD8Qrho1IZ8oVC/y8ha2A==
-X-Received: by 2002:aa7:d8c9:: with SMTP id k9mr7089489eds.366.1612267608773;
-        Tue, 02 Feb 2021 04:06:48 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id w24sm3303274ejn.36.2021.02.02.04.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 04:06:47 -0800 (PST)
-Date:   Tue, 2 Feb 2021 13:06:45 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] rtc: s3c: quiet maybe-unused variable warning
-Message-ID: <20210202120645.2ycd3txtgmknavuw@kozik-lap>
-References: <20210202112934.3612726-1-alexandre.belloni@bootlin.com>
- <20210202112934.3612726-2-alexandre.belloni@bootlin.com>
+        Tue, 2 Feb 2021 07:08:05 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9199C061573;
+        Tue,  2 Feb 2021 04:07:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ff/wpjr28khgZASsQau1yxjR8C0J+5ugrzPgigwTWJ0=; b=g+zlPNAWAiJW5GOWEjHNIVmqA
+        0i1nsvoEBElLib6NPI+ewFmTSmVP7JGSQ7ZLly3jTDpFtnIDio9CEcaBiQSFwcgmPHoMvRYCbwGWt
+        PkjTmE1MYLjA2QUDOjN2Mn234zZSJtnzMrVt+Kc4GD8aK1RdS6EgeyWWIM9ttIO1LsqlzqeuKm1bX
+        hC3JYtKbNMb2qpSdXuDo/qCblleoKhE5dft21RMev3iDIm67Fs0AiDx4do2YnTx+1m42FvFdXA9/n
+        hFly2dtJBy7Hrr+SaHO+q+VcPF9VPjlgiUyfr22h++1gaon0GMT8fIpHV/Ua3BRHpputjXSfiebb7
+        f+YrLjvrA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38196)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l6uSd-0004KH-MO; Tue, 02 Feb 2021 12:07:11 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l6uSa-00030y-Hf; Tue, 02 Feb 2021 12:07:08 +0000
+Date:   Tue, 2 Feb 2021 12:07:08 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ding Tianhong <dingtianhong@huawei.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v12 01/14] ARM: mm: add missing pud_page define to
+ 2-level page tables
+Message-ID: <20210202120708.GM1463@shell.armlinux.org.uk>
+References: <20210202110515.3575274-1-npiggin@gmail.com>
+ <20210202110515.3575274-2-npiggin@gmail.com>
+ <20210202111319.GL1463@shell.armlinux.org.uk>
+ <d1f661f2-f473-1dd8-94cc-fe76714249b5@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202112934.3612726-2-alexandre.belloni@bootlin.com>
+In-Reply-To: <d1f661f2-f473-1dd8-94cc-fe76714249b5@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:29:34PM +0100, Alexandre Belloni wrote:
-> When CONFIG_OF is disabled then the matching table is not referenced.
+On Tue, Feb 02, 2021 at 07:47:04PM +0800, Ding Tianhong wrote:
+> On 2021/2/2 19:13, Russell King - ARM Linux admin wrote:
+> > On Tue, Feb 02, 2021 at 09:05:02PM +1000, Nicholas Piggin wrote:
+> >> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+> >> index c02f24400369..d63a5bb6bd0c 100644
+> >> --- a/arch/arm/include/asm/pgtable.h
+> >> +++ b/arch/arm/include/asm/pgtable.h
+> >> @@ -166,6 +166,9 @@ extern struct page *empty_zero_page;
+> >>  
+> >>  extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+> >>  
+> >> +#define pud_page(pud)		pmd_page(__pmd(pud_val(pud)))
+> >> +#define pud_write(pud)		pmd_write(__pmd(pud_val(pud)))
+> > 
+> > As there is no PUD, does it really make sense to return a valid
+> > struct page (which will be the PTE page) for pud_page(), which is
+> > several tables above?
+> > 
+> --- a/arch/arm/include/asm/pgtable-2level.h
+> +++ b/arch/arm/include/asm/pgtable-2level.h
 > 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
->  drivers/rtc/rtc-s3c.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> +static inline int pud_none(pud_t pud)
+> +{
+> +          return 0;
+> +}
 > 
+> I think it could be fix like this.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+We already have that.
 
-Best regards,
-Krzysztof
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
