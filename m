@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC20330CAB9
+	by mail.lfdr.de (Postfix) with ESMTP id 6308430CAB8
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239155AbhBBS6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239051AbhBBS4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237992AbhBBS6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:58:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238856AbhBBS4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 13:56:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7811BC061786;
-        Tue,  2 Feb 2021 10:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e1zVoQg1UhBO6rVR4/m5uorCM3XbTBOXLDJFdXea4To=; b=vkf3Pr3HHQAzpmHFsq5sgfiNRT
-        M5rwlRJDk0dvNqcOeNr+P5StleKu91I20bg5U91cAtkC+X7arf1N7ibf21cSrVhh0KgnC6iofY/et
-        0Zkt9gVoBhekGve4fd2YtGoIyaKF8YpVD3Kz6MKrChdsg1QiUWeZLMqE6frOnkOHKwjURIMVN0E0o
-        UcYZZSwKwmBru7pGja9U4bE2VIzI+D3b8BX7dMz8Wr7jQ+Pm2up6PaM1zS7f0E5bmVB+gMLE2w5T2
-        PM6WWish3BxWTNw2I5tp22jlMl4BAUSXAuWnPXKLKQMw7aT6DOAwfjyFPa8E6MimWVLDWh3k7kM9b
-        iWT3E56A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l70pa-00FcxD-H7; Tue, 02 Feb 2021 18:55:18 +0000
-Date:   Tue, 2 Feb 2021 18:55:18 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
-        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-Message-ID: <20210202185518.GA3723843@infradead.org>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-9-mgurtovoy@nvidia.com>
- <20210201181454.22112b57.cohuck@redhat.com>
- <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
- <20210201114230.37c18abd@omen.home.shazbot.org>
- <20210202170659.1c62a9e8.cohuck@redhat.com>
- <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
- <20210202105455.5a358980@omen.home.shazbot.org>
- <20210202185017.GZ4247@nvidia.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C0064F66;
+        Tue,  2 Feb 2021 18:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612292136;
+        bh=BjWZCFlqgjdNMZLVU5uAX8s9kz3EWVagnqa51rr2xCA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gbDEMsrNzRVJHy54V4CeoRSo7RDBd/5xx9QUX370/LxtHhOMIvJjsbHa0ZPKVUfki
+         m8VzdOYard7X0Pl1+SQEqTvYUbYFtV593hqXl5k2HYXVswPcW2Gf05fsdTgTXdNta0
+         94ZORDd2MWSKbl8itx6SntzxLscatuq9yRpMIQHFZ0R8fcOq7SMZL4EF2ji/ikaeGJ
+         Snnxog7I6+TI9Gs9niHYUwXTAVw7XPbxJMV2+nUPab6Ji//XFbnvtxkCTS24YvGOum
+         vGuLCrFLsI/DDnhHoYs82M556L4ghubxHDUn1y3u//lS4j9q8kHMYXeCFoXa+2nkXB
+         tgpXJVoS/u6mg==
+Date:   Tue, 2 Feb 2021 20:55:28 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        coreteam@netfilter.org, Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH net 1/4] ipv6: silence compilation warning for non-IPV6
+ builds
+Message-ID: <20210202185528.GE3264866@unreal>
+References: <20210202135544.3262383-1-leon@kernel.org>
+ <20210202135544.3262383-2-leon@kernel.org>
+ <20210202082909.7d8f479f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202185017.GZ4247@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210202082909.7d8f479f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 02:50:17PM -0400, Jason Gunthorpe wrote:
-> For uAPI compatability vfio_pci.ko would need some
-> request_module()/symbol_get() trick to pass control over to the device
-> specific module.
+On Tue, Feb 02, 2021 at 08:29:09AM -0800, Jakub Kicinski wrote:
+> On Tue,  2 Feb 2021 15:55:41 +0200 Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > The W=1 compilation of allmodconfig generates the following warning:
+> >
+> > net/ipv6/icmp.c:448:6: warning: no previous prototype for 'icmp6_send' [-Wmissing-prototypes]
+> >   448 | void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+> >       |      ^~~~~~~~~~
+> >
+> > In such configuration, the icmp6_send() is not used outside of icmp.c, so close
+> > its EXPORT_SYMBOL and add "static" word to limit the scope.
+> >
+> > Fixes: cc7a21b6fbd9 ("ipv6: icmp6: avoid indirect call for icmpv6_send()")
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>
+> That's a little much ifdefinery, why not move the declaration from
+> under the ifdef in the header instead?
 
-Err, don't go there.
+We will find ourselves with exported but not used function, it will
+increase symbol file, not big deal but not nice, either.
 
-Please do the DRIVER_EXPLICIT_BIND_ONLY thing first, which avoids the
-need for such hacks.
+>
+> If you repost please target net-next, admittedly these fixes are pretty
+> "obviously correct" but they are not urgent either.
+
+I'll do.
+
+Thanks
