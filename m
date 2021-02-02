@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60DD30BEBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF05330BEC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhBBMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:51:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47666 "EHLO mx2.suse.de"
+        id S232130AbhBBMwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:52:25 -0500
+Received: from mga14.intel.com ([192.55.52.115]:18020 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231837AbhBBMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:51:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612270208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3F6qa8X0Xbhc890ifMMao+IDeLJ53e6DtIS3S2SWeMw=;
-        b=cP2YZVCt1yH8knyPp29hVTdPhGEGhy/aw1zq43+b3tSYuk4FvwOwsZs03TMtgjs5T4C5JI
-        Hhko43viQi9KnY1H6wWIkSCHvYOsFPfuFa8cYwqJ5u+tst+I1D+9qLoI3NVECsff0s2RVt
-        ujN+UnXTLFl9RMahD2U8cL2LCEk+M8A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8205CAF76;
-        Tue,  2 Feb 2021 12:50:08 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 13:50:07 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 07/12] printk: add syslog_lock
-Message-ID: <YBlKf1XWzMcJVCkX@alley>
-References: <20210126211551.26536-1-john.ogness@linutronix.de>
- <20210126211551.26536-8-john.ogness@linutronix.de>
- <YBfzfs9zU8rgHl6y@alley>
- <87h7mwj5k4.fsf@jogness.linutronix.de>
+        id S232118AbhBBMwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:52:22 -0500
+IronPort-SDR: 9oaEIbCYozsdYu46+M08X9+AQUNxiBfF6S52tROwAIcI4s3jrg9CnQUeUfe7MYMUYW3xE8uQeb
+ 3qyFgePKgOWg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180070650"
+X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
+   d="scan'208";a="180070650"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 04:50:35 -0800
+IronPort-SDR: 50zdS5TqZg6AnzkF9QEEHiEqNoBPJKDvtGTSIhfzOC9kYWYllxX3Qdqa0baYc5HYQiuvfFvRJ1
+ snS1vZ1x7abg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
+   d="scan'208";a="479740992"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Feb 2021 04:50:32 -0800
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH 0/6] usb: Handle device properties with software node API
+Date:   Tue,  2 Feb 2021 15:50:26 +0300
+Message-Id: <20210202125032.64982-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7mwj5k4.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-02-01 14:17:55, John Ogness wrote:
-> On 2021-02-01, Petr Mladek <pmladek@suse.com> wrote:
-> >> The global variables @syslog_seq, @syslog_partial, @syslog_time
-> >> and write access to @clear_seq are protected by @logbuf_lock.
-> >> Once @logbuf_lock is removed, these variables will need their
-> >> own synchronization method. Introduce @syslog_lock for this
-> >> purpose.
-> >
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> >> @@ -390,8 +390,12 @@ DEFINE_RAW_SPINLOCK(logbuf_lock);
-> >>  		printk_safe_exit_irqrestore(flags);	\
-> >>  	} while (0)
-> >>  
-> >> +/* syslog_lock protects syslog_* variables and write access to clear_seq. */
-> >> +static DEFINE_RAW_SPINLOCK(syslog_lock);
-> >
-> > I am not expert on RT code but I think that it prefers the generic
-> > spinlocks. syslog_lock seems to be used in a normal context.
-> > IMHO, it does not need to be a raw spinlock.
-> >
-> > Note that using normal spinlock would require switching the locking
-> > order. logbuf_lock is a raw lock. Normal spinlock must not be taken
-> > under a raw spinlock.
-> >
-> > Or we could switch syslog_lock to the normal spinlock later
-> > after logbuf_lock is removed.
-> 
-> I was planning on this last option because I think it is the
-> simplest. There are places such as syslog_print_all() where the
-> printk_safe_enter() and logbuf_lock locking are not at the same place as
-> the syslog_lock locking (and syslog_lock is inside).
->
-> Once the safe buffers are removed, syslog_lock can transition to a
-> spinlock. (spinlock's must not be under local_irq_save().)
+Hi,
 
-Fair enough. Please, mention in the commit message that it
-will get switched to normal spinlock later. And the the raw
-spinlock is used to make the transition more straightforward
-or something like this.
- 
-> >> +
-> >>  #ifdef CONFIG_PRINTK
-> >>  DECLARE_WAIT_QUEUE_HEAD(log_wait);
-> >> +/* All 3 protected by @syslog_lock. */
-> >>  /* the next printk record to read by syslog(READ) or /proc/kmsg */
-> >>  static u64 syslog_seq;
-> >>  static size_t syslog_partial;
-> >> @@ -1648,8 +1661,14 @@ int do_syslog(int type, char __user *buf, int len, int source)
-> >>  			return 0;
-> >>  		if (!access_ok(buf, len))
-> >>  			return -EFAULT;
-> >> +
-> >> +		/* Get a consistent copy of @syslog_seq. */
-> >> +		raw_spin_lock_irq(&syslog_lock);
-> >> +		seq = syslog_seq;
-> >> +		raw_spin_unlock_irq(&syslog_lock);
-> >> +
-> >>  		error = wait_event_interruptible(log_wait,
-> >> -				prb_read_valid(prb, syslog_seq, NULL));
-> >> +				prb_read_valid(prb, seq, NULL));
-> >
-> > Hmm, this will not detect when syslog_seq gets cleared in parallel.
-> > I hope that nobody rely on this behavior. But who knows?
-> >
-> > A solution might be to have also syslog_seq latched. But I am
-> > not sure if it is worth it.
-> >
-> > I am for taking the risk and use the patch as it is now. Let's keep
-> > the code for now. We could always use the latched variable when
-> > anyone complains. Just keep it in mind.
-> 
-> We could add a simple helper:
-> 
-> /* Get a consistent copy of @syslog_seq. */
-> static u64 syslog_seq_read(void)
-> {
->     unsigned long flags;
-> 
->     raw_spin_lock_irqsave(&syslog_lock, flags);
->     seq = syslog_seq;
->     raw_spin_unlock_irqrestore(&syslog_lock, flags);
->     return seq;
-> }
-> 
-> Then change the code to:
-> 
->     error = wait_event_interruptible(log_wait,
->                     prb_read_valid(prb, read_syslog_seq(), NULL));
-> 
+Currently it is not possible to take full advantage of software
+fwnodes in the drivers because device_del() is calling
+device_remove_properties() (that removes the software node attached to
+the device) unconditionally which prevents the software nodes from
+being reused or shared, and because subsystems are dealing with device
+properties instead of software nodes which in many cases prevents the
+drivers from using software nodes at all.
 
-Great idea! Please, use it but without the flags. IMHO, using flags
-might be confusing when reading the come. It might create false
-expectations...
+To fix the situation, the device_remove_properties() call in
+device_del() has to be removed, and later the subsystems need to be
+converted so that they deal with software nodes instead of just device
+properties. But before that can be done, the drivers must be prepared
+for those changes. These patches do that for the USB drivers.
 
-> register_console() could also make use of the function. (That is why I
-> am suggesting the flags variant.)
+The first patch introduces device_create_managed_software_node()
+function that can be used as a drop-in replacement for
+device_add_properties(). The rest of the patches simply use that
+function, or convert the drivers in some other way to use software
+nodes instead of just the device properties in them.
 
-I think that flags are actually not needed in register_console() as
-mentioned in the other mail. Anyway, we could keep register_console()
-as is (opencoded) for now.
+thanks,
 
-Best Regards,
-Petr
+Heikki Krogerus (6):
+  software node: Provide replacement for device_add_properties()
+  usb: dwc2: pci: Drop the empty quirk function
+  usb: dwc3: haps: Constify the software node
+  usb: dwc3: qcom: Constify the software node
+  usb: dwc3: host: Use software node API with the properties
+  xhci: ext-caps: Use software node API with the properties
+
+ drivers/base/swnode.c            | 43 ++++++++++++++++++++++++++++++++
+ drivers/usb/dwc2/pci.c           | 18 -------------
+ drivers/usb/dwc3/dwc3-haps.c     |  8 +++++-
+ drivers/usb/dwc3/dwc3-qcom.c     | 12 ++++++---
+ drivers/usb/dwc3/host.c          |  2 +-
+ drivers/usb/host/xhci-ext-caps.c |  3 ++-
+ include/linux/property.h         |  4 +++
+ 7 files changed, 66 insertions(+), 24 deletions(-)
+
+-- 
+2.30.0
+
