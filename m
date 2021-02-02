@@ -2,155 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6660E30B471
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0C930B475
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhBBBIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        id S229915AbhBBBJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhBBBIM (ORCPT
+        with ESMTP id S229866AbhBBBIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:08:12 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B764CC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:07:32 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id a12so18350132qkh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:07:32 -0800 (PST)
+        Mon, 1 Feb 2021 20:08:55 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4CBC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:08:15 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id o10so893385wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:08:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NszN4D5jzxy6frT0PN3aEj0vwxxqCzqxTFC21xlKA2c=;
-        b=mzPpODks3Hz/c3k7qugw9y9nTN+2ETWrIEmwpYHyI23BXj3J6N2CmbedBCmDvne9e2
-         uWBUZXHVTmVsGahn5gvR3D5CEcMo2U8XoFLapZ7aC00EzXj/poCNx4CLsMN4pKHclSGK
-         JVb6OfBikmgd2t++YwljcC1c0B6Oz0kJHd01E=
+        bh=RndNhAUPEtKb/UpdxEGQ4FR5gEglHekd7o0mVZRrBqQ=;
+        b=otCvhmypBIsU0J/onWHBK+g2qEX0OxWIhiVfNvjAUaHwhT+ibJG+RaYiLpZ4TJyqmi
+         DdZq19Q3SPbdn5aBZf8+AsCdYBGuPkn8epCg2pdmaNFOqakpsJSEbCIbdtZXqIIWkJvw
+         bR7L4z770xZfS8N4HIPZJ7gQaQJfolmpybmdiMYDyEBe8U61fIp0/5Rr3ZFZob9kEXuq
+         X37WyIlu6xyWlRb0+xpJHTgVA9sgfB646kpTpUK6Ty0tMmS+D8JxtjcuGYCc1s5TtpEg
+         8BtJaDPbNBf1QOhhhalJ/yreI5AaQDA5s9vwf+9M5EcazIKaLfT9apknEvGrShR5jCQW
+         hd+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NszN4D5jzxy6frT0PN3aEj0vwxxqCzqxTFC21xlKA2c=;
-        b=iLQUx00K6NFL44FjCWAAIN/DDIjmiz9TO2owBasMdasD6xmZXGqQczDsPQS3xgjlPL
-         l5YTlcU2m+rkrPaZOUP2PJ3XDAL5ddSyS8szCbogjPaAXEocnfmdu44Ct948q9DYkRQE
-         uE4QrcR3WeUmXaQ+OKX5u0M4dZWgc3PMESSw+3jjvSoQn1opCjbYLHGrz2oJuBxcpdV+
-         ypHUNbwDd4R9pEeDEAZ20Ffxrxcyx8QNImw/GSD/0iPkLK5ooxvLAYgH+C7FG+A6+JRF
-         w1Ono+KqBmZe6mhGoQVG2RF1DH+/E+Ew/cadujsoeFvvyvS336gTIlC+cAEeE0qNBYSS
-         Lvvg==
-X-Gm-Message-State: AOAM532r/JcrP5Qm227r80MCPegovcoA44lpRqJrM5jYf+ZCzdxGBXIk
-        7aX5CwQXo/pwbB1NBZ389JezG8WZ2rauHg==
-X-Google-Smtp-Source: ABdhPJxGW3cRfksKfgsq9P5sSaLTJVkMLHQs/3mifEvqoaOl1bpOVZ1/m5M2fl2pPwTyzW8OjgAqCA==
-X-Received: by 2002:a05:620a:64d:: with SMTP id a13mr16913238qka.383.1612228052020;
-        Mon, 01 Feb 2021 17:07:32 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id a23sm15415967qth.9.2021.02.01.17.07.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 17:07:31 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id v123so2823076yba.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:07:31 -0800 (PST)
-X-Received: by 2002:a25:c683:: with SMTP id k125mr30638749ybf.32.1612228051259;
- Mon, 01 Feb 2021 17:07:31 -0800 (PST)
+        bh=RndNhAUPEtKb/UpdxEGQ4FR5gEglHekd7o0mVZRrBqQ=;
+        b=Kiy44jXCRYoU5H68vb6PJyU89P/p3kFj+SqVNDSvfgOTS9f4YxqnLrQe8mekoWisBS
+         ggrJFz3+U+mewux34X9kDDR1R/k7Gh64amS+I2gd9rBjlgSVEWbTi8Nt/Asqqd0/vad9
+         qyDxr+caW/X9HbAgwG6fQv3sPoFtvbhdQ3Z3UNkkDpMNm1+Vaj1UvHWwrnnf+R1MuP32
+         Zp65SIPpIT/ZmXkigpWKr059ZM2aKU+MO6KKQCpRjzNHL4m48EYmRQjPW1xVq38rH+jl
+         3SIpWu9Bx9P7S94/itAf9aaJl/p44n+4km206uwIKwGB9OIkjbg0Jq/MOHg6lLXuDMHO
+         UDNw==
+X-Gm-Message-State: AOAM531Z74h1zFRsI/6gR2GR+hZN0GYDjPW1KyJ07DNGI8iD7J76jTfB
+        OV87KcY3Pbslo6FE0gxvLTFDax8XStkwlYp/+qjkpQ==
+X-Google-Smtp-Source: ABdhPJxyhZPweyEZdtVS8pbzENesvAgQg7GA6UjMKqYygX8k02wcRUHVoGOMkAll0W7ToHbbz9juQ18x6KIdTBOcux8=
+X-Received: by 2002:a05:600c:4fcb:: with SMTP id o11mr1232051wmq.88.1612228093600;
+ Mon, 01 Feb 2021 17:08:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107122909.16317-1-yong.wu@mediatek.com> <20210107122909.16317-2-yong.wu@mediatek.com>
-In-Reply-To: <20210107122909.16317-2-yong.wu@mediatek.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 1 Feb 2021 17:07:19 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Xkn0pVGP5R7-xKjrDUTsrWRcy3L-D_qg8_hgV=noRhxA@mail.gmail.com>
-Message-ID: <CAD=FV=Xkn0pVGP5R7-xKjrDUTsrWRcy3L-D_qg8_hgV=noRhxA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/7] iommu: Move iotlb_sync_map out from __iommu_map
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+References: <20210128083817.314315-1-surenb@google.com> <20210128091348.GA1962975@infradead.org>
+ <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
+ <YBMAGRIwcbPF17cU@google.com> <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 1 Feb 2021 17:08:02 -0800
+Message-ID: <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
+ linux vm
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "(Exiting) Benjamin Gaignard" <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>, labbott@redhat.com,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
         Robin Murphy <robin.murphy@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, srv_heupstream@mediatek.com,
+        James Jones <jajones@nvidia.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        youlin.pei@mediatek.com, Nicolas Boichat <drinkcat@chromium.org>,
-        anan.sun@mediatek.com, chao.hao@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        kernel-team@android.com, Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@aculab.com>
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jan 7, 2021 at 4:31 AM Yong Wu <yong.wu@mediatek.com> wrote:
+On Thu, Jan 28, 2021 at 11:00 AM Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> @@ -2438,18 +2435,31 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
->         return ret;
->  }
+> On Thu, Jan 28, 2021 at 10:19 AM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Thu, Jan 28, 2021 at 09:52:59AM -0800, Suren Baghdasaryan wrote:
+> > > On Thu, Jan 28, 2021 at 1:13 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > > >
+> > > > On Thu, Jan 28, 2021 at 12:38:17AM -0800, Suren Baghdasaryan wrote:
+> > > > > Currently system heap maps its buffers with VM_PFNMAP flag using
+> > > > > remap_pfn_range. This results in such buffers not being accounted
+> > > > > for in PSS calculations because vm treats this memory as having no
+> > > > > page structs. Without page structs there are no counters representing
+> > > > > how many processes are mapping a page and therefore PSS calculation
+> > > > > is impossible.
+> > > > > Historically, ION driver used to map its buffers as VM_PFNMAP areas
+> > > > > due to memory carveouts that did not have page structs [1]. That
+> > > > > is not the case anymore and it seems there was desire to move away
+> > > > > from remap_pfn_range [2].
+> > > > > Dmabuf system heap design inherits this ION behavior and maps its
+> > > > > pages using remap_pfn_range even though allocated pages are backed
+> > > > > by page structs.
+> > > > > Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
+> > > > > system heap and replace remap_pfn_range with vm_insert_page, following
+> > > > > Laura's suggestion in [1]. This would allow correct PSS calculation
+> > > > > for dmabufs.
+> > > > >
+> > > > > [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
+> > > > > [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
+> > > > > (sorry, could not find lore links for these discussions)
+> > > > >
+> > > > > Suggested-by: Laura Abbott <labbott@kernel.org>
+> > > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > > > ---
+> > > > >  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+> > > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > > > index 17e0e9a68baf..0e92e42b2251 100644
+> > > > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > > > @@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+> > > > >       struct sg_page_iter piter;
+> > > > >       int ret;
+> > > > >
+> > > > > +     /* All pages are backed by a "struct page" */
+> > > > > +     vma->vm_flags &= ~VM_PFNMAP;
+> > > >
+> > > > Why do we clear this flag?  It shouldn't even be set here as far as I
+> > > > can tell.
+> > >
+> > > Thanks for the question, Christoph.
+> > > I tracked down that flag being set by drm_gem_mmap_obj() which DRM
+> > > drivers use to "Set up the VMA to prepare mapping of the GEM object"
+> > > (according to drm_gem_mmap_obj comments). I also see a pattern in
+> > > several DMR drivers to call drm_gem_mmap_obj()/drm_gem_mmap(), then
+> > > clear VM_PFNMAP and then map the VMA (for example here:
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/rockchip/rockchip_drm_gem.c#L246).
+> > > I thought that dmabuf allocator (in this case the system heap) would
+> > > be the right place to set these flags because it controls how memory
+> > > is allocated before mapping. However it's quite possible that I'm
+> >
+> > However, you're not setting but removing a flag under the caller.
+> > It's different with appending more flags(e.g., removing condition
+> > vs adding more conditions). If we should remove the flag, caller
+> > didn't need to set it from the beginning. Hiding it under this API
+> > continue to make wrong usecase in future.
 >
-> +static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
-> +                     phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> +{
-> +       const struct iommu_ops *ops = domain->ops;
-> +       int ret;
-> +
-> +       ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
-
-The above is broken.  Instead of GFP_KERNEL it should be passing "gfp".
-
-
-> +       if (ret == 0 && ops->iotlb_sync_map)
-> +               ops->iotlb_sync_map(domain);
-> +
-> +       return ret;
-> +}
-> +
->  int iommu_map(struct iommu_domain *domain, unsigned long iova,
->               phys_addr_t paddr, size_t size, int prot)
->  {
->         might_sleep();
-> -       return __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
-> +       return _iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
->  }
->  EXPORT_SYMBOL_GPL(iommu_map);
+> Which takes us back to the question of why VM_PFNMAP is being set by
+> the caller in the first place.
 >
->  int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
->               phys_addr_t paddr, size_t size, int prot)
->  {
-> -       return __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
-> +       return _iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
+> >
+> > > missing the real reason for VM_PFNMAP being set in drm_gem_mmap_obj()
+> > > before dma_buf_mmap() is called. I could not find the answer to that,
+> > > so I hope someone here can clarify that.
+> >
+> > Guess DRM had used carved out pure PFN memory long time ago and
+> > changed to use dmabuf since somepoint.
+>
+> It would be really good to know the reason for sure to address the
+> issue properly.
+>
+> > Whatever there is a history, rather than removing the flag
+> > under them, let's add WARN_ON(vma->vm_flags & VM_PFNMAP) so
+> > we could clean up catching them and start discussion.
+>
+> The issue with not clearing the flag here is that vm_insert_page() has
+> a BUG_ON(vma->vm_flags & VM_PFNMAP). If we do not clear this flag I
+> suspect we will get many angry developers :)
+> If your above guess is correct and we can mandate dmabuf heap users
+> not to use VM_PFNMAP then I think the following code might be the best
+> way forward:
+>
+> +       bool pfn_requested = !!(vma->vm_flags & VM_PFNMAP);
+> +.      WARN_ON_ONCE(pfn_requested);
+>
+>         for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
+>                 struct page *page = sg_page_iter_page(&piter);
+>
+> -               ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
+> -                                     vma->vm_page_prot);
+> +               ret = pfn_requested ?
+> +.                      remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
+> +                                     vma->vm_page_prot) :
+> +                       vm_insert_page(vma, addr, page);
 
-Specifically the above bug means we drop the "GFP_ATOMIC" here.
-
-It means we trigger a warning, like this (on a downstream kernel with
-the patch backported):
-
- BUG: sleeping function called from invalid context at mm/page_alloc.c:4726
- in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 9, name: ksoftirqd/0
- CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.93-12508-gc10c93e28e39 #1
- Call trace:
-  dump_backtrace+0x0/0x154
-  show_stack+0x20/0x2c
-  dump_stack+0xa0/0xfc
-  ___might_sleep+0x11c/0x12c
-  __might_sleep+0x50/0x84
-  __alloc_pages_nodemask+0xf8/0x2bc
-  __arm_lpae_alloc_pages+0x48/0x1b4
-  __arm_lpae_map+0x124/0x274
-  __arm_lpae_map+0x1cc/0x274
-  arm_lpae_map+0x140/0x170
-  arm_smmu_map+0x78/0xbc
-  __iommu_map+0xd4/0x210
-  _iommu_map+0x4c/0x84
-  iommu_map_atomic+0x44/0x58
-  __iommu_dma_map+0x8c/0xc4
-  iommu_dma_map_page+0xac/0xf0
-
----
-
-A quick (but not very tested) fix at:
-
-https://lore.kernel.org/r/20210201170611.1.I64a7b62579287d668d7c89e105dcedf45d641063@changeid/
-
-
--Doug
+Folks, any objections to the approach above?
