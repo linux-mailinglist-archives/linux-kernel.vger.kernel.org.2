@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AC330C6FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E769430C701
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237226AbhBBRGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:06:11 -0500
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:40292 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237166AbhBBRDc (ORCPT
+        id S237181AbhBBRHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237024AbhBBREe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:03:32 -0500
-Received: by mail-wm1-f47.google.com with SMTP id c127so2922274wmf.5;
-        Tue, 02 Feb 2021 09:03:16 -0800 (PST)
+        Tue, 2 Feb 2021 12:04:34 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D355FC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:03:54 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id e15so2955927wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LlSpQiAeO5UD+cdMKYJ9CnM6vv6XdQSneSZu18Ir1hY=;
+        b=TzVMfjf+ylnuHPTfEahpcfHvrwIKlOzm8kZ6UZxO8/PUZmMCmW8G3Z44hXndw8bnlq
+         iIUZ760s/Zccd8nAfCYOIrPjTjWoYL0Ceqdqloz8lSNEmrBORIuJwNhBTaGSjddFDOcQ
+         AnurNFHeaF6uVkEG+7173SHWXrgnoxhikvLZAPRZLggeZofIyBxtpGY8TJ+Pvhd1Z5d0
+         qtiIyk8KvQ/T8PO0kaJNGgPKxykmMEN1jHJcJE02d/Dbk3BQovpvLFXEzpW1WaF4vTFM
+         01cmHL8ufHxB1KMhOszwj2DzfFbsAYUsgg6T6kzX+A5/P3CWnlaLRKMe3W6ZhC3sQAJF
+         8DtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DD+251eGktrSTImPGVbBwQ3z1hqdMBWG31qVIVIXP5o=;
-        b=fStGpbTmQ9RsYNxFFwZdQVV0O/3zB+ex7Q625Arm2BpuT+VPQSAXF7DIyrCJgg7zUj
-         i2FRWye1CguYTlBxKf17U/i9+YF38zmLd5oyMj2FWwNC0WsqkF2xhr4TQweMmNLGhWSi
-         hQEweJiIVEVFde7oKSu3sMgKppFK553YzcGS27/KidRx1s9wQNs4P2YSwffwRdJkiqAl
-         H9UXrW8U+QxjhcVl42lt1aPElfD2upiuDnp7joVj1q/UtVMDgGpqCn+MIwqCCl7CZUuk
-         4DBXD85K+MnXLqtS9KkR8GKLL0xZAsiJNsZEIZRyBDYKgK/PXvZVvobnbSjm8Bph/nQx
-         3i4Q==
-X-Gm-Message-State: AOAM532xSER91QRvq77oMlhc4OvIXSbkjKGWHdrB3hHVmPi/0k6OYznY
-        F+SJkcDzZBFKX9izvMJECoc=
-X-Google-Smtp-Source: ABdhPJwsEMGnEjA/NKpbirU1u3HMobdNK7rrUiV5kMJbI1JoH9E/2vjXHtijtgxHb7IEQSN6sjawmQ==
-X-Received: by 2002:a7b:c041:: with SMTP id u1mr4506508wmc.161.1612285370649;
-        Tue, 02 Feb 2021 09:02:50 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r17sm18597208wro.46.2021.02.02.09.02.49
+        bh=LlSpQiAeO5UD+cdMKYJ9CnM6vv6XdQSneSZu18Ir1hY=;
+        b=LtW9LL5U9rzJd6T0SEPFnyq8+an0EBZltrbOuEuDCjfPf81JGhI2QSNmjqqKSCzdIc
+         0o99WAXYIFvqzYmO+H2VGGtQs8o6kfC3XKn2WXVCmDb9zlI3D2tRgduYjVgfAbvhMi5n
+         k4SpLn4AZ5A5Ai8DCXuZl5oWvQP+w8CT7fxcsT7yfCVkx5AALAijzLH9WmBsPIa4dI2W
+         9spCZu4V/NMhEiJ8salqg1ZHukZeNBiuKK/DguDoSDnZHYIcPcjqkvJra+gb8/db0UyM
+         Zp9ie6DpcJZNkY2gDG1nu0gXYrD/Mf5F7pMv99X6Xa3MGKtHlVkGT+g+bo4KlNn44vDa
+         tn0Q==
+X-Gm-Message-State: AOAM530rkLS68HfIlc+B3Vn5Xdbson+4BqBFYVY6SXMBT0W707JvWJky
+        AHgvpmhvuhADwmYja4BzP+0kxw==
+X-Google-Smtp-Source: ABdhPJw7ncqblw1w7tWGFXv9BaZLz89rCTXcutCm2/LmNWfuj4bPNh3PMRTyPZbm2rD1CHhNptWiLA==
+X-Received: by 2002:a05:600c:4fc2:: with SMTP id o2mr4462198wmq.90.1612285433466;
+        Tue, 02 Feb 2021 09:03:53 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id q63sm4041403wma.43.2021.02.02.09.03.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:02:50 -0800 (PST)
-Date:   Tue, 2 Feb 2021 17:02:48 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v5 13/16] asm-generic/hyperv: introduce hv_device_id and
- auxiliary structures
-Message-ID: <20210202170248.4hds554cyxpuayqc@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-14-wei.liu@kernel.org>
- <MWHPR21MB1593959647DA60219E19C25ED7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Tue, 02 Feb 2021 09:03:52 -0800 (PST)
+Date:   Tue, 2 Feb 2021 18:03:46 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/12] kasan: clean up setting free info in
+ kasan_slab_free
+Message-ID: <YBmF8gCRRdRgJw0/@elver.google.com>
+References: <cover.1612208222.git.andreyknvl@google.com>
+ <e762958db74587308514341a18622ff350a75d8a.1612208222.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593959647DA60219E19C25ED7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <e762958db74587308514341a18622ff350a75d8a.1612208222.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:26:52AM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
-> > 
-> > We will need to identify the device we want Microsoft Hypervisor to
-> > manipulate.  Introduce the data structures for that purpose.
-> > 
-> > They will be used in a later patch.
-> > 
-> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  include/asm-generic/hyperv-tlfs.h | 79 +++++++++++++++++++++++++++++++
-> >  1 file changed, 79 insertions(+)
-> > 
-> > diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> > index 8423bf53c237..42ff1326c6bd 100644
-> > --- a/include/asm-generic/hyperv-tlfs.h
-> > +++ b/include/asm-generic/hyperv-tlfs.h
-> > @@ -623,4 +623,83 @@ struct hv_set_vp_registers_input {
-> >  	} element[];
-> >  } __packed;
-> > 
-> > +enum hv_device_type {
-> > +	HV_DEVICE_TYPE_LOGICAL = 0,
-> > +	HV_DEVICE_TYPE_PCI = 1,
-> > +	HV_DEVICE_TYPE_IOAPIC = 2,
-> > +	HV_DEVICE_TYPE_ACPI = 3,
-> > +};
-> > +
-> > +typedef u16 hv_pci_rid;
-> > +typedef u16 hv_pci_segment;
-> > +typedef u64 hv_logical_device_id;
-> > +union hv_pci_bdf {
-> > +	u16 as_uint16;
-> > +
-> > +	struct {
-> > +		u8 function:3;
-> > +		u8 device:5;
-> > +		u8 bus;
-> > +	};
-> > +} __packed;
-> > +
-> > +union hv_pci_bus_range {
-> > +	u16 as_uint16;
-> > +
-> > +	struct {
-> > +		u8 subordinate_bus;
-> > +		u8 secondary_bus;
-> > +	};
-> > +} __packed;
-> > +
-> > +union hv_device_id {
-> > +	u64 as_uint64;
-> > +
-> > +	struct {
-> > +		u64 :62;
-> > +		u64 device_type:2;
-> > +	};
+On Mon, Feb 01, 2021 at 08:43PM +0100, Andrey Konovalov wrote:
+> Put kasan_stack_collection_enabled() check and kasan_set_free_info()
+> calls next to each other.
 > 
-> Are the above 4 lines extraneous junk? 
-> If not, a comment would be helpful.  And we
-> would normally label the 62 bit field as 
-> "reserved0" or something similar.
+> The way this was previously implemented was a minor optimization that
+> relied of the the fact that kasan_stack_collection_enabled() is always
+> true for generic KASAN. The confusion that this brings outweights saving
+> a few instructions.
 > 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-No. It is not junk. I got this from a header in tree.
+Reviewed-by: Marco Elver <elver@google.com>
 
-I am inclined to just drop this hunk. If that breaks things, I will use
-"reserved0".
-
-Wei.
+> ---
+>  mm/kasan/common.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index a7eb553c8e91..086bb77292b6 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -350,13 +350,11 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>  
+>  	kasan_poison(object, cache->object_size, KASAN_KMALLOC_FREE);
+>  
+> -	if (!kasan_stack_collection_enabled())
+> -		return false;
+> -
+>  	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
+>  		return false;
+>  
+> -	kasan_set_free_info(cache, object, tag);
+> +	if (kasan_stack_collection_enabled())
+> +		kasan_set_free_info(cache, object, tag);
+>  
+>  	return kasan_quarantine_put(cache, object);
+>  }
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
