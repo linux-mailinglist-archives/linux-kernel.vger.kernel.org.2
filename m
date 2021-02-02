@@ -2,283 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFC530CD51
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F63630CD57
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhBBUvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:51:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231193AbhBBUvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:51:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEA364E38;
-        Tue,  2 Feb 2021 20:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612299022;
-        bh=KAMQGQO1pfD3t34LGdFZWhK0tJH4obaQlEHMOr9wuhw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RN2yaenZ+37TyzEarkMHGxUHB5hwOOEUQzn9/b/0xDmf/d/EQ2CLeNm5YcZEEJV0j
-         JCIXPkSPuV1iaIvHfu7GHG2M9Ip9NdaoMqnv1DlUj4RF9gnbHXdWNY0t6oGqR1TxW0
-         MTtiRo8hzES0DD/2SaEyyFpobmjaibzv43OC9LtkSlc6Z8U0aHMltpO1QZkhl/FP96
-         JmUB61TVhd0FQsUMhamdMNab+VS3oj3wcJVtinRLFYtobR8FgFL3XrnAh8q9rE2CcM
-         ia48HLbQbH0BMBq3wl07KHNWU23W20PjOSNzg3E+SXxzen6QrPD0rSme4VtzYnQQMr
-         KilykHiVZUpow==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     linux-pci@vger.kernel.org
-Cc:     Alex Gagniuc <mr.nuke.me@gmail.com>, Sinan Kaya <okaya@kernel.org>,
-        Keith Busch <keith.busch@intel.com>,
-        Jan Vesely <jano.vesely@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Austin Bolen <austin_bolen@dell.com>,
-        Shyam Iyer <Shyam_Iyer@dell.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Dave Airlie <airlied@gmail.com>,
-        Ben Skeggs <skeggsb@gmail.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "A . Vladimirov" <vladimirov.atanas@gmail.com>,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] PCI/LINK: Remove bandwidth notification
-Date:   Tue,  2 Feb 2021 14:50:13 -0600
-Message-Id: <20210202205014.136880-1-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233802AbhBBUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233756AbhBBUwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:52:40 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A95C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 12:51:59 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o63so15680318pgo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 12:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DDCp9RzMvHUJbmD5LpwsO8bBYL0TirlWe1D2XxSeIec=;
+        b=soYgdc0akMR2yNT+0SjjRn09zRvM8VuwOB37mrA3+A3bD8gJIaIpsZXCLzZoErNewV
+         ctpjwF0nZcP++xPNnFuDBlfxXX655ud2S7vGUdC7Huf2TRCmtA1VfnVFSPl6uf7nLDQz
+         o+yxr3/Zob+DlVrbAViaObQAoxYfJkPL/uoHMhCAmplBlBAZRjrM2YF02ZtWJRIh+FRK
+         PWlD5XpoAIJtD0K5O9ACLiGv2HyQLF+daaqgqP9YB9kcoADDhvExjmggLzyJZLPtf5SV
+         3eE9x4fBJ12ulr6rNt7UEnGcFmkEnyZEeK0zVnZV6nbiSerUF0Ex5cXC++EokZAZvK7M
+         Sw7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DDCp9RzMvHUJbmD5LpwsO8bBYL0TirlWe1D2XxSeIec=;
+        b=AjJuMSjDlwA31E9Gf51DJK+CkisvHZBRk802e0TRjKcLazOYpK3IL10cDPF2CwoPOE
+         JW2u6XkKJ0glGO72BSkPYuvcaUKSRr4NKQMoQmDUgT8jNoTXDgy5vF38SJsRjz5jZL3q
+         UfHCieqV/r+pmX+3tVH0ywLAUyoMme92jqpQ+mvnSfs6OMiiO1xyVz1vEzihv26bE7Fl
+         pfajo28QyiaJY6AbeKzxoIhnPxqr6BP3c+q6GzGfD9/Etp9TSg8chj4OUkFEKdI5R+KW
+         witLjsPhQPO57QxPYHKCEWYf6X0jktdHEoAdN6gMjmXgkW4IVs9JxwhjqbgVbCKfstk/
+         bZmg==
+X-Gm-Message-State: AOAM53170zJSR/N/uCzwHnCPSvXX5KHcBW91StSWzCkjtArCs39FpQdM
+        qN2wBBgYWB6Cw2Q91HzBntY=
+X-Google-Smtp-Source: ABdhPJxl5hps3mFiW7ZYdF3geeF1j8ghVcsy6A2Dcx1bcMfNOGmNgsL/+w0WUBTH4ECwwVyvL+uGbw==
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id q20-20020a056a000854b02901b762330c5fmr23374045pfk.73.1612299119233;
+        Tue, 02 Feb 2021 12:51:59 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id 76sm22819171pfz.174.2021.02.02.12.51.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Feb 2021 12:51:58 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [RFC 15/20] mm: detect deferred TLB flushes in vma granularity
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <8F37526F-8189-483A-A16E-E0EB8662AD98@amacapital.net>
+Date:   Tue, 2 Feb 2021 12:51:56 -0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        X86 ML <x86@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <846661D8-0963-4DCF-AE8D-1417064CB721@gmail.com>
+References: <A6E4897D-8D5A-4084-8288-8E43F3039921@gmail.com>
+ <8F37526F-8189-483A-A16E-E0EB8662AD98@amacapital.net>
+To:     Andy Lutomirski <luto@amacapital.net>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+> On Feb 1, 2021, at 4:14 PM, Andy Lutomirski <luto@amacapital.net> =
+wrote:
+>=20
+>=20
+>> On Feb 1, 2021, at 2:04 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+>>=20
+>> Andy=E2=80=99s comments managed to make me realize this code is =
+wrong. We must
+>> call inc_mm_tlb_gen(mm) every time.
+>>=20
+>> Otherwise, a CPU that saw the old tlb_gen and updated it in its local
+>> cpu_tlbstate on a context-switch. If the process was not running when =
+the
+>> TLB flush was issued, no IPI will be sent to the CPU. Therefore, =
+later
+>> switch_mm_irqs_off() back to the process will not flush the local =
+TLB.
+>>=20
+>> I need to think if there is a better solution. Multiple calls to
+>> inc_mm_tlb_gen() during deferred flushes would trigger a full TLB =
+flush
+>> instead of one that is specific to the ranges, once the flush =
+actually takes
+>> place. On x86 it=E2=80=99s practically a non-issue, since anyhow any =
+update of more
+>> than 33-entries or so would cause a full TLB flush, but this is still =
+ugly.
+>=20
+> What if we had a per-mm ring buffer of flushes?  When starting a =
+flush, we would stick the range in the ring buffer and, when flushing, =
+we would read the ring buffer to catch up.  This would mostly replace =
+the flush_tlb_info struct, and it would let us process multiple partial =
+flushes together.
 
-The PCIe Bandwidth Change Notification feature logs messages when the link
-bandwidth changes.  Some users have reported that these messages occur
-often enough to significantly reduce NVMe performance.  GPUs also seem to
-generate these messages.
+I wanted to sleep on it, and went back and forth on whether it is the =
+right
+direction, hence the late response.
 
-We don't know why the link bandwidth changes, but in the reported cases
-there's no indication that it's caused by hardware failures.
+I think that what you say make sense. I think that I even tried to do =
+once
+something similar for some reason, but my memory plays tricks on me.
 
-Remove the bandwidth change notifications for now.  Hopefully we can add
-this back when we have a better understanding of why this happens and how
-we can make the messages useful instead of overwhelming.
+So tell me what you think on this ring-based solution. As you said, you =
+keep
+per-mm ring of flush_tlb_info. When you queue an entry, you do something
+like:
 
-Link: https://lore.kernel.org/r/20200115221008.GA191037@google.com/
-Link: https://lore.kernel.org/r/155605909349.3575.13433421148215616375.stgit@gimli.home/
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206197
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/pcie/Kconfig           |   8 --
- drivers/pci/pcie/Makefile          |   1 -
- drivers/pci/pcie/bw_notification.c | 138 -----------------------------
- drivers/pci/pcie/portdrv.h         |   6 --
- drivers/pci/pcie/portdrv_pci.c     |   1 -
- 5 files changed, 154 deletions(-)
- delete mode 100644 drivers/pci/pcie/bw_notification.c
+#define RING_ENTRY_INVALID (0)
 
-diff --git a/drivers/pci/pcie/Kconfig b/drivers/pci/pcie/Kconfig
-index 3946555a6042..45a2ef702b45 100644
---- a/drivers/pci/pcie/Kconfig
-+++ b/drivers/pci/pcie/Kconfig
-@@ -133,14 +133,6 @@ config PCIE_PTM
- 	  This is only useful if you have devices that support PTM, but it
- 	  is safe to enable even if you don't.
- 
--config PCIE_BW
--	bool "PCI Express Bandwidth Change Notification"
--	depends on PCIEPORTBUS
--	help
--	  This enables PCI Express Bandwidth Change Notification.  If
--	  you know link width or rate changes occur only to correct
--	  unreliable links, you may answer Y.
--
- config PCIE_EDR
- 	bool "PCI Express Error Disconnect Recover support"
- 	depends on PCIE_DPC && ACPI
-diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
-index d9697892fa3e..b2980db88cc0 100644
---- a/drivers/pci/pcie/Makefile
-+++ b/drivers/pci/pcie/Makefile
-@@ -12,5 +12,4 @@ obj-$(CONFIG_PCIEAER_INJECT)	+= aer_inject.o
- obj-$(CONFIG_PCIE_PME)		+= pme.o
- obj-$(CONFIG_PCIE_DPC)		+= dpc.o
- obj-$(CONFIG_PCIE_PTM)		+= ptm.o
--obj-$(CONFIG_PCIE_BW)		+= bw_notification.o
- obj-$(CONFIG_PCIE_EDR)		+= edr.o
-diff --git a/drivers/pci/pcie/bw_notification.c b/drivers/pci/pcie/bw_notification.c
-deleted file mode 100644
-index 565d23cccb8b..000000000000
---- a/drivers/pci/pcie/bw_notification.c
-+++ /dev/null
-@@ -1,138 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--/*
-- * PCI Express Link Bandwidth Notification services driver
-- * Author: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-- *
-- * Copyright (C) 2019, Dell Inc
-- *
-- * The PCIe Link Bandwidth Notification provides a way to notify the
-- * operating system when the link width or data rate changes.  This
-- * capability is required for all root ports and downstream ports
-- * supporting links wider than x1 and/or multiple link speeds.
-- *
-- * This service port driver hooks into the bandwidth notification interrupt
-- * and warns when links become degraded in operation.
-- */
--
--#define dev_fmt(fmt) "bw_notification: " fmt
--
--#include "../pci.h"
--#include "portdrv.h"
--
--static bool pcie_link_bandwidth_notification_supported(struct pci_dev *dev)
--{
--	int ret;
--	u32 lnk_cap;
--
--	ret = pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &lnk_cap);
--	return (ret == PCIBIOS_SUCCESSFUL) && (lnk_cap & PCI_EXP_LNKCAP_LBNC);
--}
--
--static void pcie_enable_link_bandwidth_notification(struct pci_dev *dev)
--{
--	u16 lnk_ctl;
--
--	pcie_capability_write_word(dev, PCI_EXP_LNKSTA, PCI_EXP_LNKSTA_LBMS);
--
--	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &lnk_ctl);
--	lnk_ctl |= PCI_EXP_LNKCTL_LBMIE;
--	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, lnk_ctl);
--}
--
--static void pcie_disable_link_bandwidth_notification(struct pci_dev *dev)
--{
--	u16 lnk_ctl;
--
--	pcie_capability_read_word(dev, PCI_EXP_LNKCTL, &lnk_ctl);
--	lnk_ctl &= ~PCI_EXP_LNKCTL_LBMIE;
--	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, lnk_ctl);
--}
--
--static irqreturn_t pcie_bw_notification_irq(int irq, void *context)
--{
--	struct pcie_device *srv = context;
--	struct pci_dev *port = srv->port;
--	u16 link_status, events;
--	int ret;
--
--	ret = pcie_capability_read_word(port, PCI_EXP_LNKSTA, &link_status);
--	events = link_status & PCI_EXP_LNKSTA_LBMS;
--
--	if (ret != PCIBIOS_SUCCESSFUL || !events)
--		return IRQ_NONE;
--
--	pcie_capability_write_word(port, PCI_EXP_LNKSTA, events);
--	pcie_update_link_speed(port->subordinate, link_status);
--	return IRQ_WAKE_THREAD;
--}
--
--static irqreturn_t pcie_bw_notification_handler(int irq, void *context)
--{
--	struct pcie_device *srv = context;
--	struct pci_dev *port = srv->port;
--	struct pci_dev *dev;
--
--	/*
--	 * Print status from downstream devices, not this root port or
--	 * downstream switch port.
--	 */
--	down_read(&pci_bus_sem);
--	list_for_each_entry(dev, &port->subordinate->devices, bus_list)
--		pcie_report_downtraining(dev);
--	up_read(&pci_bus_sem);
--
--	return IRQ_HANDLED;
--}
--
--static int pcie_bandwidth_notification_probe(struct pcie_device *srv)
--{
--	int ret;
--
--	/* Single-width or single-speed ports do not have to support this. */
--	if (!pcie_link_bandwidth_notification_supported(srv->port))
--		return -ENODEV;
--
--	ret = request_threaded_irq(srv->irq, pcie_bw_notification_irq,
--				   pcie_bw_notification_handler,
--				   IRQF_SHARED, "PCIe BW notif", srv);
--	if (ret)
--		return ret;
--
--	pcie_enable_link_bandwidth_notification(srv->port);
--	pci_info(srv->port, "enabled with IRQ %d\n", srv->irq);
--
--	return 0;
--}
--
--static void pcie_bandwidth_notification_remove(struct pcie_device *srv)
--{
--	pcie_disable_link_bandwidth_notification(srv->port);
--	free_irq(srv->irq, srv);
--}
--
--static int pcie_bandwidth_notification_suspend(struct pcie_device *srv)
--{
--	pcie_disable_link_bandwidth_notification(srv->port);
--	return 0;
--}
--
--static int pcie_bandwidth_notification_resume(struct pcie_device *srv)
--{
--	pcie_enable_link_bandwidth_notification(srv->port);
--	return 0;
--}
--
--static struct pcie_port_service_driver pcie_bandwidth_notification_driver = {
--	.name		= "pcie_bw_notification",
--	.port_type	= PCIE_ANY_PORT,
--	.service	= PCIE_PORT_SERVICE_BWNOTIF,
--	.probe		= pcie_bandwidth_notification_probe,
--	.suspend	= pcie_bandwidth_notification_suspend,
--	.resume		= pcie_bandwidth_notification_resume,
--	.remove		= pcie_bandwidth_notification_remove,
--};
--
--int __init pcie_bandwidth_notification_init(void)
--{
--	return pcie_port_service_register(&pcie_bandwidth_notification_driver);
--}
-diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
-index af7cf237432a..2ff5724b8f13 100644
---- a/drivers/pci/pcie/portdrv.h
-+++ b/drivers/pci/pcie/portdrv.h
-@@ -53,12 +53,6 @@ int pcie_dpc_init(void);
- static inline int pcie_dpc_init(void) { return 0; }
- #endif
- 
--#ifdef CONFIG_PCIE_BW
--int pcie_bandwidth_notification_init(void);
--#else
--static inline int pcie_bandwidth_notification_init(void) { return 0; }
--#endif
--
- /* Port Type */
- #define PCIE_ANY_PORT			(~0)
- 
-diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-index 0b250bc5f405..8bd4992a4f32 100644
---- a/drivers/pci/pcie/portdrv_pci.c
-+++ b/drivers/pci/pcie/portdrv_pci.c
-@@ -255,7 +255,6 @@ static void __init pcie_init_services(void)
- 	pcie_pme_init();
- 	pcie_dpc_init();
- 	pcie_hp_init();
--	pcie_bandwidth_notification_init();
- }
- 
- static int __init pcie_portdrv_init(void)
--- 
-2.25.1
+  gen =3D inc_mm_tlb_gen(mm);
+  struct flush_tlb_info *info =3D mm->ring[gen % RING_SIZE];
+  spin_lock(&mm->ring_lock);
+  WRITE_ONCE(info->new_tlb_gen, RING_ENTRY_INVALID);
+  smp_wmb();
+  info->start =3D start;
+  info->end =3D end;
+  info->stride_shift =3D stride_shift;
+  info->freed_tables =3D freed_tables;
+  smp_store_release(&info->new_tlb_gen, gen);
+  spin_unlock(&mm->ring_lock);
+ =20
+When you flush you use the entry generation as a sequence lock. On =
+overflow
+of the ring (i.e., sequence number mismatch) you perform a full flush:
 
+  for (gen =3D mm->tlb_gen_completed; gen < mm->tlb_gen; gen++) {
+	struct flush_tlb_info *info =3D &mm->ring[gen % RING_SIZE];
+
+	// detect overflow and invalid entries
+	if (smp_load_acquire(info->new_tlb_gen) !=3D gen)
+		goto full_flush;
+
+	start =3D min(start, info->start);
+	end =3D max(end, info->end);
+	stride_shift =3D min(stride_shift, info->stride_shift);
+	freed_tables |=3D info.freed_tables;
+	smp_rmb();
+
+	// seqlock-like check that the information was not updated=20
+	if (READ_ONCE(info->new_tlb_gen) !=3D gen)
+		goto full_flush;
+  }
+
+On x86 I suspect that performing a full TLB flush would anyhow be the =
+best
+thing to do if there is more than a single entry. I am also not sure =
+that it
+makes sense to check the ring from flush_tlb_func_common() (i.e., in =
+each
+IPI handler) as it might cause cache thrashing.
+
+Instead it may be better to do so from flush_tlb_mm_range(), when the
+flushes are initiated, and use an aggregated flush_tlb_info for the =
+flush.
+
+It may also be better to have the ring arch-independent, so it would
+resemble more of mmu_gather (the parts about the TLB flush information,
+without the freed pages stuff).
+
+We can detect deferred TLB flushes either by storing =E2=80=9Cdeferred_gen=
+=E2=80=9D in the
+page-tables/VMA (as I did) or by going over the ring, from =
+tlb_gen_completed
+to tlb_gen, and checking for an overlap. I think page-tables would be =
+most
+efficient/scalable, but perhaps going over the ring would be easier to
+understand logic.
+
+Makes sense? Thoughts?=
