@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0189730C073
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5E430CBA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhBBN6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:58:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
+        id S239711AbhBBTbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:31:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232640AbhBBNvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:51:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6536064FBD;
-        Tue,  2 Feb 2021 13:43:30 +0000 (UTC)
+        id S233495AbhBBN6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:58:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E329564FF0;
+        Tue,  2 Feb 2021 13:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273410;
-        bh=onaZ8XFYYkEufPgP5rHs26W5zhQS+nX8oYg1XWr25TE=;
+        s=korg; t=1612273560;
+        bh=3U0MsKFZ6jZdT/tWymIAFZBHCGQ7wHMXvj6Cm2T4Fjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cIm7eIDQHPpoLlI7tcz/5/jwuiKc5CvmBDnRUIRx1C3hg+tpr99L6mFn/5jDz/8Fn
-         xfx/brzO/9aECSKMX5fO9H9fqZeVHrl9TQ3pMXSTpl5LddZ/M8nAdlXPuivgO00Nq5
-         kNfmqAg6OO7Y8Z13mNGBCKT8pvCZOD4WqzkLrgbc=
+        b=uVp1gnfCmyDSs2u/zjQe862mnArzF8jtOhDW4KqIYcl/TZjNALtJH7DTy5zfebHdu
+         fv2lH1H69sa/RtHLifIHQ/NPj0ggzg3qt0r23zQun/ENdNjXSqcJEERIBo4s2ZO2qn
+         JoXC9xMGJvddt5//dOcF/+Fa5/hzNQ7xX8150wCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/142] pNFS/NFSv4: Fix a layout segment leak in pnfs_layout_process()
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Aviraj CJ <acj@cisco.com>
+Subject: [PATCH 5.4 01/61] ICMPv6: Add ICMPv6 Parameter Problem, code 3 definition
 Date:   Tue,  2 Feb 2021 14:37:39 +0100
-Message-Id: <20210202133001.674846954@linuxfoundation.org>
+Message-Id: <20210202132946.546768538@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132957.692094111@linuxfoundation.org>
-References: <20210202132957.692094111@linuxfoundation.org>
+In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
+References: <20210202132946.480479453@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,35 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 814b84971388cd5fb182f2e914265b3827758455 ]
+commit b59e286be280fa3c2e94a0716ddcee6ba02bc8ba upstream.
 
-If the server returns a new stateid that does not match the one in our
-cache, then pnfs_layout_process() will leak the layout segments returned
-by pnfs_mark_layout_stateid_invalid().
+Based on RFC7112, Section 6:
 
-Fixes: 9888d837f3cf ("pNFS: Force a retry of LAYOUTGET if the stateid doesn't match our cache")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   IANA has added the following "Type 4 - Parameter Problem" message to
+   the "Internet Control Message Protocol version 6 (ICMPv6) Parameters"
+   registry:
+
+      CODE     NAME/DESCRIPTION
+       3       IPv6 First Fragment has incomplete IPv6 Header Chain
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Aviraj CJ <acj@cisco.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/nfs/pnfs.c | 1 +
+ include/uapi/linux/icmpv6.h |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
-index 471bfa273dade..426877f72441e 100644
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -2418,6 +2418,7 @@ out_forget:
- 	spin_unlock(&ino->i_lock);
- 	lseg->pls_layout = lo;
- 	NFS_SERVER(ino)->pnfs_curr_ld->free_lseg(lseg);
-+	pnfs_free_lseg_list(&free_me);
- 	return ERR_PTR(-EAGAIN);
- }
+--- a/include/uapi/linux/icmpv6.h
++++ b/include/uapi/linux/icmpv6.h
+@@ -137,6 +137,7 @@ struct icmp6hdr {
+ #define ICMPV6_HDR_FIELD		0
+ #define ICMPV6_UNK_NEXTHDR		1
+ #define ICMPV6_UNK_OPTION		2
++#define ICMPV6_HDR_INCOMP		3
  
--- 
-2.27.0
-
+ /*
+  *	constants for (set|get)sockopt
 
 
