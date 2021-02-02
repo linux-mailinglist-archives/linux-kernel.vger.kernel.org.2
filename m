@@ -2,121 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E545D30C986
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DA030C9A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238368AbhBBSUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:20:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238384AbhBBSQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:16:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9084864F92;
-        Tue,  2 Feb 2021 18:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612289771;
-        bh=jExAi6+S0KhwmLELocI6wMJuzz/tLWY8R7yvg8v3kSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EDgDXp2MRosyELVG93hsa2FWpra6U+O1s/wok5z4I/qOXv7rdUmjG2axPtMIvq+YN
-         yBgA8wcWgNGCYn0pW2zVsZsv3wcPZETui3XjKumHzFywKHgYsDnq+d0PEjUY80BQCe
-         IzesvjbDuB+UAqmSCfbvnjKvS7w0UCcntNSHwnveAp/98Y5aklQbVLZ5aIeTMaBtIb
-         Y2S9E4/e0RHCm573D5HvZcykwBcZPsiKWKBYdn9Gm25wRz155OpIc0oI5MY1vEx2Z5
-         y6k9c5Z7N9NTPpMQGOvaiK4lasHyvoskCgCDKMvmuqHqWSSfiiKO+c0UX4uuveVSEz
-         Bmm6b/PXs32Ig==
-Date:   Tue, 2 Feb 2021 20:15:46 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210202181546.GO242749@kernel.org>
-References: <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
- <YBkcyQsky2scjEcP@dhcp22.suse.cz>
- <20210202124857.GN242749@kernel.org>
- <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
- <YBlUXdwV93xMIff6@dhcp22.suse.cz>
- <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
- <YBlgCl8MQuuII22w@dhcp22.suse.cz>
- <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
- <YBlicIupOyPF9f3D@dhcp22.suse.cz>
- <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
+        id S238254AbhBBSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:23:52 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42080 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238419AbhBBSVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 13:21:10 -0500
+Received: from 89-64-80-193.dynamic.chello.pl (89.64.80.193) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id eb8ce28fe232e34e; Tue, 2 Feb 2021 19:19:55 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v2 2/5] ACPI: battery: Clean up printing messages
+Date:   Tue, 02 Feb 2021 19:15:57 +0100
+Message-ID: <3131826.iYOCbf7Byd@kreacher>
+In-Reply-To: <1991501.dpTHplkurC@kreacher>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 03:34:29PM +0100, David Hildenbrand wrote:
-> On 02.02.21 15:32, Michal Hocko wrote:
-> > On Tue 02-02-21 15:26:20, David Hildenbrand wrote:
-> > > On 02.02.21 15:22, Michal Hocko wrote:
-> > > > On Tue 02-02-21 15:12:21, David Hildenbrand wrote:
-> > > > [...]
-> > > > > I think secretmem behaves much more like longterm GUP right now
-> > > > > ("unmigratable", "lifetime controlled by user space", "cannot go on
-> > > > > CMA/ZONE_MOVABLE"). I'd either want to reasonably well control/limit it or
-> > > > > make it behave more like mlocked pages.
-> > > > 
-> > > > I thought I have already asked but I must have forgotten. Is there any
-> > > > actual reason why the memory is not movable? Timing attacks?
-> > > 
-> > > I think the reason is simple: no direct map, no copying of memory.
-> > 
-> > This is an implementation detail though and not something terribly hard
-> > to add on top later on. I was more worried there would be really
-> > fundamental reason why this is not possible. E.g. security implications.
-> 
-> I don't remember all the details. Let's see what Mike thinks regarding
-> migration (e.g., security concerns).
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thanks for considering me a security expert :-)
+Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
+in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
+respectively, which among other things causes the excessive log
+level of the messages previously printed via ACPI_EXCEPTION() to
+be more adequate.
 
-Yet, I cannot estimate how dangerous is the temporal exposure of
-this data to the kernel via the direct map in the simple map/copy/unmap
-sequence.
+Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
+definition from the headers and update the documentation accordingly.
 
-More secure way would be to map source and destination in a different page table
-rather than in the direct map, similarly to the way text_poke() on x86
-does.
+While at it, update the pr_fmt() definition and drop the unneeded
+PREFIX sybmbol definition from battery.c.
 
-I've left the migration callback empty for now because it can be added on
-top and its implementation would depend on the way we do (or do not do)
-pooling.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
--- 
-Sincerely yours,
-Mike.
+v1 -> v2: Changelog update
+
+---
+ Documentation/firmware-guide/acpi/debug.rst |    1 
+ drivers/acpi/battery.c                      |   29 ++++++++++++++--------------
+ drivers/acpi/sysfs.c                        |    1 
+ include/acpi/acpi_drivers.h                 |    1 
+ 4 files changed, 15 insertions(+), 17 deletions(-)
+
+Index: linux-pm/drivers/acpi/battery.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/battery.c
++++ linux-pm/drivers/acpi/battery.c
+@@ -8,7 +8,7 @@
+  *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
+  */
+ 
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++#define pr_fmt(fmt) "ACPI: battery: " fmt
+ 
+ #include <linux/async.h>
+ #include <linux/delay.h>
+@@ -29,8 +29,6 @@
+ 
+ #include <acpi/battery.h>
+ 
+-#define PREFIX "ACPI: "
+-
+ #define ACPI_BATTERY_VALUE_UNKNOWN 0xFFFFFFFF
+ #define ACPI_BATTERY_CAPACITY_VALID(capacity) \
+ 	((capacity) != 0 && (capacity) != ACPI_BATTERY_VALUE_UNKNOWN)
+@@ -44,10 +42,6 @@
+ #define ACPI_BATTERY_STATE_CHARGING	0x2
+ #define ACPI_BATTERY_STATE_CRITICAL	0x4
+ 
+-#define _COMPONENT		ACPI_BATTERY_COMPONENT
+-
+-ACPI_MODULE_NAME("battery");
+-
+ MODULE_AUTHOR("Paul Diefenbaugh");
+ MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
+ MODULE_DESCRIPTION("ACPI Battery Driver");
+@@ -466,7 +460,8 @@ static int extract_package(struct acpi_b
+ static int acpi_battery_get_status(struct acpi_battery *battery)
+ {
+ 	if (acpi_bus_get_status(battery->device)) {
+-		ACPI_EXCEPTION((AE_INFO, AE_ERROR, "Evaluating _STA"));
++		acpi_handle_info(battery->device->handle,
++				 "_STA evaluation failed\n");
+ 		return -ENODEV;
+ 	}
+ 	return 0;
+@@ -535,8 +530,10 @@ static int acpi_battery_get_info(struct
+ 		mutex_unlock(&battery->lock);
+ 
+ 		if (ACPI_FAILURE(status)) {
+-			ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s",
+-					use_bix ? "_BIX":"_BIF"));
++			acpi_handle_info(battery->device->handle,
++					 "%s evaluation failed: %s\n",
++					 use_bix ?"_BIX":"_BIF",
++				         acpi_format_exception(status));
+ 		} else {
+ 			result = extract_battery_info(use_bix,
+ 						      battery,
+@@ -573,7 +570,9 @@ static int acpi_battery_get_state(struct
+ 	mutex_unlock(&battery->lock);
+ 
+ 	if (ACPI_FAILURE(status)) {
+-		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _BST"));
++		acpi_handle_info(battery->device->handle,
++				 "_BST evaluation failed: %s",
++				 acpi_format_exception(status));
+ 		return -ENODEV;
+ 	}
+ 
+@@ -625,7 +624,9 @@ static int acpi_battery_set_alarm(struct
+ 	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+ 
+-	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Alarm set to %d\n", battery->alarm));
++	acpi_handle_debug(battery->device->handle, "Alarm set to %d\n",
++			  battery->alarm);
++
+ 	return 0;
+ }
+ 
+@@ -1201,7 +1202,7 @@ static int acpi_battery_add(struct acpi_
+ 	if (result)
+ 		goto fail;
+ 
+-	pr_info(PREFIX "%s Slot [%s] (battery %s)\n",
++	pr_info("%s Slot [%s] (battery %s)\n",
+ 		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
+ 		device->status.battery_present ? "present" : "absent");
+ 
+@@ -1282,7 +1283,7 @@ static void __init acpi_battery_init_asy
+ 	if (battery_check_pmic) {
+ 		for (i = 0; i < ARRAY_SIZE(acpi_battery_blacklist); i++)
+ 			if (acpi_dev_present(acpi_battery_blacklist[i], "1", -1)) {
+-				pr_info(PREFIX ACPI_BATTERY_DEVICE_NAME
++				pr_info(ACPI_BATTERY_DEVICE_NAME
+ 					": found native %s PMIC, not loading\n",
+ 					acpi_battery_blacklist[i]);
+ 				return;
+Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+===================================================================
+--- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
++++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+@@ -52,7 +52,6 @@ shows the supported mask values, current
+     ACPI_CA_DISASSEMBLER            0x00000800
+     ACPI_COMPILER                   0x00001000
+     ACPI_TOOLS                      0x00002000
+-    ACPI_BATTERY_COMPONENT          0x00040000
+     ACPI_BUTTON_COMPONENT           0x00080000
+     ACPI_SBS_COMPONENT              0x00100000
+     ACPI_FAN_COMPONENT              0x00200000
+Index: linux-pm/drivers/acpi/sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/sysfs.c
++++ linux-pm/drivers/acpi/sysfs.c
+@@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
+ 	ACPI_DEBUG_INIT(ACPI_COMPILER),
+ 	ACPI_DEBUG_INIT(ACPI_TOOLS),
+ 
+-	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
+Index: linux-pm/include/acpi/acpi_drivers.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_drivers.h
++++ linux-pm/include/acpi/acpi_drivers.h
+@@ -15,7 +15,6 @@
+  * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
+  * if you add to this list.
+  */
+-#define ACPI_BATTERY_COMPONENT		0x00040000
+ #define ACPI_BUTTON_COMPONENT		0x00080000
+ #define ACPI_SBS_COMPONENT		0x00100000
+ #define ACPI_FAN_COMPONENT		0x00200000
+
+
+
