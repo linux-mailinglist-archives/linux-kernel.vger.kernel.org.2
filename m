@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EFE30C8EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C913830C8FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238192AbhBBSDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237871AbhBBSAc (ORCPT
+        id S237980AbhBBSGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:06:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59470 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234405AbhBBSBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:00:32 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BBBC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:59:52 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id u20so8193586iot.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:59:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IzDi96523sahyObx2Yd6Yye0zu9EowaSoOEtWhQZYPw=;
-        b=ApRAVOsXkXemdTCGFDc8VtFnTyUzSGGWZWyjtGq5r2fILEpMKNtTROIkk2yPTZ+Fcl
-         a+JTO4wDHcxHH0nBnd7clvNVnsgyjAENynekaYLoakU8+UAYEnz69j0tTtU+Yzd6PEJd
-         Stndn4AoK/aTpazox13ynrwj+Hs0m9NGZ3T3FHrGwKpT4k3bSOV54sYPLXewJdQv0jpl
-         U7Deq5VVnIp1uyhVkYRWQIA4BTfND/zJK9+aomgRWPzX4KeIdasjkC6fVRUW/ZPpjgLS
-         xhs20pm7+KU8uA1UH4p8KbGKNQibVAYPl3GA7PhUY1aWdTgATXgkHIJNnP6JspI+FB4P
-         2aSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IzDi96523sahyObx2Yd6Yye0zu9EowaSoOEtWhQZYPw=;
-        b=WGzJQTzrZb3+FW9/ohFa8J+K8GihWjkakQlTtu6KwRvacYzDnZe9eiwuaZT2OFtuOD
-         dtC/JXk1oymbvopZMnkwkN/UlDMJMoI7Vx0An3kJXT6ChVBCEmn+mkJloXL0aw9QsKZf
-         Udkb56cCt/ZAk7f3D1eb9GaK3+DXVshQcgRoKctudIbJRXGJwwykGkKtZ81RQjTLCjW2
-         6tZsoO7jS+EmK9lRf0P/YSyBk6wpawOvzw7IHkN0hlVXYw+1728cmdnPVTl5sMJxRKR+
-         wxQRD1IB9xaCKNlKKUtY7cDNZUufCmMURL6Z29n1PYsywUx4JTrfGF6KejmvgOWJ5i19
-         z3NA==
-X-Gm-Message-State: AOAM533Hx78iI9PvCWCpxqGFPKJrZq1Gaq/Ls64Ze/mvR2qwQwVr8rY1
-        V/TrzEMHNYsrU1NAIehQTeDwGUL6JIy6iDDQNpytyeE4hqI=
-X-Google-Smtp-Source: ABdhPJyZ3+uPg+spmKYxqmrn5OUa6GKTOb5com8Rvh92LAZ9OOXEJPNKaIyTK0E+2yXbOzqExizxQAJjkKyUzhM3yi0=
-X-Received: by 2002:a5d:94cb:: with SMTP id y11mr17689016ior.117.1612288791921;
- Tue, 02 Feb 2021 09:59:51 -0800 (PST)
+        Tue, 2 Feb 2021 13:01:17 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 112HUxl6004795;
+        Tue, 2 Feb 2021 13:00:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=xvHIsgzKyZQkrHD83FTOBU/tApKe6WvjIoLg2C2AXP8=;
+ b=cwdpNrRxJ/zUjhQ+fJsDXxK0tJ9NwIoJHYynpeprhsPqe0IzjMbg6CJcZ6N0T8HBtIxI
+ ACZN2p7hI7doMK/BDjFrp/oKCjFdcobad4qmda2wF/BtdYIkVw1luWoowqTNIY/5oY7n
+ FBr08x6PPKeE8ROuJR0FR9Ja6/BcpXmvwFlvYQQIBh0XUTChrtRMbtYvGbe3zHsHOJ5/
+ El10H/DMecbzk8MAy19IMVlFRuvbWMzHp/4BMHXvJMm5Us3UqhoghihVDOE6+3/EPpMs
+ qgBIYOiAoSUvoWMvMj6P44pueiIvqFVEkfCMcBFWIXchtk7a6ZZRLZMN0P1/OEtLCyp1 2g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36fb3n14aj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Feb 2021 13:00:34 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 112HV3Id005344;
+        Tue, 2 Feb 2021 13:00:34 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36fb3n149j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Feb 2021 13:00:34 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 112HrQ39030725;
+        Tue, 2 Feb 2021 18:00:32 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 36cxqh9mqx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Feb 2021 18:00:32 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 112I0K4v29819208
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Feb 2021 18:00:20 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 61275AE057;
+        Tue,  2 Feb 2021 18:00:29 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 054A7AE063;
+        Tue,  2 Feb 2021 18:00:29 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.15.83])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Feb 2021 18:00:28 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH v2 0/2] s390/kvm: fix MVPG when in VSIE
+Date:   Tue,  2 Feb 2021 19:00:26 +0100
+Message-Id: <20210202180028.876888-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210201160420.2826895-1-elver@google.com>
-In-Reply-To: <20210201160420.2826895-1-elver@google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 2 Feb 2021 18:59:40 +0100
-Message-ID: <CANn89iJFvmLctLT99rYn=mCwD8QaJfEaWvawTiVNV4=5dD=Tnw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
-To:     Marco Elver <elver@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linmiaohe <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-02_08:2021-02-02,2021-02-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 clxscore=1015 impostorscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxlogscore=825
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102020112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 5:04 PM Marco Elver <elver@google.com> wrote:
->
-> Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
-> cloning an skb, save and restore truesize after pskb_expand_head(). This
-> can occur if the allocator decides to service an allocation of the same
-> size differently (e.g. use a different size class, or pass the
-> allocation on to KFENCE).
->
-> Because truesize is used for bookkeeping (such as sk_wmem_queued), a
-> modified truesize of a cloned skb may result in corrupt bookkeeping and
-> relevant warnings (such as in sk_stream_kill_queues()).
->
-> Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
-> Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
+The current handling of the MVPG instruction when executed in a nested
+guest is wrong, and can lead to the nested guest hanging.
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+This patchset fixes the behaviour to be more architecturally correct,
+and fixes the hangs observed.
+
+v1->v2
+* complete rewrite
+
+Claudio Imbrenda (2):
+  s390/kvm: extend kvm_s390_shadow_fault to return entry pointer
+  s390/kvm: VSIE: correctly handle MVPG when in VSIE
+
+ arch/s390/kvm/gaccess.c |  26 ++++++++--
+ arch/s390/kvm/gaccess.h |   5 +-
+ arch/s390/kvm/vsie.c    | 102 ++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 119 insertions(+), 14 deletions(-)
+
+-- 
+2.26.2
+
