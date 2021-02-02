@@ -2,200 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0693630C7FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DE030C96C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237718AbhBBRhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:37:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
+        id S238446AbhBBSRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:17:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234136AbhBBOMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F29476503F;
-        Tue,  2 Feb 2021 13:52:19 +0000 (UTC)
+        id S233666AbhBBOGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:06:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5416C64F93;
+        Tue,  2 Feb 2021 13:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273940;
-        bh=7e/aVsahmQoNFB8Pe/h7Yc+dRm8tI1iNWsH2VTPfrDc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iMzBSgsokxYK17IUbccV7pK0zgsFtf7yeX+BcBJ2SQkwnf4xZ8N1Z4RBmZq0Qv59q
-         xTB/hPSKmRr+oalSGUTfyqevoxTtAdRI9h2VzggpPAp0TTouWYlcrTeRiUkcdPKvPf
-         pl4T4czJL6bKZbhCxUTcfqw1Gu7F0ST63mh4bHMg=
+        s=korg; t=1612273765;
+        bh=d5j7SbnWRAJXpPB7+lw0l9poLZ38YRZwN8cr2At3V/0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lkYrPKQuWGuQbvDmvVHswSUCP6KlzOiSoHpVvCFhk/0NQ3EeasxZKPFi8lH8Tt6Oh
+         O4hZ70O+xAlMjpaF8QLd6mCt8Gy9s3CrARNzopnWDBrC611trpAvtmP1AcWeQlaqnD
+         xk26xBn9I0m6GKhvpePbvX/JBK/N6NphILsTOjRg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH 4.14 00/30] 4.14.219-rc1 review
+        stable@vger.kernel.org,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 21/28] xfrm: Fix oops in xfrm_replay_advance_bmp
 Date:   Tue,  2 Feb 2021 14:38:41 +0100
-Message-Id: <20210202132942.138623851@linuxfoundation.org>
+Message-Id: <20210202132942.033211771@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+References: <20210202132941.180062901@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.219-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.219-rc1
-X-KernelTest-Deadline: 2021-02-04T13:29+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.219 release.
-There are 30 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Shmulik Ladkani <shmulik@metanetworks.com>
 
-Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 56ce7c25ae1525d83cf80a880cf506ead1914250 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.219-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+When setting xfrm replay_window to values higher than 32, a rare
+page-fault occurs in xfrm_replay_advance_bmp:
 
-thanks,
+  BUG: unable to handle page fault for address: ffff8af350ad7920
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0002) - not-present page
+  PGD ad001067 P4D ad001067 PUD 0
+  Oops: 0002 [#1] SMP PTI
+  CPU: 3 PID: 30 Comm: ksoftirqd/3 Kdump: loaded Not tainted 5.4.52-050452-generic #202007160732
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2.el7 04/01/2014
+  RIP: 0010:xfrm_replay_advance_bmp+0xbb/0x130
+  RSP: 0018:ffffa1304013ba40 EFLAGS: 00010206
+  RAX: 000000000000010d RBX: 0000000000000002 RCX: 00000000ffffff4b
+  RDX: 0000000000000018 RSI: 00000000004c234c RDI: 00000000ffb3dbff
+  RBP: ffffa1304013ba50 R08: ffff8af330ad7920 R09: 0000000007fffffa
+  R10: 0000000000000800 R11: 0000000000000010 R12: ffff8af29d6258c0
+  R13: ffff8af28b95c700 R14: 0000000000000000 R15: ffff8af29d6258fc
+  FS:  0000000000000000(0000) GS:ffff8af339ac0000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: ffff8af350ad7920 CR3: 0000000015ee4000 CR4: 00000000001406e0
+  Call Trace:
+   xfrm_input+0x4e5/0xa10
+   xfrm4_rcv_encap+0xb5/0xe0
+   xfrm4_udp_encap_rcv+0x140/0x1c0
 
-greg k-h
+Analysis revealed offending code is when accessing:
 
--------------
-Pseudo-Shortlog of commits:
+	replay_esn->bmp[nr] |= (1U << bitnr);
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.219-rc1
+with 'nr' being 0x07fffffa.
 
-Pengcheng Yang <yangpc@wangsu.com>
-    tcp: fix TLP timer not set when CA_STATE changes from DISORDER to OPEN
+This happened in an SMP system when reordering of packets was present;
+A packet arrived with a "too old" sequence number (outside the window,
+i.e 'diff > replay_window'), and therefore the following calculation:
 
-Ivan Vecera <ivecera@redhat.com>
-    team: protect features update by RCU to avoid deadlock
+			bitnr = replay_esn->replay_window - (diff - pos);
 
-Pan Bian <bianpan2016@163.com>
-    NFC: fix possible resource leak
+yields a negative result, but since bitnr is u32 we get a large unsigned
+quantity (in crash dump above: 0xffffff4b seen in ecx).
 
-Pan Bian <bianpan2016@163.com>
-    NFC: fix resource leak when target index is invalid
+This was supposed to be protected by xfrm_input()'s former call to:
 
-Bartosz Golaszewski <bgolaszewski@baylibre.com>
-    iommu/vt-d: Don't dereference iommu_device if IOMMU_API is not built
+		if (x->repl->check(x, skb, seq)) {
 
-David Woodhouse <dwmw@amazon.co.uk>
-    iommu/vt-d: Gracefully handle DMAR units with no supported address widths
+However, the state's spinlock x->lock is *released* after '->check()'
+is performed, and gets re-acquired before '->advance()' - which gives a
+chance for a different core to update the xfrm state, e.g. by advancing
+'replay_esn->seq' when it encounters more packets - leading to a
+'diff > replay_window' situation when original core continues to
+xfrm_replay_advance_bmp().
 
-Andy Lutomirski <luto@kernel.org>
-    x86/entry/64/compat: Fix "x86/entry/64/compat: Preserve r8-r11 in int $0x80"
+An attempt to fix this issue was suggested in commit bcf66bf54aab
+("xfrm: Perform a replay check after return from async codepaths"),
+by calling 'x->repl->recheck()' after lock is re-acquired, but fix
+applied only to asyncronous crypto algorithms.
 
-Andy Lutomirski <luto@kernel.org>
-    x86/entry/64/compat: Preserve r8-r11 in int $0x80
+Augment the fix, by *always* calling 'recheck()' - irrespective if we're
+using async crypto.
 
-Dan Carpenter <dan.carpenter@oracle.com>
-    can: dev: prevent potential information leak in can_fill_info()
+Fixes: 0ebea8ef3559 ("[IPSEC]: Move state lock into x->type->input")
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/xfrm/xfrm_input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Johannes Berg <johannes.berg@intel.com>
-    mac80211: pause TX while changing interface type
+diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
+index 1e87639f2c270..d613bf77cc0f9 100644
+--- a/net/xfrm/xfrm_input.c
++++ b/net/xfrm/xfrm_input.c
+@@ -315,7 +315,7 @@ resume:
+ 		/* only the first xfrm gets the encap type */
+ 		encap_type = 0;
+ 
+-		if (async && x->repl->recheck(x, skb, seq)) {
++		if (x->repl->recheck(x, skb, seq)) {
+ 			XFRM_INC_STATS(net, LINUX_MIB_XFRMINSTATESEQERROR);
+ 			goto drop_unlock;
+ 		}
+-- 
+2.27.0
 
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: pcie: reschedule in long-running memory reads
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: pcie: use jiffies for memory read spin time limit
-
-Kamal Heib <kamalheib1@gmail.com>
-    RDMA/cxgb4: Fix the reported max_recv_sge value
-
-Shmulik Ladkani <shmulik@metanetworks.com>
-    xfrm: Fix oops in xfrm_replay_advance_bmp
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nft_dynset: add timeout extension to template
-
-Max Krummenacher <max.oss.09@gmail.com>
-    ARM: imx: build suspend-imx6.S with arm instruction set
-
-Roger Pau Monne <roger.pau@citrix.com>
-    xen-blkfront: allow discard-* nodes to be optional
-
-Lorenzo Bianconi <lorenzo@kernel.org>
-    mt7601u: fix rx buffer refcounting
-
-Lorenzo Bianconi <lorenzo@kernel.org>
-    mt7601u: fix kernel crash unplugging the device
-
-Andrea Righi <andrea.righi@canonical.com>
-    leds: trigger: fix potential deadlock with libata
-
-David Woodhouse <dwmw@amazon.co.uk>
-    xen: Fix XenStore initialisation for XS_LOCAL
-
-Jay Zhou <jianjay.zhou@huawei.com>
-    KVM: x86: get smi pending status correctly
-
-Like Xu <like.xu@linux.intel.com>
-    KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-
-Claudiu Beznea <claudiu.beznea@microchip.com>
-    drivers: soc: atmel: add null entry at the end of at91_soc_allowed_list[]
-
-Sudeep Holla <sudeep.holla@arm.com>
-    drivers: soc: atmel: Avoid calling at91_soc_init on non AT91 SoCs
-
-Giacinto Cifelli <gciofono@gmail.com>
-    net: usb: qmi_wwan: added support for Thales Cinterion PLSx3 modem family
-
-Johannes Berg <johannes.berg@intel.com>
-    wext: fix NULL-ptr-dereference with cfg80211's lack of commit()
-
-Koen Vandeputte <koen.vandeputte@citymesh.com>
-    ARM: dts: imx6qdl-gw52xx: fix duplicate regulator naming
-
-Kai-Heng Feng <kai.heng.feng@canonical.com>
-    ACPI: sysfs: Prefer "compatible" modalias
-
-Josef Bacik <josef@toxicpanda.com>
-    nbd: freeze the queue while we're adding connections
-
-
--------------
-
-Diffstat:
-
- Makefile                                        |  4 +--
- arch/arm/boot/dts/imx6qdl-gw52xx.dtsi           |  2 +-
- arch/arm/mach-imx/suspend-imx6.S                |  1 +
- arch/x86/entry/entry_64_compat.S                |  8 ++---
- arch/x86/kvm/pmu_intel.c                        |  2 +-
- arch/x86/kvm/x86.c                              |  5 +++
- drivers/acpi/device_sysfs.c                     | 20 ++++-------
- drivers/block/nbd.c                             |  8 +++++
- drivers/block/xen-blkfront.c                    | 20 ++++-------
- drivers/infiniband/hw/cxgb4/qp.c                |  2 +-
- drivers/iommu/dmar.c                            | 45 +++++++++++++++++--------
- drivers/leds/led-triggers.c                     | 10 +++---
- drivers/net/can/dev.c                           |  2 +-
- drivers/net/team/team.c                         |  6 ++--
- drivers/net/usb/qmi_wwan.c                      |  1 +
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 14 ++++----
- drivers/net/wireless/mediatek/mt7601u/dma.c     |  5 ++-
- drivers/soc/atmel/soc.c                         | 13 +++++++
- drivers/xen/xenbus/xenbus_probe.c               | 31 +++++++++++++++++
- include/linux/intel-iommu.h                     |  2 ++
- include/net/tcp.h                               |  2 +-
- net/ipv4/tcp_input.c                            | 10 +++---
- net/ipv4/tcp_recovery.c                         |  5 +--
- net/mac80211/ieee80211_i.h                      |  1 +
- net/mac80211/iface.c                            |  6 ++++
- net/netfilter/nft_dynset.c                      |  4 ++-
- net/nfc/netlink.c                               |  1 +
- net/nfc/rawsock.c                               |  2 +-
- net/wireless/wext-core.c                        |  5 +--
- net/xfrm/xfrm_input.c                           |  2 +-
- tools/testing/selftests/x86/test_syscall_vdso.c | 35 +++++++++++--------
- 31 files changed, 181 insertions(+), 93 deletions(-)
 
 
