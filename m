@@ -2,257 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144EE30BD6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069E330B901
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhBBLuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:50:21 -0500
-Received: from m1390.mail.163.com ([220.181.13.90]:9271 "EHLO
-        m1390.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhBBLuN (ORCPT
+        id S231167AbhBBHz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:55:58 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:34444 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhBBHzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:50:13 -0500
-X-Greylist: delayed 11033 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 06:50:07 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=bsaAy
-        4RiykAFIHAMnRaPwM/p7hr5K9y9NLlDI/xOFhM=; b=icEl6PU+jSQE9kPoxJEMu
-        h573lhOmi7jV0spQbhMkvv2IaypbkTvENm8cznsJY65shQKTQO8W3G3+owFSsEVZ
-        9tpGFV2yFk2JdM+BASZqkLsFAUaTlRBfq/dOrZxkk0tNYOnPEG5Dxb87th1niVWN
-        fCOX0EvhrR/DBseN4hjSZ8=
-Received: from ultrachin$163.com ( [111.206.145.41] ) by
- ajax-webmail-wmsvr90 (Coremail) ; Tue, 2 Feb 2021 15:54:35 +0800 (CST)
-X-Originating-IP: [111.206.145.41]
-Date:   Tue, 2 Feb 2021 15:54:35 +0800 (CST)
-From:   chin <ultrachin@163.com>
-To:     "Vincent Guittot" <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Juri Lelli" <juri.lelli@redhat.com>,
-        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
-        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-        heddchen@tencent.com,
-        =?GBK?Q?xiaoggchen=28=B3=C2=D0=A1=B9=E2=29?= 
-        <xiaoggchen@tencent.com>
-Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE
- tasks
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <CAKfTPtAYoBm1se=HAcsyxwZTQ=XW+HcQJsP3maZy6CNgLSfLZA@mail.gmail.com>
-References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
- <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
- <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com>
- <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
- <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com>
- <CAKfTPtCSra_kfncR7J_7ona+8MoO0ZX8uTEXvZ7PU7C0pYiM5w@mail.gmail.com>
- <38c1aeee.2d5f.176f9bb0cfb.Coremail.ultrachin@163.com>
- <CAKfTPtAYoBm1se=HAcsyxwZTQ=XW+HcQJsP3maZy6CNgLSfLZA@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Tue, 2 Feb 2021 02:55:55 -0500
+Received: by mail-ot1-f43.google.com with SMTP id d5so3582843otc.1;
+        Mon, 01 Feb 2021 23:55:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y3W4ojETZRqcy6K2o7uqMnhqNcJkNWap/xwgIJK0V1g=;
+        b=AFBPH7EQiW0gQMhBfpEUQHXoYTuF3Nn5zXH7Yf+/kh/Q4s1gs42CxBpKM4FNyEJ/Xx
+         GXTINXBeL+daZCvx8wk/FR3Vq4rcA170fOdLGj1kLi7rZ82J1uP28CeZMFmcXgGo2bab
+         Too/ybd66oJ6/ZezyveJQykNKPLsX7sxaKitu5pksThns5tUgFoptKr5pWCNKmQHGjH+
+         JXA48QKFdm8GbV1rJ274cTZ0FULJjvDAK2kI7hDYt8ejqMHdnNlZ5BdtAmwtumfhVoZK
+         b6KFN1H42DZfe4zgQxz19x+v+nFrKj3Yb5uogOo2DQuAopP+LwlPmIHRGIOjQvnbsjA1
+         p0Jg==
+X-Gm-Message-State: AOAM530XX4wr7mVarCyBuvvvrcQJiI5k0ICnVtX4bZVss//5/Dt46G6j
+        z0yHsP15U8fROuvOd7rcLSX6nRbo+kcZ3xeh6hU=
+X-Google-Smtp-Source: ABdhPJzuyQLJgOyFdbcv2aqIb+hOzlKKiF6Sn6VhjXREBWxj60HBybKJgAxIatRMC70329Bp2QDj6sQ6M4GuTtMDOaY=
+X-Received: by 2002:a9d:3604:: with SMTP id w4mr6009142otb.107.1612252514252;
+ Mon, 01 Feb 2021 23:55:14 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <4e2f3ac4.2b66.17761bc6eb9.Coremail.ultrachin@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: WsGowAAXrsQ7BRlg3b+HAA--.45656W
-X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbi8RstWF-PJ-OODQAAsY
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+References: <20210130040344.2807439-1-saravanak@google.com>
+ <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
+ <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com> <CAGETcx896XEv8OqOe4eGncjOYb=v6+g1RWkpo5g0hTbfp4Os+w@mail.gmail.com>
+In-Reply-To: <CAGETcx896XEv8OqOe4eGncjOYb=v6+g1RWkpo5g0hTbfp4Os+w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Feb 2021 08:55:02 +0100
+Message-ID: <CAMuHMdWo0Dpf_GwT1WrGk9f3v7-KX86eR2wgNtXkqoN0t_CLag@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgoKQXQgMjAyMS0wMS0xMyAxNjozMDoxNCwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3Vp
-dHRvdEBsaW5hcm8ub3JnPiB3cm90ZToKPk9uIFdlZCwgMTMgSmFuIDIwMjEgYXQgMDQ6MTQsIGNo
-aW4gPHVsdHJhY2hpbkAxNjMuY29tPiB3cm90ZToKPj4KPj4KPj4KPj4KPj4gQXQgMjAyMS0wMS0x
-MiAxNjoxODo1MSwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3VpdHRvdEBsaW5hcm8ub3Jn
-PiB3cm90ZToKPj4gPk9uIFR1ZSwgMTIgSmFuIDIwMjEgYXQgMDc6NTksIGNoaW4gPHVsdHJhY2hp
-bkAxNjMuY29tPiB3cm90ZToKPj4gPj4KPj4gPj4KPj4gPj4KPj4gPj4KPj4gPj4gQXQgMjAyMS0w
-MS0xMSAxOTowNDoxOSwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3VpdHRvdEBsaW5hcm8u
-b3JnPiB3cm90ZToKPj4gPj4gPk9uIE1vbiwgMTEgSmFuIDIwMjEgYXQgMDk6MjcsIGNoaW4gPHVs
-dHJhY2hpbkAxNjMuY29tPiB3cm90ZToKPj4gPj4gPj4KPj4gPj4gPj4KPj4gPj4gPj4gQXQgMjAy
-MC0xMi0yMyAxOTozMDoyNiwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3VpdHRvdEBsaW5h
-cm8ub3JnPiB3cm90ZToKPj4gPj4gPj4gPk9uIFdlZCwgMjMgRGVjIDIwMjAgYXQgMDk6MzIsIDx1
-bHRyYWNoaW5AMTYzLmNvbT4gd3JvdGU6Cj4+ID4+ID4+ID4+Cj4+ID4+ID4+ID4+IEZyb206IENo
-ZW4gWGlhb2d1YW5nIDx4aWFvZ2djaGVuQHRlbmNlbnQuY29tPgo+PiA+PiA+PiA+Pgo+PiA+PiA+
-PiA+PiBCZWZvcmUgYSBDUFUgc3dpdGNoZXMgZnJvbSBydW5uaW5nIFNDSEVEX05PUk1BTCB0YXNr
-IHRvCj4+ID4+ID4+ID4+IFNDSEVEX0lETEUgdGFzaywgdHJ5aW5nIHRvIHB1bGwgU0NIRURfTk9S
-TUFMIHRhc2tzIGZyb20gb3RoZXIKPj4gPj4gPj4gPgo+PiA+PiA+PiA+Q291bGQgeW91IGV4cGxh
-aW4gbW9yZSBpbiBkZXRhaWwgd2h5IHlvdSBvbmx5IGNhcmUgYWJvdXQgdGhpcyB1c2UgY2FzZQo+
-PiA+PiA+Pgo+PiA+PiA+PiA+aW4gcGFydGljdWxhciBhbmQgbm90IHRoZSBnZW5lcmFsIGNhc2U/
-Cj4+ID4+ID4+Cj4+ID4+ID4+Cj4+ID4+ID4+IFdlIHdhbnQgdG8gcnVuIG9ubGluZSB0YXNrcyB1
-c2luZyBTQ0hFRF9OT1JNQUwgcG9saWN5IGFuZCBvZmZsaW5lIHRhc2tzCj4+ID4+ID4+IHVzaW5n
-IFNDSEVEX0lETEUgcG9saWN5LiBUaGUgb25saW5lIHRhc2tzIGFuZCB0aGUgb2ZmbGluZSB0YXNr
-cyBydW4gaW4KPj4gPj4gPj4gdGhlIHNhbWUgY29tcHV0ZXIgaW4gb3JkZXIgdG8gdXNlIHRoZSBj
-b21wdXRlciBlZmZpY2llbnRseS4KPj4gPj4gPj4gVGhlIG9ubGluZSB0YXNrcyBhcmUgaW4gc2xl
-ZXAgaW4gbW9zdCB0aW1lcyBidXQgc2hvdWxkIHJlc3BvbmNlIHNvb24gb25jZQo+PiA+PiA+PiB3
-YWtlIHVwLiBUaGUgb2ZmbGluZSB0YXNrcyBhcmUgaW4gbG93IHByaW9yaXR5IGFuZCB3aWxsIHJ1
-biBvbmx5IHdoZW4gbm8gb25saW5lCj4+ID4+ID4+IHRhc2tzLgo+PiA+PiA+Pgo+PiA+PiA+PiBU
-aGUgb25saW5lIHRhc2tzIGFyZSBtb3JlIGltcG9ydGFudCB0aGFuIHRoZSBvZmZsaW5lIHRhc2tz
-IGFuZCBhcmUgbGF0ZW5jeQo+PiA+PiA+PiBzZW5zaXRpdmUgd2Ugc2hvdWxkIG1ha2Ugc3VyZSB0
-aGUgb25saW5lIHRhc2tzIHByZWVtcHQgdGhlIG9mZmxpbmUgdGFza3MKPj4gPj4gPj4gYXMgc29v
-biBhcyBwb3NzaWxiZSB3aGlsZSB0aGVyZSBhcmUgb25saW5lIHRhc2tzIHdhaXRpbmcgdG8gcnVu
-Lgo+PiA+PiA+PiBTbyBpbiBvdXIgc2l0dWF0aW9uIHdlIGhvcGUgdGhlIFNDSEVEX05PUk1BTCB0
-byBydW4gaWYgaGFzIGFueS4KPj4gPj4gPj4KPj4gPj4gPj4gTGV0J3MgYXNzdW1lIHdlIGhhdmUg
-MiBDUFVzLAo+PiA+PiA+PiBJbiBDUFUxIHdlIGdvdCAyIFNDSEVEX05PUk1BTCB0YXNrcy4KPj4g
-Pj4gPj4gaW4gQ1BVMiB3ZSBnb3QgMSBTQ0hFRF9OT1JNQUwgdGFzayBhbmQgMiBTQ0hFRF9JRExF
-IHRhc2tzLgo+PiA+PiA+Pgo+PiA+PiA+PiAgICAgICAgICAgICAgQ1BVMSAgICAgICAgICAgICAg
-ICAgICAgICBDUFUyCj4+ID4+ID4+ICAgICAgICAgY3VyciAgICAgICBycTEgICAgICAgICAgICBj
-dXJyICAgICAgICAgIHJxMgo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAg
-ICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+PiB0MCAgICB8Tk9STUFMfCB8IHxOT1JN
-QUx8ICAgICAgIHxOT1JNQUx8IHwgfElETEV8IHxJRExFfAo+PiA+PiA+PiAgICAgICArLS0tLS0t
-KyB8ICstLS0tLS0rICAgICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+Pgo+PiA+
-PiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOT1JNQUwgZXhpdHMgb3IgYmxv
-Y2tlZAo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgICAgICAgIHwg
-Ky0tLS0rICstLS0tKwo+PiA+PiA+PiB0MSAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAgICAg
-ICAgICAgIHwgfElETEV8IHxJRExFfAo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0r
-ICAgICAgICAgICAgICAgIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+Pgo+PiA+PiA+PiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBwaWNrX25leHRfdGFza19mYWlyCj4+ID4+ID4+ICAg
-ICAgICstLS0tLS0rIHwgKy0tLS0tLSsgICAgICAgICArLS0tLSsgfCArLS0tLSsKPj4gPj4gPj4g
-dDIgICAgfE5PUk1BTHwgfCB8Tk9STUFMfCAgICAgICAgIHxJRExFfCB8IHxJRExFfAo+PiA+PiA+
-PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgKy0tLS0rIHwgKy0tLS0rCj4+ID4+
-ID4+Cj4+ID4+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNDSEVEX0lETEUg
-cnVubmluZwo+PiA+PiA+PiB0MyAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICArLS0tLSsg
-IHwgKy0tLS0rCj4+ID4+ID4+ICAgICAgIHxOT1JNQUx8IHwgfE5PUk1BTHwgICAgICAgIHxJRExF
-fCAgfCB8SURMRXwKPj4gPj4gPj4gICAgICAgKy0tLS0tLSsgfCArLS0tLS0tKyAgICAgICAgKy0t
-LS0rICB8ICstLS0tKwo+PiA+PiA+Pgo+PiA+PiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBydW5fcmViYWxhbmNlX2RvbWFpbnMKPj4gPj4gPj4gICAgICAgKy0tLS0tLSsgfCAg
-ICAgICAgICAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKPj4gPj4gPj4gdDQgICAgfE5P
-Uk1BTHwgfCAgICAgICAgICAgICAgICB8Tk9STUFMfCB8IHxJRExFfCB8SURMRXwKPj4gPj4gPj4g
-ICAgICAgKy0tLS0tLSsgfCAgICAgICAgICAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsK
-Pj4gPj4gPj4KPj4gPj4gPj4gQXMgd2UgY2FuIHNlZQo+PiA+PiA+PiB0MTogTk9STUFMIHRhc2sg
-aW4gQ1BVMiBleGl0cyBvciBibG9ja2VkCj4+ID4+ID4+IHQyOiBDUFUyIHBpY2tfbmV4dF90YXNr
-X2ZhaXIgd291bGQgcGljayBhIFNDSEVEX0lETEUgdG8gcnVuIHdoaWxlCj4+ID4+ID4+IGFub3Ro
-ZXIgU0NIRURfTk9STUFMIGluIHJxMSBpcyB3YWl0aW5nLgo+PiA+PiA+PiB0MzogU0NIRURfSURM
-RSBydW4gaW4gQ1BVMiB3aGlsZSBhIFNDSEVEX05PUk1BTCB3YWl0IGluIENQVTEuCj4+ID4+ID4+
-IHQ0OiBhZnRlciBhIHNob3J0IHRpbWUsIHBlcmlvZGljIGxvYWRfYmFsYW5jZSB0cmlnZ2VyZCBh
-bmQgcHVsbAo+PiA+PiA+PiBTQ0hFRF9OT1JNQUwgaW4gcnExIHRvIHJxMiwgYW5kIFNDSEVEX05P
-Uk1BTCBsaWtlbHkgcHJlZW1wdHMgU0NIRURfSURMRS4KPj4gPj4gPj4KPj4gPj4gPj4gSW4gdGhp
-cyBzY2VuYXJpbywgU0NIRURfSURMRSBpcyBydW5uaW5nIHdoaWxlIFNDSEVEX05PUk1BTCBpcyB3
-YWl0aW5nIHRvIHJ1bi4KPj4gPj4gPj4gVGhlIGxhdGVuY3kgb2YgdGhpcyBTQ0hFRF9OT1JNQUwg
-d2lsbCBiZSBoaWdoIHdoaWNoIGlzIG5vdCBhY2NlcHRibGUuCj4+ID4+ID4+Cj4+ID4+ID4+IERv
-IGEgbG9hZF9iYWxhbmNlIGJlZm9yZSBydW5uaW5nIHRoZSBTQ0hFRF9JRExFIG1heSBmaXggdGhp
-cyBwcm9ibGVtLgo+PiA+PiA+Pgo+PiA+PiA+PiBUaGlzIHBhdGNoIHdvcmtzIGFzIGJlbG93Ogo+
-PiA+PiA+Pgo+PiA+PiA+PiAgICAgICAgICAgICAgQ1BVMSAgICAgICAgICAgICAgICAgICAgICBD
-UFUyCj4+ID4+ID4+ICAgICAgICAgY3VyciAgICAgICBycTEgICAgICAgICAgICBjdXJyICAgICAg
-ICAgIHJxMgo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICstLS0tLS0r
-IHwgKy0tLS0rICstLS0tKwo+PiA+PiA+PiB0MCAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAg
-IHxOT1JNQUx8IHwgfElETEV8IHxJRExFfAo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0t
-LS0rICAgICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+Pgo+PiA+PiA+PiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOT1JNQUwgZXhpdHMgb3IgYmxvY2tlZAo+PiA+
-PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgICAgICAgIHwgKy0tLS0rICst
-LS0tKwo+PiA+PiA+PiB0MSAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAgICAgICAgICAgIHwg
-fElETEV8IHxJRExFfAo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAg
-ICAgICAgIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+Pgo+PiA+PiA+PiB0MiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBwaWNrX25leHRfdGFza19mYWlyIChhbGwgc2UgYXJlIFNDSEVEX0lETEUp
-Cj4+ID4+ID4+Cj4+ID4+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5ld2lk
-bGVfYmFsYW5jZQo+PiA+PiA+PiAgICAgICArLS0tLS0tKyB8ICAgICAgICAgICAgICAgICArLS0t
-LS0tKyB8ICstLS0tKyArLS0tLSsKPj4gPj4gPj4gdDMgICAgfE5PUk1BTHwgfCAgICAgICAgICAg
-ICAgICAgfE5PUk1BTHwgfCB8SURMRXwgfElETEV8Cj4+ID4+ID4+ICAgICAgICstLS0tLS0rIHwg
-ICAgICAgICAgICAgICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+PiA+PiA+Pgo+PiA+PiA+
-Pgo+PiA+PiA+PiB0MTogTk9STUFMIHRhc2sgaW4gQ1BVMiBleGl0cyBvciBibG9ja2VkCj4+ID4+
-ID4+IHQyOiBwaWNrX25leHRfdGFza19mYWlyIGNoZWNrIGFsbCBzZSBpbiByYnRyZWUgYXJlIFND
-SEVEX0lETEUgYW5kIGNhbGxzCj4+ID4+ID4+IG5ld2lkbGVfYmFsYW5jZSB3aG8gdHJpZXMgdG8g
-cHVsbCBhIFNDSEVEX05PUk1BTChpZiBoYXMpLgo+PiA+PiA+PiB0MzogcGlja19uZXh0X3Rhc2tf
-ZmFpciB3b3VsZCBwaWNrIGEgU0NIRURfTk9STUFMIHRvIHJ1biBpbnN0ZWFkIG9mCj4+ID4+ID4+
-IFNDSEVEX0lETEUobGlrZWx5KS4KPj4gPj4gPj4KPj4gPj4gPj4gPgo+PiA+PiA+PiA+PiBDUFUg
-YnkgZG9pbmcgbG9hZF9iYWxhbmNlIGZpcnN0Lgo+PiA+PiA+PiA+Pgo+PiA+PiA+PiA+PiBTaWdu
-ZWQtb2ZmLWJ5OiBDaGVuIFhpYW9ndWFuZyA8eGlhb2dnY2hlbkB0ZW5jZW50LmNvbT4KPj4gPj4g
-Pj4gPj4gU2lnbmVkLW9mZi1ieTogQ2hlbiBIZSA8aGVkZGNoZW5AdGVuY2VudC5jb20+Cj4+ID4+
-ID4+ID4+IC0tLQo+PiA+PiA+PiA+PiAga2VybmVsL3NjaGVkL2ZhaXIuYyB8IDUgKysrKysKPj4g
-Pj4gPj4gPj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykKPj4gPj4gPj4gPj4KPj4g
-Pj4gPj4gPj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hlZC9mYWlyLmMgYi9rZXJuZWwvc2NoZWQv
-ZmFpci5jCj4+ID4+ID4+ID4+IGluZGV4IGFlN2NlYmEuLjBhMjYxMzIgMTAwNjQ0Cj4+ID4+ID4+
-ID4+IC0tLSBhL2tlcm5lbC9zY2hlZC9mYWlyLmMKPj4gPj4gPj4gPj4gKysrIGIva2VybmVsL3Nj
-aGVkL2ZhaXIuYwo+PiA+PiA+PiA+PiBAQCAtNzAwNCw2ICs3MDA0LDExIEBAIHN0cnVjdCB0YXNr
-X3N0cnVjdCAqCj4+ID4+ID4+ID4+ICAgICAgICAgc3RydWN0IHRhc2tfc3RydWN0ICpwOwo+PiA+
-PiA+PiA+PiAgICAgICAgIGludCBuZXdfdGFza3M7Cj4+ID4+ID4+ID4+Cj4+ID4+ID4+ID4+ICsg
-ICAgICAgaWYgKHByZXYgJiYKPj4gPj4gPj4gPj4gKyAgICAgICAgICAgZmFpcl9wb2xpY3kocHJl
-di0+cG9saWN5KSAmJgo+PiA+PiA+PiA+Cj4+ID4+ID4+ID5XaHkgZG8geW91IG5lZWQgYSBwcmV2
-IGFuZCBmYWlyIHRhc2sgID8gWW91IHNlZW0gdG8gdGFyZ2V0IHRoZSBzcGVjaWFsCj4+ID4+ID4+
-ID5jYXNlIG9mIHBpY2tfbmV4dF90YXNrICBidXQgaW4gdGhpcyBjYXNlIHdoeSBub3Qgb25seSB0
-ZXN0aW5nIHJmIT1udWxsCj4+ID4+ID4+ID4gdG8gbWFrZSBzdXJlIHRvIG5vdCByZXR1cm4gaW1t
-ZWRpYXRlbHkgYWZ0ZXIganVtcGluZyB0byB0aGUgaWRsZQo+PiA+PiA+Pgo+PiA+PiA+PiA+bGFi
-ZWw/Cj4+ID4+ID4+IFdlIGp1c3Qgd2FudCB0byBkbyBsb2FkX2JhbGFuY2Ugb25seSB3aGVuIENQ
-VSBzd2l0Y2hlcyBmcm9tIFNDSEVEX05PUk1BTAo+PiA+PiA+PiB0byBTQ0hFRF9JRExFLgo+PiA+
-PiA+PiBJZiBub3QgY2hlY2sgcHJldiwgd2hlbiB0aGUgcnVubmluZyB0YXNrcyBhcmUgYWxsIFND
-SEVEX0lETEUsIHdlIHdvdWxkCj4+ID4+ID4+IGRvIG5ld2lkbGVfYmFsYW5jZSBldmVyeXRpbWUg
-aW4gcGlja19uZXh0X3Rhc2tfZmFpciwgaXQgbWFrZXMgbm8gc2Vuc2UKPj4gPj4gPj4gYW5kIGtp
-bmQgb2Ygd2FzdGluZy4KPj4gPj4gPgo+PiA+PiA+SSBhZ3JlZSB0aGF0IGNhbGxpbmcgbmV3aWRs
-ZV9iYWxhbmNlIGV2ZXJ5IHRpbWUgcGlja19uZXh0X3Rhc2tfZmFpciBpcwo+PiA+PiA+Y2FsbGVk
-IHdoZW4gdGhlcmUgYXJlIG9ubHkgc2NoZWRfaWRsZSB0YXNrcyBpcyB1c2VsZXNzLgo+PiA+PiA+
-QnV0IHlvdSBhbHNvIGhhdmUgdG8gdGFrZSBpbnRvIGFjY291bnQgY2FzZXMgd2hlcmUgdGhlcmUg
-d2FzIGFub3RoZXIKPj4gPj4gPmNsYXNzIG9mIHRhc2sgcnVubmluZyBvbiB0aGUgY3B1IGxpa2Ug
-UlQgb25lLiBJbiB5b3VyIGV4YW1wbGUgYWJvdmUsCj4+ID4+ID5pZiB5b3UgcmVwbGFjZSB0aGUg
-bm9ybWFsIHRhc2sgb24gQ1BVMiBieSBhIFJUIHRhc2ssIHlvdSBzdGlsbCB3YW50IHRvCj4+ID4+
-Cj4+ID4+ID5waWNrIHRoZSBub3JtYWwgdGFzayBvbiBDUFUxIG9uY2UgUlQgdGFzayBnb2VzIHRv
-IHNsZWVwLgo+PiA+PiBTdXJlLCB0aGlzIGNhc2Ugc2hvdWxkIGJlIHRha2VuIGludG8gYWNjb3Vu
-dCwgIHdlIHNob3VsZCBhbHNvIHRyeSB0bwo+PiA+PiBwaWNrIG5vcm1hbCB0YXNrIGluIHRoaXMg
-Y2FzZS4KPj4gPj4KPj4gPj4gPgo+PiA+PiA+QW5vdGhlciBwb2ludCB0aGF0IHlvdSB3aWxsIGhh
-dmUgdG8gY29uc2lkZXIgdGhlIGltcGFjdCBvbgo+PiA+PiA+cnEtPmlkbGVfc3RhbXAgYmVjYXVz
-ZSBuZXdpZGxlX2JhbGFuY2UgaXMgYXNzdW1lZCB0byBiZSBjYWxsZWQgYmVmb3JlCj4+ID4+Cj4+
-ID4+ID5nb2luZyBpZGxlIHdoaWNoIGlzIG5vdCB0aGUgY2FzZSBhbnltb3JlIHdpdGggeW91ciB1
-c2UgY2FzZQo+PiA+PiBZZXMuIHJxLT5pZGxlX3N0YW1wIHNob3VsZCBub3QgYmUgY2hhbmdlZCBp
-biB0aGlzIGNhc2UuCj4+ID4+Cj4+ID4+Cj4+ID4+Cj4+ID4+IEFjdHVhbGx5IHdlIHdhbnQgdG8g
-cHVsbCBhIFNDSEVEX05PUk1BTCB0YXNrIChpZiBwb3NzaWJsZSkgdG8gcnVuIHdoZW4gYSBjcHUg
-aXMKPj4gPj4gYWJvdXQgdG8gcnVuIFNDSEVEX0lETEUgdGFzay4gQnV0IGN1cnJlbnRseSBuZXdp
-ZGxlX2JhbGFuY2UgaXMgbm90Cj4+ID4+IGRlc2lnbmVkIGZvciBTQ0hFRF9JRExFICBzbyBTQ0hF
-RF9JRExFIGNhbiBhbHNvIGJlIHB1bGxlZCB3aGljaAo+PiA+PiBpcyB1c2VsZXNzIGluIG91ciBz
-aXR1YXRpb24uCj4+ID4KPj4gPm5ld2lkbGVfYmFsYW5jZSB3aWxsIHB1bGwgYSBzY2hlZF9pZGxl
-IHRhc2sgb25seSBpZiB0aGVyZSBpcyBhbgo+PiA+aW1iYWxhbmNlIHdoaWNoIGlzIHRoZSByaWdo
-dCB0aGluZyB0byBkbyBJTU8gdG8gZW5zdXJlIGZhaXJuZXNzCj4+ID5iZXR3ZWVuIHNjaGVkX2lk
-bGUgdGFza3MuICBCZWluZyBhIHNjaGVkX2lkbGUgdGFzayBkb2Vzbid0IG1lYW4gdGhhdAo+PiA+
-d2Ugc2hvdWxkIGJyZWFrIHRoZSBmYWlybmVzcwo+PiA+Cj4+ID4+Cj4+ID4+IFNvIHdlIHBsYW4g
-dG8gYWRkIGEgbmV3IGZ1bmN0aW9uIHNjaGVkX2lkbGVfYmFsYW5jZSB3aGljaCBvbmx5IHRyeSB0
-bwo+PiA+PiBwdWxsIFNDSEVEX05PUk1BTCB0YXNrcyBmcm9tIHRoZSBidXNpZXN0IGNwdS4gQW5k
-IHdlIHdpbGwgY2FsbAo+PiA+PiBzY2hlZF9pZGxlX2JhbGFuY2Ugd2hlbiB0aGUgcHJldmlvdXMg
-dGFzayBpcyBub3JtYWwgb3IgUlQgYW5kCj4+ID4+IGhvcGluZyB3ZSBjYW4gcHVsbCBhIFNDSEVE
-X05PUk1BTCB0YXNrIHRvIHJ1bi4KPj4gPj4KPj4gPj4gRG8geW91IHRoaW5rIGl0IGlzIG9rIHRv
-IGFkZCBhIG5ldyBzY2hlZF9pZGxlX2JhbGFuY2U/Cj4+ID4KPj4gPkkgZG9uJ3Qgc2VlIGFueSBy
-ZWFzb24gd2h5IHRoZSBzY2hlZHVsZXIgc2hvdWxkIG5vdCBwdWxsIGEgc2NoZWRfaWRsZQo+PiA+
-dGFzayBpZiB0aGVyZSBpcyBhbiBpbWJhbGFuY2UuIFRoYXQgd2lsbCBoYXBwZW4gYW55d2F5IGR1
-cmluZyB0aGUgbmV4dAo+Pgo+PiA+cGVyaW9kaWMgbG9hZCBiYWxhbmNlCj4+IE9LLiBXZSBzaG91
-bGQgbm90IHB1bGwgdGhlIFNDSEVEX0lETEUgdGFza3Mgb25seSBpbiBsb2FkX2JhbGFuY2UuCj4+
-Cj4+Cj4+IERvIHlvdSB0aGluayBpdCBtYWtlIHNlbnNlIHRvIGRvIGFuIGV4dHJhIGxvYWRfYmFs
-YW5jZSB3aGVuIGNwdSBpcwo+PiBhYm91dCB0byBydW4gU0NIRURfSURMRSB0YXNrIChzd2l0Y2hl
-ZCBmcm9tIG5vcm1hbC9SVCk/Cj4KPkknbSBub3Qgc3VyZSB0byBnZXQgeW91ciBwb2ludCBoZXJl
-Lgo+RG8geW91IG1lYW4gaWYgYSBzY2hlZF9pZGxlIHRhc2sgaXMgcGlja2VkIHRvIGJlY29tZSB0
-aGUgcnVubmluZyB0YXNrCj53aGVyZWFzIHRoZXJlIGFyZSBydW5uYWJsZSBub3JtYWwgdGFza3Mg
-PyBUaGlzIGNhbiBoYXBwZW4gaWYgbm9ybWFsCj50YXNrcyBhcmUgbG9uZyBydW5uaW5nIHRhc2tz
-LiBXZSBzaG91bGQgbm90IGluIHRoaXMgY2FzZS4gVGhlIG9ubHkKPmNhc2UgaXMgd2hlbiB0aGUg
-cnVubmluZyB0YXNrLCB3aGljaCBpcyBub3QgYSBzY2hlZF9pZGxlIHRhc2sgYnV0IGEKPm5vcm1h
-bC9ydC9kZWFkbGluZSBvbmUsIGdvZXMgdG8gc2xlZXAgYW5kIHRoZXJlIGFyZSBvbmx5IHNjaGVk
-X2lkbGUKPnRhc2tzIGVucXVldWVkLiBJbiB0aGlzIGNhc2UgYW5kIG9ubHkgaW4gdGhpcyBjYXNl
-LCB3ZSBzaG91bGQgdHJpZ2dlcgo+YSBsb2FkX2JhbGFuY2UgdG8gZ2V0IGEgY2hhbmNlIHRvIHB1
-bGwgYSB3YWl0aW5nIG5vcm1hbCB0YXNrIGZyb20KPmFub3RoZXIgQ1BVLgo+Cj5UaGlzIG1lYW5z
-IGNoZWNraW5nIHRoaXMgc3RhdGUgaW4gcGlja19uZXh0X3Rhc2tfZmFpcigpIGFuZCBpbiBiYWxh
-bmNlX2ZhaXIoKQoKV2UgbWFkZSBhbm90aGVyIGNoYW5nZSB3b3VsZCB5b3UgcGxlYXNlIGdpdmUg
-c29tZSBjb21tZW50cz8KCmRpZmYgLS1naXQgYS9rZXJuZWwvc2NoZWQvZmFpci5jIGIva2VybmVs
-L3NjaGVkL2ZhaXIuYwppbmRleCAwNGEzY2UyLi4yMzU3MzAxIDEwMDY0NAotLS0gYS9rZXJuZWwv
-c2NoZWQvZmFpci5jCisrKyBiL2tlcm5lbC9zY2hlZC9mYWlyLmMKQEAgLTcwMjksNiArNzAyOSwx
-MCBAQCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKgogICAgICAgIHN0cnVjdCB0YXNrX3N0cnVjdCAqcDsK
-ICAgICAgICBpbnQgbmV3X3Rhc2tzOwogCisgICAgICAgaWYgKHNjaGVkX2lkbGVfcnEocnEpICYm
-IHByZXYgJiYgcHJldi0+c3RhdGUgJiYKKyAgICAgICAgICAgcHJldi0+cG9saWN5ICE9IFNDSEVE
-X0lETEUpCisgICAgICAgICAgICAgICBnb3RvIGlkbGU7CisKIGFnYWluOgogICAgICAgIGlmICgh
-c2NoZWRfZmFpcl9ydW5uYWJsZShycSkpCiAgICAgICAgICAgICAgICBnb3RvIGlkbGU7CkBAIC0x
-MDU3MSw3ICsxMDU3NSw4IEBAIHN0YXRpYyBpbnQgbmV3aWRsZV9iYWxhbmNlKHN0cnVjdCBycSAq
-dGhpc19ycSwgc3RydWN0IHJxX2ZsYWdzICpyZikKICAgICAgICAgKiBXZSBtdXN0IHNldCBpZGxl
-X3N0YW1wIF9iZWZvcmVfIGNhbGxpbmcgaWRsZV9iYWxhbmNlKCksIHN1Y2ggdGhhdCB3ZQogICAg
-ICAgICAqIG1lYXN1cmUgdGhlIGR1cmF0aW9uIG9mIGlkbGVfYmFsYW5jZSgpIGFzIGlkbGUgdGlt
-ZS4KICAgICAgICAgKi8KLSAgICAgICB0aGlzX3JxLT5pZGxlX3N0YW1wID0gcnFfY2xvY2sodGhp
-c19ycSk7CisgICAgICAgaWYgKCFycS0+bnJfcnVubmluZykKKyAgICAgICAgICAgICAgIHRoaXNf
-cnEtPmlkbGVfc3RhbXAgPSBycV9jbG9jayh0aGlzX3JxKTsKIAogICAgICAgIC8qCiAgICAgICAg
-ICogRG8gbm90IHB1bGwgdGFza3MgdG93YXJkcyAhYWN0aXZlIENQVXMuLi4KCj4KPj4gQnkgZG9p
-bmcgdGhpcyBTQ0hFRF9OT1JNQUwgdGFza3Mgd2FpdGluZyBvbiBvdGhlciBjcHVzIHdvdWxkIGdl
-dAo+PiBhIGNoYW5jZSB0byBiZSBwdWxsZWQgdG8gdGhpcyBjcHUgYW5kIHJ1biwgaXQgaXMgaGVs
-cGZ1bCB0byByZWR1Y2UgdGhlIGxhdGVuY3kKPj4gb2YgU0NIRURfTk9STUFMIHRhc2tzLgo+Pgo+
-Pgo+PiA+Pj4KPj4gPj4gPgo+PiA+PiA+Pgo+PiA+PiA+PiA+Cj4+ID4+ID4+Cj4+ID4+ID4+ID5B
-bHNvIHdoeSBub3QgZG9pbmcgdGhhdCBmb3IgZGVmYXVsdCBjYXNlIHRvbyA/IGkuZS4gYmFsYW5j
-ZV9mYWlyKCkgPwo+PiA+PiA+PiBZb3UgYXJlIHJpZ2h0LCBpZiB5b3UgdGhpbmsgdGhpcyBzY2Vu
-YXJpbyBtYWtlcyBzZW5zZSwgd2Ugd2lsbCBzZW5kIGEKPj4gPj4gPj4gcmVmaW5lZCBwYXRjaCBz
-b29uIDotKQo+PiA+PiA+Pgo+PiA+PiA+PiA+Cj4+ID4+ID4+ID4+ICsgICAgICAgICAgIHNjaGVk
-X2lkbGVfY3B1KHJxLT5jcHUpKQo+PiA+PiA+PiA+PiArICAgICAgICAgICAgICAgZ290byBpZGxl
-Owo+PiA+PiA+PiA+PiArCj4+ID4+ID4+ID4+ICBhZ2FpbjoKPj4gPj4gPj4gPj4gICAgICAgICBp
-ZiAoIXNjaGVkX2ZhaXJfcnVubmFibGUocnEpKQo+PiA+PiA+PiA+PiAgICAgICAgICAgICAgICAg
-Z290byBpZGxlOwo+PiA+PiA+PiA+PiAtLQo+PiA+PiA+PiA+PiAxLjguMy4xCj4+ID4+ID4+ID4+
-Cj4+ID4+ID4+ID4+Cg==
+Hi Saravana,
+
+On Tue, Feb 2, 2021 at 4:01 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Mon, Feb 1, 2021 at 2:40 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sat, Jan 30, 2021 at 5:09 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > This patch series solves two general issues with fw_devlink=on
+> > > >
+> > > > Patch 1/2 addresses the issue of firmware nodes that look like they'll
+> > > > have struct devices created for them, but will never actually have
+> > > > struct devices added for them. For example, DT nodes with a compatible
+> > > > property that don't have devices added for them.
+> > > >
+> > > > Patch 2/2 address (for static kernels) the issue of optional suppliers
+> > > > that'll never have a driver registered for them. So, if the device could
+> > > > have probed with fw_devlink=permissive with a static kernel, this patch
+> > > > should allow those devices to probe with a fw_devlink=on. This doesn't
+> > > > solve it for the case where modules are enabled because there's no way
+> > > > to tell if a driver will never be registered or it's just about to be
+> > > > registered. I have some other ideas for that, but it'll have to come
+> > > > later thinking about it a bit.
+> > > >
+> > > > These two patches might remove the need for several other patches that
+> > > > went in as fixes for commit e590474768f1 ("driver core: Set
+> > > > fw_devlink=on by default"), but I think all those fixes are good
+> > > > changes. So I think we should leave those in.
+> > > >
+> > > > Marek, Geert,
+> > > >
+> > > > Can you try this series on a static kernel with your OF_POPULATED
+> > > > changes reverted? I just want to make sure these patches can identify
+> > > > and fix those cases.
+> > > >
+> > > > Tudor,
+> > > >
+> > > > You should still make the clock driver fix (because it's a bug), but I
+> > > > think this series will fix your issue too (even without the clock driver
+> > > > fix). Can you please give this a shot?
+> > >
+> > > Marek, Geert, Tudor,
+> > >
+> > > Forgot to say that this will probably fix your issues only in a static
+> > > kernel. So please try this with a static kernel. If you can also try
+> > > and confirm that this does not fix the issue for a modular kernel,
+> > > that'd be good too.
+> >
+> > Thanks for your series!
+> >
+> > For the modular case, this series has no impact, as expected (i.e. fails
+> > to boot, no I/O devices probed).
+> > With modules disabled, both r8a7791/koelsch and r8a77951/salvator-xs
+> > seem to boot fine, except for one issue on koelsch:
+>
+> Thanks a lot for testing the series!
+>
+> Regarding the koelsch issue, do you not see it with your OF_POPULATED
+> fix for rcar-sysc driver? But only see if you revert it and use this
+> series?
+
+I've just rechecked, and with fw_devlink=on, and my OF_POPULATED
+fir for rcar-sysc, i2c-demux-pinctrl works, both with modules enabled
+and disabled.
+
+> > dmesg:
+> >
+> >     +i2c-demux-pinctrl i2c-12: failed to setup demux-adapter 0 (-19)
+> >     +i2c-demux-pinctrl i2c-13: failed to setup demux-adapter 0 (-19)
+> >     +i2c-demux-pinctrl i2c-14: failed to setup demux-adapter 0 (-19)
+> >
+> >     -  #0: rsnd-dai.0-ak4642-hifi
+> >     +  No soundcards found.
+> >
+> > regulator_summary:
+> >
+> >     -13-0050-vcc                   0    0mA     0mV     0mV
+> >     -13-0039-dvdd-3v               1    0mA     0mV     0mV
+> >     -13-0039-bgvdd                 1    0mA     0mV     0mV
+> >     -13-0039-pvdd                  1    0mA     0mV     0mV
+> >     -13-0039-dvdd                  1    0mA     0mV     0mV
+> >     -13-0039-avdd                  1    0mA     0mV     0mV
+> >
+> > pm_genpd_summary:
+> >
+> >     -/devices/platform/soc/e6518000.i2c  suspended                  0
+> >     -/devices/platform/soc/e6530000.i2c  suspended                  0
+> >     -/devices/platform/soc/e6520000.i2c  suspended                  0
+> >
+> > These are all symptoms of the same issue: i2c buses and devices are not
+> > probed, due to the use of the i2c demuxer.
+> > I guess the fw_devlink tracker doesn't consider "i2c-parent" links?
+>
+> No, it doesn't parse "i2c-parent". Ugh... looked at it. It's going to
+> be a problem to parse because it requires the parents to be disbled in
+> DT and then fixes them up during run time. fw_devlink can handle DT
+> overlay changing a specific node, but the problem is that the consumer
+> DT node doesn't get changed. So the i2c-parent will first be parsed,
+> fw_devlink will notice they are disabled, so it'll ignore them. Then
+> those nodes are enabled, but the i2c-parent isn't reparsed because the
+> consumer isn't updated.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
