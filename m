@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCC630CE66
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B23F30CE59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbhBBWE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:04:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58724 "EHLO mail.kernel.org"
+        id S233697AbhBBWBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:01:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234431AbhBBWCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:02:22 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 884ED64FAA;
-        Tue,  2 Feb 2021 22:01:22 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1l73jd-00970K-Hm; Tue, 02 Feb 2021 17:01:21 -0500
-Message-ID: <20210202220121.435051654@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 02 Feb 2021 16:59:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [for-linus][PATCH 5/5] tracepoint: Fix race between tracing and removing tracepoint
-References: <20210202215949.848582355@goodmis.org>
+        id S229542AbhBBWA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:00:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE2F64F60;
+        Tue,  2 Feb 2021 22:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612303216;
+        bh=7MwmGaIDa8krR7cbY5vwmlx4VkryftuFPHME4HwUihY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M00WsYIA5mTCeVa5IeOsB9EgOz9HobnLIAaZ3G4SuZvbN8p//zYZMxGZEDvv71rTg
+         ABdK1OdGuPzq/Kkr9DpcnwtK0SR6Re/aJ/cdoxXBfFBVvjZQ4n9xaWznnyN3TgeV/5
+         qWWqsMjoXZNyFilYNlvEBOTAT/DeNdy2CqCHyv4HdRqwA5F8Srkx3S4cq/lifU2BMN
+         7bOYOtdi2HO+8VZRd6DB3XkvVZ/6UGy8orCDehwqIa8/FLeVbkx0Mm9wb/RcuMw0iW
+         +jcOevLAU0mCCdJELbadoAzvKbRAQHf19zyxbOZaMy+irK0CLqwp53cCI+b2oENsaR
+         rKb4bQrW8uuLg==
+Date:   Wed, 3 Feb 2021 00:00:08 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v4 2/5] x86/sgx: Reduce the locking range in
+ sgx_sanitize_section()
+Message-ID: <YBnLaEz0hi/s9T8X@kernel.org>
+References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
+ <20210201132653.35690-3-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201132653.35690-3-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+On Mon, Feb 01, 2021 at 09:26:50PM +0800, Tianjia Zhang wrote:
+> The spin lock of sgx_epc_section only locks the page_list. The
+> EREMOVE operation and init_laundry_list is not necessary in the
+> protection range of the spin lock. This patch reduces the lock
+> range of the spin lock in the function sgx_sanitize_section()
+> and only protects the operation of the page_list.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-When executing a tracepoint, the tracepoint's func is dereferenced twice -
-in __DO_TRACE() (where the returned pointer is checked) and later on in
-__traceiter_##_name where the returned pointer is dereferenced without
-checking which leads to races against tracepoint_removal_sync() and
-crashes.
+I'm not confident that this change has any practical value.
 
-This adds a check before referencing the pointer in tracepoint_ptr_deref.
+/Jarkko
 
-Link: https://lkml.kernel.org/r/20210202072326.120557-1-aik@ozlabs.ru
-
-Cc: stable@vger.kernel.org
-Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/linux/tracepoint.h | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 0f21617f1a66..966ed8980327 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -307,11 +307,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 									\
- 		it_func_ptr =						\
- 			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
--		do {							\
--			it_func = (it_func_ptr)->func;			\
--			__data = (it_func_ptr)->data;			\
--			((void(*)(void *, proto))(it_func))(__data, args); \
--		} while ((++it_func_ptr)->func);			\
-+		if (it_func_ptr) {					\
-+			do {						\
-+				it_func = (it_func_ptr)->func;		\
-+				__data = (it_func_ptr)->data;		\
-+				((void(*)(void *, proto))(it_func))(__data, args); \
-+			} while ((++it_func_ptr)->func);		\
-+		}							\
- 		return 0;						\
- 	}								\
- 	DEFINE_STATIC_CALL(tp_func_##_name, __traceiter_##_name);
--- 
-2.29.2
-
-
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index c519fc5f6948..4465912174fd 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -41,20 +41,17 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
+>  		if (kthread_should_stop())
+>  			return;
+>  
+> -		/* needed for access to ->page_list: */
+> -		spin_lock(&section->lock);
+> -
+>  		page = list_first_entry(&section->init_laundry_list,
+>  					struct sgx_epc_page, list);
+>  
+>  		ret = __eremove(sgx_get_epc_virt_addr(page));
+> -		if (!ret)
+> +		if (!ret) {
+> +			spin_lock(&section->lock);
+>  			list_move(&page->list, &section->page_list);
+> -		else
+> +			spin_unlock(&section->lock);
+> +		} else
+>  			list_move_tail(&page->list, &dirty);
+>  
+> -		spin_unlock(&section->lock);
+> -
+>  		cond_resched();
+>  	}
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
+> 
+> 
