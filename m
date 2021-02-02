@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1751830C128
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B2E30C124
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbhBBOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:14:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S234222AbhBBOO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:14:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233951AbhBBOIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:08:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80DB66502A;
-        Tue,  2 Feb 2021 13:50:16 +0000 (UTC)
+        id S233803AbhBBOHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:07:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BC465022;
+        Tue,  2 Feb 2021 13:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273817;
-        bh=s03BhVqrOox6nd+uSEz+3DvdL02rQBQgyotoO2izrWE=;
+        s=korg; t=1612273797;
+        bh=DpSWERrmDQN8N+1CBidMJOO7M6qEhPS/9My/pwxvyYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aRkdFtKaQiQ0njhz0kBPgYPt68+xfls+ua6eSCpCn3H+HdqlPh2TPAa/AU1rwgJNR
-         lsUBL76ZbSMnlZqkZl8Wa3y4hj4HBMwm/Afr6NVAX4WslZPfB/4OGAYY1KLEXcHUdH
-         82hYZfkpX/5yzk5TMyZesWvrm6nuoYk/lXMmqe4s=
+        b=0g3LJCzTVM+WaTN3tiCqQlLIEmmPk1ESVp8unMS+KCCM0ka0Kbhn17JuVLHfJGVgL
+         eOLqamXRSJAlezRs2sXyqOVneCxV1LWV43n0WX3F1IGKayqUFijmJHtUP3OsBlS90o
+         GkhmnwdRgTxDcefrLC2kVrUBFWgh1ukLOkbwoUGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 04/32] y2038: futex: Move compat implementation into futex.c
+Subject: [PATCH 4.4 07/28] y2038: futex: Move compat implementation into futex.c
 Date:   Tue,  2 Feb 2021 14:38:27 +0100
-Message-Id: <20210202132942.213518411@linuxfoundation.org>
+Message-Id: <20210202132941.486122279@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
-References: <20210202132942.035179752@linuxfoundation.org>
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+References: <20210202132941.180062901@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -97,7 +97,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -47,9 +47,6 @@ obj-$(CONFIG_PROFILING) += profile.o
+@@ -36,9 +36,6 @@ obj-$(CONFIG_PROFILING) += profile.o
  obj-$(CONFIG_STACKTRACE) += stacktrace.o
  obj-y += time/
  obj-$(CONFIG_FUTEX) += futex.o
@@ -130,7 +130,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #endif
  
  /*
-@@ -3123,7 +3126,7 @@ err_unlock:
+@@ -3088,7 +3091,7 @@ err_unlock:
   * Process a futex-list entry, check whether it's owned by the
   * dying task, and do notification if so:
   */
@@ -139,7 +139,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
  	u32 uval, uninitialized_var(nval), mval;
  
-@@ -3354,6 +3357,192 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
+@@ -3318,6 +3321,192 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
  	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
  }
  
