@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9DA30CAEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C5630CAF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239304AbhBBTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S239336AbhBBTHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239383AbhBBTC1 (ORCPT
+        with ESMTP id S239393AbhBBTCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:02:27 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FBDC061A2B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:58:20 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id z9so12574103plg.19
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:58:20 -0800 (PST)
+        Tue, 2 Feb 2021 14:02:39 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1840DC061A2E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:58:21 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 18so14788950pgp.22
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:58:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=AT93/ogWHXZz20/nWmto+tVuhh8JYGtfkCQW8Y2OAc4=;
-        b=r5R8y+ePnaAaeFSdFKCGU7w4lreH34R3dbk7cfBMhYkTaOHLEhd2TwMXIbp2vgFYi3
-         Gd/u1N8eXJchw09Pj82KEmSH5oCErngyK4OhDuq+mzuwOp3lpfgSp9+1HQ27i7YJXnmr
-         k90Cuvq3phZ7aKAKk8rsgizzFnYhuzngDJeoGoxSPmCgG0nPlJsipQTbR/jfIztrVdmH
-         PChpmj8LgDQ5h6LSSW2KJf/diK7nV4A5xnjbi3T91sat9hXOZuoS8B9rCG2oy0PPUbzE
-         oeBetr1O4R4IPOqoZ61HiXZTMb2cSBR6jwSXXgE8SEYEVw4HV027RlgtmhDE63G10nUC
-         4ISw==
+        bh=7arfRLL2Z2CtnM0YUHBbJ+FLJFgLhV7kQmsV+ql5Wjw=;
+        b=I4XvQXp2ht+2a41TenE/roJ1Ett778dW7gHugcfOPCOJRwFKzXH81fcTcsBv2atCd9
+         AYPcKfbLDHtPedau0a9TVeDLqDORxZH01r3RoKiBwxAyM8FrDzlNsvMJu8q7pqY8g+et
+         4xmVbVRZ8BLTu8bBGlfAfBmH1MLqhoZXHiQocMogRtc/GgebeTKNxUWsPZmHTNInLhd3
+         EwH5KJICDoGq5rc2HGa0tM6u3GgbFGSWXSzCFnCrz0dp3uI+unkeBajE55ILXgaiilCl
+         FKbtJVgy9le9npYsArei5igdzuUaCSjknWA2xeapzvgej/A6m4+74B3Tn5+BAgLFV0kD
+         5euw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=AT93/ogWHXZz20/nWmto+tVuhh8JYGtfkCQW8Y2OAc4=;
-        b=cKSXAsr1znSoQzkEGhO6MHjIAATDggzzuwV6NgRg4gEMHLL2cG7b89hmciFYYByjQ5
-         ezYOcmB+l/fy9ROyFbLPf+rF1MACiMe9lVjRz93ZDCntPUhMnGR4UsvSoqeOl/Gx/4Op
-         wE5OlrMKlcmXMpq5Zf1CiPw49rFVA17qHoPuL67t2fVNsMEviDJwPEi1two0FcWb2FKs
-         YaFnh7hN1znyyblIeNu+H37J5mposvDMicl0jN1bcrMBugsK/13UhSSy/KCqmMcAD5ls
-         1ZMXCsp/yqGSApz1wsNK1O70L8HVbKnI7html5NhHSBVdXUDLKwJaUERxdUzSaGKy35g
-         2I1Q==
-X-Gm-Message-State: AOAM533XXspYjiiICpOE0hmGliFKcx01BmZnttNr9GxVq6vlnq4+SaAV
-        O/WRQuKSBprgr9qEOSo91jKArc2t+6T8iqu70v/t7x3Otd2lNu+/w/KwmG9+FqPWqW12Xo9cDp7
-        uJdtxFY5zbbvhhl2k+WnxjrS3br70DYIws7psj2BeP1hpRJxTRjXUyRLtoO8BQX/OmCgsVbOu
-X-Google-Smtp-Source: ABdhPJwCA8GyUrhXpxf2tdjZ130kf6w37Af0AcDtX/wCAZtKVUM1t3M3pKL4+fHk82e59W3QYalqp5VOzjzD
+        bh=7arfRLL2Z2CtnM0YUHBbJ+FLJFgLhV7kQmsV+ql5Wjw=;
+        b=jddwY7UPeNQNbGJiQvWkokxutgq+93b+G9RmxAvLAaYwKDzZqSqgJCX/3LevyLQE6C
+         b+fmcDikBzrMjFGt47JBKqGtNUxus+eNsaKWm6yTLL05MN1+V9ARdOh1JhKX90sx0eiz
+         Ejo/Id3A+i3r4bk9TIkS0+SoB6dRJWU6SBVlLnYLHycyGDcRMoBfdJEexXAxQlSmPJ55
+         FsoDukJu3KNM3dyj6mRQhJ6ret3IIrFqMuBgeOptvMpGkhEzVJ9ap0CTRxujRIbUNu7U
+         zKZOHlaeWECApb9llc41ahMhKUZ+eVGVDKuV1tR9x1MxzCnI13aD2uW2bSYGDiKLV3Xm
+         Rcew==
+X-Gm-Message-State: AOAM532Q7UEKO27lD4+h3fBdpWi3FoxwFCS3KNi0gvp2RvJeM/Hy+6o1
+        xbHWORXghnX+ocz77Lwz6cJ6jfn61dwAqkSjrvZnypaERb55omlhQadhCPXaywK82BJmnfyRWgA
+        4fVr1jZPiF1qEZdfA94F25M4vuMiw323aNbPciaStBiutVqM2xmqQ9Qu6lj5h0XYZ5d8kEfuv
+X-Google-Smtp-Source: ABdhPJzXNvUKye10Fi3gdAai/uJC9OZeI8HcXCz3jyHrLKGlj9WEWKBgFqLkRaBCXC1/W6Dl77imlc+CAAZX
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:9090:561:5a98:6d47])
- (user=bgardon job=sendgmr) by 2002:a17:90a:8d83:: with SMTP id
- d3mr614671pjo.0.1612292298314; Tue, 02 Feb 2021 10:58:18 -0800 (PST)
-Date:   Tue,  2 Feb 2021 10:57:28 -0800
+ (user=bgardon job=sendgmr) by 2002:a17:90b:1247:: with SMTP id
+ gx7mr5877515pjb.22.1612292300509; Tue, 02 Feb 2021 10:58:20 -0800 (PST)
+Date:   Tue,  2 Feb 2021 10:57:29 -0800
 In-Reply-To: <20210202185734.1680553-1-bgardon@google.com>
-Message-Id: <20210202185734.1680553-23-bgardon@google.com>
+Message-Id: <20210202185734.1680553-24-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210202185734.1680553-1-bgardon@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 22/28] KVM: x86/mmu: Mark SPTEs in disconnected pages as removed
+Subject: [PATCH v2 23/28] KVM: x86/mmu: Allow parallel page faults for the TDP MMU
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -72,81 +72,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When clearing TDP MMU pages what have been disconnected from the paging
-structure root, set the SPTEs to a special non-present value which will
-not be overwritten by other threads. This is needed to prevent races in
-which a thread is clearing a disconnected page table, but another thread
-has already acquired a pointer to that memory and installs a mapping in
-an already cleared entry. This can lead to memory leaks and accounting
-errors.
+Make the last few changes necessary to enable the TDP MMU to handle page
+faults in parallel while holding the mmu_lock in read mode.
 
 Reviewed-by: Peter Feiner <pfeiner@google.com>
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 36 ++++++++++++++++++++++++++++++------
- 1 file changed, 30 insertions(+), 6 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 7a2cdfeac4d2..0dd27e000dd0 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -334,9 +334,10 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
- {
- 	struct kvm_mmu_page *sp = sptep_to_sp(pt);
- 	int level = sp->role.level;
--	gfn_t gfn = sp->gfn;
-+	gfn_t base_gfn = sp->gfn;
- 	u64 old_child_spte;
- 	u64 *sptep;
-+	gfn_t gfn;
- 	int i;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index b4d6709c240e..3d181a2b2485 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3724,7 +3724,12 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 		return r;
  
- 	trace_kvm_mmu_prepare_zap_page(sp);
-@@ -345,16 +346,39 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, u64 *pt,
- 
- 	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
- 		sptep = pt + i;
-+		gfn = base_gfn + (i * KVM_PAGES_PER_HPAGE(level - 1));
- 
- 		if (shared) {
--			old_child_spte = xchg(sptep, 0);
-+			/*
-+			 * Set the SPTE to a nonpresent value that other
-+			 * threads will not overwrite. If the SPTE was
-+			 * already marked as removed then another thread
-+			 * handling a page fault could overwrite it, so
-+			 * set the SPTE until it is set from some other
-+			 * value to the removed SPTE value.
-+			 */
-+			for (;;) {
-+				old_child_spte = xchg(sptep, REMOVED_SPTE);
-+				if (!is_removed_spte(old_child_spte))
-+					break;
-+				cpu_relax();
-+			}
- 		} else {
- 			old_child_spte = READ_ONCE(*sptep);
--			WRITE_ONCE(*sptep, 0);
+ 	r = RET_PF_RETRY;
+-	write_lock(&vcpu->kvm->mmu_lock);
 +
-+			/*
-+			 * Marking the SPTE as a removed SPTE is not
-+			 * strictly necessary here as the MMU lock should
-+			 * stop other threads from concurrentrly modifying
-+			 * this SPTE. Using the removed SPTE value keeps
-+			 * the shared and non-atomic cases consistent and
-+			 * simplifies the function.
-+			 */
-+			WRITE_ONCE(*sptep, REMOVED_SPTE);
- 		}
--		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
--			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
--			old_child_spte, 0, level - 1, shared);
-+		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp), gfn,
-+				    old_child_spte, REMOVED_SPTE, level - 1,
-+				    shared);
- 	}
++	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
++		read_lock(&vcpu->kvm->mmu_lock);
++	else
++		write_lock(&vcpu->kvm->mmu_lock);
++
+ 	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
+ 		goto out_unlock;
+ 	r = make_mmu_pages_available(vcpu);
+@@ -3739,7 +3744,10 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 				 prefault, is_tdp);
  
- 	kvm_flush_remote_tlbs_with_address(kvm, gfn,
+ out_unlock:
+-	write_unlock(&vcpu->kvm->mmu_lock);
++	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
++		read_unlock(&vcpu->kvm->mmu_lock);
++	else
++		write_unlock(&vcpu->kvm->mmu_lock);
+ 	kvm_release_pfn_clean(pfn);
+ 	return r;
+ }
 -- 
 2.30.0.365.g02bc693789-goog
 
