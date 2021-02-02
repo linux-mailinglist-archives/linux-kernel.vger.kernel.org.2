@@ -2,222 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E94B30BDCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C769730BDD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhBBMLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:11:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231281AbhBBMKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:10:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8746B64F5D;
-        Tue,  2 Feb 2021 12:09:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612267804;
-        bh=9+NYi16sShih4NLwkXwFR5WL/nfdEw9USH/MLzlKLf0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cnCXmnLPICDPpfKwbfP/LBk5ogUDs17Blml0u/mNc6+BAZjELgSZ/vc+M2LJSzPxC
-         Egbx1BANNIaL8tao/EqSIQr6RMx6AdGG/6BXWkBYKAV84TV8Tz0wa5pQadGf89CRKr
-         dMUWVA7m0Nraur8yoM/i5vmDFRDN2osl/gbTFDg7cNKGvfo1zvIDCpbIb3WFAcziCt
-         ZrSPQVL0ZaqvksAYYkiKuvR4ij0vjGyQ6rTtjb/LTalVo2LzC6utYCOme/+KcZKMTK
-         Zxd4zcQt9SaB6a4GL4qqIB2Ps2ix/0yK9alNHrAMRrzsOfk9WFhuZiQrErBNHhMi+I
-         xIlL8Pr8aDF5Q==
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: rename checkpoint=merge mount option
- to checkpoint_merge
-To:     Daeho Jeong <daeho43@gmail.com>, Chao Yu <yuchao0@huawei.com>
-Cc:     Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210202092332.2562006-1-daeho43@gmail.com>
- <a7adaf99-0df1-cf4a-a60a-d47a104f51aa@huawei.com>
- <CACOAw_wmodtCvDRa_1hh2=u9AP3Qg6VBGG4K1by9QJNGweApVA@mail.gmail.com>
- <938ce080-d211-0834-64b4-fd4836a26d5a@huawei.com>
- <CACOAw_xLcARkqx7oQjLT--vxVHWBxdSz6dN0B00m9ejO+S7qoQ@mail.gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <b925bd13-4a9f-21f5-41f0-b2556dabe065@kernel.org>
-Date:   Tue, 2 Feb 2021 20:09:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231419AbhBBMLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhBBMKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:10:47 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93690C06174A;
+        Tue,  2 Feb 2021 04:10:07 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e1f00bc090c6ff424f9e7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:bc09:c6f:f424:f9e7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E963E1EC009F;
+        Tue,  2 Feb 2021 13:10:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612267806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=x6RQS6BkYqxqzRm+Des2zMV0CQxJ/Mgnfn7LgCj6DSk=;
+        b=EOi6snXHQcNraqBUhl1i6+dGr7Y1cr0pGCoNb58dt0xjo0cA3KCn6o9JUZsrxfhQDJqvtG
+        yG/oZGdzCXLpBL8mmf+bgdyFHeIhaDF03isLFxVmGyFJOD48tZ9jdHtREkFMYVMk10HQJP
+        tq5T1bgfI3jL650oe1E1QvFCe8Xm/l0=
+Date:   Tue, 2 Feb 2021 13:10:03 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] thermal: Move therm_throt there from x86/mce
+Message-ID: <20210202121003.GD18075@zn.tnic>
+References: <20210201142704.12495-1-bp@alien8.de>
+ <20210201142704.12495-3-bp@alien8.de>
+ <bcf48ba877acf7ae003672d5b7cf2effe004ca0e.camel@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_xLcARkqx7oQjLT--vxVHWBxdSz6dN0B00m9ejO+S7qoQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bcf48ba877acf7ae003672d5b7cf2effe004ca0e.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/2 19:29, Daeho Jeong wrote:
-> Thanks for the explanation.
-> 
-> I am going to remove the line clearing "MERGE_CHECKPOINT".
-> But, when we go with the below remount command, I think the
-> "nocheckpoint_merge" option will work well to disable only just
-> "checkpoint_merge" from the previous option.
-> "mount -o remount,nocheckpoint_merge  /dir"
-> 
-> It would be more convenient to users. What do you think?
+On Mon, Feb 01, 2021 at 11:10:29AM -0800, Srinivas Pandruvada wrote:
+> Only user of the above interface is in drivers/thermal/intel.
+> So why can't we move these to drivers/thermal/intel/thermal_interrupt.h
+> or similar?
 
-It's fine to me, please go ahead. :)
+Sure, see below.
 
-Thanks,
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Thu, 7 Jan 2021 13:29:05 +0100
+Subject: [PATCH] thermal: Move therm_throt there from x86/mce
 
-> 
-> 2021년 2월 2일 (화) 오후 6:55, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2021/2/2 17:44, Daeho Jeong wrote:
->>> When we remount it without the "checkpoint_merge" option, shouldn't we
->>> need to clear "MERGE_CHECKPOINT" again?
->>> This is actually what I intended, but I was wrong. Actually, I found this.
->>>
->>> When we remount the filesystem, the previous mount option is passed
->>> through the "data" argument in the below.
->>> f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>
->>> If we don't provide the "nocheckpoint_merge" option, how can we turn
->>> off the "checkpoint_merge" option which is turned on in the previous
->>> mount?
->>
->> We can use "mount -o remount /dev/xxx /mnt" to disable checkpoint_merge,
->> since that command won't pass old mount options to remount?
->>
->> Quoted from man mount:
->>
->>                 mount -o remount,rw /dev/foo /dir
->>
->>                 After  this  call  all  old  mount options are replaced and arbitrary stuff from fstab (or mtab) is ignored, except the loop= option which is internally generated and maintained by the
->>                 mount command.
->>
->>                 mount -o remount,rw  /dir
->>
->>                 After this call mount reads fstab and merges these options with the options from the command line (-o). If no mountpoint found in fstab than remount with unspecified source is allowed.
->>
->> Thanks,
->>
->>>
->>> 2021년 2월 2일 (화) 오후 6:28, Chao Yu <yuchao0@huawei.com>님이 작성:
->>>>
->>>> On 2021/2/2 17:23, Daeho Jeong wrote:
->>>>> From: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> As checkpoint=merge comes in, mount option setting related to checkpoint
->>>>> had been mixed up and it became hard to understand. So, I separated
->>>>> this option from "checkpoint=" and made another mount option
->>>>> "checkpoint_merge" for this.
->>>>>
->>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>>> ---
->>>>> v2: renamed "checkpoint=merge" to "checkpoint_merge"
->>>>> v3: removed "nocheckpoint_merge" option
->>>>> ---
->>>>>     Documentation/filesystems/f2fs.rst |  6 +++---
->>>>>     fs/f2fs/super.c                    | 21 +++++++++------------
->>>>>     2 files changed, 12 insertions(+), 15 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>>>> index d0ead45dc706..475994ed8b15 100644
->>>>> --- a/Documentation/filesystems/f2fs.rst
->>>>> +++ b/Documentation/filesystems/f2fs.rst
->>>>> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]      Set to "disable" to turn off checkpointing. Set to "enabl
->>>>>                          hide up to all remaining free space. The actual space that
->>>>>                          would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->>>>>                          This space is reclaimed once checkpoint=enable.
->>>>> -                      Here is another option "merge", which creates a kernel daemon
->>>>> -                      and makes it to merge concurrent checkpoint requests as much
->>>>> -                      as possible to eliminate redundant checkpoint issues. Plus,
->>>>> +checkpoint_merge      When checkpoint is enabled, this can be used to create a kernel
->>>>> +                      daemon and make it to merge concurrent checkpoint requests as
->>>>> +                      much as possible to eliminate redundant checkpoint issues. Plus,
->>>>>                          we can eliminate the sluggish issue caused by slow checkpoint
->>>>>                          operation when the checkpoint is done in a process context in
->>>>>                          a cgroup having low i/o budget and cpu shares. To make this
->>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>> index 56696f6cfa86..b60dcef7f9d0 100644
->>>>> --- a/fs/f2fs/super.c
->>>>> +++ b/fs/f2fs/super.c
->>>>> @@ -215,7 +215,7 @@ static match_table_t f2fs_tokens = {
->>>>>         {Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->>>>>         {Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->>>>>         {Opt_checkpoint_enable, "checkpoint=enable"},
->>>>> -     {Opt_checkpoint_merge, "checkpoint=merge"},
->>>>> +     {Opt_checkpoint_merge, "checkpoint_merge"},
->>>>>         {Opt_compress_algorithm, "compress_algorithm=%s"},
->>>>>         {Opt_compress_log_size, "compress_log_size=%u"},
->>>>>         {Opt_compress_extension, "compress_extension=%s"},
->>>>> @@ -1142,12 +1142,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>>                 return -EINVAL;
->>>>>         }
->>>>>
->>>>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
->>>>> -             return -EINVAL;
->>>>> -     }
->>>>> -
->>>>>         /* Not pass down write hints if the number of active logs is lesser
->>>>>          * than NR_CURSEG_PERSIST_TYPE.
->>>>>          */
->>>>> @@ -1782,7 +1776,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>>>                 seq_printf(seq, ",checkpoint=disable:%u",
->>>>>                                 F2FS_OPTION(sbi).unusable_cap);
->>>>>         if (test_opt(sbi, MERGE_CHECKPOINT))
->>>>> -             seq_puts(seq, ",checkpoint=merge");
->>>>> +             seq_puts(seq, ",checkpoint_merge");
->>>>>         if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->>>>>                 seq_printf(seq, ",fsync_mode=%s", "posix");
->>>>>         else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
->>>>> @@ -1827,6 +1821,7 @@ static void default_options(struct f2fs_sb_info *sbi)
->>>>>         sbi->sb->s_flags |= SB_LAZYTIME;
->>>>>         set_opt(sbi, FLUSH_MERGE);
->>>>>         set_opt(sbi, DISCARD);
->>>>> +     clear_opt(sbi, MERGE_CHECKPOINT);
->>>>
->>>> It's not needed here?
->>>>
->>>> Thanks,
->>>>
->>>>>         if (f2fs_sb_has_blkzoned(sbi))
->>>>>                 F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
->>>>>         else
->>>>> @@ -2066,9 +2061,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>>>                 }
->>>>>         }
->>>>>
->>>>> -     if (!test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> -             f2fs_stop_ckpt_thread(sbi);
->>>>> -     } else {
->>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>>                 err = f2fs_start_ckpt_thread(sbi);
->>>>>                 if (err) {
->>>>>                         f2fs_err(sbi,
->>>>> @@ -2076,6 +2070,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>>>                             err);
->>>>>                         goto restore_gc;
->>>>>                 }
->>>>> +     } else {
->>>>> +             f2fs_stop_ckpt_thread(sbi);
->>>>>         }
->>>>>
->>>>>         /*
->>>>> @@ -3831,7 +3827,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>>>
->>>>>         /* setup checkpoint request control and start checkpoint issue thread */
->>>>>         f2fs_init_ckpt_req_control(sbi);
->>>>> -     if (test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>>                 err = f2fs_start_ckpt_thread(sbi);
->>>>>                 if (err) {
->>>>>                         f2fs_err(sbi,
->>>>>
->>> .
->>>
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
+This functionality has nothing to do with MCE, move it to the thermal
+framework and untangle it from MCE.
+
+Requested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/Kconfig                              |  4 ---
+ arch/x86/include/asm/mce.h                    | 16 ----------
+ arch/x86/include/asm/thermal.h                | 13 ++++++++
+ arch/x86/kernel/cpu/intel.c                   |  3 ++
+ arch/x86/kernel/cpu/mce/Makefile              |  2 --
+ arch/x86/kernel/cpu/mce/intel.c               |  1 -
+ arch/x86/kernel/irq.c                         | 21 ++++++++++++
+ drivers/thermal/intel/Kconfig                 |  4 +++
+ drivers/thermal/intel/Makefile                |  1 +
+ .../thermal/intel}/therm_throt.c              | 32 ++++++-------------
+ drivers/thermal/intel/thermal_interrupt.h     | 15 +++++++++
+ drivers/thermal/intel/x86_pkg_temp_thermal.c  |  4 ++-
+ 12 files changed, 69 insertions(+), 47 deletions(-)
+ create mode 100644 arch/x86/include/asm/thermal.h
+ rename {arch/x86/kernel/cpu/mce => drivers/thermal/intel}/therm_throt.c (97%)
+ create mode 100644 drivers/thermal/intel/thermal_interrupt.h
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..9989db3a9bf5 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1158,10 +1158,6 @@ config X86_MCE_INJECT
+ 	  If you don't know what a machine check is and you don't do kernel
+ 	  QA it is safe to say n.
+ 
+-config X86_THERMAL_VECTOR
+-	def_bool y
+-	depends on X86_MCE_INTEL
+-
+ source "arch/x86/events/Kconfig"
+ 
+ config X86_LEGACY_VM86
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index def9aa5e1fa4..ddfb3cad8dff 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -288,22 +288,6 @@ extern void (*mce_threshold_vector)(void);
+ /* Deferred error interrupt handler */
+ extern void (*deferred_error_int_vector)(void);
+ 
+-/*
+- * Thermal handler
+- */
+-
+-void intel_init_thermal(struct cpuinfo_x86 *c);
+-
+-/* Interrupt Handler for core thermal thresholds */
+-extern int (*platform_thermal_notify)(__u64 msr_val);
+-
+-/* Interrupt Handler for package thermal thresholds */
+-extern int (*platform_thermal_package_notify)(__u64 msr_val);
+-
+-/* Callback support of rate control, return true, if
+- * callback has rate control */
+-extern bool (*platform_thermal_package_rate_control)(void);
+-
+ /*
+  * Used by APEI to report memory error via /dev/mcelog
+  */
+diff --git a/arch/x86/include/asm/thermal.h b/arch/x86/include/asm/thermal.h
+new file mode 100644
+index 000000000000..ddbdefd5b94f
+--- /dev/null
++++ b/arch/x86/include/asm/thermal.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_THERMAL_H
++#define _ASM_X86_THERMAL_H
++
++#ifdef CONFIG_X86_THERMAL_VECTOR
++void intel_init_thermal(struct cpuinfo_x86 *c);
++bool x86_thermal_enabled(void);
++void intel_thermal_interrupt(void);
++#else
++static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
++#endif
++
++#endif /* _ASM_X86_THERMAL_H */
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 59a1e3ce3f14..71221af87cb1 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -24,6 +24,7 @@
+ #include <asm/traps.h>
+ #include <asm/resctrl.h>
+ #include <asm/numa.h>
++#include <asm/thermal.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <linux/topology.h>
+@@ -719,6 +720,8 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 		tsx_disable();
+ 
+ 	split_lock_init();
++
++	intel_init_thermal(c);
+ }
+ 
+ #ifdef CONFIG_X86_32
+diff --git a/arch/x86/kernel/cpu/mce/Makefile b/arch/x86/kernel/cpu/mce/Makefile
+index 9f020c994154..015856abdbb1 100644
+--- a/arch/x86/kernel/cpu/mce/Makefile
++++ b/arch/x86/kernel/cpu/mce/Makefile
+@@ -9,8 +9,6 @@ obj-$(CONFIG_X86_MCE_THRESHOLD) += threshold.o
+ mce-inject-y			:= inject.o
+ obj-$(CONFIG_X86_MCE_INJECT)	+= mce-inject.o
+ 
+-obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
+-
+ obj-$(CONFIG_ACPI_APEI)		+= apei.o
+ 
+ obj-$(CONFIG_X86_MCELOG_LEGACY)	+= dev-mcelog.o
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index c2476fe0682e..e309476743b7 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -531,7 +531,6 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
+ 
+ void mce_intel_feature_init(struct cpuinfo_x86 *c)
+ {
+-	intel_init_thermal(c);
+ 	intel_init_cmci();
+ 	intel_init_lmce();
+ 	intel_ppin_init(c);
+diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
+index c5dd50369e2f..d4ad344e80bf 100644
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -21,6 +21,7 @@
+ #include <asm/hw_irq.h>
+ #include <asm/desc.h>
+ #include <asm/traps.h>
++#include <asm/thermal.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <asm/trace/irq_vectors.h>
+@@ -374,3 +375,23 @@ void fixup_irqs(void)
+ 	}
+ }
+ #endif
++
++#ifdef CONFIG_X86_THERMAL_VECTOR
++static void smp_thermal_vector(void)
++{
++	if (x86_thermal_enabled())
++		intel_thermal_interrupt();
++	else
++		pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
++		       smp_processor_id());
++}
++
++DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
++{
++	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
++	inc_irq_stat(irq_thermal_count);
++	smp_thermal_vector();
++	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
++	ack_APIC_irq();
++}
++#endif
+diff --git a/drivers/thermal/intel/Kconfig b/drivers/thermal/intel/Kconfig
+index 8025b21f43fa..ce4f59213c7a 100644
+--- a/drivers/thermal/intel/Kconfig
++++ b/drivers/thermal/intel/Kconfig
+@@ -8,6 +8,10 @@ config INTEL_POWERCLAMP
+ 	  enforce idle time which results in more package C-state residency. The
+ 	  user interface is exposed via generic thermal framework.
+ 
++config X86_THERMAL_VECTOR
++	def_bool y
++	depends on X86 && CPU_SUP_INTEL && X86_LOCAL_APIC
++
+ config X86_PKG_TEMP_THERMAL
+ 	tristate "X86 package temperature thermal driver"
+ 	depends on X86_THERMAL_VECTOR
+diff --git a/drivers/thermal/intel/Makefile b/drivers/thermal/intel/Makefile
+index 0d9736ced5d4..ff2ad30ef397 100644
+--- a/drivers/thermal/intel/Makefile
++++ b/drivers/thermal/intel/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_INTEL_QUARK_DTS_THERMAL)	+= intel_quark_dts_thermal.o
+ obj-$(CONFIG_INT340X_THERMAL)  += int340x_thermal/
+ obj-$(CONFIG_INTEL_BXT_PMIC_THERMAL) += intel_bxt_pmic_thermal.o
+ obj-$(CONFIG_INTEL_PCH_THERMAL)	+= intel_pch_thermal.o
++obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
+diff --git a/arch/x86/kernel/cpu/mce/therm_throt.c b/drivers/thermal/intel/therm_throt.c
+similarity index 97%
+rename from arch/x86/kernel/cpu/mce/therm_throt.c
+rename to drivers/thermal/intel/therm_throt.c
+index 5b15d7cef1d1..f8e882592ba5 100644
+--- a/arch/x86/kernel/cpu/mce/therm_throt.c
++++ b/drivers/thermal/intel/therm_throt.c
+@@ -26,13 +26,13 @@
+ #include <linux/cpu.h>
+ 
+ #include <asm/processor.h>
++#include <asm/thermal.h>
+ #include <asm/traps.h>
+ #include <asm/apic.h>
+-#include <asm/mce.h>
++#include <asm/irq.h>
+ #include <asm/msr.h>
+-#include <asm/trace/irq_vectors.h>
+ 
+-#include "internal.h"
++#include "thermal_interrupt.h"
+ 
+ /* How long to wait between reporting thermal events */
+ #define CHECK_INTERVAL		(300 * HZ)
+@@ -570,7 +570,7 @@ static void notify_thresholds(__u64 msr_val)
+ }
+ 
+ /* Thermal transition interrupt handler */
+-static void intel_thermal_interrupt(void)
++void intel_thermal_interrupt(void)
+ {
+ 	__u64 msr_val;
+ 
+@@ -606,23 +606,6 @@ static void intel_thermal_interrupt(void)
+ 	}
+ }
+ 
+-static void unexpected_thermal_interrupt(void)
+-{
+-	pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
+-		smp_processor_id());
+-}
+-
+-static void (*smp_thermal_vector)(void) = unexpected_thermal_interrupt;
+-
+-DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
+-{
+-	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
+-	inc_irq_stat(irq_thermal_count);
+-	smp_thermal_vector();
+-	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
+-	ack_APIC_irq();
+-}
+-
+ /* Thermal monitoring depends on APIC, ACPI and clock modulation */
+ static int intel_thermal_supported(struct cpuinfo_x86 *c)
+ {
+@@ -633,6 +616,11 @@ static int intel_thermal_supported(struct cpuinfo_x86 *c)
+ 	return 1;
+ }
+ 
++bool x86_thermal_enabled(void)
++{
++	return atomic_read(&therm_throt_en);
++}
++
+ void intel_init_thermal(struct cpuinfo_x86 *c)
+ {
+ 	unsigned int cpu = smp_processor_id();
+@@ -719,8 +707,6 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
+ 				| PACKAGE_THERM_INT_HIGH_ENABLE), h);
+ 	}
+ 
+-	smp_thermal_vector = intel_thermal_interrupt;
+-
+ 	rdmsr(MSR_IA32_MISC_ENABLE, l, h);
+ 	wrmsr(MSR_IA32_MISC_ENABLE, l | MSR_IA32_MISC_ENABLE_TM1, h);
+ 
+diff --git a/drivers/thermal/intel/thermal_interrupt.h b/drivers/thermal/intel/thermal_interrupt.h
+new file mode 100644
+index 000000000000..53f427bb58dc
+--- /dev/null
++++ b/drivers/thermal/intel/thermal_interrupt.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _INTEL_THERMAL_INTERRUPT_H
++#define _INTEL_THERMAL_INTERRUPT_H
++
++/* Interrupt Handler for package thermal thresholds */
++extern int (*platform_thermal_package_notify)(__u64 msr_val);
++
++/* Interrupt Handler for core thermal thresholds */
++extern int (*platform_thermal_notify)(__u64 msr_val);
++
++/* Callback support of rate control, return true, if
++ * callback has rate control */
++extern bool (*platform_thermal_package_rate_control)(void);
++
++#endif /* _INTEL_THERMAL_INTERRUPT_H */
+diff --git a/drivers/thermal/intel/x86_pkg_temp_thermal.c b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+index b81c33202f41..295742e83960 100644
+--- a/drivers/thermal/intel/x86_pkg_temp_thermal.c
++++ b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+@@ -17,8 +17,10 @@
+ #include <linux/pm.h>
+ #include <linux/thermal.h>
+ #include <linux/debugfs.h>
++
+ #include <asm/cpu_device_id.h>
+-#include <asm/mce.h>
++
++#include "thermal_interrupt.h"
+ 
+ /*
+ * Rate control delay: Idea is to introduce denounce effect
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
