@@ -2,706 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EFA30B6AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFE230B6AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhBBEsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhBBEsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:48:36 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CDDC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 20:47:55 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id p21so26064553lfu.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 20:47:55 -0800 (PST)
+        id S231848AbhBBEsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:48:54 -0500
+Received: from mail-bn8nam11on2088.outbound.protection.outlook.com ([40.107.236.88]:15457
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231566AbhBBEss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 23:48:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nldRBwUVMEGgtlGGGElukgW59S91q3BIfyvbCp1Xk4ffWxwPtbdgY/Lg6nFik1GXMYfjle7+sUVKHWJnuCbAnaRKUTKzbmicgmFrdvpr9QBaMv8wWWwaLaOsM3VnVxk+q3PMVooqGakIkZzmqeheGHwOe0763EtnsDiBjddkOTct0Q5mwcj/iOa4kzxHWQMSpE/ldzrZ4AFn6X/2/LtmII7JlA64Nk8MTn3pacrB/JQ+quPf7FvRPXn+8C1W7nyeq9BPQhriiNYNkhrHwY+DFbaNInJIFtnHMiBMttsu7FkdcHTL1I+QXgAcn+8EChqLKfnrVcAXkAvXTqb/nEM/GA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKPxIaBUddEQN4P3tSuh39va0VRNXC9vMfjIoy8pKoY=;
+ b=ndye5uaSJOlmb2pD2gESMgmSyMiJnFMQkGuOBXDuyI5raQaa/1lV6yNJnV6Cnff7G6JVpVXcvCOSamkYPCCobGOwRca9U0zYVTwM34iuVq7Mk2K/lc1312v/RrNZp43QjyR9Kkhf4Zi1veUFSiVNmi5mi63F35w7KIo+YkewYemj1mQ3JjoAywLA0iJv/LVX8XexoaQjHxS4nIinG48wOC/uWZIOYSq/tK5vVSFrEHvFQotvVB5aIW8zdKdtLlfHN5557bibZ7cbXSuzUlIE6DQtWQ8KKMEnPDMVXLhiSN8tu9CTKtXvtUSi3HVVT7Ne5NTSJfrYSk2pxcfkoihihA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i7TeoCq3ZFAIginvweqeVFAAGvP1hkwO4iMbLBNKVQU=;
-        b=fNJVCQJs2VqYhLCNUtu65i5903kAUMgacy1L1TXpwibmVVL+U8Cy36/Xkum5iFiBL0
-         SPDebOCV7DCHeNTp9SScEDAuhmJ7kFghTcOmMq83zmxnzBA6I0lILflG3mBz+l+Ws9Lh
-         L+0Ccj+ubl6Np1b8iChv/hCzjOdV/SfTXUTxKo89+1dQTsQIjGq80n1cwId2yezarJ1c
-         Mpxb8kv/OV6sc7SMFXAgr03jZT22k/94uvHWGM5+Tyi7LpfRkTNGMKKTbOumCmzWxpS+
-         DTFIqAT+TOhuwtaeGuSw6mzXd3y0wLVX8nGVNW/5nctLMDY/6ZisUpJonU9rxOPlQDft
-         8QTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i7TeoCq3ZFAIginvweqeVFAAGvP1hkwO4iMbLBNKVQU=;
-        b=dQh+ViIoXZT9LiDLC8lbmy8OEOnMTWFIZRBrXgQ7JEM710Q2mkHvjzJFc2yIA59dKA
-         gD0UEJ1+MGnwbMw5+65jDcRiUIrArZGOvvnsrjA6poWZ0wwYfqGG8krs91cm0Zxlg4RJ
-         kHR+/Z8eWmRHjEnCGWLWLIebP9Ri6DiWbjPHC67u9B7XFzFMuE5v2HR7LbEx9iCWyDZC
-         Msc7bWWvT3JWVYXKVNfoC+6pb+FRmGgqrLNkmIKsjS3yUgvH/Av/iYHcdpp2x5GEuNs0
-         +0CzGEaD/at57HTbAKlzU3eCnDy5aMS68eizI9gOuD4lUEv3a0QrEPLh0bPjLDhF86cv
-         aH6A==
-X-Gm-Message-State: AOAM5325VkmxhscDhEkfa1zVeYpM9AY3A3IqdsgoCDG1xeCdHlGLHliG
-        Bwb1fCvurOz2KfigVcYO6krJ2Bvfa8Ph4R7v0cE11W6HqgJyFQ==
-X-Google-Smtp-Source: ABdhPJzVqXJN6btafTOmXd+21uyKKx6gJlW4xsP4ZQw50TZsMz6PAV9HI7+27a8h7p7a1GzYnC8EEeWg2x+vh3dvoiY=
-X-Received: by 2002:a19:6410:: with SMTP id y16mr404733lfb.113.1612241273545;
- Mon, 01 Feb 2021 20:47:53 -0800 (PST)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKPxIaBUddEQN4P3tSuh39va0VRNXC9vMfjIoy8pKoY=;
+ b=JIzdDKxfTs5fKfDEXALWubgPjXWfALwCFUyiLfHfEcknbDPkmFyY7uX5jGbPqeXV7Yx+CZu3M/gTo8sBXGbaRn2YpauThagudP0zO0Wp06LrflQ7yxC+ZTMXKZq0XKmHU+4pdZ+Nu36gkP7K36X3SaeWKIK+yKkDuTqezkMpDgQ=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4102.namprd11.prod.outlook.com (2603:10b6:a03:181::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Tue, 2 Feb
+ 2021 04:47:57 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.023; Tue, 2 Feb 2021
+ 04:47:57 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYzXSBrdmZyZWVfcmN1OiBSZWxlYXNlIHBhZ2UgY2Fj?=
+ =?gb2312?Q?he_under_memory_pressure?=
+Thread-Topic: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
+Thread-Index: AQHW9wfxGJ2IWJwsv0i2q1lIZ3Sxz6pDuv2AgACRBPk=
+Date:   Tue, 2 Feb 2021 04:47:57 +0000
+Message-ID: <BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210130131851.23285-1-qiang.zhang@windriver.com>,<20210201195753.GA2026@pc638.lan>
+In-Reply-To: <20210201195753.GA2026@pc638.lan>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 459555ec-08b3-4fc3-d497-08d8c735b5da
+x-ms-traffictypediagnostic: BY5PR11MB4102:
+x-microsoft-antispam-prvs: <BY5PR11MB4102E76A302DF43C0D5B5E61FFB59@BY5PR11MB4102.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Kn3GwjWvSCGv7XggGuLSTC8Z5KiUHJXDy+CRnr12vhVILTAIFjbli2SMtorzjSrVIRC8gYLlpkEWHnVEhAwjID4U16Ykj6Yy3gIs2JUKW1Ulhb76AEPTn1uL3PAyfUlqwD7+7hisE79/ivIpzu4SfK0dPe1mRaVext0Rn+gsuIUlAHXkCDQVTS86O5kTKqiZ58Esd8AKX2tHa8wnlzEnNA7h9PaL7ASuUGhVxWY6pKU0wWWJcnqZtMV/PYdUpZBP3mqRxcyvBWnnlQlCJWTZOVzYP/fni/MmJKkIYyAsRrlqdlRhiqp5dys3v+NyGLFAmlu0oCSI/md/hdWZ371NYnDsa8Zx6DOyCEMWwuhCcYJBViYCjOGhP2/BI5Sv5yj+KjJwuyZ3DoYp0zrQI47sYHogta0d391cT8RtixD+kYn5H8+EQJJ5CqzCRG1Ofo3sEu1t7IOiz5GAfFcG1MMlCN7/R3VyILP7mQGR72SqNX2vOySSpaPKESJ0h0fq794P2ZwXxPLhD3H6FOcl+LYpv44Lt2Bsx3ntOdaeRe3eXtUR9iHzhj2vXNOQlhTUyULI3eqybY2bttboe/KDI8fghJXLlp1M1N8zfyBSZuU6fHINvlgrRjOSnPGZN9NvHqI1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(136003)(39850400004)(376002)(71200400001)(52536014)(66476007)(5660300002)(6916009)(224303003)(64756008)(66946007)(54906003)(66556008)(86362001)(2906002)(66446008)(55016002)(9686003)(7696005)(4326008)(186003)(91956017)(83380400001)(6506007)(76116006)(8936002)(26005)(33656002)(316002)(478600001)(3557205002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?eFZ5b1R4SDJrQVZIV3Y5R1FKVDVPTHEwenlMeHVWYTZwNG4vSlV3UWphVDJ3?=
+ =?gb2312?B?OGFXdXlzVGppN3hBYUVROWZWQkNITEVSN0xWdVFDY3RZUThxM2pkdGpRKzJY?=
+ =?gb2312?B?d3I5bExOQkV4Smlrb2p0alVtYnU2SU8wUG9MVEIxRkMySEtqSG93RUVILzlq?=
+ =?gb2312?B?L2ZQQU1sU1BzOFNEaE9KdTZsNFRNaEVuSng5azg1aGEzWGJWVTNvcTFVQXla?=
+ =?gb2312?B?RnBKbGU0YXZQVENvK29JbkJFQ2NWTy9jeldqTXRoOFVXRHVWWUQ5Q3plbGxU?=
+ =?gb2312?B?a0dDTmFVMHhFVjNyV25MQ1lwZ3NWN2VEUHlzTE4zcEV1UFdRUUhheHNpd3di?=
+ =?gb2312?B?NVl6VURSamk4N1BsU3ZaMHR1UjhqR2Jkd1lac0tqMk9qMFVLc2dHMXMrTGlt?=
+ =?gb2312?B?U0hxaGF5N1E5QWNabVMrS05IdWQ0VzNnUGMzZHZZQjBJSWpyby9ZV2pVOHAz?=
+ =?gb2312?B?MERrTGUyK25NNktSNjBXQkt1bFZFcEV3aG9xQ25HbDB5Qm9YVEE3dG8rMU1y?=
+ =?gb2312?B?SGd0MTZDUlZWSklJR2o2YVZVSXljdThWNisvdjRTZ3JEcVMrZ2tDeVBtOGpr?=
+ =?gb2312?B?ZmVhcVpwTlJpSlg5c1ZBSlcwYjl3NS9kalgrY0x6MDlwRm56MjRvb3pnNm1G?=
+ =?gb2312?B?d1p0aHFmcEM0YmdOZHlIR0thQkdXdzZqNExDL3VoN21JWEVmd2NLSk4zc3ox?=
+ =?gb2312?B?YzVWMlZlTVd5czUxc3ZGd3NBNG5nUlhoU0IxaXRYUWJnZ2VESCt0UEs2RjA0?=
+ =?gb2312?B?Nnk0VnJpeDRaR2tkQ3dCWlZQalNaRHFTRjNEem1qRUZTMzFCMGlFWC9VOVdn?=
+ =?gb2312?B?NnVZb1E0R1YyU1l5QnVpRnVRV2R6dlduOS9qb3ViTTRtWmd6aXlpM2dDcjEz?=
+ =?gb2312?B?Z0h1eTQyaXI1OHBoQ1JxZEtiNnJXU3RsdG52K1Z1UVpEQXRQZFpnSnBwSXQ4?=
+ =?gb2312?B?YjhUMjc3emlId3BoT2lQamFuaEc0NzJPc1UrclNhTFZ1RHU1eU9jOTdjYyt1?=
+ =?gb2312?B?eXlqNVJ6VStFOThBN0FNbk5oeFRWRTUwT25tVVdtb2gxSUZYTFBhUnAyZUM3?=
+ =?gb2312?B?WFdHaTZWdnlBMnh6T2crL0xBN3drN1hRYlRnbkpaM3dVV2pnTC9HK1BFTHlJ?=
+ =?gb2312?B?dnVZRW4xR1EvYkFKWlpLbEtYVGVGdGtROHhmWTB2SnZyVCtHd2E3eFp0ZlpH?=
+ =?gb2312?B?SjBrQUR1VXdKWEtOL0p4YjV3ZEtYVmpydGhWMUVwQ20vMk9nV0hqRjAyd1BP?=
+ =?gb2312?B?YStMZWF3RDkvWkI2bmZndDlZOWJVbGd2YmlpeUt5WDNENmRhTnpRWldkbzBn?=
+ =?gb2312?B?L0dWQXVhVHpvVUpmSm93SlE5WE5ZUHZOVEpmam1vOTNQMzgzc1laU3JhTXIr?=
+ =?gb2312?Q?SD+0zmKb4XjZ5GCoMJwUfhP2XQXBT1ak=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <010001774e62035b-a15faf51-b1a7-419d-8171-c00abd27ec0b-000000@email.amazonses.com>
-In-Reply-To: <010001774e62035b-a15faf51-b1a7-419d-8171-c00abd27ec0b-000000@email.amazonses.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 2 Feb 2021 10:17:41 +0530
-Message-ID: <CAFA6WYNVWeTcHL=DpcAz7MkLBz2YRcU4K796H1bCC+yzY6mvtw@mail.gmail.com>
-Subject: Re: [PATCH] optee: sync OP-TEE headers
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 459555ec-08b3-4fc3-d497-08d8c735b5da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 04:47:57.0377
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DwhnVH+Yrj77zJXSU7cW9Vvex2rogtq01AXNj2z9ErQA7RvlKSGoaPzjIyRjXmpR2vhhHw9lqoFHJiIxIYgUnWH5clFarsQhoRJpi2DsDWg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 at 19:13, Jens Wiklander via OP-TEE
-<op-tee@lists.trustedfirmware.org> wrote:
->
-> Pulls in updates in the internal headers from OP-TEE OS [1]. A few
-> defines has been shortened, hence the changes in rpc.c. Defines not used
-> by the driver in tee_rpc_cmd.h has been filtered out.
->
-> Note that this does not change the ABI.
->
-> Link: [1] https://github.com/OP-TEE/optee_os
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  drivers/tee/optee/optee_msg.h     | 154 ++----------------------------
->  drivers/tee/optee/optee_rpc_cmd.h | 103 ++++++++++++++++++++
->  drivers/tee/optee/optee_smc.h     |  70 +++++++++-----
->  drivers/tee/optee/rpc.c           |  39 ++++----
->  4 files changed, 178 insertions(+), 188 deletions(-)
->  create mode 100644 drivers/tee/optee/optee_rpc_cmd.h
->
-
-Looks good to me apart from the minor nit below.
-
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-
-> diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
-> index 7b2d919da2ac..7c4723b66668 100644
-> --- a/drivers/tee/optee/optee_msg.h
-> +++ b/drivers/tee/optee/optee_msg.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
->  /*
-> - * Copyright (c) 2015-2019, Linaro Limited
-> + * Copyright (c) 2015-2021, Linaro Limited
->   */
->  #ifndef _OPTEE_MSG_H
->  #define _OPTEE_MSG_H
-> @@ -12,11 +12,9 @@
->   * This file defines the OP-TEE message protocol used to communicate
->   * with an instance of OP-TEE running in secure world.
->   *
-> - * This file is divided into three sections.
-> + * This file is divided into two sections.
->   * 1. Formatting of messages.
->   * 2. Requests from normal world
-> - * 3. Requests from secure world, Remote Procedure Call (RPC), handled by
-> - *    tee-supplicant.
->   */
->
->  /*****************************************************************************
-> @@ -54,8 +52,8 @@
->   * Every entry in buffer should point to a 4k page beginning (12 least
->   * significant bits must be equal to zero).
->   *
-> - * 12 least significant bints of optee_msg_param.u.tmem.buf_ptr should hold page
-> - * offset of the user buffer.
-> + * 12 least significant bits of optee_msg_param.u.tmem.buf_ptr should hold
-> + * page offset of user buffer.
->   *
->   * So, entries should be placed like members of this structure:
->   *
-> @@ -176,17 +174,9 @@ struct optee_msg_param {
->   * @params: the parameters supplied to the OS Command
->   *
->   * All normal calls to Trusted OS uses this struct. If cmd requires further
-> - * information than what these field holds it can be passed as a parameter
-> + * information than what these fields hold it can be passed as a parameter
->   * tagged as meta (setting the OPTEE_MSG_ATTR_META bit in corresponding
-> - * attrs field). All parameters tagged as meta has to come first.
-> - *
-> - * Temp memref parameters can be fragmented if supported by the Trusted OS
-> - * (when optee_smc.h is bearer of this protocol this is indicated with
-> - * OPTEE_SMC_SEC_CAP_UNREGISTERED_SHM). If a logical memref parameter is
-> - * fragmented then has all but the last fragment the
-> - * OPTEE_MSG_ATTR_FRAGMENT bit set in attrs. Even if a memref is fragmented
-> - * it will still be presented as a single logical memref to the Trusted
-> - * Application.
-> + * attrs field). All parameters tagged as meta have to come first.
->   */
->  struct optee_msg_arg {
->         u32 cmd;
-> @@ -290,13 +280,10 @@ struct optee_msg_arg {
->   * OPTEE_MSG_CMD_REGISTER_SHM registers a shared memory reference. The
->   * information is passed as:
->   * [in] param[0].attr                  OPTEE_MSG_ATTR_TYPE_TMEM_INPUT
-> - *                                     [| OPTEE_MSG_ATTR_FRAGMENT]
-> + *                                     [| OPTEE_MSG_ATTR_NONCONTIG]
->   * [in] param[0].u.tmem.buf_ptr                physical address (of first fragment)
->   * [in] param[0].u.tmem.size           size (of first fragment)
->   * [in] param[0].u.tmem.shm_ref                holds shared memory reference
-> - * ...
-> - * The shared memory can optionally be fragmented, temp memrefs can follow
-> - * each other with all but the last with the OPTEE_MSG_ATTR_FRAGMENT bit set.
->   *
->   * OPTEE_MSG_CMD_UNREGISTER_SHM unregisteres a previously registered shared
-
-nit: since you are touching this file, s/unregisteres/unregisters/
-
--Sumit
-
->   * memory reference. The information is passed as:
-> @@ -313,131 +300,4 @@ struct optee_msg_arg {
->  #define OPTEE_MSG_CMD_UNREGISTER_SHM   5
->  #define OPTEE_MSG_FUNCID_CALL_WITH_ARG 0x0004
->
-> -/*****************************************************************************
-> - * Part 3 - Requests from secure world, RPC
-> - *****************************************************************************/
-> -
-> -/*
-> - * All RPC is done with a struct optee_msg_arg as bearer of information,
-> - * struct optee_msg_arg::arg holds values defined by OPTEE_MSG_RPC_CMD_* below
-> - *
-> - * RPC communication with tee-supplicant is reversed compared to normal
-> - * client communication desribed above. The supplicant receives requests
-> - * and sends responses.
-> - */
-> -
-> -/*
-> - * Load a TA into memory, defined in tee-supplicant
-> - */
-> -#define OPTEE_MSG_RPC_CMD_LOAD_TA      0
-> -
-> -/*
-> - * Reserved
-> - */
-> -#define OPTEE_MSG_RPC_CMD_RPMB         1
-> -
-> -/*
-> - * File system access, defined in tee-supplicant
-> - */
-> -#define OPTEE_MSG_RPC_CMD_FS           2
-> -
-> -/*
-> - * Get time
-> - *
-> - * Returns number of seconds and nano seconds since the Epoch,
-> - * 1970-01-01 00:00:00 +0000 (UTC).
-> - *
-> - * [out] param[0].u.value.a    Number of seconds
-> - * [out] param[0].u.value.b    Number of nano seconds.
-> - */
-> -#define OPTEE_MSG_RPC_CMD_GET_TIME     3
-> -
-> -/*
-> - * Wait queue primitive, helper for secure world to implement a wait queue.
-> - *
-> - * If secure world need to wait for a secure world mutex it issues a sleep
-> - * request instead of spinning in secure world. Conversely is a wakeup
-> - * request issued when a secure world mutex with a thread waiting thread is
-> - * unlocked.
-> - *
-> - * Waiting on a key
-> - * [in] param[0].u.value.a OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP
-> - * [in] param[0].u.value.b wait key
-> - *
-> - * Waking up a key
-> - * [in] param[0].u.value.a OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP
-> - * [in] param[0].u.value.b wakeup key
-> - */
-> -#define OPTEE_MSG_RPC_CMD_WAIT_QUEUE   4
-> -#define OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP 0
-> -#define OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP        1
-> -
-> -/*
-> - * Suspend execution
-> - *
-> - * [in] param[0].value .a number of milliseconds to suspend
-> - */
-> -#define OPTEE_MSG_RPC_CMD_SUSPEND      5
-> -
-> -/*
-> - * Allocate a piece of shared memory
-> - *
-> - * Shared memory can optionally be fragmented, to support that additional
-> - * spare param entries are allocated to make room for eventual fragments.
-> - * The spare param entries has .attr = OPTEE_MSG_ATTR_TYPE_NONE when
-> - * unused. All returned temp memrefs except the last should have the
-> - * OPTEE_MSG_ATTR_FRAGMENT bit set in the attr field.
-> - *
-> - * [in]  param[0].u.value.a            type of memory one of
-> - *                                     OPTEE_MSG_RPC_SHM_TYPE_* below
-> - * [in]  param[0].u.value.b            requested size
-> - * [in]  param[0].u.value.c            required alignment
-> - *
-> - * [out] param[0].u.tmem.buf_ptr       physical address (of first fragment)
-> - * [out] param[0].u.tmem.size          size (of first fragment)
-> - * [out] param[0].u.tmem.shm_ref       shared memory reference
-> - * ...
-> - * [out] param[n].u.tmem.buf_ptr       physical address
-> - * [out] param[n].u.tmem.size          size
-> - * [out] param[n].u.tmem.shm_ref       shared memory reference (same value
-> - *                                     as in param[n-1].u.tmem.shm_ref)
-> - */
-> -#define OPTEE_MSG_RPC_CMD_SHM_ALLOC    6
-> -/* Memory that can be shared with a non-secure user space application */
-> -#define OPTEE_MSG_RPC_SHM_TYPE_APPL    0
-> -/* Memory only shared with non-secure kernel */
-> -#define OPTEE_MSG_RPC_SHM_TYPE_KERNEL  1
-> -
-> -/*
-> - * Free shared memory previously allocated with OPTEE_MSG_RPC_CMD_SHM_ALLOC
-> - *
-> - * [in]  param[0].u.value.a            type of memory one of
-> - *                                     OPTEE_MSG_RPC_SHM_TYPE_* above
-> - * [in]  param[0].u.value.b            value of shared memory reference
-> - *                                     returned in param[0].u.tmem.shm_ref
-> - *                                     above
-> - */
-> -#define OPTEE_MSG_RPC_CMD_SHM_FREE     7
-> -
-> -/*
-> - * Access a device on an i2c bus
-> - *
-> - * [in]  param[0].u.value.a            mode: RD(0), WR(1)
-> - * [in]  param[0].u.value.b            i2c adapter
-> - * [in]  param[0].u.value.c            i2c chip
-> - *
-> - * [in]  param[1].u.value.a            i2c control flags
-> - *
-> - * [in/out] memref[2]                  buffer to exchange the transfer data
-> - *                                     with the secure world
-> - *
-> - * [out]  param[3].u.value.a           bytes transferred by the driver
-> - */
-> -#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
-> -/* I2C master transfer modes */
-> -#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
-> -#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
-> -/* I2C master control flags */
-> -#define OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT  BIT(0)
-> -
->  #endif /* _OPTEE_MSG_H */
-> diff --git a/drivers/tee/optee/optee_rpc_cmd.h b/drivers/tee/optee/optee_rpc_cmd.h
-> new file mode 100644
-> index 000000000000..b8275140cef8
-> --- /dev/null
-> +++ b/drivers/tee/optee/optee_rpc_cmd.h
-> @@ -0,0 +1,103 @@
-> +/* SPDX-License-Identifier: BSD-2-Clause */
-> +/*
-> + * Copyright (c) 2016-2021, Linaro Limited
-> + */
-> +
-> +#ifndef __OPTEE_RPC_CMD_H
-> +#define __OPTEE_RPC_CMD_H
-> +
-> +/*
-> + * All RPC is done with a struct optee_msg_arg as bearer of information,
-> + * struct optee_msg_arg::arg holds values defined by OPTEE_RPC_CMD_* below.
-> + * Only the commands handled by the kernel driver are defined here.
-> + *
-> + * RPC communication with tee-supplicant is reversed compared to normal
-> + * client communication described above. The supplicant receives requests
-> + * and sends responses.
-> + */
-> +
-> +/*
-> + * Get time
-> + *
-> + * Returns number of seconds and nano seconds since the Epoch,
-> + * 1970-01-01 00:00:00 +0000 (UTC).
-> + *
-> + * [out]    value[0].a     Number of seconds
-> + * [out]    value[0].b     Number of nano seconds.
-> + */
-> +#define OPTEE_RPC_CMD_GET_TIME         3
-> +
-> +/*
-> + * Wait queue primitive, helper for secure world to implement a wait queue.
-> + *
-> + * If secure world needs to wait for a secure world mutex it issues a sleep
-> + * request instead of spinning in secure world. Conversely is a wakeup
-> + * request issued when a secure world mutex with a thread waiting thread is
-> + * unlocked.
-> + *
-> + * Waiting on a key
-> + * [in]    value[0].a      OPTEE_RPC_WAIT_QUEUE_SLEEP
-> + * [in]    value[0].b      Wait key
-> + *
-> + * Waking up a key
-> + * [in]    value[0].a      OPTEE_RPC_WAIT_QUEUE_WAKEUP
-> + * [in]    value[0].b      Wakeup key
-> + */
-> +#define OPTEE_RPC_CMD_WAIT_QUEUE       4
-> +#define OPTEE_RPC_WAIT_QUEUE_SLEEP     0
-> +#define OPTEE_RPC_WAIT_QUEUE_WAKEUP    1
-> +
-> +/*
-> + * Suspend execution
-> + *
-> + * [in]    value[0].a  Number of milliseconds to suspend
-> + */
-> +#define OPTEE_RPC_CMD_SUSPEND          5
-> +
-> +/*
-> + * Allocate a piece of shared memory
-> + *
-> + * [in]    value[0].a      Type of memory one of
-> + *                         OPTEE_RPC_SHM_TYPE_* below
-> + * [in]    value[0].b      Requested size
-> + * [in]    value[0].c      Required alignment
-> + * [out]   memref[0]       Buffer
-> + */
-> +#define OPTEE_RPC_CMD_SHM_ALLOC                6
-> +/* Memory that can be shared with a non-secure user space application */
-> +#define OPTEE_RPC_SHM_TYPE_APPL                0
-> +/* Memory only shared with non-secure kernel */
-> +#define OPTEE_RPC_SHM_TYPE_KERNEL      1
-> +
-> +/*
-> + * Free shared memory previously allocated with OPTEE_RPC_CMD_SHM_ALLOC
-> + *
-> + * [in]     value[0].a     Type of memory one of
-> + *                         OPTEE_RPC_SHM_TYPE_* above
-> + * [in]     value[0].b     Value of shared memory reference or cookie
-> + */
-> +#define OPTEE_RPC_CMD_SHM_FREE         7
-> +
-> +/*
-> + * Issue master requests (read and write operations) to an I2C chip.
-> + *
-> + * [in]     value[0].a     Transfer mode (OPTEE_RPC_I2C_TRANSFER_*)
-> + * [in]     value[0].b     The I2C bus (a.k.a adapter).
-> + *                             16 bit field.
-> + * [in]     value[0].c     The I2C chip (a.k.a address).
-> + *                             16 bit field (either 7 or 10 bit effective).
-> + * [in]     value[1].a     The I2C master control flags (ie, 10 bit address).
-> + *                             16 bit field.
-> + * [in/out] memref[2]      Buffer used for data transfers.
-> + * [out]    value[3].a     Number of bytes transferred by the REE.
-> + */
-> +#define OPTEE_RPC_CMD_I2C_TRANSFER     21
-> +
-> +/* I2C master transfer modes */
-> +#define OPTEE_RPC_I2C_TRANSFER_RD      0
-> +#define OPTEE_RPC_I2C_TRANSFER_WR      1
-> +
-> +/* I2C master control flags */
-> +#define OPTEE_RPC_I2C_FLAGS_TEN_BIT    BIT(0)
-> +
-> +#endif /*__OPTEE_RPC_CMD_H*/
-> diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
-> index 777ad54d4c2c..821e1c30c150 100644
-> --- a/drivers/tee/optee/optee_smc.h
-> +++ b/drivers/tee/optee/optee_smc.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
->  /*
-> - * Copyright (c) 2015-2019, Linaro Limited
-> + * Copyright (c) 2015-2021, Linaro Limited
->   */
->  #ifndef OPTEE_SMC_H
->  #define OPTEE_SMC_H
-> @@ -39,10 +39,10 @@
->  /*
->   * Function specified by SMC Calling convention
->   *
-> - * Return one of the following UIDs if using API specified in this file
-> - * without further extentions:
-> - * 65cb6b93-af0c-4617-8ed6-644a8d1140f8
-> - * see also OPTEE_SMC_UID_* in optee_msg.h
-> + * Return the following UID if using API specified in this file
-> + * without further extensions:
-> + * 384fb3e0-e7f8-11e3-af63-0002a5d5c51b.
-> + * see also OPTEE_MSG_UID_* in optee_msg.h
->   */
->  #define OPTEE_SMC_FUNCID_CALLS_UID OPTEE_MSG_FUNCID_CALLS_UID
->  #define OPTEE_SMC_CALLS_UID \
-> @@ -53,7 +53,7 @@
->  /*
->   * Function specified by SMC Calling convention
->   *
-> - * Returns 2.0 if using API specified in this file without further extentions.
-> + * Returns 2.0 if using API specified in this file without further extensions.
->   * see also OPTEE_MSG_REVISION_* in optee_msg.h
->   */
->  #define OPTEE_SMC_FUNCID_CALLS_REVISION OPTEE_MSG_FUNCID_CALLS_REVISION
-> @@ -109,8 +109,8 @@ struct optee_smc_call_get_os_revision_result {
->   *
->   * Call register usage:
->   * a0  SMC Function ID, OPTEE_SMC*CALL_WITH_ARG
-> - * a1  Upper 32bit of a 64bit physical pointer to a struct optee_msg_arg
-> - * a2  Lower 32bit of a 64bit physical pointer to a struct optee_msg_arg
-> + * a1  Upper 32 bits of a 64-bit physical pointer to a struct optee_msg_arg
-> + * a2  Lower 32 bits of a 64-bit physical pointer to a struct optee_msg_arg
->   * a3  Cache settings, not used if physical pointer is in a predefined shared
->   *     memory area else per OPTEE_SMC_SHM_*
->   * a4-6        Not used
-> @@ -214,8 +214,9 @@ struct optee_smc_get_shm_config_result {
->   * secure world accepts command buffers located in any parts of non-secure RAM
->   */
->  #define OPTEE_SMC_SEC_CAP_DYNAMIC_SHM          BIT(2)
-> -
-> -/* Secure world supports Shared Memory with a NULL buffer reference */
-> +/* Secure world is built with virtualization support */
-> +#define OPTEE_SMC_SEC_CAP_VIRTUALIZATION       BIT(3)
-> +/* Secure world supports Shared Memory with a NULL reference */
->  #define OPTEE_SMC_SEC_CAP_MEMREF_NULL          BIT(4)
->
->  #define OPTEE_SMC_FUNCID_EXCHANGE_CAPABILITIES 9
-> @@ -245,8 +246,8 @@ struct optee_smc_exchange_capabilities_result {
->   *
->   * Normal return register usage:
->   * a0  OPTEE_SMC_RETURN_OK
-> - * a1  Upper 32bit of a 64bit Shared memory cookie
-> - * a2  Lower 32bit of a 64bit Shared memory cookie
-> + * a1  Upper 32 bits of a 64-bit Shared memory cookie
-> + * a2  Lower 32 bits of a 64-bit Shared memory cookie
->   * a3-7        Preserved
->   *
->   * Cache empty return register usage:
-> @@ -293,6 +294,31 @@ struct optee_smc_disable_shm_cache_result {
->  #define OPTEE_SMC_ENABLE_SHM_CACHE \
->         OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_ENABLE_SHM_CACHE)
->
-> +/*
-> + * Query OP-TEE about number of supported threads
-> + *
-> + * Normal World OS or Hypervisor issues this call to find out how many
-> + * threads OP-TEE supports. That is how many standard calls can be issued
-> + * in parallel before OP-TEE will return OPTEE_SMC_RETURN_ETHREAD_LIMIT.
-> + *
-> + * Call requests usage:
-> + * a0  SMC Function ID, OPTEE_SMC_GET_THREAD_COUNT
-> + * a1-6 Not used
-> + * a7  Hypervisor Client ID register
-> + *
-> + * Normal return register usage:
-> + * a0  OPTEE_SMC_RETURN_OK
-> + * a1  Number of threads
-> + * a2-7 Preserved
-> + *
-> + * Error return:
-> + * a0  OPTEE_SMC_RETURN_UNKNOWN_FUNCTION   Requested call is not implemented
-> + * a1-7        Preserved
-> + */
-> +#define OPTEE_SMC_FUNCID_GET_THREAD_COUNT      15
-> +#define OPTEE_SMC_GET_THREAD_COUNT \
-> +       OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_GET_THREAD_COUNT)
-> +
->  /*
->   * Resume from RPC (for example after processing a foreign interrupt)
->   *
-> @@ -341,16 +367,16 @@ struct optee_smc_disable_shm_cache_result {
->   *
->   * "Return" register usage:
->   * a0  SMC Function ID, OPTEE_SMC_CALL_RETURN_FROM_RPC.
-> - * a1  Upper 32bits of 64bit physical pointer to allocated
-> + * a1  Upper 32 bits of 64-bit physical pointer to allocated
->   *     memory, (a1 == 0 && a2 == 0) if size was 0 or if memory can't
->   *     be allocated.
-> - * a2  Lower 32bits of 64bit physical pointer to allocated
-> + * a2  Lower 32 bits of 64-bit physical pointer to allocated
->   *     memory, (a1 == 0 && a2 == 0) if size was 0 or if memory can't
->   *     be allocated
->   * a3  Preserved
-> - * a4  Upper 32bits of 64bit Shared memory cookie used when freeing
-> + * a4  Upper 32 bits of 64-bit Shared memory cookie used when freeing
->   *     the memory or doing an RPC
-> - * a5  Lower 32bits of 64bit Shared memory cookie used when freeing
-> + * a5  Lower 32 bits of 64-bit Shared memory cookie used when freeing
->   *     the memory or doing an RPC
->   * a6-7        Preserved
->   */
-> @@ -363,9 +389,9 @@ struct optee_smc_disable_shm_cache_result {
->   *
->   * "Call" register usage:
->   * a0  This value, OPTEE_SMC_RETURN_RPC_FREE
-> - * a1  Upper 32bits of 64bit shared memory cookie belonging to this
-> + * a1  Upper 32 bits of 64-bit shared memory cookie belonging to this
->   *     argument memory
-> - * a2  Lower 32bits of 64bit shared memory cookie belonging to this
-> + * a2  Lower 32 bits of 64-bit shared memory cookie belonging to this
->   *     argument memory
->   * a3-7        Resume information, must be preserved
->   *
-> @@ -379,7 +405,7 @@ struct optee_smc_disable_shm_cache_result {
->         OPTEE_SMC_RPC_VAL(OPTEE_SMC_RPC_FUNC_FREE)
->
->  /*
-> - * Deliver foreign interrupt to normal world.
-> + * Deliver a foreign interrupt in normal world.
->   *
->   * "Call" register usage:
->   * a0  OPTEE_SMC_RETURN_RPC_FOREIGN_INTR
-> @@ -389,7 +415,7 @@ struct optee_smc_disable_shm_cache_result {
->   * a0  SMC Function ID, OPTEE_SMC_CALL_RETURN_FROM_RPC.
->   * a1-7        Preserved
->   */
-> -#define OPTEE_SMC_RPC_FUNC_FOREIGN_INTR                4
-> +#define OPTEE_SMC_RPC_FUNC_FOREIGN_INTR        4
->  #define OPTEE_SMC_RETURN_RPC_FOREIGN_INTR \
->         OPTEE_SMC_RPC_VAL(OPTEE_SMC_RPC_FUNC_FOREIGN_INTR)
->
-> @@ -405,10 +431,10 @@ struct optee_smc_disable_shm_cache_result {
->   *
->   * "Call" register usage:
->   * a0  OPTEE_SMC_RETURN_RPC_CMD
-> - * a1  Upper 32bit of a 64bit Shared memory cookie holding a
-> + * a1  Upper 32 bits of a 64-bit Shared memory cookie holding a
->   *     struct optee_msg_arg, must be preserved, only the data should
->   *     be updated
-> - * a2  Lower 32bit of a 64bit Shared memory cookie holding a
-> + * a2  Lower 32 bits of a 64-bit Shared memory cookie holding a
->   *     struct optee_msg_arg, must be preserved, only the data should
->   *     be updated
->   * a3-7        Resume information, must be preserved
-> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> index 1e3614e4798f..a0c30b664e53 100644
-> --- a/drivers/tee/optee/rpc.c
-> +++ b/drivers/tee/optee/rpc.c
-> @@ -12,6 +12,7 @@
->  #include <linux/tee_drv.h>
->  #include "optee_private.h"
->  #include "optee_smc.h"
-> +#include "optee_rpc_cmd.h"
->
->  struct wq_entry {
->         struct list_head link;
-> @@ -89,7 +90,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->         if (!client.adapter)
->                 goto bad;
->
-> -       if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
-> +       if (params[1].u.value.a & OPTEE_RPC_I2C_FLAGS_TEN_BIT) {
->                 if (!i2c_check_functionality(client.adapter,
->                                              I2C_FUNC_10BIT_ADDR)) {
->                         i2c_put_adapter(client.adapter);
-> @@ -103,11 +104,11 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->         snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
->
->         switch (params[0].u.value.a) {
-> -       case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> +       case OPTEE_RPC_I2C_TRANSFER_RD:
->                 ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
->                                       params[2].u.memref.size);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-> +       case OPTEE_RPC_I2C_TRANSFER_WR:
->                 ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
->                                       params[2].u.memref.size);
->                 break;
-> @@ -194,10 +195,10 @@ static void handle_rpc_func_cmd_wq(struct optee *optee,
->                 goto bad;
->
->         switch (arg->params[0].u.value.a) {
-> -       case OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP:
-> +       case OPTEE_RPC_WAIT_QUEUE_SLEEP:
->                 wq_sleep(&optee->wait_queue, arg->params[0].u.value.b);
->                 break;
-> -       case OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP:
-> +       case OPTEE_RPC_WAIT_QUEUE_WAKEUP:
->                 wq_wakeup(&optee->wait_queue, arg->params[0].u.value.b);
->                 break;
->         default:
-> @@ -267,11 +268,11 @@ static struct tee_shm *cmd_alloc_suppl(struct tee_context *ctx, size_t sz)
->         struct tee_shm *shm;
->
->         param.attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
-> -       param.u.value.a = OPTEE_MSG_RPC_SHM_TYPE_APPL;
-> +       param.u.value.a = OPTEE_RPC_SHM_TYPE_APPL;
->         param.u.value.b = sz;
->         param.u.value.c = 0;
->
-> -       ret = optee_supp_thrd_req(ctx, OPTEE_MSG_RPC_CMD_SHM_ALLOC, 1, &param);
-> +       ret = optee_supp_thrd_req(ctx, OPTEE_RPC_CMD_SHM_ALLOC, 1, &param);
->         if (ret)
->                 return ERR_PTR(-ENOMEM);
->
-> @@ -308,10 +309,10 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
->
->         sz = arg->params[0].u.value.b;
->         switch (arg->params[0].u.value.a) {
-> -       case OPTEE_MSG_RPC_SHM_TYPE_APPL:
-> +       case OPTEE_RPC_SHM_TYPE_APPL:
->                 shm = cmd_alloc_suppl(ctx, sz);
->                 break;
-> -       case OPTEE_MSG_RPC_SHM_TYPE_KERNEL:
-> +       case OPTEE_RPC_SHM_TYPE_KERNEL:
->                 shm = tee_shm_alloc(ctx, sz, TEE_SHM_MAPPED);
->                 break;
->         default:
-> @@ -383,7 +384,7 @@ static void cmd_free_suppl(struct tee_context *ctx, struct tee_shm *shm)
->         struct tee_param param;
->
->         param.attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
-> -       param.u.value.a = OPTEE_MSG_RPC_SHM_TYPE_APPL;
-> +       param.u.value.a = OPTEE_RPC_SHM_TYPE_APPL;
->         param.u.value.b = tee_shm_get_id(shm);
->         param.u.value.c = 0;
->
-> @@ -400,7 +401,7 @@ static void cmd_free_suppl(struct tee_context *ctx, struct tee_shm *shm)
->          */
->         tee_shm_put(shm);
->
-> -       optee_supp_thrd_req(ctx, OPTEE_MSG_RPC_CMD_SHM_FREE, 1, &param);
-> +       optee_supp_thrd_req(ctx, OPTEE_RPC_CMD_SHM_FREE, 1, &param);
->  }
->
->  static void handle_rpc_func_cmd_shm_free(struct tee_context *ctx,
-> @@ -418,10 +419,10 @@ static void handle_rpc_func_cmd_shm_free(struct tee_context *ctx,
->
->         shm = (struct tee_shm *)(unsigned long)arg->params[0].u.value.b;
->         switch (arg->params[0].u.value.a) {
-> -       case OPTEE_MSG_RPC_SHM_TYPE_APPL:
-> +       case OPTEE_RPC_SHM_TYPE_APPL:
->                 cmd_free_suppl(ctx, shm);
->                 break;
-> -       case OPTEE_MSG_RPC_SHM_TYPE_KERNEL:
-> +       case OPTEE_RPC_SHM_TYPE_KERNEL:
->                 tee_shm_free(shm);
->                 break;
->         default:
-> @@ -458,23 +459,23 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
->         }
->
->         switch (arg->cmd) {
-> -       case OPTEE_MSG_RPC_CMD_GET_TIME:
-> +       case OPTEE_RPC_CMD_GET_TIME:
->                 handle_rpc_func_cmd_get_time(arg);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_WAIT_QUEUE:
-> +       case OPTEE_RPC_CMD_WAIT_QUEUE:
->                 handle_rpc_func_cmd_wq(optee, arg);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_SUSPEND:
-> +       case OPTEE_RPC_CMD_SUSPEND:
->                 handle_rpc_func_cmd_wait(arg);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_SHM_ALLOC:
-> +       case OPTEE_RPC_CMD_SHM_ALLOC:
->                 free_pages_list(call_ctx);
->                 handle_rpc_func_cmd_shm_alloc(ctx, arg, call_ctx);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_SHM_FREE:
-> +       case OPTEE_RPC_CMD_SHM_FREE:
->                 handle_rpc_func_cmd_shm_free(ctx, arg);
->                 break;
-> -       case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
-> +       case OPTEE_RPC_CMD_I2C_TRANSFER:
->                 handle_rpc_func_cmd_i2c_transfer(ctx, arg);
->                 break;
->         default:
-> --
-> 2.25.1
->
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogVWxhZHpp
+c2xhdSBSZXpraSA8dXJlemtpQGdtYWlsLmNvbT4Kt6LLzcqxvOQ6IDIwMjHE6jLUwjLI1SAzOjU3
+CsrVvP7IyzogWmhhbmcsIFFpYW5nCrOty806IHVyZXpraUBnbWFpbC5jb207IHBhdWxtY2tAa2Vy
+bmVsLm9yZzsgam9lbEBqb2VsZmVybmFuZGVzLm9yZzsgcmN1QHZnZXIua2VybmVsLm9yZzsgbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZwrW98ziOiBSZTogW1BBVENIIHYzXSBrdmZyZWVfcmN1
+OiBSZWxlYXNlIHBhZ2UgY2FjaGUgdW5kZXIgbWVtb3J5IHByZXNzdXJlCgpbUGxlYXNlIG5vdGU6
+IFRoaXMgZS1tYWlsIGlzIGZyb20gYW4gRVhURVJOQUwgZS1tYWlsIGFkZHJlc3NdCgpIZWxsbywg
+WnFpYW5nLgoKPiBGcm9tOiBacWlhbmcgPHFpYW5nLnpoYW5nQHdpbmRyaXZlci5jb20+Cj4KPiBB
+ZGQgZnJlZSBwZXItY3B1IGV4aXN0aW5nIGtyY3AncyBwYWdlIGNhY2hlIG9wZXJhdGlvbiwgd2hl
+bgo+IHRoZSBzeXN0ZW0gaXMgdW5kZXIgbWVtb3J5IHByZXNzdXJlLgo+Cj4gU2lnbmVkLW9mZi1i
+eTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+IC0tLQo+ICBrZXJuZWwvcmN1
+L3RyZWUuYyB8IDI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2Vk
+LCAyNiBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9r
+ZXJuZWwvcmN1L3RyZWUuYwo+IGluZGV4IGMxYWUxZTUyZjYzOC4uNjQ0YjBmM2M3YjlmIDEwMDY0
+NAo+IC0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jCj4gKysrIGIva2VybmVsL3JjdS90cmVlLmMKPiBA
+QCAtMzU3MSwxNyArMzU3MSw0MSBAQCB2b2lkIGt2ZnJlZV9jYWxsX3JjdShzdHJ1Y3QgcmN1X2hl
+YWQgKmhlYWQsIHJjdV9jYWxsYmFja190IGZ1bmMpCj4gIH0KPiAgRVhQT1JUX1NZTUJPTF9HUEwo
+a3ZmcmVlX2NhbGxfcmN1KTsKPgo+ICtzdGF0aWMgaW50IGZyZWVfa3JjX3BhZ2VfY2FjaGUoc3Ry
+dWN0IGtmcmVlX3JjdV9jcHUgKmtyY3ApCj4gK3sKPiArICAgICB1bnNpZ25lZCBsb25nIGZsYWdz
+Owo+ICsgICAgIHN0cnVjdCBsbGlzdF9ub2RlICpwYWdlX2xpc3QsICpwb3MsICpuOwo+ICsgICAg
+IGludCBmcmVlZCA9IDA7Cj4gKwo+ICsgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZSgma3JjcC0+
+bG9jaywgZmxhZ3MpOwo+ICsgICAgIHBhZ2VfbGlzdCA9IGxsaXN0X2RlbF9hbGwoJmtyY3AtPmJr
+dmNhY2hlKTsKPiArICAgICBrcmNwLT5ucl9ia3Zfb2JqcyA9IDA7Cj4gKyAgICAgcmF3X3NwaW5f
+dW5sb2NrX2lycXJlc3RvcmUoJmtyY3AtPmxvY2ssIGZsYWdzKTsKPiArCj4gKyAgICAgbGxpc3Rf
+Zm9yX2VhY2hfc2FmZShwb3MsIG4sIHBhZ2VfbGlzdCkgewo+ICsgICAgICAgICAgICAgZnJlZV9w
+YWdlKCh1bnNpZ25lZCBsb25nKXBvcyk7Cj4gKyAgICAgICAgICAgICBmcmVlZCsrOwo+ICsgICAg
+IH0KPiArCj4gKyAgICAgcmV0dXJuIGZyZWVkOwo+ICt9Cj4gKwo+ICBzdGF0aWMgdW5zaWduZWQg
+bG9uZwo+ICBrZnJlZV9yY3Vfc2hyaW5rX2NvdW50KHN0cnVjdCBzaHJpbmtlciAqc2hyaW5rLCBz
+dHJ1Y3Qgc2hyaW5rX2NvbnRyb2wgKnNjKQo+ICB7Cj4gICAgICAgaW50IGNwdTsKPiAgICAgICB1
+bnNpZ25lZCBsb25nIGNvdW50ID0gMDsKPiArICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+Cj4g
+ICAgICAgLyogU25hcHNob3QgY291bnQgb2YgYWxsIENQVXMgKi8KPiAgICAgICBmb3JfZWFjaF9w
+b3NzaWJsZV9jcHUoY3B1KSB7Cj4gICAgICAgICAgICAgICBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAq
+a3JjcCA9IHBlcl9jcHVfcHRyKCZrcmMsIGNwdSk7Cj4KPiAgICAgICAgICAgICAgIGNvdW50ICs9
+IFJFQURfT05DRShrcmNwLT5jb3VudCk7Cj4gKwo+ICsgICAgICAgICAgICAgcmF3X3NwaW5fbG9j
+a19pcnFzYXZlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gKyAgICAgICAgICAgICBjb3VudCArPSBr
+cmNwLT5ucl9ia3Zfb2JqczsKPiArICAgICAgICAgICAgIHJhd19zcGluX3VubG9ja19pcnFyZXN0
+b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gICAgICAgfQo+Cj4gICAgICAgcmV0dXJuIGNvdW50
+Owo+IEBAIC0zNTk4LDYgKzM2MjIsOCBAQCBrZnJlZV9yY3Vfc2hyaW5rX3NjYW4oc3RydWN0IHNo
+cmlua2VyICpzaHJpbmssIHN0cnVjdCBzaHJpbmtfY29udHJvbCAqc2MpCj4gICAgICAgICAgICAg
+ICBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAqa3JjcCA9IHBlcl9jcHVfcHRyKCZrcmMsIGNwdSk7Cj4K
+PiAgICAgICAgICAgICAgIGNvdW50ID0ga3JjcC0+Y291bnQ7Cj4gKyAgICAgICAgICAgICBjb3Vu
+dCArPSBmcmVlX2tyY19wYWdlX2NhY2hlKGtyY3ApOwo+ICsKPiAgICAgICAgICAgICAgIHJhd19z
+cGluX2xvY2tfaXJxc2F2ZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICAgICAgICAgICAgICAgaWYg
+KGtyY3AtPm1vbml0b3JfdG9kbykKPiAgICAgICAgICAgICAgICAgICAgICAga2ZyZWVfcmN1X2Ry
+YWluX3VubG9jayhrcmNwLCBmbGFncyk7Cj4gLS0KPiAyLjE3LjEKPj4KPlRoYW5rIHlvdSBmb3Ig
+eW91ciBwYXRjaCEKPgo+SSBzcGVudCBzb21lIHRpbWUgdG8gc2VlIGhvdyB0aGUgcGF0Y2ggYmVo
+YXZlcyB1bmRlciBsb3cgbWVtb3J5IGNvbmRpdGlvbi4KPlRvIHNpbXVsYXRlIGl0LCBpIHVzZWQg
+InJjdXNjYWxlIiB0b29sIHdpdGggYmVsb3cgcGFyYW1ldGVyczoKPgo+Li4vcmN1dG9ydHVyZS9i
+aW4va3ZtLnNoIC0tdG9ydHVyZSByY3VzY2FsZSAtLWFsbGNwdXMgLS1kdXJhdGlvbiAxMCAtLWtj
+b25maWcgPkNPTkZJR19OUl9DUFVTPTY0IFwKPi0tYm9vdGFyZ3MgInJjdXNjYWxlLmtmcmVlX3Jj
+dV90ZXN0PTEgcmN1c2NhbGUua2ZyZWVfbnRocmVhZHM9MTYgPnJjdXNjYWxlLmhvbGRvZmY9MjAg
+cmN1c2NhbGUua2ZyZWVfbG9vcHM9MTAwMDAgXAo+dG9ydHVyZS5kaXNhYmxlX29ub2ZmX2F0X2Jv
+b3QiIC0tdHJ1c3QtbWFrZQo+Cj42NCBDUFVzICsgNTEyIE1CIG9mIG1lbW9yeS4gSW4gZ2VuZXJh
+bCwgbXkgdGVzdCBzeXN0ZW0gd2FzIHJ1bm5pbmcgb24gZWRnZQo+aGl0dGluZyBhbiBvdXQgb2Yg
+bWVtb3J5IHNvbWV0aW1lcywgYnV0IGNvdWxkIGJlIGNvbnNpZGVyZWQgYXMgc3RhYmxlIGluCj5y
+ZWdhcmRzIHRvIGEgdGVzdCBjb21wbGV0aW9uIGFuZCB0YWtlbiB0aW1lLCBzbyBib3RoIHdlcmUg
+cHJldHR5IHNvbGlkLgo+Cj5Zb3UgY2FuIGZpbmQgYSBjb21wYXJpc29uIG9uIGEgcGxvdCwgdGhh
+dCBjYW4gYmUgZG93bmxvYWRlZCBmb2xsb3dpbmcKPmEgbGluazogd2dldCA+ZnRwOi8vdnBzNDE4
+MzAxLm92aC5uZXQvaW5jb21pbmcvcmVsZWFzZV9wYWdlX2NhY2hlX3VuZGVyX2xvd19tZW1vcnku
+cG5nCj4KPkluIHNob3J0LCBpIHNlZSB0aGF0IGEgcGF0Y2hlZCB2ZXJzaW9uIGNhbiBsZWFkIHRv
+IGxvbmdlciB0ZXN0IGNvbXBsZXRpb24sCj53aGVyZWFzIHRoZSBkZWZhdWx0IHZhcmlhbnQgaXMg
+c3RhYmxlIG9uIGFsbW9zdCBhbGwgcnVucy4gQWZ0ZXIgc29tZSBhbmFseXNpcwo+YW5kIGZ1cnRo
+ZXIgZGlnZ2luZyBpIGNhbWUgdG8gY29uY2x1c2lvbiB0aGF0IGEgc2hyaW5rZXIgZnJlZV9rcmNf
+cGFnZV9jYWNoZSgpCj5jb25jdXJzIHdpdGggcnVuX3BhZ2VfY2FjaGVfd29ya2VyKGtyY3ApIHJ1
+bm5pbmcgZnJvbSBrdmZyZWVfcmN1KCkgY29udGV4dC4KPgo+aS5lLiBEdXJpbmcgdGhlIHRlc3Qg
+YSBwYWdlIHNocmlua2VyIGlzIHByZXR0eSBhY3RpdmUsIGJlY2F1c2Ugb2YgbG93IG1lbW9yeQo+
+Y29uZGl0aW9uLiBPdXIgY2FsbGJhY2sgZHJhaW5zIGl0IHdoZXJlYXMga3ZmcmVlX3JjdSgpIHBh
+cnQgcmVmaWxsIGl0IHJpZ2h0Cj5hd2F5IG1ha2luZyBraW5kIG9mIHZpY2lvdXMgY2lyY2xlLgo+
+Cj5TbywgYSBydW5fcGFnZV9jYWNoZV93b3JrZXIoKSBzaG91bGQgYmUgYmFja29mZiBmb3Igc29t
+ZSB0aW1lIHdoZW4gYSBzeXN0ZW0KPnJ1bnMgaW50byBhIGxvdyBtZW1vcnkgY29uZGl0aW9uIG9y
+IGhpZ2ggcHJlc3N1cmU6Cj4KPmRpZmYgLS1naXQgYS9rZXJuZWwvcmN1L3RyZWUuYyBiL2tlcm5l
+bC9yY3UvdHJlZS5jCj5pbmRleCA3MDc3ZDczZmNiNTMuLjQ0NjcyM2I5NjQ2YiAxMDA2NDQKPi0t
+LSBhL2tlcm5lbC9yY3UvdHJlZS5jCj4rKysgYi9rZXJuZWwvcmN1L3RyZWUuYwo+QEAgLTMxNjMs
+NyArMzE2Myw3IEBAIHN0cnVjdCBrZnJlZV9yY3VfY3B1IHsKPiAgICAgICAgYm9vbCBpbml0aWFs
+aXplZDsKPiAgICAgICAgaW50IGNvdW50Owo+Cj4tICAgICAgIHN0cnVjdCB3b3JrX3N0cnVjdCBw
+YWdlX2NhY2hlX3dvcms7Cj4rICAgICAgIHN0cnVjdCBkZWxheWVkX3dvcmsgcGFnZV9jYWNoZV93
+b3JrOwo+ICAgICAgICBhdG9taWNfdCB3b3JrX2luX3Byb2dyZXNzOwo+ICAgICAgICBzdHJ1Y3Qg
+aHJ0aW1lciBocnRpbWVyOwo+Cj5AQCAtMzQxOSw3ICszNDE5LDcgQEAgc2NoZWR1bGVfcGFnZV93
+b3JrX2ZuKHN0cnVjdCBocnRpbWVyICp0KQo+ICAgICAgICBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAq
+a3JjcCA9Cj4gICAgICAgICAgICAgICAgY29udGFpbmVyX29mKHQsIHN0cnVjdCBrZnJlZV9yY3Vf
+Y3B1LCBocnRpbWVyKTsKPgo+LSAgICAgICBxdWV1ZV93b3JrKHN5c3RlbV9oaWdocHJpX3dxLCAm
+a3JjcC0+cGFnZV9jYWNoZV93b3JrKTsKPisgICAgICAgcXVldWVfZGVsYXllZF93b3JrKHN5c3Rl
+bV9oaWdocHJpX3dxLCAma3JjcC0+cGFnZV9jYWNoZV93b3JrLCAwKTsKPiAgICAgICAgcmV0dXJu
+IEhSVElNRVJfTk9SRVNUQVJUOwo+IH0KPgo+QEAgLTM0MjgsNyArMzQyOCw3IEBAIHN0YXRpYyB2
+b2lkIGZpbGxfcGFnZV9jYWNoZV9mdW5jKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykKPiAgICAg
+ICAgc3RydWN0IGt2ZnJlZV9yY3VfYnVsa19kYXRhICpibm9kZTsKPiAgICAgICAgc3RydWN0IGtm
+cmVlX3JjdV9jcHUgKmtyY3AgPQo+ICAgICAgICAgICAgICAgIGNvbnRhaW5lcl9vZih3b3JrLCBz
+dHJ1Y3Qga2ZyZWVfcmN1X2NwdSwKPi0gICAgICAgICAgICAgICAgICAgICAgIHBhZ2VfY2FjaGVf
+d29yayk7Cj4rICAgICAgICAgICAgICAgICAgICAgICBwYWdlX2NhY2hlX3dvcmsud29yayk7Cj4g
+ICAgICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4gICAgICAgIGJvb2wgcHVzaGVkOwo+ICAgICAg
+ICBpbnQgaTsKPkBAIC0zNDUyLDE1ICszNDUyLDIyIEBAIHN0YXRpYyB2b2lkIGZpbGxfcGFnZV9j
+YWNoZV9mdW5jKHN0cnVjdCB3b3JrX3N0cnVjdCA+KndvcmspCj4gICAgICAgIGF0b21pY19zZXQo
+JmtyY3AtPndvcmtfaW5fcHJvZ3Jlc3MsIDApOwo+IH0KPgo+K3N0YXRpYyBib29sIGJhY2tvZmZf
+cGFnZV9jYWNoZV9maWxsOwo+Kwo+IHN0YXRpYyB2b2lkCj4gcnVuX3BhZ2VfY2FjaGVfd29ya2Vy
+KHN0cnVjdCBrZnJlZV9yY3VfY3B1ICprcmNwKQo+IHsKPiAgICAgICAgaWYgKHJjdV9zY2hlZHVs
+ZXJfYWN0aXZlID09IFJDVV9TQ0hFRFVMRVJfUlVOTklORyAmJgo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIWF0b21pY194Y2hnKCZrcmNwLT53b3JrX2luX3Byb2dyZXNzLCAxKSkgewo+LSAgICAg
+ICAgICAgICAgIGhydGltZXJfaW5pdCgma3JjcC0+aHJ0aW1lciwgQ0xPQ0tfTU9OT1RPTklDLAo+
+LSAgICAgICAgICAgICAgICAgICAgICAgSFJUSU1FUl9NT0RFX1JFTCk7Cj4tICAgICAgICAgICAg
+ICAga3JjcC0+aHJ0aW1lci5mdW5jdGlvbiA9IHNjaGVkdWxlX3BhZ2Vfd29ya19mbjsKPi0gICAg
+ICAgICAgICAgICBocnRpbWVyX3N0YXJ0KCZrcmNwLT5ocnRpbWVyLCAwLCBIUlRJTUVSX01PREVf
+UkVMKTsKPisgICAgICAgICAgICAgICBpZiAoUkVBRF9PTkNFKGJhY2tvZmZfcGFnZV9jYWNoZV9m
+aWxsKSkgewo+KyAgICAgICAgICAgICAgICAgICAgICAgcXVldWVfZGVsYXllZF93b3JrKHN5c3Rl
+bV9oaWdocHJpX3dxLCAma3JjcC0+cGFnZV9jYWNoZV93b3JrLCA+SFopOwo+KyAgICAgICAgICAg
+ICAgICAgICAgICAgV1JJVEVfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCwgZmFsc2UpOwo+
+KyAgICAgICAgICAgICAgIH0gZWxzZSB7Cj4rICAgICAgICAgICAgICAgICAgICAgICBocnRpbWVy
+X2luaXQoJmtyY3AtPmhydGltZXIsIENMT0NLX01PTk9UT05JQywKPisgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgSFJUSU1FUl9NT0RFX1JFTCk7Cj4rICAgICAgICAgICAgICAgICAgICAg
+ICBrcmNwLT5ocnRpbWVyLmZ1bmN0aW9uID0gc2NoZWR1bGVfcGFnZV93b3JrX2ZuOwo+KyAgICAg
+ICAgICAgICAgICAgICAgICAgaHJ0aW1lcl9zdGFydCgma3JjcC0+aHJ0aW1lciwgMCwgSFJUSU1F
+Ul9NT0RFX1JFTCk7Cj4rICAgICAgICAgICAgICAgfQo+ICAgICAgICB9Cj4gfQo+Cj5AQCAtMzY0
+NCw2ICszNjUxLDggQEAga2ZyZWVfcmN1X3Nocmlua19jb3VudChzdHJ1Y3Qgc2hyaW5rZXIgKnNo
+cmluaywgc3RydWN0ID5zaHJpbmtfY29udHJvbCAqc2MpCj4gICAgICAgICAgICAgICAgcmF3X3Nw
+aW5fdW5sb2NrX2lycXJlc3RvcmUoJmtyY3AtPmxvY2ssIGZsYWdzKTsKPiAgICAgICAgfQo+Cj4r
+ICAgICAgIC8vIExvdyBtZW1vcnkgY29uZGl0aW9uLCBsaW1pdCBhIHBhZ2UgY2FjaGUgd29ya2Vy
+IGFjdGl2aXR5Lgo+KyAgICAgICBXUklURV9PTkNFKGJhY2tvZmZfcGFnZV9jYWNoZV9maWxsLCB0
+cnVlKTsKPiAgICAgICAgcmV0dXJuIGNvdW50Owo+IH0KCj5AQCAtNDYzNCw3ICs0NjQzLDcgQEAg
+c3RhdGljIHZvaWQgX19pbml0IGtmcmVlX3JjdV9iYXRjaF9pbml0KHZvaWQpCj4gICAgICAgICAg
+ICAgICAgfQo+Cj4gICAgICAgICAgICAgICAgSU5JVF9ERUxBWUVEX1dPUksoJmtyY3AtPm1vbml0
+b3Jfd29yaywga2ZyZWVfcmN1X21vbml0b3IpOwo+LSAgICAgICAgICAgICAgIElOSVRfV09SSygm
+a3JjcC0+cGFnZV9jYWNoZV93b3JrLCBmaWxsX3BhZ2VfY2FjaGVfZnVuYyk7Cj4rICAgICAgICAg
+ICAgICAgSU5JVF9ERUxBWUVEX1dPUksoJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgZmlsbF9wYWdl
+X2NhY2hlX2Z1bmMpOwo+ICAgICAgICAgICAgICAgIGtyY3AtPmluaXRpYWxpemVkID0gdHJ1ZTsK
+PiAgICAgICAgfQo+ICAgICAgICBpZiAocmVnaXN0ZXJfc2hyaW5rZXIoJmtmcmVlX3JjdV9zaHJp
+bmtlcikpCj4KPmJlbG93IHBhdGNoIGZpeGVzIGl0LiBXZSBzaG91bGQgYmFja29mZiB0aGUgcGFn
+ZSBmaWxsIHdvcmtlciBrZWVwaW5nIGl0IGVtcHR5Cj51bnRpbCB0aGUgc2l0dWF0aW9uIHdpdGgg
+bWVtb3J5IGNvbnN1bXB0aW9uIGlzIG5vcm1hbGl6ZWQuCgogIE1heWJlIGNhbiBjYW5jZWwgdGhl
+IHRpbWVyIGFuZCBjYW5jZWwgd29yayBpbiB0aGUgcmN1X3Nocmlua19jb3VudCBmdW5jdGlvbiwg
+YWZ0ZXIgCiAgdGhlIHJjdV9zaHJpbmtfc2NhbiBmdW5jdGlvbiBpcyBleGVjdXRlZCBhbmQgcmVj
+b3ZlciB0aW1lci4KCj4KPkFueSB0aG91Z2h0cyBpZGVhcz8KPgo+LS0KPlZsYWQgUmV6a2kK
