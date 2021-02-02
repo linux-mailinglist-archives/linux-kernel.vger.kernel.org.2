@@ -2,156 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991EF30C70C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4E130C713
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbhBBRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
+        id S237260AbhBBRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:09:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237126AbhBBRHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:07:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD8864F8C;
-        Tue,  2 Feb 2021 17:06:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612285598;
-        bh=g2rObhmtphAlxaYZTTwEpq1gjCoLGjCUpZOyUdJRNfY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KL+TjpjXyShRMcSEZwD/B4owVc7KVw07oy4lbpGOD5jGmCwTLQgLsUpJPEsJNuebU
-         yarYOcN8IaSDqMPVtNwqHPNUr4DIRvff7RPjtGMFlITatK1c5M3GzXKw3cfC6NoGcp
-         GORlqkFNG4DHOUg+R9pq0Q+MRpe6zH6bs1DRUgzsVjKrEotIYJlQTD8oselqp2sdgb
-         Z8GTRK3pQVRj7DBdK/lFrc9F5rVefakCWsrPmYIameWZaPyDflmi05h+ONjTae2AuV
-         M37MMVqfw/orKg9cRHmQFQW2cfNk0MmC/ZnC3y5aAkVRCNocLb1x8WFLV75dWrjPVz
-         g5tIXJEpeLGyQ==
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, ak@linux.intel.com, clm@fb.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH clocksource 5/5] clocksource: Do pairwise clock-desynchronization checking
-Date:   Tue,  2 Feb 2021 09:06:35 -0800
-Message-Id: <20210202170635.24839-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210202170437.GA23593@paulmck-ThinkPad-P72>
-References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
+        id S236641AbhBBRIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:08:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E900864E08;
+        Tue,  2 Feb 2021 17:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612285681;
+        bh=Z8cMomjrAYU4z9TUMAf08w8gzIc/ZvDdmZSEWtHFl8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0aCKKeUCWFNzkU9jARYAHj0g+6nBg6G7Bc86hchJz+tm6O+EybeGgnNLqGEnR+vfp
+         7uabR2M/vSMuhMBtfo5svwDaEeVbwTgUMXjmgVBcEjTIL/EUEQ9E4nPRQpLu8EsKPw
+         bXDoWHa6qBTlJhN9jS/n77a+1Sy9PRFskdkAk944=
+Date:   Tue, 2 Feb 2021 18:07:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RESEND PATCH v3 1/5] misc: Add Synopsys DesignWare xData IP
+ driver
+Message-ID: <YBmG7qgIDYIveDfX@kroah.com>
+References: <cover.1612284945.git.gustavo.pimentel@synopsys.com>
+ <2c70018d5965c171c15870638ee717fe5f9483f6.1612284945.git.gustavo.pimentel@synopsys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c70018d5965c171c15870638ee717fe5f9483f6.1612284945.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Feb 02, 2021 at 05:56:34PM +0100, Gustavo Pimentel wrote:
+> Add Synopsys DesignWare xData IP driver. This driver enables/disables
+> the PCI traffic generator module pertain to the Synopsys DesignWare
+> prototype.
+> 
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> ---
+>  drivers/misc/dw-xdata-pcie.c | 379 +++++++++++++++++++++++++++++++++++++++++++
 
-Although smp_call_function() has the advantage of simplicity, using
-it to check for cross-CPU clock desynchronization means that any CPU
-being slow reduces the sensitivity of the checking across all CPUs.
-And it is not uncommon for smp_call_function() latencies to be in the
-hundreds of microseconds.
+You are adding sysfs entries but you do not have any Documentation/ABI/
+entries for us to be able to properly review this code :(
 
-This commit therefore switches to smp_call_function_single(), so that
-delays from a given CPU affect only those measurements involving that
-particular CPU.
+> +static ssize_t sysfs_write_show(struct kobject *kobj,
+> +				struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct device *dev = kobj2device(kobj);
+> +	struct pci_dev *pdev = device2pci_dev(dev);
+> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
+> +	u64 rate;
+> +
+> +	dw_xdata_perf(dw, &rate, true);
+> +	return sprintf(buf, "%llu MB/s\n", rate);
 
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Mark Rutland <Mark.Rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/time/clocksource.c | 41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+sysfs_emit()
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 67cf41c..3bae5fb 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -214,7 +214,7 @@ static void clocksource_watchdog_inject_delay(void)
- }
- 
- static struct clocksource *clocksource_verify_work_cs;
--static DEFINE_PER_CPU(u64, csnow_mid);
-+static u64 csnow_mid;
- static cpumask_t cpus_ahead;
- static cpumask_t cpus_behind;
- 
-@@ -228,7 +228,7 @@ static void clocksource_verify_one_cpu(void *csin)
- 		sign = ((smp_processor_id() >> inject_delay_shift_percpu) & 0x1) * 2 - 1;
- 		delta = sign * NSEC_PER_SEC;
- 	}
--	__this_cpu_write(csnow_mid, cs->read(cs) + delta);
-+	csnow_mid = cs->read(cs) + delta;
- }
- 
- static void clocksource_verify_percpu_wq(struct work_struct *unused)
-@@ -236,9 +236,12 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 	int cpu;
- 	struct clocksource *cs;
- 	int64_t cs_nsec;
-+	int64_t cs_nsec_max;
-+	int64_t cs_nsec_min;
- 	u64 csnow_begin;
- 	u64 csnow_end;
--	u64 delta;
-+	s64 delta;
-+	bool firsttime = 1;
- 
- 	cs = smp_load_acquire(&clocksource_verify_work_cs); // pairs with release
- 	if (WARN_ON_ONCE(!cs))
-@@ -247,19 +250,28 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 		cs->name, smp_processor_id());
- 	cpumask_clear(&cpus_ahead);
- 	cpumask_clear(&cpus_behind);
--	csnow_begin = cs->read(cs);
--	smp_call_function(clocksource_verify_one_cpu, cs, 1);
--	csnow_end = cs->read(cs);
-+	preempt_disable();
- 	for_each_online_cpu(cpu) {
- 		if (cpu == smp_processor_id())
- 			continue;
--		delta = (per_cpu(csnow_mid, cpu) - csnow_begin) & cs->mask;
--		if ((s64)delta < 0)
-+		csnow_begin = cs->read(cs);
-+		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
-+		csnow_end = cs->read(cs);
-+		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
-+		if (delta < 0)
- 			cpumask_set_cpu(cpu, &cpus_behind);
--		delta = (csnow_end - per_cpu(csnow_mid, cpu)) & cs->mask;
--		if ((s64)delta < 0)
-+		delta = (csnow_end - csnow_mid) & cs->mask;
-+		if (delta < 0)
- 			cpumask_set_cpu(cpu, &cpus_ahead);
-+		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
-+		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
-+		if (firsttime || cs_nsec > cs_nsec_max)
-+			cs_nsec_max = cs_nsec;
-+		if (firsttime || cs_nsec < cs_nsec_min)
-+			cs_nsec_min = cs_nsec;
-+		firsttime = 0;
- 	}
-+	preempt_enable();
- 	if (!cpumask_empty(&cpus_ahead))
- 		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
- 			cpumask_pr_args(&cpus_ahead),
-@@ -268,12 +280,9 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 		pr_warn("        CPUs %*pbl behind CPU %d for clocksource %s.\n",
- 			cpumask_pr_args(&cpus_behind),
- 			smp_processor_id(), cs->name);
--	if (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind)) {
--		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
--		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
--		pr_warn("        CPU %d duration %lldns for clocksource %s.\n",
--			smp_processor_id(), cs_nsec, cs->name);
--	}
-+	if (!firsttime && (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind)))
-+		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
-+			smp_processor_id(), cs_nsec_min, cs_nsec_max, cs->name);
- 	smp_store_release(&clocksource_verify_work_cs, NULL); // pairs with acquire.
- }
- 
--- 
-2.9.5
+> +}
+> +
+> +static ssize_t sysfs_write_store(struct kobject *kobj,
+> +				 struct kobj_attribute *attr, const char *buf,
+> +				 size_t count)
+> +{
+> +	struct device *dev = kobj2device(kobj);
+> +	struct pci_dev *pdev = device2pci_dev(dev);
+> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
+> +
+> +	pci_dbg(pdev, "xData: requested write transfer\n");
+> +	dw_xdata_start(dw, true);
+> +
+> +	return count;
+> +}
+> +
+> +struct kobj_attribute sysfs_write_attr = __ATTR(write, 0644,
+> +						sysfs_write_show,
+> +						sysfs_write_store);
 
+__ATTR_RW() please
+
+> +
+> +static ssize_t sysfs_read_show(struct kobject *kobj,
+> +			       struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct device *dev = kobj2device(kobj);
+> +	struct pci_dev *pdev = device2pci_dev(dev);
+> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
+> +	u64 rate;
+> +
+> +	dw_xdata_perf(dw, &rate, false);
+> +	return sprintf(buf, "%llu MB/s\n", rate);
+
+sysfs_emit()
+
+> +}
+> +
+> +static ssize_t sysfs_read_store(struct kobject *kobj,
+> +				struct kobj_attribute *attr, const char *buf,
+> +				size_t count)
+> +{
+> +	struct device *dev = kobj2device(kobj);
+> +	struct pci_dev *pdev = device2pci_dev(dev);
+> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
+> +
+> +	pci_dbg(pdev, "xData: requested read transfer\n");
+> +	dw_xdata_start(dw, false);
+> +
+> +	return count;
+> +}
+> +
+> +struct kobj_attribute sysfs_read_attr = __ATTR(read, 0644,
+> +					       sysfs_read_show,
+> +					       sysfs_read_store);
+
+__ATTR_RW()
+
+> +
+> +static ssize_t sysfs_stop_store(struct kobject *kobj,
+> +				struct kobj_attribute *attr, const char *buf,
+> +				size_t count)
+> +{
+> +	struct device *dev = kobj2device(kobj);
+
+Wait, what???
+
+Why are you creating "raw" kobjects here?  This is a device, use device
+attributes.  Use DEVICE_ATTR_RW() for all of the above.
+
+Who reviewed this thing???
+
+> +	struct pci_dev *pdev = device2pci_dev(dev);
+> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
+> +
+> +	pci_dbg(pdev, "xData: requested stop any transfer\n");
+> +	dw_xdata_stop(dw);
+> +
+> +	return count;
+> +}
+> +
+> +struct kobj_attribute sysfs_stop_attr = __ATTR(stop, 0644,
+> +					       NULL,
+> +					       sysfs_stop_store);
+> +
+> +static int dw_xdata_pcie_probe(struct pci_dev *pdev,
+> +			       const struct pci_device_id *pid)
+> +{
+> +	const struct dw_xdata_pcie_data *pdata = (void *)pid->driver_data;
+> +	struct device *dev = &pdev->dev;
+> +	struct dw_xdata *dw;
+> +	u64 addr;
+> +	int err;
+> +
+> +	/* Enable PCI device */
+> +	err = pcim_enable_device(pdev);
+> +	if (err) {
+> +		pci_err(pdev, "enabling device failed\n");
+> +		return err;
+> +	}
+> +
+> +	/* Mapping PCI BAR regions */
+> +	err = pcim_iomap_regions(pdev, BIT(pdata->rg_bar), pci_name(pdev));
+> +	if (err) {
+> +		pci_err(pdev, "xData BAR I/O remapping failed\n");
+> +		return err;
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +
+> +	/* Allocate memory */
+> +	dw = devm_kzalloc(&pdev->dev, sizeof(*dw), GFP_KERNEL);
+> +	if (!dw)
+> +		return -ENOMEM;
+> +
+> +	/* Data structure initialization */
+> +	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
+> +	if (!dw->rg_region.vaddr)
+> +		return -ENOMEM;
+> +
+> +	dw->rg_region.vaddr += pdata->rg_off;
+> +	dw->rg_region.paddr = pdev->resource[pdata->rg_bar].start;
+> +	dw->rg_region.paddr += pdata->rg_off;
+> +	dw->rg_region.sz = pdata->rg_sz;
+> +
+> +	dw->max_wr_len = pcie_get_mps(pdev);
+> +	dw->max_wr_len >>= 2;
+> +
+> +	dw->max_rd_len = pcie_get_readrq(pdev);
+> +	dw->max_rd_len >>= 2;
+> +
+> +	dw->pdev = pdev;
+> +
+> +	writel(0x0, &(__dw_regs(dw)->RAM_addr));
+> +	writel(0x0, &(__dw_regs(dw)->RAM_port));
+> +
+> +	addr = dw->rg_region.paddr + DW_XDATA_EP_MEM_OFFSET;
+> +	writel(lower_32_bits(addr), &(__dw_regs(dw)->addr_lsb));
+> +	writel(upper_32_bits(addr), &(__dw_regs(dw)->addr_msb));
+> +	pci_dbg(pdev, "xData: target address = 0x%.16llx\n", addr);
+> +
+> +	pci_dbg(pdev, "xData: wr_len=%zu, rd_len=%zu\n",
+> +		dw->max_wr_len * 4, dw->max_rd_len * 4);
+> +
+> +	err = sysfs_create_file(&dev->kobj, &sysfs_write_attr.attr);
+> +	if (err)
+> +		return err;
+> +
+> +	err = sysfs_create_file(&dev->kobj, &sysfs_read_attr.attr);
+> +	if (err)
+> +		return err;
+> +
+> +	err = sysfs_create_file(&dev->kobj, &sysfs_stop_attr.attr);
+> +	if (err)
+> +		return err;
+
+By manually creating sysfs files, you just raced with userspace and lost
+horribly.
+
+Please never do that, use an attribute group and have the driver core
+automatically create/remove your files for you.
+
+Big hint, if you ever find yourself calling sysfs_* in a driver, you are
+doing something wrong.
+
+thanks,
+
+greg k-h
