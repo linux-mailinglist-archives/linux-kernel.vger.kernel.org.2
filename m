@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208FD30B907
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F02F30B915
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhBBH54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:57:56 -0500
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:43336 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhBBH5y (ORCPT
+        id S231635AbhBBH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:59:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231553AbhBBH7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:57:54 -0500
-Received: by mail-vs1-f49.google.com with SMTP id h11so10637260vsa.10;
-        Mon, 01 Feb 2021 23:57:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E0lZHuXu7pWNvv2BjdvH63uklWmKRl14BRUiRfYGOh0=;
-        b=BjWc7UBX9cAhfhJg04y/rStYLn4DYHx3uo+fnTq5cS2zVYCj/mewE4apdBLrBYqm3p
-         h5iFKkpeEYYwXaUIxmosnPiDPpi9G8l9wRJFyogArBHd8qSRBg1kYVqoPtNQlyxv56t9
-         cXRabRGQgbz9WGiny4M1s9H0uREmjbcCUXy+rP5BsErXdX6Y5wjxStJs6ylPxQqy9LWg
-         E7c9Lsv5DpMUmp9NtQlmO78UBkf/Hp3VoNI8SJy4pD/T0OlUnoUBnyZMbilK1hZil6bM
-         ApP7xmWzv6QJqmG3xQ0tsqD63f9ZpIPdqNE8tsszcBR8caqco0TaAusMYdcmrsFGrqMK
-         OyLg==
-X-Gm-Message-State: AOAM531mvPk3NHoc36LE1+vhf6n9jswRDE4yNJppxtxSXt/m85mtn1Ws
-        CuGireedhK/p5uf7gmrZzAjoD7AVll1wWg==
-X-Google-Smtp-Source: ABdhPJz2alyk3kIW6tVwzoFxztK3sjDN82aEkf5YNJVr9GpkqT+fq5DcMpY+F2ReKoumCznpk96euA==
-X-Received: by 2002:a67:f9c8:: with SMTP id c8mr11412770vsq.47.1612252633013;
-        Mon, 01 Feb 2021 23:57:13 -0800 (PST)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id d200sm2429541vkd.54.2021.02.01.23.57.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 23:57:12 -0800 (PST)
-Received: by mail-ua1-f46.google.com with SMTP id g5so6821840uak.10;
-        Mon, 01 Feb 2021 23:57:11 -0800 (PST)
-X-Received: by 2002:ab0:6496:: with SMTP id p22mr492388uam.23.1612252631684;
- Mon, 01 Feb 2021 23:57:11 -0800 (PST)
+        Tue, 2 Feb 2021 02:59:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612252695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RSs+hI92LA+WjDbN8bdyYyPQ3riB041flC5bDy3Nc0E=;
+        b=ZPBYW7fdH1dJvERxQOJEAEd6EiigMcz0cFu9wH2dZQzLpMDV/d8OODVVrN91TkGk5v7fDR
+        Zuhu4b6oAIUla2uj9erBmXG5jvSuGelPEeYSgXVRM6buCM1qe9/qhJCZIwgDbWgKtyImVc
+        weHkniopk0z+xafvwRDgkOmqvavCJe8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-OpISDnU8NjOlwL1voug-oQ-1; Tue, 02 Feb 2021 02:58:07 -0500
+X-MC-Unique: OpISDnU8NjOlwL1voug-oQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4858B107ACE3;
+        Tue,  2 Feb 2021 07:58:05 +0000 (UTC)
+Received: from gondolin (ovpn-113-169.ams2.redhat.com [10.36.113.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F058060BE5;
+        Tue,  2 Feb 2021 07:57:57 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 08:57:55 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     <jgg@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
+        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
+        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
+        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
+        <mjrosato@linux.ibm.com>, <yishaih@nvidia.com>, <aik@ozlabs.ru>
+Subject: Re: [PATCH 5/9] vfio-pci/zdev: remove unused vdev argument
+Message-ID: <20210202085755.3e06184e.cohuck@redhat.com>
+In-Reply-To: <20210201162828.5938-6-mgurtovoy@nvidia.com>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+        <20210201162828.5938-6-mgurtovoy@nvidia.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20210127172500.13356-1-andre.przywara@arm.com> <20210127172500.13356-15-andre.przywara@arm.com>
-In-Reply-To: <20210127172500.13356-15-andre.przywara@arm.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 2 Feb 2021 15:57:00 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64p_NBVOBE1dsFXR3OOxZv21zaV5MUMRSJ35JQS9DFFqA@mail.gmail.com>
-Message-ID: <CAGb2v64p_NBVOBE1dsFXR3OOxZv21zaV5MUMRSJ35JQS9DFFqA@mail.gmail.com>
-Subject: Re: [PATCH v5 14/20] dt-bindings: bus: rsb: Add H616 compatible string
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 1:26 AM Andre Przywara <andre.przywara@arm.com> wrote:
->
-> Add the obvious compatible name to the existing RSB binding, and pair
-> it with the existing A23 fallback compatible string, as the devices are
-> compatible.
->
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+On Mon, 1 Feb 2021 16:28:24 +0000
+Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+> Zdev static functions does not use vdev argument. Remove it.
+
+s/does not use/do not use the/
+
+> 
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_zdev.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+
