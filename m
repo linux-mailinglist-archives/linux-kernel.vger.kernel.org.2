@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6D430CBE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E3730CB62
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239973AbhBBTi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:38:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        id S239745AbhBBTWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:22:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233281AbhBBNzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:55:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE5664FDA;
-        Tue,  2 Feb 2021 13:44:44 +0000 (UTC)
+        id S233403AbhBBOBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:01:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C0764FFB;
+        Tue,  2 Feb 2021 13:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273485;
-        bh=p7RgX990Zy43ln7VD0Ml2WPAEEjgm+INSlqnYqdBOAQ=;
+        s=korg; t=1612273620;
+        bh=gI51k9d9SiKr8vQwrXcNwrN8V9AwpkdttioFwXxF9OE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VMnPL2aGz1SS1AZMbFkGKT7/Qp5xLz/pYw3nQl3fkr1dC3dOcSZBuWiNubsAe0yVq
-         GcCG7aIeJzWkdX2ipMBiF1TT8zSJy/I7bqfCWedp+tbBXgrNoUPHmQwexZ7jTmV+6i
-         LCRoIR/pjiIpmK1EL6FLcd669UEc9cOelkhZUPG8=
+        b=DBlO5WxOIFS1Sdf6OeVtF8gGQrCxJCPT191Idl7/do+ds4Mmh7CTV9MbBjjkeA+VK
+         3xncxE7E5PO7OGI7Awry+ittaBKFKMaTXb9nPynvlErTkZVZgDDckwiCkzc3NFj0uf
+         ZWjTlwoHyoyXu+QsgZ1vjxzpLBdsakriakAZdFZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 125/142] can: dev: prevent potential information leak in can_fill_info()
-Date:   Tue,  2 Feb 2021 14:38:08 +0100
-Message-Id: <20210202133002.854597314@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Max Krummenacher <max.krummenacher@toradex.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.4 31/61] ARM: imx: build suspend-imx6.S with arm instruction set
+Date:   Tue,  2 Feb 2021 14:38:09 +0100
+Message-Id: <20210202132947.784810701@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132957.692094111@linuxfoundation.org>
-References: <20210202132957.692094111@linuxfoundation.org>
+In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
+References: <20210202132946.480479453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Max Krummenacher <max.oss.09@gmail.com>
 
-[ Upstream commit b552766c872f5b0d90323b24e4c9e8fa67486dd5 ]
+commit a88afa46b86ff461c89cc33fc3a45267fff053e8 upstream.
 
-The "bec" struct isn't necessarily always initialized. For example, the
-mcp251xfd_get_berr_counter() function doesn't initialize anything if the
-interface is down.
+When the kernel is configured to use the Thumb-2 instruction set
+"suspend-to-memory" fails to resume. Observed on a Colibri iMX6ULL
+(i.MX 6ULL) and Apalis iMX6 (i.MX 6Q).
 
-Fixes: 52c793f24054 ("can: netlink support for bus-error reporting and counters")
-Link: https://lore.kernel.org/r/YAkaRdRJncsJO8Ve@mwanda
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It looks like the CPU resumes unconditionally in ARM instruction mode
+and then chokes on the presented Thumb-2 code it should execute.
+
+Fix this by using the arm instruction set for all code in
+suspend-imx6.S.
+
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Fixes: df595746fa69 ("ARM: imx: add suspend in ocram support for i.mx6q")
+Acked-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/can/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-imx/suspend-imx6.S |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 09879aea9f7cc..24cd3c1027ecc 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -1163,7 +1163,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
--	struct can_berr_counter bec;
-+	struct can_berr_counter bec = { };
- 	enum can_state state = priv->state;
+--- a/arch/arm/mach-imx/suspend-imx6.S
++++ b/arch/arm/mach-imx/suspend-imx6.S
+@@ -67,6 +67,7 @@
+ #define MX6Q_CCM_CCR	0x0
  
- 	if (priv->do_get_state)
--- 
-2.27.0
-
+ 	.align 3
++	.arm
+ 
+ 	.macro  sync_l2_cache
+ 
 
 
