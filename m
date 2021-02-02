@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B2D30C5C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E327930C739
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236516AbhBBQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        id S237273AbhBBRNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236284AbhBBQ04 (ORCPT
+        with ESMTP id S236264AbhBBQ1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:26:56 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A9C06178B;
-        Tue,  2 Feb 2021 08:26:15 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id z18so19339511ile.9;
-        Tue, 02 Feb 2021 08:26:15 -0800 (PST)
+        Tue, 2 Feb 2021 11:27:18 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5838FC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:26:37 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id j12so14657177pfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uUPSf5IONoMjH7eJPdjOKIHOgkvLOpGL4eqwWCbjGqQ=;
-        b=VnsLZMaMRaxj7WfTbrUjXcfUBtOJvRdty0dDO+U2Eh9+5DIogmRJs8nsGV+0p1ppBm
-         z53Se1utHs8QgVHjuWDH6rTIxGRNUl4Mwgt1m+FGzRCurII7IoX6z7a3Y+10kvzwPBTG
-         6czCsyV3zX4mKbUm1CvSJKZGeVwiJz9fqC80p7FSf5H4cX972oCrZqMOYWwynmDyR6Ks
-         mgl3jSagE26iDArQM9FzC4fuys07ib4rGC7RG13HIeD8lxBioUz7JWft/P5hGRY7fyeW
-         NjF4CTpfGSmzygDz+72Cwva1CxHj68LV54H02Hb8MKc1kJ6j7NIIkibSG0U0vVgj8vnT
-         Bf6g==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=l4h6Ivu7DxeeLevJc1wQ+Ze6BVBDNOqfFBaVlOOvfD0=;
+        b=Prj01pdPh3i/44KjbGbWaacJo35qLM4VarOzw/eGcQFhdfXnRipH1JT6n5AVVzqyBB
+         ElkQT02SXpzSxXEy/04+RB50ZxAsJ7bfObZzNTc//m4oD5tL75/ltzjotxdcTRWkt2Kx
+         rYR4RwqyrT6K3Hi2lJuJ4rzgoZhlwAbidDy3aOU8x7lhv0m/bd1mlqIDEGbKQ3nnZ7mK
+         711c/pTmQ5kjzjDkYniVLcjV4kVMa+Bv4pVgbwq1kZaHpxgvJcy2YM9G+B9WlYBIPTxU
+         JmvVCPC2OFaQ8I74JdqNI34TMPp1+GkN9FIFr2PjkpgjFhAmSdFlo28ayqjcOKiOrpkc
+         jrfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uUPSf5IONoMjH7eJPdjOKIHOgkvLOpGL4eqwWCbjGqQ=;
-        b=C7oAh5lAqj4BjyEefMbWelr/dm0B1nj0rPOVfZ4WHRe3Zx3q3KdL/mbtp//GLURP7m
-         X1jRzU2xmrX5oWAfwUkZxZnFGHi+GMRlAUs2UQRa0wEYQ3CTuh2rQWQte1h0IOcbDpQn
-         NIwFE1AnKmZMlsRpl/vXhmApW9nsXs1gW3su47LGO3PUQ2Z+OnCe+BVjStHnnbCv9/F3
-         ogt1/VoPQk0dYce22Ztc5KeUJI02V4cMdtJMtFP+lbvhQNltd2Jt0X8JPH2oqJbdw878
-         qUfJU0mnZfa4FIkmfEU/fdKc+PaT6WXCtAXHIz4P9rq3z3kCceaf4jaC/qE/lfhIYQFx
-         gj+A==
-X-Gm-Message-State: AOAM5313JU+AyQf9ng+rmgE5uCWHJfuhIihFcsIQg7kEaJ/V6DCAMAMJ
-        ZwnYbD9lwVhYHmJAc0jCSjtGXsAKx+kuFhRaqFJcpdXqMz8=
-X-Google-Smtp-Source: ABdhPJzce812e00lFV/98GezeHMsK91BtHrPg83M1U807OvDlwrIfgM7Kzat6SmzGT6F4/pLAaLB1/wCSDCDotAxpuw=
-X-Received: by 2002:a05:6e02:1343:: with SMTP id k3mr530712ilr.102.1612283174756;
- Tue, 02 Feb 2021 08:26:14 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=l4h6Ivu7DxeeLevJc1wQ+Ze6BVBDNOqfFBaVlOOvfD0=;
+        b=ovQot/aOwbREwGTQBF1uf9YwaoWUbNmEtp3O+RXTG2pfFbP494U9rdaDpjG6haTjpp
+         RXE+2OVLu4wS2gc1YacqSBlS9XWBk+c5EeMT9NqpBE91dR3MW2mt+2VxykcWTCNEtcWE
+         8qVCHPQvtX0ALKwDX8120fUXNFOIAzR0snJ70aR9F2e3d3i4uy8FOKrxEAuVvlRVgR7b
+         JXHviyJEXWW9QLPx7bXnnVueBWqiCoGBegkxS8iHJFA5Ps1hXJO+iuq3Ua2ie5I2QaGQ
+         oxfpbwzZLiau47e7h3arZGT7MAgh81nSw2N3v8Vun/OaVyyhZ9aG8ZLSlv9tB8WRbtwk
+         6R3A==
+X-Gm-Message-State: AOAM5325TwBNKu7Qbxb6qShogC6azBTra06ZUnDq6hTQvFWeKe38v0m7
+        rzU+Xv0UMUAgDsmuzzoBV+CKog==
+X-Google-Smtp-Source: ABdhPJz23hBGlWbblH5zl60/YjQ3RKwRUlZd50alKTD1+nw88ReAaT0M2kwABWE88CwZbsdwgcrgmw==
+X-Received: by 2002:a63:fe13:: with SMTP id p19mr22812940pgh.119.1612283196793;
+        Tue, 02 Feb 2021 08:26:36 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id o14sm24015155pgr.44.2021.02.02.08.26.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:26:35 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 10/21] rtc: meson: quiet maybe-unused variable warning
+In-Reply-To: <20210202112219.3610853-11-alexandre.belloni@bootlin.com>
+References: <20210202112219.3610853-1-alexandre.belloni@bootlin.com>
+ <20210202112219.3610853-11-alexandre.belloni@bootlin.com>
+Date:   Tue, 02 Feb 2021 08:26:35 -0800
+Message-ID: <7hsg6eh1vo.fsf@baylibre.com>
 MIME-Version: 1.0
-References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
- <20210202053307.GB28542@1wt.eu>
-In-Reply-To: <20210202053307.GB28542@1wt.eu>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Tue, 2 Feb 2021 08:26:02 -0800
-Message-ID: <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
-Subject: Re: Alternative compilers to GCC/Clang
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-gcc@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 9:33 PM Willy Tarreau <w@1wt.eu> wrote:
+Alexandre Belloni <alexandre.belloni@bootlin.com> writes:
+
+> When CONFIG_OF is disabled then the matching table is not referenced.
 >
-> Hi Amy,
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+Acked-by: Kevin Hilman <khilman@baylibre.com>
+
+> ---
+>  drivers/rtc/rtc-meson.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> On Mon, Feb 01, 2021 at 03:31:49PM -0800, Amy Parker wrote:
-> > Hello! My name's Amy. I'm really impressed by the work done to make
-> > Clang (and the LLVM toolchain overall) able to compile the kernel.
-> > Figured I might as well donate my monkey hours to helping make it run
-> > on other compilers as well. I haven't been able to find any that use
-> > the same arguments structure as GCC and Clang (read: you can pass it
-> > in as CC=compilername in your $MAKEOPTS). Any compilers along that
-> > route anyone here has worked with that I could work with?
->
-> If you're interested, you should have a look at TCC (tiny CC) :
->
->      https://repo.or.cz/tinycc.git
-
-Thank you for linking this! Wasn't able to find this git repository
-for it - only binaries for nonfree operating systems (yuck).
-
->
-> It compiles extremely fast, implements some subsets of gcc (a few
-> attributes for example), but is far from being able to compile a kernel
-
-Well, we'll see what I can do with that. :)
-
-> (at least last time I checked). Its speed makes it very convenient for
-> development. I made some efforts to make haproxy support it (and provided
-> some fixes to tcc) as it compiles the whole project in 0.5 second instead
-> of ~10 seconds with a modern gcc. It could probably compile a kernel in
-> 15-20 seconds if properly supported, and this could be particularly handy
-> for development and testing.
-
-Oh wow, yeah, that would be great. Thank you for pointing this out!
-Compiling the kernel in 15-20 seconds instead of the current *couple
-minutes* would definitely be great.
-
->
-> Regards,
-> Willy
-
-Best regards,
-Amy Parker
-(she/her/hers)
+> diff --git a/drivers/rtc/rtc-meson.c b/drivers/rtc/rtc-meson.c
+> index 8642c06565ea..44bdc8b4a90d 100644
+> --- a/drivers/rtc/rtc-meson.c
+> +++ b/drivers/rtc/rtc-meson.c
+> @@ -380,7 +380,7 @@ static int meson_rtc_probe(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static const struct of_device_id meson_rtc_dt_match[] = {
+> +static const __maybe_unused struct of_device_id meson_rtc_dt_match[] = {
+>  	{ .compatible = "amlogic,meson6-rtc", },
+>  	{ .compatible = "amlogic,meson8-rtc", },
+>  	{ .compatible = "amlogic,meson8b-rtc", },
+> -- 
+> 2.29.2
