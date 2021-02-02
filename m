@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F4130C2DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5913930C2EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhBBPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbhBBPAb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:00:31 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE931C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 06:59:50 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id a16so1654294ilq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cKDGkdAH6hnP9LDv3OSd/rUwsKO2Hnsk5XLdUyUcTiA=;
-        b=ZTxCza8R+qKMO5AULHOV6aqYudyKoCq1ldvPSstkJUe++vlUm6kwA0NSIjetUWvwOr
-         hIFujVH9L2DNpz8drDLj/rv4R4u7/hc79IUf6YfKXT6oZXygc3b2U9r28iB6aIcPKEjU
-         PILiKxbjOVyXEJwzZKbfzJfSBRqk0rHMk6V4WuCLHeuzEPuLwDeEHN/zVlefRb0vETXR
-         hW8Uu2zuCqz/lC+Q8toxwcmf3CL8x+lwD9JbTbxDiMoadqfik9UFDkpZy21GupRbKIe+
-         iNCoDj7W3qVQOFdsx9vI9u+OjevzmoDAl7NZHeeCimBgM3KOBcgEhJEXekuXfSA5WJvC
-         EY3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cKDGkdAH6hnP9LDv3OSd/rUwsKO2Hnsk5XLdUyUcTiA=;
-        b=F7Bc9qcTTdr73BLPuxwK0AQ8O9DS46zI8D5RRmosxaEq9FHSRezpLvk+VSnhb2EEv2
-         BRGKmYt6l0HPvd79TJlzZDsB+1ozPdEVedM9qfsQZqQCNl2gxkBVYQ7Cl8d6dAYn8fhO
-         /vjEoff9WabZ7Obsultcl8ZHMyD0cbIJPaLPY8r99H/GCa4GovHK+/VrCrA5LBvMwTNx
-         xfbBf8HlolAfuSnCCpgK3uu3r6kSkDbTd62cLNc18Iq6sZDOEcCcFPNrNMH5xkXNCv9o
-         Wd6qfuZ/W058kRE7NqclauJKKEYYI9ZG64LPqZ5VkSKIZ1voC3zLGyuOatUbsO9NjfI/
-         Z1lA==
-X-Gm-Message-State: AOAM531sk7l2smSlHRkcXygpka6/CBn/gEOMeZjp6EHXd5jBOKyrNBKR
-        umTXyCecxrNFIspd/sqCTnHt1zjsJtmDduDV9LfggA==
-X-Google-Smtp-Source: ABdhPJwlgQNiDbpOt8/s7/PtFHiU3OsbyGtG9ixXUuXmc8Hbf0GbL6accU63MRrf6/lEOgiXrCFgbvKRS3t/0TSABik=
-X-Received: by 2002:a05:6e02:1a89:: with SMTP id k9mr17243624ilv.68.1612277990062;
- Tue, 02 Feb 2021 06:59:50 -0800 (PST)
+        id S235063AbhBBPDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:03:46 -0500
+Received: from mga03.intel.com ([134.134.136.65]:38166 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234921AbhBBPC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:02:58 -0500
+IronPort-SDR: OPXWHv5vWDOExESCi3weiZl62nHF1+i85ltzNtF5q46SiQphcYrlpZTQJcDyCiWVVBSiAKh0rI
+ 07CXn92h4RBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180941069"
+X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
+   d="scan'208";a="180941069"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 07:01:06 -0800
+IronPort-SDR: +s0fCS9Fjq4/R6UZgAdxjeShz1QH1UzkitSPJuILcnR1hafmwqMxYRd14nT6NGVVGTZZwiLTD/
+ 1EFhaH8SXtVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
+   d="scan'208";a="479822168"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 02 Feb 2021 07:01:03 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Feb 2021 17:01:02 +0200
+Date:   Tue, 2 Feb 2021 17:01:02 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 1/6] software node: Provide replacement for
+ device_add_properties()
+Message-ID: <20210202150102.GA1687065@kuha.fi.intel.com>
+References: <20210202125032.64982-1-heikki.krogerus@linux.intel.com>
+ <20210202125032.64982-2-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0gMEBV=Gm-R=5zkN-J_p7cMTBwoOJrv=ec1j6SfSYRg_w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210202135544.3262383-1-leon@kernel.org> <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
- <20210202145724.GA3264866@unreal>
-In-Reply-To: <20210202145724.GA3264866@unreal>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 2 Feb 2021 15:59:38 +0100
-Message-ID: <CANn89iJ1WYEfS-Pgzvec+54+3JQHCPSNdCfYaFkGYAEk3sGwmA@mail.gmail.com>
-Subject: Re: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        coreteam@netfilter.org, Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Julian Anastasov <ja@ssi.bg>,
-        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
-        Matteo Croce <mcroce@redhat.com>,
-        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
-        Simon Horman <horms@verge.net.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gMEBV=Gm-R=5zkN-J_p7cMTBwoOJrv=ec1j6SfSYRg_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 3:57 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Feb 02, 2021 at 03:34:37PM +0100, Eric Dumazet wrote:
-> > On Tue, Feb 2, 2021 at 2:55 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > >
-> > > Hi,
-> > >
-> > > This short series fixes W=1 compilation warnings which I experienced
-> > > when tried to compile net/* folder.
-> > >
-> >
-> > Ok, but we never had a strong requirement about W=1, so adding Fixes:
-> > tag is adding
->
-> I added because Jakub has checker that looks for Fixes lines in "net"
-> patches.
+Hi Rafael,
 
-Send this to net-next
+On Tue, Feb 02, 2021 at 03:44:05PM +0100, Rafael J. Wysocki wrote:
+> > +/**
+> > + * device_create_managed_software_node - Create a software node for a device
+> > + * @dev: The device the software node is assigned to.
+> > + * @properties: Device properties for the software node.
+> > + * @parent: Parent of the software node.
+> > + *
+> > + * Creates a software node as a managed resource for @dev, which means the
+> > + * lifetime of the newly created software node is tied to the lifetime of @dev.
+> > + * Software nodes created with this function should not be reused or shared
+> > + * because of that. The function takes a deep copy of @properties for the
+> > + * software node.
+> > + *
+> > + * Since the new software node is assigned directly to @dev, and since it should
+> > + * not be shared, it is not returned to the caller. The function returns 0 on
+> > + * success, and errno in case of an error.
+> > + */
+> > +int device_create_managed_software_node(struct device *dev,
+> > +                                       const struct property_entry *properties,
+> > +                                       const struct software_node *parent)
+> > +{
+> > +       struct fwnode_handle *p = software_node_fwnode(parent);
+> > +       struct fwnode_handle *fwnode;
+> > +
+> > +       if (parent && !p)
+> > +               return -EINVAL;
+> > +
+> > +       fwnode = fwnode_create_software_node(properties, p);
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To answer your question below: here.
 
-As I stated, we never enforce W=1 compilation rule.
+> > +       if (IS_ERR(fwnode))
+> > +               return PTR_ERR(fwnode);
+> > +
+> > +       to_swnode(fwnode)->managed = true;
+> > +       set_secondary_fwnode(dev, fwnode);
+> > +
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(device_create_managed_software_node);
+> > +
+> >  int software_node_notify(struct device *dev, unsigned long action)
+> >  {
+> >         struct swnode *swnode;
+> > @@ -1073,6 +1111,11 @@ int software_node_notify(struct device *dev, unsigned long action)
+> >                 sysfs_remove_link(&swnode->kobj, dev_name(dev));
+> >                 sysfs_remove_link(&dev->kobj, "software_node");
+> >                 kobject_put(&swnode->kobj);
+> > +
+> > +               if (swnode->managed) {
+> > +                       set_secondary_fwnode(dev, NULL);
+> > +                       kobject_put(&swnode->kobj);
+> 
+> Where does the corresponding kobject_get() get called?
 
-I understand we might want that for _future_ kernels.
+So in function fwnode_create_software_node() we use
+kobject_init_and_add().
 
->
-> > unnecessary burden to stable teams all around the world.
->
-> It is automatic.
 
-I do receive a copy of all backports in my mailbox, whenever I am tagged.
+thanks,
 
-I can tell you there is a lot of pollution.
-
->
-> Thanks
+-- 
+heikki
