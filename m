@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AF630B8BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D381730B8C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhBBHhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:37:10 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39202 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhBBHhE (ORCPT
+        id S232045AbhBBHha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:37:30 -0500
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:39547 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhBBHhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:37:04 -0500
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l6qEX-0007nV-TI
-        for linux-kernel@vger.kernel.org; Tue, 02 Feb 2021 07:36:22 +0000
-Received: by mail-lf1-f70.google.com with SMTP id t4so3542014lfe.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:36:21 -0800 (PST)
+        Tue, 2 Feb 2021 02:37:24 -0500
+Received: by mail-lf1-f49.google.com with SMTP id h7so26548757lfc.6;
+        Mon, 01 Feb 2021 23:37:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LSoMdUbpzG6cQwzLgZZTiGXvRVf2gEXyL2WC99OtW+s=;
-        b=td1LDS/4JNxtVIU3HJEKr7r4iI6Ih5UxZnUc8I9HDycgqZKyp0fO1ubqB9yqCEYoFc
-         WsmsdRxu4serPnMUOqJo8qzI8t51XJdcGgZVf+jW9+5/FbO69wmjhXwjfUQEDwvqTfRR
-         UFN75+X5KY4KX8zMgVNBYeczQNBsDt3uQRVV6bMUJaGON9aARhsccv1QvE2cPAAyWKMQ
-         n9XhwWYQS975cDbNeOc3X8rrVmfyasU1E1erDxCwJtjbJ20pHON8ss3V3j50flhVOth+
-         dA8k6wsA+fSQVtMOxZcKRsMNBDfTZ4l0/2pPSEY0ExRFQIdwJwsByMZqGE9tlQLK1A7k
-         oDPA==
-X-Gm-Message-State: AOAM530bmJO7IlwKPogfwEgD01OSfowM2brZ2fl2eGct/af9G+P+HxDT
-        dfajkxizCVyQ1oMy3R4xbrObfUrzJIwd5WvrzyRDw3K30tEgc9ZHtd0ITtmKDFuSphmbxCPLPnL
-        5cWnstZ9iTzqd6GF+5EXgSCJ2vnKbroacggg7CGbFDFcvE8AWY1YuGariNg==
-X-Received: by 2002:a05:6512:b1b:: with SMTP id w27mr10509604lfu.10.1612251381361;
-        Mon, 01 Feb 2021 23:36:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5dv1Lrlfrr7Ynb6iQgLdZKKxLKhBfVWGXB8B6/fyiUueDPcltK2OaDOeatPA3x15vvGz/Vb5SF9Yn6KsvJL4=
-X-Received: by 2002:a05:6512:b1b:: with SMTP id w27mr10509591lfu.10.1612251381100;
- Mon, 01 Feb 2021 23:36:21 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=a9oX6SQpcG6aFxEmEN6XUmbcvrUqBQW0B4ivGRUk14Y=;
+        b=spo7QMjo1skBbbmVtRzS6gtjW9Jkk9ppf/p/B7tb2/R0+Wyg+xdSl+btPqCbeDpB7J
+         4mMCNa7gv9IqSBECAdFMJ6t8OeXXVFyoS9VQoLSnqj3PxrxhUQs4qAevg2B8tp5rJ2I2
+         M/5zWmoRQ3ZC9sTUNC2OBPK6moMU+DcJ/YD0dZSN3jLZwrkI/TI2npnq/rrz3NZJhxCx
+         GYsvffGGF4800Fm1Vk2L2FxlzmJafyyHGExI0U360DaeDy5TsQue7QKq5j88Jsi+3Ukb
+         zRlbD6dSo92rs9xbnyvGEhrOb5B/UHPzgTFULxf2wg/NeFFjwt4u+mNlqbWlrbK1stvn
+         cLSQ==
+X-Gm-Message-State: AOAM531uUane5yE6XFPHwqJOukVbsDEsHSgJWvPi7TgFFvvDkCY2QTVv
+        dySv52ZPLwE78EYFcOxDzhQ=
+X-Google-Smtp-Source: ABdhPJzB7+ux71l4/Jmbl28nLibAzVE8RnJXOBl4tc1wi2EMbXgZRM7sAJaLrOxK2MjJzmlLIXNwHQ==
+X-Received: by 2002:a19:305:: with SMTP id 5mr10122694lfd.348.1612251401712;
+        Mon, 01 Feb 2021 23:36:41 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id s19sm2461535ljg.43.2021.02.01.23.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 23:36:40 -0800 (PST)
+Date:   Tue, 2 Feb 2021 09:36:34 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] regulator: qcom-labibb: avoid unbalanced IRQ enable
+Message-ID: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20200805084559.30092-1-kai.heng.feng@canonical.com>
- <c0c336d806584361992d4b52665fbb82@realtek.com> <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
- <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
- <871rdz7zjf.fsf@codeaurora.org> <e4f2fe2b-52a2-7b39-6758-decf22d82eb6@lwfinger.net>
-In-Reply-To: <e4f2fe2b-52a2-7b39-6758-decf22d82eb6@lwfinger.net>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 2 Feb 2021 15:36:09 +0800
-Message-ID: <CAAd53p5p=Bz-VKLxbajhZ2VeHs1Dczcqc1hgPZtNsMb-Fy6J3w@mail.gmail.com>
-Subject: Re: [PATCH] rtw88: 8821c: Add RFE 2 support
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Tony Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:REALTEK WIRELESS DRIVER (rtw88)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Huang <tehuang@realtek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 3:02 PM Larry Finger <Larry.Finger@lwfinger.net> wrote:
->
-> On 2/2/21 12:29 AM, Kalle Valo wrote:
-> > Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
-> >
-> >> On Wed, Aug 5, 2020 at 7:24 PM Kai-Heng Feng
-> >> <kai.heng.feng@canonical.com> wrote:
-> >>>
-> >>> Hi Tony,
-> >>>
-> >>>> On Aug 5, 2020, at 19:18, Tony Chuang <yhchuang@realtek.com> wrote:
-> >>>>
-> >>>>> 8821CE with RFE 2 isn't supported:
-> >>>>> [   12.404834] rtw_8821ce 0000:02:00.0: rfe 2 isn't supported
-> >>>>> [   12.404937] rtw_8821ce 0000:02:00.0: failed to setup chip efuse info
-> >>>>> [   12.404939] rtw_8821ce 0000:02:00.0: failed to setup chip information
-> >>>>>
-> >>>>
-> >>>> NACK
-> >>>>
-> >>>> The RFE type 2 should be working with some additional fixes.
-> >>>> Did you tested connecting to AP with BT paired?
-> >>>
-> >>> No, I only tested WiFi.
-> >>>
-> >>>> The antenna configuration is different with RFE type 0.
-> >>>> I will ask someone else to fix them.
-> >>>> Then the RFE type 2 modules can be supported.
-> >>>
-> >>> Good to know that, I'll be patient and wait for a real fix.
-> >>
-> >> It's been quite some time, is support for RFE type 2 ready now?
-> >
-> > It looks like this patch should add it:
-> >
-> > https://patchwork.kernel.org/project/linux-wireless/patch/20210202055012.8296-4-pkshih@realtek.com/
-> >
-> New firmware (rtw8821c_fw.bin) is also needed. That is available at
-> https://github.com/lwfinger/rtw88.git.
+If a spurious OCP IRQ occurs the isr schedules delayed work
+but does not disable the IRQ. The delayed work assumes IRQ was
+disabled in handler and attempts enabling it again causing
+unbalanced enable.
 
-Thanks. RFE2 works with the new firmware.
+Fixes: 390af53e04114 ("regulator: qcom-labibb: Implement short-circuit and over-current IRQs")
 
-Kai-Heng
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+This fix is done purely based on code reading. No testing is done.
 
->
-> Larry
->
+I don't have the HW (and even if I did I might have hard time producing
+these errors) I have not tested this and I am unsure if my code-reading
+is correct => I would _really_ appreciate second opinion and/or testing
+
+ drivers/regulator/qcom-labibb-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+index dbb4511c3c6d..5ac4566f9b7f 100644
+--- a/drivers/regulator/qcom-labibb-regulator.c
++++ b/drivers/regulator/qcom-labibb-regulator.c
+@@ -275,7 +275,7 @@ static irqreturn_t qcom_labibb_ocp_isr(int irq, void *chip)
+ 	ret = qcom_labibb_check_ocp_status(vreg);
+ 	if (ret == 0) {
+ 		vreg->ocp_irq_count = 0;
+-		goto end;
++		return IRQ_NONE;
+ 	}
+ 	vreg->ocp_irq_count++;
+ 
+
+base-commit: 4288b4ccda966c2a49ec7c67100208378bdb34d2
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
