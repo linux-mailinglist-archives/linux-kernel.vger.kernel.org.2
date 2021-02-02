@@ -2,153 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A5830CB21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F9630CB32
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239525AbhBBTOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:14:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhBBTLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:11:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C6D64D87;
-        Tue,  2 Feb 2021 19:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612293066;
-        bh=Pzyl+wYYgvPCwgJ+GvBahmfBmshzS1gdeGZydw56C1k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=urlxNYufSkfJp0SH0EEfwFzSeIYwXDdueMnyILwXIullWx4SbMoEerX80f5OQqyLU
-         Bg+fxp5cMzP5FzVAMlOPfjBauj+B1/aEKphaIK3R5lVLYCvCQesqrDIQmZvMjDXmNR
-         wmsGMRNi9ZfDbI6vAJ5p7VMbSsLj4nb8l1NhazBIB10phtLBckQ1cOU2nN3vTXLilS
-         uJtQ4CoJagfCIkQnsWqgtg/k3AnTkwWKwrvb5ozbBGjBggCHGi2zD+24ANJ5uL76kr
-         bEh+jPfAk+q1UtVeseCuM6MVzwqCxfVLsegGHFyjAVr0PWSO8yZEm61pbzlwU5cRc5
-         HnguLQxiFymVg==
-Date:   Tue, 2 Feb 2021 21:10:40 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210202191040.GP242749@kernel.org>
-References: <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
- <20210126120823.GM827@dhcp22.suse.cz>
- <20210128092259.GB242749@kernel.org>
- <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
- <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
- <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
- <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
- <YBkcyQsky2scjEcP@dhcp22.suse.cz>
- <20210202124857.GN242749@kernel.org>
- <YBlTMqjB06aqyGbT@dhcp22.suse.cz>
+        id S238664AbhBBTPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:15:50 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:42498 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239430AbhBBTL5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:11:57 -0500
+Received: by mail-oo1-f49.google.com with SMTP id g46so5392268ooi.9;
+        Tue, 02 Feb 2021 11:11:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a+JeHbdnuibuIZ2G2YzY3S3qg4y03usyq52pjaAExoU=;
+        b=ZRXcLPcgRJJuTU7VZ8dNQ+a7S0N3HnD/QoSoQ87p1iwT6yzRGceiuBwd3Pgota3z/F
+         wkxq8AXwE4Oht4lTY8dykFd2/KMzqefI+YVbG3OmTjtdUoTyszB3uET8Ns/b8UXFIo39
+         v0pIbbtO0CeHz2iCmcRzC0WLnZwSRA3372aBgOx6j5ku0NLrdFdKIcRMFLJbkTyiJ+/r
+         n06PmQ7XtZmp1jc+YM+z7vIFHJJohA42pF5xoJ6vPaFeh10bCNI9ltKtYjfYkoBy9KBu
+         Gr6LWlhT3o5fgMwaUQZLsx/pIzRhUM0hBfgJOGuNRHLutwhG7FVTy01gXF4WbM9p6pkS
+         flVw==
+X-Gm-Message-State: AOAM531IrhGSqg4A4RxwaOsnDGL+4I9WfWJ0KbGT58zp7ngXMCoM3f3o
+        H2QzOC9saIP3BIqoFuIT9GwOk3qoks3ANKfHjZU=
+X-Google-Smtp-Source: ABdhPJyLaZZRwY28907pmLAm8002cpnYdYQvPuZutHipRCL1iyD+TzWwEHBGjYKf5+Zhu3Rd7G5GusMhYX/l9cSSUSw=
+X-Received: by 2002:a4a:9873:: with SMTP id z48mr16639097ooi.44.1612293075062;
+ Tue, 02 Feb 2021 11:11:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBlTMqjB06aqyGbT@dhcp22.suse.cz>
+References: <20210122204038.3238-1-ggherdovich@suse.cz> <20210122204038.3238-2-ggherdovich@suse.cz>
+ <YA6XmO2nuivdpE8M@hirez.programming.kicks-ass.net> <1611653310.11983.66.camel@suse.cz>
+ <CAJZ5v0jbw2X_Wk6We-uYOh9rMCrTTSSb32NFcYaFrtK+bMXMJQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jbw2X_Wk6We-uYOh9rMCrTTSSb32NFcYaFrtK+bMXMJQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 2 Feb 2021 20:11:04 +0100
+Message-ID: <CAJZ5v0icG4V5o8p1fAQY1Ne2vCe0CBq2YfSajSxkCE3VbuY_Ow@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
+ schedutil invariant formula
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Larabel <Michael@phoronix.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 02:27:14PM +0100, Michal Hocko wrote:
-> On Tue 02-02-21 14:48:57, Mike Rapoport wrote:
-> > On Tue, Feb 02, 2021 at 10:35:05AM +0100, Michal Hocko wrote:
-> > > On Mon 01-02-21 08:56:19, James Bottomley wrote:
-> > > 
-> > > I have also proposed potential ways out of this. Either the pool is not
-> > > fixed sized and you make it a regular unevictable memory (if direct map
-> > > fragmentation is not considered a major problem)
-> > 
-> > I think that the direct map fragmentation is not a major problem, and the
-> > data we have confirms it, so I'd be more than happy to entirely drop the
-> > pool, allocate memory page by page and remove each page from the direct
-> > map. 
-> > 
-> > Still, we cannot prove negative and it could happen that there is a
-> > workload that would suffer a lot from the direct map fragmentation, so
-> > having a pool of large pages upfront is better than trying to fix it
-> > afterwards. As we get more confidence that the direct map fragmentation is
-> > not an issue as it is common to believe we may remove the pool altogether.
-> 
-> I would drop the pool altogether and instantiate pages to the
-> unevictable LRU list and internally treat it as ramdisk/mlock so you
-> will get an accounting correctly. The feature should be still opt-in
-> (e.g. a kernel command line parameter) for now. The recent report by
-> Intel (http://lkml.kernel.org/r/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com)
-> there is no clear win to have huge mappings in _general_ but there are
-> still workloads which benefit. 
->  
-> > I think that using PMD_ORDER allocations for the pool with a fallback to
-> > order 0 will do the job, but unfortunately I doubt we'll reach a consensus
-> > about this because dogmatic beliefs are hard to shake...
-> 
-> If this is opt-in then those beliefs can be relaxed somehow. Long term
-> it makes a lot of sense to optimize for a better direct map management
-> but I do not think this is a hard requirement for an initial
-> implementation if it is not imposed to everybody by default.
+On Tue, Feb 2, 2021 at 7:45 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> > A more restrictive possibility is to still use plain PMD_ORDER allocations
-> > to fill the pool, without relying on CMA. In this case there will be no
-> > global secretmem specific pool to exhaust, but then it's possible to drain
-> > high order free blocks in a system, so CMA has an advantage of limiting
-> > secretmem pools to certain amount of memory with somewhat higher
-> > probability for high order allocation to succeed. 
-> > 
-> > > or you need a careful access control 
-> > 
-> > Do you mind elaborating what do you mean by "careful access control"?
-> 
-> As already mentioned, a mechanism to control who can use this feature -
-> e.g. make it a special device which you can access control by
-> permissions or higher level security policies. But that is really needed
-> only if the pool is fixed sized.
-  
-Let me reiterate to make sure I don't misread your suggestion.
+> On Tue, Jan 26, 2021 at 5:19 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+> >
+> > On Mon, 2021-01-25 at 11:04 +0100, Peter Zijlstra wrote:
+> > > On Fri, Jan 22, 2021 at 09:40:38PM +0100, Giovanni Gherdovich wrote:
+> > > > This workload is constant in time, so instead of using the PELT sum we can
+> > > > pretend that scale invariance is obtained with
+> > > >
+> > > >     util_inv = util_raw * freq_curr / freq_max1        [formula-1]
+> > > >
+> > > > where util_raw is the PELT util from v5.10 (which is to say, not invariant),
+> > > > and util_inv is the PELT util from v5.11-rc4. freq_max1 comes from
+> > > > commit 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for
+> > > > frequency invariance on AMD EPYC") and is (P0+max_boost)/2 = (2.25+3.4)/2 =
+> > > > 2.825 GHz.  Then we have the schedutil formula
+> > > >
+> > > >     freq_next = 1.25 * freq_max2 * util_inv            [formula-2]
+> > > >
+> > > > Here v5.11-rc4 uses freq_max2 = P0 = 2.25 GHz (and this patch changes it to
+> > > > 3.4 GHz).
+> > > >
+> > > > Since all cores are busy, there is no boost available. Let's be generous and say
+> > > > the tasks initially get P0, i.e. freq_curr = 2.25 GHz. Combining the formulas
+> > > > above and taking util_raw = 825/1024 = 0.8, freq_next is:
+> > > >
+> > > >     freq_next = 1.25 * 2.25 * 0.8 * 2.25 / 2.825 = 1.79 GHz
+> > >
+> > > Right, so here's a 'problem' between schedutil and cpufreq, they don't
+> > > use the same f_max at all times.
+> > >
+> > > And this is also an inconsistency between acpi_cpufreq and intel_pstate
+> > > (passive). IIRC the intel_pstate cpufreq drivers uses 4C/1C/P0 resp,
+> > > while ACPI seems to stick to P0 f_max.
+> >
+> > That's correct. A different f_max is used depending on the occasion. Let me
+> > rephrase with:
+>
+> OK, I confused the terminology, sorry about that.
+>
+> > cpufreq core asks the driver what's the f_max. What's the answer?
+> >
+> > intel_pstate says: 1C
+>
+> Yes, unless turbo is disabled, in which case it is P0.
 
-If we make secretmem an opt-in feature with, e.g. kernel parameter, the
-pooling of large pages is unnecessary. In this case there is no limited
-resource we need to protect because secretmem will allocate page by page.
+BTW, and that actually is quite important, the max_freq reported by
+intel_pstate doesn't matter for schedutil after the new ->adjust_perf
+callback has been added, because that doesn't even use the frequency.
 
-Since there is no limited resource, we don't need special permissions
-to access secretmem so we can move forward with a system call that creates
-a mmapable file descriptor and save the hassle of a chardev.
+So, as a long-term remedy, it may just be better to implement
+->adjust_perf in acpi_cpufreq().
 
-I cannot say I don't like this as it cuts roughly half of mm/secretmem.c :)
+Again, I'm terribly sorry for missing this thread and the patch.
 
-But I must say I am still a bit concerned about that we have no provisions
-here for dealing with the direct map fragmentation even with the set goal
-to improve the direct map management in the long run...
-
--- 
-Sincerely yours,
-Mike.
+> > acpi_cpufreq says: P0
+>
+> This is P0+1, isn't it?
+>
+> > scheduler asks the freq-invariance machinery what's f_max, because it needs to
+> > compute f_curr/f_max. What's the answer?
+> >
+> > Intel CPUs: 4C in most cases, 1C on Atom, something else on Xeon Phi.
+> > AMD CPUs: (P0 + 1C) / 2.
+> >
+> >
+> > Legend:
+> > 1C = 1-core boost
+> > 4C = 4-cores boost
+> > P0 = max non-boost P-States
