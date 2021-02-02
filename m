@@ -2,43 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26F830C7D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6927E30C7D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237610AbhBBRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:33:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
+        id S237297AbhBBRcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:32:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234173AbhBBOMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D61FC6504B;
-        Tue,  2 Feb 2021 13:52:55 +0000 (UTC)
+        id S234181AbhBBOMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:12:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 828FA6504C;
+        Tue,  2 Feb 2021 13:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273976;
-        bh=c+qTeRHMe1EPvovcvQf69siH95zbSNHGz3mybK9UL0I=;
+        s=korg; t=1612273979;
+        bh=0AM94Ii/H/GZK8UwKi9UQTQW2fx5jlfjqYgylomNMZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nXV+dm28mW3mZm6f23u6S0afPKBL0iFAPoU3xySmJtyWpwrmuXtRJNEMaXjUwzxV+
-         3r6NavdP0HKylDeKsrTavPCQPWtpFy9Co41vRTZ+wcP+jYvVwweQzj9jI7doyhfbNB
-         fGeE/lv8i3zearB4tRbOynz0JEHxpT+H6vdyXhZU=
+        b=RLBN1EWoUZD8RdR3zOG2KhBBKMzYXNH0pqYZ/cwip3Y2HGW7vXofUeFl2n7Bg+flK
+         dmENPnvQHRjISbpp+53AokrU+bvYnx8lQ35QpMopvE6iBTit/0JKdZdXcPlPE3x4G5
+         lRFJHPE8+Od0YrExphQ4a+xaMjSJCHvr4bKPIndE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhijianx.li@intel.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alistair Delva <adelva@google.com>
-Subject: [PATCH 4.14 24/30] x86/entry/64/compat: Fix "x86/entry/64/compat: Preserve r8-r11 in int $0x80"
-Date:   Tue,  2 Feb 2021 14:39:05 +0100
-Message-Id: <20210202132943.127113115@linuxfoundation.org>
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Filippo Sironi <sironi@amazon.de>
+Subject: [PATCH 4.14 25/30] iommu/vt-d: Gracefully handle DMAR units with no supported address widths
+Date:   Tue,  2 Feb 2021 14:39:06 +0100
+Message-Id: <20210202132943.171461158@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
 References: <20210202132942.138623851@linuxfoundation.org>
@@ -50,94 +41,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-commit 22cd978e598618e82c3c3348d2069184f6884182 upstream.
+commit c40aaaac1018ff1382f2d35df5129a6bcea3df6b upstream.
 
-Commit:
+Instead of bailing out completely, such a unit can still be used for
+interrupt remapping.
 
-  8bb2610bc496 ("x86/entry/64/compat: Preserve r8-r11 in int $0x80")
-
-was busted: my original patch had a minor conflict with
-some of the nospec changes, but "git apply" is very clever
-and silently accepted the patch by making the same changes
-to a different function in the same file.  There was obviously
-a huge offset, but "git apply" for some reason doesn't feel
-any need to say so.
-
-Move the changes to the correct function.  Now the
-test_syscall_vdso_32 selftests passes.
-
-If anyone cares to observe the original problem, try applying the
-patch at:
-
-  https://lore.kernel.org/lkml/d4c4d9985fbe64f8c9e19291886453914b48caee.1523975710.git.luto@kernel.org/raw
-
-to the kernel at 316d097c4cd4e7f2ef50c40cff2db266593c4ec4:
-
- - "git am" and "git apply" accept the patch without any complaints at all
- - "patch -p1" at least prints out a message about the huge offset.
-
-Reported-by: zhijianx.li@intel.com
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Cc: Arjan van de Ven <arjan@linux.intel.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org #v4.17+
-Fixes: 8bb2610bc496 ("x86/entry/64/compat: Preserve r8-r11 in int $0x80")
-Link: http://lkml.kernel.org/r/6012b922485401bc42676e804171ded262fc2ef2.1530078306.git.luto@kernel.org
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Alistair Delva <adelva@google.com>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/linux-iommu/549928db2de6532117f36c9c810373c14cf76f51.camel@infradead.org/
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+[ context change due to moving drivers/iommu/dmar.c to
+  drivers/iommu/intel/dmar.c ]
+Signed-off-by: Filippo Sironi <sironi@amazon.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/entry/entry_64_compat.S |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/iommu/dmar.c |   46 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -84,13 +84,13 @@ ENTRY(entry_SYSENTER_compat)
- 	pushq	%rdx			/* pt_regs->dx */
- 	pushq	%rcx			/* pt_regs->cx */
- 	pushq	$-ENOSYS		/* pt_regs->ax */
--	pushq   %r8			/* pt_regs->r8 */
-+	pushq   $0			/* pt_regs->r8  = 0 */
- 	xorl	%r8d, %r8d		/* nospec   r8 */
--	pushq   %r9			/* pt_regs->r9 */
-+	pushq   $0			/* pt_regs->r9  = 0 */
- 	xorl	%r9d, %r9d		/* nospec   r9 */
--	pushq   %r10			/* pt_regs->r10 */
-+	pushq   $0			/* pt_regs->r10 = 0 */
- 	xorl	%r10d, %r10d		/* nospec   r10 */
--	pushq   %r11			/* pt_regs->r11 */
-+	pushq   $0			/* pt_regs->r11 = 0 */
- 	xorl	%r11d, %r11d		/* nospec   r11 */
- 	pushq   %rbx                    /* pt_regs->rbx */
- 	xorl	%ebx, %ebx		/* nospec   rbx */
-@@ -357,13 +357,13 @@ ENTRY(entry_INT80_compat)
- 	pushq	%rdx			/* pt_regs->dx */
- 	pushq	%rcx			/* pt_regs->cx */
- 	pushq	$-ENOSYS		/* pt_regs->ax */
--	pushq   $0			/* pt_regs->r8  = 0 */
-+	pushq   %r8			/* pt_regs->r8 */
- 	xorl	%r8d, %r8d		/* nospec   r8 */
--	pushq   $0			/* pt_regs->r9  = 0 */
-+	pushq   %r9			/* pt_regs->r9 */
- 	xorl	%r9d, %r9d		/* nospec   r9 */
--	pushq   $0			/* pt_regs->r10 = 0 */
-+	pushq   %r10			/* pt_regs->r10*/
- 	xorl	%r10d, %r10d		/* nospec   r10 */
--	pushq   $0			/* pt_regs->r11 = 0 */
-+	pushq   %r11			/* pt_regs->r11 */
- 	xorl	%r11d, %r11d		/* nospec   r11 */
- 	pushq   %rbx                    /* pt_regs->rbx */
- 	xorl	%ebx, %ebx		/* nospec   rbx */
+--- a/drivers/iommu/dmar.c
++++ b/drivers/iommu/dmar.c
+@@ -1026,8 +1026,8 @@ static int alloc_iommu(struct dmar_drhd_
+ {
+ 	struct intel_iommu *iommu;
+ 	u32 ver, sts;
+-	int agaw = 0;
+-	int msagaw = 0;
++	int agaw = -1;
++	int msagaw = -1;
+ 	int err;
+ 
+ 	if (!drhd->reg_base_addr) {
+@@ -1052,17 +1052,28 @@ static int alloc_iommu(struct dmar_drhd_
+ 	}
+ 
+ 	err = -EINVAL;
+-	agaw = iommu_calculate_agaw(iommu);
+-	if (agaw < 0) {
+-		pr_err("Cannot get a valid agaw for iommu (seq_id = %d)\n",
+-			iommu->seq_id);
+-		goto err_unmap;
+-	}
+-	msagaw = iommu_calculate_max_sagaw(iommu);
+-	if (msagaw < 0) {
+-		pr_err("Cannot get a valid max agaw for iommu (seq_id = %d)\n",
+-			iommu->seq_id);
+-		goto err_unmap;
++	if (cap_sagaw(iommu->cap) == 0) {
++		pr_info("%s: No supported address widths. Not attempting DMA translation.\n",
++			iommu->name);
++		drhd->ignored = 1;
++	}
++
++	if (!drhd->ignored) {
++		agaw = iommu_calculate_agaw(iommu);
++		if (agaw < 0) {
++			pr_err("Cannot get a valid agaw for iommu (seq_id = %d)\n",
++			       iommu->seq_id);
++			drhd->ignored = 1;
++		}
++	}
++	if (!drhd->ignored) {
++		msagaw = iommu_calculate_max_sagaw(iommu);
++		if (msagaw < 0) {
++			pr_err("Cannot get a valid max agaw for iommu (seq_id = %d)\n",
++			       iommu->seq_id);
++			drhd->ignored = 1;
++			agaw = -1;
++		}
+ 	}
+ 	iommu->agaw = agaw;
+ 	iommu->msagaw = msagaw;
+@@ -1089,7 +1100,12 @@ static int alloc_iommu(struct dmar_drhd_
+ 
+ 	raw_spin_lock_init(&iommu->register_lock);
+ 
+-	if (intel_iommu_enabled) {
++	/*
++	 * This is only for hotplug; at boot time intel_iommu_enabled won't
++	 * be set yet. When intel_iommu_init() runs, it registers the units
++	 * present at boot time, then sets intel_iommu_enabled.
++	 */
++	if (intel_iommu_enabled && !drhd->ignored) {
+ 		err = iommu_device_sysfs_add(&iommu->iommu, NULL,
+ 					     intel_iommu_groups,
+ 					     "%s", iommu->name);
+@@ -1118,7 +1134,7 @@ error:
+ 
+ static void free_iommu(struct intel_iommu *iommu)
+ {
+-	if (intel_iommu_enabled) {
++	if (intel_iommu_enabled && iommu->iommu.ops) {
+ 		iommu_device_unregister(&iommu->iommu);
+ 		iommu_device_sysfs_remove(&iommu->iommu);
+ 	}
 
 
