@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5CD30C82D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CF230C170
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237810AbhBBRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:43:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        id S234237AbhBBOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234110AbhBBOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7B764FAE;
-        Tue,  2 Feb 2021 13:52:03 +0000 (UTC)
+        id S233668AbhBBONl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:13:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F46C6504A;
+        Tue,  2 Feb 2021 13:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273924;
-        bh=YmmVrfADKQPkGiEzioXk3a5THk9oy8tVCgLEMIEcB9w=;
+        s=korg; t=1612273995;
+        bh=GpN8qT98RVpJc8qD5Ha46R+uHPu6WMXFK8MHkJqvxd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V96q+ZN1eA8bp+APjgaa9sZHFhpsYQUWBwC5AkebFaEDJZ+QTTii3RNbPYfibCc4i
-         VLiCxWf2pwkk/QjeXAUjn5QWm6rz0NdqCfS/u7atgVFnhkBh8YpR1Tr9OsHsdKhEtN
-         X7q8pY1k3OGl+FTEzjGzrkx6zSy+IxycSqdGddRY=
+        b=yqUKcOgbm7KLuuMjMM+eFFJOABeyOfrIXZEcXuMIDDu9cIbBliaEh5vsr57/HONn9
+         SrjbUy7itnL1vnqwzWP1L+o/CdgGZYIrppnDNCiJOnv+y4+sFIjvNNhbMuebdauF6t
+         bVChaUUVFXPdFZTxV9T6FbdJPkz06EGIE391lRlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com,
-        syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 04/30] wext: fix NULL-ptr-dereference with cfg80211s lack of commit()
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 02/37] ACPI: sysfs: Prefer "compatible" modalias
 Date:   Tue,  2 Feb 2021 14:38:45 +0100
-Message-Id: <20210202132942.317719364@linuxfoundation.org>
+Message-Id: <20210202132943.000935541@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 5122565188bae59d507d90a9a9fd2fd6107f4439 upstream.
+commit 36af2d5c4433fb40ee2af912c4ac0a30991aecfc upstream.
 
-Since cfg80211 doesn't implement commit, we never really cared about
-that code there (and it's configured out w/o CONFIG_WIRELESS_EXT).
-After all, since it has no commit, it shouldn't return -EIWCOMMIT to
-indicate commit is needed.
+Commit 8765c5ba1949 ("ACPI / scan: Rework modalias creation when
+"compatible" is present") may create two "MODALIAS=" in one uevent
+file if specific conditions are met.
 
-However, EIWCOMMIT is actually an alias for EINPROGRESS, which _can_
-happen if e.g. we try to change the frequency but we're already in
-the process of connecting to some network, and drivers could return
-that value (or even cfg80211 itself might).
+This breaks systemd-udevd, which assumes each "key" in one uevent file
+to be unique. The internal implementation of systemd-udevd overwrites
+the first MODALIAS with the second one, so its kmod rule doesn't load
+the driver for the first MODALIAS.
 
-This then causes us to crash because dev->wireless_handlers is NULL
-but we try to check dev->wireless_handlers->standard[0].
+So if both the ACPI modalias and the OF modalias are present, use the
+latter to ensure that there will be only one MODALIAS.
 
-Fix this by also checking dev->wireless_handlers. Also simplify the
-code a little bit.
-
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
-Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20210121171621.2076e4a37d5a.I5d9c72220fe7bb133fb718751da0180a57ecba4e@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://github.com/systemd/systemd/pull/18163
+Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: 4.1+ <stable@vger.kernel.org> # 4.1+
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/wireless/wext-core.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/device_sysfs.c |   20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
---- a/net/wireless/wext-core.c
-+++ b/net/wireless/wext-core.c
-@@ -898,8 +898,9 @@ out:
- int call_commit_handler(struct net_device *dev)
- {
- #ifdef CONFIG_WIRELESS_EXT
--	if ((netif_running(dev)) &&
--	   (dev->wireless_handlers->standard[0] != NULL))
-+	if (netif_running(dev) &&
-+	    dev->wireless_handlers &&
-+	    dev->wireless_handlers->standard[0])
- 		/* Call the commit handler on the driver */
- 		return dev->wireless_handlers->standard[0](dev, NULL,
- 							   NULL, NULL);
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -259,20 +259,12 @@ int __acpi_device_uevent_modalias(struct
+ 	if (add_uevent_var(env, "MODALIAS="))
+ 		return -ENOMEM;
+ 
+-	len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
+-				  sizeof(env->buf) - env->buflen);
+-	if (len < 0)
+-		return len;
+-
+-	env->buflen += len;
+-	if (!adev->data.of_compatible)
+-		return 0;
+-
+-	if (len > 0 && add_uevent_var(env, "MODALIAS="))
+-		return -ENOMEM;
+-
+-	len = create_of_modalias(adev, &env->buf[env->buflen - 1],
+-				 sizeof(env->buf) - env->buflen);
++	if (adev->data.of_compatible)
++		len = create_of_modalias(adev, &env->buf[env->buflen - 1],
++					 sizeof(env->buf) - env->buflen);
++	else
++		len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
++					  sizeof(env->buf) - env->buflen);
+ 	if (len < 0)
+ 		return len;
+ 
 
 
