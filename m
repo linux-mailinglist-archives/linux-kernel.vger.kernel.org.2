@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E8730BDC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FD030BDD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhBBMJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhBBMIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:08:53 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF94C061573;
-        Tue,  2 Feb 2021 04:08:12 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id v24so27565862lfr.7;
-        Tue, 02 Feb 2021 04:08:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zZCZ+wr8JRQsDltWKVRvfaIgSPnse+tD2ObDmx6z1mo=;
-        b=WE6eDV958XPFL2lx62O08hHtA4AbTQKkx99h3LgDSiB8kL4k18sPL29upJlhwy79pW
-         dRE9GxYeTwkpywtjjLXy1FsDikUdVM0GoydTIbdG4O1iTCTjymUN4hrll8XWJVlyY+yl
-         6a/1394h+4586CA4idzuKMeYwn6tKQp8JKgcj3wlWTE4yVLfMHRk/BmusiN+RsTg3Nij
-         B0/Q6Sj5V0zAQ4EdSvUmr1/aDVfFt4lm+dSoacZ6PVGkVKg5MXiyFKlS1eMAayfJyJ7H
-         gGkRlmWMhZMevMiRAbw+CQkJ9O+UoeQ8qfuDXyRn2lncIdR/sKwLykcPjGmcOE78RnlA
-         is6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zZCZ+wr8JRQsDltWKVRvfaIgSPnse+tD2ObDmx6z1mo=;
-        b=iW8JPFTuwAgDcc1KA+8l6JWsSc8c45pz2I+zNHfOcDag7j/BsL/MWHuarHcbGkwT1o
-         QkXh7z5swnLHG1BIxkV7hmfQaYa3YJUhgsHQ1yXRC3TYNGioDeKhoEzh3dfxHzAiesZA
-         m6nxxXUNDCXYvJUfBAiggOEEiEqagwJGUVXQyueh8jajpdU/OdfhnasJaetQZtImO3ZG
-         SAnZkP/iBtbeIDYBsiMvKg7x5RRguwggw6HPOGJBrn3jUGIHI2tYi196HnWG7kPRvJeY
-         o2rK3bn8WCsoeGxGF5/bH+XmU+010rTbZRc2+kO1hTEFxug6KMYSs5gdHTxuuRPrZbCZ
-         wITA==
-X-Gm-Message-State: AOAM531jGMcbaTIum70KM7rsOLO814D988AuFRq8bXJo6yDXU3A1Q53Q
-        nKKK/Yot0rXe5SEL51Mhyrg=
-X-Google-Smtp-Source: ABdhPJzlgkqPiX4UUZ8aMlEwbhk6EdlzN9uDmhnCePDFFjoZGK+1yh+5uZEfT9h5TWq+18bIEG0J/A==
-X-Received: by 2002:a05:6512:39c3:: with SMTP id k3mr5404293lfu.501.1612267691278;
-        Tue, 02 Feb 2021 04:08:11 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.228])
-        by smtp.googlemail.com with ESMTPSA id i5sm3918806ljj.42.2021.02.02.04.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 04:08:10 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     rydberg@bitmath.org, dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
-Subject: [PATCH] drivers/mt: restrict length of kzalloc in input_mt_init_slots()
-Date:   Tue,  2 Feb 2021 18:08:07 +0600
-Message-Id: <20210202120807.1394788-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231452AbhBBMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:11:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhBBMJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:09:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C189764F5D;
+        Tue,  2 Feb 2021 12:08:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612267710;
+        bh=JwednvX4Gfq7nQWX9hZSJ7DoIpMTpIBhI9nly8aBdd4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gTtETPGrLQeGnFg870CToy4RawOaAxEp7M8D0Ez/OrXpyfb+vZuufRt8re75oILbd
+         xthh5CsHP3yBsua2iYzwkGIjFJ+ToLtIVBxxGTkez507QJS0/0dM6dkyLl66Es3iDJ
+         i+XuR0ztmTWbqvg38enV144IegTa0V2vSL1CyMqc=
+Date:   Tue, 2 Feb 2021 13:08:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Adrian Catangiu <acatan@amazon.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qemu-devel@nongnu.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, graf@amazon.com, rdunlap@infradead.org,
+        arnd@arndb.de, ebiederm@xmission.com, rppt@kernel.org,
+        0x7f454c46@gmail.com, borntraeger@de.ibm.com, Jason@zx2c4.com,
+        jannh@google.com, w@1wt.eu, colmmacc@amazon.com, luto@kernel.org,
+        tytso@mit.edu, ebiggers@kernel.org, dwmw@amazon.co.uk,
+        bonzini@gnu.org, sblbir@amazon.com, raduweis@amazon.com,
+        corbet@lwn.net, mst@redhat.com, mhocko@kernel.org,
+        rafael@kernel.org, pavel@ucw.cz, mpe@ellerman.id.au,
+        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
+        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
+        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
+        ghammer@redhat.com
+Subject: Re: [PATCH v5 1/2] drivers/misc: sysgenid: add system generation id
+ driver
+Message-ID: <YBlAueoh12esXR2A@kroah.com>
+References: <1612200294-17561-1-git-send-email-acatan@amazon.com>
+ <1612200294-17561-2-git-send-email-acatan@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612200294-17561-2-git-send-email-acatan@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in input_mt_init_slots [1] when
-struct_size(mt, slots, num_slots)=0x40006 where num_slots=0x10001,
-which exceeds KMALLOC_MAX_SIZE (0x40000) and causes
-order >= MAX_ORDER condition.
+On Mon, Feb 01, 2021 at 07:24:53PM +0200, Adrian Catangiu wrote:
+> +static long sysgenid_ioctl(struct file *file,
+> +						   unsigned int cmd, unsigned long arg)
 
-[1]
-Call Trace:
- alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
- kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
- kmalloc include/linux/slab.h:557 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- input_mt_init_slots drivers/input/input-mt.c:49 [inline]
-
-Reported-by: syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
- drivers/input/input-mt.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/input/input-mt.c b/drivers/input/input-mt.c
-index 44fe6f2f063c..e542f45a45ab 100644
---- a/drivers/input/input-mt.c
-+++ b/drivers/input/input-mt.c
-@@ -40,13 +40,18 @@ int input_mt_init_slots(struct input_dev *dev, unsigned int num_slots,
- {
- 	struct input_mt *mt = dev->mt;
- 	int i;
-+	size_t mt_size = 0;
- 
- 	if (!num_slots)
- 		return 0;
- 	if (mt)
- 		return mt->num_slots != num_slots ? -EINVAL : 0;
- 
--	mt = kzalloc(struct_size(mt, slots, num_slots), GFP_KERNEL);
-+	mt_size = struct_size(mt, slots, num_slots);
-+	if (mt_size > KMALLOC_MAX_SIZE)
-+		return -ENOMEM;
-+
-+	mt = kzalloc(mt_size, GFP_KERNEL);
- 	if (!mt)
- 		goto err_mem;
- 
--- 
-2.25.1
+Very odd indentation style, checkpatch.pl didn't catch this?
 
