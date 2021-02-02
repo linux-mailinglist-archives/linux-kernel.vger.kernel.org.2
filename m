@@ -2,199 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DA030C9A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F5230C984
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238254AbhBBSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:23:52 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42080 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238419AbhBBSVK (ORCPT
+        id S238282AbhBBSUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:20:18 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:38015 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238366AbhBBSQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:21:10 -0500
-Received: from 89-64-80-193.dynamic.chello.pl (89.64.80.193) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id eb8ce28fe232e34e; Tue, 2 Feb 2021 19:19:55 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v2 2/5] ACPI: battery: Clean up printing messages
-Date:   Tue, 02 Feb 2021 19:15:57 +0100
-Message-ID: <3131826.iYOCbf7Byd@kreacher>
-In-Reply-To: <1991501.dpTHplkurC@kreacher>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+        Tue, 2 Feb 2021 13:16:45 -0500
+Received: by mail-wr1-f54.google.com with SMTP id b3so3365596wrj.5;
+        Tue, 02 Feb 2021 10:16:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FCp+C+rgPYZTZ229hkCWEYMMpy6/7MzmueKWQdI985s=;
+        b=AV298+j1AiOz73Ta9LuHBF/a4+s40toGw8rx4Ge35ATNTNQ1Bs8Jwv8HEHs5A6nNUW
+         0enZabyNCwuiSvjW6XPVLZuGg8JOdpHOmx2bP3x3Lkzzu70gp7tziRM83sQohottoK3v
+         AkY6uR1J5BzFKMLMcev9oratFZoJp6egTS/gZADHzFeRr+7oF8eWIs3PaIQIBp1yY3HU
+         nwsoBXnvyCImhNV5P9EJTBEMES+kVFKgcYuAAIEoVUR0NgcgNYpJDPGNANy1SMfbOU4U
+         2LUO+M/r0GCG7tvucm1KYbb1nb0WqSM85iWpqhFc0D4fQrgUhRaRUgvakp7WTkqKW9oc
+         jVoA==
+X-Gm-Message-State: AOAM53377A6xRl0XZnRSlxNRAOc5h1IcZj51G9cWNJlgI7V3eQQQA/j7
+        FXH92/o7NEDl3s9FwrVFjv4=
+X-Google-Smtp-Source: ABdhPJzm1+hIiMOhMVNoFIodRo9Vswj4u0lg6rRTh7uPnqz7H7LD3Ip2YXrB+ZXKnVMQ9OPhiXifIA==
+X-Received: by 2002:adf:902a:: with SMTP id h39mr24929214wrh.147.1612289761909;
+        Tue, 02 Feb 2021 10:16:01 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id r11sm4433342wmh.9.2021.02.02.10.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 10:16:01 -0800 (PST)
+Date:   Tue, 2 Feb 2021 18:16:00 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v5 15/16] x86/hyperv: implement an MSI domain for root
+ partition
+Message-ID: <20210202181600.4lk4zber7dogsd6e@liuwe-devbox-debian-v2>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-16-wei.liu@kernel.org>
+ <MWHPR21MB1593FFC6005966A3D9BEA3EFD7BB9@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210202173153.jkbvwck2vsjlbjbz@liuwe-devbox-debian-v2>
+ <MWHPR21MB1593248BE6E343117897FE82D7B59@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB1593248BE6E343117897FE82D7B59@MWHPR21MB1593.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Feb 02, 2021 at 06:15:23PM +0000, Michael Kelley wrote:
+> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, February 2, 2021 9:32 AM
+> > 
+> > On Wed, Jan 27, 2021 at 05:47:04AM +0000, Michael Kelley wrote:
+> > > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
+> > > >
+> > > > When Linux runs as the root partition on Microsoft Hypervisor, its
+> > > > interrupts are remapped.  Linux will need to explicitly map and unmap
+> > > > interrupts for hardware.
+> > > >
+> > > > Implement an MSI domain to issue the correct hypercalls. And initialize
+> > > > this irqdomain as the default MSI irq domain.
+> > > >
+> > > > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > > > ---
+> > > > v4: Fix compilation issue when CONFIG_PCI_MSI is not set.
+> > > > v3: build irqdomain.o for 32bit as well.
+> > >
+> > > I'm not clear on the intent for 32-bit builds.  Given that hv_proc.c is built
+> > > only for 64-bit, I'm assuming running Linux in the root partition
+> > > is only functional for 64-bit builds.  So is the goal simply that 32-bit
+> > > builds will compile correctly?  Seems like maybe there should be
+> > > a CONFIG option for running Linux in the root partition, and that
+> > > option would force 64-bit.
+> > 
+> > To ensure 32 bit kernel builds and 32 bit guests still work.
+> > 
+> > The config option ROOT_API is to be introduced by Nuno's /dev/mshv
+> > series. We can use that option to gate some objects when that's
+> > available.
+> > 
+> 
+> But just so I'm 100% clear, is there intent to run 32-bit Linux in the root
+> partition?  I'm assuming not.
 
-Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
-in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
-respectively, which among other things causes the excessive log
-level of the messages previously printed via ACPI_EXCEPTION() to
-be more adequate.
+That's correct. There is no intent to run 32-bit Linux as the root
+partition.
 
-Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
-definition from the headers and update the documentation accordingly.
+Wei.
 
-While at it, update the pr_fmt() definition and drop the unneeded
-PREFIX sybmbol definition from battery.c.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2: Changelog update
-
----
- Documentation/firmware-guide/acpi/debug.rst |    1 
- drivers/acpi/battery.c                      |   29 ++++++++++++++--------------
- drivers/acpi/sysfs.c                        |    1 
- include/acpi/acpi_drivers.h                 |    1 
- 4 files changed, 15 insertions(+), 17 deletions(-)
-
-Index: linux-pm/drivers/acpi/battery.c
-===================================================================
---- linux-pm.orig/drivers/acpi/battery.c
-+++ linux-pm/drivers/acpi/battery.c
-@@ -8,7 +8,7 @@
-  *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
-  */
- 
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+#define pr_fmt(fmt) "ACPI: battery: " fmt
- 
- #include <linux/async.h>
- #include <linux/delay.h>
-@@ -29,8 +29,6 @@
- 
- #include <acpi/battery.h>
- 
--#define PREFIX "ACPI: "
--
- #define ACPI_BATTERY_VALUE_UNKNOWN 0xFFFFFFFF
- #define ACPI_BATTERY_CAPACITY_VALID(capacity) \
- 	((capacity) != 0 && (capacity) != ACPI_BATTERY_VALUE_UNKNOWN)
-@@ -44,10 +42,6 @@
- #define ACPI_BATTERY_STATE_CHARGING	0x2
- #define ACPI_BATTERY_STATE_CRITICAL	0x4
- 
--#define _COMPONENT		ACPI_BATTERY_COMPONENT
--
--ACPI_MODULE_NAME("battery");
--
- MODULE_AUTHOR("Paul Diefenbaugh");
- MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
- MODULE_DESCRIPTION("ACPI Battery Driver");
-@@ -466,7 +460,8 @@ static int extract_package(struct acpi_b
- static int acpi_battery_get_status(struct acpi_battery *battery)
- {
- 	if (acpi_bus_get_status(battery->device)) {
--		ACPI_EXCEPTION((AE_INFO, AE_ERROR, "Evaluating _STA"));
-+		acpi_handle_info(battery->device->handle,
-+				 "_STA evaluation failed\n");
- 		return -ENODEV;
- 	}
- 	return 0;
-@@ -535,8 +530,10 @@ static int acpi_battery_get_info(struct
- 		mutex_unlock(&battery->lock);
- 
- 		if (ACPI_FAILURE(status)) {
--			ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s",
--					use_bix ? "_BIX":"_BIF"));
-+			acpi_handle_info(battery->device->handle,
-+					 "%s evaluation failed: %s\n",
-+					 use_bix ?"_BIX":"_BIF",
-+				         acpi_format_exception(status));
- 		} else {
- 			result = extract_battery_info(use_bix,
- 						      battery,
-@@ -573,7 +570,9 @@ static int acpi_battery_get_state(struct
- 	mutex_unlock(&battery->lock);
- 
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _BST"));
-+		acpi_handle_info(battery->device->handle,
-+				 "_BST evaluation failed: %s",
-+				 acpi_format_exception(status));
- 		return -ENODEV;
- 	}
- 
-@@ -625,7 +624,9 @@ static int acpi_battery_set_alarm(struct
- 	if (ACPI_FAILURE(status))
- 		return -ENODEV;
- 
--	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Alarm set to %d\n", battery->alarm));
-+	acpi_handle_debug(battery->device->handle, "Alarm set to %d\n",
-+			  battery->alarm);
-+
- 	return 0;
- }
- 
-@@ -1201,7 +1202,7 @@ static int acpi_battery_add(struct acpi_
- 	if (result)
- 		goto fail;
- 
--	pr_info(PREFIX "%s Slot [%s] (battery %s)\n",
-+	pr_info("%s Slot [%s] (battery %s)\n",
- 		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
- 		device->status.battery_present ? "present" : "absent");
- 
-@@ -1282,7 +1283,7 @@ static void __init acpi_battery_init_asy
- 	if (battery_check_pmic) {
- 		for (i = 0; i < ARRAY_SIZE(acpi_battery_blacklist); i++)
- 			if (acpi_dev_present(acpi_battery_blacklist[i], "1", -1)) {
--				pr_info(PREFIX ACPI_BATTERY_DEVICE_NAME
-+				pr_info(ACPI_BATTERY_DEVICE_NAME
- 					": found native %s PMIC, not loading\n",
- 					acpi_battery_blacklist[i]);
- 				return;
-Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-===================================================================
---- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-+++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-@@ -52,7 +52,6 @@ shows the supported mask values, current
-     ACPI_CA_DISASSEMBLER            0x00000800
-     ACPI_COMPILER                   0x00001000
-     ACPI_TOOLS                      0x00002000
--    ACPI_BATTERY_COMPONENT          0x00040000
-     ACPI_BUTTON_COMPONENT           0x00080000
-     ACPI_SBS_COMPONENT              0x00100000
-     ACPI_FAN_COMPONENT              0x00200000
-Index: linux-pm/drivers/acpi/sysfs.c
-===================================================================
---- linux-pm.orig/drivers/acpi/sysfs.c
-+++ linux-pm/drivers/acpi/sysfs.c
-@@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
- 	ACPI_DEBUG_INIT(ACPI_COMPILER),
- 	ACPI_DEBUG_INIT(ACPI_TOOLS),
- 
--	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
-Index: linux-pm/include/acpi/acpi_drivers.h
-===================================================================
---- linux-pm.orig/include/acpi/acpi_drivers.h
-+++ linux-pm/include/acpi/acpi_drivers.h
-@@ -15,7 +15,6 @@
-  * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
-  * if you add to this list.
-  */
--#define ACPI_BATTERY_COMPONENT		0x00040000
- #define ACPI_BUTTON_COMPONENT		0x00080000
- #define ACPI_SBS_COMPONENT		0x00100000
- #define ACPI_FAN_COMPONENT		0x00200000
-
-
-
+> 
+> Michael
