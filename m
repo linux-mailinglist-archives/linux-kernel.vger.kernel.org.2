@@ -2,76 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D4F30C7F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D474230C806
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237697AbhBBRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:37:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237505AbhBBRee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:34:34 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5093D64ECE;
-        Tue,  2 Feb 2021 17:33:55 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6zYn-00BZHW-3j; Tue, 02 Feb 2021 17:33:53 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 17:33:53 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Crispin <john@phrozen.org>
-Cc:     Bert Vermeulen <bert@biot.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] irqchip: Add support for Realtek RTL838x/RTL839x
- IRQ controller
-In-Reply-To: <44d6de52-5422-1138-cb00-21320668eb29@phrozen.org>
-References: <20210104131755.2979203-1-bert@biot.com>
- <20210104131755.2979203-3-bert@biot.com>
- <44d6de52-5422-1138-cb00-21320668eb29@phrozen.org>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <db9b3d9c6f886428763c8c21fe26f172@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john@phrozen.org, bert@biot.com, tglx@linutronix.de, robh+dt@kernel.org, mail@birger-koblitz.de, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S237647AbhBBRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237636AbhBBRga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:36:30 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7364C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:35:49 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id bl23so31243336ejb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mX9ypY+omwlKGZ2kXIDWnnuce1UHcRhtfE/HnoiDjQE=;
+        b=u4vBN3nj0jYBDFgioAFwhhfQeq2M9O0v2vttHGfK/tH3lAYdkKXKqvOHhphpgFs2XW
+         APmvMAHZAxj8iqB7++LPYQoNOQekVcdGN+yrTU31FwGwwf5JndF016URWoX7Gz5fB/sg
+         CGsx/9BTg8agG5Np6EMW4lHrkHfk8o7UEmpO/xJQq0ACG8lF+MxG9c0Hez+ciAmX4WgB
+         9UcMo3/80r/yOCijrUk/Qo+II3PxgtUyeTgHjMhfT7TUx0rB8fmv4fpPuRB099VjZU79
+         hA7xntZTIO7kpFNU/+n8PfZj3zTnbcFao5JnHNAexv3A2Eu2dEQdqOb4hCgDOTjb51/z
+         Uq6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mX9ypY+omwlKGZ2kXIDWnnuce1UHcRhtfE/HnoiDjQE=;
+        b=IZfybwrqb7PXC8Wc+1B6KZ83EjfSpr2Wnu3Katgb3G/gXGRfYHCM5I0PncImg4O5XL
+         6UdG7n2yidHfz8tbr6EZl2vo7tgVcD/LO+J1WpS3H506cfYns+GVprs7tLcHECz0xt2y
+         XAOsnBGI/MRbWaO25GedPe+6BxMnI8CdoFonUBQFJ5Ko+Er9LW0Wucrxt7elpneeUUHS
+         1mIuEoFKbWcQIGo0Kb5Fcx/OeczQq9ABP66BLNtqSumA4R457VjAtXFLR2jwrs3/UjAl
+         werjUOaNrm569MASmIwUHw+AcG9Oqnp4JfPP4pM9Gzrh68pb7GrY/tsNoTVX6WZadVIq
+         d6xw==
+X-Gm-Message-State: AOAM532o32TCzUI0B7qoFKbe2A2KBTFNI9ssADN8l4wvO6zEd+A53W+f
+        Zr2vGmWrT1eg3xwxsn71ok8=
+X-Google-Smtp-Source: ABdhPJxMJuJ9mxj/PxCc9WurBPmTp5rXdXihx94U7jV0P9z23NVV02prdxOwEvGzhTcOY2bPtmCqgg==
+X-Received: by 2002:a17:906:5846:: with SMTP id h6mr23072480ejs.521.1612287348469;
+        Tue, 02 Feb 2021 09:35:48 -0800 (PST)
+Received: from localhost (ipv6-95d4aa31e260cdb5.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:95d4:aa31:e260:cdb5])
+        by smtp.gmail.com with ESMTPSA id o4sm10375211edw.78.2021.02.02.09.35.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Feb 2021 09:35:47 -0800 (PST)
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     thierry.reding@gmail.com
+Cc:     oliver.graute@gmail.com, Marco Felsch <m.felsch@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] drm/panel: simple: add SGD GKTW70SDAD1SD
+Date:   Tue,  2 Feb 2021 18:35:13 +0100
+Message-Id: <1612287314-5384-1-git-send-email-oliver.graute@gmail.com>
+X-Mailer: git-send-email 2.7.4
+X-Patchwork-Bot: notify
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John,
+Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
+to panel-simple.
 
-On 2021-02-02 15:33, John Crispin wrote:
-> On 04.01.21 14:17, Bert Vermeulen wrote:
->> This is a standard IRQ driver with only status and mask registers.
->> 
->> The mapping from SoC interrupts (18-31) to MIPS core interrupts is
->> done via an interrupt-map in device tree.
->> 
->> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> Signed-off-by: John Crispin <john@phrozen.org>
+The panel spec from Variscite can be found at:
+https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
 
-There is already a v4 on the list[1], so you may want to comment on that 
-one.
+Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
+Cc: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+---
 
-It would also help if you'd give a reason for your SoB to be added.
-Or did you mean to Ack the patch?
+v3:
 
-Thanks,
+- added flags
+- added delay
 
-         M.
+v2:
 
-[1] https://lore.kernel.ortg/r/20210122204224.509124-1-bert@biot.com
+- changed bpc to 6
+- set max value of pixelclock
+- increased hfront_porch and hback_porch
+- dropped connector-type
+
+adding of bus_format = MEDIA_BUS_FMT_RGB666_1X18 results in wrong colors.
+omitting bus_format and using some default is better (Tux Pinguin is colored
+fine)
+
+ drivers/gpu/drm/panel/panel-simple.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 2be358f..c63f6a8 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -3336,6 +3336,36 @@ static const struct panel_desc satoz_sat050at40h12r2 = {
+ 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+ };
+ 
++static const struct display_timing sgd_gktw70sdad1sd_timing = {
++	.pixelclock = {30000000, 30000000, 40000000},
++	.hactive = { 800, 800, 800},
++	.hfront_porch = {40, 40, 40},
++	.hback_porch = {40, 40, 40},
++	.hsync_len = {48, 48, 48},
++	.vactive = {480, 480, 480},
++	.vfront_porch = {13, 13, 13},
++	.vback_porch = {29, 29, 29},
++	.vsync_len = {3, 3, 3},
++	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
++			DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_NEGEDGE,
++};
++
++static const struct panel_desc sgd_gktw70sdad1sd = {
++	.timings = &sgd_gktw70sdad1sd_timing,
++	.num_timings = 1,
++	.bpc = 6,
++	.size = {
++		.width = 153,
++		.height = 86,
++	},
++	.delay = {
++		.prepare = 20 + 20 + 10 + 10,
++		.enable = 50,
++		.disable = 50,
++		.unprepare =  10 + 10 + 20 + 20,
++	},
++};
++
+ static const struct drm_display_mode sharp_ld_d5116z01b_mode = {
+ 	.clock = 168480,
+ 	.hdisplay = 1920,
+@@ -4222,6 +4252,9 @@ static const struct of_device_id platform_of_match[] = {
+ 		.compatible = "satoz,sat050at40h12r2",
+ 		.data = &satoz_sat050at40h12r2,
+ 	}, {
++		.compatible = "sgd,gktw70sdad1sd",
++		.data = &sgd_gktw70sdad1sd,
++	}, {
+ 		.compatible = "sharp,ld-d5116z01b",
+ 		.data = &sharp_ld_d5116z01b,
+ 	}, {
 -- 
-Jazz is not dead. It just smells funny...
+2.7.4
+
