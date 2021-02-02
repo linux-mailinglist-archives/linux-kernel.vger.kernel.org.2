@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEAC30C5F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C33D30C623
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbhBBQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:36:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236455AbhBBQdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:33:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E067364F79;
-        Tue,  2 Feb 2021 16:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612283571;
-        bh=YWHfyr2/AnPgY4UlYi+YIrWZvY9TvUAJqBz883GtN+8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WuZY4PzrKxLZei/0QrkUSLj7JT7R/qQ4uj0khxMrvXs1jDuFWY3gPFcyTB7ClHQ6Y
-         rlkDcyg0QxZiZiQYhKoDX0v3Fu/DQ9j4B5H9DaP3MOOMSFymuifCK2rDGbETRbUOfm
-         3BdU/8TSArNJFBGQP0x0RX5OVD1F8o6aAPEk6Sc8lPnpfSLmImp2xTeO5slq/VTbDm
-         fB7q39XdtFE19LcJ0a9NzmJx1GfmHMmekaObpoA+jKEMjCTY1WESa0Zyu2Eb3dRb6G
-         z1+JaaLA6AIjEnQ55+MsIXKkbLhCz4DYCyqigrWFNh2d8tFb+7eBUzr9lDw34Jsjil
-         GnL+UmAV1ODnQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     mazziesaccount@gmail.com,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-In-Reply-To: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
-References: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
-Subject: Re: (subset) [PATCH 1/2] regulator: qcom-labibb: avoid unbalanced IRQ enable
-Message-Id: <161228352412.18127.16657481619745854565.b4-ty@kernel.org>
-Date:   Tue, 02 Feb 2021 16:32:04 +0000
+        id S236734AbhBBQjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:39:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236336AbhBBQg3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:36:29 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9D5C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:33:07 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id z21so15239429pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eAEmX4T0SFhCX900Vx4u0Ymo1oePmn//2Jt6pbrxJRM=;
+        b=P4NrsAe6VNaTkp+kWO5WECdGg5XEKewsuFO7JZUNV6F7jEkq0C/9vP23BBB57HoGAx
+         vbB6CjOlwF3ataZYUKLSpnvjkLD/+6VtqdoOK+nlXrbOLVNvLXUhECvB90dBJBO//Z2b
+         h3MYWqBXNHbMBnWqnPLAvPbUJW7dq4N6KPS9Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eAEmX4T0SFhCX900Vx4u0Ymo1oePmn//2Jt6pbrxJRM=;
+        b=eyvL+mF6ZPEHEMR2UbREoASH7nupmZ6jIDwPObRYuEZ4tmHJKjSoGqFxqNCESvEH7d
+         tvWzCnCrJ5vPdGOXsHKAyVN59j2WxgD5MTzbbfphQKUMO5gLzU0WMuB/aFz/eOSdZYKe
+         0w9/hyBoY3/7kP2Ixa/QwBFB5ikQeCiSbW0P2BSgY6IuAP5za6ZhYlCfgJ58GwFWN5cb
+         +6tamZlAKw/Bwvde9xk7citxv1FEGe+5SuW2ZhFv/X2ys385j1Q897s4I7dHT4K0t49J
+         YvisoWj+HG55Vk7ayQwV5heUHGwj5K/T4EXHynzRf814mC+S90JLUMwJrCEftsVMj0WJ
+         I+NQ==
+X-Gm-Message-State: AOAM533m65SmCC7/rM8ak2y4adrjWKy24RZrEsmZd9dkZmYmyRzT9Hgo
+        +qmuHoSNB55FaxAIbJEny7XuOg==
+X-Google-Smtp-Source: ABdhPJx7beim7GgN+Jw1TKGiM6BGWFthksNDqUSEVQjVdn+wX6KKt4N6o+LMbQF8+5fuM+xj+r0yJQ==
+X-Received: by 2002:a63:5b43:: with SMTP id l3mr22400040pgm.369.1612283586702;
+        Tue, 02 Feb 2021 08:33:06 -0800 (PST)
+Received: from bleung.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
+        by smtp.gmail.com with ESMTPSA id i7sm22362511pfc.50.2021.02.02.08.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:33:05 -0800 (PST)
+From:   Benson Leung <bleung@chromium.org>
+To:     heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
+        pmalani@chromium.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kyletso@google.com, bleung@google.com, bleung@chromium.org
+Subject: [PATCH] platform/chrome: cros_ec_typec: Fix call to typec_partner_set_pd_revision
+Date:   Tue,  2 Feb 2021 08:32:48 -0800
+Message-Id: <20210202163248.3981555-1-bleung@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 09:36:34 +0200, Matti Vaittinen wrote:
-> If a spurious OCP IRQ occurs the isr schedules delayed work
-> but does not disable the IRQ. The delayed work assumes IRQ was
-> disabled in handler and attempts enabling it again causing
-> unbalanced enable.
-> 
-> Fixes: 390af53e04114 ("regulator: qcom-labibb: Implement short-circuit and over-current IRQs")
+typec_partner_set_pd_revision returns void now.
 
-Applied to
+Fixes: cefc011f8daf platform/chrome: cros_ec_typec: Set Partner PD revision from status
+Signed-off-by: Benson Leung <bleung@chromium.org>
+---
+ drivers/platform/chrome/cros_ec_typec.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index a7778258d0a0..7b93dfd02999 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -842,11 +842,7 @@ static int cros_typec_handle_sop_disc(struct cros_typec_data *typec, int port_nu
+ 		goto disc_exit;
+ 	}
+ 
+-	ret = typec_partner_set_pd_revision(port->partner, pd_revision);
+-	if (ret < 0) {
+-		dev_err(typec->dev, "Failed to update partner PD revision, port: %d\n", port_num);
+-		goto disc_exit;
+-	}
++	typec_partner_set_pd_revision(port->partner, pd_revision);
+ 
+ 	memset(sop_disc, 0, EC_PROTO2_MAX_RESPONSE_SIZE);
+ 	ret = cros_typec_ec_command(typec, 0, EC_CMD_TYPEC_DISCOVERY, &req, sizeof(req),
+-- 
+2.30.0.365.g02bc693789-goog
 
-Thanks!
-
-[2/2] regulator: qcom-labibb: Use disable_irq_nosync from isr
-      commit: 337710b3121a4f4183c38ff056f6f9ef516cc34f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
