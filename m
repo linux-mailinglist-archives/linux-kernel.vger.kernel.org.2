@@ -2,163 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F333130CF9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7957530CFA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbhBBXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:05:59 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:22160 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbhBBXF4 (ORCPT
+        id S236073AbhBBXGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:06:54 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12505 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235664AbhBBXGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:05:56 -0500
-X-Greylist: delayed 57464 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 18:05:53 EST
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 112N4khF003133;
-        Wed, 3 Feb 2021 08:04:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 112N4khF003133
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612307086;
-        bh=UGA0Rplim8ZfC6e4whP20xTht9RzqhbWWxLaXhzWRUA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tOBe0hEHHf9tvmT3rHNnjBL9ugZuudIECWVtYvCik/AC2pP1I4bqBET4RIJ/vBKSB
-         0aRw/i7F91TD/PzkclnU2rVRXFMEw6JAzCx93I17/rKXeFG7l0py1WRGJG2fQCZQLj
-         q99jD6spPDWOLAzyv0+yHJdvetuJ0mv8N9l2T+24C2KTXwMzAOnAFXBCq1xn8EfdZh
-         EqvYL29bZ/OMZE6jEBXdHTulk62/GRSs0uLVCRks7bcTqFsH9kUUbnniWFdepR5nay
-         nVRHIn7crbFdyzki6dQc69GxxIU1dobMhHCeavZav8fqc5flWT+QiFEmuYa9o3WH3Q
-         4bzZRX2Ms/k9g==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id u11so13344353plg.13;
-        Tue, 02 Feb 2021 15:04:46 -0800 (PST)
-X-Gm-Message-State: AOAM532yuR3F6Vl6z+NNFjFuGpuWcQl1WLAEmHtTkrLsMp8b4+WdKjrw
-        hQrJrSp9A9DIdg9f51DuZe3ED7EZv7t5beQT7aU=
-X-Google-Smtp-Source: ABdhPJxvtHfeu+crGL+CyXAo0FUYVHkXnleiaiv+dMA4n8+oso6WU2K79gP3aD12VFT56j8XRv47GWHWmTyr4FAXNxk=
-X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr88481pjb.153.1612307085830;
- Tue, 02 Feb 2021 15:04:45 -0800 (PST)
+        Tue, 2 Feb 2021 18:06:49 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6019dae10000>; Tue, 02 Feb 2021 15:06:09 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 23:06:08 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 23:06:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gYk1yqceUNLtvTXR9+RwEfNiHXf1Mqv7UitCS55DYuZN6YzNSP/AYE7AtUPAFqR7aEDQNkBb8RgcqOwGk654sMWQn7jjEYI6mSXlnM6zIA25ftlNf/t9+72Led0v8TQt+l76BMDqjd4Z7iQpIX0kOEx7g9mdjSCbarqSK+3FRx/J6lqBEgyzXthvSRcFn5vixLFLIAJvypNf4u/5GGyeDMXPeq+wuJWjMpm9uoxoppecfun/2oFruys73500CbUh45iFS7ekhHlz8WZex0T5scl/9WPdkRvWZfhYYjxIA+0jrIOijE0XmWvK79re/eTYT3vMxhU5f/x3BKxLWUbxGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K0dzWgfpjvflZLMuenj4hzoJICmlXcr+Cl1I7K83j5w=;
+ b=Zl8JJvg7GsS2fSD5Ygv60OQmxOBWXb4dQzxt73n0DpTaDmO6s6ba/W4bGriRBVXdveL2zNelRFTng1hh7W8Aqf9VRIvVbnEUr6X4Z3QYPMH3BPpJs2/NHo5tomDgxnDWiEzfZwVWcmVqHfQej+q6BuNM+12H3hqWsBajFzXEeCkRJut7XM+bO6ykFHlbkOAJaVJX1YP+K/l4vM9SwjwvIO7LfPk90+G6KVGxjnL3d9jYH4xn7ms5JsWhGuK/NuUTdsZIvtcUfcqtUCyRB8O63i16xYj9v98K1+Vhw/E8PWuEuk3ICIOC+dFtL0qSADSEpfj/pTRuAGtHIX4RRVMcsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0203.namprd12.prod.outlook.com (2603:10b6:4:56::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Tue, 2 Feb
+ 2021 23:06:07 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
+ 23:06:07 +0000
+Date:   Tue, 2 Feb 2021 19:06:04 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
+        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
+        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
+        <aik@ozlabs.ru>
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+Message-ID: <20210202230604.GD4247@nvidia.com>
+References: <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+ <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+ <20210202105455.5a358980@omen.home.shazbot.org>
+ <20210202185017.GZ4247@nvidia.com>
+ <20210202123723.6cc018b8@omen.home.shazbot.org>
+ <20210202204432.GC4247@nvidia.com>
+ <5e9ee84e-d950-c8d9-ac70-df042f7d8b47@nvidia.com>
+ <20210202143013.06366e9d@omen.home.shazbot.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210202143013.06366e9d@omen.home.shazbot.org>
+X-ClientProxiedBy: MN2PR05CA0017.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210202070218.856847-1-masahiroy@kernel.org> <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
-In-Reply-To: <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 3 Feb 2021 08:04:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQh=bMuyEinKzr6t28E2TuSWAhYU=M+jeJ+HiNhjQN=3A@mail.gmail.com>
-Message-ID: <CAK7LNAQh=bMuyEinKzr6t28E2TuSWAhYU=M+jeJ+HiNhjQN=3A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Peter Jones <pjones@redhat.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR05CA0017.namprd05.prod.outlook.com (2603:10b6:208:c0::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.13 via Frontend Transport; Tue, 2 Feb 2021 23:06:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l74kG-002mC2-Gt; Tue, 02 Feb 2021 19:06:04 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612307169; bh=K0dzWgfpjvflZLMuenj4hzoJICmlXcr+Cl1I7K83j5w=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=Fdk9x+4pWbK0ODmWudsUpDrJ2eruqCvasfbAz3nBoTJaFRASOm2r515EISYdzkEXT
+         olxLmbvmv7e3Jal0hnjZM02XRXDQg20X3KVjvXXvi7ikOrvDmfucHmzrnL+5R8DHbq
+         8aw+n0o58qD+DNwiQZsjJ73kevc9udnrlzUXIFPFxM5gyyArs/pT66syLt/j0lwqLb
+         IwmRyGx4WeqyJKg+2fIUQAyan0eU/Su9T+piWHcF10tvn86xL5rm3sL6H/+wGbYSEL
+         w0lK1DdT4ejXKKUxE2VQdn5m9W9NXU0Be0MiWisAtkE0mSMulZTESDY0Qvu1PD53ii
+         TrKOFeLd0XeOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 7:09 PM Sergey Senozhatsky
-<sergey.senozhatsky@gmail.com> wrote:
->
-> On (21/02/02 16:02), Masahiro Yamada wrote:
-> >
-> > CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
-> > CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
-> >
-> > When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
-> > all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
-> > used in <linux/printk.h>, which is included from most of source files.
-> >
-> > In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
-> >
-> >   arch/x86/platform/uv/uv_nmi.c
-> >   drivers/firmware/efi/libstub/efi-stub-helper.c
-> >   drivers/tty/sysrq.c
-> >   kernel/printk/printk.c
-> >
-> > So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
-> > kernel, it is enough to recompile those 4 files.
->
-> Do you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT so often that it becomes a
-> problem?
->
->         -ss
+On Tue, Feb 02, 2021 at 02:30:13PM -0700, Alex Williamson wrote:
 
+> The first set of users already fail this specification though, we can't
+> base it strictly on device and vendor IDs, we need wildcards, class
+> codes, revision IDs, etc., just like any other PCI drvier.  We're not
+> going to maintain a set of specific device IDs for the IGD
+> extension,
 
+The Intel GPU driver already has a include/drm/i915_pciids.h that
+organizes all the PCI match table entries, no reason why VFIO IGD
+couldn't include that too and use the same match table as the real GPU
+driver. Same HW right?
 
-<linux/printk.h> is one of most included headers,
-so it is worth downsizing.
+Also how sure are you that this loose detection is going to work with
+future Intel discrete GPUs that likely won't need vfio_igd?
 
-CONSOLE_LOGLEVEL_DEFAULT is not such a parameter
-that printk() users need to know.
+> nor I suspect the NVLINK support as that would require a kernel update
+> every time a new GPU is released that makes use of the same interface.
 
-Changing CONFIG_CONSOLE_LOGLEVEL_DEFAULT results in
-the rebuilds of the entire tree, which is a flag of
-bad code structure.
+The nvlink device that required this special vfio code was a one
+off. Current devices do not use it. Not having an exact PCI ID match
+in this case is a bug.
 
-So, this is not only CONSOLE_LOGLEVEL_DEFAULT.
-<linux/printk.h> contains parameters
-and func declarations that printk() users
-do not need to know.
+> As I understand Jason's reply, these vendor drivers would have an ids
+> table and a user could look at modalias for the device to compare to
+> the driver supported aliases for a match.  Does kmod already have this
+> as a utility outside of modprobe?
 
-Examples:
-CONSOLE_LOGLEVEL_DEFAULT
-log_buf_addr_get()
-log_buf_len_get()
-oops_in_progress
-...
+I think this is worth exploring.
 
+One idea that fits nicely with the existing infrastructure is to add
+to driver core a 'device mode' string. It would be "default" or "vfio"
 
-They are only needed for those who want
-to more closely get access to
-the printk internals.
+devices in vfio mode only match vfio mode device_drivers.
 
+devices in vfio mode generate a unique modalias string that includes
+some additional 'mode=vfio' identifier
 
-Ideally, such parameters and func
-declarations can go to the subsystems'
-local header (kernel/printk/internal.h)
-but when it is not possible,
-they can be separated out to
-a different header.
+drivers that run in vfio mode generate a module table string that
+includes the same mode=vfio
 
+The driver core can trigger driver auto loading soley based on the
+mode string, happens naturally.
 
-I can see a similar idea in the consumer/provider
-model in several subsystems.
+All the existing udev, depmod/etc tooling will transparently work.
 
-Consumers and providers are often orthogonal,
-and de-coupling them clarifies
-who needs what.
+Like driver_override, but doesn't bypass all the ID and module loading
+parts of the driver core.
 
-See other subsystems, for example,
+(But lets not get too far down this path until we can agree that
+embracing the driver core like the RFC contemplates is the agreed
+direction)
 
-<linux/clk.h>           -  clk consumer
-<linux/clk-provider.h>  -  clk provider
+> Seems like it would be embedded in the aliases for the module, with
+> this explicit binding flag being the significant difference that
+> prevents auto loading the device.  We still have one of the races that
+> driver_override resolves though, the proposed explicit bind flag is on
+> the driver not the device, so a native host driver being loaded due to
+> a hotplug operation or independent actions of different admins could
+> usurp the device between unbind of old driver and bind to new driver.
 
+This is because the sysfs doesn't have an atomic way to bind and
+rebind a device, teaching 'bind' to how to do that would also solve
+this problem.
 
+> This seems unpredictable from a user perspective.  In either the igd or
+> nvlink cases, if the platform features aren't available, the feature
+> set of the device is reduced.  That's not apparent until the user tries
+> to start interacting with the device if the device specific driver
+> doesn't fail the probe.  Userspace policy would need to decide if a
+> fallback driver is acceptable or the vendor specific driver failure is
+> fatal. Thanks,
 
+It matches today's behavior, if it is a good idea to preserve it, then
+it can be so without much effort.
 
+I do prefer the explicitness because I think most use cases have a
+user that requires the special driver to run. Explicitly binding a
+the required driver seems preferable.
 
+Certainly nvlink and mlx5 should fail probe and not fall back to plain
+vfio-pci. If user wants plain vfio-pci user should ask explicitly. At
+least for the mlx5 cases this is a completely reasonable thing to
+do. I like that we can support this choice.
 
+I'm not so clear on IGD, especially how it would interact with future
+descrete cards that probably don't need it. IMHO, it would be fine if
+it was different for some good reason.
 
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+Jason
