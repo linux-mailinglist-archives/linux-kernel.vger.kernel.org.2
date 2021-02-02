@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7D230B5E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A151D30B5EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhBBDhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 22:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        id S231336AbhBBDjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhBBDhQ (ORCPT
+        with ESMTP id S230055AbhBBDjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 22:37:16 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C37C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:36:36 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id z21so13996902pgj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:36:36 -0800 (PST)
+        Mon, 1 Feb 2021 22:39:44 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D416C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:39:04 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id d8so12787392qvs.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Vj03bk7C20eRxq9MRNtull42jIxYqLtfdVc1X9lNV/s=;
-        b=CLDpAqPg3mAeh3S9IsnE+Rrto5zL43QGASXrCR09ZQ8346Mw3+D+WsiFmLfVq/SYoO
-         ONQLqRqEkw2JMs/6nrjCY2kELuoPqnLFIESKMveIGNYMAUNbnZPOkDjUIRpyJPfSE3A4
-         rEufZbuaRFLkiislLQoeATSMw+GHAHFCHtHv5OhztmJDjyH070Y7A83i4RNQtJ62L7f1
-         JAKbKqP4FiFHJmSE/tDIUkIijBnJNUUmj17PzTSMOezABayeX6PrS/nrgIbm/wtocxUG
-         hxL6lFSvHF7WikCkvwVSBom3SUsDWMGC058BAMuowM9GCLJuHDUM0vdp46SulZwkoi+I
-         StHA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=8YVuxrTBaW2u/EvVshmB1lhIJOhjS6aKrPCo07emghg=;
+        b=Sz7AEELQcZbOmHR4c3XoJoG0B0b9UXp6kt1AxKunbluqicRtEdb0MPrxNytbawaU8j
+         1w1PRgFtMu8NDu7PUo6GquGnAC7AGef4uOwUstOSVOBfvpQa6SYYhqH2J+dvaVCEhspv
+         xyMd/R83xqZmVDHtmLgBuhI+MFTcydHy9h1W78n6eO1iCUI0V5ahSN/E3HNtnRT7ZylP
+         yTpxh+KvuZIwgKUU0nXpV0gbX5IdOlPr8qn0uTuzhvddI6SmJf0LOayy4Z2a9efMnUtx
+         sWnkG2+e9X/mougZZOZkS6hnGc2F8QsooTewfAjFNOAdgehOb0ZB8D9scKoUdsPHYVFa
+         bwcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Vj03bk7C20eRxq9MRNtull42jIxYqLtfdVc1X9lNV/s=;
-        b=GRaBNaVlMwS+5Rjsb3EILlcefvEBDb3Y8ahOk1ZCimxPpApnHhSQgtc8Sui/CaUVuX
-         ispvjkiPQQM49LlYSwGpkeII7i7iNIzYz+xgMm79yBqXYr24/xELC60yDVXdnnfLR46+
-         PkhqwlqQrUUKTAB7YrsX5kkWb1FX5ex+BQyjjFuuB4eqK1mO4GQbVi3nF92TOE73752S
-         MHcYG7rfbr72AGuxKecM1a1sFN1ALGOW9EBug7X4GrA+ueuC+6pRjnl8v51w1Wa6zy0V
-         SeACzVCDXiBMDiVoqBwMrD/RTKr4lL14TG90ScRbfegZpNZTDsd0bDLLxgCAjoWRhNBC
-         HtvQ==
-X-Gm-Message-State: AOAM532IC705xJJre6y1j5sevE7PeMtIKibHgMtN+S9TdHdYpvxNlHtA
-        4adzpI1GeXmecCP6xB42YBweZ3C4r9Exfg==
-X-Google-Smtp-Source: ABdhPJyykLEFVe6h3WuIPkh+50rUN3D5oRYKBcrsUWTLAZTB8d/L7dRhp9gu65iCZKt58YvPvsnWqQ==
-X-Received: by 2002:a63:1c12:: with SMTP id c18mr20069830pgc.356.1612236995288;
-        Mon, 01 Feb 2021 19:36:35 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 68sm18823296pfe.33.2021.02.01.19.36.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 19:36:34 -0800 (PST)
-Date:   Mon, 01 Feb 2021 19:36:34 -0800 (PST)
-X-Google-Original-Date: Mon, 01 Feb 2021 19:36:32 PST (-0800)
-Subject:     Re: [PATCH] arch_numa: fix common code printing of phys_addr_t
-In-Reply-To: <20210128035533.23722-1-rdunlap@infradead.org>
-CC:     linux-kernel@vger.kernel.org, rdunlap@infradead.org, lkp@intel.com,
-        Atish Patra <Atish.Patra@wdc.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     rdunlap@infradead.org
-Message-ID: <mhng-ea6bdfae-f473-448f-80df-5042b2a5cf83@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=8YVuxrTBaW2u/EvVshmB1lhIJOhjS6aKrPCo07emghg=;
+        b=Sz4hbWu5sjY2VkthL7Ka0HUZ0loPhpIV5kNLGP/R1ZsQi2Da+/zpsYCbl7w3gNI29+
+         OpRGYrOAsLbqePSaVkMV0p9KYjExSS2YIhezvsrF84CBz31qV9QjH8g5JGTSGiyV8EwL
+         Vuzc4i8DxVI34ORVWTyf8WCc2+tgalU3xsLxwgXp6QiDs8/OBHJNvPxo203GkFKzsx58
+         LaTPb/Ka8aqMnwry6/CtGdXHWYsFoYa5D/NvthwB2wQZqsst3FtQgM3T1+nFwU7XNYuW
+         hGXzxomiO3qmxY2q+QuqX21eV1mE6gkyipmlMfPsgOEAwQg5P1rkHhPK0kmL0Lqauha8
+         NS2w==
+X-Gm-Message-State: AOAM533EgxkzTQDHAD2eUjHJbg1pBqz5WJ1/GBn0ZwV93nxiASGmOybx
+        DRJj3A+NBGW3N8SU8ycS7pOsCxRNOlM=
+X-Google-Smtp-Source: ABdhPJx1ybll3gmI/7R+/k9eDmwSM7WJRbyNfJh0JGSdH1WuIM8avnPLBbaoAJayK2oDD6oDsJnPAdbaRms=
+Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:d56c:119f:44fb:5da4])
+ (user=badhri job=sendgmr) by 2002:ad4:4c84:: with SMTP id bs4mr18662349qvb.0.1612237143459;
+ Mon, 01 Feb 2021 19:39:03 -0800 (PST)
+Date:   Mon,  1 Feb 2021 19:38:59 -0800
+Message-Id: <20210202033859.258491-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v1] usb: typec: tcpm: Set in_ams flag when Source caps have
+ been received
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyle Tso <kyletso@google.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 19:55:33 PST (-0800), rdunlap@infradead.org wrote:
-> Fix build warnings in the arch_numa common code:
->
-> ../include/linux/kern_levels.h:5:18: warning: format '%Lx' expects argument of type 'long long unsigned int', but argument 3 has type 'phys_addr_t' {aka 'unsigned int'} [-Wformat=]
-> ../drivers/base/arch_numa.c:360:56: note: format string is defined here
->   360 |    pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
-> ../drivers/base/arch_numa.c:435:39: note: format string is defined here
->   435 |  pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
->
-> Fixes: ae3c107cd8be ("numa: Move numa implementation to common code")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> ---
->  drivers/base/arch_numa.c |   13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->
-> --- linux-next-20210125.orig/drivers/base/arch_numa.c
-> +++ linux-next-20210125/drivers/base/arch_numa.c
-> @@ -355,11 +355,12 @@ static int __init numa_register_nodes(vo
->  	/* Check that valid nid is set to memblks */
->  	for_each_mem_region(mblk) {
->  		int mblk_nid = memblock_get_region_node(mblk);
-> +		phys_addr_t start = mblk->base;
-> +		phys_addr_t end = mblk->base + mblk->size - 1;
->
->  		if (mblk_nid == NUMA_NO_NODE || mblk_nid >= MAX_NUMNODES) {
-> -			pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
-> -				mblk_nid, mblk->base,
-> -				mblk->base + mblk->size - 1);
-> +			pr_warn("Warning: invalid memblk node %d [mem %pap-%pap]\n",
-> +				mblk_nid, &start, &end);
->  			return -EINVAL;
->  		}
->  	}
-> @@ -427,14 +428,14 @@ out_free_distance:
->  static int __init dummy_numa_init(void)
->  {
->  	phys_addr_t start = memblock_start_of_DRAM();
-> -	phys_addr_t end = memblock_end_of_DRAM();
-> +	phys_addr_t end = memblock_end_of_DRAM() - 1;
->  	int ret;
->
->  	if (numa_off)
->  		pr_info("NUMA disabled\n"); /* Forced off on command line. */
-> -	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
-> +	pr_info("Faking a node at [mem %pap-%pap]\n", &start, &end);
->
-> -	ret = numa_add_memblk(0, start, end);
-> +	ret = numa_add_memblk(0, start, end + 1);
->  	if (ret) {
->  		pr_err("NUMA init failed\n");
->  		return ret;
+Receiving the first packet in an AMS sequence signals the
+beginning of AMS. Set in_ams flag to true when SRC_CAPS are
+received during POWER_NEGOTIATION AMS.
+This fixes the failure flagged while running TD.PD.SNK.E9
+compliance test.
 
-Thanks, this is on for-next.  Did you, by any chance, find %Lx documented
-anywhere?  It's not ISO C and the GCC source code says it's a GNU extension,
-but I couldn't find it in the documentation (or even where to add it, which I
-guess is how I forgot to send my version fo the patch).
+From Deterministic PD compliance MOI spec:
+TD.PD.SNK.E9. GetSinkCap in Place of Accept
+Description:
+As Provider, the Tester intentionally sends a GetSinkCap message in place
+of Accept message and verifies the UUT will send a SoftReset and recover
+from the error.
+Steps:
+a) Run PROC.PD.E1 Bring-up according to the UUT role.
+b) The Tester cycles VBus.
+c) The Tester sends a Source Capabilities message to the UUT.
+d) Upon receipt of a Request message from the UUT, the Tester replies with
+   a GoodCRC message.
+e) The Tester sends a GetSinkCap message to the UUT.
+f) If a SoftReset is not received within 15 ms after the GetSinkCap EOP was
+   sent, the test fails.
+g) If a SoftReset is received timely, the Tester replies with an Accept
+   message.
+h) The Tester sends Source Capabilities message to the UUT repeatedly until
+   nCapsCount reached or a GoodCRC is received. If nCapsCount reached, the
+   test fails.
+i) If a Request is not received timely within 30 ms after the GoodCRC EOP
+   corresponding to Source Capabilities message was received, the test
+   fails.
+
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 0afd8ef692e8..b3e07d9b7597 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2243,6 +2243,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
+ 		 * handled.
+ 		 */
+ 			port->ams = POWER_NEGOTIATION;
++			port->in_ams = true;
+ 			tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
+ 		} else {
+ 			if (port->ams == GET_SOURCE_CAPABILITIES)
+-- 
+2.30.0.365.g02bc693789-goog
+
