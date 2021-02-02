@@ -2,123 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9418030CA6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9599B30CA60
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238719AbhBBSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:48:35 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35423 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234235AbhBBSqY (ORCPT
+        id S237389AbhBBSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:46:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238894AbhBBSoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:46:24 -0500
-Received: by mail-ot1-f44.google.com with SMTP id 36so20841214otp.2;
-        Tue, 02 Feb 2021 10:46:08 -0800 (PST)
+        Tue, 2 Feb 2021 13:44:04 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0C9C061794;
+        Tue,  2 Feb 2021 10:43:22 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id l12so2350907wmq.2;
+        Tue, 02 Feb 2021 10:43:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FTcjVQpSA0X4qzf7rJ9olI9PqEkdO2UG9/HpEyiNBEw=;
+        b=t8KtSnIGTI2BBNTCoNUlAxPYHpRzvHf4w9wCskHEoadfNxB/fxgB/FAvcV06D245jN
+         8++ce1xbZjC5XeQ5PxMmqFEyOK15TyAOD/IXGLxZRHNiA09kZ/yBWVS9xP7CPx24LpZC
+         4U2L8pLH8Ct1GGa4hrUIvH5Nt7yIuFrhVv6wvJJLFXGetjwdeDR2/HGgZDvLeYkiYGe4
+         XWh+W7p76bKSZkTI0dB7Lp3G570TinBnLWZ2GBY9hSpBQ/B9vuudM1qVVJoOVZLqVbu/
+         P5ohiXh9R8UcM8IiDqYkBctKkyq5IQz7t2P+Qew4pDNCiHbfnunORf+XqhyBdDWdmEOZ
+         bzBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vDHKtoa2dINjq91DEdtqJMKEb/4RkQwFTAJadkfEl8c=;
-        b=CSAYRo7rCHIc/QIaziQD5x4HirGINdooEaSSrvGk8bGVBZ0avpIL8GrXutc2CggzLk
-         foqGTUCwJatUNAwrPOJkVYrtA24sZtnb4Exqw5wCMX/W3ITF9W4RMMp5PJ2cN3vM8iFN
-         sY4SqaYKbCo5NPVsoaWR9XJLpznKSatPczMsbdc6QS2Wwp7uU6Q/L49zOd8QRYsTXmGj
-         Fthqo/hJli+OJNK9Fw1qTlT3zsqtPFUNBRGVh08KqVmODJ265S6zbbH/WUxF/2A7NGWj
-         871PBB7XTjkhCD1FROVtGwtJvpdRt5FUuTAXFDsvfhfXn/iIXx6R5T5xQfssXIYpuskC
-         uIBQ==
-X-Gm-Message-State: AOAM533qhWSCPRbXUaxTaKIZWEIgox8vWct7iPy7iNkEDbKdeiJJdDuQ
-        PQ5biDfZPZMOpPQNxpIVS/cfMgv6yFqzwKftDuI=
-X-Google-Smtp-Source: ABdhPJztG9TXX3UAOYTzxJ26ZDs075GiZsbyJMDwBhUdtSuipaQSWuCAle8teE+JM162PHVqUIU9cmb/Z5L1xwldtmo=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr16935376otm.206.1612291542781;
- Tue, 02 Feb 2021 10:45:42 -0800 (PST)
+        bh=FTcjVQpSA0X4qzf7rJ9olI9PqEkdO2UG9/HpEyiNBEw=;
+        b=MJBOSoFfeJKOaz1dTBD7yRg+zZkGP7qKRk6z42gOkUewnEIBPK0Cehq8OrWDF11v6e
+         uMQn26jwKVbaOWNFBWm7Np+tnswWGEXteqzK34hSxmwj3RpmgJyQg49xhW45BlRWH+hz
+         TblDuKVLvPojo6rEqh8jd1COtgpMuwRYFqmikXqR/KQxN65f6HDpnLb8JmDeuF0Q9SVI
+         upsVz23coJABJrL0+oVCZNEIcvf9FlsGFOd3MSmGYiJmTO9P8jnOe0QjR+6MdUc6i0NK
+         qCf7VvX5r+BD3mS+CMgFGUBGxOZzO610NmvKC41nHCoe7cJuqMBDLtQJ/hnYwGs+8Y+3
+         UerQ==
+X-Gm-Message-State: AOAM530euSsRmEE7Odd900mokeGx9YYYvmfIfESNI6F0WOPCrD/OfZWa
+        lFP8mr8xnMBv1h0xJhemssj8ZoM7BlnbT3b756Y=
+X-Google-Smtp-Source: ABdhPJyHqiYDDAzqBZpY0Y+2FPubQ691OoTQ5VqxFwRjJE++/McpO5N1sG+LYCu7AE2HsS5XKzkPfNubVIHKGR/eNmI=
+X-Received: by 2002:a1c:8002:: with SMTP id b2mr4982176wmd.94.1612291401278;
+ Tue, 02 Feb 2021 10:43:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122204038.3238-1-ggherdovich@suse.cz> <20210122204038.3238-2-ggherdovich@suse.cz>
- <YA6XmO2nuivdpE8M@hirez.programming.kicks-ass.net> <1611653310.11983.66.camel@suse.cz>
-In-Reply-To: <1611653310.11983.66.camel@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 2 Feb 2021 19:45:31 +0100
-Message-ID: <CAJZ5v0jbw2X_Wk6We-uYOh9rMCrTTSSb32NFcYaFrtK+bMXMJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
- schedutil invariant formula
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Larabel <Michael@phoronix.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+ <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
+ <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+ <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org> <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
+ <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
+ <CAF6AEGspvnwRrXurmRvvRhr8dsFRc6fNnLsSo52Te0rHXtj4jA@mail.gmail.com>
+ <CAF6AEGsDL-qRyXWftTgzHGn=UTvz=rcyEUcJv+oGtVXCkYibug@mail.gmail.com> <e338e4bd-0e8c-9199-caa1-93945ed2b94b@somainline.org>
+In-Reply-To: <e338e4bd-0e8c-9199-caa1-93945ed2b94b@somainline.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 2 Feb 2021 10:45:55 -0800
+Message-ID: <CAF6AEGsm4nzU4rJsKFSShb4s6GCi93=+kzcETngQkoC3KD1sqw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
+ and prescaler
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 5:19 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+On Tue, Feb 2, 2021 at 6:32 AM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
 >
-> On Mon, 2021-01-25 at 11:04 +0100, Peter Zijlstra wrote:
-> > On Fri, Jan 22, 2021 at 09:40:38PM +0100, Giovanni Gherdovich wrote:
-> > > This workload is constant in time, so instead of using the PELT sum we can
-> > > pretend that scale invariance is obtained with
-> > >
-> > >     util_inv = util_raw * freq_curr / freq_max1        [formula-1]
-> > >
-> > > where util_raw is the PELT util from v5.10 (which is to say, not invariant),
-> > > and util_inv is the PELT util from v5.11-rc4. freq_max1 comes from
-> > > commit 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for
-> > > frequency invariance on AMD EPYC") and is (P0+max_boost)/2 = (2.25+3.4)/2 =
-> > > 2.825 GHz.  Then we have the schedutil formula
-> > >
-> > >     freq_next = 1.25 * freq_max2 * util_inv            [formula-2]
-> > >
-> > > Here v5.11-rc4 uses freq_max2 = P0 = 2.25 GHz (and this patch changes it to
-> > > 3.4 GHz).
-> > >
-> > > Since all cores are busy, there is no boost available. Let's be generous and say
-> > > the tasks initially get P0, i.e. freq_curr = 2.25 GHz. Combining the formulas
-> > > above and taking util_raw = 825/1024 = 0.8, freq_next is:
-> > >
-> > >     freq_next = 1.25 * 2.25 * 0.8 * 2.25 / 2.825 = 1.79 GHz
+> Il 01/02/21 18:31, Rob Clark ha scritto:
+> > On Mon, Feb 1, 2021 at 9:18 AM Rob Clark <robdclark@gmail.com> wrote:
+> >>
+> >> On Mon, Feb 1, 2021 at 9:05 AM Rob Clark <robdclark@gmail.com> wrote:
+> >>>
+> >>> On Mon, Feb 1, 2021 at 7:47 AM Rob Clark <robdclark@gmail.com> wrote:
+> >>>>
+> >>>> On Mon, Feb 1, 2021 at 2:11 AM AngeloGioacchino Del Regno
+> >>>> <angelogioacchino.delregno@somainline.org> wrote:
+> >>>>>
+> >>>>> Il 31/01/21 20:50, Rob Clark ha scritto:
+> >>>>>> On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
+> >>>>>> <angelogioacchino.delregno@somainline.org> wrote:
+> >>>>>>>
+> >>>>>>> The VCO rate was being miscalculated due to a big overlook during
+> >>>>>>> the process of porting this driver from downstream to upstream:
+> >>>>>>> here we are really recalculating the rate of the VCO by reading
+> >>>>>>> the appropriate registers and returning a real frequency, while
+> >>>>>>> downstream the driver was doing something entirely different.
+> >>>>>>>
+> >>>>>>> In our case here, the recalculated rate was wrong, as it was then
+> >>>>>>> given back to the set_rate function, which was erroneously doing
+> >>>>>>> a division on the fractional value, based on the prescaler being
+> >>>>>>> either enabled or disabled: this was actually producing a bug for
+> >>>>>>> which the final VCO rate was being doubled, causing very obvious
+> >>>>>>> issues when trying to drive a DSI panel because the actual divider
+> >>>>>>> value was multiplied by two!
+> >>>>>>>
+> >>>>>>> To make things work properly, remove the multiplication of the
+> >>>>>>> reference clock by two from function dsi_pll_calc_dec_frac and
+> >>>>>>> account for the prescaler enablement in the vco_recalc_rate (if
+> >>>>>>> the prescaler is enabled, then the hardware will divide the rate
+> >>>>>>> by two).
+> >>>>>>>
+> >>>>>>> This will make the vco_recalc_rate function to pass the right
+> >>>>>>> frequency to the (clock framework) set_rate function when called,
+> >>>>>>> which will - in turn - program the right values in both the
+> >>>>>>> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
+> >>>>>>> registers, finally making the PLL to output the right clock.
+> >>>>>>>
+> >>>>>>> Also, while at it, remove the prescaler TODO by also adding the
+> >>>>>>> possibility of disabling the prescaler on the PLL (it is in the
+> >>>>>>> PLL_ANALOG_CONTROLS_ONE register).
+> >>>>>>> Of course, both prescaler-ON and OFF cases were tested.
+> >>>>>>
+> >>>>>> This somehow breaks things on sc7180 (display gets stuck at first
+> >>>>>> frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
+> >>>>>> bridge)
+> >>>>>>
+> >>>>>
+> >>>>> First frame of the splash means that something is "a bit" wrong...
+> >>>>> ...like the DSI clock is a little off.
+> >>>>>
+> >>>>> I don't have such hardware, otherwise I would've tried... but what you
+> >>>>> describe is a bit strange.
+> >>>>> Is there any other older qcom platform using this chip? Any other
+> >>>>> non-qcom platform? Is the driver for the SN65DSI86 surely fine?
+> >>>>> Anyway, as you know, I would never propose untested patches nor
+> >>>>> partially working ones for any reason: I'm sorry that this happened.
+> >>>>
+> >>>> I don't think there is anything publicly avail w/ sc7180 (yet.. but very soon)
+> >>>>
+> >>>> The ti-sn65dsi86 bridge is used on a bunch of 845/850 devices (like
+> >>>> the snapdragon windows laptops).. and I think also the older 835
+> >>>> laptops.. ofc that doesn't mean that there isn't some bug, but I'd
+> >>>> guess maybe more likely that there is some small difference in DSI vs
+> >>>> older devices, or some cmd vs video mode difference.
+> >>>>
+> >>>> Anyways, seems like the screen did eventually recover so that gives me
+> >>>> a bit of confidence to bisect this series, which I'll do a bit later
+> >>>> today.
+> >>>
+> >>> fwiw, this series minus this patch, and everything looks ok.. let me
+> >>> take a closer look at what changes with this patch
+> >>
+> >> Btw, it looks like upstream, config->disable_prescaler is always
+> >> false.. I don't suppose you have anything WIP that changes this?
 > >
-> > Right, so here's a 'problem' between schedutil and cpufreq, they don't
-> > use the same f_max at all times.
+>
+> Regarding that one, I have tested the driver in both cases, with
+> and without prescaler enabled (both worked fine), then I have decided
+> to leave the prescaler option exactly as the previous default.
+>
+> My plan about this was/still is:
+> 1. Wait until this one gets merged (gives me time to also look
+>     at the other billion patches that I've sent);
+> 2. Add the prescaler option DT property and explain that it has
+>     to be used only with "puny" displays (low resolution, low
+>     clocks) as with "good ones", enabling the prescaler gives less
+>     clock jitter (and some microamps more power consumption);
+> 3. Add the Spread Spectrum Clock (SSC) functionality with related
+>     DT properties.
+>
+> Point 2 and 3 would go in the same series, unless someone does
+> N.2 before I do... and N.3 requires a bit of extensive testing,
+> which I have already partially started on the FxTec phone.
+>
+> > fwiw, this is the clk_summary diff with and without this patch:
 > >
-> > And this is also an inconsistency between acpi_cpufreq and intel_pstate
-> > (passive). IIRC the intel_pstate cpufreq drivers uses 4C/1C/P0 resp,
-> > while ACPI seems to stick to P0 f_max.
+> > ------------------
+> > 270,282c270,282
+> > <     dsi0_pll_out_div_clk              1        1        0
+> > 887039941          0     0  50000         Y
+> > <        dsi0_pll_post_out_div_clk       0        0        0
+> > 221759985          0     0  50000         Y
+> > <        dsi0_pll_bit_clk               2        2        0
+> > 887039941          0     0  50000         Y
+> > <           dsi0_pclk_mux               1        1        0
+> > 887039941          0     0  50000         Y
+> > <              dsi0_phy_pll_out_dsiclk       1        1        0
+> > 147839991          0     0  50000         Y
+> > <                 disp_cc_mdss_pclk0_clk_src       1        1        0
+> >    147839991          0     0  50000         Y
+> > <                    disp_cc_mdss_pclk0_clk       1        1        0
+> >   147839991          0     0  50000         Y
+> > <           dsi0_pll_by_2_bit_clk       0        0        0
+> > 443519970          0     0  50000         Y
+> > <           dsi0_phy_pll_out_byteclk       1        1        0
+> > 110879992          0     0  50000         Y
+> > <              disp_cc_mdss_byte0_clk_src       2        2        0
+> > 110879992          0     0  50000         Y
+> > <                 disp_cc_mdss_byte0_div_clk_src       1        1
+> >    0    55439996          0     0  50000         Y
+> > <                    disp_cc_mdss_byte0_intf_clk       1        1
+> >    0    55439996          0     0  50000         Y
+> > <                 disp_cc_mdss_byte0_clk       1        1        0
+> > 110879992          0     0  50000         Y
+> > ---
+> >>      dsi0_pll_out_div_clk              1        1        0   887039978          0     0  50000         Y
+> >>         dsi0_pll_post_out_div_clk       0        0        0   221759994          0     0  50000         Y
+> >>         dsi0_pll_bit_clk               2        2        0   887039978          0     0  50000         Y
+> >>            dsi0_pclk_mux               1        1        0   887039978          0     0  50000         Y
+> >>               dsi0_phy_pll_out_dsiclk       1        1        0   147839997          0     0  50000         Y
+> >>                  disp_cc_mdss_pclk0_clk_src       1        1        0   147839997          0     0  50000         Y
+> >>                     disp_cc_mdss_pclk0_clk       1        1        0   147839997          0     0  50000         Y
+> >>            dsi0_pll_by_2_bit_clk       0        0        0   443519989          0     0  50000         Y
+> >>            dsi0_phy_pll_out_byteclk       1        1        0   110879997          0     0  50000         Y
+> >>               disp_cc_mdss_byte0_clk_src       2        2        0   110879997          0     0  50000         Y
+> >>                  disp_cc_mdss_byte0_div_clk_src       1        1        0    55439999          0     0  50000         Y
+> >>                     disp_cc_mdss_byte0_intf_clk       1        1        0    55439999          0     0  50000         Y
+> >>                  disp_cc_mdss_byte0_clk       1        1        0   110879997          0     0  50000         Y
+> > ------------------
+> >
+> >
 >
-> That's correct. A different f_max is used depending on the occasion. Let me
-> rephrase with:
-
-OK, I confused the terminology, sorry about that.
-
-> cpufreq core asks the driver what's the f_max. What's the answer?
+> This is almost exactly what I saw on my devices as well, you get a
+> difference of "just some Hz" (which can be totally ignored), because
+> of how the calculation is done now.
 >
-> intel_pstate says: 1C
-
-Yes, unless turbo is disabled, in which case it is P0.
-
-> acpi_cpufreq says: P0
-
-This is P0+1, isn't it?
-
-> scheduler asks the freq-invariance machinery what's f_max, because it needs to
-> compute f_curr/f_max. What's the answer?
+> Thing is, what you see as PIXEL and BYTE clocks *before* the change is
+> Linux thinking that your DSI is at that frequency, while the PLL will
+> output *half* the rate, which is exactly what the patch fixes.
 >
-> Intel CPUs: 4C in most cases, 1C on Atom, something else on Xeon Phi.
-> AMD CPUs: (P0 + 1C) / 2.
+> "Fun" story is: the Xperia XZ1 (8998) and XZ (8996) have got the same
+> display... by lowering the DSI rate on the MSM8996 phone by half, I
+> get the same *identical* issues as the 8998 one without this patch.
+> The clocks all match between one and another, because.. it's.. the same
+> display, after all.
 >
+> It is because of the aforementioned test that I have raised doubts about
+> the TI chip driver (or anything else really).. but then, anything is
+> possible.
+
+It does look like, *so far* the TI bridge chip is only used on qc
+platforms (according to grep'ing dts), so I suppose I can't rule out
+bugs which cancel each other out.  Although there are various other
+bridges used (for ex, the sdm845 rb3 board has some dsi->hdmi bridge)
+
+I guess it would be useful if we could measure the clk somehow to
+confirm that it is running at the rate we think it is..
+
+BR,
+-R
+
+
+> >>>
+> >>>>> In any case, just to be perfectly transparent, while being here waiting
+> >>>>> for review, this patch series got tested on more smartphones, even ones
+> >>>>> that I don't personally own, with different displays.
+> >>>>>
+> >>>>> For your reference, here's a list (all MSM8998..):
+> >>>>> - OnePlus 5               (1920x1080)
+> >>>>> - F(x)Tec Pro 1           (2160x1080)
+> >>>>> - Sony Xperia XZ1 Compact (1280x720)
+> >>>>> - Sony Xperia XZ1         (1920x1080)
+> >>>>> - Sony Xperia XZ Premium  (3840x2160)
+> >>>>>
+> >>>>
+> >>>> Yeah, no worries, I wasn't trying to imply that the patch was untested.
+> >>>>
 >
-> Legend:
-> 1C = 1-core boost
-> 4C = 4-cores boost
-> P0 = max non-boost P-States
+> I know, of course!
+>
+> >>>> Out of curiosity, are any of those video mode panels?
+>
+> Yes and "also":
+> The FxTec Pro1 has a video mode panel, for which I'm trying to upstream
+> the driver...look here: https://lore.kernel.org/patchwork/patch/1365228/
+>
+> The Xperia XZ Premium has a Sharp LS055D1SX04 panel under NT35950, which
+> can be configured as command or as video mode... I tried both modes, but
+> there is some issue with the DPU1/DSI drivers and *DUAL DSI*, as cmd
+> does work with some tearing, but video doesn't even start (downstream it
+> works).
+>
+> So the only video mode panel that I could test is that BOE panel on the
+> FxTec phone (single dsi), which works just great.
+>
+> >>>>
+> >>>>>
+> >>>>>> Also, something (I assume DSI related) that I was testing on
+> >>>>>> msm-next-staging seems to have effected the colors on the panel (ie.
+> >>>>>> they are more muted).. which seems to persist across reboots (ie. when
+> >>>>>
+> >>>>> So much "fun". This makes me think something about the PCC block doing
+> >>>>> the wrong thing (getting misconfigured).
+> >>>>>
+> >>>>>> switching back to a good kernel), and interestingly if I reboot from a
+> >>>>>> good kernel I see part of the login prompt (or whatever was previously
+> >>>>>> on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
+> >>>>>> the display to think it is in PSR mode??)
+> >>>>>>
+> >>>>>
+> >>>>>   From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
+> >>>>> cannot produce (logically, at least) this, so I say that it is very
+> >>>>> unlikely for this to be a consequence of the 10nm pll fixes...
+> >>>>>
+> >>>>
+> >>>> Note that the bridge can also be programmed via dsi cmd mode packets,
+> >>>> which I believe is the case on the 835 laptops (or at least one of
+> >>>> them).. but all the things I have are using i2c as the control path.
+> >>>>
+> >>>>> ...unless the bootloader is not configuring the DSI rates, but that's
+> >>>>> also veeeeery unlikely (it always does, or it always does not).
+> >>>>
+> >>>> I haven't looked at the bootloader display code, but booting back to
+> >>>> an old/good kernel didn't change anything..  even powering off didn't.
+> >>>> But the ghost image seemed to fade after some time, and by the next
+> >>>> morning it was fine.  Which is strange. (But tbf, I'm more a gpu guy
+> >>>> who works on display only when necessary.. ie. a gpu without a display
+> >>>> isn't so much fun ;-))
+> >>>>
+>
+> OpenCL all the way! lol :D
+>
+> On Qualcomm platforms, the first thing that I've ever done was to bring
+> up displays on 8974 Sony platforms... (we're talking about years ago).
+>
+> I'm a lil more on the display side of things (but growing a beard while
+> waiting between a frame and another due to no GPU isn't so much fun
+> either!).
+>
+> >>>>>> Not sure if that is caused by these patches, but if I can figure out
+> >>>>>> how to get the panel back to normal I can bisect.  I think for now
+> >>>>>> I'll drop this series.  Possibly it could be a
+> >>>>>> two-wrongs-makes-a-right situation that had things working before, but
+> >>>>>> I think someone from qcom who knows the DSI IP should take a look.
+> >>>>>>
+> >>>>>
+> >>>>> I would be happy if someone from Qualcomm takes a look: after all, there
+> >>>>> is no documentation and they're the only ones that can verify this kind
+> >>>>> of stuff. Please, Qualcomm.
+> >>>>
+> >>>> Hopefully someone can take a look.
+> >>>>
+> >>>>> Besides that, if there's anything I can help with to solve this riddle,
+> >>>>> I'm here for you.
+> >>>>
+> >>>> Thanks, like I said I'll try applying the patches one by one and see
+> >>>> if I can narrow down what made the panel go funny, and we can go from
+> >>>> there
+> >>>>
+> >>>> BR,
+> >>>> -R
+> >>>>
+> >>>>> Yours,
+> >>>>> -- Angelo
+> >>>>>
+> >>>>>> BR,
+> >>>>>> -R
+> >>>>>>
+> >>>>>>
+> >>>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> >>>>>>> ---
+> >>>>>>>    drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
+> >>>>>>>    1 file changed, 9 insertions(+), 13 deletions(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> >>>>>>> index 8b66e852eb36..5be562dfbf06 100644
+> >>>>>>> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> >>>>>>> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> >>>>>>> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
+> >>>>>>>
+> >>>>>>>           pll_freq = pll->vco_current_rate;
+> >>>>>>>
+> >>>>>>> -       if (config->disable_prescaler)
+> >>>>>>> -               divider = fref;
+> >>>>>>> -       else
+> >>>>>>> -               divider = fref * 2;
+> >>>>>>> -
+> >>>>>>> +       divider = fref;
+> >>>>>>>           multiplier = 1 << config->frac_bits;
+> >>>>>>>           dec_multiple = div_u64(pll_freq * multiplier, divider);
+> >>>>>>>           dec = div_u64_rem(dec_multiple, multiplier, &frac);
+> >>>>>>> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
+> >>>>>>>
+> >>>>>>>    static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
+> >>>>>>>    {
+> >>>>>>> +       struct dsi_pll_config *config = &pll->pll_configuration;
+> >>>>>>>           void __iomem *base = pll->mmio;
+> >>>>>>> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
+> >>>>>>>
+> >>>>>>> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
+> >>>>>>> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
+> >>>>>>>           pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
+> >>>>>>>           pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
+> >>>>>>>           pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
+> >>>>>>> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+> >>>>>>>           frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
+> >>>>>>>                     0x3) << 16);
+> >>>>>>>
+> >>>>>>> -       /*
+> >>>>>>> -        * TODO:
+> >>>>>>> -        *      1. Assumes prescaler is disabled
+> >>>>>>> -        */
+> >>>>>>>           multiplier = 1 << config->frac_bits;
+> >>>>>>> -       pll_freq = dec * (ref_clk * 2);
+> >>>>>>> -       tmp64 = (ref_clk * 2 * frac);
+> >>>>>>> +       pll_freq = dec * ref_clk;
+> >>>>>>> +       tmp64 = ref_clk * frac;
+> >>>>>>>           pll_freq += div_u64(tmp64, multiplier);
+> >>>>>>> -
+> >>>>>>>           vco_rate = pll_freq;
+> >>>>>>>
+> >>>>>>> +       if (config->disable_prescaler)
+> >>>>>>> +               vco_rate = div_u64(vco_rate, 2);
+> >>>>>>> +
+> >>>>>>>           DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+> >>>>>>>               pll_10nm->id, (unsigned long)vco_rate, dec, frac);
+> >>>>>>>
+> >>>>>>> --
+> >>>>>>> 2.29.2
+> >>>>>>>
+> >>>>>
+>
