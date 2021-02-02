@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B7630C68D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A121D30C6AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhBBQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:51:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:53308 "EHLO foss.arm.com"
+        id S236820AbhBBQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:54:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236868AbhBBQtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:49:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13426ED1;
-        Tue,  2 Feb 2021 08:48:28 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D30DE3F73B;
-        Tue,  2 Feb 2021 08:48:25 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>,
-        vincent.guittot@linaro.org, mgorman@suse.de, mingo@kernel.org,
-        peterz@infradead.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, linux-kernel@vger.kernel.org
-Cc:     linuxarm@openeuler.org, xuwei5@huawei.com, liguozhu@hisilicon.com,
-        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
-        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
-        guodong.xu@linaro.org, Barry Song <song.bao.hua@hisilicon.com>,
-        Meelis Roos <mroos@linux.ee>
-Subject: Re: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-In-Reply-To: <jhj4kiu4hz8.mognet@arm.com>
-References: <20210201033830.15040-1-song.bao.hua@hisilicon.com> <jhj4kiu4hz8.mognet@arm.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Tue, 02 Feb 2021 16:48:23 +0000
-Message-ID: <jhj1rdy4drc.mognet@arm.com>
+        id S236879AbhBBQut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:50:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6680C64F8C;
+        Tue,  2 Feb 2021 16:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612284607;
+        bh=1pyS1O/tfQWwIdEuctiuv1WSn/cICDq2gO6ZI5MLyZA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qt+bYOoaif+OB/INxcPDne0PeMVbxxORuDpNI16pbNOCCU4a5tZO5vvLS03z5jveX
+         G+Bafubjefm+jxrIXV/LLBvJJ1dlbTE/zFrmH+gWJFNTYiOvPr2acASlyDvPfizQdx
+         ozHjlJ/igtTdoamKzZ7Zap5VGKntlfdpGdyx3jpH/uesYIftYG3HEx+LYDWtOkx+1E
+         MRLqH2573UW9iEKCNpmiUdHQlggyORBwu29gY6WZNCpqMWmJ4Av/0ghsw2pSGkdq1y
+         W3tkKlIEWlxIT5dxLb3T2AjEN8vvJ9Kr5EZ7dksAAzxzMZ70lGVHX311Lna1tmYlK8
+         euCa+Je5VO2Uw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5ECD3609D9;
+        Tue,  2 Feb 2021 16:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161228460738.23213.13014448307375459803.git-patchwork-notify@kernel.org>
+Date:   Tue, 02 Feb 2021 16:50:07 +0000
+References: <20210201055706.415842-1-xie.he.0141@gmail.com>
+In-Reply-To: <20210201055706.415842-1-xie.he.0141@gmail.com>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ms@dev.tdt.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 15:17, Valentin Schneider wrote:
-> That is, rather than building overlapping groups and fixing them whenever
-> that breaks (distance > 2), we could have:
-> - the local group being the child domain's span (as always)
-> - all non-local NUMA groups spanning a single node each, with the right sgc
->   cross-referencing.
->
-> Thoughts?
->
+Hello:
 
-Hmph I'm thinking this can be broken by domain degeneration, as nothing
-will come fix up the ->sgc link and we'd be back to having a reference to a
-group that doesn't get updated... 
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Sun, 31 Jan 2021 21:57:06 -0800 you wrote:
+> When sending a packet, we will prepend it with an LAPB header.
+> This modifies the shared parts of a cloned skb, so we should copy the
+> skb rather than just clone it, before we prepend the header.
+> 
+> In "Documentation/networking/driver.rst" (the 2nd point), it states
+> that drivers shouldn't modify the shared parts of a cloned skb when
+> transmitting.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: lapb: Copy the skb before sending a packet
+    https://git.kernel.org/netdev/net/c/88c7a9fd9bdd
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
