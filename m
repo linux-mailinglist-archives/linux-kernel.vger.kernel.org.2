@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B1830C3CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A785230C3ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbhBBP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235485AbhBBP0T (ORCPT
+        id S235629AbhBBPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:35:25 -0500
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:22447 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234995AbhBBPcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:26:19 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7E5C06174A;
-        Tue,  2 Feb 2021 07:25:38 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id f2so24396194ljp.11;
-        Tue, 02 Feb 2021 07:25:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1BFhguJtknsgKZxynMp8586vauMG7FnrvbgtjYyZdro=;
-        b=Vv94kslTjxOHCof/KEF/LoLKR4nL5ltWMvPcoQIXsSRavJWqtYBiP4QkJfugy6ZSHw
-         QF/4EXVfa3lenAfwmQje7P49RcR1YghY0PCAU//9kv0OcVTFjTz+s6MTZsuDvoxeNQBg
-         VhJHmLc35E4FARCFj1km/HlUqEq5qSdKlViFF05bIHJYnduqZRrIF/W9XUC7LvaYe2wg
-         H1qPnPgPgF1ij8aDO/c1c+3R7ZGttCyFlLtxcYJiYN+c2/hWbqX0cqLcTFyW4c+9bQO4
-         8eoNEKdfAyzCfqpFKMhgFKZr15lZL86pIdGoUv/Neqjn/opYp+dRlJF99YQ2/8WOcbaG
-         28Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1BFhguJtknsgKZxynMp8586vauMG7FnrvbgtjYyZdro=;
-        b=MX491ZNuDqCJiwhs4ej73LOSS70us4LxE7dV3l0lP+v/rNS9Kq9rCeMxv9/lbL+Di9
-         JBo/myvnZX71wz98MDaeFO0wILBty29wsEI+SnJ0FUOFbkikQkMCpVq9Yn/+Fe34NBZJ
-         vFWbvzj0NutK84HA1lwE4wqzN3N0iO/IuRn6uDPxjFbd12VETLSM3XbFIShhcRiSzkTr
-         s36Cnrn50rtZxS3Va31vplsJphqCiwXp9KmJvsl+FFLytYwdVOiIalcLKEAnGjyEeauX
-         UD2hYva12yiZ1FImZ/XlGeMnF1VCLSuFSLFB/zweY0Ngdp7aLASKFYAvgc452Jidldq/
-         xxdA==
-X-Gm-Message-State: AOAM531qBClaNqm/5jKQ/5jpsSk7LFToPk8GnSV86zOjLhxSxuzaT9LH
-        X2R3YVTMCsZva6DtPi/8QEpqq+ekjUg=
-X-Google-Smtp-Source: ABdhPJy9CrYxZnEFUlb+AY6IJgJ2nx7yfz9iiAllAC8BTXE/k9hwCGANIk8LURd2z3PsTK23pF1mFg==
-X-Received: by 2002:a2e:7c16:: with SMTP id x22mr13561352ljc.46.1612279536183;
-        Tue, 02 Feb 2021 07:25:36 -0800 (PST)
-Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id s19sm2604205ljg.43.2021.02.02.07.25.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 07:25:35 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] ASoC: tegra: Add RT5631 machine driver
-To:     Jon Hunter <jonathanh@nvidia.com>, Ion Agorria <AG0RRIA@yahoo.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Stephen Warren <swarren@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ion Agorria <ion@agorria.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
- <20210131184101.651486-3-AG0RRIA@yahoo.com>
- <7f4eb8f7-215e-ab3d-fcef-9243037cf246@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8d0bc6f3-45ce-565d-d80f-b50fb75e7c55@gmail.com>
-Date:   Tue, 2 Feb 2021 18:25:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Tue, 2 Feb 2021 10:32:46 -0500
+X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 10:32:43 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1612279966;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Ff0ODS3QBH1c9Z92pXmSGi2ISsoawY8OQVKLEOisOdI=;
+  b=AlIWjYGiPo/Ba/sCiDaBeEurUVa29SgQFaEW5LDX6VQ7gkpLjKaPA/bA
+   +MbDNhxXarP6uwEkeAck9sLAdhyuME8sE8uEEk0sQhXY71S3JgcspXDmI
+   nvnBvhiMv3KoXU+odPjFoYw+batTOQnR7dcjC4Gf0XJWwDj4KTVy5Xme6
+   U=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: 3AsF6jWq0gMIIKS1cdsb7GcLWobd5iEgdpRkCEPFI/T0bE6dBMaAKwJkpHPCPlXUy/8L47yPoS
+ Ir3YOcLKU9ZljJFLU9/qevKmpLia6n5Sxb07p+ObyagjNGHumtyIZpHjAB0tR0r07ONc+/1ISv
+ Y/yNHDRdozIUNz423FFx0RtDiWaEYE7Z+3VKZeSybNrBBmiYxvZ+3HsAZ4L4yRPYIRHnnTsW/6
+ cTW7rS0ki5wDxJAo3EjtAadZ0L0c7NDOMnO0zRsJkKSOCADBCbV1BvOZQjU+vQUfMDL/QbE5Y6
+ NdU=
+X-SBRS: 5.1
+X-MesageID: 36576887
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.79,395,1602561600"; 
+   d="scan'208";a="36576887"
+Subject: Re: [PATCH] xen/netback: avoid race in
+ xenvif_rx_ring_slots_available()
+To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <stable@vger.kernel.org>
+References: <20210202070938.7863-1-jgross@suse.com>
+From:   Igor Druzhinin <igor.druzhinin@citrix.com>
+Message-ID: <c17d4e45-cad1-510d-0e7b-9d95af89ff01@citrix.com>
+Date:   Tue, 2 Feb 2021 15:26:03 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7f4eb8f7-215e-ab3d-fcef-9243037cf246@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210202070938.7863-1-jgross@suse.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.02.2021 16:22, Jon Hunter пишет:
-> So this is very similar to tegra_rt5677, is it not possible to support
-> both codecs with the same machine driver?
+On 02/02/2021 07:09, Juergen Gross wrote:
+> Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
+> xenvif_rx_ring_slots_available() is no longer called only from the rx
+> queue kernel thread, so it needs to access the rx queue with the
+> associated queue held.
+> 
+> Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
+> Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-These codecs require individual configurations and those
-"../codecs/rt5631.h" and  "../codecs/rt5677.h" aren't compatible at a
-quick glance.
+Appreciate a quick fix! Is this the only place that sort of race could
+happen now?
 
-The tegra_rt5677 also uses outdated GPIO API and etc. Hence the new
-driver should be a better base anyways.
-
-Overall it shouldn't worth time and effort trying to squeeze these
-drivers into a single one, IMO.
+Igor
