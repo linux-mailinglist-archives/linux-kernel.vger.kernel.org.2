@@ -2,145 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D9E30B424
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260B830B435
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhBBA3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:29:30 -0500
-Received: from mail.micronovasrl.com ([212.103.203.10]:47076 "EHLO
-        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhBBA3T (ORCPT
+        id S231466AbhBBAdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:33:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:55102 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231264AbhBBAdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:29:19 -0500
-Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
-        by mail.micronovasrl.com (Postfix) with ESMTP id 6B8C2B04815
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:28:36 +0100 (CET)
-Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
-         h=content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:user-agent:date:date
-        :message-id:from:from:references:to:subject:subject; s=dkim; t=
-        1612225715; x=1613089716; bh=JxP7LmBQXWp8+fn4nnMWKgOwLEm0OV0hIqn
-        35rpYk5c=; b=W7FVB/oVs6yI3GQPrTJReWVG71GGzEnbDuiZ21lTiVyDtVtW9UO
-        glAGdOhfTItxXAwcXhG8cg9Ak32gqYWP+IwAzYVBlgYw9zutcOoxsVuGof3j4wuE
-        sypwoOQtA6Nq6bALJLMLl3tFq888nH0EaKgvpPTFvvu/OL90jmWzPzXg=
-X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.901
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.901 tagged_above=-10 required=4.5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, NICE_REPLY_A=-0.001]
-        autolearn=unavailable autolearn_force=no
-Received: from mail.micronovasrl.com ([127.0.0.1])
-        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id l9rv-ziJSxDm for <linux-kernel@vger.kernel.org>;
-        Tue,  2 Feb 2021 01:28:35 +0100 (CET)
-Received: from [192.168.50.85] (146-241-184-239.dyn.eolo.it [146.241.184.239])
-        by mail.micronovasrl.com (Postfix) with ESMTPSA id 034A5B047FF;
-        Tue,  2 Feb 2021 01:28:33 +0100 (CET)
-Subject: Re: [PATCH 0/3] Handle UART without interrupt on TEMT using em485
-To:     Eric Tremblay <etremblay@distech-controls.com>
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
-        lukas@wunner.de, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
-        heiko.stuebner@theobroma-systems.com
-References: <5FC36FF8-8F09-4B82-92C0-BE5E0AA2C117@micronovasrl.com>
- <f480b022-0dbb-7dba-e426-2882683ec54b@distech-controls.com>
-From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
-Message-ID: <ab49f27c-50ca-5d29-e3a4-ff47acdd47ce@micronovasrl.com>
-Date:   Tue, 2 Feb 2021 01:28:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <f480b022-0dbb-7dba-e426-2882683ec54b@distech-controls.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: it
+        Mon, 1 Feb 2021 19:33:07 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1120OGUb097502;
+        Tue, 2 Feb 2021 00:30:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=ZD3O6UhLJAWSFXbqdeC30GFnxxsqy5F0A2XspSE2k3I=;
+ b=PBia5cAmKQbTLfL02K1RqdfgADjeFbpPyPPXB+edblVO4k8uH4KbgexZd9qjwJgpTOCD
+ t26wDioy/zJXbrC+Zwp08VpFF8Hk1scD4NnsgATR85J+G4ELVsTMoUqY5KforgIgi4mi
+ lmBWxEq8z00CQB7gFSpSKzRmWg1iNZ3LyitbIIjKrrAAqSZP5jkf/lNW9vUmj6jVPMSo
+ Hh2aesFDbkJpgRWPyU2l/f7rjaafi3Opqc6517FKc7Tl8zXQdJy5XB0DBzMYdl6i6vv3
+ E7bsw85C9+oLoljjs9BzUkwhH2mmTfRdALhCIOxoPlhbAjf8rxa150FN/fuLyS/Axcdx cg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36cxvr07u7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 00:30:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1120KV5P186621;
+        Tue, 2 Feb 2021 00:30:51 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
+        by userp3030.oracle.com with ESMTP id 36dhcvt94y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 00:30:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lf4t45QDoB8vll5RTRng2L+O3TkPfHd9ckJcWVodwi4GawJMKYDpYZk0P1OcsROvpUty1ZbF+uiJ9cQhGrlA6GA9CyVVv+gS703oWInoicBFDuHqZp3+phPpXraVYeLVhZY8rHIAQx9KI4+03158RLMfkoeVIgQU0V9uxHkqBb3F0P6WQaKdIsfONCPEdRgOzF9cPnZaS9TbAXeRGJcHJZGFThErMCszIpNEP2GWnFDVcaXikK3Fr1W3r2x/pNoTI+L9n4uOUMGNnWlhCPR8xsltCbcMglEJH5uChlEV6O8WwewAqkVauYNZwCLSay8CwRZ41bSbDBmAURSVmPtyVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZD3O6UhLJAWSFXbqdeC30GFnxxsqy5F0A2XspSE2k3I=;
+ b=DfasdOxinepCiln9Dct2P7UCfhH8jxG2Jb1uFLu1+e0DT3i+0GhuYU+ZajCa40teQBtZ+lAS7vSMRZnMhyOC1D/rybPImxSBZP5oxEdDLthF1mib/2MhnLoAf+vGfW9gMTx27hCFIvy6/6rtFutKDUlXMnFYxoKIn9Ar3ZjseLyZyFaSJ/8N/G9sFMoeJLPDbbLT5EDyWc5UpDQrbsWyGF+uvKI8UlBXJMe0ORzoquubL1jkFjsqsL7e07cThFBri/+ZJ6bL02ClCw3J3a1BlQIvqow3RthVjGoFHtwqbB7cRuKhhVhx0tmXsMycNLVoCsaFXViyRzz84jf1REzQsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZD3O6UhLJAWSFXbqdeC30GFnxxsqy5F0A2XspSE2k3I=;
+ b=FQiyxGGt/mSdey1cVbyrJdyugBVpA6nyKJT0SUNzOIs5GoSp53oQTA7Q0Ig17NYh843rGmx4y21BkEwpIAipXvFyEozqXffIiAnqWLLA1gxLsTSn21BzsQ1st+nC09VaFkod8yhpnZeVFLsWYNVGPSdpqkspsYUfK8/BHd1jP28=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2823.namprd10.prod.outlook.com (2603:10b6:a03:87::15)
+ by BYAPR10MB3080.namprd10.prod.outlook.com (2603:10b6:a03:87::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.21; Tue, 2 Feb
+ 2021 00:30:48 +0000
+Received: from BYAPR10MB2823.namprd10.prod.outlook.com
+ ([fe80::adef:30b8:ee4e:c772]) by BYAPR10MB2823.namprd10.prod.outlook.com
+ ([fe80::adef:30b8:ee4e:c772%3]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
+ 00:30:48 +0000
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Subject: [PATCH] KVM: x86/mmu: Remove unused variable invalid_list
+Date:   Mon,  1 Feb 2021 16:30:37 -0800
+Message-Id: <20210202003037.899504-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.27.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2606:b400:8301:1041::13]
+X-ClientProxiedBy: CH2PR07CA0038.namprd07.prod.outlook.com
+ (2603:10b6:610:5b::12) To BYAPR10MB2823.namprd10.prod.outlook.com
+ (2603:10b6:a03:87::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2606:b400:8301:1041::13) by CH2PR07CA0038.namprd07.prod.outlook.com (2603:10b6:610:5b::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 2 Feb 2021 00:30:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b5fd25a3-8ada-4c5f-ef53-08d8c711c95b
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3080:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB30808A3A30F038D70A9AC3EADBB59@BYAPR10MB3080.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:270;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xA+BF3XVoVWabkvzc4KdKX/6hwYg5mUtYZb6V9lr/skHEa6gCpvjyrNMYlbrrGiqPnCdTFyoh0bPq3fg6pSkASSgK5Vfrt+Iq5zSvHuAtIZC/UWvlgFJrmNJq8MiQns8fL26b7fFY7V1FST935c+3Q9k6M6DQC5xooB4PEEqsOJTDqSHzq8d1u4CaBrZ+TRjufYs+LuE0EYSXvPYMqPA2fijZyvew0aMZ2Ie0Y+lr2MehZZF1IdqdwX5gGVI5L+8jAxcGlqlemjLfAi7/HLwvPEJH05X7YaXPALfpNvM5XBAvdEzyoCszIssp6qNPEC9v1oAstCs/YM42OlyC5O2wfFdEQT8r6TMOg5j/aeBHT7j9znmE+Ylj4D6zgWnvU/H7yLLJyvWNs++efuc0IURg9vAcpENas64MMTOPC+MFxoVpowv9iecaD5QSQaJlSdsY3TIb6K2z0yzbquxHOK4u0zy7UgBg2/DiC1P+VhhUJmSxcequD9HmeUblbgzvmR0DZXg93PpEg74mGHpPgRj2iqqmuMitxPENDUVOHDy9AImk95XlqSz4A8oGfSglgKKAu3+vYkqNwtBey0b5zwP6pSsMS9xlFHs7taxPPkMQBXPPgXKbqWHq/2u7tSBhRgLDSeUhG4ag74o6DbelGKtI3qjUtA7tK7wsQ84z6KDbi6PvwphGwjZJW+dJ2VNMJebI+dadhBP6kcwmMM9Rs3SRPYhOz7SzMIZcI3d9w4yq+yqVF3oaYrGu5cjqTXFOL8Lx+mRc5YJsWQM0NWEcG62x/OWMh0Uc3ohE8AIiU+0+nW5YXBQx0ICz98qUY73QzbN3UlZ6neisLuk1ozBuWrwowC+nL8YVf21DnwXrTWx9wOdPLLnnILzdeQVmHNozGN9ElAVJuDX2J2u11sdsf0q0w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:BYAPR10MB2823.namprd10.prod.outlook.com;PTR:;CAT:OSPM;SFS:(376002)(39860400002)(136003)(396003)(366004)(346002)(110136005)(478600001)(52116002)(83380400001)(8936002)(16526019)(186003)(5660300002)(86362001)(6496006)(66946007)(316002)(6666004)(7416002)(1076003)(2616005)(4744005)(66476007)(66556008)(36756003)(921005)(2906002)(8676002)(4326008)(6486002)(103116003)(107886003)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7uwqWfKuaYGi6xC0qs2YTsFsiHASWmMSFs1V9AeOxZHgA3dr78aEdFL9P58n?=
+ =?us-ascii?Q?RHAds16noYtDm0giTnHQuRfausKFB52zxpSP1UI9BYqWTYIpY0jjv3wjZ8T6?=
+ =?us-ascii?Q?ZVWWDKXLtDdqyEcX1E2u3/3+OkQLNhT1Fl1R64XNESl7YG0TexnYRbel73hb?=
+ =?us-ascii?Q?6IAdUH4ulicyfm7BbtDyvy0314CgBtt4IaIrrk22gc/Cs9ymC282Zu5OPwIL?=
+ =?us-ascii?Q?qP1DGVqi3gSGfXFxiyC++SQO5OZbCWFvgRYGMShvqzATPnoCCDvQK3OWAw3j?=
+ =?us-ascii?Q?UrKFjzHYli7375uUVIeBOmUmFxCvWjUaJnq+jyOiHDJNseSD1FoNNMXqHvKH?=
+ =?us-ascii?Q?gRdq9ljASx6ddThysdQ/Xi2mZADrQj2AWlrpuVf7UNxXoL4n0yfD/yWhUHjy?=
+ =?us-ascii?Q?d4XhWUWkbIN18luKEYHKdXztRLeMSaztz5VWRiADVn7LKyNjTdqskUUnUmgc?=
+ =?us-ascii?Q?P0s7IeuO9h14Z1LHIaB12ZXjY0eV4awphKpNdjGkjef5j0WhToKKL1SkBP2i?=
+ =?us-ascii?Q?Xqw9XRrPMu+ZhIeEzLnN0ncPjHpl2eNq2tZd4+CkN7wZTXyPOYJMI0CBiKN4?=
+ =?us-ascii?Q?vb9u74h1WXgNgR7kIPdKkQ6/Xsv3z5px/Z098WOuzaQmnBYqpEzNjjzrIt1x?=
+ =?us-ascii?Q?atel2dMUkFbur6Gz0waYa886/QoZX+ZyoEC8GMn9a2hVoE3MCtDW3u60dOQB?=
+ =?us-ascii?Q?6gsPJ9+ELKODlixgMIB5S9aAY0GziPrNzootX4LjP9moLnhtFVr3i51OUHxX?=
+ =?us-ascii?Q?e9xw/GIAmk6vh9yP6EIRCKp/8i0DEBFKNNzYVbuVNbjTfFvpwBMcqRfktjxt?=
+ =?us-ascii?Q?2QboiqE5NhUZCRJlcW5uW4Uyy7Aw8qBYj+Gy3LvhdQvaxWZK3gfC+T9IQ9je?=
+ =?us-ascii?Q?S33+eGGN5g2IgVDMnPvwjLdpRSUOgWH+/5RcdeittvYew6wW2XVGQW8HHohV?=
+ =?us-ascii?Q?4l0wxK3cKqMEVdlo8mMIEqMM9qpyDTOCejh2EAxEe4a9+fAKAwvh2xOGJZZo?=
+ =?us-ascii?Q?Xj1rEOysEBkWn2FuuNDOlW4TP9t6GzH6JWzvDC/VjDhZC1R9rU2XG63uLN2I?=
+ =?us-ascii?Q?wCGXbGfUvPFGiB+CW9TZSxDAZd0pww=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5fd25a3-8ada-4c5f-ef53-08d8c711c95b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2823.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 00:30:48.1341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tQzYMFXyHn/XxK2nMYCdoHPmJZDTJA8VbEs4Z4QBh0OlOSZyjvLpvrNaHJquysrUR5OKV6taJ5OpGwE+g/Ho8OaGZkMlOUI9kThsCykSLmw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3080
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020001
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/02/2021 01:02, Eric Tremblay ha scritto:
-> On 2021-01-28 7:12 p.m., Giulio Benetti wrote:
->> Hi Eric,
->>
->>> Il giorno 29 gen 2021, alle ore 00:37, Eric Tremblay <etremblay@distech-controls.com> ha scritto:
->>>
->>> ﻿The series is mainly about the support of 8250 UART without TEMT
->>> interrupt. I saw that there was some development in the past but
->>> it was never merged. Since the last discussion were quite some
->>> time ago, I was not sure if I should post a v4 over the
->>> last v3 or start from scratch so I decided to post a new patch. Please
->>> advice if I should have done the reverse.
->> Please keep my and Heiko’s SoB and add your SoB too describing between [ ] what Heiko has done and what you’ve done.
->> For example:
->> SoB: Giulio
->> SoB: Heiko
->> [Heiko: ...]
->> SoB Eric
->> [Eric: improved timeout etc.]
-> 
-> I will add them in the next version, thanks for mentioning it.
+Since commit ebdb292dac79 ("KVM: x86/mmu: Batch zap MMU pages when
+shrinking the slab"), invalid_list is no longer used in
+mmu_shrink_scan(). Remove it.
 
-Thank you
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->>
->>> The approach is a little different from the last proposed patch which was
->>> doing using a polling at 100us. I tought that it could be really long on
->>> some fast baudrate and really not that long on slow baudrate. The current
->>> approach is to calculate the time of a bytes when the settings are changed.
->>> When we get the interrupt for the empty FIFO, it's the longer it can take
->>> to empty the shift register.
->> Good idea.
->>
->>> The other two patches are to use that features with the PORT_16550A_FSL64
->>> found on some chip like the LS1043A.
->> Do you mind to add my 8250_dw patch that was originally part of this patchset? I had to send it
->> soon, you’ve preceded me :-)
-> 
-> I think there was still a comment pending on that patch. I think you should resubmit
-> since I think it's a bit out-of-scope for me.
-
-Ah yes, you're correct, I will submit it then.
-
-Best regards
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481aa29d..4b42c7a08e42 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5736,7 +5736,6 @@ mmu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 
+ 	list_for_each_entry(kvm, &vm_list, vm_list) {
+ 		int idx;
+-		LIST_HEAD(invalid_list);
+ 
+ 		/*
+ 		 * Never scan more than sc->nr_to_scan VM instances.
 -- 
-Giulio Benetti
-CTO
-
-MICRONOVA SRL
-Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
-Tel. 049/8931563 - Fax 049/8931346
-Cod.Fiscale - P.IVA 02663420285
-Capitale Sociale € 26.000 i.v.
-Iscritta al Reg. Imprese di Padova N. 02663420285
-Numero R.E.A. 258642
-
->>
->> Thank you
->> Best regards
->> Giulio
->>
->>> Thanks
->>>
->>> Eric Tremblay (3):
->>> serial: 8250: Handle UART without interrupt on TEMT using em485
->>> serial: 8250: add compatible for fsl,16550-FIFO64
->>> serial: 8250: remove UART_CAP_TEMT on PORT_16550A_FSL64
->>>
->>> drivers/tty/serial/8250/8250.h            |  1 +
->>> drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
->>> drivers/tty/serial/8250/8250_of.c         |  5 ++
->>> drivers/tty/serial/8250/8250_omap.c       |  2 +-
->>> drivers/tty/serial/8250/8250_port.c       | 89 ++++++++++++++++++++++-
->>> include/linux/serial_8250.h               |  2 +
->>> 6 files changed, 98 insertions(+), 3 deletions(-)
->>>
->>> -- 
->>> 2.17.1
-> 
-> 
+2.27.0
 
