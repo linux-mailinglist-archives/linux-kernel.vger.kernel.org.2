@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997B730BAD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7F930BAD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhBBJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:22:12 -0500
-Received: from mga02.intel.com ([134.134.136.20]:43618 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232839AbhBBJVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:21:38 -0500
-IronPort-SDR: FCrOJIrfSh2UG00JWmjJqHci6bC12qG+ntO6xGNR9a+oYSLB2LkMHejlTZzdKUhxeFhwFzd41U
- ZDuZxmTo5Qww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167931623"
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="167931623"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:20:56 -0800
-IronPort-SDR: 3IZJvT2+iksRI4caXQXYKA0zDQjX2ac/4W13D8lhgQPzWc0hyDU3c2UKU3VFR/OQr5dtp16QFw
- V2Y4+jlsr1tw==
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="391381398"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:20:54 -0800
-Subject: Re: [kbuild-all] Re: s390-linux-ld: ll_temac_main.c:undefined
- reference to `devm_platform_ioremap_resource_byname'
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Wang Hai <wanghai38@huawei.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202102010812.qthaghhK-lkp@intel.com>
- <ac0c1ba8-d7c7-1868-db25-ccf063effec8@infradead.org>
- <1606d1eb-2e10-185c-7f80-1a1538da03c8@intel.com>
- <8044e33e-018a-839b-4f71-38510d576f6e@infradead.org>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <f297b20d-a2cc-88b0-2d8e-9f41c842ab83@intel.com>
-Date:   Tue, 2 Feb 2021 17:20:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S232803AbhBBJXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232807AbhBBJVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:21:52 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99448C06174A;
+        Tue,  2 Feb 2021 01:21:09 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id m22so15687827ljj.4;
+        Tue, 02 Feb 2021 01:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rLnGvO/qQHa2EWoyYFO5NVkGeyHgHfQpLXHqwUMHMr4=;
+        b=mDNKERf1KBX0XmIX4zsOhJb63ydOHXL2XHEFNpHjVjlJ7u6D8d7FN9Wr3y5MOL88C5
+         wQ+3jiGTBq7GgicBJ1KM8Xub/5seUqxsdRJZxuvITLuf9wSFIR1lntBv5eDcM0HJt9/o
+         lQQLV2plNX3z6ES1abdAsowBtTpGpwimCjJZc7mwpRa8o90GhTODHBZLUZ0I2u+5j/5j
+         /iQ6AtTk9uNcP2Yr+V4WKjg44gsvhrYVJgmOlNBJnqVfQtBxS34dy0TsnQt49Qf9iuAa
+         etccBCTLA3iAAhBxnQL7sIx9xw7D9gd6Ijlb/ogKibgy/CPhUqob+F7eCs0rAfAZr8sD
+         N5Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rLnGvO/qQHa2EWoyYFO5NVkGeyHgHfQpLXHqwUMHMr4=;
+        b=W/l4MXNb7p25IUOnzRDKbj2D2HveqEOfiXb/vD3kHGopYh3aFssmSL913Zwartp1av
+         fLWRR0WV+m77nVS2xZzBZI1z4xXEgpy6l/FWUgvQeGbFwI/tkNMlk55Ln8uvLushnogU
+         BFkEruMyMgKYeC8QwVCMf9Uk373Q7/SEwGy0ocTU0DGVsPhcSgOZzPzLq/Oci4thVuyh
+         2Mg9vDOGVAu9eLXlOnbuitzRKUMh4PDnpus772scLOv0aArCCkqrae1BZ15Dy85ywY/w
+         7gIYOCVhnkgSk0tlMz0V7xqi12QqXx5J0nP38N/izooRtX3xy3Pr2yRvKbcPggLxKjqw
+         uODA==
+X-Gm-Message-State: AOAM533L6FzyhS+QcWYgZxgNFxiGLX5JuC8cDZYrCMu7BqwKyBhWaUJj
+        jdDhMa0j4yL+VeNopElzFMQ=
+X-Google-Smtp-Source: ABdhPJy3u8txAbV4kKg26JT2C4g4fzcj8b4ktT2GGh0vXRJ7U3zgmPVu9Uv3X085E4iNnQ/PqRQQ3g==
+X-Received: by 2002:a2e:b048:: with SMTP id d8mr13097228ljl.138.1612257668162;
+        Tue, 02 Feb 2021 01:21:08 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.228])
+        by smtp.googlemail.com with ESMTPSA id y18sm3213608lfe.29.2021.02.02.01.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 01:21:07 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
+Subject: [PATCH] net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
+Date:   Tue,  2 Feb 2021 15:20:59 +0600
+Message-Id: <20210202092059.1361381-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <8044e33e-018a-839b-4f71-38510d576f6e@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot found WARNING in qrtr_tun_write_iter [1] when write_iter length
+exceeds KMALLOC_MAX_SIZE causing order >= MAX_ORDER condition.
 
+Additionally, there is no check for 0 length write.
 
-On 2/2/21 1:22 PM, Randy Dunlap wrote:
-> On 2/1/21 9:09 PM, Rong Chen wrote:
->>
->> On 2/2/21 6:38 AM, Randy Dunlap wrote:
->>> On 1/31/21 4:06 PM, kernel test robot wrote:
->>>> Hi Wang,
->>>>
->>>> FYI, the error/warning still remains.
->>>>
->>>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>> head:   1048ba83fb1c00cd24172e23e8263972f6b5d9ac
->>>> commit: bd69058f50d5ffa659423bcfa6fe6280ce9c760a net: ll_temac: Use devm_platform_ioremap_resource_byname()
->>>> date:   6 months ago
->>>> config: s390-randconfig-r034-20210201 (attached as .config)
->>> Hi robot,
->>>
->>> Instead of hit & miss with s390 randconfigs, you could do what I did:
->>> (all for arch/s390/):
->> Hi Randy,
->>
->> Thanks for the advice, do you mean we don't need to test randconfig for arch s390?
-> You should still do randconfig testing for s390 (for other problems), but the robot has been
-> sending out a lot of build errors similar to this one, using different randconfig files.
->
-> I am just saying that you can find all of the ioremap/iounmap/devm_io* type build errors
-> in one kernel config file as described above.
+[1]
+WARNING: mm/page_alloc.c:5011
+[..]
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ qrtr_tun_write_iter+0x8a/0x180 net/qrtr/tun.c:83
+ call_write_iter include/linux/fs.h:1901 [inline]
 
-Hi Randy,
+Reported-by: syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+ net/qrtr/tun.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Thanks for the detailed explanation, will do it.
-
-Best Regards,
-Rong Chen
-
->
->> Best Regards,
->> Rong Chen
->>
->>> $ make allmodconfig
->>> $ scripts/config -d PCI  ## this also disables HAS_IOMEM
->>> $ make oldconfig
->>> $ make all
->>>
->>> The latter gives a full list of drivers etc. that use iomemp/ioremap etc. as well as dev_io* variants instead of just a few random ones.
->>>
->>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>      s390-linux-ld: drivers/net/ethernet/xilinx/ll_temac_main.o: in function `temac_probe':
->>>>      ll_temac_main.c:(.text+0x39b6): undefined reference to `devm_platform_ioremap_resource_byname'
->>>>>> s390-linux-ld: ll_temac_main.c:(.text+0x3a4c): undefined reference to `devm_platform_ioremap_resource_byname'
->>>>      s390-linux-ld: ll_temac_main.c:(.text+0x3bce): undefined reference to `devm_ioremap'
->>>>      s390-linux-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
->>>>      xilinx_axienet_main.c:(.text+0x844): undefined reference to `devm_ioremap_resource'
->>> _______________________________________________
->
+diff --git a/net/qrtr/tun.c b/net/qrtr/tun.c
+index 15ce9b642b25..b238c40a9984 100644
+--- a/net/qrtr/tun.c
++++ b/net/qrtr/tun.c
+@@ -80,6 +80,12 @@ static ssize_t qrtr_tun_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	ssize_t ret;
+ 	void *kbuf;
+ 
++	if (!len)
++		return -EINVAL;
++
++	if (len > KMALLOC_MAX_SIZE)
++		return -ENOMEM;
++
+ 	kbuf = kzalloc(len, GFP_KERNEL);
+ 	if (!kbuf)
+ 		return -ENOMEM;
+-- 
+2.25.1
 
