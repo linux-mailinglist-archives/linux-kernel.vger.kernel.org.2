@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4184D30B99C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBBF30B985
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbhBBIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S232319AbhBBIVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhBBISf (ORCPT
+        with ESMTP id S232557AbhBBITg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:18:35 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15C3C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:17:54 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id f16so1499118wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:17:54 -0800 (PST)
+        Tue, 2 Feb 2021 03:19:36 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE59C061573;
+        Tue,  2 Feb 2021 00:18:55 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id f16so1501787wmq.5;
+        Tue, 02 Feb 2021 00:18:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ACGAKZnb6JF4l8ikEp5I5AXDxCVsSoURups5lEzImcE=;
-        b=faVgTeBCLeqPvkrmO4za/Et/AIZPpbyYeOSQwvHRa9gdZ2t4QAgk5uHJv5ELGJyfWx
-         NkW06AKTrif2dFxuIWk9dry3jBm80jDcKSAwR+3ic2S+E2AAtxF4udrC71YF65Y0tO3u
-         7DeAp0qh96TSD3KmOfO+E1qFOaGHSmzNHJTP1Nb2G0+QA14xARDqk8MP+ptlN3uFwcKI
-         7vzCnPl/s0q93U1hzL1wUoiRTPZ8QqYlU8TMztPh09dh5E/z9izsSuQGckGZD+JXdAGe
-         tvLAIdwmpIJdI2YMcngrqC3yFgBxmKtzzy4z98byi4krI9324BskEq4vkdLQx9jKpy/8
-         N90w==
+         :content-disposition:in-reply-to;
+        bh=3Kr9Epl1kAlnX6nt81Nq6kJoyLjYKyuMq30muLpi2p8=;
+        b=kypzQ3DWrVZOA8QOrjdX2Sr1ociC5v585XN+sviQzHeBvVgYJ6vSYdBpZg+JzakTcq
+         oXvyfzzCBCu6c+bNBfsjlIQDfQGmjXK1UuXTpDJ2AvQ/UtE3EmfWbUvaHsI2mdZsdc9y
+         Art3KRmO587DP603ZjbxqylDmIzxdEmk3rEo5Kr4LZVvp08//ehHC9Yx3dRIw0rV7Yr/
+         5ToBMqJaDRqZwogF0mUICL28A6eoxtBR9iLK6+B3hQOkGmy/BxVYg9FIdnvexCfaoefp
+         maWOy+xDZ+w/wtDCBRL3ElP1/QYaGNRMWA47HgW5FjMYJBwinxDOzNyQY+/augRVirtW
+         DDRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ACGAKZnb6JF4l8ikEp5I5AXDxCVsSoURups5lEzImcE=;
-        b=ZDckH3F+LgzNpcarX2eBe83MDOZp9dAhBoohgnyqO+iRqUj84yKAZhE4MPIWBx2v9g
-         WNv26f+NAlAHF7GDnuEMAUw2FifE9/YqMBc4Lm4uzeTqbee4MgvtBlsmXzDsroKlmV+S
-         BjQZ3XWyC89Haim8xxJMyLGJCoxtNuSu+ww4uJMrx0ozCoRUHaIDnWxqBM0RSci3uiRi
-         jipbiay95JdiZFC4quJfq83jcheL33YlIn3jhw+yHovCnaWVOEVyUCxSrmFoZkpZ1vrs
-         X8Dx4E1uuP1jT0DslOIA9Jy+N4JdRO1iuQlUu7ecNDQDmSe2Ew/y/GpqA1ZoFuc4h/qB
-         dV2w==
-X-Gm-Message-State: AOAM532i6dSGfWRb0vutqnBOBbuHzTTTCYV/t6BApbuDr1p5BHN0b/ce
-        L+LZ3z8fP2fei4KvLqqJb7AJ4A==
-X-Google-Smtp-Source: ABdhPJxxw8SaCGfa18oKKwhPP66vF4sF3f2ps9se2LMWTc4wfpbd+MEzuOcdQstMg0aiFEYB2sBnxw==
-X-Received: by 2002:a1c:e905:: with SMTP id q5mr2443624wmc.84.1612253873405;
-        Tue, 02 Feb 2021 00:17:53 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id d10sm5269530wrn.88.2021.02.02.00.17.52
+         :mime-version:content-disposition:in-reply-to;
+        bh=3Kr9Epl1kAlnX6nt81Nq6kJoyLjYKyuMq30muLpi2p8=;
+        b=agJN4zt3BA0m9+dLV8iTtTMcNQQmXUArh4R4yu8D6zgCAiceScCqwD5Ca8rcEZMhe8
+         3tScppL7BGd22xUyL7w+nJh8p6RcH3wThZv9obNsP5uYPPJ/kefbL1EUstrS8JkahYxZ
+         uChkLDf/U3/YS87E3kk4rcOJpUoi1rE13hKqURw92kBueBTTGx9x81HX8U4hVrFIo+QY
+         ymK8vg798BGYQme4oBIeY3riZdhi7CkePJ889kOQ+gVXbPQepfXnaT67uI01xsbEsih2
+         WYpmUQDhWptOTSnY3BvKtP9CebbSmGTvTWA32BUxcALyHXd75xOJeEBSm8VVAi8ewEv2
+         tbAA==
+X-Gm-Message-State: AOAM533T876ukwtYwlZ62vw7Y86+A/8HfISLrHtXCxYk5tupXKuHhtCn
+        8m01ipQut6Wkx/ajNzHbbf4=
+X-Google-Smtp-Source: ABdhPJxWH7AgJ6Gtf9tHMpXuVnG+g43O3ZVUDlHb9iJCAjQKpTmuQfdlrcJrclc6I+ImUA+OrC9Spw==
+X-Received: by 2002:a7b:cbd5:: with SMTP id n21mr2478654wmi.5.1612253934526;
+        Tue, 02 Feb 2021 00:18:54 -0800 (PST)
+Received: from anparri (host-95-238-70-33.retail.telecomitalia.it. [95.238.70.33])
+        by smtp.gmail.com with ESMTPSA id c62sm1883575wmd.43.2021.02.02.00.18.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:17:52 -0800 (PST)
-Date:   Tue, 2 Feb 2021 08:17:51 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Lee Duncan <lduncan@suse.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: pmcraid: fix 'ioarcb' alignment warning
-Message-ID: <20210202081751.GZ4774@dell>
-References: <20210201170013.727112-1-arnd@kernel.org>
+        Tue, 02 Feb 2021 00:18:54 -0800 (PST)
+Date:   Tue, 2 Feb 2021 09:18:43 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     kuba@kernel.org, davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
+        skarade@microsoft.com, juvazq@microsoft.com, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 net-next] hv_netvsc: Copy packets sent by Hyper-V out
+ of the receive buffer
+Message-ID: <20210202081843.GA3923@anparri>
+References: <20210126162907.21056-1-parri.andrea@gmail.com>
+ <161196780649.27852.15602248378687946476.git-patchwork-notify@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210201170013.727112-1-arnd@kernel.org>
+In-Reply-To: <161196780649.27852.15602248378687946476.git-patchwork-notify@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021, Arnd Bergmann wrote:
+Hi net maintainers,
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Building with 'make W=1' enables -Wpacked-not-aligned, and this
-> warns about pmcraid because of incompatible alignment constraints for
-> pmcraid_passthrough_ioctl_buffer:
-> 
-> drivers/scsi/pmcraid.h:1044:1: warning: alignment 1 of 'struct pmcraid_passthrough_ioctl_buffer' is less than 32 [-Wpacked-not-aligned]
->  1044 | } __attribute__ ((packed));
->       | ^
-> drivers/scsi/pmcraid.h:1041:24: warning: 'ioarcb' offset 16 in 'struct pmcraid_passthrough_ioctl_buffer' isn't aligned to 32 [-Wpacked-not-aligned]
->  1041 |  struct pmcraid_ioarcb ioarcb;
-> 
-> The inner structure is documented as having 32 byte alignment here,
-> but is starts at a 16 byte offset in the outer structure, so it's never
-> actually aligned, as the outer structure is also marked 'packed'.
-> 
-> Lee Jones point this out as one of the last files that need to be changed
-> before the warning can be enabled by default.
-> 
-> Change the annotations in a way that avoids the warning but leaves the
-> layout unchanged, by removing the packing on the inner structure and
-> adding it to the outer one. The one-byte request_buffer[] array should
-> have been a flexible array member here, which is how I change it to
-> avoid extra padding from the alignment attribute.
 
-Looks good to me.
+On Sat, Jan 30, 2021 at 12:50:06AM +0000, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to netdev/net-next.git (refs/heads/master):
+> 
+> On Tue, 26 Jan 2021 17:29:07 +0100 you wrote:
+> > Pointers to receive-buffer packets sent by Hyper-V are used within the
+> > guest VM.  Hyper-V can send packets with erroneous values or modify
+> > packet fields after they are processed by the guest.  To defend against
+> > these scenarios, copy (sections of) the incoming packet after validating
+> > their length and offset fields in netvsc_filter_receive().  In this way,
+> > the packet can no longer be modified by the host.
+> > 
+> > [...]
+> 
+> Here is the summary with links:
+>   - [v2,net-next] hv_netvsc: Copy packets sent by Hyper-V out of the receive buffer
+>     https://git.kernel.org/netdev/net-next/c/0ba35fe91ce3
 
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
+I'd have some fixes on top of this and I'm wondering about the process: would
+you consider fixes/patches on top of this commit now? would you rather prefer
+me to squash these fixes into a v3? other?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+  Andrea
