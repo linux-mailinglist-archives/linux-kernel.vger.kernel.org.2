@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFF130C75B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C58630C758
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237430AbhBBRSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:18:46 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41332 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237331AbhBBRPi (ORCPT
+        id S237420AbhBBRSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237363AbhBBRPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:15:38 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 112HDqOb004710;
-        Tue, 2 Feb 2021 11:13:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612286032;
-        bh=0GZnBlsOkIAfjlHvw1T+IMeqbm+/Fp8bDPjTo2hjuDs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Ra8W66MYl0TlPXojJYJRm1TR63LmE1LYpFMwPYm6xPmVYP3hTyuBLH4kw90SkTlrY
-         hbr+pxs2hVaL0BogygW6yDCvwzO2EVM3nwTn/xP/ax6A9ChE4e/v4o6dxQXCgpx7pF
-         2nTxPK/JDg0GjH1Y44XcBrRNIlH/o333VnXMdezg=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 112HDqBx120507
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Feb 2021 11:13:52 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Feb
- 2021 11:13:51 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Feb 2021 11:13:51 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 112HDp2N007407;
-        Tue, 2 Feb 2021 11:13:51 -0600
-Date:   Tue, 2 Feb 2021 11:13:51 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     <arm@kernel.org>, <soc@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        <linux-kernel@vger.kernel.org>, Tero Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [GIT PULL 1/2] MAINTAINERS: Update to TI maintainer for v5.12
-Message-ID: <20210202171351.qhnzxvakptfbyocv@coach>
-References: <20210130131411.afna4wj72r7xscqn@skinny>
- <161228438414.1848830.8600684869682893491.b4-ty@arndb.de>
+        Tue, 2 Feb 2021 12:15:48 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41898C061793;
+        Tue,  2 Feb 2021 09:14:17 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 6so21286492wri.3;
+        Tue, 02 Feb 2021 09:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k4CVJlb0/AWH3A5Sub6ShZZ3WZC37rBXFHjTDRb3cs8=;
+        b=E7vNGQax2iQ+VzmOWvnQc0Ye+5pEJQ54SIN3BtnUz+f20UyqTUOd96462rNbqQ2w4G
+         AIxPDjuuEAOtxsNdfC1YdwNwbd/CUwcjZHNYsIYwtWTJeglBMsgpzNv9Fr7P7emFipcQ
+         YAfxD6H+9zbWpu1VhQn0hIPGHKhLkS0mnIMclIXFfsm96cmXH6K+zVTPNGq6NTmxY36m
+         5tSTDC2DtjKPTu2C7yngO4aG4zQumjZXhEGQGyi6bM4rpg/jb1KOP0Nu1oyy+YPyZHpD
+         XAyQd9PLaejKLKgMbxhEUiSv/x2L8tkE/Gax3xxRTjAEXCBhoOt+Z/dFQsoL6zjqOaiv
+         rrDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k4CVJlb0/AWH3A5Sub6ShZZ3WZC37rBXFHjTDRb3cs8=;
+        b=duWcyMRN3YAGiPsm9YxTV69mE10eDK6PuNS72OH6lleS/ZHg0PQmF2dVmIQzmgSjNr
+         PHNI8WgojCAGFLm3+GYtH4meQZ9tsQIoXn5EXtopduBEN1j62RQC+1A8/xXfvD9yD5JG
+         DzLuH0I7qa5I+abwVmunM/2F+JkEpfLRVuxOKcve5hlVWiWcjtVJ2nSEUSl8op2k2JzN
+         plxf57Z5V2ygytl+WMUMzB9A4EOc90A06iSSrcKQjZeIzyTqRoWkxY03KHMsXi6EtIqO
+         EEldqnnTpBxEW01/B/Bc9B56FmeuHyb4tmjjmeqEjW0aZozIjXSMOJ7oLyKIV+vp/Qtp
+         cvZg==
+X-Gm-Message-State: AOAM532QPkc76Lx1CMFzw9i/YxBuPiN0k+GY75C+FD/TQJyy4DKD0QVK
+        gaEY6tVO8GQn+Xixy+CKPMgkDzCoXMZVr743aB8=
+X-Google-Smtp-Source: ABdhPJzgh6Vc+DUq9tdwN2uJ46Lh9+eMLS11bhb8F+ysmXG56poEbcOCvD5XP4uvYaOUA09pp7BUGnMtp1hix5FIEKk=
+X-Received: by 2002:adf:e448:: with SMTP id t8mr25353656wrm.288.1612286055917;
+ Tue, 02 Feb 2021 09:14:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161228438414.1848830.8600684869682893491.b4-ty@arndb.de>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210202142901.7131-1-elic@nvidia.com>
+In-Reply-To: <20210202142901.7131-1-elic@nvidia.com>
+From:   Si-Wei Liu <siwliu.kernel@gmail.com>
+Date:   Tue, 2 Feb 2021 09:14:02 -0800
+Message-ID: <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
+Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change map
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lulu@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17:47-20210202, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> On Sat, 30 Jan 2021 07:14:11 -0600, Nishanth Menon wrote:
-> > Please pull the following MAINTAINERS file update for v5.12 cycle. Made
-> > sense to send via ARM path since the main PR path was for TI platforms.
-> 
-> This seems more appropriate to have in v5.11, I tend to fast-track
-> maintainer address changes as bug-fixes so future emails reach the
-> correct address.
+On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
+>
+> When a change of memory map occurs, the hardware resources are destroyed
+> and then re-created again with the new memory map. In such case, we need
+> to restore the hardware available and used indices. The driver failed to
+> restore the used index which is added here.
+>
+> Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> ---
+> This patch is being sent again a single patch the fixes hot memory
+> addtion to a qemy process.
+>
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 88dde3455bfd..839f57c64a6f 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+>         u64 device_addr;
+>         u64 driver_addr;
+>         u16 avail_index;
+> +       u16 used_index;
+>         bool ready;
+>         struct vdpa_callback cb;
+>         bool restore;
+> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+>         u32 virtq_id;
+>         struct mlx5_vdpa_net *ndev;
+>         u16 avail_idx;
+> +       u16 used_idx;
+>         int fw_state;
+>
+>         /* keep last in the struct */
+> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+>
+>         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+>         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+> +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
 
-Ouch, my bad. Thanks for the headsup, will keep this in mind if
-(hopefully not), we need to do this in the future.
+The saved indexes will apply to the new virtqueue object whenever it
+is created. In virtio spec, these indexes will reset back to zero when
+the virtio device is reset. But I don't see how it's done today. IOW,
+I don't see where avail_idx and used_idx get cleared from the mvq for
+device reset via set_status().
 
-> 
-> > The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-> > 
-> >   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-> > 
-> > are available in the Git repository at:
-> > 
-> > [...]
-> 
-> Merged into arm/fixes, thanks!
-> 
-> merge commit: 6102f9e700bb3fee2f37756514885e7b14a70ef6
+-Siwei
 
-Thanks.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+>         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+>                  get_features_12_3(ndev->mvdev.actual_features));
+>         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>  struct mlx5_virtq_attr {
+>         u8 state;
+>         u16 available_index;
+> +       u16 used_index;
+>  };
+>
+>  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+>         memset(attr, 0, sizeof(*attr));
+>         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+>         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+> +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+>         kfree(out);
+>         return 0;
+>
+> @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+>                 return err;
+>
+>         ri->avail_index = attr.available_index;
+> +       ri->used_index = attr.used_index;
+>         ri->ready = mvq->ready;
+>         ri->num_ent = mvq->num_ent;
+>         ri->desc_addr = mvq->desc_addr;
+> @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+>                         continue;
+>
+>                 mvq->avail_idx = ri->avail_index;
+> +               mvq->used_idx = ri->used_index;
+>                 mvq->ready = ri->ready;
+>                 mvq->num_ent = ri->num_ent;
+>                 mvq->desc_addr = ri->desc_addr;
+> --
+> 2.29.2
+>
