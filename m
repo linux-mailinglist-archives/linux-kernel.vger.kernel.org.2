@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8687D30C16F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C00830C141
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhBBOWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:22:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49182 "EHLO mail.kernel.org"
+        id S231751AbhBBOSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:18:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234216AbhBBONf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:13:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70FB764FB4;
-        Tue,  2 Feb 2021 13:53:12 +0000 (UTC)
+        id S234033AbhBBOLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:11:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F01864FA9;
+        Tue,  2 Feb 2021 13:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273993;
-        bh=V08v5oF/ERGc74OMxpDBGXcBxIp4n7jf+bX4Z0SaL4U=;
+        s=korg; t=1612273915;
+        bh=ecQa8LHiurxs3y103kI0B0ZtaKy0+Ngq7af/JCuEj4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XGeGIkyYWRHV9+KGKu6Gf3H3ZKdJQe3+KnJp383USxccwgD023YFq5N/uyTvPPN0i
-         /ZufYe9MALADugxp93yW9Rk+K06wASv0Q5ZDcoKfFIi3t+LYYb/455l2sHKKgUw1He
-         jJnby3RKDX94bbumyohdnT+JtCl7fFOT/zj3TOZI=
+        b=joTGJ+rhmIyfm6XBlni5jM6sowUJb0jeLaXadbZ5e8AlIaKDMrTyyNR3hU5kNH4Jv
+         4o1PczD09Dpk+0L8uX9ttCKmvbyCaIu/fGvLYc5fErbrF8IxSLHTq8R5oOyhl3pkGs
+         0Yzwktlfv96yBjitJXD6hX9s9351IeyD0e3A/yDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.19 12/37] drivers: soc: atmel: add null entry at the end of at91_soc_allowed_list[]
-Date:   Tue,  2 Feb 2021 14:38:55 +0100
-Message-Id: <20210202132943.410148332@linuxfoundation.org>
+        Max Krummenacher <max.krummenacher@toradex.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.14 15/30] ARM: imx: build suspend-imx6.S with arm instruction set
+Date:   Tue,  2 Feb 2021 14:38:56 +0100
+Message-Id: <20210202132942.764751292@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
+References: <20210202132942.138623851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Max Krummenacher <max.oss.09@gmail.com>
 
-commit 680896556805d3ad3fa47f6002b87b3041a45ac2 upstream.
+commit a88afa46b86ff461c89cc33fc3a45267fff053e8 upstream.
 
-of_match_node() calls __of_match_node() which loops though the entries of
-matches array. It stops when condition:
-(matches->name[0] || matches->type[0] || matches->compatible[0]) is
-false. Thus, add a null entry at the end of at91_soc_allowed_list[]
-array.
+When the kernel is configured to use the Thumb-2 instruction set
+"suspend-to-memory" fails to resume. Observed on a Colibri iMX6ULL
+(i.MX 6ULL) and Apalis iMX6 (i.MX 6Q).
 
-Fixes: caab13b49604 ("drivers: soc: atmel: Avoid calling at91_soc_init on non AT91 SoCs")
-Cc: stable@vger.kernel.org #4.12+
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+It looks like the CPU resumes unconditionally in ARM instruction mode
+and then chokes on the presented Thumb-2 code it should execute.
+
+Fix this by using the arm instruction set for all code in
+suspend-imx6.S.
+
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Fixes: df595746fa69 ("ARM: imx: add suspend in ocram support for i.mx6q")
+Acked-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/soc/atmel/soc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/mach-imx/suspend-imx6.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -258,7 +258,8 @@ static const struct of_device_id at91_so
- 	{ .compatible = "atmel,at91rm9200", },
- 	{ .compatible = "atmel,at91sam9", },
- 	{ .compatible = "atmel,sama5", },
--	{ .compatible = "atmel,samv7", }
-+	{ .compatible = "atmel,samv7", },
-+	{ }
- };
+--- a/arch/arm/mach-imx/suspend-imx6.S
++++ b/arch/arm/mach-imx/suspend-imx6.S
+@@ -73,6 +73,7 @@
+ #define MX6Q_CCM_CCR	0x0
  
- static int __init atmel_soc_device_init(void)
+ 	.align 3
++	.arm
+ 
+ 	.macro  sync_l2_cache
+ 
 
 
