@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7108F30B6A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C111730B6A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhBBEpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:45:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34514 "EHLO mail.kernel.org"
+        id S231774AbhBBEqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:46:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231540AbhBBEpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:45:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48A5A64EDA;
-        Tue,  2 Feb 2021 04:44:03 +0000 (UTC)
+        id S231725AbhBBEqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 23:46:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A0B64EDA;
+        Tue,  2 Feb 2021 04:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612241045;
-        bh=/Uu6nhhPRG0xelNUcutobrsnbE1m4ygZ8a43Nff8nvw=;
+        s=k20201202; t=1612241171;
+        bh=UW1qYPGwhsrczGp+QodpcDp1sn17mWrlWhPimNr/dJo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VTaYaEz2TCCBkkNs/iHyu1FwyDOqbTbttAQDr83JrYM19iIB3vMQhpnzDwFwLZa+J
-         9pJkCh9ccNULcmtcgKaXsbNPX43bw7ZmuYcmDWIdBdEY3guWL3OLP3vYks+Diy61nq
-         mF85CVgRwHJNFLtQ1VJsejGMAMA3/INZsTL4Xhcmm8vKuehMPFKBAd0eujjdxr/J/7
-         dtYogzETNb3Az4sn6SVgFpmp21EZT+IaYldj5WYa6ZEv3EWc3CdsOlUgWwjJI0BApI
-         jtNa+s2jjYuxcofsV1XX4r3ObrN1+WcfWxcJOZCfvFcXaUbQqVN51oTL5nRHGKqwFv
-         hFpOc6Wr1JLIw==
-Date:   Tue, 2 Feb 2021 10:14:00 +0530
+        b=ToqwdBePyZjZTmFxaueUVOtPVDDB+lTx0pDEinu/5fOGPdG1o/Xy77HW6QKrB+TcU
+         25EOoqsi9laIoQ6F7CJXRF2s1eF3sEa0mVCb5Kl1aQfodSuUEQ8//zgJWmrsmDDbrQ
+         mrlQrUJq/VbOoPFwqK/Br5/fDlEo/799QBNXgtLX1B5Lv6Lh12yZPN63rbt1NKkNTK
+         E8kOup4zxSlXGg6kBfNteMFAQVdt8rc7BgV0vBB37YUSWfnolXPHi7KGbDdpXwbAuH
+         +ghniSsFnDqMTYM2CEn3HfOaUOfEPAqWxR0VEefPySPa5OF4D0kCCWDmYYAGANCSVb
+         pFbZQZ19EOCeg==
+Date:   Tue, 2 Feb 2021 10:16:07 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        sanyog.r.kale@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 3/3] soundwire: bus: clear parity interrupt before the
- mask is enabled
-Message-ID: <20210202044400.GI2771@vkoul-mobl>
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
- <20210126083746.3238-4-yung-chuan.liao@linux.intel.com>
- <20210201110921.GZ2771@vkoul-mobl>
- <f5ef9a07-73df-c2b6-3e03-001f53700c5b@linux.intel.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/6] soundwire: qcom: set continue execution flag for
+ ignored commands
+Message-ID: <20210202044607.GJ2771@vkoul-mobl>
+References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ <20210129173248.5941-4-srinivas.kandagatla@linaro.org>
+ <20210201141642.GB2771@vkoul-mobl>
+ <1fef14fe-b254-9282-c213-d23e3b7d5f61@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5ef9a07-73df-c2b6-3e03-001f53700c5b@linux.intel.com>
+In-Reply-To: <1fef14fe-b254-9282-c213-d23e3b7d5f61@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-02-21, 10:29, Pierre-Louis Bossart wrote:
+On 01-02-21, 15:50, Srinivas Kandagatla wrote:
 > 
-> > >   	 * Set SCP_INT1_MASK register, typically bus clash and
-> > > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> > > index f7ba1a77a1df..c1fdc85d0a74 100644
-> > > --- a/drivers/soundwire/intel.c
-> > > +++ b/drivers/soundwire/intel.c
-> > > @@ -1286,7 +1286,8 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
-> > >   	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
-> > >   		prop->hw_disabled = true;
-> > > -	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH;
-> > > +	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
-> > > +		SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
+> 
+> On 01/02/2021 14:16, Vinod Koul wrote:
+> > >   	/* Configure number of retries of a read/write cmd */
+> > > -	ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR, SWRM_RD_WR_CMD_RETRIES);
+> > > +	if (ctrl->version_major == 1 && ctrl->version_minor >= 5 &&
+> > > +	    ctrl->version_step >= 1) {
+> > why not use raw version value?
 > > 
-> > move this to intel patch please..
+> >          if (ctrl->raw > 0x10501 )
 > > 
-> > >   	return 0;
-> > >   }
-> > > diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> > > index a2766c3b603d..30415354d419 100644
-> > > --- a/include/linux/soundwire/sdw.h
-> > > +++ b/include/linux/soundwire/sdw.h
-> > > @@ -426,6 +426,7 @@ struct sdw_master_prop {
-> > >   };
-> > >   #define SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH	BIT(0)
-> > > +#define SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY	BIT(1)
-> > 
-> > Why not add this quirk in patch 1..?
-> 
-> There is an element of history here. We first found out about the bus clash
-> on multiple devices and dealt with a specific bug number. Then we spend
-> weeks on the parity issue on a new platform and ultimately showed we needed
-> a similar work-around.
-> 
-> All these problems are not typical from a user perspective; they appear when
-> loading/unloading modules in loops, at some point it seems some hardware
-> devices don't always reset properly or there's something problematic in
-> power delivery.
-> 
-> I don't think it's an issue if we refactor the code to add the quirks first,
-> and add the intel.c patches later. We probably want 2 intel changes to keep
-> the references to the bugs though and the detailed explanations.
+> We can do that way as well, but Major Minor seems much clear to readers!
 
-Yes I would like to see that. Explanations are always welcome including
-development/debug notes.. Changelogs are very important documentation for
-kernel, so relevant details are always good to add.
-> 
-> > Also add comments about each quirk, hopefully it wont be a big table
-> 
-> Sounds fine.
+yes but comparison with numbers is always easiest and better :) We can
+always add comment that check version 1.5.1 which will make it clear
 
 -- 
 ~Vinod
