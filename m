@@ -2,121 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D4D30C9DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA03630C9C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238703AbhBBSb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238559AbhBBSYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:24:45 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06789C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:24:05 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 190so3379178wmz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:24:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MgieW2mFRkLjVmzEdO+rCy5IuyzB9BYZea1yZZDisDU=;
-        b=ThwOimmnlbRD7ClelZlSvTTMvrt4/HBr3aKX0vqL4pluYtd4RcmqyXdbjWm3rmmvfO
-         XaDBvZZesrQSJj0dn68mkh+pkniH4hIco+w5W/cj0fyIu3v2ZKHgIQiwJ0UWRvpEDB+0
-         4gDej/5zHg+ssFLGrlXUpoo8MD2YiPyjPXHRsUYDAJknZASEzx3DA6dAw05cbHWK/09m
-         AmXlZbqcBmp9fLBzac3W3VL6rNZfAcUyp/FkgcwxvWR5tJ+DOkphAmx5i80lVINqt2e3
-         WzXD5H5PIsTrl6s9CmK99hscu3ecC8QiG4oKiZdFWOqznB+xrTj9bvVPgAIYpI37oTGQ
-         DpQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MgieW2mFRkLjVmzEdO+rCy5IuyzB9BYZea1yZZDisDU=;
-        b=Jq0YbVOVfoHUgha26NPqXiH1WE7HEoejf625KFH58aKSy8dEomuFaSU3e0bLXOvbT0
-         fXPRPMIzeq9WPadC4PJm0GHBRvUn85yFj55tamNCR6EW0NXZgod4JYJFLYiG/dtDmBBh
-         c/8LOV94sa5G8qro3SFVvILVQVKQfQeOHessrYCZS2RYhJFokapaSH3mhsqDMJh9pxSb
-         QEpo571lM5Rs0PCkiUvYnDsxagOhqfEFNvtuUFagymeQ1YityhgGf1FcQt3iAVqjxapy
-         xKTgWKYipKGtOKDqbOeYOW8V9IlawX5JSJv2Coo2wPrcR4tD5JsMCvTgGFO25bmo9IVk
-         uYnA==
-X-Gm-Message-State: AOAM532oTVOVwmeLL5W37YgEtDWVqovtELP1jV9+AkIIr6NdbsDFnaMd
-        oP/YOLfJF60q7kJf6LUNvW+GiG8g0r3nUYc4q+LNug==
-X-Google-Smtp-Source: ABdhPJxyWbsmgA9sTq5DVu4oskgnl1milGSq73HSrJ4cKCCbs2f7IWzxeKS8co+5qhzF2K7w7UV8O69zhWPTCyWzYw8=
-X-Received: by 2002:a05:600c:4e92:: with SMTP id f18mr4736926wmq.126.1612290243428;
- Tue, 02 Feb 2021 10:24:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128083817.314315-1-surenb@google.com> <20210128091348.GA1962975@infradead.org>
- <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
- <YBMAGRIwcbPF17cU@google.com> <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
- <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
- <20210202070336.GA3535861@infradead.org> <CAJuCfpHWVcL1Cw=nm4THf0EzEan0jyVgLRNOdKr2ZbXex3DUcg@mail.gmail.com>
- <20210202085114.GA3562876@infradead.org>
-In-Reply-To: <20210202085114.GA3562876@infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 2 Feb 2021 10:23:52 -0800
-Message-ID: <CAJuCfpEfJEnzzr6dKZGTyVmQGZMmZBVTR+M4RsbZXjeGzFe8Gw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
- linux vm
+        id S238670AbhBBS2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:28:01 -0500
+Received: from mga11.intel.com ([192.55.52.93]:64452 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238289AbhBBSZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 13:25:04 -0500
+IronPort-SDR: e23cfKNk14nG+y+GcyHumJmOm8EhyYG6TNHiBXm9to+MOhS9nO8oLkKqcfi0UubNcoZ/kkYyzC
+ goFY6vFohgZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="177397682"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="177397682"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:24:21 -0800
+IronPort-SDR: rlVOr+F59Dm93VedZPbkRLa3d7C9TiDXpbtmq3k0WVsbXYLMphar3MgWZ1t5VZzywr2UW91/TO
+ FbLUWuM8GdVQ==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="391610338"
+Received: from joship1x-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.131.202])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:24:20 -0800
+Date:   Tue, 2 Feb 2021 10:24:18 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
 To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "(Exiting) Benjamin Gaignard" <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>, labbott@redhat.com,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        "Christian K??nig" <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        "??rjan Eide" <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210202182418.3wyxnm6rqeoeclu2@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-4-ben.widawsky@intel.com>
+ <20210202181016.GD3708021@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202181016.GD3708021@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 12:51 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Tue, Feb 02, 2021 at 12:44:44AM -0800, Suren Baghdasaryan wrote:
-> > On Mon, Feb 1, 2021 at 11:03 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > >
-> > > IMHO the
-> > >
-> > >         BUG_ON(vma->vm_flags & VM_PFNMAP);
-> > >
-> > > in vm_insert_page should just become a WARN_ON_ONCE with an error
-> > > return, and then we just need to gradually fix up the callers that
-> > > trigger it instead of coming up with workarounds like this.
-> >
-> > For the existing vm_insert_page users this should be fine since
-> > BUG_ON() guarantees that none of them sets VM_PFNMAP.
->
-> Even for them WARN_ON_ONCE plus an actual error return is a way
-> better assert that is much developer friendly.
+On 21-02-02 18:10:16, Christoph Hellwig wrote:
+> On Fri, Jan 29, 2021 at 04:24:27PM -0800, Ben Widawsky wrote:
+> >  #ifndef __CXL_H__
+> >  #define __CXL_H__
+> >  
+> > +#include <linux/bitfield.h>
+> > +#include <linux/bitops.h>
+> > +#include <linux/io.h>
+> > +
+> > +#define CXL_SET_FIELD(value, field)                                            \
+> > +	({                                                                     \
+> > +		WARN_ON(!FIELD_FIT(field##_MASK, value));                      \
+> > +		FIELD_PREP(field##_MASK, value);                               \
+> > +	})
+> > +
+> > +#define CXL_GET_FIELD(word, field) FIELD_GET(field##_MASK, word)
+> 
+> This looks like some massive obsfucation.  What is the intent
+> here?
+> 
 
-Agree.
+I will drop these. I don't recall why I did this to be honest.
 
->
-> > However, for the
-> > system_heap_mmap I have one concern. When vm_insert_page returns an
-> > error due to VM_PFNMAP flag, the whole mmap operation should fail
-> > (system_heap_mmap returning an error leading to dma_buf_mmap failure).
-> > Could there be cases when a heap user (DRM driver for example) would
-> > be expected to work with a heap which requires VM_PFNMAP and at the
-> > same time with another heap which requires !VM_PFNMAP? IOW, this
-> > introduces a dependency between the heap and its
-> > user. The user would have to know expectations of the heap it uses and
-> > can't work with another heap that has the opposite expectation. This
-> > usecase is purely theoretical and maybe I should not worry about it
-> > for now?
->
-> If such a case ever arises we can look into it.
+> > +	/* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
+> > +	struct {
+> > +		void __iomem *regs;
+> > +	} status;
+> > +
+> > +	/* Cap 0002h - CXL_CAP_CAP_ID_PRIMARY_MAILBOX */
+> > +	struct {
+> > +		void __iomem *regs;
+> > +		size_t payload_size;
+> > +	} mbox;
+> > +
+> > +	/* Cap 4000h - CXL_CAP_CAP_ID_MEMDEV */
+> > +	struct {
+> > +		void __iomem *regs;
+> > +	} mem;
+> 
+> This style looks massively obsfucated.  For one the comments look like
+> absolute gibberish, but also what is the point of all these anonymous
+> structures?
 
-Sounds good. I'll prepare a new patch and will post it later today. Thanks!
+They're not anonymous, and their names are for the below register functions. The
+comments are connected spec reference 'Cap XXXXh' to definitions in cxl.h. I can
+articulate that if it helps.
+
+> 
+> > +#define cxl_reg(type)                                                          \
+> > +	static inline void cxl_write_##type##_reg32(struct cxl_mem *cxlm,      \
+> > +						    u32 reg, u32 value)        \
+> > +	{                                                                      \
+> > +		void __iomem *reg_addr = cxlm->type.regs;                      \
+> > +		writel(value, reg_addr + reg);                                 \
+> > +	}                                                                      \
+> > +	static inline void cxl_write_##type##_reg64(struct cxl_mem *cxlm,      \
+> > +						    u32 reg, u64 value)        \
+> > +	{                                                                      \
+> > +		void __iomem *reg_addr = cxlm->type.regs;                      \
+> > +		writeq(value, reg_addr + reg);                                 \
+> > +	}                                                                      \
+> 
+> What is the value add of all this obsfucation over the trivial
+> calls to the write*/read* functions, possible with a locally
+> declarate "void __iomem *" variable in the callers like in all
+> normall drivers?  Except for making the life of the poor soul trying
+> to debug this code some time in the future really hard, of course.
+> 
+
+The register space for CXL devices is a bit weird since it's all subdivided
+under 1 BAR for now. To clearly distinguish over the different subregions, these
+helpers exist. It's really easy to mess this up as the developer and I actually
+would disagree that it makes debugging quite a bit easier. It also gets more
+convoluted when you add the other 2 BARs which also each have their own
+subregions.
+
+For example. if my mailbox function does:
+cxl_read_status_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+
+instead of:
+cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+
+It's easier to spot than:
+readl(cxlm->regs + cxlm->status_offset + CXLDEV_MB_CAPS_OFFSET)
+
+
+> > +	/* 8.2.8.4.3 */
+> 
+> ????
+> 
+
+I had been trying to be consistent with 'CXL2.0 - ' in front of all spec
+reference. I obviously missed this one.
+
