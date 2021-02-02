@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DA830C775
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634F530C880
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237331AbhBBRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:22:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49668 "EHLO mail.kernel.org"
+        id S237802AbhBBRwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:52:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234230AbhBBOOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:14:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E425364FAD;
-        Tue,  2 Feb 2021 13:53:23 +0000 (UTC)
+        id S233754AbhBBOJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3444164F99;
+        Tue,  2 Feb 2021 13:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612274004;
-        bh=IlZtFPYsyDOrrMcoH8Djsi1UeGPViV8qeUcCW6Xft2c=;
+        s=korg; t=1612273858;
+        bh=2ZQdflJ0IRcFyn4Mg7yQRUPkfdekW4o3Inms5uQK7QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HrdZ0YW8tcrrfADhj5N91zUPKIzfVDJsAz8VVV225FLGacttqitRBRtzCrFdwAmYj
-         dnIo7no53/XBNNp7ExwLh1nkX956ttJ9vK3s088qGz5MI6HG5xzwWWIe/cqaRFEy8m
-         j446qcaVs0EG35xDS8eX43YHefjN7dgZlv4Y9iOo=
+        b=DFdCzzslt4x6fdcXeL1S30qzRGRGPjwBVGSAS0+ol7H/DZ7pOB34Mq8R2K7v5apSn
+         xV/vOcmvFJpUSXBcko91drEQd4/07Hkx0/CrtwZy7m0g9kT6xO3F4k3GHEwRbqx8aR
+         xEE9S5uKLLBq6tYlkqO9CMQNv0WPMH3F0V2LzwpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 05/37] ALSA: hda/via: Apply the workaround generically for Clevo machines
-Date:   Tue,  2 Feb 2021 14:38:48 +0100
-Message-Id: <20210202132943.121587900@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 26/32] iwlwifi: pcie: reschedule in long-running memory reads
+Date:   Tue,  2 Feb 2021 14:38:49 +0100
+Message-Id: <20210202132943.060104477@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,35 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 4961167bf7482944ca09a6f71263b9e47f949851 upstream.
+[ Upstream commit 3d372c4edfd4dffb7dea71c6b096fb414782b776 ]
 
-We've got another report indicating a similar problem wrt the
-power-saving behavior with VIA codec on Clevo machines.  Let's apply
-the existing workaround generically to all Clevo devices with VIA
-codecs to cover all in once.
+If we spin for a long time in memory reads that (for some reason in
+hardware) take a long time, then we'll eventually get messages such
+as
 
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1181330
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210126165603.11683-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  watchdog: BUG: soft lockup - CPU#2 stuck for 24s! [kworker/2:2:272]
 
+This is because the reading really does take a very long time, and
+we don't schedule, so we're hogging the CPU with this task, at least
+if CONFIG_PREEMPT is not set, e.g. with CONFIG_PREEMPT_VOLUNTARY=y.
+
+Previously I misinterpreted the situation and thought that this was
+only going to happen if we had interrupts disabled, and then fixed
+this (which is good anyway, however), but that didn't always help;
+looking at it again now I realized that the spin unlock will only
+reschedule if CONFIG_PREEMPT is used.
+
+In order to avoid this issue, change the code to cond_resched() if
+we've been spinning for too long here.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 04516706bb99 ("iwlwifi: pcie: limit memory read spin time")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130253.217a9d6a6a12.If964cb582ab0aaa94e81c4ff3b279eaafda0fd3f@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_via.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -1056,7 +1056,7 @@ static const struct hda_fixup via_fixups
- static const struct snd_pci_quirk vt2002p_fixups[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1487, "Asus G75", VIA_FIXUP_ASUS_G75),
- 	SND_PCI_QUIRK(0x1043, 0x8532, "Asus X202E", VIA_FIXUP_INTMIC_BOOST),
--	SND_PCI_QUIRK(0x1558, 0x3501, "Clevo W35xSS_370SS", VIA_FIXUP_POWER_SAVE),
-+	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo", VIA_FIXUP_POWER_SAVE),
- 	{}
- };
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index ed90f46626e7d..71edbf7a42ed4 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -1910,6 +1910,7 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 	while (offs < dwords) {
+ 		/* limit the time we spin here under lock to 1/2s */
+ 		unsigned long end = jiffies + HZ / 2;
++		bool resched = false;
  
+ 		if (iwl_trans_grab_nic_access(trans, &flags)) {
+ 			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
+@@ -1920,10 +1921,15 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 							HBUS_TARG_MEM_RDAT);
+ 				offs++;
+ 
+-				if (time_after(jiffies, end))
++				if (time_after(jiffies, end)) {
++					resched = true;
+ 					break;
++				}
+ 			}
+ 			iwl_trans_release_nic_access(trans, &flags);
++
++			if (resched)
++				cond_resched();
+ 		} else {
+ 			return -EBUSY;
+ 		}
+-- 
+2.27.0
+
 
 
