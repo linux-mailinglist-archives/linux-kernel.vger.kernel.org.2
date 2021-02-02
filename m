@@ -2,67 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C702130BA66
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B48D30BA0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhBBIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:55:56 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:41228
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S232596AbhBBIzy (ORCPT
+        id S232262AbhBBIgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:36:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhBBIgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:55:54 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgAXH7uWDhlgwQ+sAQ--.37418S3;
-        Tue, 02 Feb 2021 16:34:30 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: mm/hugetlb.c: Fix typos in comments
-Date:   Tue,  2 Feb 2021 16:34:02 +0800
-Message-Id: <1612254842-6894-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgAXH7uWDhlgwQ+sAQ--.37418S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyrur47trWfXw1DXr4fZrb_yoWxZrXE9a
-        yvyrWrG3WYqr9xAF45KryUtr1Ikrn8urnrAay3Cry3ta4FyF95GFyrWw4UuF1YgayUurW3
-        CF9Ikw43Cw43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjAhL5UUUUU==
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Tue, 2 Feb 2021 03:36:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612254917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4NY/G36GtP697RjgpeOLFmdF2+6N5HezZacpHU3/OHU=;
+        b=fNc5uvakWDZzN6fO5crkpZoRiPjshH3QHsntGsyG90z8iOXqF36ktz3oSsIgWULeUtkL/b
+        dPzb6pN05kNIFADMEkde9w+/w9RmOHoO9cdJLYVglpa/28C6CltTTPMA7snqYdlkVbTJmp
+        iwu23yILZmNR7UaRna/yFeZbVM0DvvQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-lPodgu1jNaaMDod5g1K1VQ-1; Tue, 02 Feb 2021 03:35:15 -0500
+X-MC-Unique: lPodgu1jNaaMDod5g1K1VQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A306B107ACE4;
+        Tue,  2 Feb 2021 08:35:13 +0000 (UTC)
+Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A53A1975E;
+        Tue,  2 Feb 2021 08:35:10 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210129064045.18471-1-osalvador@suse.de>
+ <b9a2f80e-a90f-62bf-4197-66cdb315cb84@redhat.com>
+ <20210202075243.GA7037@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v2] x86/vmemmap: Handle unpopulated sub-pmd ranges
+Message-ID: <dd9dfa98-21df-70c8-d43d-e9a83889464c@redhat.com>
+Date:   Tue, 2 Feb 2021 09:35:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210202075243.GA7037@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> IMHO, we should rip out that code here and enforce page alignment in
+>> vmemmap_populate()/vmemmap_free().
+>>
+>> Am I missing something?
+> 
+> Thanks David for bringing this up, I must say I was not aware that this
+> topic was ever discussed.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 18f6ee3..35db386 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3990,7 +3990,7 @@ void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
- 
- /*
-  * This is called when the original mapper is failing to COW a MAP_PRIVATE
-- * mappping it owns the reserve page for. The intention is to unmap the page
-+ * mapping it owns the reserve page for. The intention is to unmap the page
-  * from other VMAs and let the children be SIGKILLed if they are faulting the
-  * same region.
-  */
+Yeah, last time I raised it was in
+
+https://lkml.kernel.org/r/20200703013435.GA11340@L-31X9LVDL-1304.local
+
+but I never got to clean it up myself.
+
+> 
+> Ok, I've been having a look into this.
+> At first I was concerced because of a pure SPARSEMEM configuration, but I
+> see that those allocations are done in a very diferent way so it does not
+> bother us.
+> 
+> So we have the following enforcements during hotplug:
+> 
+> add_memory_resource
+>   check_hotplug_memory_range : Checks range aligned to memory_block_size_bytes,
+>                              : which means it must be section-size aligned
+> 
+> populate_section_memmap
+>   __populate_section_memmap  : Checks range aligned to sub-section size
+> 
+> So, IIRC we have two cases during hotplug:
+>   1) the ones that want memory blocks
+>   2) the ones that do not want them (pmem stuff)
+> 
+> For #1, we always enforce section alignment in add_memory_resource, and for
+> #2 we always make sure the range is at least sub-section aligned.
+> 
+> And the important stuff is that boot memory is no longer to be hot-removed
+> (boot memory had some strange layout sometimes).
+
+The vmemmap of boot mem sections is always fully populated, even with 
+strange memory layouts (e.g., see comment in pfn_valid()). In addition, 
+we can only offline+remove whole sections, so that should be fine.
+
+> 
+> So, given the above, I think it should be safe to drop that check in
+> remote_pte_table.
+> But do we really need to force page alignment in vmemmap_populate/vmemmap_free?
+> vmemmap_populate should already receive a page-aligned chunk because
+>   __populate_section_memmap made sure of that, and vmemmap_free() should be ok
+> as we already filtered out at hot-adding stage.
+> 
+> Of course, this will hold as long as struct page size of multiple of 8.
+> Should that change we might get trouble, but I do not think that can ever
+> happened (tm).
+> 
+> But anyway, I am fine with placing a couple of checks in vmemmap_{populate,free}
+> just to double check.
+> 
+> What do you think?
+
+I'd just throw in 1 or 2 VM_BUG_ON() to self-document what we expect and 
+that we thought about these conditions. It's then easy to identify the 
+relevant commit where we explain the rationale.
+
+I don't have a strong opinion, the other archs also don't seem to care 
+about documenting/enforcing it.
+
 -- 
-1.8.3.1
+Thanks,
+
+David / dhildenb
 
