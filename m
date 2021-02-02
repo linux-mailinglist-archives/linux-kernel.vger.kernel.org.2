@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D130CF63
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5585130CF64
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbhBBWvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:51:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:59428 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233342AbhBBWvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:51:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECABCD6E;
-        Tue,  2 Feb 2021 14:50:27 -0800 (PST)
-Received: from [10.57.35.108] (unknown [10.57.35.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2EF3F694;
-        Tue,  2 Feb 2021 14:50:26 -0800 (PST)
-Subject: Re: [PATCH V3 05/14] coresight: ete: Add support for ETE tracing
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mike.leach@linaro.org, lcherian@marvell.com,
-        linux-kernel@vger.kernel.org
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-6-git-send-email-anshuman.khandual@arm.com>
- <20210202185639.GE1536093@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <f4e8471a-872b-7733-eaa4-387530564e0e@arm.com>
-Date:   Tue, 2 Feb 2021 22:50:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S236119AbhBBWwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235948AbhBBWwA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:52:00 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B9C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:51:20 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id m22so30524983lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:51:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+9krdDlER7nO0uQSN0FBS16AynTCBOll5fbT8VYMinM=;
+        b=Qlsv2h0Plid5mDH3CHuEkJ6gQAw2QIc//0ZoRgMoJmE55ll7JUzmhoz98kNWxXNK5R
+         RnFI75ha8WMAFzprmVwnMtkxFQk5+KAtpEixh5rW9WIqtpR/sWSL51oAZoRJ2sltvu9u
+         cwP1n7LK1CcoiBibnu23KkHAJX2oM6Tk9Q14U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+9krdDlER7nO0uQSN0FBS16AynTCBOll5fbT8VYMinM=;
+        b=Eitm1vOYCsNVDyaYoqLzt55pwdPkKDP7OcM+U6qrE2ODCUmKItCno5Zf84i9YJp9AF
+         FS+x8xjUjF30HkSNZYHI10LEyQ4PEpZ9NNHj55EkWVQpU8KWHnBFSw9BNxuwY8zoukfW
+         ARTKS5wFc5lLWtV/Qcx7EZFJA4RpPVGwnKU0Tz0emvCoxv3sPgOZzb7qDCvfO04eo2Hn
+         Q9SRA/c4UXTM4xJUQLga3NLVKpzGDxmJsc/9WsoBhhrqhE4wj4kLMkauoK1f5VB74IIl
+         HeU0aIKITnsxyvDPXBWEoiILuE83tPC0Dfr6gUrW6qUMgEdvBVs3cqSDnZh2JifKg21r
+         0btQ==
+X-Gm-Message-State: AOAM532vQL5MBTvQ/ewuQ2eD5DWnw0CPBLZfstTHU/ZfmPT70ktGEOH5
+        dLiLkFK3Afx/o2NgjUozbSx8WVCg3hIOjQ==
+X-Google-Smtp-Source: ABdhPJxXkyUX+tkFY1wzjoJ5ZZ+m81oNPC8bXTe74bjbu5Zt5WoHhGH6g6EIqqJv6Xuy9HtAlNOXGA==
+X-Received: by 2002:a19:155:: with SMTP id 82mr125412lfb.468.1612306278232;
+        Tue, 02 Feb 2021 14:51:18 -0800 (PST)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id h9sm41976lfj.24.2021.02.02.14.51.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 14:51:17 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id a25so26035138ljn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:51:16 -0800 (PST)
+X-Received: by 2002:a2e:b1c8:: with SMTP id e8mr7297437lja.251.1612306276462;
+ Tue, 02 Feb 2021 14:51:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210202185639.GE1536093@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210202201846.716915-1-timur@kernel.org> <202102021351.AEDE896AB3@keescook>
+ <9ce56a1c-9ea6-996b-84c6-cfde908c2ecd@kernel.org> <20210202173436.6516c676@gandalf.local.home>
+In-Reply-To: <20210202173436.6516c676@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Feb 2021 14:51:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com>
+Message-ID: <CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com>
+Subject: Re: [PATCH] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Timur Tabi <timur@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        roman.fietze@magna.com, John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 6:56 PM, Mathieu Poirier wrote:
-> On Wed, Jan 27, 2021 at 02:25:29PM +0530, Anshuman Khandual wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> Add ETE as one of the supported device types we support
->> with ETM4x driver. The devices are named following the
->> existing convention as ete<N>.
->>
->> ETE mandates that the trace resource status register is programmed
->> before the tracing is turned on. For the moment simply write to
->> it indicating TraceActive.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
+On Tue, Feb 2, 2021 at 2:34 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>   "I also suspect that everybody has already accepted that KASLR isn't
+>    really working locally anyway (due to all the hw leak models with
+>    cache and TLB timing), so anybody who can look at kernel messages
+>    already probably could figure most of those things out."
 
-...
+Honestly, if you have to pass a kernel command line, and there's a big
+notice in the kernel messages about this, I no longer care.
 
->> @@ -1834,10 +1854,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->>   	if (drvdata->cpu < 0)
->>   		return drvdata->cpu;
->>   
->> -	desc.name = devm_kasprintf(dev, GFP_KERNEL, "etm%d", drvdata->cpu);
->> -	if (!desc.name)
->> -		return -ENOMEM;
->> -
->>   	init_arg.drvdata = drvdata;
->>   	init_arg.csa = &desc.access;
->>   	init_arg.pid = etm_pid;
->> @@ -1853,6 +1869,20 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->>   	if (!desc.access.io_mem ||
->>   	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
->>   		drvdata->skip_power_up = true;
-> 
-> Add a space here...
-> 
->> +	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
->> +	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
-> 
-> And here too.  Othersiwe it makes a big blob in the middle of the function.
-> 
->> +	if (etm4x_is_ete(drvdata)) {
->> +		type_name = "ete";
->> +		/* ETE v1 has major version == 5. Adjust this for logging.*/
->> +		major -= 4;
-> 
-> I don't have the documentation for the ETE but I would not adjust @major.  I
-> would simply leave it to what the HW gives us since regardless of the name, the
-> major revision of the IP block is 5.
-> 
+Because it means that people who _do_ care will know about it.
 
-At the moment only register definitions are public and can be found here :
+But I don't want it to be a kernel config option - if you do
+debugging, and you want unhidden pointers, you can add it to the
+kernel command line and make sure it's *your* choice and not some
+random kernel config by somebody else (ie distro).
 
-https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcdevarch
+And yes, my opinion is that KASRL really only works remotely anyway. I
+think we might as well accept that as a fact, and that it's unlikely
+that hardware will be fixed in general, even if on _some_ hardware
+might make it work better than it works in general.
 
-The ETE is natural extension of the ETM architecture to support future
-architecture changes and is designed in a way that the same software
-can driver both ETM and ETE without much changes.
+Instead of fighting windmills, accept that KASRL is dead locally for
+the "wide access" cases (ie not necessarily just "shell access", but
+"local JIT of uncontrolled code"), but do it because the remote case
+still matters, and because a lot of local accesses are fairly
+constrained in that they do *not* give random code execution to the
+local users (but that "fairly constrained" presumably also generally
+means that they can't do dmesg).
 
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
->> index ca24ac5..8b90de5 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
->> @@ -128,6 +128,8 @@
->>   #define TRCCIDR2			0xFF8
->>   #define TRCCIDR3			0xFFC
->>   
->> +#define TRCRSR_TA			BIT(12)
->> +
->>   /*
->>    * System instructions to access ETM registers.
->>    * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
->> @@ -390,6 +392,9 @@
->>   #define ETM_COMMON_SYSREG_LIST_CASES		\
->>   	ETM_COMMON_SYSREG_LIST(NOP, __unused)
->>   
->> +#define ETM4x_ONLY_SYSREG_LIST_CASES		\
->> +	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
->> +
->>   #define ETM4x_SYSREG_LIST_CASES			\
->>   	ETM_COMMON_SYSREG_LIST_CASES		\
->>   	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
->> @@ -406,7 +411,6 @@
->>   	ETE_ONLY_SYSREG_LIST(WRITE, (val))
->>   
->>   #define ETE_ONLY_SYSREG_LIST_CASES		\
->> -	ETM_COMMON_SYSREG_LIST_CASES		\
-> 
-> This goes in patch 04.
-> 
-
-Sure, will move it.
-
-> With the above:
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-Thanks for the review
-
-Suzuki
+             Linus
