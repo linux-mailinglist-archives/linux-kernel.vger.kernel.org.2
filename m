@@ -2,423 +2,652 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F8930CF3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1630CF3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235668AbhBBWnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbhBBWnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:43:17 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF2AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:42:32 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id v19so15885348pgj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vm+8K78/vDISuVFEQprDbnRBNIJoznUwb75pujPY7SE=;
-        b=fwusQ5MgE08tPrIz9IXoaRwx79BMgS2fy5tjm/VODYmSbcG1ZgjQgvB4oI+6T/UJnd
-         CL6qpNWk+cK1dpKRZ2AROGiggZTw/gE5xd1mUuqa1eVRBA4fpAlR6aPpKttMvSGmEv2P
-         uVeCP0D7YlcQ5z0SPsVlmuGIKGvsSNuQURufJp/VdC2L/nZdoG5OosSGamqmYpzbByv3
-         2gQKTZOkmlY+ggwkAK8NgP1ABlFJr0YQBydFRZM3wsTJkvr69L6nU4V0uStTM150kch8
-         qSTnPfOCm9z3uSlSSsfldUypkicWjPeZM4ivZ9uE1MrdIN96bABNIsE09/ynImNtxtYW
-         a9Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vm+8K78/vDISuVFEQprDbnRBNIJoznUwb75pujPY7SE=;
-        b=Dw4oC9/OQXApghSqlJf9KZWI4WTrSRbkVYL0GkoxzlisvqRoMhBkdRaJ/Cxfq2Uwpf
-         Qqh+IoFV4RT6MSGZg0j76K6dGCaXm0KofluezPz690id1C2s6BvD5cWN2A7FoduvJzrt
-         /53Em6CGWXKZGo5Jc571bc0ojY7c7jAVrq0xKFoftzHqPAT4QXgwKmNBwStBxcytF6gV
-         6+qfKDHmRZDdB+yO0Ebe/Yc4G3mHSKVyp/CbZ6qgp+IKt+eJxFohd9E+GD7Fqc62vGC/
-         26MOOc0IJgUXLPIUYgjoWxjOlKOg7ULrH+COeRvKKcnbh5sWxr2JqPzEWad8aaH2Fukt
-         dqTQ==
-X-Gm-Message-State: AOAM530vR5RMWlCP0JGGJVPRiwZ4dBKVrptTdRrrS3/OIwFOceUCXAlm
-        Nj3TVkNoHMCKS8DN9fB3uw4+4WkEiVbhAA==
-X-Google-Smtp-Source: ABdhPJwU4CQdbaCmrPnR1+S9jzQCYG+PW9zZykgA9jrS3TwvdmqOQYb35rNn/UX+U7oys6m6t8oRVQ==
-X-Received: by 2002:a63:c207:: with SMTP id b7mr338232pgd.184.1612305751722;
-        Tue, 02 Feb 2021 14:42:31 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id q141sm48250pfc.24.2021.02.02.14.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 14:42:31 -0800 (PST)
-Date:   Tue, 2 Feb 2021 15:42:29 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/17] remoteproc: Add support for detaching a rproc
-Message-ID: <20210202224229.GA1541378@xps15>
-References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
- <64b559dc-9e89-c351-ddee-f9cebd155ed7@st.com>
- <20210202004956.GD1319650@xps15>
- <200a464a-f6dd-480c-d7cd-d8165828fabc@foss.st.com>
+        id S235580AbhBBWod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:44:33 -0500
+Received: from mga05.intel.com ([192.55.52.43]:35384 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232280AbhBBWoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:44:25 -0500
+IronPort-SDR: jpV78Cr1QytCK1dZjgeonlSxdVrcftSETvg1yIxOuPYf31qIfs9QAf3IO7y4md8jnUEE4/NE+y
+ yURGBHy0NtQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="265775423"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="gz'50?scan'50,208,50";a="265775423"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:43:40 -0800
+IronPort-SDR: f69gMEnVslUSjbKSBTtaKdc1jCVnk3LtsKaqJWLBooT4kd/ycThRDmazK9sttyClVZNH2ZzYvF
+ x7STzGWasUKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="gz'50?scan'50,208,50";a="579206328"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Feb 2021 14:43:38 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l74OY-0009jI-1D; Tue, 02 Feb 2021 22:43:38 +0000
+Date:   Wed, 3 Feb 2021 06:43:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [rcu:willy-maple 132/202] include/linux/kernel.h:694:51: error:
+ 'struct vm_region' has no member named 'vm_rb'
+Message-ID: <202102030650.iZBgPiVQ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="nFreZHaLTZJo0R7j"
 Content-Disposition: inline
-In-Reply-To: <200a464a-f6dd-480c-d7cd-d8165828fabc@foss.st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:54:13AM +0100, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 2/2/21 1:49 AM, Mathieu Poirier wrote:
-> > On Wed, Jan 27, 2021 at 10:21:24AM +0100, Arnaud POULIQUEN wrote:
-> >> Hi Mathieu
-> >>
-> >> On 12/18/20 6:32 PM, Mathieu Poirier wrote:
-> >>> Following the work done here [1], this set provides support for the
-> >>> remoteproc core to release resources associated with a remote processor
-> >>> without having to switch it off. That way a platform driver can be removed
-> >>> or the application processor power cycled while the remote processor is
-> >>> still operating.
-> >>>
-> >>> Of special interest in this series are patches 5 and 6 where getting the
-> >>> address of the resource table installed by an eternal entity if moved to
-> >>> the core.  This is to support scenarios where a remote process has been
-> >>> booted by the core but is being detached.  To re-attach the remote
-> >>> processor, the address of the resource table needs to be known at a later
-> >>> time than the platform driver's probe() function.
-> >>>
-> >>> Applies cleanly on v5.10
-> >>>
-> >>> Thanks,
-> >>> Mathieu
-> >>>
-> >>> [1]. https://lkml.org/lkml/2020/7/14/1600
-> >>>
-> >>> ----
-> >>> New for v4:
-> >>> - Made binding description OS agnostic (Rob)
-> >>> - Added functionality to set the external resource table in the core
-> >>> - Fixed a crash when detaching (Arnaud)
-> >>> - Fixed error code propagation in rproc_cdev_relase() and rproc_del() (Arnaud)
-> >>> - Added RB tags
-> >>
-> >>
-> >> I tested you series, attach and  detach is working well.
-> >>
-> >> Then I faced issue when tried to re-attach after a detach.
-> >>
-> > 
-> > Right, in this case don't expect the re-attach to work properly because function
-> > stm32_rproc_detach() does not exist.  As such the M4 doesn't put itself back
-> > in "wait-for-attach" mode as it does when booted by the boot loader.  If I
-> > remember correctly we talked about that during an earlier conversation and we
-> > agreed FW support would be needed to properly test the re-attach.
-> 
-> Yes you are right the remote firmware needs to be inform about the detach, and
-> this is the purpose of the detach ops.
-> But also some actions are missing on local side as some resources have also to
-> be reinitialized as described in my previous mail.
-> For instance the resource table is handled by the remoteproc framework. The
-> remote firmware should only have a read access to this table.
-> 
-> >  
-> >> But I don't know if this feature has to be supported in this step.
-> >>
-> >> The 2 issues I found are:
-> >>
-> >> 1) memory carveouts are released on detach so need to be reinitialized.
-> >> The use of prepare/unprepare for the attach and detach would solve the issue but
-> >> probably need to add parameter to differentiate a start/stop from a attach/detach.
 
-I am in agreement with you assesment and the patch you have proposed to fix it.
-Right now carveouts are properly handled between start and stop operations
-because their parsing and allocation is done as part for ops:parse_fw(), which
-is called for each iteration.  Moving the parsing and allocation to
-rproc_prepare_device() ends up doing the same thing.
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I am not sure we absolutely need an extra parameter to differentiate between
-start/stop and attach/detach.  Typically the rproc_prepare_device() is used to
-do some kind of setup like providing power to a memory bank.  I suppose that if
-a memory bank is already powered by the boot loader, asking to power it up again
-won't do anything.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git willy-maple
+head:   7e346d2845b4bd77663394f39fa70456e0084c86
+commit: 25b065e50d69b0bb569d8b59f904eb9ad8566f31 [132/202] mm: Remove rb tree.
+config: riscv-nommu_k210_defconfig (attached as .config)
+compiler: riscv64-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=25b065e50d69b0bb569d8b59f904eb9ad8566f31
+        git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+        git fetch --no-tags rcu willy-maple
+        git checkout 25b065e50d69b0bb569d8b59f904eb9ad8566f31
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv 
 
-As such I suggest we keep the parameters as they are now.  We can revisit if a
-use case comes up at a later time. 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> >>
-> >> 2) The vrings in the loaded resource table (so no cached) has to be properly
-> >> reinitialized. In rproc_free_vring  the vring da is set to 0 that is then
-> >> considered as a fixed address.
-> >>
-> >> Here is a fix which works on the stm32 platform
-> >>
-> >> @@ -425,7 +425,7 @@ void rproc_free_vring(struct rproc_vring *rvring)
-> >>  	 */
-> >>  	if (rproc->table_ptr) {
-> >>  		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
-> >> -		rsc->vring[idx].da = 0;
-> >> +		rsc->vring[idx].da = FW_RSC_ADDR_ANY;
-> >>  		rsc->vring[idx].notifyid = -1;
-> >>  	}
-> >>  }
+All errors (new ones prefixed by >>):
 
-I see why this could be needed.  I initially assumed the remote processor would
-install a new resource table in memory upon receiving notification the core is
-going away.  But upon reflection the remote processor may not even have access
-to the image it is running.
+   In file included from <command-line>:
+   mm/nommu.c: In function 'add_nommu_region':
+>> include/linux/kernel.h:694:51: error: 'struct vm_region' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:477:13: note: in expansion of macro 'rb_entry'
+     477 |   pregion = rb_entry(parent, struct vm_region, vm_rb);
+         |             ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_region' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:477:13: note: in expansion of macro 'rb_entry'
+     477 |   pregion = rb_entry(parent, struct vm_region, vm_rb);
+         |             ^~~~~~~~
+   mm/nommu.c:488:22: error: 'struct vm_region' has no member named 'vm_rb'
+     488 |  rb_link_node(&region->vm_rb, parent, p);
+         |                      ^~
+   mm/nommu.c:489:25: error: 'struct vm_region' has no member named 'vm_rb'
+     489 |  rb_insert_color(&region->vm_rb, &nommu_region_tree);
+         |                         ^~
+   mm/nommu.c: In function 'delete_nommu_region':
+   mm/nommu.c:502:18: error: 'struct vm_region' has no member named 'vm_rb'
+     502 |  rb_erase(&region->vm_rb, &nommu_region_tree);
+         |                  ^~
+   mm/nommu.c: In function 'add_vma_to_mm':
+   mm/nommu.c:587:9: error: 'struct mm_struct' has no member named 'mm_rb'
+     587 |  p = &mm->mm_rb.rb_node;
+         |         ^~
+   In file included from <command-line>:
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:590:10: note: in expansion of macro 'rb_entry'
+     590 |   pvma = rb_entry(parent, struct vm_area_struct, vm_rb);
+         |          ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:590:10: note: in expansion of macro 'rb_entry'
+     590 |   pvma = rb_entry(parent, struct vm_area_struct, vm_rb);
+         |          ^~~~~~~~
+   mm/nommu.c:613:19: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     613 |  rb_link_node(&vma->vm_rb, parent, p);
+         |                   ^~
+   mm/nommu.c:614:22: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     614 |  rb_insert_color(&vma->vm_rb, &mm->mm_rb);
+         |                      ^~
+   mm/nommu.c:614:34: error: 'struct mm_struct' has no member named 'mm_rb'
+     614 |  rb_insert_color(&vma->vm_rb, &mm->mm_rb);
+         |                                  ^~
+   In file included from <command-line>:
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:619:10: note: in expansion of macro 'rb_entry'
+     619 |   prev = rb_entry(rb_prev, struct vm_area_struct, vm_rb);
+         |          ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:619:10: note: in expansion of macro 'rb_entry'
+     619 |   prev = rb_entry(rb_prev, struct vm_area_struct, vm_rb);
+         |          ^~~~~~~~
+   mm/nommu.c: In function 'delete_vma_from_mm':
+   mm/nommu.c:655:15: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     655 |  rb_erase(&vma->vm_rb, &mm->mm_rb);
+         |               ^~
+   mm/nommu.c:655:27: error: 'struct mm_struct' has no member named 'mm_rb'
+     655 |  rb_erase(&vma->vm_rb, &mm->mm_rb);
+         |                           ^~
+   In file included from <command-line>:
+   mm/nommu.c: In function 'do_mmap':
+>> include/linux/kernel.h:694:51: error: 'struct vm_region' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:1141:14: note: in expansion of macro 'rb_entry'
+    1141 |    pregion = rb_entry(rb, struct vm_region, vm_rb);
+         |              ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_region' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   mm/nommu.c:1141:14: note: in expansion of macro 'rb_entry'
+    1141 |    pregion = rb_entry(rb, struct vm_region, vm_rb);
+         |              ^~~~~~~~
+   mm/nommu.c: At top level:
+   mm/nommu.c:1658:15: warning: no previous prototype for 'arch_get_unmapped_area' [-Wmissing-prototypes]
+    1658 | unsigned long arch_get_unmapped_area(struct file *file, unsigned long addr,
+         |               ^~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from <command-line>:
+   fs/proc/nommu.c: In function 'nommu_region_list_show':
+>> include/linux/kernel.h:694:51: error: 'struct vm_region' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/nommu.c:77:30: note: in expansion of macro 'rb_entry'
+      77 |  return nommu_region_show(m, rb_entry(p, struct vm_region, vm_rb));
+         |                              ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_region' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/nommu.c:77:30: note: in expansion of macro 'rb_entry'
+      77 |  return nommu_region_show(m, rb_entry(p, struct vm_region, vm_rb));
+         |                              ^~~~~~~~
+   fs/proc/nommu.c:78:1: error: control reaches end of non-void function [-Werror=return-type]
+      78 | }
+         | ^
+   cc1: some warnings being treated as errors
+--
+   fs/proc/task_nommu.c: In function 'task_mem':
+>> fs/proc/task_nommu.c:29:23: error: 'struct mm_struct' has no member named 'mm_rb'
+      29 |  for (p = rb_first(&mm->mm_rb); p; p = rb_next(p)) {
+         |                       ^~
+   In file included from <command-line>:
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:30:9: note: in expansion of macro 'rb_entry'
+      30 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:30:9: note: in expansion of macro 'rb_entry'
+      30 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+   fs/proc/task_nommu.c: In function 'task_vsize':
+   fs/proc/task_nommu.c:90:23: error: 'struct mm_struct' has no member named 'mm_rb'
+      90 |  for (p = rb_first(&mm->mm_rb); p; p = rb_next(p)) {
+         |                       ^~
+   In file included from <command-line>:
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:91:9: note: in expansion of macro 'rb_entry'
+      91 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:91:9: note: in expansion of macro 'rb_entry'
+      91 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+   fs/proc/task_nommu.c: In function 'task_statm':
+   fs/proc/task_nommu.c:108:23: error: 'struct mm_struct' has no member named 'mm_rb'
+     108 |  for (p = rb_first(&mm->mm_rb); p; p = rb_next(p)) {
+         |                       ^~
+   In file included from <command-line>:
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:109:9: note: in expansion of macro 'rb_entry'
+     109 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:109:9: note: in expansion of macro 'rb_entry'
+     109 |   vma = rb_entry(p, struct vm_area_struct, vm_rb);
+         |         ^~~~~~~~
+   fs/proc/task_nommu.c: In function 'show_map':
+>> include/linux/kernel.h:694:51: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                                                   ^~
+   include/linux/compiler_types.h:300:9: note: in definition of macro '__compiletime_assert'
+     300 |   if (!(condition))     \
+         |         ^~~~~~~~~
+   include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+     320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |  ^~~~~~~~~~~~~~~~
+   include/linux/kernel.h:694:20: note: in expansion of macro '__same_type'
+     694 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+         |                    ^~~~~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:195:27: note: in expansion of macro 'rb_entry'
+     195 |  return nommu_vma_show(m, rb_entry(p, struct vm_area_struct, vm_rb));
+         |                           ^~~~~~~~
+>> include/linux/compiler_types.h:140:35: error: 'struct vm_area_struct' has no member named 'vm_rb'
+     140 | #define __compiler_offsetof(a, b) __builtin_offsetof(a, b)
+         |                                   ^~~~~~~~~~~~~~~~~~
+   include/linux/stddef.h:17:32: note: in expansion of macro '__compiler_offsetof'
+      17 | #define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+         |                                ^~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:697:21: note: in expansion of macro 'offsetof'
+     697 |  ((type *)(__mptr - offsetof(type, member))); })
+         |                     ^~~~~~~~
+   include/linux/rbtree.h:38:37: note: in expansion of macro 'container_of'
+      38 | #define rb_entry(ptr, type, member) container_of(ptr, type, member)
+         |                                     ^~~~~~~~~~~~
+   fs/proc/task_nommu.c:195:27: note: in expansion of macro 'rb_entry'
+     195 |  return nommu_vma_show(m, rb_entry(p, struct vm_area_struct, vm_rb));
+         |                           ^~~~~~~~
+   fs/proc/task_nommu.c: In function 'm_start':
+   fs/proc/task_nommu.c:220:23: error: 'struct mm_struct' has no member named 'mm_rb'
+     220 |  for (p = rb_first(&mm->mm_rb); p; p = rb_next(p))
+         |                       ^~
+   fs/proc/task_nommu.c: In function 'show_map':
+   fs/proc/task_nommu.c:196:1: error: control reaches end of non-void function [-Werror=return-type]
+     196 | }
+         | ^
+   cc1: some warnings being treated as errors
 
-Let me think about this further - I want to make sure we don't introduce a
-regression for current implementations.
 
-> > 
-> > In light of the above let me know if these two issues are still relevant.  If
-> > so I'll investigate further.
-> 
-> To highlight the issue just test attach/detach/attch  with a firmware that
-> implements a RPMsg communication. On the second attach the virtio framework is
-> not properly restarted.
-> 
-> Then please find at the end of the mail 3 patches for test I added on top of
-> your series,that allow me to reattach. Of course the RPMsg channels are not
-> re-created as i don't implement the remote FW part, but the Linux virtio and
-> RPmsg frameworks are restarted.
-> 
-> - [PATCH 1/3] remoteproc: stm32: add capability to detach from the remoteproc
->   => Add a dummy function in stm32_rproc for test.
-> - [PATCH 2/3] remoteproc: Add prepare/unprepare for attach detach
->   => Add prepare/unprepare on attach/detach + implement attach in stm32mp1 to
->      reinitialize the memory region that as been cleaned on detach.
-> - [PATCH 3/3] remoteproc: virtio: set to vring address to FW_RSC_ADDR_ANY on free
->   => Reinitialize the vring addresses on detach. For this one a better
->      implementation would be to use a cached resource table to fully
->      reinitialize it on re-attach.
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >>
-> >> Here, perhaps a better alternative would be to make a cached copy on attach
-> >> before updating it. On the next attach, the cached copy would be copied as it is
-> >> done in rproc_start.
-> >>
-> >> Thanks,
-> >> Arnaud
-> >>
-> >>
-> >>>
-> >>> Mathieu Poirier (17):
-> >>>   dt-bindings: remoteproc: Add bindind to support autonomous processors
-> >>>   remoteproc: Re-check state in rproc_shutdown()
-> >>>   remoteproc: Remove useless check in rproc_del()
-> >>>   remoteproc: Rename function rproc_actuate()
-> >>>   remoteproc: Add new get_loaded_rsc_table() remoteproc operation
-> >>>   remoteproc: stm32: Move resource table setup to rproc_ops
-> >>>   remoteproc: Add new RPROC_ATTACHED state
-> >>>   remoteproc: Properly represent the attached state
-> >>>   remoteproc: Properly deal with a kernel panic when attached
-> >>>   remoteproc: Add new detach() remoteproc operation
-> >>>   remoteproc: Introduce function __rproc_detach()
-> >>>   remoteproc: Introduce function rproc_detach()
-> >>>   remoteproc: Add return value to function rproc_shutdown()
-> >>>   remoteproc: Properly deal with a stop request when attached
-> >>>   remoteproc: Properly deal with a start request when attached
-> >>>   remoteproc: Properly deal with detach request
-> >>>   remoteproc: Refactor rproc delete and cdev release path
-> >>>
-> >>>  .../bindings/remoteproc/remoteproc-core.yaml  |  27 +++
-> >>>  drivers/remoteproc/remoteproc_cdev.c          |  32 ++-
-> >>>  drivers/remoteproc/remoteproc_core.c          | 211 +++++++++++++++---
-> >>>  drivers/remoteproc/remoteproc_internal.h      |   8 +
-> >>>  drivers/remoteproc/remoteproc_sysfs.c         |  20 +-
-> >>>  drivers/remoteproc/stm32_rproc.c              | 147 ++++++------
-> >>>  include/linux/remoteproc.h                    |  24 +-
-> >>>  7 files changed, 344 insertions(+), 125 deletions(-)
-> >>>  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-> >>>
-> 
-> Subject: [PATCH 1/3] remoteproc: stm32: add capability to detach from the
->  remoteproc
-> 
-> Add a dummy function to allow to detach. No specific action is needed
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
-> ---
->  drivers/remoteproc/stm32_rproc.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index 2c949725b91e..b325d28f627c 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -590,6 +590,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
->  	return reset_control_assert(ddata->hold_boot);
->  }
-> 
-> +static int stm32_rproc_detach(struct rproc *rproc)
-> +{
-> +	/* Nothing to do but ops mandatory to support the detach feature */
-> +	return 0;
-> +}
-> +
->  static int stm32_rproc_stop(struct rproc *rproc)
->  {
->  	struct stm32_rproc *ddata = rproc->priv;
-> @@ -712,6 +718,7 @@ static struct rproc_ops st_rproc_ops = {
->  	.start		= stm32_rproc_start,
->  	.stop		= stm32_rproc_stop,
->  	.attach		= stm32_rproc_attach,
-> +	.detach		= stm32_rproc_detach,
->  	.kick		= stm32_rproc_kick,
->  	.load		= rproc_elf_load_segments,
->  	.parse_fw	= stm32_rproc_parse_fw,
-> -- 
-> 2.17.1
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> 
-> Subject: [PATCH 2/3] remoteproc: Add prepare/unprepare for attach detach
-> 
-> Some actions such as memory resources reallocation are needed when try
-> to reattach. Use the prepare ops for these actions.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 14 ++++++++++++++
->  drivers/remoteproc/stm32_rproc.c     | 14 +++++++-------
->  2 files changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c
-> b/drivers/remoteproc/remoteproc_core.c
-> index f1f51ad1a1d6..f177561b8863 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1557,6 +1557,13 @@ static int rproc_attach(struct rproc *rproc)
->  		return ret;
->  	}
-> 
-> +	/* Prepare rproc for firmware loading if needed */
-> +	ret = rproc_prepare_device(rproc);
-> +	if (ret) {
-> +		dev_err(dev, "can't prepare rproc %s: %d\n", rproc->name, ret);
-> +		goto disable_iommu;
-> +	}
-> +
->  	ret = rproc_get_loaded_rsc_table(rproc);
->  	if (ret) {
->  		dev_err(dev, "can't load resource table: %d\n", ret);
-> @@ -1990,6 +1997,13 @@ int rproc_detach(struct rproc *rproc)
->  	/* clean up all acquired resources */
->  	rproc_resource_cleanup(rproc);
-> 
-> +	/* Release HW resources if needed */
-> +	ret = rproc_unprepare_device(rproc);
-> +	if (ret) {
-> +		atomic_inc(&rproc->power);
-> +		goto out;
-> +	}
-> +
->  	rproc_disable_iommu(rproc);
-> 
->  	/*
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index b325d28f627c..bf50d79b1f09 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -413,9 +413,6 @@ static int stm32_rproc_parse_fw(struct rproc *rproc, const
-> struct firmware *fw)
->  	struct stm32_rproc *ddata = rproc->priv;
->  	int ret;
-> 
-> -	ret  = stm32_rproc_parse_memory_regions(rproc);
-> -	if (ret)
-> -		return ret;
-> 
->  	if (ddata->trproc)
->  		ret = rproc_tee_get_rsc_table(ddata->trproc);
-> @@ -580,6 +577,12 @@ static int stm32_rproc_start(struct rproc *rproc)
-> 
->  	return reset_control_assert(ddata->hold_boot);
->  }
-> +static int stm32_rproc_prepare(struct rproc *rproc)
-> +{
-> +	dev_err(&rproc->dev, "%s: %d\n", __func__, __LINE__);
-> +
-> +	return stm32_rproc_parse_memory_regions(rproc);
-> +}
-> 
->  static int stm32_rproc_attach(struct rproc *rproc)
->  {
-> @@ -717,6 +720,7 @@ static int stm32_rproc_get_loaded_rsc_table(struct rproc *rproc)
->  static struct rproc_ops st_rproc_ops = {
->  	.start		= stm32_rproc_start,
->  	.stop		= stm32_rproc_stop,
-> +	.prepare	= stm32_rproc_prepare,
->  	.attach		= stm32_rproc_attach,
->  	.detach		= stm32_rproc_detach,
->  	.kick		= stm32_rproc_kick,
-> @@ -921,10 +925,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> 
->  	if (state == M4_STATE_CRUN) {
->  		rproc->state = RPROC_DETACHED;
-> -
-> -		ret = stm32_rproc_parse_memory_regions(rproc);
-> -		if (ret)
-> -			goto free_resources;
->  	}
-> 
->  	rproc->has_iommu = false;
-> -- 
-> 2.17.1
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> Subject: [PATCH 3/3] remoteproc: virtio: set to vring address to
->  FW_RSC_ADDR_ANY on free
-> 
-> The resource table vring structure is cleaned on free. But value is set
-> to 0. This value is considered as a valid address. Set the value
-> to  FW_RSC_ADDR_ANY instead.
-> This is needed to allow to reattach to an autonomous firmware.
-> An alternative would be to save the resource table before updating it.
-> On free the value would be reset to initial value.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c
-> b/drivers/remoteproc/remoteproc_core.c
-> index f177561b8863..5b5de4db3981 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -425,7 +425,7 @@ void rproc_free_vring(struct rproc_vring *rvring)
->  	 */
->  	if (rproc->table_ptr) {
->  		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
-> -		rsc->vring[idx].da = 0;
-> +		rsc->vring[idx].da = FW_RSC_ADDR_ANY;
->  		rsc->vring[idx].notifyid = -1;
->  	}
->  }
-> -- 
-> 2.17.1
-> 
-> 
-> 
-> 
-> 
-> 
+vim +694 include/linux/kernel.h
+
+cf14f27f82af78 Alexei Starovoitov 2018-03-28  684  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  685  /**
+^1da177e4c3f41 Linus Torvalds     2005-04-16  686   * container_of - cast a member of a structure out to the containing structure
+^1da177e4c3f41 Linus Torvalds     2005-04-16  687   * @ptr:	the pointer to the member.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  688   * @type:	the type of the container struct this is embedded in.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  689   * @member:	the name of the member within the struct.
+^1da177e4c3f41 Linus Torvalds     2005-04-16  690   *
+^1da177e4c3f41 Linus Torvalds     2005-04-16  691   */
+^1da177e4c3f41 Linus Torvalds     2005-04-16  692  #define container_of(ptr, type, member) ({				\
+c7acec713d14c6 Ian Abbott         2017-07-12  693  	void *__mptr = (void *)(ptr);					\
+c7acec713d14c6 Ian Abbott         2017-07-12 @694  	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+c7acec713d14c6 Ian Abbott         2017-07-12  695  			 !__same_type(*(ptr), void),			\
+c7acec713d14c6 Ian Abbott         2017-07-12  696  			 "pointer type mismatch in container_of()");	\
+c7acec713d14c6 Ian Abbott         2017-07-12  697  	((type *)(__mptr - offsetof(type, member))); })
+^1da177e4c3f41 Linus Torvalds     2005-04-16  698  
+
+:::::: The code at line 694 was first introduced by commit
+:::::: c7acec713d14c6ce8a20154f9dfda258d6bcad3b kernel.h: handle pointers to arrays better in container_of()
+
+:::::: TO: Ian Abbott <abbotti@mev.co.uk>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--nFreZHaLTZJo0R7j
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+H4sICDrQGWAAAy5jb25maWcAlFxbj9u4kn4/v0LIAIuZh2T6lpwEi36gJcrmWBIVUfIli4Xg
+cas7RrrtPr7Mmeyv3ypKskip6OQMJkk3q3gvVn1VLOqXf/zisdNx97I6btar5+fv3lO1rfar
+Y/XgPW6eq//2AuklMvd4IPJ3wBxttqe/f99vDuu/vPfvrq/fXb3dr6/fvrxce9Nqv62ePX+3
+fdw8naCNzW77j1/+4cskFOPS98sZz5SQSZnzRX7/Rrfx4e7tM7b49mm99n4d+/5v3qd3t++u
+3hjVhCqBcP+9LRp3Td1/urq9umoJUXAuv7m9u9L/nduJWDI+k7sqRp0ro88JUyVTcTmWuex6
+NggiiUTCO5LIPpdzmU27knyScRYAYyjhrzJnComwIL94Y73Gz96hOp5euyUSichLnsxKlsHI
+RCzy+9sbYG97l3EqIg7Lp3Jvc/C2uyO2cJ6K9FnUzuXNG6q4ZIU5nVEhYPqKRbnBH/CQFVGu
+B0MUT6TKExbz+ze/bnfb6rc33fjUUs1E6ptDO9PmLPcn5eeCF5ykF4pHYkTMasJmHNYDKrMC
+RBD6gOlE7ULCqnuH05+H74dj9dIt5JgnPBO+3hQ1kXN7mwIZM5FQZeVE8Aw7W3bUCUsCWPSG
+AXg7kkpZpnhT9otXbR+83WNvTNSQYlhI0TScdc3pWfqwX1Mli8zn9RZ877egOfiMJ7lqlyHf
+vFT7A7USky9lCrVkIHw9xqY4kUgR0D+5GzU5LKLITSYpEzGelBlXZS5iEDmbp1mfwWDbsaYZ
+53GaQ/P6YJ0bbctnMiqSnGVLsuuGy6TptfHT4vd8dfjmHaFfbwVjOBxXx4O3Wq93p+1xs33q
+VisX/rSECiXzfQl9iWRsDmQmsrxHxl0hh4P7jItg8JJ8IxXA0KXPlULWnJ6bEuRS/sTcDPUB
+AxdKRiwHTTBYpswvPDWUnxxWtQSauQzwa8kXIFaUFlI1s1ndLsLaKoczjPoslolNSTgHjcTH
+/igSKjePlT1AY6Gn9Q/0LkwnoIN7knhWjKgBQ1AQIszvr9+b5bhWMVuY9JtOTEWST0Fthrzf
+xk3/rCp/AvPRJ7Y9q2r9tXo4PVd777FaHU/76qCLm1kS1J7xgc6vbz72tIYq0lRmuUHttn2c
+ySJV9EEGRQ5KDISPJMPg/WkqoU0807nMaG1RTxJNi+6K5lmqUIERgVPqs5wHJFPGI7YkdmoU
+TaHqTOvDLDAUN/7OYmi4VpiGuepIoURKJ2RBOf4iUkueg3IERTf0mIIy+hIzF21B60FdS7pJ
+d8QsgfBF5YE5spGUoHDc4g0iIVPQMuILx3miqod/Ypb4nOigz63gB8OYgWXNo/7vcNB9nuYa
+tWXMXMhaA3S/a6MGZjwzJ6DGPI8B+JSN3b4gG5c4wtpWEnNKpRKLxtp0Y6mPqAl0LD0+YmC1
++9at7aoAdNrV1L+WqTDxwIw3xX6cLvyJ1TRPpWuWYpywKKQlX0/AQdOm3kFjghYyIcsic5kc
+FswELECz4PTRj3k8YlkGcIgkT7HiMqbrjtKQ2s12OvGIBwEPeiuKolueUU1n+fzrq7uBsWo8
+jbTaP+72L6vtuvL4X9UWLB8DNeqj7QOIUZv/pp2uedKS/mSLBhaI6+ZKbd0HWMeA7CwvR9mU
+lomIjRyEggLDKpIj63hBfdiqbMxbfE63NinCEDBsyoARdgU8AlDm9L7HLNUs87JIUIkKFoGa
+oKUPcEsoooGYNUtqOzntFD7cjUxQmwnlz3rGTI8hS0ArA94vY4Dq1x8vMbDF/c2d1WAZl7EM
+LBAZxwWxoF8AapZBzG5vujHMmG73/vbTWZ00Je8/dCWwkjIMFc/vr/7+eGX7mnqQIQAtOEXg
+z7FRxHtTnDOQHA0SWFROCtCS0chQvTnzp1rdtobdRFRYDOgS2h+rIb1FHrXKGxZqI5sLPHFo
+2C21efYwYM9HGZhpkCqwyASDKuJh6WTOAf4bY0nHOc69jOCkRLCghks6BShgDL5GRjsf9ua5
+WjeBg05+JSApEcKgafEGMkJz6sAAacqTIFvmpqkzSsvpzfVVGeSjH5C1s5xrt7EDa9aA9YjT
+59URNYh3/P5amXPQ257Nbm8EMcyG+OFOWMgNZTiC8x3AcaTs+ZnOEmOT4Dykk6VC2bsZW+rC
+oABIHJMaJk67lpIMgbC6N2IQE5mnUaEBMlE7L+A4NeLQO+PgerDSKAzTwlxKe91MJW+h5M6r
+vb66oqIFX8qb91fmnKHk1mbttUI3cw/NDKxDB8lxLKMdVNq94t4fjDBXHOjA0JtqtX/+vt5t
+Pfhz2D1X98fjdxDiqzfmBmveMgSFO4IjT5uQhokvcpBJUgyaVhqgex61NUAz5gNi3Eh8LbO7
+f4O/AUZv9VS9gM0zJtWp+pjU8c6qum642b/8e7WvvGC/+atnkEORxXOWcUQaoM7JqY+lHIP6
+aFkHMCCvnvYr77Ht5UH3YnpTDoaWPBifFZxb7ddfN0c43LDlbx+qV6hkL04zyj+KOC3BEPPI
+Ms05aFnUI0tQ0jwKHUE7jX20TQSrCwgRHSkfgwE9eKQ1hNb9EymnQ90L51aHc5qoY8/coN8I
+pgrXWmZLBzEQ4JsBD0v7fSttTpsYYn9kGlllfEyWoz9Qm7MyKOJBw9i9tXwXqGfDRbEp7iPU
+ukACKYpyM9pGV9FjBVyTw1JIk/unyuHXTCbjXpvwM0a89fZNxYDsiCr1uIh4EoUpEEvAYQ0A
+88GJMSLXESIdVDJwkgILYjcY9fYGhRC7cBkoqf1AACxTniW4IfNFCzvPgW1fzt7+uTpUD963
+Wme+7nePm2crynaWOuRuQKTGpabyutSStTB4G4AmSZiSaRd2CuVcXPpLX8884guR0xFFgxsk
+D7E+/Mlk+kPuDLxVkISiH83rAeMfKJiz+YQzie4mN+anPVgV45pdG/ZdBkXkiOWMEHQRO1vf
+Y5QqhXEXCTLZMe6Grq8yavolGll3ngkAUo7KJtGubQe2wGOJQc+BJTBDDuiF66FL+H+emOc7
+myvAOQ6i7s1BO4tnHAs5N3Dh+Xct6vzvan06rv58rvRFmaf9xqNhF0YiCeO8VH4m0pxovqGj
+n2BsrFXY7V5XXMqI9sYani/IdIlBa4ag/BFbDKjN4dNCdVDLpGy7VkUvWVy97PbfvZhCGi0s
+qL0mAyfilBMAumi8bOOk0gg0VprrzdRA9ZP+z0At6KZlHCWo56W2DACHSxYEWZn3PdNEgstY
+Ni4w6G4R61gYWGbjxPkRZ4nP/AntmXxJpaSjQV9GBYXlWnPOWRYtSwErXc/YjGOgqUB0oQZ4
+aFyk9eXgtqoeDt5x531d/QXohqPfFyrYI9yYB0ITpzmqAO7DVE0l7N4wI4bMh3cuQfXXZm3C
+PgsY+JaXA7/SwQXfB0s1nCMqz826aduTQ6ha1HGZCY9SO3rV0AM+y+M0NLRpWwIKFCyrZdyT
+gEXSvOdNs7r5M37Vl6itUjgjyufd6qHBoq0gz0Hr4F0EeW76FQ3HUQdjMPxNH7zzHHCTgwwA
+Eh3ZaRj4LHNYiJoB5adpBk5OLGcUHGjFtEalMpWRHC8t603vUu03nQ7egxYQa9viiYC1pKNz
+ZhXD4ibKEbzMqbMV5Ib7KUNTBmWI0a7cgdGBiloI77LMBppDSpKmcvSHVYA6xkL1UGZZO4kg
+GtDyDFRzrQDN0cE2ZL27EUPJZajgBiclmQGUU6fX193+aDpFVnmtlzeHNbUlIGzxEodJx6UT
+AJWqgCOAwxauSySVsZgkLDB0COY7CDltaNJZyhLhMEI35Jw5BzgZewdj1u1oNaX8dOsvPtCW
+y67aOJh/rw6e2B6O+9OLjgYfvsIhffCO+9X2gHweAFJwLGEBN6/4o+19/se1dXX2fAR86IXp
+mBm+6+7fW9QN3ssO7we9X/fVv06bfQUd3Pi/WTP1J5KcobXNdcTNV6IpMdas3TggIqS0Il5E
+hToRY/t6OjqbEklaWHhGF5RhiKIOiJWWnJqpTrKYumIENVPMwEAv+kx6ZMWh2j/j1fgGQ/iP
+q56MN/UleKqgGy908YdcXmbgsx/RQb8Ohlcv3MBg9upO+XIke+aQmsLl8SvMb7jAoqO1NChs
+GGThTwDQclfSQz0SF3LMYnGnrdhgFSar/YMWc/G79FB2rDVQmMFCO10s5n1FcBZWqtFzkg4l
+r3WfcEZXaxAVQyM2veW5ETuZGUAB/lESgy/g+ak6wUKZnC2D4dPPjbLuUik3CAjEAxq2grFa
+fPoIqG1pubcRHzN/qYvJ1YoC2Bl9UY9IZLAJCkw2uKUPfdSGyw8QWJs7XyZWlKsmfbx5fzW0
+P7vtW0041O1qhUdo5qaNgmU54HkKbjQcKDlm/OZcOFzehlhfGjiKqQ1oGXw/WTgSGWqOkR9/
+uF0sLrEwjDex8o+cjXFuP8H6I7bGYqbqh5wAzC6RQxWVUfqjRjQXOIMRX/yIFX7jC4w/BWIs
+fBAvGoO2y5v2NVlrXmwJHFRMYMc0JndowubOTCSO69a6FcTSA6TZHfEme4AkY6xOyFZyaB2Y
+xufcPvraYa4DRJJGRTA4sIku0tRFy3340w/Sd0ArWrqg9VDdGfpaDxNWtQCfAHNRhg5MbcNu
+fOpgYzHVpclucN86RDal/UMF60yvbz9ZroWT6dBjTvPUWz/v1t+M8ddAUrvKXjpZYloqwgfw
+czG/F0MGOkoKghinqJ7BzT5UlXf8Wnmrh4cNejogw7rVwzsTDw47MwYnEj/P6FjBOBWylxx7
+ps2v6bnKufbflMOc13QMrkW0UzGZx5K28fmEZzGjR6qzfANJmSylRpiso8Sop3EVdQ0J6pWR
+7EgY7GJ8ej5uHk9bfQ/bGvWHIZaKw6DE8BKoNtBpvuMEdlyTyA9ooUSeGM8CnRiG5In4cHdz
+XYKU0k1Mch9cNyX8W2cTUx6njmCfHkD+4fbTP51kFb+/oqWDjRbvr64GSMyuvVS+QwKQnIuS
+xbe37xdlrnx2YZXyz/HiI+1xXdw2QwvxcRE5E1Yy/8I8eCBY6XO/DSNf4CI46njTfvX6dbM+
+UAouyOIBP4My05Vu5moW15Gi/eql8v48PT6C6g2Gvnc4IteMrFaHVVbrb8+bp69H7788kNuh
+L9bBQB9TUpnCfEz02+koMPOnEaZzXGBtozOXe667ri/B0dd9fV59b7aZGt1szCj7aoUkBnjP
+KoZ/oyIGBP7xiqZncq7ub94bRvAHozuHtfrCYOgxWSRDSD0RATVHLCY9FoP9jPVBccqJLwCK
+5TkMnoNTwCwQjhwXBTx2HE8euz3ChM/BnwholFRfUYsR4NGcStjlAfON7J7usOZ+LU40vkGN
+Oggk1QHlmI2KkEpMUMvEx7tdWorreiWGMQE85iKkrV3DNuGsnyjdbEyvf2MligU4VakrNqfv
+dutoKj3nBlDGPCloepAyYoFn+AxH17LcR13qZ2A3GzFpXMKhxdys97vD7vHoTb6/Vvu3M+/p
+VB1s9+wcNbrMauCUjA9hZrtN4AW58lHHMgpCoSYUaiiyECE9LHCOmc39JAM/Mm4U4ReE9pGU
+06J/rw80DN2nzLoU1w8Qmka60OK5FORqgeHY2BF9QJYLeWmTOd4w9u9da+HVMFDtTnsLqbQQ
+C7OB6xC1VZJmcmTd6WNmviZZWV4CJMCfiBRAZf7hjrYj5ACMNpiIRnIxGHdWveyO1et+t6bw
+Fd4X5BhGpXE/Ublu9PXl8ES2l8aqPSJ0i1bNnjKeCyLQpGBsvyr9hsSTW/B+Nq+/eYfXar15
+PF9XHFongL08756gGPP8zOG1Np0g16Z4v1s9rHcvrookvY6ZLNLfw31VHdYrMEefd3vx2dXI
+j1g17+ZdvHA1MKCZjk+0OVY1dXTaPD+gMWwXidgojNssdN4kFOSZjAa+bxtk/+nWdfOfT6tn
+WCfnQpJ0Uwx8OB4DGVhgFsnfgzY7bxmDLDO/IGdAVG7Po04VPT+j6IIaPyVyhm8WI9gKM+64
+dlnkTmCu07voqIRDhaXzIYTFC581jJKI42efUbGY2gbjRLaH0x7eOuszMW/dmsBbGjWvEY0X
+k1aHxrhTzB1zWRXt4DpkrvbvJ0vrVVtnc5obTGQg4a8fl1OZMARXN04ujAWA98MTMFHgoGQ8
+cbjbBl/wM40pFs0cGwZcGJgT4FbFn3F4TrYYrFcEf6ficqfpgpU3H5MYIyeOmziTC1eEPBr2
+YveCDb7j/ib26QlkbIgC2fZhv9s8WGnVSZBJB5pu2Q2cx+iIbdKPudXgfY43devN9okMW+d0
++ACT6qMyn5BDIpo0XD688KOaDB0RLSWkIwIdidh1ZnTSP/yccMdj0+ZBC42D7XuqJucBNHq9
+6ZYinbFIBPiIIFSlvsOjHXi+QC8BeHSGWilT6q2mzhBEupX2GGMoGM7dsk83Vg6vqbNl2n/z
+anIAOHelAAYXnAZR03SOK900u1Bbp5rUPonw6xsjku9zIXNaKvAeJ1R3mNjjJruoYYFP4Gha
+k2zQI9dbu1p/7cUpFJH+1ILMmrvWxIfq9LDTSWGdrLQKAhBjGVrv9/DFR2dJzWIwQFGQ2ReQ
+rQHmWWI2ox8WEpl3YzFmCWZnY36YDf3xH2LVWg03nISJu1XtiUK3OXe8jUsc7+2KRPgyoJfR
+OmDNTd36tN8cv1MOMWac00qB+wUKOni7XGnbmYMFdF3r1LwXiQ7xaTLf8VjgA5ULeVj1FyW6
+cTEDKkQqvn/zP//7xnoL8nW1f6i2qD27iZuZhZvt5rhZPW/+r/ftEf1hjToNvf9xASNtt07Z
+jTibus80zT5aZjz8T/lL12tXPVr8WAe+1Dsvk0N/tcwhvrR38drpfP1V6r1yIRa5u5/ryZ1x
+dFDJyoHCiDZ/7lfQ5353Om62tupI63R4KvwvckyzA5thn84scAGUDFPjkyIe0W/9M1anrg8f
+TqS+KIXsZVn6GFX2Re4wkJl//cFFKfPrq0DQwoBkkRcllWQGNP0I0WS+vbn0dKRhACzNR8uP
+RNWacucaCrKwbM5yOnpRc8BOuKgfnC07CfRlRSRGujNHplfmfyRmv1iAJp9YwUV9W3l5zb5A
+X/hFHszn72QBn93D2cHnAE2SXucNfkECqb1a9vZ7AkNC85z/HIdSKGlmcnNdhPin/+xGYUyy
+Z7qgxJGrjBToN2I6F2LC0RGxqaD2WoJ+PmvOUbeLTgLvJSh1Sib7XPYftnebFwZGZ0UdG0Zf
+1E/7T420Cp4zO96GZigZk7t2VjwDNdI/xl2qdI+AG17fqeN3pHQyLT+n65413vpb/UJFl77u
+N9vjN33p+/BSHZ6GWerNJ0Aw9GbjE12MD99Ji+c39w8RPmub8ej8euafTo7PheD5/fl1M1hu
+hTntgxbujO3UebwYF59kcvCxqM7DxW9LNCMO+h/e6BpbJgzfXbhlw+IY3MWdkVg8khEmtmeZ
+/nqUcVywGvwBdT+SynrA6NyI5krp5RWQ0Vv97RsAmutvB826rsv3FDiqe8NPclFORgYjK+cs
+S+5vru4+2hKa6mdwzm8e4BsY/dYZuOhgcP0dGuhbf/yG1Ch638Atw69tAJqM8TbderBmUfRI
+wdRHS+sw18n++BYUQH5SV9FPC/GFF9Ft93asnv/wWbhV7uprjrgGgF7/ZbBxx/aT22Wl+Tcn
+NKj+PD09ISYx0mmtq302FtplcCQrn99ADBegeyo4HQej++90efl5EWIIfmpdaCGFxvMjxWgQ
+9lMzs2Xi/yu5mt62YRh636/IcQOKYN29B9dxPurGdvwRr7sUQRYURbEmWNJhP396pBzbEmlj
+t6JiZIuiqEeafNxv52veLbTsQuHrvH3EtbCNxIUWD/PMECT4KaMtYj9A15Q+bMylSBMZ3l0D
+MX5Y/d1fWnr/YMxd3S6rF6oeDmL/583IwBI5HKjgTuUwhliNWCpKZkyGNL6Y7bqhPfDfaqvV
+dWGQ+43yaKGmAuymU5KXcP/QBvJJBKyQlGi5pOLAWKnfsG9HUe6EmzlJjdSqBG1Q28bgBhWt
+vXmKXjodBLZFyMhP0uPpfDN5PO7fPk7sDpa795fuTYsOAGrSS7NugqD7b2Saqujutj+Iyzmt
+yruvnS1N59QsVmXm1bhjV1EhBp+XlVk8aBtFoXojljt1UmVDC/zUpwITTytboH7z0rjXCSZQ
+iel7AyXFUZQ555RDN3whbN3T5/Pp9Z2K2m4mvz4uh78H88fhsp9Op1/a/aIcHs29IFDn1wBk
+OT7G21ydHA9Qc2aptCfyi7dNsUNHXPj86p6m0UnquukzNdAxC9zEbv+t0HM6NBktTXesLGRb
+XYtHszEjc0HHgO4NeFbqvvFUY+wlmnVUQNguVETiV6Obj08VFjN+aB2sSsmCG1j/HybWSzBZ
+ehx5HYBF4BeskiKKZuYIDZbb0nXB143ipGz/+c/dZTfBFb33+EjshqwUdViXPDJeKPja3g5I
+FGtVJHRjJs+zoETtVJ5XQr6755aUJblPDXOjvwQNsH4qGHyMotsigkcTAw3YB0RGjQhCSJPJ
+c3WEbEOs2fHG53+7dZ6lGgtxWW6KARvtr9PzDhuLf3MB+TbHD+QB4VOZZsICLJ2cBer0ormD
+Qa+jizzIlooMl76v6eONURtyZS61BVOy8e8JzXcuVPxTcdhzXXtFAAIF3zaYHlq0DuviVjOm
+IHz6cZ/KIb87RzdgLw9nkJvSfRoe/xx+7156ZEtxpaGj5hwhEDXPXyUPHFUpH3CYCFmQccFf
+HKZbD0AZ2ASGC96arEfAC3nZIMHtsWZ7x4aolWEGB6rpkkE1eeleTn78A/+S95wKXAAA
+
+--nFreZHaLTZJo0R7j--
