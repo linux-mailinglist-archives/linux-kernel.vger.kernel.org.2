@@ -2,120 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A0230BA56
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA4630BA57
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhBBIvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:51:35 -0500
-Received: from mga01.intel.com ([192.55.52.88]:5486 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232801AbhBBIvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:51:21 -0500
-IronPort-SDR: tAJu8SgQpbzq8JHtAIN6yzjreALMk77p3gUDaq0nsmuHSoe5uZgL7W7frv5+DH5rySaTBkKdZc
- Zbzuf6HLDikw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="199735965"
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="199735965"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:49:23 -0800
-IronPort-SDR: pfqINw/Q+J3JXewrVLGqe2BcjsDTWrWVhpZmbZsZlNhMluxAbes6ocafUEcUC10npyBeFuAN3d
- GKREx4L5MQSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="479489030"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 02 Feb 2021 00:49:20 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Feb 2021 10:49:19 +0200
-Date:   Tue, 2 Feb 2021 10:49:19 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] usb: typec: tcpci: Add Callback to Usb
- Communication capable partner
-Message-ID: <20210202084919.GF1433721@kuha.fi.intel.com>
-References: <20210202003101.221145-1-badhri@google.com>
- <20210202003101.221145-2-badhri@google.com>
+        id S232777AbhBBIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:51:51 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:30821 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232354AbhBBIvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:51:37 -0500
+X-Originating-IP: 82.65.183.113
+Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 70341240011;
+        Tue,  2 Feb 2021 08:50:45 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Improve kasan population by using hugepages when
+ possible
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kasan-dev@googlegroups.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210201080024.844-1-alex@ghiti.fr>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <74fef5c9-0632-3e12-e11b-81dd115a4be5@ghiti.fr>
+Date:   Tue, 2 Feb 2021 03:50:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202003101.221145-2-badhri@google.com>
+In-Reply-To: <20210201080024.844-1-alex@ghiti.fr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:31:00PM -0800, Badhri Jagan Sridharan wrote:
-> The USB Communications Capable bit indicates if port
-> partner is capable of communication over the USB data lines
-> (e.g. D+/- or SS Tx/Rx). TCPM passes this information for chip specific
-> operations.
+Hi,
+
+Le 2/1/21 à 3:00 AM, Alexandre Ghiti a écrit :
+> Kasan function that populates the shadow regions used to allocate them
+> page by page and did not take advantage of hugepages, so fix this by
+> trying to allocate hugepages of 1GB and fallback to 2MB hugepages or 4K
+> pages in case it fails.
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
+> This reduces the page table memory consumption and improves TLB usage,
+> as shown below:
+> 
+> Before this patch:
+> 
+> ---[ Kasan shadow start ]---
+> 0xffffffc000000000-0xffffffc400000000    0x00000000818ef000        16G PTE     . A . . . . R V
+> 0xffffffc400000000-0xffffffc447fc0000    0x00000002b7f4f000   1179392K PTE     D A . . . W R V
+> 0xffffffc480000000-0xffffffc800000000    0x00000000818ef000        14G PTE     . A . . . . R V
+> ---[ Kasan shadow end ]---
+> 
+> After this patch:
+> 
+> ---[ Kasan shadow start ]---
+> 0xffffffc000000000-0xffffffc400000000    0x00000000818ef000        16G PTE     . A . . . . R V
+> 0xffffffc400000000-0xffffffc440000000    0x0000000240000000         1G PGD     D A . . . W R V
+> 0xffffffc440000000-0xffffffc447e00000    0x00000002b7e00000       126M PMD     D A . . . W R V
+> 0xffffffc447e00000-0xffffffc447fc0000    0x00000002b818f000      1792K PTE     D A . . . W R V
+> 0xffffffc480000000-0xffffffc800000000    0x00000000818ef000        14G PTE     . A . . . . R V
+> ---[ Kasan shadow end ]---
+> 
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 > ---
->  drivers/usb/typec/tcpm/tcpci.c | 9 +++++++++
->  drivers/usb/typec/tcpm/tcpci.h | 6 ++++++
->  2 files changed, 15 insertions(+)
+>   arch/riscv/mm/kasan_init.c | 101 +++++++++++++++++++++++++++----------
+>   1 file changed, 73 insertions(+), 28 deletions(-)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index f676abab044b..a27deb0b5f03 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -255,6 +255,14 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
->  			   TCPC_TCPC_CTRL_ORIENTATION : 0);
->  }
->  
-> +static void tcpci_set_partner_usb_comm_capable(struct tcpc_dev *tcpc, bool capable)
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index a8a2ffd9114a..8f11b73018b1 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -47,37 +47,82 @@ asmlinkage void __init kasan_early_init(void)
+>   	local_flush_tlb_all();
+>   }
+>   
+> -static void __init populate(void *start, void *end)
+> +static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
 > +{
-> +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> +	phys_addr_t phys_addr;
+> +	pte_t *ptep = memblock_alloc(PTRS_PER_PTE * sizeof(pte_t), PAGE_SIZE);
 > +
-> +	if (tcpci->data->set_partner_usb_comm_capable)
-> +		tcpci->data->set_partner_usb_comm_capable(tcpci, tcpci->data, capable);
+> +	do {
+> +		phys_addr = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> +		set_pte(ptep, pfn_pte(PFN_DOWN(phys_addr), PAGE_KERNEL));
+> +	} while (ptep++, vaddr += PAGE_SIZE, vaddr != end);
+> +
+> +	set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(ptep)), PAGE_TABLE));
 > +}
 > +
->  static int tcpci_set_vconn(struct tcpc_dev *tcpc, bool enable)
->  {
->  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-> @@ -720,6 +728,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
->  	tcpci->tcpc.set_bist_data = tcpci_set_bist_data;
->  	tcpci->tcpc.enable_frs = tcpci_enable_frs;
->  	tcpci->tcpc.frs_sourcing_vbus = tcpci_frs_sourcing_vbus;
-> +	tcpci->tcpc.set_partner_usb_comm_capable = tcpci_set_partner_usb_comm_capable;
->  
->  	if (tcpci->data->auto_discharge_disconnect) {
->  		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
-> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> index c3c7d07d9b4e..57b6e24e0a0c 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.h
-> +++ b/drivers/usb/typec/tcpm/tcpci.h
-> @@ -161,6 +161,10 @@ struct tcpci;
->   *		Optional; Enables TCPC to autonously discharge vbus on disconnect.
->   * @vbus_vsafe0v:
->   *		optional; Set when TCPC can detect whether vbus is at VSAFE0V.
-> + * @set_partner_usb_comm_capable:
-> + *		Optional; The USB Communications Capable bit indicates if port
-> + *		partner is capable of communication over the USB data lines
-> + *		(e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
->   */
->  struct tcpci_data {
->  	struct regmap *regmap;
-> @@ -175,6 +179,8 @@ struct tcpci_data {
->  				  enum typec_cc_status cc);
->  	int (*set_vbus)(struct tcpci *tcpci, struct tcpci_data *data, bool source, bool sink);
->  	void (*frs_sourcing_vbus)(struct tcpci *tcpci, struct tcpci_data *data);
-> +	void (*set_partner_usb_comm_capable)(struct tcpci *tcpci, struct tcpci_data *data,
-> +					     bool capable);
->  };
->  
->  struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
-> -- 
-> 2.30.0.365.g02bc693789-goog
+> +static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
+> +{
+> +	phys_addr_t phys_addr;
+> +	pmd_t *pmdp = memblock_alloc(PTRS_PER_PMD * sizeof(pmd_t), PAGE_SIZE);
+> +	unsigned long next;
+> +
+> +	do {
+> +		next = pmd_addr_end(vaddr, end);
+> +
+> +		if (IS_ALIGNED(vaddr, PMD_SIZE) && (next - vaddr) >= PMD_SIZE) {
+> +			phys_addr = memblock_phys_alloc(PMD_SIZE, PMD_SIZE);
+> +			if (phys_addr) {
+> +				set_pmd(pmdp, pfn_pmd(PFN_DOWN(phys_addr), PAGE_KERNEL));
+> +				continue;
+> +			}
+> +		}
+> +
+> +		kasan_populate_pte(pmdp, vaddr, end);
+> +	} while (pmdp++, vaddr = next, vaddr != end);
+> +
+> +	/*
+> +	 * Wait for the whole PGD to be populated before setting the PGD in
+> +	 * the page table, otherwise, if we did set the PGD before populating
+> +	 * it entirely, memblock could allocate a page at a physical address
+> +	 * where KASAN is not populated yet and then we'd get a page fault.
+> +	 */
+> +	set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(pmdp)), PAGE_TABLE));
 
-thanks,
+In case the PMD was filled entirely, PFN_DOWN(__pa(pmdp)) will point to 
+the next physical page, which is wrong. The same problem happens on the 
+other levels too.
 
--- 
-heikki
+I'll fix that in a v2 later today.
+
+Alex
+
+> +}
+> +
+> +static void kasan_populate_pgd(unsigned long vaddr, unsigned long end)
+> +{
+> +	phys_addr_t phys_addr;
+> +	pgd_t *pgdp = pgd_offset_k(vaddr);
+> +	unsigned long next;
+> +
+> +	do {
+> +		next = pgd_addr_end(vaddr, end);
+> +
+> +		if (IS_ALIGNED(vaddr, PGDIR_SIZE) && (next - vaddr) >= PGDIR_SIZE) {
+> +			phys_addr = memblock_phys_alloc(PGDIR_SIZE, PGDIR_SIZE);
+> +			if (phys_addr) {
+> +				set_pgd(pgdp, pfn_pgd(PFN_DOWN(phys_addr), PAGE_KERNEL));
+> +				continue;
+> +			}
+> +		}
+> +
+> +		kasan_populate_pmd(pgdp, vaddr, end);
+> +	} while (pgdp++, vaddr = next, vaddr != end);
+> +}
+> +
+> +/*
+> + * This function populates KASAN shadow region focusing on hugepages in
+> + * order to minimize the page table cost and TLB usage too.
+> + * Note that start must be PGDIR_SIZE-aligned in SV39 which amounts to be
+> + * 1G aligned (that represents a 8G alignment constraint on virtual address
+> + * ranges because of KASAN_SHADOW_SCALE_SHIFT).
+> + */
+> +static void __init kasan_populate(void *start, void *end)
+>   {
+> -	unsigned long i, offset;
+>   	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+>   	unsigned long vend = PAGE_ALIGN((unsigned long)end);
+> -	unsigned long n_pages = (vend - vaddr) / PAGE_SIZE;
+> -	unsigned long n_ptes =
+> -	    ((n_pages + PTRS_PER_PTE) & -PTRS_PER_PTE) / PTRS_PER_PTE;
+> -	unsigned long n_pmds =
+> -	    ((n_ptes + PTRS_PER_PMD) & -PTRS_PER_PMD) / PTRS_PER_PMD;
+> -
+> -	pte_t *pte =
+> -	    memblock_alloc(n_ptes * PTRS_PER_PTE * sizeof(pte_t), PAGE_SIZE);
+> -	pmd_t *pmd =
+> -	    memblock_alloc(n_pmds * PTRS_PER_PMD * sizeof(pmd_t), PAGE_SIZE);
+> -	pgd_t *pgd = pgd_offset_k(vaddr);
+> -
+> -	for (i = 0; i < n_pages; i++) {
+> -		phys_addr_t phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> -		set_pte(&pte[i], pfn_pte(PHYS_PFN(phys), PAGE_KERNEL));
+> -	}
+> -
+> -	for (i = 0, offset = 0; i < n_ptes; i++, offset += PTRS_PER_PTE)
+> -		set_pmd(&pmd[i],
+> -			pfn_pmd(PFN_DOWN(__pa(&pte[offset])),
+> -				__pgprot(_PAGE_TABLE)));
+>   
+> -	for (i = 0, offset = 0; i < n_pmds; i++, offset += PTRS_PER_PMD)
+> -		set_pgd(&pgd[i],
+> -			pfn_pgd(PFN_DOWN(__pa(&pmd[offset])),
+> -				__pgprot(_PAGE_TABLE)));
+> +	kasan_populate_pgd(vaddr, vend);
+>   
+>   	local_flush_tlb_all();
+>   	memset(start, 0, end - start);
+> @@ -99,7 +144,7 @@ void __init kasan_init(void)
+>   		if (start >= end)
+>   			break;
+>   
+> -		populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
+> +		kasan_populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
+>   	};
+>   
+>   	for (i = 0; i < PTRS_PER_PTE; i++)
+> 
