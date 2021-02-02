@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F5B30C71A
+	by mail.lfdr.de (Postfix) with ESMTP id 1157630C718
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237194AbhBBRK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:10:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37036 "EHLO mail.kernel.org"
+        id S237185AbhBBRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:10:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236333AbhBBQ4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:56:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5A7B64F86;
-        Tue,  2 Feb 2021 16:56:07 +0000 (UTC)
+        id S236985AbhBBQ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:56:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B2C64F87
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612284968;
-        bh=yDkMIr4Qx+NeJi8rys6dcmz42y2akm+IAzTeK220aFs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OsooDO+4GGwXBZUWk41gJe2riDhRLiZaKII5Kq16KvJ9X8iEHGZWrE7V9RSVjShpW
-         Faczh1nxYHVCD7is1ugyepqKVQxhPcjgukHyPMTEM3W0pdyFA6H/tVioh3cmN8uOqH
-         qFZZzZA4P9YPhlAjHExgEpz7PNAvpNUNIKxBams1ayj9/t8L1FoBiwKDKLkeCl4Sws
-         W2l1B51w5aXT+Wy37x+URtT2eQZBM58gdZzodarK/HHK5p5i32mZxvrVEQLRUqO/3z
-         HhUQrPY4RH2I8Vz28FPbXxyIU7qtyzTIZkZn5vZ2XPtCT1U6UWk7hgAYviHoqvMr4F
-         6yGnI+o1RtGwA==
+        s=k20201202; t=1612284969;
+        bh=6TGUCJUMZhRtmM1UYvc81rMpTe+uEskUyGr0VlcYLNU=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=kNbzWiaImTY90Z6QtP3pQb54YNWnQL9EPFqHMAjSrQSYsU34kCMyxmyd7SNZKnlOq
+         JcyDSnIsP9RaAUV7ShTKrBNayMefhlKGBWpgniLSVGVUElYrTrIybA4yV9Bj0fsDMf
+         +PPo7IYBkRI2Jh2nHIzG9CGBAjZuo1S2jslC9wdJhp+/4e9i7FaLh6adwGFZSB4Qma
+         g5yWATSAhd9AOh/uN1DfAfRV/LnRnyDxZtKOM1DnfxXjcZJl8EVoMWNA+nLPrcAi8L
+         nI935/iJa3JOyJ6mCI39VwObz8WBf4FhbgCQHhPqEGjvH7NMZx6pTGKEPb+5Bfnp5C
+         Nph+IpSUi5xHg==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 3/4] habanalabs/gaudi: use HBM_ECC_EN bit for ECC ERR
-Date:   Tue,  2 Feb 2021 18:55:59 +0200
-Message-Id: <20210202165600.4620-3-ogabbay@kernel.org>
+Subject: [PATCH 4/4] habanalabs: enable F/W events after init done
+Date:   Tue,  2 Feb 2021 18:56:00 +0200
+Message-Id: <20210202165600.4620-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210202165600.4620-1-ogabbay@kernel.org>
 References: <20210202165600.4620-1-ogabbay@kernel.org>
@@ -38,61 +37,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+Only after the initialization of the device is done, the driver is
+ready to receive events from the F/W. The driver can't handle events
+before that because of races so it will ignore events. In case of
+a fatal event, the driver won't know about it and the device will be
+operational although it shouldn't be.
 
-driver should use ECC info from FW only if HBM ECC CAP is set.
-otherwise, try to fetch the data from MC regs only if security is
-disabled.
+Same logic should be applied after hard-reset.
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/misc/habanalabs/common/device.c     | 23 +++++++++++++++++----
+ drivers/misc/habanalabs/common/habanalabs.h |  9 ++++++--
+ drivers/misc/habanalabs/gaudi/gaudi.c       | 10 ++++++---
+ drivers/misc/habanalabs/goya/goya.c         | 12 +++++++----
+ 4 files changed, 41 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 59219c862ca0..15fcb5c31c4b 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -1159,12 +1159,20 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
+ 	atomic_set(&hdev->in_reset, 0);
+ 	hdev->needs_reset = false;
+ 
+-	if (hard_reset)
++	dev_notice(hdev->dev, "Successfully finished resetting the device\n");
++
++	if (hard_reset) {
+ 		hdev->hard_reset_cnt++;
+-	else
+-		hdev->soft_reset_cnt++;
+ 
+-	dev_warn(hdev->dev, "Successfully finished resetting the device\n");
++		/* After reset is done, we are ready to receive events from
++		 * the F/W. We can't do it before because we will ignore events
++		 * and if those events are fatal, we won't know about it and
++		 * the device will be operational although it shouldn't be
++		 */
++		hdev->asic_funcs->enable_events_from_fw(hdev);
++	} else {
++		hdev->soft_reset_cnt++;
++	}
+ 
+ 	return 0;
+ 
+@@ -1415,6 +1423,13 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 
+ 	hdev->init_done = true;
+ 
++	/* After initialization is done, we are ready to receive events from
++	 * the F/W. We can't do it before because we will ignore events and if
++	 * those events are fatal, we won't know about it and the device will
++	 * be operational although it shouldn't be
++	 */
++	hdev->asic_funcs->enable_events_from_fw(hdev);
++
+ 	return 0;
+ 
+ release_ctx:
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 98163317ec43..18ed3a6000b0 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -860,12 +860,16 @@ enum div_select_defs {
+  *                           and place them in the relevant cs jobs
+  * @collective_wait_create_jobs: allocate collective wait cs jobs
+  * @scramble_addr: Routine to scramble the address prior of mapping it
+- *                  in the MMU.
++ *                 in the MMU.
+  * @descramble_addr: Routine to de-scramble the address prior of
+- *                  showing it to users.
++ *                   showing it to users.
+  * @ack_protection_bits_errors: ack and dump all security violations
+  * @get_hw_block_id: retrieve a HW block id to be used by the user to mmap it.
+  * @hw_block_mmap: mmap a HW block with a given id.
++ * @enable_events_from_fw: send interrupt to firmware to notify them the
++ *                         driver is ready to receive asynchronous events. This
++ *                         function should be called during the first init and
++ *                         after every hard-reset of the device
+  */
+ struct hl_asic_funcs {
+ 	int (*early_init)(struct hl_device *hdev);
+@@ -982,6 +986,7 @@ struct hl_asic_funcs {
+ 			u32 *block_id);
+ 	int (*hw_block_mmap)(struct hl_device *hdev, struct vm_area_struct *vma,
+ 			u32 block_id, u32 block_size);
++	void (*enable_events_from_fw)(struct hl_device *hdev);
+ };
+ 
+ 
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 8fc0de3cf3a9..b929e602fa3d 100644
+index b929e602fa3d..6905857b363b 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -7105,7 +7105,9 @@ static int gaudi_hbm_read_interrupts(struct hl_device *hdev, int device,
- 	u32 base, val, val2, wr_par, rd_par, ca_par, derr, serr, type, ch;
- 	int err = 0;
- 
--	if (!hdev->asic_prop.fw_security_disabled) {
-+	if (hdev->asic_prop.fw_security_status_valid &&
-+			(hdev->asic_prop.fw_app_security_map &
-+				CPU_BOOT_DEV_STS0_HBM_ECC_EN)) {
- 		if (!hbm_ecc_data) {
- 			dev_err(hdev->dev, "No FW ECC data");
- 			return 0;
-@@ -7127,14 +7129,24 @@ static int gaudi_hbm_read_interrupts(struct hl_device *hdev, int device,
- 				le32_to_cpu(hbm_ecc_data->hbm_ecc_info));
- 
- 		dev_err(hdev->dev,
--			"HBM%d pc%d ECC: TYPE=%d, WR_PAR=%d, RD_PAR=%d, CA_PAR=%d, SERR=%d, DERR=%d\n",
--			device, ch, type, wr_par, rd_par, ca_par, serr, derr);
-+			"HBM%d pc%d interrupts info: WR_PAR=%d, RD_PAR=%d, CA_PAR=%d, SERR=%d, DERR=%d\n",
-+			device, ch, wr_par, rd_par, ca_par, serr, derr);
-+		dev_err(hdev->dev,
-+			"HBM%d pc%d ECC info: 1ST_ERR_ADDR=0x%x, 1ST_ERR_TYPE=%d, SEC_CONT_CNT=%u, SEC_CNT=%d, DEC_CNT=%d\n",
-+			device, ch, hbm_ecc_data->first_addr, type,
-+			hbm_ecc_data->sec_cont_cnt, hbm_ecc_data->sec_cnt,
-+			hbm_ecc_data->dec_cnt);
- 
- 		err = 1;
- 
- 		return 0;
+@@ -1383,8 +1383,6 @@ static int gaudi_late_init(struct hl_device *hdev)
+ 		return rc;
  	}
  
-+	if (!hdev->asic_prop.fw_security_disabled) {
-+		dev_info(hdev->dev, "Cannot access MC regs for ECC data while security is enabled\n");
-+		return 0;
-+	}
+-	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_INTS_REGISTER);
+-
+ 	rc = gaudi_fetch_psoc_frequency(hdev);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "Failed to fetch psoc frequency\n");
+@@ -8500,6 +8498,11 @@ static int gaudi_block_mmap(struct hl_device *hdev,
+ 	return -EPERM;
+ }
+ 
++static void gaudi_enable_events_from_fw(struct hl_device *hdev)
++{
++	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_INTS_REGISTER);
++}
 +
- 	base = GAUDI_HBM_CFG_BASE + device * GAUDI_HBM_CFG_OFFSET;
- 	for (ch = 0 ; ch < GAUDI_HBM_CHANNELS ; ch++) {
- 		val = RREG32_MASK(base + ch * 0x1000 + 0x06C, 0x0000FFFF);
+ static const struct hl_asic_funcs gaudi_funcs = {
+ 	.early_init = gaudi_early_init,
+ 	.early_fini = gaudi_early_fini,
+@@ -8581,7 +8584,8 @@ static const struct hl_asic_funcs gaudi_funcs = {
+ 	.descramble_addr = hl_mmu_descramble_addr,
+ 	.ack_protection_bits_errors = gaudi_ack_protection_bits_errors,
+ 	.get_hw_block_id = gaudi_get_hw_block_id,
+-	.hw_block_mmap = gaudi_block_mmap
++	.hw_block_mmap = gaudi_block_mmap,
++	.enable_events_from_fw = gaudi_enable_events_from_fw
+ };
+ 
+ /**
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index d26b405f0c17..af6a5760924c 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -798,9 +798,6 @@ int goya_late_init(struct hl_device *hdev)
+ 		return rc;
+ 	}
+ 
+-	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR,
+-			GOYA_ASYNC_EVENT_ID_INTS_REGISTER);
+-
+ 	return 0;
+ }
+ 
+@@ -5400,6 +5397,12 @@ static int goya_block_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
+ 	return -EPERM;
+ }
+ 
++static void goya_enable_events_from_fw(struct hl_device *hdev)
++{
++	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR,
++			GOYA_ASYNC_EVENT_ID_INTS_REGISTER);
++}
++
+ static const struct hl_asic_funcs goya_funcs = {
+ 	.early_init = goya_early_init,
+ 	.early_fini = goya_early_fini,
+@@ -5481,7 +5484,8 @@ static const struct hl_asic_funcs goya_funcs = {
+ 	.descramble_addr = hl_mmu_descramble_addr,
+ 	.ack_protection_bits_errors = goya_ack_protection_bits_errors,
+ 	.get_hw_block_id = goya_get_hw_block_id,
+-	.hw_block_mmap = goya_block_mmap
++	.hw_block_mmap = goya_block_mmap,
++	.enable_events_from_fw = goya_enable_events_from_fw
+ };
+ 
+ /*
 -- 
 2.25.1
 
