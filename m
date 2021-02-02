@@ -2,128 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013AC30B882
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 032C430B884
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhBBHPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhBBHPK (ORCPT
+        id S232040AbhBBHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:16:08 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12403 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhBBHQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:15:10 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDE4C061756;
-        Mon,  1 Feb 2021 23:14:29 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id g3so11963157plp.2;
-        Mon, 01 Feb 2021 23:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=1XGayTK4HPTLvC5l+72jKh59N3CTEjHrLWkQehRGI4E=;
-        b=ItXmN3NR1uhvjzqMhai0oe/AOBk8yZPVZtFFUqAtmS4Dllk9QZV0DFdHv9xh0/O2lQ
-         EhwVDbn/fmf58+fll9rf2Ckei2Jg23UhlL3V562Xn0HQIBHE8AbGCRVnPDQC6djDJO0I
-         LMNA9yTNRRvdpn397ttKvdjjtpUhQ7fygDuMIwUeWOxAmpFxJk+imSVDvDMRu554Rxof
-         aalfKn73ndZRTT62SVNi5svN9uFZZizCyZB8hf+1jf1EAK10PWlWe3OsQVebRA6Gbrs5
-         D5pQvGfwDtE4eMxX5T0JAbphixa0YeBeOLqPZHp+CzYEoqvobSjJCzPc2SVosMHsPYtD
-         97ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=1XGayTK4HPTLvC5l+72jKh59N3CTEjHrLWkQehRGI4E=;
-        b=Q+anm/qmXpzs3pgBP5cPdjhHl7ry8fuKQ4KlxvRsSrvnAKyVTNZAOMWcN+/j8ZXcg4
-         boOwHnabb7z/1F/7q3iFyF/HHfcH5Ju4ar7XgWRV+9jdiIavHLYx4iXc1EvIK1e3tQrw
-         8JPYRQ0NnJlv7nuoTvJ+0PAvW8THV7W+M3zJZSGNh1i95kQtO5apj7mVihqdTTwVswv8
-         eS50SLZclpk14QZwzkT+1yirMnyGMeO+3BkGQlo25o1wW7Kg1hUMZ9mp5qvSaP144zl9
-         hrnSDlNJWptH11OEQnT6Rh4Eye6Qjch1wTwRW7y2dxvbreD+cmlwRt3X7vvFUOOnfJbt
-         7bfw==
-X-Gm-Message-State: AOAM530xCJ4llBMkX0kW2nEbT8XS2BBS/mV0/Le+64A3ZhLcoJ/vgASV
-        Gub1hLTYSWIxWyaKm+nwzz8=
-X-Google-Smtp-Source: ABdhPJzgPkbe03Mx8f1miu0cWw5cEuiVp4QPguObuIgvrXw4ZfAgK1E0Nl2N8P0OGZGEkqVVE7aicQ==
-X-Received: by 2002:a17:90a:d714:: with SMTP id y20mr2720056pju.5.1612250069141;
-        Mon, 01 Feb 2021 23:14:29 -0800 (PST)
-Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
-        by smtp.gmail.com with ESMTPSA id v31sm22096301pgl.76.2021.02.01.23.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 23:14:28 -0800 (PST)
-Date:   Tue, 02 Feb 2021 17:14:23 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
-To:     Nadav Amit <namit@vmware.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
-        Yu Zhao <yuzhao@google.com>
-References: <20210131001132.3368247-1-namit@vmware.com>
-        <1612063149.2awdsvvmhj.astroid@bobo.none>
-        <A1589669-34AE-4E15-8358-79BAD7C72520@vmware.com>
-        <YBf3sl3M+j3hJRoM@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBf3sl3M+j3hJRoM@hirez.programming.kicks-ass.net>
+        Tue, 2 Feb 2021 02:16:04 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DVGJm3qYtzjGgW;
+        Tue,  2 Feb 2021 15:14:16 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Feb 2021 15:15:17 +0800
+Subject: Re: [PATCH v13 05/15] iommu/smmuv3: Get prepared for nested stage
+ support
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-6-eric.auger@redhat.com>
+CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
+        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
+        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <118a047b-91f4-3c84-867f-6c0b89f9011e@huawei.com>
+Date:   Tue, 2 Feb 2021 15:14:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Message-Id: <1612248111.g00kf5qxrp.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201118112151.25412-6-eric.auger@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Peter Zijlstra's message of February 1, 2021 10:44 pm:
-> On Sun, Jan 31, 2021 at 07:57:01AM +0000, Nadav Amit wrote:
->> > On Jan 30, 2021, at 7:30 PM, Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->=20
->> > I'll go through the patches a bit more closely when they all come=20
->> > through. Sparc and powerpc of course need the arch lazy mode to get=20
->> > per-page/pte information for operations that are not freeing pages,=20
->> > which is what mmu gather is designed for.
->>=20
->> IIUC you mean any PTE change requires a TLB flush. Even setting up a new=
- PTE
->> where no previous PTE was set, right?
+Hi Eric,
 
-In cases of increasing permissiveness of access, yes it may want to=20
-update the "TLB" (read hash table) to avoid taking hash table faults.
+On 2020/11/18 19:21, Eric Auger wrote:
+> When nested stage translation is setup, both s1_cfg and
+> s2_cfg are set.
+> 
+> We introduce a new smmu domain abort field that will be set
+> upon guest stage1 configuration passing.
+> 
+> arm_smmu_write_strtab_ent() is modified to write both stage
+> fields in the STE and deal with the abort field.
+> 
+> In nested mode, only stage 2 is "finalized" as the host does
+> not own/configure the stage 1 context descriptor; guest does.
+> 
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> 
+> ---
+> v10 -> v11:
+> - Fix an issue reported by Shameer when switching from with vSMMU
+>   to without vSMMU. Despite the spec does not seem to mention it
+>   seems to be needed to reset the 2 high 64b when switching from
+>   S1+S2 cfg to S1 only. Especially dst[3] needs to be reset (S2TTB).
+>   On some implementations, if the S2TTB is not reset, this causes
+>   a C_BAD_STE error
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 64 +++++++++++++++++----
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
+>  2 files changed, 56 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 18ac5af1b284..412ea1bafa50 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -1181,8 +1181,10 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  	 * three cases at the moment:
+>  	 *
+>  	 * 1. Invalid (all zero) -> bypass/fault (init)
+> -	 * 2. Bypass/fault -> translation/bypass (attach)
+> -	 * 3. Translation/bypass -> bypass/fault (detach)
+> +	 * 2. Bypass/fault -> single stage translation/bypass (attach)
+> +	 * 3. Single or nested stage Translation/bypass -> bypass/fault (detach)
+> +	 * 4. S2 -> S1 + S2 (attach_pasid_table)
+> +	 * 5. S1 + S2 -> S2 (detach_pasid_table)
 
-But whatever the reason for the flush, there may have to be more
-data carried than just the virtual address range and/or physical
-pages.
+The following line "BUG_ON(ste_live && !nested);" forbids this transform.
+And I have a look at the 6th patch, the transform seems S1 + S2 -> abort.
+So after detach, the status is not the same as that before attach. Does it
+match our expectation?
 
-If you clear out the PTE then you have no guarantee of actually being
-able to go back and address the the in-memory or in-hardware translation=20
-structures to update them, depending on what exact scheme is used
-(powerpc probably could if all page sizes were the same, but THP or=20
-64k/4k sub pages would throw a spanner in those works).
-
-> These are the HASH architectures. Their hardware doesn't walk the
-> page-tables, but it consults a hash-table to resolve page translations.
-
-Yeah, it's very cool in a masochistic way.
-
-I actually don't know if it's worth doing a big rework of it, as much=20
-as I'd like to. Rather than just keep it in place and eventually
-dismantling some of the go-fast hooks from core code if we can one day
-deprecate it in favour of the much easier radix mode.
-
-The whole thing is like a big steam train, years ago Paul and Ben and=20
-Anton and co got the boiler stoked up and set all the valves just right=20
-so it runs unbelievably well for what it's actually doing but look at it
-the wrong way and the whole thing could blow up. (at least that's what=20
-it feels like to me probably because I don't know the code that well).
-
-Sparc could probably do the same, not sure about Xen. I don't suppose
-vmware is intending to add any kind of paravirt mode related to this stuff?
+>  	 *
+>  	 * Given that we can't update the STE atomically and the SMMU
+>  	 * doesn't read the thing in a defined order, that leaves us
+> @@ -1193,7 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  	 * 3. Update Config, sync
+>  	 */
+>  	u64 val = le64_to_cpu(dst[0]);
+> -	bool ste_live = false;
+> +	bool s1_live = false, s2_live = false, ste_live;
+> +	bool abort, nested = false, translate = false;
+>  	struct arm_smmu_device *smmu = NULL;
+>  	struct arm_smmu_s1_cfg *s1_cfg;
+>  	struct arm_smmu_s2_cfg *s2_cfg;
+> @@ -1233,6 +1236,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  		default:
+>  			break;
+>  		}
+> +		nested = s1_cfg->set && s2_cfg->set;
+> +		translate = s1_cfg->set || s2_cfg->set;
+>  	}
+>  
+>  	if (val & STRTAB_STE_0_V) {
+> @@ -1240,23 +1245,36 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  		case STRTAB_STE_0_CFG_BYPASS:
+>  			break;
+>  		case STRTAB_STE_0_CFG_S1_TRANS:
+> +			s1_live = true;
+> +			break;
+>  		case STRTAB_STE_0_CFG_S2_TRANS:
+> -			ste_live = true;
+> +			s2_live = true;
+> +			break;
+> +		case STRTAB_STE_0_CFG_NESTED:
+> +			s1_live = true;
+> +			s2_live = true;
+>  			break;
+>  		case STRTAB_STE_0_CFG_ABORT:
+> -			BUG_ON(!disable_bypass);
+>  			break;
+>  		default:
+>  			BUG(); /* STE corruption */
+>  		}
+>  	}
+>  
+> +	ste_live = s1_live || s2_live;
+> +
+>  	/* Nuke the existing STE_0 value, as we're going to rewrite it */
+>  	val = STRTAB_STE_0_V;
+>  
+>  	/* Bypass/fault */
+> -	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
+> -		if (!smmu_domain && disable_bypass)
+> +
+> +	if (!smmu_domain)
+> +		abort = disable_bypass;
+> +	else
+> +		abort = smmu_domain->abort;
+> +
+> +	if (abort || !translate) {
+> +		if (abort)
+>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
+>  		else
+>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_BYPASS);
+> @@ -1274,8 +1292,16 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  		return;
+>  	}
+>  
+> +	BUG_ON(ste_live && !nested);
+> +
+> +	if (ste_live) {
+> +		/* First invalidate the live STE */
+> +		dst[0] = cpu_to_le64(STRTAB_STE_0_CFG_ABORT);
+> +		arm_smmu_sync_ste_for_sid(smmu, sid);
+> +	}
+> +
+[...]
 
 Thanks,
-Nick
+Keqian
