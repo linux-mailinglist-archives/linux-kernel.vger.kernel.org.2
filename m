@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8698930C8BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2169B30C96E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhBBR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:59:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
+        id S238452AbhBBSRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:17:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233612AbhBBOId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:08:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C09F6502E;
-        Tue,  2 Feb 2021 13:50:27 +0000 (UTC)
+        id S233665AbhBBOGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:06:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C52E364F8E;
+        Tue,  2 Feb 2021 13:49:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273828;
-        bh=bKbMna5GuS4eLGTnZRrVFBvIizzKzHKr+gzPRS1GmlY=;
+        s=korg; t=1612273763;
+        bh=lhdzq5PpdZBF9KqQ787moPSy/SUyn84t0ZPaOmVkGrQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ducwJN87oRoN+gVJJ2Yte6QhFfJB1XlBOJvl83p5HP+Kv/W3foZyS9wMgRW3LDzC1
-         eU6sU7z1xjEto87ITKB1rW2WElqshoYtFmEjKLLO0IHTu3ZxGYcpzzCF7M0cDiVAdP
-         IrvrJcpkdcQb05iIU28WYguH+C05+rd9y45dttL8=
+        b=L7jKKnlnCeJaVeDlY4oo0ZZZn9ecaWwjRG/6Bv8hVksYxw5E2hET38ONTeHD4JqI+
+         MzG+VEfTv3dTbP+VJqoqaOV81APNBohf7qwfFfYs+crBG4iJmAqmENelP+63Gb6JdE
+         aZ8g8tehZV/1aGqFEzPvquaw1N7X66OVSLyObRyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Like Xu <like.xu@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 16/32] KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-Date:   Tue,  2 Feb 2021 14:38:39 +0100
-Message-Id: <20210202132942.660234162@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.4 20/28] netfilter: nft_dynset: add timeout extension to template
+Date:   Tue,  2 Feb 2021 14:38:40 +0100
+Message-Id: <20210202132941.998209256@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
-References: <20210202132942.035179752@linuxfoundation.org>
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+References: <20210202132941.180062901@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <like.xu@linux.intel.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 98dd2f108e448988d91e296173e773b06fb978b8 upstream.
+commit 0c5b7a501e7400869ee905b4f7af3d6717802bcb upstream.
 
-The HW_REF_CPU_CYCLES event on the fixed counter 2 is pseudo-encoded as
-0x0300 in the intel_perfmon_event_map[]. Correct its usage.
+Otherwise, the newly create element shows no timeout when listing the
+ruleset. If the set definition does not specify a default timeout, then
+the set element only shows the expiration time, but not the timeout.
+This is a problem when restoring a stateful ruleset listing since it
+skips the timeout policy entirely.
 
-Fixes: 62079d8a4312 ("KVM: PMU: add proper support for fixed counter 2")
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
-Message-Id: <20201230081916.63417-1-like.xu@linux.intel.com>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/pmu_intel.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nft_dynset.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/pmu_intel.c
-+++ b/arch/x86/kvm/pmu_intel.c
-@@ -29,7 +29,7 @@ static struct kvm_event_hw_type_mapping
- 	[4] = { 0x2e, 0x41, PERF_COUNT_HW_CACHE_MISSES },
- 	[5] = { 0xc4, 0x00, PERF_COUNT_HW_BRANCH_INSTRUCTIONS },
- 	[6] = { 0xc5, 0x00, PERF_COUNT_HW_BRANCH_MISSES },
--	[7] = { 0x00, 0x30, PERF_COUNT_HW_REF_CPU_CYCLES },
-+	[7] = { 0x00, 0x03, PERF_COUNT_HW_REF_CPU_CYCLES },
- };
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -189,8 +189,10 @@ static int nft_dynset_init(const struct
+ 		nft_set_ext_add_length(&priv->tmpl, NFT_SET_EXT_EXPR,
+ 				       priv->expr->ops->size);
+ 	if (set->flags & NFT_SET_TIMEOUT) {
+-		if (timeout || set->timeout)
++		if (timeout || set->timeout) {
++			nft_set_ext_add(&priv->tmpl, NFT_SET_EXT_TIMEOUT);
+ 			nft_set_ext_add(&priv->tmpl, NFT_SET_EXT_EXPIRATION);
++		}
+ 	}
  
- /* mapping between fixed pmc index and intel_arch_events array */
+ 	priv->timeout = timeout;
 
 
