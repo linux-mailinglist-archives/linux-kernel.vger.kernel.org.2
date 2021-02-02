@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADD530C0DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9060A30C0E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbhBBOJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:09:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
+        id S233977AbhBBOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233487AbhBBOC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:02:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BAA464F7B;
-        Tue,  2 Feb 2021 13:47:27 +0000 (UTC)
+        id S233498AbhBBOC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:02:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D1B64F7E;
+        Tue,  2 Feb 2021 13:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273647;
-        bh=yauYUa5OcB0J7FDh4uHAC5VmXWfWJTbgKJD2EDOTMDo=;
+        s=korg; t=1612273650;
+        bh=RWMoZa4fN4HBzAdXKrJtp02hinEuBVW2tbGs7sLVtEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1gjlmGDcLqgCh2EWtBfQjTUm+zmRZEXAunni3BIO3OmBZEAZkhrZ4NpXrPQbawLq0
-         IeRhiSuy5WETLFH7U+oWj0oN1Vu+IqTRmChfIxFmLOJ6srJke9laksR66rDcvjqQRo
-         EdOk0bhlbifLIR/IZujFppnpl88N8qzko0nEgSYg=
+        b=UTtHTReGLi0fQSdchkSdNdFER7WgFN+rLPikbItJwj8fFJnaQOZAu825EDHxwv3wt
+         ShriglqKhe6sjM4LLvDkxoVtPfH+bSqghr3N9Cczq1dBHL69Ozt3WI+2AKXpK8Qq7V
+         g/1V/+PSsSInGLegCpdaXuo1eG5HZIuRwAscHkls=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Lukasz Majczak <lma@semihalf.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 40/61] RDMA/cxgb4: Fix the reported max_recv_sge value
-Date:   Tue,  2 Feb 2021 14:38:18 +0100
-Message-Id: <20210202132948.160703572@linuxfoundation.org>
+Subject: [PATCH 5.4 41/61] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib skl_tplg_complete
+Date:   Tue,  2 Feb 2021 14:38:19 +0100
+Message-Id: <20210202132948.202418701@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
 References: <20210202132946.480479453@linuxfoundation.org>
@@ -41,37 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit a372173bf314d374da4dd1155549d8ca7fc44709 ]
+[ Upstream commit c1c3ba1f78354a20222d291ed6fedd17b7a74fd7 ]
 
-The max_recv_sge value is wrongly reported when calling query_qp, This is
-happening due to a typo when assigning the max_recv_sge value, the value
-of sq_max_sges was assigned instead of rq_max_sges.
+If dobj->control is not initialized we end up in an OOPs during
+skl_tplg_complete:
 
-Fixes: 3e5c02c9ef9a ("iw_cxgb4: Support query_qp() verb")
-Link: https://lore.kernel.org/r/20210114191423.423529-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+[   26.553358] BUG: kernel NULL pointer dereference, address:
+0000000000000078
+[   26.561151] #PF: supervisor read access in kernel mode
+[   26.566897] #PF: error_code(0x0000) - not-present page
+[   26.572642] PGD 0 P4D 0
+[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
+[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
+5.4.81 #4
+[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
+Google_Soraka.10431.106.0 12/03/2019
+[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
+
+Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210121171644.131059-1-ribalda@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index 89ac2f9ae6dd8..e7472f0da59d2 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -2471,7 +2471,7 @@ int c4iw_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	init_attr->cap.max_send_wr = qhp->attr.sq_num_entries;
- 	init_attr->cap.max_recv_wr = qhp->attr.rq_num_entries;
- 	init_attr->cap.max_send_sge = qhp->attr.sq_max_sges;
--	init_attr->cap.max_recv_sge = qhp->attr.sq_max_sges;
-+	init_attr->cap.max_recv_sge = qhp->attr.rq_max_sges;
- 	init_attr->cap.max_inline_data = T4_MAX_SEND_INLINE;
- 	init_attr->sq_sig_type = qhp->sq_sig_all ? IB_SIGNAL_ALL_WR : 0;
- 	return 0;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index aa5833001fde5..2cb719893324a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
+ 
+ 	list_for_each_entry(dobj, &component->dobj_list, list) {
+ 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
+-		struct soc_enum *se =
+-			(struct soc_enum *)kcontrol->private_value;
+-		char **texts = dobj->control.dtexts;
++		struct soc_enum *se;
++		char **texts;
+ 		char chan_text[4];
+ 
+-		if (dobj->type != SND_SOC_DOBJ_ENUM ||
+-		    dobj->control.kcontrol->put !=
+-		    skl_tplg_multi_config_set_dmic)
++		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
++		    kcontrol->put != skl_tplg_multi_config_set_dmic)
+ 			continue;
++
++		se = (struct soc_enum *)kcontrol->private_value;
++		texts = dobj->control.dtexts;
+ 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
+ 
+ 		for (i = 0; i < se->items; i++) {
 -- 
 2.27.0
 
