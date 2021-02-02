@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9F030B3E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA4330B3E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhBBAI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:08:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhBBAIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:08:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6AF264ED7;
-        Tue,  2 Feb 2021 00:08:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612224495;
-        bh=0+LJhSALxF0SzaWgfhQcangQC/O2y6q2Wc1eGwpSUf0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=F5hAyAcVeiaADqsHhfM57TmpaOe6h6leCSebn8YfMF/Y6pgbwXlLg6KB9ZlbiccoM
-         euQUnDSr8Lxc2MyS1yoYOT7Esj5gZbi92gK/j3T1R+yKHBVteE1qXXgLsEuSQ+ciXX
-         K5ANSIHQJTtT1hn9et8MCfebSrA0cehxiYt3HfOCY5YATOonGdhspLVmH5fjEIOoRS
-         8To62+WnlmqN9P0isCv9sw3KH+bx+ypraXHmgpoO4SPGQGdzqyyn9pd9A1iRkiFihI
-         2UUvM1XKSZRIOYKbTShWFC767RM1Z7ngKZ8guOY/Wr9nCp12+pGIWb003XtpU9hGG6
-         7IUH/GnnNj5kw==
-Date:   Mon, 1 Feb 2021 18:08:12 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] scsi: mpt3sas: Replace one-element array with
- flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
-Message-ID: <20210202000812.GA191357@embeddedor>
+        id S231284AbhBBAKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:10:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhBBAJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 19:09:58 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B21C061573;
+        Mon,  1 Feb 2021 16:09:18 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id w124so20893056oia.6;
+        Mon, 01 Feb 2021 16:09:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0TE9ujTMtpgmXpTEN32smn/Hrl3w8ROl+2N6JMyyprc=;
+        b=cqUxBx9gLwZ1ga3Z8feLdyW9JR+TYznPB/yYPEbFEMfbTQb8nmxBkIAOqUmXt1Vq4F
+         muiUveGAHgUZrZueBk1Y6cg38qjQm/xNIsHfVToqmwurDMa3r3D8O4ZD7nd6UiOS1/Ec
+         d+uU1rC1LxErrYbb0J7nMPYr21b1tscfBjoV2crG7p1BT0lDqw1ch3N0YiiMynkBlN9j
+         1mHNEpluO9au6Oo6Dx+9MCmh3BHKIyp9jTLL4x/z4HJwp4aOT0OwpXLVKPFqxaBRy32m
+         BZ/C2A0gdQZa3fcjUTOQB+79qJj0TLPDc90ktSHihbUl+saHZkqs4PCYAT6ZIdmbxX6g
+         yyXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0TE9ujTMtpgmXpTEN32smn/Hrl3w8ROl+2N6JMyyprc=;
+        b=Mro1vi8kBcvJ4ptzCfFuE65BxO6YE5/1WryXdfQL7pLfFNtYLdh6ilwXlKHd25KHDF
+         Q6iwuqYgqohhGsNbkCBLw+9syG/TB47Q9Jv745sCNGBMk5O83H7Q45tsw4spiXa3fO7Z
+         Iud3UAgICjt9+CkQtHzOyaef+ZUdcp7WZ6ZswtkGukbTqxZ8aEo8/ltZ/46oX5sk+/sp
+         Jjy/G9frDxsXg14iJWxUcMGwxiAbxbMw0K4TDsDIeheBvYptNbMInNv+783KE/GQPq/2
+         O0AezT89vE5biuvbM6UXL4n+oek85vh6Eet8wXkrL8NKDXjHrMm0NLBmtUjYIEocXD/G
+         Ulfg==
+X-Gm-Message-State: AOAM5305nudcmIox/BrEoVD3PjuwxrhJHzy2Lgya0TDXOh3LUws4M1tQ
+        iPTBy9PDe/cwP32ssh6J8nM4rD4mkdpP7Pz8ox4o7ZrLOCI=
+X-Google-Smtp-Source: ABdhPJzbOjHKI2jQukZqVEU9VKOcIVl9F86oh8s52VIjTvipduBJyKeX3P5fNiznoHjjUqS5OaXGbTO7hhZImI+vlPU=
+X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr908421oiw.161.1612224558074;
+ Mon, 01 Feb 2021 16:09:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210201232609.3524451-1-elder@linaro.org> <20210201232609.3524451-2-elder@linaro.org>
+In-Reply-To: <20210201232609.3524451-2-elder@linaro.org>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Mon, 1 Feb 2021 16:09:03 -0800
+Message-ID: <CAE1WUT56=3hvwdDjdJP1yAOYM8P_wP2zEGwcV+NDx9ia7xWPAQ@mail.gmail.com>
+Subject: Re: [PATCH net 1/4] net: ipa: add a missing __iomem attribute
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Mon, Feb 1, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
+>
+> The virt local variable in gsi_channel_state() does not have an
+> __iomem attribute but should.  Fix this.
+>
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>  drivers/net/ipa/gsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+> index 14d9a791924bf..e2e77f09077a9 100644
+> --- a/drivers/net/ipa/gsi.c
+> +++ b/drivers/net/ipa/gsi.c
+> @@ -440,7 +440,7 @@ static void gsi_evt_ring_de_alloc_command(struct gsi *gsi, u32 evt_ring_id)
+>  static enum gsi_channel_state gsi_channel_state(struct gsi_channel *channel)
+>  {
+>         u32 channel_id = gsi_channel_id(channel);
+> -       void *virt = channel->gsi->virt;
+> +       void __iomem *virt = channel->gsi->virt;
+>         u32 val;
+>
+>         val = ioread32(virt + GSI_CH_C_CNTXT_0_OFFSET(channel_id));
+> --
+> 2.27.0
+>
 
-Refactor the code according to the use of a flexible-array member in
-struct _MPI2_CONFIG_PAGE_IO_UNIT_3, instead of a one-element array,
-and use the struct_size() helper to calculate the size for the
-allocation.
+Seems pretty straightforward to me, ioread32 expects an
+__iomem-annotated pointer.
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-fix the following warning:
-
-drivers/scsi/mpt3sas/mpt3sas_ctl.c:3193:63: warning: array subscript 24
-is above array bounds of ‘U16[1]’ {aka ‘short unsigned int[1]’}
-[-Warray-bounds]
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h | 11 +----------
- drivers/scsi/mpt3sas/mpt3sas_ctl.c   |  6 +++---
- 2 files changed, 4 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-index 43a3bf8ff428..908b0ca63204 100644
---- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-+++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-@@ -987,21 +987,12 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
- 
- /*IO Unit Page 3 */
- 
--/*
-- *Host code (drivers, BIOS, utilities, etc.) should leave this define set to
-- *one and check the value returned for GPIOCount at runtime.
-- */
--#ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
--#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
--#endif
--
- typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
- 	MPI2_CONFIG_PAGE_HEADER Header;			 /*0x00 */
- 	U8                      GPIOCount;		 /*0x04 */
- 	U8                      Reserved1;		 /*0x05 */
- 	U16                     Reserved2;		 /*0x06 */
--	U16
--		GPIOVal[MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX];/*0x08 */
-+	U16			GPIOVal[];		 /*0x08 */
- } MPI2_CONFIG_PAGE_IO_UNIT_3,
- 	*PTR_MPI2_CONFIG_PAGE_IO_UNIT_3,
- 	Mpi2IOUnitPage3_t, *pMpi2IOUnitPage3_t;
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-index c8a0ce18f2c5..82374a97c91d 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -3143,7 +3143,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
- 	Mpi2ConfigReply_t mpi_reply;
- 	u16 backup_rail_monitor_status = 0;
- 	u16 ioc_status;
--	int sz;
-+	size_t sz;
- 	ssize_t rc = 0;
- 
- 	if (!ioc->is_warpdrive) {
-@@ -3157,11 +3157,11 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
- 		goto out;
- 
- 	/* allocate upto GPIOVal 36 entries */
--	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
-+	sz = struct_size(io_unit_pg3, GPIOVal, 36);
- 	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
- 	if (!io_unit_pg3) {
- 		rc = -ENOMEM;
--		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
-+		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%ld) bytes\n",
- 			__func__, sz);
- 		goto out;
- 	}
--- 
-2.27.0
-
+Reviewed-by: Amy Parker <enbyamy@gmail.com>
