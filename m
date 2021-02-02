@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8B230B54B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B9630B552
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhBBCfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhBBCfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:35:10 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE225C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 18:34:29 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id t17so13977825qtq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 18:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sjpJNs0J12vp1IhfE1UDS+GBxWHaPxs/MJ4w9Q0NI04=;
-        b=JvYNweR+f9nFJL+a49zw+w4LD5s+2syVVDuDOHSRvHkCHLFGIMyYDWbWkf5fbjU2CO
-         wsls7x8LXSclZD+BZvmtobTH1BqmGUi02ejI7YhnV0jzjab/WhL2Wc+46Ia9ErE3hcGm
-         h5DSgwfoPk5/9z4d8cxR10/1pnkrNVMzFwWJYl89cd6SzB4Xo82Q75u4PRoTavfDgQer
-         16MJPawwfwF7XrmzeUghiNv+55Mf7pxjxvMyo3gDGPbrny0dU03ARtxudtzPRooYuY6B
-         +lFE6zioMVtYH9ceA89q2cuDcIUQJVuzDaKHeE8ILjAxQoIQODLZh80gOJWZoj/tDqjl
-         +6/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sjpJNs0J12vp1IhfE1UDS+GBxWHaPxs/MJ4w9Q0NI04=;
-        b=EWDUXRm1jy+uPiQdGgW1Z00javdruaqpsGSpLKwc6UfMam9gOVo39XI7lB2Vocm7aO
-         BfrzNkY470LhqDh6h60nwguTAHhvuyI+dF1LLoT/eJL1KMx4UM8MzBu0gy5qyO4RfUix
-         W4l0ByZbqVh3FuaEGPeZ7tHLIfehS31zTFp3YnHjvpxRWlHAQCTJhEv8uusC48f0tD92
-         2weKsYQNW7kUNW97QOJ7u/zlve2d5kJGG/QC7Fb68qb28csl6/VhwsqeKGZFHWXljfs6
-         Hp1mRT9zrnne1Dmw4IYLXhasPSfrdFxjJNGAXGj+/IbkE3Vwdxoa4aKq0j53nJjlt4Mw
-         jrZQ==
-X-Gm-Message-State: AOAM533k/EYeTU/mYA+Y6yoLdO+0oUs6CFfGFYZbU42RvOhYGcDthalw
-        7LW+jIzHhEuVyL0azgL60WSobxr++MnOOEugfUW1rMHz72pz9A==
-X-Google-Smtp-Source: ABdhPJyefunSNBjc33jM0hiZCz2tsvHkqwoJ3p0w2/HJkrB9lJcKW/qY+D7/0W5nvugdLhtFGClyj3y0HT/DvJN4uz4=
-X-Received: by 2002:ac8:b0e:: with SMTP id e14mr17833369qti.360.1612233269172;
- Mon, 01 Feb 2021 18:34:29 -0800 (PST)
+        id S231211AbhBBChj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:37:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229822AbhBBChh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 21:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A93AE64DDC;
+        Tue,  2 Feb 2021 02:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612233417;
+        bh=aYaNKfCnYiSwQ0Jqq2pVkFBGnbFVGwDNv4yn576p31Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CfapMaxXNMeg8aiNbpOFcHczkEMgpE1MjlaviMKqweOtGZGP+Hj6zt7reHB51vSkT
+         197C10/3oRRuTSk95F3SY/7IK2ZIMRP0LUlUYQUE7R35yr/sSHDx3jxGpGwIGeYCJR
+         DGWzXc2L84ihlAuaMaITeYrbihax7s2houJ43nbpP1K6KQjee7kXWS5bTK6HFhWsmc
+         njPbh/wOvNwTpDKd/uMFgxlavoScyAlAGr6a+Q9f0iiQLa9YimlYDfBjhjt7VGnRzX
+         1oLhE16NBH6RtTnmwG7lJwtsuTXZIjTuSCK2uwQ3hN5oZ65u9bByKIH+g345+yeleg
+         1iNtvIPYu2anA==
+Date:   Mon, 1 Feb 2021 20:36:54 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steve French <sfrench@samba.org>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] smb3: Fix out-of-bounds bug in SMB2_negotiate()
+Message-ID: <20210202023654.GA265921@embeddedor>
 MIME-Version: 1.0
-References: <20210128112714.16324-1-tangbin@cmss.chinamobile.com>
-In-Reply-To: <20210128112714.16324-1-tangbin@cmss.chinamobile.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Tue, 2 Feb 2021 10:34:17 +0800
-Message-ID: <CAA+D8AN-E7HDHLOO_rnu3spwNS5GczPDMAsM+A3J66Zfhd6G-Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Utilize the defined parameter to clear code
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     Mark Brown <broonie@kernel.org>, Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 7:28 PM Tang Bin <tangbin@cmss.chinamobile.com> wrote:
->
-> Utilize the defined parameter 'dev' to make the code cleaner.
->
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+While addressing some warnings generated by -Warray-bounds, I found this
+bug that was introduced back in 2017:
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+  CC [M]  fs/cifs/smb2pdu.o
+fs/cifs/smb2pdu.c: In function ‘SMB2_negotiate’:
+fs/cifs/smb2pdu.c:822:16: warning: array subscript 1 is above array bounds
+of ‘__le16[1]’ {aka ‘short unsigned int[1]’} [-Warray-bounds]
+  822 |   req->Dialects[1] = cpu_to_le16(SMB30_PROT_ID);
+      |   ~~~~~~~~~~~~~^~~
+fs/cifs/smb2pdu.c:823:16: warning: array subscript 2 is above array bounds
+of ‘__le16[1]’ {aka ‘short unsigned int[1]’} [-Warray-bounds]
+  823 |   req->Dialects[2] = cpu_to_le16(SMB302_PROT_ID);
+      |   ~~~~~~~~~~~~~^~~
+fs/cifs/smb2pdu.c:824:16: warning: array subscript 3 is above array bounds
+of ‘__le16[1]’ {aka ‘short unsigned int[1]’} [-Warray-bounds]
+  824 |   req->Dialects[3] = cpu_to_le16(SMB311_PROT_ID);
+      |   ~~~~~~~~~~~~~^~~
+fs/cifs/smb2pdu.c:816:16: warning: array subscript 1 is above array bounds
+of ‘__le16[1]’ {aka ‘short unsigned int[1]’} [-Warray-bounds]
+  816 |   req->Dialects[1] = cpu_to_le16(SMB302_PROT_ID);
+      |   ~~~~~~~~~~~~~^~~
+
+At the time, the size of array _Dialects_ was changed from 1 to 3 in struct
+validate_negotiate_info_req, and then in 2019 it was changed from 3 to 4,
+but those changes were never made in struct smb2_negotiate_req, which has
+led to a 3 and a half years old out-of-bounds bug in function
+SMB2_negotiate() (fs/cifs/smb2pdu.c).
+
+Fix this by increasing the size of array _Dialects_ in struct
+smb2_negotiate_req to 4.
+
+Fixes: 9764c02fcbad ("SMB3: Add support for multidialect negotiate (SMB2.1 and later)")
+Fixes: d5c7076b772a ("smb3: add smb3.1.1 to default dialect list")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/cifs/smb2pdu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/cifs/smb2pdu.h b/fs/cifs/smb2pdu.h
+index d85edf5d1429..a5a9e33c0d73 100644
+--- a/fs/cifs/smb2pdu.h
++++ b/fs/cifs/smb2pdu.h
+@@ -286,7 +286,7 @@ struct smb2_negotiate_req {
+ 	__le32 NegotiateContextOffset; /* SMB3.1.1 only. MBZ earlier */
+ 	__le16 NegotiateContextCount;  /* SMB3.1.1 only. MBZ earlier */
+ 	__le16 Reserved2;
+-	__le16 Dialects[1]; /* One dialect (vers=) at a time for now */
++	__le16 Dialects[4]; /* BB expand this if autonegotiate > 4 dialects */
+ } __packed;
+ 
+ /* Dialects */
+-- 
+2.27.0
+
