@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0B430BBCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B58530BBD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbhBBKKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhBBKKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:10:05 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA393C0613D6;
-        Tue,  2 Feb 2021 02:09:25 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b8so12181506plh.12;
-        Tue, 02 Feb 2021 02:09:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FYeJLFgukpjjaiX0ohZ3jkdwwwc8rHopLauzuSIyIdw=;
-        b=tV+v78ppPBh5j1qozvGytXqYRH3YTJdedkA+I8BKPM/+ZtmYvrTzBWbeVfXbArKUSM
-         iN4DyO4rLEKMayZ/QM19bmkFz6e2qX/7WaBp+PIDYEig7nWtknkexxzua6XvFhgpHqne
-         lMEJZfTOQk7alc33ttk1hifGy5+zTtIrFKaHTSf6mg9Tfz5AO0tqYi4erZkvNM02mM7F
-         34qhUEHyyimt6uvazTjZyHv98SSh3Jyu5L4GyjX35aHc1AQuPb7R2MgE/5cvZaUS1c2/
-         oW/pTvabA1T2TAr4fqG1xQ9yyF5eenOs5p6igNbRJQAuRb/uXxQJoOvzreh2AVCzW5ld
-         4Zkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FYeJLFgukpjjaiX0ohZ3jkdwwwc8rHopLauzuSIyIdw=;
-        b=bOIzmPHvRpzgmS1MmP9MuyPEs2lHHMSPd5xHbplR/n2Nkuoow4i8P7LrCQQXSCeBS1
-         QvNEFeKzRbFhC6uC12aL5DJtv1XUUVGpZ3pvo/aD+YB1GW3KheCp70vakvw2UOeHTMI8
-         m8zvpgXyhpfjg2go7ZtNRWUnja84KPvwMWfX/ntL59ar6A4MAFRRmifjg1194UOWYQmZ
-         TO48u5iO/2tHoiwEbDQXds+4SPq4RhWUov2Rj9DXUTOGwebtl3a2Xj91Do65PGYJXQRA
-         LoThXRCR0PF8rrB4Aqhe2LXlpB/duLiDGceGSBlArcWt9GyXEKNwjokHvvnIeobRMGPY
-         mYaA==
-X-Gm-Message-State: AOAM530B6XEA5phDOS5fsxDvc4l8ytxSDmE/WxwxWGcs/xP4Q7NFpd1R
-        RdRQ8vWY/zKTKkDk7GCE5dqcHAMlQE5jlw==
-X-Google-Smtp-Source: ABdhPJzOiwWh5mPPYa1i19XPG4Fp5MvPpEcfOWz0ooMRC2HOki3phGTorM9UmMcRGoRVm4K5OTM51w==
-X-Received: by 2002:a17:90a:d02:: with SMTP id t2mr3397288pja.130.1612260565335;
-        Tue, 02 Feb 2021 02:09:25 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id l2sm21403893pga.65.2021.02.02.02.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 02:09:24 -0800 (PST)
-Date:   Tue, 2 Feb 2021 19:09:21 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Peter Jones <pjones@redhat.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-efi@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
-Message-ID: <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
-References: <20210202070218.856847-1-masahiroy@kernel.org>
+        id S230104AbhBBKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:12:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:47320 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhBBKMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 05:12:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74B4A1396;
+        Tue,  2 Feb 2021 02:11:56 -0800 (PST)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5317C3F7D7;
+        Tue,  2 Feb 2021 02:11:54 -0800 (PST)
+Date:   Tue, 2 Feb 2021 10:11:05 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2w=?= =?UTF-8?B?w6ltZW50IFDDqXJvbg==?= 
+        <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>
+Subject: Re: [linux-sunxi] [PATCH v5 04/20] dt-bindings: mfd: axp20x: Add
+ AXP305 compatible (plus optional IRQ)
+Message-ID: <20210202101105.3396862f@slackpad.fritz.box>
+In-Reply-To: <CAGb2v674jBtROBXZ7HLj9Uqa_BZxW04z9VQ1R6Cn901+ES0k6g@mail.gmail.com>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+        <20210127172500.13356-5-andre.przywara@arm.com>
+        <CAGb2v674jBtROBXZ7HLj9Uqa_BZxW04z9VQ1R6Cn901+ES0k6g@mail.gmail.com>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202070218.856847-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/02/02 16:02), Masahiro Yamada wrote:
-> 
-> CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
-> CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
-> 
-> When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
-> all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
-> used in <linux/printk.h>, which is included from most of source files.
-> 
-> In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
-> 
->   arch/x86/platform/uv/uv_nmi.c
->   drivers/firmware/efi/libstub/efi-stub-helper.c
->   drivers/tty/sysrq.c
->   kernel/printk/printk.c
-> 
-> So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
-> kernel, it is enough to recompile those 4 files.
+On Tue, 2 Feb 2021 15:55:50 +0800
+Chen-Yu Tsai <wens@csie.org> wrote:
 
-Do you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT so often that it becomes a
-problem?
+Hi,
 
-	-ss
+> On Thu, Jan 28, 2021 at 1:26 AM Andre Przywara <andre.przywara@arm.com> wrote:
+> >
+> > The AXP305 PMIC used in AXP805 seems to be fully compatible to the  
+>                           ^
+> This statement doesn't quite make sense. I assume you wanted to mention
+> a board or the H616 SoC here?
+
+Argh, indeed!
+
+> > AXP805 PMIC, so add the proper chain of compatible strings.
+> >
+> > Also at least on one board (Orangepi Zero2) there is no interrupt line
+> > connected to the CPU, so make the "interrupts" property optional.
+> >
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > ---
+> >  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/axp20x.txt b/Documentation/devicetree/bindings/mfd/axp20x.txt
+> > index 4991a6415796..4fd748101e3c 100644
+> > --- a/Documentation/devicetree/bindings/mfd/axp20x.txt
+> > +++ b/Documentation/devicetree/bindings/mfd/axp20x.txt
+> > @@ -26,10 +26,10 @@ Required properties:
+> >      * "x-powers,axp803"
+> >      * "x-powers,axp806"
+> >      * "x-powers,axp805", "x-powers,axp806"
+> > +    * "x-powers,axp803", "x-powers,axp805", "x-powers,axp806"  
+> 
+> axp305? axp803 is used with A64 IIRC.
+
+Oh, well spotted. This AXP naming already confused me when they were
+all called 80x, now using 30x gave me the rest ;-)
+
+Sorry for the blunder!
+
+Cheers,
+Andre
+
+> 
+> ChenYu
+> 
+> >      * "x-powers,axp809"
+> >      * "x-powers,axp813"
+> >  - reg: The I2C slave address or RSB hardware address for the AXP chip
+> > -- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
+> >  - interrupt-controller: The PMIC has its own internal IRQs
+> >  - #interrupt-cells: Should be set to 1
+> >
+> > @@ -43,6 +43,7 @@ more information:
+> >                         AXP20x/LDO3: software-based implementation
+> >
+> >  Optional properties:
+> > +- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
+> >  - x-powers,dcdc-freq: defines the work frequency of DC-DC in KHz
+> >                       AXP152/20X: range:  750-1875, Default: 1.5 MHz
+> >                       AXP22X/8XX: range: 1800-4050, Default: 3   MHz
+> > --
+> > 2.17.5
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> > To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210127172500.13356-5-andre.przywara%40arm.com.  
+
