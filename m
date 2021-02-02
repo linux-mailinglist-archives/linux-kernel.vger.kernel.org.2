@@ -2,74 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F02F30B915
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECE130B91E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhBBH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:59:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231553AbhBBH7l (ORCPT
+        id S231712AbhBBIBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:01:16 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12062 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231658AbhBBIBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:59:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612252695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSs+hI92LA+WjDbN8bdyYyPQ3riB041flC5bDy3Nc0E=;
-        b=ZPBYW7fdH1dJvERxQOJEAEd6EiigMcz0cFu9wH2dZQzLpMDV/d8OODVVrN91TkGk5v7fDR
-        Zuhu4b6oAIUla2uj9erBmXG5jvSuGelPEeYSgXVRM6buCM1qe9/qhJCZIwgDbWgKtyImVc
-        weHkniopk0z+xafvwRDgkOmqvavCJe8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-OpISDnU8NjOlwL1voug-oQ-1; Tue, 02 Feb 2021 02:58:07 -0500
-X-MC-Unique: OpISDnU8NjOlwL1voug-oQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4858B107ACE3;
-        Tue,  2 Feb 2021 07:58:05 +0000 (UTC)
-Received: from gondolin (ovpn-113-169.ams2.redhat.com [10.36.113.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F058060BE5;
-        Tue,  2 Feb 2021 07:57:57 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 08:57:55 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     <jgg@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
-        <mjrosato@linux.ibm.com>, <yishaih@nvidia.com>, <aik@ozlabs.ru>
-Subject: Re: [PATCH 5/9] vfio-pci/zdev: remove unused vdev argument
-Message-ID: <20210202085755.3e06184e.cohuck@redhat.com>
-In-Reply-To: <20210201162828.5938-6-mgurtovoy@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
-        <20210201162828.5938-6-mgurtovoy@nvidia.com>
-Organization: Red Hat GmbH
+        Tue, 2 Feb 2021 03:01:07 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVHJ60VjMzMT4W;
+        Tue,  2 Feb 2021 15:58:46 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Feb 2021 16:00:18 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH] drivers/perf: Prevent forced unbinding of ARM_DMC620_PMU drivers
+Date:   Tue, 2 Feb 2021 15:58:06 +0800
+Message-ID: <1612252686-50329-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 16:28:24 +0000
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+Set "suppress_bind_attrs" to true, so that bind/unbind can be
+disabled via sysfs and prevent unbinding ARM_DMC620_PMU drivers
+during perf sampling.
 
-> Zdev static functions does not use vdev argument. Remove it.
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+---
+ drivers/perf/arm_dmc620_pmu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-s/does not use/do not use the/
-
-> 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> ---
->  drivers/vfio/pci/vfio_pci_zdev.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
-
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+index 27f54c0..66ad5b3 100644
+--- a/drivers/perf/arm_dmc620_pmu.c
++++ b/drivers/perf/arm_dmc620_pmu.c
+@@ -717,6 +717,7 @@ static struct platform_driver dmc620_pmu_driver = {
+ 	.driver	= {
+ 		.name		= DMC620_DRVNAME,
+ 		.acpi_match_table = dmc620_acpi_match,
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe	= dmc620_pmu_device_probe,
+ 	.remove	= dmc620_pmu_device_remove,
+--
+2.8.1
 
