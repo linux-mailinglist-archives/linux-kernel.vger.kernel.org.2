@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B4430C57C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D080F30C55B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhBBQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236255AbhBBQVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:21:55 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CE3C061220
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:18:08 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id y187so17684860qke.20
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=tJ1RjowJP8uP6aGuamfXuNzicvFr4anl7UIOhyimvSM=;
-        b=bZaqIqlPPqbLYC0Cr7r6Q2eRJOmpXZWUFpKvj0rZR486uxqjXbpMJxZHKo3rm6040d
-         OEx1Heh+JWUXlIy2GaZkuiDz20uIbhQxArX8nktdQTWk1jli26ZkYAlaqTl39hex4nq1
-         /ZC7lrjP6lh33XKn51dRCMqvxhSVu5yPhUdKl2EqBaamrx05QuT+1eOQvfZU/4nnY048
-         k6XvMyZCPv7LMD4yistrtaftg5pZIuuFIsZ1Ymy5ble0KUjinVBWL9opXeU0hXEzD8rW
-         ZR+GXZepH87T/w4zgkeCEu4AnMgIQA7IxL9ZG7C5XuqC4adc99l9D6eCP1jgduXnnnJf
-         GE5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tJ1RjowJP8uP6aGuamfXuNzicvFr4anl7UIOhyimvSM=;
-        b=IXHfOIMjXqXdgvI67S0VUBBahe/kGFs3x8a+A6zh872RGqVXDEAqPVWwS9d2etEXPL
-         c6YqkarnGUEn3dnxkBvRdAK7HzpFWG7xHed6hGv/13HY9g5bTfG4cKG71kFY8nL1UFoE
-         +DaTIwrXQEY++FM+uBE6nQs5KR1c+ID2MME3kWA7SanJNE3IR/0Vm8/TDx6xwVoriMlQ
-         TXoX51d5Qvxg7+kl2/JIGJI1xk1qw567iEnviwCnU7fD1/M2BgKlKra7qNrW8FYF4Q/D
-         i9azxj+MSEA70GEPPI2P/6OKugGBH6iNJVs1wdC5eTMwnIx4IRjbkLlhh/li6ZS/FRoQ
-         3yjQ==
-X-Gm-Message-State: AOAM5320AlZq+BIZUo0DVPrUtlVVtabEabX7ugDUbytCvpR1sg7imH3h
-        fT+tiaHIjjEHQhU8X4D+mFTh29Pv3ara
-X-Google-Smtp-Source: ABdhPJzQeYu49Y8qZoV69wlqJLq6kDobFv8A0AP3hSzacRVoRcfuqx0oabaJQZYnsb//jx+QoiYUGmcosnxz
-Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:a05:6214:c27:: with SMTP id
- a7mr20744200qvd.54.1612282688190; Tue, 02 Feb 2021 08:18:08 -0800 (PST)
-Date:   Wed,  3 Feb 2021 00:17:33 +0800
-In-Reply-To: <20210202161733.932215-1-kyletso@google.com>
-Message-Id: <20210202161733.932215-9-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210202161733.932215-1-kyletso@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v5 8/8] usb: typec: tcpm: Get Sink VDO from fwnode
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236227AbhBBQU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236131AbhBBQSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:18:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65F0864F65;
+        Tue,  2 Feb 2021 16:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612282661;
+        bh=nb+F01HMLRbj+cnqYSMEzMNAlToI/VhoRjb/1UPO14o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=awb7QjyJEyWVbjnGn/Mhv+3amTQfNDdW5oLwCYeY0+pF87JCTfQnE5VFAlFWGfXEy
+         7oD3w5MWDGPKQ6ZHQGm6VbKwhUSIowuGhzLrgXJoe4Vp94x/RvzkhPFmuDuOsAW6pY
+         d16+y1zXDJCBuUJYinBwNcS/IW8wtuZJhd++vdnsgu6Uo/wNAUbVLlHX5MHiHtVFkE
+         cNq+tSvbruwksHhvxADr2b6Z6xg6yalPyhq5r+1hkx9S4MRyZUHR7wip57UDpvuqQw
+         7R5Se4QM3b3TbIMGMdsvN3oK+rGV3heiT1fgkLBHwjTyBNkMR9M15LDaHP70IjK5CW
+         FzedsnaOEljLA==
+Date:   Tue, 2 Feb 2021 18:17:34 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+Message-ID: <YBl7HlcgPSX0qRHy@kernel.org>
+References: <20210123014247.989368-1-lma@semihalf.com>
+ <20210125171846.GA31929@roeck-us.net>
+ <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
+ <YBSTOrlgTPpzoblY@kernel.org>
+ <7a702108-ec9e-b2e2-be89-3590437c0eb5@roeck-us.net>
+ <bf4564a2f4f761a4c0a00857c7dc346fc43bcd92.camel@HansenPartnership.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bf4564a2f4f761a4c0a00857c7dc346fc43bcd92.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
-configuration mechanism") removed the tcpc_config which includes the
-Sink VDO and it is not yet added back with fwnode. Add it now.
+On Sat, Jan 30, 2021 at 04:41:13PM -0800, James Bottomley wrote:
+> On Sat, 2021-01-30 at 15:49 -0800, Guenter Roeck wrote:
+> > On 1/29/21 2:59 PM, Jarkko Sakkinen wrote:
+> > > On Tue, Jan 26, 2021 at 04:46:07PM +0100, Łukasz Majczak wrote:
+> > > > Hi Jarkko, Guenter
+> > > > 
+> > > > Yes, here are the logs when failure occurs -
+> > > > https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
+> > > > Look for a phrase "TPM returned invalid status"
+> > > > 
+> > > > Guenter - good suggestion - I will try to keep it as tight as
+> > > > possible.
+> > > > 
+> > > > Best regards,
+> > > > Lukasz
+> > > 
+> > > Is it possible for you try out with linux-next? Thanks. It's a
+> > > known issue, which ought to be fixed by now.
+> > > 
+> > > The log message is harmless, it'a warning not panic, and does not
+> > > endanger system stability. WARN()'s always dump stack trace. No
+> > > oops is happening.
+> > > 
+> > 
+> > There is a note in the kernel documentation which states:
+> > 
+> > Note that the WARN()-family should only be used for "expected to
+> > be unreachable" situations. If you want to warn about "reachable
+> > but undesirable" situations, please use the pr_warn()-family of
+> > functions.
+> 
+> It fits the definition.  The warning only triggers if the access is in
+> the wrong locality, which should be impossible, so the warning should
+> be unreachable.
 
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+It's an overkill. Even in perfectly working kernel it's not impossible, as
+sometimes hardware gives faulty data. I think that it also lacks the useful
+information i.e. the status code.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 979b7ee6473c..9b13e19118f0 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5677,6 +5677,20 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 			port->new_source_frs_current = frs_current;
- 	}
- 
-+	/* sink-vdos is optional */
-+	ret = fwnode_property_count_u32(fwnode, "sink-vdos");
-+	if (ret < 0)
-+		ret = 0;
-+
-+	port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-+	if (port->nr_snk_vdo) {
-+		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-+						     port->snk_vdo,
-+						     port->nr_snk_vdo);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.30.0.365.g02bc693789-goog
+I would useful WARN() only if the driver state could suffer. In this case
+it doesn't. It only results failing transfer but kernel state is still
+legit.
 
+/Jarkko
+> 
