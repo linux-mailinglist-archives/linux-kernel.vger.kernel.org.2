@@ -2,89 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E1030BD62
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E827830BD71
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBBLtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:49:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11673 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhBBLtH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:49:07 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DVNM92BMkzlDlp;
-        Tue,  2 Feb 2021 19:46:45 +0800 (CST)
-Received: from [10.174.177.80] (10.174.177.80) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Feb 2021 19:48:14 +0800
-Subject: Re: [PATCH v12 01/14] ARM: mm: add missing pud_page define to 2-level
- page tables
-From:   Ding Tianhong <dingtianhong@huawei.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Nicholas Piggin <npiggin@gmail.com>
-CC:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210202110515.3575274-1-npiggin@gmail.com>
- <20210202110515.3575274-2-npiggin@gmail.com>
- <20210202111319.GL1463@shell.armlinux.org.uk>
- <d1f661f2-f473-1dd8-94cc-fe76714249b5@huawei.com>
-Message-ID: <a9773c79-4fa3-dd26-27f3-bbd88600db1b@huawei.com>
-Date:   Tue, 2 Feb 2021 19:48:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S231137AbhBBLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 06:52:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231349AbhBBLwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 06:52:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC8F764EDA;
+        Tue,  2 Feb 2021 11:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612266691;
+        bh=oQSn79aftyH7uGpea6Y6ZKbRHlClxKT7EnCy9j5mu6I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KK9bYO37E2FaElLdXySz5TIENWBjx4vahDzo3fjQ2KiVwfrHBdCX2vnld8JVRISxV
+         Gxm8/IYe1ZWln0kVNauPkUQ72wOUo9fsFw1FmPNJibRbz5GZbYeN23ARQ1Mt4UP5hy
+         kdMOi+jX0oYFbiVyI1B6stNgkDOhExSocbSHX02Q=
+Date:   Tue, 2 Feb 2021 12:51:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: Re: [PATCH v2 3/9] scsi: ufshpb: Add region's reads counter
+Message-ID: <YBk8vkmxkoR3lTSO@kroah.com>
+References: <20210202083007.104050-1-avri.altman@wdc.com>
+ <20210202083007.104050-4-avri.altman@wdc.com>
+ <YBk0PHFW+8klHN8Y@kroah.com>
+ <DM6PR04MB65750EECC22CC837D028003DFCB59@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <d1f661f2-f473-1dd8-94cc-fe76714249b5@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.80]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB65750EECC22CC837D028003DFCB59@DM6PR04MB6575.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/2 19:47, Ding Tianhong wrote:
-> On 2021/2/2 19:13, Russell King - ARM Linux admin wrote:
->> On Tue, Feb 02, 2021 at 09:05:02PM +1000, Nicholas Piggin wrote:
->>> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
->>> index c02f24400369..d63a5bb6bd0c 100644
->>> --- a/arch/arm/include/asm/pgtable.h
->>> +++ b/arch/arm/include/asm/pgtable.h
->>> @@ -166,6 +166,9 @@ extern struct page *empty_zero_page;
->>>  
->>>  extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
->>>  
->>> +#define pud_page(pud)		pmd_page(__pmd(pud_val(pud)))
->>> +#define pud_write(pud)		pmd_write(__pmd(pud_val(pud)))
->>
->> As there is no PUD, does it really make sense to return a valid
->> struct page (which will be the PTE page) for pud_page(), which is
->> several tables above?
->>
-> --- a/arch/arm/include/asm/pgtable-2level.h
-> +++ b/arch/arm/include/asm/pgtable-2level.h
-> 
-> +static inline int pud_none(pud_t pud)
-> +{
-> +          return 0;
-> +}
-> 
- --- a/arch/arm/include/asm/pgtable-2level.h
- +++ b/arch/arm/include/asm/pgtable-2level.h>
- +static inline int pud_page(pud_t pud)
- +{
- +          return 0;
- +}
+On Tue, Feb 02, 2021 at 11:23:17AM +0000, Avri Altman wrote:
+> > 
+> > 
+> > On Tue, Feb 02, 2021 at 10:30:01AM +0200, Avri Altman wrote:
+> > > @@ -175,6 +179,8 @@ struct ufshpb_lu {
+> > >
+> > >       /* for selecting victim */
+> > >       struct victim_select_info lru_info;
+> > > +     struct work_struct ufshpb_normalization_work;
+> > > +     unsigned long work_data_bits;
+> > 
+> > You only have 1 "bit" being used here, so perhaps just a u8?  Please
+> > don't use things like "unsigned long" for types, this isn't Windows :)
+> I am using it for atomic bit operations.
 
-> I think it could be fix like this.
-> 
-> Ding
-> 
-
+Ah, and that requires "unsigned long"?  Ok, nevermind :)
