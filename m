@@ -2,100 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB1830B87F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013AC30B882
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhBBHOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S231952AbhBBHPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhBBHOt (ORCPT
+        with ESMTP id S230135AbhBBHPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:14:49 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83457C06174A;
-        Mon,  1 Feb 2021 23:14:09 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id q9so18141866ilo.1;
-        Mon, 01 Feb 2021 23:14:09 -0800 (PST)
+        Tue, 2 Feb 2021 02:15:10 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDE4C061756;
+        Mon,  1 Feb 2021 23:14:29 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id g3so11963157plp.2;
+        Mon, 01 Feb 2021 23:14:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i+rprk54pLD+tPDUDUth98iylk1i9f9VqxJ5r+zi39c=;
-        b=Th9dnnelCfdRL7BYukHCwGMUPbVimhNiEEJWsLCr8Q13rAkjxz5K8GqnB1qapqAkGU
-         nj06n8frT81N36DIcD858nXiNFRgYM+yIctWtBQ5Fxslvi9RLKfvd+6tURpfxr1JSMG2
-         RtT3XmXnl7/Yiy0Gsjk4xBeGJizgyyoU2CzRdURLcv/3cfM98rngr/SxAzVIwRFPFqmM
-         taJqz+DKifH3yetB6gYAKRzkC9nVQl6gO1vlBSLkwgPPorEXoq8M6C2ZPKvQe/M8EU8Q
-         BHUjsCK6ebAba+SHxu5qrobawj+MFn/UvoyDOEE5DUR8PrY9vBGQSx73F+TRNhJESQlO
-         6U7Q==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=1XGayTK4HPTLvC5l+72jKh59N3CTEjHrLWkQehRGI4E=;
+        b=ItXmN3NR1uhvjzqMhai0oe/AOBk8yZPVZtFFUqAtmS4Dllk9QZV0DFdHv9xh0/O2lQ
+         EhwVDbn/fmf58+fll9rf2Ckei2Jg23UhlL3V562Xn0HQIBHE8AbGCRVnPDQC6djDJO0I
+         LMNA9yTNRRvdpn397ttKvdjjtpUhQ7fygDuMIwUeWOxAmpFxJk+imSVDvDMRu554Rxof
+         aalfKn73ndZRTT62SVNi5svN9uFZZizCyZB8hf+1jf1EAK10PWlWe3OsQVebRA6Gbrs5
+         D5pQvGfwDtE4eMxX5T0JAbphixa0YeBeOLqPZHp+CzYEoqvobSjJCzPc2SVosMHsPYtD
+         97ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i+rprk54pLD+tPDUDUth98iylk1i9f9VqxJ5r+zi39c=;
-        b=LLXEMbiBPukveOhcuz98FRFjz0enaSK+l0m8IAAyQk75xfAXJEmjfQcM6ttvYYp2C3
-         cPIQKSUUuXz3BIJlwa2yTWzOZqYQ/sUyXPA1FHuvUM6Tz7ShUMD2Unfp8wB071fldE9f
-         YRoXiHxnjCGE/kg/VETOrcFOR1+w3j9gf4lN4FB//fcb/PLmlE6E4NFNAkw0wz8U9vFs
-         7VGT8Q2vC+nH5UYG7QMYvi3Uv/T8ZhW4VqL/VTSRQzMrnYaH77Q7vbbHgQHpnBiUiW1G
-         APRxWwUVX4adOUcGAIxNxlNaPyXhH6VWHv1lKYtMEY+m9oq7Seshpz6oPzWiQ6QiRT/D
-         S9Yg==
-X-Gm-Message-State: AOAM533synBw8ilcVNhJmphY170RprQNL/2TlctokpJxxKukoxoKJ9xS
-        vQ/s0XDOCQjTBBEj+tGr3aV0coDkaK948nWAsTI=
-X-Google-Smtp-Source: ABdhPJzBBRVeY2XvzS/PhDUkTY1NGKiWnEwaAxpWkPAguR8twjHyytuvNS0+zU7r9F0yqCcsul4GAOM+Mru+mdzQGQc=
-X-Received: by 2002:a92:3646:: with SMTP id d6mr16601311ilf.170.1612250048847;
- Mon, 01 Feb 2021 23:14:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210130191719.7085-1-yury.norov@gmail.com> <20210130191719.7085-7-yury.norov@gmail.com>
- <YBgGf8y/K0da5MWz@smile.fi.intel.com>
-In-Reply-To: <YBgGf8y/K0da5MWz@smile.fi.intel.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Mon, 1 Feb 2021 23:13:58 -0800
-Message-ID: <CAAH8bW-rOejgtYFpHQMA-M7MnpPT-8XAZtNOqMMYYxFo7xX8mw@mail.gmail.com>
-Subject: Re: [PATCH 6/8] lib: inline _find_next_bit() wrappers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=1XGayTK4HPTLvC5l+72jKh59N3CTEjHrLWkQehRGI4E=;
+        b=Q+anm/qmXpzs3pgBP5cPdjhHl7ry8fuKQ4KlxvRsSrvnAKyVTNZAOMWcN+/j8ZXcg4
+         boOwHnabb7z/1F/7q3iFyF/HHfcH5Ju4ar7XgWRV+9jdiIavHLYx4iXc1EvIK1e3tQrw
+         8JPYRQ0NnJlv7nuoTvJ+0PAvW8THV7W+M3zJZSGNh1i95kQtO5apj7mVihqdTTwVswv8
+         eS50SLZclpk14QZwzkT+1yirMnyGMeO+3BkGQlo25o1wW7Kg1hUMZ9mp5qvSaP144zl9
+         hrnSDlNJWptH11OEQnT6Rh4Eye6Qjch1wTwRW7y2dxvbreD+cmlwRt3X7vvFUOOnfJbt
+         7bfw==
+X-Gm-Message-State: AOAM530xCJ4llBMkX0kW2nEbT8XS2BBS/mV0/Le+64A3ZhLcoJ/vgASV
+        Gub1hLTYSWIxWyaKm+nwzz8=
+X-Google-Smtp-Source: ABdhPJzgPkbe03Mx8f1miu0cWw5cEuiVp4QPguObuIgvrXw4ZfAgK1E0Nl2N8P0OGZGEkqVVE7aicQ==
+X-Received: by 2002:a17:90a:d714:: with SMTP id y20mr2720056pju.5.1612250069141;
+        Mon, 01 Feb 2021 23:14:29 -0800 (PST)
+Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
+        by smtp.gmail.com with ESMTPSA id v31sm22096301pgl.76.2021.02.01.23.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 23:14:28 -0800 (PST)
+Date:   Tue, 02 Feb 2021 17:14:23 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
+To:     Nadav Amit <namit@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
+        Yu Zhao <yuzhao@google.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+        <1612063149.2awdsvvmhj.astroid@bobo.none>
+        <A1589669-34AE-4E15-8358-79BAD7C72520@vmware.com>
+        <YBf3sl3M+j3hJRoM@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBf3sl3M+j3hJRoM@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Message-Id: <1612248111.g00kf5qxrp.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 5:47 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Sat, Jan 30, 2021 at 11:17:17AM -0800, Yury Norov wrote:
-> > lib/find_bit.c declares five single-line wrappers for _find_next_bit().
-> > We may turn those wrappers to inline functions. It eliminates unneeded
-> > function calls and opens room for compile-time optimizations.
->
-> >  tools/include/asm-generic/bitops/find.h | 27 +++++++++---
-> >  tools/lib/find_bit.c                    | 52 ++++++++++-------------
->
-> In a separated patch, please. I don't think we need to defer this series in
-> case if tools lagged (which is usual case in my practice).
+Excerpts from Peter Zijlstra's message of February 1, 2021 10:44 pm:
+> On Sun, Jan 31, 2021 at 07:57:01AM +0000, Nadav Amit wrote:
+>> > On Jan 30, 2021, at 7:30 PM, Nicholas Piggin <npiggin@gmail.com> wrote=
+:
+>=20
+>> > I'll go through the patches a bit more closely when they all come=20
+>> > through. Sparc and powerpc of course need the arch lazy mode to get=20
+>> > per-page/pte information for operations that are not freeing pages,=20
+>> > which is what mmu gather is designed for.
+>>=20
+>> IIUC you mean any PTE change requires a TLB flush. Even setting up a new=
+ PTE
+>> where no previous PTE was set, right?
 
-Splitting it to kernel and tools parts means either a patch bomb for tools or
-doubling the size of the series. Both options look worse than what we have now.
+In cases of increasing permissiveness of access, yes it may want to=20
+update the "TLB" (read hash table) to avoid taking hash table faults.
 
-Can you explain more on the lagged tools argument?
+But whatever the reason for the flush, there may have to be more
+data carried than just the virtual address range and/or physical
+pages.
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+If you clear out the PTE then you have no guarantee of actually being
+able to go back and address the the in-memory or in-hardware translation=20
+structures to update them, depending on what exact scheme is used
+(powerpc probably could if all page sizes were the same, but THP or=20
+64k/4k sub pages would throw a spanner in those works).
+
+> These are the HASH architectures. Their hardware doesn't walk the
+> page-tables, but it consults a hash-table to resolve page translations.
+
+Yeah, it's very cool in a masochistic way.
+
+I actually don't know if it's worth doing a big rework of it, as much=20
+as I'd like to. Rather than just keep it in place and eventually
+dismantling some of the go-fast hooks from core code if we can one day
+deprecate it in favour of the much easier radix mode.
+
+The whole thing is like a big steam train, years ago Paul and Ben and=20
+Anton and co got the boiler stoked up and set all the valves just right=20
+so it runs unbelievably well for what it's actually doing but look at it
+the wrong way and the whole thing could blow up. (at least that's what=20
+it feels like to me probably because I don't know the code that well).
+
+Sparc could probably do the same, not sure about Xen. I don't suppose
+vmware is intending to add any kind of paravirt mode related to this stuff?
+
+Thanks,
+Nick
