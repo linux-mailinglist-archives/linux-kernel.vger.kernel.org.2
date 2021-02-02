@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6417030CC5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2A630CC59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240204AbhBBTxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:53:19 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:33274 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240123AbhBBTwA (ORCPT
+        id S240131AbhBBTww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240138AbhBBTwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:52:00 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112JnXCQ062055;
-        Tue, 2 Feb 2021 19:51:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=hUD94XtAq9TQ5xmSNjjuDRv6Kc5OZGNoLG59OnZOa6Y=;
- b=tqsFOad/Em2voW8/al72tuFLvDoEzcuWf3+Ycnyx8MoXMk4Rv1D+P17dfPk+1bdWPwHJ
- hVYzKIbRWmNBe8ik4zmgZvR08umhFx4T3h4hyyTxJlq+CHXR3cLdhrXvdusMkERGZzSM
- Fbwse9fniaMQI45poQwa55AXpHsj0M/Mor0v2loR/Dm0yOVhSQHQdn9I43P47sp5ZpNp
- HPNlWFfK8/nRWpj9ifR9QwKfktWVIM6kY4OvamRsvOOqXk8T3NMoH6otT1IcXmLCYDHp
- 0K8xYvVTP1ETx5G20YKqqq+mjo+uyfq4CLjEipWCQgPtwcsDynHZ0DgYxdW9AWnk8TRo 7A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36cvyavtc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 19:51:11 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112JnUXF054853;
-        Tue, 2 Feb 2021 19:51:10 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 36dh1pk2v3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 19:51:10 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 112Jp8AZ012011;
-        Tue, 2 Feb 2021 19:51:08 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Feb 2021 11:51:08 -0800
-Date:   Tue, 2 Feb 2021 22:51:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.4 24/28] can: dev: prevent potential information leak
- in can_fill_info()
-Message-ID: <20210202195101.GF20820@kadam>
-References: <20210202132941.180062901@linuxfoundation.org>
- <20210202132942.158736432@linuxfoundation.org>
- <20210202185317.GB6964@duo.ucw.cz>
- <20210202190539.GE20820@kadam>
+        Tue, 2 Feb 2021 14:52:06 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3590C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=IUIuM9y+Lczp+ZHa3sPK+xoBhadiC5RTh6EMuVOso0c=; b=aB7KsjrdbERqUDA/X+dt6MdHHH
+        DtAIxo5CLo6LHFqCa6v6Bw5tumjuY1kdeyIzAvh++gK/55OnHv6FT2OjUp09Z5oe7Iqm9OXujmMKI
+        sNCI/sWXT4VZBinmBc2m98zV6M1SNvEWtP4YFSBssH7vKqD9ROV9OsBl0SpALEA6mOFmlDzfqY9Ii
+        3G/le5dWPW2P0AtIGCM4x8YVuwmyR5XEJvqMGyGxfNkS2NAcV2WzIBGyUibCzn2M0XfSP7so5Epz/
+        XJOuXO3gXEzvGisS6jyCNg1tpWULa1uLtGynx12SWq8QOICsPwyxZ0TLhUEtX7vgrTkyHsGg268iA
+        jeQfSfvQ==;
+Received: from [2601:1c0:6280:3f0::2a53]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l71hc-0005Xp-TM; Tue, 02 Feb 2021 19:51:09 +0000
+Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
+ to fuzz per-CPU clock checking
+To:     paulmck@kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, ak@linux.intel.com, clm@fb.com
+References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
+ <20210202170635.24839-4-paulmck@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
+Date:   Tue, 2 Feb 2021 11:51:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202190539.GE20820@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102020127
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102020127
+In-Reply-To: <20210202170635.24839-4-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 10:05:39PM +0300, Dan Carpenter wrote:
-> On Tue, Feb 02, 2021 at 07:53:17PM +0100, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > From: Dan Carpenter <dan.carpenter@oracle.com>
-> > > 
-> > > [ Upstream commit b552766c872f5b0d90323b24e4c9e8fa67486dd5 ]
-> > > 
-> > > The "bec" struct isn't necessarily always initialized. For example, the
-> > > mcp251xfd_get_berr_counter() function doesn't initialize anything if the
-> > > interface is down.
-> > 
-> > Well, yes... and = {} does not neccessarily initialize all of the
-> > structure... for example padding.
-> > 
-> > It is really simple
-> > 
-> > struct can_berr_counter {
-> > 	__u16 txerr;
-> > 	__u16 rxerr;
-> > };
-> > 
-> > but maybe something like alpha uses padding in such case, and memset
-> > would be better?
+On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> I'm pretty sure nothing uses padding in this situation.  If it does then
-> we need to re-work a bunch of code.
+> Code that checks for clock desynchronization must itself be tested, so
+> this commit creates a new clocksource.inject_delay_shift_percpu= kernel
+> boot parameter that adds or subtracts a large value from the check read,
+> using the specified bit of the CPU ID to determine whether to add or
+> to subtract.
+> 
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Mark Rutland <Mark.Rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Reported-by: Chris Mason <clm@fb.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+>  kernel/time/clocksource.c                       | 10 +++++++++-
+>  2 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 9965266..f561e94 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -593,6 +593,15 @@
+>  			times the value specified for inject_delay_freq
+>  			of consecutive non-delays.
+>  
+> +	clocksource.inject_delay_shift_percpu= [KNL]
+> +			Shift count to obtain bit from CPU number to
+> +			determine whether to shift the time of the per-CPU
+> +			clock under test ahead or behind.  For example,
 
-Not necessarily related but in theory a "= {};" assignment is a GCC
-extension and it is supposed to zero out struct holes.  If the code
-does "= {0};" then that's standard C, and will not necessarily fill
-struct holes but I think GCC tries to.  The other complication is that
-some GCC versions have bugs related to this?  We had a long thread about
-this last August.
+It's a good think that you give an example -- it helps a little bit.
+That sentence above needs to be rewritten...
 
-https://lore.kernel.org/lkml/20200801144030.GM24045@ziepe.ca/
+> +			setting this to the value four will result in
+> +			alternating groups of 16 CPUs shifting ahead and
+> +			the rest of the CPUs shifting behind.  The default
+> +			value of -1 disable this type of error injection.
 
-Anyway, this code has no holes so it's not affected.
+			            disables
 
-regards,
-dan carpenter
+> +
+>  	clocksource.max_read_retries= [KNL]
+>  			Number of clocksource_watchdog() retries due to
+>  			external delays before the clock will be marked
+
+
+-- 
+~Randy
 
