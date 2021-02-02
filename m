@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B56F30C2D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F4130C2DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhBBPA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:00:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234661AbhBBO7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:59:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D96264F59;
-        Tue,  2 Feb 2021 14:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612277946;
-        bh=NhRyZzADNGhgivXquiBhUD0Ww63unVcAOhiBA00ZkWM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ukSZIGMTENx5UQArnUDFhyuqkE1kJ5U9mkiQBMmYx8ogKsqo+sqNjqwkIfwkh6LHP
-         ZxZFjvWtXRBXp5EOrSunWvJjrpLafr3bZO0vpGd8cE8G3naELvrcVGXjib+o8dLalD
-         aMJuXQ6Y9AuNpvxW4TI7aILzP8ERjzEg+3Xz+UVtwj15kxn/3gOhX3kLdBalKm2f2B
-         a9jMstz9aN3cmfHpRBoabw0t19O4oOCrWZ766jmQWENZ8mOfT1odGRR7TptTqkZ/WX
-         8+GYgz67YyzXPUm/Sove30JECXauURJ/OVB5kQGG/2wRznLGVRpOxjsomfWjiJa6Mi
-         9rv6w6GmJ/Jsw==
-Date:   Tue, 2 Feb 2021 15:58:46 +0100
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clang-format for v5.11-rc7
-Message-ID: <20210202145846.GA25454@kernel.org>
+        id S234845AbhBBPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234984AbhBBPAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:00:31 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE931C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 06:59:50 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id a16so1654294ilq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:59:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cKDGkdAH6hnP9LDv3OSd/rUwsKO2Hnsk5XLdUyUcTiA=;
+        b=ZTxCza8R+qKMO5AULHOV6aqYudyKoCq1ldvPSstkJUe++vlUm6kwA0NSIjetUWvwOr
+         hIFujVH9L2DNpz8drDLj/rv4R4u7/hc79IUf6YfKXT6oZXygc3b2U9r28iB6aIcPKEjU
+         PILiKxbjOVyXEJwzZKbfzJfSBRqk0rHMk6V4WuCLHeuzEPuLwDeEHN/zVlefRb0vETXR
+         hW8Uu2zuCqz/lC+Q8toxwcmf3CL8x+lwD9JbTbxDiMoadqfik9UFDkpZy21GupRbKIe+
+         iNCoDj7W3qVQOFdsx9vI9u+OjevzmoDAl7NZHeeCimBgM3KOBcgEhJEXekuXfSA5WJvC
+         EY3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cKDGkdAH6hnP9LDv3OSd/rUwsKO2Hnsk5XLdUyUcTiA=;
+        b=F7Bc9qcTTdr73BLPuxwK0AQ8O9DS46zI8D5RRmosxaEq9FHSRezpLvk+VSnhb2EEv2
+         BRGKmYt6l0HPvd79TJlzZDsB+1ozPdEVedM9qfsQZqQCNl2gxkBVYQ7Cl8d6dAYn8fhO
+         /vjEoff9WabZ7Obsultcl8ZHMyD0cbIJPaLPY8r99H/GCa4GovHK+/VrCrA5LBvMwTNx
+         xfbBf8HlolAfuSnCCpgK3uu3r6kSkDbTd62cLNc18Iq6sZDOEcCcFPNrNMH5xkXNCv9o
+         Wd6qfuZ/W058kRE7NqclauJKKEYYI9ZG64LPqZ5VkSKIZ1voC3zLGyuOatUbsO9NjfI/
+         Z1lA==
+X-Gm-Message-State: AOAM531sk7l2smSlHRkcXygpka6/CBn/gEOMeZjp6EHXd5jBOKyrNBKR
+        umTXyCecxrNFIspd/sqCTnHt1zjsJtmDduDV9LfggA==
+X-Google-Smtp-Source: ABdhPJwlgQNiDbpOt8/s7/PtFHiU3OsbyGtG9ixXUuXmc8Hbf0GbL6accU63MRrf6/lEOgiXrCFgbvKRS3t/0TSABik=
+X-Received: by 2002:a05:6e02:1a89:: with SMTP id k9mr17243624ilv.68.1612277990062;
+ Tue, 02 Feb 2021 06:59:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: elm/2
+References: <20210202135544.3262383-1-leon@kernel.org> <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
+ <20210202145724.GA3264866@unreal>
+In-Reply-To: <20210202145724.GA3264866@unreal>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 2 Feb 2021 15:59:38 +0100
+Message-ID: <CANn89iJ1WYEfS-Pgzvec+54+3JQHCPSNdCfYaFkGYAEk3sGwmA@mail.gmail.com>
+Subject: Re: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        coreteam@netfilter.org, Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        Matteo Croce <mcroce@redhat.com>,
+        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Feb 2, 2021 at 3:57 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Tue, Feb 02, 2021 at 03:34:37PM +0100, Eric Dumazet wrote:
+> > On Tue, Feb 2, 2021 at 2:55 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > >
+> > > Hi,
+> > >
+> > > This short series fixes W=1 compilation warnings which I experienced
+> > > when tried to compile net/* folder.
+> > >
+> >
+> > Ok, but we never had a strong requirement about W=1, so adding Fixes:
+> > tag is adding
+>
+> I added because Jakub has checker that looks for Fixes lines in "net"
+> patches.
 
-A late trivial update, assuming you do an -rc7. Otherwise, it can go
-into the merge window.
+Send this to net-next
 
-Cheers,
-Miguel
+As I stated, we never enforce W=1 compilation rule.
 
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
+I understand we might want that for _future_ kernels.
 
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
+>
+> > unnecessary burden to stable teams all around the world.
+>
+> It is automatic.
 
-are available in the Git repository at:
+I do receive a copy of all backports in my mailbox, whenever I am tagged.
 
-  https://github.com/ojeda/linux.git tags/clang-format-for-linux-v5.11-rc7
+I can tell you there is a lot of pollution.
 
-for you to fetch changes up to 1074f8ec288f537f3b8462d09997a69b40f87e38:
-
-  clang-format: Update with the latest for_each macro list (2021-01-29 15:00:23 +0100)
-
-----------------------------------------------------------------
-clang-format update
-
-----------------------------------------------------------------
-Miguel Ojeda (1):
-      clang-format: Update with the latest for_each macro list
-
- .clang-format | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> Thanks
