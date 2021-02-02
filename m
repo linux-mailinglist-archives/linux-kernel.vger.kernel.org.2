@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8410230C983
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E545D30C986
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238509AbhBBST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:19:57 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:34431 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238352AbhBBSQW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:16:22 -0500
-Received: by mail-ot1-f45.google.com with SMTP id d5so5320464otc.1;
-        Tue, 02 Feb 2021 10:16:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8dDjqTPK+llWIRGrZH/KSVCS5Q0oIZSoyMWb9i78HpA=;
-        b=lUtDETH6QjFhezNga/K6oBhtwpVty5rKUslxX1qXgBDeiN+HufW+N5HA+IVT8POXCw
-         /XU483YGhcdgj+3VwyBId8CvrWqhgwvxziwA0t2xizWGph+RtKEt6dtkgciZ9ucG1viz
-         7jGDLhGgG5m++fteiAVH0q+0M1ID8TpBhWk3GeXnF2RsaTLUVyfriLVko/yBnjPu2GAX
-         S3FiVAXtbBkfbWaHhphPv6K4XVRY7S4ocruFL0ubU/Y0wmtN56APaoNVj5pDjWdX9lEg
-         xbl/rDqI8ETavzL1eWUFRc4Jb9RyDzIdslpD06XdgFmQnMdcup0Z/1VDWV0zb+/6z92e
-         hIAA==
-X-Gm-Message-State: AOAM531b6MtsGbHaM/QTtRpXQz3RvWU8HUdPH491qkMrjJyiGDpMJEVN
-        Kkd5DIYbgy2EeV4o1cOKuS2Xes2Usw==
-X-Google-Smtp-Source: ABdhPJwDzdTeGq37aNKpjJFMzbUg64rp+M/CU437C9KhLoxSHuWdlKLLpwcNiDt7lcCsYenGpWxp0A==
-X-Received: by 2002:a9d:4a8e:: with SMTP id i14mr16786937otf.37.1612289740973;
-        Tue, 02 Feb 2021 10:15:40 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id v16sm4805020otq.20.2021.02.02.10.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:15:40 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-pm@vger.kernel.org
-Subject: [PATCH] dt-bindings: thermal: sun8i: Fix misplaced schema keyword in compatible strings
-Date:   Tue,  2 Feb 2021 12:15:38 -0600
-Message-Id: <20210202181538.3936235-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S238368AbhBBSUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:20:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238384AbhBBSQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 13:16:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9084864F92;
+        Tue,  2 Feb 2021 18:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612289771;
+        bh=jExAi6+S0KhwmLELocI6wMJuzz/tLWY8R7yvg8v3kSM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EDgDXp2MRosyELVG93hsa2FWpra6U+O1s/wok5z4I/qOXv7rdUmjG2axPtMIvq+YN
+         yBgA8wcWgNGCYn0pW2zVsZsv3wcPZETui3XjKumHzFywKHgYsDnq+d0PEjUY80BQCe
+         IzesvjbDuB+UAqmSCfbvnjKvS7w0UCcntNSHwnveAp/98Y5aklQbVLZ5aIeTMaBtIb
+         Y2S9E4/e0RHCm573D5HvZcykwBcZPsiKWKBYdn9Gm25wRz155OpIc0oI5MY1vEx2Z5
+         y6k9c5Z7N9NTPpMQGOvaiK4lasHyvoskCgCDKMvmuqHqWSSfiiKO+c0UX4uuveVSEz
+         Bmm6b/PXs32Ig==
+Date:   Tue, 2 Feb 2021 20:15:46 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20210202181546.GO242749@kernel.org>
+References: <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
+ <YBkcyQsky2scjEcP@dhcp22.suse.cz>
+ <20210202124857.GN242749@kernel.org>
+ <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
+ <YBlUXdwV93xMIff6@dhcp22.suse.cz>
+ <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
+ <YBlgCl8MQuuII22w@dhcp22.suse.cz>
+ <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
+ <YBlicIupOyPF9f3D@dhcp22.suse.cz>
+ <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A compatible string 'enum' mistakenly has 'const: ' in the compatible
-strings. Remove these.
+On Tue, Feb 02, 2021 at 03:34:29PM +0100, David Hildenbrand wrote:
+> On 02.02.21 15:32, Michal Hocko wrote:
+> > On Tue 02-02-21 15:26:20, David Hildenbrand wrote:
+> > > On 02.02.21 15:22, Michal Hocko wrote:
+> > > > On Tue 02-02-21 15:12:21, David Hildenbrand wrote:
+> > > > [...]
+> > > > > I think secretmem behaves much more like longterm GUP right now
+> > > > > ("unmigratable", "lifetime controlled by user space", "cannot go on
+> > > > > CMA/ZONE_MOVABLE"). I'd either want to reasonably well control/limit it or
+> > > > > make it behave more like mlocked pages.
+> > > > 
+> > > > I thought I have already asked but I must have forgotten. Is there any
+> > > > actual reason why the memory is not movable? Timing attacks?
+> > > 
+> > > I think the reason is simple: no direct map, no copying of memory.
+> > 
+> > This is an implementation detail though and not something terribly hard
+> > to add on top later on. I was more worried there would be really
+> > fundamental reason why this is not possible. E.g. security implications.
+> 
+> I don't remember all the details. Let's see what Mike thinks regarding
+> migration (e.g., security concerns).
 
-Fixes: 0b28594d67a8 ("dt-bindings: thermal: Add YAML schema for sun8i-thermal driver bindings")
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Yangtao Li <tiny.windzz@gmail.com>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Amit Kucheria <amitk@kernel.org>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-Cc: linux-pm@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml   | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thanks for considering me a security expert :-)
 
-diff --git a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
-index 31edd051295a..bf97d1fb33e7 100644
---- a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
-+++ b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
-@@ -103,12 +103,12 @@ allOf:
-         compatible:
-           contains:
-             enum:
--              - const: allwinner,sun8i-h3-ths
--              - const: allwinner,sun8i-r40-ths
--              - const: allwinner,sun50i-a64-ths
--              - const: allwinner,sun50i-a100-ths
--              - const: allwinner,sun50i-h5-ths
--              - const: allwinner,sun50i-h6-ths
-+              - allwinner,sun8i-h3-ths
-+              - allwinner,sun8i-r40-ths
-+              - allwinner,sun50i-a64-ths
-+              - allwinner,sun50i-a100-ths
-+              - allwinner,sun50i-h5-ths
-+              - allwinner,sun50i-h6-ths
- 
-     then:
-       required:
+Yet, I cannot estimate how dangerous is the temporal exposure of
+this data to the kernel via the direct map in the simple map/copy/unmap
+sequence.
+
+More secure way would be to map source and destination in a different page table
+rather than in the direct map, similarly to the way text_poke() on x86
+does.
+
+I've left the migration callback empty for now because it can be added on
+top and its implementation would depend on the way we do (or do not do)
+pooling.
+
 -- 
-2.27.0
-
+Sincerely yours,
+Mike.
