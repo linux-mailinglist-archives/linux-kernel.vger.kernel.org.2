@@ -2,188 +2,560 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C9D30CE23
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAA830CE21
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbhBBVmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:42:46 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:36902 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232290AbhBBVmF (ORCPT
+        id S232273AbhBBVmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhBBVl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:42:05 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112LTadb174624;
-        Tue, 2 Feb 2021 21:41:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=2npQ4xOVjhaxbnFAsbJkWyEW1I2i3KEzIUcOYLKLtbw=;
- b=pKLoxznO3XDZvwjO1ZxDyWmgqGuMzOHtI2Fwsy8apu4QMc73ftsFJeo+vD91GazpILH4
- xQi0F5B8zv2IeIp9M1NMklSRhYhSvoT12v0RzeV04i4QvS0zl9ApiEhkKC8uRuGpzif7
- onqf2Ny56Xr8bv/D5uxKbo5H1xXrZ9Zexdf322lUHV7xtGtI0dDGCg3Lj9hO5FOLTnod
- 69iuxvRaHwlxS1xNo9liy+ut2YaPrevf8AmF7xJ0VD4lhdKRSIn2crhTusDZwjwW6709
- ftS/7DyTPrK5a81dM2ZVCcNuMR/5TpY+vz4FzHa9aonPrf6ArGIrsoXHRY1+2WqXOGJC pA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36dn4wjw5y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 21:41:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112LUChx017498;
-        Tue, 2 Feb 2021 21:39:10 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-        by userp3020.oracle.com with ESMTP id 36dh7s6ypq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 21:39:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hiR0ZcfzKc3F1ivu4lxleM43Cu05Si928iaUWxnbq1UDF8l22Lj0S8/z+qs1akyANcTLwySZWxyia7nwOiJUGrQeoGSDIcrXNmSN//IPsZRNuf6+wkju11jDHEoCIkk/eyY1oFJiExdfp6DNlFh+IMpZH94oY8qAokW4rRCcos++IQsOR1xXEFzQT5jU8cGCQHBzx+bgNpP4WpxI2tu4A1eLu7u0R+DoYWLJdTr/7GpNOHtuj4yW/squzIhIxTR6hwCfqzfGln5U//G9k0vCYCDQ8PdwERcJeTTugWviOzkzlaKFzdmtXSP3qo0QxaOVLyw6fzXsq+1IDCAbFeO2Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2npQ4xOVjhaxbnFAsbJkWyEW1I2i3KEzIUcOYLKLtbw=;
- b=PthPqROGolU9xnmVs9Y+dlrnwzH8/m2SxwiBWetiu2QqgVtjZWNIk8f5hjm06adnYc4nC56yi7Pht6plVMrzR5PAoo0pwGTZHqM7r86IIoaj94jkVdDlNkSxRFhT+2nzeTvdu8XPfBpcg73YrBT0CU4XUG0DFxbGEMFJ+EXEc1sZjf0vUxS8+BBm2aiCHtjSofLVUji1s+gbz8VF3Kb3RL5of3vck0nzF4VMryXpQaPJRcbBt1z8bwUEeU/8jAa/yKWhBxRoL0LPlmFP6YAN2dBX6eVtoRfPjf28WWsh+S7yJpelALmrUFDDQ64Redvmz7J6W7TQK+5gN+LUT1db0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 2 Feb 2021 16:41:27 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A465BC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:40:44 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id a1so22019328wrq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 13:40:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2npQ4xOVjhaxbnFAsbJkWyEW1I2i3KEzIUcOYLKLtbw=;
- b=vHdDgE8a2/S0Dc6PSFSxmwa+lpE9vdwLk8nNAW52h8skxZAV0ewkszpmOtWGeBam7b6Ng/mQw6HtpBdM3/sBPEb0BHythX/faLAXleMS9SAGFsViX/7MxQsRek1u3L/MCkfcpGGTH4C04rQLyS6EF+2ilHPud3c/zb7W1McLZrA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
- by MWHPR1001MB2350.namprd10.prod.outlook.com (2603:10b6:301:2f::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Tue, 2 Feb
- 2021 21:38:45 +0000
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3805.026; Tue, 2 Feb 2021
- 21:38:45 +0000
-Subject: Re: [PATCH] userfaultfd: hugetlbfs: only compile UFFD helpers if
- config enabled
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210202203127.3596707-1-axelrasmussen@google.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <767ce999-eb25-09e0-6d2b-ef0ff104d2f9@oracle.com>
-Date:   Tue, 2 Feb 2021 13:38:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210202203127.3596707-1-axelrasmussen@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0218.namprd03.prod.outlook.com
- (2603:10b6:303:b9::13) To MWHPR10MB1389.namprd10.prod.outlook.com
- (2603:10b6:300:21::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0218.namprd03.prod.outlook.com (2603:10b6:303:b9::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 21:38:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b91fb15-147c-44c5-719b-08d8c7c2eab4
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2350:
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB2350E9B3B2AEF39AD6380023E2B59@MWHPR1001MB2350.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YR7Kg1JDPuYrVEW2tBIWa/T90KG9MLi3TGtE9Y87XY4GqIUHJ1r/K8O1Oydt50uraKplFsaAR9V+6kmPn0aruMX4VtBBUrAkjz6kkG8h5gNItFNhHJytWuuIaDO/2VvQUaln8xrrIBXDfWt9LUtfsO21jfKjAiLijm6c/nlMfxttiIa+zJIOqIQp7K/vtOuCAYLt+zi0wbDfiRvF2hXxiEUcRS10ivvFngjWmc0SYysaSKeV2s6cKKjVEQ0dnRq7AyltJmZjJDGEDPouDqyxpmmMfcYukBCQywQivKgq3DK2Ya3PE/gKE0QWNy5d/2bvBBRy2T1G38DFQS67xHKO6sfoKvyVhynfKSMtHdmfnTeoAXJu0ZldXqlOKceXRL7imL80vSHNOARaGFtqQH64p6wEEtDoG9VUpwVJ+tGTxyj1UBPm8VksELX1LLdZBHK9lLz3rfh7BdKmRXc1wQ6vjd8NCEP3LGwsTz2TpNTwFNmzt0XgO2bWqA4zeWs86xAzoHuTPdc3WyBrvpBUhvgBrOZV9ozLml/66Ebs71HcZK3o0Mtiz4Chf2w2gN/PY3+9jNhBAxI5lML5mFe04GpCsLciiZdBbrWmZ4B6pHs7R0KYjtUFKVg1ApIG8rTD7hri7OUghIoJNPpO2yjcW3rzcZvxbK+H8Ddi1v8CmtUy4eU5890+ThCnfGO7qRZlWrvR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39860400002)(346002)(136003)(366004)(110136005)(52116002)(966005)(8676002)(16576012)(4326008)(2616005)(66556008)(66476007)(66946007)(478600001)(8936002)(956004)(86362001)(16526019)(31686004)(36756003)(53546011)(31696002)(2906002)(5660300002)(6486002)(316002)(186003)(44832011)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eDdaVHhvMlJDdC9qK0J4VVd0b0VBMjlUYTRiQWJ5WTVKbXZJNXdLMmJxTStt?=
- =?utf-8?B?OHZ4eGlTb1dlWW1FbVFKUFlNeFlscEtJTmpyS2poL05CUmM5Mm8vV3E0TGtp?=
- =?utf-8?B?a1dZc2ltN3I3Tlk0SXk1UHh1bHF1OVlMVnNlcHZvc0l5SG1sMjc3cDhPbFY2?=
- =?utf-8?B?V3V0anVaOXJmWDM0cnZTNFp5M0FQVHZiZUJ5MU8vRlFYT2tka25velVjSXB3?=
- =?utf-8?B?RFNjaG1idlJHVWZSemNxVnIxbDkvdEVFUkhwVkhsS1VwQm54R2xjOW1EaDE0?=
- =?utf-8?B?WFJWeTdTTFBzeVJ5cW81emd6MVgvdDhRNThPdG5HaXArUm5qYUpHd2pKWWtX?=
- =?utf-8?B?NmIrRUVuWlVjWWhKM3pNUFNRZ3V1cmRxZ200dDZqdXlZQU84NDRwZVVzZ2ZM?=
- =?utf-8?B?UG50dGVCeTZhaFdIS2FpQmJVelp5bmxJbmNFSVJaQUtCeUtjeWhjN2ZyTWg5?=
- =?utf-8?B?WXplQWgwMmVrdDQvN3pkYkRuRkt6UUpiSXA4Z1hWdkdWOFJyNlFDb0VNR2F1?=
- =?utf-8?B?Mjg0ejJySnJ0eEN0MytuQ3cyb3plV2tGdlJHT1lVY05ud0lpRllSYzRaT2No?=
- =?utf-8?B?K3g1b1BUYW5XTmpnMjBvbVFvKzdhdlB3bUxqSldqTURKcmo5OWFKTjZFSXIy?=
- =?utf-8?B?eHVOWmRDaXBZZVU0YW54czQxMURreGRDTTJ2MEpkSjBLeXVjZTVYV2FCZi9i?=
- =?utf-8?B?TEh4bzQrOUpaZjBhY0o0WEQ4SFN4QS83ODFEbHdXYlVTaFlwcUI3QlBwRFpD?=
- =?utf-8?B?MzZMazBQSHhYd3RoNVNIUUxqSUFYcFFCVndIVlJLRytsb01mY0hwcEhJQXlo?=
- =?utf-8?B?T2FxRE5sRjJFamwzbWJrYTJ1ZncyUUFwbUNxUXpvOThNVmNrNnYyNmQvaGRn?=
- =?utf-8?B?NFNySkVZem1ibDMrWHg0TGI3RFdFdXBVVHJXdTJEUTJ4VHdONWJFY1VwMmY3?=
- =?utf-8?B?US9IS1hhYkxWdUtLNzZ0ZEtpRWZDUnVoUXlSRVdKOThvYTgrb0p1cVQraGtW?=
- =?utf-8?B?OElueUNPNWU5MlZQSWdoZmpldVNrc3JValB4SEgxYndFR3pJS0RZT0JpVC9w?=
- =?utf-8?B?TXFCa1krK3NQc21iL2RSb204cXRIWjA5RXVJZkpveGFzOWNnNitOZUg1SWxl?=
- =?utf-8?B?ZGNHaVhXL0h1dkNvVEN4V09rV1hXUlpMU0taUXJhRjdOcitiTm0zT2FHK3B4?=
- =?utf-8?B?MGd0dncvN2g1NHpVbzNFNzRuUHR2Y08xZzEvMUt5Sml3c1FER2VHaWppdUM4?=
- =?utf-8?B?VTByV2N2cmluQmQ3VTNhcWF6WmZhaTcrbWtzY2w2Y081YkJqT0hUZ3pkRFZi?=
- =?utf-8?B?a0JhWjMyTTl5czNNMnFUcW1ZZGtCY01mckMycVk2VXhhTXpjYnQvQWtsUlJk?=
- =?utf-8?B?emw5NmhrY0ZNWnNhY2owSFlvNll0M2lqWEV0ZTVHWklsNy9HWlYzU2FDUTZz?=
- =?utf-8?B?dlF4SDFSVFd6ZnlqS0lYRFVNOTVwZzFubjVFSE5jZDM1OHNiUmFTOFBiNVhR?=
- =?utf-8?B?Y2EzTXVYdmRlK2Z2Z1ZSU3hpV0RwcFdSeG8rUlM5Z3BxZ2JTbVJJTkNCZlZv?=
- =?utf-8?B?b0pTNzBQbFlMaWZ5czdvazhWVW8yQmVQVDRINTlVcWJPQStXTkg1azJ2OXYy?=
- =?utf-8?B?QnVqQ2FURW91NThrMUF6Qjd3S3dGd2JOZDhEVGppazVOSWNiTTVxT09PUzFj?=
- =?utf-8?B?RW1BT0p3N1RZTGV2c1BBRldwSU4rMElGVnFudWpINDRMSExkb2lLUUliOVZs?=
- =?utf-8?Q?C7AgC+DqnTROozXT+IOIreL1qMMprfjIBLtUkhd?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b91fb15-147c-44c5-719b-08d8c7c2eab4
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 21:38:45.0830
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4UnQwvyCgRa7Szudy7ke+ee/dLG3dtczlg0RjFJ5aZWqNjdqSXfQ9EX0EQnUgt91GdJfLoE/xe7lZBbV5DZuNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2350
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102020138
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 phishscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 bulkscore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102020138
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=fBjWy/OOD8epGkb5GeyAJajAzXhQep6hLjut0G6pmfg=;
+        b=mGc2COikA3TOIOlxOw3dPUX+m5r7fAwSTYJnG4h+6UwB8M+WtMD8+tPRep9oPbYX5E
+         ZlrBd2ApOSd4a5/RK/R/7OXnif47uJKxgt7wYNSevgukaq9eLhRxhLjb2KJdntdbQkf5
+         dYBI1tiN1zuCF84+kQwF9Wh3K9gJUJhutvGzQKOmCyJyXFh3K/r4Po5NFL/gc3NHglXO
+         7zvuVRXQ2ZEOt6YgdYp07k9AaHxmM0lvry4Y+lAC9UhcJRZj0SzKeUNAVnxE4DwZa0jU
+         Qr1Zn4NXdQI6f22IAPGqcgRvuhZutQsYh9JT3g11OmaMgS1Vq/bOUHWERu9xK7J9/qk2
+         SKkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fBjWy/OOD8epGkb5GeyAJajAzXhQep6hLjut0G6pmfg=;
+        b=StqOjd/e9MWm5Hhmsl1/fnaYNCa1X8YyHAGzuII3hvl+h1f2JaYIC4NYtEe4gAs6W2
+         bT02aFhufmD6rX9Y9REgvGjIA5hShY8BUCAzS0xZ/cMycOujFoHZEaCWKDQI7PfXg0tD
+         j82uQ1zUrVRx/Lr7xO89e9txveL2YFvixRjUWXdQJMPiBYpvpc4tBolQBllhu3P+7PnF
+         +69YattWLwF1zRj2lpRxTSg1gsMSsf3+Oz1B8YQRDeMr+DstZi1+fhFK/wnFVJ80s29h
+         6vOauM31opSKqoz7AMPuGOICsgXNApo5nx/2k3Mzop5jVekH2qQ+NddzWSGSidTw2rLh
+         qwBw==
+X-Gm-Message-State: AOAM531KBKEZ1HEBc2DE2NNE8+pXk75x+pIaqC3GVnGPfUKhDKJQ4n7o
+        bXYjHrv1A8LQVMZveRHRsh+n2g==
+X-Google-Smtp-Source: ABdhPJxbbNQaPF3r0PA8yWSB733bQgCtzxmkFvBF0UPQnagPhQQaKMjsEVRk2I9BU6LLpQi04hw+cw==
+X-Received: by 2002:adf:9148:: with SMTP id j66mr131522wrj.28.1612302043320;
+        Tue, 02 Feb 2021 13:40:43 -0800 (PST)
+Received: from linaro.org ([2a00:23c5:6801:1801:fccf:a5e4:34ee:18ec])
+        by smtp.gmail.com with ESMTPSA id r11sm5259758wmh.9.2021.02.02.13.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 13:40:42 -0800 (PST)
+From:   Mike Leach <mike.leach@linaro.org>
+To:     acme@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        leo.yan@linaro.org, mathieu.poirier@linaro.org,
+        suzuki.poulose@arm.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        john.garry@huawei.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, Mike Leach <mike.leach@linaro.org>
+Subject: [PATCH v5] perf: cs-etm: update ETM metadata format
+Date:   Tue,  2 Feb 2021 21:40:40 +0000
+Message-Id: <20210202214040.32349-1-mike.leach@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 12:31 PM, Axel Rasmussen wrote:
-> For background, mm/userfaultfd.c provides a general mcopy_atomic
-> implementation. But some types of memory (e.g., hugetlb and shmem) need
-> a slightly different implementation, so they provide their own helpers
-> for this. In other words, userfaultfd is the only caller of this
-> function.
-> 
-> This patch achieves two things:
-> 
-> 1. Don't spend time compiling code which will end up never being
-> referenced anyway (a small build time optimization).
-> 
-> 2. In future patches (e.g. [1]), we plan to extend the signature of
-> these helpers with UFFD-specific state (e.g., enums or structs defined
-> conditionally in userfaultfd_k.h). Once this happens, this patch will be
-> needed to avoid build errors (or, we'd need to define more UFFD-only
-> stuff unconditionally, which seems messier to me).
-> 
-> Peter Xu suggested this be sent as a standalone patch, in the mailing
-> list discussion for [1].
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/list/?series=424091
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  include/linux/hugetlb.h | 4 ++++
->  mm/hugetlb.c            | 2 ++
->  2 files changed, 6 insertions(+)
+The current fixed metadata version format (version 0), means that adding
+metadata parameter items renders files from a previous version of perf
+unreadable. Per CPU parameters appear in a fixed order, but there is no
+field to indicate the number of ETM parameters per CPU.
 
-When you move this back into the "userfaultfd: add minor fault handling"
-series, feel free to add:
+This patch updates the per CPU parameter blocks to include a NR_PARAMs
+value which indicates the number of parameters in the block.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+The header version is incremented to 1. Fixed ordering is retained,
+new ETM parameters are added to the end of the list.
 
-Thanks,
+The reader code is updated to be able to read current version 0 files,
+For version 1, the reader will read the number of parameters in the
+per CPU block. This allows the reader to process older or newer files
+that may have different numbers of parameters than in use at the
+time perf was built.
+
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Leo Yan <leo.yan@linaro.org>
+
+---
+
+Changes since v4
+1. Syntax fixes suggested by Mathieu.
+
+Changes since v3
+1. Fixed index bug (Leo)
+
+Changes since v2
+1. Add error path print to improve --dump logging
+2. Replace some hardcoded values with enum consts (Mathieu).
+
+Changes since v1 (from Review by Leo):
+1. Split printing routine into sub functions per version
+2. Renamed NR_PARAMs to NR_TRC_PARAMs to emphasise use as count of trace
+related parameters, not total block parameter.
+3. Misc other fixes.
+---
+ tools/perf/arch/arm/util/cs-etm.c |   7 +-
+ tools/perf/util/cs-etm.c          | 235 ++++++++++++++++++++++++------
+ tools/perf/util/cs-etm.h          |  30 +++-
+ 3 files changed, 223 insertions(+), 49 deletions(-)
+
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index bd446aba64f7..b0470f2a955a 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -572,7 +572,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 				struct auxtrace_record *itr,
+ 				struct perf_record_auxtrace_info *info)
+ {
+-	u32 increment;
++	u32 increment, nr_trc_params;
+ 	u64 magic;
+ 	struct cs_etm_recording *ptr =
+ 			container_of(itr, struct cs_etm_recording, itr);
+@@ -607,6 +607,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 
+ 		/* How much space was used */
+ 		increment = CS_ETMV4_PRIV_MAX;
++		nr_trc_params = CS_ETMV4_PRIV_MAX - CS_ETMV4_TRCCONFIGR;
+ 	} else {
+ 		magic = __perf_cs_etmv3_magic;
+ 		/* Get configuration register */
+@@ -624,11 +625,13 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 
+ 		/* How much space was used */
+ 		increment = CS_ETM_PRIV_MAX;
++		nr_trc_params = CS_ETM_PRIV_MAX - CS_ETM_ETMCR;
+ 	}
+ 
+ 	/* Build generic header portion */
+ 	info->priv[*offset + CS_ETM_MAGIC] = magic;
+ 	info->priv[*offset + CS_ETM_CPU] = cpu;
++	info->priv[*offset + CS_ETM_NR_TRC_PARAMS] = nr_trc_params;
+ 	/* Where the next CPU entry should start from */
+ 	*offset += increment;
+ }
+@@ -674,7 +677,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
+ 
+ 	/* First fill out the session header */
+ 	info->type = PERF_AUXTRACE_CS_ETM;
+-	info->priv[CS_HEADER_VERSION_0] = 0;
++	info->priv[CS_HEADER_VERSION] = CS_HEADER_CURRENT_VERSION;
+ 	info->priv[CS_PMU_TYPE_CPUS] = type << 32;
+ 	info->priv[CS_PMU_TYPE_CPUS] |= nr_cpu;
+ 	info->priv[CS_ETM_SNAPSHOT] = ptr->snapshot_mode;
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index a2a369e2fbb6..ee32d023e9bd 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -2435,7 +2435,7 @@ static bool cs_etm__is_timeless_decoding(struct cs_etm_auxtrace *etm)
+ }
+ 
+ static const char * const cs_etm_global_header_fmts[] = {
+-	[CS_HEADER_VERSION_0]	= "	Header version		       %llx\n",
++	[CS_HEADER_VERSION]	= "	Header version		       %llx\n",
+ 	[CS_PMU_TYPE_CPUS]	= "	PMU type/num cpus	       %llx\n",
+ 	[CS_ETM_SNAPSHOT]	= "	Snapshot		       %llx\n",
+ };
+@@ -2443,6 +2443,7 @@ static const char * const cs_etm_global_header_fmts[] = {
+ static const char * const cs_etm_priv_fmts[] = {
+ 	[CS_ETM_MAGIC]		= "	Magic number		       %llx\n",
+ 	[CS_ETM_CPU]		= "	CPU			       %lld\n",
++	[CS_ETM_NR_TRC_PARAMS]	= "	NR_TRC_PARAMS		       %llx\n",
+ 	[CS_ETM_ETMCR]		= "	ETMCR			       %llx\n",
+ 	[CS_ETM_ETMTRACEIDR]	= "	ETMTRACEIDR		       %llx\n",
+ 	[CS_ETM_ETMCCER]	= "	ETMCCER			       %llx\n",
+@@ -2452,6 +2453,7 @@ static const char * const cs_etm_priv_fmts[] = {
+ static const char * const cs_etmv4_priv_fmts[] = {
+ 	[CS_ETM_MAGIC]		= "	Magic number		       %llx\n",
+ 	[CS_ETM_CPU]		= "	CPU			       %lld\n",
++	[CS_ETM_NR_TRC_PARAMS]	= "	NR_TRC_PARAMS		       %llx\n",
+ 	[CS_ETMV4_TRCCONFIGR]	= "	TRCCONFIGR		       %llx\n",
+ 	[CS_ETMV4_TRCTRACEIDR]	= "	TRCTRACEIDR		       %llx\n",
+ 	[CS_ETMV4_TRCIDR0]	= "	TRCIDR0			       %llx\n",
+@@ -2461,26 +2463,167 @@ static const char * const cs_etmv4_priv_fmts[] = {
+ 	[CS_ETMV4_TRCAUTHSTATUS] = "	TRCAUTHSTATUS		       %llx\n",
+ };
+ 
+-static void cs_etm__print_auxtrace_info(__u64 *val, int num)
++static const char * const param_unk_fmt =
++	"	Unknown parameter [%d]	       %llx\n";
++static const char * const magic_unk_fmt =
++	"	Magic number Unknown	       %llx\n";
++
++static int cs_etm__print_cpu_metadata_v0(__u64 *val, int *offset)
+ {
+-	int i, j, cpu = 0;
++	int i = *offset, j, nr_params = 0, fmt_offset;
++	__u64 magic;
+ 
+-	for (i = 0; i < CS_HEADER_VERSION_0_MAX; i++)
+-		fprintf(stdout, cs_etm_global_header_fmts[i], val[i]);
++	/* check magic value */
++	magic = val[i + CS_ETM_MAGIC];
++	if ((magic != __perf_cs_etmv3_magic) &&
++	    (magic != __perf_cs_etmv4_magic)) {
++		/* failure - note bad magic value */
++		fprintf(stdout, magic_unk_fmt, magic);
++		return -EINVAL;
++	}
++
++	/* print common header block */
++	fprintf(stdout, cs_etm_priv_fmts[CS_ETM_MAGIC], val[i++]);
++	fprintf(stdout, cs_etm_priv_fmts[CS_ETM_CPU], val[i++]);
++
++	if (magic == __perf_cs_etmv3_magic) {
++		nr_params = CS_ETM_NR_TRC_PARAMS_V0;
++		fmt_offset = CS_ETM_ETMCR;
++		/* after common block, offset format index past NR_PARAMS */
++		for (j = fmt_offset; j < nr_params + fmt_offset; j++, i++)
++			fprintf(stdout, cs_etm_priv_fmts[j], val[i]);
++	} else if (magic == __perf_cs_etmv4_magic) {
++		nr_params = CS_ETMV4_NR_TRC_PARAMS_V0;
++		fmt_offset = CS_ETMV4_TRCCONFIGR;
++		/* after common block, offset format index past NR_PARAMS */
++		for (j = fmt_offset; j < nr_params + fmt_offset; j++, i++)
++			fprintf(stdout, cs_etmv4_priv_fmts[j], val[i]);
++	}
++	*offset = i;
++	return 0;
++}
++
++static int cs_etm__print_cpu_metadata_v1(__u64 *val, int *offset)
++{
++	int i = *offset, j, total_params = 0;
++	__u64 magic;
++
++	magic = val[i + CS_ETM_MAGIC];
++	/* total params to print is NR_PARAMS + common block size for v1 */
++	total_params = val[i + CS_ETM_NR_TRC_PARAMS] + CS_ETM_COMMON_BLK_MAX_V1;
+ 
+-	for (i = CS_HEADER_VERSION_0_MAX; cpu < num; cpu++) {
+-		if (val[i] == __perf_cs_etmv3_magic)
+-			for (j = 0; j < CS_ETM_PRIV_MAX; j++, i++)
++	if (magic == __perf_cs_etmv3_magic) {
++		for (j = 0; j < total_params; j++, i++) {
++			/* if newer record - could be excess params */
++			if (j >= CS_ETM_PRIV_MAX)
++				fprintf(stdout, param_unk_fmt, j, val[i]);
++			else
+ 				fprintf(stdout, cs_etm_priv_fmts[j], val[i]);
+-		else if (val[i] == __perf_cs_etmv4_magic)
+-			for (j = 0; j < CS_ETMV4_PRIV_MAX; j++, i++)
++		}
++	} else if (magic == __perf_cs_etmv4_magic) {
++		for (j = 0; j < total_params; j++, i++) {
++			/* if newer record - could be excess params */
++			if (j >= CS_ETMV4_PRIV_MAX)
++				fprintf(stdout, param_unk_fmt, j, val[i]);
++			else
+ 				fprintf(stdout, cs_etmv4_priv_fmts[j], val[i]);
+-		else
+-			/* failure.. return */
++		}
++	} else {
++		/* failure - note bad magic value and error out */
++		fprintf(stdout, magic_unk_fmt, magic);
++		return -EINVAL;
++	}
++	*offset = i;
++	return 0;
++}
++
++static void cs_etm__print_auxtrace_info(__u64 *val, int num)
++{
++	int i, cpu = 0, version, err;
++
++	/* bail out early on bad header version */
++	version = val[0];
++	if (version > CS_HEADER_CURRENT_VERSION) {
++		/* failure.. return */
++		fprintf(stdout, "	Unknown Header Version = %x, ", version);
++		fprintf(stdout, "Version supported <= %x\n", CS_HEADER_CURRENT_VERSION);
++		return;
++	}
++
++	for (i = 0; i < CS_HEADER_VERSION_MAX; i++)
++		fprintf(stdout, cs_etm_global_header_fmts[i], val[i]);
++
++	for (i = CS_HEADER_VERSION_MAX; cpu < num; cpu++) {
++		if (version == 0)
++			err = cs_etm__print_cpu_metadata_v0(val, &i);
++		else if (version == 1)
++			err = cs_etm__print_cpu_metadata_v1(val, &i);
++		if (err)
+ 			return;
+ 	}
+ }
+ 
++/*
++ * Read a single cpu parameter block from the auxtrace_info priv block.
++ *
++ * For version 1 there is a per cpu nr_params entry. If we are handling
++ * version 1 file, then there may be less, the same, or more params
++ * indicated by this value than the compile time number we understand.
++ *
++ * For a version 0 info block, there are a fixed number, and we need to
++ * fill out the nr_param value in the metadata we create.
++ */
++static u64 *cs_etm__create_meta_blk(u64 *buff_in, int *buff_in_offset,
++				    int out_blk_size, int nr_params_v0)
++{
++	u64 *metadata = NULL;
++	int hdr_version;
++	int nr_in_params, nr_out_params, nr_cmn_params;
++	int i, k;
++
++	metadata = zalloc(sizeof(*metadata) * out_blk_size);
++	if (!metadata)
++		return NULL;
++
++	/* read block current index & version */
++	i = *buff_in_offset;
++	hdr_version = buff_in[CS_HEADER_VERSION];
++
++	if (!hdr_version) {
++	/* read version 0 info block into a version 1 metadata block  */
++		nr_in_params = nr_params_v0;
++		metadata[CS_ETM_MAGIC] = buff_in[i + CS_ETM_MAGIC];
++		metadata[CS_ETM_CPU] = buff_in[i + CS_ETM_CPU];
++		metadata[CS_ETM_NR_TRC_PARAMS] = nr_in_params;
++		/* remaining block params at offset +1 from source */
++		for (k = CS_ETM_COMMON_BLK_MAX_V1 - 1; k < nr_in_params; k++)
++			metadata[k + 1] = buff_in[i + k];
++		/* version 0 has 2 common params */
++		nr_cmn_params = 2;
++	} else {
++	/* read version 1 info block - input and output nr_params may differ */
++		/* version 1 has 3 common params */
++		nr_cmn_params = 3;
++		nr_in_params = buff_in[i + CS_ETM_NR_TRC_PARAMS];
++
++		/* if input has more params than output - skip excess */
++		nr_out_params = nr_in_params + nr_cmn_params;
++		if (nr_out_params > out_blk_size)
++			nr_out_params = out_blk_size;
++
++		for (k = CS_ETM_MAGIC; k < nr_out_params; k++)
++			metadata[k] = buff_in[i + k];
++
++		/* record the actual nr params we copied */
++		metadata[CS_ETM_NR_TRC_PARAMS] = nr_out_params - nr_cmn_params;
++	}
++
++	/* adjust in offset by number of in params used */
++	i += nr_in_params + nr_cmn_params;
++	*buff_in_offset = i;
++	return metadata;
++}
++
+ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 				  struct perf_session *session)
+ {
+@@ -2492,11 +2635,12 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	int info_header_size;
+ 	int total_size = auxtrace_info->header.size;
+ 	int priv_size = 0;
+-	int num_cpu;
+-	int err = 0, idx = -1;
+-	int i, j, k;
++	int num_cpu, trcidr_idx;
++	int err = 0;
++	int i, j;
+ 	u64 *ptr, *hdr = NULL;
+ 	u64 **metadata = NULL;
++	u64 hdr_version;
+ 
+ 	/*
+ 	 * sizeof(auxtrace_info_event::type) +
+@@ -2512,16 +2656,21 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	/* First the global part */
+ 	ptr = (u64 *) auxtrace_info->priv;
+ 
+-	/* Look for version '0' of the header */
+-	if (ptr[0] != 0)
++	/* Look for version of the header */
++	hdr_version = ptr[0];
++	if (hdr_version > CS_HEADER_CURRENT_VERSION) {
++		/* print routine will print an error on bad version */
++		if (dump_trace)
++			cs_etm__print_auxtrace_info(auxtrace_info->priv, 0);
+ 		return -EINVAL;
++	}
+ 
+-	hdr = zalloc(sizeof(*hdr) * CS_HEADER_VERSION_0_MAX);
++	hdr = zalloc(sizeof(*hdr) * CS_HEADER_VERSION_MAX);
+ 	if (!hdr)
+ 		return -ENOMEM;
+ 
+ 	/* Extract header information - see cs-etm.h for format */
+-	for (i = 0; i < CS_HEADER_VERSION_0_MAX; i++)
++	for (i = 0; i < CS_HEADER_VERSION_MAX; i++)
+ 		hdr[i] = ptr[i];
+ 	num_cpu = hdr[CS_PMU_TYPE_CPUS] & 0xffffffff;
+ 	pmu_type = (unsigned int) ((hdr[CS_PMU_TYPE_CPUS] >> 32) &
+@@ -2552,35 +2701,31 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	 */
+ 	for (j = 0; j < num_cpu; j++) {
+ 		if (ptr[i] == __perf_cs_etmv3_magic) {
+-			metadata[j] = zalloc(sizeof(*metadata[j]) *
+-					     CS_ETM_PRIV_MAX);
+-			if (!metadata[j]) {
+-				err = -ENOMEM;
+-				goto err_free_metadata;
+-			}
+-			for (k = 0; k < CS_ETM_PRIV_MAX; k++)
+-				metadata[j][k] = ptr[i + k];
++			metadata[j] =
++				cs_etm__create_meta_blk(ptr, &i,
++							CS_ETM_PRIV_MAX,
++							CS_ETM_NR_TRC_PARAMS_V0);
+ 
+ 			/* The traceID is our handle */
+-			idx = metadata[j][CS_ETM_ETMTRACEIDR];
+-			i += CS_ETM_PRIV_MAX;
++			trcidr_idx = CS_ETM_ETMTRACEIDR;
++
+ 		} else if (ptr[i] == __perf_cs_etmv4_magic) {
+-			metadata[j] = zalloc(sizeof(*metadata[j]) *
+-					     CS_ETMV4_PRIV_MAX);
+-			if (!metadata[j]) {
+-				err = -ENOMEM;
+-				goto err_free_metadata;
+-			}
+-			for (k = 0; k < CS_ETMV4_PRIV_MAX; k++)
+-				metadata[j][k] = ptr[i + k];
++			metadata[j] =
++				cs_etm__create_meta_blk(ptr, &i,
++							CS_ETMV4_PRIV_MAX,
++							CS_ETMV4_NR_TRC_PARAMS_V0);
+ 
+ 			/* The traceID is our handle */
+-			idx = metadata[j][CS_ETMV4_TRCTRACEIDR];
+-			i += CS_ETMV4_PRIV_MAX;
++			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
++		}
++
++		if (!metadata[j]) {
++			err = -ENOMEM;
++			goto err_free_metadata;
+ 		}
+ 
+ 		/* Get an RB node for this CPU */
+-		inode = intlist__findnew(traceid_list, idx);
++		inode = intlist__findnew(traceid_list, metadata[j][trcidr_idx]);
+ 
+ 		/* Something went wrong, no need to continue */
+ 		if (!inode) {
+@@ -2601,7 +2746,7 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	}
+ 
+ 	/*
+-	 * Each of CS_HEADER_VERSION_0_MAX, CS_ETM_PRIV_MAX and
++	 * Each of CS_HEADER_VERSION_MAX, CS_ETM_PRIV_MAX and
+ 	 * CS_ETMV4_PRIV_MAX mark how many double words are in the
+ 	 * global metadata, and each cpu's metadata respectively.
+ 	 * The following tests if the correct number of double words was
+@@ -2703,6 +2848,12 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 	intlist__delete(traceid_list);
+ err_free_hdr:
+ 	zfree(&hdr);
+-
++	/*
++	 * At this point, as a minimum we have valid header. Dump the rest of
++	 * the info section - the print routines will error out on structural
++	 * issues.
++	 */
++	if (dump_trace)
++		cs_etm__print_auxtrace_info(auxtrace_info->priv, num_cpu);
+ 	return err;
+ }
+diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+index 4ad925d6d799..e153d02df0de 100644
+--- a/tools/perf/util/cs-etm.h
++++ b/tools/perf/util/cs-etm.h
+@@ -17,23 +17,37 @@ struct perf_session;
+  */
+ enum {
+ 	/* Starting with 0x0 */
+-	CS_HEADER_VERSION_0,
++	CS_HEADER_VERSION,
+ 	/* PMU->type (32 bit), total # of CPUs (32 bit) */
+ 	CS_PMU_TYPE_CPUS,
+ 	CS_ETM_SNAPSHOT,
+-	CS_HEADER_VERSION_0_MAX,
++	CS_HEADER_VERSION_MAX,
+ };
+ 
++/*
++ * Update the version for new format.
++ *
++ * New version 1 format adds a param count to the per cpu metadata.
++ * This allows easy adding of new metadata parameters.
++ * Requires that new params always added after current ones.
++ * Also allows client reader to handle file versions that are different by
++ * checking the number of params in the file vs the number expected.
++ */
++#define CS_HEADER_CURRENT_VERSION 1
++
+ /* Beginning of header common to both ETMv3 and V4 */
+ enum {
+ 	CS_ETM_MAGIC,
+ 	CS_ETM_CPU,
++	/* Number of trace config params in following ETM specific block */
++	CS_ETM_NR_TRC_PARAMS,
++	CS_ETM_COMMON_BLK_MAX_V1,
+ };
+ 
+ /* ETMv3/PTM metadata */
+ enum {
+ 	/* Dynamic, configurable parameters */
+-	CS_ETM_ETMCR = CS_ETM_CPU + 1,
++	CS_ETM_ETMCR = CS_ETM_COMMON_BLK_MAX_V1,
+ 	CS_ETM_ETMTRACEIDR,
+ 	/* RO, taken from sysFS */
+ 	CS_ETM_ETMCCER,
+@@ -41,10 +55,13 @@ enum {
+ 	CS_ETM_PRIV_MAX,
+ };
+ 
++/* define fixed version 0 length - allow new format reader to read old files. */
++#define CS_ETM_NR_TRC_PARAMS_V0 (CS_ETM_ETMIDR - CS_ETM_ETMCR + 1)
++
+ /* ETMv4 metadata */
+ enum {
+ 	/* Dynamic, configurable parameters */
+-	CS_ETMV4_TRCCONFIGR = CS_ETM_CPU + 1,
++	CS_ETMV4_TRCCONFIGR = CS_ETM_COMMON_BLK_MAX_V1,
+ 	CS_ETMV4_TRCTRACEIDR,
+ 	/* RO, taken from sysFS */
+ 	CS_ETMV4_TRCIDR0,
+@@ -55,6 +72,9 @@ enum {
+ 	CS_ETMV4_PRIV_MAX,
+ };
+ 
++/* define fixed version 0 length - allow new format reader to read old files. */
++#define CS_ETMV4_NR_TRC_PARAMS_V0 (CS_ETMV4_TRCAUTHSTATUS - CS_ETMV4_TRCCONFIGR + 1)
++
+ /*
+  * ETMv3 exception encoding number:
+  * See Embedded Trace Macrocell spcification (ARM IHI 0014Q)
+@@ -162,7 +182,7 @@ struct cs_etm_packet_queue {
+ 
+ #define BMVAL(val, lsb, msb)	((val & GENMASK(msb, lsb)) >> lsb)
+ 
+-#define CS_ETM_HEADER_SIZE (CS_HEADER_VERSION_0_MAX * sizeof(u64))
++#define CS_ETM_HEADER_SIZE (CS_HEADER_VERSION_MAX * sizeof(u64))
+ 
+ #define __perf_cs_etmv3_magic 0x3030303030303030ULL
+ #define __perf_cs_etmv4_magic 0x4040404040404040ULL
 -- 
-Mike Kravetz
+2.17.1
+
