@@ -2,165 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A86130BA6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECF830BA76
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhBBI6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:58:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhBBI6B (ORCPT
+        id S232455AbhBBI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:59:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231929AbhBBI65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:58:01 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23319C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:57:21 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id a16so692889ilq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=oGwAR6bY8VSRQmUwKZ34FKMeypPh0jsTSiLoYBbPc64=;
-        b=EEa1m8UfTMdIkJdT6uQshRNB67qXyf9x3s84g2hkFToF1WcifUqTHBDWLLigrf6nK/
-         1dHgKQ2vLWuWk6rdMbJ+MYZNrdlAW9ZGcCdlr9nCanSgCGEeQVc18Y/o/AStQ7dPXCN2
-         G/84S2z9GuCoxONLys1cRj5XeETwoP/7GnGmuYa/lHNbFqn8mRsga2O3HSAWvqezXx0J
-         52Inn+Fd6PkCBjBSFvfGr5yAKiUN7aAdbw0nORI9KcG4mh3c6C/BeBySDOPED2QPeZvO
-         hHK75MAHn5ANUg0e1bQuJS0qfXWuhy9Ukc0Yo8YyEIwzBRWVMFu5ILBvES9RZuTki+zE
-         nUcA==
+        Tue, 2 Feb 2021 03:58:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612256250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Si/dI5lNziAyVoRmOt6q5oX+Pb8j9QNnXS8AF/vdi/A=;
+        b=F6QniaO9pvvPoGycjt5q+69xVQC5gYdAWKcDFv7KLDsimPZOIMnlWQPQnCZkTqVc7vQR0P
+        RHHYuN4eQ/8V7A9B/OoeSay36rT42ebxat1w0G5Tb3VzaERQTkAm8IQ4eQ3p8j2CML+qPj
+        ry83KEIwBs0Ut82o8ypSn0J8YVarzoE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-sS1uv3IfMMGh_2fBHstCvQ-1; Tue, 02 Feb 2021 03:57:23 -0500
+X-MC-Unique: sS1uv3IfMMGh_2fBHstCvQ-1
+Received: by mail-wr1-f69.google.com with SMTP id u15so2608189wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:57:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=oGwAR6bY8VSRQmUwKZ34FKMeypPh0jsTSiLoYBbPc64=;
-        b=pIt3NGv+MFDZCYHfpb6FfdQlUGUwIcudPPf5Vhhl0NeXGhqi163safNCAZJUv/7b7s
-         NwtYYfQEHv+rfKO1b/utLW6/r9XsKEgQSTmP7YLosc81JMUAZrptiK6vyBxC7rcyco0D
-         nDXdFlOr6H5fgY5W1RwSt3hVaQuTQG3eArRiUaiS809hrhkniC87Y6Y3mVsStMsFjGCD
-         TjrZ7K6bjV9brZR5RtSnBGkQHiFQN5VGiem4x7wVEzljtvhtoCYAO94UNq+OMtSm/q/Y
-         4cB75rHA6QzTrq8ihiXtPk/fZ74ti7Ed5KNQnDlspGSAU3N5M7OvjYQztv/7BGm0Xcbj
-         XdQQ==
-X-Gm-Message-State: AOAM530F0k5/DaZbihn+MZoufE7wyNA8//d0UvMkuwihevLuGkYLcTo0
-        uV/6+WdEYELpeQNbweAOciGWvg==
-X-Google-Smtp-Source: ABdhPJy/BTGAL3CxSNcLT44HtScvwuY6Ur4oNDxCjia11s3y4xc2HoorkufOuwsOmqinor4VC1jyjg==
-X-Received: by 2002:a92:c090:: with SMTP id h16mr420348ile.190.1612256240438;
-        Tue, 02 Feb 2021 00:57:20 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:78f9:6386:be80:e7fc])
-        by smtp.gmail.com with ESMTPSA id k125sm3507818iof.14.2021.02.02.00.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:57:19 -0800 (PST)
-Date:   Tue, 2 Feb 2021 01:57:15 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, page-reclaim@google.com
-Subject: Augmented Page Reclaim
-Message-ID: <YBkT6175GmMWBvw3@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Si/dI5lNziAyVoRmOt6q5oX+Pb8j9QNnXS8AF/vdi/A=;
+        b=SgVh4+/S32v7AQB/rv/Ey/PDVFOt4qHfFNwITjmC/NjnuOxC59j/5hz89Pw5rlhG3K
+         O9HQDldk0IT7JJfc6gy/sVsWm9z6eHuQ0tyZplvnAANw+Qe+6IOlTmVLksmreE9PPWfX
+         Q4T63AUGX0V2/62RWc0yqkMnLRZpJJiXMJQuG7pZUn979aIzFLd1/sFQQmHD2q3GJAQR
+         C3du6j75oeqXlqJ3pN1iJxJsv1j+TRfNPlMmLSC4JeC5o1mjmevYblmptM4hlYrQ8jiQ
+         6TEPw9LMbpVu5gBEZLV3i21rhtMFIxKfN7MTMuvPfVebaSP9xOCFYjwXsOURDEakLmzd
+         gSdQ==
+X-Gm-Message-State: AOAM530uJvUVDl3wR9CArdmGXfLKVUUjJ4JB7X7CKNEZByERSXla5VJ+
+        9PpicLag5d+3vodw3OLFGr2bpn2Aqc+fBBys/nsHjP5vJMclP17XrilAs+Z0fy3WIvv7F/QfQhu
+        CY1xiWvfnL6h+3vXBVgE7ul5c
+X-Received: by 2002:a05:6000:192:: with SMTP id p18mr22178812wrx.69.1612256242134;
+        Tue, 02 Feb 2021 00:57:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwgPkiIX+L54pamL9Mka7GlGAiN10QTM7Wb7cXKG91/ROpxarDwNpZ+XfHCi6Y0Xzv6dxYUrw==
+X-Received: by 2002:a05:6000:192:: with SMTP id p18mr22178791wrx.69.1612256241890;
+        Tue, 02 Feb 2021 00:57:21 -0800 (PST)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id i7sm2269412wmq.2.2021.02.02.00.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 00:57:21 -0800 (PST)
+Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
+ switch table on arm64
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Bill Wendling <morbo@google.com>
+References: <20210120173800.1660730-13-jthierry@redhat.com>
+ <20210127221557.1119744-1-ndesaulniers@google.com>
+ <20210127232651.rj3mo7c2oqh4ytsr@treble>
+ <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
+ <20210201214423.dhsma73k7ccscovm@treble>
+ <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <671f1aa9-975e-1bda-6768-259adbdc24c8@redhat.com>
+Date:   Tue, 2 Feb 2021 09:57:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-======================
-Augmented Page Reclaim
-======================
-We would like to share a work with you and see if there is enough
-interest to warrant a run for the mainline. This work is a part of
-result from a decade of research and experimentation in memory
-overcommit at Google: an augmented page reclaim that, in our
-experience, is performant, versatile and, more importantly, simple.
 
-Performance
-===========
-On Android, our most advanced simulation that generates memory
-pressure from realistic user behavior shows 18% fewer low-memory
-kills, which in turn reduces cold starts by 16%. This is on top of
-per-process reclaim, a predecessor of ``MADV_COLD`` and
-``MADV_PAGEOUT``, against background apps.
 
-On Borg (warehouse-scale computers), a similar approach enables us to
-identify jobs that underutilize their memory and downsize them
-considerably without compromising any of our service level indicators.
-Our findings are published in the papers listed below, e.g., 32% of
-memory usage on Borg has been idle for at least 2 minutes.
+On 2/2/21 12:17 AM, Nick Desaulniers wrote:
+> On Mon, Feb 1, 2021 at 1:44 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>>
+>> On Fri, Jan 29, 2021 at 10:10:01AM -0800, Nick Desaulniers wrote:
+>>> On Wed, Jan 27, 2021 at 3:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>>>>
+>>>> On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
+>>>>>> From: Raphael Gault <raphael.gault@arm.com>
+>>>>>>
+>>>>>> This plugins comes into play before the final 2 RTL passes of GCC and
+>>>>>> detects switch-tables that are to be outputed in the ELF and writes
+>>>>>> information in an ".discard.switch_table_info" section which will be
+>>>>>> used by objtool.
+>>>>>>
+>>>>>> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+>>>>>> [J.T.: Change section name to store switch table information,
+>>>>>>         Make plugin Kconfig be selected rather than opt-in by user,
+>>>>>>         Add a relocation in the switch_table_info that points to
+>>>>>>         the jump operation itself]
+>>>>>> Signed-off-by: Julien Thierry <jthierry@redhat.com>
+>>>>>
+>>>>> Rather than tightly couple this feature to a particular toolchain via
+>>>>> plugin, it might be nice to consider what features could be spec'ed out
+>>>>> for toolchains to implement (perhaps via a -f flag).
+>>>>
+>>>> The problem is being able to detect switch statement jump table vectors.
+>>>>
+>>>> For a given indirect branch (due to a switch statement), what are all
+>>>> the corresponding jump targets?
+>>>>
+>>>> We would need the compiler to annotate that information somehow.
+>>>
+>>> Makes sense, the compiler should have this information.  How is this
+>>> problem solved on x86?
+>>
+>> Thus far we've been able to successfully reverse engineer it on x86,
+>> though it hasn't been easy.
+>>
+>> There were some particulars for arm64 which made doing so impossible.
+>> (I don't remember the details.)
 
-On Chrome OS, our field telemetry reports 96% fewer low-memory tab
-discards and 59% fewer OOM kills from fully-utilized devices and no UX
-regressions from underutilized devices. Our real-world benchmark that
-browses popular websites in multiple tabs demonstrates 51% less CPU
-usage from ``kswapd`` and 45% (some) and 52% (full) less PSI on
-v5.11-rc6 built from the tree below.
+The main issue is that the tables for arm64 have more indirection than x86.
 
-Versatility
-===========
-Userspace can trigger aging and eviction independently via the
-``debugfs`` interface [note]_ for working set estimation, proactive
-reclaim, far memory tiering, NUMA-aware job scheduling, etc. The
-metrics from the interface are easily interpretable, which allows
-intuitive provisioning and discoveries like the Borg example above.
-For a warehouse-scale computer, the interface is intended to be a
-building block of a closed-loop control system, with a machine
-learning algorithm being the controller.
+On x86, the dispatching jump instruction fetches the target address from 
+a contiguous array of addresses based on a given offset. So the list of 
+potential targets of the jump is neatly organized in a table (and sure, 
+before link time these are just relocation, but still processable).
 
-Simplicity
-==========
-The workflow [note]_ is well defined and each step in it has a clear
-meaning. There are no magic numbers or heuristics involved but a few
-basic data structures that have negligible memory footprint. This
-simplicity has served us well as the scale and the diversity of our
-workloads constantly grow.
+On arm64 (with GCC at least), what is stored in a table is an array of 
+candidate offsets from the jump instruction. And because arm64 is 
+limited to 32bit instructions, the encoding often requires multiple 
+instructions to compute the target address:
 
-Repo
-====
-git pull https://linux-mm.googlesource.com/page-reclaim refs/changes/80/1080/1
+ldr<*>  x_offset, [x_offsets_table, x_index, ...]  // load offset
+adr     x_dest_base, <addr>          // load target branch for offset 0
+add     x_dest, x_target_base, x_offset, ...  // compute final address
+br      x_dest        // jump
 
-Gerrit: https://linux-mm-review.googlesource.com/c/page-reclaim/+/1080
+Where this gets trickier is that (with GCC) the offsets stored in the 
+table might or might not be signed constants (and this can be seen in 
+GCC intermediate representations, but I do not believe this information 
+is output in the final object file). And on top of that, GCC might 
+decide to use offsets that are seen as unsigned during intermediate 
+representation as signed offset by sign extending them in the add 
+instruction.
 
-.. [note] See ``Documentation/vm/multigen-lru.rst`` in the tree.
+So, to handle this we'd have to track the different operation done with 
+the offset, from the load to the final jump, decoding the instructions
+and deducing the potential target instructions from the table of offsets.
 
-FAQ
-===
-What is the motivation for this work?
--------------------------------------
-In our case, DRAM is a major factor in total cost of ownership, and
-improving memory overcommit brings a high return on investment.
-Moreover, Google-Wide Profiling has been observing the high CPU
-overhead [note]_ from page reclaim.
+But that is error prone as we don't really know how many instructions 
+can be between the ones doing the address computation, and I remember 
+some messy case of a jump table inside a jump table where tracking the 
+instruction touching one or the other offset would need a lot of corner 
+case handling.
 
-Why not try to improve the existing code?
------------------------------------------
-We have tried but concluded the two limiting factors [note]_ in the
-existing code are fundamental, and therefore changes made atop them
-will not result in substantial gains on any of the aspects above.
+And this of course is just for GCC, I haven't looked at what it all 
+looks like on Clang's end.
 
-What particular workloads does it help?
----------------------------------------
-This work optimizes page reclaim for workloads that are not IO bound,
-because we find they are the norm on servers and clients in the cloud
-era. It would most likely help any workloads that share the common
-characteristics [note]_ we observed.
 
-How would it benefit the community?
------------------------------------
-Google is committed to promoting sustainable development of the
-community. We hope successful adoptions of this work will steadily
-climb over time. To that end, we would be happy to learn your
-workloads and work with you case by case, and we will do our best to
-keep the repo fully maintained. For those whose workloads rely on the
-existing code, we will make sure you will not be affected in any way.
+> 
+> I think the details are pertinent to finding a portable solution.  The
+> commit message of this commit in particular doesn't document such
+> details, such as why such an approach is necessary or how the data is
+> laid out for objtool to consume it.
+> 
 
-References
-==========
-1. `Long-term SLOs for reclaimed cloud computing resources
-   <https://research.google/pubs/pub43017/>`_
+Sorry, I will need to make that clearer. The next patch explains it a 
+bit [1]
 
-2. `Profiling a warehouse-scale computer
-   <https://research.google/pubs/pub44271/>`_
+Basically, for simplicity, the plugin creates a new section containing 
+tables (one per jump table) of references to the jump targets, similar 
+to what x86 has, except that in this case this table isn't actually used 
+by runtime code and is discarded at link time. I only chose this to 
+minimize what needed to be changed in objtool and because the format 
+seemed simple enough.
 
-3. `Evaluation of NUMA-Aware Scheduling in Warehouse-Scale Clusters
-   <https://research.google/pubs/pub48329/>`_
+But I'm open on some alternative, whether it's a -fjump-table-info 
+option added to compilers with a different format to do the links. The 
+important requirement is to be able to know all the candidate targets 
+for a "br <reg>" instruction.
 
-4. `Software-defined far memory in warehouse-scale computers
-   <https://research.google/pubs/pub48551/>`_
+[1] https://lkml.org/lkml/2021/1/20/910
 
-5. `Borg: the Next Generation
-   <https://research.google/pubs/pub49065/>`_
+Thanks,
+
+-- 
+Julien Thierry
+
