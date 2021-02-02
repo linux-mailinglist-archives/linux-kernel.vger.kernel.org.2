@@ -2,203 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1157630C718
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0722F30C6CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237185AbhBBRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
+        id S236885AbhBBQ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:59:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236985AbhBBQ4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:56:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B2C64F87
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612284969;
-        bh=6TGUCJUMZhRtmM1UYvc81rMpTe+uEskUyGr0VlcYLNU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=kNbzWiaImTY90Z6QtP3pQb54YNWnQL9EPFqHMAjSrQSYsU34kCMyxmyd7SNZKnlOq
-         JcyDSnIsP9RaAUV7ShTKrBNayMefhlKGBWpgniLSVGVUElYrTrIybA4yV9Bj0fsDMf
-         +PPo7IYBkRI2Jh2nHIzG9CGBAjZuo1S2jslC9wdJhp+/4e9i7FaLh6adwGFZSB4Qma
-         g5yWATSAhd9AOh/uN1DfAfRV/LnRnyDxZtKOM1DnfxXjcZJl8EVoMWNA+nLPrcAi8L
-         nI935/iJa3JOyJ6mCI39VwObz8WBf4FhbgCQHhPqEGjvH7NMZx6pTGKEPb+5Bfnp5C
-         Nph+IpSUi5xHg==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] habanalabs: enable F/W events after init done
-Date:   Tue,  2 Feb 2021 18:56:00 +0200
-Message-Id: <20210202165600.4620-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210202165600.4620-1-ogabbay@kernel.org>
-References: <20210202165600.4620-1-ogabbay@kernel.org>
+        id S236955AbhBBQ5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:57:19 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8884164DB2;
+        Tue,  2 Feb 2021 16:56:25 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 11:56:23 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210202115623.08e8164d@gandalf.local.home>
+In-Reply-To: <YBmBu0c24RjNYFet@hirez.programming.kicks-ass.net>
+References: <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+        <20210129140103.3ce971b7@gandalf.local.home>
+        <20210129162454.293523c6@gandalf.local.home>
+        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+        <20210130074410.6384c2e2@oasis.local.home>
+        <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
+        <20210202095249.5abd6780@gandalf.local.home>
+        <YBmBu0c24RjNYFet@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only after the initialization of the device is done, the driver is
-ready to receive events from the F/W. The driver can't handle events
-before that because of races so it will ignore events. In case of
-a fatal event, the driver won't know about it and the device will be
-operational although it shouldn't be.
+On Tue, 2 Feb 2021 17:45:47 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Same logic should be applied after hard-reset.
+> On Tue, Feb 02, 2021 at 09:52:49AM -0500, Steven Rostedt wrote:
+> 
+> > But from a handler, you could do:
+> > 
+> > 	if (in_nmi())
+> > 		return;
+> > 	local_irq_save(flags);
+> > 	/* Now you are safe from being re-entrant. */  
+> 
+> But that's an utter crap thing to do. That's like saying I don't care
+> about my events, at which point you might as well not bother at all.
+> 
+> And you can still do that, you just get less coverage today than you
+> used to. You used to throw things under the bus, now you throw more
+> under the bus. If you didn't care, I can't seem to find myself caring
+> either.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/device.c     | 23 +++++++++++++++++----
- drivers/misc/habanalabs/common/habanalabs.h |  9 ++++++--
- drivers/misc/habanalabs/gaudi/gaudi.c       | 10 ++++++---
- drivers/misc/habanalabs/goya/goya.c         | 12 +++++++----
- 4 files changed, 41 insertions(+), 13 deletions(-)
+NMIs are special, and they always have been. They shouldn't be doing much
+anyway. If they are, then that's a problem.
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 59219c862ca0..15fcb5c31c4b 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1159,12 +1159,20 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
- 	atomic_set(&hdev->in_reset, 0);
- 	hdev->needs_reset = false;
- 
--	if (hard_reset)
-+	dev_notice(hdev->dev, "Successfully finished resetting the device\n");
-+
-+	if (hard_reset) {
- 		hdev->hard_reset_cnt++;
--	else
--		hdev->soft_reset_cnt++;
- 
--	dev_warn(hdev->dev, "Successfully finished resetting the device\n");
-+		/* After reset is done, we are ready to receive events from
-+		 * the F/W. We can't do it before because we will ignore events
-+		 * and if those events are fatal, we won't know about it and
-+		 * the device will be operational although it shouldn't be
-+		 */
-+		hdev->asic_funcs->enable_events_from_fw(hdev);
-+	} else {
-+		hdev->soft_reset_cnt++;
-+	}
- 
- 	return 0;
- 
-@@ -1415,6 +1423,13 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
- 
- 	hdev->init_done = true;
- 
-+	/* After initialization is done, we are ready to receive events from
-+	 * the F/W. We can't do it before because we will ignore events and if
-+	 * those events are fatal, we won't know about it and the device will
-+	 * be operational although it shouldn't be
-+	 */
-+	hdev->asic_funcs->enable_events_from_fw(hdev);
-+
- 	return 0;
- 
- release_ctx:
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 98163317ec43..18ed3a6000b0 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -860,12 +860,16 @@ enum div_select_defs {
-  *                           and place them in the relevant cs jobs
-  * @collective_wait_create_jobs: allocate collective wait cs jobs
-  * @scramble_addr: Routine to scramble the address prior of mapping it
-- *                  in the MMU.
-+ *                 in the MMU.
-  * @descramble_addr: Routine to de-scramble the address prior of
-- *                  showing it to users.
-+ *                   showing it to users.
-  * @ack_protection_bits_errors: ack and dump all security violations
-  * @get_hw_block_id: retrieve a HW block id to be used by the user to mmap it.
-  * @hw_block_mmap: mmap a HW block with a given id.
-+ * @enable_events_from_fw: send interrupt to firmware to notify them the
-+ *                         driver is ready to receive asynchronous events. This
-+ *                         function should be called during the first init and
-+ *                         after every hard-reset of the device
-  */
- struct hl_asic_funcs {
- 	int (*early_init)(struct hl_device *hdev);
-@@ -982,6 +986,7 @@ struct hl_asic_funcs {
- 			u32 *block_id);
- 	int (*hw_block_mmap)(struct hl_device *hdev, struct vm_area_struct *vma,
- 			u32 block_id, u32 block_size);
-+	void (*enable_events_from_fw)(struct hl_device *hdev);
- };
- 
- 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index b929e602fa3d..6905857b363b 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -1383,8 +1383,6 @@ static int gaudi_late_init(struct hl_device *hdev)
- 		return rc;
- 	}
- 
--	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_INTS_REGISTER);
--
- 	rc = gaudi_fetch_psoc_frequency(hdev);
- 	if (rc) {
- 		dev_err(hdev->dev, "Failed to fetch psoc frequency\n");
-@@ -8500,6 +8498,11 @@ static int gaudi_block_mmap(struct hl_device *hdev,
- 	return -EPERM;
- }
- 
-+static void gaudi_enable_events_from_fw(struct hl_device *hdev)
-+{
-+	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_INTS_REGISTER);
-+}
-+
- static const struct hl_asic_funcs gaudi_funcs = {
- 	.early_init = gaudi_early_init,
- 	.early_fini = gaudi_early_fini,
-@@ -8581,7 +8584,8 @@ static const struct hl_asic_funcs gaudi_funcs = {
- 	.descramble_addr = hl_mmu_descramble_addr,
- 	.ack_protection_bits_errors = gaudi_ack_protection_bits_errors,
- 	.get_hw_block_id = gaudi_get_hw_block_id,
--	.hw_block_mmap = gaudi_block_mmap
-+	.hw_block_mmap = gaudi_block_mmap,
-+	.enable_events_from_fw = gaudi_enable_events_from_fw
- };
- 
- /**
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index d26b405f0c17..af6a5760924c 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -798,9 +798,6 @@ int goya_late_init(struct hl_device *hdev)
- 		return rc;
- 	}
- 
--	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR,
--			GOYA_ASYNC_EVENT_ID_INTS_REGISTER);
--
- 	return 0;
- }
- 
-@@ -5400,6 +5397,12 @@ static int goya_block_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
- 	return -EPERM;
- }
- 
-+static void goya_enable_events_from_fw(struct hl_device *hdev)
-+{
-+	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR,
-+			GOYA_ASYNC_EVENT_ID_INTS_REGISTER);
-+}
-+
- static const struct hl_asic_funcs goya_funcs = {
- 	.early_init = goya_early_init,
- 	.early_fini = goya_early_fini,
-@@ -5481,7 +5484,8 @@ static const struct hl_asic_funcs goya_funcs = {
- 	.descramble_addr = hl_mmu_descramble_addr,
- 	.ack_protection_bits_errors = goya_ack_protection_bits_errors,
- 	.get_hw_block_id = goya_get_hw_block_id,
--	.hw_block_mmap = goya_block_mmap
-+	.hw_block_mmap = goya_block_mmap,
-+	.enable_events_from_fw = goya_enable_events_from_fw
- };
- 
- /*
--- 
-2.25.1
+But if you want to make the stack tracer work on all contexts, I'm happy to
+take patches. I don't have time to work on it today.
+
+> 
+> > Where as there's no equivalent in a NMI handler. That's what makes
+> > kprobe/ftrace handlers different than NMI handlers.  
+> 
+> I don't see how.
+> 
+> > > Also, given how everything can nest, it had better all be lockless
+> > > anyway. You can get your regular function trace interrupted, which can
+> > > hit a #DB, which can function trace, which can #BP which can function
+> > > trace again which can get #NMI etc.. Many wonderfun nestings possible.  
+> > 
+> > I would call #DB an #BP handlers very special.  
+> 
+> They are, just like NMI is special, which is why they're classed
+> together.
+> 
+> > Question: Do #DB and #BP set "in_interrupt()"? Because the function tracer
+> > has infrastructure to prevent recursion in the same context.  
+> 
+> Sure we _could_ do that, but then we get into the 'fun' problem of
+> getting a breakpoint/int3 at random places and calling random code and
+> having deadlocks because they take the same lock.
+
+My question wasn't to have them do it, I was simply asking if they do. I
+was assuming that they do not.
+
+> 
+> There was very little that stopped that from happening.
+> 
+> > That is, a
+> > ftrace handler calls something that gets traced, the recursion protection
+> > will detect that and prevent the handler from being called again. But the
+> > recursion protection is interrupt context aware and lets the handler get
+> > called again if the recursion happens from a different context:  
+> 
+> > If #DB and #BP do not change the in_interrupt() context, then the above
+> > still will protect the ftrace handlers from recursion due to them.  
+> 
+> But it doesn't help with:
+> 
+> 	spin_lock_irq(&foo); // task context
+> 	#DB
+> 	  spin_lock_irq(&foo); // interrupt context per your above
+
+The statement above said:
+
+ "If #DB and #BP do not change the in_interrupt() context"
+
+Which would make the above be in the same context and the handler would
+not be called for the #DB case.
+
+> 
+> All you need to do is put a breakpoint on a piece of code that holds a
+> spinlock and a handler that takes the same spinlock.
+> 
+> There was very little from stopping that.
+> 
+> > That would require refactoring all the code that's been around since 2008.  
+> 
+> Because I couldn't tell why/if any of that was correct at all. #DB/#BP
+> don't play by the normal rules. They're _far_ more NMI-like than they're
+> IRQ-like due to ignoring IF.
+
+I'm fine with #DB and #BP being a "in_nmi()", as they are probably even
+more special than NMIs.
+
+-- Steve
 
