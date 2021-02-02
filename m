@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3923330CEA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AB230CEA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234816AbhBBWRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:17:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:58240 "EHLO foss.arm.com"
+        id S234834AbhBBWSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:18:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:58434 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234661AbhBBWR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:17:27 -0500
+        id S234661AbhBBWSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:18:06 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AF51143D;
-        Tue,  2 Feb 2021 14:16:41 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7420C1474;
+        Tue,  2 Feb 2021 14:16:43 -0800 (PST)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F8203F694;
-        Tue,  2 Feb 2021 14:16:38 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 738553F694;
+        Tue,  2 Feb 2021 14:16:41 -0800 (PST)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -24,9 +24,9 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         f.fainelli@gmail.com, etienne.carriere@linaro.org,
         thara.gopinath@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v6 04/37] firmware: arm_scmi: add devm_acquire_protocol helper
-Date:   Tue,  2 Feb 2021 22:15:22 +0000
-Message-Id: <20210202221555.41167-5-cristian.marussi@arm.com>
+Subject: [PATCH v6 05/37] firmware: arm_scmi: make notifications aware of protocols users
+Date:   Tue,  2 Feb 2021 22:15:23 +0000
+Message-Id: <20210202221555.41167-6-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210202221555.41167-1-cristian.marussi@arm.com>
 References: <20210202221555.41167-1-cristian.marussi@arm.com>
@@ -34,160 +34,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a method to get hold of a protocol, causing it to be initialized and
-its resource accounting updated, without getting access to its operations
-and handle.
-
-Some protocols, like SCMI SystemPower, do not expose any protocol ops to
-the Kernel OSPM agent but still need to be at least initialized: this
-helper avoids the need to invoke a full devm_get_protocol() only to get
-the protocol initialized while throwing away unused the protocol ops and
-handle.
+Account for any active registered notifier against the proper related
+protocol; do not consider pending event handlers, only active handlers
+will concur to protocol usage accounting.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/driver.c | 70 +++++++++++++++++++++++-------
- include/linux/scmi_protocol.h      | 14 ++++--
- 2 files changed, 66 insertions(+), 18 deletions(-)
+ drivers/firmware/arm_scmi/notify.c | 51 ++++++++++++++++++++++++++----
+ 1 file changed, 44 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 583c00a1355b..ca911a7eb511 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -745,6 +745,30 @@ static void scmi_devm_release_protocol(struct device *dev, void *res)
- 	scmi_release_protocol(dres->handle, dres->protocol_id);
- }
+diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+index 66196b293b6c..cdaf0f962d84 100644
+--- a/drivers/firmware/arm_scmi/notify.c
++++ b/drivers/firmware/arm_scmi/notify.c
+@@ -91,6 +91,7 @@
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
  
-+static struct scmi_protocol_instance __must_check *
-+__scmi_devres_get_protocol_instance(struct scmi_device *sdev, u8 protocol_id)
-+{
-+	struct scmi_protocol_devres *dres;
-+	struct scmi_protocol_instance *pi;
-+
-+	dres = devres_alloc(scmi_devm_release_protocol,
-+			    sizeof(*dres), GFP_KERNEL);
-+	if (!dres)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pi = scmi_get_protocol_instance(sdev->handle, protocol_id);
-+	if (IS_ERR(pi)) {
-+		devres_free(dres);
-+		return pi;
-+	}
-+
-+	dres->handle = sdev->handle;
-+	dres->protocol_id = protocol_id;
-+	devres_add(&sdev->dev, dres);
-+
-+	return pi;
-+}
-+
++#include "common.h"
+ #include "notify.h"
+ 
+ #define SCMI_MAX_PROTO		256
+@@ -368,7 +369,7 @@ static struct scmi_event_handler *
+ scmi_get_active_handler(struct scmi_notify_instance *ni, u32 evt_key);
+ static void scmi_put_active_handler(struct scmi_notify_instance *ni,
+ 				    struct scmi_event_handler *hndl);
+-static void scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
++static bool scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+ 				      struct scmi_event_handler *hndl);
+ 
  /**
-  * scmi_devm_get_protocol  - Devres managed get protocol operations and handle
-  * @sdev: A reference to an scmi_device whose embedded struct device is to
-@@ -768,32 +792,47 @@ scmi_devm_get_protocol(struct scmi_device *sdev, u8 protocol_id,
- 		       struct scmi_protocol_handle **ph)
+@@ -900,9 +901,21 @@ static inline int scmi_bind_event_handler(struct scmi_notify_instance *ni,
+ 	if (!r_evt)
+ 		return -EINVAL;
+ 
+-	/* Remove from pending and insert into registered */
++	/*
++	 * Remove from pending and insert into registered while getting hold
++	 * of protocol instance.
++	 */
+ 	hash_del(&hndl->hash);
++	/*
++	 * Acquire protocols only for NON pending handlers, so as NOT to trigger
++	 * protocol initialization when a notifier is registered against a still
++	 * not registered protocol, since it would make little sense to force init
++	 * protocols for which still no SCMI driver user exists: they wouldn't
++	 * emit any event anyway till some SCMI driver starts using it.
++	 */
++	scmi_acquire_protocol(ni->handle, KEY_XTRACT_PROTO_ID(hndl->key));
+ 	hndl->r_evt = r_evt;
++
+ 	mutex_lock(&r_evt->proto->registered_mtx);
+ 	hash_add(r_evt->proto->registered_events_handlers,
+ 		 &hndl->hash, hndl->key);
+@@ -1193,41 +1206,65 @@ static int scmi_disable_events(struct scmi_event_handler *hndl)
+  * * unregister and free the handler itself
+  *
+  * Context: Assumes all the proper locking has been managed by the caller.
++ *
++ * Return: True if handler was freed (users dropped to zero)
+  */
+-static void scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
++static bool scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+ 				      struct scmi_event_handler *hndl)
  {
- 	struct scmi_protocol_instance *pi;
--	struct scmi_protocol_devres *dres;
--	struct scmi_handle *handle = sdev->handle;
- 
- 	if (!ph)
- 		return ERR_PTR(-EINVAL);
- 
--	dres = devres_alloc(scmi_devm_release_protocol,
--			    sizeof(*dres), GFP_KERNEL);
--	if (!dres)
--		return ERR_PTR(-ENOMEM);
--
--	pi = scmi_get_protocol_instance(handle, protocol_id);
--	if (IS_ERR(pi)) {
--		devres_free(dres);
-+	pi = __scmi_devres_get_protocol_instance(sdev, protocol_id);
-+	if (IS_ERR(pi))
- 		return pi;
--	}
--
--	dres->handle = handle;
--	dres->protocol_id = protocol_id;
--	devres_add(&sdev->dev, dres);
- 
- 	*ph = &pi->ph;
- 
- 	return pi->proto->ops;
++	bool freed = false;
++
+ 	if (refcount_dec_and_test(&hndl->users)) {
+ 		if (!IS_HNDL_PENDING(hndl))
+ 			scmi_disable_events(hndl);
+ 		scmi_free_event_handler(hndl);
++		freed = true;
+ 	}
++
++	return freed;
  }
  
-+/**
-+ * scmi_devm_acquire_protocol  - Devres managed helper to get hold of a protocol
-+ * @sdev: A reference to an scmi_device whose embedded struct device is to
-+ *	  be used for devres accounting.
-+ * @protocol_id: The protocol being requested.
-+ *
-+ * Get hold of a protocol accounting for its usage, possibly triggering its
-+ * initialization but without getting access to its protocol specific operations
-+ * and handle.
-+ *
-+ * Being a devres based managed method, protocol hold will be automatically
-+ * released, and possibly de-initialized on last user, once the SCMI driver
-+ * owning the scmi_device is unbound from it.
-+ *
-+ * Return: 0 on SUCCESS
-+ */
-+static int __must_check scmi_devm_acquire_protocol(struct scmi_device *sdev,
-+						   u8 protocol_id)
-+{
-+	struct scmi_protocol_instance *pi;
-+
-+	pi = __scmi_devres_get_protocol_instance(sdev, protocol_id);
-+	if (IS_ERR(pi))
-+		return PTR_ERR(pi);
-+
-+	return 0;
-+}
-+
- static int scmi_devm_protocol_match(struct device *dev, void *res, void *data)
+ static void scmi_put_handler(struct scmi_notify_instance *ni,
+ 			     struct scmi_event_handler *hndl)
  {
- 	struct scmi_protocol_devres *dres = res;
-@@ -1076,6 +1115,7 @@ static int scmi_probe(struct platform_device *pdev)
- 	handle = &info->handle;
- 	handle->dev = info->dev;
- 	handle->version = &info->version;
-+	handle->devm_acquire_protocol = scmi_devm_acquire_protocol;
- 	handle->devm_get_protocol = scmi_devm_get_protocol;
- 	handle->devm_put_protocol = scmi_devm_put_protocol;
++	bool freed;
++	u8 protocol_id;
+ 	struct scmi_registered_event *r_evt = hndl->r_evt;
  
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index bbcb2d999068..b3ca2969c29a 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -595,9 +595,15 @@ struct scmi_notify_ops {
-  * @sensor_ops: pointer to set of sensor protocol operations
-  * @reset_ops: pointer to set of reset protocol operations
-  * @voltage_ops: pointer to set of voltage protocol operations
-- * @devm_get_protocol: devres managed method to acquire a protocol and get specific
-- *		       operations and a dedicated protocol handler
-- * @devm_put_protocol: devres managed method to release a protocol
-+ * @devm_acquire_protocol: devres managed method to get hold of a protocol,
-+ *			   causing its initialization and related resource
-+ *			   accounting
-+ * @devm_get_protocol: devres managed method to acquire a protocol, causing
-+ *		       its initialization and resource accounting, while getting
-+ *		       protocol specific operations and a dedicated protocol
-+ *		       handler
-+ * @devm_put_protocol: devres managed method to release a protocol acquired
-+ *		       with devm_acquire/get_protocol
-  * @notify_ops: pointer to set of notifications related operations
-  * @perf_priv: pointer to private data structure specific to performance
-  *	protocol(for internal use only)
-@@ -624,6 +630,8 @@ struct scmi_handle {
- 	const struct scmi_reset_ops *reset_ops;
- 	const struct scmi_voltage_ops *voltage_ops;
+ 	mutex_lock(&ni->pending_mtx);
+-	if (r_evt)
++	if (r_evt) {
++		protocol_id = r_evt->proto->id;
+ 		mutex_lock(&r_evt->proto->registered_mtx);
++	}
  
-+	int __must_check (*devm_acquire_protocol)(struct scmi_device *sdev,
-+						  u8 proto);
- 	const void __must_check *
- 		(*devm_get_protocol)(struct scmi_device *sdev, u8 proto,
- 				     struct scmi_protocol_handle **ph);
+-	scmi_put_handler_unlocked(ni, hndl);
++	freed = scmi_put_handler_unlocked(ni, hndl);
+ 
+-	if (r_evt)
++	if (r_evt) {
+ 		mutex_unlock(&r_evt->proto->registered_mtx);
++		/*
++		 * Only registered handler acquired protocol; must be here
++		 * released only AFTER unlocking registered_mtx, since
++		 * releasing a protocol can trigger its de-initialization
++		 * (ie. including r_evt and registered_mtx)
++		 */
++		if (freed)
++			scmi_release_protocol(ni->handle, protocol_id);
++	}
+ 	mutex_unlock(&ni->pending_mtx);
+ }
+ 
+ static void scmi_put_active_handler(struct scmi_notify_instance *ni,
+ 				    struct scmi_event_handler *hndl)
+ {
++	bool freed;
+ 	struct scmi_registered_event *r_evt = hndl->r_evt;
++	u8 protocol_id = r_evt->proto->id;
+ 
+ 	mutex_lock(&r_evt->proto->registered_mtx);
+-	scmi_put_handler_unlocked(ni, hndl);
++	freed = scmi_put_handler_unlocked(ni, hndl);
+ 	mutex_unlock(&r_evt->proto->registered_mtx);
++	if (freed)
++		scmi_release_protocol(ni->handle, protocol_id);
+ }
+ 
+ /**
 -- 
 2.17.1
 
