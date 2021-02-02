@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D793730CCDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FFA30CCE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhBBUNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhBBUNm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:13:42 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5043CC061573;
-        Tue,  2 Feb 2021 12:13:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=/r/WPmX0rkYqfttFzRKsV+hgjsh3bZ14tB7P3tI6PZ0=; b=yMB3HKvcHkZAxPZJHg9jJedZ/1
-        w4rgaNnFfG/bu1H4w645NVgFdizX3cosn14fkdJGFxGAPptby0N38krynB5HJD3nWs6WxY0480vgw
-        nJQYB2c7P67NDw5dJ4FGAxHnlbVvbt4ZnwUEvorD6xgHxWBREZol1BABKbTbiKI+kUgCojKLX8vQv
-        Fl9gspfSAh16ipfnXKrOYypbjUkcaFBKtOUn8Oj9iDubENCn3l9Tn1YpvEkSNqZryuUTEI/6PNYq8
-        T8k/Ccg62nWXXOQ15q2IILSUqeDesGbsjIKL02d4N9qPGQkZw9cBFt8k7uobaRcrKVb4WHrt7RK0l
-        M68wP2UQ==;
-Received: from [2601:1c0:6280:3f0::2a53] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l722l-00078f-I0; Tue, 02 Feb 2021 20:13:00 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH -next] PCI: endpoint: fix build error, EP NTB driver uses configfs
-Date:   Tue,  2 Feb 2021 12:12:55 -0800
-Message-Id: <20210202201255.26768-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S231995AbhBBURn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:17:43 -0500
+Received: from retiisi.eu ([95.216.213.190]:49876 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232682AbhBBUQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:16:31 -0500
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 78215634C8D;
+        Tue,  2 Feb 2021 22:14:36 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Dan Scally <djrscally@gmail.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH 1/1] ipu3-cio2: Build bridge only if ACPI is enabled
+Date:   Tue,  2 Feb 2021 22:14:40 +0200
+Message-Id: <20210202201440.10613-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pci-epf-ntb driver uses configfs APIs, so it should depend on
-CONFIGFS_FS to prevent build errors.
+ipu3-cio2-bridge uses several features of the ACPI framework that have no
+meaningful replacement when ACPI is disabled. Instead of adding #ifdefs to
+the affected places, only build the bridge code if CONFIG_ACPI is enabled.
 
-ld: drivers/pci/endpoint/functions/pci-epf-ntb.o: in function `epf_ntb_add_cfs':
-pci-epf-ntb.c:(.text+0x1b): undefined reference to `config_group_init_type_name'
-
-Fixes: 7dc64244f9e9 ("PCI: endpoint: Add EP function driver to provide NTB functionality")
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: linux-pci@vger.kernel.org
+Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
-You may switch to 'select CONFIG_FS_FS' if you feel strongly about it.
+Hi Randy,
 
- drivers/pci/endpoint/functions/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+Thanks for reporting this.
 
---- linux-next-20210202.orig/drivers/pci/endpoint/functions/Kconfig
-+++ linux-next-20210202/drivers/pci/endpoint/functions/Kconfig
-@@ -16,6 +16,7 @@ config PCI_EPF_TEST
- config PCI_EPF_NTB
- 	tristate "PCI Endpoint NTB driver"
- 	depends on PCI_ENDPOINT
-+	depends on CONFIGFS_FS
+This patch should address the problem.
+
+ drivers/media/pci/intel/ipu3/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
+index 24f4e79fe0cb..dce8274c81e6 100644
+--- a/drivers/media/pci/intel/ipu3/Kconfig
++++ b/drivers/media/pci/intel/ipu3/Kconfig
+@@ -20,7 +20,7 @@ config VIDEO_IPU3_CIO2
+ 
+ config CIO2_BRIDGE
+ 	bool "IPU3 CIO2 Sensors Bridge"
+-	depends on VIDEO_IPU3_CIO2
++	depends on VIDEO_IPU3_CIO2 && ACPI
  	help
- 	  Select this configuration option to enable the NTB driver
- 	  for PCI Endpoint. NTB driver implements NTB controller
+ 	  This extension provides an API for the ipu3-cio2 driver to create
+ 	  connections to cameras that are hidden in the SSDB buffer in ACPI.
+-- 
+2.29.2
+
