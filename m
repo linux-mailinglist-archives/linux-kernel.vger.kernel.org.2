@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9597030C9B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6789730C9E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbhBBS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+        id S233828AbhBBScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:32:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233639AbhBBOGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:06:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE0864F89;
-        Tue,  2 Feb 2021 13:49:06 +0000 (UTC)
+        id S233626AbhBBOFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:05:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC62965016;
+        Tue,  2 Feb 2021 13:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273746;
-        bh=j+xZwxu3KrOGfnOrUx8aKqFaLLUXF/iAgHe03ZnFEvE=;
+        s=korg; t=1612273749;
+        bh=4LrE/zeZ8s5gY2rFbs8YZ5A4LSmSNByXukqTsZw2CGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ir/CM/0AwQ93MDARXvk7uFV4jNRATy+lxy2YNsFnM24IhaRIuRKJEedb5QQdrIWhE
-         ym46MA1wPeNU3k0nRPel2wmSie3c+o0hRLHgiaiAHDZjh/ZsTX9SY6tQZ1h7H2DDWZ
-         IYjAB1BpYMVwrXk9CabneLnb2EfWBNjyCJO8iUL4=
+        b=YZxH2nRVb+QEqGCNauxqqq7bvdWE7VrneAALk5YxMyOwdaUp5iU5wNlqgj6nvcLhr
+         Oz+A2k6V/BJ3GATE/X1VQEB64jIEPFbKqk6hGZaeJiNhbfcul2vr2TVbyA8nxECPXl
+         BgxvYnOGnOKkIs+V1zNQb+KOX7EplP6eapDotp/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 15/28] futex: Provide state handling for exec() as well
-Date:   Tue,  2 Feb 2021 14:38:35 +0100
-Message-Id: <20210202132941.800726495@linuxfoundation.org>
+Subject: [PATCH 4.4 16/28] futex: Add mutex around futex exit
+Date:   Tue,  2 Feb 2021 14:38:36 +0100
+Message-Id: <20210202132941.837154396@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
 References: <20210202132941.180062901@linuxfoundation.org>
@@ -43,97 +43,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit af8cbda2cfcaa5515d61ec500498d46e9a8247e2 upstream.
+commit 3f186d974826847a07bc7964d79ec4eded475ad9 upstream.
 
-exec() attempts to handle potentially held futexes gracefully by running
-the futex exit handling code like exit() does.
-
-The current implementation has no protection against concurrent incoming
-waiters. The reason is that the futex state cannot be set to
-FUTEX_STATE_DEAD after the cleanup because the task struct is still active
-and just about to execute the new binary.
-
-While its arguably buggy when a task holds a futex over exec(), for
-consistency sake the state handling can at least cover the actual futex
-exit cleanup section. This provides state consistency protection accross
-the cleanup. As the futex state of the task becomes FUTEX_STATE_OK after the
-cleanup has been finished, this cannot prevent subsequent attempts to
-attach to the task in case that the cleanup was not successfull in mopping
-up all leftovers.
+The mutex will be used in subsequent changes to replace the busy looping of
+a waiter when the futex owner is currently executing the exit cleanup to
+prevent a potential live lock.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20191106224556.753355618@linutronix.de
+Link: https://lkml.kernel.org/r/20191106224556.845798895@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |   38 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 4 deletions(-)
+ include/linux/futex.h |    1 +
+ include/linux/sched.h |    1 +
+ kernel/futex.c        |   16 ++++++++++++++++
+ 3 files changed, 18 insertions(+)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3234,7 +3234,7 @@ static void exit_robust_list(struct task
- 				   curr, pip);
+--- a/include/linux/futex.h
++++ b/include/linux/futex.h
+@@ -70,6 +70,7 @@ static inline void futex_init_task(struc
+ 	INIT_LIST_HEAD(&tsk->pi_state_list);
+ 	tsk->pi_state_cache = NULL;
+ 	tsk->futex_state = FUTEX_STATE_OK;
++	mutex_init(&tsk->futex_exit_mutex);
  }
  
--void futex_exec_release(struct task_struct *tsk)
-+static void futex_cleanup(struct task_struct *tsk)
+ void futex_exit_recursive(struct task_struct *tsk);
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1704,6 +1704,7 @@ struct task_struct {
+ #endif
+ 	struct list_head pi_state_list;
+ 	struct futex_pi_state *pi_state_cache;
++	struct mutex futex_exit_mutex;
+ 	unsigned int futex_state;
+ #endif
+ #ifdef CONFIG_PERF_EVENTS
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3271,12 +3271,23 @@ static void futex_cleanup(struct task_st
+  */
+ void futex_exit_recursive(struct task_struct *tsk)
  {
- 	if (unlikely(tsk->robust_list)) {
- 		exit_robust_list(tsk);
-@@ -3274,7 +3274,7 @@ void futex_exit_recursive(struct task_st
++	/* If the state is FUTEX_STATE_EXITING then futex_exit_mutex is held */
++	if (tsk->futex_state == FUTEX_STATE_EXITING)
++		mutex_unlock(&tsk->futex_exit_mutex);
  	tsk->futex_state = FUTEX_STATE_DEAD;
  }
  
--void futex_exit_release(struct task_struct *tsk)
-+static void futex_cleanup_begin(struct task_struct *tsk)
+ static void futex_cleanup_begin(struct task_struct *tsk)
  {
  	/*
- 	 * Switch the state to FUTEX_STATE_EXITING under tsk->pi_lock.
-@@ -3290,10 +3290,40 @@ void futex_exit_release(struct task_stru
- 	raw_spin_lock_irq(&tsk->pi_lock);
- 	tsk->futex_state = FUTEX_STATE_EXITING;
- 	raw_spin_unlock_irq(&tsk->pi_lock);
-+}
- 
--	futex_exec_release(tsk);
-+static void futex_cleanup_end(struct task_struct *tsk, int state)
-+{
-+	/*
-+	 * Lockless store. The only side effect is that an observer might
-+	 * take another loop until it becomes visible.
++	 * Prevent various race issues against a concurrent incoming waiter
++	 * including live locks by forcing the waiter to block on
++	 * tsk->futex_exit_mutex when it observes FUTEX_STATE_EXITING in
++	 * attach_to_pi_owner().
 +	 */
-+	tsk->futex_state = state;
-+}
- 
--	tsk->futex_state = FUTEX_STATE_DEAD;
-+void futex_exec_release(struct task_struct *tsk)
-+{
-+	/*
-+	 * The state handling is done for consistency, but in the case of
-+	 * exec() there is no way to prevent futher damage as the PID stays
-+	 * the same. But for the unlikely and arguably buggy case that a
-+	 * futex is held on exec(), this provides at least as much state
-+	 * consistency protection which is possible.
-+	 */
-+	futex_cleanup_begin(tsk);
-+	futex_cleanup(tsk);
-+	/*
-+	 * Reset the state to FUTEX_STATE_OK. The task is alive and about
-+	 * exec a new binary.
-+	 */
-+	futex_cleanup_end(tsk, FUTEX_STATE_OK);
-+}
++	mutex_lock(&tsk->futex_exit_mutex);
 +
-+void futex_exit_release(struct task_struct *tsk)
-+{
-+	futex_cleanup_begin(tsk);
-+	futex_cleanup(tsk);
-+	futex_cleanup_end(tsk, FUTEX_STATE_DEAD);
++	/*
+ 	 * Switch the state to FUTEX_STATE_EXITING under tsk->pi_lock.
+ 	 *
+ 	 * This ensures that all subsequent checks of tsk->futex_state in
+@@ -3299,6 +3310,11 @@ static void futex_cleanup_end(struct tas
+ 	 * take another loop until it becomes visible.
+ 	 */
+ 	tsk->futex_state = state;
++	/*
++	 * Drop the exit protection. This unblocks waiters which observed
++	 * FUTEX_STATE_EXITING to reevaluate the state.
++	 */
++	mutex_unlock(&tsk->futex_exit_mutex);
  }
  
- long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ void futex_exec_release(struct task_struct *tsk)
 
 
