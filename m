@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BD130BE3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8254F30BE3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhBBMdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:33:19 -0500
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:59846 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhBBMdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:33:16 -0500
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id 66E035401D8;
-        Tue,  2 Feb 2021 20:32:25 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Bernard Zhao <bernard@vivo.com>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] drm/msm: remove unneeded variable: "rc"
-Date:   Tue,  2 Feb 2021 04:32:03 -0800
-Message-Id: <20210202123214.15787-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.29.0
+        id S231513AbhBBMdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:33:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229894AbhBBMdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:33:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F6264E27;
+        Tue,  2 Feb 2021 12:32:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612269141;
+        bh=CCjPtrOe2z7rwX8Ik4iHxMcLMZzQg3xF3GCxJVyvafQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U/vmCypYEGCPJOifz8Z6dnFhNAYTdIG3vLzXViuo5lNvBGxQ0GDKN1/vKi98IPUbP
+         KasrUJ9k4YCxQqKVnFwVmUtWlvhQkbJgQ5GO58WZU+jQ3GdnuJKZTorTZmYl791/1K
+         Q7TZsXcLMeUIfjc7lT5lkbXOUHK/c5Vz9tdvn3Yyrzk87mhfYHAqnTdx5DCSB9hTGF
+         b4IM0MoYNzBF6APnf6TKWZG9i78VQ1ji6US8999JPJ4D8L8V4O4Nyd0hH2WofhuqyN
+         oB7N9PFwnLryHYgNwNsCFEZudg/N1mMEmtU6rldLiO5qSUwfMcXfNHgWc2Oj0QmLOM
+         a7DtbvsXoKylQ==
+Date:   Tue, 2 Feb 2021 12:32:16 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
+Message-ID: <20210202123215.GA16868@willie-the-truck>
+References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
+ <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHUJLTk4aTh1JGElKVkpNSklJTUJKT05MSElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mz46CCo4Fj8cFzY6Ii9NLCEQ
-        DwEKFDVVSlVKTUpJSU1CSk9NS0JMVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSU9ISzcG
-X-HM-Tid: 0a7762bace45d995kuws66e035401d8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unneeded variable: "rc".
+On Tue, Feb 02, 2021 at 09:41:53AM +0530, Anshuman Khandual wrote:
+> pfn_valid() validates a pfn but basically it checks for a valid struct page
+> backing for that pfn. It should always return positive for memory ranges
+> backed with struct page mapping. But currently pfn_valid() fails for all
+> ZONE_DEVICE based memory types even though they have struct page mapping.
+> 
+> pfn_valid() asserts that there is a memblock entry for a given pfn without
+> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+> that they do not have memblock entries. Hence memblock_is_map_memory() will
+> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+> into the system via memremap_pages() called from a driver, their respective
+> memory sections will not have SECTION_IS_EARLY set.
+> 
+> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+> for firmware reserved memory regions. memblock_is_map_memory() can just be
+> skipped as its always going to be positive and that will be an optimization
+> for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
+> hotplugged memory too will not have SECTION_IS_EARLY set for their sections
+> 
+> Skipping memblock_is_map_memory() for all non early memory sections would
+> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+> performance for normal hotplug memory as well.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/msm/dp/dp_panel.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hmm. Although I follow your logic, this does seem to rely on an awful lot of
+assumptions to continue to hold true as the kernel evolves. In particular,
+how do we ensure that early sections are always fully backed with
+'struct page's and never contain any nomap entries? What's to stop somebody
+changing that and quietly breaking our pfn_valid() implementation?
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index d1780bcac8cc..9cc816663668 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -409,7 +409,6 @@ int dp_panel_timing_cfg(struct dp_panel *dp_panel)
- 
- int dp_panel_init_panel_info(struct dp_panel *dp_panel)
- {
--	int rc = 0;
- 	struct drm_display_mode *drm_mode;
- 
- 	drm_mode = &dp_panel->dp_mode.drm_mode;
-@@ -436,7 +435,7 @@ int dp_panel_init_panel_info(struct dp_panel *dp_panel)
- 					min_t(u32, dp_panel->dp_mode.bpp, 30));
- 	DRM_DEBUG_DP("updated bpp = %d\n", dp_panel->dp_mode.bpp);
- 
--	return rc;
-+	return 0;
- }
- 
- struct dp_panel *dp_panel_get(struct dp_panel_in *in)
--- 
-2.29.0
+And to be clear, I'm not trying to say that this patch is broken. I'm just
+trying to work out how on Earth we can maintain it!
 
+Will
