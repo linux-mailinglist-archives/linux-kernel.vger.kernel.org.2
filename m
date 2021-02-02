@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C871430C954
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19F730C969
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238345AbhBBSQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:16:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238397AbhBBSOi (ORCPT
+        id S238435AbhBBSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:17:20 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:34316 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233310AbhBBSPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:14:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8131EC06174A;
-        Tue,  2 Feb 2021 10:13:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bJEP+2U5IHzdV2qfnQ7rYOCO3psxW3Bn2kjhHos5sUE=; b=wJAxx4saCmpOESyrOd9ngpJa8p
-        WclqsGHnEBCWPZPSjwMviTo2DraBgO/ruRSqVc1jZKjk8P1ETlGUT0ZhoSJ33sXPtY4wPD7EvVtuh
-        vCvgqYuU6TWVajw+XMVs3AHKvE5tj9r31Wn/vHI220bvXTQUv2tsHtmfxQzVKF/YsaUzbG3Vf9Ab3
-        k/bav4UP053XTUZXT8EEZItKfYHXn9QYa4ayeq5KkBDZ9C0tBvTgz8TTDs1JdXN30lUSljn6FZsQA
-        n63z8TKMycIgOhwJqOfnP/Y2l/w5Xc5shymhQEajRookQg5x/6X5bhabeGGdnWvfGkOTYGGBW5qIJ
-        kuPLgAzg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l70BW-00FZoh-LW; Tue, 02 Feb 2021 18:13:54 +0000
-Date:   Tue, 2 Feb 2021 18:13:54 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 05/14] cxl/mem: Register CXL memX devices
-Message-ID: <20210202181354.GE3708021@infradead.org>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-6-ben.widawsky@intel.com>
+        Tue, 2 Feb 2021 13:15:11 -0500
+Received: by mail-oi1-f178.google.com with SMTP id h192so23779190oib.1;
+        Tue, 02 Feb 2021 10:14:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ESu9qocOeJ67z2OHdnWOiQklfbvu6intt3N2b/O4T2E=;
+        b=hi7Sp6TZ1J54Lup5UcO9GcV+7qFChvzdlp1V6teSJ3bJU/om/vCmrtDZzgZRPj2MnP
+         CWHAe+K4xs/GQ4GpTYyZEOBrEpxTAqvYzRa1pJl/a4KPRHgim3M52gJL8t/r+sk66HzM
+         4gjmxvNyAOHgBx6kgaeScWDNwcXN1vsPGu5QmWkSPYz+t8fhOD9UQhbQBD4EcjYVUD0A
+         CchEIhkINDQn+yhVrcBPT1May55R9kzxKF/bJJKZ5q4W7Ou8bjXRL2kq6POQjppKPVPA
+         E1uyLCS27KJ/pM4VO4aaJ/t9yk7l6YsUvqpEvJrvzLz6g1S0G62TZlWiiIdAxwZD2eQl
+         Dvcw==
+X-Gm-Message-State: AOAM531zS3hPGLjXkV7zTGCfT6TvhrdDrnW3P77Q6zVz23qvQjARpfdU
+        XN3kh+OfdU80Rv9VS4Y4lQ1xY1HzKQ==
+X-Google-Smtp-Source: ABdhPJy9KzWuD4sI+4nuXCmVu/ITJu+fqI2M2n6z+ZmyhAeAa22PZCmdGMbZ2jZAXV6BfCf8OAforw==
+X-Received: by 2002:aca:d908:: with SMTP id q8mr3507672oig.67.1612289669762;
+        Tue, 02 Feb 2021 10:14:29 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id k20sm4733387otr.34.2021.02.02.10.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 10:14:28 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michael Auchter <michael.auchter@ni.com>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH] dt-bindings: iio: dac: Add missing ad5686 compatible strings
+Date:   Tue,  2 Feb 2021 12:14:27 -0600
+Message-Id: <20210202181427.3934218-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130002438.1872527-6-ben.widawsky@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 25e08e5f40bd..33432a4cbe23 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -3179,6 +3179,20 @@ struct device *get_device(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(get_device);
->  
-> +/**
-> + * get_live_device() - increment reference count for device iff !dead
-> + * @dev: device.
-> + *
-> + * Forward the call to get_device() if the device is still alive. If
-> + * this is called with the device_lock() held then the device is
-> + * guaranteed to not die until the device_lock() is dropped.
-> + */
-> +struct device *get_live_device(struct device *dev)
-> +{
-> +	return dev && !dev->p->dead ? get_device(dev) : NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(get_live_device);
+The example uses 'adi,ad5686', but the schema fails to document it. Given
+the filename and there is a similar part AD5686, let's just add the
+compatible strings including the 'r' variant.
 
-Err, if you want to add new core functionality that needs to be in a
-separate well documented prep patch, and also CCed to the relevant
-maintainers.
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Michael Auchter <michael.auchter@ni.com>
+Cc: linux-iio@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
->  	mutex_unlock(&cxlm->mbox.mutex);
->  }
->  
-> +static int cxl_memdev_open(struct inode *inode, struct file *file)
-> +{
-> +	struct cxl_memdev *cxlmd =
-> +		container_of(inode->i_cdev, typeof(*cxlmd), cdev);
-> +
-> +	file->private_data = cxlmd;
+diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+index 8065228e5df8..190919291828 100644
+--- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+@@ -19,6 +19,8 @@ properties:
+       - adi,ad5338r
+       - adi,ad5671r
+       - adi,ad5675r
++      - adi,ad5686
++      - adi,ad5686r
+       - adi,ad5691r
+       - adi,ad5692r
+       - adi,ad5693
+-- 
+2.27.0
 
-There is no good reason to ever mirror stuff from the inode into
-file->private_data, as you can just trivially get at the original
-location using file_inode(file).
