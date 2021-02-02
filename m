@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFA630B585
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E7630B58D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbhBBC6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:58:00 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41895 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhBBC56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:57:58 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DV8cD0DdXz9tjt;
-        Tue,  2 Feb 2021 13:57:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612234636;
-        bh=5xkzDG4WtUNuRhGuN7jmw2R75twvSA4l6Hb78ZxgOb0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lmX0MWQZPTIVfi/2Ns6f+WpVd9hSAAgpiH4/JQCHTW8wDPjZSLUc6/PCkN9aUXeNf
-         ClhRud9vDq67PvrqumdILcSX55gVsc+3gz5EfgrZ6JWwPm7tOzDMzPLYQSoJGT6d9Z
-         CQrRKodycRMj8z55o9rO9cXleSZGDj9gaPBSX407QfE87MgfvtuKLfJrMNMapAGBuc
-         pinwiEbbPIM4kyN7GJeduqvLkxu/DaKtquGxUT0JaQVGJoat47o3yBDmwLeq0UOZGT
-         Ey4ZESjRKDdwPqJPHUJ1v9mMXwT7HzQ/lydS/JkhRa6+ieq4NR6aXk4qkA6ThJeQ/6
-         p8ngvoLqFsR5g==
-Date:   Tue, 2 Feb 2021 13:57:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the block tree
-Message-ID: <20210202135714.6470f476@canb.auug.org.au>
+        id S230033AbhBBDBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:01:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhBBDBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 22:01:39 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482D7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:00:58 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id q201so15429875ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QKlES40ZuuTnQtRZPjfqK6jrJL4AVKwk6AC0/Xfkqm4=;
+        b=TKINA+ss6nSCUFev9F01YHAkMmRw70CqR6dFHclmYWCEWAxry26XMjSUdMWBta7bUa
+         w6peKJSmF5RPlr4ypNZ3fkaiBYqUXhVjRHLMKOnfmbNoPXdBX+BCd2LGcLW2KXNnyUZ0
+         nDx4MCOiucEk454n6jR7yGGho/FtjF7gX6F4i4lxnXEAtAJtN4vGZVepQaBpHvtTquUS
+         vLi9bpfV/Hm5+T2CyAuYhJLW2mRdPwXsrsVsvI7XGq0ieBNMxNQhpJx8U1XbBRwPZLx/
+         FCm5rJKNmGfMFnKJAw9QdLB2PR54g2bgE74hA2Myk8bEB46RzgmwXduDXUAvT6YVAN1C
+         K5CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QKlES40ZuuTnQtRZPjfqK6jrJL4AVKwk6AC0/Xfkqm4=;
+        b=dx/bclErdikxOdg6TA+Jdapi86+86uggoI9dPJ9dFWUxh2CCyqiaZedepuE7jvMYjh
+         0TU2GhoY/RUKM/5MSylDrnAbv2DLXv67qFlN1RpG0ZNikCzivvCTrhsRqTLF0uPGlXEU
+         DfZjWcQBpSZXf2UvEMBA2HTRhuRMkj6/P9fNabB14jhKGmfyTlj6FDVxR3k5mGWo0Uy+
+         EpEEHtze8sXfTirtZwtYPzPmxX5uotSquZJ9TyWbZLlyT6joqkCHTUcJYHduYdTMENjt
+         ekrTQQORjoTUPrX6Ftx1KQbv9DQcXHEDAJm1N5uFvZL2mw0dchs7H9sgV4UfDgtOe+og
+         zDvg==
+X-Gm-Message-State: AOAM5339aoBoAN7s48uqOsdN5fEGNUf2LO8T6HkFJpzV8OIejHLqFrrm
+        fMdp1TtYwwKyojXzSI1Cojr9qyWmXAiE1/b2ik5npA==
+X-Google-Smtp-Source: ABdhPJw+xl52yLOOnfjekYr5KRXZgIi6lkOSwSq6OsZ6gDTuNN+0py4jKNxFq9CszelcmCFRJXYyJMOfXwFar5J07Ts=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr29578976ybz.466.1612234857051;
+ Mon, 01 Feb 2021 19:00:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8khiC8Fh8Zx.ODu4O_E0T+r";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210130040344.2807439-1-saravanak@google.com>
+ <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com> <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com>
+In-Reply-To: <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 1 Feb 2021 19:00:21 -0800
+Message-ID: <CAGETcx896XEv8OqOe4eGncjOYb=v6+g1RWkpo5g0hTbfp4Os+w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8khiC8Fh8Zx.ODu4O_E0T+r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 1, 2021 at 2:40 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Sat, Jan 30, 2021 at 5:09 AM Saravana Kannan <saravanak@google.com> wrote:
+> > On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > This patch series solves two general issues with fw_devlink=on
+> > >
+> > > Patch 1/2 addresses the issue of firmware nodes that look like they'll
+> > > have struct devices created for them, but will never actually have
+> > > struct devices added for them. For example, DT nodes with a compatible
+> > > property that don't have devices added for them.
+> > >
+> > > Patch 2/2 address (for static kernels) the issue of optional suppliers
+> > > that'll never have a driver registered for them. So, if the device could
+> > > have probed with fw_devlink=permissive with a static kernel, this patch
+> > > should allow those devices to probe with a fw_devlink=on. This doesn't
+> > > solve it for the case where modules are enabled because there's no way
+> > > to tell if a driver will never be registered or it's just about to be
+> > > registered. I have some other ideas for that, but it'll have to come
+> > > later thinking about it a bit.
+> > >
+> > > These two patches might remove the need for several other patches that
+> > > went in as fixes for commit e590474768f1 ("driver core: Set
+> > > fw_devlink=on by default"), but I think all those fixes are good
+> > > changes. So I think we should leave those in.
+> > >
+> > > Marek, Geert,
+> > >
+> > > Can you try this series on a static kernel with your OF_POPULATED
+> > > changes reverted? I just want to make sure these patches can identify
+> > > and fix those cases.
+> > >
+> > > Tudor,
+> > >
+> > > You should still make the clock driver fix (because it's a bug), but I
+> > > think this series will fix your issue too (even without the clock driver
+> > > fix). Can you please give this a shot?
+> >
+> > Marek, Geert, Tudor,
+> >
+> > Forgot to say that this will probably fix your issues only in a static
+> > kernel. So please try this with a static kernel. If you can also try
+> > and confirm that this does not fix the issue for a modular kernel,
+> > that'd be good too.
+>
+> Thanks for your series!
+>
+> For the modular case, this series has no impact, as expected (i.e. fails
+> to boot, no I/O devices probed).
+> With modules disabled, both r8a7791/koelsch and r8a77951/salvator-xs
+> seem to boot fine, except for one issue on koelsch:
 
-Hi all,
+Thanks a lot for testing the series!
 
-After merging the block tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Regarding the koelsch issue, do you not see it with your OF_POPULATED
+fix for rcar-sysc driver? But only see if you revert it and use this
+series?
 
-block/bio.c: In function 'bio_add_zone_append_page':
-block/bio.c:860:31: error: 'struct bio' has no member named 'bi_disk'
-  860 |  struct request_queue *q =3D bio->bi_disk->queue;
-      |                               ^~
+>
+> dmesg:
+>
+>     +i2c-demux-pinctrl i2c-12: failed to setup demux-adapter 0 (-19)
+>     +i2c-demux-pinctrl i2c-13: failed to setup demux-adapter 0 (-19)
+>     +i2c-demux-pinctrl i2c-14: failed to setup demux-adapter 0 (-19)
+>
+>     -  #0: rsnd-dai.0-ak4642-hifi
+>     +  No soundcards found.
+>
+> regulator_summary:
+>
+>     -13-0050-vcc                   0    0mA     0mV     0mV
+>     -13-0039-dvdd-3v               1    0mA     0mV     0mV
+>     -13-0039-bgvdd                 1    0mA     0mV     0mV
+>     -13-0039-pvdd                  1    0mA     0mV     0mV
+>     -13-0039-dvdd                  1    0mA     0mV     0mV
+>     -13-0039-avdd                  1    0mA     0mV     0mV
+>
+> pm_genpd_summary:
+>
+>     -/devices/platform/soc/e6518000.i2c  suspended                  0
+>     -/devices/platform/soc/e6530000.i2c  suspended                  0
+>     -/devices/platform/soc/e6520000.i2c  suspended                  0
+>
+> These are all symptoms of the same issue: i2c buses and devices are not
+> probed, due to the use of the i2c demuxer.
+> I guess the fw_devlink tracker doesn't consider "i2c-parent" links?
 
-Caused by commit
+No, it doesn't parse "i2c-parent". Ugh... looked at it. It's going to
+be a problem to parse because it requires the parents to be disbled in
+DT and then fixes them up during run time. fw_devlink can handle DT
+overlay changing a specific node, but the problem is that the consumer
+DT node doesn't get changed. So the i2c-parent will first be parsed,
+fw_devlink will notice they are disabled, so it'll ignore them. Then
+those nodes are enabled, but the i2c-parent isn't reparsed because the
+consumer isn't updated.
 
-  309dca309fc3 ("block: store a block_device pointer in struct bio")
+> Note that I only tested this on R-Car Gen2 and Gen3.
+> I did not test this on Renesas SH/R-Mobile or RZ/A SoCs.
 
-interacting with commit
+Thanks for any testing you can do :)
 
-  9f678097f3de ("block: add bio_add_zone_append_page")
+So overall, this series seems to be helping, but doesn't cover 100% of
+the cases. So I suppose this is still a useful series. I'll be happy
+to take any Tested-by or Reviewed-by.
 
-from the btrfs tree.
-
-I applied the following merge fix up for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 2 Feb 2021 13:54:29 +1100
-Subject: [PATCH] block: bio: fix up for bi_disk removal
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- block/bio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/bio.c b/block/bio.c
-index bf3ab1b5c844..e3b9d3e0a196 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -857,7 +857,7 @@ EXPORT_SYMBOL(bio_add_pc_page);
- int bio_add_zone_append_page(struct bio *bio, struct page *page,
- 			     unsigned int len, unsigned int offset)
- {
--	struct request_queue *q =3D bio->bi_disk->queue;
-+	struct request_queue *q =3D bio->bi_bdev->bd_disk->queue;
- 	bool same_page =3D false;
-=20
- 	if (WARN_ON_ONCE(bio_op(bio) !=3D REQ_OP_ZONE_APPEND))
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8khiC8Fh8Zx.ODu4O_E0T+r
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAYv4oACgkQAVBC80lX
-0GxIKQf/TO4TRaSRFH79dXjUG4PrYe9bD0eL84a5m9p98qU6djvh9QkPu+f7ol8S
-ff6TDkaz0vnsotrf1/wncNoY0s5aq5N/J/T+O1yjO4v7TYkr+fkMOeKZ74kebT/Z
-bhnII8dNJ368I6RDZe3lnCSviup722xguvFQ8cdVq4wL4cPc23QDJcXgxDyScCFY
-BSSi/LnCprRHdWI23l7A1HayrKEnwauLguf1CVXeVdO3gyNh5B324jZX6XVp9FHA
-qopRo1fM7nPft+9QEqSua10rVZkLFxZg8u2pTyE2fGcTsuYlnwTY/WfBeCGgY2oQ
-+/AhVNocOJpDWP67SyRJ0j+BXVnPSw==
-=yT/Q
------END PGP SIGNATURE-----
-
---Sig_/8khiC8Fh8Zx.ODu4O_E0T+r--
+-Saravana
