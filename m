@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2110530C37E
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3F330C37F
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhBBPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:20:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41200 "EHLO mail.kernel.org"
+        id S235366AbhBBPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:20:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:51916 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235415AbhBBPRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:17:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3836764EBF;
-        Tue,  2 Feb 2021 15:17:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612279025;
-        bh=gsqH5R2MIBk8ennetSW+5uxOlY9Y3VrMrn7TTPDHofU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CFneDKyiNp/x1cpnR5unToS/CuwUXHXJEVCQdz92PdwdNubg8GGIf5DFIUJxv/cFX
-         SUMlzfH3SqgpbjIf64QxC56MT+TDwD6gVrdhv5SSH9/CMHjS78KR7SPmVAGE+wqaU1
-         Kp2LvNItkEyd3h4QFpvWVyPZEIAQHBxz4Iwp3R8oQXvgMP7Sa4zU6OImzZdgBGyZcu
-         UyfBoeC1KXYczlJrb6ze/DeC52nRFQYCtNOyYMFfTOVI0GAB+9Z0jvKqroDMk8rxZw
-         cJuZRND0porSFY2zcQKH9JPSANa9HIqHBeslgrZ3K7AOV4v5wBV9eIB2WfNU1FoYXM
-         Iclmbsp1jEhoA==
-Date:   Tue, 2 Feb 2021 17:16:58 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, dhowells@redhat.com,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, patrick@puiterwijk.org
-Subject: Re: [PATCH v3 1/3] x509: Detect sm2 keys by their parameters OID
-Message-ID: <YBls6paPlQ9L797n@kernel.org>
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
- <20210127123350.817593-2-stefanb@linux.vnet.ibm.com>
- <689c44925d60238181390e775b52809e89e0b26a.camel@kernel.org>
- <e975bd1e-5256-ea8f-2247-fc362302e647@linux.ibm.com>
+        id S232502AbhBBPSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:18:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97859ED1;
+        Tue,  2 Feb 2021 07:17:23 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 623D63F719;
+        Tue,  2 Feb 2021 07:17:21 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>,
+        vincent.guittot@linaro.org, mgorman@suse.de, mingo@kernel.org,
+        peterz@infradead.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, linux-kernel@vger.kernel.org
+Cc:     linuxarm@openeuler.org, xuwei5@huawei.com, liguozhu@hisilicon.com,
+        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
+        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
+        guodong.xu@linaro.org, Barry Song <song.bao.hua@hisilicon.com>,
+        Meelis Roos <mroos@linux.ee>
+Subject: Re: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
+In-Reply-To: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Tue, 02 Feb 2021 15:17:15 +0000
+Message-ID: <jhj4kiu4hz8.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e975bd1e-5256-ea8f-2247-fc362302e647@linux.ibm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 09:57:40PM -0500, Stefan Berger wrote:
-> On 1/30/21 4:26 PM, Jarkko Sakkinen wrote:
-> > On Wed, 2021-01-27 at 07:33 -0500, Stefan Berger wrote:
-> > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > > 
-> > > Detect whether a key is an sm2 type of key by its OID in the parameters
-> > > array rather than assuming that everything under OID_id_ecPublicKey
-> > > is sm2, which is not the case.
-> > > 
-> > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > ---
-> > >   crypto/asymmetric_keys/x509_cert_parser.c | 13 ++++++++++++-
-> > >   1 file changed, 12 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> > > index 52c9b455fc7d..4643fe5ed69a 100644
-> > > --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> > > +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> > > @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
-> > >                            const void *value, size_t vlen)
-> > >   {
-> > >          struct x509_parse_context *ctx = context;
-> > > +       enum OID oid;
-> > >          ctx->key_algo = ctx->last_oid;
-> > >          switch (ctx->last_oid) {
-> > > @@ -470,7 +471,17 @@ int x509_extract_key_data(void *context, size_t hdrlen,
-> > >                  ctx->cert->pub->pkey_algo = "ecrdsa";
-> > >                  break;
-> > >          case OID_id_ecPublicKey:
-> > > -               ctx->cert->pub->pkey_algo = "sm2";
-> > > +               if (ctx->params_size < 2)
-> > Either a named constant, or at least a comment instead of just '2'.
-> 
-> 
-> I will look at the 2 entries whether they contain the expected values:
-> ASN1_OID and length
-> 
-> Thanks!
-> 
->    Stefan
+On 01/02/21 16:38, Barry Song wrote:
+> @@ -964,6 +941,12 @@ static void init_overlap_sched_group(struct sched_domain *sd,
+>
+>       build_balance_mask(sd, sg, mask);
+>       cpu = cpumask_first_and(sched_group_span(sg), mask);
+> +	/*
+> +	 * for the group generated by grandchild, use the sgc of 2nd cpu
+> +	 * because the 1st cpu might be used by another sched_group
+> +	 */
+> +	if (from_grandchild && cpumask_weight(mask) > 1)
+> +		cpu = cpumask_next_and(cpu, sched_group_span(sg), mask);
+>
+>       sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
 
-Just add inline comment that explains that.
+So you are getting a (hopefully) unique ID for this group span at this
+given topology level (i.e. sd->private) but as I had stated in that list of
+issues, this creates an sgc that isn't attached to the local group of any
+sched_domain, and thus won't get its capacity values updated.
 
-/Jarkko
+This can actually be seen via the capacity values you're getting at build
+time:
+
+> [    0.868907] CPU0 attaching sched-domain(s):
+...
+> [    0.869542]    domain-2: span=0-5 level=NUMA
+> [    0.869559]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
+                                                          ^^^^^^^^^^^^^^^^
+> [    0.871177] CPU4 attaching sched-domain(s):
+...
+> [    0.871200]   groups: 4:{ span=4 cap=977 }, 5:{ span=5 cap=1001 }
+> [    0.871243]   domain-1: span=4-7 level=NUMA
+> [    0.871257]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
+                                ^^^^^^^^^^^^^^^^
+
+IMO what we want to do here is to hook this CPU0-domain-2-group5 to the sgc
+of CPU4-domain1-group4. I've done that in the below diff - this gives us
+groups with sgc's owned at lower topology levels, but this will only ever
+be true for non-local groups. This has the added benefit of working with
+single-CPU nodes. Briefly tested on your topology and the sunfire's (via
+QEMU), and I didn't get screamed at.
+
+Before the fun police comes and impounds my keyboard, I'd like to point out
+that we could leverage this cross-level sgc referencing hack to further
+change the NUMA domains and pretty much get rid of overlapping groups
+(that's what I was fumbling with in [1]).
+
+[1]: http://lore.kernel.org/r/jhjwnw11ak2.mognet@arm.com
+
+That is, rather than building overlapping groups and fixing them whenever
+that breaks (distance > 2), we could have:
+- the local group being the child domain's span (as always)
+- all non-local NUMA groups spanning a single node each, with the right sgc
+  cross-referencing.
+
+Thoughts?
+
+--->8---
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index b748999c9e11..ef43abb6b1fb 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -932,21 +932,15 @@ build_group_from_child_sched_domain(struct sched_domain *sd, int cpu)
+ 
+ static void init_overlap_sched_group(struct sched_domain *sd,
+ 				     struct sched_group *sg,
+-				     int from_grandchild)
++				     struct sched_domain *grandchild)
+ {
+ 	struct cpumask *mask = sched_domains_tmpmask2;
+-	struct sd_data *sdd = sd->private;
++	struct sd_data *sdd = grandchild ? grandchild->private : sd->private;
+ 	struct cpumask *sg_span;
+ 	int cpu;
+ 
+ 	build_balance_mask(sd, sg, mask);
+ 	cpu = cpumask_first_and(sched_group_span(sg), mask);
+-	/*
+-	 * for the group generated by grandchild, use the sgc of 2nd cpu
+-	 * because the 1st cpu might be used by another sched_group
+-	 */
+-	if (from_grandchild && cpumask_weight(mask) > 1)
+-		cpu = cpumask_next_and(cpu, sched_group_span(sg), mask);
+ 
+ 	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+ 	if (atomic_inc_return(&sg->sgc->ref) == 1)
+@@ -979,7 +973,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 
+ 	for_each_cpu_wrap(i, span, cpu) {
+ 		struct cpumask *sg_span;
+-		int from_grandchild = 0;
++		bool from_grandchild = false;
+ 
+ 		if (cpumask_test_cpu(i, covered))
+ 			continue;
+@@ -1033,7 +1027,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 		       !cpumask_subset(sched_domain_span(sibling->child),
+ 				       span)) {
+ 			sibling = sibling->child;
+-			from_grandchild = 1;
++			from_grandchild = true;
+ 		}
+ 
+ 		sg = build_group_from_child_sched_domain(sibling, cpu);
+@@ -1043,7 +1037,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 		sg_span = sched_group_span(sg);
+ 		cpumask_or(covered, covered, sg_span);
+ 
+-		init_overlap_sched_group(sd, sg, from_grandchild);
++		init_overlap_sched_group(sd, sg, from_grandchild ? sibling : NULL);
+ 
+ 		if (!first)
+ 			first = sg;
+
