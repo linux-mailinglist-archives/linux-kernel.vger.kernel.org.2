@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F50C30C2BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0C330C2C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhBBO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:59:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234927AbhBBO6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:58:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A37264F58;
-        Tue,  2 Feb 2021 14:57:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612277848;
-        bh=x80ikcQCXibw96rrG3IZPOwWRAOBGuEpB8MSkepn+wQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uw5Wu4ZUfl/PbEyx9gNxBYHc4EJPUXnDaLSEQmaWx9EHCK69Q8+dbKc0W3K7IxaGW
-         DGDgM2WPjMy1/PLFkhmhUlt9U3WAeldm6KBdlNRVXMlPa7orTvy5PuUE40hW0lsWhj
-         YLuIRDavEZD4BuLbQ3GM66fpi0Ze8PMMPwKhyoxr0oFDyjqipm9IycUCt5t4AIwM7U
-         BfpOIq3ZAdRsv0QvVtVrdO3knTCnBsUn3yoTWKUZYcufdyCK1vfMWRnwS8azNwWf84
-         Bh4Wielzhi6aNUHZy4AqLrJy1umym8Wkr1t32136DAcYRvr2FKMeSpnGyFZG5rEwOL
-         hgZbLT8oEZ0iA==
-Date:   Tue, 2 Feb 2021 16:57:24 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        coreteam@netfilter.org, Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Julian Anastasov <ja@ssi.bg>,
-        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
-        Matteo Croce <mcroce@redhat.com>,
-        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
-        Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
-Message-ID: <20210202145724.GA3264866@unreal>
-References: <20210202135544.3262383-1-leon@kernel.org>
- <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
+        id S234955AbhBBO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:59:30 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:34126 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234957AbhBBO6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:58:50 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 02 Feb 2021 06:58:10 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 02 Feb 2021 06:58:08 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 02 Feb 2021 20:27:45 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 7F5C921DF9; Tue,  2 Feb 2021 20:27:44 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [PATCH v2] Bluetooth: hci_qca: check for SSR triggered flag while suspend
+Date:   Tue,  2 Feb 2021 20:27:42 +0530
+Message-Id: <1612277862-13022-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 03:34:37PM +0100, Eric Dumazet wrote:
-> On Tue, Feb 2, 2021 at 2:55 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > Hi,
-> >
-> > This short series fixes W=1 compilation warnings which I experienced
-> > when tried to compile net/* folder.
-> >
->
-> Ok, but we never had a strong requirement about W=1, so adding Fixes:
-> tag is adding
+QCA_IBS_DISABLED flag will be set after memorydump started from
+controller.Currently qca_suspend() is waiting for SSR to complete
+based on flag QCA_IBS_DISABLED.Added to check for QCA_SSR_TRIGGERED
+flag too.
 
-I added because Jakub has checker that looks for Fixes lines in "net"
-patches.
+Fixes: 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during suspend")
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> unnecessary burden to stable teams all around the world.
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 17a3859..ff2fb68 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -2111,7 +2111,8 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 	    !test_bit(QCA_SSR_TRIGGERED, &qca->flags))
+ 		return 0;
+ 
+-	if (test_bit(QCA_IBS_DISABLED, &qca->flags)) {
++	if (test_bit(QCA_IBS_DISABLED, &qca->flags) ||
++	    test_bit(QCA_SSR_TRIGGERED, &qca->flags)) {
+ 		wait_timeout = test_bit(QCA_SSR_TRIGGERED, &qca->flags) ?
+ 					IBS_DISABLE_SSR_TIMEOUT_MS :
+ 					FW_DOWNLOAD_TIMEOUT_MS;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-It is automatic.
-
-Thanks
