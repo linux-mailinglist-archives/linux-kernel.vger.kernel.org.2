@@ -2,45 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA9530CC42
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0134430C07B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239928AbhBBTtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:49:24 -0500
-Received: from 8bytes.org ([81.169.241.247]:53998 "EHLO theia.8bytes.org"
+        id S232911AbhBBN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:59:14 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:43842 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233190AbhBBNwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:52:13 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id B01A03D4; Tue,  2 Feb 2021 14:51:31 +0100 (CET)
-Date:   Tue, 2 Feb 2021 14:51:30 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org, Yian Chen <yian.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] iommu/vt-d: Add new enum value and structure for SATC
-Message-ID: <20210202135130.GV32671@8bytes.org>
-References: <20210202044057.615277-1-baolu.lu@linux.intel.com>
- <20210202044057.615277-2-baolu.lu@linux.intel.com>
+        id S233245AbhBBNwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:52:51 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l6w5z-003nZG-Iz; Tue, 02 Feb 2021 14:51:55 +0100
+Date:   Tue, 2 Feb 2021 14:51:55 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: mdiobus: Prevent spike on MDIO bus reset signal
+Message-ID: <YBlY+5vB3uRQT41U@lunn.ch>
+References: <20210126073337.20393-1-mike.looijmans@topic.nl>
+ <YBAVwFlLsfVEHd+E@lunn.ch>
+ <20210126134937.GI1551@shell.armlinux.org.uk>
+ <YBH+uUUatjfwqFWq@lunn.ch>
+ <20210128002555.GQ1551@shell.armlinux.org.uk>
+ <YBIPj+3QhWLr9zjT@lunn.ch>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.47109184-a5be-4b1d-bb22-724baf83e536@emailsignatures365.codetwo.com>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.a2a17a1f-7cb0-46c3-bdd8-65266e08a153@emailsignatures365.codetwo.com>
+ <7cbe00ba-d762-7e18-6936-ae8cbd493ade@topic.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202044057.615277-2-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7cbe00ba-d762-7e18-6936-ae8cbd493ade@topic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolu,
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > 
+> >      Andrew
+> 
+> Just wondering, now, a v2 patch isn't needed? Or should I amend the commit
+> text?
 
-On Tue, Feb 02, 2021 at 12:40:55PM +0800, Lu Baolu wrote:
-> @@ -514,7 +514,8 @@ enum acpi_dmar_type {
->  	ACPI_DMAR_TYPE_ROOT_ATS = 2,
->  	ACPI_DMAR_TYPE_HARDWARE_AFFINITY = 3,
->  	ACPI_DMAR_TYPE_NAMESPACE = 4,
-> -	ACPI_DMAR_TYPE_RESERVED = 5	/* 5 and greater are reserved */
-> +	ACPI_DMAR_TYPE_SATC = 5,
-> +	ACPI_DMAR_TYPE_RESERVED = 6	/* 5 and greater are reserved */
+Hi Mike
 
-Nit: The comment needs to be updated too.
+Take a look in patchwork.kernel.org. It has been flaky the last few
+days. If the patch is not there, you definitively need to repost. If
+you do find it, check what state it is in. That will tell you if it
+needs reposting.
 
+      Andrew
