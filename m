@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3765F30B4EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DC730B4EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhBBBzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:55:16 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12092 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhBBBzM (ORCPT
+        id S229596AbhBBCAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:00:24 -0500
+Received: from pv50p00im-ztbu10011701.me.com ([17.58.6.53]:59984 "EHLO
+        pv50p00im-ztbu10011701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhBBCAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:55:12 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DV7BJ6Yhsz162tS;
-        Tue,  2 Feb 2021 09:53:12 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Tue, 2 Feb 2021
- 09:54:23 +0800
-Subject: Re: [PATCH v5 0/1] perf/smmuv3: Don't reserve the PMCG register
- spaces
-To:     Will Deacon <will@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210201132750.1709-1-thunder.leizhen@huawei.com>
- <20210201155021.GD15263@willie-the-truck>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <c4d50b48-aaa2-68e5-dfbe-891884cd1fe7@huawei.com>
-Date:   Tue, 2 Feb 2021 09:54:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210201155021.GD15263@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        Mon, 1 Feb 2021 21:00:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1612231160;
+        bh=rGl5/iosVM/5pN5iya5pmf6fh8L6VxYZ78FobWeoRvk=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=mEWdeyPUHIQXfuu3//mKjmjXXvCjOkyEth0dBwJEQ0fv+SHpSnyFXmnF5F0F6U4QI
+         ELTiBQuDdPGrgN7p2RNT/blAPeTYiqx9Yti0sdogKAW78QWmt06bGMldYIA6l5JYkT
+         Gb2ujFoyvOFT8ZvMPyU8cK4BohWiUvLeq7gFUtil6xLt/I+cczbcxDO3FTERBm4OFz
+         5UkMSUTORkI62VSfhs5iLAWapTmp/u80LruMr1z0MlwAf8z7Q8kLT9SdgPdkgk3XkT
+         RMUclNRvYqiZAwdNyHS+QfpDth7kapx0x8+v0SHVmnOiPwqttKhIEvLUENhZtZdGZo
+         a3EqYrzjzHSzA==
+Received: from [11.240.15.70] (unknown [119.3.119.19])
+        by pv50p00im-ztbu10011701.me.com (Postfix) with ESMTPSA id 3C4218A0551;
+        Tue,  2 Feb 2021 01:59:17 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] PM: hibernate: add sanity check on power_kobj
+From:   Abel Wu <abel.w@icloud.com>
+In-Reply-To: <20210201105243.GA23135@duo.ucw.cz>
+Date:   Tue, 2 Feb 2021 09:59:11 +0800
+Cc:     rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hewenliang4@huawei.com,
+        wuyun.wu@huawei.com
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Message-Id: <F87648CF-E5D6-41C7-9F4E-87A4BA2A4786@icloud.com>
+References: <20210201075041.1201-1-abel.w@icloud.com>
+ <20210201105243.GA23135@duo.ucw.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_14:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102020012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/2/1 23:50, Will Deacon wrote:
-> On Mon, Feb 01, 2021 at 09:27:49PM +0800, Zhen Lei wrote:
->> v4 --> v5:
->> 1. Give up doing the mapping for the entire SMMU register space.
->> 2. Fix some compile warnings. Sorry. So sorry.
+> On Feb 1, 2021, at 6:52 PM, Pavel Machek <pavel@ucw.cz> wrote:
 > 
-> That's alright, these things happen. However, this came in slightly too
-> late for 5.12, so please resend at -rc1 and we'll aim for 5.13.
+> On Mon 2021-02-01 02:50:41, Abel Wu wrote:
+>> The @power_kobj is initialized in pm_init() which is the same
+>> initcall level as pm_disk_init(). Although this dependency is
+>> guaranteed based on the current initcall serial execution model,
+>> it would still be better do a cost-less sanity check to avoid
+>> oops once the dependency is broken.
+> 
+> I don't believe this is good idea. If the dependency is ever broken,
+> this will make failure more subtle and harder to debug.
 
-Okay, thanks for your tolerance.
+Thanks for reviewing. I think the cmdline parameter initcall_debug will
+help in this case.
+Actually we are trying to make initcalls being called asynchronously to
+reduce boot time which is crucial to our cloud-native business. And we
+resolve this kind of dependencies by retrying failed initcalls.
 
+Best regards,
+	Abel
 > 
-> Will
+>> Signed-off-by: Abel Wu <abel.w@icloud.com>
+>> ---
+>> kernel/power/hibernate.c | 3 +++
+>> 1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+>> index da0b41914177..060089cc261d 100644
+>> --- a/kernel/power/hibernate.c
+>> +++ b/kernel/power/hibernate.c
+>> @@ -1262,6 +1262,9 @@ static const struct attribute_group attr_group = {
+>> 
+>> static int __init pm_disk_init(void)
+>> {
+>> +	if (!power_kobj)
+>> +		return -EINVAL;
+>> +
+>> 	return sysfs_create_group(power_kobj, &attr_group);
+>> }
+>> 
+>> -- 
+>> 2.27.0
 > 
-> .
-> 
+> -- 
+> http://www.livejournal.com/~pavelmachek
 
