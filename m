@@ -2,56 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB1230BCFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD19F30BD03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhBBL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:26:04 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:60885 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhBBLX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:23:29 -0500
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7E70C100005;
-        Tue,  2 Feb 2021 11:22:40 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 14/21] rtc: rv3028: quiet maybe-unused variable warning
-Date:   Tue,  2 Feb 2021 12:22:11 +0100
-Message-Id: <20210202112219.3610853-15-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210202112219.3610853-1-alexandre.belloni@bootlin.com>
-References: <20210202112219.3610853-1-alexandre.belloni@bootlin.com>
+        id S231410AbhBBL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 06:27:12 -0500
+Received: from mga05.intel.com ([192.55.52.43]:42302 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231245AbhBBLYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 06:24:06 -0500
+IronPort-SDR: 90cM5wyiVTkRt1gQbOKr+m+Gvo0vJ5g2wZ8iwVhye4HtVaHi0Dr5adrCFPvNfN4ylW3s29ko1z
+ 3ivyp59KvNqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="265669327"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="265669327"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 03:22:17 -0800
+IronPort-SDR: moMPn00gvSZCt+UezBpZ7wwZYzT4zWMIrShx2RULg13yS8k8EYKpYFVSEU+ImgSugF3lwKsHQm
+ KBdglL1MkTPA==
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="413557648"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 03:22:14 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6tl5-001NIM-WD; Tue, 02 Feb 2021 13:22:12 +0200
+Date:   Tue, 2 Feb 2021 13:22:11 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Giulio Benetti <giulio.benetti@micronovasrl.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, gregkh@linuxfoundation.org,
+        jslaby@suse.com, matwey.kornilov@gmail.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: Re: [PATCH v3 5/5] serial: 8250_dw: add em485 support
+Message-ID: <YBk14xJhIyqTNH/k@smile.fi.intel.com>
+References: <20200517215610.2131618-1-heiko@sntech.de>
+ <20200517215610.2131618-6-heiko@sntech.de>
+ <20200518152103.GI1634618@smile.fi.intel.com>
+ <1f7881b5-f900-dbbe-3f8d-f990d2bdf5a7@micronovasrl.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f7881b5-f900-dbbe-3f8d-f990d2bdf5a7@micronovasrl.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_OF is disabled then the matching table is not referenced.
+On Tue, Feb 02, 2021 at 01:31:17AM +0100, Giulio Benetti wrote:
+> Il 18/05/2020 17:21, Andy Shevchenko ha scritto:
+> > On Sun, May 17, 2020 at 11:56:10PM +0200, Heiko Stuebner wrote:
+> > > From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+> > > 
+> > > Need to use rs485 transceiver so let's use existing em485 485 emulation
+> > > layer on top of 8250.
+> > > 
+> > > Add rs485_config callback to port and uses the standard em485 start and
+> > > stop helpers.
+> > 
+> > Would it prevent to use native RS485 support?
+> 
+> 8250_dw doesn't have a native RS485 support, do you mean using hardware
+> RTS assertion? Anyway at the moment it's not present. This would be the
+> first rs485 support added to 8250_dw.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-rv3028.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+DW v4.0+ has it.
 
-diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
-index 2ee2afa3fa66..0c48d980d06a 100644
---- a/drivers/rtc/rtc-rv3028.c
-+++ b/drivers/rtc/rtc-rv3028.c
-@@ -898,7 +898,7 @@ static int rv3028_probe(struct i2c_client *client)
- 	return 0;
- }
- 
--static const struct of_device_id rv3028_of_match[] = {
-+static const __maybe_unused struct of_device_id rv3028_of_match[] = {
- 	{ .compatible = "microcrystal,rv3028", },
- 	{ }
- };
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
