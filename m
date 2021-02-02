@@ -2,189 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA5530BA8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA6E30BAA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhBBJCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:02:40 -0500
-Received: from mga02.intel.com ([134.134.136.20]:41952 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232865AbhBBJCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:02:24 -0500
-IronPort-SDR: x454s37T8T9F6Pnyy1ZbZlh3G3vTWFYWh/34mRC3ETRnrdjuUGHuXJxJ4hiYWXEnhs+G0oP06X
- D+8f8AH0bXeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167929259"
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="167929259"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:01:30 -0800
-IronPort-SDR: kwcEYLKFwPjBtqXR8uk8B7RFBisPG9WX+3szRx4T/IPFtHLSg9X+tQdPG9U22w6OkYrl2FgYtN
- EtwvKqngfG9w==
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="479491983"
-Received: from chenyi-pc.sh.intel.com ([10.239.159.24])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:01:28 -0800
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] KVM: X86: Expose bus lock debug exception to guest
-Date:   Tue,  2 Feb 2021 17:04:33 +0800
-Message-Id: <20210202090433.13441-4-chenyi.qiang@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210202090433.13441-1-chenyi.qiang@intel.com>
-References: <20210202090433.13441-1-chenyi.qiang@intel.com>
+        id S231968AbhBBJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:11:50 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49832 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232728AbhBBJFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:05:53 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B645B1C0B76; Tue,  2 Feb 2021 10:04:52 +0100 (CET)
+Date:   Tue, 2 Feb 2021 10:04:52 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Abel Wu <abel.w@icloud.com>
+Cc:     rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hewenliang4@huawei.com,
+        wuyun.wu@huawei.com
+Subject: Re: [PATCH] PM: hibernate: add sanity check on power_kobj
+Message-ID: <20210202090451.GA27619@amd>
+References: <20210201075041.1201-1-abel.w@icloud.com>
+ <20210201105243.GA23135@duo.ucw.cz>
+ <F87648CF-E5D6-41C7-9F4E-87A4BA2A4786@icloud.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+In-Reply-To: <F87648CF-E5D6-41C7-9F4E-87A4BA2A4786@icloud.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bus lock debug exception is an ability to notify the kernel by an #DB
-trap after the instruction acquires a bus lock and is executed when
-CPL>0. This allows the kernel to enforce user application throttling or
-mitigations.
 
-Existence of bus lock debug exception is enumerated via
-CPUID.(EAX=7,ECX=0).ECX[24]. Software can enable these exceptions by
-setting bit 2 of the MSR_IA32_DEBUGCTL. Expose the CPUID to guest and
-emulate the MSR handling when guest enables it.
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since SVM already has specific handlers of MSR_IA32_DEBUGMSR in the
-svm_get/set_msr, move x86 commmon part to VMX and add the bus lock debug
-exception support.
+On Tue 2021-02-02 09:59:11, Abel Wu wrote:
+>=20
+>=20
+> > On Feb 1, 2021, at 6:52 PM, Pavel Machek <pavel@ucw.cz> wrote:
+> >=20
+> > On Mon 2021-02-01 02:50:41, Abel Wu wrote:
+> >> The @power_kobj is initialized in pm_init() which is the same
+> >> initcall level as pm_disk_init(). Although this dependency is
+> >> guaranteed based on the current initcall serial execution model,
+> >> it would still be better do a cost-less sanity check to avoid
+> >> oops once the dependency is broken.
+> >=20
+> > I don't believe this is good idea. If the dependency is ever broken,
+> > this will make failure more subtle and harder to debug.
+>=20
+> Thanks for reviewing. I think the cmdline parameter initcall_debug will
+> help in this case.
+> Actually we are trying to make initcalls being called asynchronously to
+> reduce boot time which is crucial to our cloud-native business. And we
+> resolve this kind of dependencies by retrying failed initcalls.
 
-Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
----
- arch/x86/kvm/cpuid.c   |  3 ++-
- arch/x86/kvm/vmx/vmx.c | 23 +++++++++++++++++++++--
- arch/x86/kvm/x86.c     | 16 ++--------------
- arch/x86/kvm/x86.h     |  2 ++
- 4 files changed, 27 insertions(+), 17 deletions(-)
+And this patch is okay if that gets mainlined, but not before.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 13036cf0b912..ea7c593794d2 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -402,7 +402,8 @@ void kvm_set_cpu_caps(void)
- 		F(AVX512VBMI) | F(LA57) | F(PKU) | 0 /*OSPKE*/ | F(RDPID) |
- 		F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
- 		F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
--		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/
-+		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
-+		F(BUS_LOCK_DETECT)
- 	);
- 	/* Set LA57 based on hardware capability. */
- 	if (cpuid_ecx(7) & F(LA57))
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index ae79284e6199..e1d2b5db1179 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -147,6 +147,9 @@ module_param(allow_smaller_maxphyaddr, bool, S_IRUGO);
- 	RTIT_STATUS_ERROR | RTIT_STATUS_STOPPED | \
- 	RTIT_STATUS_BYTECNT))
- 
-+#define MSR_VMX_SUPPORTED_DEBUGCTL (DEBUGCTLMSR_LBR | \
-+	DEBUGCTLMSR_BTF | DEBUGCTLMSR_BUS_LOCK_DETECT)
-+
- /*
-  * List of MSRs that can be directly passed to the guest.
-  * In addition to these x2apic and PT MSRs are handled specially.
-@@ -1924,6 +1927,9 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
- 			return 1;
- 		goto find_uret_msr;
-+	case MSR_IA32_DEBUGCTLMSR:
-+		msr_info->data = vmcs_read64(GUEST_IA32_DEBUGCTL);
-+		break;
- 	default:
- 	find_uret_msr:
- 		msr = vmx_find_uret_msr(vmx, msr_info->index);
-@@ -2002,9 +2008,22 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 						VM_EXIT_SAVE_DEBUG_CONTROLS)
- 			get_vmcs12(vcpu)->guest_ia32_debugctl = data;
- 
--		ret = kvm_set_msr_common(vcpu, msr_info);
--		break;
-+		if (data & ~MSR_VMX_SUPPORTED_DEBUGCTL)
-+			return 1;
- 
-+		if (!msr_info->host_initiated &&
-+		    (data & DEBUGCTLMSR_BUS_LOCK_DETECT) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_BUS_LOCK_DETECT))
-+			return 1;
-+
-+		if (data & (DEBUGCTLMSR_BTF|DEBUGCTLMSR_LBR)) {
-+			if (report_ignored_msrs)
-+				vcpu_unimpl(vcpu, "%s: BTF|LBR in IA32_DEBUGCTLMSR 0x%llx, nop\n",
-+					    __func__, data);
-+			data &= ~(DEBUGCTLMSR_BTF|DEBUGCTLMSR_LBR);
-+		}
-+		vmcs_write64(GUEST_IA32_DEBUGCTL, data);
-+		return 0;
- 	case MSR_IA32_BNDCFGS:
- 		if (!kvm_mpx_supported() ||
- 		    (!msr_info->host_initiated &&
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e149cb2c921c..0e66acffa2e9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -116,8 +116,9 @@ EXPORT_SYMBOL_GPL(kvm_x86_ops);
- static bool __read_mostly ignore_msrs = 0;
- module_param(ignore_msrs, bool, S_IRUGO | S_IWUSR);
- 
--static bool __read_mostly report_ignored_msrs = true;
-+bool __read_mostly report_ignored_msrs = true;
- module_param(report_ignored_msrs, bool, S_IRUGO | S_IWUSR);
-+EXPORT_SYMBOL_GPL(report_ignored_msrs);
- 
- unsigned int min_timer_period_us = 200;
- module_param(min_timer_period_us, uint, S_IRUGO | S_IWUSR);
-@@ -3071,18 +3072,6 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		}
- 		break;
--	case MSR_IA32_DEBUGCTLMSR:
--		if (!data) {
--			/* We support the non-activated case already */
--			break;
--		} else if (data & ~(DEBUGCTLMSR_LBR | DEBUGCTLMSR_BTF)) {
--			/* Values other than LBR and BTF are vendor-specific,
--			   thus reserved and should throw a #GP */
--			return 1;
--		} else if (report_ignored_msrs)
--			vcpu_unimpl(vcpu, "%s: MSR_IA32_DEBUGCTLMSR 0x%llx, nop\n",
--				    __func__, data);
--		break;
- 	case 0x200 ... 0x2ff:
- 		return kvm_mtrr_set_msr(vcpu, msr, data);
- 	case MSR_IA32_APICBASE:
-@@ -3355,7 +3344,6 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	switch (msr_info->index) {
- 	case MSR_IA32_PLATFORM_ID:
- 	case MSR_IA32_EBL_CR_POWERON:
--	case MSR_IA32_DEBUGCTLMSR:
- 	case MSR_IA32_LASTBRANCHFROMIP:
- 	case MSR_IA32_LASTBRANCHTOIP:
- 	case MSR_IA32_LASTINTFROMIP:
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index c5ee0f5ce0f1..f13aa386e536 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -296,6 +296,8 @@ extern int pi_inject_timer;
- 
- extern struct static_key kvm_no_apic_vcpu;
- 
-+extern bool report_ignored_msrs;
-+
- static inline u64 nsec_to_cycles(struct kvm_vcpu *vcpu, u64 nsec)
- {
- 	return pvclock_scale_delta(nsec, vcpu->arch.virtual_tsc_mult,
--- 
-2.17.1
+Best regards,
+							Pavel
+						=09
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAZFbMACgkQMOfwapXb+vKMsACfemy1Qj83ceejJNSRQ4aSJqaC
+aO0An2VkofaLO9/WlKkHvZWeT5mGsj//
+=nUX3
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
