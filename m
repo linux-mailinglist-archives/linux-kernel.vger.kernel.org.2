@@ -2,562 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BD230C746
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3425630C748
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237353AbhBBRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:15:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237024AbhBBRNI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:13:08 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9563FC061573;
-        Tue,  2 Feb 2021 09:12:28 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id f1so29054646lfu.3;
-        Tue, 02 Feb 2021 09:12:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uShyWR3MNmvXVDpkE0D46LY+ORkDVqS/Qa6mLsHQbmA=;
-        b=GGkMLzVNfZnjg41kzwybogaLKTyd50iu58ydKhc9p7VnR5hAzjFSVXwhfEDOgSd4wz
-         IF9iB16wzH/seyfemK9Tc43fXWrq2rdWj7eZP2PlOwkW+1OGeAge09/+/bjT+9uktsrI
-         HQcxjRdK8jVsGU8rlrkGydEDXjDcsTeomek/5D+wXcnPWhu2g/EW0SM1cZgK93acTRNv
-         pIuRF0WQMMdeYtVrAE5M8LXkejvjdOAL75Urno2AiH4PxPdtIvRrBF65Js9C6F9T1Egt
-         bIafcD+gdpI44KVxqFM3gqDzddXdsDiJCkLWfmVk7jG86RWX3FQv9Yt6n5wk5MOeBlew
-         edfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uShyWR3MNmvXVDpkE0D46LY+ORkDVqS/Qa6mLsHQbmA=;
-        b=arU0yhWaWBZuJ11NRqVDgIltc83ZfFQfEUXpJX6AztwqFR+4tG0/hUAeAAqPsczOvy
-         SY3Ro6RGfLWeAYBMzp1ykZMn+XQ+vK7+k4J64aM46sHx4fK0akoteUmcg0m52z8FUdL5
-         UpBBsacUsAQBh5Ef6djXKhXHHrIwlFzi5jHrQiFzehY2ZO5JLnxuHptJVeqUa4UBJMce
-         K0O3/hM6Mv4J/TuHCYOZymbocPv1xCDlhv8+ieGuQD3TJKKEpJhnQQ0l+Jkv+tZRJegs
-         98FgH2rswHWENEtIALhotSqayphK8YfleFJjmV7lrAr/C5M0fVt+dT/YcDrLcauF7hvC
-         XXCQ==
-X-Gm-Message-State: AOAM531L9wBACEavNz4n4dAZNqQnisbvDhb3qTOXYIL9G7dyQrlyB//H
-        TiS4OEca54wG6N1RW6EXUOwMtIXRCjQ=
-X-Google-Smtp-Source: ABdhPJyxUmatK38o8ykTXLx7DqtE30aaaFBQp8V5TivEquQQBlTpx5wu3jwd8mxQna+whhJKKyd/jg==
-X-Received: by 2002:a05:6512:44e:: with SMTP id y14mr11062321lfk.603.1612285946235;
-        Tue, 02 Feb 2021 09:12:26 -0800 (PST)
-Received: from [192.168.1.36] (88-114-221-222.elisa-laajakaista.fi. [88.114.221.222])
-        by smtp.gmail.com with ESMTPSA id v2sm1682162lft.4.2021.02.02.09.12.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 09:12:25 -0800 (PST)
-Subject: Re: [PATCH v24 00/25] LSM: Module stacking for AppArmor
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org
-References: <20210126164108.1958-1-casey.ref@schaufler-ca.com>
- <20210126164108.1958-1-casey@schaufler-ca.com>
- <31ba0fe7-afdf-8f7d-e7a7-8f15d8c690a4@gmail.com>
- <c810406d-2197-9529-a8cb-2f289e9c248c@schaufler-ca.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <c5c40a66-b36d-73ab-6c92-f4d1f5f4ad35@gmail.com>
-Date:   Tue, 2 Feb 2021 19:12:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S237284AbhBBRP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:15:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236178AbhBBRNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:13:36 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD5B864F87;
+        Tue,  2 Feb 2021 17:12:55 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6zET-00BYvb-E7; Tue, 02 Feb 2021 17:12:53 +0000
 MIME-Version: 1.0
-In-Reply-To: <c810406d-2197-9529-a8cb-2f289e9c248c@schaufler-ca.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Feb 2021 17:12:53 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v7 2/3] arm64: kvm: Introduce MTE VCPU feature
+In-Reply-To: <20210115152811.8398-3-steven.price@arm.com>
+References: <20210115152811.8398-1-steven.price@arm.com>
+ <20210115152811.8398-3-steven.price@arm.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <0c0adbcd250690f703ac4a28faf99263@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.2.2021 17.30, Casey Schaufler wrote:
-> On 2/2/2021 4:05 AM, Topi Miettinen wrote:
->> On 26.1.2021 18.40, Casey Schaufler wrote:
->>> This patchset provides the changes required for
->>> the AppArmor security module to stack safely with any other.
->>
->> In my test, when kernel command line has apparmor before selinux in lsm= entry, the boot is not successful with enforcing=1:
->> systemd[1]: Failed to compute init label, ignoring.
->> systemd[1]: Failed to set SELinux security context system_u:object_r:cgroup_t:s0 for /sys/fs/cgroup: Invalid argument
->> systemd[1]: Failed to set SELinux security context system_u:object_r:pstore_t:s0 for /sys/fs/pstore: Invalid argument
->> systemd[1]: Failed to set SELinux security context system_u:object_r:sysfs_t:s0 for /sys/firmware/efi/efivars: Invalid argument
->> ...
->> Failed to drop capability bounding set of usermode helpers: Operation not permitted
->> Failed to drop capability bounding set of usermode helpers.
->> systemd[1]: Freezing execution.
+On 2021-01-15 15:28, Steven Price wrote:
+> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
+> for a VM. This exposes the feature to the guest and automatically tags
+> memory pages touched by the VM as PG_mte_tagged (and clears the tags
+> storage) to ensure that the guest cannot see stale tags, and so that 
+> the
+> tags are correctly saved/restored across swap.
 > 
-> Systemd has extensive support for SELinux. That's good.
-> It doesn't have an understanding of what needs to be done
-> if SELinux is active but not the default security module
-> for interfaces including SO_PEERSEC and /proc/*/attr/*.
-> That's going to take some work.
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_emulate.h |  3 +++
+>  arch/arm64/include/asm/kvm_host.h    |  3 +++
+>  arch/arm64/include/asm/pgtable.h     |  2 +-
+>  arch/arm64/kernel/mte.c              | 36 +++++++++++++++++-----------
+>  arch/arm64/kvm/arm.c                 |  9 +++++++
+>  arch/arm64/kvm/hyp/exception.c       |  3 ++-
+>  arch/arm64/kvm/mmu.c                 | 16 +++++++++++++
+>  arch/arm64/kvm/sys_regs.c            |  6 ++++-
+>  include/uapi/linux/kvm.h             |  1 +
+>  9 files changed, 62 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h
+> b/arch/arm64/include/asm/kvm_emulate.h
+> index f612c090f2e4..6bf776c2399c 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu 
+> *vcpu)
+>  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
+>  	    vcpu_el1_is_32bit(vcpu))
+>  		vcpu->arch.hcr_el2 |= HCR_TID2;
+> +
+> +	if (kvm_has_mte(vcpu->kvm))
+> +		vcpu->arch.hcr_el2 |= HCR_ATA;
+>  }
+> 
+>  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+> diff --git a/arch/arm64/include/asm/kvm_host.h
+> b/arch/arm64/include/asm/kvm_host.h
+> index 51590a397e4b..1ca5785fb0e9 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -132,6 +132,8 @@ struct kvm_arch {
+> 
+>  	u8 pfr0_csv2;
+>  	u8 pfr0_csv3;
+> +	/* Memory Tagging Extension enabled for the guest */
+> +	bool mte_enabled;
+>  };
+> 
+>  struct kvm_vcpu_fault_info {
+> @@ -749,6 +751,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu 
+> *vcpu);
+>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+> 
+> +#define kvm_has_mte(kvm) (system_supports_mte() && 
+> (kvm)->arch.mte_enabled)
+>  #define kvm_vcpu_has_pmu(vcpu)					\
+>  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h 
+> b/arch/arm64/include/asm/pgtable.h
+> index 501562793ce2..27416d52f6a9 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct
+> *mm, unsigned long addr,
+>  		__sync_icache_dcache(pte);
+> 
+>  	if (system_supports_mte() &&
+> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
+>  		mte_sync_tags(ptep, pte);
 
-Ok. What will be the replacement for SO_PEERSEC? Systemd calls 
-getsockopt(fd, SOL_SOCKET, SO_PEERSEC, s, &n).
-
-Is the /proc part something that should be fixed on systemd side, or can 
-perhaps the SELinux libraries hide this from applications?
-
-> 
->>
->> Probably SELinux libraries can't find or set the labels for the PID1 or any file systems. Before the init label message, systemd calls getcon_raw(), getfilecon_raw(), string_to_security_class() and security_compute_create_raw(), so one of these don't understand the LSM stacking.
-> 
-> That is correct.
-> 
->>
->> Also the policy needs updating to handle process2:setdisplay:
->> SELinux:  Permission setdisplay in class process2 not defined in policy.
->> SELinux: the above unknown classes and permissions will be denied
->>
->> With enforcing=0, many services start, but for example systemd-journald doesn't. This is probably related to the earlier problem with labels (maybe libraries try to use SELinux labels where kernel wants AppArmor profiles):
->> systemd[1]: Failed to set SELinux security context system_u:object_r:init_runtime_t:s0 for /run/systemd/units/invocation:systemd-user-sessions.service: Invalid argument
-> 
-> This is also an artifact of systemd seeing AppArmor information
-> instead of SELinux contexts.
-
-Will SELinux libraries choose automatically the correct way to set 
-labels in the future?
-
->>
->> Switching the order so that apparmor is after selinux, boot is successful. Loading AppArmor profiles needs a permission from SELinux:
->>
->> Feb 02 08:53:15 audit[963]: AVC avc:  denied  { mac_admin } for  pid=963 comm="apparmor_parser" capability=33 scontext=system_u:system_r:initrc_t:s0 tcontext=system_u:system_r:initrc_t:s0 tclass=capability2 permissive=0
->> Feb 02 08:53:15 audit[963]: AVC apparmor="STATUS" operation="profile_replace" info="not policy admin" error=-13 profile="unconfined" pid=963 comm="apparmor_parser"
->> Feb 02 08:53:15 audit: AUDIT1420 subj_selinux=system_u:system_r:initrc_t:s0 subj_apparmor==unconfined
->> Feb 02 08:53:15 audit[963]: SYSCALL arch=c000003e syscall=1 success=no exit=-13 a0=7 a1=7a8f2ff04f80 a2=1e09 a3=0 items=0 ppid=961 pid=963 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm="apparmor_parser" exe="/usr/sbin/apparmor_parser" subj=? key=(null)
->> Feb 02 08:53:15 audit: PROCTITLE proctitle=2F7362696E2F61707061726D6F725F706172736572002D2D77726974652D6361636865002D2D7265706C616365002D2D002F6574632F61707061726D6F722E64
->> Feb 02 08:53:15 apparmor.systemd[963]: /sbin/apparmor_parser: Unable to replace "/lib/systemd/systemd-resolved".  Permission denied; attempted to load a profile while confined?
->>
->> This just seems to need TE rules for the apparmor_parser.
->>
->> Double equal sign in subj_apparmor==unconfined looks odd, should that be just one like subj_selinux?
-> 
-> The audit code is reporting what AppArmor provides.
-> I agree that this looks odd.
-> 
->>
->>
->> Tools like ps, and KDE and Gnome System Monitors only show SELinux context, but it would be nice if MAC contexts for all enabled LSMs were shown.
-> 
-> I agree. How this should be done has been a topic of
-> lively debate for some time.
-> 
->>
->> -Topi
-> 
-> Thank you for this report. Which distribution are you using?
-> I have been testing with Fedora (SELinux + AppArmor) and Ubuntu
-> (AppArmor + Smack). I would be very interested to see how a
-> distribution that doesn't use systemd behaves.
-
-This is Debian with systemd, I'm using SELinux + TOMOYO + AppArmor.
-
--Topi
+Care to elaborate on this change?
 
 > 
->>
->>>
->>> v24: Rebase to 5.11-rc1
->>>        Incorporate feedback from v23
->>>        - Address the IMA team's concerns about "label collisions".
->>>          A label collision occurs when there is ambiguity about
->>>          which of multiple LSMs is being targeted in the definition
->>>          of an integrity check rule.  A system with Smack and
->>>          AppArmor would be unable to distinguish which LSM is
->>>          important to an integrity rule referrencing the label
->>>          "unconfined" as that label is meaningful to both.
->>>          Provide a boot option to specify which LSM will be used in
->>>          IMA rules when multiple LSMs are present. (patch 04)
->>>          Pull LSM "slot" identification from later audit patches in
->>>          in support of this (patch 03).
->>>        - Pick up a few audit events that need to include supplimental
->>>          subject context records that had been missed in the
->>>          previous version.
->>> v23: Rebase to 5.10-rc4
->>>        Incorporate feedback from v22
->>>        - Change /proc/*/attr/display to /proc/*/attr/interface_lsm to
->>>          make the purpose clearer. (patch 0012)
->>>        - Include ABI documentation. (patch 0012, 0022)
->>>        - Introduce LSM documentation updates with the patches where
->>>          the interfaces are added rather than at the end. (patch 0012, 0022)
->>>        Include more maintainers and mail lists in To: and Cc: directives.
->>> v22: Rebase to 5.10-rc1
->>> v21: Rebase to 5.9-rc4
->>>        Incorporate feedback from v20
->>>        - Further revert UDS SO_PEERSEC to use scaffolding around
->>>          the interfaces that use lsmblobs and store only a single
->>>          secid. The possibility of multiple security modules
->>>          requiring data here is still a future problem.
->>>        - Incorporate Richard Guy Briggs' non-syscall auxiliary
->>>          records patch (patch 0019-0021) in place of my "supplimental"
->>>          records implementation. [I'm not sure I've given proper
->>>          attestation. I will correct as appropriate]
->>> v20: Rebase to 5.9-rc1
->>>        Change the BPF security module to use the lsmblob data. (patch 0002)
->>>        Repair length logic in subject label processing (patch 0015)
->>>        Handle -EINVAL from the empty BPF setprocattr hook (patch 0020)
->>>        Correct length processing in append_ctx() (patch 0022)
->>> v19: Rebase to 5.8-rc6
->>>        Incorporate feedback from v18
->>>        - Revert UDS SO_PEERSEC implementation to use lsmblobs
->>>          directly, rather than allocating as needed. The correct
->>>          treatment of out-of-memory conditions in the later case
->>>          is difficult to define. (patch 0005)
->>>        - Use a size_t in append_ctx() (patch 0021)
->>>        - Fix a memory leak when creating compound contexts. (patch 0021)
->>>        Fix build error when CONFIG_SECURITY isn't set (patch 0013)
->>>        Fix build error when CONFIG_SECURITY isn't set (patch 0020)
->>>        Fix build error when CONFIG_SECURITY isn't set (patch 0021)
->>> v18: Rebase to 5.8-rc3
->>>        Incorporate feedback from v17
->>>        - Null pointer checking in UDS (patch 0005)
->>>        Match changes in IMA code (patch 0012)
->>>        Fix the behavior of LSM context supplimental audit
->>>        records so that there's always exactly one when it's
->>>        appropriate for there to be one. This is a substantial
->>>        change that requires extention of the audit_context beyond
->>>        syscall events. (patch 0020)
->>> v17: Rebase to 5.7-rc4
->>> v16: Rebase to 5.6
->>>        Incorporate feedback from v15 - Thanks Stephen, Mimi and Paul
->>>        - Generally improve commit messages WRT scaffolding
->>>        - Comment ima_lsm_isset() (patch 0002)
->>>        - Some question may remain on IMA warning (patch 0002)
->>>        - Mark lsm_slot as __lsm_ro_after_init not __init_data (patch 0002)
->>>        - Change name of lsmblob variable in ima_match_rules() (patch 0003)
->>>        - Instead of putting a struct lsmblob into the unix_skb_parms
->>>          structure put a pointer to an allocated instance. There is
->>>          currently only space for 5 u32's in unix_skb_parms and it is
->>>          likely to get even tighter. Fortunately, the lifecycle
->>>          management of the allocated lsmblob is simple. (patch 0005)
->>>        - Dropped Acks due to the above change (patch 0005)
->>>        - Improved commentary on secmark labeling scaffolding. (patch 0006)
->>>        - Reduced secmark related labeling scaffolding. (patch 0006)
->>>        - Replace use of the zeroth entry of an lsmblob in scaffolding
->>>          with a function lsmblob_value() to hopefully make it less
->>>          obscure. (patch 0006)
->>>        - Convert security_secmark_relabel_packet to use lsmblob as
->>>          this reduces much of the most contentious scaffolding. (patch 0006)
->>>        - Dropped Acks due to the above change (patch 0006)
->>>        - Added BUILD_BUG_ON() for CIPSO tag 6. (patch 0018)
->>>        - Reworked audit subject information. Instead of adding fields in
->>>          the middle of existing records add a new record to the event. When
->>>          a separate record is required use subj="?". (patch 0020)
->>>        - Dropped Acks due to the above change (patch 0020)
->>>        - Reworked audit object information. Instead of adding fields in
->>>          the middle of existing records add a new record to the event. When
->>>          a separate record is required use obj="?". (patch 0021)
->>>        - Dropped Acks due to the above change (patch 0021)
->>>        - Enhanced documentation (patch 0022)
->>>        - Removed unnecessary error code check in security_getprocattr()
->>>          (patch 0021)
->>> v15: Rebase to 5.6-rc1
->>>        - Revise IMA data use (patch 0002)
->>>        Incorporate feedback from v14
->>>        - Fix lockdown module registration naming (patch 0002)
->>>        - Revise how /proc/self/attr/context is gathered. (patch 0022)
->>>        - Revise access modes on /proc/self/attr/context. (patch 0022)
->>>        - Revise documentation on LSM external interfaces. (patch 0022)
->>> v14: Rebase to 5.5-rc5
->>>        Incorporate feedback from v13
->>>        - Use an array of audit rules (patch 0002)
->>>        - Significant change, removed Acks (patch 0002)
->>>        - Remove unneeded include (patch 0013)
->>>        - Use context.len correctly (patch 0015)
->>>        - Reorder code to be more sensible (patch 0016)
->>>        - Drop SO_PEERCONTEXT as it's not needed yet (patch 0023)
->>> v13: Rebase to 5.5-rc2
->>>        Incorporate feedback from v12
->>>        - Print lsmblob size with %z (Patch 0002)
->>>        - Convert lockdown LSM initialization. (Patch 0002)
->>>        - Restore error check in nft_secmark_compute_secid (Patch 0006)
->>>        - Correct blob scaffolding in ima_must_appraise() (Patch 0009)
->>>        - Make security_setprocattr() clearer (Patch 0013)
->>>        - Use lsm_task_display more widely (Patch 0013)
->>>        - Use passed size in lsmcontext_init() (Patch 0014)
->>>        - Don't add a smack_release_secctx() hook (Patch 0014)
->>>        - Don't print warning in security_release_secctx() (Patch 0014)
->>>        - Don't duplicate the label in nfs4_label_init_security() (Patch 0016)
->>>        - Remove reviewed-by as code has significant change (Patch 0016)
->>>        - Send the entire lsmblob for Tag 6 (Patch 0019)
->>>        - Fix description of socket_getpeersec_stream parameters (Patch 0023)
->>>        - Retain LSMBLOB_FIRST. What was I thinking? (Patch 0023)
->>>        - Add compound context to LSM documentation (Patch 0023)
->>> v12: Rebase to 5.5-rc1
->>>        Fixed a couple of incorrect contractions in the text.
->>> v11: Rebase to 5.4-rc6
->>>        Incorporate feedback from v10
->>>        - Disambiguate reading /proc/.../attr/display by restricting
->>>          all use of the interface to the current process.
->>>        - Fix a merge error in AppArmor's display attribute check
->>> v10: Ask the security modules if the display can be changed.
->>> v9: There is no version 9
->>> v8: Incorporate feedback from v7
->>>       - Minor clean-up in display value management
->>>       - refactor "compound" context creation to use a common
->>>         append_ctx() function.
->>> v7: Incorporate feedback from v6
->>>       - Make setting the display a privileged operation. The
->>>         availability of compound contexts reduces the need for
->>>         setting the display.
->>> v6: Incorporate feedback from v5
->>>       - Add subj_<lsm>= and obj_<lsm>= fields to audit records
->>>       - Add /proc/.../attr/context to get the full context in
->>>         lsmname\0value\0... format as suggested by Simon McVittie
->>>       - Add SO_PEERCONTEXT for getsockopt() to get the full context
->>>         in the same format, also suggested by Simon McVittie.
->>>       - Add /sys/kernel/security/lsm_display_default to provide
->>>         the display default value.
->>> v5: Incorporate feedback from v4
->>>       - Initialize the lsmcontext in security_secid_to_secctx()
->>>       - Clear the lsmcontext in all security_release_secctx() cases
->>>       - Don't use the "display" on strictly internal context
->>>         interfaces.
->>>       - The SELinux binder hooks check for cases where the context
->>>         "display" isn't compatible with SELinux.
->>> v4: Incorporate feedback from v3
->>>       - Mark new lsm_<blob>_alloc functions static
->>>       - Replace the lsm and slot fields of the security_hook_list
->>>         with a pointer to a LSM allocated lsm_id structure. The
->>>         LSM identifies if it needs a slot explicitly. Use the
->>>         lsm_id rather than make security_add_hooks return the
->>>         slot value.
->>>       - Validate slot values used in security.c
->>>       - Reworked the "display" process attribute handling so that
->>>         it works right and doesn't use goofy list processing.
->>>       - fix display value check in dentry_init_security
->>>       - Replace audit_log of secids with '?' instead of deleting
->>>         the audit log
->>> v3: Incorporate feedback from v2
->>>       - Make lsmblob parameter and variable names more
->>>         meaningful, changing "le" and "l" to "blob".
->>>       - Improve consistency of constant naming.
->>>       - Do more sanity checking during LSM initialization.
->>>       - Be a bit clearer about what is temporary scaffolding.
->>>       - Rather than clutter security_getpeersec_dgram with
->>>         otherwise unnecessary checks remove the apparmor
->>>         stub, which does nothing useful.
->>>
->>> Patch 01 moves management of the sock security blob
->>> from the individual modules to the infrastructure.
->>>
->>> Patches 02-03 introduce a structure "lsmblob" that will gradually
->>> replace the "secid" as a shorthand for security module information.
->>> At this point lsmblob contains an array of u32 secids, one "slot"
->>> for each of the security modules compiled into the kernel that
->>> used secids. A "slot" is allocated when a security module requests
->>> one.
->>>
->>> Patch 04 provides mechanism for the IMA subsystem to identify
->>> explicitly which LSM is subject to IMA policy. This includes
->>> a boot option for specifying the default and an additional option
->>> in IMA rules "lsm=".
->>>
->>> Patches 05-13 change LSM interfaces to use the lsmblob instead
->>> of secids. It is important that the lsmblob be a fixed size entity
->>> that does not have to be allocated. Several of the places
->>> where it is used would have performance and/or locking
->>> issues with dynamic allocation.
->>>
->>> Patch 14 provides a mechanism for a process to identify which
->>> security module's hooks should be used when displaying or
->>> converting a security context string.  A new interface
->>> /proc/self/attr/interface_lsm contains the name of the security
->>> module to show. Reading from this file will present the name of
->>> the module, while writing to it will set the value. Only names
->>> of active security modules are accepted. Internally, the name
->>> is translated to the appropriate "slot" number for the module
->>> which is then stored in the task security blob. Setting the
->>> display requires that all modules using the /proc interfaces
->>> allow the transition. The interface LSM of other processess
->>> can be neither read nor written. All suggested cases for
->>> reading the interface LSM of a different process have race
->>> conditions.
->>>
->>> Patch 15 Starts the process of changing how a security
->>> context is represented. Since it is possible for a
->>> security context to have been generated by more than one
->>> security module it is now necessary to note which module
->>> created a security context so that the correct "release"
->>> hook can be called. There are several places where the
->>> module that created a security context cannot be inferred.
->>>
->>> This is achieved by introducing a "lsmcontext" structure
->>> which contains the context string, its length and the
->>> "slot" number of the security module that created it.
->>> The security_release_secctx() interface is changed,
->>> replacing the (string,len) pointer pair with a lsmcontext
->>> pointer.
->>>
->>> Patches 16-18 convert the security interfaces from
->>> (string,len) pointer pairs to a lsmcontext pointer.
->>> The slot number identifying the creating module is
->>> added by the infrastructure. Where the security context
->>> is stored for extended periods the data type is changed.
->>>
->>> The Netlabel code is converted to save lsmblob structures
->>> instead of secids in Patch 19. This is not strictly
->>> necessary as there can only be one security module that
->>> uses Netlabel at this point. Using a lsmblob is much
->>> cleaner, as the interfaces that use the data have all
->>> been converted.
->>>
->>> Patch 20 adds checks to the binder hooks which verify
->>> that both ends of a transaction use the same interface LSM.
->>>
->>> Patches 21-23 add addition audit records for subject and
->>> object LSM data when there are multiple security modules
->>> with such data. The AUDIT_MAC_TASK_CONTEXTS record is used
->>> in conjuction with a "subj=?" field to identify the subject
->>> data. The AUDIT_MAC_OBJ_CONTEXTS record is used in conjuction
->>> with a "obj=?" field to identify the object data.  The
->>> AUDIT_MAC_TASK_CONTEXTS record identifies the security module
->>> with the data: "subj_selinux=xyz_t subj_apparmor=abc". The
->>> AUDIT_MAC_OBJ_CONTEXTS record identifies the security module
->>> with the data: "obj_selinux=xyz_t obj_apparmor=abc".  While
->>> AUDIT_MAC_TASK_CONTEXTS records will always contain an entry
->>> for each possible security modules, AUDIT_MAC_OBJ_CONTEXTS
->>> records will only contain entries for security modules for
->>> which the object in question has data.
->>>
->>> An example of the MAC_TASK_CONTEXTS (1420) record is:
->>>
->>>       type=UNKNOWN[1420]
->>>       msg=audit(1600880931.832:113)
->>>       subj_apparmor==unconfined
->>>       subj_smack=_
->>>
->>> An example of the MAC_OBJ_CONTEXTS (1421) record is:
->>>
->>>       type=UNKNOWN[1421]
->>>       msg=audit(1601152467.009:1050):
->>>       obj_selinux=unconfined_u:object_r:user_home_t:s0
->>>
->>> Patch 24 adds a new interface for getting the compound security
->>> contexts, /proc/self/attr/context.  An example of the content
->>> of this file is:
->>>
->>>       selinux\0one_u:one_r:one_t:s0-s0:c0.c1023\0apparmor\0unconfined\0
->>>
->>> Finally, with all interference on the AppArmor hooks removed,
->>> Patch 25 removes the exclusive bit from AppArmor. An unnecessary
->>> stub hook was also removed.
->>>
->>> The Ubuntu project is using an earlier version of this patchset in
->>> their distribution to enable stacking for containers.
->>>
->>> Performance measurements to date have the change within the "noise".
->>> The sockperf and dbench results are on the order of 0.2% to 0.8%
->>> difference, with better performance being as common as worse. The
->>> benchmarks were run with AppArmor and Smack on Ubuntu.
->>>
->>> https://github.com/cschaufler/lsm-stacking.git#stack-5.11-rc1-v24
->>>
->>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->>>
->>>
->>> Casey Schaufler (25):
->>>     LSM: Infrastructure management of the sock security
->>>     LSM: Add the lsmblob data structure.
->>>     LSM: provide lsm name and id slot mappings
->>>     IMA: avoid label collisions with stacked LSMs
->>>     LSM: Use lsmblob in security_audit_rule_match
->>>     LSM: Use lsmblob in security_kernel_act_as
->>>     LSM: Use lsmblob in security_secctx_to_secid
->>>     LSM: Use lsmblob in security_secid_to_secctx
->>>     LSM: Use lsmblob in security_ipc_getsecid
->>>     LSM: Use lsmblob in security_task_getsecid
->>>     LSM: Use lsmblob in security_inode_getsecid
->>>     LSM: Use lsmblob in security_cred_getsecid
->>>     IMA: Change internal interfaces to use lsmblobs
->>>     LSM: Specify which LSM to display
->>>     LSM: Ensure the correct LSM context releaser
->>>     LSM: Use lsmcontext in security_secid_to_secctx
->>>     LSM: Use lsmcontext in security_inode_getsecctx
->>>     LSM: security_secid_to_secctx in netlink netfilter
->>>     NET: Store LSM netlabel data in a lsmblob
->>>     LSM: Verify LSM display sanity in binder
->>>     audit: add support for non-syscall auxiliary records
->>>     Audit: Add new record for multiple process LSM  attributes
->>>     Audit: Add a new record for multiple object LSM attributes
->>>     LSM: Add /proc attr entry for full LSM context
->>>     AppArmor: Remove the exclusive flag
->>>
->>>    Documentation/ABI/testing/ima_policy          |   8 +-
->>>    Documentation/ABI/testing/procfs-attr-context |  14 +
->>>    .../ABI/testing/procfs-attr-lsm_display       |  22 +
->>>    Documentation/security/lsm.rst                |  28 +
->>>    drivers/android/binder.c                      |  26 +-
->>>    fs/ceph/xattr.c                               |   6 +-
->>>    fs/nfs/nfs4proc.c                             |   8 +-
->>>    fs/nfsd/nfs4xdr.c                             |  20 +-
->>>    fs/proc/base.c                                |   2 +
->>>    include/linux/audit.h                         |  43 +-
->>>    include/linux/cred.h                          |   3 +-
->>>    include/linux/lsm_hooks.h                     |  36 +-
->>>    include/linux/security.h                      | 185 +++++-
->>>    include/net/netlabel.h                        |  11 +-
->>>    include/net/scm.h                             |  15 +-
->>>    include/net/xfrm.h                            |  13 +-
->>>    include/uapi/linux/audit.h                    |   2 +
->>>    kernel/audit.c                                | 175 ++++--
->>>    kernel/audit.h                                |  11 +-
->>>    kernel/auditfilter.c                          |  36 +-
->>>    kernel/auditsc.c                              | 191 +++---
->>>    kernel/cred.c                                 |  12 +-
->>>    net/ipv4/cipso_ipv4.c                         |  26 +-
->>>    net/ipv4/ip_sockglue.c                        |  12 +-
->>>    net/netfilter/nf_conntrack_netlink.c          |  24 +-
->>>    net/netfilter/nf_conntrack_standalone.c       |  11 +-
->>>    net/netfilter/nfnetlink_queue.c               |  38 +-
->>>    net/netfilter/nft_meta.c                      |  10 +-
->>>    net/netfilter/xt_SECMARK.c                    |   7 +-
->>>    net/netlabel/netlabel_domainhash.c            |   4 +-
->>>    net/netlabel/netlabel_kapi.c                  |   6 +-
->>>    net/netlabel/netlabel_unlabeled.c             | 106 ++--
->>>    net/netlabel/netlabel_unlabeled.h             |   2 +-
->>>    net/netlabel/netlabel_user.c                  |  23 +-
->>>    net/netlabel/netlabel_user.h                  |   2 +-
->>>    net/xfrm/xfrm_policy.c                        |  10 +-
->>>    net/xfrm/xfrm_state.c                         |  20 +-
->>>    security/apparmor/include/apparmor.h          |   3 +-
->>>    security/apparmor/include/net.h               |   6 +-
->>>    security/apparmor/include/procattr.h          |   2 +-
->>>    security/apparmor/lsm.c                       | 105 ++--
->>>    security/apparmor/procattr.c                  |  22 +-
->>>    security/bpf/hooks.c                          |  12 +-
->>>    security/commoncap.c                          |   7 +-
->>>    security/integrity/ima/ima.h                  |  15 +-
->>>    security/integrity/ima/ima_api.c              |  17 +-
->>>    security/integrity/ima/ima_appraise.c         |   6 +-
->>>    security/integrity/ima/ima_main.c             |  54 +-
->>>    security/integrity/ima/ima_policy.c           |  97 ++-
->>>    security/integrity/integrity_audit.c          |   6 +-
->>>    security/loadpin/loadpin.c                    |   8 +-
->>>    security/lockdown/lockdown.c                  |   7 +-
->>>    security/safesetid/lsm.c                      |   8 +-
->>>    security/security.c                           | 561 ++++++++++++++++--
->>>    security/selinux/hooks.c                      |  99 ++--
->>>    security/selinux/include/classmap.h           |   2 +-
->>>    security/selinux/include/objsec.h             |   5 +
->>>    security/selinux/include/security.h           |   1 +
->>>    security/selinux/netlabel.c                   |  25 +-
->>>    security/selinux/ss/services.c                |   4 +-
->>>    security/smack/smack.h                        |   6 +
->>>    security/smack/smack_access.c                 |   2 +-
->>>    security/smack/smack_lsm.c                    |  91 +--
->>>    security/smack/smack_netfilter.c              |   8 +-
->>>    security/smack/smackfs.c                      |  13 +-
->>>    security/tomoyo/tomoyo.c                      |   8 +-
->>>    security/yama/yama_lsm.c                      |   7 +-
->>>    67 files changed, 1741 insertions(+), 634 deletions(-)
->>>    create mode 100644 Documentation/ABI/testing/procfs-attr-context
->>>    create mode 100644 Documentation/ABI/testing/procfs-attr-lsm_display
->>>
->>
+>  	__check_racy_pte_update(mm, ptep, pte);
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index dc9ada64feed..f9e089be1603 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -25,27 +25,33 @@
+> 
+>  u64 gcr_kernel_excl __ro_after_init;
+> 
+> -static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool 
+> check_swap)
+> +static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool 
+> check_swap,
+> +			       bool pte_is_tagged)
+>  {
+>  	pte_t old_pte = READ_ONCE(*ptep);
+> 
+>  	if (check_swap && is_swap_pte(old_pte)) {
+>  		swp_entry_t entry = pte_to_swp_entry(old_pte);
+> 
+> -		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
+> +		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
+> +			set_bit(PG_mte_tagged, &page->flags);
+>  			return;
+> +		}
+>  	}
+> 
+> -	page_kasan_tag_reset(page);
+> -	/*
+> -	 * We need smp_wmb() in between setting the flags and clearing the
+> -	 * tags because if another thread reads page->flags and builds a
+> -	 * tagged address out of it, there is an actual dependency to the
+> -	 * memory access, but on the current thread we do not guarantee that
+> -	 * the new page->flags are visible before the tags were updated.
+> -	 */
+> -	smp_wmb();
+> -	mte_clear_page_tags(page_address(page));
+> +	if (pte_is_tagged) {
+> +		set_bit(PG_mte_tagged, &page->flags);
+> +		page_kasan_tag_reset(page);
+> +		/*
+> +		 * We need smp_wmb() in between setting the flags and clearing the
+> +		 * tags because if another thread reads page->flags and builds a
+> +		 * tagged address out of it, there is an actual dependency to the
+> +		 * memory access, but on the current thread we do not guarantee that
+> +		 * the new page->flags are visible before the tags were updated.
+> +		 */
+> +		smp_wmb();
+> +		mte_clear_page_tags(page_address(page));
+> +	}
+>  }
+> 
+>  void mte_sync_tags(pte_t *ptep, pte_t pte)
+> @@ -53,11 +59,13 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
+>  	struct page *page = pte_page(pte);
+>  	long i, nr_pages = compound_nr(page);
+>  	bool check_swap = nr_pages == 1;
+> +	bool pte_is_tagged = pte_tagged(pte);
+> 
+>  	/* if PG_mte_tagged is set, tags have already been initialised */
+>  	for (i = 0; i < nr_pages; i++, page++) {
+> -		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> -			mte_sync_page_tags(page, ptep, check_swap);
+> +		if (!test_bit(PG_mte_tagged, &page->flags))
+> +			mte_sync_page_tags(page, ptep, check_swap,
+> +					   pte_is_tagged);
+>  	}
+>  }
 
+This part really wants to have its own patch and be documented,
+explaining why it is still valid not to atomically test and set
+the PG_mte_tagged bit.
+
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 6e637d2b4cfb..f4c2fd2e7c49 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -97,6 +97,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  		r = 0;
+>  		kvm->arch.return_nisv_io_abort_to_user = true;
+>  		break;
+> +	case KVM_CAP_ARM_MTE:
+> +		if (!system_supports_mte() || kvm->created_vcpus)
+> +			return -EINVAL;
+> +		r = 0;
+> +		kvm->arch.mte_enabled = true;
+> +		break;
+>  	default:
+>  		r = -EINVAL;
+>  		break;
+> @@ -238,6 +244,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
+> long ext)
+>  		 */
+>  		r = 1;
+>  		break;
+> +	case KVM_CAP_ARM_MTE:
+> +		r = system_supports_mte();
+> +		break;
+>  	case KVM_CAP_STEAL_TIME:
+>  		r = kvm_arm_pvtime_supported();
+>  		break;
+> diff --git a/arch/arm64/kvm/hyp/exception.c 
+> b/arch/arm64/kvm/hyp/exception.c
+> index 73629094f903..56426565600c 100644
+> --- a/arch/arm64/kvm/hyp/exception.c
+> +++ b/arch/arm64/kvm/hyp/exception.c
+> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu
+> *vcpu, unsigned long target_mode,
+>  	new |= (old & PSR_C_BIT);
+>  	new |= (old & PSR_V_BIT);
+> 
+> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
+> +	if (kvm_has_mte(vcpu->kvm))
+> +		new |= PSR_TCO_BIT;
+> 
+>  	new |= (old & PSR_DIT_BIT);
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 7d2257cc5438..b9f9fb462de6 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu,
+> phys_addr_t fault_ipa,
+>  	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>  							   &pfn, &fault_ipa);
+> +
+> +	if (kvm_has_mte(kvm) && pfn_valid(pfn)) {
+> +		/*
+> +		 * VM will be able to see the page's tags, so we must ensure
+> +		 * they have been initialised.
+> +		 */
+> +		struct page *page = pfn_to_page(pfn);
+> +		long i, nr_pages = compound_nr(page);
+
+"unsigned long" to match the return type of compound_nr().
+
+Also, shouldn't you cap nr_pages to vma_pagesize? It could well
+be that what we end-up mapping at S2 has nothing to do with
+the view the kernel has of that page.
+
+> +
+> +		/* if PG_mte_tagged is set, tags have already been initialised */
+> +		for (i = 0; i < nr_pages; i++, page++) {
+> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> +				mte_clear_page_tags(page_address(page));
+> +		}
+> +	}
+> +
+>  	if (writable) {
+>  		prot |= KVM_PGTABLE_PROT_W;
+>  		kvm_set_pfn_dirty(pfn);
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 88d4f360949e..57e5be14f1cc 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1029,7 +1029,8 @@ static u64 read_id_reg(const struct kvm_vcpu 
+> *vcpu,
+>  		val &= ~(0xfUL << ID_AA64PFR0_CSV3_SHIFT);
+>  		val |= ((u64)vcpu->kvm->arch.pfr0_csv3 << ID_AA64PFR0_CSV3_SHIFT);
+>  	} else if (id == SYS_ID_AA64PFR1_EL1) {
+> -		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
+> +		if (!kvm_has_mte(vcpu->kvm))
+> +			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
+>  	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
+>  		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
+>  			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
+> @@ -1284,6 +1285,9 @@ static bool access_ccsidr(struct kvm_vcpu *vcpu,
+> struct sys_reg_params *p,
+>  static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+>  				   const struct sys_reg_desc *rd)
+>  {
+> +	if (kvm_has_mte(vcpu->kvm))
+> +		return 0;
+> +
+>  	return REG_HIDDEN;
+>  }
+> 
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 886802b8ffba..de737d5102ca 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1056,6 +1056,7 @@ struct kvm_ppc_resize_hpt {
+>  #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
+>  #define KVM_CAP_SYS_HYPERV_CPUID 191
+>  #define KVM_CAP_DIRTY_LOG_RING 192
+> +#define KVM_CAP_ARM_MTE 193
+> 
+>  #ifdef KVM_CAP_IRQ_ROUTING
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
