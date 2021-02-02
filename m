@@ -2,279 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1444730C7B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F4530C7C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237381AbhBBR2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:28:53 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:54524 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237302AbhBBR0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:26:40 -0500
-Received: from mailhost.synopsys.com (sv2-mailhost2.synopsys.com [10.205.2.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 563F24023A;
-        Tue,  2 Feb 2021 17:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1612286741; bh=V/v1V/xgmflYlq/oVoXoJbMcFtrzIooJbHLEOY/XB7E=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=USn8lS5Bi6PG0CgFRy6RPNAfaUOqthhJ01poDsQl+OJXkig2DPir0CqGy+jSGZosS
-         ooY/SDRbHNsE+aPsuPGa6Nhx7bd1myzKYzJDbfxY4kIDXgwNAu4Z8P57u1DWk7A9mQ
-         xxzePBl4wkVSwckp1158pIhwf/mmC5jt1YcblccMGiNh3sucD5WI6cInCB843o20/h
-         CvschAjhbqOK/+Je1c3A4ga1mpDgZvTtkUS+ciyYQQiYdW7/foNJ3Wj8NwkI0Hp0cf
-         qnGfgDVivHv8KHYTSu4NxlIDRmuBL0feIue8hB7KoPsdEa2ZlB+TkAK6IK8eMgV4aL
-         Z6189n6Re4ygQ==
-Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id F14F9A009C;
-        Tue,  2 Feb 2021 17:25:40 +0000 (UTC)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id D877C40032;
-        Tue,  2 Feb 2021 17:25:39 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Tj3E4OsO";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ncg4+3vVnDk3eJwqVhChwM6eOHBLZti7Z0lW0Bw8yh984Bu1aLrc97STcAdq3b6i7zNqSavGl6XNMBzcvw5NvhMJt6tp3O+zTYPx5HxGSFhi7KOKoXXi4FJKOkb/OQKH8DC3VFjBjGO74kqc7GgI3WX4sE2qdL2aN2Av4//sLhVh4e32KzGWKk4/zetLTibT5MCpQ2YpJ/NMWabFhGZRJ3zCxsDJQac4kqZZaiYf9jTy1dYZWS/NxZwHCPWJBfRe6vmDQ2eA8+lXXwA33VzdWwhhdvYj7/TIQbbpiRQdHT2j0PzU4ga+IIkjhsTt4Inyu3k/mULiT2/4LyBVzgeJGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V/v1V/xgmflYlq/oVoXoJbMcFtrzIooJbHLEOY/XB7E=;
- b=MY+jBGdOPaJHtFwOiemczpXVO3JAotXQeb13CGSWOxqH0Ci+Gd4caaMi5NvSdawuwe45Kb6TT5CYYIqqPuHqv0GQXy/IAcmKdwcqfMtL0ItSfeAksFAcu9y8xbrgwHoUSmoO9Y9kOxoEz3+zgzXI/4fuE20Wf8SJIcOELlZnwkYFCAunrl/lll1aDv2KQJa0PofA+qs7ikRZloaA/CrXHZ8sWrOD/tngE2D9xePpjUMFtAxt/y/NDubIRgjBJ56nB3WHYih9PLXe9DCA6k/coVA9Bhu3qsCti011Kio0oyUirNC1wwBx6K8+TFQdNQdCliLKlOoMpIhPI0B+dbVCkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V/v1V/xgmflYlq/oVoXoJbMcFtrzIooJbHLEOY/XB7E=;
- b=Tj3E4OsOo+mmn9V0t6trmK5Jsl4qK0Tbr1zeEWiwRhgngDhbtdIO1vwe0+OXnanPt7DjCIMYX7kqgM796Qm4hN/CEjvY64ehN8tjccN1B6mtF76qKsLNkx+/aXLEYITnk3KEhQiw/AVAzgkjQZpzwdI5n968q40rQF7kUN1P8WE=
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
- DM5PR12MB1449.namprd12.prod.outlook.com (2603:10b6:4:10::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.19; Tue, 2 Feb 2021 17:25:37 +0000
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
- 17:25:37 +0000
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 0/5] misc: Add Add Synopsys DesignWare xData IP driver
-Thread-Topic: [PATCH v3 0/5] misc: Add Add Synopsys DesignWare xData IP driver
-Thread-Index: AQHWvlUnrEoqwwtzmk2HTCBmG0B2lKpFBCnAgAAWroCAAAXKUIAAAxKAgAADzUCAAGfZgIAAA1Cw
-Date:   Tue, 2 Feb 2021 17:25:37 +0000
-Message-ID: <DM5PR12MB1835EDF370312360F147913BDAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
-References: <cover.1605777306.git.gustavo.pimentel@synopsys.com>
- <DM5PR12MB183527AA0FECE00D7A3D46DBDAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
- <YBklScf1HPCVKQPf@kroah.com>
- <DM5PR12MB183515FF24DC1C306CDCD718DAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
- <YBkst6PeVskpi4SO@kroah.com>
- <DM5PR12MB18352C83BFA6587910C922A7DAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
- <YBmHBaevmWRmyUTq@kroah.com>
-In-Reply-To: <YBmHBaevmWRmyUTq@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jWjNWemRHRjJiMXhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
- =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
- =?utf-8?B?Y2JYTm5MV0U0T0RBMVlqSTRMVFkxTjJJdE1URmxZaTA1T0dVMkxXWTRPVFJq?=
- =?utf-8?B?TWpjek9EQTBNbHhoYldVdGRHVnpkRnhoT0Rnd05XSXlPUzAyTlRkaUxURXha?=
- =?utf-8?B?V0l0T1RobE5pMW1PRGswWXpJM016Z3dOREppYjJSNUxuUjRkQ0lnYzNvOUlq?=
- =?utf-8?B?RTNNemdpSUhROUlqRXpNalUyTnpZd016TTJNRFExTWpjd055SWdhRDBpY25w?=
- =?utf-8?B?dU1WSjZNVmxtVUZaNmEwSkhOa1JIVUd3eVpVaGFRMkZyUFNJZ2FXUTlJaUln?=
- =?utf-8?B?WW13OUlqQWlJR0p2UFNJeElpQmphVDBpWTBGQlFVRkZVa2hWTVZKVFVsVkdU?=
- =?utf-8?B?a05uVlVGQlFsRktRVUZDYWxWQlduSnBVRzVYUVdWNmVDdFZSa3BVWWxwUE4x?=
- =?utf-8?B?QklOVkZWYkU1MGF6UlBRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVaEJRVUZCUTJ0RFFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVWQlFWRkJRa0ZCUVVGT2NsTldNMmRCUVVGQlFVRkJRVUZCUVVGQlFVRktO?=
- =?utf-8?B?RUZCUVVKdFFVZHJRV0puUW1oQlJ6UkJXWGRDYkVGR09FRmpRVUp6UVVkRlFX?=
- =?utf-8?B?Sm5RblZCUjJ0QlltZENia0ZHT0VGa2QwSm9RVWhSUVZwUlFubEJSekJCV1ZG?=
- =?utf-8?B?Q2VVRkhjMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?blFVRkJRVUZCYm1kQlFVRkhXVUZpZDBJeFFVYzBRVnBCUW5sQlNHdEJXSGRD?=
- =?utf-8?B?ZDBGSFJVRmpaMEl3UVVjMFFWcFJRbmxCU0UxQldIZENia0ZIV1VGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCV21kQ2RrRklWVUZpWjBKclFV?=
- =?utf-8?B?aEpRV1ZSUW1aQlNFRkJXVkZDZVVGSVVVRmlaMEpzUVVoSlFXTjNRbVpCU0Ux?=
- =?utf-8?B?QldWRkNkRUZJVFVGa1VVSjFRVWRqUVZoM1FtcEJSemhCWW1kQ2JVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVW8wUVVGQlFtMUJSemhC?=
- =?utf-8?B?WkZGQ2RVRkhVVUZqWjBJMVFVWTRRV05CUW1oQlNFbEJaRUZDZFVGSFZVRmpa?=
- =?utf-8?B?MEo2UVVZNFFXTjNRbWhCUnpCQlkzZENNVUZITkVGYWQwSm1RVWhKUVZwUlFu?=
- =?utf-8?B?cEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGRlFVRkJRVUZCUVVGQlFXZEJRVUZCUVVGdVow?=
- =?utf-8?B?RkJRVWRaUVdKM1FqRkJSelJCV2tGQ2VVRklhMEZZZDBKM1FVZEZRV05uUWpC?=
- =?utf-8?B?QlJ6UkJXbEZDZVVGSVRVRllkMEo2UVVjd1FXRlJRbXBCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJVVUZCUVVGQlFVRkJRVU5C?=
- =?utf-8?B?UVVGQlFVRkRaVUZCUVVGYVowSjJRVWhWUVdKblFtdEJTRWxCWlZGQ1prRklR?=
- =?utf-8?B?VUZaVVVKNVFVaFJRV0puUW14QlNFbEJZM2RDWmtGSVRVRmtRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUWtGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGSlFVRkJRVUZCU2pSQlFVRkNiVUZIT0VGa1VVSjFRVWRSUVdO?=
- =?utf-8?B?blFqVkJSamhCWTBGQ2FFRklTVUZrUVVKMVFVZFZRV05uUW5wQlJqaEJaRUZD?=
- =?utf-8?B?ZWtGSE1FRlpkMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVVkJRVUZCUVVGQlFVRkJaMEZCUVVGQlFXNW5RVUZCUjFsQlluZENN?=
- =?utf-8?B?VUZITkVGYVFVSjVRVWhyUVZoM1FuZEJSMFZCWTJkQ01FRkhORUZhVVVKNVFV?=
- =?utf-8?B?aE5RVmgzUWpGQlJ6QkJXWGRCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5sUVVG?=
- =?utf-8?B?QlFWcDNRakJCU0UxQldIZENkMEZJU1VGaWQwSnJRVWhWUVZsM1FqQkJSamhC?=
- =?utf-8?B?WkVGQ2VVRkhSVUZoVVVKMVFVZHJRV0puUW01QlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFVbEJR?=
- =?utf-8?B?VUZCUVVGS05FRkJRVUo2UVVkRlFXSkJRbXhCU0UxQldIZENhRUZIVFVGWmQw?=
- =?utf-8?B?SjJRVWhWUVdKblFqQkJSamhCWTBGQ2MwRkhSVUZpWjBGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZuUVVGQlFVRkJibWRCUVVGSVRVRlpVVUp6UVVkVlFXTjNRbVpC?=
- =?utf-8?B?U0VWQlpGRkNka0ZJVVVGYVVVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVZGQlFVRkJRVUZCUVVGRFFVRkJRVUZCUTJWQlFVRkJZM2RDZFVGSVFV?=
- =?utf-8?B?RmpkMEptUVVkM1FXRlJRbXBCUjFWQlltZENla0ZIVlVGWWQwSXdRVWRWUVdO?=
- =?utf-8?B?blFuUkJSamhCVFZGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVSkJRVUZCUVVGQlFVRkJTVUZCUVVGQlFVbzBRVUZC?=
- =?utf-8?B?UW5wQlJ6UkJZMEZDZWtGR09FRmlRVUp3UVVkTlFWcFJRblZCU0UxQldsRkNa?=
- =?utf-8?B?a0ZJVVVGYVVVSjVRVWN3UVZoM1FucEJTRkZCWkZGQ2EwRkhWVUZpWjBJd1FV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdkQlFV?=
- =?utf-8?B?RkJRVUZ1WjBGQlFVaFpRVnAzUW1aQlIzTkJXbEZDTlVGSVkwRmlkMEo1UVVk?=
- =?utf-8?B?UlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJRVUZC?=
- =?utf-8?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=synopsys.com;
-x-originating-ip: [89.155.14.32]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1ad4906f-3062-40cf-96ae-08d8c79f8e84
-x-ms-traffictypediagnostic: DM5PR12MB1449:
-x-microsoft-antispam-prvs: <DM5PR12MB1449174BD3B1C41D7D89CF2BDAB59@DM5PR12MB1449.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RXHeFtlR4dB2bJZsg1PRP9aNe4dWJAnXC48EihRIQ8phgEXdJTk25sTvRZz5iaWiM8+suVmiTN1swrAvSGwfjJaoDKVX6qd7iCtbaqTLDZRA7ChI4PwkLiHwLgR7kj+zJfVNlj+9YntLA7AZultqb+KoL4PZK/Rsv6z7vwSzeQVNHyhn9DLey5NHyD7MSuhzwI8BPt8u9M8kHHC5bUTOvbOpkjzsFBfvTz1p/4bP4kiTqonP2U2Kxhx0mAMq+PhkLwKWBcIKUNOT34d7PDh8UdhXantLQ3a4z2yvvzTv60vLTS69iMXCXwJb7YEAXGCS7aptM/I9EgFbUH5LkAgKWFp7WZsjRXiT/MmKLHWvwefwvO0tpFHFtnRVRAREqAWPdeCgPEZGpgMxBn5g3ONcRZ7dLMnYmslrHwHjpm4aAIAApss5tJ592no252kSVcnUJ5QW75iOt9JurZsUc1hBfOLVTSJt26LCm8tG6qd60mD24tEctNAMj0rvYmS9vMn9YIC1HmllicJpB/1lQq4Iyw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(136003)(346002)(396003)(478600001)(26005)(33656002)(8676002)(2906002)(83380400001)(186003)(6916009)(52536014)(8936002)(5660300002)(4326008)(66446008)(64756008)(6506007)(66556008)(76116006)(71200400001)(53546011)(7696005)(9686003)(316002)(54906003)(55016002)(66476007)(66946007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NTRBMDNESHZoWUVxdXJ2UVhpS2NJSmQ2V0ZTNDdwaWJUeStERTNUK0RpZlZ1?=
- =?utf-8?B?TURvZ2lhTjJYN245dEJjTno5Vlk1TkswQmZaYlUraFVOY2VHUXBYbHA0VTdp?=
- =?utf-8?B?dWl4c2hHUk9ISzYySzROTFlCTkQ1YVlVSVhWYXZ0QXRqYk1XdHdTSDRSV2U5?=
- =?utf-8?B?NUFKRDJ3S1lvVm1BMTlkQVJzcG9TblNuWDJhNXpnODNOYndTWDBqSURtZFVU?=
- =?utf-8?B?UUkzUjR4RWJETlFTbThoUUdBNGxqNjlHM1NvTVVTRHlVMDA3VEtwOCtDaG9Z?=
- =?utf-8?B?c2hjakpxaDczQUpYNUpldmEvMCtzNDBSZTY5Rkhob3A5RVg3N28wejBObnhW?=
- =?utf-8?B?ZW56cHFNeHBQdExPZzFneUFLMlFOL1pkVzdVUUttRVZ1OEh2bjBPNUF4OUlq?=
- =?utf-8?B?TjR6SHA3VnFQVEE2Tm5LVDhRT3MxWUxtcnRXaE1VVHMwNFgyYTVuNnFRVkcw?=
- =?utf-8?B?NnFHd0ZBV1NXZlNCZmJoRWhzclBmVmR3TnJ3a1d0N0lYeXJQRlQ0MVZZeklq?=
- =?utf-8?B?cXlubzFhbzJjUklrdEdxUDFISkNSSXhLR1FmajVSclRPQW5zRW8yZW8yMkor?=
- =?utf-8?B?dnJSUGxGMHFOZ3BVUXJqUCtxNTREbGRuS25jaTlIR2dLSE1oU1NxM2h5Umh4?=
- =?utf-8?B?K2ZUZzU5QlNXRzZoOTMrYm9nbGJyOW9TYjVTdG9pZHp5ZHNSTUxWSXZlbnoy?=
- =?utf-8?B?R0ZVSjFjVGVqMzZsN3Rhb05CbTRCeHN5RzZFTWdxWmgwV2RydnpscHlsalZI?=
- =?utf-8?B?Y1RjVHI3emRrYkFMVHpRWVBNSUlWMEdLcjRYa01NQkxCQm4xL2tzTGY5eTRx?=
- =?utf-8?B?K1ppNDE5bDJEOXFUUndKR3Nic1hBT3ZDOURQWUVhbzZxNUN0T3N6TVV0NzRT?=
- =?utf-8?B?eHZ2cVo4QTJwRWJiNmd1cmFEd0dLdWV2cjNtRVVhN0lSb0RUeUpBYU5teG5V?=
- =?utf-8?B?UFdYamcrNjJseTh5cjJxVmE1cUpWM2VzK1E4VGUwNDJnc21KUk5yV1VuVU1h?=
- =?utf-8?B?MkJVaDVscy9hUEVIVld6M3lYaW1GT1N2b2N4UWIyQytvZFNGSHVUd0xZS3Vz?=
- =?utf-8?B?V3VPK2RYcUpwNEUwQVpManRpZGhZRnpBRVJXT3FFbXhYNTJCaTRScFBrTXBB?=
- =?utf-8?B?bDA3enRkMlQvdUVkSWJnSTRyT3BzMkd0YWRVa2h5MjEwNU9xWmhMZHErWjlH?=
- =?utf-8?B?b3Bpa1dGSDUxRFFpWFlaMVlXaXF0RkRtY0YzQVVudkhiMGNqNXoreGNjQ01I?=
- =?utf-8?B?YVFjS2czcEhhUEpSWGdvSlFjeVBySGZFeXZXaDRmRGEwMUkwSGFBVUh5M2Nl?=
- =?utf-8?B?bzJHRkZsOVp5b0pMakprZHJOVXNQaW9tbnlhWXZoTzI4a0pPUmtDSzgyOHM4?=
- =?utf-8?B?Zk5mRjlGSkhoZEhwMjZTL21xcW0zYWxJSTRmV3BteUQ1Mi83NjZyOHVuRm94?=
- =?utf-8?Q?PyB/9186?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S236289AbhBBRam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:30:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237450AbhBBR1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:27:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D028264F5F
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 17:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612286836;
+        bh=Zk04KfSzdnOFWzT/qWyFIx7D8zqxW3K/43LWh0T3Sg4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T6WDWAeu8Y8VAhy0igXONX2EZaJAOixX5lNH9ymm7QYfar+DEhlmnYBWs3LYpsI6q
+         PkcPDa9tSbD64qm1ZBRi3IAtZEoKtwV0Fwdzul3o20FIR6fEbLP1Umz/bkVVtYgsOu
+         bLc6XbPgP0BvB1CPEds/BOKygctMSkY+L84Zv5IS2oED+AxwEV0n9h137CzF2e1HnT
+         dLFtgNymNTNOga2ibzlef0gB+lDz85UgrGbA/9EgXtLyeDQXWoQODYba4OSwEnU+ih
+         PY0HwvN3nfDcI0VRWxbK5Yh1+7CgI/mSGmy/JB3slyeeCFdxj3thkNX87S7EvebHP/
+         oBKyGTfi4JVvA==
+Received: by mail-ej1-f45.google.com with SMTP id f14so6932995ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:27:15 -0800 (PST)
+X-Gm-Message-State: AOAM533wAzu3Cg55q6BtHFYwzpLwe+uoG8T7vNCIDBlO2f67gbQg7OtJ
+        zCeWISRe7u2pGekKXulP54GVwn0uJ7m8D5+rNQmQFg==
+X-Google-Smtp-Source: ABdhPJwBw5als6sCiDI2Y3n25BFYHymIxtEGJKILquNgG75MkSk9gAouIJ7mpl1PKAzmPBKW5pihc3qS2IbUQATfXKs=
+X-Received: by 2002:a17:906:17d3:: with SMTP id u19mr24720399eje.316.1612286834358;
+ Tue, 02 Feb 2021 09:27:14 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ad4906f-3062-40cf-96ae-08d8c79f8e84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 17:25:37.6897
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ii0IVL7pPRZO7w84u67+7dhkFEq4fYVfCC0EjdcQ6h5QEkgd/ah2AdJFRWTPKQBfdp4YK+cNA0yzG1RnQnssVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1449
+References: <20210201174555.GA17819@redhat.com> <20210201174709.GA17895@redhat.com>
+ <CALCETrWrPyd1HLXfKLc17CF85r2336YoEpe6bo6dNGdG_2A2bQ@mail.gmail.com> <20210202150247.GA20059@redhat.com>
+In-Reply-To: <20210202150247.GA20059@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 2 Feb 2021 09:27:02 -0800
+X-Gmail-Original-Message-ID: <CALCETrVf-3QxFcNNGOwbK58RGuN_ACOFY=VVG=hBjWyc6QRFqQ@mail.gmail.com>
+Message-ID: <CALCETrVf-3QxFcNNGOwbK58RGuN_ACOFY=VVG=hBjWyc6QRFqQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] x86: introduce TS_COMPAT_RESTART to fix
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCBGZWIgMiwgMjAyMSBhdCAxNzo4OjIxLCBHcmVnIEtyb2FoLUhhcnRtYW4gDQo8Z3Jl
-Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+IHdyb3RlOg0KDQo+IE9uIFR1ZSwgRmViIDAyLCAyMDIx
-IGF0IDA0OjU4OjUwUE0gKzAwMDAsIEd1c3Rhdm8gUGltZW50ZWwgd3JvdGU6DQo+ID4gT24gVHVl
-LCBGZWIgMiwgMjAyMSBhdCAxMDo0MzozLCBHcmVnIEtyb2FoLUhhcnRtYW4gDQo+ID4gPGdyZWdr
-aEBsaW51eGZvdW5kYXRpb24ub3JnPiB3cm90ZToNCj4gPiANCj4gPiA+IE9uIFR1ZSwgRmViIDAy
-LCAyMDIxIGF0IDEwOjM4OjI5QU0gKzAwMDAsIEd1c3Rhdm8gUGltZW50ZWwgd3JvdGU6DQo+ID4g
-PiA+IE9uIFR1ZSwgRmViIDIsIDIwMjEgYXQgMTA6MTE6MjEsIEdyZWcgS3JvYWgtSGFydG1hbiAN
-Cj4gPiA+ID4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPiB3cm90ZToNCj4gPiA+ID4gDQo+
-ID4gPiA+ID4gT24gVHVlLCBGZWIgMDIsIDIwMjEgYXQgMDg6NTE6MTBBTSArMDAwMCwgR3VzdGF2
-byBQaW1lbnRlbCB3cm90ZToNCj4gPiA+ID4gPiA+IEp1c3QgYSBraW5kbHkgcmVtaW5kZXIuDQo+
-ID4gPiA+ID4gDQo+ID4gPiA+ID4gcmVtaW5kZXIgb2Ygd2hhdD8NCj4gPiA+ID4gDQo+ID4gPiA+
-IFRvIHJldmlldyB0aGUgcGF0Y2ggc2V0LiBJJ3ZlIGRvbmUgdGhlIHJlcXVlc3RlZCBtb2RpZmlj
-YXRpb25zLCBidXQgSSANCj4gPiA+ID4gZGlkbid0IGdldCBhbnkgZmVlZGJhY2sgaWYgdGhpcyBw
-YXRjaCBzZXJpZXMgaXMgZmluZSBvciBpdCBuZWVkcyANCj4gPiA+ID4gc29tZXRoaW5nIG1vcmUg
-dG8gaGF2ZSBhbiBBQ0suDQo+ID4gPiANCj4gPiA+IEkgZG8gbm90IGtud28sIEkgZG9uJ3Qgc2Vl
-IGFueXRoaW5nIG15IG15IHJldmlldyBxdWV1ZSwgc29ycnkuDQo+ID4gDQo+ID4gSSd2ZSByZXNl
-bmQgdGhlIHBhdGNoIHNlcmllcy4gTGV0J3Mgc2VlIGlmIGFwcGVhcnMgbm93IPCfmIoNCj4gPiAN
-Cj4gPiA+IA0KPiA+ID4gPiBJZiBzb21lIGZlZWRiYWNrIHdhcyBwcm92aWRlZCwgcGxlYXNlIGFj
-Y2VwdCBteSBhcG9sb2dpZXMuIE15IGVtYWlsIA0KPiA+ID4gPiBhY2NvdW50IHdhcyBoYXZpbmcg
-c29tZSBpc3N1ZXMgc29tZSB0aW1lIGFnbyBhbmQgSSBtaWdodCBub3QgaGF2ZSANCj4gPiA+ID4g
-cmVjZWl2ZWQgc29tZSBlbWFpbHMuDQo+ID4gPiANCj4gPiA+IENoZWNrIHRoZSBhcmNoaXZlcyBw
-bGVhc2UsIHRoYXQncyB3aGF0IHRoZXkgYXJlIHRoZXJlIGZvciA6KQ0KPiA+IA0KPiA+IEkgaGF2
-ZSBqdXN0IGNoZWNrZWQsIHRoZXJlIGlzbid0IGFueSBmZWVkYmFjayBiZXNpZGVzIHlvdXJzIGFu
-ZCBBcm5kIA0KPiA+IEJlcmdtYW5uLg0KPiANCj4gRGlkIHlvdSBpbmNvcnBvcmF0ZSBvdXIgcmV2
-aWV3Pw0KDQpZZXMsIEkgZGlkLiBUaGUgZHJpdmVyIGluaXRpYWxseSB3YXMgdXNpbmcgdGhlIG1v
-ZHVsZXMgcGFyYW1ldGVycywgYW5kIA0KYmFzZWQgb24geW91ciBmZWVkYmFjayBJIGNoYW5nZWQg
-dG8gc3lzZnMgdXNpbmcgb3RoZXIgZHJpdmVycycgDQppbXBsZW1lbnRhdGlvbiBhcyBhIHJlZmVy
-ZW5jZS4gSSBhbHNvIHRoZSBkcml2ZXIgc3RydWN0dXJlIGNoYW5nZWQgdG8gdXNlIA0KbWFjcm9z
-IGluc3RlYWQgb2YgYml0ZmllbGRzLg0KDQo+IA0KPiBncmVnIGstaA0KDQoNCg==
+On Tue, Feb 2, 2021 at 7:03 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> On 02/01, Andy Lutomirski wrote:
+> >
+> > On Mon, Feb 1, 2021 at 9:47 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > >
+> > > The comment in get_nr_restart_syscall() says:
+> > >
+> > >          * The problem is that we can get here when ptrace pokes
+> > >          * syscall-like values into regs even if we're not in a syscall
+> > >          * at all.
+> > >
+> > > Yes. but if we are not in syscall then the
+> > >
+> > >         status & (TS_COMPAT|TS_I386_REGS_POKED)
+> > >
+> > > check below can't really help:
+> > >
+> > >         - TS_COMPAT can't be set
+> > >
+> > >         - TS_I386_REGS_POKED is only set if regs->orig_ax was changed by
+> > >           32bit debugger; and even in this case get_nr_restart_syscall()
+> > >           is only correct if the tracee is 32bit too.
+> > >
+> > > Suppose that 64bit debugger plays with 32bit tracee and
+> >
+> > At the risk of asking an obnoxious question here:
+> >
+> > >
+> > >         * Tracee calls sleep(2) // TS_COMPAT is set
+> > >         * User interrupts the tracee by CTRL-C after 1 sec and does
+> > >           "(gdb) call func()"
+> > >         * gdb saves the regs by PTRACE_GETREGS
+> >
+> > It seems to me that a better solution may be for gdb to see the
+> > post-restart-setup state.  In other words, shouldn't the GETREGS
+> > return with the ax pointing to the restart syscall already?
+>
+> and ip = regs-ip - 2? And hide ERESTART_BLOCK from debugger? Perhaps
+> I misunderstood, but this doesn't look like a better solution to me.
+> Not to mention this would be the serious user-visible change... And
+> even the necessary changes in getreg() do not look good to me.
+>
+> Plus I do not understand how this could work. OK, suppose that the
+> tracee reports a signal with ax = ERESTART_BLOCK.
+>
+> Debugger simply does GETREGS + SETREGS + PTRACE_CONT(signr). In this
+> case handle_signal() should set ax = -EINTR, but syscall_get_error()
+> will report __NR_ia32_restart_syscall?
+>
+> Probably I greatly misunderstood you...
+
+My idea may well be nuts, but I was indeed imagining that we hide
+ERESTART_BLOCK from the debugger.  We would do the ip -= 2 and nr =
+__NR_..._restart_syscall before any ptrace events happen at all.
+Admittedly, this may cause strace to fail, so this is probably a bad
+idea.
+
+Oh well, your patch is probably a decent solution.
