@@ -2,198 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C31130CD2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE4A30CD2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhBBUjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:39:06 -0500
-Received: from mga17.intel.com ([192.55.52.151]:36328 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229984AbhBBUjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:39:05 -0500
-IronPort-SDR: EYUiu4QMsRRfHW1z7aFMsWL1tafx0dOG7U629gzsMiJxR7IzPyzk7LQlQ/wBxFy1vfcx5kluj2
- Ah7aPHRpWsNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160692435"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160692435"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:38:20 -0800
-IronPort-SDR: 6n7b4GyhtRSAkAJFIhGrchf1hiQMaRkSk0rQ6dsAdFksWwBeTwSlZB/IjleGH4lnA5jkJQgKg7
- JG3RVYxnEMyQ==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="396157626"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.22.86])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:38:20 -0800
-Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20200917183219.3603-1-russell.h.weight@intel.com>
- <7f181203-c164-4e6e-c710-1096b0aa13b8@redhat.com>
- <8c21b52f-7bb7-e1d7-737e-1637adbe343d@intel.com>
-Message-ID: <fac78c3e-3a5f-2931-537d-64504d72fd6e@intel.com>
-Date:   Tue, 2 Feb 2021 12:38:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232536AbhBBUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:40:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhBBUkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:40:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612298346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cxKILuRnLUyJm7OjpO6X1TfMyhzRQAP6Snl2wpeGcYk=;
+        b=MUYthlLT7Gp1nQrehIhEG6Ss2ILREogRY/IV2f4uIjSSBUT5irJ8F4eFVmZaoWb/Db6C23
+        8n4+MCfo7tuKRMpo5rMA4n0+LB10x3qcYKLHVw7eqkPAxkmTQdxf54ImGQRhXk+HcQaCBo
+        Vx0ku7WzqfGgcETzw42V2afXZg/q420=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-QcjBs-jMMzWBSf1SlAju3g-1; Tue, 02 Feb 2021 15:39:02 -0500
+X-MC-Unique: QcjBs-jMMzWBSf1SlAju3g-1
+Received: by mail-qk1-f197.google.com with SMTP id e187so18463408qkf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 12:39:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cxKILuRnLUyJm7OjpO6X1TfMyhzRQAP6Snl2wpeGcYk=;
+        b=p449iDCgpWbymk2Ql+IIIGz9KvU0qNjaVEe3OrCMQDStAzDRsiiue7nQba+jFoYjLQ
+         2kkYG4MZNNs0bcVcGR0aAB6mLhk4jRAh0eWlnKggqZW4+RJ7MAFFQAqwqHdZFflnjNue
+         c/G0XNJ+bEZZGI1q8EiPg6iR0ZZhfFFlHK8zDNFWpQsG0c41EMX3uz/QCMfDbZXqRjUD
+         L/WANiexAe50PWwwGfdWby21icDH78toNsGBVn5V5EWV+TvM168Hw/SC+hWNX3Fjc8sG
+         JERqbqf7oSIuZwkaTaMyTzGPvicIOo99QCLhPu0f3wn3QizaLDICW9MkktPV5ketBofF
+         e3qQ==
+X-Gm-Message-State: AOAM532PGlRpJ46H7aMPUVP5f6GLaSqaNW3PXkXszEv652/u4LUHxAOy
+        2EiDFjt/E9uLDUAypsweDKREqf/8rC0+Cg4TpTGh1R0ZcXH/ZRRJoug8R3J4sYXEkMIaIRl4Cuu
+        LinL0+H0Hp6xEmtCjeOIw4X/v
+X-Received: by 2002:a05:6214:913:: with SMTP id dj19mr22417093qvb.33.1612298341428;
+        Tue, 02 Feb 2021 12:39:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyafFtJVqxfl3ZVONklJT+TkO26nkgrl/XIOWV4Fo8YGYJICgDvYe1YdGqwsJUmu7Uzfhqvhw==
+X-Received: by 2002:a05:6214:913:: with SMTP id dj19mr22417072qvb.33.1612298341170;
+        Tue, 02 Feb 2021 12:39:01 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id s23sm33984qke.3.2021.02.02.12.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 12:39:00 -0800 (PST)
+Date:   Tue, 2 Feb 2021 15:38:59 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] userfaultfd: hugetlbfs: only compile UFFD helpers if
+ config enabled
+Message-ID: <20210202203859.GH6468@xz-x1>
+References: <20210202203127.3596707-1-axelrasmussen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <8c21b52f-7bb7-e1d7-737e-1637adbe343d@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20210202203127.3596707-1-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 02, 2021 at 12:31:27PM -0800, Axel Rasmussen wrote:
+> For background, mm/userfaultfd.c provides a general mcopy_atomic
+> implementation. But some types of memory (e.g., hugetlb and shmem) need
+> a slightly different implementation, so they provide their own helpers
+> for this. In other words, userfaultfd is the only caller of this
+> function.
+> 
+> This patch achieves two things:
+> 
+> 1. Don't spend time compiling code which will end up never being
+> referenced anyway (a small build time optimization).
+> 
+> 2. In future patches (e.g. [1]), we plan to extend the signature of
+> these helpers with UFFD-specific state (e.g., enums or structs defined
+> conditionally in userfaultfd_k.h). Once this happens, this patch will be
+> needed to avoid build errors (or, we'd need to define more UFFD-only
+> stuff unconditionally, which seems messier to me).
+> 
+> Peter Xu suggested this be sent as a standalone patch, in the mailing
+> list discussion for [1].
+> 
+> [1] https://patchwork.kernel.org/project/linux-mm/list/?series=424091
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
+I meant a standalone patch along with the next version of your series would be
+good enough... :) If Mike is fine I won't complain if you'd squashed it into
+that patch either.  The patch itself looks correct to me.
 
-On 2/2/21 12:32 PM, Russ Weight wrote:
->
-> On 9/17/20 1:28 PM, Tom Rix wrote:
->> On 9/17/20 11:32 AM, Russ Weight wrote:
->>> Port enable is not complete until ACK = 0. Change
->>> __afu_port_enable() to guarantee that the enable process
->>> is complete by polling for ACK == 0.
->>>
->>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->>> ---
->>>  drivers/fpga/dfl-afu-error.c |  2 +-
->>>  drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
->>>  drivers/fpga/dfl-afu.h       |  2 +-
->>>  3 files changed, 23 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
->>> index c4691187cca9..0806532a3e9f 100644
->>> --- a/drivers/fpga/dfl-afu-error.c
->>> +++ b/drivers/fpga/dfl-afu-error.c
->>> @@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->>>  	__afu_port_err_mask(dev, false);
->>>  
->> There is an earlier bit that sets ret = -EINVAL.
->>
->> This error will be lost or not handled well.
->>
->> Right now it doesn't seem to be handled.
-> Good catch. I'll give priority to -EINVAL in the next version of the
-> patch, as it is more informative in the context of this function.
-Actually - Hao pointed out in his response that the falure to re-enable the port
-is a more serious error, so the code flow OK, but needs a comment.
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-- Russ
->>>  	/* Enable the Port by clear the reset */
->>> -	__afu_port_enable(pdev);
->>> +	ret = __afu_port_enable(pdev);
->>>  
->>>  done:
->>>  	mutex_unlock(&pdata->lock);
->>> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
->>> index 753cda4b2568..f73b06cdf13c 100644
->>> --- a/drivers/fpga/dfl-afu-main.c
->>> +++ b/drivers/fpga/dfl-afu-main.c
->>> @@ -21,6 +21,9 @@
->>>  
->>>  #include "dfl-afu.h"
->>>  
->>> +#define RST_POLL_INVL 10 /* us */
->>> +#define RST_POLL_TIMEOUT 1000 /* us */
->>> +
->>>  /**
->>>   * __afu_port_enable - enable a port by clear reset
->>>   * @pdev: port platform device.
->>> @@ -32,7 +35,7 @@
->>>   *
->>>   * The caller needs to hold lock for protection.
->>>   */
->>> -void __afu_port_enable(struct platform_device *pdev)
->>> +int __afu_port_enable(struct platform_device *pdev)
->>>  {
->>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->>>  	void __iomem *base;
->>> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
->>>  	WARN_ON(!pdata->disable_count);
->>>  
->>>  	if (--pdata->disable_count != 0)
->>> -		return;
->>> +		return 0;
->> Is this really a success ? Maybe -EBUSY ?
-> Yilun addressed this question in his previous response. This isessentially a
-> reference count for nested disable calls. Weonly do the enable if the
-> disable count has gone to zero, so this isn't an error condition.
->>>  
->>>  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
->>>  
->>> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
->>>  	v = readq(base + PORT_HDR_CTRL);
->>>  	v &= ~PORT_CTRL_SFTRST;
->>>  	writeq(v, base + PORT_HDR_CTRL);
->>> -}
->>>  
->>> -#define RST_POLL_INVL 10 /* us */
->>> -#define RST_POLL_TIMEOUT 1000 /* us */
->>> +	/*
->>> +	 * HW clears the ack bit to indicate that the port is fully out
->>> +	 * of reset.
->>> +	 */
->>> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
->>> +			       !(v & PORT_CTRL_SFTRST_ACK),
->>> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
->>> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
->>> +		return -ETIMEDOUT;
->>> +	}
->>> +
->>> +	return 0;
->>> +}
->>>  
->>>  /**
->>>   * __afu_port_disable - disable a port by hold reset
->>> @@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
->>>  
->>>  	ret = __afu_port_disable(pdev);
->>>  	if (!ret)
->>> -		__afu_port_enable(pdev);
->>> +		ret = __afu_port_enable(pdev);
->>>  
->>>  	return ret;
->>>  }
->>> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
->>>  static int port_enable_set(struct platform_device *pdev, bool enable)
->>>  {
->>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->>> -	int ret = 0;
->>> +	int ret;
->>>  
->>>  	mutex_lock(&pdata->lock);
->>>  	if (enable)
->>> -		__afu_port_enable(pdev);
->>> +		ret = __afu_port_enable(pdev);
->>>  	else
->>>  		ret = __afu_port_disable(pdev);
->>>  	mutex_unlock(&pdata->lock);
->>> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
->>> index 576e94960086..e5020e2b1f3d 100644
->>> --- a/drivers/fpga/dfl-afu.h
->>> +++ b/drivers/fpga/dfl-afu.h
->>> @@ -80,7 +80,7 @@ struct dfl_afu {
->>>  };
->>>  
->>>  /* hold pdata->lock when call __afu_port_enable/disable */
->>> -void __afu_port_enable(struct platform_device *pdev);
->>> +int __afu_port_enable(struct platform_device *pdev);
->>>  int __afu_port_disable(struct platform_device *pdev);
->> The other functions in this file have afu_*  since the __afu_port_enable/disable
->>
->> are used other places would it make sense to remove the '__' prefix ?
->>
->> If you think so, maybe a cleanup patch later.
-> Yilun and Hao addressed this comment in their previous responses. We are using the
-> '__' prefix to indicate highlight the fact caller needs to use care in managing
-> the locking associated with these functions.
->
-> Thanks,
-> - Russ
->> Tom
->>
->>>  
->>>  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+Thanks,
+
+-- 
+Peter Xu
 
