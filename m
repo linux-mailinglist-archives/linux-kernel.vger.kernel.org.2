@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222BF30B913
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02E530B917
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhBBH7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:59:38 -0500
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:37919 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhBBH7d (ORCPT
+        id S231397AbhBBIAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:00:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46881 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229462AbhBBIAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:59:33 -0500
-Received: by mail-vs1-f52.google.com with SMTP id l192so3148366vsd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:59:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=89LBUP1EwOlSAZ3wN5Ztlx7kj3QOve6gLNz9Zd6Ut4Y=;
-        b=A50Tu/dPF8oxiO0guSb0Gx5I186nqNkaMO3tNfFOHT8dkBIcblANKZzRhUbUyMg0dT
-         yhuM63nRn4OUe5EpIZO+lDAFXZzL/KlY1AVo4Xwzdv6qwfiwrU9q10EjllaueyCFXDSE
-         VjJTtiwFlmEO/aMfCIjpL20H0v6CHGa4R940BlP1GPnKMX3F0+ZoxhLO7/ErRbZcaEyV
-         WS+fH6AhfEHMu6Xk9fZoaPnMdO4NEX5Ih45ikSxbN2mdOotqEmGplsScVfyK8hTIKD8N
-         quuxxiXapcxJ5z7Uks637HllEVqZZsfurWq67lbSsyC0i9YQCxswqDHxVKeniOQgZR5I
-         S7uQ==
-X-Gm-Message-State: AOAM533oAmWBoJKEp5Z/U4Z/bl7s3HMZWqh1hrLO5nlOlRLqhfNfNeAE
-        V5nmMZ/H/caXSPF0edgIH6W1SXAHbehPXQ==
-X-Google-Smtp-Source: ABdhPJyXRktH2Tv4C0CvIokLAuCSuwrfZrZLRg+SgAdN+JHB+5/fihZBioD7FbpPiZ41EDidAnL8Cw==
-X-Received: by 2002:a05:6102:2db:: with SMTP id h27mr11513649vsh.11.1612252731334;
-        Mon, 01 Feb 2021 23:58:51 -0800 (PST)
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
-        by smtp.gmail.com with ESMTPSA id p9sm1139127vsq.6.2021.02.01.23.58.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 23:58:50 -0800 (PST)
-Received: by mail-vk1-f169.google.com with SMTP id g17so4591123vkk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:58:50 -0800 (PST)
-X-Received: by 2002:a1f:38c9:: with SMTP id f192mr3257323vka.24.1612252730254;
- Mon, 01 Feb 2021 23:58:50 -0800 (PST)
+        Tue, 2 Feb 2021 03:00:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612252758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qr/EBv5x90hPAyplhITInR4O7nt+NV3Z854L2GClqxI=;
+        b=AqscvCrYBVs+PlN4DXTxvYZ36Y8FRS3GKptilyoVFH4i8Sww+eXwq0zp5UxiMHMa3qSEvZ
+        AC9d96y7mV72kmUXOTpxBf1BIabfUNM5Zrm0pXGwROs7JqMN9SQkcm8fas0D6R60bxEpIE
+        3kYQkcuGYy2P4x4pY9Euc+/cqa9ZpkY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-OZpaACF5OKmSbUNVcVUenA-1; Tue, 02 Feb 2021 02:59:13 -0500
+X-MC-Unique: OZpaACF5OKmSbUNVcVUenA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48DB01800D50;
+        Tue,  2 Feb 2021 07:59:11 +0000 (UTC)
+Received: from gondolin (ovpn-113-169.ams2.redhat.com [10.36.113.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A6C21975E;
+        Tue,  2 Feb 2021 07:59:02 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 08:58:59 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, jgg@nvidia.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, gmataev@nvidia.com, cjia@nvidia.com,
+        yishaih@nvidia.com, aik@ozlabs.ru
+Subject: Re: [PATCH 6/9] vfio-pci/zdev: fix possible segmentation fault
+ issue
+Message-ID: <20210202085859.12c09b6d.cohuck@redhat.com>
+In-Reply-To: <20210201134757.375c91bf@omen.home.shazbot.org>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+        <20210201162828.5938-7-mgurtovoy@nvidia.com>
+        <20210201175214.0dc3ba14.cohuck@redhat.com>
+        <139adb14-f75a-25ef-06da-e87729c2ccf2@linux.ibm.com>
+        <20210201134757.375c91bf@omen.home.shazbot.org>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20210127172500.13356-1-andre.przywara@arm.com>
- <20210127172500.13356-7-andre.przywara@arm.com> <20210128101544.yyvrguk2jlgr4uwo@gilmour>
-In-Reply-To: <20210128101544.yyvrguk2jlgr4uwo@gilmour>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 2 Feb 2021 15:58:38 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65_Zvi_ydb0cx4YYu3v11ns57fa+PT-+qtdKn+N-fLugg@mail.gmail.com>
-Message-ID: <CAGb2v65_Zvi_ydb0cx4YYu3v11ns57fa+PT-+qtdKn+N-fLugg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v5 06/20] mfd: axp20x: Allow AXP chips
- without interrupt lines
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 6:15 PM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> On Wed, Jan 27, 2021 at 05:24:46PM +0000, Andre Przywara wrote:
-> > Currently the AXP chip requires to have its IRQ line connected to some
-> > interrupt controller, and will fail probing when this is not the case.
-> >
-> > On a new Allwinner SoC (H616) there is no NMI pin anymore, and at
-> > least one board does not connect the AXP's IRQ pin to anything else,
-> > so the interrupt functionality of the AXP chip is simply not available.
-> >
-> > Check whether the interrupt line number returned by the platform code is
-> > valid, before trying to register the irqchip. If not, we skip this
-> > registration, to avoid the driver to bail out completely.
-> >
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
->
-> Acked-by: Maxime Ripard <mripard@kernel.org>
+On Mon, 1 Feb 2021 13:47:57 -0700
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+> On Mon, 1 Feb 2021 12:08:45 -0500
+> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> 
+> > On 2/1/21 11:52 AM, Cornelia Huck wrote:  
+> > > On Mon, 1 Feb 2021 16:28:25 +0000
+> > > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+> > >     
+> > >> In case allocation fails, we must behave correctly and exit with error.
+> > >>
+> > >> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>    
+> > > 
+> > > Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
+> > > 
+> > > Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> > > 
+> > > I think this should go in independently of this series. >    
+> > 
+> > Agreed, makes sense to me -- thanks for finding.
+> > 
+> > Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>  
+> 
+> I can grab this one, and 5/9.  Connie do you want to toss an R-b at
+> 5/9?  Thanks,
+> 
+> Alex
+
+Yes, makes sense to grab these two. R-b added.
+
