@@ -2,158 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C975830B931
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12F330B933
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbhBBIEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:04:49 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12380 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhBBIEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:04:24 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DVHND3fyRz7f54;
-        Tue,  2 Feb 2021 16:02:20 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Feb 2021 16:03:32 +0800
-Subject: Re: [PATCH v13 06/15] iommu/smmuv3: Implement
- attach/detach_pasid_table
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
-        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-7-eric.auger@redhat.com>
-CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
-        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
-        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <4c3dded7-8b60-a303-3bdf-fa610f0e1a73@huawei.com>
-Date:   Tue, 2 Feb 2021 16:03:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S231924AbhBBIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:05:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229797AbhBBIFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:05:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 925E164EEE
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612253091;
+        bh=HA1oDXGCJxu9Glv25heLCkXDw2HKLAWYDLwD3J37ABw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HUXG68XseUPvE+ml32U2sD1sEQR2GPeDFbFFBv263YJeeEFdtnzKicowpoUTYRbaI
+         NLqrNh+YOw74vXeqBGfJvHJq7BPrmQeh6C3Qnct75aferyDOSf1r7mtvB+emXI4hJr
+         oRYyELEYQyjMaFRNdVWhJfTvCtK9lXUj/quieO4PlKv5jgvVmGu3oUY+ylqA2PQJwY
+         e0rLZV82LPiSrFH3uFVxKRIgMWSySbE+eVIAqHKY4V4n/wqrOUMHOX1g6o2bT5lXt5
+         E0K9s1fCOqMfPLOfa9ZwLat0/VBXybD0Of7bJdlrNBOTHqL1fNl/qMCd9gd3v+hH7F
+         E+ZeILS0tzM/A==
+Received: by mail-ot1-f47.google.com with SMTP id n42so19003996ota.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:04:51 -0800 (PST)
+X-Gm-Message-State: AOAM531TvCq0QZGj7sOVAHUxq7B2N7epidW8lXKCvxPjyUcpHxjaClM1
+        ICUen/RXiGPkJ41E2LNx0Z0hden4HVn1uMWlr0Q=
+X-Google-Smtp-Source: ABdhPJw39Q3RUD6safr+5ByEW89VpY/DyeiocJ8/R3PNwoQ5ppmdGcWAIyjioRK1qG42ibb3Uk5BktCYXZ73KHjVQoA=
+X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr14502963otq.305.1612253090768;
+ Tue, 02 Feb 2021 00:04:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118112151.25412-7-eric.auger@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+References: <20210202022441.1451389-1-nathan@kernel.org>
+In-Reply-To: <20210202022441.1451389-1-nathan@kernel.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 2 Feb 2021 09:04:34 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
+Message-ID: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Tue, Feb 2, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
+> depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
+> leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
+> selected:
+>
+> ld.lld: error: unknown emulation: aarch64linuxb
 
-On 2020/11/18 19:21, Eric Auger wrote:
-> On attach_pasid_table() we program STE S1 related info set
-> by the guest into the actual physical STEs. At minimum
-> we need to program the context descriptor GPA and compute
-> whether the stage1 is translated/bypassed or aborted.
-> 
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> 
-> ---
-> v7 -> v8:
-> - remove smmu->features check, now done on domain finalize
-> 
-> v6 -> v7:
-> - check versions and comment the fact we don't need to take
->   into account s1dss and s1fmt
-> v3 -> v4:
-> - adapt to changes in iommu_pasid_table_config
-> - different programming convention at s1_cfg/s2_cfg/ste.abort
-> 
-> v2 -> v3:
-> - callback now is named set_pasid_table and struct fields
->   are laid out differently.
-> 
-> v1 -> v2:
-> - invalidate the STE before changing them
-> - hold init_mutex
-> - handle new fields
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 89 +++++++++++++++++++++
->  1 file changed, 89 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 412ea1bafa50..805acdc18a3a 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -2661,6 +2661,93 @@ static void arm_smmu_get_resv_regions(struct device *dev,
->  	iommu_dma_get_resv_regions(dev, head);
->  }
->  
-> +static int arm_smmu_attach_pasid_table(struct iommu_domain *domain,
-> +				       struct iommu_pasid_table_config *cfg)
-> +{
-> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-> +	struct arm_smmu_master *master;
-> +	struct arm_smmu_device *smmu;
-> +	unsigned long flags;
-> +	int ret = -EINVAL;
-> +
-> +	if (cfg->format != IOMMU_PASID_FORMAT_SMMUV3)
-> +		return -EINVAL;
-> +
-> +	if (cfg->version != PASID_TABLE_CFG_VERSION_1 ||
-> +	    cfg->vendor_data.smmuv3.version != PASID_TABLE_SMMUV3_CFG_VERSION_1)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&smmu_domain->init_mutex);
-> +
-> +	smmu = smmu_domain->smmu;
-> +
-> +	if (!smmu)
-> +		goto out;
-> +
-> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
-> +		goto out;
-> +
-> +	switch (cfg->config) {
-> +	case IOMMU_PASID_CONFIG_ABORT:
-> +		smmu_domain->s1_cfg.set = false;
-> +		smmu_domain->abort = true;
-> +		break;
-> +	case IOMMU_PASID_CONFIG_BYPASS:
-> +		smmu_domain->s1_cfg.set = false;
-> +		smmu_domain->abort = false;
-I didn't test it, but it seems that this will cause BUG() in arm_smmu_write_strtab_ent().
-At the line "BUG_ON(ste_live && !nested);". Maybe I miss something?
+While this is the original error message I reported, I think it would be
+better to explain that lld actually does support linking big-endian
+kernels but they don't boot, for unknown reasons.
 
-> +		break;
-> +	case IOMMU_PASID_CONFIG_TRANSLATE:
-> +		/* we do not support S1 <-> S1 transitions */
-> +		if (smmu_domain->s1_cfg.set)
-> +			goto out;
-> +
-> +		/*
-> +		 * we currently support a single CD so s1fmt and s1dss
-> +		 * fields are also ignored
-> +		 */
-> +		if (cfg->pasid_bits)
-> +			goto out;
-> +
-> +		smmu_domain->s1_cfg.cdcfg.cdtab_dma = cfg->base_ptr;
-> +		smmu_domain->s1_cfg.set = true;
-> +		smmu_domain->abort = false;
-> +		break;
-> +	default:
-> +		goto out;
-> +	}
-> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
-> +		arm_smmu_install_ste_for_dev(master);
-> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-> +	ret = 0;
-> +out:
-> +	mutex_unlock(&smmu_domain->init_mutex);
-> +	return ret;
-> +}
-> +
-[...]
+I can send a patch to address the build error and mark big-endian
+as "depends on !LD_IS_LLD || COMPILE_TEST" to reflect that
+and help with randconfig testing.
 
-Thanks,
-Keqian
+        Arnd
