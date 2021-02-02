@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09FF30BF7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3BC30BF86
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbhBBNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232353AbhBBNb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:31:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D88DF64F61;
-        Tue,  2 Feb 2021 13:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612272602;
-        bh=Tmpg5G8Q5WWZwkwEzV2K4ehCcH+3UNaSq0kO2M0KaCw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YUkXaIK68CSCM4Vaqzz+PupuMY7Sx73apJkS8Xl4sbkCGrzk8MrdEzhZE6j+RdKe9
-         +izykXTBqxMbvIJiuJZFJ4bk6rsKfrIqVE3mINm2G5XA2BdaD5xENhF2Pw66Zz+iKe
-         eWG7PDVyR51IWYcV9BWvGOqM4e++q49pG3jQFfCPOmxT8wf2MgHQt6LHKk/Yhzt6cc
-         p/eXYzxcfCN4Qeas+X4jSHM69+9Tn9cnrjHeg+oled73uFHHa+9K6k4kv010HteMkq
-         mrbZJSUNjLc+IMrNjNivP3karOUuCWU26EnB4r0G8V1Ib6B9Bs5BhWiv782OSctKVU
-         1LjICCl9cFN1g==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l6vkl-0011zH-Tr; Tue, 02 Feb 2021 14:29:59 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 13/13] arm64: dts: hisilicon: cleanup Hikey 970 PCI schema
-Date:   Tue,  2 Feb 2021 14:29:58 +0100
-Message-Id: <c966e7788af64dbd384d2e9def204533d73e8a97.1612271903.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612271903.git.mchehab+huawei@kernel.org>
-References: <cover.1612271903.git.mchehab+huawei@kernel.org>
+        id S232521AbhBBNdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:33:46 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:35830 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232364AbhBBNbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:31:35 -0500
+Date:   Tue, 02 Feb 2021 13:30:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612272649; bh=ZfF+yk2N+NpRKErjKX/1hJfnJ9+R0QZ7qi8wGDkxhLc=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=JC6ZE9YeQdNvI/FWAl8VlGARKHDd6WNRQLAfnfL4TVLDkLkoYE9K8UqDc4M7jBs9N
+         g4khZmUyNszCOHZYqaHjaU1RqnX9uCCZF0Y3556PymK+l2H37MIhyhkEFs7WCZtAvf
+         /Hl5Sa4CK7Wbq+vm2zPcTsYQ/N14xJc0SU2u3qE0h50tEDFvF3J9/2nvuOz0JBKGz6
+         xZAC2RaD1jhAkA2NyOJen4GjnhAl8X5d59limqowBlkzBLf50L8+Mf1dC1+8tMB+uu
+         4uMest71b8Svz4XnAVl5nW2/qzGmvnntUkLJptBBRNzv+DKBcOK9Yi+qsDxeW8DiCK
+         l/UcY02ewA5Bg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH RESEND v3 net-next 0/5] net: consolidate page_is_pfmemalloc() usage
+Message-ID: <20210202133030.5760-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original schema was not generic enough and not
-properly documented. Those got updated via some driver
-changes.
+page_is_pfmemalloc() is used mostly by networking drivers to test
+if a page can be considered for reusing/recycling.
+It doesn't write anything to the struct page itself, so its sole
+argument can be constified, as well as the first argument of
+skb_propagate_pfmemalloc().
+In Page Pool core code, it can be simply inlined instead.
+Most of the callers from NIC drivers were just doppelgangers of
+the same condition tests. Derive them into a new common function
+do deduplicate the code.
 
-Apply those changes also to Hikey 970 schema.
+Resend of v3 [2]:
+ - it missed Patchwork and Netdev archives, probably due to server-side
+   issues.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi      | 18 +++++++++---------
- .../boot/dts/hisilicon/hikey970-pmic.dtsi      |  1 -
- 2 files changed, 9 insertions(+), 10 deletions(-)
+Since v2 [1]:
+ - use more intuitive name for the new inline function since there's
+   nothing "reserved" in remote pages (Jakub Kicinski, John Hubbard);
+ - fold likely() inside the helper itself to make driver code a bit
+   fancier (Jakub Kicinski);
+ - split function introduction and using into two separate commits;
+ - collect some more tags (Jesse Brandeburg, David Rientjes).
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index c0a0336a8ea4..7e96d5eda13a 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -673,11 +673,12 @@ its_pcie: interrupt-controller@f4000000 {
- 		};
- 
- 		pcie@f4000000 {
--			compatible = "hisilicon,kirin970-pcie", "hisilicon,kirin960-pcie";
-+			compatible = "hisilicon,kirin970-pcie";
- 			reg = <0x0 0xf4000000 0x0 0x1000000>,
- 			      <0x0 0xfc180000 0x0 0x1000>,
- 			      <0x0 0xfc000000 0x0 0x80000>,
- 			      <0x0 0xf5000000 0x0 0x2000>;
-+			pci-supply = <&ldo33>;
- 			reg-names = "dbi", "apb", "phy", "config";
- 			bus-range = <0x0  0x1>;
- 			msi-parent = <&its_pcie>;
-@@ -705,19 +706,18 @@ &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
- 				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
- 				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
- 				 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+
- 			clock-names = "pcie_phy_ref", "pcie_aux",
- 				      "pcie_apb_phy", "pcie_apb_sys",
- 				      "pcie_aclk";
--			switch,reset-gpios = <&gpio7 0 0 >;
--			eth,reset-gpios = <&gpio25 2 0 >;
--			m_2,reset-gpios = <&gpio3 1 0 >;
--			mini1,reset-gpios = <&gpio27 4 0 >;
- 
--			eth,clkreq-gpios = <&gpio20 6 0 >;
--			m_2,clkreq-gpios = <&gpio27 3 0 >;
--			mini1,clkreq-gpios = <&gpio17 0 0 >;
-+			reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
-+				      <&gpio3 1 0 >, <&gpio27 4 0 >;
- 
--			/*vboost iboost pre post main*/
-+			clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >,
-+				       <&gpio17 0 0 >;
-+
-+			/* vboost iboost pre post main */
- 			eye_param = <0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF>;
- 
- 			pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-index 8cf45b962fea..49afcd7c00ce 100644
---- a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-@@ -73,7 +73,6 @@ ldo33: LDO33 { /* PEX8606 */
- 					regulator-name = "ldo33";
- 					regulator-min-microvolt = <2500000>;
- 					regulator-max-microvolt = <3300000>;
--					regulator-boot-on;
- 				};
- 
- 				ldo34: LDO34 { /* GPS AUX IN VDD */
--- 
-2.29.2
+Since v1 [0]:
+ - new: reduce code duplication by introducing a new common function
+   to test if a page can be reused/recycled (David Rientjes);
+ - collect autographs for Page Pool bits (Jesper Dangaard Brouer,
+   Ilias Apalodimas).
+
+[0] https://lore.kernel.org/netdev/20210125164612.243838-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210127201031.98544-1-alobakin@pm.me
+[2] https://lore.kernel.org/lkml/20210131120844.7529-1-alobakin@pm.me
+
+Alexander Lobakin (5):
+  mm: constify page_is_pfmemalloc() argument
+  skbuff: constify skb_propagate_pfmemalloc() "page" argument
+  net: introduce common dev_page_is_reusable()
+  net: use the new dev_page_is_reusable() instead of private versions
+  net: page_pool: simplify page recycling condition tests
+
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 17 ++++++----------
+ drivers/net/ethernet/intel/fm10k/fm10k_main.c | 13 ++++--------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +-------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 15 +-------------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 13 ++----------
+ drivers/net/ethernet/intel/igb/igb_main.c     |  9 ++-------
+ drivers/net/ethernet/intel/igc/igc_main.c     |  9 ++-------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  9 ++-------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  9 ++-------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +------
+ include/linux/mm.h                            |  2 +-
+ include/linux/skbuff.h                        | 20 +++++++++++++++++--
+ net/core/page_pool.c                          | 14 ++++---------
+ 13 files changed, 46 insertions(+), 106 deletions(-)
+
+--=20
+2.30.0
+
 
