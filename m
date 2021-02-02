@@ -2,53 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C109530CBE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BA830C216
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239783AbhBBTiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:38:16 -0500
-Received: from 8bytes.org ([81.169.241.247]:54014 "EHLO theia.8bytes.org"
+        id S234551AbhBBOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:40:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhBBNzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:55:46 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 5FB4B3D4; Tue,  2 Feb 2021 14:55:03 +0100 (CET)
-Date:   Tue, 2 Feb 2021 14:55:01 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org, Yian Chen <yian.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] iommu/vt-d: Apply SATC policy
-Message-ID: <20210202135501.GX32671@8bytes.org>
-References: <20210202044057.615277-1-baolu.lu@linux.intel.com>
- <20210202044057.615277-4-baolu.lu@linux.intel.com>
+        id S229983AbhBBORp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:17:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9454164FC5;
+        Tue,  2 Feb 2021 13:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612274149;
+        bh=keCkanpK2quFyUoP2sx6/rYjvo75AHXrNu1jIcal3Nk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BkqNr1X+v2SqOy6cjJ9bc7qgUWfmFxrAWzOXsO57Ko5nkViZYaz9DRIVvzt/6rg+X
+         V1/IoxLg98kVAy38RnB5qDcYnkrQkzPYDJDvN/C+fwQPrff6CDBcqiKKe2KA4zgpls
+         cAwuFtQ4JzUQxaInNBSnz6xAL/vw6PYbT9rqpyuQ4+Dnk3du/F+8mBNzD7ajHeizaO
+         WcLY2pWHY5XUTkrCo9OTZGVufSybf6xW5PIW9l5DTzTuWu5yqRgU34A22XnbGx5nda
+         +53ZsdeGnrR18zrE08B6OjVLT+loJBOMo/Tft9e9vLYcgfkld/iOwyZn8b29r9Ec9F
+         pqgPtCPIQNVvw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
+Date:   Tue,  2 Feb 2021 15:55:40 +0200
+Message-Id: <20210202135544.3262383-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202044057.615277-4-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:40:57PM +0800, Lu Baolu wrote:
-> +	list_for_each_entry_rcu(satcu, &dmar_satc_units, list) {
-> +		satc = container_of(satcu->hdr, struct acpi_dmar_satc, header);
-> +		if (satc->segment == pci_domain_nr(dev->bus) && satcu->atc_required) {
+From: Leon Romanovsky <leonro@nvidia.com>
 
-You can safe a level of indentation and make this look nicer if you do:
+Hi,
 
-		if (satc->segment != pci_domain_nr(dev->bus) || !satcu->atc_required)
-			continue;
+This short series fixes W=1 compilation warnings which I experienced
+when tried to compile net/* folder.
 
+Thanks
 
-> +			for_each_dev_scope(satcu->devices, satcu->devices_cnt, i, tmp)
-> +				if (to_pci_dev(tmp) == dev)
-> +					goto out;
-> +		}
-> +	}
-> +	ret = 0;
-> +out:
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
+Leon Romanovsky (4):
+  ipv6: silence compilation warning for non-IPV6 builds
+  ipv6: move udp declarations to net/udp.h
+  net/core: move ipv6 gro function declarations to net/ipv6
+  netfilter: move handlers to net/ip_vs.h
+
+ include/net/ip_vs.h             | 11 +++++++++++
+ include/net/ipv6.h              |  3 +++
+ include/net/udp.h               |  3 +++
+ net/core/dev.c                  |  4 +---
+ net/ipv6/icmp.c                 |  6 ++++++
+ net/ipv6/ip6_input.c            |  3 +--
+ net/netfilter/ipvs/ip_vs_core.c | 12 ------------
+ 7 files changed, 25 insertions(+), 17 deletions(-)
+
+--
+2.29.2
+
