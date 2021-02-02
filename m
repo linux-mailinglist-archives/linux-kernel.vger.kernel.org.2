@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEF530C132
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972D030C12D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhBBOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:15:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
+        id S233876AbhBBOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:15:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233898AbhBBOKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:10:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D296503A;
-        Tue,  2 Feb 2021 13:51:09 +0000 (UTC)
+        id S233866AbhBBOKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:10:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D5F65037;
+        Tue,  2 Feb 2021 13:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273869;
-        bh=oXlgI/FwgbHEt8TA6tUSLHdkEelemYyZBZpzZSLbGZE=;
+        s=korg; t=1612273872;
+        bh=VO72xo3Ln8pM8nOw4InhlEiC5MpY0EvtYKsSSrbihHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iE/WDG4RvgBEV5Of8Izj8IjzjB7H4E23d9pslzkf3fJjugS7gzC1Q419jhS91Wdmp
-         zZZCgn+oqwD+Lf0qRDDqPYphPEuoUqKlf8l3dhwGAY2DvEPimv4EoEwQOtiT0x0JSx
-         Z/Ch/vJhaOBptsxzIT3Uinl7FymndsorobKLF4y0=
+        b=Tb2+yOQNYIED6om8QVrQnH5QKHADSgCstHpQMtLTBvQF0WCfSdIEWlRPB2WM5/qbV
+         /UOJXDqeh2aBKJ4KPC0lzO4o5mcfyKxB9w0wYp448HcpV11z11/cBimlWiQvf50TcK
+         wIqqlQY4c1gHjGCWrx8ke3UOqj/2XK7OEPyC8phU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Joerg Roedel <jroedel@suse.de>,
-        Filippo Sironi <sironi@amazon.de>
-Subject: [PATCH 4.9 30/32] iommu/vt-d: Dont dereference iommu_device if IOMMU_API is not built
-Date:   Tue,  2 Feb 2021 14:38:53 +0100
-Message-Id: <20210202132943.219130518@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 31/32] NFC: fix resource leak when target index is invalid
+Date:   Tue,  2 Feb 2021 14:38:54 +0100
+Message-Id: <20210202132943.261191142@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
 References: <20210202132942.035179752@linuxfoundation.org>
@@ -43,69 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+From: Pan Bian <bianpan2016@163.com>
 
-commit 9def3b1a07c41e21c68a0eb353e3e569fdd1d2b1 upstream.
+commit 3a30537cee233fb7da302491b28c832247d89bbe upstream.
 
-Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
-with no supported address widths") dmar.c needs struct iommu_device to
-be selected. We can drop this dependency by not dereferencing struct
-iommu_device if IOMMU_API is not selected and by reusing the information
-stored in iommu->drhd->ignored instead.
+Goto to the label put_dev instead of the label error to fix potential
+resource leak on path that the target index is invalid.
 
-This fixes the following build error when IOMMU_API is not selected:
-
-drivers/iommu/dmar.c: In function ‘free_iommu’:
-drivers/iommu/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
- 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
-                                                ^
-
-Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Acked-by: David Woodhouse <dwmw@amazon.co.uk>
-Link: https://lore.kernel.org/r/20201013073055.11262-1-brgl@bgdev.pl
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-[ - context change due to moving drivers/iommu/dmar.c to
-    drivers/iommu/intel/dmar.c
-  - set the drhr in the iommu like in upstream commit b1012ca8dc4f
-    ("iommu/vt-d: Skip TE disabling on quirky gfx dedicated iommu") ]
-Signed-off-by: Filippo Sironi <sironi@amazon.de>
+Fixes: c4fbb6515a4d ("NFC: The core part should generate the target index")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210121152748.98409-1-bianpan2016@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iommu/dmar.c        |    3 ++-
- include/linux/intel-iommu.h |    2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/iommu/dmar.c
-+++ b/drivers/iommu/dmar.c
-@@ -1110,6 +1110,7 @@ static int alloc_iommu(struct dmar_drhd_
+---
+ net/nfc/rawsock.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/net/nfc/rawsock.c
++++ b/net/nfc/rawsock.c
+@@ -117,7 +117,7 @@ static int rawsock_connect(struct socket
+ 	if (addr->target_idx > dev->target_next_idx - 1 ||
+ 	    addr->target_idx < dev->target_next_idx - dev->n_targets) {
+ 		rc = -EINVAL;
+-		goto error;
++		goto put_dev;
  	}
  
- 	drhd->iommu = iommu;
-+	iommu->drhd = drhd;
- 
- 	return 0;
- 
-@@ -1124,7 +1125,7 @@ error:
- 
- static void free_iommu(struct intel_iommu *iommu)
- {
--	if (intel_iommu_enabled && iommu->iommu_dev)
-+	if (intel_iommu_enabled && !iommu->drhd->ignored)
- 		iommu_device_destroy(iommu->iommu_dev);
- 
- 	if (iommu->irq) {
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -447,6 +447,8 @@ struct intel_iommu {
- 	struct device	*iommu_dev; /* IOMMU-sysfs device */
- 	int		node;
- 	u32		flags;      /* Software defined flags */
-+
-+	struct dmar_drhd_unit *drhd;
- };
- 
- static inline void __iommu_flush_cache(
+ 	rc = nfc_activate_target(dev, addr->target_idx, addr->nfc_protocol);
 
 
