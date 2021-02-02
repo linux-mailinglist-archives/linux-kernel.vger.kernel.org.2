@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE8430C66A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E8330C669
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbhBBQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:47:54 -0500
-Received: from mga03.intel.com ([134.134.136.65]:48675 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236724AbhBBQpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:45:10 -0500
-IronPort-SDR: QEXjGaHnr/veopYioSE4mCQEL1ka/6KtnhD+ikiKrzyFMATGECqrYoR+P5uFYGTdnFueA4yhP2
- Cdv0XjSi8Fwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="180961609"
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="180961609"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 08:43:20 -0800
-IronPort-SDR: Mik2ouu6FRss9AOS0SbJY7i4r2d/YqEjTDVgiyZPrxjGNLsPw6PRlAITedaZuVaxHrgoo0nZ5w
- t4l/YFObU0rQ==
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="391564051"
-Received: from bmdumitr-mobl.amr.corp.intel.com (HELO [10.212.155.40]) ([10.212.155.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 08:43:16 -0800
-Subject: Re: [PATCH] soundwire: debugfs: use controller id instead of link_id
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210115162559.20869-1-srinivas.kandagatla@linaro.org>
- <20210119145220.GS2771@vkoul-mobl>
- <45300dc3-00b0-497b-804e-f7f1e857f32a@linux.intel.com>
- <57d5f1bd-50fa-30ab-03c0-260460e45d61@linaro.org>
- <6d4d4a6b-f28c-81db-4e67-2b5b94116fa4@linux.intel.com>
- <1fad2388-27d0-7014-818d-1272fa70ed9b@linaro.org>
- <33fe8455-01b4-f867-4974-a3e867c930f0@linux.intel.com>
- <feee8676-33fe-7929-8b6c-6abe3a09159a@linaro.org>
- <20210201101414.GS2771@vkoul-mobl>
- <4b850685-1058-0e18-d3e8-e23e20086235@linux.intel.com>
- <20210202041853.GF2771@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6eebbadd-d26b-9dba-f425-01988fb64bec@linux.intel.com>
-Date:   Tue, 2 Feb 2021 10:43:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233581AbhBBQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236808AbhBBQpD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:45:03 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4667C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:44:22 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id a1so10151484qvd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GHt+58lpMeN8FS8Vy0xXsKPAH5qjP5k97xDYxNly/mc=;
+        b=Gqa1+92O2XoVdq5h3WJwvIe53CWAcsJ+UBuSqLqbDzVZ+B5OJ6z9mbaF+Xd1pE2kyO
+         ZBiqehKbCvYFUZD45B4RDBY991mbJDTkTw5RkQDmAbLoyKorJeVh5cNFAtaJHLUDs5fh
+         hbXuNCWCieD5tiGjGAu8tLxyHEkHSHRlFdIssg2sybQn6sncjLZ5zxoRlvzhpvk00wR9
+         yBYD/Pf/9PSePO1vuzYkrYvFohsWUMGgVf6mpwnbvQoh1YOpAI91LkjUTXmjz5cn8grM
+         ZBoH+vb74KN38ud6Zu/jDqu00YHifhJXrI3RJoW/bcaK1WRlthg4Dv3JM0ZlzfZDVymB
+         EPzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GHt+58lpMeN8FS8Vy0xXsKPAH5qjP5k97xDYxNly/mc=;
+        b=EfrGr6t2olFPymTakYMXWv0JnzVK2PNpMhzvUjl7xiAoaHihyjGxS5NBKFcCP7qpwX
+         J0sUO1JgBwzeO5TWr09l2ObrODiYPp4DiDsP9jqINWjrJQqakZzt562CDWYfREv31u2h
+         9gR0CX1CyPNBMh9aiJ8TnRI3LDLWq1lloiuxjWOafroIQYuDLshbCwZ8r4JMHNRsYuui
+         LksmBTEpW0w6fyFWrk8I8TY5Wg8e9LvMGSwsph/XH4gResYA1QG1W0NfSMCIhic8dIzG
+         tniOwgssE+vE77wVX/3mUThU0t+bWue9skeb0Oh0TxIQz7bOQNf89oktz0t1QiQSAS7g
+         xXsw==
+X-Gm-Message-State: AOAM533n9Qs50BtDhk4OxCGpYIWhUr+kRMM+8jOxrBcRTXGBEzLyISIl
+        2eqwf3+CcoW5za9McnKPCUV7qw==
+X-Google-Smtp-Source: ABdhPJzpFtBa8bHhZ4cLgismUjbOWGsHslkWVqUIkLdMBKjip8QuQAUNewHD8Wr7QA7C49wzM3jfAQ==
+X-Received: by 2002:a0c:a9c7:: with SMTP id c7mr7444088qvb.53.1612284262005;
+        Tue, 02 Feb 2021 08:44:22 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id 133sm17669457qkg.38.2021.02.02.08.44.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:44:21 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l6ymq-002bgU-0u; Tue, 02 Feb 2021 12:44:20 -0400
+Date:   Tue, 2 Feb 2021 12:44:20 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     20200918161902.GX8409@ziepe.ca,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Wei" <wzam@amazon.com>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20210202164420.GL4718@ziepe.ca>
+References: <27564187-4a08-f187-5a84-3df50009f6ca@amazon.com>
+ <20210202163127.GD6468@xz-x1>
 MIME-Version: 1.0
-In-Reply-To: <20210202041853.GF2771@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202163127.GD6468@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/1/21 10:18 PM, Vinod Koul wrote:
-> On 01-02-21, 10:10, Pierre-Louis Bossart wrote:
->> On 2/1/21 4:14 AM, Vinod Koul wrote:
->>> On 21-01-21, 17:23, Srinivas Kandagatla wrote:
->>>> On 21/01/2021 15:12, Pierre-Louis Bossart wrote:
->>>>> On 1/21/21 6:03 AM, Srinivas Kandagatla wrote:
+On Tue, Feb 02, 2021 at 11:31:27AM -0500, Peter Xu wrote:
+> On Tue, Feb 02, 2021 at 04:40:33PM +0200, Gal Pressman wrote:
+> > Hi Peter & Jason,
 > 
->>>> I totally agree!
->>>>
->>>> If I understand it correctly in Intel case there will be only one Link ID
->>>> per bus.
->>>
->>> Yes IIUC there would be one link id per bus.
->>>
->>> the ida approach gives us unique id for each master,bus I would like to
->>> propose using that everywhere
->>
->> We have cases where link2 is not used but link0, 1 and 3 are.
->> Using the IDA would result in master-0,1,2 being shown, that would throw the
->> integrator off. the link_id is related to hardware and can tolerate gaps,
->> the IDA is typically always increasing and is across the system, not
->> controller specific.
->>
->> We can debate forever but both pieces of information are useful, so my
->> recommendation is to use both:
->>
->> snprintf(name, sizeof(name), "master-%d-%d", bus_id, bus->link_id);
+> Hi, Gal, Jason,
 > 
-> I agree we should use both, but does it really make sense for naming? We
-> can keep name in ida and expose the link_id as a parameter for
-> integrators to see in sysfs.
+> > 
+> > It seems the hugetlb part was overlooked?
+> > We're testing if the RDMA fork MADV_DONTFORK stuff can be removed on appropriate
+> > kernels, but our tests still fail due to lacking explicit huge pages support [1].
+> 
+> I didn't think it high priority only because I think most hugetlbfs users
+> should be using it shared, but maybe I'm wrong..  Then it got lost indeed.
 
-That would mean changing the meaning of sysfs properties:
+It turns out people are doing this:
 
-/*
-  * The sysfs for properties reflects the MIPI description as given
-  * in the MIPI DisCo spec
-  *
-  * Base file is:
-  *	sdw-master-N
-  *      |---- revision
-  *      |---- clk_stop_modes
-  *      |---- max_clk_freq
-  *      |---- clk_freq
-  *      |---- clk_gears
-  *      |---- default_row
-  *      |---- default_col
-  *      |---- dynamic_shape
-  *      |---- err_threshold
-  */
+mmap(NULL, SEND_BUFF_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0)
 
-N is the link ID in the spec. I am not convinced we'd do the community a 
-service by unilaterally changing what an external spec means, or add a 
-property that's kernel-defined while the rest is supposed to come from 
-firmware. If you want to change the spec then you can contribute 
-feedback in MIPI circles (MIPI have a mechanism for maintainers to 
-provide such feedback without company/employer membership requirements)
+Which makes some sense...
 
-So either we add a sysfs layer that represents a controller (better in 
-my opinion so that we can show the link/master count), or keep the 
-existing hierarchy but expand the name with a unique ID so that Qualcomm 
-don't get errors with duplicate sysfs link0 entries.
+Gal, you could also MADV_DONTFORK this range if you are explicitly
+allocating them via special mmap.
 
+Jason
