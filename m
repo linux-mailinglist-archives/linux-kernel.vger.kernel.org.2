@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF65630C831
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7AC30C832
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237836AbhBBRoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:44:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237750AbhBBRmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:42:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3559864F5F;
-        Tue,  2 Feb 2021 17:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612287683;
-        bh=XrqQUpQjK2B6Gy7MUmqLIy6ph4nA8RzfeE8HGNIUfNc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dknAJxgPhZ8OA5JCBRRCYStwLbZYN7Dm8Kyj4lWnbR+mNZkDbjGO3g2QEkTg/8hrt
-         h/aZm0FtNwnF4EjexKOs3cDon7oWnaXvDwMDMqevnnme+IcuHmn0lNNzZAzUe+u2Qo
-         MWc2d+/fH72UOZozQ/+wNyr0XkjxKncMMVmg00BQIx6NSGL5tynfaEOD6G2ddV9+JD
-         SEAOVDboLbpuPsRJZUCIVWKwSVUsMcA8yFg+cE6JAd3izAMjkSByrqK/+hDwdgmaoK
-         l6Me7J1kOdOF59yKRtqXe6IaAepk/yARBLZF5nXF9bDYxmTHP1GPXexD1/3gpkRljD
-         8QnmVGbJFNDcQ==
-Received: by mail-ej1-f45.google.com with SMTP id a9so12890158ejr.2;
-        Tue, 02 Feb 2021 09:41:23 -0800 (PST)
-X-Gm-Message-State: AOAM530ka2qXaOPzqNxZhGe4I8NIydeLyWi5eAMV+bCgQRn/3qDVfKrQ
-        yqMbAgikNMn6GJrlMGaqfrfSRYmfIHvwQMYZRw==
-X-Google-Smtp-Source: ABdhPJy7qlQzOEBJFERevS2s5A+17Y7LWXKTGTcLN/aIJ+lDn4tB+n0QfADEErfdMqiE4vPYS8qSp9wXnwGuOy+rUg0=
-X-Received: by 2002:a17:907:16a2:: with SMTP id hc34mr4934241ejc.108.1612287681717;
- Tue, 02 Feb 2021 09:41:21 -0800 (PST)
+        id S237639AbhBBRou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:44:50 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18566 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237751AbhBBRmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:42:06 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60198ec50000>; Tue, 02 Feb 2021 09:41:25 -0800
+Received: from [172.27.0.48] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 17:41:19 +0000
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+CC:     Matthew Rosato <mjrosato@linux.ibm.com>, <jgg@nvidia.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
+        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
+        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
+        <yishaih@nvidia.com>, <aik@ozlabs.ru>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+ <20210201162828.5938-9-mgurtovoy@nvidia.com>
+ <20210201181454.22112b57.cohuck@redhat.com>
+ <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+Date:   Tue, 2 Feb 2021 19:41:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com> <cb6edbd0-346b-0674-5b5c-7ce3a437736d@microchip.com>
-In-Reply-To: <cb6edbd0-346b-0674-5b5c-7ce3a437736d@microchip.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 2 Feb 2021 11:41:09 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKa5tHsKpOzkTjoiyQSJ+Q7_JOhkZ1m5tnOHK8dDGP7uA@mail.gmail.com>
-Message-ID: <CAL_JsqKa5tHsKpOzkTjoiyQSJ+Q7_JOhkZ1m5tnOHK8dDGP7uA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210202170659.1c62a9e8.cohuck@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612287685; bh=T9u2m8ib6L6wjnHIIPMQb8zM6/4WXaLdn05UdqoTT0c=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=N7eZ8ReEx0/Bqg8xyxrqzQMO8fa7xE7tK+5n1zO5nKxn2aYadp7UDLxOdfBN4PSSe
+         jaiYRM/E0kIc4jRblHs/SaiNHjJ1jxm+uqMe8sH0sKUkui7HPuNc4b/T3WygdpT0Fs
+         bVxhgrB9M3V1aKw6FkHNIUq6bEnRf38pCsmYhM6J1CqsSu+IOT5Ki9g0aSjidqqIF1
+         t62ePGc3K4aYGh/H69wI4+ypPBwQZkih1aNx4aqUOc8u6J9hHW9WPxw4Wt23P3FVzQ
+         6VXZAy3ZTiVS85rAJgkB/woIpeIX+MwVm+d8aTCVdkEjAodn6ogQZ1h2oeXsrTkRff
+         xfJCT2DFJ5I+g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 10:52 AM <Tudor.Ambarus@microchip.com> wrote:
->
-> Hi, Saravana,
->
-> On 2/2/21 6:33 AM, Saravana Kannan wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > This patch series solves two general issues with fw_devlink=on
-> >
-> > Patch 1/3 and 3/3 addresses the issue of firmware nodes that look like
-> > they'll have struct devices created for them, but will never actually
-> > have struct devices added for them. For example, DT nodes with a
-> > compatible property that don't have devices added for them.
-> >
-> > Patch 2/2 address (for static kernels) the issue of optional suppliers
-> > that'll never have a driver registered for them. So, if the device could
-> > have probed with fw_devlink=permissive with a static kernel, this patch
-> > should allow those devices to probe with a fw_devlink=on. This doesn't
-> > solve it for the case where modules are enabled because there's no way
-> > to tell if a driver will never be registered or it's just about to be
-> > registered. I have some other ideas for that, but it'll have to come
-> > later thinking about it a bit.
-> >
-> > Marek, Geert,
-> >
-> > I don't expect v2 to do any better for your cases.
-> >
-> > This series not making any difference for Marek is still a mystery to
-> > me. I guess one of the consumers doesn't take too well to its probe (and
-> > it's consumers' probe) being delayed till late_initcall(). I'll continue
-> > looking into it.
-> >
-> > Marc,
-> >
-> > This v2 should do better than v1 with gpiolib stub driver reverted. I
-> > forgot to take care of the case where more suppliers could link after I
-> > went and deleted some of the links. v2 handles that now.
-> >
-> > Tudor,
-> >
-> > You should still make the clock driver fix (because it's a bug), but I
-> > think this series will fix your issue too (even without the clock driver
-> > fix). Can you please give this a shot?
-> >
->
-> Did the following tests (using sama5_defconfig and at91-sama5d2_xplained.dts):
-> 1/ modular kernel with your v2 on top of next-20210202, and without the clock
-> driver fix: the problem persists.
->
-> 2/ static kernel with your v2 on top of next-20210202, and without the clock
-> driver fix: the problem persists. Comparing to the previous test, I see that
-> the links to pmc are dropped. I can see the following only with early printk
-> enabled:
-> platform fc008000.serial: Dropping the link to f0014000.pmc
-> But later on, the serial still gets deferred waiting for the dma controller
-> this time:
-> platform f8020000.serial: probe deferral - supplier f0010000.dma-controller not ready
-> I'll check what happens in the dma-controller.
 
-Not sure if it's the case here, but some serial drivers use DMA only
-when available and decide that on open() rather than probe. How is
-devlinks going to deal with that?
+On 2/2/2021 6:06 PM, Cornelia Huck wrote:
+> On Mon, 1 Feb 2021 11:42:30 -0700
+> Alex Williamson <alex.williamson@redhat.com> wrote:
+>
+>> On Mon, 1 Feb 2021 12:49:12 -0500
+>> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+>>
+>>> On 2/1/21 12:14 PM, Cornelia Huck wrote:
+>>>> On Mon, 1 Feb 2021 16:28:27 +0000
+>>>> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+>>>>      
+>>>>> This patch doesn't change any logic but only align to the concept of
+>>>>> vfio_pci_core extensions. Extensions that are related to a platform
+>>>>> and not to a specific vendor of PCI devices should be part of the core
+>>>>> driver. Extensions that are specific for PCI device vendor should go
+>>>>> to a dedicated vendor vfio-pci driver.
+>>>> My understanding is that igd means support for Intel graphics, i.e. a
+>>>> strict subset of x86. If there are other future extensions that e.g.
+>>>> only make sense for some devices found only on AMD systems, I don't
+>>>> think they should all be included under the same x86 umbrella.
+>>>>
+>>>> Similar reasoning for nvlink, that only seems to cover support for some
+>>>> GPUs under Power, and is not a general platform-specific extension IIUC.
+>>>>
+>>>> We can arguably do the zdev -> s390 rename (as zpci appears only on
+>>>> s390, and all PCI devices will be zpci on that platform), although I'm
+>>>> not sure about the benefit.
+>>> As far as I can tell, there isn't any benefit for s390 it's just
+>>> "re-branding" to match the platform name rather than the zdev moniker,
+>>> which admittedly perhaps makes it more clear to someone outside of s390
+>>> that any PCI device on s390 is a zdev/zpci type, and thus will use this
+>>> extension to vfio_pci(_core).  This would still be true even if we added
+>>> something later that builds atop it (e.g. a platform-specific device
+>>> like ism-vfio-pci).  Or for that matter, mlx5 via vfio-pci on s390x uses
+>>> these zdev extensions today and would need to continue using them in a
+>>> world where mlx5-vfio-pci.ko exists.
+>>>
+>>> I guess all that to say: if such a rename matches the 'grand scheme' of
+>>> this design where we treat arch-level extensions to vfio_pci(_core) as
+>>> "vfio_pci_(arch)" then I'm not particularly opposed to the rename.  But
+>>> by itself it's not very exciting :)
+>> This all seems like the wrong direction to me.  The goal here is to
+>> modularize vfio-pci into a core library and derived vendor modules that
+>> make use of that core library.  If existing device specific extensions
+>> within vfio-pci cannot be turned into vendor modules through this
+>> support and are instead redefined as platform specific features of the
+>> new core library, that feels like we're already admitting failure of
+>> this core library to support known devices, let alone future devices.
+>>
+>> IGD is a specific set of devices.  They happen to rely on some platform
+>> specific support, whose availability should be determined via the
+>> vendor module probe callback.  Packing that support into an "x86"
+>> component as part of the core feels not only short sighted, but also
+>> avoids addressing the issues around how userspace determines an optimal
+>> module to use for a device.
+> Hm, it seems that not all current extensions to the vfio-pci code are
+> created equal.
+>
+> IIUC, we have igd and nvlink, which are sets of devices that only show
+> up on x86 or ppc, respectively, and may rely on some special features
+> of those architectures/platforms. The important point is that you have
+> a device identifier that you can match a driver against.
 
-Rob
+maybe you can supply the ids ?
+
+Alexey K, I saw you've been working on the NVLINK2 for P9. can you 
+supply the exact ids for that should be bounded to this driver ?
+
+I'll add it to V3.
+
+>
+> On the other side, we have the zdev support, which both requires s390
+> and applies to any pci device on s390. If we added special handling for
+> ISM on s390, ISM would be in a category similar to igd/nvlink.
+>
+> Now, if somebody plugs a mlx5 device into an s390, we would want both
+> the zdev support and the specialized mlx5 driver. Maybe zdev should be
+> some kind of library that can be linked into normal vfio-pci, into
+> vfio-pci-mlx5, and a hypothetical vfio-pci-ism? You always want zdev on
+> s390 (if configured into the kernel).
+>
