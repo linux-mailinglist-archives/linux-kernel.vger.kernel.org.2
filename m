@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881D930CD84
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C27730CD8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbhBBVAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:00:33 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7520 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233274AbhBBVAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:00:20 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6019bd3c0000>; Tue, 02 Feb 2021 12:59:40 -0800
-Received: from [172.27.0.48] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
- 2021 20:59:30 +0000
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
-        <aik@ozlabs.ru>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-9-mgurtovoy@nvidia.com>
- <20210201181454.22112b57.cohuck@redhat.com>
- <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
- <20210201114230.37c18abd@omen.home.shazbot.org>
- <20210202170659.1c62a9e8.cohuck@redhat.com>
- <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
- <20210202105455.5a358980@omen.home.shazbot.org>
- <20210202185017.GZ4247@nvidia.com>
- <20210202123723.6cc018b8@omen.home.shazbot.org>
- <20210202204432.GC4247@nvidia.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <5e9ee84e-d950-c8d9-ac70-df042f7d8b47@nvidia.com>
-Date:   Tue, 2 Feb 2021 22:59:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234034AbhBBVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:01:54 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49446 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232563AbhBBVBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:01:33 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 112L0dpN029850;
+        Tue, 2 Feb 2021 22:00:39 +0100
+Date:   Tue, 2 Feb 2021 22:00:39 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Amy Parker <enbyamy@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gcc@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: Alternative compilers to GCC/Clang
+Message-ID: <20210202210039.GB29751@1wt.eu>
+Reply-To: linux-kernel@vger.kernel.org
+References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
+ <20210202053307.GB28542@1wt.eu>
+ <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
+ <CAE1WUT7zprk-3naBGwZk=bsVR8Od=PT0kqNO6EVBQUOG+F1h3w@mail.gmail.com>
+ <20210202201920.GA18106@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210202204432.GC4247@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612299580; bh=VzeO8fn5oKUBcIe3AbDvCWI0BQgaZOFMZoUoYnQg2tg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=Q+CtvyvMHflZh/Clwh4OHJNijKdiI76UyAEj58pPtOU6Pvuastj2UFSYud50DDPLP
-         9GSAAKJ3kdJjy5flRmGiHJtvOeg1rPdyNy25OkqRYl2Bf/VWtK1M01W9CRBUsmt90S
-         MXhYztrU7Lbwq8fw9HkQm5cWQNPuaoPdyS5eIGCXDr8T0wQBu+Jjqo2ZVrcp/x0+Gw
-         hlhzsLSbeMLho2eVtyx33vlnfFSOgsJETYVo1tWgwnJlFrSN1YNiCi7Ksdd1vzrAZa
-         eu/MiwQCyrd3/ArsC6JAHEvh6Oguldg+kS6ST9mLs1xXqj4zroTNyi8J7HDYSnD4cO
-         x/STV1yKoFfWA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202201920.GA18106@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 02, 2021 at 09:19:20PM +0100, Borislav Petkov wrote:
+> On Tue, Feb 02, 2021 at 11:11:32AM -0800, Amy Parker wrote:
+> > On Tue, Feb 2, 2021 at 8:26 AM Amy Parker <enbyamy@gmail.com> wrote:
+> > > > It compiles extremely fast, implements some subsets of gcc (a few
+> > > > attributes for example), but is far from being able to compile a kernel
+> > >
+> > > Well, we'll see what I can do with that. :)
+> > 
+> > Well, just installed it and tried building the kernel. Fails every file. :)
+> > 
+> > It's definitely something to work towards - but I don't know if kernel
+> > advancements requiring newer GCC versions will go slow enough to allow
+> > TCC improvements to arise. This isn't just something like with Clang
+> > where a few tweaks to files and to Clang itself did the trick.
+> 
+> Maybe this'll help you find something to do:
+> 
+> https://www.youtube.com/watch?v=iU0Z0vBKrtQ
+> 
+> Yes, it would be lovely to be able to compile the kernel with tcc but it
+> is not going to be trivial.
 
-On 2/2/2021 10:44 PM, Jason Gunthorpe wrote:
-> On Tue, Feb 02, 2021 at 12:37:23PM -0700, Alex Williamson wrote:
->
->> For the most part, this explicit bind interface is redundant to
->> driver_override, which already avoids the duplicate ID issue.
-> No, the point here is to have the ID tables in the PCI drivers because
-> they fundamentally only work with their supported IDs. The normal
-> driver core ID tables are a replacement for all the hardwired if's in
-> vfio_pci.
->
-> driver_override completely disables all the ID checking, it seems only
-> useful for vfio_pci which works with everything. It should not be used
-> with something like nvlink_vfio_pci.ko that needs ID checking.
+In any case there will always be numerous limitations, but at least being
+able to perform the basic build check with limited options could save quite
+some time to many developers. Using gcc once the tcc-based "typo check"
+passes would already be a nice start. Getting the kernel to boot would
+indeed be a huge step forward! In haproxy we can only build with threading
+disabled and it works slowly but sufficiently for basic tests and printf-
+based debugging. It's convenient for bisecting certain bugs.
 
-This mechanism of driver_override seems weird to me. In case of hotplug 
-and both capable drivers (native device driver and vfio-pci) are loaded, 
-both will compete on the device.
+Thanks for the video Boris, I wasn't aware of it, definitely interesting!
 
-I think the proposed flags is very powerful and it does fix the original 
-concern Alex had ("if we start adding ids for vfio drivers then we 
-create conflicts with the native host driver") and it's very deterministic.
-
-In this way we'll bind explicitly to a driver.
-
-And the way we'll choose a vfio-pci driver is by device_id + vendor_id + 
-subsystem_device + subsystem_vendor.
-
-There shouldn't be 2 vfio-pci drivers that support a device with same 
-above 4 ids.
-
-if you don't find a suitable vendor-vfio-pci.ko, you'll try binding 
-vfio-pci.ko.
-
-Each driver will publish its supported ids in sysfs to help the user to 
-decide.
-
->
-> Yes, this DRIVER_EXPLICIT_BIND_ONLY idea somewhat replaces
-> driver_override because we could set the PCI any match on vfio_pci and
-> manage the driver binding explicitly instead.
->
->> A driver id table doesn't really help for binding the device,
->> ultimately even if a device is in the id table it might fail to
->> probe due to the missing platform support that each of these igd and
->> nvlink drivers expose,
-> What happens depends on what makes sense for the driver, some missing
-> optional support could continue without it, or it could fail.
->
-> IGD and nvlink can trivially go onwards and work if they don't find
-> the platform support.
->
-> Or they might want to fail, I think the mlx5 and probably nvlink
-> drivers should fail as they are intended to be coupled with userspace
-> that expects to use their extended features.
->
-> In those cases failing is a feature because it prevents the whole
-> system from going into an unexpected state.
->
-> Jason
+Willy
