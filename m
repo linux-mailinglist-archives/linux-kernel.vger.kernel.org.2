@@ -2,204 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1323030C8E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD8230C913
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238175AbhBBSDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:03:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
+        id S238194AbhBBSJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:09:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233934AbhBBOIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:08:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 021526502D;
-        Tue,  2 Feb 2021 13:50:21 +0000 (UTC)
+        id S233646AbhBBOHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:07:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E638364F96;
+        Tue,  2 Feb 2021 13:49:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273822;
-        bh=IpDvbHeP4tmjOwgowyLGmsAwrATmNBJt3kLhn14+kzc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qLJW5GPhjh5iNgIqx7pTNaDPToTpPypSkAauPIBLsBcUw0h8cef7zrOF+c2Gk7dVp
-         NqCGdWV1Lmo/rfdUoCdcK5zgYSq5pAXQop9/2LTPPhngWkYKNLwzEBY4lgf8D9MYLp
-         11urGq2qZeeLBfndQaj6D3cIg4uGOwseGdRbNM5Y=
+        s=korg; t=1612273787;
+        bh=WStUDGcn4DghHedJEwCfxUeb0+v6Nzp8MdgjoXK0jC8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IfVDXVimJAHaeUb+lmoir0aDFpf/D0ZYT8p0d6i7VfhdRvIL0kSm5420TWlROqmqy
+         YUwXuwlaKOSif8GuRA/9PqrPQ10oz/31cy5C/U8BVv5iw1JxNzREPf9sM1iNhYWgRM
+         5A6whbAwJhslE04RdzzKQnruuF86BJnGMHNO2zX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH 4.9 00/32] 4.9.255-rc1 review
+        stable@vger.kernel.org, Giacinto Cifelli <gciofono@gmail.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 03/28] net: usb: qmi_wwan: added support for Thales Cinterion PLSx3 modem family
 Date:   Tue,  2 Feb 2021 14:38:23 +0100
-Message-Id: <20210202132942.035179752@linuxfoundation.org>
+Message-Id: <20210202132941.330199630@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+References: <20210202132941.180062901@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.255-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.255-rc1
-X-KernelTest-Deadline: 2021-02-04T13:29+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.255 release.
-There are 32 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Giacinto Cifelli <gciofono@gmail.com>
 
-Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-Anything received after that time might be too late.
+commit 7e0e63d09516e96994c879f07c5a3c3269d7015e upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.255-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+Bus 003 Device 009: ID 1e2d:006f
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass          239 Miscellaneous Device
+  bDeviceSubClass         2 ?
+  bDeviceProtocol         1 Interface Association
+  bMaxPacketSize0        64
+  idVendor           0x1e2d
+  idProduct          0x006f
+  bcdDevice            0.00
+  iManufacturer           3 Cinterion Wireless Modules
+  iProduct                2 PLSx3
+  iSerial                 4 fa3c1419
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          303
+    bNumInterfaces          9
+    bConfigurationValue     1
+    iConfiguration          1 Cinterion Configuration
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower              500mA
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         0
+      bInterfaceCount         2
+      bFunctionClass          2 Communications
+      bFunctionSubClass       2 Abstract (modem)
+      bFunctionProtocol       1 AT-commands (v.25ter)
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         2 Communications
+      bInterfaceSubClass      2 Abstract (modem)
+      bInterfaceProtocol      1 AT-commands (v.25ter)
+      iInterface              0
+      CDC Header:
+        bcdCDC               1.10
+      CDC ACM:
+        bmCapabilities       0x02
+          line coding and serial state
+      CDC Call Management:
+        bmCapabilities       0x03
+          call management
+          use DataInterface
+        bDataInterface          1
+      CDC Union:
+        bMasterInterface        0
+        bSlaveInterface         1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               5
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass        10 CDC Data
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         2
+      bInterfaceCount         2
+      bFunctionClass          2 Communications
+      bFunctionSubClass       2 Abstract (modem)
+      bFunctionProtocol       1 AT-commands (v.25ter)
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         2 Communications
+      bInterfaceSubClass      2 Abstract (modem)
+      bInterfaceProtocol      1 AT-commands (v.25ter)
+      iInterface              0
+      CDC Header:
+        bcdCDC               1.10
+      CDC ACM:
+        bmCapabilities       0x02
+          line coding and serial state
+      CDC Call Management:
+        bmCapabilities       0x03
+          call management
+          use DataInterface
+        bDataInterface          3
+      CDC Union:
+        bMasterInterface        2
+        bSlaveInterface         3
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               5
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass        10 CDC Data
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         4
+      bInterfaceCount         2
+      bFunctionClass          2 Communications
+      bFunctionSubClass       2 Abstract (modem)
+      bFunctionProtocol       1 AT-commands (v.25ter)
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        4
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         2 Communications
+      bInterfaceSubClass      2 Abstract (modem)
+      bInterfaceProtocol      1 AT-commands (v.25ter)
+      iInterface              0
+      CDC Header:
+        bcdCDC               1.10
+      CDC ACM:
+        bmCapabilities       0x02
+          line coding and serial state
+      CDC Call Management:
+        bmCapabilities       0x03
+          call management
+          use DataInterface
+        bDataInterface          5
+      CDC Union:
+        bMasterInterface        4
+        bSlaveInterface         5
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x85  EP 5 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               5
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        5
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass        10 CDC Data
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x86  EP 6 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         6
+      bInterfaceCount         2
+      bFunctionClass          2 Communications
+      bFunctionSubClass       2 Abstract (modem)
+      bFunctionProtocol       1 AT-commands (v.25ter)
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        6
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         2 Communications
+      bInterfaceSubClass      2 Abstract (modem)
+      bInterfaceProtocol      1 AT-commands (v.25ter)
+      iInterface              0
+      CDC Header:
+        bcdCDC               1.10
+      CDC ACM:
+        bmCapabilities       0x02
+          line coding and serial state
+      CDC Call Management:
+        bmCapabilities       0x03
+          call management
+          use DataInterface
+        bDataInterface          7
+      CDC Union:
+        bMasterInterface        6
+        bSlaveInterface         7
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x87  EP 7 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               5
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        7
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass        10 CDC Data
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x88  EP 8 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        8
+      bAlternateSetting       0
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass    255 Vendor Specific Subclass
+      bInterfaceProtocol    255 Vendor Specific Protocol
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x89  EP 9 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               5
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x8a  EP 10 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x05  EP 5 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+Device Qualifier (for other device speed):
+  bLength                10
+  bDescriptorType         6
+  bcdUSB               2.00
+  bDeviceClass          239 Miscellaneous Device
+  bDeviceSubClass         2 ?
+  bDeviceProtocol         1 Interface Association
+  bMaxPacketSize0        64
+  bNumConfigurations      1
+Device Status:     0x0000
+  (Bus Powered)
 
-thanks,
+Cc: stable@vger.kernel.org
+Signed-off-by: Giacinto Cifelli <gciofono@gmail.com>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Link: https://lore.kernel.org/r/20210120045650.10855-1-gciofono@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-greg k-h
+---
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.255-rc1
-
-Pan Bian <bianpan2016@163.com>
-    NFC: fix possible resource leak
-
-Pan Bian <bianpan2016@163.com>
-    NFC: fix resource leak when target index is invalid
-
-Bartosz Golaszewski <bgolaszewski@baylibre.com>
-    iommu/vt-d: Don't dereference iommu_device if IOMMU_API is not built
-
-David Woodhouse <dwmw@amazon.co.uk>
-    iommu/vt-d: Gracefully handle DMAR units with no supported address widths
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    can: dev: prevent potential information leak in can_fill_info()
-
-Johannes Berg <johannes.berg@intel.com>
-    mac80211: pause TX while changing interface type
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: pcie: reschedule in long-running memory reads
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: pcie: use jiffies for memory read spin time limit
-
-Kamal Heib <kamalheib1@gmail.com>
-    RDMA/cxgb4: Fix the reported max_recv_sge value
-
-Shmulik Ladkani <shmulik@metanetworks.com>
-    xfrm: Fix oops in xfrm_replay_advance_bmp
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nft_dynset: add timeout extension to template
-
-Max Krummenacher <max.oss.09@gmail.com>
-    ARM: imx: build suspend-imx6.S with arm instruction set
-
-Lorenzo Bianconi <lorenzo@kernel.org>
-    mt7601u: fix rx buffer refcounting
-
-Lorenzo Bianconi <lorenzo@kernel.org>
-    mt7601u: fix kernel crash unplugging the device
-
-Andrea Righi <andrea.righi@canonical.com>
-    leds: trigger: fix potential deadlock with libata
-
-Jay Zhou <jianjay.zhou@huawei.com>
-    KVM: x86: get smi pending status correctly
-
-Like Xu <like.xu@linux.intel.com>
-    KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Prevent exit livelock
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Provide distinct return value when owner is exiting
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Add mutex around futex exit
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Provide state handling for exec() as well
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Sanitize exit state handling
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Mark the begin of futex exit explicitly
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Set task::futex_state to DEAD right after handling futex exit
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Split futex_mm_release() for exit/exec
-
-Thomas Gleixner <tglx@linutronix.de>
-    exit/exec: Seperate mm_release()
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Replace PF_EXITPIDONE with a state
-
-Thomas Gleixner <tglx@linutronix.de>
-    futex: Move futex exit handling into futex code
-
-Arnd Bergmann <arnd@arndb.de>
-    y2038: futex: Move compat implementation into futex.c
-
-Giacinto Cifelli <gciofono@gmail.com>
-    net: usb: qmi_wwan: added support for Thales Cinterion PLSx3 modem family
-
-Johannes Berg <johannes.berg@intel.com>
-    wext: fix NULL-ptr-dereference with cfg80211's lack of commit()
-
-Kai-Heng Feng <kai.heng.feng@canonical.com>
-    ACPI: sysfs: Prefer "compatible" modalias
-
-
--------------
-
-Diffstat:
-
- Makefile                                        |   4 +-
- arch/arm/mach-imx/suspend-imx6.S                |   1 +
- arch/x86/kvm/pmu_intel.c                        |   2 +-
- arch/x86/kvm/x86.c                              |   5 +
- drivers/acpi/device_sysfs.c                     |  20 +-
- drivers/infiniband/hw/cxgb4/qp.c                |   2 +-
- drivers/iommu/dmar.c                            |  41 ++-
- drivers/leds/led-triggers.c                     |  10 +-
- drivers/net/can/dev.c                           |   2 +-
- drivers/net/usb/qmi_wwan.c                      |   1 +
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c |  14 +-
- drivers/net/wireless/mediatek/mt7601u/dma.c     |   5 +-
- fs/exec.c                                       |   2 +-
- include/linux/compat.h                          |   2 -
- include/linux/futex.h                           |  44 ++-
- include/linux/intel-iommu.h                     |   2 +
- include/linux/sched.h                           |   9 +-
- kernel/Makefile                                 |   3 -
- kernel/exit.c                                   |  29 +-
- kernel/fork.c                                   |  40 +--
- kernel/futex.c                                  | 446 ++++++++++++++++++++++--
- kernel/futex_compat.c                           | 201 -----------
- net/mac80211/ieee80211_i.h                      |   1 +
- net/mac80211/iface.c                            |   6 +
- net/netfilter/nft_dynset.c                      |   4 +-
- net/nfc/netlink.c                               |   1 +
- net/nfc/rawsock.c                               |   2 +-
- net/wireless/wext-core.c                        |   5 +-
- net/xfrm/xfrm_input.c                           |   2 +-
- 29 files changed, 545 insertions(+), 361 deletions(-)
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -934,6 +934,7 @@ static const struct usb_device_id produc
+ 	{QMI_FIXED_INTF(0x0b3c, 0xc00a, 6)},	/* Olivetti Olicard 160 */
+ 	{QMI_FIXED_INTF(0x0b3c, 0xc00b, 4)},	/* Olivetti Olicard 500 */
+ 	{QMI_FIXED_INTF(0x1e2d, 0x0060, 4)},	/* Cinterion PLxx */
++	{QMI_QUIRK_SET_DTR(0x1e2d, 0x006f, 8)}, /* Cinterion PLS83/PLS63 */
+ 	{QMI_FIXED_INTF(0x1e2d, 0x0053, 4)},	/* Cinterion PHxx,PXxx */
+ 	{QMI_FIXED_INTF(0x1e2d, 0x0082, 4)},	/* Cinterion PHxx,PXxx (2 RmNet) */
+ 	{QMI_FIXED_INTF(0x1e2d, 0x0082, 5)},	/* Cinterion PHxx,PXxx (2 RmNet) */
 
 
