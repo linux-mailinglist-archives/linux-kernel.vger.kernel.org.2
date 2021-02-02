@@ -2,101 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AF130C2DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E63C30BB42
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbhBBPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:02:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22411 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234565AbhBBPBU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:01:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612277989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/nqgkmwEUBwFXFP1lcLQvcaHEBrgIYTBqrD9vTkcUJA=;
-        b=glAake+fded5yG0kcJpK2cC/6BrqV5JMP6hqCzvrue6Qb8+4XtO7h4aTpsIG2w9OZbJ/IL
-        Utg9MRorRP8kXaEuqpG+NNBZQC1LQM0+1VB/415XkLBkukmOOermTfgJfDIsMMjz2X4LMs
-        lH9o4f3ass/E+XCH8z3tGeEWdc3uWwI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-6s0xieiNOxuNgw70t6dwzA-1; Tue, 02 Feb 2021 09:59:44 -0500
-X-MC-Unique: 6s0xieiNOxuNgw70t6dwzA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B155BAFA82;
-        Tue,  2 Feb 2021 14:59:43 +0000 (UTC)
-Received: from localhost (ovpn-115-185.ams2.redhat.com [10.36.115.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 660F219C71;
-        Tue,  2 Feb 2021 14:59:40 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 09:41:57 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH RFC v2 09/10] vdpa_sim_blk: implement ramdisk behaviour
-Message-ID: <20210202094157.GB243557@stefanha-x1.localdomain>
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-10-sgarzare@redhat.com>
+        id S229984AbhBBJo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:44:29 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:44810 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229557AbhBBJnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:43:07 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l6sCB-0006Z7-K4; Tue, 02 Feb 2021 20:42:04 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 02 Feb 2021 20:42:03 +1100
+Date:   Tue, 2 Feb 2021 20:42:03 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
+Cc:     "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "xuzaibo@huawei.com" <xuzaibo@huawei.com>,
+        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "yumeng18@huawei.com" <yumeng18@huawei.com>
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+Message-ID: <20210202094203.GA28856@gondor.apana.org.au>
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+ <1611299395-675-5-git-send-email-yumeng18@huawei.com>
+ <20210128050354.GA30874@gondor.apana.org.au>
+ <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+ <20210128103908.GA32495@gondor.apana.org.au>
+ <c3c3d47edbfd61c338deea5a10a4fb39e2ace68a.camel@linux.intel.com>
+ <20210202051346.GB27641@gondor.apana.org.au>
+ <f239c77dd510c860254189b65fa297d039041490.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210128144127.113245-10-sgarzare@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <f239c77dd510c860254189b65fa297d039041490.camel@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 02, 2021 at 09:27:33AM +0000, Alessandrelli, Daniele wrote:
+>
+> I see. Just to clarify: does the in-kernel user requirement also apply
+> to the case when the author of a device driver also provides the
+> software implementation for the new algorithms supported by device
+> driver / HW?
 
---XOIedfhf+7KOe/yw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes we need an actual user.  For example, if your algorithm is used
+by the Security Subsystem (IMA) that would be sufficient.
 
-On Thu, Jan 28, 2021 at 03:41:26PM +0100, Stefano Garzarella wrote:
-> The previous implementation wrote only the status of each request.
-> This patch implements a more accurate block device simulator,
-> providing a ramdisk-like behavior.
->=20
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
-> v2:
-> - used %zd %zx to print size_t and ssize_t variables in dev_err()
-> - removed unnecessary new line [Jason]
-> - moved VIRTIO_BLK_T_GET_ID in another patch [Jason]
-> - used push/pull instead of write/read terminology
-> - added vdpasim_blk_check_range() to avoid overflows [Stefan]
-> - use vdpasim*_to_cpu instead of le*_to_cpu
-> - used vringh_kiov_length() helper [Jason]
-> ---
->  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 164 ++++++++++++++++++++++++---
->  1 file changed, 146 insertions(+), 18 deletions(-)
-
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-
---XOIedfhf+7KOe/yw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmAZHmQACgkQnKSrs4Gr
-c8i2cwgAnejUJEOfV7h1JLqKBGsbMZ8G/rYq5Tpn2NYeHH+hHKUzJuYhhiy6A/dc
-ApoMhiK73jMGntzRVlchJ9EzLdG3mWp1fV7nDHb3jfSefPaMn/+sqHpRte3gAtp5
-6qRPQg86qq2acmxReSwEuLADmwkQ9IEfUobw+9Eh8eaL8Fam79/brxgeAi+jyTUi
-Y6fHt/8yCLtpz+gp2FqWtmN0COcu6C6/I9yDwfIyhmn1jUtO7O8MUBDTEmOuY+TC
-41AXprR3YIHGnEzaDphoqwmSN7NyWTmvQScwFA2HPDgVWe4VksizaICwg/Iz0IWD
-lND4h139qSBuLPJKWi/2ReukfLcOjw==
-=DBTx
------END PGP SIGNATURE-----
-
---XOIedfhf+7KOe/yw--
-
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
