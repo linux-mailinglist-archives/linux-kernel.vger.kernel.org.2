@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05E930C772
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF8330C89C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhBBRVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:21:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
+        id S238033AbhBBR4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:56:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233891AbhBBOOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:14:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2848B65051;
-        Tue,  2 Feb 2021 13:53:20 +0000 (UTC)
+        id S233965AbhBBOJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 444E565035;
+        Tue,  2 Feb 2021 13:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612274001;
-        bh=qXRVGrwbDgWrFUpTXD//lIduNtq3Rn5MANWeTzIY4lg=;
+        s=korg; t=1612273852;
+        bh=prZQOZOObSvBTrvH1I889otqQ3sVLsRMx8QQ/Ky0H4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDzPbTfGavps/eUG6RQTEHdqjdRRzzB2wIl802mDip8ZjT1ClCfCJnJjeLlKvSOfb
-         0oKu4d/fvgVm6u3Vj+JP9wT9hYO2GxaR8ltMmP5sm/eGBj3Uv2BuWpqm9zmpZ4sCZg
-         +t6hi5HD9/oYzloqapk/2Svt/79/UuFggXwQQ/BM=
+        b=MHy6vFEbPIDNi4vQ28sNitiYIve/iLxjfbwfq5xIgvYTedDTvukBYqCR4ywFSYQ4E
+         /hbykwgQKR/ZQiZsPT5hI1YYmy8ctlZFqNWZldJfaDIePuXHDsBqBCOXOH9NBpqKc6
+         nLtrQqDgTiN6mHHx3vgIHcn6K5ywp2u7kjbQaUDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: [PATCH 4.19 04/37] xen/privcmd: allow fetching resource sizes
-Date:   Tue,  2 Feb 2021 14:38:47 +0100
-Message-Id: <20210202132943.076447076@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 25/32] iwlwifi: pcie: use jiffies for memory read spin time limit
+Date:   Tue,  2 Feb 2021 14:38:48 +0100
+Message-Id: <20210202132943.017047512@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Pau Monne <roger.pau@citrix.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit ef3a575baf53571dc405ee4028e26f50856898e7 upstream.
+[ Upstream commit 6701317476bbfb1f341aa935ddf75eb73af784f9 ]
 
-Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
-addr = 0 in order to fetch the size of a specific resource.
+There's no reason to use ktime_get() since we don't need any better
+precision than jiffies, and since we no longer disable interrupts
+around this code (when grabbing NIC access), jiffies will work fine.
+Use jiffies instead of ktime_get().
 
-Add a shortcut to the default map resource path, since fetching the
-size requires no address to be passed in, and thus no VMA to setup.
+This cleanup is preparation for the following patch "iwlwifi: pcie: reschedule
+in long-running memory reads". The code gets simpler with the weird clock use
+etc. removed before we add cond_resched().
 
-This is missing from the initial implementation, and causes issues
-when mapping resources that don't have fixed or known sizes.
-
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Tested-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: stable@vger.kernel.org # >= 4.18
-Link: https://lore.kernel.org/r/20210112115358.23346-1-roger.pau@citrix.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130253.621c948b1fad.I3ee9f4bc4e74a0c9125d42fb7c35cd80df4698a1@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/privcmd.c |   25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -743,14 +743,15 @@ static int remap_pfn_fn(pte_t *ptep, pgt
- 	return 0;
- }
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index e1287c3421165..ed90f46626e7d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -1909,7 +1909,7 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
  
--static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
-+static long privcmd_ioctl_mmap_resource(struct file *file,
-+				struct privcmd_mmap_resource __user *udata)
- {
- 	struct privcmd_data *data = file->private_data;
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct privcmd_mmap_resource kdata;
- 	xen_pfn_t *pfns = NULL;
--	struct xen_mem_acquire_resource xdata;
-+	struct xen_mem_acquire_resource xdata = { };
- 	int rc;
+ 	while (offs < dwords) {
+ 		/* limit the time we spin here under lock to 1/2s */
+-		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
++		unsigned long end = jiffies + HZ / 2;
  
- 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
-@@ -760,6 +761,22 @@ static long privcmd_ioctl_mmap_resource(
- 	if (data->domid != DOMID_INVALID && data->domid != kdata.dom)
- 		return -EPERM;
+ 		if (iwl_trans_grab_nic_access(trans, &flags)) {
+ 			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
+@@ -1920,11 +1920,7 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 							HBUS_TARG_MEM_RDAT);
+ 				offs++;
  
-+	/* Both fields must be set or unset */
-+	if (!!kdata.addr != !!kdata.num)
-+		return -EINVAL;
-+
-+	xdata.domid = kdata.dom;
-+	xdata.type = kdata.type;
-+	xdata.id = kdata.id;
-+
-+	if (!kdata.addr && !kdata.num) {
-+		/* Query the size of the resource. */
-+		rc = HYPERVISOR_memory_op(XENMEM_acquire_resource, &xdata);
-+		if (rc)
-+			return rc;
-+		return __put_user(xdata.nr_frames, &udata->num);
-+	}
-+
- 	down_write(&mm->mmap_sem);
- 
- 	vma = find_vma(mm, kdata.addr);
-@@ -793,10 +810,6 @@ static long privcmd_ioctl_mmap_resource(
- 	} else
- 		vma->vm_private_data = PRIV_VMA_LOCKED;
- 
--	memset(&xdata, 0, sizeof(xdata));
--	xdata.domid = kdata.dom;
--	xdata.type = kdata.type;
--	xdata.id = kdata.id;
- 	xdata.frame = kdata.idx;
- 	xdata.nr_frames = kdata.num;
- 	set_xen_guest_handle(xdata.frame_list, pfns);
+-				/* calling ktime_get is expensive so
+-				 * do it once in 128 reads
+-				 */
+-				if (offs % 128 == 0 && ktime_after(ktime_get(),
+-								   timeout))
++				if (time_after(jiffies, end))
+ 					break;
+ 			}
+ 			iwl_trans_release_nic_access(trans, &flags);
+-- 
+2.27.0
+
 
 
