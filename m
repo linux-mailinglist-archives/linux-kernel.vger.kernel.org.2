@@ -2,160 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC9C30C26E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA5530C275
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhBBOuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:50:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58870 "EHLO mail.kernel.org"
+        id S234631AbhBBOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:50:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234807AbhBBOt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:49:28 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D79064D99;
-        Tue,  2 Feb 2021 14:48:47 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6wyy-00BWXD-Lo; Tue, 02 Feb 2021 14:48:44 +0000
+        id S234808AbhBBOtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:49:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5D9064F49;
+        Tue,  2 Feb 2021 14:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612277329;
+        bh=G3KQesqI3VgP63AXwofPugp+1nSxUQ1OQ3Asy+jaNxs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=eojN5/2N4cQk8EnY0ICyh6i1TcTTpwXBuPH3WiiD+Is0PsjvGpY6et9QhxsGT5VuL
+         j2sZioAI4vghYTiCSjBPzgNsLMs1/gfmvuCGiKiwY4jRuKAUk34iNtn/+vkSZEbnhr
+         k9d4cJ0KKieTU51s6fPYwc2gIvP21tuqwVnRXaECdcxkgRA4n5XFeDOSnW4hKtmA8v
+         aAGKa2F7Y0LeNpYwk9gqDbsPb7gTaSCc/kJQbcS0BWF8UEpHqg9XIafhyzb8kZ6WAg
+         0cnqrnXAnajN7ayCTf4OOpA1XV8iLkFGReeBa9UEfwdBe1rEW+W/NUOVo2j0JJkxgi
+         ZysjLyIga5lLQ==
+Date:   Tue, 2 Feb 2021 08:48:47 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-pci@vger.kernel.org,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        devicetree@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@axis.com, Mark Brown <broonie@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Zhou Wang <wangzhou1@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH 00/13] Add support for Hikey 970 PCIe
+Message-ID: <20210202144847.GA97183@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 14:48:44 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: PCI MSI issue with reinserting a driver
-In-Reply-To: <8a54fdd0-950b-f801-e83d-750aef73ab3c@huawei.com>
-References: <cc224272-15db-968b-46a0-95951e11b23f@huawei.com>
- <87o8h3lj0n.wl-maz@kernel.org>
- <a80b9be0-c455-c852-ddac-3f514a15e896@huawei.com>
- <8a54fdd0-950b-f801-e83d-750aef73ab3c@huawei.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <4848792ce8c9ed7490e2205281a3cbda@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, tglx@linutronix.de, wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1612271903.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-02 12:38, John Garry wrote:
->>> Here's my suspicion: two of the interrupts are mapped in the 
->>> low-level
->>> domain (the ITS, I'd expect in your case), but they have never been
->>> mapped at the higher level.
->>> 
->>> On teardown, we only get rid of the 30 that were actually mapped, and
->>> leave the last two dangling in the ITS domain, and thus the ITS 
->>> device
->>> resources are never freed. On reload, we request another 32
->>> interrupts, which can't be satisfied for this device.
->>> 
->>> Assuming I got it right, the question is: why weren't these 
->>> interrupts
->>> mapped in the PCI domain the first place. And if I got it wrong, I'm
->>> even more curious!
->> 
->> Not sure. I also now notice an error for the SAS PCI driver on D06 
->> when nr_cpus < 16, which means number of MSI vectors allocated < 32, 
->> so looks the same problem. There we try to allocate 16 + max(nr cpus, 
->> 16) MSI.
->> 
->> Anyway, let me have a look today to see what is going wrong.
->> 
-> Could this be the problem:
+On Tue, Feb 02, 2021 at 02:29:45PM +0100, Mauro Carvalho Chehab wrote:
+> This series add support for Kirin 970 and for the Hikey 970
+> board at the already-existing  driver.
 > 
-> nr_cpus=11
+> patches 1-3 were previously submitted as RFC:
 > 
-> In alloc path, we have:
-> 	its_alloc_device_irq(nvecs=27 = 16+11)
-> 	  bitmap_find_free_region(order = 5);
-> In free path, we have:
-> 	its_irq_domain_free(nvecs = 1) and free each 27 vecs
-> 	  bitmap_release_region(order = 0)
+> - Patch 1 converts the Synopsys Designware PCIe binding
+>   documentation to the DT schema;
+> - Patch 2 converts the pcie-kirin DT binding to the DT schema;
+> - Patch 3 adds some extra configuration needed by
+>   Kirin 970.
 > 
-> So we allocate 32 bits, but only free 27. And 2nd alloc for 32 fails.
+> Patches 4-5 were imported from Manivannan's Hikey 970
+> tree:
 > 
-> FWIW, this hack seems to fix it:
+>    https://git.linaro.org/people/manivannan.sadhasivam/96b-common.git/commit/?h=hikey970_pcie&id=4917380ad023c62960aa0f876bd4f23cefc8729e
 > 
-> ---->8-----
+> It contains the original port made by Linaro.
 > 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-> b/drivers/irqchip/irq-gic-v3-its.c
-> index ac5412b284e6..458ea0ebea2b 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> patches 6 to 12 contains several cleanups applied on the
+> top of Manivann's work, in order to simplify the extra data
+> that would be required at DT, and to ensure that the power
+> regulator needed to enable the PCI support on Hikey970
+> will be enabled before trying to power it on, as otherwise,
+> PCI resource allocation will fail.
 > 
-> @@ -3533,34 +3534,39 @@ static int its_irq_domain_alloc(struct
-> irq_domain *domain, unsigned int virq,
->  	struct its_device *its_dev = info->scratchpad[0].ptr;
->  	struct its_node *its = its_dev->its;
->  	struct irq_data *irqd;
-> -	irq_hw_number_t hwirq;
-> +	irq_hw_number_t hwirq[nr_irqs]; //vla :(
->  	int err;
->  	int i;
+> -
 > 
-> -	err = its_alloc_device_irq(its_dev, nr_irqs, &hwirq);
-> +	for (i = 0; i < nr_irqs; i++) {
-> +		err = its_alloc_device_irq(its_dev, 1, &hwirq[i]);
-> +		if (err) //tidy
-> +			return err;
-> +	}
-> +
-> -	if (err)
-> -		return err;
+> patch 13 is here mostly as an example about what is needed
+> in order for PCIe (and Ethernet) to start working on Hikey 970.
 > 
->  	err = iommu_dma_prepare_msi(info->desc, its->get_msi_base(its_dev));
->  	if (err)
->  		return err;
+> It won't apply cleanly, as it depends on another patch series,
+> adding the needed regulator drivers.
 > 
->  	for (i = 0; i < nr_irqs; i++) {
-> -		err = its_irq_gic_domain_alloc(domain, virq + i, hwirq + i);
-> +		err = its_irq_gic_domain_alloc(domain, virq + i, hwirq[i]);
->  		if (err)
->  			return err;
+> I'll re-submit patch 13 after the pending stuff gets merged
+> upstream.
 > 
->  		irq_domain_set_hwirq_and_chip(domain, virq + i,
-> -					      hwirq + i, &its_irq_chip, its_dev);
-> +					      hwirq[i], &its_irq_chip, its_dev);
->  		irqd = irq_get_irq_data(virq + i);
->  		irqd_set_single_target(irqd);
->  		irqd_set_affinity_on_activate(irqd);
->  		pr_debug("ID:%d pID:%d vID:%d\n",
-> -			 (int)(hwirq + i - its_dev->event_map.lpi_base),
-> -			 (int)(hwirq + i), virq + i);
-> +			 (int)(hwirq[i] - its_dev->event_map.lpi_base),
-> +			 (int)(hwirq[i]), virq + i);
->  	}
-> ----8<-----
+> Manivannan Sadhasivam (2):
+>   pci: dwc: pcie-kirin: add HI3670 PCI-E controller support
+>   arm64: dts: hisilicon: Add HI3670 PCI-E controller support
 > 
-> 
-> But I'm not sure that we have any requirement for those map bits to be
-> consecutive.
+> Mauro Carvalho Chehab (11):
+>   doc: bindings: pci: designware-pcie.txt: convert it to yaml
+>   doc: bindings: kirin-pcie.txt: convert it to yaml
+>   doc: bindings: add new parameters used by Hikey 970
+>   pci: dwc: pcie-kirin: simplify error handling logic
+>   pci: dwc: pcie-kirin: simplify kirin 970 get resource logic
+>   pci: dwc: pcie-kirin: place common init code altogether
+>   pci: dwc: pcie-kirin: allow to optionally require a regulator
+>   pci: dwc: pcie-kirin: allow using multiple reset GPIOs
+>   pci: dwc: pcie-kirin: add support for clkreq GPIOs
+>   pci: dwc: pcie-kirin: cleanup kirin970_pcie_get_eyeparam()
+>   arm64: dts: hisilicon: cleanup Hikey 970 PCI schema
 
-We can't really do that. All the events must be contiguous,
-and there is also a lot of assumptions in the ITS driver that
-LPI allocations is also contiguous.
+Please match:
 
-But there is also the fact that for Multi-MSI, we *must*
-allocate 32 vectors. Any driver could assume that if we have
-allocated 17 vectors, then there is another 15 available.
+  $ git log --oneline drivers/pci/controller/dwc/pcie-kirin.c
+  60f5b73fa0f2 ("PCI: dwc: Remove unnecessary wrappers around dw_pcie_host_init()")
+  b9ac0f9dc8ea ("PCI: dwc: Move dw_pcie_setup_rc() to DWC common code")
+  59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
+  886a9c134755 ("PCI: dwc: Move link handling into common code")
+  5bcb1757e637 ("PCI: dwc: Move MSI interrupt setup into DWC common code")
+  a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" resource setup into common code")
+  ecc3e424d190 ("PCI: kirin: Return -EPROBE_DEFER in case the gpio isn't ready")
 
-My question still stand: how was this working with the previous
-behaviour?
+We've already picked "PCIe" (not "PCI-E") as the preferred spelling.
+Please adopt in subject lines, commit logs, comments, etc.
 
-Thanks,
+Similarly, "YAML" in comments & text, since acronyms are normally
+capitalized.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+"DesignWare" (not "Designware").
+
+HiSilicon seems to use "HiKey" (not "Hikey"), so let's follow them.
+
+Pick either "Kirin 970" or "HiKey 970" From
+http://www.o.hisilicon.com/en/Products/ProductList/HiKey, it looks
+like "HiKey 970" refers to a board, and "Kirin 970" refers to a piece
+of it.
+
+Please wrap commit logs to fill 75 columns.
+
+>  .../bindings/pci/amlogic,meson-pcie.txt       |   4 +-
+>  .../bindings/pci/axis,artpec6-pcie.txt        |   2 +-
+>  .../bindings/pci/designware-pcie.txt          |  77 --
+>  .../bindings/pci/fsl,imx6q-pcie.txt           |   2 +-
+>  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 144 ++++
+>  .../bindings/pci/hisilicon-histb-pcie.txt     |   2 +-
+>  .../bindings/pci/hisilicon-pcie.txt           |   2 +-
+>  .../devicetree/bindings/pci/kirin-pcie.txt    |  50 --
+>  .../bindings/pci/layerscape-pci.txt           |   2 +-
+>  .../bindings/pci/nvidia,tegra194-pcie.txt     |   4 +-
+>  .../devicetree/bindings/pci/pci-armada8k.txt  |   2 +-
+>  .../devicetree/bindings/pci/pci-keystone.txt  |  10 +-
+>  .../devicetree/bindings/pci/pcie-al.txt       |   2 +-
+>  .../devicetree/bindings/pci/qcom,pcie.txt     |  14 +-
+>  .../bindings/pci/samsung,exynos-pcie.yaml     |   2 +-
+>  .../devicetree/bindings/pci/snps,pcie.yaml    | 139 ++++
+>  .../pci/socionext,uniphier-pcie-ep.yaml       |   2 +-
+>  .../devicetree/bindings/pci/ti-pci.txt        |   4 +-
+>  .../devicetree/bindings/pci/uniphier-pcie.txt |   2 +-
+>  MAINTAINERS                                   |   4 +-
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  64 ++
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |   1 -
+>  drivers/pci/controller/dwc/pcie-kirin.c       | 736 +++++++++++++++++-
+>  23 files changed, 1084 insertions(+), 187 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/designware-pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/snps,pcie.yaml
+> 
+> -- 
+> 2.29.2
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
