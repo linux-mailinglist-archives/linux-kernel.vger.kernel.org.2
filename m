@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F0830C1D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C75D30C1E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbhBBOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:34:27 -0500
-Received: from jax4mhob17.registeredsite.com ([64.69.218.105]:39900 "EHLO
-        jax4mhob17.registeredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234590AbhBBOdm (ORCPT
+        id S234674AbhBBOfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:35:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51205 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234620AbhBBOe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:33:42 -0500
-Received: from mailpod.hostingplatform.com ([10.30.71.204])
-        by jax4mhob17.registeredsite.com (8.14.4/8.14.4) with ESMTP id 112EWkgK119015
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 2 Feb 2021 09:32:46 -0500
-Received: (qmail 12776 invoked by uid 0); 2 Feb 2021 14:32:45 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 2 Feb 2021 14:32:45 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     netdev@vger.kernel.org
-Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: mdiobus: Prevent spike on MDIO bus reset signal
-Date:   Tue,  2 Feb 2021 15:32:39 +0100
-Message-Id: <20210202143239.10714-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        Tue, 2 Feb 2021 09:34:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612276382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MOfLz2ooS1YVxqAqeLs03INDucXpuqKyLYasthASKR4=;
+        b=UERma3UKTpOegbcM6USO7RvqJT6o1WZKHH1W1Kn10cFUe8SGQi43Yg9IDAMCQzl2OqZbZ+
+        IUovxp2eMpEgZI5ECZsnR8+Zf2sO5ZK24fle/+ym82euOD0aw8Lg1oLBpBI6AvlNiAtuhu
+        rVw5wFRfKdsWNGcfevJ5XmRvMSUY+IU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-QGq7qQrGPZmiYRqNjGj6Aw-1; Tue, 02 Feb 2021 09:33:00 -0500
+X-MC-Unique: QGq7qQrGPZmiYRqNjGj6Aw-1
+Received: by mail-wr1-f69.google.com with SMTP id u3so12572871wri.19
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:33:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MOfLz2ooS1YVxqAqeLs03INDucXpuqKyLYasthASKR4=;
+        b=Dm0B+r9DcO+qfjqBZjwvy047U69v4xfMDeg+vMaAQsOFyvuI+7Lxi2l7tFXpJeHXC2
+         Tb/04suX87jfOXhBKT5Nc7ucMRCdZi1TSnsZt9Nt32gLnaExYfehClxW1VhxijBm3Efl
+         tqwp2yHL56FIbnPP+MJOuWdEu7hCOxaheNjsX/6wqfO0DxS+Qja6C7LGtQgrwtDkMmpp
+         eH+1J+79jGPFazqPGLIzIUxpNwi+luGYEvHeLPJm4tdsSa34ndw8wyOL4E9C2Lsjo6mZ
+         IKUix7NpZU0OaLG2RTdzvch0/5cOYACQf9oTGor0WKQyv2XhlKX7Q9px2ubokJwmDAPh
+         2mxQ==
+X-Gm-Message-State: AOAM533fDrsrez3AX6vhlctTk4lpntWzNisM6DjbQZHJghpI0BEw8bsl
+        8fRNQUhYhvbuUmEPL37QdVkubPTARuMAIFlseOBFQKzQUZx/OvrrJqtlLOfw2ZQ2UqMK2MnBW7D
+        6EGaa/04yR6gN5sqhf+epTHOD
+X-Received: by 2002:adf:d1cb:: with SMTP id b11mr24388392wrd.118.1612276379287;
+        Tue, 02 Feb 2021 06:32:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzNlKeX+el7cMOrZK5yq6RtSBJMhNR+o0snQl4QXFgxLrVEgd3S6vtJXgCeHmPNLUWxDwZ7tg==
+X-Received: by 2002:adf:d1cb:: with SMTP id b11mr24388360wrd.118.1612276379086;
+        Tue, 02 Feb 2021 06:32:59 -0800 (PST)
+Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
+        by smtp.gmail.com with ESMTPSA id b138sm3242759wmb.35.2021.02.02.06.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 06:32:54 -0800 (PST)
+Date:   Tue, 2 Feb 2021 09:32:50 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Adrian Catangiu <acatan@amazon.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        gregkh@linuxfoundation.org, graf@amazon.com, arnd@arndb.de,
+        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
+        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
+        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
+        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
+        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
+        mhocko@kernel.org, rafael@kernel.org, mpe@ellerman.id.au,
+        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
+        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
+        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
+        ghammer@redhat.com
+Subject: Re: [PATCH v4 1/2] drivers/misc: sysgenid: add system generation id
+ driver
+Message-ID: <20210202092418-mutt-send-email-mst@kernel.org>
+References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
+ <1610453760-13812-2-git-send-email-acatan@amazon.com>
+ <20210127221505.GB24799@amd>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127221505.GB24799@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mdio_bus reset code first de-asserted the reset by allocating with
-GPIOD_OUT_LOW, then asserted and de-asserted again. In other words, if
-the reset signal defaulted to asserted, there'd be a short "spike"
-before the reset.
+On Wed, Jan 27, 2021 at 11:15:05PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > - Solution
+> > 
+> > The System Generation ID is a simple concept meant to alleviate the
+> > issue by providing a monotonically increasing u32 counter that changes
+> > each time the VM or container is restored from a snapshot.
+> 
+> I'd make it u64.
+> 
+> But as people explained, this has race problems that may be impossible
+> to solve?
 
-Here is what happens depending on the pre-existing state of the reset
-signal:
-Reset (previously asserted):   ~~~|_|~~~~|_______
-Reset (previously deasserted): _____|~~~~|_______
-                                  ^ ^    ^
-                                  A B    C
+Well the read/write interface could be used in a safe way thinkably:
 
-At point A, the low going transition is because the reset line is
-requested using GPIOD_OUT_LOW. If the line is successfully requested,
-the first thing we do is set it high _without_ any delay. This is
-point B. So, a glitch occurs between A and B.
+- application checks VM gen id
+- application sends a transaction e.g. to  database
+- application re-checks VM gen id
+- if id changed, application checks the database for duplicate
+  transactions
 
-We then fsleep() and finally set the GPIO low at point C.
+not sure how can the mmap interface be used safely.
+Drop it for now?
 
-Requesting the line using GPIOD_OUT_HIGH eliminates the A and B
-transitions. Instead we get:
 
-Reset (previously asserted)  : ~~~~~~~~~~|______
-Reset (previously deasserted): ____|~~~~~|______
-                                   ^     ^
-                                   A     C
 
-Where A and C are the points described above in the code. Point B
-has been eliminated.
+> Best regards,
+> 								Pavel
+> 								
+> -- 
+> http://www.livejournal.com/~pavelmachek
 
-The issue was found when we pulled down the reset signal for the
-Marvell 88E1512P PHY (because it requires at least 50ms after POR with
-an active clock). Looking at the reset signal with a scope revealed a
-short spike, point B in the artwork above.
-
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
----
-
-Changes in v2:
-Put more explanation into the commit text, and the artwork from Russell King
-
- drivers/net/phy/mdio_bus.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 2b42e46066b4..34e98ae75110 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -543,8 +543,8 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	mutex_init(&bus->mdio_lock);
- 	mutex_init(&bus->shared_lock);
- 
--	/* de-assert bus level PHY GPIO reset */
--	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
-+	/* assert bus level PHY GPIO reset */
-+	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_HIGH);
- 	if (IS_ERR(gpiod)) {
- 		err = dev_err_probe(&bus->dev, PTR_ERR(gpiod),
- 				    "mii_bus %s couldn't get reset GPIO\n",
-@@ -553,8 +553,6 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 		return err;
- 	} else	if (gpiod) {
- 		bus->reset_gpiod = gpiod;
--
--		gpiod_set_value_cansleep(gpiod, 1);
- 		fsleep(bus->reset_delay_us);
- 		gpiod_set_value_cansleep(gpiod, 0);
- 		if (bus->reset_post_delay_us > 0)
--- 
-2.17.1
 
