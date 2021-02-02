@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9134A30B989
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 286F330B993
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbhBBIWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbhBBIV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:21:28 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E4FC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:20:47 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id i6so13236822ybq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:20:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jnWY72rptLP2mi3bsf536ONY28gusJQRji0UXgomKro=;
-        b=B4gFI+8TlnKMhqz6tbOVJryq3Znq5MIWuzHAOCEZO5GypiU4NOFut9T0tQ5pk5dXvq
-         goh06hx7cQwhNY83q90CUXxRahn9Qh4FLftjcwKQnCN6iMUrJ/uZ8RkjFJfyg6Acb80z
-         OWSxirqdbEjpVLZlXRXHCXJcQUiJynislup8VRliS+WV5Bhei2DeGuiSBAkMkkdD2WIg
-         bHAItCeeqqR5VrITXjMvxRuKyLqn+KLgeil9OBMDJRVGLk7oeZ8popox74WskuLc2yNT
-         bP9pafaCrVd7Z1SGTD9ez4UIPLVBex9CPA1OKFXjVDSHxPELdIPH0gj05zylnGUs77JX
-         srHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jnWY72rptLP2mi3bsf536ONY28gusJQRji0UXgomKro=;
-        b=lqFVa5nFcZ+2JPB2a3JX08hEObylnHCu0GauRhMbijGCVer/ETKG6IbpGlSd4DnjrV
-         eu+zb+dYdbHa0o2BbWSBeH/jRm3Jks/fP+8ew8ZBhk3O83+JLzR5NkAOKUbmYHflitV4
-         M4nOMSttH6gg4GtZ1435cXf/A9JWRQ5Shw0NQwM5Oj2bBlZmEpikcXXJnGmcrLWDhBM7
-         A59Dmefmmejs/ty4uVMGdVDcXoYhkk3QvM1WOLSiXxjy4UUivSqm+LlCMUJjimQHdRcn
-         s45rouLDWJfASAtVbcJMX28DC/gTxbv6b1stGZvZiAUftIptpaP6udo690AceZgKmkaF
-         Y0iQ==
-X-Gm-Message-State: AOAM530QirbgZSrqx0tG92bInFnbUMF2nV/Z6bA7+/Vbtpa7KAhPiDKh
-        ouryNTnK0Hi7gBUAOjhHD9JscMhy/lpPzcVojV/33A==
-X-Google-Smtp-Source: ABdhPJyUafIkSuqqvECAV1VOlEitae42W6N7ZcUU85gX9a6HPyT7KNsD9A4o3TN8eGNhEnSU1WfBWlBxGagdxpVURF4=
-X-Received: by 2002:a25:b74c:: with SMTP id e12mr21829597ybm.20.1612254046790;
- Tue, 02 Feb 2021 00:20:46 -0800 (PST)
+        id S232617AbhBBIXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:23:50 -0500
+Received: from mga05.intel.com ([192.55.52.43]:4860 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231324AbhBBIXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:23:22 -0500
+IronPort-SDR: TjiajcQu8hiWbokg6NvcsRgCRx6oi9x9GDItJ8GtCMocRS04jbVY/rH6YAXORY8cbzOuZegX2b
+ XMABRm7vjbuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="265649233"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="265649233"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:21:36 -0800
+IronPort-SDR: WAnMADibO6TaXQ29FfB/fxgl6lF2DbEN/KLanN7lHaF/PIxH6zZ25JwiYMxZX4I1aInMm5UsN+
+ y3mv8IKyRBig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="479481555"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 02 Feb 2021 00:21:34 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Feb 2021 10:21:33 +0200
+Date:   Tue, 2 Feb 2021 10:21:33 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Handle vbus shutoff when in source
+ mode
+Message-ID: <20210202082133.GB1433721@kuha.fi.intel.com>
+References: <20210201100212.49863-1-badhri@google.com>
 MIME-Version: 1.0
-References: <20210130040344.2807439-1-saravanak@google.com>
- <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
- <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com>
- <CAGETcx896XEv8OqOe4eGncjOYb=v6+g1RWkpo5g0hTbfp4Os+w@mail.gmail.com> <CAMuHMdWo0Dpf_GwT1WrGk9f3v7-KX86eR2wgNtXkqoN0t_CLag@mail.gmail.com>
-In-Reply-To: <CAMuHMdWo0Dpf_GwT1WrGk9f3v7-KX86eR2wgNtXkqoN0t_CLag@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 2 Feb 2021 00:20:09 -0800
-Message-ID: <CAGETcx9C3jM+6K3oYHooV6fKkj5OiBT6UnJpufH3w=zCmKLY8A@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201100212.49863-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 11:55 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Tue, Feb 2, 2021 at 4:01 AM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 1, 2021 at 2:40 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Sat, Jan 30, 2021 at 5:09 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > This patch series solves two general issues with fw_devlink=on
-> > > > >
-> > > > > Patch 1/2 addresses the issue of firmware nodes that look like they'll
-> > > > > have struct devices created for them, but will never actually have
-> > > > > struct devices added for them. For example, DT nodes with a compatible
-> > > > > property that don't have devices added for them.
-> > > > >
-> > > > > Patch 2/2 address (for static kernels) the issue of optional suppliers
-> > > > > that'll never have a driver registered for them. So, if the device could
-> > > > > have probed with fw_devlink=permissive with a static kernel, this patch
-> > > > > should allow those devices to probe with a fw_devlink=on. This doesn't
-> > > > > solve it for the case where modules are enabled because there's no way
-> > > > > to tell if a driver will never be registered or it's just about to be
-> > > > > registered. I have some other ideas for that, but it'll have to come
-> > > > > later thinking about it a bit.
-> > > > >
-> > > > > These two patches might remove the need for several other patches that
-> > > > > went in as fixes for commit e590474768f1 ("driver core: Set
-> > > > > fw_devlink=on by default"), but I think all those fixes are good
-> > > > > changes. So I think we should leave those in.
-> > > > >
-> > > > > Marek, Geert,
-> > > > >
-> > > > > Can you try this series on a static kernel with your OF_POPULATED
-> > > > > changes reverted? I just want to make sure these patches can identify
-> > > > > and fix those cases.
-> > > > >
-> > > > > Tudor,
-> > > > >
-> > > > > You should still make the clock driver fix (because it's a bug), but I
-> > > > > think this series will fix your issue too (even without the clock driver
-> > > > > fix). Can you please give this a shot?
-> > > >
-> > > > Marek, Geert, Tudor,
-> > > >
-> > > > Forgot to say that this will probably fix your issues only in a static
-> > > > kernel. So please try this with a static kernel. If you can also try
-> > > > and confirm that this does not fix the issue for a modular kernel,
-> > > > that'd be good too.
-> > >
-> > > Thanks for your series!
-> > >
-> > > For the modular case, this series has no impact, as expected (i.e. fails
-> > > to boot, no I/O devices probed).
-> > > With modules disabled, both r8a7791/koelsch and r8a77951/salvator-xs
-> > > seem to boot fine, except for one issue on koelsch:
-> >
-> > Thanks a lot for testing the series!
-> >
-> > Regarding the koelsch issue, do you not see it with your OF_POPULATED
-> > fix for rcar-sysc driver? But only see if you revert it and use this
-> > series?
->
-> I've just rechecked, and with fw_devlink=on, and my OF_POPULATED
-> fir for rcar-sysc, i2c-demux-pinctrl works, both with modules enabled
-> and disabled.
+On Mon, Feb 01, 2021 at 02:02:12AM -0800, Badhri Jagan Sridharan wrote:
+> While in source mode, vbus could be shutoff by protections
+> circuits. TCPM does not move back to toggling state to
+> re-initiate connection. Fix this by moving to SRC_UNATTACHED
+> state when vbus shuts off while in source mode.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Thanks Geert! My guess is that with your OF_POPULATED changes the
-"i2c-parents" of i2c-demux-pinctrl don't get probe deferred and
-therefore i2c-demux-pinctrl probes after them and everything goes
-well.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-I guess that goes to show this series can't be the magic bullet even
-with patch 2/3 -- especially for top level DT nodes that never have
-devices created.
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 0afd8ef692e8..ff0732c12b8a 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4897,6 +4897,17 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
+>  		/* Do nothing, waiting for sink detection */
+>  		break;
+>  
+> +	case SRC_STARTUP:
+> +	case SRC_SEND_CAPABILITIES:
+> +	case SRC_SEND_CAPABILITIES_TIMEOUT:
+> +	case SRC_NEGOTIATE_CAPABILITIES:
+> +	case SRC_TRANSITION_SUPPLY:
+> +	case SRC_READY:
+> +	case SRC_WAIT_NEW_CAPABILITIES:
+> +		/* Force to unattached state to re-initiate connection */
+> +		tcpm_set_state(port, SRC_UNATTACHED, 0);
+> +		break;
+> +
+>  	case PORT_RESET:
+>  		/*
+>  		 * State set back to default mode once the timer completes.
+> -- 
+> 2.30.0.365.g02bc693789-goog
 
-The other odd thing I noticed is that i2c-demux-pinctrl seems to
-return -ENODEV when I think it should do -EPROBE_DEFER. In
-i2c_demux_activate_master():
+thanks,
 
-        ret = of_changeset_apply(&priv->chan[new_chan].chgset);
-        if (ret)
-                goto err;
-
-        adap = of_find_i2c_adapter_by_node(priv->chan[new_chan].parent_np);
-        if (!adap) {
-                ret = -ENODEV;
-                goto err_with_revert;
-        }
-
-If I understand the code correctly, it's assuming the selected parent
-will probe successfully as soon as its status=ok change is done. Which
-is not guaranteed for many reasons (driver not registered, async
-probing, stuff like fw_devlink, etc).
-
-Thanks,
-Saravana
+-- 
+heikki
