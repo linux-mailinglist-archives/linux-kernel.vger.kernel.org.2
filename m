@@ -2,237 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D734530B7DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9214F30B7D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhBBGaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:30:01 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:41989 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231952AbhBBG3w (ORCPT
+        id S232046AbhBBG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:29:43 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:17433 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231509AbhBBG3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:29:52 -0500
-X-UUID: 6c8a7d8511dd4e28a27000d42d405fc9-20210202
-X-UUID: 6c8a7d8511dd4e28a27000d42d405fc9-20210202
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1507493788; Tue, 02 Feb 2021 14:28:36 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Feb 2021 14:28:28 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Feb 2021 14:28:27 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ikjoon Jang <ikjn@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhanyong Wang <zhanyong.wang@mediatek.com>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        stable <stable@vger.kernel.org>
-Subject: [next v2 PATCH] usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints
-Date:   Tue, 2 Feb 2021 14:28:18 +0800
-Message-ID: <1612247298-4654-1-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        Tue, 2 Feb 2021 01:29:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612247357; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=z7Jt7mLpbCjEtcnUQ9bOehTzH3Sk9XSsW7oxWAsa7AE=;
+ b=M22AriNk/bwVWhhI9PZmwkY+IcGM0ZMp8rZg08OqPP6AgRCUO28lg3G7AUzp7fGTfCmdY8l0
+ FGuyxaDb3Tw8GlZyiCSdaZhBtaEaVQ/e3EUMxIGiAhUD+KqvTVuzqb9oeUTXFeAdGVPAkk9e
+ iUElFWR2Y4BCSSKGdIRq6X0HzoY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6018f11e6dd11a02214cda9e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:28:46
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 22E8BC43468; Tue,  2 Feb 2021 06:28:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DB9DC433C6;
+        Tue,  2 Feb 2021 06:28:44 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 34469E8ADEB93BE70103A71D898FDDBC2A64BDA9A3D8F3654D9CCF20D038F0372000:8
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Feb 2021 11:58:44 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
+ flag
+In-Reply-To: <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210129090516.GB3998@willie-the-truck>
+ <5d23fce629323bcda71594010824aad0@codeaurora.org>
+ <20210201111556.GA7172@willie-the-truck>
+ <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
+ <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+Message-ID: <dc95c4d32691a588a7f660e3b20dd33e@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For those unchecked endpoints, we don't allocate bandwidth for
-them, so no need free the bandwidth, otherwise will decrease
-the allocated bandwidth.
-Meanwhile use xhci_dbg() instead of dev_dbg() to print logs and
-rename bw_ep_list_new as bw_ep_chk_list.
+On 2021-02-01 23:50, Jordan Crouse wrote:
+> On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
+>> On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+>> >
+>> > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
+>> > > On 2021-01-29 14:35, Will Deacon wrote:
+>> > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
+>> > > > > Add a new page protection flag IOMMU_LLC which can be used
+>> > > > > by non-coherent masters to set cacheable memory attributes
+>> > > > > for an outer level of cache called as last-level cache or
+>> > > > > system cache. Initial user of this page protection flag is
+>> > > > > the adreno gpu and then can later be used by other clients
+>> > > > > such as video where this can be used for per-buffer based
+>> > > > > mapping.
+>> > > > >
+>> > > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> > > > > ---
+>> > > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
+>> > > > >  include/linux/iommu.h          | 6 ++++++
+>> > > > >  2 files changed, 9 insertions(+)
+>> > > > >
+>> > > > > diff --git a/drivers/iommu/io-pgtable-arm.c
+>> > > > > b/drivers/iommu/io-pgtable-arm.c
+>> > > > > index 7439ee7fdcdb..ebe653ef601b 100644
+>> > > > > --- a/drivers/iommu/io-pgtable-arm.c
+>> > > > > +++ b/drivers/iommu/io-pgtable-arm.c
+>> > > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
+>> > > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+>> > > > >           else if (prot & IOMMU_CACHE)
+>> > > > >                   pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+>> > > > >                           << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > > > +         else if (prot & IOMMU_LLC)
+>> > > > > +                 pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
+>> > > > > +                         << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > > >   }
+>> > > > >
+>> > > > >   if (prot & IOMMU_CACHE)
+>> > > > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> > > > > index ffaa389ea128..1f82057df531 100644
+>> > > > > --- a/include/linux/iommu.h
+>> > > > > +++ b/include/linux/iommu.h
+>> > > > > @@ -31,6 +31,12 @@
+>> > > > >   * if the IOMMU page table format is equivalent.
+>> > > > >   */
+>> > > > >  #define IOMMU_PRIV       (1 << 5)
+>> > > > > +/*
+>> > > > > + * Non-coherent masters can use this page protection flag to set
+>> > > > > cacheable
+>> > > > > + * memory attributes for only a transparent outer level of cache,
+>> > > > > also known as
+>> > > > > + * the last-level or system cache.
+>> > > > > + */
+>> > > > > +#define IOMMU_LLC        (1 << 6)
+>> > > >
+>> > > > On reflection, I'm a bit worried about exposing this because I think it
+>> > > > will
+>> > > > introduce a mismatched virtual alias with the CPU (we don't even have a
+>> > > > MAIR
+>> > > > set up for this memory type). Now, we also have that issue for the PTW,
+>> > > > but
+>> > > > since we always use cache maintenance (i.e. the streaming API) for
+>> > > > publishing the page-tables to a non-coheren walker, it works out.
+>> > > > However,
+>> > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
+>> > > > allocation, then they're potentially in for a nasty surprise due to the
+>> > > > mismatched outer-cacheability attributes.
+>> > > >
+>> > >
+>> > > Can't we add the syscached memory type similar to what is done on android?
+>> >
+>> > Maybe. How does the GPU driver map these things on the CPU side?
+>> 
+>> Currently we use writecombine mappings for everything, although there
+>> are some cases that we'd like to use cached (but have not merged
+>> patches that would give userspace a way to flush/invalidate)
+>> 
+>> BR,
+>> -R
+> 
+> LLC/system cache doesn't have a relationship with the CPU cache.  Its 
+> just a
+> little accelerator that sits on the connection from the GPU to DDR and 
+> caches
+> accesses. The hint that Sai is suggesting is used to mark the buffers 
+> as
+> 'no-write-allocate' to prevent GPU write operations from being cached 
+> in the LLC
+> which a) isn't interesting and b) takes up cache space for read 
+> operations.
+> 
+> Its easiest to think of the LLC as a bonus accelerator that has no cost 
+> for
+> us to use outside of the unfortunate per buffer hint.
+> 
+> We do have to worry about the CPU cache w.r.t I/O coherency (which is a
+> different hint) and in that case we have all of concerns that Will 
+> identified.
+> 
 
-Fixes: 1d69f9d901ef ("usb: xhci-mtk: fix unreleased bandwidth data")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Tested-by: Ikjoon Jang <ikjn@chromium.org>
-Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
----
-v2: add 'break' when find the ep that will be dropped suggested by Ikjoon
-    add Tested-by and Reviewed-by Ikjoon
----
- drivers/usb/host/xhci-mtk-sch.c | 59 ++++++++++++++++++---------------
- drivers/usb/host/xhci-mtk.h     |  4 ++-
- 2 files changed, 36 insertions(+), 27 deletions(-)
+For mismatched outer cacheability attributes which Will mentioned, I was
+referring to [1] in android kernel.
 
-diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index a313e75ff1c6..b45e5bf08997 100644
---- a/drivers/usb/host/xhci-mtk-sch.c
-+++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -200,6 +200,7 @@ static struct mu3h_sch_ep_info *create_sch_ep(struct usb_device *udev,
- 
- 	sch_ep->sch_tt = tt;
- 	sch_ep->ep = ep;
-+	INIT_LIST_HEAD(&sch_ep->endpoint);
- 	INIT_LIST_HEAD(&sch_ep->tt_endpoint);
- 
- 	return sch_ep;
-@@ -374,6 +375,7 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
- 					sch_ep->bw_budget_table[j];
- 		}
- 	}
-+	sch_ep->allocated = used;
- }
- 
- static int check_sch_tt(struct usb_device *udev,
-@@ -542,6 +544,22 @@ static int check_sch_bw(struct usb_device *udev,
- 	return 0;
- }
- 
-+static void destroy_sch_ep(struct usb_device *udev,
-+	struct mu3h_sch_bw_info *sch_bw, struct mu3h_sch_ep_info *sch_ep)
-+{
-+	/* only release ep bw check passed by check_sch_bw() */
-+	if (sch_ep->allocated)
-+		update_bus_bw(sch_bw, sch_ep, 0);
-+
-+	list_del(&sch_ep->endpoint);
-+
-+	if (sch_ep->sch_tt) {
-+		list_del(&sch_ep->tt_endpoint);
-+		drop_tt(udev);
-+	}
-+	kfree(sch_ep);
-+}
-+
- static bool need_bw_sch(struct usb_host_endpoint *ep,
- 	enum usb_device_speed speed, int has_tt)
- {
-@@ -584,7 +602,7 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
- 
- 	mtk->sch_array = sch_array;
- 
--	INIT_LIST_HEAD(&mtk->bw_ep_list_new);
-+	INIT_LIST_HEAD(&mtk->bw_ep_chk_list);
- 
- 	return 0;
- }
-@@ -636,29 +654,12 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 
- 	setup_sch_info(udev, ep_ctx, sch_ep);
- 
--	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_list_new);
-+	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_chk_list);
- 
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
- 
--static void xhci_mtk_drop_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
--			     struct mu3h_sch_ep_info *sch_ep)
--{
--	struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
--	int bw_index = get_bw_index(xhci, udev, sch_ep->ep);
--	struct mu3h_sch_bw_info *sch_bw = &mtk->sch_array[bw_index];
--
--	update_bus_bw(sch_bw, sch_ep, 0);
--	list_del(&sch_ep->endpoint);
--
--	if (sch_ep->sch_tt) {
--		list_del(&sch_ep->tt_endpoint);
--		drop_tt(udev);
--	}
--	kfree(sch_ep);
--}
--
- void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 		struct usb_host_endpoint *ep)
- {
-@@ -689,7 +690,8 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 
- 	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
- 		if (sch_ep->ep == ep) {
--			xhci_mtk_drop_ep(mtk, udev, sch_ep);
-+			destroy_sch_ep(udev, sch_bw, sch_ep);
-+			break;
- 		}
- 	}
- }
-@@ -704,9 +706,9 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 	struct mu3h_sch_ep_info *sch_ep, *tmp;
- 	int bw_index, ret;
- 
--	dev_dbg(&udev->dev, "%s\n", __func__);
-+	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
- 
--	list_for_each_entry(sch_ep, &mtk->bw_ep_list_new, endpoint) {
-+	list_for_each_entry(sch_ep, &mtk->bw_ep_chk_list, endpoint) {
- 		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
- 		sch_bw = &mtk->sch_array[bw_index];
- 
-@@ -717,7 +719,7 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 		}
- 	}
- 
--	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
-+	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
- 		struct xhci_ep_ctx *ep_ctx;
- 		struct usb_host_endpoint *ep = sch_ep->ep;
- 		unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
-@@ -746,12 +748,17 @@ EXPORT_SYMBOL_GPL(xhci_mtk_check_bandwidth);
- void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- {
- 	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
-+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-+	struct mu3h_sch_bw_info *sch_bw;
- 	struct mu3h_sch_ep_info *sch_ep, *tmp;
-+	int bw_index;
- 
--	dev_dbg(&udev->dev, "%s\n", __func__);
-+	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
- 
--	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
--		xhci_mtk_drop_ep(mtk, udev, sch_ep);
-+	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
-+		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
-+		sch_bw = &mtk->sch_array[bw_index];
-+		destroy_sch_ep(udev, sch_bw, sch_ep);
- 	}
- 
- 	xhci_reset_bandwidth(hcd, udev);
-diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-index 577f431c5c93..cbb09dfea62e 100644
---- a/drivers/usb/host/xhci-mtk.h
-+++ b/drivers/usb/host/xhci-mtk.h
-@@ -59,6 +59,7 @@ struct mu3h_sch_bw_info {
-  * @ep_type: endpoint type
-  * @maxpkt: max packet size of endpoint
-  * @ep: address of usb_host_endpoint struct
-+ * @allocated: the bandwidth is aready allocated from bus_bw
-  * @offset: which uframe of the interval that transfer should be
-  *		scheduled first time within the interval
-  * @repeat: the time gap between two uframes that transfers are
-@@ -86,6 +87,7 @@ struct mu3h_sch_ep_info {
- 	u32 ep_type;
- 	u32 maxpkt;
- 	void *ep;
-+	bool allocated;
- 	/*
- 	 * mtk xHCI scheduling information put into reserved DWs
- 	 * in ep context
-@@ -130,8 +132,8 @@ struct mu3c_ippc_regs {
- struct xhci_hcd_mtk {
- 	struct device *dev;
- 	struct usb_hcd *hcd;
--	struct list_head bw_ep_list_new;
- 	struct mu3h_sch_bw_info *sch_array;
-+	struct list_head bw_ep_chk_list;
- 	struct mu3c_ippc_regs __iomem *ippc_regs;
- 	bool has_ippc;
- 	int num_u2_ports;
+[1] https://android-review.googlesource.com/c/kernel/common/+/1549097/3
+
+Thanks,
+Sai
+
 -- 
-2.18.0
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
