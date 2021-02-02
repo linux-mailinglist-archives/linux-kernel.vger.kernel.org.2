@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB0430B521
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C0230B51E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhBBCQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:16:16 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11967 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhBBCQN (ORCPT
+        id S229624AbhBBCOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:14:31 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12093 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhBBCO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:16:13 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DV7fn2wtrzjGdm;
-        Tue,  2 Feb 2021 10:14:25 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Feb 2021 10:15:26 +0800
-Subject: Re: [PATCH] mm/page_io: Use pr_alert_ratelimited for swap read/write
- errors
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210201142055.29068-1-georgi.djakov@linaro.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <dc9e1b85-b657-565c-cec1-683eafb35f9f@huawei.com>
-Date:   Tue, 2 Feb 2021 10:15:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 1 Feb 2021 21:14:29 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DV7cZ18LFz162v8;
+        Tue,  2 Feb 2021 10:12:30 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Tue, 2 Feb 2021
+ 10:13:37 +0800
+From:   Sun Ke <sunke32@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <Markus.Elfring@web.de>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <sunke32@huawei.com>
+Subject: [PATCH v3] nbd: Fix NULL pointer in flush_workqueue
+Date:   Mon, 1 Feb 2021 21:15:08 -0500
+Message-ID: <20210202021508.1319706-1-sunke32@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20210201142055.29068-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/1 22:20, Georgi Djakov wrote:
-> If there are errors during swap read or write, they can easily fill
-> the log buffer and remove any previous messages that might be useful
-> for debugging, especially on systems that rely for logging only on
-> the kernel ring-buffer.
-> 
-> For example, on a systems using zram as swap, we are more likely to
-> see any page allocation errors preceding the swap write errors if the
-> alerts are ratelimited.
-> 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+Open /dev/nbdX first, the config_refs will be 1 and
+the pointers in nbd_device are still null. Disconnect
+/dev/nbdX, then reference a null recv_workq. The
+protection by config_refs in nbd_genl_disconnect is useless.
 
-Make sense for me. Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+[  656.366194] BUG: kernel NULL pointer dereference, address: 0000000000000020
+[  656.368943] #PF: supervisor write access in kernel mode
+[  656.369844] #PF: error_code(0x0002) - not-present page
+[  656.370717] PGD 10cc87067 P4D 10cc87067 PUD 1074b4067 PMD 0
+[  656.371693] Oops: 0002 [#1] SMP
+[  656.372242] CPU: 5 PID: 7977 Comm: nbd-client Not tainted 5.11.0-rc5-00040-g76c057c84d28 #1
+[  656.373661] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+[  656.375904] RIP: 0010:mutex_lock+0x29/0x60
+[  656.376627] Code: 00 0f 1f 44 00 00 55 48 89 fd 48 83 05 6f d7 fe 08 01 e8 7a c3 ff ff 48 83 05 6a d7 fe 08 01 31 c0 65 48 8b 14 25 00 6d 01 00 <f0> 48 0f b1 55 d
+[  656.378934] RSP: 0018:ffffc900005eb9b0 EFLAGS: 00010246
+[  656.379350] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[  656.379915] RDX: ffff888104cf2600 RSI: ffffffffaae8f452 RDI: 0000000000000020
+[  656.380473] RBP: 0000000000000020 R08: 0000000000000000 R09: ffff88813bd6b318
+[  656.381039] R10: 00000000000000c7 R11: fefefefefefefeff R12: ffff888102710b40
+[  656.381599] R13: ffffc900005eb9e0 R14: ffffffffb2930680 R15: ffff88810770ef00
+[  656.382166] FS:  00007fdf117ebb40(0000) GS:ffff88813bd40000(0000) knlGS:0000000000000000
+[  656.382806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  656.383261] CR2: 0000000000000020 CR3: 0000000100c84000 CR4: 00000000000006e0
+[  656.383819] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  656.384370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  656.384927] Call Trace:
+[  656.385111]  flush_workqueue+0x92/0x6c0
+[  656.385395]  nbd_disconnect_and_put+0x81/0xd0
+[  656.385716]  nbd_genl_disconnect+0x125/0x2a0
+[  656.386034]  genl_family_rcv_msg_doit.isra.0+0x102/0x1b0
+[  656.386422]  genl_rcv_msg+0xfc/0x2b0
+[  656.386685]  ? nbd_ioctl+0x490/0x490
+[  656.386954]  ? genl_family_rcv_msg_doit.isra.0+0x1b0/0x1b0
+[  656.387354]  netlink_rcv_skb+0x62/0x180
+[  656.387638]  genl_rcv+0x34/0x60
+[  656.387874]  netlink_unicast+0x26d/0x590
+[  656.388162]  netlink_sendmsg+0x398/0x6c0
+[  656.388451]  ? netlink_rcv_skb+0x180/0x180
+[  656.388750]  ____sys_sendmsg+0x1da/0x320
+[  656.389038]  ? ____sys_recvmsg+0x130/0x220
+[  656.389334]  ___sys_sendmsg+0x8e/0xf0
+[  656.389605]  ? ___sys_recvmsg+0xa2/0xf0
+[  656.389889]  ? handle_mm_fault+0x1671/0x21d0
+[  656.390201]  __sys_sendmsg+0x6d/0xe0
+[  656.390464]  __x64_sys_sendmsg+0x23/0x30
+[  656.390751]  do_syscall_64+0x45/0x70
+[  656.391017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> ---
->  mm/page_io.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/page_io.c b/mm/page_io.c
-> index 92f7941c6d01..485fa5cca4a2 100644
-> --- a/mm/page_io.c
-> +++ b/mm/page_io.c
-> @@ -41,9 +41,9 @@ void end_swap_bio_write(struct bio *bio)
->  		 * Also clear PG_reclaim to avoid rotate_reclaimable_page()
->  		 */
->  		set_page_dirty(page);
-> -		pr_alert("Write-error on swap-device (%u:%u:%llu)\n",
-> -			 MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
-> -			 (unsigned long long)bio->bi_iter.bi_sector);
-> +		pr_alert_ratelimited("Write-error on swap-device (%u:%u:%llu)\n",
-> +				     MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
-> +				     (unsigned long long)bio->bi_iter.bi_sector);
->  		ClearPageReclaim(page);
->  	}
->  	end_page_writeback(page);
-> @@ -106,9 +106,9 @@ static void end_swap_bio_read(struct bio *bio)
->  	if (bio->bi_status) {
->  		SetPageError(page);
->  		ClearPageUptodate(page);
-> -		pr_alert("Read-error on swap-device (%u:%u:%llu)\n",
-> -			 MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
-> -			 (unsigned long long)bio->bi_iter.bi_sector);
-> +		pr_alert_ratelimited("Read-error on swap-device (%u:%u:%llu)\n",
-> +				     MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
-> +				     (unsigned long long)bio->bi_iter.bi_sector);
->  		goto out;
->  	}
->  
-> 
-> .
-> 
+To fix it, just add a check for a non null task_recv in
+nbd_genl_disconnect.
+
+Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
+Signed-off-by: Sun Ke <sunke32@huawei.com>
+---
+v3: Do not use unkock and add put_nbd.
+v2: Use jump target unlock.
+---
+ drivers/block/nbd.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 6727358e147d..c92f375877d2 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -2011,19 +2011,23 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
+ 		       index);
+ 		return -EINVAL;
+ 	}
+-	if (!refcount_inc_not_zero(&nbd->refs)) {
++	mutex_lock(&nbd->config_lock);
++	if (!refcount_inc_not_zero(&nbd->refs) || !nbd->recv_workq) {
++		mutex_unlock(&nbd->config_lock);
+ 		mutex_unlock(&nbd_index_mutex);
+ 		printk(KERN_ERR "nbd: device at index %d is going down\n",
+ 		       index);
+ 		return -EINVAL;
+ 	}
++	mutex_unlock(&nbd->config_lock);
+ 	mutex_unlock(&nbd_index_mutex);
+-	if (!refcount_inc_not_zero(&nbd->config_refs)) {
+-		nbd_put(nbd);
+-		return 0;
+-	}
++	if (!refcount_inc_not_zero(&nbd->config_refs))
++		goto put_nbd;
+ 	nbd_disconnect_and_put(nbd);
+ 	nbd_config_put(nbd);
++	goto put_nbd;
++
++put_nbd:
+ 	nbd_put(nbd);
+ 	return 0;
+ }
+-- 
+2.25.4
 
