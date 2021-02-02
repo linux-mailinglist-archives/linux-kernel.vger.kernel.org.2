@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA3730CA9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE0830CA6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239030AbhBBSzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:55:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S233809AbhBBSsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:48:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbhBBSox (ORCPT
+        with ESMTP id S238928AbhBBSpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:44:53 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A31C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:44:13 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id t63so20851175qkc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:44:13 -0800 (PST)
+        Tue, 2 Feb 2021 13:45:17 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE746C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:44:36 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id n10so15450505pgl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:44:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6NrYwMryjhSf8mb6qdDWT1m6IwDhTR3/t7R1WlKEKoI=;
-        b=WLd+qHBVqRdD250/aYzj9n/ag1cWfmEHEDwFhQuNz21u2ptdc+L+vQl/LLxjhNbKsI
-         ES7/wJd2DxX8IWjGzN1+xNuiZJCyjaxsf2EKFhyKUl8sxBMPFRfG7RHt1f6TKWp+X9Vk
-         3gqkNpPBGMfsUkXJKwDBYmpSqdBgvf0DyZuCAZ8+S4mxms04TX6L4UoSHKbexEkgyFNP
-         Ckx8Ybq64XG82JKWmeLCZHNQ5MkRkmmtc5WOkPoZ4LbowWPlTfhgk7RtsahV75rxyhi9
-         7P+fV3nHLPSChNwTskvKY/bFGwbM3vjFQVEk4lA/LzoZhRW/jAbJKyvxKUAsmTupqEb7
-         jhgg==
+        bh=pqYAJ+nDIkVEKnS+v7ZhHGM7/OU8LF5OYhbV8HTOckE=;
+        b=EbqJ0Eurb13i9Kw7vv82CpFT7VlQSyoOtUH5W4u37wAbfax4UUXya1SmKJ0iwKaSfl
+         VxqsOSzQDWUmkiJI4xt6F6HBcRKZy5gKku7bXr0dp7tUWLHFYIvMJDmUXHVs0bRIGASq
+         qFzeb8ioYMyL4PqV4ZhFRHd8THUyK4izEz8XY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6NrYwMryjhSf8mb6qdDWT1m6IwDhTR3/t7R1WlKEKoI=;
-        b=RZiepzvZkR28kUOZgU/YxUl0PsN//xu6GTMDHVuJ6+oflF+257mQoAt4vZUdXAKxaV
-         O4rJau64Goe0FvAdp5y7tD38OECfw+4J1JxtrRzy+pAjTRmX+Ij9qjxd2MFuNkUZsVnn
-         04fhWi1SF9FahUQbVzr907VcgEbEQOwLDUAa6OJHJ9/4FwPOOZ2jQ9YgDZVj9PHBJ7IE
-         P+z9nF1LualTAWMpvGUU234t2s8b4HLES2xpyBIAmw6VTt0kDwd4MgQCnbeR1kQ4Ezz0
-         JfJ2yiYtP40WaVjNYr6UDdr5Fq6vZw01pu5V8vctsWzdb9mHWgzwMwl6ZgDDkr0gABQ7
-         yQiw==
-X-Gm-Message-State: AOAM530lGBlv/QhCHtP7GkfA2PZaYwIrDSroJQQs82YQwKVlvbn2VYHG
-        XlKNP1GXyxBeqlPaUvYfmWhilg==
-X-Google-Smtp-Source: ABdhPJwExZvBVVEUtLaD1ZuRfZiAGXecrwPpVpHunS7NXDpk+oqMsb7jUQEKW7IIQU99XQGapTqPqg==
-X-Received: by 2002:a37:4d8e:: with SMTP id a136mr21354060qkb.317.1612291452536;
-        Tue, 02 Feb 2021 10:44:12 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id x74sm16903842qkb.55.2021.02.02.10.44.11
+        bh=pqYAJ+nDIkVEKnS+v7ZhHGM7/OU8LF5OYhbV8HTOckE=;
+        b=RJDeTPvvChbUf7Hp9C5Mb6jh1VpyMNjstKbCo1QuxIV7UbC/cp+NYL+GKTNlCacOes
+         aZoeOwJ77HnB7sJdkd8nTMXeANhPFj29HmRW+HMA/MzBOR42GqdQS5b9urfjERp2Kh/l
+         wI8kQFdDVnGas30qQQBeyfh20SsMbWxJGakBRne1b+saG/MPCnJdAI6SwA5m/oYwZgtB
+         rNhj0vV/vTyeo+tNxpreSy/gQj6hks3GoV487GDsrnb40nkNg3w+uoVxPPNVrPLtMsiD
+         lCL1Umfer0IQD2xMKhTWD550O3W668W2eaLpwXLN5cZkAPF9g3MxUnUweQBrU3oiUs7F
+         4xpA==
+X-Gm-Message-State: AOAM533FkiyA0sAQCyhK1l78dZs46D3+I4wVb5XfRtg+NIaSryaMS3Iq
+        XWwMyl8MLRMjFu8XaEF5sOds5+jR6nJKQQ==
+X-Google-Smtp-Source: ABdhPJx1CNpkVUy6oY3ybTfZeELGCkt9kxOASEb/AynyM8HGSLE0OxMZky3E0lP+gxQBbqJcpAo5xA==
+X-Received: by 2002:a63:2009:: with SMTP id g9mr23088703pgg.219.1612291476245;
+        Tue, 02 Feb 2021 10:44:36 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3571:bd6e:ee19:b59f])
+        by smtp.gmail.com with ESMTPSA id b21sm23159859pfb.45.2021.02.02.10.44.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:44:11 -0800 (PST)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] mm: vmstat: add some comments on internal storage of byte items
-Date:   Tue,  2 Feb 2021 13:44:11 -0500
-Message-Id: <20210202184411.118614-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.30.0
+        Tue, 02 Feb 2021 10:44:35 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCHv4 0/3] iio: Add a ChromeOS EC MKBP proximity driver
+Date:   Tue,  2 Feb 2021 10:44:31 -0800
+Message-Id: <20210202184434.42644-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Byte-accounted items are used for slab object accounting at the cgroup
-level, because the objects in a slab page can belong to different
-cgroups. At the global level these items always change in multiples of
-whole slab pages. The vmstat code exploits this and stores these items
-as pages internally, which allows for more compact per-cpu data.
+This is a different approach to [1] where I tried to add this proximity
+sensor logic to the input subsystem. Instead, we'll take the approach of
+making a small IIO proximity driver that parses the EC switch bitmap to
+find out if the front proximity sensor is detecting something or not.
+This allows us to treat proximity sensors as IIO devices all the time in
+userspace instead of handling this switch on the EC via the input
+subsystem and then other proximity sensors via IIO.
 
-This optimization isn't self-evident from the asserts and the division
-in the stat update functions. Provide the reader with some context.
+I propose this is all merged through IIO subsystem. Please ack
+the first patch so it can be merged that way.
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- include/linux/vmstat.h |  6 ++++++
- mm/vmstat.c            | 12 ++++++++++++
- 2 files changed, 18 insertions(+)
+Changes from v3:
+ * Added SPI and cros-ec wrapper nodes to yaml example
+ * Ignore notifier registration return code that is always zero
 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 773135fc6e19..506d625163a1 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -313,6 +313,12 @@ static inline void __mod_node_page_state(struct pglist_data *pgdat,
- 			enum node_stat_item item, int delta)
- {
- 	if (vmstat_item_in_bytes(item)) {
-+		/*
-+		 * Only cgroups use subpage accounting right now; at
-+		 * the global level, these items still change in
-+		 * multiples of whole pages. Store them as pages
-+		 * internally to keep the per-cpu counters compact.
-+		 */
- 		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
- 		delta >>= PAGE_SHIFT;
- 	}
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 1cf549dd703e..eff67397301b 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -346,6 +346,12 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
- 	long t;
- 
- 	if (vmstat_item_in_bytes(item)) {
-+		/*
-+		 * Only cgroups use subpage accounting right now; at
-+		 * the global level, these items still change in
-+		 * multiples of whole pages. Store them as pages
-+		 * internally to keep the per-cpu counters compact.
-+		 */
- 		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
- 		delta >>= PAGE_SHIFT;
- 	}
-@@ -555,6 +561,12 @@ static inline void mod_node_state(struct pglist_data *pgdat,
- 	long o, n, t, z;
- 
- 	if (vmstat_item_in_bytes(item)) {
-+		/*
-+		 * Only cgroups use subpage accounting right now; at
-+		 * the global level, these items still change in
-+		 * multiples of whole pages. Store them as pages
-+		 * internally to keep the per-cpu counters compact.
-+		 */
- 		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
- 		delta >>= PAGE_SHIFT;
- 	}
+Changes from v2:
+ * Check iio clock and use IIO time if not boottime
+
+Changes from v1:
+ * Driver moved location
+ * Put mkbp everywhere
+ * Fixed up DT binding to not fail and make sure is a child of cros-ec
+ * Simplified logic for sending a message
+ * Dropped CONFIG_OF usage
+ * Sorted includes
+
+[1] https://lore.kernel.org/r/20201205004709.3126266-1-swboyd@chromium.org
+
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>
+Cc: <devicetree@vger.kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Stephen Boyd (3):
+  platform/chrome: cros_ec: Add SW_FRONT_PROXIMITY MKBP define
+  dt-bindings: iio: Add cros ec proximity yaml doc
+  iio: proximity: Add a ChromeOS EC MKBP proximity driver
+
+ .../google,cros-ec-mkbp-proximity.yaml        |  46 ++++
+ .../bindings/mfd/google,cros-ec.yaml          |   3 +
+ drivers/iio/proximity/Kconfig                 |  11 +
+ drivers/iio/proximity/Makefile                |   1 +
+ .../iio/proximity/cros_ec_mkbp_proximity.c    | 242 ++++++++++++++++++
+ .../linux/platform_data/cros_ec_commands.h    |   1 +
+ 6 files changed, 304 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
+ create mode 100644 drivers/iio/proximity/cros_ec_mkbp_proximity.c
+
+
+base-commit: 19c329f6808995b142b3966301f217c831e7cf31
 -- 
-2.30.0
+https://chromeos.dev
 
