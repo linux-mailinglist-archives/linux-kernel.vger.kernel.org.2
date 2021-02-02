@@ -2,177 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA3D30C90F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB15F30C8C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238154AbhBBSIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:08:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32302 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233925AbhBBOHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:07:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612274784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HoV6WmzOM8JYFHRnbfZo8tVfL3dwzU/hINcFi1knTHc=;
-        b=XdOENgkvd8cmfnUccX7rF6hlKCiuqTtBIxsmDjpZ2YR26jORetIwvgAU7qJnzJ3V2B+arW
-        Gnad8E++TJ1An6rtvQIyGM+6Ms32KHnZYeGicV6u07zYVv7zRD3wLBYNJanERucDxmiafM
-        hWPZrp+pK2ruN4EzDJEIAyMcdL870Po=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-8X0eXTvmNuyA4QDEKnCY3A-1; Tue, 02 Feb 2021 09:06:22 -0500
-X-MC-Unique: 8X0eXTvmNuyA4QDEKnCY3A-1
-Received: by mail-wm1-f70.google.com with SMTP id y9so1010490wmj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:06:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HoV6WmzOM8JYFHRnbfZo8tVfL3dwzU/hINcFi1knTHc=;
-        b=EIQFG6w1vi/KY3p6iHWR8A4C7WakWYf6jCTyKyjQp2auPT1qip2+OiFLynJZm7xpxY
-         75b3IchqNSTD9x5dIomjdj7pvrvbhNMwEHdflUkahjfrvy014YgVgyQaCpsHKMN4ti6s
-         6/ls2bGNaVhz6eqRuAKsszg4T5jM+CS8MHwTC8oxKvajYoDI1FlPG0JeJVPVEUpRfKG4
-         OxrjIaJ2DxF9RrDium9lQ9MHgT7OMgKtEEWqcUl/0cU/92PNrWmROaYSS0kPDrtCN7lD
-         fumUSQrQkqoHJHYSfVG6xEm0FrPqNteF+D/KLcQqsjUrsd10BnhTq3dwdmDMFEMHlj4a
-         EFVQ==
-X-Gm-Message-State: AOAM5309n6EZD76IKX0h8r0TKeT6fDZjx5T6Urp0+B4v+bPnRLHEO5Gh
-        pegkgV5Oa6TK+dq0Vu8cphBy5ADAaiKxn1jQ2Hb12lQ0BKOOg5WuS9U0EeLzswsCi+ymZ7c1V7A
-        BORINkkoUszlGI4Bdws5frC2X
-X-Received: by 2002:a1c:2d0b:: with SMTP id t11mr3742608wmt.109.1612274781424;
-        Tue, 02 Feb 2021 06:06:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwLuu9HSbHaNq2JSTJGYoIuanz10/6LwyOztA42Q7LIGokzZlY2asGRgWOD0wv1yz3mEZn6wA==
-X-Received: by 2002:a1c:2d0b:: with SMTP id t11mr3742583wmt.109.1612274781204;
-        Tue, 02 Feb 2021 06:06:21 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id o124sm3431503wmb.5.2021.02.02.06.06.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 06:06:20 -0800 (PST)
-Date:   Tue, 2 Feb 2021 09:06:17 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Si-Wei Liu <siwliu.kernel@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com,
-        Si-Wei Liu <si-wei.liu@oracle.com>
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
-Message-ID: <20210202090558-mutt-send-email-mst@kernel.org>
-References: <20210128134130.3051-1-elic@nvidia.com>
- <20210128134130.3051-2-elic@nvidia.com>
- <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
- <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
- <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
- <CAPWQSg3KOAypcrs9krW8cGE7EDLTehCUCYFZMUYYNaYPH1oBZQ@mail.gmail.com>
- <20210202070055.GB232587@mtl-vdi-166.wap.labs.mlnx>
+        id S233941AbhBBSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:00:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43122 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233952AbhBBOIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:08:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 50039B0C6;
+        Tue,  2 Feb 2021 14:07:52 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 15:07:51 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 10/13] module: pass struct find_symbol_args to
+ find_symbol
+In-Reply-To: <20210202121334.1361503-11-hch@lst.de>
+Message-ID: <alpine.LSU.2.21.2102021504550.570@pobox.suse.cz>
+References: <20210202121334.1361503-1-hch@lst.de> <20210202121334.1361503-11-hch@lst.de>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210202070055.GB232587@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:00:55AM +0200, Eli Cohen wrote:
-> On Mon, Feb 01, 2021 at 08:15:29PM -0800, Si-Wei Liu wrote:
-> > On Mon, Feb 1, 2021 at 7:13 PM Jason Wang <jasowang@redhat.com> wrote:
-> > >
-> > >
-> > > On 2021/2/2 上午3:17, Si-Wei Liu wrote:
-> > > > On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gmail.com> wrote:
-> > > >> On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> wrote:
-> > > >>> suspend_vq should only suspend the VQ on not save the current available
-> > > >>> index. This is done when a change of map occurs when the driver calls
-> > > >>> save_channel_info().
-> > > >> Hmmm, suspend_vq() is also called by teardown_vq(), the latter of
-> > > >> which doesn't save the available index as save_channel_info() doesn't
-> > > >> get called in that path at all. How does it handle the case that
-> > > >> aget_vq_state() is called from userspace (e.g. QEMU) while the
-> > > >> hardware VQ object was torn down, but userspace still wants to access
-> > > >> the queue index?
-> > > >>
-> > > >> Refer to https://lore.kernel.org/netdev/1601583511-15138-1-git-send-email-si-wei.liu@oracle.com/
-> > > >>
-> > > >> vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
-> > > >> vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
-> > > >>
-> > > >> QEMU will complain with the above warning while VM is being rebooted
-> > > >> or shut down.
-> > > >>
-> > > >> Looks to me either the kernel driver should cover this requirement, or
-> > > >> the userspace has to bear the burden in saving the index and not call
-> > > >> into kernel if VQ is destroyed.
-> > > > Actually, the userspace doesn't have the insights whether virt queue
-> > > > will be destroyed if just changing the device status via set_status().
-> > > > Looking at other vdpa driver in tree i.e. ifcvf it doesn't behave like
-> > > > so. Hence this still looks to me to be Mellanox specifics and
-> > > > mlx5_vdpa implementation detail that shouldn't expose to userspace.
-> > >
-> > >
-> > > So I think we can simply drop this patch?
-> > 
-> > Yep, I think so. To be honest I don't know why it has anything to do
-> > with the memory hotplug issue.
-> 
-> No relation. That's why I put them in two different patches. Only the
-> second one is the fix as I stated in the cover letter.
-> 
-> Anyway, let's just take the second patch.
-> 
-> Michael, do you need me to send PATCH 2 again as a single patch or can
-> you just take it?
+>  void *__symbol_get(const char *symbol)
+>  {
+> -	struct module *owner;
+> -	const struct kernel_symbol *sym;
+> +	struct find_symbol_arg fsa = {
+> +		.name	= symbol,
+> +		.gplok	= true,
+> +		.warn	= true,
+> +	};
+>  
+>  	preempt_disable();
+> -	sym = find_symbol(symbol, &owner, NULL, NULL, true, true);
+> -	if (sym && strong_try_module_get(owner))
+> -		sym = NULL;
+> +	if (!find_symbol(&fsa) || !strong_try_module_get(fsa.owner)) {
 
-Pls post fixes separately. Thanks!
+I think this should be in fact
 
-> 
-> > 
-> > -Siwei
-> > 
-> > >
-> > > Thanks
-> > >
-> > >
-> > > >> -Siwei
-> > > >>
-> > > >>
-> > > >>> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > >>> ---
-> > > >>>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
-> > > >>>   1 file changed, 8 deletions(-)
-> > > >>>
-> > > >>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > >>> index 88dde3455bfd..549ded074ff3 100644
-> > > >>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > >>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > >>> @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
-> > > >>>
-> > > >>>   static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
-> > > >>>   {
-> > > >>> -       struct mlx5_virtq_attr attr;
-> > > >>> -
-> > > >>>          if (!mvq->initialized)
-> > > >>>                  return;
-> > > >>>
-> > > >>> @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
-> > > >>>
-> > > >>>          if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
-> > > >>>                  mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
-> > > >>> -
-> > > >>> -       if (query_virtqueue(ndev, mvq, &attr)) {
-> > > >>> -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
-> > > >>> -               return;
-> > > >>> -       }
-> > > >>> -       mvq->avail_idx = attr.available_index;
-> > > >>>   }
-> > > >>>
-> > > >>>   static void suspend_vqs(struct mlx5_vdpa_net *ndev)
-> > > >>> --
-> > > >>> 2.29.2
-> > > >>>
-> > >
+  if (!find_symbol(&fsa) || strong_try_module_get(fsa.owner)) {
 
+to get the logic right (note the missing !). We want to return NULL if 
+strong_try_module_get() does not succeed for a found symbol.
+
+> +		preempt_enable();
+> +		return NULL;
+> +	}
+>  	preempt_enable();
+> -
+> -	return sym ? (void *)kernel_symbol_value(sym) : NULL;
+> +	return (void *)kernel_symbol_value(fsa.sym);
+>  }
+>  EXPORT_SYMBOL_GPL(__symbol_get);
+
+Miroslav
