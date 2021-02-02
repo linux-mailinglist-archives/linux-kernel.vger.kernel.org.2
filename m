@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFA930B84D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FCD30B852
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhBBHEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:04:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S232459AbhBBHFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbhBBHEd (ORCPT
+        with ESMTP id S232380AbhBBHFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:04:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A96C061573;
-        Mon,  1 Feb 2021 23:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tBP6AtIkMrM+Ev+R7wP7xBQMTerQ6VlEXrvmiPe+MLs=; b=MALRJpA5D6Md9oQRdFOJ2QLDzX
-        6lrzxsVryKxlxjPJDrfyR08pgBFY2XL7QGu1RBfmVpjG9zvuMqQxneIaX9dZEnjyGefb6FcrzgxzE
-        o3XxbovGKbOC4mJjqTkQOERYx2O5rk5P2gjCfoo2DAZe+vCxZV8g4DMxpN0qalCI/hpDhvOVm4lgN
-        mxPa1gZptd7rhi3wN5/s8xy2skHCMadcF2yZBTOAUkOyE6CmrljZwmGI1XsoLCrOx4/AVZe/B95Cn
-        88eo9tsaesh1izZGrAPszUYqrMbwdxhU+EOQJrX7ELc6q4vtMjs0Q4az36G/y7JpAsCm6MNnwc8ku
-        HPXAWDzw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6piq-00Epu1-L3; Tue, 02 Feb 2021 07:03:36 +0000
-Date:   Tue, 2 Feb 2021 07:03:36 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "(Exiting) Benjamin Gaignard" <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>, labbott@redhat.com,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Christian K??nig <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        ??rjan Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
- linux vm
-Message-ID: <20210202070336.GA3535861@infradead.org>
-References: <20210128083817.314315-1-surenb@google.com>
- <20210128091348.GA1962975@infradead.org>
- <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
- <YBMAGRIwcbPF17cU@google.com>
- <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
- <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
+        Tue, 2 Feb 2021 02:05:03 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDEBC0613D6;
+        Mon,  1 Feb 2021 23:04:23 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id f6so46467ioz.5;
+        Mon, 01 Feb 2021 23:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ch8HiDn9RPP6F97sx8UHBgj1bauCXmdUmArhq8iz8l4=;
+        b=fQo6OikdEgR6C2XczWRSA8ZWbZu4d9ec4a3jPo5+kr3OxQ2keebKHgNsWCbNO2F0d7
+         KgyDbNp2s8ytbt4bc5Ec/XgwvoeH5CbIG7LWF+6NLTafXjFhsAUVsYuK/Lm+uy+4fVjN
+         8KBp9sTrWvxsVdjbK2X6ugOtyysIEWRa9jdNbpffoNGDj91ckXGjqXVXQEThv+H0KMta
+         7kVFXza0J5I5cpZA1GGk1BGJQi95BHMqgGz+TajtazL2PZVxpy6NfzIN8UhREJwC4wZG
+         6FBDVzC7jf85TVu7WGDmBkE78dQFutvEeUz737MlRQFcgeOCiIEObirBOinYLHQzfer3
+         u3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ch8HiDn9RPP6F97sx8UHBgj1bauCXmdUmArhq8iz8l4=;
+        b=ogZIJtWiuOfNVEp7dv5+9QUnZvYu7TLDxcLB2GHo/eglywEFuaLSErhf/HwQaN7WrX
+         0V9e9MqcZVvEI/u0vLID3V34F1+Dk7oBBaELcQnO6cwVjXeA/9HnGjIGPImA5K21vUMa
+         25Yi2gqEIbQImQefktAdDaygfFfpoA74DPY27oshBvAROJDcARbOKKgD3wQemQegHMrz
+         Yh1GLdE+gcmuXeiTv/IZmbW5SliySViPDUBpKXTTuuUXZmiwaIglC0ilDs2rFMvKnOsE
+         CqUwVe8O356SvhjzPWyDu2U069nv5pT7YM/KTPdFslK/Z91lHtWz8uXwUbaxMtQULhEW
+         xBxw==
+X-Gm-Message-State: AOAM5327F55cAPemrvQajtlM5w1rF+WMPhzXBx43BysDlE3y/Pj7roox
+        QX+2nCUf+UBmkSfIgX4nZRnfBRIwyrkw3nF/QNR34u/59ls73g==
+X-Google-Smtp-Source: ABdhPJy+ZsksyunXUp7b5BB9oTqedYDFbUF8FSiCWLVWw6OiWXOQVFsj/mW0jDaw8d8URzhnK6EHzo/skdcMjXF5YJY=
+X-Received: by 2002:a05:6602:1541:: with SMTP id h1mr6411983iow.171.1612249462958;
+ Mon, 01 Feb 2021 23:04:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210202060604.711160-1-masahiroy@kernel.org>
+In-Reply-To: <20210202060604.711160-1-masahiroy@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 2 Feb 2021 08:04:10 +0100
+Message-ID: <CA+icZUVADDyNMhQQwjS9zvkha3ZuKQeZRT41c2Z=fgkPY+i7SQ@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts/clang-tools: switch explicitly to Python 3
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMHO the
+On Tue, Feb 2, 2021 at 7:06 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> For the same reason as commit 51839e29cb59 ("scripts: switch explicitly
+> to Python 3"), switch some more scripts, which I tested and confirmed
+> working on Python 3.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>
+> Changes in v2:
+>  - Drop the spdxcheck.py change. The same fix exists in linux-next.
+>
 
-	BUG_ON(vma->vm_flags & VM_PFNMAP);
+Link: https://lore.kernel.org/r/20210121085412.265400-1-bert@biot.com
 
-in vm_insert_page should just become a WARN_ON_ONCE with an error
-return, and then we just need to gradually fix up the callers that
-trigger it instead of coming up with workarounds like this.
+- Sedat -
+
+>  scripts/clang-tools/gen_compile_commands.py | 2 +-
+>  scripts/clang-tools/run-clang-tools.py      | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> index 19963708bcf8..8ddb5d099029 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/env python
+> +#!/usr/bin/env python3
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+>  # Copyright (C) Google LLC, 2018
+> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+> index fa7655c7cec0..f754415af398 100755
+> --- a/scripts/clang-tools/run-clang-tools.py
+> +++ b/scripts/clang-tools/run-clang-tools.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/env python
+> +#!/usr/bin/env python3
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+>  # Copyright (C) Google LLC, 2020
+> --
+> 2.27.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210202060604.711160-1-masahiroy%40kernel.org.
