@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AF830B8C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CECE30B8C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhBBHh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:37:59 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33181 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhBBHh5 (ORCPT
+        id S232171AbhBBHi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:38:56 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:39241 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232202AbhBBHir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:37:57 -0500
-Received: by mail-io1-f70.google.com with SMTP id m3so13990266ioy.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:37:41 -0800 (PST)
+        Tue, 2 Feb 2021 02:38:47 -0500
+Received: by mail-lj1-f174.google.com with SMTP id u4so21291843ljh.6;
+        Mon, 01 Feb 2021 23:38:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RaaaFb/FsJvO/g1ivtUAIUikFA3tVEf/1+9ztYf1vwU=;
-        b=l/lgS2+pk3V2SOfA1FyfnxvCDCpfm8GfQifxxJ8+7bpTpG3m74LCiLLW6GdtppARhb
-         Ae2X8dCTx+mE5M6J5PE1msOqBYgInSCEJqYiUqyVa/WzTl1clckAoIHU+HhNwR1DtjVU
-         7efdqS17FkdlNNzXOjz9eOeoPTd2MWZDcyHI7EL2NgCPfPoVrywRlLOXZeXnIKNYhn0y
-         ABeeEzOvK714xEcggE9eoRCqc31PASocJ7MHWWrtLPGqQOMQQsDSLJ42HHkszgSig9vm
-         4oNcwRDiAAvaXghJRdYVxg3DJOIwIGZ0wk8NX8XfPHmUWTYUo6ldbmglRzpyzGWCD2qB
-         ZKZg==
-X-Gm-Message-State: AOAM532NGtRcfowLZ9SuMAP1ZdsJa73Wp00QHndjOUI5J4NGPNlDHk2c
-        maNnHnZVe1sGcM/RSvY0PcJojEyWFBsOujgNzNfro3inGeUu
-X-Google-Smtp-Source: ABdhPJzm/FMTL/y5VGWVV8XN4BkZ2Tjq3Kpve7nvbkO3aNldgDBQN2tnw2yF0Lp49K+9h0ZGO/61NUhhTbNf+dpRUaoBlSTcyaGu
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RCsq0lQnyJowuaLECngen64lS6PLCnkwIXsedpi2nHs=;
+        b=XHfeht+h8FlBQPYqUlIn2vfVddgSGqQe2BKRNlTRxS29XZD0xN4kC4P7VxDFCjZjAr
+         q/SFnxQH3TJIZgl1OegamEmbcVAn9+exiYhb6gkL13vnUT3WF2dQ06zR5OP9KwudaOYU
+         SEAHSBfCu2WlAdQ+h1FdJdeypGRYoROtFiYrZZpbJ/k9GsXclRmiy2PNTG2NK7gbNLfN
+         EwsdcyW9SkgoUs5Tk8QS95P9yRWhEf4+T1q1zvYK6cRmXPxnKissDzuRI9fE7/6aGJux
+         PH8hwsZkMSCOOY8WwJ5SjyypV8g9+FGqaU8kWwjXordQtsrLYAU/jB3Qkp3BhFgJgZVh
+         oG+w==
+X-Gm-Message-State: AOAM530k0GwVLZ35orXc8KWLIFty3kMTVbCssKH3crp72j9Bu6OoX6rs
+        6jqJhxBoBTQo/JxqhdAz60Q=
+X-Google-Smtp-Source: ABdhPJxtBkSx+nBB44/bwUk/mCPW67PLF2vhzRPzdifuoJj0sy1m5Sn4toDtTqwOYD8iB1+grRHtLw==
+X-Received: by 2002:a2e:7614:: with SMTP id r20mr12913905ljc.93.1612251485093;
+        Mon, 01 Feb 2021 23:38:05 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id z14sm45830lfh.296.2021.02.01.23.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 23:38:04 -0800 (PST)
+Date:   Tue, 2 Feb 2021 09:37:58 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] regulator: qcom-labibb: Use disable_irq_nosync from isr
+Message-ID: <f2c4c88d90bf7473e1b84b8a99b7b33d7a081764.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
+References: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9ad4:: with SMTP id x20mr4255172ion.31.1612251436391;
- Mon, 01 Feb 2021 23:37:16 -0800 (PST)
-Date:   Mon, 01 Feb 2021 23:37:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000027a68305ba558a86@google.com>
-Subject: WARNING: refcount bug in uprobe_mmap
-From:   syzbot <syzbot+e61dd1b2a6fb2ffd2dee@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Calling the disable_irq() from irq handler might be a bad idea as
+disable_irq() should wait for handlers to run. I don't see why
+this wouldn't deadlock in wait_event waiting for the threaded
+handler to complete.
 
-syzbot found the following issue on:
+Use disable_irq_nosync() instead.
 
-HEAD commit:    fd821bf0 Add linux-next specific files for 20210201
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17255354d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80ac9f64e6e2c06
-dashboard link: https://syzkaller.appspot.com/bug?extid=e61dd1b2a6fb2ffd2dee
+Fixes: 390af53e04114 ("regulator: qcom-labibb: Implement short-circuit and over-current IRQs")
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e61dd1b2a6fb2ffd2dee@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 0 PID: 10416 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Modules linked in:
-CPU: 0 PID: 10416 Comm: syz-executor.5 Not tainted 5.11.0-rc6-next-20210201-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Code: 09 31 ff 89 de e8 87 b5 b0 fd 84 db 0f 85 36 ff ff ff e8 fa ae b0 fd 48 c7 c7 60 f7 be 89 c6 05 4a a8 4e 09 01 e8 be 96 fd 04 <0f> 0b e9 17 ff ff ff e8 db ae b0 fd 0f b6 1d 2f a8 4e 09 31 ff 89
-RSP: 0018:ffffc9000262fb80 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815b3b35 RDI: fffff520004c5f62
-RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815acd0e R11: 0000000000000000 R12: ffff888011d9d800
-R13: ffffc9000262fc10 R14: ffffc9000262fc10 R15: ffff888011d9d818
-FS:  00007f3dcdee1700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32d27000 CR3: 00000000291a8000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_add include/linux/refcount.h:199 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- get_uprobe kernel/events/uprobes.c:597 [inline]
- build_probe_list kernel/events/uprobes.c:1312 [inline]
- uprobe_mmap+0x8ff/0x1080 kernel/events/uprobes.c:1382
- mmap_region+0x56c/0x1730 mm/mmap.c:1881
- do_mmap+0xcff/0x11d0 mm/mmap.c:1580
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x49c/0x620 mm/mmap.c:1631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b09
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3dcdee1188 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465b09
-RDX: 0000000000000000 RSI: 0000000000003000 RDI: 0000000020007000
-RBP: 00000000004b069f R08: 0000000000000003 R09: 0000000000000000
-R10: 0000000000000412 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffcf33596cf R14: 00007f3dcdee1300 R15: 0000000000022000
-
-
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This fix is done purely based on code reading. No testing is done.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I don't have the HW (and even if I did I might have hard time producing
+these errors) I have not tested this and I am unsure if my code-reading
+is correct => I would _really_ appreciate second opinion and/or testing
+
+ drivers/regulator/qcom-labibb-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+index 5ac4566f9b7f..40e92670e307 100644
+--- a/drivers/regulator/qcom-labibb-regulator.c
++++ b/drivers/regulator/qcom-labibb-regulator.c
+@@ -283,7 +283,7 @@ static irqreturn_t qcom_labibb_ocp_isr(int irq, void *chip)
+ 	 * Disable the interrupt temporarily, or it will fire continuously;
+ 	 * we will re-enable it in the recovery worker function.
+ 	 */
+-	disable_irq(irq);
++	disable_irq_nosync(irq);
+ 
+ 	/* Warn the user for overcurrent */
+ 	dev_warn(vreg->dev, "Over-Current interrupt fired!\n");
+@@ -536,7 +536,7 @@ static irqreturn_t qcom_labibb_sc_isr(int irq, void *chip)
+ 	 * Disable the interrupt temporarily, or it will fire continuously;
+ 	 * we will re-enable it in the recovery worker function.
+ 	 */
+-	disable_irq(irq);
++	disable_irq_nosync(irq);
+ 
+ 	/* Signal out of regulation event to drivers */
+ 	regulator_notifier_call_chain(vreg->rdev,
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
