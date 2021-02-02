@@ -2,64 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7EB30C7AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E2E30C1BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237408AbhBBR1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:27:48 -0500
-Received: from 8bytes.org ([81.169.241.247]:54076 "EHLO theia.8bytes.org"
+        id S234382AbhBBObG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:31:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234129AbhBBOOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:14:37 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 83B4E3E6; Tue,  2 Feb 2021 15:13:51 +0100 (CET)
-Date:   Tue, 2 Feb 2021 15:13:50 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: Re: [PATCH 2/2] iommu: add Unisoc iommu basic driver
-Message-ID: <20210202141349.GB32671@8bytes.org>
-References: <20210202073258.559443-3-zhang.lyra@gmail.com>
- <20210202104257.736836-1-zhang.lyra@gmail.com>
+        id S234005AbhBBOTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:19:51 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D925E64E2B;
+        Tue,  2 Feb 2021 14:15:17 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6wSZ-00BVy2-W6; Tue, 02 Feb 2021 14:15:16 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202104257.736836-1-zhang.lyra@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Feb 2021 14:15:15 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, steven.price@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+Subject: Re: [PATCH v16 0/9] Enable ptp_kvm for arm/arm64
+In-Reply-To: <20201209060932.212364-1-jianyong.wu@arm.com>
+References: <20201209060932.212364-1-jianyong.wu@arm.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <74108ee1d0021acbdd7aed5b467e5432@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:42:57PM +0800, Chunyan Zhang wrote:
-> +static phys_addr_t sprd_iommu_iova_to_phys(struct iommu_domain *domain,
-> +					   dma_addr_t iova)
-> +{
-> +	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
-> +	unsigned long flags;
-> +	phys_addr_t pa;
-> +	unsigned long start = domain->geometry.aperture_start;
-> +	unsigned long end = domain->geometry.aperture_end;
-> +
-> +	if (iova < start || iova > end)
-> +		pr_err("iova (0x%llx) exceed the vpn range[0x%lx-0x%lx]!\n",
-> +		       iova, start, end);
+On 2020-12-09 06:09, Jianyong Wu wrote:
+> Currently, we offen use ntp (sync time with remote network clock)
+> to sync time in VM. But the precision of ntp is subject to network 
+> delay
+> so it's difficult to sync time in a high precision.
+> 
+> kvm virtual ptp clock (ptp_kvm) offers another way to sync time in VM,
+> as the remote clock locates in the host instead of remote network 
+> clock.
+> It targets to sync time between guest and host in virtualization
+> environment and in this way, we can keep the time of all the VMs 
+> running
+> in the same host in sync. In general, the delay of communication 
+> between
+> host and guest is quiet small, so ptp_kvm can offer time sync precision
+> up to in order of nanosecond. Please keep in mind that ptp_kvm just
+> limits itself to be a channel which transmit the remote clock from
+> host to guest and leaves the time sync jobs to an application, eg. 
+> chrony,
+> in usersapce in VM.
+> 
+> How ptp_kvm works:
+> After ptp_kvm initialized, there will be a new device node under
+> /dev called ptp%d. A guest userspace service, like chrony, can use this
+> device to get host walltime, sometimes also counter cycle, which 
+> depends
+> on the service it calls. Then this guest userspace service can use 
+> those
+> data to do the time sync for guest.
+> here is a rough sketch to show how kvm ptp clock works.
+> 
+> |----------------------------|              
+> |--------------------------|
+> |       guest userspace      |              |          host            
+> |
+> |ioctl -> /dev/ptp%d         |              |                          
+> |
+> |       ^   |                |              |                          
+> |
+> |----------------------------|              |                          
+> |
+> |       |   | guest kernel   |              |                          
+> |
+> |       |   V      (get host walltime/counter cycle)                   
+> |
+> |      ptp_kvm -> hypercall - - - - - - - - - - ->hypercall service    
+> |
+> |                         <- - - - - - - - - - - -                     
+> |
+> |----------------------------|              
+> |--------------------------|
+> 
+> 1. time sync service in guest userspace call ptp device through 
+> /dev/ptp%d.
+> 2. ptp_kvm module in guest receives this request then invoke hypercall 
+> to route
+> into host kernel to request host walltime/counter cycle.
+> 3. ptp_kvm hypercall service in host response to the request and send 
+> data back.
+> 4. ptp (not ptp_kvm) in guest copy the data to userspace.
+> 
+> This ptp_kvm implementation focuses itself to step 2 and 3 and step 2 
+> works
+> in guest comparing step 3 works in host kernel.
 
-It is not a good idea to continue here with an out-of-range iova. The
-code below might access random memory for its checks. Better do a
-WARN_ON here and return an invalid physical address.
+FWIW, and in order to speed up the review, I've posted a reworked
+version[0] of this series with changes that address the comments
+I had for on v16.
 
-> +
-> +	spin_lock_irqsave(&dom->pgtlock, flags);
-> +	pa = *(dom->pgt_va + ((iova - start) >> SPRD_IOMMU_PAGE_SHIFT));
-> +	pa = (pa << SPRD_IOMMU_PAGE_SHIFT) + ((iova - start) & (SPRD_IOMMU_PAGE_SIZE - 1));
-> +	spin_unlock_irqrestore(&dom->pgtlock, flags);
-> +
-> +	return pa;
-> +}
-> +
+Thanks,
+
+         M.
+
+[0] https://lore.kernel.org/r/20210202141204.3134855-1-maz@kernel.org
+-- 
+Jazz is not dead. It just smells funny...
