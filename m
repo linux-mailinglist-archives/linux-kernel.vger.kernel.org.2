@@ -2,281 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7393E30C8A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0448F30C8B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237959AbhBBR5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:57:05 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:45506 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbhBBRyZ (ORCPT
+        id S238079AbhBBR56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237886AbhBBRyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:54:25 -0500
-Received: by mail-oi1-f175.google.com with SMTP id g69so23647144oib.12;
-        Tue, 02 Feb 2021 09:54:07 -0800 (PST)
+        Tue, 2 Feb 2021 12:54:55 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B269FC06178C;
+        Tue,  2 Feb 2021 09:54:15 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id l12so21435619wry.2;
+        Tue, 02 Feb 2021 09:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CJyHdLKM3KKlD0L2BTz6ZRZkRawk3i7fIdk2ltQBhgQ=;
+        b=KhEXaUZLl7VRD+fZCHudvwEBlLIRqtBIbeNk60XG7hoos16ZR0lDtdvn903vyLCe7L
+         LNMyrhbAWycofkBilzQBXDcKlxE7JNga/hHPNGhNJ+lwR9FQxe5hO5J9NciOZkK/uYKK
+         bGnOtM+Sg9WA6glbdE5GyL2wNrImbf0bYmvbtD5GNvtjWqQWCZuoMQFh//26HaTk3s5b
+         OkgfVWo1Bp3MXHVuGG4j7ZK2m09Sh/+1+xDlx+UUTj1od3LCVHix1UcnuFFpGcG0gZVF
+         gRXQVVrsFxKjbhBQyp36dghvI28r3Nd1hf7aeZO7rmZ19xsrtTZ68Ul8RK1yKTDV47NS
+         DdWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8vDbQmL5iEpetuc73BnBxCM6fFf2Ksz8RzcABWCqFJU=;
-        b=FUo0ekdmK4FlBwpmlCjb/VV6Z3P6JRCSI6CSgvOthnPmsA8RKNIWo79CgrNucyIB/m
-         r4MBjVKVSkfQivKDUf0YbA6E1+/i50ry0iM9bimwdChxY7SDxkcGfQc0yGb9euRKmbkB
-         m3Z7qNMn5HUgsUUu0N8YGHoyyJ8VmGVKJ3xb6X4ZVL2eNsSzki6G2LGAgiAJFYGRvB4a
-         NkE1NY/ouV4I1DipHUvaLQp3ZBlhhNUwsOwN9Wp1uRYfXgnXxMUnarRW4nH4cmLBt0t6
-         Gp2G6c/HNJTzeYp8FnZYC2Xd401BWuasMMbrbSyKAwNuko7/585Yzv4yhmVYMv6H/mNY
-         yHQA==
-X-Gm-Message-State: AOAM533CqNlYf/J1RCSyr87wTJAQFPQ1MO3EpoFATNYinXr8tkWRjO6C
-        /QrVaOK9rszppgLPnEe7UeYMRuP83w==
-X-Google-Smtp-Source: ABdhPJwIYDUyFnb5s/PSk+AdX838p6dxHfZoKOZ+WzBABVXuE4rg9x/AiinJzkyQAz7JTW4NvyEmIQ==
-X-Received: by 2002:aca:c64c:: with SMTP id w73mr3685645oif.168.1612288421912;
-        Tue, 02 Feb 2021 09:53:41 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id a76sm5348460oib.45.2021.02.02.09.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:53:40 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] dt-bindings: mtd: spi-nor: Convert to DT schema format
-Date:   Tue,  2 Feb 2021 11:53:39 -0600
-Message-Id: <20210202175340.3902494-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CJyHdLKM3KKlD0L2BTz6ZRZkRawk3i7fIdk2ltQBhgQ=;
+        b=R/iqvWRLlrgCrN5rBc09TaWMtNmgAn2xgyOTSihnnOE0IWfQ6/1/79R/heOcntaG9w
+         nYH6hfO1CUbFfE3nlooVRy/3knDySRhRhqUuFhEQ2Xj9WMOo6iUk1fvGyb+siOkvsKEn
+         4dxh7KpV7F6lSAG1WykPZ1NzOOUsDhTX2cEmWhGDPaggJrexyaSAhJzhCQZoPfINK/f6
+         L1L2GCCdTUShS0AQqObZO3tl46OsqOMzSYmDCzSDJgJ5fr3y1+Hh7PhldKNAWosRwaxq
+         Ip8W8VOUZH0k06ITb5ixHZtIrnce/VAnSEOKzL7TwKNOL7Ksd1lTpxwRw5ydBDdnDeov
+         y/SA==
+X-Gm-Message-State: AOAM5320MtkyaOjycPOuUQ2LEUpOZcHy0WDHsOfA5EiXall/u6L+cpFi
+        zJJBBATT14WLayAM74eYf0B8pRBDnh3liYfn2hc=
+X-Google-Smtp-Source: ABdhPJyRQrR0eOd4kqTsOJnb6c1RpDnW2FDLIgNNMt8KEH3j0eupO8ShjmZP8Z+eJXt2vpA80TvvuICO3X5ERvIqxO8=
+X-Received: by 2002:a5d:5502:: with SMTP id b2mr25035724wrv.245.1612288454444;
+ Tue, 02 Feb 2021 09:54:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210128134130.3051-1-elic@nvidia.com> <20210128134130.3051-2-elic@nvidia.com>
+ <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
+ <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
+ <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com> <CAPWQSg3KOAypcrs9krW8cGE7EDLTehCUCYFZMUYYNaYPH1oBZQ@mail.gmail.com>
+ <c65808bf-b336-8718-f7ea-b39fcc658dfb@redhat.com> <20210202070631.GA233234@mtl-vdi-166.wap.labs.mlnx>
+ <CAPWQSg058RGaxSS7s5s=kpxdGryiy2padRFztUZtXN+ttiDd1A@mail.gmail.com> <20210202092253.GA236663@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <20210202092253.GA236663@mtl-vdi-166.wap.labs.mlnx>
+From:   Si-Wei Liu <siwliu.kernel@gmail.com>
+Date:   Tue, 2 Feb 2021 09:54:00 -0800
+Message-ID: <CAPWQSg0tRXoGF88LQSLzUg88ZEi8p+M=R6Qd445iABShfn-o4g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com,
+        Si-Wei Liu <si-wei.liu@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the SPI-NOR binding to DT schema format. Like other memory chips,
-the compatible strings are a mess with vendor prefixes not being used
-consistently and some compatibles not documented. The resulting schema
-passes on 'compatible' checks for most in tree users with the exception
-of some oddballs.
+On Tue, Feb 2, 2021 at 1:23 AM Eli Cohen <elic@nvidia.com> wrote:
+>
+> On Tue, Feb 02, 2021 at 12:38:51AM -0800, Si-Wei Liu wrote:
+> > Thanks Eli and Jason for clarifications. See inline.
+> >
+> > On Mon, Feb 1, 2021 at 11:06 PM Eli Cohen <elic@nvidia.com> wrote:
+> > >
+> > > On Tue, Feb 02, 2021 at 02:02:25PM +0800, Jason Wang wrote:
+> > > >
+> > > > On 2021/2/2 =E4=B8=8B=E5=8D=8812:15, Si-Wei Liu wrote:
+> > > > > On Mon, Feb 1, 2021 at 7:13 PM Jason Wang <jasowang@redhat.com> w=
+rote:
+> > > > > >
+> > > > > > On 2021/2/2 =E4=B8=8A=E5=8D=883:17, Si-Wei Liu wrote:
+> > > > > > > On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gma=
+il.com> wrote:
+> > > > > > > > On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com>=
+ wrote:
+> > > > > > > > > suspend_vq should only suspend the VQ on not save the cur=
+rent available
+> > > > > > > > > index. This is done when a change of map occurs when the =
+driver calls
+> > > > > > > > > save_channel_info().
+> > > > > > > > Hmmm, suspend_vq() is also called by teardown_vq(), the lat=
+ter of
+> > > > > > > > which doesn't save the available index as save_channel_info=
+() doesn't
+> > > > > > > > get called in that path at all. How does it handle the case=
+ that
+> > > > > > > > aget_vq_state() is called from userspace (e.g. QEMU) while =
+the
+> > > > > > > > hardware VQ object was torn down, but userspace still wants=
+ to access
+> > > > > > > > the queue index?
+> > > > > > > >
+> > > > > > > > Refer to https://lore.kernel.org/netdev/1601583511-15138-1-=
+git-send-email-si-wei.liu@oracle.com/
+> > > > > > > >
+> > > > > > > > vhost VQ 0 ring restore failed: -1: Resource temporarily un=
+available (11)
+> > > > > > > > vhost VQ 1 ring restore failed: -1: Resource temporarily un=
+available (11)
+> > > > > > > >
+> > > > > > > > QEMU will complain with the above warning while VM is being=
+ rebooted
+> > > > > > > > or shut down.
+> > > > > > > >
+> > > > > > > > Looks to me either the kernel driver should cover this requ=
+irement, or
+> > > > > > > > the userspace has to bear the burden in saving the index an=
+d not call
+> > > > > > > > into kernel if VQ is destroyed.
+> > > > > > > Actually, the userspace doesn't have the insights whether vir=
+t queue
+> > > > > > > will be destroyed if just changing the device status via set_=
+status().
+> > > > > > > Looking at other vdpa driver in tree i.e. ifcvf it doesn't be=
+have like
+> > > > > > > so. Hence this still looks to me to be Mellanox specifics and
+> > > > > > > mlx5_vdpa implementation detail that shouldn't expose to user=
+space.
+> > > > > >
+> > > > > > So I think we can simply drop this patch?
+> > > > > Yep, I think so. To be honest I don't know why it has anything to=
+ do
+> > > > > with the memory hotplug issue.
+> > > >
+> > > >
+> > > > Eli may know more, my understanding is that, during memory hotplut,=
+ qemu
+> > > > need to propagate new memory mappings via set_map(). For mellanox, =
+it means
+> > > > it needs to rebuild memory keys, so the virtqueue needs to be suspe=
+nded.
+> > > >
+> > >
+> > > I think Siwei was asking why the first patch was related to the hotpl=
+ug
+> > > issue.
+> >
+> > I was thinking how consistency is assured when saving/restoring this
+> > h/w avail_index against the one in the virtq memory, particularly in
+> > the region_add/.region_del() context (e.g. the hotplug case). Problem
+> > is I don't see explicit memory barrier when guest thread updates the
+> > avail_index, how does the device make sure the h/w avail_index is
+> > uptodate while guest may race with updating the virtq's avail_index in
+> > the mean while? Maybe I completely miss something obvious?
+> DKIM-Signature: v1; arsa-sha256; crelaxed/relaxed; dnvidia.com; sn1;
+>         t 12257780; bhHnB0z4VEKwRS3WGY8d836MJgxu5Eln/jbFZlNXVxc08;
+>         hX-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
+>          MIME-Version:Content-Type:Content-Disposition:
+>          Content-Transfer-Encoding:In-Reply-To:User-Agent:X-Originating-I=
+P:
+>          X-ClientProxiedBy;
+>         bgGmb8+rcn3/rKzKQ/7QzSnghWzZ+FAU0XntsRZYGQ66sFvT7zsYPHogG3LIWNY77=
+t
+>          wNHPw7GCJrNaH3nEXPbOp0FMOZw4Kv4W7UPuYPobbLeTkvuPAidjB8dM42vz+1X6=
+1t
+>          9IVQT9X4hnAxRjI5CqZOo41GS4Tl1X+ykGoA+VE80BR/R/+nQ3tXDVULfppzeB+v=
+u3
+>          TWnnpaZ2GyoNyPlMiyVRkHdXzDVgA4uQHxwHn7otGK5J4lzyu8KrFyQtiP+f6hfu=
+5v
+>          crJkYS8e9A+rfzUmKWuyHcKcmhPhAVJ4XdpzZcDXXlMHVxG7nR1o88xttC6D1+oN=
+IP
+>          9xHI3DkNBpEuA
+> If you're asking about syncronization upon hot plug of memory, the
+> hardware always goes to read the available index from memory when a new
+> hardware object is associted with a virtqueue. You can argue then that
+> you don't need to restore the available index and you may be right but
+> this is the currect inteface to the firmware.
+>
+>
+> If you're asking on generally how sync is assured when the guest updates
+> the available index, can you please send a pointer to the code where you
+> see the update without a memory barrier?
 
-I dropped the 'm25p.*-nonjedec' compatible strings as these don't appear
-to be used anywhere.
+This is a snippet of virtqueue_add_split() where avail_index gets
+updated by guest:
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/mtd/jedec,spi-nor.txt |  91 ----------------
- .../bindings/mtd/jedec,spi-nor.yaml           | 102 ++++++++++++++++++
- 2 files changed, 102 insertions(+), 91 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+        /* Put entry in available array (but don't update avail->idx until =
+they
+         * do sync). */
+        avail =3D vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+        vq->split.vring.avail->ring[avail] =3D cpu_to_virtio16(_vq->vdev, h=
+ead);
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-deleted file mode 100644
-index f03be904d3c2..000000000000
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ /dev/null
-@@ -1,91 +0,0 @@
--* SPI NOR flash: ST M25Pxx (and similar) serial flash chips
--
--Required properties:
--- #address-cells, #size-cells : Must be present if the device has sub-nodes
--  representing partitions.
--- compatible : May include a device-specific string consisting of the
--               manufacturer and name of the chip. A list of supported chip
--               names follows.
--               Must also include "jedec,spi-nor" for any SPI NOR flash that can
--               be identified by the JEDEC READ ID opcode (0x9F).
--
--               Supported chip names:
--                 at25df321a
--                 at25df641
--                 at26df081a
--                 mr25h128
--                 mr25h256
--                 mr25h10
--                 mr25h40
--                 mx25l4005a
--                 mx25l1606e
--                 mx25l6405d
--                 mx25l12805d
--                 mx25l25635e
--                 n25q064
--                 n25q128a11
--                 n25q128a13
--                 n25q512a
--                 s25fl256s1
--                 s25fl512s
--                 s25sl12801
--                 s25fl008k
--                 s25fl064k
--                 sst25vf040b
--                 m25p40
--                 m25p80
--                 m25p16
--                 m25p32
--                 m25p64
--                 m25p128
--                 w25x80
--                 w25x32
--                 w25q32
--                 w25q64
--                 w25q32dw
--                 w25q80bl
--                 w25q128
--                 w25q256
--
--               The following chip names have been used historically to
--               designate quirky versions of flash chips that do not support the
--               JEDEC READ ID opcode (0x9F):
--                 m25p05-nonjedec
--                 m25p10-nonjedec
--                 m25p20-nonjedec
--                 m25p40-nonjedec
--                 m25p80-nonjedec
--                 m25p16-nonjedec
--                 m25p32-nonjedec
--                 m25p64-nonjedec
--                 m25p128-nonjedec
--
--- reg : Chip-Select number
--- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
--
--Optional properties:
--- m25p,fast-read : Use the "fast read" opcode to read data from the chip instead
--                   of the usual "read" opcode. This opcode is not supported by
--                   all chips and support for it can not be detected at runtime.
--                   Refer to your chips' datasheet to check if this is supported
--                   by your chip.
--- broken-flash-reset : Some flash devices utilize stateful addressing modes
--		   (e.g., for 32-bit addressing) which need to be managed
--		   carefully by a system. Because these sorts of flash don't
--		   have a standardized software reset command, and because some
--		   systems don't toggle the flash RESET# pin upon system reset
--		   (if the pin even exists at all), there are systems which
--		   cannot reboot properly if the flash is left in the "wrong"
--		   state. This boolean flag can be used on such systems, to
--		   denote the absence of a reliable reset mechanism.
--
--Example:
--
--	flash: m25p80@0 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "spansion,m25p80", "jedec,spi-nor";
--		reg = <0>;
--		spi-max-frequency = <40000000>;
--		m25p,fast-read;
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-new file mode 100644
-index 000000000000..5e7e5349f9a1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -0,0 +1,102 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/jedec,spi-nor.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SPI NOR flash ST M25Pxx (and similar) serial flash chips
-+
-+maintainers:
-+  - Rob Herring <robh@kernel.org>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - pattern: "^((((micron|spansion|st),)?\
-+              (m25p(40|80|16|32|64|128)|\
-+              n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
-+              atmel,at25df(321a|641|081a)|\
-+              everspin,mr25h(10|40|128|256)|\
-+              (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|25635e)|\
-+              (mxicy|macronix),mx25u(4033|4035)|\
-+              (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
-+              (sst|microchip),sst25vf(016b|032b|040b)|\
-+              (sst,)?sst26wf016b|\
-+              (sst,)?sst25wf(040b|080)|\
-+              winbond,w25x(80|32)|\
-+              (winbond,)?w25q(16|32(w|dw)?|64(dw)?|80bl|128(fw)?|256))$"
-+          - const: jedec,spi-nor
-+      - items:
-+          - enum:
-+              - issi,is25lp016d
-+              - micron,mt25qu02g
-+              - mxicy,mx25r1635f
-+              - mxicy,mx25u6435f
-+              - mxicy,mx25v8035f
-+              - spansion,s25sl12801
-+              - spansion,s25fs512s
-+          - const: jedec,spi-nor
-+      - const: jedec,spi-nor
-+    description:
-+      Must also include "jedec,spi-nor" for any SPI NOR flash that can be
-+      identified by the JEDEC READ ID opcode (0x9F).
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency: true
-+  spi-rx-bus-width: true
-+  spi-tx-bus-width: true
-+
-+  m25p,fast-read:
-+    type: boolean
-+    description:
-+      Use the "fast read" opcode to read data from the chip instead of the usual
-+      "read" opcode. This opcode is not supported by all chips and support for
-+      it can not be detected at runtime. Refer to your chips' datasheet to check
-+      if this is supported by your chip.
-+
-+  broken-flash-reset:
-+    type: boolean
-+    description:
-+      Some flash devices utilize stateful addressing modes (e.g., for 32-bit
-+      addressing) which need to be managed carefully by a system. Because these
-+      sorts of flash don't have a standardized software reset command, and
-+      because some systems don't toggle the flash RESET# pin upon system reset
-+      (if the pin even exists at all), there are systems which cannot reboot
-+      properly if the flash is left in the "wrong" state. This boolean flag can
-+      be used on such systems, to denote the absence of a reliable reset
-+      mechanism.
-+
-+  label: true
-+
-+  partitions:
-+    type: object
-+
-+  '#address-cells': true
-+  '#size-cells': true
-+
-+patternProperties:
-+  # Note: use 'partitions' node for new users
-+  '^partition@':
-+    type: object
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        flash@0 {
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+            compatible = "spansion,m25p80", "jedec,spi-nor";
-+            reg = <0>;
-+            spi-max-frequency = <40000000>;
-+            m25p,fast-read;
-+        };
-+    };
-+...
--- 
-2.27.0
+        /* Descriptors and available array need to be set before we expose =
+the
+         * new available array entries. */
+        virtio_wmb(vq->weak_barriers);
+        vq->split.avail_idx_shadow++;
+        vq->split.vring.avail->idx =3D cpu_to_virtio16(_vq->vdev,
+                                                vq->split.avail_idx_shadow)=
+;
+        vq->num_added++;
 
+There's memory barrier to make sure the update to descriptor and
+available ring is seen before writing to the avail->idx, but there
+seems no gurantee that this update would flush to the memory
+immmedately either before or after the mlx5-vdpa is suspened and gets
+the old avail_index value stashed somewhere. In this case, how does
+the hardware ensure the consistency between the guest virtio and host
+mlx5-vdpa? Or, it completly relies on guest to update the avail_index
+once the next buffer is available, so that the index will be in sync
+again?
+
+Thanks,
+-Siwei
+
+>
+> >
+> > Thanks,
+> > -Siwei
+> >
+> > >
+> > > But you're correct. When memory is added, I get a new memory map. Thi=
+s
+> > > requires me to build a new memory key object which covers the new mem=
+ory
+> > > map. Since the virtqueue objects are referencing this memory key, I n=
+eed
+> > > to destroy them and build new ones referncing the new memory key.
+> > >
+> > > > Thanks
+> > > >
+> > > >
+> > > > >
+> > > > > -Siwei
+> > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > >
+> > > > > > > > -Siwei
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > > > > ---
+> > > > > > > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
+> > > > > > > > >    1 file changed, 8 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/=
+vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > index 88dde3455bfd..549ded074ff3 100644
+> > > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdp=
+a_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
+> > > > > > > > >
+> > > > > > > > >    static void suspend_vq(struct mlx5_vdpa_net *ndev, str=
+uct mlx5_vdpa_virtqueue *mvq)
+> > > > > > > > >    {
+> > > > > > > > > -       struct mlx5_virtq_attr attr;
+> > > > > > > > > -
+> > > > > > > > >           if (!mvq->initialized)
+> > > > > > > > >                   return;
+> > > > > > > > >
+> > > > > > > > > @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5=
+_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+> > > > > > > > >
+> > > > > > > > >           if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET=
+_Q_OBJECT_STATE_SUSPEND))
+> > > > > > > > >                   mlx5_vdpa_warn(&ndev->mvdev, "modify to=
+ suspend failed\n");
+> > > > > > > > > -
+> > > > > > > > > -       if (query_virtqueue(ndev, mvq, &attr)) {
+> > > > > > > > > -               mlx5_vdpa_warn(&ndev->mvdev, "failed to q=
+uery virtqueue\n");
+> > > > > > > > > -               return;
+> > > > > > > > > -       }
+> > > > > > > > > -       mvq->avail_idx =3D attr.available_index;
+> > > > > > > > >    }
+> > > > > > > > >
+> > > > > > > > >    static void suspend_vqs(struct mlx5_vdpa_net *ndev)
+> > > > > > > > > --
+> > > > > > > > > 2.29.2
+> > > > > > > > >
+> > > >
