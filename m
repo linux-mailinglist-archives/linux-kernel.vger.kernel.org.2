@@ -2,109 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307E930C468
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EFC30C467
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235794AbhBBPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:50:41 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2483 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235646AbhBBPsg (ORCPT
+        id S235712AbhBBPuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:50:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235648AbhBBPrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:48:36 -0500
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DVTdP4plgz67jmx;
-        Tue,  2 Feb 2021 23:44:25 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 2 Feb 2021 16:47:54 +0100
-Received: from [10.47.3.41] (10.47.3.41) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 2 Feb 2021
- 15:47:53 +0000
-Subject: Re: PCI MSI issue with reinserting a driver
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        <linux-kernel@vger.kernel.org>
-References: <cc224272-15db-968b-46a0-95951e11b23f@huawei.com>
- <87o8h3lj0n.wl-maz@kernel.org>
- <a80b9be0-c455-c852-ddac-3f514a15e896@huawei.com>
- <8a54fdd0-950b-f801-e83d-750aef73ab3c@huawei.com>
- <4848792ce8c9ed7490e2205281a3cbda@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <28c56995-501a-880b-e6dd-ac76b8290c2c@huawei.com>
-Date:   Tue, 2 Feb 2021 15:46:25 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 2 Feb 2021 10:47:42 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECECEC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 07:47:00 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id f16so2902609wmq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 07:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f8qxGPcRh9HAR8Xi8fDP2DL2jLjx52coGhpEuMS0fJI=;
+        b=FNqLZbndjzFWU2NyGwDReOjQfkL1OUgvOv5ZeR1Nb/JpNeBwq8aNlfRhy0PWJBTmi+
+         ZRKNKC0kcTKRZB4/2Ud02HFebrv+Qpy5JJvxbDm7YMeOqXj52HqymPxpjQ+hJP6KGhk8
+         SOJOuY99UyXKHU8ar69nSb0bdBJZr9O15C6X0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=f8qxGPcRh9HAR8Xi8fDP2DL2jLjx52coGhpEuMS0fJI=;
+        b=EBFQ6BOS3YAuHvyWrxF+YuejlXBXS+ZDXFKKPLG0ItW25wJOr1fk+0uhHm3/8laDU2
+         dFt79fkQqjPle0kpeq/Nds/DrsWeIcqlLUg3P3sLQa64UuBHyp40Vr9DFZ2xnQOf/BRm
+         4hRCnYB6BSSgUSBplE7GqtGcRTvLsjWZydC6uhDttaZLI/w+SDhWk60tFeZHNE0mkLxR
+         RwgS+FBjcaxT3W0+m5qDl77JEivJkKiJQeid31RDK4KadAfkWT5nqQrRe0jJHLP8k66U
+         i6bZT53LVSiWzkUb+KoRl+uFI9sIzZQUyF3fvOgxaEJ6aWN/Ou8GkyDGqCmM53xHFhHC
+         4tfA==
+X-Gm-Message-State: AOAM530gbSykrqSaQpNc9F7qO7fsfuU8RdOByyInQhXZRPExDsEJEwpY
+        4XmC6d8oqKFSuPLACy59wyyHqw==
+X-Google-Smtp-Source: ABdhPJzGDcfEbXLu5zWgOTaJHCrtUgCi8vnt5G/ag2pejaSfAJI0aWalNdwwTM/uYA2FjMPfL/MkHQ==
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr4175635wmp.156.1612280819590;
+        Tue, 02 Feb 2021 07:46:59 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b13sm31067041wrt.31.2021.02.02.07.46.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 07:46:58 -0800 (PST)
+Date:   Tue, 2 Feb 2021 16:46:56 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
+Message-ID: <YBlz8Go2DseRWuOa@phenom.ffwll.local>
+Mail-Followup-To: Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+References: <20210125234901.2730699-1-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <4848792ce8c9ed7490e2205281a3cbda@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.3.41]
-X-ClientProxiedBy: lhreml733-chm.china.huawei.com (10.201.108.84) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125234901.2730699-1-swboyd@chromium.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/2021 14:48, Marc Zyngier wrote:
->>>
->>> Not sure. I also now notice an error for the SAS PCI driver on D06 
->>> when nr_cpus < 16, which means number of MSI vectors allocated < 32, 
->>> so looks the same problem. There we try to allocate 16 + max(nr cpus, 
->>> 16) MSI.
->>>
->>> Anyway, let me have a look today to see what is going wrong.
->>>
->> Could this be the problem:
->>
->> nr_cpus=11
->>
->> In alloc path, we have:
->>     its_alloc_device_irq(nvecs=27 = 16+11)
->>       bitmap_find_free_region(order = 5);
->> In free path, we have:
->>     its_irq_domain_free(nvecs = 1) and free each 27 vecs
->>       bitmap_release_region(order = 0)
->>
->> So we allocate 32 bits, but only free 27. And 2nd alloc for 32 fails.
-
-[ ... ]
-
->>
->>
->> But I'm not sure that we have any requirement for those map bits to be
->> consecutive.
+On Mon, Jan 25, 2021 at 03:49:01PM -0800, Stephen Boyd wrote:
+> Lockdep complains about an AA deadlock when rebooting the device.
 > 
-> We can't really do that. All the events must be contiguous,
-> and there is also a lot of assumptions in the ITS driver that
-> LPI allocations is also contiguous.
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.4.91 #1 Not tainted
+> --------------------------------------------
+> reboot/5213 is trying to acquire lock:
+> ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
 > 
-> But there is also the fact that for Multi-MSI, we *must*
-> allocate 32 vectors. Any driver could assume that if we have
-> allocated 17 vectors, then there is another 15 available.
+> but task is already holding lock:
+> ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
 > 
-> My question still stand: how was this working with the previous
-> behaviour?
+> other info that might help us debug this:
+> Possible unsafe locking scenario:
+> 
+> CPU0
+> ----
+> lock(&kms->commit_lock[i]);
+> lock(&kms->commit_lock[i]);
+> 
+> *** DEADLOCK ***
+> 
+> May be due to missing lock nesting notation
+> 
+> 6 locks held by reboot/5213:
+> __arm64_sys_reboot+0x148/0x2a0
+> device_shutdown+0x10c/0x2c4
+> drm_atomic_helper_shutdown+0x48/0xfc
+> modeset_lock+0x120/0x24c
+> lock_crtcs+0x60/0xa4
+> 
+> stack backtrace:
+> CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
+> Hardware name: Google Pompom (rev1) with LTE (DT)
+> Call trace:
+> dump_backtrace+0x0/0x1dc
+> show_stack+0x24/0x30
+> dump_stack+0xfc/0x1a8
+> __lock_acquire+0xcd0/0x22b8
+> lock_acquire+0x1ec/0x240
+> __mutex_lock_common+0xe0/0xc84
+> mutex_lock_nested+0x48/0x58
+> lock_crtcs+0x60/0xa4
+> msm_atomic_commit_tail+0x348/0x570
+> commit_tail+0xdc/0x178
+> drm_atomic_helper_commit+0x160/0x168
+> drm_atomic_commit+0x68/0x80
+> 
+> This is because lockdep thinks all the locks taken in lock_crtcs() are
+> the same lock, when they actually aren't. That's because we call
+> mutex_init() in msm_kms_init() and that assigns on static key for every
+> lock initialized in this loop. Let's allocate a dynamic number of
+> lock_class_keys and assign them to each lock so that lockdep can figure
+> out an AA deadlock isn't possible here.
+> 
+> Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
+> Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-Because previously in this scenario we would allocate 32 bits and free 
-32 bits in the map; but now we allocate 32 bits, yet only free 27 - so 
-leak 5 bits. And this comes from how irq_domain_free_irqs_hierarchy() 
-now frees per-interrupt, instead of all irqs per domain.
+This smells like throwing more bad after initial bad code ...
 
-Before:
-  In free path, we have:
-      its_irq_domain_free(nvecs = 27)
-        bitmap_release_region(count order = 5 == 32bits)
+First a rant: https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
 
-Current:
-  In free path, we have:
-      its_irq_domain_free(nvecs = 1) for free each 27 vecs
-        bitmap_release_region(count order = 0 == 1bit)
+Yes I know the locking you're doing here is correct, but that goes to the
+second issue: Why is this needed? atomic_async_update helpers are supposed
+to take care of ordering fun like this, if they're not, we need to address
+things there. The problem that
 
-Cheers,
-John
+commit b3d91800d9ac35014e0349292273a6fa7938d402
+Author: Krishna Manikandan <mkrishn@codeaurora.org>
+Date:   Fri Oct 16 19:40:43 2020 +0530
+
+    drm/msm: Fix race condition in msm driver with async layer updates
+
+is _the_ reason we have drm_crtc_commit to track stuff, and Maxime has
+recently rolled out a pile of changes to vc4 to use these things
+correctly. Hacking some glorious hand-rolled locking for synchronization
+of updates really should be the exception for kms drivers, not the rule.
+And this one here doesn't look like an exception by far (the one legit I
+know of is the locking issues amdgpu has between atomic_commit_tail and
+gpu reset, and that one is really nasty, so not going to get fixed in
+helpers, ever).
+
+Cheers, Daniel
+
+> ---
+>  drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+> index d8151a89e163..4735251a394d 100644
+> --- a/drivers/gpu/drm/msm/msm_kms.h
+> +++ b/drivers/gpu/drm/msm/msm_kms.h
+> @@ -157,6 +157,7 @@ struct msm_kms {
+>  	 * from the crtc's pending_timer close to end of the frame:
+>  	 */
+>  	struct mutex commit_lock[MAX_CRTCS];
+> +	struct lock_class_key commit_lock_keys[MAX_CRTCS];
+>  	unsigned pending_crtc_mask;
+>  	struct msm_pending_timer pending_timers[MAX_CRTCS];
+>  };
+> @@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
+>  {
+>  	unsigned i, ret;
+>  
+> -	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
+> -		mutex_init(&kms->commit_lock[i]);
+> +	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
+> +		lockdep_register_key(&kms->commit_lock_keys[i]);
+> +		__mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
+> +			     &kms->commit_lock_keys[i]);
+> +	}
+>  
+>  	kms->funcs = funcs;
+>  
+> 
+> base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+> -- 
+> https://chromeos.dev
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
