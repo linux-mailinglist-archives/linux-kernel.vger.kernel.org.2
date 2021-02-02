@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C3D30B4C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBAA30B4D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhBBBiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:38:13 -0500
-Received: from mga03.intel.com ([134.134.136.65]:54238 "EHLO mga03.intel.com"
+        id S229915AbhBBBsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:48:37 -0500
+Received: from mga14.intel.com ([192.55.52.115]:37690 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhBBBiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:38:11 -0500
-IronPort-SDR: xMZZFBLez2cvh8haHyVLmGBESlVJcIDr/zvcPXYHOzse0wC4zKafiTTXFhOmd4w24osF/DJ70L
- pzsz0n7oafhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180857770"
+        id S229852AbhBBBsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 20:48:35 -0500
+IronPort-SDR: Naf2FP/F340rXbe6zBR2qzHxNmyeIRlZ9N6Bc1LBz0YL/gziW29GLqxR7lEmbjNrOlat5HRhPF
+ 1m1MwPa/Vo5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180005340"
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="180857770"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 17:37:30 -0800
-IronPort-SDR: IZZPI5C6/xyLi+cjoyhhNGucBzp+wVrvOAQmrc5cO3HgKDMd/fyboe7QOaYPZYHKJmMU6ElpYM
- 3i6pwpUHbLvQ==
+   d="scan'208";a="180005340"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 17:47:54 -0800
+IronPort-SDR: cTIokm0jo98k7fEoro2xwG68uHTxSwmfepHt18u5dRUaS9fvSx+3D9uzaJNOX54DyuGEmnknEG
+ rN+5ldPYUG8Q==
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="507065127"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 17:37:30 -0800
-From:   ira.weiny@intel.com
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: [PATCH] x86: Remove unnecessary kmap() from sgx_ioc_enclave_init()
-Date:   Mon,  1 Feb 2021 17:37:25 -0800
-Message-Id: <20210202013725.3514671-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+   d="scan'208";a="370192789"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 17:47:54 -0800
+Subject: [PATCH] libnvdimm/dimm: Avoid race between probe and
+ available_slots_show()
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Coly Li <colyli@suse.com>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 01 Feb 2021 17:47:53 -0800
+Message-ID: <161223047357.4134109.9331035508023355722.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Richard reports that the following test:
 
-kmap is inefficient and we are trying to reduce the usage in the kernel.
-There is no readily apparent reason why the initp_page page needs to be
-allocated and kmap'ed() but sigstruct needs to be page aligned and token
-512 byte aligned.
+(while true; do
+     cat /sys/bus/nd/devices/nmem*/available_slots 2>&1 > /dev/null
+ done) &
 
-In this case page_address() can be used instead of kmap_local_page() as
-a much more efficient way to use the address because the page is
-allocated GFP_KERNEL.
+while true; do
+     for i in $(seq 0 4); do
+         echo nmem$i > /sys/bus/nd/drivers/nvdimm/bind
+     done
+     for i in $(seq 0 4); do
+         echo nmem$i > /sys/bus/nd/drivers/nvdimm/unbind
+     done
+ done
 
-Remove the kmap and replace with page_address() to get a kernel address
-for the alloc'ed page.
+...fails with a crash signature like:
 
-In addition add a comment regarding the alignment requirements as well
-as 2 BUILD_BUG_ON's to ensure future changes to sigstruct and token do
-not go unnoticed and cause a bug.
+    divide error: 0000 [#1] SMP KASAN PTI
+    RIP: 0010:nd_label_nfree+0x134/0x1a0 [libnvdimm]
+    [..]
+    Call Trace:
+     available_slots_show+0x4e/0x120 [libnvdimm]
+     dev_attr_show+0x42/0x80
+     ? memset+0x20/0x40
+     sysfs_kf_seq_show+0x218/0x410
 
-Cc: Sean Christopherson <seanjc@google.com>,
-Cc: Jethro Beekman <jethro@fortanix.com>,
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+The root cause is that available_slots_show() consults driver-data, but
+fails to synchronize against device-unbind setting up a TOCTOU race to
+access uninitialized memory.
 
+Validate driver-data under the device-lock.
+
+Fixes: 4d88a97aa9e8 ("libnvdimm, nvdimm: dimm driver and base libnvdimm device-driver infrastructure")
+Cc: <stable@vger.kernel.org>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Coly Li <colyli@suse.com>
+Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
-Changes from v1[1]:
-	Use page_address() instead of kcmalloc() to ensure sigstruct is
-	page aligned
-	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
+ drivers/nvdimm/dimm_devs.c |   18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-[1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 90a5caf76939..678b02d67c3c 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -615,11 +615,18 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
- 		return -EFAULT;
- 
-+	/*
-+	 * sigstruct must be on a page boundry and token on a 512 byte boundry
-+	 * so use alloc_page/page_address instead of a kmalloc().
-+	 */
- 	initp_page = alloc_page(GFP_KERNEL);
- 	if (!initp_page)
- 		return -ENOMEM;
- 
--	sigstruct = kmap(initp_page);
-+	sigstruct = page_address(initp_page);
-+
-+	BUILD_BUG_ON(sizeof(*sigstruct) > (PAGE_SIZE/2));
-+	BUILD_BUG_ON(SGX_LAUNCH_TOKEN_SIZE > (PAGE_SIZE/2));
- 	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
- 	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
- 
-@@ -645,7 +652,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	ret = sgx_encl_init(encl, sigstruct, token);
- 
- out:
--	kunmap(initp_page);
- 	__free_page(initp_page);
- 	return ret;
+diff --git a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
+index b59032e0859b..9d208570d059 100644
+--- a/drivers/nvdimm/dimm_devs.c
++++ b/drivers/nvdimm/dimm_devs.c
+@@ -335,16 +335,16 @@ static ssize_t state_show(struct device *dev, struct device_attribute *attr,
  }
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+ static DEVICE_ATTR_RO(state);
+ 
+-static ssize_t available_slots_show(struct device *dev,
+-		struct device_attribute *attr, char *buf)
++static ssize_t __available_slots_show(struct nvdimm_drvdata *ndd, char *buf)
+ {
+-	struct nvdimm_drvdata *ndd = dev_get_drvdata(dev);
++	struct device *dev;
+ 	ssize_t rc;
+ 	u32 nfree;
+ 
+ 	if (!ndd)
+ 		return -ENXIO;
+ 
++	dev = ndd->dev;
+ 	nvdimm_bus_lock(dev);
+ 	nfree = nd_label_nfree(ndd);
+ 	if (nfree - 1 > nfree) {
+@@ -356,6 +356,18 @@ static ssize_t available_slots_show(struct device *dev,
+ 	nvdimm_bus_unlock(dev);
+ 	return rc;
+ }
++
++static ssize_t available_slots_show(struct device *dev,
++				    struct device_attribute *attr, char *buf)
++{
++	ssize_t rc;
++
++	nd_device_lock(dev);
++	rc = __available_slots_show(dev_get_drvdata(dev), buf);
++	nd_device_unlock(dev);
++
++	return rc;
++}
+ static DEVICE_ATTR_RO(available_slots);
+ 
+ __weak ssize_t security_show(struct device *dev,
 
