@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6389E30B4DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53DE30B4E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhBBBvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:51:06 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2574 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhBBBvD (ORCPT
+        id S229786AbhBBBxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhBBBxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:51:03 -0500
-Received: from dggeme708-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DV74Y4XV4zW3WX;
-        Tue,  2 Feb 2021 09:48:13 +0800 (CST)
-Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
- dggeme708-chm.china.huawei.com (10.1.199.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 2 Feb 2021 09:50:18 +0800
-Received: from dggeme758-chm.china.huawei.com ([10.6.80.69]) by
- dggeme758-chm.china.huawei.com ([10.6.80.69]) with mapi id 15.01.2106.006;
- Tue, 2 Feb 2021 09:50:18 +0800
-From:   "Wanghongzhe (Hongzhe, EulerOS)" <wanghongzhe@huawei.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-CC:     "keescook@chromium.org" <keescook@chromium.org>,
-        "wad@chromium.org" <wad@chromium.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH] seccomp: Improve performance by optimizing memory barrier
-Thread-Topic: [PATCH] seccomp: Improve performance by optimizing memory
- barrier
-Thread-Index: AQHW+JKVO2If6N9YNUuKsZSbR9a9o6pC6YoAgAEvrUA=
-Date:   Tue, 2 Feb 2021 01:50:18 +0000
-Message-ID: <003c156cf88c4ccd82d50e450c4696ed@huawei.com>
-References: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
- <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
-In-Reply-To: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.177.164]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 1 Feb 2021 20:53:31 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B30C061573;
+        Mon,  1 Feb 2021 17:52:51 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id b145so6489744pfb.4;
+        Mon, 01 Feb 2021 17:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=4dPB0xdozLnJ4HtFbULqQeJT3HtsViC+HjWIT7oeuiI=;
+        b=A596Ysvq014L9mFKZs37S5/W5bTE2ckwYfmpCpJ9nK27wUnTGUHfcS4olYHh1lwEYi
+         OG/cmNrMZ26tasIl3Q05IDWl/L7kDiv6u0J6SksFwo9iFK2K6lc9PpwLmyCnDho+mehZ
+         AYBbibs05MBm8Z6SI6sJrBe/I9tVoQnacJWdZH3O3fANifne1TFM/clp/0CFlVvuDBLz
+         Qk2bF3qevUtqIag/7tnISR7FZ6TkzhH+oFCeAaL99nzf33V/4dcm6ET4hCE9epWFKHFh
+         5bHuvJwOh1oKv3pKEGkFwRwA4DJ9G+Rt3XsCWjTgn+a7fqsUHVabiv9qYDTlufjtZfmL
+         8IxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=4dPB0xdozLnJ4HtFbULqQeJT3HtsViC+HjWIT7oeuiI=;
+        b=uR9fwtxKanOLzQ9oGClmWw9o6tsavsJXprn88LxkxNgcbX/x2lCz8XnLE8K0iZ5fGJ
+         GcoL+gOzy9JkW3D2jPRlHLTA7JKTzd/+UihKtPFomaKKP6ZU3yRq3nxZxImKu3S3cR7f
+         mW2kQ0siYOEvdJpc682MCfCvFnbXYLGnhx4k3lt0SkOeeKSC5or7CikNzKJCDGqUkhpS
+         y2wJsY8I/Co2NpaQz2pBpsdG1cOznMfEclmQV+V8Sg459G2h4melV7hZTrszJIaW2OJG
+         kzLP/P9mZ9nqlEteo+lMlMZ10E1DOluROoqkJNlaj3GsBuVol8BMy8r1wbV9VAyuMQDV
+         dSZg==
+X-Gm-Message-State: AOAM533UMLGP7zlZObS/5DbWEheRLNBJdmxDVOkHv3R4Uy3mpLaEuPmL
+        urVvz7VqmzUrSFU+m9mwV9w=
+X-Google-Smtp-Source: ABdhPJzpk7F4glgCPjEUcr5K297Ke5ORCshoB5cX9ev1Y19QQXM9NU6F/FQlje3ynVyzVGfMyxYuvg==
+X-Received: by 2002:a63:a542:: with SMTP id r2mr19669741pgu.211.1612230771093;
+        Mon, 01 Feb 2021 17:52:51 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id fs14sm712574pjb.46.2021.02.01.17.52.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 17:52:50 -0800 (PST)
+Date:   Tue, 2 Feb 2021 09:52:34 +0800
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
+Message-ID: <20210202095234.000059ca@gmail.com>
+In-Reply-To: <CAHp75VenJVOSbAXryGK_BWytRJF=T1zwk5xDimRQOTojoXbMFQ@mail.gmail.com>
+References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+        <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
+        <20210129130110.00003bb1@gmail.com>
+        <CAHp75Vdi4H_zY3+QPSq_wmdf20B9xPeqsOT10JHfMLJESX77gA@mail.gmail.com>
+        <20210129215638.000047b0@gmail.com>
+        <CAHp75VcdOibSRuSBZYhFtEcVxuammYMfcnrUQGvS6ttArFxj6g@mail.gmail.com>
+        <20210130143924.00005432@gmail.com>
+        <CAHp75VenJVOSbAXryGK_BWytRJF=T1zwk5xDimRQOTojoXbMFQ@mail.gmail.com>
+Organization: Coolpad
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+PiBPbiBGZWIgMSwgMjAyMSwgYXQgNDowNiBBTSwgd2FuZ2hvbmd6aGUgPHdhbmdob25nemhl
-QGh1YXdlaS5jb20+IHdyb3RlOg0KPj4gDQo+PiDvu79JZiBhIHRocmVhZChBKSdzIFRTWU5DIGZs
-YWcgaXMgc2V0IGZyb20gc2VjY29tcCgpLCB0aGVuIGl0IHdpbGwgDQo+PiBzeW5jaHJvbml6ZSBp
-dHMgc2VjY29tcCBmaWx0ZXIgdG8gb3RoZXIgdGhyZWFkcyhCKSBpbiBzYW1lIHRocmVhZCANCj4+
-IGdyb3VwLiBUbyBhdm9pZCByYWNlIGNvbmRpdGlvbiwgc2VjY29tcCBwdXRzIHJtYigpIGJldHdl
-ZW4gcmVhZGluZyB0aGUgDQo+PiBtb2RlIGFuZCBmaWx0ZXIgaW4gc2VjY29tcCBjaGVjayBwYXRj
-aChpbiBCIHRocmVhZCkuDQo+PiBBcyBhIHJlc3VsdCwgZXZlcnkgc3lzY2FsbCdzIHNlY2NvbXAg
-Y2hlY2sgaXMgc2xvd2VkIGRvd24gYnkgdGhlIA0KPj4gbWVtb3J5IGJhcnJpZXIuDQo+PiANCj4+
-IEhvd2V2ZXIsIHdlIGNhbiBvcHRpbWl6ZSBpdCBieSBjYWxsaW5nIHJtYigpIG9ubHkgd2hlbiBm
-aWx0ZXIgaXMgTlVMTCANCj4+IGFuZCByZWFkaW5nIGl0IGFnYWluIGFmdGVyIHRoZSBiYXJyaWVy
-LCB3aGljaCBtZWFucyB0aGUgcm1iKCkgaXMgDQo+PiBjYWxsZWQgb25seSBvbmNlIGluIHRocmVh
-ZCBsaWZldGltZS4NCj4+IA0KPj4gVGhlICdmaWx0ZXIgaXMgTlVMTCcgY29uZGl0b24gbWVhbnMg
-dGhhdCBpdCBpcyB0aGUgZmlyc3QgdGltZSANCj4+IGF0dGFjaGluZyBmaWx0ZXIgYW5kIGlzIGJ5
-IG90aGVyIHRocmVhZChBKSB1c2luZyBUU1lOQyBmbGFnLg0KPj4gSW4gdGhpcyBjYXNlLCB0aHJl
-YWQgQiBtYXkgcmVhZCB0aGUgZmlsdGVyIGZpcnN0IGFuZCBtb2RlIGxhdGVyIGluIENQVSANCj4+
-IG91dC1vZi1vcmRlciBleGVjdGlvbi4gQWZ0ZXIgdGhpcyB0aW1lLCB0aGUgdGhyZWFkIEIncyBt
-b2RlIGlzIGFsd2F5cyANCj4+IGJlIHNldCwgYW5kIHRoZXJlIHdpbGwgbm8gcmFjZSBjb25kaXRp
-b24gd2l0aCB0aGUgZmlsdGVyL2JpdG1hcC4NCj4+IA0KPj4gSW4gYWRkdGlvbiwgd2Ugc2hvdWxk
-IHB1dHMgYSB3cml0ZSBtZW1vcnkgYmFycmllciBiZXR3ZWVuIHdyaXRpbmcgdGhlIA0KPj4gZmls
-dGVyIGFuZCBtb2RlIGluIHNtcF9tYl9fYmVmb3JlX2F0b21pYygpLCB0byBhdm9pZCB0aGUgcmFj
-ZSANCj4+IGNvbmRpdGlvbiBpbiBUU1lOQyBjYXNlLg0KPg0KPiBJIGhhdmVu4oCZdCBmdWxseSB3
-b3JrZWQgdGhpcyBvdXQsIGJ1dCBybWIoKSBpcyBib2d1cy4gVGhpcyBzaG91bGQgYmUgc21wX3Jt
-YigpLg0KDQpZZXMsIEkgdGhpbmsgeW91IGFyZSByaWdodC5JIHdpbGwgZml4IGl0IGFuZCBzZW5k
-IGFub3RoZXIgcGF0Y2guDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IHdhbmdob25nemhlIDx3YW5n
-aG9uZ3poZUBodWF3ZWkuY29tPg0KPj4gLS0tDQo+PiBrZXJuZWwvc2VjY29tcC5jIHwgMzEgKysr
-KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPj4gMSBmaWxlIGNoYW5nZWQsIDIyIGluc2Vy
-dGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQo+PiANCj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvc2Vj
-Y29tcC5jIGIva2VybmVsL3NlY2NvbXAuYyBpbmRleCANCj4+IDk1MmRjMWM5MDIyOS4uYjk0NGNi
-MmI2Yjk0IDEwMDY0NA0KPj4gLS0tIGEva2VybmVsL3NlY2NvbXAuYw0KPj4gKysrIGIva2VybmVs
-L3NlY2NvbXAuYw0KPj4gQEAgLTM5Nyw4ICszOTcsMjAgQEAgc3RhdGljIHUzMiBzZWNjb21wX3J1
-bl9maWx0ZXJzKGNvbnN0IHN0cnVjdCBzZWNjb21wX2RhdGEgKnNkLA0KPj4gICAgICAgICAgICBS
-RUFEX09OQ0UoY3VycmVudC0+c2VjY29tcC5maWx0ZXIpOw0KPj4gDQo+PiAgICAvKiBFbnN1cmUg
-dW5leHBlY3RlZCBiZWhhdmlvciBkb2Vzbid0IHJlc3VsdCBpbiBmYWlsaW5nIG9wZW4uICovDQo+
-PiAtICAgIGlmIChXQVJOX09OKGYgPT0gTlVMTCkpDQo+PiAtICAgICAgICByZXR1cm4gU0VDQ09N
-UF9SRVRfS0lMTF9QUk9DRVNTOw0KPj4gKyAgICBpZiAoV0FSTl9PTihmID09IE5VTEwpKSB7DQo+
-PiArICAgICAgICAvKg0KPj4gKyAgICAgICAgICogTWFrZSBzdXJlIHRoZSBmaXJzdCBmaWx0ZXIg
-YWRkdGlvbiAoZnJvbSBhbm90aGVyDQo+PiArICAgICAgICAgKiB0aHJlYWQgdXNpbmcgVFNZTkMg
-ZmxhZykgYXJlIHNlZW4uDQo+PiArICAgICAgICAgKi8NCj4+ICsgICAgICAgIHJtYigpOw0KPj4g
-KyAgICAgICAgDQo+PiArICAgICAgICAvKiBSZWFkIGFnYWluICovDQo+PiArICAgICAgICBmID0g
-UkVBRF9PTkNFKGN1cnJlbnQtPnNlY2NvbXAuZmlsdGVyKTsNCj4+ICsNCj4+ICsgICAgICAgIC8q
-IEVuc3VyZSB1bmV4cGVjdGVkIGJlaGF2aW9yIGRvZXNuJ3QgcmVzdWx0IGluIGZhaWxpbmcgb3Bl
-bi4gKi8NCj4+ICsgICAgICAgIGlmIChXQVJOX09OKGYgPT0gTlVMTCkpDQo+PiArICAgICAgICAg
-ICAgcmV0dXJuIFNFQ0NPTVBfUkVUX0tJTExfUFJPQ0VTUzsNCj4+ICsgICAgfQ0KPj4gDQo+PiAg
-ICBpZiAoc2VjY29tcF9jYWNoZV9jaGVja19hbGxvdyhmLCBzZCkpDQo+PiAgICAgICAgcmV0dXJu
-IFNFQ0NPTVBfUkVUX0FMTE9XOw0KPj4gQEAgLTYxNCw5ICs2MjYsMTYgQEAgc3RhdGljIGlubGlu
-ZSB2b2lkIHNlY2NvbXBfc3luY190aHJlYWRzKHVuc2lnbmVkIGxvbmcgZmxhZ3MpDQo+PiAgICAg
-ICAgICogZXF1aXZhbGVudCAoc2VlIHB0cmFjZV9tYXlfYWNjZXNzKSwgaXQgaXMgc2FmZSB0bw0K
-Pj4gICAgICAgICAqIGFsbG93IG9uZSB0aHJlYWQgdG8gdHJhbnNpdGlvbiB0aGUgb3RoZXIuDQo+
-PiAgICAgICAgICovDQo+PiAtICAgICAgICBpZiAodGhyZWFkLT5zZWNjb21wLm1vZGUgPT0gU0VD
-Q09NUF9NT0RFX0RJU0FCTEVEKQ0KPj4gKyAgICAgICAgaWYgKHRocmVhZC0+c2VjY29tcC5tb2Rl
-ID09IFNFQ0NPTVBfTU9ERV9ESVNBQkxFRCkgew0KPj4gKyAgICAgICAgICAgIC8qDQo+PiArICAg
-ICAgICAgICAgICogTWFrZSBzdXJlIG1vZGUgY2Fubm90IGJlIHNldCBiZWZvcmUgdGhlIGZpbHRl
-cg0KPj4gKyAgICAgICAgICAgICAqIGFyZSBzZXQuDQo+PiArICAgICAgICAgICAgICovDQo+PiAr
-ICAgICAgICAgICAgc21wX21iX19iZWZvcmVfYXRvbWljKCk7DQo+PiArDQo+PiAgICAgICAgICAg
-IHNlY2NvbXBfYXNzaWduX21vZGUodGhyZWFkLCBTRUNDT01QX01PREVfRklMVEVSLA0KPj4gICAg
-ICAgICAgICAgICAgICAgICAgICBmbGFncyk7DQo+PiArICAgICAgICB9DQo+PiAgICB9DQo+PiB9
-DQo+PiANCj4+IEBAIC0xMTYwLDEyICsxMTc5LDYgQEAgc3RhdGljIGludCBfX3NlY2NvbXBfZmls
-dGVyKGludCB0aGlzX3N5c2NhbGwsIGNvbnN0IHN0cnVjdCBzZWNjb21wX2RhdGEgKnNkLA0KPj4g
-ICAgaW50IGRhdGE7DQo+PiAgICBzdHJ1Y3Qgc2VjY29tcF9kYXRhIHNkX2xvY2FsOw0KPj4gDQo+
-PiAtICAgIC8qDQo+PiAtICAgICAqIE1ha2Ugc3VyZSB0aGF0IGFueSBjaGFuZ2VzIHRvIG1vZGUg
-ZnJvbSBhbm90aGVyIHRocmVhZCBoYXZlDQo+PiAtICAgICAqIGJlZW4gc2VlbiBhZnRlciBTWVND
-QUxMX1dPUktfU0VDQ09NUCB3YXMgc2Vlbi4NCj4+IC0gICAgICovDQo+PiAtICAgIHJtYigpOw0K
-Pj4gLQ0KPj4gICAgaWYgKCFzZCkgew0KPj4gICAgICAgIHBvcHVsYXRlX3NlY2NvbXBfZGF0YSgm
-c2RfbG9jYWwpOw0KPj4gICAgICAgIHNkID0gJnNkX2xvY2FsOw0KPj4gLS0NCj4+IDIuMTkuMQ0K
-Pj4gDQo=
+On Mon, 1 Feb 2021 19:40:21 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+
+> On Sat, Jan 30, 2021 at 8:39 AM carlis <zhangxuezhi3@gmail.com> wrote:
+> > On Fri, 29 Jan 2021 16:26:12 +0200
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:  
+> > > On Fri, Jan 29, 2021 at 3:56 PM carlis <zhangxuezhi3@gmail.com>
+> > > wrote:  
+> > > > On Fri, 29 Jan 2021 12:23:08 +0200
+> > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:  
+> 
+> ...
+> 
+> > > > Hi, I apologize for what I said in the previous two emails. I
+> > > > missed one email you sent before, and now I probably understand
+> > > > what you meant. Here is a version I modified according to your
+> > > > suggestion:  
+> 
+> I have realized that you are mocking stuff in the generic fbtft
+> structure for all drivers while only a single one is going to use
+> that. Consider moving everything to the driver in question.
+> 
+> 
+
+hi, 
+   Do you mean that i define the TE completion and irq_te in the
+   fb_st7789v.c as i did before?
