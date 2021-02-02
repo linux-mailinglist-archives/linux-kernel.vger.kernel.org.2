@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD5730BC17
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BBB30BC22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhBBKez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:34:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28147 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229631AbhBBKer (ORCPT
+        id S229622AbhBBKgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:36:10 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:36355 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhBBKgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:34:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612261996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C6EnQJADAEP2un65IiO+7dRtagMmN96hqQ78sKe3a4Q=;
-        b=Mo3w+wNTeKkiNu3wuGRaX+5HKBpbnEZ3bCNN/sraU6Cu7OjcgOhpEC4ovoIinWns1lpM9V
-        tLgFhRLgeH8p5xmtBayUgcqL4hlzW4Ru94SzKL6i7GTT50+/B8vGqalx2Ihu/n+hz7s7Gl
-        9GokUUrlOd2Mngjlqmeon/NsLXvYt+Y=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-QbdYRaomPp2eUHmPIAUGXw-1; Tue, 02 Feb 2021 05:33:13 -0500
-X-MC-Unique: QbdYRaomPp2eUHmPIAUGXw-1
-Received: by mail-ed1-f71.google.com with SMTP id w23so121169edr.15
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 02:33:13 -0800 (PST)
+        Tue, 2 Feb 2021 05:36:08 -0500
+Received: by mail-oi1-f181.google.com with SMTP id d18so22249521oic.3;
+        Tue, 02 Feb 2021 02:35:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C6EnQJADAEP2un65IiO+7dRtagMmN96hqQ78sKe3a4Q=;
-        b=g98qgb7ByH5x+j2sV3Yd7AkxNZ9kPuHrcoeQAgqY2SjeK4JUpDOUPmJgvrmk3TMP56
-         luEcwBGjxSciZdgkhN3/Iym0qTZXeeh72kq9pxGsv2zgTnZrtFpx5Hkb5vIUZov8VPE4
-         aYxEqXVVUYM8sV15Lhpuw69CS3GztZLSXjo7m9wzlj5WtUMLqNZhmmkXS4vQFbMHmDxk
-         m/33tdm2GjAsWBBxYRfAc4dmQenzLt+O/SalkT20QLSEpWWQjuSzf1FpZjWpj11ceZSk
-         gdPddTEMKNHz1WPZAbv94zEkWoOM+uLnhqpUChrpauTl6RRmlq1XspYhxGWBz//W8jYO
-         RTJg==
-X-Gm-Message-State: AOAM530AhekSt5iojQYEm6A05EQbJaoCA04b6/8DyO6rpLvmy3EkndrP
-        vlWp0cH1Dvnr0WCBpYbvjOsQ3pyfFlZGFCkhc7TApT5cNqLjH6Kt0bZpYNTTTLHF3pxf9Ndjz0G
-        Yv8MD/ys2VSjxiH+mR6/QXLgO2zNa046K/PdJn55xPzekBWKtvjyMKmb4jeXADBm+rV4s15M0T6
-        ap
-X-Received: by 2002:aa7:d817:: with SMTP id v23mr244389edq.192.1612261992258;
-        Tue, 02 Feb 2021 02:33:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwO7SkdS0Kh/9ftpeXXLbdVTYwB8pnZ9oCQOs4Xht2tgKobWoIStyU859GpT+RaJFXfaPRYWA==
-X-Received: by 2002:aa7:d817:: with SMTP id v23mr244371edq.192.1612261992084;
-        Tue, 02 Feb 2021 02:33:12 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id x17sm9690450edd.76.2021.02.02.02.33.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 02:33:11 -0800 (PST)
-Subject: Re: 5.11 new lockdep warning related to led-class code (also may
- involve ata / piix controller)
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jens Axboe <axboe@kernel.dk>, Dan Murphy <dmurphy@ti.com>,
-        linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
- <20210112223015.GB28214@duo.ucw.cz>
- <f344f1db-1a7a-0a80-1cb1-f9c3fbf83abd@redhat.com>
- <0ec34bca-f7e0-8954-c253-d07ed6b71b80@redhat.com>
- <20210127220134.GC23419@amd>
- <cc1cac99-e3de-9585-bfa0-db7b013e8a80@redhat.com>
- <20210202093228.GA29131@amd>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <46bcf09c-c4ac-e96b-1813-1798d36cd93d@redhat.com>
-Date:   Tue, 2 Feb 2021 11:33:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SDaLV+HWALbbtXb48Ve+mhVAzVueh3MiwiWIcXEV1JA=;
+        b=eruJmtqDvNBQpD19TRj0nYFoEkZauUQ61Ks2YJmqK6JiY/gGgY7lFYYQ1AsQ7SJMwH
+         GBfPwycjhNCD67lquCpOFiVn+GJ9hjTwTwXyaVluEPic9XQQvE89P3eQj3grBYtkQUBE
+         DSCB9CHFH8epkBCbVQ3KaQcT+V4nK1zzL4fZilAR9oHE/48SDHsfjNfaAfRwKUQWjRuX
+         oUNVSnrlhauZ0i+LBshUXydYrGNyQiAaLTuweOo91IBDX2ehtihSSXngv0XwZuK2iTFM
+         oujER3bVM5sNxI24cV5Cbqb6DZ0ofRK6YznB100qeY1sQnMeKNTA6mZa/1saMqdKv7eW
+         Hfxg==
+X-Gm-Message-State: AOAM5313FjC8VacZ5Oc2vlGs6jF6/gdxEEjR6rVBagBwbVArJBITjL85
+        nDc2yiN9L/o6vLA1hccxAM6CX/EpbkImtZ2oZ5kFm7we4Ho=
+X-Google-Smtp-Source: ABdhPJzYhm34xe/jhzhtlNiIRIECWDgB6A8qnsP+nN4x6e97EvMDX1hP84QvrJ0SW1MUid8+sRRFk/6nIvQdlclFC1Q=
+X-Received: by 2002:a54:4e88:: with SMTP id c8mr2160665oiy.148.1612262126894;
+ Tue, 02 Feb 2021 02:35:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210202093228.GA29131@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210202200324.5179db33@canb.auug.org.au>
+In-Reply-To: <20210202200324.5179db33@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Feb 2021 11:35:15 +0100
+Message-ID: <CAMuHMdXcKrCBq7gytvD07NBRjuLMdJRahQ3Dfa_mMdZBHdds6w@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Feb 2, 2021 at 10:13 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> After merging the akpm-current tree, today's linux-next build (x86_64
+> allnoconfig) failed like this:
+>
+> In file included from arch/x86/include/asm/page.h:76,
+>                  from arch/x86/include/asm/thread_info.h:12,
+>                  from include/linux/thread_info.h:56,
+>                  from arch/x86/include/asm/preempt.h:7,
+>                  from include/linux/preempt.h:78,
+>                  from include/linux/spinlock.h:51,
+>                  from include/linux/mmzone.h:8,
+>                  from include/linux/gfp.h:6,
+>                  from include/linux/slab.h:15,
+>                  from include/linux/crypto.h:20,
+>                  from arch/x86/kernel/asm-offsets.c:9:
+> include/linux/mm.h: In function 'is_pinnable_page':
+> include/asm-generic/memory_model.h:64:14: error: implicit declaration of function 'page_to_section'; did you mean 'present_section'? [-Werror=implicit-function-declaration]
+>    64 |  int __sec = page_to_section(__pg);   \
+>       |              ^~~~~~~~~~~~~~~
+> include/asm-generic/memory_model.h:81:21: note: in expansion of macro '__page_to_pfn'
+>    81 | #define page_to_pfn __page_to_pfn
+>       |                     ^~~~~~~~~~~~~
+> include/linux/mm.h:1134:15: note: in expansion of macro 'page_to_pfn'
+>  1134 |   is_zero_pfn(page_to_pfn(page));
+>       |               ^~~~~~~~~~~
 
-On 2/2/21 10:32 AM, Pavel Machek wrote:
-> Hi!
-> 
->>> Is it a regression? AFAIK it is a bug that has been there
->>> forever... My original plan was to simply wait for 5.12, so it gets
->>> full release of testing...
->>
->> It may have been a pre-existing bug which got triggered by libata
->> changes?
-> 
-> Fixes tag suggests it is rather old.
-> 
->> I don't know. I almost always run all my locally build kernels with lockdep
->> enabled and as the maintainer of the vboxvideo, vboxguest and vboxsf guest
->> drivers in the mainline kernel I quite often boot local build kernels inside
->> a vm.
->>
->> So I believe that lockdep tripping over this is new in 5.11, which is why
->> I called it a regression.
->>
->> And the fix seems very safe and simple, so IMHO it would be good to get
->> this into 5.11
-> 
-> It is in 5.11 now, and also -stable kernels. (Which suprised me a
-> bit).
-> 
-> Testing would be welcome.
+In addition, noreply@ellerman.id.au reports for m68k/m5272c3_defconfig:
 
-I've been running my locally build kernels with this patch added for
-a while now. Including inside VirtualBox where the bug triggered before.
+    include/linux/mm.h:1133:3: error: implicit declaration of function
+'is_zero_pfn'; did you mean 'is_zero_ino'?
+[-Werror=implicit-function-declaration]
 
-I've not seen any bad side-effects from having this patch in my local
-kernels and I can confirm that it fixes the issue which I was seeing.
+is_zero_pfn() is only defined if CONFIG_MMU=y.
 
-Regards,
+Hence using it in mm/gup.c in commit 3f509f6aef4bb868 ("mm/gup: migrate
+pinned pages out of movable zone") breaks compilation of gup.c, too.
 
-Hans
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
