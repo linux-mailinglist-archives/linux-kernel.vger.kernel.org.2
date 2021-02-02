@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1861830BBD4
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA2A30BBD5
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhBBKMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:12:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46334 "EHLO mail.kernel.org"
+        id S229815AbhBBKMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:12:45 -0500
+Received: from gentwo.org ([3.19.106.255]:45882 "EHLO gentwo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhBBKMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:12:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D8A64DD1;
-        Tue,  2 Feb 2021 10:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612260685;
-        bh=KNcH9sjzQJ5GgNGIRMnH4szcrBtKnEMWDLKCwAErbzo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WaNeg+I8cFjFe6klcQAI69e2zY4CRmjXotkipP9x4ghFhSmnN4nEOrCl7DvChHnSz
-         yi3EzXlxu8NwsssxFzwqxVboGOdk03wryW64crwCgfpU1oCXf82yRKMf5ycTe9OaAY
-         7OU5FJ+Gs93RHFmAKB83o5sdhZW1zJ/BzauPWP+w=
-Date:   Tue, 2 Feb 2021 11:11:21 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] misc: Add Add Synopsys DesignWare xData IP driver
-Message-ID: <YBklScf1HPCVKQPf@kroah.com>
-References: <cover.1605777306.git.gustavo.pimentel@synopsys.com>
- <DM5PR12MB183527AA0FECE00D7A3D46DBDAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
+        id S229572AbhBBKMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 05:12:40 -0500
+Received: by gentwo.org (Postfix, from userid 1002)
+        id C01833F511; Tue,  2 Feb 2021 10:11:53 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id BDE3A3F13E;
+        Tue,  2 Feb 2021 10:11:53 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 10:11:53 +0000 (UTC)
+From:   Christoph Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Abel Wu <abel.w@icloud.com>
+cc:     Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, hewenliang4@huawei.com,
+        wuyun.wu@huawei.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/slub: embed __slab_alloc to its caller
+In-Reply-To: <20210202080515.2689-1-abel.w@icloud.com>
+Message-ID: <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
+References: <20210202080515.2689-1-abel.w@icloud.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR12MB183527AA0FECE00D7A3D46DBDAB59@DM5PR12MB1835.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:51:10AM +0000, Gustavo Pimentel wrote:
-> Just a kindly reminder.
+On Tue, 2 Feb 2021, Abel Wu wrote:
 
-reminder of what?
+> Since slab_alloc_node() is the only caller of __slab_alloc(), embed
+> __slab_alloc() to its caller to save function call overhead. This
+> will also expand the caller's code block size a bit, but hackbench
+> tests on both host and guest didn't show a difference w/ or w/o
+> this patch.
+
+slab_alloc_node is an always_inline function. It is intentional that only
+the fast path was inlined and not the slow path.
