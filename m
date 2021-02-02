@@ -2,125 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C9330C70E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07F530C707
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhBBRJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:09:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36555 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237247AbhBBRHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:07:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612285544;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+1fcZpUJGSqPe1zl7e3r1ocOmADnUob8Rp5BHT4HHk=;
-        b=GoxIoHKolpRvHRZsiGHWjG5NaWTImY8wlC9fzyS7IflUCK8XjLYEHZIGYjq9pUtmhLK7dE
-        wbHIJ1c4toUhdUSyfFRXd5jFb3icjg7dPz89NT3MGOC6c3rEuLVB/gfNWF42UJ0mEL/I/u
-        eD7ZgT1ctvr8NzQunPRVbiLMrcY5PVI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-BuP_ox5cONiNH4NVjwBfTQ-1; Tue, 02 Feb 2021 12:05:41 -0500
-X-MC-Unique: BuP_ox5cONiNH4NVjwBfTQ-1
-Received: by mail-qv1-f69.google.com with SMTP id k18so2326927qvj.15
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:05:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v+1fcZpUJGSqPe1zl7e3r1ocOmADnUob8Rp5BHT4HHk=;
-        b=Nz82pRtQSYWHvLQ94VsylMIEySBxcekrN8TD8kCZ3r4Mi1thY4BPeAa47C1xh8Pono
-         NdBdaLCIi6cRlggLeQ53uyK2Ij80po72hdpiov0AMj2AIa2xHp/+Ti4toyUnoab0q5eY
-         or9T0r1s07N4u+BxyTnNVOyI1mxXGnNTS1hVTocFAkaolMxiL2+POjSv6EOKSXE7ZV3l
-         O+gveRSYk6mgF3NuIkuOLqHOJnUmD/ifexRk+w5Jp/sNKio2x8P10LbIeieSrrMgBOLK
-         T69LAO4Nn0u+9LF632zu3Ggc0GvNT6ZaV5Vtqf8q3lHaeNTGJmF9VRZwg/ypMUYn75ae
-         0/fA==
-X-Gm-Message-State: AOAM531uDXfor0f21pVbS8tdgrrTAKK8LT2nPjrvzGRvuC/Y2VVERhiY
-        GOPzuQgBu+ct6jX9EhiTSdbdwI84AaAzLoE0aK8O/aqw/jhMLSQLZ1GYr25viMYtu5WUsp77F7E
-        rgwzDzqMxPapG77lXfCK8BBs2
-X-Received: by 2002:ac8:5c0f:: with SMTP id i15mr21179462qti.152.1612285540352;
-        Tue, 02 Feb 2021 09:05:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyVYvXbx1aYCp2m6Z1qjq0RDFhIwHj+UOGix7nhMTiN6DYUXpr7fokobWIsOXak0A4NmvHXZw==
-X-Received: by 2002:ac8:5c0f:: with SMTP id i15mr21179421qti.152.1612285540084;
-        Tue, 02 Feb 2021 09:05:40 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id l38sm16761303qte.88.2021.02.02.09.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:05:39 -0800 (PST)
-Date:   Tue, 2 Feb 2021 12:05:36 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     20200918161902.GX8409@ziepe.ca,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Zhang, Wei" <wzam@amazon.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20210202170536.GE6468@xz-x1>
-References: <27564187-4a08-f187-5a84-3df50009f6ca@amazon.com>
- <20210202163127.GD6468@xz-x1>
- <20210202164420.GL4718@ziepe.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210202164420.GL4718@ziepe.ca>
+        id S237163AbhBBRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:08:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237068AbhBBRHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:07:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8440364F87;
+        Tue,  2 Feb 2021 17:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612285597;
+        bh=KaMUmGr3azy9DQAkMwwvhM4y3A5x0Q/1YvPOK6DGS8E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ujjCoO72ZgSBEjxXf9+5IlNBltlwixK7JLzgxx+MRWrSTBIQfVT1ircLJ3XTjX/Oe
+         KmN20CTpEWkQ5xCC1DQqVBWSUYy+jPhlY6O7GdwPEoRb97FrQ1XxvncuTU3uyZ/P/J
+         S63dWQsbrVZCpl44MzLfLX9n14fnzNYbSgIuqG3ng/5LgcV7Kp7P2XQXIeUopB0vuk
+         wk0og2uSuPCJLCvUD+kpr+Whd8dM1UCBzwgwHaJDD2kwROXVxq9GrTNInyvjhKTXy0
+         InhpO2UyHBKWb9IouUlwomVcLP0zH/3XXdFhDRqRgdepmYGkhI69oyiCrT1BaeMN95
+         pAk+z/kBlW5VA==
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, ak@linux.intel.com, clm@fb.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH clocksource 1/5] clocksource: Provide module parameters to inject delays in watchdog
+Date:   Tue,  2 Feb 2021 09:06:31 -0800
+Message-Id: <20210202170635.24839-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210202170437.GA23593@paulmck-ThinkPad-P72>
+References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:44:20PM -0400, Jason Gunthorpe wrote:
-> On Tue, Feb 02, 2021 at 11:31:27AM -0500, Peter Xu wrote:
-> > On Tue, Feb 02, 2021 at 04:40:33PM +0200, Gal Pressman wrote:
-> > > Hi Peter & Jason,
-> > 
-> > Hi, Gal, Jason,
-> > 
-> > > 
-> > > It seems the hugetlb part was overlooked?
-> > > We're testing if the RDMA fork MADV_DONTFORK stuff can be removed on appropriate
-> > > kernels, but our tests still fail due to lacking explicit huge pages support [1].
-> > 
-> > I didn't think it high priority only because I think most hugetlbfs users
-> > should be using it shared, but maybe I'm wrong..  Then it got lost indeed.
-> 
-> It turns out people are doing this:
-> 
-> mmap(NULL, SEND_BUFF_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0)
-> 
-> Which makes some sense...
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Yes, thanks Jason.  Though my understanding is that hugetlb pages are normally
-reserved in production, used with careful pre-provisioning on which app would
-consume how much (either 2M or 1G).  Such an app (especially if it forks
-randomly) could actually easily exaust the huge page pool.
+When the clocksource watchdog marks a clock as unstable, this might be due
+to that clock being unstable or it might be due to delays that happen to
+occur between the reads of the two clocks.  Yes, interrupts are disabled
+across those two reads, but there are no shortage of things that can
+delay interrupts-disabled regions of code ranging from SMI handlers to
+vCPU preemption.  It would be good to have some indication as to why
+the clock was marked unstable.
 
-> 
-> Gal, you could also MADV_DONTFORK this range if you are explicitly
-> allocating them via special mmap.
+The first step is a way of injecting such delays, and this
+commit therefore provides a clocksource.inject_delay_freq and
+clocksource.inject_delay_run kernel boot parameters that specify that
+sufficient delay be injected to cause the clocksource_watchdog()
+function to mark a clock unstable.  This delay is injected every
+Nth set of M calls to clocksource_watchdog(), where N is the value
+specified for the inject_delay_freq boot parameter and M is the value
+specified for the inject_delay_run boot parameter.  Values of zero or
+less for either parameter disable delay injection, and the default for
+clocksource.inject_delay_freq is zero, that is, disabled.  The default for
+clocksource.inject_delay_run is the value one, that is single-call runs.
 
-Yeah I wanted to mention this one too but I just forgot when reply: the issue
-thread previously pasted smells like some people would like to drop
-MADV_DONTFORK, but if it's able to still be applied I don't know why not.. It
-should still be better than depending on the coming patch imho - it marks the
-region as "not necessary for the fork" then we skip the whole hugetlbfs chunk.
-It should at least be more efficient if applicable.
+This facility is intended for diagnostic use only, and should be avoided
+on production systems.
 
-Thanks,
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+[ paulmck: Apply Rik van Riel feedback. ]
+Reported-by: Chris Mason <clm@fb.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 22 ++++++++++++++++++++
+ kernel/time/clocksource.c                       | 27 +++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a10b545..9965266 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -577,6 +577,28 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
+ 
++	clocksource.inject_delay_freq= [KNL]
++			Number of runs of calls to clocksource_watchdog()
++			before delays are injected between reads from the
++			two clocksources.  Values less than or equal to
++			zero disable this delay injection.  These delays
++			can cause clocks to be marked unstable, so use
++			of this parameter should therefore be avoided on
++			production systems.  Defaults to zero (disabled).
++
++	clocksource.inject_delay_run= [KNL]
++			Run lengths of clocksource_watchdog() delay
++			injections.  Specifying the value 8 will result
++			in eight consecutive delays followed by eight
++			times the value specified for inject_delay_freq
++			of consecutive non-delays.
++
++	clocksource.max_read_retries= [KNL]
++			Number of clocksource_watchdog() retries due to
++			external delays before the clock will be marked
++			unstable.  Defaults to three retries, that is,
++			four attempts to read the clock under test.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..545889c 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/delay.h>
+ 
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -184,6 +185,31 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
++static int inject_delay_freq;
++module_param(inject_delay_freq, int, 0644);
++static int inject_delay_run = 1;
++module_param(inject_delay_run, int, 0644);
++static int max_read_retries = 3;
++module_param(max_read_retries, int, 0644);
++
++static void clocksource_watchdog_inject_delay(void)
++{
++	int i;
++	static int injectfail = -1;
++
++	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
++		return;
++	if (injectfail < 0 || injectfail > INT_MAX / 2)
++		injectfail = inject_delay_run;
++	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
++		printk("%s(): Injecting delay.\n", __func__);
++		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
++			udelay(1000);
++		printk("%s(): Done injecting delay.\n", __func__);
++	}
++	WARN_ON_ONCE(injectfail < 0);
++}
++
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	struct clocksource *cs;
+@@ -208,6 +234,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 
+ 		local_irq_disable();
+ 		csnow = cs->read(cs);
++		clocksource_watchdog_inject_delay();
+ 		wdnow = watchdog->read(watchdog);
+ 		local_irq_enable();
+ 
 -- 
-Peter Xu
+2.9.5
 
