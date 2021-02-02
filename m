@@ -2,55 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB9330D00F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BFC30D013
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhBBX5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:57:11 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:42675 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBBX5J (ORCPT
+        id S231401AbhBBX5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhBBX5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:57:09 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 20D33C0009;
-        Tue,  2 Feb 2021 23:56:21 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        YueHaibing <yuehaibing@huawei.com>,
-        David Gow <davidgow@google.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: rtc: Make xilinx zynqmp driver depend on HAS_IOMEM
-Date:   Wed,  3 Feb 2021 00:56:21 +0100
-Message-Id: <161231017090.3708629.4178463549133754887.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210127035146.1523286-1-davidgow@google.com>
-References: <20210127035146.1523286-1-davidgow@google.com>
+        Tue, 2 Feb 2021 18:57:47 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A21C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 15:57:06 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id hs11so32783008ejc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 15:57:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8ei7hzPsgvHgxY53PqUfsTxtC6XeuV2PKdJfigEzcdI=;
+        b=mzBF5mEs8+7DFtT3HTRtRwBqdt+He1ge0SMWWG8XkrU4j3buin9RWxFI80NU1dbq/R
+         /WLbqer0SbWlVjMvaJu8gx57DMPD9tzGQQF+a3hKcNHSjouwn82qB4ZWZcmbSuMgp9QE
+         9S6NwSapDuZl2RcO5BNqKzDgJeGii59VEjCP8ylXYrcdeS2mK8609qBkeYKPEA85A/XM
+         3Rd5vrV43Hxg2OmRr6UcKmh+9goio20mf2HCQz2M2p0H1sRaYgxs3Q/lCUojUG+I8kWT
+         pxnhEpwitUxifLzlm2ksMzc+MnXqrZGtV0guUtXY0v4eLpikf6uL5iOMNfwyslLvg+36
+         Ztvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ei7hzPsgvHgxY53PqUfsTxtC6XeuV2PKdJfigEzcdI=;
+        b=teIBfea8EnKbf5SPIg7Vdu+ONcHTgkJX2bfpPHXgx3PvD3J4X8IGAVZ9b/qTdcXQT9
+         NVA5wWjYCzWnX9pNsdNNtuuqH9MaMNCuwntV7UIHmvUipUAzDxUxAra+qicaz7ZttaXp
+         NdhS1SEBz+kkkNTbOUCKHP/o00oe70TtQhfp5f8dgAcauKuV6RhAqBuV7h99vg2kQb64
+         ZdPh9ukWRBGqNsCXeYGt/uYiEvmRPSSG4apZyGB2Kpx6hsw21rmguMGRBHXO9RRbrh2r
+         GNZB0RYJo+Fucy5TsKiE77jDh4sZ5ej/i9k9TiZyD2Pr52/Z8jRtK2Ey56K8RMXnvxtn
+         faOg==
+X-Gm-Message-State: AOAM531+h/gVAi+uA2b1xC9hWUSluCs89bEzdHDZRVocsRCSt4uf71XN
+        MJdgL0rFhr5j9ae67ob8/tbIEo3/QUhg7hGkOYK7j2R+SaQ=
+X-Google-Smtp-Source: ABdhPJzuqtFYxd9D7t5y31bMs8ikTlJEE9y04BxTxSW9gyQdaL5YEXOIHpBRxrY3j9MA0Fe049i291NZnJ64txyck0M=
+X-Received: by 2002:a17:906:d8a1:: with SMTP id qc1mr440588ejb.523.1612310224889;
+ Tue, 02 Feb 2021 15:57:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-14-ben.widawsky@intel.com> <20210201182848.GL197521@fedora>
+ <20210202235103.v36v3znh5tsi4g5x@intel.com>
+In-Reply-To: <20210202235103.v36v3znh5tsi4g5x@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 2 Feb 2021 15:57:03 -0800
+Message-ID: <CAPcyv4i3MMY=WExfvcPFYiJkHoM_UeZ63ORZqi0Vbm76JapS8A@mail.gmail.com>
+Subject: Re: [PATCH 13/14] cxl/mem: Add limited Get Log command (0401h)
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 19:51:47 -0800, David Gow wrote:
-> The Xilinx zynqmp RTC driver makes use of IOMEM functions like
-> devm_platform_ioremap_resource(), which are only available if
-> CONFIG_HAS_IOMEM is defined.
-> 
-> This causes the driver not to be enable under make ARCH=um allyesconfig,
-> even though it won't build.
-> 
-> [...]
+On Tue, Feb 2, 2021 at 3:51 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-02-01 13:28:48, Konrad Rzeszutek Wilk wrote:
+> > On Fri, Jan 29, 2021 at 04:24:37PM -0800, Ben Widawsky wrote:
+> > > The Get Log command returns the actual log entries that are advertised
+> > > via the Get Supported Logs command (0400h). CXL device logs are selected
+> > > by UUID which is part of the CXL spec. Because the driver tries to
+> > > sanitize what is sent to hardware, there becomes a need to restrict the
+> > > types of logs which can be accessed by userspace. For example, the
+> > > vendor specific log might only be consumable by proprietary, or offline
+> > > applications, and therefore a good candidate for userspace.
+> > >
+> > > The current driver infrastructure does allow basic validation for all
+> > > commands, but doesn't inspect any of the payload data. Along with Get
+> > > Log support comes new infrastructure to add a hook for payload
+> > > validation. This infrastructure is used to filter out the CEL UUID,
+> > > which the userspace driver doesn't have business knowing, and taints on
+> > > invalid UUIDs being sent to hardware.
+> >
+> > Perhaps a better option is to reject invalid UUIDs?
+> >
+> > And if you really really want to use invalid UUIDs then:
+> >
+> > 1) Make that code wrapped in CONFIG_CXL_DEBUG_THIS_IS_GOING_TO..?
+> >
+> > 2) Wrap it with lockdown code so that you can't do this at all
+> >    when in LOCKDOWN_INTEGRITY or such?
+> >
+>
+> The commit message needs update btw as CEL is allowed in the latest rev of the
+> patches.
+>
+> We could potentially combine this with the now added (in a branch) CONFIG_RAW
+> config option. Indeed I think that makes sense. Dan, thoughts?
 
-Applied, thanks!
-
-[1/1] drivers: rtc: Make xilinx zynqmp driver depend on HAS_IOMEM
-      commit: ddd0521549a975e6148732d6ca6b89ffa862c0e5
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Yeah, unknown UUIDs blocking is the same risk as raw commands as a
+vendor can trigger any behavior they want. A "CONFIG_RAW depends on
+!CONFIG_INTEGRITY" policy sounds reasonable as well.
