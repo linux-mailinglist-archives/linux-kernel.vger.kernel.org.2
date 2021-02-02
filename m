@@ -2,72 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B0130C654
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE2530C65A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236803AbhBBQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:44:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236745AbhBBQmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:42:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1FBB64F64;
-        Tue,  2 Feb 2021 16:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612284102;
-        bh=L71Awcg/HF6WOIMSygGKnyNZDF81guEDZR3Xldfh3NA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t/lvXoPoVfVH2sMKx9lhcgnIVnDuG8zHsBYJnBELL8MsYb3fYw8jDBY5avGdq6/bF
-         iXVk+/LgiRNoAPxO8rOn1PqxfISapICLFR1AdqPH+vW1oQ7Jz0mHy1HYKNUrXfwbLe
-         sg/2IxwDzoABo+UlXJu4qcCcIsjC8UVEp3RZip06hSasUCrRG8Xy8CTIgyt2CN17TC
-         8xE82v0SkQ0O6vEchROia2UtCKHFyLXf9zLCIqpdvXv62LsfWFD/ShiszEZlJZs5ah
-         cn/cNa/RyBM7GJqTSWHWEWrDWeDDGcz0G5vvfn3UqGECINpa3XLEbe23y+CH9/u5fF
-         jkTlhB2+8MW9g==
-Date:   Tue, 2 Feb 2021 08:41:40 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
-Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
-Message-ID: <20210202084140.642a9cc1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAJht_ENcz1A+C8=tJ_wP8kQby4OuyWirJC+c+-ngg5D54dpHNg@mail.gmail.com>
-References: <20210201055706.415842-1-xie.he.0141@gmail.com>
-        <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com>
-        <CAJht_EOw4d9h7LqOsXpucADV5=gAGws-fKj5q7BdH2+h0Yv9Vg@mail.gmail.com>
-        <20210201204224.4872ce23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAJht_ENcz1A+C8=tJ_wP8kQby4OuyWirJC+c+-ngg5D54dpHNg@mail.gmail.com>
+        id S236813AbhBBQps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236779AbhBBQnG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:43:06 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75C2C06174A;
+        Tue,  2 Feb 2021 08:42:25 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id c4so18465842wru.9;
+        Tue, 02 Feb 2021 08:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=STneyShm0vCPYM4l3wpr4D69jWlxGiJ4g4tzZ7/33lE=;
+        b=Z8h1xH9LrCIPbnUzDhB6+8OgUVkaq3lMCCgyLN0ZPUv8uKh1CGeCtexXpijdWGeEdR
+         GmuMpknz9Xi/KKlCXJNdmCykqb7XMrDbl1hQeONsplw0h5K7DxwcmeBHPTqhf/n1FwSl
+         twSkencRK6PL1ThnkyhuV9IKTwtSLwmBLvCqYEzPgYOevXeJRrABOjSSgyK7nG+nfMv7
+         LDAUDusE6mxPyKTsXFh2FcyPBev6/DzxmoHcZbXvChChWJxHY74FbieBOcnEIessfNAs
+         mk6DBnsjmySGjFkdSOqoy39WYd6OgG1pU+/6SX5SG2SNErZj1nSPVoQdbah0wjMck+ji
+         b7YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
+         :subject:date:message-id:mime-version:content-transfer-encoding
+         :thread-index:content-language;
+        bh=STneyShm0vCPYM4l3wpr4D69jWlxGiJ4g4tzZ7/33lE=;
+        b=ea4RIgs9/CPZYOL3964+zwAwpNuhFte+3N9T+ddw7/Nf2RF6A2yRMZTKQGV6R5qSJg
+         BwRs9ZPCyDO/mFQyfOWLvBqMnEeeXyyFzZstozZuEWMdeUTmdSbq0CzKc2xpqTodmlCc
+         e3W1qPtME3x9e5BulWMSBs3S8r4CIXfRDjP2CVeHvE7hFP7K2bqJCvH2IsKUjLrue+fW
+         KERc2NdSUH+ypSo3+80SXNFiriwy8+aj9KF41xCGY10FovatjAVfaLsMywnMal4u6z5k
+         ULj8h1OKarJtY7CSG+rPgNU7P/7ABcIlCYWUTnuQKb0sBiSM4hPnpwhmS+rgVhkeR4CM
+         FVTQ==
+X-Gm-Message-State: AOAM533Ly+uqkTq8azEysvc/Gn4PSA2UsWCXKZUElso4YPYufDhWLX7V
+        78TomkAI3DFuYWc5qLuJuTk=
+X-Google-Smtp-Source: ABdhPJy2nnGmtTJ3TUqoRthgCxgYu0/DthvxcvL9h7iYFq5Z3OEkSPZ7bmrdl5r8eH8nbB7nJSHkNg==
+X-Received: by 2002:adf:f891:: with SMTP id u17mr24929982wrp.253.1612284144489;
+        Tue, 02 Feb 2021 08:42:24 -0800 (PST)
+Received: from CBGR90WXYV0 (host86-190-149-163.range86-190.btcentralplus.com. [86.190.149.163])
+        by smtp.gmail.com with ESMTPSA id b4sm32480479wrn.12.2021.02.02.08.42.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Feb 2021 08:42:23 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: "Paul Durrant" <paul@xen.org>
+Reply-To: <paul@xen.org>
+To:     =?utf-8?Q?'Roger_Pau_Monn=C3=A9'?= <roger.pau@citrix.com>
+Cc:     <xen-devel@lists.xenproject.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'Paul Durrant'" <pdurrant@amazon.com>,
+        "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Dongli Zhang'" <dongli.zhang@oracle.com>
+References: <20210128130441.11744-1-paul@xen.org> <YBl9ycif3bG/Y+eR@Air-de-Roger>
+In-Reply-To: <YBl9ycif3bG/Y+eR@Air-de-Roger>
+Subject: RE: [PATCH v2] xen-blkback: fix compatibility bug with single page rings
+Date:   Tue, 2 Feb 2021 16:42:22 -0000
+Message-ID: <037601d6f982$61e34f80$25a9ee80$@xen.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQESWKuFsxkk/iz7Hd1VT64wNwq0EAFvpAqOq8LV10A=
+Content-Language: en-gb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 22:25:17 -0800 Xie He wrote:
-> On Mon, Feb 1, 2021 at 8:42 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> -----Original Message-----
+> From: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+> Sent: 02 February 2021 16:29
+> To: Paul Durrant <paul@xen.org>
+> Cc: xen-devel@lists.xenproject.org; linux-block@vger.kernel.org; =
+linux-kernel@vger.kernel.org; Paul
+> Durrant <pdurrant@amazon.com>; Konrad Rzeszutek Wilk =
+<konrad.wilk@oracle.com>; Jens Axboe
+> <axboe@kernel.dk>; Dongli Zhang <dongli.zhang@oracle.com>
+> Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single =
+page rings
+>=20
+> On Thu, Jan 28, 2021 at 01:04:41PM +0000, Paul Durrant wrote:
+> > From: Paul Durrant <pdurrant@amazon.com>
 > >
-> > On Mon, 1 Feb 2021 08:14:31 -0800 Xie He wrote:  
-> > > On Mon, Feb 1, 2021 at 6:10 AM Julian Wiedmann <jwi@linux.ibm.com> wrote:  
->  [...]  
-> > >
-> > > Calling "skb_cow_head" before we call "skb_clone" would indeed solve
-> > > the problem of writes to our clones affecting clones in other parts of
-> > > the system. But since we are still writing to the skb after
-> > > "skb_clone", it'd still be better to replace "skb_clone" with
-> > > "skb_copy" to avoid interference between our own clones.  
+> > Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to =
+avoid
+> > inconsistent xenstore 'ring-page-order' set by malicious blkfront"), =
+the
+> > behaviour of xen-blkback when connecting to a frontend was:
 > >
-> > Why call skb_cow_head() before skb_clone()? skb_cow_head should be
-> > called before the data in skb head is modified. I'm assuming you're only
-> > modifying "front" of the frame, right? skb_cow_head() should do nicely
-> > in that case.  
-> 
-> The modification happens after skb_clone. If we call skb_cow_head
-> after skb_clone (before the modification), then skb_cow_head would
-> always see that the skb is a clone and would always copy it. Therefore
-> skb_clone + skb_cow_head is equivalent to skb_copy.
+> > - read 'ring-page-order'
+> > - if not present then expect a single page ring specified by =
+'ring-ref'
+> > - else expect a ring specified by 'ring-refX' where X is between 0 =
+and
+> >   1 << ring-page-order
+> >
+> > This was correct behaviour, but was broken by the afforementioned =
+commit to
+> > become:
+> >
+> > - read 'ring-page-order'
+> > - if not present then expect a single page ring (i.e. =
+ring-page-order =3D 0)
+> > - expect a ring specified by 'ring-refX' where X is between 0 and
+> >   1 << ring-page-order
+> > - if that didn't work then see if there's a single page ring =
+specified by
+> >   'ring-ref'
+> >
+> > This incorrect behaviour works most of the time but fails when a =
+frontend
+> > that sets 'ring-page-order' is unloaded and replaced by one that =
+does not
+> > because, instead of reading 'ring-ref', xen-blkback will read the =
+stale
+> > 'ring-ref0' left around by the previous frontend will try to map the =
+wrong
+> > grant reference.
+> >
+> > This patch restores the original behaviour.
+> >
+> > Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid =
+inconsistent xenstore 'ring-page-
+> order' set by malicious blkfront")
+> > Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> > ---
+> > Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> > Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
+> > Cc: Jens Axboe <axboe@kernel.dk>
+> > Cc: Dongli Zhang <dongli.zhang@oracle.com>
+> >
+> > v2:
+> >  - Remove now-spurious error path special-case when nr_grefs =3D=3D =
+1
+> > ---
+> >  drivers/block/xen-blkback/common.h |  1 +
+> >  drivers/block/xen-blkback/xenbus.c | 38 =
++++++++++++++-----------------
+> >  2 files changed, 17 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/drivers/block/xen-blkback/common.h =
+b/drivers/block/xen-blkback/common.h
+> > index b0c71d3a81a0..524a79f10de6 100644
+> > --- a/drivers/block/xen-blkback/common.h
+> > +++ b/drivers/block/xen-blkback/common.h
+> > @@ -313,6 +313,7 @@ struct xen_blkif {
+> >
+> >  	struct work_struct	free_work;
+> >  	unsigned int 		nr_ring_pages;
+> > +	bool                    multi_ref;
+>=20
+> You seem to have used spaces between the type and the variable name
+> here, while neighbors also use hard tabs.
+>=20
 
-You're right. I thought cow_head is a little more clever.
+Oops. Xen vs. Linux coding style :-( I'll send a v3 with the whitespace =
+fixed.
+
+> The rest LGTM:
+>=20
+> Reviewed-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+>=20
+> We should have forbidden the usage of ring-page-order =3D 0 and we =
+could
+> have avoided having to add the multi_ref variable, but that's too late
+> now.
+
+Thanks. Yes, that cat is out of the bag and has been for a while =
+unfortunately.
+
+  Paul
+
+>=20
+> Thanks, Roger.
+
