@@ -2,105 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CE330C884
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0693630C7FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237990AbhBBRwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:52:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
+        id S237718AbhBBRhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:37:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233972AbhBBOJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:09:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DE56503B;
-        Tue,  2 Feb 2021 13:50:30 +0000 (UTC)
+        id S234136AbhBBOMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:12:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F29476503F;
+        Tue,  2 Feb 2021 13:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273831;
-        bh=yGyz2xjtcIhzcMx2wl3FUVaQGrBfGbphDwVDkdXw6Kc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ljE+vBXqux8jJHD15Ll21gLtgyZBOf9+/EfraU8QF8DE9iH6AZVjW6ba4hARtEKdy
-         ZZnWhZhPoFiYGobOfMyPOd2/he0nLWY4OQ7JPYUXD63ecqHCHyt90jtr/uhGMwNiaX
-         yBSzRqp2Ct7ap6aNLCA6/iZkjPo1JbL4fXV36waI=
+        s=korg; t=1612273940;
+        bh=7e/aVsahmQoNFB8Pe/h7Yc+dRm8tI1iNWsH2VTPfrDc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iMzBSgsokxYK17IUbccV7pK0zgsFtf7yeX+BcBJ2SQkwnf4xZ8N1Z4RBmZq0Qv59q
+         xTB/hPSKmRr+oalSGUTfyqevoxTtAdRI9h2VzggpPAp0TTouWYlcrTeRiUkcdPKvPf
+         pl4T4czJL6bKZbhCxUTcfqw1Gu7F0ST63mh4bHMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jay Zhou <jianjay.zhou@huawei.com>,
-        Shengen Zhuang <zhuangshengen@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 17/32] KVM: x86: get smi pending status correctly
-Date:   Tue,  2 Feb 2021 14:38:40 +0100
-Message-Id: <20210202132942.708400898@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: [PATCH 4.14 00/30] 4.14.219-rc1 review
+Date:   Tue,  2 Feb 2021 14:38:41 +0100
+Message-Id: <20210202132942.138623851@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
-References: <20210202132942.035179752@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.219-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.219-rc1
+X-KernelTest-Deadline: 2021-02-04T13:29+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jay Zhou <jianjay.zhou@huawei.com>
+This is the start of the stable review cycle for the 4.14.219 release.
+There are 30 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 1f7becf1b7e21794fc9d460765fe09679bc9b9e0 upstream.
+Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+Anything received after that time might be too late.
 
-The injection process of smi has two steps:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.219-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-    Qemu                        KVM
-Step1:
-    cpu->interrupt_request &= \
-        ~CPU_INTERRUPT_SMI;
-    kvm_vcpu_ioctl(cpu, KVM_SMI)
+thanks,
 
-                                call kvm_vcpu_ioctl_smi() and
-                                kvm_make_request(KVM_REQ_SMI, vcpu);
+greg k-h
 
-Step2:
-    kvm_vcpu_ioctl(cpu, KVM_RUN, 0)
+-------------
+Pseudo-Shortlog of commits:
 
-                                call process_smi() if
-                                kvm_check_request(KVM_REQ_SMI, vcpu) is
-                                true, mark vcpu->arch.smi_pending = true;
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.219-rc1
 
-The vcpu->arch.smi_pending will be set true in step2, unfortunately if
-vcpu paused between step1 and step2, the kvm_run->immediate_exit will be
-set and vcpu has to exit to Qemu immediately during step2 before mark
-vcpu->arch.smi_pending true.
-During VM migration, Qemu will get the smi pending status from KVM using
-KVM_GET_VCPU_EVENTS ioctl at the downtime, then the smi pending status
-will be lost.
+Pengcheng Yang <yangpc@wangsu.com>
+    tcp: fix TLP timer not set when CA_STATE changes from DISORDER to OPEN
 
-Signed-off-by: Jay Zhou <jianjay.zhou@huawei.com>
-Signed-off-by: Shengen Zhuang <zhuangshengen@huawei.com>
-Message-Id: <20210118084720.1585-1-jianjay.zhou@huawei.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ivan Vecera <ivecera@redhat.com>
+    team: protect features update by RCU to avoid deadlock
 
----
- arch/x86/kvm/x86.c |    5 +++++
- 1 file changed, 5 insertions(+)
+Pan Bian <bianpan2016@163.com>
+    NFC: fix possible resource leak
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -97,6 +97,7 @@ static u64 __read_mostly efer_reserved_b
- 
- static void update_cr8_intercept(struct kvm_vcpu *vcpu);
- static void process_nmi(struct kvm_vcpu *vcpu);
-+static void process_smi(struct kvm_vcpu *vcpu);
- static void enter_smm(struct kvm_vcpu *vcpu);
- static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
- 
-@@ -3199,6 +3200,10 @@ static void kvm_vcpu_ioctl_x86_get_vcpu_
- 					       struct kvm_vcpu_events *events)
- {
- 	process_nmi(vcpu);
-+
-+	if (kvm_check_request(KVM_REQ_SMI, vcpu))
-+		process_smi(vcpu);
-+
- 	events->exception.injected =
- 		vcpu->arch.exception.pending &&
- 		!kvm_exception_is_soft(vcpu->arch.exception.nr);
+Pan Bian <bianpan2016@163.com>
+    NFC: fix resource leak when target index is invalid
+
+Bartosz Golaszewski <bgolaszewski@baylibre.com>
+    iommu/vt-d: Don't dereference iommu_device if IOMMU_API is not built
+
+David Woodhouse <dwmw@amazon.co.uk>
+    iommu/vt-d: Gracefully handle DMAR units with no supported address widths
+
+Andy Lutomirski <luto@kernel.org>
+    x86/entry/64/compat: Fix "x86/entry/64/compat: Preserve r8-r11 in int $0x80"
+
+Andy Lutomirski <luto@kernel.org>
+    x86/entry/64/compat: Preserve r8-r11 in int $0x80
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    can: dev: prevent potential information leak in can_fill_info()
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: pause TX while changing interface type
+
+Johannes Berg <johannes.berg@intel.com>
+    iwlwifi: pcie: reschedule in long-running memory reads
+
+Johannes Berg <johannes.berg@intel.com>
+    iwlwifi: pcie: use jiffies for memory read spin time limit
+
+Kamal Heib <kamalheib1@gmail.com>
+    RDMA/cxgb4: Fix the reported max_recv_sge value
+
+Shmulik Ladkani <shmulik@metanetworks.com>
+    xfrm: Fix oops in xfrm_replay_advance_bmp
+
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nft_dynset: add timeout extension to template
+
+Max Krummenacher <max.oss.09@gmail.com>
+    ARM: imx: build suspend-imx6.S with arm instruction set
+
+Roger Pau Monne <roger.pau@citrix.com>
+    xen-blkfront: allow discard-* nodes to be optional
+
+Lorenzo Bianconi <lorenzo@kernel.org>
+    mt7601u: fix rx buffer refcounting
+
+Lorenzo Bianconi <lorenzo@kernel.org>
+    mt7601u: fix kernel crash unplugging the device
+
+Andrea Righi <andrea.righi@canonical.com>
+    leds: trigger: fix potential deadlock with libata
+
+David Woodhouse <dwmw@amazon.co.uk>
+    xen: Fix XenStore initialisation for XS_LOCAL
+
+Jay Zhou <jianjay.zhou@huawei.com>
+    KVM: x86: get smi pending status correctly
+
+Like Xu <like.xu@linux.intel.com>
+    KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
+
+Claudiu Beznea <claudiu.beznea@microchip.com>
+    drivers: soc: atmel: add null entry at the end of at91_soc_allowed_list[]
+
+Sudeep Holla <sudeep.holla@arm.com>
+    drivers: soc: atmel: Avoid calling at91_soc_init on non AT91 SoCs
+
+Giacinto Cifelli <gciofono@gmail.com>
+    net: usb: qmi_wwan: added support for Thales Cinterion PLSx3 modem family
+
+Johannes Berg <johannes.berg@intel.com>
+    wext: fix NULL-ptr-dereference with cfg80211's lack of commit()
+
+Koen Vandeputte <koen.vandeputte@citymesh.com>
+    ARM: dts: imx6qdl-gw52xx: fix duplicate regulator naming
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    ACPI: sysfs: Prefer "compatible" modalias
+
+Josef Bacik <josef@toxicpanda.com>
+    nbd: freeze the queue while we're adding connections
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                        |  4 +--
+ arch/arm/boot/dts/imx6qdl-gw52xx.dtsi           |  2 +-
+ arch/arm/mach-imx/suspend-imx6.S                |  1 +
+ arch/x86/entry/entry_64_compat.S                |  8 ++---
+ arch/x86/kvm/pmu_intel.c                        |  2 +-
+ arch/x86/kvm/x86.c                              |  5 +++
+ drivers/acpi/device_sysfs.c                     | 20 ++++-------
+ drivers/block/nbd.c                             |  8 +++++
+ drivers/block/xen-blkfront.c                    | 20 ++++-------
+ drivers/infiniband/hw/cxgb4/qp.c                |  2 +-
+ drivers/iommu/dmar.c                            | 45 +++++++++++++++++--------
+ drivers/leds/led-triggers.c                     | 10 +++---
+ drivers/net/can/dev.c                           |  2 +-
+ drivers/net/team/team.c                         |  6 ++--
+ drivers/net/usb/qmi_wwan.c                      |  1 +
+ drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 14 ++++----
+ drivers/net/wireless/mediatek/mt7601u/dma.c     |  5 ++-
+ drivers/soc/atmel/soc.c                         | 13 +++++++
+ drivers/xen/xenbus/xenbus_probe.c               | 31 +++++++++++++++++
+ include/linux/intel-iommu.h                     |  2 ++
+ include/net/tcp.h                               |  2 +-
+ net/ipv4/tcp_input.c                            | 10 +++---
+ net/ipv4/tcp_recovery.c                         |  5 +--
+ net/mac80211/ieee80211_i.h                      |  1 +
+ net/mac80211/iface.c                            |  6 ++++
+ net/netfilter/nft_dynset.c                      |  4 ++-
+ net/nfc/netlink.c                               |  1 +
+ net/nfc/rawsock.c                               |  2 +-
+ net/wireless/wext-core.c                        |  5 +--
+ net/xfrm/xfrm_input.c                           |  2 +-
+ tools/testing/selftests/x86/test_syscall_vdso.c | 35 +++++++++++--------
+ 31 files changed, 181 insertions(+), 93 deletions(-)
 
 
