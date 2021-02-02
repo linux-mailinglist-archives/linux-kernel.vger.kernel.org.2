@@ -2,204 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7282030CBC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AB030CBCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239867AbhBBTfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234088AbhBBTeT (ORCPT
+        id S239879AbhBBTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:35:53 -0500
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:41867
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239822AbhBBTey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:34:19 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90213C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:33:38 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id e132so1758556ybh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:33:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=19pezVk0QoKOTRujKHqImvij052toB7i96dgscsU07M=;
-        b=AT5LlNEvnLfOQ+A4/wCpwc6dScKxQeYCUOVjf28Wgpsa2K0+c9Lt6tJVPPIOtZsIgb
-         NvQKME92Kl+8ssx0f4Ft77lAzFSRKYTy4Tng87EKiyceIYV+Z7E1xIF2n9fP7St+DcYr
-         hcyDAYOv/IpqcsdbUVf43OnycLNgPW21seBjAG/HDGBxRCU705M4BnCi5ATszhIpIl/W
-         OMS5M9zpkZazcbXzBFwS8nxQl9AgN2jFP8e/Wfzfy6i6AovtVsXMuO3JEmdfzz+3NjOx
-         8+B3Dpy9Y4LneaNOV0KWctkw729KKuRZ7j8MTiU3UacwAW5BjlIetetoEbajazGqoDLm
-         UUqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=19pezVk0QoKOTRujKHqImvij052toB7i96dgscsU07M=;
-        b=qwzDH2isktF8JmrtdlTMOIqmEgnRaveuXRUc+I0gL3rs+yC9GYbwHj8JLPL6KcRYMB
-         fcmjrLPqAnsYKnOMpoCQndkq21zpv5+xi2fkTz+JT9fj+QVMPKCNAWQL1NAoTzKkVocI
-         UCEgqHO7+UMivXEaAlIwcVcvbHLmx6kcA3+L7oYxm5sT93vTZzvtX6hG9VuRkUB4Klxz
-         NB6lKL8KF4+x5kwbeHtLBut6r7+5/TDm5xuuvz1I7BOQp54t7bTwHn2cgzAIT8kKJvnh
-         BFYUE5dvkMqkqPMe8nO+MRl5GqPuoPxualseBndYBf5JX7J5YOGDVG0uDu/+cuUs7+AZ
-         09FA==
-X-Gm-Message-State: AOAM530cTATF2XiwpeGEEQrl+inMv7oTOTsIJxn9vcgIX9eCi+Br39Sr
-        kbWEOg4dtvIR9MMwbDgcxXQPINGPuCwkL13Qegx/Ww==
-X-Google-Smtp-Source: ABdhPJyw3Pgdkhhb7YZGafFhRDXuoH71B0vAi7/f94ad8ZeujXQFx4KeQPkkkKEGyRqMSh/5u8zEil3vUUc0B5/0To8=
-X-Received: by 2002:a25:f8a:: with SMTP id 132mr34946575ybp.228.1612294417635;
- Tue, 02 Feb 2021 11:33:37 -0800 (PST)
+        Tue, 2 Feb 2021 14:34:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612294446; bh=ffKmFpWMlYFAPTjEDC3llRKB9Lrhg7fxHnn8+PmK1m0=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=r5HQ1K1QyvrzD13wHJKJ25vkrK22IY3kqRF5/HoKm5jBI0tIzKFL95Bqbk02g+dGH9jkyQQ//5ERzgHneVJ7UKApyyRJqgWA6Dc5sWAj7X5Q+MyaE14R1VlUDFrHiCdtbSipf0gkfHm2lVHwKco/ManTtofxtG2x8R4Czl3hqMSnI/vBaEgfVE/Wge91OSwfsiGFcXuTC9ji/aC4EtKTg598R37r03NqGqI7cqGdMwdxfYBSEc0+bWqvBOikZhMMXxLRgVM5G/7ohFLugcLUZKus6CUPcAY/lhIRXDzyDeePXzdtWHuCb7o7FkX/s226NGfjnG0nxQ7rIG7eXSXZKw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612294446; bh=mphhD3eVyHt7Z1VyJUmuKI9b7eepkQ/mwIczOWfntjM=; h=Subject:To:From:Date:From:Subject:Reply-To; b=lg8MHYZQaSHmkcgY4ln2IQY09QKzxfoZTE6Jljt9YZmAlSrvhYpi/9birIjYUu+EYDQrE2dqBbrfw4rEv1Tl8yLMNd/KtU8Efd0piEyR0wnDN7kPeru0SdC+laMXqtORrMlS4EDkhI13k0DFUDgiRBUIGnx9L7dAiPqVUeMm6Pc6ZhyI7ubFYpHFten71RlVf0QOP/fBmJtGOIWsqH7Ck4I/01wtk00vJxCbfVDtYrdCuMwQS+GtjTZlaq9wFMfFsi4sV/9+erutDiOaCkdBVyOrfnulkbp3MwY0dzNeBOSNH8QSs/sNXxDYdl6d4DvpLCWpVa4A9NQ39KXLX6rouA==
+X-YMail-OSG: 1oFZJugVM1ljBpgmA3l8tWT.ztvwgeVD3oSCiySgbhK4FE2A9NwuTNei.aRdkmx
+ 2OE4J8HBnk84_Fys6oOX0ib778.5S0z8hJIHHksdhYz.H42WtoQk0mKW0xF72WELhqGQXj8N4dlj
+ KMZcSxDb2iA0FZzGykgZgDfzuqGa.xwjlkOZBzs0cMEjg8qGN6RXr7vGh3CX6wkegNoZEIAnHJn7
+ seH5kHcqX35eC3g2NxkDQB.2dgwGyIGyC96lRbIzsCwWNTefszlDreodR.CQ6GB_ZG5a2aHZzfos
+ yt6KtnghBE7aDGo9VUSYZ.rc7wQNWn.bolzG29Y2IpQVr6ABHY0ihG2rGd2ifwNeMDfZLi1n5jQV
+ 9ydLRNOEJGg2hO7CUlzkg1vPEckBGJarXQl9szZpHFHPvoXx4X_azZ3ruVIOoSD2EkHDVE9wP99c
+ Ef1WMUWKYLSJNxIhfmes5wU80GYluxKoL5C0TByU0Wa7HcxAFkhLsEI8W02L4_UMYT80XsXCZmFP
+ 9l9duXpxYY6BezQ.gz1Gm1FEVBGPVn98RdVA7ujKvFO2RN3IyHo58V9y19hykx9Hzd5Xc_6_4emD
+ X6JpvjxLsQZ_ddzhJxM6as0TNOcEMjRO_zcH7NFiLa_k1dDCvBX2HOt8qNo5E0n3MztFvRAG7jyR
+ ROpIuAqj.AKNn2UP0yTULkafPsfE1sLb9X.hrBjkCyyuXKXp20uOwLSebF9uN0JJx3nadphHKJ_8
+ QnGr6EK5gPaEInahKhN5WehcrMHP6QBD66eSsYAIlTaIqMsgV6XhcIJ25d3.KGjRYbRyBL8xTiOk
+ TEdpfS.ddgz65UcpWYGk4MnPG.SJ6.YoLfbWnHDaTrZsSHvLZAhjZ._jzQ5lvYg5Y6Yj4Bi67xYj
+ vkrgR2s0X2o7vJmWuGPObniuRJbOQaUZqjHCea9I5hU4DVX.QemCib8v1thLd8xTpgxdSPMU.2XS
+ lMWJIPxaEZxhxv_BYY8RL8aLKBbEFtl1mXwPzJ9LU5fi1qLG5uJnspgQO6OS1oJ9z_B4K6An4sJv
+ c4xeWL7YvlZdwE38rWNGjTMebzJP1p74nBTweZ9fgzx37IyaR2VIXA1Mb0pCm1k0I2rGznCHAJhJ
+ fga_czAJVCXkD305RZnY6qSHCvUk8TFq3RLv3s9R7nFbxLRVFJVZ8iIpO4UyS5gGuwBEHjwSbRJx
+ XEMVttVmnnwGj5A0.g1mVKoLG50HrzzS4qVxt_7FrBi_q6RAJcjeqoxl4fgSZWf5Ez8LgBFCEWrH
+ cCoScuy.tlAXMOa7xZoRrmsOfvQak25lLB9gvXV0qI1.wTRR1jqJOnzJX5CEOwgW.3z9tJYU35Be
+ 36oQnxxn5SFzvgi8691.QzJzFeFrbINcIaRbFPJartZA9Ccq7gp2Qgy6nyciLczd9FiHNUU64Twj
+ Z7c.SNvzbkEFJqTFM_PfYKw3e0Ar4w_3fiKz3tR62UIvpDuNagP1tJf5B0YurMkKJkdAwAZ6Yx2j
+ Cv9gfHnMtbB9gKruRtRGREuh5fOT_6OA3W4G5c8HrWWuUnOL.bksDGO.DtnCUU91oAGbArXRJbgT
+ Bn8kbC6zn5zg5DdLWhrRgPSF_QPnKGJ7UHJZfCWy7E8Tkl8m_qup4dhgRLBaCqR9MDPtUULb2Zm.
+ 5w87F8isOsYl9TZ2nUDO4h_8KLCOlUz7ITtj9hJXa6HQlwoWfMgVEXBS2FI794uWPrnOV3cIa7aS
+ vg5HY9XfATtXkommizxR67Od4TCgmhpaTCZs5ctaqUwCPO1.tXArNqSK7bOxA62d83D_iKWbW92a
+ x6s9AFuogcKOxPWkGcW.Uqz__qLOEH5_E6PPeo5wz_bXMBaUIy2wRHQZilc2FqgXpNr_ApFaTXSL
+ 2NyIY63AdfIEY3euja1XWYctfqgxmwbI6VU.DFc2YGyqXKQmw46F5nlcbEgVA0JE13EOmAf1h4d5
+ I9arHAxki_4d9t3DZr6aY__ASIC_ZG9XUAGwDtjFsJBGwyfgh0ejEvg9.J.SevaH_.0EEggJu._I
+ ie_1LwVfVKMn8P.Z.5BmCvd02_4hef_9VKe1ZZm17RcA8_xd3xHa_.dODLITB.VS_DDM.HTdee67
+ nyZY7xek5FevkBreYusUOkCGBwWqTUlbvnmbVB6fk.Ez3dOx1LFPSWtuwLxOYeEVMeTb0iau3TDF
+ yv1odvYLqLb6CrrlffpJs.HiMw5umwqnAdn0tep.8oFbMMhs1VMACB_MMWYE3wZXcef3KugEZy4a
+ 323I8bc2piz2YF2rFTrrkQYIcrLBFXMVzn4NIJggS7F54fDISYL_.63Qg8OMxFQCcggM_IS.UFRR
+ JXCjpjKxW1o5GpS4cWIg8okvHu8FZv0Ed9yJKQjaNXYVHbwQ94eZKOpfgeZ0j4RPCfAsRy0bRoMF
+ ZxVKtYHFCQxsXpHLWiJYxCeMoxuYB5kOQyNVi0oNQdoVOZRoLoHhc3S7QX7SoQjNh6JthGSUjC3m
+ 26hM8g5GuXYv2TlOpnoFTnKK0G.0u88JLM14t.f.NlV..N3x3vqk2XcdH1J8V3HIkYeCqWm8TW5Z
+ MytNkUUqdfejApMyUYRixDYHf850bMyfgk15ETESI3AYH1P1pTsKlUr8byNX8qNEM8NOYR.DZEy8
+ KOHURxfao0VORIGRiOaIov5lR4lPjsSmjTmsdPQ5.3443vqYFTgRe6V8xwIGf4kiBYQPjy5wmeUM
+ 8gkroJBZEWyD_hb3GP5wOoQbY7SMZR7vWmdGhO3si0Gk4nQWSL8YRDLzHfXwKSDA_DMo2De9nATd
+ 5F6BUINNaAGIjPT2DM9r7nrodDKi6ORFSr7lG7.4FAUmbXKve0TOAIgZTEfkQOyb7DmKSeZdT5yr
+ 9N8IxCQWThs_KkkkIAa_vx68sdAXKRu9NRAenjlLGbsj.6yMHGyMR.QN.3IFsn6qIyntzOr4wE8z
+ k0oHV5McxWiANCfxabcRTFOmv3GpYipi1XZ9vMpefrEAgyatzaEDkldw0mdGFSBjqbjLrb4kGZF2
+ VL6xrmPTAg6NwlJRkeLtl3r0dM3Tw_zj3lnyAA0xQ2kGXRK.DgsOi7ADPIdWe4CvqolO3J5Xf337
+ HAcIyNPrdZLaN.tZwllLUovjlEZKAYSPmnhckO2BT8rfJgmgoWta3RaC45Ndiq3WeJe1Un0.ekD_
+ 5wqD6XA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 2 Feb 2021 19:34:06 +0000
+Received: by smtp406.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 7b895dfc98e0e9d57e2350dee38d396b;
+          Tue, 02 Feb 2021 19:34:00 +0000 (UTC)
+Subject: Re: [PATCH v2] smackfs: restrict bytes count in smackfs write
+ functions
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     andreyknvl@google.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, serge@hallyn.com,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <d0f9a341-281b-704c-04e4-4304ed17ba23@schaufler-ca.com>
+ <20210202191318.1402500-1-snovitoll@gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <58e65f92-51ea-2dd0-d7b8-a63019e3dcf0@schaufler-ca.com>
+Date:   Tue, 2 Feb 2021 11:33:58 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210130040344.2807439-1-saravanak@google.com>
- <20210130040344.2807439-3-saravanak@google.com> <CAMuHMdVWJZrGDvtMiyaAOfnZP5jBJec42oQvYeZSgt9ZLhqDvA@mail.gmail.com>
- <CAGETcx8KYGHkSdgjxJ55_gdAP7wh_CykKuXq_qXBfFdtsQ4Jsg@mail.gmail.com> <CAMuHMdXft=pJXXqY-i_GQTr8FtFJePQ_drVHRMPAFUqSy4aNKA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXft=pJXXqY-i_GQTr8FtFJePQ_drVHRMPAFUqSy4aNKA@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 2 Feb 2021 11:33:01 -0800
-Message-ID: <CAGETcx-LrUMNxqMNm52XcgqFj2oUuzG8bXUq-hT4bKycSTPrUg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] driver core: fw_devlink: Handle missing drivers
- for optional suppliers
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210202191318.1402500-1-snovitoll@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.17648 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 12:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Mon, Feb 1, 2021 at 9:49 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 1, 2021 at 2:32 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Sat, Jan 30, 2021 at 5:03 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > After a deferred probe attempt has exhaused all the devices that can be
-> > > > bound, any device that remains unbound has one/both of these conditions
-> > > > true:
-> > > >
-> > > > (1) It is waiting on its supplier to bind
-> > > > (2) It does not have a matching driver
-> > > >
-> > > > So, to make fw_devlink=on more forgiving of missing drivers for optional
-> > > > suppliers, after we've done a full deferred probe attempt, this patch
-> > > > deletes all device links created by fw_devlink where the supplier hasn't
-> > > > probed yet and the supplier itself is not waiting on any of its
-> > > > suppliers. This allows consumers to probe during another deferred probe
-> > > > attempt if they were waiting on optional suppliers.
-> > > >
-> > > > When modules are enabled, we can't differentiate between a driver
-> > > > that'll never be registered vs a driver that'll be registered soon by
-> > > > loading a module. So, this patch doesn't do anything for the case where
-> > > > modules are enabled.
-> > >
-> > > For the modular case, can't you do a probe regardless? Or limit it
-> > > to devices where the missing provider is a DMAC or IOMMU driver?
-> > > Many drivers can handle missing DMAC controller drivers, and are even
-> > > supposed to work that way.  They may even retry obtaining DMA releases
-> > > later.
-> >
-> > I don't want to handle this at a property/provider-type level. It'll
-> > be a whack-a-mole that'll never end -- there'll be some driver that
-> > would work without some resource. Letting it probe is not difficult (I
-> > just need to drop these device links), but the problem is that a lot
-> > of drivers are not written properly to be able to handle getting
-> > deferred and then getting reattempted before the supplier. Either
-> > because:
-> >
-> > 1. They were never built and tested as a module
-> > 2. The supplier gets deferred and the consumer doesn't have proper
-> > deferred probe implementation and when we drop the device links, the
-> > consumer might be attempted before the supplier and things go bad.
->
-> You may be a bit too pessimistic here: we had deferred probing for
-> years.  With devices with complex dependencies, it's not uncommon for a
-> driver to be probed 3 or 4 times, before it succeeds (and FTR, would be
-> happy to see this fixed).  So most drivers should handle this already.
-> And if they don't, they're already broken.
+On 2/2/2021 11:13 AM, Sabyrzhan Tasbolatov wrote:
+>> if PAGE_SIZE >= SMK_LOADSIZE all legitimate requests can be made
+>> using PAGE_SIZE as a limit. Your example with 19990 spaces before
+>> the data demonstrates that the interface is inadequately documented.
+>> Tizen and Automotive Grade Linux are going to be fine with a PAGE_SIZE
+>> limit. The best way to address this concern is to go ahead with the
+>> PAGE_SIZE limit and create ABI documents for the smackfs interfaces.
+>> I will take your patch for the former and create a patch for the latter.
+> Please let me know if there is anything else required for this patch.
+> AFAIU, we agreed with PAGE_SIZE as the limit.
 
-I fully agree the drivers are broken and they should be fixed (like
-we've been doing so far). I'd happily say "fix your driver" and just
-mark properties (iommu, dmas) as "optional" and be done with it.
-Actually, handling optional properties is pretty simple -- we just
-need to stop parsing them (delete code/make it a flag).
+I am in the process of adding your patch to smack-next for 5.12.
 
-But my understanding is, you can't set fw_devlink=on by default and
-break devices that used to boot fine before. But we can't find the
-broken drivers without setting fw_devlink=on by default. So it's a
-catch-22. I'm happy to continue helping debug the issues if we are
-okay with leaving fw_devlink=on in 5.12, but I'm not sure everyone
-will agree to that.
+I will have a separate documentation patch. 
 
-Also, there's also no way to selectively enable fw_devlink on a
-DT/board level (Rob will have to agree to a property in the chosen {}
-node). So, without that, I'm forced to go for the lowest common
-denominator.
-
->
-> > One hack I'm thinking of is that with CONFIG_MODULES, I can drop these
-> > unmet device links after a N-second timeout, but having the timeout
-> > extended everytime a new driver is registered. So as long as no two
-> > modules are loaded further than N seconds apart during boot up, it
-> > would all just work out fine. But it doesn't solve the problem fully
-> > either. But maybe it'll be good enough? I haven't analyzed this fully
-> > yet -- so apologies in advance if it's stupid.
->
-> So you would introduce an additional delay when e.g. mounting the root
-> file system, as the SDHI driver probe may be postponed due to the DMAC
-> driver not being available?
-
-Honestly I'm thinking of deleting/adding a conditional for iommu/dma
-parsing. So boards that know all iommus/dmas are needed can set some
-flag if they want.
-
-In your example, if the DMAC driver is needed for SDHI to work (mount
-root), then I'd expect it to be loaded(ramdisk)/builtin before mount
-root. And it'd just work. If the DMA is optional and SDHI should have
-mounted root without it, then the solution is what I said above.
-
-> Let's consider the possible combinations here:
->   1. If both provider and consumer are built-in, there's no issue.
->   2. If the provider is built-in, and the consumer is modular, it should
->      just work, too.
->   3. If the consumer is built-in, but the provider is modular (or not
->      available), what to do?
->      Wouldn't it be safe to assume the user did intend the consumer to
->      probe without the provider, and thus continue, if possible (e.g.
->      for an optional DMA channel)?  Else the user would have configured
->      the provider driver built-in, too.
->   4. If both provider and consumer are modular, perhaps userspace should
->      try to load the modules in the right order, i.e. provider drivers
->      first?
-
-One of the main benefits/goal of fw_devlink is that it makes module
-load ordering irrelevant. There are other correctness issues with
-depending on module load ordering too. So I don't want to go down the
-(fix your module load order) route.
-
->
-> For DMACs, it's the consumer that knows if it can work without the DMAC
-> driver present, and fall back to PIO, or not.  So we could add a flag
-> for that to struct driver.
-
-The whole point of fw_devlink is to figure stuff out without the
-drivers being available (sync_state() is a whole another layer of
-complexity). If the drivers come into picture, we don't really need
-fw_devlink to parse dmas. The dma framework code can add device links
-once a consumer starts using the dma (similar to how iommus do it).
-
-> For IOMMUs, it's different: the consumer drivers are not aware of it,
-> only the driver/IOMMU subsystem is.  And whether to work in the absence
-> of an IOMMU driver is more like a system (security) policy decision.
-
-I think some consumers can make this decision too. For example, not
-supporting DRM content if the IOMMU isn't available, etc.
-
-Long story short, I don't have a problem with saying fix the driver.
-But I don't  think I can have fw_devlink=on by default with that
-argument. And making it fw_devlink=on by default is my goal.
-
--Saravana
