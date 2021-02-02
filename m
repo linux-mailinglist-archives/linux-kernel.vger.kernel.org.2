@@ -2,70 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF1430C58E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3077330C593
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhBBQZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:25:52 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:38524 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhBBQXZ (ORCPT
+        id S236389AbhBBQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:26:23 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:42717 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236139AbhBBQXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:23:25 -0500
-Received: by mail-wr1-f53.google.com with SMTP id b3so2979933wrj.5;
-        Tue, 02 Feb 2021 08:23:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0Tl/pMxs9MIy87xsuWIVEOhHXa7tZ9dZIJ0KCeGa4jI=;
-        b=fMy85NFgtbjalzT7DedynCqERL/6JDmbAIsO27jM4cpJn6X5QrTtuAMwcbYoexAoT6
-         GxVpama5x1SrodeLurAKRCGrmd7+KAdb0pfnuychTpyiFphLSHaWZRhVcfpreCfJRrl8
-         Z9UkuogsKzsxlrbq6wqf3XtrudfnL4Hq3cAWGdNcytkCRwQrU0Uq/Q9zU2QBONnAyvns
-         c45TQWzOfTVGh39E2FgyKe9iIh+HJaUE03FjCVg/QcsMJDn0nf4t53LgFAoB6Qg+jL+C
-         giWpcsNUsen3mX8q2JH5LLIKtVv4EUIxbatJRS6T4TFuBRQZVEk5XYe5b1NF7lr9OuyI
-         P++A==
-X-Gm-Message-State: AOAM5328KMKzBjudSuWtiUtUzwjJY1SGzK4FvEjPoxORM5ybhAbuTunt
-        4a14K7SXdN2FXimpyblDlZ4=
-X-Google-Smtp-Source: ABdhPJx6LQHNUFui3giapOyyc5YGOC6dtOEQkMgOyDblBANYn5obn77kkqsoELxUiLKfWRiM9E+4kA==
-X-Received: by 2002:adf:dd43:: with SMTP id u3mr25063060wrm.396.1612282956206;
-        Tue, 02 Feb 2021 08:22:36 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id e11sm32813367wrt.35.2021.02.02.08.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 08:22:35 -0800 (PST)
-Date:   Tue, 2 Feb 2021 16:22:34 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Igor Druzhinin <igor.druzhinin@citrix.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-Message-ID: <20210202162234.sf575hwoj4bngvpt@liuwe-devbox-debian-v2>
-References: <20210202070938.7863-1-jgross@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202070938.7863-1-jgross@suse.com>
-User-Agent: NeoMutt/20180716
+        Tue, 2 Feb 2021 11:23:44 -0500
+Received: from marcel-macbook.holtmann.net (p4fefcdd8.dip0.t-ipconnect.de [79.239.205.216])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 3631DCECDE;
+        Tue,  2 Feb 2021 17:30:19 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH v4 0/2] Bluetooth: btusb: Add protocol for MediaTek
+ bluetooth devices
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210202102618.27640-1-mark-yw.chen@mediatek.com>
+Date:   Tue, 2 Feb 2021 17:22:52 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, Sean.Wang@mediatek.com,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, robin.chiu@mediatek.com,
+        Eric.liang@mediatek.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <F933AA60-A9AA-48FC-8F59-4338891C50B6@holtmann.org>
+References: <20210202102618.27640-1-mark-yw.chen@mediatek.com>
+To:     Mark-YW.Chen@mediatek.com
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:09:38AM +0100, Juergen Gross wrote:
-> Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-> xenvif_rx_ring_slots_available() is no longer called only from the rx
-> queue kernel thread, so it needs to access the rx queue with the
-> associated queue held.
-> 
-> Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-> Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+Hi Mark,
 
-Acked-by: Wei Liu <wl@xen.org>
+> v4:
+> 1. add read chip info. from MediaTek bluetooth devices.
+> 2. support download firmware for MT7921U.
+> 
+> mark-yw.chen (2):
+>  Bluetooth: btusb: Fine-tune mt7663 mechanism.
+>  Bluetooth: btusb: Add protocol support for MediaTek MT7921U USB
+>    devices
+> 
+> drivers/bluetooth/btusb.c | 211 +++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 206 insertions(+), 5 deletions(-)
+
+both patches have been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
+
