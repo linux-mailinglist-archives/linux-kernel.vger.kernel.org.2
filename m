@@ -2,150 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464AA30B3FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335BF30B3FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhBBAQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:16:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S231396AbhBBAQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhBBAP4 (ORCPT
+        with ESMTP id S231377AbhBBAQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:15:56 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50A7C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 16:15:00 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id b21so13578583pgk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 16:15:00 -0800 (PST)
+        Mon, 1 Feb 2021 19:16:20 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BBCC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 16:15:39 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e1so17442161ilu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 16:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=c8//MWYPxllDiS7aiVWvuvZ5u+o3Llfwk59pxO392CA=;
-        b=wcbV8xCkVuGdJEFtGv7Xqp2eeynTTNbHizH/im84FIh/EIpCJzQ7zYjYIa9eBay/zD
-         H9zwuRAS2FRyJ6a0ktEVZLEO/NRXvbxRjIglMZ9hjl1AVzIECg93uRXgNd/ifpB0XLvn
-         VdhgySsn7/9NEzA0jo65SYPTJKi3NBJDVwa9QJ8O0YW06GTjWqNdakvOFFgLPoTkeZt0
-         03RRj/7aGLwp+7jl0sH3xlmBHcvGPWMEHYpzkbvxzGfgxR+vSNMQg1AYZFE0xKT9A62m
-         L+dUQA/X1ahqSIQ3jvfp8T9WxpUbD/xOTEd6EcetqxseBPMNIY2Toos6p+tbh8bd/c08
-         YZYw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TtPkc8bpmMTneY15LywBNFRCOF1XpYt1CfluJTqK46Q=;
+        b=fPs73iLwE/3/OQNCm5DLJZOGRdIHOzGY//w4JelVoihQ5TScKdW8kp4cEY4RdMrGTH
+         3COXxd7PHsD5skxi98iBMDq6PQvs3VShUQ5XGwTNCu/j62lC6aqi5xOqe9dN1klN54z3
+         7+YZ9UdiFRtz/An/zU80C+zrj5Dhw/f4OnyF07rcKRwCLvIhq16CKKnEixRZEMEFKoXp
+         hw4VL07l7AYmTRw1GJgykvDw5bOZfv48i/2tP1PU4zBEcI10Ikv3TkyjT+9eE4e12Gmt
+         b9D+8A87o2yEQcVyJZhcEOEyCF+LKwMWDWDzOq7NcsljCSXbKV4VSLcXIS6fbPX5orKu
+         ySiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=c8//MWYPxllDiS7aiVWvuvZ5u+o3Llfwk59pxO392CA=;
-        b=WyE4wG8zhcNpfpW8u0cQZNdBkrVTnTirmGZ/43Y/ds4zqfszF4f/Oz2gWzT0lMhr11
-         Zudoqd78ZmkwqGUZffj0j1a88H9wLOHqVVXK6vuAEwNxdsUXl2XYRJQGLuM+4xGFjVg/
-         YvXoTym1L7hHOTsgEU0IE7YI0UK1+u1Ci4l1gCf4Q1EZajSnH1LlwbFcNmS3i423HL+E
-         NxlHPjvgv1/PAA+NbygMqMgADW6dn9mhLapdJ+DStQAoyqFhy19g4qdMizw2vKz+N0iF
-         3CeJR0UTTuw1f6lTwB6WBGgjklwRdJZUZHaUFDt3Mr1j3gXhHGHC/3h069mQyxQsyjZ5
-         jDGw==
-X-Gm-Message-State: AOAM5315NWhOMWq2KhN3qV2Dn491YVYNtRM+6Zq2zIiVAQNMdywkzFuY
-        1+xRJmcaNzsEFBxCZnfP1cdBdw==
-X-Google-Smtp-Source: ABdhPJw53jcn5hSuIG8ub4KmD6MDqHvXydl0r2qjhnl1FjYpKiDzNi4jrAIH68xn7NOoahHTgkQgsg==
-X-Received: by 2002:a62:7acf:0:b029:1bd:e13a:fdbc with SMTP id v198-20020a627acf0000b02901bde13afdbcmr19006548pfc.52.1612224900461;
-        Mon, 01 Feb 2021 16:15:00 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:117a:7890:cdb4:ef1c? ([2601:646:c200:1ef2:117a:7890:cdb4:ef1c])
-        by smtp.gmail.com with ESMTPSA id x8sm564282pjf.55.2021.02.01.16.14.59
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TtPkc8bpmMTneY15LywBNFRCOF1XpYt1CfluJTqK46Q=;
+        b=oDZe4iv+GWfFgu91Yc+Cozo5qtv4VVcgQ89WYE3SCVxNSQnE0TQrkGZTTBI/WsW3+Z
+         gwfmfflo/Jja79DMhh0qe7K039dfK+9myhJGZcUJQ0anHj9Ow9fURxF15PcdkeE73Cr6
+         qTFJYHNrXTIbfOhNqfdBnW5xh2qhcWeFtVGYZzUruEgoyTG6PhKSsMR+m3X+DQ5RWmVm
+         y7p/ADL9PognbCDnh43nouI6c2oxE1Q82jE1MuHxRlkmLWI71nsyh4JFXaofr1xcwIYa
+         9v5dwFYu5ZKWtd7BdJLyvEb+skcFEJMnLCi+yNUJN8aZpnjtMHBVp6wwIuEEsNytpH2g
+         VS5w==
+X-Gm-Message-State: AOAM530LNoOYUqnjgUpO5lSl2SLeO8FUWpD2zrYVd9XPqVRNx8E0DAla
+        um61IPLTFaLmmpVzXv/FouiiXciZq13qJQ==
+X-Google-Smtp-Source: ABdhPJyQCMOZlh2c2kD+gonRir9By4SErR8TcJ6rsDlABjViJlwdqdfP88WMXwhP77L2Tc6VhKSH1Q==
+X-Received: by 2002:a92:a303:: with SMTP id a3mr14297577ili.114.1612224938937;
+        Mon, 01 Feb 2021 16:15:38 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id m11sm22907iln.44.2021.02.01.16.15.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 16:14:59 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC 15/20] mm: detect deferred TLB flushes in vma granularity
-Date:   Mon, 1 Feb 2021 16:14:58 -0800
-Message-Id: <8F37526F-8189-483A-A16E-E0EB8662AD98@amacapital.net>
-References: <A6E4897D-8D5A-4084-8288-8E43F3039921@gmail.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        X86 ML <x86@kernel.org>
-In-Reply-To: <A6E4897D-8D5A-4084-8288-8E43F3039921@gmail.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-X-Mailer: iPhone Mail (18C66)
+        Mon, 01 Feb 2021 16:15:38 -0800 (PST)
+Subject: Re: [PATCH net 3/4] net: ipa: use the right accessor in
+ ipa_endpoint_status_skip()
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210201232609.3524451-1-elder@linaro.org>
+ <20210201232609.3524451-4-elder@linaro.org>
+ <CAE1WUT6VOx=sS1K1PaJG+Ks06CMpoz_efCyNhFQhD83_YNLk5A@mail.gmail.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <5a415ba4-9d69-5479-3be0-c5e6167b0f8a@linaro.org>
+Date:   Mon, 1 Feb 2021 18:15:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAE1WUT6VOx=sS1K1PaJG+Ks06CMpoz_efCyNhFQhD83_YNLk5A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/1/21 6:02 PM, Amy Parker wrote:
+> On Mon, Feb 1, 2021 at 3:32 PM Alex Elder <elder@linaro.org> wrote:
+>>
+>> When extracting the destination endpoint ID from the status in
+>> ipa_endpoint_status_skip(), u32_get_bits() is used.  This happens to
+>> work, but it's wrong: the structure field is only 8 bits wide
+>> instead of 32.
+>>
+>> Fix this by using u8_get_bits() to get the destination endpoint ID.
+> 
+> Isn't
 
-> On Feb 1, 2021, at 2:04 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
->=20
-> =EF=BB=BF
->>=20
->> On Jan 30, 2021, at 4:11 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
->>=20
->> From: Nadav Amit <namit@vmware.com>
->>=20
->> Currently, deferred TLB flushes are detected in the mm granularity: if
->> there is any deferred TLB flush in the entire address space due to NUMA
->> migration, pte_accessible() in x86 would return true, and
->> ptep_clear_flush() would require a TLB flush. This would happen even if
->> the PTE resides in a completely different vma.
->=20
-> [ snip ]
->=20
->> +static inline void read_defer_tlb_flush_gen(struct mmu_gather *tlb)
->> +{
->> +    struct mm_struct *mm =3D tlb->mm;
->> +    u64 mm_gen;
->> +
->> +    /*
->> +     * Any change of PTE before calling __track_deferred_tlb_flush() mus=
-t be
->> +     * performed using RMW atomic operation that provides a memory barri=
-ers,
->> +     * such as ptep_modify_prot_start().  The barrier ensure the PTEs ar=
-e
->> +     * written before the current generation is read, synchronizing
->> +     * (implicitly) with flush_tlb_mm_range().
->> +     */
->> +    smp_mb__after_atomic();
->> +
->> +    mm_gen =3D atomic64_read(&mm->tlb_gen);
->> +
->> +    /*
->> +     * This condition checks for both first deferred TLB flush and for o=
-ther
->> +     * TLB pending or executed TLB flushes after the last table that we
->> +     * updated. In the latter case, we are going to skip a generation, w=
-hich
->> +     * would lead to a full TLB flush. This should therefore not cause
->> +     * correctness issues, and should not induce overheads, since anyhow=
- in
->> +     * TLB storms it is better to perform full TLB flush.
->> +     */
->> +    if (mm_gen !=3D tlb->defer_gen) {
->> +        VM_BUG_ON(mm_gen < tlb->defer_gen);
->> +
->> +        tlb->defer_gen =3D inc_mm_tlb_gen(mm);
->> +    }
->> +}
->=20
-> Andy=E2=80=99s comments managed to make me realize this code is wrong. We m=
-ust
-> call inc_mm_tlb_gen(mm) every time.
->=20
-> Otherwise, a CPU that saw the old tlb_gen and updated it in its local
-> cpu_tlbstate on a context-switch. If the process was not running when the
-> TLB flush was issued, no IPI will be sent to the CPU. Therefore, later
-> switch_mm_irqs_off() back to the process will not flush the local TLB.
->=20
-> I need to think if there is a better solution. Multiple calls to
-> inc_mm_tlb_gen() during deferred flushes would trigger a full TLB flush
-> instead of one that is specific to the ranges, once the flush actually tak=
-es
-> place. On x86 it=E2=80=99s practically a non-issue, since anyhow any updat=
-e of more
-> than 33-entries or so would cause a full TLB flush, but this is still ugly=
-.
->=20
+(I saw your second message.)
 
-What if we had a per-mm ring buffer of flushes?  When starting a flush, we w=
-ould stick the range in the ring buffer and, when flushing, we would read th=
-e ring buffer to catch up.  This would mostly replace the flush_tlb_info str=
-uct, and it would let us process multiple partial flushes together.=
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/net/ipa/ipa_endpoint.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+>> index 448d89da1e456..612afece303f3 100644
+>> --- a/drivers/net/ipa/ipa_endpoint.c
+>> +++ b/drivers/net/ipa/ipa_endpoint.c
+>> @@ -1164,8 +1164,8 @@ static bool ipa_endpoint_status_skip(struct ipa_endpoint *endpoint,
+>>                  return true;
+> 
+> A few lines above this, endpoint_id is initialized as u32. If we're
+> going for "correctness", endpoint_id should be a u8. But of course,
+> this would contrast with ipa_endpoint having it as a u32.
+
+You are correct, endpoint_id is *defined* as type u32.
+
+But the issue here is that the field status->endp_dst_idx
+has type u8.  u32_get_bits() assumes the field it is
+passed has type u32; while u8_get_bits() takes a u8.
+
+The return value of u8_get_bits() is u8, as you might
+suspect.  The C standard guarantees that the u8 value
+will be promoted to the u32 target type here.
+
+>>          if (!status->pkt_len)
+>>                  return true;
+>> -       endpoint_id = u32_get_bits(status->endp_dst_idx,
+>> -                                  IPA_STATUS_DST_IDX_FMASK);
+>> +       endpoint_id = u8_get_bits(status->endp_dst_idx,
+>> +                                 IPA_STATUS_DST_IDX_FMASK);
+>>          if (endpoint_id != endpoint->endpoint_id)
+>>                  return true;
+>>
+>> --
+>> 2.27.0
+>>
+> 
+> As far as I see it, using u32_get_bits instead of u8_get_bits simply
+> eliminates confusion about the type of endpoint_id. Perhaps instead of
+> this patch, send a patch with a comment that while u32_get_bits is
+> used, the field is only 8 bits?
+
+No.  We really want to extract a sub-field from the u8
+value passed to u8_get_bits() (not u32_get_bits()).
+
+Does that make sense?
+
+					-Alex
+
+
+> Best regards,
+> Amy Parker
+> (she/her/hers)
+> 
+
