@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92CB30CB28
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D8630CB38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239564AbhBBTOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        id S239640AbhBBTRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239186AbhBBTMZ (ORCPT
+        with ESMTP id S239519AbhBBTOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:12:25 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFB1C0617AA;
-        Tue,  2 Feb 2021 11:11:44 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id x71so23925297oia.9;
-        Tue, 02 Feb 2021 11:11:44 -0800 (PST)
+        Tue, 2 Feb 2021 14:14:18 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5C1C0613ED;
+        Tue,  2 Feb 2021 11:13:37 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a8so29575793lfi.8;
+        Tue, 02 Feb 2021 11:13:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ska71jiHojC54SOYCBQ1AKHCS3X3JTpfbQsFpLGOP0c=;
-        b=raM/FPGkdCZz1KmHU8ngiCRO/kehkjF1I6X0oa9wNdobKMGo4aA8QtePyfzrV3qOKh
-         UYXLRoV2aEd+AzB30u83r/xfF5WVOpp6ewx0gJNEofxz+Lw+JAk3m7SCIJPw7sAhE9jx
-         XPPSTuoVfD2DzDxUXMu4h9QCVNCWAevZ7zw6G4vsX7ABq8r9VJL4pxHtN1ciQ8IhC3W5
-         JFOuR8zn5ETP/GLmddvMJZNA83XyvfDapILkKj4YvRZDpB/F8S0E1AIy+R1B988+MVL/
-         p/8PF5gtaOuA2ApfAQW/rBbqhwa4WpFMNllcYXO2XCJcKt0/0axs0y6YkyDL+fSWMt6p
-         wPiQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ti+SnrqAH/0Tc4A4Abslaivo8HMiDpiHUB8vKR58GDw=;
+        b=ephl6gjqGHlTsdvTdIVUtzb67nBWtZbdDKxYFbl5ty7e04/qfiRJW6B0g14zpvZP2W
+         8v9qsZ5oLAbZ6iMzmiWUXq/XQDQbVmIezaeen2RNiLoNDAwwAMNN/iujQL+SJhtU4dun
+         Tce4STX39FyOq3FeGf/WlC+GABCw3t+2Pml+y/laIxPFN12TBPVYAdVz5OaA79/nqS3x
+         4t5v4XwV57bgBbSqDAvHywHv6APg7uNx4EIj5dIRcNNJn85D3udvnBHlNnv778upWAoZ
+         dq510L/EkbWwnUh2dyp+Dfbm7pJbs9pQBfzw7csebedB1PCHlrJHvn29m3LejpOQ49BI
+         hb9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ska71jiHojC54SOYCBQ1AKHCS3X3JTpfbQsFpLGOP0c=;
-        b=RtY2QkeSMndtdQMehtWfQhMOQepO+qoPl5DgXlgGBR41dzXgVcyHeGnD7LfMDqZwv9
-         Su38wMdRwi3+RQTsBvaYLNBgJgQC03O650orsVgT625Xeem7Jf7/GwJAhcrmAhK1iaXn
-         UnYgSyQt35Wi1oG+9r7mHUGfP56YlAaOwEeeDqtLETvqoriy2o3owKUEnl+7M2wwoS1g
-         P7//86X/5A9Eeu/gCPI2rToXmQI3gQiBxsMd2MHIm7IEmIcx3LiNcH6X8t/ay5jWaspC
-         xqsX1VZYYekiGSqlcFR4ChzBehJilnZ5cUcsLS9bMpSNBpJBtp+OgDVRMsecUHmg+k6Y
-         JeBA==
-X-Gm-Message-State: AOAM532NAX06aa940BdFdQHUJQV07ZSjP2j3x+6ERdXwjkBTH2JKcR0N
-        QjMdd9Y/uPVWY2Gu9009InjmDdS9+2ex0TWM4YwFGZv3V3k=
-X-Google-Smtp-Source: ABdhPJx0HkGblkDdLafb1qCDmr3Lo5CvcXHSsskkQ5s9ylD1ve6LTgZwK13heLHXImmHWfwtmz9VcKzjnuVS+eNjJkk=
-X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr3892391oiw.161.1612293103833;
- Tue, 02 Feb 2021 11:11:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ti+SnrqAH/0Tc4A4Abslaivo8HMiDpiHUB8vKR58GDw=;
+        b=TvIzS9DImXolx8xVG4OiGzKRf/QXYtJRNpQ8e7yK1M888vJaC/GQ3QZxv7k6ZiXAFX
+         3UXomwzrtAzz+ibS+Xc2f3AINZlj9Z/IxnN1datA6aR/tQBWRmiN8Sv9aifV3K127TS8
+         VLp411BOCEJBZ6CPic3odUzpaejKA9w7ISBJSkidvBCWFQfH6Tm5nQkwkRpJyws2Idfe
+         xssRb0fRqSYQ7zPfB5ddN7X9YWKQncEFCS10Y+kdxhihFjh+Ca6Xtg/I8lvZhpMzLUzz
+         C8WYBiBy8xSLw7ficowsbv4q38Os+XrZZGisEnffIZD7O9jMBNr7CjNf0x9wC3K1tatd
+         Jg9w==
+X-Gm-Message-State: AOAM533B3K66DKXDFDQQWbQiKm7g8gBdALXLkEbqh7LPSAAOPhOPyjP0
+        LswAs06aLLcI7dHp7Mc1dyg=
+X-Google-Smtp-Source: ABdhPJyM5hMXLtPcTE+bvMnPhU60nqy2i/9nc7bSQTSeDpcUZx3vwxO/s9YORLHgLXx2LKgFguWzWg==
+X-Received: by 2002:a05:6512:3190:: with SMTP id i16mr12096680lfe.200.1612293215695;
+        Tue, 02 Feb 2021 11:13:35 -0800 (PST)
+Received: from localhost.localdomain ([37.151.209.186])
+        by smtp.googlemail.com with ESMTPSA id p3sm3402591lfg.14.2021.02.02.11.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 11:13:34 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     casey@schaufler-ca.com
+Cc:     andreyknvl@google.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mhocko@suse.com,
+        penguin-kernel@i-love.sakura.ne.jp, serge@hallyn.com,
+        snovitoll@gmail.com,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] smackfs: restrict bytes count in smackfs write functions
+Date:   Wed,  3 Feb 2021 01:13:18 +0600
+Message-Id: <20210202191318.1402500-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <d0f9a341-281b-704c-04e4-4304ed17ba23@schaufler-ca.com>
+References: <d0f9a341-281b-704c-04e4-4304ed17ba23@schaufler-ca.com>
 MIME-Version: 1.0
-References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
- <20210202053307.GB28542@1wt.eu> <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
-In-Reply-To: <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Tue, 2 Feb 2021 11:11:32 -0800
-Message-ID: <CAE1WUT7zprk-3naBGwZk=bsVR8Od=PT0kqNO6EVBQUOG+F1h3w@mail.gmail.com>
-Subject: Re: Alternative compilers to GCC/Clang
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-gcc@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 8:26 AM Amy Parker <enbyamy@gmail.com> wrote:
-> > It compiles extremely fast, implements some subsets of gcc (a few
-> > attributes for example), but is far from being able to compile a kernel
->
-> Well, we'll see what I can do with that. :)
+> if PAGE_SIZE >= SMK_LOADSIZE all legitimate requests can be made
+> using PAGE_SIZE as a limit. Your example with 19990 spaces before
+> the data demonstrates that the interface is inadequately documented.
+> Tizen and Automotive Grade Linux are going to be fine with a PAGE_SIZE
+> limit. The best way to address this concern is to go ahead with the
+> PAGE_SIZE limit and create ABI documents for the smackfs interfaces.
+> I will take your patch for the former and create a patch for the latter.
 
-Well, just installed it and tried building the kernel. Fails every file. :)
-
-It's definitely something to work towards - but I don't know if kernel
-advancements requiring newer GCC versions will go slow enough to allow
-TCC improvements to arise. This isn't just something like with Clang
-where a few tweaks to files and to Clang itself did the trick.
+Please let me know if there is anything else required for this patch.
+AFAIU, we agreed with PAGE_SIZE as the limit.
