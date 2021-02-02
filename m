@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B17630C16B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEF530C132
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhBBOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:22:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
+        id S234280AbhBBOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:15:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234209AbhBBON0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:13:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2796504F;
-        Tue,  2 Feb 2021 13:53:06 +0000 (UTC)
+        id S233898AbhBBOKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:10:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D296503A;
+        Tue,  2 Feb 2021 13:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273987;
-        bh=y+/6JOiMOOSr3Rf4Ca/V6WVy1L6mHxCIbGUPnkTn6AI=;
+        s=korg; t=1612273869;
+        bh=oXlgI/FwgbHEt8TA6tUSLHdkEelemYyZBZpzZSLbGZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fuhoLbfOZx379hbLOHbZzq7O8rkqyFtPayI2YxJqAfuferDfWu2xyauiC7asw5p0u
-         UANtFPAgWzIYmCpPo4fufEqLP4OV1OTI28OdbUviM8vMvJ9DctM6QvH2z/iV60A9Kf
-         ZuBohQmnNUaZ3PyRHBHeigt52eBBTyIxqteyjah4=
+        b=iE/WDG4RvgBEV5Of8Izj8IjzjB7H4E23d9pslzkf3fJjugS7gzC1Q419jhS91Wdmp
+         zZZCgn+oqwD+Lf0qRDDqPYphPEuoUqKlf8l3dhwGAY2DvEPimv4EoEwQOtiT0x0JSx
+         Z/Ch/vJhaOBptsxzIT3Uinl7FymndsorobKLF4y0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurent Badel <laurentbadel@eaton.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.19 10/37] PM: hibernate: flush swap writer after marking
+        stable@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Joerg Roedel <jroedel@suse.de>,
+        Filippo Sironi <sironi@amazon.de>
+Subject: [PATCH 4.9 30/32] iommu/vt-d: Dont dereference iommu_device if IOMMU_API is not built
 Date:   Tue,  2 Feb 2021 14:38:53 +0100
-Message-Id: <20210202132943.325340169@linuxfoundation.org>
+Message-Id: <20210202132943.219130518@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Badel <laurentbadel@eaton.com>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-commit fef9c8d28e28a808274a18fbd8cc2685817fd62a upstream.
+commit 9def3b1a07c41e21c68a0eb353e3e569fdd1d2b1 upstream.
 
-﻿Flush the swap writer after, not before, marking the files, to ensure the
-signature is properly written.
+Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+with no supported address widths") dmar.c needs struct iommu_device to
+be selected. We can drop this dependency by not dereferencing struct
+iommu_device if IOMMU_API is not selected and by reusing the information
+stored in iommu->drhd->ignored instead.
 
-Fixes: 6f612af57821 ("PM / Hibernate: Group swap ops")
-Signed-off-by: Laurent Badel <laurentbadel@eaton.com>
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This fixes the following build error when IOMMU_API is not selected:
+
+drivers/iommu/dmar.c: In function ‘free_iommu’:
+drivers/iommu/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
+ 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
+                                                ^
+
+Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Acked-by: David Woodhouse <dwmw@amazon.co.uk>
+Link: https://lore.kernel.org/r/20201013073055.11262-1-brgl@bgdev.pl
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+[ - context change due to moving drivers/iommu/dmar.c to
+    drivers/iommu/intel/dmar.c
+  - set the drhr in the iommu like in upstream commit b1012ca8dc4f
+    ("iommu/vt-d: Skip TE disabling on quirky gfx dedicated iommu") ]
+Signed-off-by: Filippo Sironi <sironi@amazon.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/power/swap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/dmar.c        |    3 ++-
+ include/linux/intel-iommu.h |    2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -491,10 +491,10 @@ static int swap_writer_finish(struct swa
- 		unsigned int flags, int error)
- {
- 	if (!error) {
--		flush_swap_writer(handle);
- 		pr_info("S");
- 		error = mark_swapfiles(handle, flags);
- 		pr_cont("|\n");
-+		flush_swap_writer(handle);
+--- a/drivers/iommu/dmar.c
++++ b/drivers/iommu/dmar.c
+@@ -1110,6 +1110,7 @@ static int alloc_iommu(struct dmar_drhd_
  	}
  
- 	if (error)
+ 	drhd->iommu = iommu;
++	iommu->drhd = drhd;
+ 
+ 	return 0;
+ 
+@@ -1124,7 +1125,7 @@ error:
+ 
+ static void free_iommu(struct intel_iommu *iommu)
+ {
+-	if (intel_iommu_enabled && iommu->iommu_dev)
++	if (intel_iommu_enabled && !iommu->drhd->ignored)
+ 		iommu_device_destroy(iommu->iommu_dev);
+ 
+ 	if (iommu->irq) {
+--- a/include/linux/intel-iommu.h
++++ b/include/linux/intel-iommu.h
+@@ -447,6 +447,8 @@ struct intel_iommu {
+ 	struct device	*iommu_dev; /* IOMMU-sysfs device */
+ 	int		node;
+ 	u32		flags;      /* Software defined flags */
++
++	struct dmar_drhd_unit *drhd;
+ };
+ 
+ static inline void __iommu_flush_cache(
 
 
