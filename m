@@ -2,121 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4601A30B84A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048D130B867
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhBBHE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbhBBHC5 (ORCPT
+        id S232531AbhBBHIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:08:47 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:17938 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232508AbhBBHIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:02:57 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00027C061756;
-        Mon,  1 Feb 2021 23:02:16 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id k25so21716550oik.13;
-        Mon, 01 Feb 2021 23:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6C9jt/6KxKNI0ezRD+MueHVWKLwHrnHbGoKiSrDh4Uk=;
-        b=J1oKhx9CaBvCt8hzUuwHMNy4gPNUhBKMfkJAlClJm/qYeIQR7frtxcFn1etLDY0miO
-         MDJ7kGgIm5gslAgt5gRnEFhSakFZBN46qI5t+mzfTQfVGoTHnx7FH1nqiPo3EWrGoMw6
-         qJDHHNi/nENgmdm6/J03xppqFtgroKpkk8cKJXzlZfCBf1Lz5AydLwfMKntj1Ti8wm9v
-         qhG0qqO8r0AbTNxSZ1ZJEPRzUpGBYZ9ZzJ2/yaX16tOazwhAP/zYLkfn37GdcjM96OTh
-         +ThndwLKA+D7Y1gh9e+AxNYw1xY8+JDHeqwCjrq8W3jDmRzBbEqvygs7slEBOlPZM8qc
-         hCMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6C9jt/6KxKNI0ezRD+MueHVWKLwHrnHbGoKiSrDh4Uk=;
-        b=HoNd7tF6cZ19fTAduye0BKz35zL8zVKipNvDKIigKLU0W02UIO/9HV5scv2AlVD5Fg
-         hmGGwazpIWXYrWogS3YGizgW8CKAEB0foI4w1FYvZN9B+QWuM2KORT/VCX2dSnjmHClp
-         5xpDTrzmMMtEPt2ssE20TGnWjJ9hr/9P/syJxHCwEaZ4h1RKOXDWYxXeYnJaWlMmVguY
-         DykS3KurdnOxllBPbgz4UldGvcLc2Rd+RRIEJPjPzE4yUqkzdmTKfVHnaY5Jgi2iqx17
-         cmSQZeZawbuxRuqWuA3Ce/2mOKOzQsDYsHknaGj4a96fDTfxgjGQFFuLEfnUwIoz1yaB
-         41Hw==
-X-Gm-Message-State: AOAM531PZY29x6ykHC0zP4wTkfKe6GYf2CpYhhbFccBaUNHhLtDwzTJH
-        J4WMynO3fRBGjCO5lOYONDQ=
-X-Google-Smtp-Source: ABdhPJxO0De8BobalEGebOu3MbJMAXe1SmvJcxPZxpNPkOOjh03HzC49YZoqLDLyJujzxy2AcZSg7w==
-X-Received: by 2002:aca:5988:: with SMTP id n130mr1870437oib.60.1612249336466;
-        Mon, 01 Feb 2021 23:02:16 -0800 (PST)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id d3sm4705650ooi.42.2021.02.01.23.02.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 23:02:15 -0800 (PST)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] rtw88: 8821c: Add RFE 2 support
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Tony Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:REALTEK WIRELESS DRIVER (rtw88)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Huang <tehuang@realtek.com>
-References: <20200805084559.30092-1-kai.heng.feng@canonical.com>
- <c0c336d806584361992d4b52665fbb82@realtek.com>
- <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
- <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
- <871rdz7zjf.fsf@codeaurora.org>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <e4f2fe2b-52a2-7b39-6758-decf22d82eb6@lwfinger.net>
-Date:   Tue, 2 Feb 2021 01:02:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 2 Feb 2021 02:08:18 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 11274eAp003392;
+        Tue, 2 Feb 2021 16:04:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11274eAp003392
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612249482;
+        bh=b2jPOlkmNQEQwNHcvOIubOJ6oDXT0fTKYaGEmlHljAI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ueStfIRG5Kl3BNbhbUI+1XErXYBed+C5Jh8MnATHP9lkxK1OPYAlfvj/RtamHV8zj
+         9Q/n6GroGELc152fNd91JuIgemZpOSKoDrYe2lBHtgZoEVoBFA9mXcgX10QqawDv1W
+         Xkvrdpy911mi+dNTLCX7d9TGTkt+1gchbISTycZ6/o0LLSxp3l6qG0JFb/Qu9WAZ2U
+         q63DivUoTZYnQmRFXgehWgq7ugRH/r05woY9m3GcizA4e3HmJO1Nq/+GjpvvJvx928
+         rmgl8QfD3vEHFz0gyu483qLBzG++IuO5AuKr/mRPbysfs5S2yZnraS+0pcbZvmzYqR
+         I5t+s0cWbt1fA==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Peter Jones <pjones@redhat.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-efi@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
+Date:   Tue,  2 Feb 2021 16:02:16 +0900
+Message-Id: <20210202070218.856847-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <871rdz7zjf.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 12:29 AM, Kalle Valo wrote:
-> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
-> 
->> On Wed, Aug 5, 2020 at 7:24 PM Kai-Heng Feng
->> <kai.heng.feng@canonical.com> wrote:
->>>
->>> Hi Tony,
->>>
->>>> On Aug 5, 2020, at 19:18, Tony Chuang <yhchuang@realtek.com> wrote:
->>>>
->>>>> 8821CE with RFE 2 isn't supported:
->>>>> [   12.404834] rtw_8821ce 0000:02:00.0: rfe 2 isn't supported
->>>>> [   12.404937] rtw_8821ce 0000:02:00.0: failed to setup chip efuse info
->>>>> [   12.404939] rtw_8821ce 0000:02:00.0: failed to setup chip information
->>>>>
->>>>
->>>> NACK
->>>>
->>>> The RFE type 2 should be working with some additional fixes.
->>>> Did you tested connecting to AP with BT paired?
->>>
->>> No, I only tested WiFi.
->>>
->>>> The antenna configuration is different with RFE type 0.
->>>> I will ask someone else to fix them.
->>>> Then the RFE type 2 modules can be supported.
->>>
->>> Good to know that, I'll be patient and wait for a real fix.
->>
->> It's been quite some time, is support for RFE type 2 ready now?
-> 
-> It looks like this patch should add it:
-> 
-> https://patchwork.kernel.org/project/linux-wireless/patch/20210202055012.8296-4-pkshih@realtek.com/
-> 
-New firmware (rtw8821c_fw.bin) is also needed. That is available at 
-https://github.com/lwfinger/rtw88.git.
+CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
+CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
 
-Larry
+When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
+all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
+used in <linux/printk.h>, which is included from most of source files.
+
+In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
+
+  arch/x86/platform/uv/uv_nmi.c
+  drivers/firmware/efi/libstub/efi-stub-helper.c
+  drivers/tty/sysrq.c
+  kernel/printk/printk.c
+
+So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
+kernel, it is enough to recompile those 4 files.
+
+Remove the CONSOLE_LOGLEVEL_DEFAULT definition from <linux/printk.h>,
+and use CONFIG_CONSOLE_LOGLEVEL_DEFAULT directly.
+
+With this, the build system will rebuild the minimal number of objects.
+
+Steps to confirm it:
+
+  [1] Do the full build
+  [2] Change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from 'make menuconfig' etc.
+  [3] Rebuild
+
+  $ make
+    SYNC    include/config/auto.conf
+    CALL    scripts/checksyscalls.sh
+    CALL    scripts/atomic/check-atomics.sh
+    DESCEND  objtool
+    CHK     include/generated/compile.h
+    CC      kernel/printk/printk.o
+    AR      kernel/printk/built-in.a
+    AR      kernel/built-in.a
+    CC      drivers/tty/sysrq.o
+    AR      drivers/tty/built-in.a
+    CC      drivers/firmware/efi/libstub/efi-stub-helper.o
+    STUBCPY drivers/firmware/efi/libstub/efi-stub-helper.stub.o
+    AR      drivers/firmware/efi/libstub/lib.a
+    AR      drivers/built-in.a
+    GEN     .version
+    CHK     include/generated/compile.h
+    UPD     include/generated/compile.h
+    CC      init/version.o
+    AR      init/built-in.a
+    LD      vmlinux.o
+    ...
+
+For the same reason, do likewise for CONSOLE_LOGLEVEL_QUIET and
+MESSAGE_LOGLEVEL_DEFAULT.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/x86/platform/uv/uv_nmi.c                  |  2 +-
+ drivers/firmware/efi/libstub/efi-stub-helper.c |  6 +++---
+ drivers/tty/sysrq.c                            |  4 ++--
+ drivers/video/fbdev/core/fbcon.c               |  2 +-
+ drivers/video/fbdev/efifb.c                    |  2 +-
+ include/linux/printk.h                         | 10 ----------
+ init/main.c                                    |  2 +-
+ kernel/printk/printk.c                         |  6 +++---
+ 8 files changed, 12 insertions(+), 22 deletions(-)
+
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index eafc530c8767..4751299c7416 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -100,7 +100,7 @@ static cpumask_var_t uv_nmi_cpu_mask;
+  * Default is all stack dumps go to the console and buffer.
+  * Lower level to send to log buffer only.
+  */
+-static int uv_nmi_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
++static int uv_nmi_loglevel = CONFIG_CONSOLE_LOGLEVEL_DEFAULT;
+ module_param_named(dump_loglevel, uv_nmi_loglevel, int, 0644);
+ 
+ /*
+diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+index aa8da0a49829..3e8d8f706589 100644
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -12,7 +12,7 @@
+ #include <linux/ctype.h>
+ #include <linux/efi.h>
+ #include <linux/kernel.h>
+-#include <linux/printk.h> /* For CONSOLE_LOGLEVEL_* */
++#include <linux/printk.h> /* For CONSOLE_LOGLEVEL_DEBUG */
+ #include <asm/efi.h>
+ #include <asm/setup.h>
+ 
+@@ -21,7 +21,7 @@
+ bool efi_nochunk;
+ bool efi_nokaslr = !IS_ENABLED(CONFIG_RANDOMIZE_BASE);
+ bool efi_noinitrd;
+-int efi_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
++int efi_loglevel = CONFIG_CONSOLE_LOGLEVEL_DEFAULT;
+ bool efi_novamap;
+ 
+ static bool efi_nosoftreserve;
+@@ -213,7 +213,7 @@ efi_status_t efi_parse_options(char const *cmdline)
+ 		if (!strcmp(param, "nokaslr")) {
+ 			efi_nokaslr = true;
+ 		} else if (!strcmp(param, "quiet")) {
+-			efi_loglevel = CONSOLE_LOGLEVEL_QUIET;
++			efi_loglevel = CONFIG_CONSOLE_LOGLEVEL_QUIET;
+ 		} else if (!strcmp(param, "noinitrd")) {
+ 			efi_noinitrd = true;
+ 		} else if (!strcmp(param, "efi") && val) {
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 959f9e121cc6..e0ae7793155e 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -103,7 +103,7 @@ static void sysrq_handle_loglevel(int key)
+ 	int i;
+ 
+ 	i = key - '0';
+-	console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
++	console_loglevel = CONFIG_CONSOLE_LOGLEVEL_DEFAULT;
+ 	pr_info("Loglevel set to %d\n", i);
+ 	console_loglevel = i;
+ }
+@@ -584,7 +584,7 @@ void __handle_sysrq(int key, bool check_mask)
+ 	 * routing in the consumers of /proc/kmsg.
+ 	 */
+ 	orig_log_level = console_loglevel;
+-	console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
++	console_loglevel = CONFIG_CONSOLE_LOGLEVEL_DEFAULT;
+ 
+         op_p = __sysrq_get_key_op(key);
+         if (op_p) {
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index bf61598bf1c3..75b97268663f 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -1043,7 +1043,7 @@ static void fbcon_init(struct vc_data *vc, int init)
+ 
+ 	info = registered_fb[con2fb_map[vc->vc_num]];
+ 
+-	if (logo_shown < 0 && console_loglevel <= CONSOLE_LOGLEVEL_QUIET)
++	if (logo_shown < 0 && console_loglevel <= CONFIG_CONSOLE_LOGLEVEL_QUIET)
+ 		logo_shown = FBCON_LOGO_DONTSHOW;
+ 
+ 	if (vc != svc || logo_shown == FBCON_LOGO_DONTSHOW ||
+diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+index e57c00824965..dfb234a0a59d 100644
+--- a/drivers/video/fbdev/efifb.c
++++ b/drivers/video/fbdev/efifb.c
+@@ -160,7 +160,7 @@ static void efifb_show_boot_graphics(struct fb_info *info)
+ 	}
+ 
+ 	/* Avoid flashing the logo if we're going to print std probe messages */
+-	if (console_loglevel > CONSOLE_LOGLEVEL_QUIET)
++	if (console_loglevel > CONFIG_CONSOLE_LOGLEVEL_QUIET)
+ 		return;
+ 
+ 	/* bgrt_tab.status is unreliable, so we don't check it */
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index fe7eb2351610..fd34b3aa2f90 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -46,22 +46,12 @@ static inline const char *printk_skip_headers(const char *buffer)
+ 
+ #define CONSOLE_EXT_LOG_MAX	8192
+ 
+-/* printk's without a loglevel use this.. */
+-#define MESSAGE_LOGLEVEL_DEFAULT CONFIG_MESSAGE_LOGLEVEL_DEFAULT
+-
+ /* We show everything that is MORE important than this.. */
+ #define CONSOLE_LOGLEVEL_SILENT  0 /* Mum's the word */
+ #define CONSOLE_LOGLEVEL_MIN	 1 /* Minimum loglevel we let people use */
+ #define CONSOLE_LOGLEVEL_DEBUG	10 /* issue debug messages */
+ #define CONSOLE_LOGLEVEL_MOTORMOUTH 15	/* You can't shut this one up */
+ 
+-/*
+- * Default used to be hard-coded at 7, quiet used to be hardcoded at 4,
+- * we're now allowing both to be set from kernel config.
+- */
+-#define CONSOLE_LOGLEVEL_DEFAULT CONFIG_CONSOLE_LOGLEVEL_DEFAULT
+-#define CONSOLE_LOGLEVEL_QUIET	 CONFIG_CONSOLE_LOGLEVEL_QUIET
+-
+ extern int console_printk[];
+ 
+ #define console_loglevel (console_printk[0])
+diff --git a/init/main.c b/init/main.c
+index c68d784376ca..4dfcbf7f24c6 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -236,7 +236,7 @@ static int __init debug_kernel(char *str)
+ 
+ static int __init quiet_kernel(char *str)
+ {
+-	console_loglevel = CONSOLE_LOGLEVEL_QUIET;
++	console_loglevel = CONFIG_CONSOLE_LOGLEVEL_QUIET;
+ 	return 0;
+ }
+ 
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 5a95c688621f..92b93340905c 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -61,10 +61,10 @@
+ #include "internal.h"
+ 
+ int console_printk[4] = {
+-	CONSOLE_LOGLEVEL_DEFAULT,	/* console_loglevel */
+-	MESSAGE_LOGLEVEL_DEFAULT,	/* default_message_loglevel */
++	CONFIG_CONSOLE_LOGLEVEL_DEFAULT,	/* console_loglevel */
++	CONFIG_MESSAGE_LOGLEVEL_DEFAULT,	/* default_message_loglevel */
+ 	CONSOLE_LOGLEVEL_MIN,		/* minimum_console_loglevel */
+-	CONSOLE_LOGLEVEL_DEFAULT,	/* default_console_loglevel */
++	CONFIG_CONSOLE_LOGLEVEL_DEFAULT,	/* default_console_loglevel */
+ };
+ EXPORT_SYMBOL_GPL(console_printk);
+ 
+-- 
+2.27.0
 
