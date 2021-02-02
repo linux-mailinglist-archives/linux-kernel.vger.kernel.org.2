@@ -2,138 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC61B30C5F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB1C30C617
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbhBBQfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S236485AbhBBQiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236570AbhBBQdA (ORCPT
+        with ESMTP id S236511AbhBBQeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:33:00 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC42C061573;
-        Tue,  2 Feb 2021 08:28:01 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id e70so20342320ote.11;
-        Tue, 02 Feb 2021 08:28:01 -0800 (PST)
+        Tue, 2 Feb 2021 11:34:50 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF89FC061D7F;
+        Tue,  2 Feb 2021 08:29:21 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id d6so19623703ilo.6;
+        Tue, 02 Feb 2021 08:29:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=LDgn1SWNf0wdSg79ulwE3dp31gPMMknk60I4YXAyX/U=;
-        b=I0Vk99hXLVShvyTDdHUmBfjqYZ+gzW08ZP79/2EVNaHxQPpJ+bf+1xQk2fU6mocd3D
-         qRCYVaEu58j5PIJJ+MEDpbJL8uHCvdInI5Er8rSEVOYrJxH3Zaw104i/PwsjTpx8Mxnu
-         0RZYnwezyQvQuKyFq2IbRYITb19zt+Tuucwx0tMvuBnUDDArFSSKMuyBkLUKmSc9FPJj
-         2L5C8jPCpvnq4/r2XyRcSIBcx/nZw6mKHM8tM/hDVk/P9QB46oJsUaLYVzUf0Q4QFfnX
-         oKj9j7UMT78JuCiGFzVrAHTWyLNo3up+yOzIsVCu4it+nrHAcpRWTEm1u1wPFG/qDtl0
-         eYYg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=acTr1665vWrpkNtr60MLNyhztGeZCGtXmoVAckbTx+Y=;
+        b=vaTAaaqvRwgGSpX8k2TeCxg6+UctH1IP5fl7yVZ+fUtjTNxK1p5ADAIg9xEKcAPzjH
+         YOnP4O8ZQNKONgkEr8fdJsF7UE7JlJrelRcawSVxScn9hlrerRzm6YchWoQOGnJP9Xr0
+         puSa6PTtrMUap7LHOPThrADpRf4Hn2BjqM3eJJArI1quNyMYZzQghx7ioqS8NHv8c0Pm
+         dhmxoywyJOhpkRCcZMap0S9QJnXlfoNGHA2/v8ipQY3s4/fnsnJnKy0+OcslnqDBLmNs
+         VIy9fNIpoyR317pXgOIP1jfBG/nSqe/HVwu7JsuSp5Lm7o4VOyc+NwDvA/wDD6dBrfhS
+         Y2dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=LDgn1SWNf0wdSg79ulwE3dp31gPMMknk60I4YXAyX/U=;
-        b=atn3MTo9N73IlPtmudQfBDimTntbv+afpQMIVfGX3qEm3jhrcP/bVbW2F/d05sybuM
-         BKBQAnhlqhMN9qDhpXVO+oVUwYXOAVLVZL9z90KDWkkl0tJr0uwrYRWlPzcP55HZDn3J
-         6Th/ERNj0UNk405fOkXo9zhUNfjjNuo+sc9mn/QrYPZS1GqAWdvzrc+C5lABEKEBx0zq
-         YEs0HJIGVaxqQCWT4rtxR9M6sFbvqPEB1jfkYVJV/bqWI6xSkfxPW47OesPWG0fVYK/Z
-         w+VVSTLHNJYgoeP1flYP9Y/xKR9ygKYNl8QJ9zx6gTIRugZv7MPJNnMortnH/KbNYFVz
-         dESQ==
-X-Gm-Message-State: AOAM531cAYC7fjlEiud6UA8IfBLn4XUlZziTN6smwkAZr6t69qaec6WJ
-        VELktPyW4bi5twQVlTV4WeY=
-X-Google-Smtp-Source: ABdhPJw22UCJZeQrbyeJq+KwF3PVuOvt5fNhj7g/A6PaUTp2SvnOSZTCqekJXXq/On84+Dcnx517Rg==
-X-Received: by 2002:a9d:7151:: with SMTP id y17mr15921335otj.39.1612283281433;
-        Tue, 02 Feb 2021 08:28:01 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a22sm4685260otp.53.2021.02.02.08.28.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Feb 2021 08:28:00 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 2 Feb 2021 08:27:59 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>, netdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: fec: Silence M5272 build warnings
-Message-ID: <20210202162759.GD159455@roeck-us.net>
-References: <20210202130650.865023-1-geert@linux-m68k.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=acTr1665vWrpkNtr60MLNyhztGeZCGtXmoVAckbTx+Y=;
+        b=AorFgz7P95iHVI6FEDrIRGf9x/yGCiGQYxBYi2D+1FAxPi4yERvc0LdBuagZux7TvU
+         km6S21ij1MAUHVUuALqdR/XrtZoIH/zAK7xnto1XqvZYC7idRUFDYDUsarKXJ6Ixoo5J
+         YWk2RN2t5vmd6csNNj6Bmu7grDv8xnuLp+ZwNoxlQiitbtIAcz6kiSBzos43m0/a8Bt8
+         ogSgd3HmQvuxUXc5ASkZZ+hcFSHNSBR/WNhbgqqc8Gwg+sFrC18D7WR6CZ4aDQ4NCzDR
+         44FJSYqQ+B9wHz8blxInvJgtTeniA7lBsGgTG+uKK4Si/RYflThZ1ZiiktHjp2ofU11q
+         rITA==
+X-Gm-Message-State: AOAM532J9xpsIESmnOTLXX5i6yL8GHSAW/DygYjbXCZ4iIPs02zOEV2N
+        96mNDRadfw7fJSKBnUZHMAU=
+X-Google-Smtp-Source: ABdhPJyVkCpyhBPcGEzCX9BZlz3e2ANuVAXl3WPVurb8TqOjoOZStgOY/tpnwGS4ylRb+mKYIt7ErA==
+X-Received: by 2002:a05:6e02:18c9:: with SMTP id s9mr20776364ilu.265.1612283361413;
+        Tue, 02 Feb 2021 08:29:21 -0800 (PST)
+Received: from llvm-development.us-central1-a.c.llvm-285123.internal (1.45.188.35.bc.googleusercontent.com. [35.188.45.1])
+        by smtp.googlemail.com with ESMTPSA id k11sm10844005ilo.8.2021.02.02.08.29.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:29:20 -0800 (PST)
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v3] ext4: Enable code path when DX_DEBUG is set
+Date:   Tue,  2 Feb 2021 16:28:37 +0000
+Message-Id: <20210202162837.129631-1-viniciustinti@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210202080508.GA3550351@infradead.org>
+References: <20210202080508.GA3550351@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210202130650.865023-1-geert@linux-m68k.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 02:06:50PM +0100, Geert Uytterhoeven wrote:
-> If CONFIG_M5272=y:
-> 
->     drivers/net/ethernet/freescale/fec_main.c: In function ‘fec_restart’:
->     drivers/net/ethernet/freescale/fec_main.c:948:6: warning: unused variable ‘val’ [-Wunused-variable]
->       948 |  u32 val;
-> 	  |      ^~~
->     drivers/net/ethernet/freescale/fec_main.c: In function ‘fec_get_mac’:
->     drivers/net/ethernet/freescale/fec_main.c:1667:28: warning: unused variable ‘pdata’ [-Wunused-variable]
->      1667 |  struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
-> 	  |                            ^~~~~
-> 
-> Fix this by moving the variable declarations inside the existing #ifdef
-> blocks.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Clang with -Wunreachable-code-aggressive is being used to try to find
+unreachable code that could cause potential bugs. There is no plan to
+enable it by default.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+The following code was detected as unreachable:
 
-> ---
->  drivers/net/ethernet/freescale/fec_main.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index 9ebdb0e54291b204..3db882322b2bd3e8 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -945,7 +945,6 @@ static void
->  fec_restart(struct net_device *ndev)
->  {
->  	struct fec_enet_private *fep = netdev_priv(ndev);
-> -	u32 val;
->  	u32 temp_mac[2];
->  	u32 rcntl = OPT_FRAME_SIZE | 0x04;
->  	u32 ecntl = 0x2; /* ETHEREN */
-> @@ -997,7 +996,8 @@ fec_restart(struct net_device *ndev)
->  
->  #if !defined(CONFIG_M5272)
->  	if (fep->quirks & FEC_QUIRK_HAS_RACC) {
-> -		val = readl(fep->hwp + FEC_RACC);
-> +		u32 val = readl(fep->hwp + FEC_RACC);
-> +
->  		/* align IP header */
->  		val |= FEC_RACC_SHIFT16;
->  		if (fep->csum_flags & FLAG_RX_CSUM_ENABLED)
-> @@ -1664,7 +1664,6 @@ static int fec_enet_rx_napi(struct napi_struct *napi, int budget)
->  static void fec_get_mac(struct net_device *ndev)
->  {
->  	struct fec_enet_private *fep = netdev_priv(ndev);
-> -	struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
->  	unsigned char *iap, tmpaddr[ETH_ALEN];
->  
->  	/*
-> @@ -1695,6 +1694,8 @@ static void fec_get_mac(struct net_device *ndev)
->  		if (FEC_FLASHMAC)
->  			iap = (unsigned char *)FEC_FLASHMAC;
->  #else
-> +		struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
-> +
->  		if (pdata)
->  			iap = (unsigned char *)&pdata->mac;
->  #endif
-> -- 
-> 2.25.1
-> 
+fs/ext4/namei.c:831:17: warning: code will never be executed
+[-Wunreachable-code]
+                        unsigned n = count - 1;
+                                     ^~~~~
+fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
+explicitly dead
+                if (0) { // linear search cross check
+                    ^
+                    /* DISABLES CODE */ ( )
+
+This has been present since commit ac27a0ec112a ("[PATCH] ext4: initial
+copy of files from ext3") and fs/ext3 had it present at the beginning of
+git history. It has not been changed since.
+
+This patch moves the code to a new function `htree_rep_invariant_check`
+which only performs the check when DX_DEBUG is set. This allows the
+function to be used in other parts of the code.
+
+Suggestions from: Andreas, Christoph, Nathan, Nick and Ted.
+
+Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
+---
+ fs/ext4/namei.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index cf652ba3e74d..a6e28b4b5a95 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -731,6 +731,29 @@ struct stats dx_show_entries(struct dx_hash_info *hinfo, struct inode *dir,
+ 		       (space/bcount)*100/blocksize);
+ 	return (struct stats) { names, space, bcount};
+ }
++
++/*
++ * Linear search cross check
++ */
++static inline void htree_rep_invariant_check(struct dx_entry *at,
++					     struct dx_entry *target,
++					     u32 hash, unsigned int n)
++{
++	while (n--) {
++		dxtrace(printk(KERN_CONT ","));
++		if (dx_get_hash(++at) > hash) {
++			at--;
++			break;
++		}
++	}
++	ASSERT(at == target - 1);
++}
++#else /* DX_DEBUG */
++static inline void htree_rep_invariant_check(struct dx_entry *at,
++					     struct dx_entry *target,
++					     u32 hash, unsigned int n)
++{
++}
+ #endif /* DX_DEBUG */
+ 
+ /*
+@@ -827,20 +850,7 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
+ 				p = m + 1;
+ 		}
+ 
+-		if (0) { // linear search cross check
+-			unsigned n = count - 1;
+-			at = entries;
+-			while (n--)
+-			{
+-				dxtrace(printk(KERN_CONT ","));
+-				if (dx_get_hash(++at) > hash)
+-				{
+-					at--;
+-					break;
+-				}
+-			}
+-			ASSERT(at == p - 1);
+-		}
++		htree_rep_invariant_check(entries, p, hash, count - 1);
+ 
+ 		at = p - 1;
+ 		dxtrace(printk(KERN_CONT " %x->%u\n",
+-- 
+2.25.1
+
