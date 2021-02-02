@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC7A30B460
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D8C30B468
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBBBCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        id S229590AbhBBBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:05:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBBBCo (ORCPT
+        with ESMTP id S229530AbhBBBFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:02:44 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556BFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:02:04 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id b3so491008wrj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:02:04 -0800 (PST)
+        Mon, 1 Feb 2021 20:05:00 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028A1C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:04:20 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id 7so18645134wrz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:04:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jQ1WfUQt71q9l47M9pw0jo5iRtif7JjLaJa1M/+QKNA=;
-        b=sfxw6+zLWDJRfH56sqKa94m7XlcE20QqtuZWiUdSqnAbENFGMkOTIrsrFcV+gfwjph
-         mATOGJxGfnmlFvSnAxTObjuQIqbZpUeNzcSlthCa3peNPkbDy8VwwHZswGFsxRveHsFa
-         OlzLAMaQKawooUlRGX0XYqL6M+RRBuWMi8Pz/TF2uSMSglFHIc8zbQz3MLspMr+93EEk
-         hvMf7XUMSLKe3bWRt6/HPX6BKTAJh0DyO8K3pSAEgw6jpmziL/0iJyvw6DuGwl9p+QQO
-         hOSQkQpkinfRhRSQmWsfTR7IScQcvkPSmck6Iax0Cs1avxUqNeGTaXhIWaEx3mLmd+w2
-         gD+A==
+        bh=9Zh2Ei6J61XQxwQGIOp0JjNjlDIhrnbirBPmQD0bdfE=;
+        b=oAq5tF2giAnF45SikHwCnfJ/wedC8EeUwTbA9Xj81mtid2GED8hf+tcDz5ofDAk317
+         Fppcmk4PAncYIQh4qiEBMLQ9hI2XMwTQaxLakLvLXyC0gSvobWI1m5Moy+vPe2DeSYFe
+         lguwTOuTfogmRYcze/aKTYtC9cye3ylJrwMi1Jpzu4yNv8e7IDp2F/gOygZUNu7PSmct
+         qbA3KYuxMnPww+TJfeydaQRrB+5WhALpNiGlx+khPIViqqawzIw2Lq4gVG6JWFgkPDvA
+         sysMD2kmf36qyUbNUWxlRYMbb/kCdaxqzxeZDYWcmOgKX0IYUIzE2NBDijHwBXDXwKbl
+         CKbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jQ1WfUQt71q9l47M9pw0jo5iRtif7JjLaJa1M/+QKNA=;
-        b=qybQyqS1DArAPHkZQxJ5sUxwX2Rh+SZ2GTBvF7RqgfBzL4rfhonP0Z/QgPGAxUCEGB
-         ONVMFBEHg6aNdJK6/0Fz39/C3W4NanfFWtdhaeQSZlhAsB4xHHFPXWO6+4ww1eSsDlLK
-         6gofldTzGl62V+rWt+KbZh/XU7iUYfoor03rxWxpWm/cQxSdwQp1t3Zs0wbnc2cdREXk
-         0/BES77DZ6xKRmhOZAcV7/UsDQcZSGEWiW4TtfL9eNNY/JUx6whAoUurC7Mr99ZpYj18
-         Od9nbK6ksLljsEH0hcw/WKfqX7Hsxn+cMRjv0KYy2X+tAhNqdexCqgjb6fRDmPcRtqvn
-         ZRsQ==
-X-Gm-Message-State: AOAM533t33ofdGe7DfI1zoGHpp9J2+CekMKCTKIYQUoMC9k85ttvSkVN
-        Cbj0P2obwxKHKcNR8meknPsRIEksrLc7BJ7ZeQQ=
-X-Google-Smtp-Source: ABdhPJyN9lDOFpf6i67VfzNyhPIg+MgZptmc6lM8lXHJwQb7WZhKmtjZOl8MQcPqYywrkpcTepEhBr4RoZMPZwLMUnU=
-X-Received: by 2002:a5d:69ce:: with SMTP id s14mr20175051wrw.206.1612227723132;
- Mon, 01 Feb 2021 17:02:03 -0800 (PST)
+        bh=9Zh2Ei6J61XQxwQGIOp0JjNjlDIhrnbirBPmQD0bdfE=;
+        b=d+nM0G4SlcxX4wsk9D7TnBsXoY2Vvs3CoLtlYtxCElX5I9YoTLYlXAck4jO6C3tsaz
+         pw5zF1kETPTZ/S0n0IiiMy/in07ksoA6iYI8sBBiW5xP5dYYxO+a6adSs5D+WXKd+KZT
+         NVLgADR09HNdPyry3YKQgHUwON8XklaFJEma3gMrv63+wpBdnwkEuAqVRPJPw8dHq160
+         3zhm4WPaWxbsxHvFyEpTmIGR95gZ9TRQ8pwhXVgDbsrqVPCdlg25JvZ9u/iGNDN88aD+
+         XTkY65SX8vIvfe44qAgJBELHIZkK3C3eJplypju9X1nrYeoKusg9p3uBCYejycDRxNJd
+         0Nng==
+X-Gm-Message-State: AOAM5337yATh3UWMgsJ07kuYS/zfY//Q1n7QtxZRufdTLTAM9JfXSz1V
+        CivCnJrUXPgMTYaYCFPEA025soqM2B1U94qVTAQ=
+X-Google-Smtp-Source: ABdhPJzgYO8rG50sO+X2rVodTZe3f9r/4Cc5A9+EWJ7mWEPGrb9BUttVfkcu8UVWXTTk+U2kkzsGYdd6g2rGkiO1bdQ=
+X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr20353628wrt.130.1612227858834;
+ Mon, 01 Feb 2021 17:04:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127105121.20345-1-lukasz.luba@arm.com> <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
- <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
-In-Reply-To: <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
+References: <20210127194047.21462-1-christianshewitt@gmail.com>
+ <CAKGbVbtaDHmukvfF=sfSmWHVdAYoF6-i4RTzsPQ6zfsjHcGNCw@mail.gmail.com> <2c8d2b9e-c1cc-1157-19de-409957ecf9da@arm.com>
+In-Reply-To: <2c8d2b9e-c1cc-1157-19de-409957ecf9da@arm.com>
 From:   Qiang Yu <yuq825@gmail.com>
-Date:   Tue, 2 Feb 2021 09:01:51 +0800
-Message-ID: <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
+Date:   Tue, 2 Feb 2021 09:04:07 +0800
+Message-ID: <CAKGbVbuLRvZaZNfU-pi=7vqJZO2zOHAkrjTo6vs9BKLrV21O8g@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/lima: add governor data with pre-defined thresholds
 To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, lima@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian Hewitt <christianshewitt@gmail.com>
+        lima@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
-
-Thanks for the explanation. So the deferred timer option makes a mistake that
-when GPU goes from idle to busy for only one poll periodic, in this
-case 50ms, right?
-But delayed timer will wakeup CPU every 50ms even when system is idle, will this
-cause more power consumption for the case like phone suspend?
+OK, I see. Patch is also:
+Reviewed-by: Qiang Yu <yuq825@gmail.com>
 
 Regards,
 Qiang
 
-
-On Mon, Feb 1, 2021 at 5:53 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+On Mon, Feb 1, 2021 at 5:59 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> Hi Qiang,
 >
-> On 1/30/21 1:51 PM, Qiang Yu wrote:
-> > Thanks for the patch. But I can't observe any difference on glmark2
-> > with or without this patch.
-> > Maybe you can provide other test which can benefit from it.
 >
-> This is a design problem and has impact on the whole system.
-> There is a few issues. When the device is not checked and there are
-> long delays between last check and current, the history is broken.
-> It confuses the devfreq governor and thermal governor (Intelligent Power
-> Allocation (IPA)). Thermal governor works on stale stats data and makes
-> stupid decisions, because there is no new stats (device not checked).
-> Similar applies to devfreq simple_ondemand governor, where it 'tires' to
-> work on a loooong period even 3sec and make prediction for the next
-> frequency based on it (which is broken).
+> On 1/30/21 1:57 PM, Qiang Yu wrote:
+> > This patch gets minor improvement on glmark2 (160->162).
 >
-> How it should be done: constant reliable check is needed, then:
-> - period is guaranteed and has fixed size, e.g 50ms or 100ms.
-> - device status is quite recent so thermal devfreq cooling provides
->    'fresh' data into thermal governor
->
-> This would prevent odd behavior and solve the broken cases.
+> It has bigger impact when the load is changing and the frequency
+> is stuck to min w/o this patch.
 >
 > >
-> > Considering it will wake up CPU more frequently, and user may choose
-> > to change this by sysfs,
-> > I'd like to not apply it.
+> > Seems there's no way for user to change this value, do we?
+> > Or there's work pending to expose it to sysfs?
 >
-> The deferred timer for GPU is wrong option, for UFS or eMMC makes more
-> sense. It's also not recommended for NoC busses. I've discovered that
-> some time ago and proposed to have option to switch into delayed timer.
-> Trust me, it wasn't obvious to find out that this missing check has
-> those impacts. So the other engineers or users might not know that some
-> problems they faces (especially when the device load is changing) is due
-> to this delayed vs deffered timer and they will change it in the sysfs.
+> True there is no user sysfs. I've proposed a patch to export these via
+> sysfs. Chanwoo is going to work on it. When it will land mainline, it's
+> probably a few months. So for now, the fix makes sense.
 >
 > Regards,
 > Lukasz
 >
-> >
-> > Regards,
-> > Qiang
-> >
