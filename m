@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A695E30CCD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37D230CD0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240407AbhBBUKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:10:49 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:32979 "EHLO ozlabs.org"
+        id S233657AbhBBU1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:27:14 -0500
+Received: from gate.crashing.org ([63.228.1.57]:33561 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240488AbhBBUJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:09:58 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DVbVz6mXjz9tl7;
-        Wed,  3 Feb 2021 07:09:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612296556;
-        bh=tbOypyd8KY8FX7ans6NU/EulP2Nyi/rkMwWZTX0QPb8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Fk9bYFDhCWX3Z2y0c4zOM9WM+c5VEu/u/AFXSN6ajm0XU7ihe1jAEaQZQ/PfljKyo
-         aanwidZIsDm87fRKjBvftXpGf9kTSt2iw1C9k7PyqqZ5Ek/ykgy0dGCy6q3DEi8E2R
-         VDEC/V/YPZv2YDgqVKmEQ0ratGo6XsuDmaKoJJu8dKwUVM9vSTsP6/rbOa6+5KrUac
-         uypCde/ZMOlhEYtwfJ+Zg6VkIG63yYnk4rTEXOdXHxjUnMUrXfb9NBaxzOP48uBb8B
-         r9AXWOIqQ5GE/MvQY009TcCUAI7iUNjuvAgtWqtR3W2K1TwiWEWPBVOxy+EzYE6lsB
-         w5bMRGTc3qlEQ==
-Date:   Wed, 3 Feb 2021 07:09:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the fscache tree
-Message-ID: <20210203070915.06a1a574@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//NSZVaMyddnlu+peJXIJPMj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232545AbhBBUSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:18:10 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 112KAiAK011475;
+        Tue, 2 Feb 2021 14:10:44 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 112KAhnm011470;
+        Tue, 2 Feb 2021 14:10:43 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 2 Feb 2021 14:10:43 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "msuchanek@suse.de" <msuchanek@suse.de>,
+        Paul Mackerras <paulus@samba.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 11/23] powerpc/syscall: Rename syscall_64.c into syscall.c
+Message-ID: <20210202201042.GB30983@gate.crashing.org>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu> <ff9dd4accdc897013594768833d54444e4823bf9.1611585031.git.christophe.leroy@csgroup.eu> <1611656343.yaxha7r2q4.astroid@bobo.none> <d9993f034db848d1afeffa322373b811@AcuMS.aculab.com> <1611791083.sqnnh21vv0.astroid@bobo.none> <0cf90825-da89-6464-98d4-dc7490bff557@csgroup.eu> <1612247170.ea0f766ml4.astroid@bobo.none>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612247170.ea0f766ml4.astroid@bobo.none>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//NSZVaMyddnlu+peJXIJPMj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 02, 2021 at 04:38:31PM +1000, Nicholas Piggin wrote:
+> > So to avoid confusion, I'll rename it. But I think "interrupt" is maybe not the right name. An 
+> > interrupt most of the time refers to IRQ.
+> 
+> That depends what you mean by interrupt and IRQ.
 
-Hi all,
+In the PowerPC architecture, an exception is an abnormal condition, and
+that can often cause an interrupt.  What Christophe colloquially calls
+an "IRQ" here is called an external exception c.q. external interrupt.
 
-In commit
+> But if you say irq it's more likely to mean
+> a device interrupt, and "interrupt" usually refres to the asynch
+> ones.
 
-  51721d69bb95 ("afs: Fix error handling in afs_req_issue_op()")
+Power talks about "instruction-caused interrupts", for one aspect of the
+difference here; and "precise" / "imprecise" interrupts for another.
 
-Fixes tag
+> So it's really fine to use the proper arch-specific names for things
+> in arch code. I'm trying to slowly change names from exception to
+> interrupt.
 
-  Fixes: 0dd1a43b5d74 ("afs: Fix error handling in afs_req_issue_op()")
+Thanks :-)
 
-has these problem(s):
+> > For me system call is not an interrupt in the way it 
+> > doesn't unexpectedly interrupt a program flow. In powerpc manuals it is generally called exceptions, 
+> > no I'm more inclined to call it exception.c
+> 
+> Actually that's backwards. Powerpc manuals (at least the one I look at) 
+> calls them all interrupts including system calls, and also the system
+> call interrupt is actually the only one that doesn't appear to be
+> associated with an exception.
 
-  - Target SHA1 does not exist
+Yeah.  You could easily make such an exception, which is set when you
+execute a system call instruction, and cleared when the interrupt is
+taken, of course; but the architecture doesn't.
 
-I have no idea which commit you meant :-(
+> And on the other hand you can deal with exceptions in some cases without
+> taking an interrupt at all. For example if you had MSR[EE]=0 you could
+> change the decrementer or execute msgclr or change HMER SPR etc to clear
+> various exceptions without ever taking the interrupt.
 
---=20
-Cheers,
-Stephen Rothwell
+A well-known example is the exception bits in the FPSCR, which do not
+cause an interrupt unless the corresponding enable bits are also set.
 
---Sig_//NSZVaMyddnlu+peJXIJPMj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAZsWsACgkQAVBC80lX
-0Gz0eAf+OgewCqE7g3a23ijoTvcnfwF+pyxc677fv+d9MmLtrpECCqNSkZK6nWU6
-NNcVL/ClEvibREsUIVrYPSx4s70VbSIimJiOJgVcNefpg453QErwmhN0chxL3QD5
-fhXV/WWiR2rb6kpKcenRb8D1RQN8NzPGpJSb3oBw2GmQWbCj8cVKckLTvf+OnX2t
-KNb4F8NYbYFIUFwny3QxFXDnaOxPoFhlDYG8nRhWc/kFFL0ZwssnhNzQbWAGamba
-2lOe8DjHTylJQZGRiiGWs1WcOTLUwFNLvxlF9wZTknlYhadJPs8OZiiskhGEO8mx
-ARM5g7lR2cjNwasL6xRsH40Z61LQVQ==
-=d3cl
------END PGP SIGNATURE-----
-
---Sig_//NSZVaMyddnlu+peJXIJPMj--
+Segher
