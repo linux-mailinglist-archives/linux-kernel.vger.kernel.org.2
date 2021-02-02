@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F25730CF94
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F333130CF9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbhBBXDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236121AbhBBXCw (ORCPT
+        id S236061AbhBBXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:05:59 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:22160 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhBBXF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:02:52 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5BAC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 15:02:11 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id d5so6140959otc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 15:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XGGgE9xbLQzvIfmDO0cdQ0AC2QlXscqj6q7EJ+IMmFM=;
-        b=DT4ONh4pI/pF5jcB4d5SDi6QIrzKbnFB+yX6kaR5IVP+21bDSRorBa8DbuUSfq6u1U
-         20+RNjU+DSb2WWP7hR+HFRaK2q8Pr3EwfvF0lN7U7hxLF/arEIL/+TvlX0PNX5KZnHYo
-         LXgiAEc5XclfLALiJl/zP1f04hk8GYc6gnjgv1kqvgWOZR6nWkkyNggiPYrWuxVQra8f
-         b2C/D7dtgXFyLjhRLeGV7f92a4Oa9y34gSedLOwZz8vjrhfrMGJNMdsAIgdMm2KjI48q
-         iSFNBEsELlPpDfQK5lMRKH/UjxUq8JToeTV9Dwz0MvXWB0tW6JgzpUUu1hoEjfpCO0vS
-         hoNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XGGgE9xbLQzvIfmDO0cdQ0AC2QlXscqj6q7EJ+IMmFM=;
-        b=c5irI61dATxJw70UhN+AYRbz8YXwvXpBk9nzkAgV+e79E94uzQBQeZSIdJEmGpuzaa
-         K2pfs5UJ6K2SI8+lqkizwIRZH2YeeG6NmU1C6rBRSDqmmTGgy2xfslF6UirEqvaXbbB4
-         mGcpYyaxcarTITyd+gFE7C2xozN/uXn0PLRt73t8ofLC9TktbxvFnm/DEJ4iMRy9gM3A
-         YZhtMu9y8l3J9r7Pfu7PQr8teokl3U107nE7jdcaxl5NWid68Y7O0JzkH2Ff/74is4B5
-         Jm8SelMbFnF1XW41uR/VoXHSybeubKAzvdnhsKMJgvURpm7PBNIC5z+8FS20g9KhTdya
-         dL5g==
-X-Gm-Message-State: AOAM530dXpQubf9y1JFDmfEJ3H0JmlASkVTlTHXYXDKG4O/MnaEsY++g
-        6Q9eGnEJNVAz+LiQEsKqYGEJHQ==
-X-Google-Smtp-Source: ABdhPJzCG++xaEY5rOt60SAJJi86UczJMGRaSnKu5WBUd5ezFl1KTI4M6w++OEHELGtK4wRZYzR3Zg==
-X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr22184otq.103.1612306931321;
-        Tue, 02 Feb 2021 15:02:11 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u25sm67993otg.40.2021.02.02.15.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 15:02:10 -0800 (PST)
-Date:   Tue, 2 Feb 2021 17:02:08 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <YBnZ8O+zI/dzrjDQ@builder.lan>
-References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
- <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
+        Tue, 2 Feb 2021 18:05:56 -0500
+X-Greylist: delayed 57464 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 18:05:53 EST
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 112N4khF003133;
+        Wed, 3 Feb 2021 08:04:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 112N4khF003133
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612307086;
+        bh=UGA0Rplim8ZfC6e4whP20xTht9RzqhbWWxLaXhzWRUA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tOBe0hEHHf9tvmT3rHNnjBL9ugZuudIECWVtYvCik/AC2pP1I4bqBET4RIJ/vBKSB
+         0aRw/i7F91TD/PzkclnU2rVRXFMEw6JAzCx93I17/rKXeFG7l0py1WRGJG2fQCZQLj
+         q99jD6spPDWOLAzyv0+yHJdvetuJ0mv8N9l2T+24C2KTXwMzAOnAFXBCq1xn8EfdZh
+         EqvYL29bZ/OMZE6jEBXdHTulk62/GRSs0uLVCRks7bcTqFsH9kUUbnniWFdepR5nay
+         nVRHIn7crbFdyzki6dQc69GxxIU1dobMhHCeavZav8fqc5flWT+QiFEmuYa9o3WH3Q
+         4bzZRX2Ms/k9g==
+X-Nifty-SrcIP: [209.85.214.177]
+Received: by mail-pl1-f177.google.com with SMTP id u11so13344353plg.13;
+        Tue, 02 Feb 2021 15:04:46 -0800 (PST)
+X-Gm-Message-State: AOAM532yuR3F6Vl6z+NNFjFuGpuWcQl1WLAEmHtTkrLsMp8b4+WdKjrw
+        hQrJrSp9A9DIdg9f51DuZe3ED7EZv7t5beQT7aU=
+X-Google-Smtp-Source: ABdhPJxvtHfeu+crGL+CyXAo0FUYVHkXnleiaiv+dMA4n8+oso6WU2K79gP3aD12VFT56j8XRv47GWHWmTyr4FAXNxk=
+X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr88481pjb.153.1612307085830;
+ Tue, 02 Feb 2021 15:04:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
+References: <20210202070218.856847-1-masahiroy@kernel.org> <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
+In-Reply-To: <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 3 Feb 2021 08:04:08 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQh=bMuyEinKzr6t28E2TuSWAhYU=M+jeJ+HiNhjQN=3A@mail.gmail.com>
+Message-ID: <CAK7LNAQh=bMuyEinKzr6t28E2TuSWAhYU=M+jeJ+HiNhjQN=3A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andy@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Peter Jones <pjones@redhat.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 05 Dec 09:56 CST 2020, Serge Semin wrote:
+On Tue, Feb 2, 2021 at 7:09 PM Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> On (21/02/02 16:02), Masahiro Yamada wrote:
+> >
+> > CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
+> > CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
+> >
+> > When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
+> > all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
+> > used in <linux/printk.h>, which is included from most of source files.
+> >
+> > In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
+> >
+> >   arch/x86/platform/uv/uv_nmi.c
+> >   drivers/firmware/efi/libstub/efi-stub-helper.c
+> >   drivers/tty/sysrq.c
+> >   kernel/printk/printk.c
+> >
+> > So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
+> > kernel, it is enough to recompile those 4 files.
+>
+> Do you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT so often that it becomes a
+> problem?
+>
+>         -ss
 
-> In accordance with the USB HCD/DRD schema all the USB controllers are
-> supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> existing DT-nodes will be renamed in a subsequent patch let's first make
-> sure the DWC3 Qualcomm driver supports them and second falls back to the
-> deprecated naming so not to fail on the legacy DTS-files passed to the
-> newer kernels.
-> 
 
-Felipe, will you merge this, so that I can merge the dts patch depending
-on this into the Qualcomm DT tree?
 
-Regards,
-Bjorn
+<linux/printk.h> is one of most included headers,
+so it is worth downsizing.
 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index c703d552bbcf..49ad8d507d37 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->  	struct device		*dev = &pdev->dev;
->  	int			ret;
->  
-> -	dwc3_np = of_get_child_by_name(np, "dwc3");
-> +	dwc3_np = of_get_child_by_name(np, "usb") ?:
-> +		  of_get_child_by_name(np, "dwc3");
->  	if (!dwc3_np) {
->  		dev_err(dev, "failed to find dwc3 core child\n");
->  		return -ENODEV;
-> -- 
-> 2.29.2
-> 
+CONSOLE_LOGLEVEL_DEFAULT is not such a parameter
+that printk() users need to know.
+
+Changing CONFIG_CONSOLE_LOGLEVEL_DEFAULT results in
+the rebuilds of the entire tree, which is a flag of
+bad code structure.
+
+So, this is not only CONSOLE_LOGLEVEL_DEFAULT.
+<linux/printk.h> contains parameters
+and func declarations that printk() users
+do not need to know.
+
+Examples:
+CONSOLE_LOGLEVEL_DEFAULT
+log_buf_addr_get()
+log_buf_len_get()
+oops_in_progress
+...
+
+
+They are only needed for those who want
+to more closely get access to
+the printk internals.
+
+
+Ideally, such parameters and func
+declarations can go to the subsystems'
+local header (kernel/printk/internal.h)
+but when it is not possible,
+they can be separated out to
+a different header.
+
+
+I can see a similar idea in the consumer/provider
+model in several subsystems.
+
+Consumers and providers are often orthogonal,
+and de-coupling them clarifies
+who needs what.
+
+See other subsystems, for example,
+
+<linux/clk.h>           -  clk consumer
+<linux/clk-provider.h>  -  clk provider
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
