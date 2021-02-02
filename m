@@ -2,97 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361BB30CCD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8597930CCDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240503AbhBBUKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:10:42 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:41367 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240471AbhBBUIG (ORCPT
+        id S240425AbhBBULZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:11:25 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:60903 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238623AbhBBUKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:08:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612296485; x=1643832485;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RKeIouPfYkF0dzBJ5Fr1sj32s0c2UpAxGehgP0ipTIk=;
-  b=uJ99v+zInCceXDFxcWbQb53kxFD3o7OUp1wBaEoRo4An+CpVgE0G1iGc
-   MrD01HMfmbRuizuzlZTCMYEq2LAek5MbivyKWHYtXKPdI/INoIIiOHtDg
-   bEPqSA0ZTLoPb0WqBBmpNef9dvonUIiURHoEWPR/Wvbo/aCWBbTy23ZZ8
-   p4Y5LB+6n/UwUFYeMV/6rv7CQzFF5Ioj3H605813QJ9uslmkuwY8YJpA1
-   MMqV0UBHoqSwHC/kMjFpX1sXGcAm85r7sdBPc/tmU1eS/lmRPnl/7X2ET
-   hisqglL8ZsJHwAAiQL+3WVTAs04JbyC5Zg3OIx7XWpYVelTz0WwslGKca
-   g==;
-IronPort-SDR: 2xhiryMspxkpjTx8/URWFWFtt5AZqaoYtryTyoFruivUi+L6BjodWopkvomUtuzFv0TRs7RFLJ
- QCtdHBGyisQAQwHMJiKa4eZ9F2993pp8dvvqpQwH1WeGHCflqUfh8K9g15UFxbMl5tH2r87rBe
- ICS9IG3ZfSQsw3qIRPgwacdAuxk1ks5sunoGYO2waIcA5km5vo/VjojVsFKDJswHK4iSy91mc2
- Unq7G1oi5SU6sM1n/9Pa9qYk/hWSAYFb598US+0JC9hnbv9lZF/d3utjCizc4eXDgIaTbTQs9r
- glQ=
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="42661970"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Feb 2021 13:06:50 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 2 Feb 2021 13:06:50 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 2 Feb 2021 13:06:49 -0700
-Date:   Tue, 2 Feb 2021 21:06:49 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>, <andrew@lunn.ch>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>, <jiri@resnulli.us>,
-        <ivecera@redhat.com>, <davem@davemloft.net>, <roopa@nvidia.com>,
-        <nikolay@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next v2 0/4] bridge: mrp: Extend br_mrp_switchdev_*
-Message-ID: <20210202200649.mc7vpgltoqxf2oni@soft-dev3.localdomain>
-References: <20210127205241.2864728-1-horatiu.vultur@microchip.com>
- <20210129190114.3f5b6b44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <9143d15f-c41d-f0ab-7be0-32d797820384@prevas.dk>
- <20210202115032.6affffdc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210202115032.6affffdc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Tue, 2 Feb 2021 15:10:39 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 939075C034D;
+        Tue,  2 Feb 2021 15:09:49 -0500 (EST)
+Received: from imap4 ([10.202.2.54])
+  by compute1.internal (MEProxy); Tue, 02 Feb 2021 15:09:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=sA+AU/n4/I/xsAJBbgiEJO8oMY76
+        mKXx9sM4Uq7UJao=; b=hvj88uq8ZOXU6NVHVxZr6lcTussLMmrD/h2HQ2kQwrBn
+        cCTsjUyyVlc1uy7WdtAlk3xrHZk6wXVbWl7fWU8VUFQuxJ8025494lzcCsA8Hojw
+        KjXaUfQ/QRJx62eCM5jnNC2HQMXhJjQtpc2JE664M07m7t9pxnxhhiP9q/slmx/7
+        DRT8fVRIKsI8SjwkBFUwbi8jIPpcFW0Qyl76svn7wK6Ke3MeZCWwXpLMcLudBvjT
+        vchRWbs5dcr6YaOskTUq/SIgTjvuv//5ljuA/aMb8x13LPyOApYHjt4sIWU/UTEC
+        j1Tl/yH/wSSnfc4ZGKR8bSn+fsppKTCjT+rkp9jQzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sA+AU/
+        n4/I/xsAJBbgiEJO8oMY76mKXx9sM4Uq7UJao=; b=iWvsa85Q0cHzrxUmXXaNkx
+        O8aLhxi9X6EphpmeeMq4Yx3WVre5Oh/t/VXt+ml2PqL7YDDYBYqHYfgR0H1QFYXo
+        VnI6WC8AqGKiHuAhBtvEsgWb6+/j3z6egVMUlV1RNsQkEZPrk9T216rOtiJqt4iB
+        OPxZQDQt+iRy/6bVLlnZnZ9jQo/OWc0qsoOdl5ECsA7iFds6p4O2sL3IomFGYLTP
+        rxecZYqpXtJJId5/2ZPpRspns6tn0EeUr+teUn9hU+HpxWGTio9Q/bGAJtUyt7QM
+        pBs+7wt2scVOtrtr8BDeqVia7wJar+dMOe1H/mRLPfxtI4HyxFFYniWKxYcSt8iQ
+        ==
+X-ME-Sender: <xms:jLEZYBktTP4LPOMxIxrRrAv97WWg-_-bL_2O3NbblZvpbCItnlP0rQ>
+    <xme:jLEZYM3F9T-brSm7q_Xzr1BxgYK4bMVsO7sVPlRDYcrS6GLBLdIFyscQgR_FLj_wN
+    YfLVxA1S4DjZV1_nA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgedtgddufeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflohhh
+    nhcuvfhhohhmshhonhdfuceoghhithesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrih
+    hlrdgtohhmrdgruheqnecuggftrfgrthhtvghrnhepveehjedvhfeghefhtdehhfevheef
+    vedugeeiveffkeeuiefgudffffeujedvgffhnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepghhithesjhhohhhnthhhohhmshhonhdrfhgrshht
+    mhgrihhlrdgtohhmrdgruh
+X-ME-Proxy: <xmx:jLEZYHq-tyGbFULG6zRHb1n1zf2Ee9VJlnordVqfOTN4zGod7TGvkQ>
+    <xmx:jLEZYBkiuRk-Ey9hMB0vYyEU5rFVdOaVsbrRFo9xVTw0S40bKk47dA>
+    <xmx:jLEZYP2-xaG4MNM9tUDWmrTZlOkxOQmRic_uiUfkUPfJztkPzeyAnQ>
+    <xmx:jbEZYAz4_QHCbr2WclkSKVk2-nfqCDQUwe38ez9YU28O_6X7KMToHg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0AE3016064E; Tue,  2 Feb 2021 15:09:48 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <b21034dc-f511-448f-9c1d-68013c640608@www.fastmail.com>
+In-Reply-To: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
+References: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
+Date:   Tue, 02 Feb 2021 20:08:43 +0000
+From:   "John Thomson" <git@johnthomson.fastmail.com.au>
+To:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        "Richard Weinberger" <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH]_mtd:_spi-nor:_write_support_for_minor_aligned_?=
+ =?UTF-8?Q?partitions?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/02/2021 11:50, Jakub Kicinski wrote:
-> 
-> On Tue, 2 Feb 2021 08:40:02 +0100 Rasmus Villemoes wrote:
-> > On 30/01/2021 04.01, Jakub Kicinski wrote:
-> > > On Wed, 27 Jan 2021 21:52:37 +0100 Horatiu Vultur wrote:
-> > >> This patch series extends MRP switchdev to allow the SW to have a better
-> > >> understanding if the HW can implement the MRP functionality or it needs
-> > >> to help the HW to run it. There are 3 cases:
-> >
-> > >> v2:
-> > >>  - fix typos in comments and in commit messages
-> > >>  - remove some of the comments
-> > >>  - move repeated code in helper function
-> > >>  - fix issue when deleting a node when sw_backup was true
-> > >
-> > > Folks who were involved in previous MRP conversations - does this look
-> > > good to you? Anyone planning to test?
-> >
-> > I am planning to test these, but it's unlikely I'll get around to it
-> > this week unfortunately.
-> 
-> Horatiu are you okay with deferring the series until Rasmus validates?
-> Given none of this HW is upstream now (AFAIU) this is an awkward set
-> to handle. Having a confirmation from Rasmus would make us a little bit
-> more comfortable.
+On Mon, 4 Jan 2021, at 12:28, John Thomson wrote:
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct 
+> mtd_info *parent,
+>  	struct mtd_info *master = mtd_get_master(parent);
+>  	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
+>  			   master->writesize : master->erasesize;
+> +	int wr_alignment_minor;
 
-It is perfectly fine for me to wait for Rasmus to validate this series.
-Also I have started to have a look how to implement the switchdev calls
-for Ocelot driver. I might have something by the end of the week, but
-lets see.
+int wr_alignment_minor = 0;
 
+> +	if (!(child->flags & MTD_NO_ERASE)) {
+> 	wr_alignment = child->erasesize;
+> +	if (child->erasesize_minor)
+
+if (child->erasesize_minor && IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
+Config test wrap wr_alignment_minor being set,
+so that a partition on a minor boundary is only set writeable if the non-uniform erase path can be used.
+
+> +		wr_alignment_minor = child->erasesize_minor;
+> +	}
+
+> +		if (wr_alignment_minor) {
+
+smatch picked up a tested uninitialized symbol 'wr_alignment_minor' here,
+initialise as 0.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+> +		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
+
+If it is safe to boolean test the ints and u32, I should use this consistently?
+if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor)) {
+Or is it clearer to use the math tests?
+if ((wr_alignment_minor == 0) || (wr_alignment_minor > 0 && remainder_minor > 0)) {
+
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1225,7 +1225,11 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+>  
+>  static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+>  {
+> +#ifdef CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE
+
+if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
+and the closing brace better than the #ifdef here?
+
+> +	return false;
+> +#else
+>  	return !!nor->params->erase_map.uniform_erase_type;
+> +#endif
+>  }
+>  
+>  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+
+
+Otherwise, is this approach valid, or is there a better method I can use?
+
+Cheers,
 -- 
-/Horatiu
+  John Thomson
