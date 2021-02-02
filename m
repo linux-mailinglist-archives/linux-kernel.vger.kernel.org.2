@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5BD30BE0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CF930BE15
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhBBMTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhBBMR5 (ORCPT
+        id S231222AbhBBMT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:19:59 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11674 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhBBMTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:17:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB3C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 04:17:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k2RaVcotdcFu8XtC0FHhOwZVl2mL0n0CI/DzN9Tnq0k=; b=Mlq/Kbsh9al83KXXilK1z+etHY
-        Y8n56IRFwIVfPokruVKN9TPIMY+alFEyb5SDyf2oq+QFJX1LYSKwSvAE2/Nuc0bBlJHVhvr2Mu6iL
-        CzDdpFw6bUhbC4FIdH2Vmo/2wdUWTSfo14IT/T8jCQVFVUwotOw1dYQat1LoBFb3GXaOpr75PASZa
-        fSS5JO5CtZcfTX0s5TD5B6hcRcUe+DWp7GconOLA+4YNrBzZYbeVPvX3aDg0/bdAm70WKKjcy5mu/
-        kdmYkykXP/KM/jqOjdhGPp+29FyM6S5jVVqJlb7jMj6JMK2wAFs3QdUFlsnHPJ37ZoGcYgH3l/poc
-        ljrJKQmQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6ucG-00FAbn-Al; Tue, 02 Feb 2021 12:17:10 +0000
-Date:   Tue, 2 Feb 2021 12:17:08 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: Augmented Page Reclaim
-Message-ID: <20210202121708.GT308988@casper.infradead.org>
-References: <YBkT6175GmMWBvw3@google.com>
+        Tue, 2 Feb 2021 07:19:41 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DVP2R6VTVzlDtZ;
+        Tue,  2 Feb 2021 20:17:19 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Tue, 2 Feb 2021
+ 20:18:51 +0800
+Subject: Re: [PATCH v7 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
+ controller
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210202071648.1776-1-thunder.leizhen@huawei.com>
+ <20210202071648.1776-5-thunder.leizhen@huawei.com>
+ <CAK8P3a1HuXx7qpOPAdcGadtWCkNOp75bgO8cLSpXnobULHU6ZQ@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <99b8672c-467c-9698-40e7-aed7dc5d2ee2@huawei.com>
+Date:   Tue, 2 Feb 2021 20:18:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBkT6175GmMWBvw3@google.com>
+In-Reply-To: <CAK8P3a1HuXx7qpOPAdcGadtWCkNOp75bgO8cLSpXnobULHU6ZQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-It's hard to know which 'note' refers to which reference.  Here's
-my attempt to figure that out.
 
-On Tue, Feb 02, 2021 at 01:57:15AM -0700, Yu Zhao wrote:
-
-> Versatility
-> ===========
-> Userspace can trigger aging and eviction independently via the
-> ``debugfs`` interface [note]_ for working set estimation, proactive
-
-1. `Long-term SLOs for reclaimed cloud computing resources
-   <https://research.google/pubs/pub43017/>`_
-
-> reclaim, far memory tiering, NUMA-aware job scheduling, etc. The
-> metrics from the interface are easily interpretable, which allows
-> intuitive provisioning and discoveries like the Borg example above.
-> For a warehouse-scale computer, the interface is intended to be a
-> building block of a closed-loop control system, with a machine
-> learning algorithm being the controller.
+On 2021/2/2 16:44, Arnd Bergmann wrote:
+> On Tue, Feb 2, 2021 at 8:16 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>> +
+>> +/*
+>> + * All read and write operations on L3 cache registers are protected by the
+>> + * spinlock, except for l3cache_init(). Each time the L3 cache operation is
+>> + * performed, all related information is filled into its registers. Therefore,
+>> + * there is no memory order problem when only _relaxed() functions are used.
 > 
-> Simplicity
-> ==========
-> The workflow [note]_ is well defined and each step in it has a clear
-
-2. `Profiling a warehouse-scale computer
-   <https://research.google/pubs/pub44271/>`_
-
-> meaning. There are no magic numbers or heuristics involved but a few
-> basic data structures that have negligible memory footprint. This
-> simplicity has served us well as the scale and the diversity of our
-> workloads constantly grow.
-[...]
-> FAQ
-> ===
-> What is the motivation for this work?
-> -------------------------------------
-> In our case, DRAM is a major factor in total cost of ownership, and
-> improving memory overcommit brings a high return on investment.
-> Moreover, Google-Wide Profiling has been observing the high CPU
-> overhead [note]_ from page reclaim.
-
-3. `Evaluation of NUMA-Aware Scheduling in Warehouse-Scale Clusters
-   <https://research.google/pubs/pub48329/>`_
-
-> Why not try to improve the existing code?
-> -----------------------------------------
-> We have tried but concluded the two limiting factors [note]_ in the
-
-4. `Software-defined far memory in warehouse-scale computers
-   <https://research.google/pubs/pub48551/>`_
-
-> existing code are fundamental, and therefore changes made atop them
-> will not result in substantial gains on any of the aspects above.
+> Thank you for including the text.
 > 
-> What particular workloads does it help?
-> ---------------------------------------
-> This work optimizes page reclaim for workloads that are not IO bound,
-> because we find they are the norm on servers and clients in the cloud
-> era. It would most likely help any workloads that share the common
-> characteristics [note]_ we observed.
+> I don't think the explanation with the spin_lock() explains why this
+> can be considered safe though, as spin_lock() only contains serialization
+> against other CPUs (smp_mb()) rather than the stronger DMA barriers
+> implied by readl and writel. As Russell previously explained, these
+> barriers are the L1 cache operations (e.g. v7_dma_inv_range) do
+> include stronger barriers, so it would be better to come up with a
+> justification based on those.
 
-5. `Borg: the Next Generation
-   <https://research.google/pubs/pub49065/>`_
+Okay, I'll correct the description.
+
+> 
+>> + * This can help us achieve some performance improvement:
+>> + * 1) The readl_relaxed() is about 20ns faster than readl().
+>> + * 2) The writel_relaxed() is about 123ns faster than writel().
+> 
+> These are not really the performance numbers I asked for, as a
+> low-level benchmark comparing the instructions is rather meaningless.
+> The time spent waiting for the barrier depends on what else is going
+> on around the barrier. Also, most of the time would likely be
+> spent spinning in the loop around readl() while the cache operations
+> are in progress, so the latency of a single readl() is not necessarily
+> significant.
+> 
+> To have a more useful performance number, try mentioning the
+> most performance sensitive non-coherent DMA master on one
+> of the chips that has this cache controller, and a high-level
+> performance number such as "1.2% more network packets per
+> second" if that is something you can measure easily.
+
+It's not easy. My board only have debugging NIC, only the downstream
+products have high-speed service NIC. Software needs to be packaged
+layer by layer.
+
+> 
+> Of course, if all high-speed DMA masters on this chip are
+> cache coherent, there is no need for performance numbers, just
+> mention that we don't care about speed in that case.
+
+It's not cache coherent, otherwise, the L3 cache does not need to be
+operated.
+
+> 
+>         Arnd
+> 
+> .
+> 
 
