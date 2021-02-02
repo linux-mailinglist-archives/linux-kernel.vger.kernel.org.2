@@ -2,55 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2618D30B824
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7522F30B82A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhBBG47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:56:59 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:51842 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232168AbhBBG4M (ORCPT
+        id S232331AbhBBG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:57:13 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:44615 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232303AbhBBG45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:56:12 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNeszCN_1612248925;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNeszCN_1612248925)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 02 Feb 2021 14:55:25 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     myungjoo.ham@samsung.com
-Cc:     kyungmin.park@samsung.com, cw00.choi@samsung.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] PM / devfreq: remove unneeded semicolon
-Date:   Tue,  2 Feb 2021 14:55:24 +0800
-Message-Id: <1612248924-54419-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 2 Feb 2021 01:56:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612248992; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=mPwEiG7lR6/N/+INJTDsDxIcCXE0CuohFiHjM7roeUk=; b=Xfl2CwKabW/q1kTWxWjd/nzI9q9yiSTptzsLLX8psE+xIAAMmY/GvuPqv4ClA1THoIjj9qoZ
+ 65mF661slZHfSlI+QkhNI/OftdI9Iy7Ux+uWGhHVXblJji8D3MdDFV+jLlyhHyqsTqXyIqSx
+ H2zX93n3v6/Nh0eS+iHU9dnIst8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6018f77c4ee30634ebd2ad1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:55:56
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A1A84C433CA; Tue,  2 Feb 2021 06:55:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 013C9C433CA;
+        Tue,  2 Feb 2021 06:55:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 013C9C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [RFC]  Invalidate BH LRU during page migration
+Date:   Mon,  1 Feb 2021 22:55:46 -0800
+Message-Id: <cover.1612248395.git.cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./drivers/devfreq/rk3399_dmc.c:403:2-3: Unneeded semicolon
+A page containing buffer_heads can be pinned if any of its constituent
+buffer_heads belongs to the BH LRU cache [1]. After going through
+several iterations of a patch that attempts to solve this by removing
+BH entries inside of the drop_buffers() function, which in
+the worst-case could be called for each migrated page, Minchan Kim
+suggested that we invalidate the entire BH LRU once, just before we
+start migrating pages.  Additionally, Matthew Wilcox suggested that
+we invalidate the BH LRU inside of lru_add_drain_all(), so as to
+benefit functions like other functions that would be impacted by
+pinned pages [2].
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/devfreq/rk3399_dmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+TODO:
+ - It should be possible to remove the initial setting of
+   bh_migration_done = false; in migrate_prep by passing this in as a
+   parameter to invalidate_bh_lru(), but we'd still need a matching
+   bh_migration_done = true; call. 
+ - To really benefit other callers of lru_add_drain_all() other than
+   __alloc_contig_migrate_range() in the CMA allocaiton path, we'd need
+  to add additional calls of bh_migration_done = false;
 
-diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
-index 2e91216..9e9d3b4c 100644
---- a/drivers/devfreq/rk3399_dmc.c
-+++ b/drivers/devfreq/rk3399_dmc.c
-@@ -400,7 +400,7 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
- 	default:
- 		ret = -EINVAL;
- 		goto err_edev;
--	};
-+	}
- 
- no_pmu:
- 	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, 0, 0,
+[1] https://elixir.bootlin.com/linux/latest/source/fs/buffer.c#L1238
+[2] https://lore.kernel.org/linux-fsdevel/cover.1611642038.git.cgoldswo@codeaurora.org/
+
+
+Chris Goldsworthy (1):
+  [RFC] mm: fs: Invalidate BH LRU during page migration
+
+ fs/buffer.c                 |  6 ++++++
+ include/linux/buffer_head.h |  3 +++
+ include/linux/migrate.h     |  2 ++
+ mm/migrate.c                | 18 ++++++++++++++++++
+ mm/page_alloc.c             |  3 +++
+ mm/swap.c                   |  3 +++
+ 6 files changed, 35 insertions(+)
+
 -- 
-1.8.3.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
