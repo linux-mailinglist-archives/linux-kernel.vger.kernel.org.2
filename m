@@ -2,359 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6531B30B3F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB1E30B3F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhBBAOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S231285AbhBBAPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhBBAOG (ORCPT
+        with ESMTP id S231124AbhBBAPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:14:06 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17E9C061573;
-        Mon,  1 Feb 2021 16:13:26 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 8040849B;
-        Tue,  2 Feb 2021 00:13:26 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8040849B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1612224806; bh=mC5DYKkweiqxOilqrvYYf8Aa6yGW0+baHFWk2tJrhiw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ShcOrqj4oAY/RzEg1pdqN9CFKnIknh97/iZpOrAeszZxjjHMU+Ox9HCLX617z72DP
-         GJtSkK068v+5ZXC+SyWw8xdnjTPeOlOGKUlwfcHJk9rwDMaoi5J2T2iKXC1mzASsyj
-         SKhxnXf3dCl3WOFUAeyHEWZ4eOke42XNXaQJZrO3pUXeor5mytEnVrKJiMR1XDMWDv
-         x3TLoPLOnqyPgXfW8XP2uLbYq/Ylcc/cE9gtskNkt+uInX4+HYe2jzYREOlw32ozAg
-         zCkkJiasi0eYNWoSJozmp1gXBy3gRG8cNoHqrpVgdfg30RIclgePgjZ6wZmrxpFOY5
-         FIG4tYMX9ziVg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: [PATCH] Move our minimum Sphinx version to 1.7
-Date:   Mon, 01 Feb 2021 17:13:26 -0700
-Message-ID: <87zh0ntjh5.fsf@meer.lwn.net>
+        Mon, 1 Feb 2021 19:15:15 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B87C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 16:14:34 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id c2so20939873edr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 16:14:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KFucjoYJAjrzKJvfbUSDRADl/xduzdtfqGtMS5D6hPY=;
+        b=V6v5HElpTGs/PZ0hdhIcdtSp2EM0VozT5sHt9rLv77z3b28pRg+Qbs8IyZCLk6ECOf
+         T2rc3N59flLmzclde2mw4fIu7s+KK3p+SooKJi5A/NHgOpMRwRQUF5/uDSs+UGbcippf
+         LcTMMrZHOFNuPBuGj4O+Kgzmkrdlu9Vp5Sd1Y/GYt0l0j+cnQ0jmx5kHYMFZigrv2CJj
+         i8fYM3neYCcC41JrRupSAzKkUUgJbt7+35wu/9UT0i5uhmcTs/3peaXxQ8JhocLuJWSt
+         +LGTicj+zZbNiMkHgBYLsXU+6xsXwNJw2KXgeqW2k/VDMP+7XoAUM6mO6sqs9dxFf7Et
+         0bgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KFucjoYJAjrzKJvfbUSDRADl/xduzdtfqGtMS5D6hPY=;
+        b=E/iYq9v1KNDjHbdTTgTLmRnnMRINI3DRBXa4GOSTJf2dncVKWpCucX4zpC/0V/GVru
+         XO9E+VoZ4FzxPg/G9JXrCxsfWraqsyThpLTQy9NXuaPFHfYiT9LnZB773hPJ3/5mqM1f
+         EQ1VtKDha5KRfXk+nSHTd1r0YCX9KGo0cIqnt1Gu3jp6xXKF1ozucrx6oFyHxz2AsetK
+         AikWgtDVdT/11gdwinpvRqCv5PfEHeNwZLfwJ4IaYchMkktGT6HdCsvSZaOuVOBakLVM
+         OSfrr+g8rWnXg83i2K89pFDAX2iVUNdO2VegJ2jnJsRNtNUGwqIB2ZjMS85U55pF5xCw
+         +Vfw==
+X-Gm-Message-State: AOAM530B7fZAiylaE/KXqT941j+2G57VHQJqqYQsxDZd7GY7mtf86WMs
+        3R345N3ago0u/HPds/jrI0gwW3SekYd/1Shygbe11A==
+X-Google-Smtp-Source: ABdhPJzY0Txqg5GMACYMa4RF+9K+oxBRl0P8SMWmJ+8Vr0cxUEfBHYyg/cmBiIqbSiNtU/5HFoYqNytdsJOffxgTEsI=
+X-Received: by 2002:a50:f19a:: with SMTP id x26mr12208716edl.354.1612224873669;
+ Mon, 01 Feb 2021 16:14:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+ <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
+ <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com>
+ <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com> <20210201225052.vrrvuxrsgmddjzbb@intel.com>
+ <79b98f60-151b-6c80-65c3-91a37699d121@google.com> <20210201231718.2hwaqgn2f7kc7usw@intel.com>
+ <a789317e-2ac2-10a1-dedd-1851972e3d6b@google.com> <20210202001120.vr6mos7ylnbqytxh@intel.com>
+In-Reply-To: <20210202001120.vr6mos7ylnbqytxh@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Feb 2021 16:14:31 -0800
+Message-ID: <CAPcyv4jRVDdZyqH_eL4jjRvbCOEpO_UMUZdXbtevsY6PpcRq4Q@mail.gmail.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     David Rientjes <rientjes@google.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As promised, drop support for some ancient sphinx releases, along with a
-lot of the cruft that was required to make that support work.
+On Mon, Feb 1, 2021 at 4:11 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-02-01 15:58:09, David Rientjes wrote:
+> > On Mon, 1 Feb 2021, Ben Widawsky wrote:
+> >
+> > > > I haven't seen the update to 8.2.8.4.5 to know yet :)
+> > > >
+> > > > You make a good point of at least being able to interact with the driver.
+> > > > I think you could argue that if the driver binds, then the payload size is
+> > > > accepted, in which case it would be strange to get an EINVAL when using
+> > > > the ioctl with anything >1MB.
+> > > >
+> > > > Concern was that if we mask off the reserved bits from the command
+> > > > register that we could be masking part of the payload size that is being
+> > > > passed if the accepted max is >1MB.  Idea was to avoid any possibility of
+> > > > this inconsistency.  If this is being checked for ioctl, seems like it's
+> > > > checking reserved bits.
+> > > >
+> > > > But maybe I should just wait for the spec update.
+> > >
+> > > Well, I wouldn't hold your breath (it would be an errata in this case anyway).
+> > > My preference would be to just allow allow mailbox payload size to be 2^31 and
+> > > not deal with this.
+> > >
+> > > My question was how strongly do you feel it's an error that should prevent
+> > > binding.
+> > >
+> >
+> > I don't have an objection to binding, but doesn't this require that the
+> > check in cxl_validate_cmd_from_user() guarantees send_cmd->size_in cannot
+> > be greater than 1MB?
+>
+> You're correct. I'd need to add:
+> cxlm->mbox.payload_size =
+>     min_t(size_t, 1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE), 1<<20)
 
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
-Gotta love the diffstat :)
-
- Documentation/conf.py               | 75 ++---------------------------
- Documentation/sphinx/cdomain.py     |  8 +--
- Documentation/sphinx/kernel_abi.py  | 27 ++---------
- Documentation/sphinx/kernel_feat.py | 25 ++--------
- Documentation/sphinx/kerneldoc.py   | 26 ++--------
- Documentation/sphinx/kernellog.py   | 26 +++-------
- 6 files changed, 21 insertions(+), 166 deletions(-)
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 6a767294887e..5bd45d5fb0a0 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -31,7 +31,7 @@ from load_config import loadConfig
- # -- General configuration ------------------------------------------------
- 
- # If your documentation needs a minimal Sphinx version, state it here.
--needs_sphinx = '1.3'
-+needs_sphinx = '1.7'
- 
- # Add any Sphinx extension module names here, as strings. They can be
- # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-@@ -112,19 +112,12 @@ if major >= 3:
- 
- else:
-     extensions.append('cdomain')
--    if major == 1 and minor < 7:
--        sys.stderr.write('WARNING: Sphinx 1.7 or greater will be required as of '
--                         'the 5.12 release\n')
- 
- # Ensure that autosectionlabel will produce unique names
- autosectionlabel_prefix_document = True
- autosectionlabel_maxdepth = 2
- 
--# The name of the math extension changed on Sphinx 1.4
--if (major == 1 and minor > 3) or (major > 1):
--    extensions.append("sphinx.ext.imgmath")
--else:
--    extensions.append("sphinx.ext.pngmath")
-+extensions.append("sphinx.ext.imgmath")
- 
- # Add any paths that contain templates here, relative to this directory.
- templates_path = ['_templates']
-@@ -375,71 +368,9 @@ if cjk_cmd.find("Noto Sans CJK SC") >= 0:
-      '''
- 
- # Fix reference escape troubles with Sphinx 1.4.x
--if major == 1 and minor > 3:
-+if major == 1:
-     latex_elements['preamble']  += '\\renewcommand*{\\DUrole}[2]{ #2 }\n'
- 
--if major == 1 and minor <= 4:
--    latex_elements['preamble']  += '\\usepackage[margin=0.5in, top=1in, bottom=1in]{geometry}'
--elif major == 1 and (minor > 5 or (minor == 5 and patch >= 3)):
--    latex_elements['sphinxsetup'] = 'hmargin=0.5in, vmargin=1in'
--    latex_elements['preamble']  += '\\fvset{fontsize=auto}\n'
--
--# Customize notice background colors on Sphinx < 1.6:
--if major == 1 and minor < 6:
--   latex_elements['preamble']  += '''
--        \\usepackage{ifthen}
--
--        % Put notes in color and let them be inside a table
--	\\definecolor{NoteColor}{RGB}{204,255,255}
--	\\definecolor{WarningColor}{RGB}{255,204,204}
--	\\definecolor{AttentionColor}{RGB}{255,255,204}
--	\\definecolor{ImportantColor}{RGB}{192,255,204}
--	\\definecolor{OtherColor}{RGB}{204,204,204}
--        \\newlength{\\mynoticelength}
--        \\makeatletter\\newenvironment{coloredbox}[1]{%
--	   \\setlength{\\fboxrule}{1pt}
--	   \\setlength{\\fboxsep}{7pt}
--	   \\setlength{\\mynoticelength}{\\linewidth}
--	   \\addtolength{\\mynoticelength}{-2\\fboxsep}
--	   \\addtolength{\\mynoticelength}{-2\\fboxrule}
--           \\begin{lrbox}{\\@tempboxa}\\begin{minipage}{\\mynoticelength}}{\\end{minipage}\\end{lrbox}%
--	   \\ifthenelse%
--	      {\\equal{\\py@noticetype}{note}}%
--	      {\\colorbox{NoteColor}{\\usebox{\\@tempboxa}}}%
--	      {%
--	         \\ifthenelse%
--	         {\\equal{\\py@noticetype}{warning}}%
--	         {\\colorbox{WarningColor}{\\usebox{\\@tempboxa}}}%
--		 {%
--	            \\ifthenelse%
--	            {\\equal{\\py@noticetype}{attention}}%
--	            {\\colorbox{AttentionColor}{\\usebox{\\@tempboxa}}}%
--		    {%
--	               \\ifthenelse%
--	               {\\equal{\\py@noticetype}{important}}%
--	               {\\colorbox{ImportantColor}{\\usebox{\\@tempboxa}}}%
--	               {\\colorbox{OtherColor}{\\usebox{\\@tempboxa}}}%
--		    }%
--		 }%
--	      }%
--        }\\makeatother
--
--        \\makeatletter
--        \\renewenvironment{notice}[2]{%
--          \\def\\py@noticetype{#1}
--          \\begin{coloredbox}{#1}
--          \\bf\\it
--          \\par\\strong{#2}
--          \\csname py@noticestart@#1\\endcsname
--        }
--	{
--          \\csname py@noticeend@\\py@noticetype\\endcsname
--          \\end{coloredbox}
--        }
--	\\makeatother
--
--     '''
--
- # With Sphinx 1.6, it is possible to change the Bg color directly
- # by using:
- #	\definecolor{sphinxnoteBgColor}{RGB}{204,255,255}
-diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-index 014a5229e57a..ca8ac9e59ded 100644
---- a/Documentation/sphinx/cdomain.py
-+++ b/Documentation/sphinx/cdomain.py
-@@ -236,13 +236,7 @@ class CObject(Base_CObject):
- 
-         indextext = self.get_index_text(name)
-         if indextext:
--            if major == 1 and minor < 4:
--                # indexnode's tuple changed in 1.4
--                # https://github.com/sphinx-doc/sphinx/commit/e6a5a3a92e938fcd75866b4227db9e0524d58f7c
--                self.indexnode['entries'].append(
--                    ('single', indextext, targetname, ''))
--            else:
--                self.indexnode['entries'].append(
-+            self.indexnode['entries'].append(
-                     ('single', indextext, targetname, '', None))
- 
- class CDomain(Base_CDomain):
-diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
-index f3da859c9878..efe760e410c4 100644
---- a/Documentation/sphinx/kernel_abi.py
-+++ b/Documentation/sphinx/kernel_abi.py
-@@ -45,17 +45,7 @@ from docutils import nodes, statemachine
- from docutils.statemachine import ViewList
- from docutils.parsers.rst import directives, Directive
- from docutils.utils.error_reporting import ErrorString
--
--#
--# AutodocReporter is only good up to Sphinx 1.7
--#
--import sphinx
--
--Use_SSI = sphinx.__version__[:3] >= '1.7'
--if Use_SSI:
--    from sphinx.util.docutils import switch_source_input
--else:
--    from sphinx.ext.autodoc import AutodocReporter
-+from sphinx.util.docutils import switch_source_input
- 
- __version__  = '1.0'
- 
-@@ -179,16 +169,5 @@ class KernelCmd(Directive):
-         return node.children
- 
-     def do_parse(self, content, node):
--        if Use_SSI:
--            with switch_source_input(self.state, content):
--                self.state.nested_parse(content, 0, node, match_titles=1)
--        else:
--            buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
--
--            self.state.memo.title_styles  = []
--            self.state.memo.section_level = 0
--            self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
--            try:
--                self.state.nested_parse(content, 0, node, match_titles=1)
--            finally:
--                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
-+        with switch_source_input(self.state, content):
-+            self.state.nested_parse(content, 0, node, match_titles=1)
-diff --git a/Documentation/sphinx/kernel_feat.py b/Documentation/sphinx/kernel_feat.py
-index 2fee04f1dedd..c91ea2b27697 100644
---- a/Documentation/sphinx/kernel_feat.py
-+++ b/Documentation/sphinx/kernel_feat.py
-@@ -42,17 +42,7 @@ from docutils import nodes, statemachine
- from docutils.statemachine import ViewList
- from docutils.parsers.rst import directives, Directive
- from docutils.utils.error_reporting import ErrorString
--
--#
--# AutodocReporter is only good up to Sphinx 1.7
--#
--import sphinx
--
--Use_SSI = sphinx.__version__[:3] >= '1.7'
--if Use_SSI:
--    from sphinx.util.docutils import switch_source_input
--else:
--    from sphinx.ext.autodoc import AutodocReporter
-+from sphinx.util.docutils import switch_source_input
- 
- __version__  = '1.0'
- 
-@@ -154,16 +144,7 @@ class KernelFeat(Directive):
- 
-         buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
- 
--        if Use_SSI:
--            with switch_source_input(self.state, content):
--                self.state.nested_parse(content, 0, node, match_titles=1)
--        else:
--            self.state.memo.title_styles  = []
--            self.state.memo.section_level = 0
--            self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
--            try:
--                self.state.nested_parse(content, 0, node, match_titles=1)
--            finally:
--                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
-+        with switch_source_input(self.state, content):
-+            self.state.nested_parse(content, 0, node, match_titles=1)
- 
-         return node.children
-diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-index e9857ab904f1..8189c33b9dda 100644
---- a/Documentation/sphinx/kerneldoc.py
-+++ b/Documentation/sphinx/kerneldoc.py
-@@ -37,18 +37,8 @@ import glob
- from docutils import nodes, statemachine
- from docutils.statemachine import ViewList
- from docutils.parsers.rst import directives, Directive
--
--#
--# AutodocReporter is only good up to Sphinx 1.7
--#
- import sphinx
--
--Use_SSI = sphinx.__version__[:3] >= '1.7'
--if Use_SSI:
--    from sphinx.util.docutils import switch_source_input
--else:
--    from sphinx.ext.autodoc import AutodocReporter
--
-+from sphinx.util.docutils import switch_source_input
- import kernellog
- 
- __version__  = '1.0'
-@@ -163,18 +153,8 @@ class KernelDocDirective(Directive):
-             return [nodes.error(None, nodes.paragraph(text = "kernel-doc missing"))]
- 
-     def do_parse(self, result, node):
--        if Use_SSI:
--            with switch_source_input(self.state, result):
--                self.state.nested_parse(result, 0, node, match_titles=1)
--        else:
--            save = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
--            self.state.memo.reporter = AutodocReporter(result, self.state.memo.reporter)
--            self.state.memo.title_styles, self.state.memo.section_level = [], 0
--            try:
--                self.state.nested_parse(result, 0, node, match_titles=1)
--            finally:
--                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = save
--
-+        with switch_source_input(self.state, result):
-+            self.state.nested_parse(result, 0, node, match_titles=1)
- 
- def setup(app):
-     app.add_config_value('kerneldoc_bin', None, 'env')
-diff --git a/Documentation/sphinx/kernellog.py b/Documentation/sphinx/kernellog.py
-index 8ac7d274f542..0bc00c138cad 100644
---- a/Documentation/sphinx/kernellog.py
-+++ b/Documentation/sphinx/kernellog.py
-@@ -4,29 +4,19 @@
- # only goes back to 1.6.  So here's a wrapper layer to keep around for
- # as long as we support 1.4.
- #
-+# We don't support 1.4 anymore, but we'll keep the wrappers around until
-+# we change all the code to not use them anymore :)
-+#
- import sphinx
-+from sphinx.util import logging
- 
--if sphinx.__version__[:3] >= '1.6':
--    UseLogging = True
--    from sphinx.util import logging
--    logger = logging.getLogger('kerneldoc')
--else:
--    UseLogging = False
-+logger = logging.getLogger('kerneldoc')
- 
- def warn(app, message):
--    if UseLogging:
--        logger.warning(message)
--    else:
--        app.warn(message)
-+    logger.warning(message)
- 
- def verbose(app, message):
--    if UseLogging:
--        logger.verbose(message)
--    else:
--        app.verbose(message)
-+    logger.verbose(message)
- 
- def info(app, message):
--    if UseLogging:
--        logger.info(message)
--    else:
--        app.info(message)
-+    logger.info(message)
--- 
-2.29.2
-
+nit, use the existing SZ_1M define.
