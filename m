@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CF330C13A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EF730C76E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhBBOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:17:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
+        id S237303AbhBBRVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:21:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234020AbhBBOLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:11:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C8E764F64;
-        Tue,  2 Feb 2021 13:51:41 +0000 (UTC)
+        id S234252AbhBBOOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:14:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A65A64FBD;
+        Tue,  2 Feb 2021 13:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273902;
-        bh=InmTPRoLIYuOQe6ku7j+sG3duzIbJRa9apb8B52qNoE=;
+        s=korg; t=1612274013;
+        bh=OwOgk+5l5C14L3DgTbWLuH1iGvXtOX8bUN7c/SbjFCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y6CB22EwSDHISnCgy4GO+t1X+6PpAtDk9X9bHptF7MjQHPi8UC5gqb+QnLVW08PmB
-         ioozWaw1P3tfSBmOkXmuJO5xOAcDMfQ0EZYpQm06gEqCqwm3PZFcx3nunkDkd0oSJA
-         Ck24VzgJtFQqxGBm2N/6z8b9HcokO/Em8UEFzyqU=
+        b=zhg82GoYU6W4TWx1Ta+d2XqZ/maKRrn4PW/i+gxHpIs4tWs5w3x78o6xX5dmB92FY
+         9e8MK34r1orisCnoNXJf+XZehu0XMr56OPLAiPuxvBcdP2m2jpz1hKm25cBk/6dObZ
+         Tbic8Ao5atgvcPEr+gWGgZoPud+Co4tcvjzME0VQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Jason Andryuk <jandryuk@gmail.com>
-Subject: [PATCH 4.14 10/30] xen: Fix XenStore initialisation for XS_LOCAL
+        stable@vger.kernel.org,
+        syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com,
+        syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 08/37] wext: fix NULL-ptr-dereference with cfg80211s lack of commit()
 Date:   Tue,  2 Feb 2021 14:38:51 +0100
-Message-Id: <20210202132942.559697405@linuxfoundation.org>
+Message-Id: <20210202132943.241948392@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,92 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 5f46400f7a6a4fad635d5a79e2aa5a04a30ffea1 upstream.
+commit 5122565188bae59d507d90a9a9fd2fd6107f4439 upstream.
 
-In commit 3499ba8198ca ("xen: Fix event channel callback via INTX/GSI")
-I reworked the triggering of xenbus_probe().
+Since cfg80211 doesn't implement commit, we never really cared about
+that code there (and it's configured out w/o CONFIG_WIRELESS_EXT).
+After all, since it has no commit, it shouldn't return -EIWCOMMIT to
+indicate commit is needed.
 
-I tried to simplify things by taking out the workqueue based startup
-triggered from wake_waiting(); the somewhat poorly named xenbus IRQ
-handler.
+However, EIWCOMMIT is actually an alias for EINPROGRESS, which _can_
+happen if e.g. we try to change the frequency but we're already in
+the process of connecting to some network, and drivers could return
+that value (or even cfg80211 itself might).
 
-I missed the fact that in the XS_LOCAL case (Dom0 starting its own
-xenstored or xenstore-stubdom, which happens after the kernel is booted
-completely), that IRQ-based trigger is still actually needed.
+This then causes us to crash because dev->wireless_handlers is NULL
+but we try to check dev->wireless_handlers->standard[0].
 
-So... put it back, except more cleanly. By just spawning a xenbus_probe
-thread which waits on xb_waitq and runs the probe the first time it
-gets woken, just as the workqueue-based hack did.
+Fix this by also checking dev->wireless_handlers. Also simplify the
+code a little bit.
 
-This is actually a nicer approach for *all* the back ends with different
-interrupt methods, and we can switch them all over to that without the
-complex conditions for when to trigger it. But not in -rc6. This is
-the minimal fix for the regression, although it's a step in the right
-direction instead of doing a partial revert and actually putting the
-workqueue back. It's also simpler than the workqueue.
-
-Fixes: 3499ba8198ca ("xen: Fix event channel callback via INTX/GSI")
-Reported-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/4c9af052a6e0f6485d1de43f2c38b1461996db99.camel@infradead.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Cc: Salvatore Bonaccorso <carnil@debian.org>
-Cc: Jason Andryuk <jandryuk@gmail.com>
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
+Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20210121171621.2076e4a37d5a.I5d9c72220fe7bb133fb718751da0180a57ecba4e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/xenbus/xenbus_probe.c |   31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ net/wireless/wext-core.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -705,6 +705,23 @@ static bool xs_hvm_defer_init_for_callba
- #endif
- }
- 
-+static int xenbus_probe_thread(void *unused)
-+{
-+	DEFINE_WAIT(w);
-+
-+	/*
-+	 * We actually just want to wait for *any* trigger of xb_waitq,
-+	 * and run xenbus_probe() the moment it occurs.
-+	 */
-+	prepare_to_wait(&xb_waitq, &w, TASK_INTERRUPTIBLE);
-+	schedule();
-+	finish_wait(&xb_waitq, &w);
-+
-+	DPRINTK("probing");
-+	xenbus_probe();
-+	return 0;
-+}
-+
- static int __init xenbus_probe_initcall(void)
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -896,8 +896,9 @@ out:
+ int call_commit_handler(struct net_device *dev)
  {
- 	/*
-@@ -716,6 +733,20 @@ static int __init xenbus_probe_initcall(
- 	     !xs_hvm_defer_init_for_callback()))
- 		xenbus_probe();
- 
-+	/*
-+	 * For XS_LOCAL, spawn a thread which will wait for xenstored
-+	 * or a xenstore-stubdom to be started, then probe. It will be
-+	 * triggered when communication starts happening, by waiting
-+	 * on xb_waitq.
-+	 */
-+	if (xen_store_domain_type == XS_LOCAL) {
-+		struct task_struct *probe_task;
-+
-+		probe_task = kthread_run(xenbus_probe_thread, NULL,
-+					 "xenbus_probe");
-+		if (IS_ERR(probe_task))
-+			return PTR_ERR(probe_task);
-+	}
- 	return 0;
- }
- device_initcall(xenbus_probe_initcall);
+ #ifdef CONFIG_WIRELESS_EXT
+-	if ((netif_running(dev)) &&
+-	   (dev->wireless_handlers->standard[0] != NULL))
++	if (netif_running(dev) &&
++	    dev->wireless_handlers &&
++	    dev->wireless_handlers->standard[0])
+ 		/* Call the commit handler on the driver */
+ 		return dev->wireless_handlers->standard[0](dev, NULL,
+ 							   NULL, NULL);
 
 
