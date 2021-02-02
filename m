@@ -2,202 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECF830BA76
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFFC30BA7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhBBI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:59:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231929AbhBBI65 (ORCPT
+        id S232684AbhBBJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231860AbhBBJBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:58:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612256250;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Si/dI5lNziAyVoRmOt6q5oX+Pb8j9QNnXS8AF/vdi/A=;
-        b=F6QniaO9pvvPoGycjt5q+69xVQC5gYdAWKcDFv7KLDsimPZOIMnlWQPQnCZkTqVc7vQR0P
-        RHHYuN4eQ/8V7A9B/OoeSay36rT42ebxat1w0G5Tb3VzaERQTkAm8IQ4eQ3p8j2CML+qPj
-        ry83KEIwBs0Ut82o8ypSn0J8YVarzoE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-sS1uv3IfMMGh_2fBHstCvQ-1; Tue, 02 Feb 2021 03:57:23 -0500
-X-MC-Unique: sS1uv3IfMMGh_2fBHstCvQ-1
-Received: by mail-wr1-f69.google.com with SMTP id u15so2608189wrn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:57:23 -0800 (PST)
+        Tue, 2 Feb 2021 04:01:10 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1710C061573;
+        Tue,  2 Feb 2021 01:00:29 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id y18so4679962edw.13;
+        Tue, 02 Feb 2021 01:00:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=APTYZdEMfCPIjJKgi20Wk5z1jzO4/VjOT2U7HmUAz9w=;
+        b=DJyyZI+x/JH38NMDCHkwUCg2hEIRe/NMwGzdI0I+Rr9q4/xMU2dL10Y85NeAWeWrFG
+         HQtP+JhtTVKfdQZ4dvC2UgKAQUGOvcvfygQvV0sEM4jpeZaKFNUIuWxoJhZlcJPurVy5
+         QY5tlCiXko1C06t7HvSci0pX1kWS5Oyp+35N9nFvxgdIkxA09ARKBz99ZhnMA7WESub8
+         yBAAsiNMbeHO93t1IKqpJg2TXLA9ZlwRQmba/9Xs9Tb3gcOgpax/0+Cw9a84RN0zqThI
+         9tojyLT7J5ZsDxNHm3RKDkqIZFgwKDq0bvLr3ZEORJRT2M05D9cZE6qOZRv7xwJyGsoQ
+         tkpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Si/dI5lNziAyVoRmOt6q5oX+Pb8j9QNnXS8AF/vdi/A=;
-        b=SgVh4+/S32v7AQB/rv/Ey/PDVFOt4qHfFNwITjmC/NjnuOxC59j/5hz89Pw5rlhG3K
-         O9HQDldk0IT7JJfc6gy/sVsWm9z6eHuQ0tyZplvnAANw+Qe+6IOlTmVLksmreE9PPWfX
-         Q4T63AUGX0V2/62RWc0yqkMnLRZpJJiXMJQuG7pZUn979aIzFLd1/sFQQmHD2q3GJAQR
-         C3du6j75oeqXlqJ3pN1iJxJsv1j+TRfNPlMmLSC4JeC5o1mjmevYblmptM4hlYrQ8jiQ
-         6TEPw9LMbpVu5gBEZLV3i21rhtMFIxKfN7MTMuvPfVebaSP9xOCFYjwXsOURDEakLmzd
-         gSdQ==
-X-Gm-Message-State: AOAM530uJvUVDl3wR9CArdmGXfLKVUUjJ4JB7X7CKNEZByERSXla5VJ+
-        9PpicLag5d+3vodw3OLFGr2bpn2Aqc+fBBys/nsHjP5vJMclP17XrilAs+Z0fy3WIvv7F/QfQhu
-        CY1xiWvfnL6h+3vXBVgE7ul5c
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr22178812wrx.69.1612256242134;
-        Tue, 02 Feb 2021 00:57:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwgPkiIX+L54pamL9Mka7GlGAiN10QTM7Wb7cXKG91/ROpxarDwNpZ+XfHCi6Y0Xzv6dxYUrw==
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr22178791wrx.69.1612256241890;
-        Tue, 02 Feb 2021 00:57:21 -0800 (PST)
-Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id i7sm2269412wmq.2.2021.02.02.00.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 00:57:21 -0800 (PST)
-Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
- switch table on arm64
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Bill Wendling <morbo@google.com>
-References: <20210120173800.1660730-13-jthierry@redhat.com>
- <20210127221557.1119744-1-ndesaulniers@google.com>
- <20210127232651.rj3mo7c2oqh4ytsr@treble>
- <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
- <20210201214423.dhsma73k7ccscovm@treble>
- <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <671f1aa9-975e-1bda-6768-259adbdc24c8@redhat.com>
-Date:   Tue, 2 Feb 2021 09:57:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=APTYZdEMfCPIjJKgi20Wk5z1jzO4/VjOT2U7HmUAz9w=;
+        b=dFyRSJNlwvcvfX+x87c6ZjuBKu0Pv49rFh0efDqErWH6DP22yt6lYrran6xKlTX3Ol
+         sPF4jVn7cl60HNhF6c1q36rGVssQNatKfTuGIGi8NNcBFlHyyc3x3BD9Gy1i2x8EkuMn
+         uILZ0SPFvcXF3rxGxw22POqbSiLFsD5hTCutZujCKhmSBWiyrRJZCC1jcEWoCRTaJQtt
+         G/ft25hLBIOkPFkGoLBtSRFjH0mecc253mOcqj3JR1ps6v1QzXRG4Gd1pBBp4lToeHdm
+         cQBQaFIF7YC2HWlIBrab27i3mS9RxZXBEn133rKE2lOg5FFocfVBMpaHK9K1KLWN1omN
+         rgzQ==
+X-Gm-Message-State: AOAM530GjZssTdl8Ob0c1QIcG8eukdbBqT1fLvNXbmH5761JcRiW9Yqw
+        MjiCCF10eHja75kvRh7wayI=
+X-Google-Smtp-Source: ABdhPJws/ph5GYtyOV5EjzhlRgcc1T15p6XRDzKtL/O3yFMt7HU9f6KDyZNIJncakH2VS/yvuZ/D1Q==
+X-Received: by 2002:a05:6402:c16:: with SMTP id co22mr23706354edb.175.1612256428433;
+        Tue, 02 Feb 2021 01:00:28 -0800 (PST)
+Received: from localhost.localdomain (dynamic-2a01-0c22-c05c-fc00-7bce-aab1-905d-1976.c22.pool.telefonica.de. [2a01:c22:c05c:fc00:7bce:aab1:905d:1976])
+        by smtp.gmail.com with ESMTPSA id bo12sm9046871ejb.93.2021.02.02.01.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 01:00:27 -0800 (PST)
+From:   Jonathan Schwender <schwenderjonathan@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [RFC v2] sched/rt: Fix RT (group) throttling with nohz_full
+Date:   Tue,  2 Feb 2021 10:00:10 +0100
+Message-Id: <20210202090010.5350-1-schwenderjonathan@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210201093412.4900-1-schwenderjonathan@gmail.com>
+References: <20210201093412.4900-1-schwenderjonathan@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2/2/21 12:17 AM, Nick Desaulniers wrote:
-> On Mon, Feb 1, 2021 at 1:44 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->>
->> On Fri, Jan 29, 2021 at 10:10:01AM -0800, Nick Desaulniers wrote:
->>> On Wed, Jan 27, 2021 at 3:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->>>>
->>>> On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
->>>>>> From: Raphael Gault <raphael.gault@arm.com>
->>>>>>
->>>>>> This plugins comes into play before the final 2 RTL passes of GCC and
->>>>>> detects switch-tables that are to be outputed in the ELF and writes
->>>>>> information in an ".discard.switch_table_info" section which will be
->>>>>> used by objtool.
->>>>>>
->>>>>> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
->>>>>> [J.T.: Change section name to store switch table information,
->>>>>>         Make plugin Kconfig be selected rather than opt-in by user,
->>>>>>         Add a relocation in the switch_table_info that points to
->>>>>>         the jump operation itself]
->>>>>> Signed-off-by: Julien Thierry <jthierry@redhat.com>
->>>>>
->>>>> Rather than tightly couple this feature to a particular toolchain via
->>>>> plugin, it might be nice to consider what features could be spec'ed out
->>>>> for toolchains to implement (perhaps via a -f flag).
->>>>
->>>> The problem is being able to detect switch statement jump table vectors.
->>>>
->>>> For a given indirect branch (due to a switch statement), what are all
->>>> the corresponding jump targets?
->>>>
->>>> We would need the compiler to annotate that information somehow.
->>>
->>> Makes sense, the compiler should have this information.  How is this
->>> problem solved on x86?
->>
->> Thus far we've been able to successfully reverse engineer it on x86,
->> though it hasn't been easy.
->>
->> There were some particulars for arm64 which made doing so impossible.
->> (I don't remember the details.)
-
-The main issue is that the tables for arm64 have more indirection than x86.
-
-On x86, the dispatching jump instruction fetches the target address from 
-a contiguous array of addresses based on a given offset. So the list of 
-potential targets of the jump is neatly organized in a table (and sure, 
-before link time these are just relocation, but still processable).
-
-On arm64 (with GCC at least), what is stored in a table is an array of 
-candidate offsets from the jump instruction. And because arm64 is 
-limited to 32bit instructions, the encoding often requires multiple 
-instructions to compute the target address:
-
-ldr<*>  x_offset, [x_offsets_table, x_index, ...]  // load offset
-adr     x_dest_base, <addr>          // load target branch for offset 0
-add     x_dest, x_target_base, x_offset, ...  // compute final address
-br      x_dest        // jump
-
-Where this gets trickier is that (with GCC) the offsets stored in the 
-table might or might not be signed constants (and this can be seen in 
-GCC intermediate representations, but I do not believe this information 
-is output in the final object file). And on top of that, GCC might 
-decide to use offsets that are seen as unsigned during intermediate 
-representation as signed offset by sign extending them in the add 
-instruction.
-
-So, to handle this we'd have to track the different operation done with 
-the offset, from the load to the final jump, decoding the instructions
-and deducing the potential target instructions from the table of offsets.
-
-But that is error prone as we don't really know how many instructions 
-can be between the ones doing the address computation, and I remember 
-some messy case of a jump table inside a jump table where tracking the 
-instruction touching one or the other offset would need a lot of corner 
-case handling.
-
-And this of course is just for GCC, I haven't looked at what it all 
-looks like on Clang's end.
+RFC v2 changes: Fix compile error if CONFIG_SMP is not set, which was
+Reported-by: kernel test robot <lkp@intel.com>
+I'm now using smp_processor_id() to get the ID of the CPU the timer 
+is running on.
 
 
-> 
-> I think the details are pertinent to finding a portable solution.  The
-> commit message of this commit in particular doesn't document such
-> details, such as why such an approach is necessary or how the data is
-> laid out for objtool to consume it.
-> 
+If nohz_full is enabled (more precisely HK_FLAG_TIMER is set), then
+do_sched_rt_period_timer may be called on a housekeeping CPU,
+which would not service the isolated CPU for a non-root cgroup
+(requires a kernel with RT_GROUP_SCHEDULING).
+This causes RT tasks in a non-root cgroup to get throttled
+indefinitely (unless throttling is disabled) once the timer has
+been moved to a housekeeping CPU.
+To fix this, housekeeping CPUs now service all online CPUs
+if HK_FLAG_TIMER (nohz_full) is set.
 
-Sorry, I will need to make that clearer. The next patch explains it a 
-bit [1]
+I'm not really sure how this relates to  Mike Galbraith previous
+commit e221d028bb08 ("sched,rt: fix isolated CPUs leaving root_task_group
+indefinitely throttled"), (which is dated before the housekeeping changes,)
+so I'm posting this as an RFC.
 
-Basically, for simplicity, the plugin creates a new section containing 
-tables (one per jump table) of references to the jump targets, similar 
-to what x86 has, except that in this case this table isn't actually used 
-by runtime code and is discarded at link time. I only chose this to 
-minimize what needed to be changed in objtool and because the format 
-seemed simple enough.
+Signed-off-by: Jonathan Schwender <schwenderjonathan@gmail.com>
+---
+ kernel/sched/rt.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-But I'm open on some alternative, whether it's a -fjump-table-info 
-option added to compilers with a different format to do the links. The 
-important requirement is to be able to know all the candidate targets 
-for a "br <reg>" instruction.
-
-[1] https://lkml.org/lkml/2021/1/20/910
-
-Thanks,
-
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 8f720b71d13d..879abb5de023 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -866,9 +866,16 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
+ 	 * isolation is really required, the user will turn the throttle
+ 	 * off to kill the perturbations it causes anyway.  Meanwhile,
+ 	 * this maintains functionality for boot and/or troubleshooting.
++	 * If nohz_full is active and the timer was offloaded to a
++	 * housekeeping CPU, sched_rt_period_mask() will not contain
++	 * the isolated CPU. To prevent indefinite throttling of tasks
++	 * on isolated CPUs, housekeeping CPUs service all online CPUs.
+ 	 */
+-	if (rt_b == &root_task_group.rt_bandwidth)
++	if (rt_b == &root_task_group.rt_bandwidth
++		|| (housekeeping_enabled(HK_FLAG_TIMER)
++			&& housekeeping_cpu(smp_processor_id(), HK_FLAG_TIMER))) {
+ 		span = cpu_online_mask;
++	}
+ #endif
+ 	for_each_cpu(i, span) {
+ 		int enqueue = 0;
 -- 
-Julien Thierry
+2.29.2
 
