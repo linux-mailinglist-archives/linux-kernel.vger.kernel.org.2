@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B48D30BA0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0AE30BA11
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhBBIgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:36:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26733 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229850AbhBBIgo (ORCPT
+        id S231721AbhBBIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:38:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBBIh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:36:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612254917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4NY/G36GtP697RjgpeOLFmdF2+6N5HezZacpHU3/OHU=;
-        b=fNc5uvakWDZzN6fO5crkpZoRiPjshH3QHsntGsyG90z8iOXqF36ktz3oSsIgWULeUtkL/b
-        dPzb6pN05kNIFADMEkde9w+/w9RmOHoO9cdJLYVglpa/28C6CltTTPMA7snqYdlkVbTJmp
-        iwu23yILZmNR7UaRna/yFeZbVM0DvvQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-lPodgu1jNaaMDod5g1K1VQ-1; Tue, 02 Feb 2021 03:35:15 -0500
-X-MC-Unique: lPodgu1jNaaMDod5g1K1VQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A306B107ACE4;
-        Tue,  2 Feb 2021 08:35:13 +0000 (UTC)
-Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A53A1975E;
-        Tue,  2 Feb 2021 08:35:10 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210129064045.18471-1-osalvador@suse.de>
- <b9a2f80e-a90f-62bf-4197-66cdb315cb84@redhat.com>
- <20210202075243.GA7037@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v2] x86/vmemmap: Handle unpopulated sub-pmd ranges
-Message-ID: <dd9dfa98-21df-70c8-d43d-e9a83889464c@redhat.com>
-Date:   Tue, 2 Feb 2021 09:35:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 2 Feb 2021 03:37:57 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CE6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:37:17 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id es14so9530628qvb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:37:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DW6qKjgDaZfg9tmH9Lbh2Y15xJjTza3J0FSZQyXe7e8=;
+        b=TqAUGL6T55G7V7o1ORKbs2CEC5wdY4D9EZvFInzXpo/wwv3c6nrrELMmnPm0RLynnn
+         tgIgB+DfgoH7mli2DcK4HPsKKrlUK2GMpplKwR3a0Espw6sevr+2kbjDgvJUYcUj8tZj
+         Rzynk74eJvVIJkipx2kKDjcj7CeEAsHd/Z21XyhqXb1GIS0ekg3QH+gg2upVpd0OWqJS
+         nepT2AIKgJKezKQNE5vgF+L7samPiae5iwI5E9m497LrmokRG/I8kYLmlSG7Vho3QWXc
+         NdkE/IuB0llrINfMXUKAs/Yy0L6kqp8uJHs2SAFf/eY4CVZb5RMXYGoWydXeBXcrt/ep
+         MUYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DW6qKjgDaZfg9tmH9Lbh2Y15xJjTza3J0FSZQyXe7e8=;
+        b=HtcbH0oKW7b97khWYMjv/4+tjnO8dvDySYibWUx1hS2azhxtddAH812idAb5Lj7HhD
+         C+Psqy0Jw0uFnAbeLsRnT+OBwfafvOK8zkoqp1SCQChZEnXckG7oR9UP3n8P0vnMvS+H
+         Qw76rGmT9rVpI8KTcZBJRwvHoeGt8F0/+mW+Mvxx0VYnG8vYn47EoQocoWUQuk0mj4kV
+         350DqTVTh/8mTxvMLNrnEXWBqgpXw+iWutVrky5s2VU3LJRXTjvP6vZXF7kOv/Mt0NwZ
+         iCKihbcrmnOwUpN1B3Yi+v0imPoh4K3fi3aOYRysXiMI9IlAwB7+p4ARBbpjXTOSRP09
+         xYkg==
+X-Gm-Message-State: AOAM533x+vpedG2WNSxfanvtLYX+mUraPvwvssB3JL+qDgpU9mJVt86n
+        meuiJCmHxcUxSrnMQybBhaskI4AZMmLc9qI5kO3WSg==
+X-Google-Smtp-Source: ABdhPJwUb8I/lvLDswXeoeVEnGbBA93DzVcPkMUHyw6Q+mT793xolcnIgTOrdmfsFpDsX8LgZL7vNHpLVmUoy41t7Mg=
+X-Received: by 2002:a0c:b990:: with SMTP id v16mr18963995qvf.16.1612255036209;
+ Tue, 02 Feb 2021 00:37:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210202075243.GA7037@linux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210201133421.408508-1-kyletso@google.com> <20210201133421.408508-2-kyletso@google.com>
+ <20210201153542.GH2465@kuha.fi.intel.com>
+In-Reply-To: <20210201153542.GH2465@kuha.fi.intel.com>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Tue, 2 Feb 2021 16:37:00 +0800
+Message-ID: <CAGZ6i=0Csdfy0Z-608HsX1YLBPiAz7qindF5SdTXv0yoNu7DYA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] usb: typec: Determine common SVDM Versions
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>, robh+dt@kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> IMHO, we should rip out that code here and enforce page alignment in
->> vmemmap_populate()/vmemmap_free().
->>
->> Am I missing something?
-> 
-> Thanks David for bringing this up, I must say I was not aware that this
-> topic was ever discussed.
+On Mon, Feb 1, 2021 at 11:35 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Mon, Feb 01, 2021 at 09:34:19PM +0800, Kyle Tso wrote:
+> > PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
+> >   6.4.4.2.3 Structured VDM Version
+> >   "The Structured VDM Version field of the Discover Identity Command
+> >   sent and received during VDM discovery Shall be used to determine the
+> >   lowest common Structured VDM Version supported by the Port Partners or
+> >   Cable Plug and Shall continue to operate using this Specification
+> >   Revision until they are Detached."
+> >
+> > Also clear the fields newly defined in SVDM version 2.0 for
+> > compatibilities. And fix some VDO definitions changed in the Spec.
+> >
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+> > ---
+> > Changes since v2:
+> > - rename the variable and the functions (remove the text "common")
+> > - remove the macro
+> >
+> >  drivers/usb/typec/altmodes/displayport.c |   8 +-
+> >  drivers/usb/typec/class.c                |  21 +-
+> >  drivers/usb/typec/tcpm/tcpm.c            |  47 +++-
+> >  drivers/usb/typec/ucsi/displayport.c     |  12 +-
+> >  drivers/usb/typec/ucsi/ucsi.c            |   2 +
+> >  include/linux/usb/pd_vdo.h               | 315 +++++++++++++++++------
+> >  include/linux/usb/typec.h                |  10 +
+> >  7 files changed, 326 insertions(+), 89 deletions(-)
+>
+> I think there is some room to split this one at least a little. The
+> changes to the class (so drivers/usb/typec/class.c and
+> include/linux/usb/typec.h) could be introduced separately at least.
+>
+> So I see there are two changes in this patch. You are modifying the
+> class, and then there are the updated PD definitions. Both should be
+> introduced in separate patches IMO. I think also each driver (so
+> ucsi.c and tcpm.c) can handle the changes to the class in its own
+> patch. The modifications to the PD definitions and updated VDO() and
+> so on can be handled in a single patch I guess.
+>
+I will separate this patch to different ones.
 
-Yeah, last time I raised it was in
+thanks,
+Kyle
 
-https://lkml.kernel.org/r/20200703013435.GA11340@L-31X9LVDL-1304.local
-
-but I never got to clean it up myself.
-
-> 
-> Ok, I've been having a look into this.
-> At first I was concerced because of a pure SPARSEMEM configuration, but I
-> see that those allocations are done in a very diferent way so it does not
-> bother us.
-> 
-> So we have the following enforcements during hotplug:
-> 
-> add_memory_resource
->   check_hotplug_memory_range : Checks range aligned to memory_block_size_bytes,
->                              : which means it must be section-size aligned
-> 
-> populate_section_memmap
->   __populate_section_memmap  : Checks range aligned to sub-section size
-> 
-> So, IIRC we have two cases during hotplug:
->   1) the ones that want memory blocks
->   2) the ones that do not want them (pmem stuff)
-> 
-> For #1, we always enforce section alignment in add_memory_resource, and for
-> #2 we always make sure the range is at least sub-section aligned.
-> 
-> And the important stuff is that boot memory is no longer to be hot-removed
-> (boot memory had some strange layout sometimes).
-
-The vmemmap of boot mem sections is always fully populated, even with 
-strange memory layouts (e.g., see comment in pfn_valid()). In addition, 
-we can only offline+remove whole sections, so that should be fine.
-
-> 
-> So, given the above, I think it should be safe to drop that check in
-> remote_pte_table.
-> But do we really need to force page alignment in vmemmap_populate/vmemmap_free?
-> vmemmap_populate should already receive a page-aligned chunk because
->   __populate_section_memmap made sure of that, and vmemmap_free() should be ok
-> as we already filtered out at hot-adding stage.
-> 
-> Of course, this will hold as long as struct page size of multiple of 8.
-> Should that change we might get trouble, but I do not think that can ever
-> happened (tm).
-> 
-> But anyway, I am fine with placing a couple of checks in vmemmap_{populate,free}
-> just to double check.
-> 
-> What do you think?
-
-I'd just throw in 1 or 2 VM_BUG_ON() to self-document what we expect and 
-that we thought about these conditions. It's then easy to identify the 
-relevant commit where we explain the rationale.
-
-I don't have a strong opinion, the other archs also don't seem to care 
-about documenting/enforcing it.
-
--- 
-Thanks,
-
-David / dhildenb
-
+>
+> thanks,
+>
+> --
+> heikki
