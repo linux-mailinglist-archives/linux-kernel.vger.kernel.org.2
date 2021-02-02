@@ -2,161 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF72130C3F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E434930C3FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhBBPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:35:55 -0500
-Received: from mail.pr-group.ru ([178.18.215.3]:55603 "EHLO mail.pr-group.ru"
+        id S235606AbhBBPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:37:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235403AbhBBPdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:33:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-        d=metrotek.ru; s=mail;
-        h=from:subject:date:message-id:to:cc:mime-version:content-type:in-reply-to:
-         references;
-        bh=nERRfERf5SRmkBbNLWTYs48EzkGgIACng7GdK5JFdeo=;
-        b=xS9+bfiRK+bocvxyLzlExQS5o+swL5UtzSEj1N6f65aHGLuguv2oiWUF3PWl7BIj3e6n+MbO4EiLa
-         jsrfYWPPeMIr0NqYX0lE7yaffi08og3RsWr+l6U8bp1W57aRTzQ4mVPaIa+gmOHZSN7GssxdLNy9wc
-         02QX6i5DYHeKWcJNOV43Y3dLZJss74w6TzH+YTaVYLShYhFW9zpPMI2PBfa7AkxqG/32vWWEFAkqIC
-         ESVAqo2lbNvx57vPPx50/QQGGFfeosSdTJoKP5bMCQXD9rGHkAygEydHvS5yN/Vczjk+yp1QL9nC8q
-         l9uCXkj1cWXHKX0dpayfYEYcuCP03tA==
-X-Spam-Status: No, hits=0.0 required=3.4
-        tests=BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW, TOTAL_SCORE: -1.665,autolearn=ham
-X-Spam-Level: 
-X-Footer: bWV0cm90ZWsucnU=
-Received: from dhcp-179.ddg ([85.143.252.66])
-        (authenticated user i.bornyakov@metrotek.ru)
-        by mail.pr-group.ru with ESMTPSA
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
-        Tue, 2 Feb 2021 18:32:13 +0300
-Date:   Tue, 2 Feb 2021 18:32:03 +0300
-From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, system@metrotek.ru, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: add Marvell 88X2222 transceiver support
-Message-ID: <20210202153203.qcls4fdjfwy65nd4@dhcp-179.ddg>
-References: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
- <YBiHAXSYWGO2weK6@lunn.ch>
+        id S235555AbhBBPe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:34:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7D864E92;
+        Tue,  2 Feb 2021 15:33:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612280028;
+        bh=T3DVUO/GgGfi86E/fUEjepr1D9Sby+jHPBoOfChLKkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eHbAAO/01CxQRjzrZuDMHZUN0rn6FkGXUoJ3Qv21irQdNM94ukiy6Ohqgqfdfcpgc
+         mIFM+ed4gFJkkH09s3XMDqUqa0x2mSDs3NcJi7tBnIAgEvHgJ5IXPhlLniK2w3RZaL
+         mRNuU4RmTOTvnuDjo1K0DRYEZtVPuqy0VpqPr2FyfLh4eqlQUNHj488ivreNy9d6dY
+         eA3C1+5cFVmRzllY6+3YPQiWXwZR5oIe14O8yyLaoK4ms/S9q8NV9BiybHyzwIZDs5
+         2DjgVa2NqWUh9TkNfYI5LK3KPWo7tgzk6Zwe2HxO4k3bZGh3fbIE/JQz1U8qofPhC1
+         R4FMTr+kppAoQ==
+Date:   Tue, 2 Feb 2021 17:33:41 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        James.Bottomley@hansenpartnership.com
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+Message-ID: <YBlw1eMK4mRyRhUF@kernel.org>
+References: <20210123014247.989368-1-lma@semihalf.com>
+ <20210125171846.GA31929@roeck-us.net>
+ <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
+ <YBSTOrlgTPpzoblY@kernel.org>
+ <7a702108-ec9e-b2e2-be89-3590437c0eb5@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YBiHAXSYWGO2weK6@lunn.ch>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7a702108-ec9e-b2e2-be89-3590437c0eb5@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:56:01PM +0100, Andrew Lunn wrote:
-> > +static int mv2222_config_init(struct phy_device *phydev)
-> > +{
-> > +	linkmode_zero(phydev->supported);
-> > +	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
-> > +	linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT, phydev->supported);
-> > +	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT, phydev->supported);
-> > +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT, phydev->supported);
-> > +
-> > +	phydev->pause = 0;
-> > +	phydev->asym_pause = 0;
-> > +	phydev->duplex = DUPLEX_FULL;
-> > +	phydev->autoneg = AUTONEG_DISABLE;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void mv2222_update_interface(struct phy_device *phydev)
-> > +{
-> > +	if ((phydev->speed == SPEED_1000 ||
-> > +	     phydev->speed == SPEED_100 ||
-> > +	     phydev->speed == SPEED_10) &&
-> > +	    phydev->interface != PHY_INTERFACE_MODE_1000BASEX) {
-> > +		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
+On Sat, Jan 30, 2021 at 03:49:09PM -0800, Guenter Roeck wrote:
+> On 1/29/21 2:59 PM, Jarkko Sakkinen wrote:
+> > On Tue, Jan 26, 2021 at 04:46:07PM +0100, Łukasz Majczak wrote:
+> >> Hi Jarkko, Guenter
+> >>
+> >> Yes, here are the logs when failure occurs -
+> >> https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
+> >> Look for a phrase "TPM returned invalid status"
+> >>
+> >> Guenter - good suggestion - I will try to keep it as tight as possible.
+> >>
+> >> Best regards,
+> >> Lukasz
+> > 
+> > Is it possible for you try out with linux-next? Thanks. It's a known
+> > issue, which ought to be fixed by now.
+> > 
+> > The log message is harmless, it'a warning not panic, and does not
+> > endanger system stability. WARN()'s always dump stack trace. No oops
+> > is happening.
+> > 
 > 
-> The speeds 10 and 100 seem odd here. 1000BaseX only supports 1G. It
-> would have to be SGMII in order to also support 10Mbps and 100Mbps.
-> Plus you are not listing 10 and 100 as a supported value.
+> There is a note in the kernel documentation which states:
 > 
-> > +/* Returns negative on error, 0 if link is down, 1 if link is up */
-> > +static int mv2222_read_status_1g(struct phy_device *phydev)
-> > +{
-> > +	int val, link = 0;
-> > +
-> > +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
-> > +	if (val < 0)
-> > +		return val;
-> > +
-> > +	if (!(val & MDIO_STAT1_LSTATUS) ||
-> > +	    (phydev->autoneg == AUTONEG_ENABLE && !(val & MDIO_AN_STAT1_COMPLETE)))
-> > +		return 0;
-> > +
-> > +	link = 1;
-> > +
-> > +	if (phydev->autoneg == AUTONEG_DISABLE) {
-> > +		phydev->speed = SPEED_1000;
-> > +		phydev->duplex = DUPLEX_FULL;
-> > +
-> > +		return link;
-> > +	}
-> > +
-> > +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_PHY_STAT);
-> > +	if (val < 0)
-> > +		return val;
-> > +
-> > +	if (val & MV_1GBX_PHY_STAT_AN_RESOLVED) {
-> > +		if (val & MV_1GBX_PHY_STAT_DUPLEX)
-> > +			phydev->duplex = DUPLEX_FULL;
-> > +		else
-> > +			phydev->duplex = DUPLEX_HALF;
-> > +
-> > +		if (val & MV_1GBX_PHY_STAT_SPEED1000)
-> > +			phydev->speed = SPEED_1000;
-> > +		else if (val & MV_1GBX_PHY_STAT_SPEED100)
-> > +			phydev->speed = SPEED_100;
-> > +		else
-> > +			phydev->speed = SPEED_10;
+> Note that the WARN()-family should only be used for "expected to
+> be unreachable" situations. If you want to warn about "reachable
+> but undesirable" situations, please use the pr_warn()-family of
+> functions.
 > 
-> Are you sure it is not doing SGMII? Maybe it can do both, 1000BaseX
-> and SGMII? You would generally use 1000BaseX to connect to a fibre
-> SFP, and SGMII to connect to a copper SFP. So ideally you want to be
-> able to swap between these modes as needed.
-> 
-> > +static int mv2222_read_status(struct phy_device *phydev)
-> > +{
-> > +	int link;
-> > +
-> > +	linkmode_zero(phydev->lp_advertising);
-> > +	phydev->pause = 0;
-> > +	phydev->asym_pause = 0;
-> > +
-> > +	switch (phydev->interface) {
-> > +	case PHY_INTERFACE_MODE_10GBASER:
-> > +		link = mv2222_read_status_10g(phydev);
-> > +		break;
-> > +	case PHY_INTERFACE_MODE_1000BASEX:
-> > +	default:
-> > +		link = mv2222_read_status_1g(phydev);
-> > +		break;
-> > +	}
-> > +
-> > +	if (link < 0)
-> > +		return link;
-> > +
-> > +	phydev->link = link;
-> > +
-> > +	if (phydev->link)
-> > +		mv2222_link_led_on(phydev);
-> > +	else
-> > +		mv2222_link_led_off(phydev);
-> 
-> You have to manually control the LED? That is odd for a PHY. Normally
-> you just select a mode and it will do it all in hardware.
-> 
->     Andrew
+> It seems to me that "harmless" doesn't really fit the expected
+> use of WARN(). Should it possibly be converted to pr_warn() ?
 
-Thanks for the review, Andrew, your remarks are all valid. I'll
-implement 1000Base-X/SGMII swapping. As for the LED, I'll just drop it
-for now, as it is not essential. I'll commit LEDs config when core
-funtionality will be accepted.
+It should, and I agree that it was a mistake to merge the commit
+that added this WARN(). I'm sending a late PR to Linus containing
+just the James' fixes. I'll include one line change to that PR,
+that does just what you suggested.
 
+It also lacks useful information, i.e. the status.
+
+I just send a fixed with your "suggested-by". Can you review and
+ack it ASAP so that I can then go on and send PR to Linus?
+
+/Jarkko
