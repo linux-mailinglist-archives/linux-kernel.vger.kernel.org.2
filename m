@@ -2,229 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC0830BABD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAED430BAC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhBBJQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:16:27 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12064 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbhBBJOe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:14:34 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVJwq4NrkzMT10;
-        Tue,  2 Feb 2021 17:12:11 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
- 17:13:45 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: rename checkpoint=merge mount option
- to checkpoint_merge
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20210202051829.2127214-1-daeho43@gmail.com>
- <ef27f0cc-87b6-cea1-31a6-f2837d6a673c@huawei.com>
- <CACOAw_wGY1CNXZ9QoLB1t0800Wyjv1_P9iuqk4SOKjT-oUQamw@mail.gmail.com>
- <6f1e4639-3715-d855-951d-7c0a67fa9913@huawei.com>
- <CACOAw_zmPXzTrtp7VVyBoYLRe_TRzTB6CqjQkmLq=NU=Bky9WQ@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <ec3685a4-1871-fd69-68ae-1c22066aa06d@huawei.com>
-Date:   Tue, 2 Feb 2021 17:13:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S232957AbhBBJRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:17:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41076 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231621AbhBBJQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:16:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612257337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Po2Q/2zwzavvhoOnN15a5ryoMFy4vJPIEnIH7L7Khw=;
+        b=pvmwFpqMDy/t9KwnRCKmGfTHuoUl/YZkOLzJYrOLwNqihOqeEJw6t7324hrZsBYih1IMbE
+        BqsmGBJcDeQRuWfpZ3Qkt85OJJDbEGFpm1YNWblj/mBCK0uFub9RGoiYumid+wMSZDsHeM
+        MD32s7rp/NLbaLrg+BtPtbK/pCeKyJs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 847EEB049;
+        Tue,  2 Feb 2021 09:15:37 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 10:15:36 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 11/12] printk: remove logbuf_lock
+Message-ID: <YBkYOKL22kADKTeG@alley>
+References: <20210126211551.26536-1-john.ogness@linutronix.de>
+ <20210126211551.26536-12-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_zmPXzTrtp7VVyBoYLRe_TRzTB6CqjQkmLq=NU=Bky9WQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126211551.26536-12-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/2 17:07, Daeho Jeong wrote:
-> If I understand it correctly, the only thing I have to do now is
-> remove "nocheckpoint_merge" now.
-> Am I correct? :)
-
-For this patch, Yup. :)
-
-Thanks,
-
+On Tue 2021-01-26 22:21:50, John Ogness wrote:
+> Since the ringbuffer is lockless, there is no need for it to be
+> protected by @logbuf_lock. Remove @logbuf_lock.
 > 
-> 2021년 2월 2일 (화) 오후 5:30, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2021/2/2 16:02, Daeho Jeong wrote:
->>> I chose the same step with "flush_merge", because it doesn't have
->>> "noflush_merge".
->>
->> Oh, "noxxx" option was added only when we set the option by default in
->> default_options(), when user want to disable the default option, it
->> needs to use "noxxx" option, and then we will show this "noxxx" option
->> string to user via show_options() to indicate that "noxxx" option is
->> working now.
->>
->> Anyway I think we should fix to show "noflush_merge" option because we
->> have set flush_merge by default.
->>
->>> Do you think we need that for both, "noflush_merge" and "nocheckpoint_merge"?
->>
->> For "nocheckpoint_merge", we can introduce this option only when we want
->> to set "checkpoint_merge" by default.
->>
->> Here is the example from noinline_data:
->>
->> Commit 75342797988 ("f2fs: enable inline data by default")
->>
->> Thanks,
->>
->>>
->>> I thought we needed to give some time to make this be turned on by
->>> default. It might be a little radical. :)
->>>
->>> What do you think?
->>>
->>> 2021년 2월 2일 (화) 오후 4:40, Chao Yu <yuchao0@huawei.com>님이 작성:
->>>>
->>>> On 2021/2/2 13:18, Daeho Jeong wrote:
->>>>> From: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> As checkpoint=merge comes in, mount option setting related to checkpoint
->>>>> had been mixed up and it became hard to understand. So, I separated
->>>>> this option from "checkpoint=" and made another mount option
->>>>> "checkpoint_merge" for this.
->>>>>
->>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>>> ---
->>>>> v2: renamed "checkpoint=merge" to "checkpoint_merge"
->>>>> ---
->>>>>     Documentation/filesystems/f2fs.rst |  6 +++---
->>>>>     fs/f2fs/super.c                    | 26 ++++++++++++++------------
->>>>>     2 files changed, 17 insertions(+), 15 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>>>> index d0ead45dc706..475994ed8b15 100644
->>>>> --- a/Documentation/filesystems/f2fs.rst
->>>>> +++ b/Documentation/filesystems/f2fs.rst
->>>>> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]      Set to "disable" to turn off checkpointing. Set to "enabl
->>>>>                          hide up to all remaining free space. The actual space that
->>>>>                          would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->>>>>                          This space is reclaimed once checkpoint=enable.
->>>>> -                      Here is another option "merge", which creates a kernel daemon
->>>>> -                      and makes it to merge concurrent checkpoint requests as much
->>>>> -                      as possible to eliminate redundant checkpoint issues. Plus,
->>>>> +checkpoint_merge      When checkpoint is enabled, this can be used to create a kernel
->>>>> +                      daemon and make it to merge concurrent checkpoint requests as
->>>>> +                      much as possible to eliminate redundant checkpoint issues. Plus,
->>>>>                          we can eliminate the sluggish issue caused by slow checkpoint
->>>>>                          operation when the checkpoint is done in a process context in
->>>>>                          a cgroup having low i/o budget and cpu shares. To make this
->>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>> index 56696f6cfa86..d8603e6c4916 100644
->>>>> --- a/fs/f2fs/super.c
->>>>> +++ b/fs/f2fs/super.c
->>>>> @@ -145,6 +145,7 @@ enum {
->>>>>         Opt_checkpoint_disable_cap_perc,
->>>>>         Opt_checkpoint_enable,
->>>>>         Opt_checkpoint_merge,
->>>>> +     Opt_nocheckpoint_merge,
->>>>>         Opt_compress_algorithm,
->>>>>         Opt_compress_log_size,
->>>>>         Opt_compress_extension,
->>>>> @@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
->>>>>         {Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->>>>>         {Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->>>>>         {Opt_checkpoint_enable, "checkpoint=enable"},
->>>>> -     {Opt_checkpoint_merge, "checkpoint=merge"},
->>>>> +     {Opt_checkpoint_merge, "checkpoint_merge"},
->>>>> +     {Opt_nocheckpoint_merge, "nocheckpoint_merge"},
->>>>>         {Opt_compress_algorithm, "compress_algorithm=%s"},
->>>>>         {Opt_compress_log_size, "compress_log_size=%u"},
->>>>>         {Opt_compress_extension, "compress_extension=%s"},
->>>>> @@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>>                 case Opt_checkpoint_merge:
->>>>>                         set_opt(sbi, MERGE_CHECKPOINT);
->>>>>                         break;
->>>>> +             case Opt_nocheckpoint_merge:
->>>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
->>>>> +                     break;
->>>>>     #ifdef CONFIG_F2FS_FS_COMPRESSION
->>>>>                 case Opt_compress_algorithm:
->>>>>                         if (!f2fs_sb_has_compression(sbi)) {
->>>>> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>>                 return -EINVAL;
->>>>>         }
->>>>>
->>>>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
->>>>> -             return -EINVAL;
->>>>> -     }
->>>>> -
->>>>>         /* Not pass down write hints if the number of active logs is lesser
->>>>>          * than NR_CURSEG_PERSIST_TYPE.
->>>>>          */
->>>>> @@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>>>                 seq_printf(seq, ",checkpoint=disable:%u",
->>>>>                                 F2FS_OPTION(sbi).unusable_cap);
->>>>>         if (test_opt(sbi, MERGE_CHECKPOINT))
->>>>> -             seq_puts(seq, ",checkpoint=merge");
->>>>> +             seq_puts(seq, ",checkpoint_merge");
->>>>
->>>> Other noxxx options will be shown in show_options(), how about following them?
->>>>
->>>>>         if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->>>>>                 seq_printf(seq, ",fsync_mode=%s", "posix");
->>>>>         else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
->>>>> @@ -1827,6 +1826,7 @@ static void default_options(struct f2fs_sb_info *sbi)
->>>>>         sbi->sb->s_flags |= SB_LAZYTIME;
->>>>>         set_opt(sbi, FLUSH_MERGE);
->>>>>         set_opt(sbi, DISCARD);
->>>>> +     clear_opt(sbi, MERGE_CHECKPOINT);
->>>>
->>>> Why should we clear checkpoint_merge option in default_options()?
->>>>
->>>> Thanks,
->>>>
->>>>>         if (f2fs_sb_has_blkzoned(sbi))
->>>>>                 F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
->>>>>         else
->>>>> @@ -2066,9 +2066,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>>>                 }
->>>>>         }
->>>>>
->>>>> -     if (!test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> -             f2fs_stop_ckpt_thread(sbi);
->>>>> -     } else {
->>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>>                 err = f2fs_start_ckpt_thread(sbi);
->>>>>                 if (err) {
->>>>>                         f2fs_err(sbi,
->>>>> @@ -2076,6 +2075,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>>>                             err);
->>>>>                         goto restore_gc;
->>>>>                 }
->>>>> +     } else {
->>>>> +             f2fs_stop_ckpt_thread(sbi);
->>>>>         }
->>>>>
->>>>>         /*
->>>>> @@ -3831,7 +3832,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>>>
->>>>>         /* setup checkpoint request control and start checkpoint issue thread */
->>>>>         f2fs_init_ckpt_req_control(sbi);
->>>>> -     if (test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>>>                 err = f2fs_start_ckpt_thread(sbi);
->>>>>                 if (err) {
->>>>>                         f2fs_err(sbi,
->>>>>
->>> .
->>>
-> .
+> This means that printk_nmi_direct and printk_safe_flush_on_panic()
+> no longer need to acquire any lock to run.
 > 
+> @console_seq, @exclusive_console_stop_seq, @console_dropped are
+> protected by @console_lock.
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index d14a4afc5b72..b57dba7f077d 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -401,6 +366,7 @@ static u64 syslog_seq;
+>  static size_t syslog_partial;
+>  static bool syslog_time;
+>  
+> +/* All 3 protected by @console_sem. */
+>  /* the next printk record to write to the console */
+>  static u64 console_seq;
+>  static u64 exclusive_console_stop_seq;
+> @@ -762,27 +728,27 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+>  	if (ret)
+>  		return ret;
+>  
+> -	logbuf_lock_irq();
+> +	printk_safe_enter_irq();
+
+What is the exact reason to keep this, please?
+
+1. The primary function of the printk_safe context is to avoid deadlock
+   caused by logbuf_lock. It might have happened with recursive or nested
+   printk(). But logbuf_lock is gone now.
+
+2. There are still some hidded locks that were guarded by this as
+   well. For example, console_owner_lock, or spinlock inside
+   console_sem, or scheduler locks taken when console_sem()
+   wakes another waiting process. It might still make sense
+   to somehow guard these.
+
+3. It kind of prevented infinite printk() recursion by using another
+   code path. The other path was limited by the size of the per-cpu
+   buffer. Well, recursion inside printk_safe code would likely
+   hit end of the stack first.
+
+
+IMHO, we do not need printk safe context here in devkmsg_read().
+It does not belong into any categoty that is described above.
+logbug_lock() is gone. devkmsg_read() is never called directly
+from printk().
+
+The same is true for almost entire patch. There are only two
+or so exceptions, see below.
+
+
+>  	if (!prb_read_valid(prb, atomic64_read(&user->seq), r)) {
+>  		if (file->f_flags & O_NONBLOCK) {
+>  			ret = -EAGAIN;
+> -			logbuf_unlock_irq();
+> +			printk_safe_exit_irq();
+>  			goto out;
+>  		}
+>  
+> -		logbuf_unlock_irq();
+> +		printk_safe_exit_irq();
+>  		ret = wait_event_interruptible(log_wait,
+>  				prb_read_valid(prb, atomic64_read(&user->seq), r));
+>  		if (ret)
+>  			goto out;
+> -		logbuf_lock_irq();
+> +		printk_safe_enter_irq();
+>  	}
+>  
+>  	if (atomic64_read(&user->seq) < prb_first_valid_seq(prb)) {
+>  		/* our last seen message is gone, return error and reset */
+>  		atomic64_set(&user->seq, prb_first_valid_seq(prb));
+>  		ret = -EPIPE;
+> -		logbuf_unlock_irq();
+> +		printk_safe_exit_irq();
+>  		goto out;
+>  	}
+>  
+
+
+> @@ -2593,7 +2559,6 @@ void console_unlock(void)
+>  		size_t len;
+>  
+>  		printk_safe_enter_irqsave(flags);
+> -		raw_spin_lock(&logbuf_lock);
+>  skip:
+>  		if (!prb_read_valid(prb, console_seq, &r))
+>  			break;
+
+I agree that printk_safe context makes sense in console_unlock().
+It prevents eventual deadlocks caused, for example by
+console_lock_owner.
+
+It also somehow prevents an infinite loop when a console driver would
+add a new message that would need to get flushed out as well which
+would trigger another messages ...
+
+
+> @@ -2973,9 +2933,7 @@ void register_console(struct console *newcon)
+>  		/*
+>  		 * console_unlock(); will print out the buffered messages
+>  		 * for us.
+> -		 */
+> -		logbuf_lock_irqsave(flags);
+
+I am just curious what was the motivation to remove printk_safe
+context here? It is a bit inconsistent with the other locations
+where you kept it.
+
+IMHO, it can be removed. It does not fit into any category
+where it would help as described above.
+
+Anyway, we have to be consistent and explain it in the commit message.
+
+
+
+> -		/*
+> +		 *
+>  		 * We're about to replay the log buffer.  Only do this to the
+>  		 * just-registered console to avoid excessive message spam to
+>  		 * the already-registered consoles.
+> @@ -2988,11 +2946,9 @@ void register_console(struct console *newcon)
+>  		exclusive_console_stop_seq = console_seq;
+>  
+>  		/* Get a consistent copy of @syslog_seq. */
+> -		raw_spin_lock(&syslog_lock);
+> +		raw_spin_lock_irqsave(&syslog_lock, flags);
+
+I guess that you have added _irqsafe() variant here to preserve the
+original behavior.
+
+I just wonder if it makes sense. We take the sleeping console_lock()
+in this function. This should not be allowed in a context
+with disabled interrupts.
+
+IMHO, we do not need the irqsafe variant here. But it probably should
+be removed in a separate patch. We should not hide it in this huge patch.
+
+
+>  		console_seq = syslog_seq;
+> -		raw_spin_unlock(&syslog_lock);
+> -
+> -		logbuf_unlock_irqrestore(flags);
+> +		raw_spin_unlock_irqrestore(&syslog_lock, flags);
+>  	}
+>  	console_unlock();
+>  	console_sysfs_notify();
+> @@ -3414,9 +3366,11 @@ bool kmsg_dump_get_line_nolock(struct kmsg_dumper_iter *iter, bool syslog,
+>  	struct printk_info info;
+>  	unsigned int line_count;
+>  	struct printk_record r;
+> +	unsigned long flags;
+>  	size_t l = 0;
+>  	bool ret = false;
+>  
+> +	printk_safe_enter_irqsave(flags);
+
+This change is neither obvious nor documented.
+
+I guess that this is preparation step for unfying
+kmsg_dump_get_line_nolock() and kmsg_dump_get_line().
+
+Please, do it in the next patch and keep this one strightforward.
+
+That said, IMHO, the printk_safe() context is not needed here at all.
+This code is not called from printk() directly. The recursion is
+prevented by iter->next_seq or the buffer size.
+
+
+>  	prb_rec_init_rd(&r, &info, line, size);
+>  
+>  	if (!iter->active)
+
+
+> @@ -3569,8 +3517,12 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
+>   */
+>  void kmsg_dump_rewind_nolock(struct kmsg_dumper_iter *iter)
+>  {
+> +	unsigned long flags;
+> +
+> +	printk_safe_enter_irqsave(flags);
+
+This is the same as in kmsg_dump_get_line_nolock().
+
+Please, keep this huge patch strightforward. Either replace
+logbuf_lock*() with the corresponding printk_safe*() calls.
+Or do not add printk_safe*() where it is not needed.
+
+>  	iter->cur_seq = latched_seq_read_nolock(&clear_seq);
+>  	iter->next_seq = prb_next_seq(prb);
+> +	printk_safe_exit_irqrestore(flags);
+>  }
+>  
+>  /**
+
+> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+> index a0e6f746de6c..a9a3137bd972 100644
+> --- a/kernel/printk/printk_safe.c
+> +++ b/kernel/printk/printk_safe.c
+> @@ -368,20 +354,21 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
+>  #endif
+>  
+>  	/*
+> -	 * Try to use the main logbuf even in NMI. But avoid calling console
+> +	 * Use the main logbuf even in NMI. But avoid calling console
+>  	 * drivers that might have their own locks.
+>  	 */
+> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK) &&
+> -	    raw_spin_trylock(&logbuf_lock)) {
+> +	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
+> +		unsigned long flags;
+>  		int len;
+>  
+> +		printk_safe_enter_irqsave(flags);
+
+The printk_safe context does not make much sense here. The per-context
+redirection is done in vprintk_func(). It will always use this path
+because PRINTK_NMI_DIRECT_CONTEXT_MASK is handled before
+PRINTK_SAFE_CONTEXT_MASK.
+
+>  		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+> -		raw_spin_unlock(&logbuf_lock);
+> +		printk_safe_exit_irqrestore(flags);
+>  		defer_console_output();
+>  		return len;
+>  	}
+>  
+> -	/* Use extra buffer in NMI when logbuf_lock is taken or in safe mode. */
+> +	/* Use extra buffer in NMI. */
+>  	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
+>  		return vprintk_nmi(fmt, args);
+
+I agree that it makes sense to keep vprintk_nmi() for now. It prevents
+an infinite recursion. I still hope that we will agree on a better
+solution later.
+
+
+Summary:
+
+I do not have a strong opinion whether to remove printk_safe
+enter/exit calls in this patch or in a separate one. I would
+be fine with both solutions.
+
+Anyway, please keep the patch as straightforward as possible.
+Please, do not move printk_safe context into another locations.
+
+Also provide more reasoning in the commit message. Why printk_safe
+enter/exit calls are preserved or why they can be removed.
+
+Feel free to mention that printk_safe context still makes sense on
+some locations, explain why, and say that it will be removed later.
+
+Best Regards,
+Petr
