@@ -2,137 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55CD30C94D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2584D30C176
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbhBBSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:15:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49027 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233699AbhBBOGq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:06:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612274719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LXlNwCxVBCnWTgIRZ67SF78i3D9tADdgI1TeYfcOFjI=;
-        b=VLZRoVsolK/2n1dXJBvWfVCkC4+UjKsPhbQn8wMS9c8yHxdZTfdZji7B+oxQBXx1Ah9s0O
-        cLumvxm45Yn/s7u7e+6oKGyxkEFImR01omu9UB3lsluQtdGZCvGg9lrSjJeVe9WbOWdYYi
-        OfkPmJNUkR7qQDaRv8/lCriyP1jWIQ8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-TPezbrMXP72866FPkGrBYw-1; Tue, 02 Feb 2021 09:05:17 -0500
-X-MC-Unique: TPezbrMXP72866FPkGrBYw-1
-Received: by mail-ed1-f72.google.com with SMTP id u19so9596609edr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:05:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LXlNwCxVBCnWTgIRZ67SF78i3D9tADdgI1TeYfcOFjI=;
-        b=DiEe3QvHRiLLhWtwGZ3lGBTTes/pAd6mFbALQz+B5Dlm5vdbr0Mw/vTKapQAlfwE6u
-         75VlrVm/zSCAysJbyWRLo7dP9veJKbI9HjKJU8+t94WYnMAMZJfBFwQcHaKa4s92Huff
-         h7jhvYZ8YOvsTogUqxJ10YC/5ZXfdvClVL01sfXvxkTvjZlq9k9cRU4LYX2zl7RoY9Bq
-         fxycTe2r147P5BO1CyGWWd7s88sRCIl3oKrlkaXo/eO8ef5RahRrZ7tSO3D8WlV4vs01
-         72VpywHm8dFcT7q1+FqeZyoOwJl/z5ToL+Xc9EqSODpgCnjK28HVu4uovUb6Iq6FL36+
-         f6UQ==
-X-Gm-Message-State: AOAM531KP7yxx29e9dUg/XAr8RTrk3rXQ4X8YsXnjh++Zz4J/ojO7ZWl
-        5LRvmNCVBi0yOh+tPhq/OJ0PS8P7J9cC4CGyVk/me80OWI2Gd4XnBYzugcSIpyspv0wnWmZQAnF
-        wP41NZovFiM21jwVczMBHe8BmqAwhvoqKDr2KYhb6y+7g7UAWFMdVz3OUes6G/5+Nkyto3w1nf6
-        4T
-X-Received: by 2002:a17:906:780c:: with SMTP id u12mr22282925ejm.125.1612274716018;
-        Tue, 02 Feb 2021 06:05:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxQ/DyaGLIBeJhjBFt5cegtfQ7kGKj1VDMfIj8k1n8QaRu28f438c65QA8HfxsXqI6Pm6fGcw==
-X-Received: by 2002:a17:906:780c:: with SMTP id u12mr22282903ejm.125.1612274715788;
-        Tue, 02 Feb 2021 06:05:15 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id ec18sm9321262ejb.24.2021.02.02.06.05.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 06:05:15 -0800 (PST)
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: rectify length of title
- underline
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nitin Joshi <njoshi1@lenovo.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210129040849.26740-1-lukas.bulwahn@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3b91a535-b818-09be-456b-c728838612dc@redhat.com>
-Date:   Tue, 2 Feb 2021 15:05:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234454AbhBBOYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:24:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231624AbhBBORv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:17:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2821F64DD5;
+        Tue,  2 Feb 2021 14:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612274769;
+        bh=ucOE/Mmv9i2CWEnQ7wz77HidV63/GBxg2zd12rEmpdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mtk8Q3WRW8e4rAGIMqVSBpBvOYwFo0HFhgAeLGXuNjXjEG35zPmakj7dmP3Hp3Xxb
+         nLQvz66M8T/SeJkpoklGcHv/kplvfAQlGnleUXc+nPaJbcAYzR2bE146XmrkoL8bC8
+         WACPjj7XeQXWdVU5Y4Gh/La16odwgfVrinCkNWdA=
+Date:   Tue, 2 Feb 2021 15:06:05 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Russell King <linux+pull@armlinux.org.uk>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
+        dmaengine@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <YBlcTXlxemmC2lgr@kroah.com>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210129040849.26740-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/29/21 5:08 AM, Lukas Bulwahn wrote:
-> Commit d7cbe2773aed ("platform/x86: thinkpad_acpi: set keyboard language")
-> adds information on keyboard setting to the thinkpad documentation, but
-> made the subsection title underline too short.
+On Tue, Feb 02, 2021 at 02:53:50PM +0100, Uwe Kleine-König wrote:
+> Hello,
 > 
-> Hence, make htmldocs warns:
+> the following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 > 
->   Documentation/admin-guide/laptops/thinkpad-acpi.rst:1472: \
->     WARNING: Title underline too short.
+>   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 > 
-> Rectify length of subsection title underline.
+> are available in the Git repository at:
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-> ---
-> applies cleanly on next-20210128
+>   https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-void
 > 
-> Nitin, please ack.
+> for you to fetch changes up to f170b59fedd733b92f58c4d7c8357fbf7601d623:
 > 
-> Hans, please pick this minor fixup for your platform/x86 -next tree.
+>   amba: Make use of bus_type functions (2021-02-02 14:26:02 +0100)
 > 
->  Documentation/admin-guide/laptops/thinkpad-acpi.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I expect this tag to be merged by Russell King as amba maintainer and by
+> Mathieu Poirier (or Greg Kroah-Hartman?) for coresight as there are some
+> pending conflicting changes. These are not hard to resolve but also
+> non-trivial. Tell me if you need assistance for resolving, also if it's only a
+> second pair of eyes to judge your resolution.
 > 
-> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> index b1188f05a99a..0e4c5bb7fb70 100644
-> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
-> @@ -1469,7 +1469,7 @@ Sysfs notes
->  
->  
->  Setting keyboard language
-> --------------------
-> +-------------------------
->  
->  sysfs: keyboard_lang
->  
+> Best regards,
+> Uwe
+> 
+> ----------------------------------------------------------------
+> Tag for adaptions to struct amba_driver::remove changing prototype
+> 
+> ----------------------------------------------------------------
+> Uwe Kleine-König (5):
+>       amba: Fix resource leak for drivers without .remove
+>       amba: reorder functions
+>       vfio: platform: simplify device removal
+>       amba: Make the remove callback return void
+>       amba: Make use of bus_type functions
+> 
+>  drivers/amba/bus.c                                 | 234 +++++++++++++++++++++++++++++++++------------------------------
+>  drivers/char/hw_random/nomadik-rng.c               |   3 +-
+>  drivers/dma/pl330.c                                |   3 +-
+>  drivers/gpu/drm/pl111/pl111_drv.c                  |   4 +-
+>  drivers/hwtracing/coresight/coresight-catu.c       |   3 +-
+>  drivers/hwtracing/coresight/coresight-cpu-debug.c  |   4 +-
+>  drivers/hwtracing/coresight/coresight-cti-core.c   |   4 +-
+>  drivers/hwtracing/coresight/coresight-etb10.c      |   4 +-
+>  drivers/hwtracing/coresight/coresight-etm3x-core.c |   4 +-
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c |   4 +-
+>  drivers/hwtracing/coresight/coresight-funnel.c     |   4 +-
+>  drivers/hwtracing/coresight/coresight-replicator.c |   4 +-
+>  drivers/hwtracing/coresight/coresight-stm.c        |   4 +-
+>  drivers/hwtracing/coresight/coresight-tmc-core.c   |   4 +-
+>  drivers/hwtracing/coresight/coresight-tpiu.c       |   4 +-
+>  drivers/i2c/busses/i2c-nomadik.c                   |   4 +-
+>  drivers/input/serio/ambakmi.c                      |   3 +-
+>  drivers/memory/pl172.c                             |   4 +-
+>  drivers/memory/pl353-smc.c                         |   4 +-
+>  drivers/mmc/host/mmci.c                            |   4 +-
+>  drivers/rtc/rtc-pl030.c                            |   4 +-
+>  drivers/rtc/rtc-pl031.c                            |   4 +-
+>  drivers/spi/spi-pl022.c                            |   5 +-
+>  drivers/tty/serial/amba-pl010.c                    |   4 +-
+>  drivers/tty/serial/amba-pl011.c                    |   3 +-
+>  drivers/vfio/platform/vfio_amba.c                  |  15 ++--
+>  drivers/video/fbdev/amba-clcd.c                    |   4 +-
+>  drivers/watchdog/sp805_wdt.c                       |   4 +-
+>  include/linux/amba/bus.h                           |   2 +-
+>  sound/arm/aaci.c                                   |   4 +-
+>  30 files changed, 157 insertions(+), 198 deletions(-)
+> 
 > 
 
+
+I'm glad to take this through my char/misc tree, as that's where the
+other coresight changes flow through.  So if no one else objects, I will
+do so...
+
+thanks,
+
+greg k-h
