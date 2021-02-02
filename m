@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D7130B67A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8B930B680
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhBBE2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:28:42 -0500
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:44575 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhBBE2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:28:36 -0500
-Received: by mail-pg1-f172.google.com with SMTP id s23so12797055pgh.11;
-        Mon, 01 Feb 2021 20:28:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ePP320up4ONpD3QZFNd5p6W7Ka4tQ6LNbZ7Mki65Nr4=;
-        b=J1FRh86PcC8KV/FLjUecZ4EBYoFDOyGka7i8ddOhAfYnSaNlfRe1wgf79dHyvAUvxU
-         9xzl8DryODZWnxk5dTt+o4l69O0ZG9yMXHgOl4RXsxFNSsLzBe/HspbYLA39705xFhSJ
-         8H3G/WKknRV2SdfDgJpevWl+BPznWimSHADrN6VgOh2WaF4HOEjt+mioZJqOQhTFhNhb
-         7dmHZQqyP6+wA+tLZ4W5ibA8Q5F0xDZH/Zcm4TxAGtvCNz6F+gHtuBFOdeI7FXY6i6z/
-         IAjk47kecCXahYqio658hhipMPRAppUdEPXqvc6VTDEN47D4uLRpb0FBcQ9SAzTYj/qU
-         DVYg==
-X-Gm-Message-State: AOAM531c3Aw+osKabzue3h8hcLA9H1lqgIeCHzN0OyB4klgIiOVT0FnI
-        41SagRm2YrEXqywASaS/8Uw=
-X-Google-Smtp-Source: ABdhPJyxW5YTtzSo0NgAoTywysInHQXePxvks+ErZjHAJTJPyHI9jlLU9IsrlVFs/7BV0puicAAG9g==
-X-Received: by 2002:a62:8749:0:b029:1c4:d1de:3b56 with SMTP id i70-20020a6287490000b02901c4d1de3b56mr19065091pfe.71.1612240075227;
-        Mon, 01 Feb 2021 20:27:55 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id f13sm1475347pjj.1.2021.02.01.20.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 20:27:54 -0800 (PST)
-Date:   Mon, 1 Feb 2021 20:27:53 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv4 5/6] dt-bindings: fpga: add authenticate-fpga-config
- property
-Message-ID: <YBjUyc2ea51S4Wzp@epycbox.lan>
-References: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
- <1612192919-4069-6-git-send-email-richard.gong@linux.intel.com>
+        id S231675AbhBBEaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:30:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231494AbhBBEas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 23:30:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7CE1264E9E;
+        Tue,  2 Feb 2021 04:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612240207;
+        bh=YLHi1Cwx3S3ifeYbkWuF4+Xh5WBWUvKIxdSReU/zWWY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WKBnrN91wWAnA7Jk/LLlaSNCP6nKN131w7hfZS6X6ABliYYWNa/v0Iv813PIaXm+f
+         AqvDW+VceOxdRWRNefpBwBpMK4MAi3Ta7ZEjrIfb0Ccid7mJc4QmhtQElBih3qbrRP
+         mj1fpN39IoHRwruIFb+dl9eepdE1STQPcL7pgfQVnEh9lQMdXO/ja2BeghLwL+zwDI
+         KJW8kKbmW3xzlp2mpNP0SLczo2AhvZ1HwneaOEWgKCf5QBTGu4l/5n9xNhh9i0peEY
+         WiyGL0ok0nL3De4Px3LV6/+F978yzdgr4ds86jwyKUW3fzF1eAcFII+iR3meMdDc/U
+         GvLo4/6QASjXw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6985B609E1;
+        Tue,  2 Feb 2021 04:30:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612192919-4069-6-git-send-email-richard.gong@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed
+ UDP GRO fraglist
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161224020742.9509.1331877778578098305.git-patchwork-notify@kernel.org>
+Date:   Tue, 02 Feb 2021 04:30:07 +0000
+References: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+In-Reply-To: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     davem@davemloft.net, steffen.klassert@secunet.com, alobakin@pm.me,
+        namkyu78.kim@samsung.com, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, willemb@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:21:58AM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> Add authenticate-fpga-config property for FPGA bitstream authentication,
-> which makes sure a signed bitstream has valid signatures.
-> 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> ---
-> v4: explain authenticate-fpga-config flag further
-> v3: no change
-> v2: put authenticate-fpga-config above partial-fpga-config
->     update commit messages
-> ---
->  Documentation/devicetree/bindings/fpga/fpga-region.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> index e811cf8..e2740b6 100644
-> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> @@ -182,6 +182,10 @@ Optional properties:
->  	This property is optional if the FPGA Manager handles the bridges.
->          If the fpga-region is  the child of a fpga-bridge, the list should not
->          contain the parent bridge.
-> +- authenticate-fpga-config : boolean, set if do bitstream authentication only.
-> +	flag authenticate-fpga-config is used to first check the integrity of
-> +	the bitstream. If the authentication is passed, the user can perform
-> +	other operations.
-From the other commits it looks like it *also* writes to QSPI? If so
-please document that.
+Hello:
 
-If not, feel free to ignore :)
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Maybe I would highlight two things:
-a) If you add 'authenticate-fpga-config' you are not allowed to add new
-   nodes
-b) If you add 'authenticate-fpga-config' you are not alllowed to add
-   other operations
->  - partial-fpga-config : boolean, set if partial reconfiguration is to be done,
->  	otherwise full reconfiguration is done.
->  - external-fpga-config : boolean, set if the FPGA has already been configured
-> -- 
-> 2.7.4
+On Sat, 30 Jan 2021 08:13:27 +0900 you wrote:
+> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> skb_gso_segment is updated but following frag_skbs are not updated.
 > 
-Thanks,
-Moritz
+> A call path skb_mac_gso_segment -> inet_gso_segment ->
+> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> does not try to update UDP/IP header of the segment list but copy
+> only the MAC header.
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND,net,v4] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
+    https://git.kernel.org/netdev/net/c/c3df39ac9b0e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
