@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A01A30BA5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEA930BA60
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhBBIwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:52:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhBBIwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:52:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD28C061573;
-        Tue,  2 Feb 2021 00:51:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FViyHdjUfYiPSPWgGhgWx2i7ISbpBjSz7lj18u2QJ8c=; b=o8BF2/rSSVljt5i8n6qbO/QXkX
-        uTDow7BL1VRjIjeNTYduv6qpazB3bUBKMLHOBj7URIf0/QWr57A1PDKoiNiwbmRc+yUb4PPwFtI6e
-        qSD2LIFGI1gFs5gBUwxcMHsWFqKbnme6PjxGzqEtWqno5TS1vkPy1DBH6iHJUoH7YVYWENUAMvP+V
-        Rs/OJdurrfpD+TrMiS6OL3o1yhBgj8Zc1nEaFh1EtmvXZuoYTnBSt55gELYpUPEhTJDd6qmeBcliT
-        QgWqwpuk8K3Gyf6r2ipRWREvVg72kZO/EOhtumjXBvnb1RPc/CeKYG3hnJjaExk0Kh0+F92N7D5zf
-        HIFR8YuA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6rP0-00Ewuo-Sx; Tue, 02 Feb 2021 08:51:15 +0000
-Date:   Tue, 2 Feb 2021 08:51:14 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "(Exiting) Benjamin Gaignard" <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>, labbott@redhat.com,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Christian K??nig <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        ??rjan Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
- linux vm
-Message-ID: <20210202085114.GA3562876@infradead.org>
-References: <20210128083817.314315-1-surenb@google.com>
- <20210128091348.GA1962975@infradead.org>
- <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
- <YBMAGRIwcbPF17cU@google.com>
- <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
- <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
- <20210202070336.GA3535861@infradead.org>
- <CAJuCfpHWVcL1Cw=nm4THf0EzEan0jyVgLRNOdKr2ZbXex3DUcg@mail.gmail.com>
+        id S232533AbhBBIx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:53:57 -0500
+Received: from mga05.intel.com ([192.55.52.43]:7656 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229975AbhBBIxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:53:53 -0500
+IronPort-SDR: yoEb/BDw6S5i2WY3kg5rvk5sFMQbg+hruwTKdg2HtSNYXu66eSwzGV2Igq0lB37QrbG5jNYWCC
+ iPRdkIcilFAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="265653130"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="265653130"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:52:06 -0800
+IronPort-SDR: +22FgflFJPsyFYdAlwZDDYTdCn+5fgEnwlPtNMH/+p0/XiUCDpYw3jE8itXqjD9el5dXBkCG6l
+ SpeBKsdJj8LA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="479489771"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 02 Feb 2021 00:52:04 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Feb 2021 10:52:03 +0200
+Date:   Tue, 2 Feb 2021 10:52:03 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] usb: typec: tcpci_maxim: Enable data path when
+ partner is USB Comm capable
+Message-ID: <20210202085203.GG1433721@kuha.fi.intel.com>
+References: <20210202003101.221145-1-badhri@google.com>
+ <20210202003101.221145-3-badhri@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpHWVcL1Cw=nm4THf0EzEan0jyVgLRNOdKr2ZbXex3DUcg@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210202003101.221145-3-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:44:44AM -0800, Suren Baghdasaryan wrote:
-> On Mon, Feb 1, 2021 at 11:03 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > IMHO the
-> >
-> >         BUG_ON(vma->vm_flags & VM_PFNMAP);
-> >
-> > in vm_insert_page should just become a WARN_ON_ONCE with an error
-> > return, and then we just need to gradually fix up the callers that
-> > trigger it instead of coming up with workarounds like this.
+On Mon, Feb 01, 2021 at 04:31:01PM -0800, Badhri Jagan Sridharan wrote:
+> Configure USB switches when partner is USB Communication capable.
+> The is enabled USB data communication over D+/D- pins.
 > 
-> For the existing vm_insert_page users this should be fine since
-> BUG_ON() guarantees that none of them sets VM_PFNMAP.
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Even for them WARN_ON_ONCE plus an actual error return is a way
-better assert that is much developer friendly.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> However, for the
-> system_heap_mmap I have one concern. When vm_insert_page returns an
-> error due to VM_PFNMAP flag, the whole mmap operation should fail
-> (system_heap_mmap returning an error leading to dma_buf_mmap failure).
-> Could there be cases when a heap user (DRM driver for example) would
-> be expected to work with a heap which requires VM_PFNMAP and at the
-> same time with another heap which requires !VM_PFNMAP? IOW, this
-> introduces a dependency between the heap and its
-> user. The user would have to know expectations of the heap it uses and
-> can't work with another heap that has the opposite expectation. This
-> usecase is purely theoretical and maybe I should not worry about it
-> for now?
+> ---
+>  drivers/usb/typec/tcpm/tcpci_maxim.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+> index f1674a611033..041a1c393594 100644
+> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
+> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+> @@ -19,6 +19,9 @@
+>  #define PD_ACTIVITY_TIMEOUT_MS				10000
+>  
+>  #define TCPC_VENDOR_ALERT				0x80
+> +#define TCPC_VENDOR_USBSW_CTRL				0x93
+> +#define TCPC_VENDOR_USBSW_CTRL_ENABLE_USB_DATA		0x9
+> +#define TCPC_VENDOR_USBSW_CTRL_DISABLE_USB_DATA		0
+>  
+>  #define TCPC_RECEIVE_BUFFER_COUNT_OFFSET		0
+>  #define TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET		1
+> @@ -274,6 +277,21 @@ static void process_tx(struct max_tcpci_chip *chip, u16 status)
+>  		max_tcpci_init_regs(chip);
+>  }
+>  
+> +/* Enable USB switches when partner is USB communications capable */
+> +static void max_tcpci_set_partner_usb_comm_capable(struct tcpci *tcpci, struct tcpci_data *data,
+> +						   bool capable)
+> +{
+> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
+> +	int ret;
+> +
+> +	ret = max_tcpci_write8(chip, TCPC_VENDOR_USBSW_CTRL, capable ?
+> +			       TCPC_VENDOR_USBSW_CTRL_ENABLE_USB_DATA :
+> +			       TCPC_VENDOR_USBSW_CTRL_DISABLE_USB_DATA);
+> +
+> +	if (ret < 0)
+> +		dev_err(chip->dev, "Failed to enable USB switches");
+> +}
+> +
+>  static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+>  {
+>  	u16 mask;
+> @@ -453,6 +471,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+>  	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
+>  	chip->data.auto_discharge_disconnect = true;
+>  	chip->data.vbus_vsafe0v = true;
+> +	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
+>  
+>  	max_tcpci_init_regs(chip);
+>  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+> -- 
+> 2.30.0.365.g02bc693789-goog
 
-If such a case ever arises we can look into it.
+thanks,
+
+-- 
+heikki
