@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D8C30B468
+	by mail.lfdr.de (Postfix) with ESMTP id C1B1F30B469
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhBBBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S229624AbhBBBHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhBBBFA (ORCPT
+        with ESMTP id S229603AbhBBBHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:05:00 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028A1C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:04:20 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 7so18645134wrz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:04:19 -0800 (PST)
+        Mon, 1 Feb 2021 20:07:11 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDAFC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:06:30 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id m6so13235479pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Zh2Ei6J61XQxwQGIOp0JjNjlDIhrnbirBPmQD0bdfE=;
-        b=oAq5tF2giAnF45SikHwCnfJ/wedC8EeUwTbA9Xj81mtid2GED8hf+tcDz5ofDAk317
-         Fppcmk4PAncYIQh4qiEBMLQ9hI2XMwTQaxLakLvLXyC0gSvobWI1m5Moy+vPe2DeSYFe
-         lguwTOuTfogmRYcze/aKTYtC9cye3ylJrwMi1Jpzu4yNv8e7IDp2F/gOygZUNu7PSmct
-         qbA3KYuxMnPww+TJfeydaQRrB+5WhALpNiGlx+khPIViqqawzIw2Lq4gVG6JWFgkPDvA
-         sysMD2kmf36qyUbNUWxlRYMbb/kCdaxqzxeZDYWcmOgKX0IYUIzE2NBDijHwBXDXwKbl
-         CKbQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5tWP56wGAsq5M1/6L0Nhx+Nff7Wx1AXO7jr86wZj1aM=;
+        b=IVgPwKBKfNJ9jpRYoicL6hpd2wmOuRx6xSG+oELVY/zQuuhBTyLcF9eM/iOrSQK9XY
+         hfa3wCKjPC5kjiiqsTwFOuMHg4lf3GQopkekSXhZFImOdjiGe5f1ugKUzKNiTJc/u+M4
+         sNfMdGZLsEIgokugJxQ6Icjgzh4DJo2HFoVoI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Zh2Ei6J61XQxwQGIOp0JjNjlDIhrnbirBPmQD0bdfE=;
-        b=d+nM0G4SlcxX4wsk9D7TnBsXoY2Vvs3CoLtlYtxCElX5I9YoTLYlXAck4jO6C3tsaz
-         pw5zF1kETPTZ/S0n0IiiMy/in07ksoA6iYI8sBBiW5xP5dYYxO+a6adSs5D+WXKd+KZT
-         NVLgADR09HNdPyry3YKQgHUwON8XklaFJEma3gMrv63+wpBdnwkEuAqVRPJPw8dHq160
-         3zhm4WPaWxbsxHvFyEpTmIGR95gZ9TRQ8pwhXVgDbsrqVPCdlg25JvZ9u/iGNDN88aD+
-         XTkY65SX8vIvfe44qAgJBELHIZkK3C3eJplypju9X1nrYeoKusg9p3uBCYejycDRxNJd
-         0Nng==
-X-Gm-Message-State: AOAM5337yATh3UWMgsJ07kuYS/zfY//Q1n7QtxZRufdTLTAM9JfXSz1V
-        CivCnJrUXPgMTYaYCFPEA025soqM2B1U94qVTAQ=
-X-Google-Smtp-Source: ABdhPJzgYO8rG50sO+X2rVodTZe3f9r/4Cc5A9+EWJ7mWEPGrb9BUttVfkcu8UVWXTTk+U2kkzsGYdd6g2rGkiO1bdQ=
-X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr20353628wrt.130.1612227858834;
- Mon, 01 Feb 2021 17:04:18 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5tWP56wGAsq5M1/6L0Nhx+Nff7Wx1AXO7jr86wZj1aM=;
+        b=TRmLoofUvoibTqTsL0ZD2YwzoZQR2/RicQ7VNay0Qs0u0VqNYFLn14BixTFrrR/RJ8
+         2DhhlnfiBBU6TE90ZFLFavA11fKItHxmdG4d3vTy+C1LbXX8NatMXjMOXO78pwclZwJS
+         wsNTYmQVCokd5xXe6wuVY6n2kBDlgnGElA5ptD3FvDlxrLlbu3vybFiAGqgYmVz9vikq
+         wHtiEN1L+LArGbapcB0AfokOCtcDf7JoRskIxcOU8ArZbYKAIx9olMIMhvfd26Lsv32P
+         x2eVCWnLcvgAoVSBukCIG2ypNe7ANGlvZxR2Hrp+/cUfqV3LVSVtFwJchTKVEt73dcuH
+         xA+A==
+X-Gm-Message-State: AOAM533+Unw7vcJBwJdn59FPjLRnEqvmWz74XYf+qkpGKtKfCk9HV4O+
+        zIRG30eQDFLAkhFfukj/kz4UQc1ND/BS1Ndr
+X-Google-Smtp-Source: ABdhPJwntOGwfW+QmkbBNMIa6+zYGCYzPyotiBWqhxHLBlUE+EHriVmMrDbRJc6c1OtSykVwqcKgdw==
+X-Received: by 2002:aa7:8b0f:0:b029:1c0:e782:ba29 with SMTP id f15-20020aa78b0f0000b02901c0e782ba29mr18490270pfd.37.1612227990480;
+        Mon, 01 Feb 2021 17:06:30 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:d1cd:7a42:64fe:9bae])
+        by smtp.gmail.com with ESMTPSA id b17sm20003282pfp.167.2021.02.01.17.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 17:06:29 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Yong Wu <yong.wu@mediatek.com>, Will Deacon <will@kernel.org>,
+        joro@8bytes.org
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu: Properly pass gfp_t in _iommu_map() to avoid atomic sleeping
+Date:   Mon,  1 Feb 2021 17:06:23 -0800
+Message-Id: <20210201170611.1.I64a7b62579287d668d7c89e105dcedf45d641063@changeid>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-References: <20210127194047.21462-1-christianshewitt@gmail.com>
- <CAKGbVbtaDHmukvfF=sfSmWHVdAYoF6-i4RTzsPQ6zfsjHcGNCw@mail.gmail.com> <2c8d2b9e-c1cc-1157-19de-409957ecf9da@arm.com>
-In-Reply-To: <2c8d2b9e-c1cc-1157-19de-409957ecf9da@arm.com>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Tue, 2 Feb 2021 09:04:07 +0800
-Message-ID: <CAKGbVbuLRvZaZNfU-pi=7vqJZO2zOHAkrjTo6vs9BKLrV21O8g@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/lima: add governor data with pre-defined thresholds
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK, I see. Patch is also:
-Reviewed-by: Qiang Yu <yuq825@gmail.com>
+Sleeping while atomic = bad.  Let's fix an obvious typo to try to avoid it.
 
-Regards,
-Qiang
+The warning that was seen (on a downstream kernel with the problematic
+patch backported):
 
-On Mon, Feb 1, 2021 at 5:59 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 1/30/21 1:57 PM, Qiang Yu wrote:
-> > This patch gets minor improvement on glmark2 (160->162).
->
-> It has bigger impact when the load is changing and the frequency
-> is stuck to min w/o this patch.
->
-> >
-> > Seems there's no way for user to change this value, do we?
-> > Or there's work pending to expose it to sysfs?
->
-> True there is no user sysfs. I've proposed a patch to export these via
-> sysfs. Chanwoo is going to work on it. When it will land mainline, it's
-> probably a few months. So for now, the fix makes sense.
->
-> Regards,
-> Lukasz
->
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4726
+ in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 9, name: ksoftirqd/0
+ CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.93-12508-gc10c93e28e39 #1
+ Call trace:
+  dump_backtrace+0x0/0x154
+  show_stack+0x20/0x2c
+  dump_stack+0xa0/0xfc
+  ___might_sleep+0x11c/0x12c
+  __might_sleep+0x50/0x84
+  __alloc_pages_nodemask+0xf8/0x2bc
+  __arm_lpae_alloc_pages+0x48/0x1b4
+  __arm_lpae_map+0x124/0x274
+  __arm_lpae_map+0x1cc/0x274
+  arm_lpae_map+0x140/0x170
+  arm_smmu_map+0x78/0xbc
+  __iommu_map+0xd4/0x210
+  _iommu_map+0x4c/0x84
+  iommu_map_atomic+0x44/0x58
+  __iommu_dma_map+0x8c/0xc4
+  iommu_dma_map_page+0xac/0xf0
+
+Fixes: d8c1df02ac7f ("iommu: Move iotlb_sync_map out from __iommu_map")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I haven't done any serious testing on this.  I saw a report of the
+warning and the fix seemed obvious so I'm shooting it out.
+
+ drivers/iommu/iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 3d099a31ddca..2b06b01850d5 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2441,7 +2441,7 @@ static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 	const struct iommu_ops *ops = domain->ops;
+ 	int ret;
+ 
+-	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
++	ret = __iommu_map(domain, iova, paddr, size, prot, gfp);
+ 	if (ret == 0 && ops->iotlb_sync_map)
+ 		ops->iotlb_sync_map(domain, iova, size);
+ 
+-- 
+2.30.0.365.g02bc693789-goog
+
