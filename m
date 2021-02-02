@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198E530BAD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997B730BAD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhBBJVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhBBJVP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:21:15 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF0C061573;
-        Tue,  2 Feb 2021 01:20:34 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id h16so13336661qth.11;
-        Tue, 02 Feb 2021 01:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FCZ/0hspr/CKWmqTo6R0TsTjOvk6ZFUd1V6vLB39+XI=;
-        b=gzb1yiSqWhHgar0tFaSOrejCEQPj+ML1SMvoBx6ibY7PFc9PBf1WpYlVIImeeHlHtz
-         +NEgCwy6D5XrSmMvTfaJjXKdYIEmfYM6fJLHnUN6pWpU6J+AXDjA26vXC2zRkO5uJ8U+
-         5sA/uYT62OpGY+J1fb/PFlENh37X7Dn0noj1iITBg5lhjYbk0JKp2I2orOqXXQ7+D0IF
-         N2kwBoYG1wuqh27nEJ/6ImDg4twfGRojNgbMC5Hayhf1JimKizeyCQhcyLq54DrsiVf/
-         hjlNibSCJuZi8XA/UsHm/LRR/hHuKWqez+/2A4kIAAO431rVfdF/uPLqRTcsjwDGlKnQ
-         TLIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FCZ/0hspr/CKWmqTo6R0TsTjOvk6ZFUd1V6vLB39+XI=;
-        b=cYuC8kvyPp4ACk4ffH3gwPy4BmbZJUqCu3TiywQ6/LXwpzqD2zWFR6cS7c4mBwMZw0
-         caFfn49425Om2clo/hTRtUV17XRsv5TaYNe90lSx94hTuUmSCxQFP72D70Maw6SwSG75
-         PScVcBVXJzrQUOM0nKaJPcaMfc6NEED2UWqSt87gsLJTLzIaUI8b49ib3aU5icmthRZM
-         D4qDJPr1EcqTZmjk5Zfw8bWi1SMzgL76xno8WNaYB1rtdFX22F/IwOkdCgxIFtVF9MSv
-         dVHEgZrnj+OY+g9KkPp4kVNNMlfklEGxMiEWDmoVE0bFSRY+xFNC0MKLQeEUuxHVCh7n
-         KVKw==
-X-Gm-Message-State: AOAM532VS7NRSOpaJYQw2l4k9NGfikBW/X3oiwCloRCcjhJDcrX9ITu6
-        Vj1Hoq12v+2dihwlkYnQGuk=
-X-Google-Smtp-Source: ABdhPJxDHSdPJoBi9sThgAu6yTV72u/XAjsuVeE/QG5CeMIggcFOEp35rTYPtA0WCgrOfeI+DTkevg==
-X-Received: by 2002:ac8:598e:: with SMTP id e14mr19389057qte.346.1612257633652;
-        Tue, 02 Feb 2021 01:20:33 -0800 (PST)
-Received: from localhost.localdomain ([156.146.58.43])
-        by smtp.gmail.com with ESMTPSA id x49sm16992513qth.95.2021.02.02.01.20.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 01:20:32 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tsbogend@alpha.franken.de, peterz@infradead.org,
-        frederic@kernel.org, peterx@redhat.com, afzal.mohd.ma@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] arch: mips: kernel: Fix two spelling in smp.c
-Date:   Tue,  2 Feb 2021 14:48:11 +0530
-Message-Id: <20210202091811.21057-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S232965AbhBBJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:22:12 -0500
+Received: from mga02.intel.com ([134.134.136.20]:43618 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232839AbhBBJVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:21:38 -0500
+IronPort-SDR: FCrOJIrfSh2UG00JWmjJqHci6bC12qG+ntO6xGNR9a+oYSLB2LkMHejlTZzdKUhxeFhwFzd41U
+ ZDuZxmTo5Qww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167931623"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="167931623"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:20:56 -0800
+IronPort-SDR: 3IZJvT2+iksRI4caXQXYKA0zDQjX2ac/4W13D8lhgQPzWc0hyDU3c2UKU3VFR/OQr5dtp16QFw
+ V2Y4+jlsr1tw==
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="391381398"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 01:20:54 -0800
+Subject: Re: [kbuild-all] Re: s390-linux-ld: ll_temac_main.c:undefined
+ reference to `devm_platform_ioremap_resource_byname'
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Wang Hai <wanghai38@huawei.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202102010812.qthaghhK-lkp@intel.com>
+ <ac0c1ba8-d7c7-1868-db25-ccf063effec8@infradead.org>
+ <1606d1eb-2e10-185c-7f80-1a1538da03c8@intel.com>
+ <8044e33e-018a-839b-4f71-38510d576f6e@infradead.org>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <f297b20d-a2cc-88b0-2d8e-9f41c842ab83@intel.com>
+Date:   Tue, 2 Feb 2021 17:20:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <8044e33e-018a-839b-4f71-38510d576f6e@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/logcal/logical/
-s/intercpu/inter-CPU/
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Changes from V1 :
-   Bart point out actual sentence construction was right,so keep it as it is.
-   Randy suggested to put better spelling casing,so inducted
-   Subject line adjusted accoring to the change
- arch/mips/kernel/smp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 74b9102fd06e..ef86fbad8546 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -59,7 +59,7 @@ static DECLARE_COMPLETION(cpu_starting);
- static DECLARE_COMPLETION(cpu_running);
+On 2/2/21 1:22 PM, Randy Dunlap wrote:
+> On 2/1/21 9:09 PM, Rong Chen wrote:
+>>
+>> On 2/2/21 6:38 AM, Randy Dunlap wrote:
+>>> On 1/31/21 4:06 PM, kernel test robot wrote:
+>>>> Hi Wang,
+>>>>
+>>>> FYI, the error/warning still remains.
+>>>>
+>>>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>> head:   1048ba83fb1c00cd24172e23e8263972f6b5d9ac
+>>>> commit: bd69058f50d5ffa659423bcfa6fe6280ce9c760a net: ll_temac: Use devm_platform_ioremap_resource_byname()
+>>>> date:   6 months ago
+>>>> config: s390-randconfig-r034-20210201 (attached as .config)
+>>> Hi robot,
+>>>
+>>> Instead of hit & miss with s390 randconfigs, you could do what I did:
+>>> (all for arch/s390/):
+>> Hi Randy,
+>>
+>> Thanks for the advice, do you mean we don't need to test randconfig for arch s390?
+> You should still do randconfig testing for s390 (for other problems), but the robot has been
+> sending out a lot of build errors similar to this one, using different randconfig files.
+>
+> I am just saying that you can find all of the ioremap/iounmap/devm_io* type build errors
+> in one kernel config file as described above.
 
- /*
-- * A logcal cpu mask containing only one VPE per core to
-+ * A logical cpu mask containing only one VPE per core to
-  * reduce the number of IPIs on large MT systems.
-  */
- cpumask_t cpu_foreign_map[NR_CPUS] __read_mostly;
-@@ -510,8 +510,8 @@ static inline void smp_on_each_tlb(void (*func) (void *info), void *info)
-  * address spaces, a new context is obtained on the current cpu, and tlb
-  * context on other cpus are invalidated to force a new context allocation
-  * at switch_mm time, should the mm ever be used on other cpus. For
-- * multithreaded address spaces, intercpu interrupts have to be sent.
-- * Another case where intercpu interrupts are required is when the target
-+ * multithreaded address spaces, inter-CPU interrupts have to be sent.
-+ * Another case where inter-CPU interrupts are required is when the target
-  * mm might be active on another cpu (eg debuggers doing the flushes on
-  * behalf of debugees, kswapd stealing pages from another process etc).
-  * Kanoj 07/00.
---
-2.26.2
+Hi Randy,
+
+Thanks for the detailed explanation, will do it.
+
+Best Regards,
+Rong Chen
+
+>
+>> Best Regards,
+>> Rong Chen
+>>
+>>> $ make allmodconfig
+>>> $ scripts/config -d PCI  ## this also disables HAS_IOMEM
+>>> $ make oldconfig
+>>> $ make all
+>>>
+>>> The latter gives a full list of drivers etc. that use iomemp/ioremap etc. as well as dev_io* variants instead of just a few random ones.
+>>>
+>>>
+>>>> All errors (new ones prefixed by >>):
+>>>>
+>>>>      s390-linux-ld: drivers/net/ethernet/xilinx/ll_temac_main.o: in function `temac_probe':
+>>>>      ll_temac_main.c:(.text+0x39b6): undefined reference to `devm_platform_ioremap_resource_byname'
+>>>>>> s390-linux-ld: ll_temac_main.c:(.text+0x3a4c): undefined reference to `devm_platform_ioremap_resource_byname'
+>>>>      s390-linux-ld: ll_temac_main.c:(.text+0x3bce): undefined reference to `devm_ioremap'
+>>>>      s390-linux-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
+>>>>      xilinx_axienet_main.c:(.text+0x844): undefined reference to `devm_ioremap_resource'
+>>> _______________________________________________
+>
 
