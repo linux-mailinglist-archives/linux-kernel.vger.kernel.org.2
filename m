@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E616830BB41
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AF130C2DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhBBJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBBJmj (ORCPT
+        id S234987AbhBBPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:02:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234565AbhBBPBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:42:39 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194E2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:41:59 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id j11so9550534plt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i+L3gHCFPBrOT3OzqVoJEMLNmPS76kGxMPoMoHjeHoE=;
-        b=NmWfjQeMO9d2WIIHpRdr6jr++3hDWkh6UnfVUtcg3HEYXxLcaL7AhreofkbExfTfS4
-         HXCv1wU1SMG+oDz231R7azvftZV6BbcfX2kUysu+hITsqutmoML1fgsSGk36rj7wXkMe
-         Q610MrPMFv2xU69rKbE68aXh82NgoiIe3RrhBv0rMQtoKrwF14r56ohHIqknoDYxvko5
-         UVT3DK9WZ5BqdlG3BDlst1cFW/Er8/rjU2UiUK2zOBgi1n8qCSlr93b4LES3ayyqOLvp
-         475+iETXMcZFDG+M+Kkn7X/cyCbT8DlhAsOZvvN9IyXcTSBvWQqs2CweLlk3QkLDBein
-         tuXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i+L3gHCFPBrOT3OzqVoJEMLNmPS76kGxMPoMoHjeHoE=;
-        b=PgPy9Xo1dsoYzQVNbntp6iRnlh4575W+RV6nkz0U7atOt+VPVNCX7pm6FT0nFfJ40u
-         28//IXVIs+eO1lvZxhyQg7pbp7+UDKzdhH+hh2baeqqY3oIa7mizQdDlJ4cFaHEnSgNu
-         4oL35kWixecrBdvmllkJSCGGN0onEHBGLU2xMSU4G9g22YU8WafM+8SaXAOIRghiGv1b
-         Ep8MXBQZiq/u5i+9lcs9Em1h762QzStBJSulMOPBPU7QljQBdDx4dY2tQNqjO4TMg/2z
-         iEH5v7ANet9RhVntMGqsGJTS8XrNAXMNNZJWWd95UaifiQZDx4OkmgMjDdsm4TmSBwiX
-         ThCQ==
-X-Gm-Message-State: AOAM531lW2hSk/ns4btMVuv+5Cctb1q3sfDlkOm3BNkI9K9mdua2zAf1
-        11Dxv7M+0of9frgUsrKMg4LIlw==
-X-Google-Smtp-Source: ABdhPJyElb1lJb3rLmD6VqzU2AijwVSJresCSXvrAwJduFmPfBlCwkCStWPQvpEfYcFDwxoaBGv9eA==
-X-Received: by 2002:a17:90a:5287:: with SMTP id w7mr3515259pjh.52.1612258918668;
-        Tue, 02 Feb 2021 01:41:58 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id r7sm21092013pfc.26.2021.02.02.01.41.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Feb 2021 01:41:57 -0800 (PST)
-Date:   Tue, 2 Feb 2021 15:11:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xuewyan@foxmail.com,
-        Xuewen.Yan@unisoc.com
-Subject: Re: [PATCH] cpufreq: Judging new_policy before update related_cpus
-Message-ID: <20210202094156.tb27lpq2nfzvbxgi@vireshk-i7>
-References: <20210202093619.543-1-xuewen.yan94@gmail.com>
+        Tue, 2 Feb 2021 10:01:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612277989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/nqgkmwEUBwFXFP1lcLQvcaHEBrgIYTBqrD9vTkcUJA=;
+        b=glAake+fded5yG0kcJpK2cC/6BrqV5JMP6hqCzvrue6Qb8+4XtO7h4aTpsIG2w9OZbJ/IL
+        Utg9MRorRP8kXaEuqpG+NNBZQC1LQM0+1VB/415XkLBkukmOOermTfgJfDIsMMjz2X4LMs
+        lH9o4f3ass/E+XCH8z3tGeEWdc3uWwI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-6s0xieiNOxuNgw70t6dwzA-1; Tue, 02 Feb 2021 09:59:44 -0500
+X-MC-Unique: 6s0xieiNOxuNgw70t6dwzA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B155BAFA82;
+        Tue,  2 Feb 2021 14:59:43 +0000 (UTC)
+Received: from localhost (ovpn-115-185.ams2.redhat.com [10.36.115.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 660F219C71;
+        Tue,  2 Feb 2021 14:59:40 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 09:41:57 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH RFC v2 09/10] vdpa_sim_blk: implement ramdisk behaviour
+Message-ID: <20210202094157.GB243557@stefanha-x1.localdomain>
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-10-sgarzare@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
 Content-Disposition: inline
-In-Reply-To: <20210202093619.543-1-xuewen.yan94@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210128144127.113245-10-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-02-21, 17:36, Xuewen Yan wrote:
-> From: Xuewen Yan <xuewen.yan@unisoc.com>
-> 
-> When the policy->related_cpus are all offline, and then
-> bring up one cpu, this time, if the ->online is NULL,
-> the code would update the ->related_cpus with ->cpus,
-> and now ->cpus is only one online cpu, as a result, the
-> ->related_cpus is different from the origion ->related_cpus.
-> 
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+
+--XOIedfhf+7KOe/yw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jan 28, 2021 at 03:41:26PM +0100, Stefano Garzarella wrote:
+> The previous implementation wrote only the status of each request.
+> This patch implements a more accurate block device simulator,
+> providing a ramdisk-like behavior.
+>=20
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 > ---
->  drivers/cpufreq/cpufreq.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index d0a3525ce27f..3d512ac463a5 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1374,8 +1374,10 @@ static int cpufreq_online(unsigned int cpu)
->  		if (ret)
->  			goto out_exit_policy;
->  
-> -		/* related_cpus should at least include policy->cpus. */
-> -		cpumask_copy(policy->related_cpus, policy->cpus);
-> +		if (new_policy) {
-> +			/* related_cpus should at least include policy->cpus. */
-> +			cpumask_copy(policy->related_cpus, policy->cpus);
-> +		}
->  	}
+> v2:
+> - used %zd %zx to print size_t and ssize_t variables in dev_err()
+> - removed unnecessary new line [Jason]
+> - moved VIRTIO_BLK_T_GET_ID in another patch [Jason]
+> - used push/pull instead of write/read terminology
+> - added vdpasim_blk_check_range() to avoid overflows [Stefan]
+> - use vdpasim*_to_cpu instead of le*_to_cpu
+> - used vringh_kiov_length() helper [Jason]
+> ---
+>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 164 ++++++++++++++++++++++++---
+>  1 file changed, 146 insertions(+), 18 deletions(-)
 
-The driver's ->init() callback is responsible for filling policy->cpus
-here.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
--- 
-viresh
+--XOIedfhf+7KOe/yw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmAZHmQACgkQnKSrs4Gr
+c8i2cwgAnejUJEOfV7h1JLqKBGsbMZ8G/rYq5Tpn2NYeHH+hHKUzJuYhhiy6A/dc
+ApoMhiK73jMGntzRVlchJ9EzLdG3mWp1fV7nDHb3jfSefPaMn/+sqHpRte3gAtp5
+6qRPQg86qq2acmxReSwEuLADmwkQ9IEfUobw+9Eh8eaL8Fam79/brxgeAi+jyTUi
+Y6fHt/8yCLtpz+gp2FqWtmN0COcu6C6/I9yDwfIyhmn1jUtO7O8MUBDTEmOuY+TC
+41AXprR3YIHGnEzaDphoqwmSN7NyWTmvQScwFA2HPDgVWe4VksizaICwg/Iz0IWD
+lND4h139qSBuLPJKWi/2ReukfLcOjw==
+=DBTx
+-----END PGP SIGNATURE-----
+
+--XOIedfhf+7KOe/yw--
+
