@@ -2,98 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7AE30B4A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A2B30B4B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhBBB0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:26:51 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11998 "EHLO
+        id S230041AbhBBB3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:29:51 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11999 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhBBB0u (ORCPT
+        with ESMTP id S229557AbhBBB3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:26:50 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DV6YZ0WLpzjGs6;
-        Tue,  2 Feb 2021 09:24:50 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Feb 2021 09:26:03 +0800
-Subject: Re: [PATCH] hugetlbfs: show pagesize in unit of GB if possible
-To:     David Rientjes <rientjes@google.com>
-CC:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210130090339.4378-1-linmiaohe@huawei.com>
- <f5ac7d57-6653-aae-f119-b87d72acf192@google.com>
- <24ab70d6-1d23-d118-f1e7-473f01615dcc@huawei.com>
- <c755cad3-1020-46bc-2c4c-7e382ad366f5@google.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <0c9187f0-39c8-8f7d-79a7-9823cba43c5c@huawei.com>
-Date:   Tue, 2 Feb 2021 09:26:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 1 Feb 2021 20:29:50 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DV6cz40snzjHj1;
+        Tue,  2 Feb 2021 09:27:47 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
+ 09:28:59 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix checkpoint mount option wrong
+ combination
+To:     Daeho Jeong <daeho43@gmail.com>, Chao Yu <chao@kernel.org>
+CC:     Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210201000606.2206740-1-daeho43@gmail.com>
+ <7e2f440e-6500-04c8-1115-880754a18efa@kernel.org>
+ <CACOAw_zW+xnN7pBmTknuJ1=CGiAvVq0sQhe7D6X8sOjgjF_qeg@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <a98a7866-3e57-e480-9405-4002de0ec4ad@huawei.com>
+Date:   Tue, 2 Feb 2021 09:28:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <c755cad3-1020-46bc-2c4c-7e382ad366f5@google.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CACOAw_zW+xnN7pBmTknuJ1=CGiAvVq0sQhe7D6X8sOjgjF_qeg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/2 5:31, David Rientjes wrote:
-> On Mon, 1 Feb 2021, Miaohe Lin wrote:
-> 
->>>> Hugepage size in unit of GB is supported. We could show pagesize in unit of
->>>> GB to make it more friendly to read. Also rework the calculation code of
->>>> page size unit to make it more readable.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  fs/hugetlbfs/inode.c | 12 ++++++++----
->>>>  1 file changed, 8 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
->>>> index 3a08fbae3b53..40a9795f250a 100644
->>>> --- a/fs/hugetlbfs/inode.c
->>>> +++ b/fs/hugetlbfs/inode.c
->>>> @@ -1014,11 +1014,15 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
->>>>  	if (sbinfo->max_inodes != -1)
->>>>  		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
->>>>  
->>>> -	hpage_size /= 1024;
->>>> -	mod = 'K';
->>>> -	if (hpage_size >= 1024) {
->>>> -		hpage_size /= 1024;
->>>> +	if (hpage_size >= SZ_1G) {
->>>> +		hpage_size /= SZ_1G;
->>>> +		mod = 'G';
->>>> +	} else if (hpage_size >= SZ_1M) {
->>>> +		hpage_size /= SZ_1M;
->>>>  		mod = 'M';
->>>> +	} else {
->>>> +		hpage_size /= SZ_1K;
->>>> +		mod = 'K';
->>>>  	}
->>>>  	seq_printf(m, ",pagesize=%lu%c", hpage_size, mod);
->>>>  	if (spool) {
->>>
->>> NACK, this can break existing userspace parsing.
->>> .
->>>
->>
->> I see. I should take care of this. Many thanks.
->>
-> 
-> Thanks.  It's an important point to emphasize because it shows how 
-> important user-facing interfaces are.  Once the hugetlbfs mount options 
-> are printed in the way they are, it becomes very difficult to change them 
-> because there can be userspace in the wild that would break as a result.  
-> This is why it's crucial to be very careful when specifying user-facing 
-> interfaces the first time so they are extensible.
-> .
-> 
+On 2021/2/1 21:11, Daeho Jeong wrote:
+> Actually, I think we need to select one among them, disable, enable
+> and merge. I realized my previous understanding about that was wrong.
 
-Many thanks for detailed explanation! I will keep this in mind! Thanks again.
+Actually,
+1. chekcpoint=enable/disable decide whether we will allow checkpoint
+2. checkpoint=merge or not decide how we issue checkpoint
+
+They are different, we should not only select only one of them, the
+combination of them is allowed.
+
+Thanks,
+
+> In that case of "checkpoint=merge,checkpoint=enable", the last option
+> will override the ones before that.
+> This is how the other mount options like fsync_mode, whint_mode and etc.
+> So, the answer will be "checkpoint=enable". What do you think?
+> 
+> 
+> 
+> 2021년 2월 1일 (월) 오후 9:40, Chao Yu <chao@kernel.org>님이 작성:
+>>
+>> On 2021/2/1 8:06, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> As checkpoint=merge comes in, mount option setting related to
+>>> checkpoint had been mixed up. Fixed it.
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> ---
+>>>    fs/f2fs/super.c | 11 +++++------
+>>>    1 file changed, 5 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>> index 56696f6cfa86..8231c888c772 100644
+>>> --- a/fs/f2fs/super.c
+>>> +++ b/fs/f2fs/super.c
+>>> @@ -930,20 +930,25 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>                                return -EINVAL;
+>>>                        F2FS_OPTION(sbi).unusable_cap_perc = arg;
+>>>                        set_opt(sbi, DISABLE_CHECKPOINT);
+>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>>                        break;
+>>>                case Opt_checkpoint_disable_cap:
+>>>                        if (args->from && match_int(args, &arg))
+>>>                                return -EINVAL;
+>>>                        F2FS_OPTION(sbi).unusable_cap = arg;
+>>>                        set_opt(sbi, DISABLE_CHECKPOINT);
+>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>>                        break;
+>>>                case Opt_checkpoint_disable:
+>>>                        set_opt(sbi, DISABLE_CHECKPOINT);
+>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>>                        break;
+>>>                case Opt_checkpoint_enable:
+>>>                        clear_opt(sbi, DISABLE_CHECKPOINT);
+>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>
+>> What if: -o checkpoint=merge,checkpoint=enable
+>>
+>> Can you please explain the rule of merge/disable/enable combination and their
+>> result? e.g.
+>> checkpoint=merge,checkpoint=enable
+>> checkpoint=enable,checkpoint=merge
+>> checkpoint=merge,checkpoint=disable
+>> checkpoint=disable,checkpoint=merge
+>>
+>> If the rule/result is clear, it should be documented.
+>>
+>> Thanks,
+>>
+>>
+>>>                        break;
+>>>                case Opt_checkpoint_merge:
+>>> +                     clear_opt(sbi, DISABLE_CHECKPOINT);
+>>>                        set_opt(sbi, MERGE_CHECKPOINT);
+>>>                        break;
+>>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
+>>> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>                return -EINVAL;
+>>>        }
+>>>
+>>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+>>> -             return -EINVAL;
+>>> -     }
+>>> -
+>>>        /* Not pass down write hints if the number of active logs is lesser
+>>>         * than NR_CURSEG_PERSIST_TYPE.
+>>>         */
+>>>
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> 
