@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627EC30C50E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6E030C503
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbhBBQLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:11:06 -0500
-Received: from mga17.intel.com ([192.55.52.151]:11622 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236097AbhBBQIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:08:52 -0500
-IronPort-SDR: DBYL1IgfkCYR1QKpGe0qVQV9QuHZz/lynG89OTa+2rz052fRoNa8PBPI2sFlfS0KJp96uOVOCI
- ANushj3+7mmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160642750"
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="160642750"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 08:04:20 -0800
-IronPort-SDR: l5mKSzRJkP7qVH9nCbGn+kbS5yQY3daL/Y2i01rj7wx1JGQX/CBt9B7GgHg5YKCVRoQTyM8sU5
- gQuViiLS7N9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="413312380"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Feb 2021 08:04:18 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 2 Feb 2021 08:04:18 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 2 Feb 2021 08:04:18 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.002;
- Tue, 2 Feb 2021 08:04:18 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Darren Hart" <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: [PATCH v5] x86/mce: Avoid infinite loop for copy from user
- recovery
-Thread-Topic: [PATCH v5] x86/mce: Avoid infinite loop for copy from user
- recovery
-Thread-Index: AQHW820jWhd/BlkCukOtPpk65S5gH6o6RPEAgAA7fACAA1zygIAF1CqAgAGTOQD//8zdUA==
-Date:   Tue, 2 Feb 2021 16:04:17 +0000
-Message-ID: <d99c43608909400199e9384bb7425beb@intel.com>
-References: <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
- <20210119105632.GF27433@zn.tnic>
- <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
- <20210120121812.GF825@zn.tnic>
- <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
- <20210125225509.GA7149@agluck-desk2.amr.corp.intel.com>
- <20210126110314.GC6514@zn.tnic>
- <20210126223605.GA14355@agluck-desk2.amr.corp.intel.com>
- <20210128175735.GB2120@zn.tnic>
- <20210201185812.GA54867@agluck-desk2.amr.corp.intel.com>
- <20210202110126.GB18075@zn.tnic>
-In-Reply-To: <20210202110126.GB18075@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235092AbhBBQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:09:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20231 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235874AbhBBQGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:06:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612281910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GoHqkcd1GD6lYKRpDHWZ6PFpXaEZ93xMiO7nY5L+AQ8=;
+        b=X6z/xyJ+qU0eu/4PUETjqfolGeNWJ35Puog9fUl+FbptZW8Kfw4rddMal/ys9C/csvcOH6
+        szhBaZvA+XHUKY6xgplMB1Bn/D+LUeTq7edYb/Ml40PjlwOfF0pfbXqu3ezs/+eBCPj5IZ
+        z7dPSnn5uwb0wQszDPYJdgWNi5JY5X4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-KPH9zAxzMmiAhd2jB5qlyQ-1; Tue, 02 Feb 2021 11:05:08 -0500
+X-MC-Unique: KPH9zAxzMmiAhd2jB5qlyQ-1
+Received: by mail-ej1-f72.google.com with SMTP id le12so10219051ejb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:05:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GoHqkcd1GD6lYKRpDHWZ6PFpXaEZ93xMiO7nY5L+AQ8=;
+        b=BUzHGsmyNGsR1ds9inTdjGdd3eByKm6RIzhZzgwZ+iz25wbsHBFDZXxkrfqKYNRn3L
+         9Q5opBEnWh+kYMGz9lASk61hWNDKZdNDcY1/7ycgwgEuV7rskvGWLQA4SB6sda3pVOYO
+         JfiOtweEHV+Zc7EUWrWbeEha1jfAyOVQE58U6G8OAiSG1XZjZUHEsM1zzmAHC03tKBwp
+         AUoVo2h0bGRIxAFwKIyaB+1D4aGqhkU8x94h9X5SDa9QxFPr6gevAdxahEJt33p4YlTZ
+         0MN+58AsiUH6WgFZdV7I6gMxrMhz8Ufjhj7WD5w0Fj2uB2i3R06IZNbgZ6B89u3wJkpJ
+         tTGQ==
+X-Gm-Message-State: AOAM533dzxnIxN9mtlJ0EjFLtMzaEc6wWirhaC32i1wpALW4D2QsuRoT
+        /6ad30NFlv5xuRMeuLRgvGhAkIkEg2/0VMUoA/JQLHSaIvWujYXiCUGO4EANnlhCY5qH226oNY9
+        x3UM7PDIUIl31BjfmdJNupO/pJyE7KED4YAP9e9a6xVDWdVRwu1kk7pR+9iAxBJKwdJvKz+Y+m2
+        CC
+X-Received: by 2002:aa7:d0d4:: with SMTP id u20mr23467804edo.203.1612281906880;
+        Tue, 02 Feb 2021 08:05:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyPM7p5TyqnwHjGKi0caOD1YfB9dGRpowZ+WQHtxS6E6Y0e0Ymh7IbcVOjUFtqL6dXlAH2MJg==
+X-Received: by 2002:aa7:d0d4:: with SMTP id u20mr23467772edo.203.1612281906630;
+        Tue, 02 Feb 2021 08:05:06 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q16sm9657765ejd.39.2021.02.02.08.05.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 08:05:05 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] KVM: X86: Rename DR6_INIT to DR6_ACTIVE_LOW
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210202090433.13441-1-chenyi.qiang@intel.com>
+ <20210202090433.13441-2-chenyi.qiang@intel.com>
+ <3db069ba-b4e0-1288-ec79-66ac44938682@redhat.com>
+ <6678520f-e69e-6116-88c9-e9d6cd450934@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ea9eaa84-999b-82cb-ef40-66fde361704d@redhat.com>
+Date:   Tue, 2 Feb 2021 17:05:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <6678520f-e69e-6116-88c9-e9d6cd450934@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBBbmQgdGhlIG11Y2ggbW9yZSBpbXBvcnRhbnQgcXVlc3Rpb24gaXMsIHdoYXQgaXMgdGhlIGNv
-ZGUgc3VwcG9zZWQgdG8NCj4gZG8gd2hlbiB0aGF0IG92ZXJmbG93ICphY3R1YWxseSogaGFwcGVu
-cyBpbiByZWFsIGxpZmU/IEJlY2F1c2UgSUlOTSwNCj4gYW4gb3ZlcmZsb3cgY29uZGl0aW9uIG9u
-IHRoZSBzYW1lIHBhZ2Ugd291bGQgbWVhbiBraWxsaW5nIHRoZSB0YXNrIHRvDQo+IGNvbnRhaW4g
-dGhlIGVycm9yIGFuZCBub3Qga2lsbGluZyB0aGUgbWFjaGluZS4uLg0KDQpDb3JyZWN0LiBUaGUg
-Y2FzZXMgSSd2ZSBhY3R1YWxseSBoaXQsIHRoZSBzZWNvbmQgbWFjaGluZSBjaGVjayBpcyBvbiB0
-aGUNCnNhbWUgYWRkcmVzcyBhcyB0aGUgZmlyc3QuIEJ1dCBmcm9tIGEgcmVjb3ZlcnkgcGVyc3Bl
-Y3RpdmUgTGludXggaXMgZ29pbmcNCnRvIHRha2UgYXdheSB0aGUgd2hvbGUgcGFnZSBhbnl3YXkg
-Li4uIHNvIG5vdCBjb21wbGFpbmluZyBpZiB0aGUgc2Vjb25kDQoob3Igc3Vic2VxdWVudCkgYWNj
-ZXNzIGlzIHdpdGhpbiB0aGUgc2FtZSBwYWdlIG1ha2VzIHNlbnNlIChhbmQgdGhhdCdzDQp3aGF0
-IHRoZSBwYXRjaCBkb2VzKS4NCg0KVGhlIGNvZGUgY2FuJ3QgaGFuZGxlIGl0IGlmIGEgc3Vic2Vx
-dWVudCAjTUMgaXMgdG8gYSBkaWZmZXJlbnQgcGFnZSAoYmVjYXVzZQ0Kd2Ugb25seSBoYXZlIGEg
-c2luZ2xlIHNwb3QgaW4gdGhlIHRhc2sgc3RydWN0dXJlIHRvIHN0b3JlIHRoZSBwaHlzaWNhbCBw
-YWdlDQphZGRyZXNzKS4gIEJ1dCB0aGF0IGxvb2tzIGFkZXF1YXRlLiBJZiB0aGUgY29kZSBpcyB3
-aWxkbHkgYWNjZXNzaW5nIGRpZmZlcmVudA0KcGFnZXMgKmFuZCogZ2V0dGluZyBtYWNoaW5lIGNo
-ZWNrcyBmcm9tIHRob3NlIGRpZmZlcmVudCBwYWdlcyAuLi4gdGhlbg0Kc29tZXRoaW5nIGlzIHZl
-cnkgc2VyaW91c2x5IHdyb25nIHdpdGggdGhlIHN5c3RlbS4NCg0KLVRvbnkNCg0K
+On 02/02/21 16:02, Xiaoyao Li wrote:
+> On 2/2/2021 10:49 PM, Paolo Bonzini wrote:
+>> On 02/02/21 10:04, Chenyi Qiang wrote:
+>>>
+>>>  #define DR6_FIXED_1    0xfffe0ff0
+>>> -#define DR6_INIT    0xffff0ff0
+>>> +/*
+>>> + * DR6_ACTIVE_LOW is actual the result of DR6_FIXED_1 | 
+>>> ACTIVE_LOW_BITS.
+>>> + * We can regard all the current FIXED_1 bits as active_low bits even
+>>> + * though in no case they will be turned into 0. But if they are 
+>>> defined
+>>> + * in the future, it will require no code change.
+>>> + * At the same time, it can be served as the init/reset value for DR6.
+>>> + */
+>>> +#define DR6_ACTIVE_LOW    0xffff0ff0
+>>>  #define DR6_VOLATILE    0x0001e00f
+>>>
+>>
+>> Committed with some changes in the wording of the comment.
+>>
+>> Also, DR6_FIXED_1 is (DR6_ACTIVE_LOW & ~DR6_VOLATILE).
+> 
+> Maybe we can add BUILD_BUG_ON() to make sure the correctness?
+
+We can even
+
+#define DR_FIXED_1  (DR6_ACTIVE_LOW & ~DR6_VOLATILE)
+
+directly.  I have pushed this patch to kvm/queue, but the other two will 
+have to wait for Fenghua's bare metal support.
+
+Paolo
+
