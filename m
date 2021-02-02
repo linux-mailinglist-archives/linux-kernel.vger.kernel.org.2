@@ -2,34 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902B630C657
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B0130C654
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236810AbhBBQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:45:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
+        id S236803AbhBBQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:44:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236769AbhBBQmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:42:06 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5133364F72;
-        Tue,  2 Feb 2021 16:41:24 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 11:41:22 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [ANNOUNCE] 5.4.93-rt51
-Message-ID: <20210202114122.5acab395@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236745AbhBBQmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:42:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1FBB64F64;
+        Tue,  2 Feb 2021 16:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612284102;
+        bh=L71Awcg/HF6WOIMSygGKnyNZDF81guEDZR3Xldfh3NA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t/lvXoPoVfVH2sMKx9lhcgnIVnDuG8zHsBYJnBELL8MsYb3fYw8jDBY5avGdq6/bF
+         iXVk+/LgiRNoAPxO8rOn1PqxfISapICLFR1AdqPH+vW1oQ7Jz0mHy1HYKNUrXfwbLe
+         sg/2IxwDzoABo+UlXJu4qcCcIsjC8UVEp3RZip06hSasUCrRG8Xy8CTIgyt2CN17TC
+         8xE82v0SkQ0O6vEchROia2UtCKHFyLXf9zLCIqpdvXv62LsfWFD/ShiszEZlJZs5ah
+         cn/cNa/RyBM7GJqTSWHWEWrDWeDDGcz0G5vvfn3UqGECINpa3XLEbe23y+CH9/u5fF
+         jkTlhB2+8MW9g==
+Date:   Tue, 2 Feb 2021 08:41:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>
+Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
+Message-ID: <20210202084140.642a9cc1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAJht_ENcz1A+C8=tJ_wP8kQby4OuyWirJC+c+-ngg5D54dpHNg@mail.gmail.com>
+References: <20210201055706.415842-1-xie.he.0141@gmail.com>
+        <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com>
+        <CAJht_EOw4d9h7LqOsXpucADV5=gAGws-fKj5q7BdH2+h0Yv9Vg@mail.gmail.com>
+        <20210201204224.4872ce23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAJht_ENcz1A+C8=tJ_wP8kQby4OuyWirJC+c+-ngg5D54dpHNg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -37,36 +47,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 1 Feb 2021 22:25:17 -0800 Xie He wrote:
+> On Mon, Feb 1, 2021 at 8:42 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Mon, 1 Feb 2021 08:14:31 -0800 Xie He wrote:  
+> > > On Mon, Feb 1, 2021 at 6:10 AM Julian Wiedmann <jwi@linux.ibm.com> wrote:  
+>  [...]  
+> > >
+> > > Calling "skb_cow_head" before we call "skb_clone" would indeed solve
+> > > the problem of writes to our clones affecting clones in other parts of
+> > > the system. But since we are still writing to the skb after
+> > > "skb_clone", it'd still be better to replace "skb_clone" with
+> > > "skb_copy" to avoid interference between our own clones.  
+> >
+> > Why call skb_cow_head() before skb_clone()? skb_cow_head should be
+> > called before the data in skb head is modified. I'm assuming you're only
+> > modifying "front" of the frame, right? skb_cow_head() should do nicely
+> > in that case.  
+> 
+> The modification happens after skb_clone. If we call skb_cow_head
+> after skb_clone (before the modification), then skb_cow_head would
+> always see that the skb is a clone and would always copy it. Therefore
+> skb_clone + skb_cow_head is equivalent to skb_copy.
 
-Dear RT Folks,
-
-I'm pleased to announce the 5.4.93-rt51 stable release.
-
-
-This release is just an update to the new stable 5.4.93 version
-and no RT specific changes have been made.
-
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.4-rt
-  Head SHA1: ad6bd8f7be41805c4488695c6b89e69714791971
-
-
-Or to build 5.4.93-rt51 directly, the following patches should be applied:
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.93.xz
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.93-rt51.patch.xz
-
-
-
-
-Enjoy,
-
--- Steve
-
+You're right. I thought cow_head is a little more clever.
