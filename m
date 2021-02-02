@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B2B30CB82
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E5830CB8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239685AbhBBT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:27:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:56100 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239708AbhBBTY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:24:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA3A8ED1;
-        Tue,  2 Feb 2021 11:23:41 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.49.77])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7AA23F73B;
-        Tue,  2 Feb 2021 11:23:34 -0800 (PST)
-Date:   Tue, 2 Feb 2021 19:23:31 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     sonicadvance1@gmail.com
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Peter Collingbourne <pcc@google.com>,
+        id S239570AbhBBT2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:28:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33020 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233025AbhBBTZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:25:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612293831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bdRo3+F70po29fse+ZS87tnszTwmf70tXILypMqRVvI=;
+        b=hB8HcjjpHKU66Ab4ruF69VuJvTodB75imtgkvj9gX1rFpycjoUG3n0qbGOliR3JjQVBTIU
+        EOdyMqcO8DEhIMwWO9NC4Sof6TF4reGmId2M0cq1+Zhe6RxeS6h+yFXljrZSm/6+2TNeUr
+        Iw/ldQ5y+nw4h3STXoMs1tNQgdln+0g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-mEJcPiv4MzCV85IS6QOqFA-1; Tue, 02 Feb 2021 14:23:48 -0500
+X-MC-Unique: mEJcPiv4MzCV85IS6QOqFA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9735583758;
+        Tue,  2 Feb 2021 19:23:38 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.128])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A113E60C5F;
+        Tue,  2 Feb 2021 19:23:35 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  2 Feb 2021 20:23:38 +0100 (CET)
+Date:   Tue, 2 Feb 2021 20:23:34 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Matteo Croce <mcroce@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] arm64: Exposes support for 32bit syscalls
-Message-ID: <20210202192331.GF67187@C02TD0UTHF1T.local>
-References: <20210202165437.334515-1-Sonicadvance1@gmail.com>
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
+Message-ID: <20210202192333.GC20059@redhat.com>
+References: <20210201174555.GA17819@redhat.com>
+ <CAHk-=wjKeFHBn60eJJjvJOW2+bdtwbeSb12R+=PBQJSSHe+FbA@mail.gmail.com>
+ <CAHk-=wjJerA3xGtK8HdEcdAnmaaTz-iVvc_xqokzNTBivKomVQ@mail.gmail.com>
+ <20210202155548.GB20059@redhat.com>
+ <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202165437.334515-1-Sonicadvance1@gmail.com>
+In-Reply-To: <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 02/02, Linus Torvalds wrote:
+>
+> On Tue, Feb 2, 2021 at 7:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > There is the "erestartsys-trap-debugger" test in ptrace-tests suite.
+> > Do you mean you want another test in tools/testing/selftests/ptrace ?
+>
+> No, I guess it's fine if it's caught by the ptrace test suite - we'll
+> hopefully get fairly timely "guys, you broke it" reports.
+>
+> Is that ptrace erestartsys-trap-debugger.c test new, or has it just
+> always failed? Or is the problem that it is so expected to fail that
+> we wouldn't get reports of it anyway (this clearly fell off your radar
+> for a long time)?
 
-On Tue, Feb 02, 2021 at 08:54:23AM -0800, sonicadvance1@gmail.com wrote:
-> From: Ryan Houdek <Sonicadvance1@gmail.com>
-> 
-> This is a continuation of https://lkml.org/lkml/2021/1/6/47
-> This patch is currently based against a 5.10 kernel but rebasing against
-> latest HEAD is trivial
-> 
-> Specifically Amanieu pointed out a couple of problem spaces that would
-> show up around memory management and various other bits.
-> 
-> This convinced me that the previous path of only having an ioctl32
-> syscall is only a bandage on a much larger problem.
-> 
-> This takes a patch from the Tango support tree and modifies it a bit to
-> not rely on a Tango specific quirk.
-> 
-> Original patch:
-> https://github.com/Amanieu/linux/commit/b4783002afb027ae702da8f56e43e45c7332d226
+No, this test-case is very old. It used to work when this
+get_nr_restart_syscall() logic was based on the test_thread_flag(TIF_IA32)
+check.
 
-Please reconsider the presentation of this commit message, because as it
-stands it's practically unreviewable, and for the vast majority of
-people CC'd this is noise.
+Then it started to fail somewhere 2-3 years ago, and to be honest I didn't
+even try to find which exactly patch broke this test. Because this logic
+was always wrong anyway, even if this test-case used to work.
 
-You need to write this such that someone can read this from start to
-finish and understand each step without jumping back-and-forth, without
-the reader having to read external links. Introduce the big picture
-first (what problem are you trying to solve? Who does this matter to?),
-then context (There's a constraint ..., someone previously tried this
-but there was a specific problem ...), then give an overview and
-justification for the code, with any caveats that reviewers may need to
-take into account.
+I sent v1 soon after this bug was reported, but every time I was too lazy,
+that is why this (minor) problem is still not fixed. So, in short, this is
+my fault in any case.
 
-As-is, this commit message doesn't follow that flow, and that places a
-burden on reviewers to expend significant effort to reverse-engineer and
-extract the information they need.
+Oleg.
 
-You'll find it's much easier to make progress if you optimize for the
-reviewers. Please look at the general way commits in the Linux source
-tree are written, and try to follow that approach.
-
-> This patch changes the KSTK_EIP and KSTK_ESP helpers to only fall to
-> Tango specific behaviour once a "Tango" syscall has been invoked.
-
-At this point the reader has no idea what a "Tango" syscall is, nor why
-this should affect KSTK_EIP or KSTK_ESP.
-
-What is a "Tango" syscall?
-
-Who is this useful for?
-
-Why does this matter to the upstream kernel?
-
-> I'm working on a backwards compatibility project that is unrelated to
-> Tango, but it would be nice to have a solution that works for both of
-> us. Since we are both working on projects that run 32bit applications
-> inside of a 64bit process for compatibility purposes.
-
-Only here do reviewers discover this something to do with running 32-bit
-applications somehow, when really that should be in the first couple of
-sentences.
-
-Generally, I have significant misgivings about exposing a new syscall
-interface (or exposing an existing interface to different callers). It's
-a maintainability nightmare, and since it's liable to violate implicit
-assumptions made in syscall implementations there's huge scope for error
-including bugs and exploitable behaviour.
-
-So without significant justification, my view is to NAK this sort of
-change.
-
-Thanks,
-Mark.
