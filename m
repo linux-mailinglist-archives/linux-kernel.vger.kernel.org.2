@@ -2,532 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FCB30B591
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D1130B5A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhBBDCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 22:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhBBDBq (ORCPT
+        id S231336AbhBBDF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:05:29 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58498 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhBBDFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 22:01:46 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB98C0613ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:01:05 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d16so18783502wro.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:01:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k4mLYCXYVTYBzB1MR9yiBWBMERVQ8QKcwhtLqIPaFyI=;
-        b=F1FrVZv5zOvmb7+UpptgzIC7cSvabISUsYVFH0efe1KzNeyGBduPwwW5q8keRLkorK
-         /25yX9UaEckbUCMZoUD7mHK3n0/VLuqk0l9mvEvhwicSkvErhsZzFc9LVLrO9sW95fRE
-         6LFoCrIY0vSDdIuWVCzrfzAq47rC8sGKCm7eqZoRXKPSPn1fpIBcKVKm4E/o4Vg3aktT
-         N9ispigy9A2N4L6R0lZ63JrqhmJOnUtfmClRN0N2p3dJ6DK1milsK9pJTN0RNku4VXa2
-         JQfbsRlsIJ0rD+t9ap6jPHg45yl4XcVNAHkyXG/pl1d8p2zDJdfOCtVaOIiEYD63owNi
-         b4lQ==
+        Mon, 1 Feb 2021 22:05:22 -0500
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l6lzb-0007Af-5b
+        for linux-kernel@vger.kernel.org; Tue, 02 Feb 2021 03:04:39 +0000
+Received: by mail-lf1-f72.google.com with SMTP id c13so2757251lfm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:04:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=k4mLYCXYVTYBzB1MR9yiBWBMERVQ8QKcwhtLqIPaFyI=;
-        b=a6r623oV1BNx9t9dsRfEjaXcPT5E6RdZ6NKjSFU0ib8V1ro1ptMWtbpg4GzzSQWV0L
-         8xtdB//n0QXSj41sCVd2Y1aw5i99cRg7VFYo0iDwkHYcDD9wtnVaSePzGH0BCXYHtvf7
-         0Oey1t0U8m0gLNeUFBIgdKM9aYNxc8SZMfUVvl0MjyM5aMfJyxVkC9MjVNmrai5a/jhO
-         RQt46O/ivBmf7FCuY2XeouZ2pzK/l91bAVpAXBvFOjmpw40Apyb6SywqaPIuw/25828L
-         8YhAfCC56yWK0wNOv6jk1vJLpo/X4PIXu61B31bmNa8GrD0NN7MUv+TVVcb5VEA8IxyK
-         YGuw==
-X-Gm-Message-State: AOAM533tze4FPj3l+fXFPwomyWGbnXBo4HkxR+QDJLaBQ6pColrLyuPs
-        ijr+Dwsm1/Fs2f6F0ztCWGYxHgTUqIxlx7Kyecb7oQ==
-X-Google-Smtp-Source: ABdhPJwhmQOLkigZ/Ew5SIwEpXhCuOj3M6M6EcKElFadI2qV1vVfwzbdRaBbBYRn3NZg6TeVH4Bx0cMQerpGUhR37Y8=
-X-Received: by 2002:adf:e50e:: with SMTP id j14mr21594316wrm.162.1612234863956;
- Mon, 01 Feb 2021 19:01:03 -0800 (PST)
+        bh=YgW55MgxWBiZGt05gocnc5NtGJCSSQJah5poStOqLN8=;
+        b=nhIALl3Gh9q83NtkHIGzN7VHAuTg2oZKjBp0lA+ZB5q4ZGf4jYpV790z1in1YBqfzO
+         r50NjfvUzbSlysQ6z2H1djqdn1CTGIsU1AHNJkfphoZ+I6zldPs41Ivss7LnOHQGyj/S
+         cW7QESZOIMmNuW9cl0lAciQtrTXr+B0Db2krNypBKcfDYM86qnZoh1+k2SdbjIv3kVOP
+         f5kT+aSFep1yHOhgJuTekZh5MpejGzJhvEmVGEMzjSXSwRszGbw5ERFBPb0wvaHa4p0+
+         a6XujtOMHmxMff30iNcRaNMYkkWFW5LTTU79LnrvwRZilVHAxXL26uebCIweGtvrGKsE
+         hD3Q==
+X-Gm-Message-State: AOAM532iy3C2PFuelFuBfjWVk27JJPkXuHOZBRKwJLlHYLYgYne9CXIp
+        DVP2Eh8dy3dp4fvsiUUP/+T899xM4eHfpbtKRSu+Q7EpL6Q79oEOLa5b76TIRwjKkWCKlvvbeOs
+        ll/anTQnXIwBjTp648o9eaSEk9HeB67YuegWFMSOTOtJzwoXNV+Q9OBNdYA==
+X-Received: by 2002:a19:7001:: with SMTP id h1mr9862128lfc.513.1612235078590;
+        Mon, 01 Feb 2021 19:04:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwvwGpjFEieUxDOs22xx93Z+Y1uD/7ps2RcSqJbrcHjYUlKQt6jFcciAnMszy0+liorMTAkBUn/mZZk3/GBMWM=
+X-Received: by 2002:a19:7001:: with SMTP id h1mr9862116lfc.513.1612235078251;
+ Mon, 01 Feb 2021 19:04:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129070340.566340-1-surenb@google.com> <09477683-6752-ebac-2a04-53c53e079acd@gmail.com>
-In-Reply-To: <09477683-6752-ebac-2a04-53c53e079acd@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 1 Feb 2021 19:00:52 -0800
-Message-ID: <CAJuCfpFzU6Xervpy761yc9iz5fiPX=7uomrTPvP4Fr6QzVzEKw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] process_madvise.2: Add process_madvise man page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
+References: <20210201164735.1268796-1-kai.heng.feng@canonical.com> <e3a01903-1b3b-4f7c-4458-179fbbd27615@gmail.com>
+In-Reply-To: <e3a01903-1b3b-4f7c-4458-179fbbd27615@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 2 Feb 2021 11:04:26 +0800
+Message-ID: <CAAd53p4MwieS-a_f_rTUvjX3ejjWy=sTCK+A7+bw22vrHNuwOw@mail.gmail.com>
+Subject: Re: [PATCH] r8169: Add support for another RTL8168FP
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "maintainer:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <nic_swsd@realtek.com>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 1:34 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
+On Tue, Feb 2, 2021 at 2:54 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
 >
-> Hello Suren,
->
-> Thank you for the revisions! Just a few more comments: all pretty small
-> stuff (many points that I overlooked the first time rround), since the
-> page already looks pretty good by now.
->
-> Again, thanks for the rendered version. As before, I've added my
-> comments to the page source.
-
-Hi Michael,
-Thanks for reviewing!
-
->
-> On 1/29/21 8:03 AM, Suren Baghdasaryan wrote:
-> > Initial version of process_madvise(2) manual page. Initial text was
-> > extracted from [1], amended after fix [2] and more details added using
-> > man pages of madvise(2) and process_vm_read(2) as examples. It also
-> > includes the changes to required permission proposed in [3].
+> On 01.02.2021 17:47, Kai-Heng Feng wrote:
+> > According to the vendor driver, the new chip with XID 0x54b is
+> > essentially the same as the one with XID 0x54a, but it doesn't need the
+> > firmware.
 > >
-> > [1] https://lore.kernel.org/patchwork/patch/1297933/
-> > [2] https://lkml.org/lkml/2020/12/8/1282
-> > [3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
+> > So add support accordingly.
 > >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > > ---
-> > changes in v2:
-> > - Changed description of MADV_COLD per Michal Hocko's suggestion
-> > - Appled fixes suggested by Michael Kerrisk
+> >  drivers/net/ethernet/realtek/r8169.h      |  1 +
+> >  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++--------
+> >  2 files changed, 14 insertions(+), 8 deletions(-)
 > >
-> > NAME
-> >     process_madvise - give advice about use of memory to a process
+> > diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
+> > index 7be86ef5a584..2728df46ec41 100644
+> > --- a/drivers/net/ethernet/realtek/r8169.h
+> > +++ b/drivers/net/ethernet/realtek/r8169.h
+> > @@ -63,6 +63,7 @@ enum mac_version {
+> >       RTL_GIGA_MAC_VER_50,
+> >       RTL_GIGA_MAC_VER_51,
+> >       RTL_GIGA_MAC_VER_52,
+> > +     RTL_GIGA_MAC_VER_53,
+> >       RTL_GIGA_MAC_VER_60,
+> >       RTL_GIGA_MAC_VER_61,
+> >       RTL_GIGA_MAC_VER_63,
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index a569abe7f5ef..ee1f72a9d453 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -145,6 +145,7 @@ static const struct {
+> >       [RTL_GIGA_MAC_VER_50] = {"RTL8168ep/8111ep"                     },
+> >       [RTL_GIGA_MAC_VER_51] = {"RTL8168ep/8111ep"                     },
+> >       [RTL_GIGA_MAC_VER_52] = {"RTL8168fp/RTL8117",  FIRMWARE_8168FP_3},
+> > +     [RTL_GIGA_MAC_VER_53] = {"RTL8168fp/RTL8117",                   },
+> >       [RTL_GIGA_MAC_VER_60] = {"RTL8125A"                             },
+> >       [RTL_GIGA_MAC_VER_61] = {"RTL8125A",            FIRMWARE_8125A_3},
+> >       /* reserve 62 for CFG_METHOD_4 in the vendor driver */
+> > @@ -682,7 +683,7 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
+> >  {
+> >       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
+> >              tp->mac_version != RTL_GIGA_MAC_VER_39 &&
+> > -            tp->mac_version <= RTL_GIGA_MAC_VER_52;
+> > +            tp->mac_version <= RTL_GIGA_MAC_VER_53;
+> >  }
+> >
+> >  static bool rtl_supports_eee(struct rtl8169_private *tp)
+> > @@ -1012,7 +1013,9 @@ static u16 rtl_ephy_read(struct rtl8169_private *tp, int reg_addr)
+> >  static void r8168fp_adjust_ocp_cmd(struct rtl8169_private *tp, u32 *cmd, int type)
+> >  {
+> >       /* based on RTL8168FP_OOBMAC_BASE in vendor driver */
+> > -     if (tp->mac_version == RTL_GIGA_MAC_VER_52 && type == ERIAR_OOB)
+> > +     if (type == ERIAR_OOB &&
+> > +         (tp->mac_version == RTL_GIGA_MAC_VER_52 ||
+> > +          tp->mac_version == RTL_GIGA_MAC_VER_53))
+> >               *cmd |= 0x7f0 << 18;
+> >  }
+> >
+> > @@ -1164,7 +1167,7 @@ static void rtl8168_driver_start(struct rtl8169_private *tp)
+> >       case RTL_GIGA_MAC_VER_31:
+> >               rtl8168dp_driver_start(tp);
+> >               break;
+> > -     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
+> >               rtl8168ep_driver_start(tp);
+> >               break;
+> >       default:
+> > @@ -1195,7 +1198,7 @@ static void rtl8168_driver_stop(struct rtl8169_private *tp)
+> >       case RTL_GIGA_MAC_VER_31:
+> >               rtl8168dp_driver_stop(tp);
+> >               break;
+> > -     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
+> >               rtl8168ep_driver_stop(tp);
+> >               break;
+> >       default:
+> > @@ -1223,7 +1226,7 @@ static bool r8168_check_dash(struct rtl8169_private *tp)
+> >       case RTL_GIGA_MAC_VER_28:
+> >       case RTL_GIGA_MAC_VER_31:
+> >               return r8168dp_check_dash(tp);
+> > -     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
+> >               return r8168ep_check_dash(tp);
+> >       default:
+> >               return false;
+> > @@ -1930,6 +1933,7 @@ static enum mac_version rtl8169_get_mac_version(u16 xid, bool gmii)
+> >               { 0x7c8, 0x608, RTL_GIGA_MAC_VER_61 },
+> >
+> >               /* RTL8117 */
+> > +             { 0x7cf, 0x54b, RTL_GIGA_MAC_VER_53 },
+> >               { 0x7cf, 0x54a, RTL_GIGA_MAC_VER_52 },
+> >
+> >               /* 8168EP family. */
+> > @@ -2274,7 +2278,7 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
+> >       case RTL_GIGA_MAC_VER_38:
+> >               RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
+> >               break;
+> > -     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+> >               RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+> >               break;
+> >       case RTL_GIGA_MAC_VER_60 ... RTL_GIGA_MAC_VER_63:
+> > @@ -2449,7 +2453,7 @@ DECLARE_RTL_COND(rtl_rxtx_empty_cond_2)
+> >  static void rtl_wait_txrx_fifo_empty(struct rtl8169_private *tp)
+> >  {
+> >       switch (tp->mac_version) {
+> > -     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+> >               rtl_loop_wait_high(tp, &rtl_txcfg_empty_cond, 100, 42);
+> >               rtl_loop_wait_high(tp, &rtl_rxtx_empty_cond, 100, 42);
+> >               break;
+> > @@ -3708,6 +3712,7 @@ static void rtl_hw_config(struct rtl8169_private *tp)
+> >               [RTL_GIGA_MAC_VER_50] = rtl_hw_start_8168ep_2,
+> >               [RTL_GIGA_MAC_VER_51] = rtl_hw_start_8168ep_3,
+> >               [RTL_GIGA_MAC_VER_52] = rtl_hw_start_8117,
+> > +             [RTL_GIGA_MAC_VER_53] = rtl_hw_start_8117,
+> >               [RTL_GIGA_MAC_VER_60] = rtl_hw_start_8125a_1,
+> >               [RTL_GIGA_MAC_VER_61] = rtl_hw_start_8125a_2,
+> >               [RTL_GIGA_MAC_VER_63] = rtl_hw_start_8125b,
+> > @@ -5101,7 +5106,7 @@ static void rtl_hw_init_8125(struct rtl8169_private *tp)
+> >  static void rtl_hw_initialize(struct rtl8169_private *tp)
+> >  {
+> >       switch (tp->mac_version) {
+> > -     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
+> > +     case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
+> >               rtl8168ep_stop_cmac(tp);
+> >               fallthrough;
+> >       case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_48:
+> >
 >
-> s/-/\-/
+> I think you have to add the following in r8169_phy_config.c
+> [RTL_GIGA_MAC_VER_53] = rtl8117_hw_phy_config,
+> Or doesn't VER_53 need this?
 
-ack
+Hmm, it works great with or without rtl8117_hw_phy_config.
+But yes, it should need this, let me send a V2 on top of net-next.
 
->
-> >
-> > SYNOPSIS
-> >     #include <sys/uio.h>
-> >
-> >     ssize_t process_madvise(int pidfd,
-> >                            const struct iovec *iovec,
-> >                            unsigned long vlen,
-> >                            int advice,
-> >                            unsigned int flags);
-> >
-> > DESCRIPTION
-> >     The process_madvise() system call is used to give advice or directions
-> >     to the kernel about the address ranges of other process as well as of
-> >     the calling process. It provides the advice to address ranges of process
-> >     described by iovec and vlen. The goal of such advice is to improve system
-> >     or application performance.
-> >
-> >     The pidfd argument is a PID file descriptor (see pidofd_open(2)) that
-> >     specifies the process to which the advice is to be applied.
-> >
-> >     The pointer iovec points to an array of iovec structures, defined in
-> >     <sys/uio.h> as:
-> >
-> >     struct iovec {
-> >         void  *iov_base;    /* Starting address */
-> >         size_t iov_len;     /* Number of bytes to transfer */
-> >     };
-> >
-> >     The iovec structure describes address ranges beginning at iov_base address
-> >     and with the size of iov_len bytes.
-> >
-> >     The vlen represents the number of elements in the iovec structure.
-> >
-> >     The advice argument is one of the values listed below.
-> >
-> >   Linux-specific advice values
-> >     The following Linux-specific advice values have no counterparts in the
-> >     POSIX-specified posix_madvise(3), and may or may not have counterparts
-> >     in the madvise(2) interface available on other implementations.
-> >
-> >     MADV_COLD (since Linux 5.4.1)
-> >         Deactive a given range of pages which will make them a more probable
-> >         reclaim target should there be a memory pressure. This is a non-
-> >         destructive operation. The advice might be ignored for some pages in
-> >         the range when it is not applicable.
-> >
-> >     MADV_PAGEOUT (since Linux 5.4.1)
-> >         Reclaim a given range of pages. This is done to free up memory occupied
-> >         by these pages. If a page is anonymous it will be swapped out. If a
-> >         page is file-backed and dirty it will be written back to the backing
-> >         storage. The advice might be ignored for some pages in the range when
-> >         it is not applicable.
-> >
-> >     The flags argument is reserved for future use; currently, this argument
-> >     must be specified as 0.
-> >
-> >     The value specified in the vlen argument must be less than or equal to
-> >     IOV_MAX (defined in <limits.h> or accessible via the call
-> >     sysconf(_SC_IOV_MAX)).
-> >
-> >     The vlen and iovec arguments are checked before applying any hints. If
-> >     the vlen is too big, or iovec is invalid, an error will be returned
-> >     immediately.
-> >
-> >     The hint might be applied to a part of iovec if one of its elements points
-> >     to an invalid memory region in the remote process. No further elements will
-> >     be processed beyond that point.
-> >
-> >     Permission to provide a hint to another process is governed by a ptrace
-> >     access mode PTRACE_MODE_READ_REALCREDS check (see ptrace(2)); in addition,
-> >     the caller must have the CAP_SYS_ADMIN capability due to performance
-> >     implications of applying the hint.
-> >
-> > RETURN VALUE
-> >     On success, process_madvise() returns the number of bytes advised. This
-> >     return value may be less than the total number of requested bytes, if an
-> >     error occurred after some iovec elements were already processed. The caller
-> >     should check the return value to determine whether a partial advice
-> >     occurred.
-> >
-> >     On error, -1 is returned and errno is set to indicate the error.
-> >
-> > ERRORS
-> >     EFAULT The memory described by iovec is outside the accessible address
-> >            space of the process referred to by pidfd.
-> >     EINVAL flags is not 0.
-> >     EINVAL The sum of the iov_len values of iovec overflows a ssize_t value.
-> >     EINVAL vlen is too large.
-> >     ENOMEM Could not allocate memory for internal copies of the iovec
-> >            structures.
-> >     EPERM The caller does not have permission to access the address space of
-> >           the process pidfd.
-> >     ESRCH The target process does not exist (i.e., it has terminated and been
-> >           waited on).
-> >     EBADF pidfd is not a valid PID file descriptor.
-> >
-> > VERSIONS
-> >     This system call first appeared in Linux 5.10, Support for this system
-> >     call is optional, depending on the setting of the CONFIG_ADVISE_SYSCALLS
-> >     configuration option.
-> >
-> > SEE ALSO
-> >     madvise(2), pidofd_open(2), process_vm_readv(2), process_vm_write(2)
-> >
-> >  man2/process_madvise.2 | 222 +++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 222 insertions(+)
-> >  create mode 100644 man2/process_madvise.2
-> >
-> > diff --git a/man2/process_madvise.2 b/man2/process_madvise.2
-> > new file mode 100644
-> > index 000000000..07553289f
-> > --- /dev/null
-> > +++ b/man2/process_madvise.2
-> > @@ -0,0 +1,222 @@
-> > +.\" Copyright (C) 2021 Suren Baghdasaryan <surenb@google.com>
-> > +.\" and Copyright (C) 2021 Minchan Kim <minchan@kernel.org>
-> > +.\"
-> > +.\" %%%LICENSE_START(VERBATIM)
-> > +.\" Permission is granted to make and distribute verbatim copies of this
-> > +.\" manual provided the copyright notice and this permission notice are
-> > +.\" preserved on all copies.
-> > +.\"
-> > +.\" Permission is granted to copy and distribute modified versions of this
-> > +.\" manual under the conditions for verbatim copying, provided that the
-> > +.\" entire resulting derived work is distributed under the terms of a
-> > +.\" permission notice identical to this one.
-> > +.\"
-> > +.\" Since the Linux kernel and libraries are constantly changing, this
-> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> > +.\" responsibility for errors or omissions, or for damages resulting from
-> > +.\" the use of the information contained herein.  The author(s) may not
-> > +.\" have taken the same level of care in the production of this manual,
-> > +.\" which is licensed free of charge, as they might when working
-> > +.\" professionally.
-> > +.\"
-> > +.\" Formatted or processed versions of this manual, if unaccompanied by
-> > +.\" the source, must acknowledge the copyright and authors of this work.
-> > +.\" %%%LICENSE_END
-> > +.\"
-> > +.\" Commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-> > +.\"
-> > +.TH PROCESS_MADVISE 2 2021-01-12 "Linux" "Linux Programmer's Manual"
-> > +.SH NAME
-> > +process_madvise \- give advice about use of memory to a process
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B #include <sys/uio.h>
-> > +.PP
-> > +.BI "ssize_t process_madvise(int " pidfd ,
-> > +.BI "                       const struct iovec *" iovec ,
-> > +.BI "                       unsigned long " vlen ,
-> > +.BI "                       int " advice ,
-> > +.BI "                       unsigned int " flags ");"
-> > +.fi
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR process_madvise()
-> > +system call is used to give advice or directions to the kernel about the
-> > +address ranges of other process as well as of the calling process.
->
-> s/other/another/
-> s/as well as of/or/
-
-ack
-
->
-> > +It provides the advice to address ranges of process described by
->
-> s/address ranges of process/the address ranges/
-
-ack
-
->
-> > +.I iovec
-> > +and
-> > +.IR vlen .
-> > +The goal of such advice is to improve system or application performance.
-> > +.PP
-> > +The
-> > +.I pidfd
-> > +argument is a PID file descriptor (see
-> > +.BR pidofd_open (2))
->
-> s/pidofd_open/pidfd_open/
-> (I overlooked this last time.)
-
-ack
-
->
-> > +that specifies the process to which the advice is to be applied.
-> > +.PP
-> > +The pointer
-> > +.I iovec
-> > +points to an array of
-> > +.I iovec
-> > +structures, defined in
-> > +.IR <sys/uio.h>
-> > +as:
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +struct iovec {
-> > +    void  *iov_base;    /* Starting address */
-> > +    size_t iov_len;     /* Number of bytes to transfer */
-> > +};
-> > +.EE
-> > +.in
-> > +.PP
-> > +The
-> > +.I iovec
-> > +structure describes address ranges beginning at
-> > +.I iov_base
-> > +address and with the size of
-> > +.I iov_len
-> > +bytes.
-> > +.PP
-> > +The
-> > +.I vlen
-> > +represents the number of elements in the
-> > +.I iovec
-> > +structure.
-> > +.PP
-> > +The
-> > +.I advice
-> > +argument is one of the values listed below.
-> > +.\"
-> > +.\" ======================================================================
-> > +.\"
-> > +.SS Linux-specific advice values
-> > +The following Linux-specific
-> > +.I advice
-> > +values have no counterparts in the POSIX-specified
-> > +.BR posix_madvise (3),
-> > +and may or may not have counterparts in the
-> > +.BR madvise (2)
-> > +interface available on other implementations.
-> > +.TP
-> > +.BR MADV_COLD " (since Linux 5.4.1)"
-> > +.\" commit 9c276cc65a58faf98be8e56962745ec99ab87636
-> > +Deactive a given range of pages which will make them a more probable
-> > +reclaim target should there be a memory pressure.
-> > +This is a non-destructive operation.
->
-> s/non-destructive/nondestructive/
-
-ack
-
->
-> > +The advice might be ignored for some pages in the range when it is not
-> > +applicable.
-> > +.TP
-> > +.BR MADV_PAGEOUT " (since Linux 5.4.1)"
-> > +.\" commit 1a4e58cce84ee88129d5d49c064bd2852b481357
-> > +Reclaim a given range of pages.
-> > +This is done to free up memory occupied by these pages.
-> > +If a page is anonymous it will be swapped out.
-> > +If a page is file-backed and dirty it will be written back to the backing
-> > +storage.
-> > +The advice might be ignored for some pages in the range when it is not
-> > +applicable.
-> > +.PP
-> > +The
-> > +.I flags
-> > +argument is reserved for future use; currently, this argument must be
-> > +specified as 0.
-> > +.PP
-> > +The value specified in the
-> > +.I vlen
-> > +argument must be less than or equal to
-> > +.BR IOV_MAX
-> > +(defined in
-> > +.I <limits.h>
-> > +or accessible via the call
-> > +.IR sysconf(_SC_IOV_MAX) ).
-> > +.PP
-> > +The
-> > +.I vlen
-> > +and
-> > +.I iovec
-> > +arguments are checked before applying any hints.
-> > +If the
-> > +.I vlen
-> > +is too big, or
-> > +.I iovec
-> > +is invalid, an error will be returned immediately.
->
-> s/immediately/immediately and no advice will be applied/ ?
->
-> That's just a guess on my part. Is it correct?
-
-Correct. Will change.
-
->
-> > +.PP
-> > +The hint might be applied to a part of
-> > +.I iovec
-> > +if one of its elements points to an invalid memory region in the
-> > +remote process.
-> > +No further elements will be processed beyond that point.
-> > +.PP
-> > +Permission to provide a hint to another process is governed by a
-> > +ptrace access mode
-> > +.B PTRACE_MODE_READ_REALCREDS
-> > +check (see
-> > +.BR ptrace (2));
-> > +in addition, the caller must have the
-> > +.B CAP_SYS_ADMIN
-> > +capability due to performance implications of applying the hint.
->
-> Great addition. Thanks.
-
-ack
-
->
-> > +.SH RETURN VALUE
-> > +On success, process_madvise() returns the number of bytes advised.
-> > +This return value may be less than the total number of requested bytes,
-> > +if an error occurred after some iovec elements were already processed.
-> > +The caller should check the return value to determine whether a partial
-> > +advice occurred.
-> > +.PP
-> > +On error, \-1 is returned and
-> > +.I errno
-> > +is set to indicate the error.
->
-> Thanks. That's better!
-
-ack
-
->
-> > +.SH ERRORS
->
-> I should have mentioned this last time: could you place the errors
-> in alphabetical order please.
-
-ack
-
->
-> > +.TP
-> > +.B EFAULT
-> > +The memory described by
-> > +.I iovec
-> > +is outside the accessible address space of the process referred to by
-> > +.IR pidfd .
-> > +.TP
-> > +.B EINVAL
-> > +.I flags
-> > +is not 0.
-> > +.TP
-> > +.B EINVAL
-> > +The sum of the
-> > +.I iov_len
-> > +values of
-> > +.I iovec
-> > +overflows a
-> > +.I ssize_t
-> > +value.
-> > +.TP
-> > +.B EINVAL
-> > +.I vlen
-> > +is too large.
-> > +.TP
-> > +.B ENOMEM
-> > +Could not allocate memory for internal copies of the
-> > +.I iovec
-> > +structures.
-> > +.TP
-> > +.B EPERM
-> > +The caller does not have permission to access the address space of the process
-> > +.IR pidfd .
-> > +.TP
-> > +.B ESRCH
-> > +The target process does not exist (i.e., it has terminated and been waited on).
-> > +.TP
-> > +.B EBADF
-> > +.I pidfd
-> > +is not a valid PID file descriptor.
-> > +.SH VERSIONS
-> > +This system call first appeared in Linux 5.10,
->
-> s/,/./
-
-ack
-
->
-> > +.\" commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-> > +Support for this system call is optional,
-> > +depending on the setting of the
-> > +.B CONFIG_ADVISE_SYSCALLS
-> > +configuration option.
-> > +.SH SEE ALSO
-> > +.BR madvise (2),
-> > +.BR pidofd_open(2),
->
-> s/pidofd_open/pidfd_open/
-
-ack
-
->
-> > +.BR process_vm_readv (2),
-> > +.BR process_vm_write (2)
->
-> Cheers,
->
-> Michael
->
-
-I will post v3 with Michal's Reviewed-by and your comments addressed
-later today.
-Thanks again for your time!
-Suren.
-
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+Kai-Heng
