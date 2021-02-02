@@ -2,193 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1B030BC51
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE7F30BC55
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBBKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:46:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S230114AbhBBKqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhBBKqB (ORCPT
+        with ESMTP id S229441AbhBBKqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:46:01 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D894EC061573;
-        Tue,  2 Feb 2021 02:45:19 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id p15so19848150wrq.8;
-        Tue, 02 Feb 2021 02:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cyJs+3SGCj9XR6rS/VsjsM1IE2RFshzJsPr437bOekg=;
-        b=R8CCZUhvPLE+ptZxc8GsaJl3TmtQXWE+yVmgMvkuloUSR8roQI2BOFKdoCN1Z3/lBd
-         CHJb//Dqnu5oJ8Mg5ryuxRPLl8yF0XgbhVZ/GgFyeUjN2xzvkH1MnMTFC5xEu5n2sqrj
-         yApTNm+noDQvdPwKDq/LGeyFQkMefdCjQZ7MAGJLITogCc+A0SUllzCxBWkKBeoSbojG
-         3Ml0bCa0n46GOYn2spBVqp5JSup/Tu5ibPzLCuYqT7cie8TR63+ojVYxctSjGrBZWt5D
-         g/kFmSNzt8SCTl0DYdrZK27v5RU0rH+kz+yXKtff96mRzwsjNmcEg5H3xnXJY2qdwSPA
-         wekw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cyJs+3SGCj9XR6rS/VsjsM1IE2RFshzJsPr437bOekg=;
-        b=ISFZZCMm3ZqelQ4jvmHEcbR7mid8/pI1QXskYBAKABJsePGQnay9LuAzT44ZHbxYIl
-         WHx8YYXZiMyLVHWLIw8irRynkVuXYanABlD77tV9b5EuX2UxJ6RG2eKCw9nsmO3aZlXV
-         QzU4/xhkFgvGyRYXGTczYWyTkdpRLZ1dN6MYtxtQnZEBU8K85v5BSoJRTEHeSREbtNLl
-         0xnVNADu4yAm4OlElSG91g9yzC+uSkmJvhEbD+rCXYpPAf7A/zxq5DmkTylJPBvuyqaz
-         HJ9/jSFFUOzsQTGyrtqqHIAJ2PnI09MMAxYSFSyUc1haj/csK9wTj+78DM2TPG7FCkyr
-         dTlg==
-X-Gm-Message-State: AOAM5318lgem+lFFb81cgaEW4ALA6ltkp6/gtMuM+7GJaK8WC5i8s15K
-        73vhYrmKj+dDlblAEb+f9gk=
-X-Google-Smtp-Source: ABdhPJwDwlBcePjdaZRYJS1IF8/IBOZLW5rSrIat6PDunt6i+D5zMu2/LoXBqWkb0y8kvKPjbTwFIw==
-X-Received: by 2002:a5d:6c66:: with SMTP id r6mr22537227wrz.86.1612262718594;
-        Tue, 02 Feb 2021 02:45:18 -0800 (PST)
-Received: from ?IPv6:2001:a61:2542:b001:294f:8948:78a8:d929? ([2001:a61:2542:b001:294f:8948:78a8:d929])
-        by smtp.gmail.com with ESMTPSA id b3sm2647400wme.32.2021.02.02.02.45.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 02:45:17 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, akpm@linux-foundation.org,
-        jannh@google.com, keescook@chromium.org, jeffv@google.com,
-        minchan@kernel.org, mhocko@suse.com, shakeelb@google.com,
-        rientjes@google.com, edgararriaga@google.com, timmurray@google.com,
-        linux-mm@kvack.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 1/1] process_madvise.2: Add process_madvise man page
-To:     Suren Baghdasaryan <surenb@google.com>, linux-man@vger.kernel.org
-References: <20210202053046.1653012-1-surenb@google.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <079db245-a08c-0dbd-01d4-8065f533652e@gmail.com>
-Date:   Tue, 2 Feb 2021 11:45:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 2 Feb 2021 05:46:34 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695DBC06174A;
+        Tue,  2 Feb 2021 02:45:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n0m769ZMPd/PM7XjIEQvcyoZkVUym0HTy3iZtH6Lb7Y=; b=ffurwNWebitiux3pz6mLKop4jd
+        iyT0lR6n9jCm3mLOaRMeWZvIBcmJpC3nR8LOtnF7rTa7QXqPCoummUWfwOlz7Y+gRZ8ZK8d06CYwv
+        SpuzOn48ZBFX0RJxrSC89b/arNY3okgNnJXrAVb9V5BWM+eqQjUeciMleuyPjgQo8QDJuw7upREjQ
+        TBeqQGOocbw8EPUIHp1PhBQ6qB5CblmRuY0BFUbZ4sPGrymy0/rGv1+xN/VWZYXEFem12ttP3UabO
+        m1gUpXJPsOAY5KD6fecStUYjpoUj9LeqfRHVyXexGFn8Pzardny9kD++Hqo2F+ROuOmzb3ZKkQhSx
+        zJmQ8Kaw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6tBo-0000n9-6S; Tue, 02 Feb 2021 10:45:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F008D301179;
+        Tue,  2 Feb 2021 11:45:41 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DDC8D299C9F61; Tue,  2 Feb 2021 11:45:41 +0100 (CET)
+Date:   Tue, 2 Feb 2021 11:45:41 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
+References: <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+ <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+ <20210129105952.74dc8464@gandalf.local.home>
+ <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+ <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+ <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+ <20210129140103.3ce971b7@gandalf.local.home>
+ <20210129162454.293523c6@gandalf.local.home>
+ <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+ <20210130074410.6384c2e2@oasis.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20210202053046.1653012-1-surenb@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130074410.6384c2e2@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suren (and Minchan and Michal)
-
-Thank you for the revisions!
-
-I've applied this patch, and done a few light edits.
-
-However, I have a questions about undocumented pieces in *madvise(2)*,
-as well as one other question. See below. 
-
-On 2/2/21 6:30 AM, Suren Baghdasaryan wrote:
-> Initial version of process_madvise(2) manual page. Initial text was
-> extracted from [1], amended after fix [2] and more details added using
-> man pages of madvise(2) and process_vm_read(2) as examples. It also
-> includes the changes to required permission proposed in [3].
+On Sat, Jan 30, 2021 at 07:44:10AM -0500, Steven Rostedt wrote:
+> On Sat, 30 Jan 2021 09:28:32 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> [1] https://lore.kernel.org/patchwork/patch/1297933/
-> [2] https://lkml.org/lkml/2020/12/8/1282
-> [3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
+> > On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
+> > > Specifically, kprobe and ftrace callbacks may have this:
+> > > 
+> > > 	if (in_nmi())
+> > > 		return;
+> > > 
+> > > 	raw_spin_lock_irqsave(&lock, flags);
+> > > 	[..]
+> > > 	raw_spin_unlock_irqrestore(&lock, flags);
+> > > 
+> > > Which is totally fine to have,  
+> > 
+> > Why? There's a distinct lack of explaining here.
+> > 
+> > Note that we ripped out all such dodgy locking from kretprobes.
 > 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Michal Hocko <mhocko@suse.com>
-> ---
-> changes in v2:
-> - Changed description of MADV_COLD per Michal Hocko's suggestion
-> - Applied fixes suggested by Michael Kerrisk
-> changes in v3:
-> - Added Michal's Reviewed-by
-> - Applied additional fixes suggested by Michael Kerrisk
-> 
-> NAME
->     process_madvise - give advice about use of memory to a process
-> 
-> SYNOPSIS
->     #include <sys/uio.h>
-> 
->     ssize_t process_madvise(int pidfd,
->                            const struct iovec *iovec,
->                            unsigned long vlen,
->                            int advice,
->                            unsigned int flags);
-> 
-> DESCRIPTION
->     The process_madvise() system call is used to give advice or directions
->     to the kernel about the address ranges of another process or the calling
->     process. It provides the advice to the address ranges described by iovec
->     and vlen. The goal of such advice is to improve system or application
->     performance.
-> 
->     The pidfd argument is a PID file descriptor (see pidfd_open(2)) that
->     specifies the process to which the advice is to be applied.
-> 
->     The pointer iovec points to an array of iovec structures, defined in
->     <sys/uio.h> as:
-> 
->     struct iovec {
->         void  *iov_base;    /* Starting address */
->         size_t iov_len;     /* Number of bytes to transfer */
->     };
-> 
->     The iovec structure describes address ranges beginning at iov_base address
->     and with the size of iov_len bytes.
-> 
->     The vlen represents the number of elements in the iovec structure.
-> 
->     The advice argument is one of the values listed below.
-> 
->   Linux-specific advice values
->     The following Linux-specific advice values have no counterparts in the
->     POSIX-specified posix_madvise(3), and may or may not have counterparts
->     in the madvise(2) interface available on other implementations.
-> 
->     MADV_COLD (since Linux 5.4.1)
+> Actually, I think you helped explain the distinction. You mention
+> "kretpobes" do you mean the infrastructure of kretprobes or all its
+> users?
 
-I just noticed these version numbers now, and thought: they can't be
-right (because the system call appeared only in v5.11). So I removed 
-them. But, of course in another sense the version numbers are (nearly)
-right, since these advice values were added for madvise(2) in Linux 5.4.
-However, they are not documented in the madvise(2) manual page. Is it
-correct to assume that MADV_COLD and MADV_PAGEOUT have exactly the same
-meaning in madvise(2) (but just for the calling process, of course)?
+kretprobe infra.
 
->         Deactive a given range of pages which will make them a more probable
-
-I changed: s/Deactive/Deactivate/
-
->         reclaim target should there be a memory pressure. This is a
->         nondestructive operation. The advice might be ignored for some pages
->         in the range when it is not applicable.
+> The infrastructure of ftrace and kprobes can work in any context, it
+> does not mean that the callbacks must. Again, these are more like
+> exceptions. Why have "in_nmi()"? If anything that can be called by an
+> NMI should just work, right? That's basically your argument for having
+> ftrace and kprobes set "in_nmi".
 > 
->     MADV_PAGEOUT (since Linux 5.4.1)
->         Reclaim a given range of pages. This is done to free up memory occupied
->         by these pages. If a page is anonymous it will be swapped out. If a
->         page is file-backed and dirty it will be written back to the backing
->         storage. The advice might be ignored for some pages in the range when
->         it is not applicable.
+> You can have locking in NMIs if the locking is *only* in NMI handlers,
+> right? If that's the case, then so should ftrace and kprobe callbacks.
 
-[...]
+Which is still dodgy as heck. NMIs _can_ nest. Now mostly it doesn't
+happen, and the few sites that do use spinlocks from NMI context are
+sure to use it from a specific NMI 'handler' context which typically
+don't nest.
 
->     The hint might be applied to a part of iovec if one of its elements points
->     to an invalid memory region in the remote process. No further elements will
->     be processed beyond that point.
+But I still utterly detest the idea of using spinlocks from NMI. It's
+inherently fragile.
 
-Is the above scenario the one that leads to the partial advice case described in
-RETURN VALUE? If yes, perhaps I should add some words to make that clearer.
+> The stack tracer checks the size of the stack, compares it to the
+> largest recorded size, and if it's bigger, it will save the stack. But
+> if this happens on two CPUs at the same time, only one can do the
+> recording at the same time. To synchronize this, a spin lock must be
+> taken. Similar to spin locks in an NMI.
 
-You can see the light edits that I made in
-https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=e3ce016472a1b3ec5dffdeb23c98b9fef618a97b
-and following that I restructured DESCRIPTION a little in
-https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=3aac0708a9acee5283e091461de6a8410bc921a6
+That sounds like something cmpxchg() should be able to do.
 
-Thanks,
+Have a per-cpu stack trace buffer and a global max one, when cpu local
+exceeds previous max, cmpxchg the buffer.
 
-Michael
+> But the problem here is, the callbacks can also be done from an NMI
+> context, so if we are in NMI, we don't want to take any locks, and
+> simply don't record the stack traces from NMIs.
 
+Which is obviously shit :-) The NMI might have interesting stack usage.
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+> The more I think about it, the more I hate the idea that ftrace
+> callbacks and kprobes are considered NMIs. Simply because they are not!
+
+Yet they happen when IRQs are off, so they are ;-)
+
+Also, given how everything can nest, it had better all be lockless
+anyway. You can get your regular function trace interrupted, which can
+hit a #DB, which can function trace, which can #BP which can function
+trace again which can get #NMI etc.. Many wonderfun nestings possible.
+
+And god knows what these handlers end up calling.
+
+The only sane approach is treating it all as NMI and having it all
+lockless.
