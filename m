@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25D230B6A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B639730B6B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhBBEle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:41:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
+        id S231790AbhBBEwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:52:50 -0500
+Received: from mga14.intel.com ([192.55.52.115]:54657 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhBBElb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:41:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6350F64EE1;
-        Tue,  2 Feb 2021 04:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612240851;
-        bh=Er+OHXyqWsWOV/4nsHP37J6xG+BftyW06TiJ8gisbV4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Il1RtFY1luYk2YDZSELCpxIvqu1sF9LKrwHYGlBcspk3ZpUh3L4OXJWt2mWt3OPIf
-         nwSYJln4iMnr2M1KF/j9D8atuGFcHj6HD6/xxG52jC+vG76AYDPPnNVbIyJ693nhEv
-         1n5rBPuTTZbkG6AxQ4dUKq7i9QXhOlePx+K6Qy/a1ygujpnIskwX5as7kX4/Zcoxsz
-         Mn7m/WJ8rqaplg3qseL1120NzSvFkfoMXLPa15BDjXMf44ktMRnhfLMwX+1KKujA3I
-         OiKLUuRpoXubNTJkEWvkiMwtVOdSgQV5CbCNfHZcmr5WITDKVVfHTIsGDASaeWt2jE
-         b/3KFWqXwt3JQ==
-Received: by mail-il1-f169.google.com with SMTP id z18so17630287ile.9;
-        Mon, 01 Feb 2021 20:40:51 -0800 (PST)
-X-Gm-Message-State: AOAM5304VJYd062GNiy5wRrkExGSX28YgNN2LK6ivIe9mMVZhOjLWZrX
-        yUi8p/gURuzDC3pd4yVRD4EvHF6mA/iJyKbXoOA=
-X-Google-Smtp-Source: ABdhPJxNqcOfKd+2zw8MJa1bQJc0zP65BYOEhjHjT5/AbrEVJT4BT/lW4iFbSw1YdLehcQ4nH1rYekWUvskMwGIjj8Q=
-X-Received: by 2002:a92:7a0e:: with SMTP id v14mr16677653ilc.35.1612240850865;
- Mon, 01 Feb 2021 20:40:50 -0800 (PST)
+        id S231597AbhBBEwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 23:52:46 -0500
+IronPort-SDR: hdoM7WeHwap2ft3IFB+MW7tI9UoCsqft7ouvGdOWONKRsO4di8UeHfWtr7ebj5PYMwA5ZmzubT
+ qsfOUK3h4Viw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180020411"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="180020411"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 20:49:25 -0800
+IronPort-SDR: 1lAE3OWH1MDJokNweNf9yHQ+WZ8pajDbquDw52AHFbF93hyDajy5+HMrR6BxbxX9dJFgPKxLfZ
+ cgAHU5OjOzOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
+   d="scan'208";a="479423171"
+Received: from allen-box.sh.intel.com ([10.239.159.128])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Feb 2021 20:49:23 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     iommu@lists.linux-foundation.org
+Cc:     Yian Chen <yian.chen@intel.com>, Joerg Roedel <joro@8bytes.org>,
+        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 0/3] iommu/vt-d: Add support for ACPI/SATC table
+Date:   Tue,  2 Feb 2021 12:40:54 +0800
+Message-Id: <20210202044057.615277-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1612232135-26683-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1612232135-26683-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 2 Feb 2021 12:40:38 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H70jXH0KCKQw+5rEUv+jBLfksADKMJfpQOuz1PxcvxC_g@mail.gmail.com>
-Message-ID: <CAAhV-H70jXH0KCKQw+5rEUv+jBLfksADKMJfpQOuz1PxcvxC_g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: MIPS: remove unneeded semicolon
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
+Intel platform VT-d (v3.2) comes with a new type of DMAR subtable
+SATC. The SATC table includes a list of SoC integrated devices
+that require SATC. OS software can use this table to enable ATS
+only for the devices in the list.
 
-On Tue, Feb 2, 2021 at 10:15 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Eliminate the following coccicheck warning:
-> ./arch/mips/kvm/mips.c:151:2-3: Unneeded semicolon
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/mips/kvm/mips.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-> index 3d6a7f5..58a8812 100644
-> --- a/arch/mips/kvm/mips.c
-> +++ b/arch/mips/kvm/mips.c
-> @@ -148,7 +148,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->         default:
->                 /* Unsupported KVM type */
->                 return -EINVAL;
-> -       };
-> +       }
->
->         /* Allocate page table to map GPA -> RPA */
->         kvm->arch.gpa_mm.pgd = kvm_pgd_alloc();
-> --
-> 1.8.3.1
->
+Yian Chen (3):
+  iommu/vt-d: Add new enum value and structure for SATC
+  iommu/vt-d: Parse SATC reporting structure
+  iommu/vt-d: Apply SATC policy
+
+ drivers/iommu/intel/dmar.c  |   9 ++
+ drivers/iommu/intel/iommu.c | 161 +++++++++++++++++++++++++++++++++++-
+ include/acpi/actbl1.h       |  11 ++-
+ include/linux/dmar.h        |   2 +
+ 4 files changed, 178 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
