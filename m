@@ -2,331 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511AB30CF7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8F430CF87
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbhBBW6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:58:20 -0500
-Received: from mga01.intel.com ([192.55.52.88]:12195 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235960AbhBBW6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:58:16 -0500
-IronPort-SDR: sOQNLtcFxyHpPkb/3xVu7chZgcM2vsBypBFzfmo/Zi6wxjS8Rh3H6/44oEq6b9y1OkxCoTLoLd
- wtg3WX9g0dVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="199885569"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="199885569"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:57:36 -0800
-IronPort-SDR: pVvelo/zucrVsqsMq3ZmMdLUKGQUkZxfs4auui5Z+4dvgRId8yfbkfHm/CHqFDi6UkaZf3LFqb
- e6HMuPxlifLQ==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="391902699"
-Received: from aisallax-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.131.184])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:57:34 -0800
-Date:   Tue, 2 Feb 2021 14:57:33 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     David Rientjes <rientjes@google.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 04/14] cxl/mem: Implement polled mode mailbox
-Message-ID: <20210202225733.miq5sl3mqit2zuhg@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-5-ben.widawsky@intel.com>
- <5986abe5-1248-30b2-5f53-fa7013baafad@google.com>
- <CAPcyv4g_yUpwoBJsLeVwCZAkZGGrfSgrCk2+GXVXBcouktZNSQ@mail.gmail.com>
+        id S235926AbhBBW7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:59:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232681AbhBBW7l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:59:41 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D0AC0613D6;
+        Tue,  2 Feb 2021 14:59:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ENue7s30/AVYjJ+FLuK3utBLdl7fX7Wgo1RZFpgH4vM=; b=iCpPPCirUc9RhjKzpwe3y4FP9W
+        Er4hHDaCbraQPxNrWmL2Yao94VNYmaPyexKnej4DgMa6blaJPt+pVpsgTWVPOEstB1gcQYPe73aAF
+        v9VazIjrtXW9X/ChFtnTI+IpgqygQ3asQ16cZidy4PTIwoXo5z32Kxd87vp9zAXjdKA3kpFJuLBJE
+        geVlY2+N3EIhy5WY1aMvzjCXYGfmzbKT5mCqHMujL6Fv8rV2q4Zib9vzCFy9tEuqFUS1QvISsZGHe
+        WLRuK+q8+3pouAGoC2JuWkD8JsJGjQyF2NKqJlTbJhN+2kMaeBEtjP/6600EQAYF8StNRlB7VhEEF
+        rYfAw2Fg==;
+Received: from [2601:1c0:6280:3f0::2a53]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l74cg-0001Wj-VY; Tue, 02 Feb 2021 22:58:15 +0000
+Subject: Re: [PATCH v5 1/2] drivers/misc: sysgenid: add system generation id
+ driver
+To:     Adrian Catangiu <acatan@amazon.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, graf@amazon.com, arnd@arndb.de,
+        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
+        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
+        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
+        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
+        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
+        mst@redhat.com, mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
+        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
+        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
+        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
+        oridgar@gmail.com, ghammer@redhat.com
+References: <1612200294-17561-1-git-send-email-acatan@amazon.com>
+ <1612200294-17561-2-git-send-email-acatan@amazon.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5290f6f5-396f-aa47-3b74-8d50c2434a04@infradead.org>
+Date:   Tue, 2 Feb 2021 14:58:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4g_yUpwoBJsLeVwCZAkZGGrfSgrCk2+GXVXBcouktZNSQ@mail.gmail.com>
+In-Reply-To: <1612200294-17561-2-git-send-email-acatan@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-01 12:00:18, Dan Williams wrote:
-> On Sat, Jan 30, 2021 at 3:52 PM David Rientjes <rientjes@google.com> wrote:
-> >
-> > On Fri, 29 Jan 2021, Ben Widawsky wrote:
-> >
-> > > Provide enough functionality to utilize the mailbox of a memory device.
-> > > The mailbox is used to interact with the firmware running on the memory
-> > > device.
-> > >
-> > > The CXL specification defines separate capabilities for the mailbox and
-> > > the memory device. The mailbox interface has a doorbell to indicate
-> > > ready to accept commands and the memory device has a capability register
-> > > that indicates the mailbox interface is ready. The expectation is that
-> > > the doorbell-ready is always later than the memory-device-indication
-> > > that the mailbox is ready.
-> > >
-> > > Create a function to handle sending a command, optionally with a
-> > > payload, to the memory device, polling on a result, and then optionally
-> > > copying out the payload. The algorithm for doing this comes straight out
-> > > of the CXL 2.0 specification.
-> > >
-> > > Primary mailboxes are capable of generating an interrupt when submitting
-> > > a command in the background. That implementation is saved for a later
-> > > time.
-> > >
-> > > Secondary mailboxes aren't implemented at this time.
-> > >
-> > > The flow is proven with one implemented command, "identify". Because the
-> > > class code has already told the driver this is a memory device and the
-> > > identify command is mandatory.
-> > >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  drivers/cxl/Kconfig |  14 ++
-> > >  drivers/cxl/cxl.h   |  39 +++++
-> > >  drivers/cxl/mem.c   | 342 +++++++++++++++++++++++++++++++++++++++++++-
-> > >  3 files changed, 394 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-> > > index 3b66b46af8a0..fe591f74af96 100644
-> > > --- a/drivers/cxl/Kconfig
-> > > +++ b/drivers/cxl/Kconfig
-> > > @@ -32,4 +32,18 @@ config CXL_MEM
-> > >         Chapter 2.3 Type 3 CXL Device in the CXL 2.0 specification.
-> > >
-> > >         If unsure say 'm'.
-> > > +
-> > > +config CXL_MEM_INSECURE_DEBUG
-> > > +     bool "CXL.mem debugging"
-> > > +     depends on CXL_MEM
-> > > +     help
-> > > +       Enable debug of all CXL command payloads.
-> > > +
-> > > +       Some CXL devices and controllers support encryption and other
-> > > +       security features. The payloads for the commands that enable
-> > > +       those features may contain sensitive clear-text security
-> > > +       material. Disable debug of those command payloads by default.
-> > > +       If you are a kernel developer actively working on CXL
-> > > +       security enabling say Y, otherwise say N.
-> >
-> > Not specific to this patch, but the reference to encryption made me
-> > curious about integrity: are all CXL.mem devices compatible with DIMP?
-> > Some?  None?
-> 
-> The encryption here is "device passphrase" similar to the NVDIMM
-> Security Management described here:
-> 
-> https://pmem.io/documents/IntelOptanePMem_DSM_Interface-V2.0.pdf
-> 
-> The LIBNVDIMM enabling wrapped this support with the Linux keys
-> interface which among other things enforces wrapping the clear text
-> passphrase with a Linux "trusted/encrypted" key.
-> 
-> Additionally, the CXL.io interface optionally supports PCI IDE:
-> 
-> https://www.intel.com/content/dam/www/public/us/en/documents/reference-guides/pcie-device-security-enhancements.pdf
-> 
-> I'm otherwise not familiar with the DIMP acronym?
-> 
-> > > +
-> > >  endif
-> > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > > index a3da7f8050c4..df3d97154b63 100644
-> > > --- a/drivers/cxl/cxl.h
-> > > +++ b/drivers/cxl/cxl.h
-> > > @@ -31,9 +31,36 @@
-> > >  #define CXLDEV_MB_CAPS_OFFSET 0x00
-> > >  #define   CXLDEV_MB_CAP_PAYLOAD_SIZE_MASK GENMASK(4, 0)
-> > >  #define CXLDEV_MB_CTRL_OFFSET 0x04
-> > > +#define   CXLDEV_MB_CTRL_DOORBELL BIT(0)
-> > >  #define CXLDEV_MB_CMD_OFFSET 0x08
-> > > +#define   CXLDEV_MB_CMD_COMMAND_OPCODE_MASK GENMASK(15, 0)
-> > > +#define   CXLDEV_MB_CMD_PAYLOAD_LENGTH_MASK GENMASK(36, 16)
-> > >  #define CXLDEV_MB_STATUS_OFFSET 0x10
-> > > +#define   CXLDEV_MB_STATUS_RET_CODE_MASK GENMASK(47, 32)
-> > >  #define CXLDEV_MB_BG_CMD_STATUS_OFFSET 0x18
-> > > +#define CXLDEV_MB_PAYLOAD_OFFSET 0x20
-> > > +
-> > > +/* Memory Device (CXL 2.0 - 8.2.8.5.1.1) */
-> > > +#define CXLMDEV_STATUS_OFFSET 0x0
-> > > +#define   CXLMDEV_DEV_FATAL BIT(0)
-> > > +#define   CXLMDEV_FW_HALT BIT(1)
-> > > +#define   CXLMDEV_STATUS_MEDIA_STATUS_MASK GENMASK(3, 2)
-> > > +#define     CXLMDEV_MS_NOT_READY 0
-> > > +#define     CXLMDEV_MS_READY 1
-> > > +#define     CXLMDEV_MS_ERROR 2
-> > > +#define     CXLMDEV_MS_DISABLED 3
-> > > +#define   CXLMDEV_READY(status) \
-> > > +             (CXL_GET_FIELD(status, CXLMDEV_STATUS_MEDIA_STATUS) == CXLMDEV_MS_READY)
-> > > +#define   CXLMDEV_MBOX_IF_READY BIT(4)
-> > > +#define   CXLMDEV_RESET_NEEDED_SHIFT 5
-> > > +#define   CXLMDEV_RESET_NEEDED_MASK GENMASK(7, 5)
-> > > +#define     CXLMDEV_RESET_NEEDED_NOT 0
-> > > +#define     CXLMDEV_RESET_NEEDED_COLD 1
-> > > +#define     CXLMDEV_RESET_NEEDED_WARM 2
-> > > +#define     CXLMDEV_RESET_NEEDED_HOT 3
-> > > +#define     CXLMDEV_RESET_NEEDED_CXL 4
-> > > +#define   CXLMDEV_RESET_NEEDED(status) \
-> > > +             (CXL_GET_FIELD(status, CXLMDEV_RESET_NEEDED) != CXLMDEV_RESET_NEEDED_NOT)
-> > >
-> > >  /**
-> > >   * struct cxl_mem - A CXL memory device
-> > > @@ -44,6 +71,16 @@ struct cxl_mem {
-> > >       struct pci_dev *pdev;
-> > >       void __iomem *regs;
-> > >
-> > > +     struct {
-> > > +             struct range range;
-> > > +     } pmem;
-> > > +
-> > > +     struct {
-> > > +             struct range range;
-> > > +     } ram;
-> > > +
-> > > +     char firmware_version[0x10];
-> > > +
-> > >       /* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
-> > >       struct {
-> > >               void __iomem *regs;
-> > > @@ -51,6 +88,7 @@ struct cxl_mem {
-> > >
-> > >       /* Cap 0002h - CXL_CAP_CAP_ID_PRIMARY_MAILBOX */
-> > >       struct {
-> > > +             struct mutex mutex; /* Protects device mailbox and firmware */
-> > >               void __iomem *regs;
-> > >               size_t payload_size;
-> > >       } mbox;
-> > > @@ -89,5 +127,6 @@ struct cxl_mem {
-> > >
-> > >  cxl_reg(status);
-> > >  cxl_reg(mbox);
-> > > +cxl_reg(mem);
-> > >
-> > >  #endif /* __CXL_H__ */
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index fa14d51243ee..69ed15bfa5d4 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -6,6 +6,270 @@
-> > >  #include "pci.h"
-> > >  #include "cxl.h"
-> > >
-> > > +#define cxl_doorbell_busy(cxlm)                                                \
-> > > +     (cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET) &                    \
-> > > +      CXLDEV_MB_CTRL_DOORBELL)
-> > > +
-> > > +#define CXL_MAILBOX_TIMEOUT_US 2000
-> >
-> > This should be _MS?
-> >
-> > > +
-> > > +enum opcode {
-> > > +     CXL_MBOX_OP_IDENTIFY            = 0x4000,
-> > > +     CXL_MBOX_OP_MAX                 = 0x10000
-> > > +};
-> > > +
-> > > +/**
-> > > + * struct mbox_cmd - A command to be submitted to hardware.
-> > > + * @opcode: (input) The command set and command submitted to hardware.
-> > > + * @payload_in: (input) Pointer to the input payload.
-> > > + * @payload_out: (output) Pointer to the output payload. Must be allocated by
-> > > + *            the caller.
-> > > + * @size_in: (input) Number of bytes to load from @payload.
-> > > + * @size_out: (output) Number of bytes loaded into @payload.
-> > > + * @return_code: (output) Error code returned from hardware.
-> > > + *
-> > > + * This is the primary mechanism used to send commands to the hardware.
-> > > + * All the fields except @payload_* correspond exactly to the fields described in
-> > > + * Command Register section of the CXL 2.0 spec (8.2.8.4.5). @payload_in and
-> > > + * @payload_out are written to, and read from the Command Payload Registers
-> > > + * defined in (8.2.8.4.8).
-> > > + */
-> > > +struct mbox_cmd {
-> > > +     u16 opcode;
-> > > +     void *payload_in;
-> > > +     void *payload_out;
-> > > +     size_t size_in;
-> > > +     size_t size_out;
-> > > +     u16 return_code;
-> > > +#define CXL_MBOX_SUCCESS 0
-> > > +};
-> > > +
-> > > +static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> > > +{
-> > > +     const int timeout = msecs_to_jiffies(CXL_MAILBOX_TIMEOUT_US);
-> > > +     const unsigned long start = jiffies;
-> > > +     unsigned long end = start;
-> > > +
-> > > +     while (cxl_doorbell_busy(cxlm)) {
-> > > +             end = jiffies;
-> > > +
-> > > +             if (time_after(end, start + timeout)) {
-> > > +                     /* Check again in case preempted before timeout test */
-> > > +                     if (!cxl_doorbell_busy(cxlm))
-> > > +                             break;
-> > > +                     return -ETIMEDOUT;
-> > > +             }
-> > > +             cpu_relax();
-> > > +     }
-> > > +
-> > > +     dev_dbg(&cxlm->pdev->dev, "Doorbell wait took %dms",
-> > > +             jiffies_to_msecs(end) - jiffies_to_msecs(start));
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > > +                              struct mbox_cmd *mbox_cmd)
-> > > +{
-> > > +     dev_warn(&cxlm->pdev->dev, "Mailbox command timed out\n");
-> > > +     dev_info(&cxlm->pdev->dev,
-> > > +              "\topcode: 0x%04x\n"
-> > > +              "\tpayload size: %zub\n",
-> > > +              mbox_cmd->opcode, mbox_cmd->size_in);
-> > > +
-> > > +     if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
-> > > +             print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
-> > > +                                  mbox_cmd->payload_in, mbox_cmd->size_in,
-> > > +                                  true);
-> > > +     }
-> > > +
-> > > +     /* Here's a good place to figure out if a device reset is needed */
-> >
-> > What are the implications if we don't do a reset, as this implementation
-> > does not?  IOW, does a timeout require a device to be recovered through a
-> > reset before it can receive additional commands, or is it safe to simply
-> > drop the command that timed out on the floor and proceed?
-> 
-> Not a satisfying answer, but "it depends". It's also complicated by
-> the fact that a reset may need to be coordinated with other devices in
-> the interleave-set as the HDM decoders may bounce.
-> 
-> For comparison, to date there have been no problems with the "drop on
-> the floor" policy of LIBNVDIMM command timeouts. At the same time
-> there simply was not a software visible reset mechanism for those
-> devices so this problem never came out. This mailbox isn't a fast
-> path, so the device is likely completely dead if this timeout is ever
-> violated, and the firmware reporting a timeout might as well assume
-> that the OS gives up on the device.
-> 
-> I'll let Ben chime in on the rest...
+Hi--
 
-Reset handling is next on the TODO list for the driver. I had two main reasons
-for not even taking a stab at it.
-1. I have no good way to test it. We are working on adding some test conditions
-   to QEMU for it.
-2. The main difficulty in my mind with reset is you can't pull the memory out
-   from under the OS here. While the driver doesn't yet handle persistent memory
-   capacities, it may have volatile capacity configured by the BIOS. So the goal
-   was, get the bits of the driver in that would at least allow developers,
-   hardware vendors, and folks contributing to the spec a way to have basic
-   interaction with a CXL type 3 device.
+On 2/1/21 9:24 AM, Adrian Catangiu wrote:
+> - Background and problem
+> 
+> The System Generation ID feature is required in virtualized or
+> containerized environments by applications that work with local copies
+> or caches of world-unique data such as random values, uuids,
+> monotonically increasing counters, etc.
+
+  ... if those applications want to comply with <some MS spec>.
+
+> Such applications can be negatively affected by VM or container
+> snapshotting when the VM or container is either cloned or returned to
+> an earlier point in time.
+
+
+> Signed-off-by: Adrian Catangiu <acatan@amazon.com>
+> ---
+>  Documentation/misc-devices/sysgenid.rst            | 236 ++++++++++++++++
+>  Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+>  MAINTAINERS                                        |   8 +
+>  drivers/misc/Kconfig                               |  16 ++
+>  drivers/misc/Makefile                              |   1 +
+>  drivers/misc/sysgenid.c                            | 307 +++++++++++++++++++++
+>  include/uapi/linux/sysgenid.h                      |  17 ++
+>  7 files changed, 586 insertions(+)
+>  create mode 100644 Documentation/misc-devices/sysgenid.rst
+>  create mode 100644 drivers/misc/sysgenid.c
+>  create mode 100644 include/uapi/linux/sysgenid.h
+> 
+> diff --git a/Documentation/misc-devices/sysgenid.rst b/Documentation/misc-devices/sysgenid.rst
+> new file mode 100644
+> index 0000000..4337ca0
+> --- /dev/null
+> +++ b/Documentation/misc-devices/sysgenid.rst
+> @@ -0,0 +1,236 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +========
+> +SYSGENID
+> +========
+> +
+> +The System Generation ID feature is required in virtualized or
+> +containerized environments by applications that work with local copies
+> +or caches of world-unique data such as random values, UUIDs,
+> +monotonically increasing counters, etc.
+> +Such applications can be negatively affected by VM or container
+> +snapshotting when the VM or container is either cloned or returned to
+> +an earlier point in time.
+> +
+> +The System Generation ID is a simple concept meant to alleviate the
+> +issue by providing a monotonically increasing counter that changes
+> +each time the VM or container is restored from a snapshot.
+> +The driver for it lives at ``drivers/misc/sysgenid.c``.
+> +
+> +The ``sysgenid`` driver exposes a monotonic incremental System
+> +Generation u32 counter via a char-dev FS interface accessible through
+
+s/FS/filesystem/
+
+> +``/dev/sysgenid`` that provides sync and async SysGen counter update
+> +notifications. It also provides SysGen counter retrieval and
+> +confirmation mechanisms.
+> +
+> +The counter starts from zero when the driver is initialized and
+> +monotonically increments every time the system generation changes.
+> +
+> +The ``sysgenid`` driver exports the ``void sysgenid_bump_generation()``
+> +symbol which can be used by backend drivers to drive system generation
+> +changes based on hardware events.
+> +System generation changes can also be driven by userspace software
+> +through a dedicated driver ioctl.
+> +
+> +Userspace applications or libraries can (a)synchronously consume the
+> +system generation counter through the provided FS interface, to make
+
+s/FS/filesystem/
+
+> +any necessary internal adjustments following a system generation update.
+> +
+> +Driver FS interface:
+> +
+> +``open()``:
+> +  When the device is opened, a copy of the current Sys-Gen-Id (counter)
+> +  is associated with the open file descriptor. The driver now tracks
+> +  this file as an independent *watcher*. The driver tracks how many
+> +  watchers are aware of the latest Sys-Gen-Id counter and how many of
+> +  them are *outdated*; outdated being those that have lived through
+> +  a Sys-Gen-Id change but not yet confirmed the new generation counter.
+> +
+> +``read()``:
+> +  Read is meant to provide the *new* system generation counter when a
+> +  generation change takes place. The read operation blocks until the
+> +  associated counter is no longer up to date, at which point the new
+> +  counter is provided/returned.
+> +  Nonblocking ``read()`` uses ``EAGAIN`` to signal that there is no
+> +  *new* counter value available. The generation counter is considered
+> +  *new* for each open file descriptor that hasn't confirmed the new
+> +  value following a generation change. Therefore, once a generation
+> +  change takes place, all ``read()`` calls will immediately return the
+> +  new generation counter and will continue to do so until the
+> +  new value is confirmed back to the driver through ``write()``.
+> +  Partial reads are not allowed - read buffer needs to be at least
+> +  32 bits in size.
+> +
+> +``write()``:
+> +  Write is used to confirm the up-to-date Sys Gen counter back to the
+> +  driver.
+> +  Following a VM generation change, all existing watchers are marked
+> +  as *outdated*. Each file descriptor will maintain the *outdated*
+> +  status until a ``write()`` confirms the up-to-date counter back to
+> +  the driver.
+> +  Partial writes are not allowed - write buffer should be exactly
+> +  32 bits in size.
+> +
+> +``poll()``:
+> +  Poll is implemented to allow polling for generation counter updates.
+> +  Such updates result in ``EPOLLIN`` polling status until the new
+> +  up-to-date counter is confirmed back to the driver through a
+> +  ``write()``.
+> +
+> +``ioctl()``:
+> +  The driver also adds support for waiting on open file descriptors
+> +  that haven't acknowledged a generation counter update, as well as a
+> +  mechanism for userspace to *force* a generation update:
+> +
+> +  - SYSGENID_WAIT_WATCHERS: blocks until there are no more *outdated*
+> +    watchers, or if a ``timeout`` argument is provided, until the
+> +    timeout expires.
+> +    If the current caller is *outdated* or a generation change happens
+> +    while waiting (thus making current caller *outdated*), the ioctl
+> +    returns ``-EINTR`` to signal the user to handle event and retry.
+> +  - SYSGENID_FORCE_GEN_UPDATE: forces a generation counter increment.
+> +    It takes a ``minimum-generation`` argument which represents the
+> +    minimum value the generation counter will be incremented to. For
+
+                                            will be set to. For
+It's not so much an increment as it is a "set to this value or higher".
+
+> +    example if current generation is ``5`` and ``SYSGENID_FORCE_GEN_UPDATE(8)``
+> +    is called, the generation counter will increment to ``8``.
+> +    This IOCTL can only be used by processes with CAP_CHECKPOINT_RESTORE
+> +    or CAP_SYS_ADMIN capabilities.
+> +
+> +``mmap()``:
+> +  The driver supports ``PROT_READ, MAP_SHARED`` mmaps of a single page
+> +  in size. The first 4 bytes of the mapped page will contain an
+> +  up-to-date u32 copy of the system generation counter.
+> +  The mapped memory can be used as a low-latency generation counter
+> +  probe mechanism in critical sections - see examples.
+> +
+> +``close()``:
+> +  Removes the file descriptor as a system generation counter *watcher*.
+> +
+> +Example application workflows
+> +-----------------------------
+> +
+[snip]
+
+
+-- 
+~Randy
 
