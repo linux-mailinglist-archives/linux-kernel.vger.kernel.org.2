@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D49F30BB0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57F130BB09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhBBJfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:35:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231688AbhBBJez (ORCPT
+        id S232983AbhBBJfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231902AbhBBJec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:34:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612258409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6LJM+19s3E1PYrGOVy7eL/hPhE6m39946JYABim2wbg=;
-        b=U6kajTs0a3oFx/wPwMNs3hn36kjVDnN2pKHF0HMxkwGddYanx3J5l+RxZjwsH2lUIhPn+a
-        Vqbe3azzum1eM8CnGRU0R2M6s4Qfr/wLnm5vu3+bRBI20a64ffzPe5KCu05471lLLs3+2Y
-        fATkiCKz6ZA6wOpJ/wNiP3mmtfUynTw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-vRaAA1sZOWiQWGE52tiRRg-1; Tue, 02 Feb 2021 04:33:27 -0500
-X-MC-Unique: vRaAA1sZOWiQWGE52tiRRg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC624190B2A1;
-        Tue,  2 Feb 2021 09:33:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E07B519717;
-        Tue,  2 Feb 2021 09:33:23 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210202085537.GA28682@gondor.apana.org.au>
-References: <20210202085537.GA28682@gondor.apana.org.au> <20210202035655.GA26997@gondor.apana.org.au> <58935b00f65e389e9ae3da2425d06bd88d280e43.camel@linux.ibm.com> <20210129150355.850093-3-stefanb@linux.vnet.ibm.com> <20210129150355.850093-1-stefanb@linux.vnet.ibm.com> <4162801.1612185801@warthog.procyon.org.uk> <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com> <4170408.1612192055@warthog.procyon.org.uk> <110279.1612254455@warthog.procyon.org.uk>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>
-Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <114434.1612258403.1@warthog.procyon.org.uk>
-Date:   Tue, 02 Feb 2021 09:33:23 +0000
-Message-ID: <114435.1612258403@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Tue, 2 Feb 2021 04:34:32 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A653C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:33:51 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id o16so3072101qkj.15
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=a77I7DhRJQNYY3jb5qJsVHRL8/cRpl6u3SuuOOR6Vb0=;
+        b=NXXJVim5+7KVLiKi9gkxZcd1xRLd+tjD8s7+bAvdmde9KDmFN4lTUGaelUuT4TtIJq
+         rZ9AC7oxnEBkA8TumHuyiqbI2m2IOE2q8AjXstWZpPdvpzY5OWEcWQohCk7XVlObLsdt
+         2UezUVCyqvVUrwbBc+fqEDxVz9vMVssmCiZ2Au9eKqnIJ/WjdEWkxRSO1LFM+PVYIx/J
+         MMFYZEss0A3SJ4DSpIlUzG+bIsrBIEPBwKLFJAFR0jAoMfgPHhiatRXDLhYVJeJJZhxR
+         CTsppq64F0L0Crt1uOBWXIEfo4mGZzyv3KF8mUJXpSsJmAy/SC1oK0DFgw3JEYZ/HRsG
+         GLOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=a77I7DhRJQNYY3jb5qJsVHRL8/cRpl6u3SuuOOR6Vb0=;
+        b=J6ZCdqD/Ynp9zHnDqDb9YlUG9FpHRzIX9UEFhslDxoSsKWzC+FruIeQeBWGT2sMheZ
+         4IaqRnVXMjnlRqAQ1ZW6ciHoZWTfKLu84cLfqwkP82qLe5FWoGvXFRiyP6XGqBgrbBBA
+         Jhgk0O2uqyGTMXvIEoTYbshU0kOpLgne1xK8l8Iieci3J+RvJSMSYm4gfZybnPpdtFWN
+         pw4Ss7fslBW9jIKf012SIxInE65MxJ3+iU9V/a73DoTaVtgxGF/RZQRXj+oPn5FtNibf
+         4mNjlBQtljxNYnwoYCrE8b+hOw7GsuRSRfbt7NoQsaMkayhSqcABwLowoUKxj/mkLm7u
+         QczQ==
+X-Gm-Message-State: AOAM5331RKONRKxVIEg8ms57FPmQSw+Z8wt47YLJxQlXK/5nNJWExmp5
+        OH7eml0lQg4Nt5G6lTS4h1JvYmhI6zpn
+X-Google-Smtp-Source: ABdhPJyEEXBPYlDd86IJsTbfBdsiMjI5Kd86ouTISlWZ9Sq5V22iEZwZikV7z9AwBr7DU0N/PiimTAPu53ET
+Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
+ (user=kyletso job=sendgmr) by 2002:a05:6214:9d3:: with SMTP id
+ dp19mr18947783qvb.40.1612258430573; Tue, 02 Feb 2021 01:33:50 -0800 (PST)
+Date:   Tue,  2 Feb 2021 17:33:34 +0800
+Message-Id: <20210202093342.738691-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v4 0/8] common SVDM version and VDO from dt
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert Xu <herbert@gondor.apana.org.au> wrote:
+v3 is here:
+https://patchwork.kernel.org/project/linux-usb/cover/20210201133421.408508-1-kyletso@google.com/
 
-> > Should I defer it till the next merge window?
-> 
-> Is there any specific reason why this has to be in the current
-> one?
+no changes except for separating the patch 
+"[v3,1/3] usb: typec: Determine common SVDM Versions"
+into the first 6 patches in this patch set.
 
-No idea.  It seems straightforward enough, at least on the keyrings side, that
-I was going to add it.
+Kyle Tso (8):
+  usb: typec: Manage SVDM version
+  usb: pd: Update VDO definitions
+  usb: pd: Make SVDM Version configurable in VDM header
+  usb: typec: tcpm: Detemine common SVDM Version
+  usb: typec: ucsi: Detemine common SVDM Version
+  usb: typec: displayport: Fill the negotiated SVDM Version in the header
+  dt-bindings: connector: Add SVDM VDO properties
+  usb: typec: tcpm: Get Sink VDO from fwnode
 
-David
+ .../bindings/connector/usb-connector.yaml     |  11 +
+ drivers/usb/typec/altmodes/displayport.c      |   8 +-
+ drivers/usb/typec/class.c                     |  21 +-
+ drivers/usb/typec/tcpm/tcpm.c                 |  61 +++-
+ drivers/usb/typec/ucsi/displayport.c          |  12 +-
+ drivers/usb/typec/ucsi/ucsi.c                 |   2 +
+ include/dt-bindings/usb/pd.h                  | 311 ++++++++++++++++-
+ include/linux/usb/pd_vdo.h                    | 315 ++++++++++++++----
+ include/linux/usb/typec.h                     |  10 +
+ 9 files changed, 661 insertions(+), 90 deletions(-)
+
+-- 
+2.30.0.365.g02bc693789-goog
 
