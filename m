@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2024130D6D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2A830D6D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbhBCJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:56:51 -0500
-Received: from mga07.intel.com ([134.134.136.100]:58110 "EHLO mga07.intel.com"
+        id S233685AbhBCJ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:57:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40616 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233258AbhBCJ4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:56:45 -0500
-IronPort-SDR: UEv0RG4URBHY/0NinJ8F1mes+OEP2z7p9qTXIGC4/9Z3VrThqsOyIHqP7RRjQmxFJ606ZbLP0A
- q9MDxSQoInJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245091943"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="245091943"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:56:04 -0800
-IronPort-SDR: QqnlqYDVHUZjs0LoFZMwWUmT6jR5sxhZc/T0rKHXfyGP0jPNcdxArOeq12BlhBgeC0ZWv8UWlp
- fPHVeB2Oop7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="372319185"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by orsmga002.jf.intel.com with ESMTP; 03 Feb 2021 01:56:01 -0800
-Subject: Re: [PATCH 3/4] scsi: ufs-debugfs: Add user-defined
- exception_event_mask
-To:     Bean Huo <huobean@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20210119141542.3808-1-adrian.hunter@intel.com>
- <20210119141542.3808-4-adrian.hunter@intel.com>
- <85b6cbb805e97081a676aeb30fe76f059eba192e.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
-Date:   Wed, 3 Feb 2021 11:56:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <85b6cbb805e97081a676aeb30fe76f059eba192e.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S233614AbhBCJ47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:56:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 65A0BAF4C;
+        Wed,  3 Feb 2021 09:56:17 +0000 (UTC)
+Message-ID: <1612346175.3640.32.camel@suse.cz>
+Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost
+ in schedutil invariant formula
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Larabel <Michael@phoronix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Date:   Wed, 03 Feb 2021 10:56:15 +0100
+In-Reply-To: <CAJZ5v0icG4V5o8p1fAQY1Ne2vCe0CBq2YfSajSxkCE3VbuY_Ow@mail.gmail.com>
+References: <20210122204038.3238-1-ggherdovich@suse.cz>
+         <20210122204038.3238-2-ggherdovich@suse.cz>
+         <YA6XmO2nuivdpE8M@hirez.programming.kicks-ass.net>
+         <1611653310.11983.66.camel@suse.cz>
+         <CAJZ5v0jbw2X_Wk6We-uYOh9rMCrTTSSb32NFcYaFrtK+bMXMJQ@mail.gmail.com>
+         <CAJZ5v0icG4V5o8p1fAQY1Ne2vCe0CBq2YfSajSxkCE3VbuY_Ow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/02/21 11:45 am, Bean Huo wrote:
-> On Tue, 2021-01-19 at 16:15 +0200, Adrian Hunter wrote:
->> Allow users to enable specific exception events via debugfs.
->>
->> The bits enabled by the driver ee_drv_ctrl are separated from the
->> bits
->> enabled by the user ee_usr_ctrl. The control mask ee_mask_ctrl is the
->> logical-or of those two. A mutex is needed to ensure that the masks
->> match
->> what was written to the device.
+On Tue, 2021-02-02 at 20:11 +0100, Rafael J. Wysocki wrote:
+> On Tue, Feb 2, 2021 at 7:45 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > 
+> > On Tue, Jan 26, 2021 at 5:19 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+> > > 
+> > >
+> > > cpufreq core asks the driver what's the f_max. What's the answer?
+> > > 
+> > > intel_pstate says: 1C
+> > 
+> > Yes, unless turbo is disabled, in which case it is P0.
 > 
-> Hallo Adrian
-
-Hi Bean
-
-Thanks for the review
-
+> BTW, and that actually is quite important, the max_freq reported by
+> intel_pstate doesn't matter for schedutil after the new ->adjust_perf
+> callback has been added, because that doesn't even use the frequency.
 > 
-> Would you like sharing the advantage of this debugfs node comparing to
-> sysfs node "attributes/exception_event_control(if it is writable)"?
+> So, as a long-term remedy, it may just be better to implement
+> ->adjust_perf in acpi_cpufreq().
 
-Primarily this is being done as a debug interface, but the user's exception
-events also need to be kept separate from the driver's ones.
+Thanks for pointing this out.
 
-> what is the value of this?
+I agree that in the long term adding ->adjust_perf to acpi_cpufreq is
+the best solution.
 
-To be able to determine if the UFS device is being affected by exception events.
+Yet for this submission, considering it's late in the 5.11 cycle,
+the patch I propose is a reasonable candidate: the footprint is small and
+it's gone through a fair amount of testing.
 
-> Also, now I can disable/enable UFS event over ufs-bsg.
 
-That will be overwritten by the driver when it updates the e.g. bkops
-control, or sometimes also suspend/resume.
+Thanks,
+Giovanni
