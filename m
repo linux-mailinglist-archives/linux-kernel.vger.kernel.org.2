@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7662930E72F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6463330E731
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhBCXVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:21:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35749 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233195AbhBCXVV (ORCPT
+        id S233886AbhBCXW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233213AbhBCXWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:21:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612394395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uu0Ziq0pBjAAZtjbVAqvEmIBT/+LT7ks6xYBOetg6qA=;
-        b=L+Flx32aKS3Yqgyq71yg0AK6fqarB+npGYI4BQ9juw97EyPrenLpq9GkTpYWCvWBIorbBJ
-        5s7Jrc6qasIWDdMu04q3pCGctZyxxqXU6wePIJNoVzWIwxmMX6S9IuyJNM6UT6WedQBTpJ
-        2vwOm18YjMXu95TZVsMau9gw14965OI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-l_bpQiEsOoObVTA5gGAqVg-1; Wed, 03 Feb 2021 18:19:53 -0500
-X-MC-Unique: l_bpQiEsOoObVTA5gGAqVg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93B9D107ACE6;
-        Wed,  3 Feb 2021 23:19:51 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.30])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EC8E219C66;
-        Wed,  3 Feb 2021 23:19:45 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  4 Feb 2021 00:19:51 +0100 (CET)
-Date:   Thu, 4 Feb 2021 00:19:44 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
-Message-ID: <20210203231944.GA17467@redhat.com>
-References: <20210201174555.GA17819@redhat.com>
+        Wed, 3 Feb 2021 18:22:25 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94182C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:21:44 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s3so1764754edi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xSDYIhEylmTeuw2DTZnxcQ8Wrmv9RL9dV2+z2ww2C58=;
+        b=Zd1fDhAzbh5JvfCU6vB0KH+C1t8PwCmbtck9DtxbZC6JIxzuc2W8BnxxTOHeQVA8g+
+         PNKk39/2C7orZiikLVhOU0aUFcYzFZPCAiUz906HqyT+f5EQB0aeDJiKmeABcIcMY2ES
+         SEBKYKFXhIhRk3d47BgYfI/U05TZViJQOBwb8qstXCRxDlO/yVAW7DDLXq6xmdNJWKR4
+         dIl0Z9Mutk0qUc3a866bIZHo25TCKiav9VYs0cwhi14p+8hJi7+fZaYWPBE06hMEu6oH
+         Y+nGgw1MsSpa1TAUq3/+Dg8Cq3YL17F5aIHRRZeeE1sL6Dy3Bb1P3S1oUT3DhpOFRUal
+         AXHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xSDYIhEylmTeuw2DTZnxcQ8Wrmv9RL9dV2+z2ww2C58=;
+        b=szDFC5O8n2KV7xODqQqvpFT0y0vqzZqFGZTjH9EUzv9cAF/C0jmT+4qJjoq62qXT3c
+         Ll4T+qarpUuSYwHcw2L/SlyoQEhrU7YmzsDL0Y69F1ppFrb8XmDaK07zpHXpHPTk6yVR
+         3I4/fsuROEsQSUaWMCUF/UYXIpJt9X/I/1BMMrC6CZSx6LFiqUTrwiZGGgSvrCQesCym
+         W0ByumoLiVPu4EFTHkbpSse9HBmcROP88Ah21zP5eLsxAhZGpNqywPs2rC/LpF2XXKIB
+         Awkdqpyljj5qK85Zk7xf0QcbP8+HTHjFPd1nz+VnucIx6cB6MUu0wNB9rC/3uBa0CSu9
+         +9Ag==
+X-Gm-Message-State: AOAM533LCXpbyAEIIa8g7+b+peR5BaIQjo8KWq00ZVgjwagK7NGurISa
+        u0aOSqYIsLX30rFfTSyDV8N4y1akhXx6ux6w876yiD+xmeBtuA==
+X-Google-Smtp-Source: ABdhPJyteeQ58iqBp708IkG20W61ytTXE2+o+FVaBb6qxe1eJ+Vel1tEfe88TMdmh5m2BlxU+Os2ZdYF0XcUo2JYQzo=
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr5570748edv.116.1612394503379;
+ Wed, 03 Feb 2021 15:21:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201174555.GA17819@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210202200324.5179db33@canb.auug.org.au> <CAK8P3a3uJfyt6vsgTdSjnE23V4E_Mw=N89nrMPLJ6bhA363nqw@mail.gmail.com>
+ <5504da4f-7eec-ecb0-c47d-7821d06dc880@infradead.org> <CAK8P3a2Y9-5dhk1MaZhhnKQkbOtqOSqfqZA0c4ncBXgD8tJTZg@mail.gmail.com>
+ <CA+CK2bC9oMvtkT3MZzxNMtCn1b0hafYPbLH3GM_Z_66j_NQeJA@mail.gmail.com>
+In-Reply-To: <CA+CK2bC9oMvtkT3MZzxNMtCn1b0hafYPbLH3GM_Z_66j_NQeJA@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 3 Feb 2021 18:21:07 -0500
+Message-ID: <CA+CK2bBpuiLf7y7qVDoo3k6vajoaTkrDNx+pnNBTMYY616iDwA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that nobody objects,
+Stephen, do you want to send a new patch based on the current
+linux-next, or do you want me to send an updated version?
 
-Andrew, Andy, Thomas, how do you think this series should be routed?
+Thank you,
+Pasha
 
-On 02/01, Oleg Nesterov wrote:
+On Wed, Feb 3, 2021 at 5:36 PM Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
 >
-> Somehow I forgot about this problem. Let me resend the last version
-> based on discussion with Linus. IIRC he was agree with this series.
+> > > After the most recent build errors, I tried to apply Pavel's patch
+> > >   https://lore.kernel.org/linux-mm/CA+CK2bBjC8=cRsL5VhWkcevPsqSXWhsANVjsFNMERLT8vWtiQw@mail.gmail.com/
+> > > but patch said that it was already applied (by Andrew I think),
+> > > so I bailed out (gave up).
+> >
+> > As far as I can tell, there are two different bugs that got mixed up, and
+> > we need both Pavel's patch (which is now in -next) and Stephen's
+> > (which got dropped again).
 >
-> And let me remind why 3/4 temporary adds the "transient" TS_COMPAT_RESTART
-> flag killed by the next patch: to simplify the backporting. 1-3 can fix
-> the problem without breaking the kABI.
+> Stephen's patch looks OK to me. I should have used define instead of
+> inline to begin with.
 >
-> Oleg.
-> ---
->  arch/x86/include/asm/processor.h   |  9 ---------
->  arch/x86/include/asm/thread_info.h | 15 ++++++++++++++-
->  arch/x86/kernel/signal.c           | 24 +-----------------------
->  fs/select.c                        | 10 ++++------
->  include/linux/restart_block.h      |  1 +
->  include/linux/thread_info.h        | 13 +++++++++++++
->  kernel/futex.c                     |  3 +--
->  kernel/time/alarmtimer.c           |  2 +-
->  kernel/time/hrtimer.c              |  2 +-
->  kernel/time/posix-cpu-timers.c     |  2 +-
->  10 files changed, 37 insertions(+), 44 deletions(-)
-
+> Thank you,
+> Pasha
+>
+> >
+> >         Arnd
