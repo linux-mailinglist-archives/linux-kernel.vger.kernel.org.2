@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE1330DDAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA50130DDE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhBCPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:09:59 -0500
-Received: from mga14.intel.com ([192.55.52.115]:51753 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233796AbhBCPGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:06:13 -0500
-IronPort-SDR: tT8lCRqIuYgiKo8kFSE9nHboPrWAm7Gkh1rms/cvbzq8VBg7+4CE/xArFh6lNMLAGlsWZg1fnz
- DU5+adpm5vBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="180281768"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="180281768"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:04:27 -0800
-IronPort-SDR: 2QQFBWoqAbTNQelf2fckyQ/zE30yj7Fjb2BNNzFWo1C3p5aO2QuMDBM+ZLCk582IxGv4rTLi+2
- ybQHsFHreVHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="480378544"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 03 Feb 2021 07:04:23 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 03 Feb 2021 17:04:19 +0200
-Date:   Wed, 3 Feb 2021 17:04:19 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Kyle Tso <kyletso@google.com>, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, robh+dt@kernel.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/8] usb: typec: Manage SVDM version
-Message-ID: <20210203150419.GJ1687065@kuha.fi.intel.com>
-References: <20210202161733.932215-1-kyletso@google.com>
- <20210202161733.932215-2-kyletso@google.com>
- <20210203124724.GD1687065@kuha.fi.intel.com>
- <20210203145143.GA58095@roeck-us.net>
- <20210203150121.GI1687065@kuha.fi.intel.com>
+        id S234348AbhBCPQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:16:59 -0500
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:54260 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233746AbhBCPFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:05:21 -0500
+Received: by mail-wm1-f41.google.com with SMTP id j11so5040157wmi.3;
+        Wed, 03 Feb 2021 07:05:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=S4bWj31VnBtUXtSIFmjXEb9AYQB1ofFXmwDnSfL9How=;
+        b=IyGG7DzSmN3RqUp2FuxJOB0bDc0mxZiNDOS6a3AoUUGk57p8lirwmdSdbtgKB8de78
+         wcEGdP47SNxm2GfICcMkiL9hPlhHTqtHRSA+jsk7KCJN2J6QooU4JrOX58mauAPmj6np
+         4F9KAaP3Wy0a6zT/c3TnxdOyUvjDZxtm1yViESz5FiaHBN5bAQxJCU99Xh1cCEugpXSj
+         yngSjfZycke/evErbqvIUgZ1ZsuY6I9/3h/yzKPnsTcM98dBUMuEjXeemoVh0nsRSxJ8
+         U2siUbHN4EQksSGjzygN3w1ZkHnXpUNFhnFNzk6oKDdUPHGs6o57JeuAddy3JP9AHxhq
+         xDKA==
+X-Gm-Message-State: AOAM530vaSXKwek/qG0srExCWiwH/TdQ1FitLEJgHHF3BdfGE9k/pXqx
+        4KExSQrZa1qlkWuHUkx+2waOGBqFG6g=
+X-Google-Smtp-Source: ABdhPJzBGOpNNYu6lCn17oaCFjyNxeGXNSqazdUgRY2Ugw8ouE5Mv1tDY51ai6TqX3Oi4iQP93WNWg==
+X-Received: by 2002:a05:600c:4f48:: with SMTP id m8mr3286386wmq.12.1612364678770;
+        Wed, 03 Feb 2021 07:04:38 -0800 (PST)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id r17sm4051704wro.46.2021.02.03.07.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 07:04:38 -0800 (PST)
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        pasha.tatashin@soleen.com, Wei Liu <wei.liu@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch@vger.kernel.org (open list:GENERIC INCLUDE/ASM HEADER FILES)
+Subject: [PATCH v6 01/16] asm-generic/hyperv: change HV_CPU_POWER_MANAGEMENT to HV_CPU_MANAGEMENT
+Date:   Wed,  3 Feb 2021 15:04:20 +0000
+Message-Id: <20210203150435.27941-2-wei.liu@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210203150435.27941-1-wei.liu@kernel.org>
+References: <20210203150435.27941-1-wei.liu@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203150121.GI1687065@kuha.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 05:01:26PM +0200, Heikki Krogerus wrote:
-> On Wed, Feb 03, 2021 at 06:51:43AM -0800, Guenter Roeck wrote:
-> > Thinking about it, would it make make sense to define the functions as
-> > static inline ?
-> 
-> I (and I believe Guenter too)
+This makes the name match Hyper-V TLFS.
 
-s/I believe Guenter too/I thought you too/
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+---
+ include/asm-generic/hyperv-tlfs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> want to keep these structures protected
-> for now. If the API starts to get too bloated, then I guess I have to
-> reconsider that. But I don't think we are there yet.
-> 
-> I have been thinking about moving the USB PD negotiation details to a
-> separate structure that could be more accessible for everybody. That
-> should allow me continue to protect my precious structures. But I have
-> not yet put much though into that.
-
-
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index e73a11850055..e6903589a82a 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -88,7 +88,7 @@
+ #define HV_CONNECT_PORT				BIT(7)
+ #define HV_ACCESS_STATS				BIT(8)
+ #define HV_DEBUGGING				BIT(11)
+-#define HV_CPU_POWER_MANAGEMENT			BIT(12)
++#define HV_CPU_MANAGEMENT			BIT(12)
+ 
+ 
+ /*
 -- 
-heikki
+2.20.1
+
