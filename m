@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD1C30E001
+	by mail.lfdr.de (Postfix) with ESMTP id EDAC230E002
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBCQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        id S231167AbhBCQss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBCQsS (ORCPT
+        with ESMTP id S230154AbhBCQsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:48:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF7C061573;
-        Wed,  3 Feb 2021 08:47:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FXQrxdNgWCg9t/vLa4D9ZuZRDMCP+8XGxw4US1HhTog=; b=c/OoSJg12hg6TA08ZMmxC5U9K6
-        OCpV83Oj8NGNClORnhfhbI+dp8Rp3puLSaw1gWZH10ZU8jjt1xRn2fku8g6kCldtIewKCeiEzQpHa
-        FIkmhWmSoPI9iLIVqaoiCBF07qtkda4NJTYCHHF+NHpyMELJEKAw+NmkVRr26TUDkT/M+kbutGnkg
-        sDM2tIeXHKQfOib1zfHstjrnNZ0GKFSLvvOTiCu6Z73ngCe1kPW+PXeFusDNYZ/3DMbOoNhuUbgtB
-        ohbMnefixVQ7LgJJcSpYv4iVSBo2H/YpoFMC9iA8Yx35EoZdMvHxrj1aORXdUHBNR3TWKvrlHqQk4
-        D8XtPzYA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7LIa-00HCKb-H6; Wed, 03 Feb 2021 16:46:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8E0F301A66;
-        Wed,  3 Feb 2021 17:46:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 97C5520B4DFEB; Wed,  3 Feb 2021 17:46:33 +0100 (CET)
-Date:   Wed, 3 Feb 2021 17:46:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: BUG: KASAN: stack-out-of-bounds in
- unwind_next_frame+0x1df5/0x2650
-Message-ID: <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+        Wed, 3 Feb 2021 11:48:38 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C39C061786
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:47:58 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id a77so537536oii.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 08:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qZEmNp2ZakxDJznFqcVZ1P80OyQOGPyM6d5UCk5d3vk=;
+        b=lrPEG74DOtqh0L7paTBjafFI44X0ikYaEsGMLmHNqbxviTPPH2RmXs68TIGDoMrrC1
+         DjwAxBpCyW1/ZZ/A1Mimjxt21m2+NePiopmTdSUrmjhtvyiwZ31SAHWPe++B7SGi6YJV
+         dOHc9ig1W+xyZ6263TnU6LVUd8RyDzTwUXkVWh4m0MuUvp7u46NIDMTe1RFSJ03m3QqH
+         lhed1HQeGZphcYM/6mCFIxFXlYyKIG4gL4tOl9gr9ChfCJI7lTUqro7G4WXbJDYhRvAW
+         tehtMsu6xdSQKpB/mqrFgpd6bs/dy57W3Ay5G60j4GwuamIYASeUDTfiEkTiPdrU6uVR
+         yWCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qZEmNp2ZakxDJznFqcVZ1P80OyQOGPyM6d5UCk5d3vk=;
+        b=oY9LmsWLzIn8puLx5B14/st1QFivUfQ4ggLK8i+5V6urdO++K/4WA+wpQE1sD6AAVO
+         ImyOVJZo49761ULkgWvQblFvMzb1cAnC+yutrrCsZ+Un/NLnELIpRlBCBh1sVF6EbVLb
+         Dd+5hkZPJx/Ry75TKkwE48SzWtPY2lHbhiZseeceFTA8bFtscL5FV/LLjeJ/92UjIQu8
+         0z8Oad0zN6bG5FhZ1nEi9tcP9vRN2txqYi5SF3San2B4gHVq3S+whutVkj/KsY2yMqr8
+         THCHjQiGVL/YjISJx/bNeFmgf087njZGoXY2TLIEU5cV4ejYyAm6nZdH/BZb1Z84GzD/
+         AYfQ==
+X-Gm-Message-State: AOAM533zXLikoghdjQv5nDY0PuUK8hFJdnsjEIVqqdRi9N2/56oEW8Eu
+        IglNEHc9dJzoOLXMI/QSYIIIPAXl1MAChmMGWGWalA==
+X-Google-Smtp-Source: ABdhPJz2RpbhkniHRFTWA/PnemwFxygMLB82C8ofE36DFtyCupwdbGrY9bzMHloCpMlEZy/Z9AXkapfX8D+WwztZi8I=
+X-Received: by 2002:aca:b9c1:: with SMTP id j184mr2575743oif.63.1612370877454;
+ Wed, 03 Feb 2021 08:47:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+References: <20210201183017.3339130-1-jxgao@google.com> <20210201183017.3339130-4-jxgao@google.com>
+ <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com> <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com>
+ <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com> <20210203133712.GA24674@lst.de>
+In-Reply-To: <20210203133712.GA24674@lst.de>
+From:   Jianxiong Gao <jxgao@google.com>
+Date:   Wed, 3 Feb 2021 08:47:45 -0800
+Message-ID: <CAMGD6P1Ksn4DJ0w=O20Ou7BOKAW9yzwJgRV57xaqLdVDK4ATaQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] Adding device_dma_parameters->offset_preserve_mask
+ to NVMe driver.
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Marc Orr <marcorr@google.com>, m.szyprowski@samsung.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        gregkh@linuxfoundation.org, Saravana Kannan <saravanak@google.com>,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        jroedel@suse.de, iommu@lists.linux-foundation.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 07:09:44PM -0800, Ivan Babrou wrote:
-> On Thu, Jan 28, 2021 at 7:35 PM Ivan Babrou <ivan@cloudflare.com> wrote:
+>
+> Please try with this extra patch:
+>
+I have tried with the extra patch and it still fails to boot.
+I have attached dmesg output for the error:
 
-> > ==================================================================
-> > [  128.368523][    C0] BUG: KASAN: stack-out-of-bounds in
-> > unwind_next_frame (arch/x86/kernel/unwind_orc.c:371
-> > arch/x86/kernel/unwind_orc.c:544)
-> > [  128.369744][    C0] Read of size 8 at addr ffff88802fceede0 by task
-> > kworker/u2:2/591
+-------------dmesg starts here-----------------
+[    6.357755] XFS (nvme0n1p2): Mounting V5 Filesystem
+[    6.430092] XFS (nvme0n1p2): Torn write (CRC failure) detected at
+log block 0x20d0. Truncating head block from 0x20e0.
+[    6.442828] XFS (nvme0n1p2): Starting recovery (logdev: internal)
+[    7.272456] XFS (nvme0n1p2): Ending recovery (logdev: internal)
+[    7.610250] systemd-journald[434]: Received SIGTERM from PID 1 (systemd).
+...
+[   10.054121] systemd[755]:
+/usr/lib/systemd/system-generators/systemd-rc-local-generator
+terminated by signal ABRT.
+[   10.726122] audit: type=1400 audit(1612370261.090:4): avc:  denied
+{ search } for  pid=783 comm="systemd-sysctl" name="crash"
+dev="nvme0n1p2" ino=50789805
+scontext=system_u:system_r:systemd_sysctl_t:s0
+tcontext=system_u:object_r:kdump_crash_t:s0 tclass=dir permissive=0
+[   10.751764] audit: type=1400 audit(1612370261.090:5): avc:  denied
+{ search } for  pid=783 comm="systemd-sysctl" name="crash"
+dev="nvme0n1p2" ino=50789805
+scontext=system_u:system_r:systemd_sysctl_t:s0
+tcontext=system_u:object_r:kdump_crash_t:s0 tclass=dir permissive=0
+[   12.366607] xfs filesystem being remounted at / supports timestamps
+until 2038 (0x7fffffff)
+[   12.376379] audit: type=1400 audit(1612370262.740:6): avc:  denied
+{ write } for  pid=788 comm="systemd-remount" name="crash"
+dev="nvme0n1p2" ino=50789805 scontext=system_u:system_r:init_t:s0
+tcontext=system_u:object_r:kdump_crash_t:s0 tclass=dir permissive=0
+[   12.413155] systemd-journald[781]: Received request to flush
+runtime journal from PID 1
+[   12.428917] audit: type=1400 audit(1612370262.793:7): avc:  denied
+{ write } for  pid=815 comm="journalctl" name="crash" dev="nvme0n1p2"
+ino=50789805 scontext=system_u:system_r:init_t:s0
+tcontext=system_u:object_r:kdump_crash_t:s0 tclass=dir permissive=0
+[   12.453006] audit: type=1400 audit(1612370262.799:8): avc:  denied
+{ write } for  pid=817 comm="systemd-random-" name="crash"
+dev="nvme0n1p2" ino=50789805 scontext=system_u:system_r:init_t:s0
+tcontext=system_u:object_r:kdump_crash_t:s0 tclass=dir permissive=0
+[   13.306030] plymouth[853]: segfault at 0 ip 00007f2eabca8090 sp
+00007fffe94d8c08 error 6 in libc-2.28.so[7f2eabbcd000+1b9000]
+[   13.318772] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00
+[   78.782418] sed[911]: segfault at 0 ip 00007fc3540da090 sp
+00007ffdb4373ff8 error 6 in libc-2.28.so[7fc353fff000+1b9000]
+[   78.794007] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00
+--------------dmesg ends here-----------
 
-Can you pretty please not line-wrap console output? It's unreadable.
-
-> edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
-> commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
-
-Not sure what tree you're on, but that's not the upstream commit.
-
-> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Date:   Tue Aug 18 15:57:52 2020 +0200
-> 
->     tracepoint: Optimize using static_call()
-> 
-
-There's a known issue with that patch, can you try:
-
-  http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+-- 
+Jianxiong Gao
