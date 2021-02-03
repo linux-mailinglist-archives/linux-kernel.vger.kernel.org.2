@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF2830D14D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6D130D153
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhBCCO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:14:59 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:53922 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231765AbhBCCO5 (ORCPT
+        id S231765AbhBCCQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhBCCQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:14:57 -0500
-X-UUID: f3d41b23589f42f285ca3c49be481669-20210203
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qcupwzAFEh+APVu6uj0OTOjq7j3sY9giePPVcQ3oRe4=;
-        b=cQ13ghAEPhEiHasWmWZ6HqVLbj4P8N8nqaqkv8iU6unUsiE/CA3ECGJywvaivMQl4KhOJxZIEXINx7T7Be1IAJk5g+tPvUfyP2q9LglPIEMIiQ15XD6mfLOAlIPQ1YbIxKTU+2PMq1gvMuasXcpjM0od17Y0S531SZafgxxLhVE=;
-X-UUID: f3d41b23589f42f285ca3c49be481669-20210203
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1863199234; Wed, 03 Feb 2021 10:14:04 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Feb
- 2021 10:14:02 +0800
-Received: from [10.19.240.15] (10.19.240.15) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Feb 2021 10:14:01 +0800
-Message-ID: <1612318441.5980.142.camel@mcddlt001>
-Subject: Re: [v3] PCI: Avoid unsync of LTR mechanism configuration
-From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-CC:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <haijun.liu@mediatek.com>,
-        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
-        <alex.williamson@redhat.com>, <rjw@rjwysocki.net>,
-        <utkarsh.h.patel@intel.com>
-Date:   Wed, 3 Feb 2021 10:14:01 +0800
-In-Reply-To: <20210201113217.GL2542@lahna.fi.intel.com>
-References: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
-         <20210201113217.GL2542@lahna.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 2 Feb 2021 21:16:26 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBB7C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:15:46 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id z9so3630156pjl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:15:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rbVLjE4pA7oT0/uWGg6EJq6VOaWfRHtB4HcfCVBTp08=;
+        b=Zc9ez/AZT+omA/BorwYfH1EEwTl+ewgo/tZBxUhlxlGzgGZuFRlE3qeomMqselW38n
+         SxDt8KE8EGYXLmBzP4rBm+TNzs00EMMqdOFuaHWXzyWOoMgVvmsGvE5Md19rwmkdBiSW
+         6/LcPnx4he5OK4NTdRU+e37cKv9IolhtJdaPA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rbVLjE4pA7oT0/uWGg6EJq6VOaWfRHtB4HcfCVBTp08=;
+        b=K1rKirF9Uu1t/IrhHYw4sf1OFTzk3nU2Z7bSx5hc1gN+3z0qtxFTEv5RLHGrat6/gt
+         DT+5Oj71kQ+0MLxNIGyZUr5X8lXYnIpH37UtSJ03VTbo9X0CeX/rObvaO4VnWRK481kG
+         mpWZPc7L06AdqB44gW+dgLlmR0ukcVG0zOOnkBsyl3+oDvd80RjEGdyng2yFrms2yopO
+         fpnloAphQkT4RIJBVeoMQF2tJ+j8g7esvTcSgwqo0cTjZa4co8flfvB6JZJK1fd+tCnC
+         +unDNqj3OslYGLlDGR32YoGUR2DCo/AWvWNkh82P2I53p0PdsjFJvji56wu01SKxLMTu
+         RQrA==
+X-Gm-Message-State: AOAM53008icVOkEPxa7vadYP6HtFk33avB010b9exb+fjrCEIqtkm6Lj
+        2PEn/8IpcMl2/BN5bXEFd21etmppb43hJA==
+X-Google-Smtp-Source: ABdhPJzO/6xe5/292sYG9QgSIjcClJEhT0/7/cC5YTsy8x3NQxVPZ1xdqN5wiT+TpY+3QiWj01Bfvg==
+X-Received: by 2002:a17:902:cec3:b029:de:901b:d0be with SMTP id d3-20020a170902cec3b02900de901bd0bemr1152733plg.26.1612318544163;
+        Tue, 02 Feb 2021 18:15:44 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:b5ef:2e43:a515:f29c])
+        by smtp.gmail.com with ESMTPSA id k31sm283869pgi.5.2021.02.02.18.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 18:15:43 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>
+Subject: [PATCH v2 1/2] platform/chrome: cros_ec: Import Type C control command
+Date:   Tue,  2 Feb 2021 18:15:37 -0800
+Message-Id: <20210203021539.745239-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: BD886473CF1087390027C2AE76042FAC1D87D9F19E38A3BC9E3AFD7AA807C52E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIE1vbiwgMjAyMS0wMi0wMSBhdCAxMzozMiArMDIwMCwgTWlrYSBXZXN0ZXJiZXJn
-IHdyb3RlOg0KPiBIaSwNCj4gDQo+IE9uIEZyaSwgSmFuIDI5LCAyMDIxIGF0IDAzOjExOjM3UE0g
-KzA4MDAsIG1pbmdjaHVhbmcucWlhb0BtZWRpYXRlay5jb20gd3JvdGU6DQo+ID4gRnJvbTogTWlu
-Z2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IElu
-IGJ1cyBzY2FuIGZsb3csIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBERVZDVEwy
-IHJlZ2lzdGVyIGlzDQo+ID4gY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBk
-ZXZpY2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQo+ID4gbWVjaGFuaXNtLCB0aGUgIkxU
-UiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgZGV2aWNlIGFuZCBicmlkZ2Ugd2lsbCBiZQ0KPiA+
-IGVuYWJsZWQgaW4gREVWQ1RMMiByZWdpc3Rlci4gQW5kIHBjaV9kZXYtPmx0cl9wYXRoIHdpbGwg
-YmUgc2V0IGFzIDEuDQo+ID4gDQo+ID4gSWYgUENJZSBsaW5rIGdvZXMgZG93biB3aGVuIGRldmlj
-ZSByZXNldHMsIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0KPiA+IG9mIGJyaWRnZSB3
-aWxsIGNoYW5nZSB0byAwIGFjY29yZGluZyB0byBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4gSG93
-ZXZlciwNCj4gPiB0aGUgcGNpX2Rldi0+bHRyX3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxs
-IDEuDQo+ID4gDQo+ID4gRm9yIGZvbGxvd2luZyBjb25kaXRpb25zLCBjaGVjayBhbmQgcmUtY29u
-ZmlndXJlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0DQo+ID4gb2YgYnJpZGdlIHRvIG1ha2Ug
-IkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbXRhY2ggbHRyX3BhdGggdmFsdWUuDQo+IA0KPiBU
-eXBvIG10YWNoIC0+IG1hdGNoLg0KPiANCj4gPiAgICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmlj
-ZSdzIExUUiBmb3IgaG90LXJlbW92ZS9ob3QtYWRkDQo+ID4gICAgLWJlZm9yZSByZXN0b3Jpbmcg
-ZGV2aWNlJ3MgREVWQ1RMMiByZWdpc3RlciB3aGVuIHJlc3RvcmUgZGV2aWNlIHN0YXRlDQo+ID4g
-DQo+ID4gU2lnbmVkLW9mZi1ieTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVk
-aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IGNoYW5nZXMgb2YgdjINCj4gPiAgLW1vZGlmeSBwYXRj
-aCBkZXNjcmlwdGlvbg0KPiA+ICAtcmVjb25maWd1cmUgYnJpZGdlJ3MgTFRSIGJlZm9yZSByZXN0
-b3JpbmcgZGV2aWNlIERFVkNUTDIgcmVnaXN0ZXINCj4gPiBjaGFuZ2VzIG9mIHYzDQo+ID4gIC1j
-YWxsIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKCkgaW4gcHJvYmUuYw0KPiANCj4gSG1tLCB3
-aGljaCBwYXJ0IG9mIHRoaXMgcGF0Y2ggdGFrZXMgY2FyZSBvZiB0aGUgcmVzZXQgcGF0aD8gSXQg
-aXMgbm90DQo+IGVudGlyZWx5IGNsZWFyIHRvIG1lIGF0IGxlYXN0Lg0KPiANCg0KV2hlbiBkZXZp
-Y2UgcmVzZXRzIGFuZCBsaW5rIGdvZXMgZG93biwgdGhlcmUgc2VlbXMgdG8gaGF2ZSB0d28gbWV0
-aG9kcw0KdG8gcmVjb3ZlciBmb3Igc29mdHdhcmUuIA0KICAgLU9uZSBpcyB0aGF0IHRyaWdnZXIg
-ZGV2aWNlIHJlbW92YWwgYW5kIHJlc2Nhbi4NCiAgIC1UaGUgb3RoZXIgaXMgdGhhdCByZXN0b3Jl
-IGRldmljZSB3aXRoIHBjaV9yZXN0b3JlX3N0YXRlKCkgYWZ0ZXIgbGluaw0KY29tZXMgYmFjayB1
-cC4NCkZvciBhYm92ZSBib3RoIHNjZW5hcmlvcywgd2UgbmVlZCBjaGVjayBhbmQgcmVjb25maWd1
-cmUgIkxUUiBNZWNoYW5pc20NCkVuYWJsZSIgYml0IG9mIGJyaWRnZS4gSXQncyBhbHNvIHRoaXMg
-cGF0Y2ggaW50ZW5kcyB0byBkby4NCiAgIC1Gb3IgdGhlIHJlc2NhbiBzY2VuYXJpbywgaXQncyBk
-b25lIGluIHBjaV9jb25maWd1cmVfbHRyKCkuDQogICAtRm9yIHRoZSByZXN0b3JlIHNjZW5hcmlv
-LCBpdCdzIGRvbmUgaW4gcGNpX3Jlc3RvcmVfcGNpZV9zdGF0ZSgpLg0KDQo+ID4gLS0tDQo+ID4g
-IGRyaXZlcnMvcGNpL3BjaS5jICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4g
-IGRyaXZlcnMvcGNpL3BjaS5oICAgfCAgMSArDQo+ID4gIGRyaXZlcnMvcGNpL3Byb2JlLmMgfCAx
-MyArKysrKysrKysrLS0tDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLmMg
-Yi9kcml2ZXJzL3BjaS9wY2kuYw0KPiA+IGluZGV4IGI5ZmVjYzI1ZDIxMy4uMTJiNTU3YzhmMDYy
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcGNpL3BjaS5jDQo+ID4gKysrIGIvZHJpdmVycy9w
-Y2kvcGNpLmMNCj4gPiBAQCAtMTQzNyw2ICsxNDM3LDI0IEBAIHN0YXRpYyBpbnQgcGNpX3NhdmVf
-cGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0N
-Cj4gPiAgDQo+ID4gK3ZvaWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9k
-ZXYgKmRldikNCj4gPiArew0KPiA+ICsjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQo+ID4gKwlzdHJ1
-Y3QgcGNpX2RldiAqYnJpZGdlOw0KPiA+ICsJdTMyIGN0bDsNCj4gPiArDQo+ID4gKwlicmlkZ2Ug
-PSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+
-bHRyX3BhdGgpIHsNCj4gPiArCQlwY2llX2NhcGFiaWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBD
-SV9FWFBfREVWQ1RMMiwgJmN0bCk7DQo+ID4gKwkJaWYgKCEoY3RsICYgUENJX0VYUF9ERVZDVEwy
-X0xUUl9FTikpIHsNCj4gPiArCQkJcGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIp
-Ow0KPiA+ICsJCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNU
-TDIsDQo+ID4gKwkJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiArCQl9DQo+ID4g
-Kwl9DQo+ID4gKyNlbmRpZg0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgdm9pZCBwY2lfcmVz
-dG9yZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQo+ID4gIHsNCj4gPiAgCWludCBp
-ID0gMDsNCj4gPiBAQCAtMTQ0Nyw2ICsxNDY1LDEzIEBAIHN0YXRpYyB2b2lkIHBjaV9yZXN0b3Jl
-X3BjaWVfc3RhdGUoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgCWlmICghc2F2ZV9zdGF0ZSkN
-Cj4gPiAgCQlyZXR1cm47DQo+ID4gIA0KPiA+ICsJLyoNCj4gPiArCSAqIERvd25zdHJlYW0gcG9y
-dHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gbGluayBnb2VzIGRvd24uDQo+ID4gKwkg
-KiBDaGVjayBhbmQgcmUtY29uZmlndXJlIHRoZSBiaXQgaGVyZSBiZWZvcmUgcmVzdG9yaW5nIGRl
-dmljZS4NCj4gPiArCSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2Lg0KPiA+ICsJICovDQo+ID4g
-KwlwY2lfcmVjb25maWd1cmVfYnJpZGdlX2x0cihkZXYpOw0KPiA+ICsNCj4gPiAgCWNhcCA9ICh1
-MTYgKikmc2F2ZV9zdGF0ZS0+Y2FwLmRhdGFbMF07DQo+ID4gIAlwY2llX2NhcGFiaWxpdHlfd3Jp
-dGVfd29yZChkZXYsIFBDSV9FWFBfREVWQ1RMLCBjYXBbaSsrXSk7DQo+ID4gIAlwY2llX2NhcGFi
-aWxpdHlfd3JpdGVfd29yZChkZXYsIFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5oIGIvZHJpdmVycy9wY2kvcGNpLmgNCj4gPiBpbmRl
-eCA1YzU5MzY1MDkyZmEuLmE2NjBhMDEzNThjNSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Bj
-aS9wY2kuaA0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL3BjaS5oDQo+ID4gQEAgLTExMSw2ICsxMTEs
-NyBAQCB2b2lkIHBjaV9mcmVlX2NhcF9zYXZlX2J1ZmZlcnMoc3RydWN0IHBjaV9kZXYgKmRldik7
-DQo+ID4gIGJvb2wgcGNpX2JyaWRnZV9kM19wb3NzaWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsN
-Cj4gPiAgdm9pZCBwY2lfYnJpZGdlX2QzX3VwZGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCj4g
-PiAgdm9pZCBwY2lfYnJpZGdlX3dhaXRfZm9yX3NlY29uZGFyeV9idXMoc3RydWN0IHBjaV9kZXYg
-KmRldik7DQo+ID4gK3ZvaWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9k
-ZXYgKmRldik7DQo+IA0KPiBOaXQ6IGNhbGxpbmcgaXQgcGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9s
-dHIoKSB3b3VsZCBtYXRjaCBiZXR0ZXIgd2l0aCB0aGUNCj4gb3RoZXIgZnVuY3Rpb24gbmFtZXMu
-DQo+IA0KDQpUaGFua3MgZm9yIHRoZSBzdWdnZXN0aW9uLiBJIHdpbGwgdXBkYXRlIHRoZSBuYW1l
-IGluIG5leHQgcGF0Y2ggOikNCg0KPiA+ICANCj4gPiAgc3RhdGljIGlubGluZSB2b2lkIHBjaV93
-YWtldXBfZXZlbnQoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgew0KPiA+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL3BjaS9wcm9iZS5jIGIvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+IGluZGV4IDk1
-M2YxNWFiYzg1MC4uZmE2MDc1MDkzZjNiIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcGNpL3By
-b2JlLmMNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gQEAgLTIxMzIsOSArMjEz
-MiwxNiBAQCBzdGF0aWMgdm9pZCBwY2lfY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2
-KQ0KPiA+ICAJICogQ29tcGxleCBhbmQgYWxsIGludGVybWVkaWF0ZSBTd2l0Y2hlcyBpbmRpY2F0
-ZSBzdXBwb3J0IGZvciBMVFIuDQo+ID4gIAkgKiBQQ0llIHI0LjAsIHNlYyA2LjE4Lg0KPiA+ICAJ
-ICovDQo+ID4gLQlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BP
-UlQgfHwNCj4gPiAtCSAgICAoKGJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KSkgJiYN
-Cj4gPiAtCSAgICAgIGJyaWRnZS0+bHRyX3BhdGgpKSB7DQo+ID4gKwlpZiAocGNpX3BjaWVfdHlw
-ZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQpIHsNCj4gPiArCQlwY2llX2NhcGFiaWxp
-dHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gKwkJCQkJIFBDSV9FWFBfREVW
-Q1RMMl9MVFJfRU4pOw0KPiA+ICsJCWRldi0+bHRyX3BhdGggPSAxOw0KPiA+ICsJCXJldHVybjsN
-Cj4gPiArCX0NCj4gPiArDQo+ID4gKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7
-DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCj4gPiArCQlwY2lfcmVj
-b25maWd1cmVfYnJpZGdlX2x0cihkZXYpOw0KPiA+ICAJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29y
-ZChkZXYsIFBDSV9FWFBfREVWQ1RMMiwNCj4gPiAgCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9F
-Tik7DQo+ID4gIAkJZGV2LT5sdHJfcGF0aCA9IDE7DQo+ID4gLS0gDQo+ID4gMi4xOC4wDQoNCg==
+This command is used to communicate with the Chrome Embedded Controller
+(EC) regarding USB Type C events and state.
+
+These header updates are included in the latest Chrome OS EC headers [1]
+
+[1]
+https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/include/ec_commands.h
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+
+Changes in v2:
+- Fixed new line errors.
+
+ .../linux/platform_data/cros_ec_commands.h    | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index d3c40220b281..5a967c9f8aca 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -5578,6 +5578,32 @@ struct ec_response_typec_discovery {
+ 	struct svid_mode_info svids[0];
+ } __ec_align1;
+ 
++/* USB Type-C commands for AP-controlled device policy. */
++#define EC_CMD_TYPEC_CONTROL 0x0132
++
++enum typec_control_command {
++	TYPEC_CONTROL_COMMAND_EXIT_MODES,
++	TYPEC_CONTROL_COMMAND_CLEAR_EVENTS,
++	TYPEC_CONTROL_COMMAND_ENTER_MODE,
++};
++
++struct ec_params_typec_control {
++	uint8_t port;
++	uint8_t command;	/* enum typec_control_command */
++	uint16_t reserved;
++
++	/*
++	 * This section will be interpreted based on |command|. Define a
++	 * placeholder structure to avoid having to increase the size and bump
++	 * the command version when adding new sub-commands.
++	 */
++	union {
++		uint32_t clear_events_mask;
++		uint8_t mode_to_enter;      /* enum typec_mode */
++		uint8_t placeholder[128];
++	};
++} __ec_align1;
++
+ /*
+  * Gather all status information for a port.
+  *
+-- 
+2.30.0.365.g02bc693789-goog
 
