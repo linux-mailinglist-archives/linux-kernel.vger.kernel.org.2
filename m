@@ -2,164 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D70130D764
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B1830D76F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhBCKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhBCKYY (ORCPT
+        id S233835AbhBCKZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:25:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233619AbhBCKZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:24:24 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F984C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:23:44 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id f16so4895032wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:23:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YVcGpKd8+eC2YQ5xYyo7fYllHOO2iPEn0qmRLD8c4tk=;
-        b=XcTmJyWd74nvKmKqGb0lHYbm4BberuwObLIrEVZVDU5MFPGSgRvwBVl691DtsVL32v
-         PoxSztsiW9kqnY7fWODTxJQ24Xut19EQmALlq/oOlmCC/lE28uXGaC0MT/lTB3vpqnHz
-         OO6YtZ53iIHcnPn/3H7K8/Ji389pkKLCfJXYw=
+        Wed, 3 Feb 2021 05:25:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612347839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PgAz4MrsS+zW5N77zXxwS56AukbM+WtnyJF1hzHWECk=;
+        b=ARYDso+SqMqa0IFVB2qsUhbyHVyxI1lfjK+/ai+fuo0WT3552J/f1gtBH4CwJ7rVqUJo0d
+        cpjl4+9Mi7fCCBu9MwMoeqRhdeFHpJLdaTkjdqWm80bZ2u72ikMkmLn9Cp9LCe7BTr0Zkc
+        wrSqEEfpRzb92wgfDVLUo960LJF2FVA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-yKZfFFvxNYWaOBwwAhb9ZA-1; Wed, 03 Feb 2021 05:23:55 -0500
+X-MC-Unique: yKZfFFvxNYWaOBwwAhb9ZA-1
+Received: by mail-ed1-f71.google.com with SMTP id p18so1367770edr.20
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:23:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=YVcGpKd8+eC2YQ5xYyo7fYllHOO2iPEn0qmRLD8c4tk=;
-        b=I6MQ6v6MrUlauVv/BFZ4lhV0Bzy2F/dLk4aHFQuD6exn84DeUWWD0/cX2SMqyaBLhC
-         3emArAlgtG44y2tGUrON1V5pD8iOWmy8XS0gjcLttQFMvaJ5hogjrrO6Ak1pt8nao5jI
-         9az7tL4l952r01thZu0ieNpEiLrHVQCGLj0qhFhP/uS3dy2qcAboGeYxxEWgV/qHNbBc
-         ECHrLkkCyrDgeOwKAqtnkI7worYRvi7InDx3fh1JuoL4ieR/jtbYrthIFh6OnGqF3UjN
-         7sbbIIaU0Q8blcfBeZJ8RkpiY4u3Je3CLPxuaPmBbGtjnNRf+2MtUSYTqjRJ2yE9gH+1
-         1Mcw==
-X-Gm-Message-State: AOAM533LdwXEkDtQCaQ1z5IvLKwVO+IN7GpiCn3Dgz6xR6GHYl6YjjcE
-        ImT6ZEFr7p7m6MMb172R8CH+IA==
-X-Google-Smtp-Source: ABdhPJwiI5aD5dqY1ckorWBWkPtWhv80Z2HTWzG7jeWjpVya/U1sTYHLj7xvi3ENjtXKYY1O+EVTCA==
-X-Received: by 2002:a7b:c3ca:: with SMTP id t10mr1325153wmj.138.1612347823070;
-        Wed, 03 Feb 2021 02:23:43 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b3sm2351907wme.32.2021.02.03.02.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 02:23:42 -0800 (PST)
-Date:   Wed, 3 Feb 2021 11:23:39 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Simon Ser <contact@emersion.fr>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        dri-devel@lists.freedesktop.org, Andrei Vagin <avagin@gmail.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Hui Su <sh_def@163.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        kernel-team <kernel-team@android.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
-Message-ID: <YBp5qzLBBMJE0Yhn@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Simon Ser <contact@emersion.fr>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        dri-devel@lists.freedesktop.org, Andrei Vagin <avagin@gmail.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Hui Su <sh_def@163.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        kernel-team <kernel-team@android.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <20210126225138.1823266-1-kaleshsingh@google.com>
- <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
- <YBFG/zBxgnapqLAK@dhcp22.suse.cz>
- <ea04b552-7345-b7d5-60fe-7a22515ea63a@amd.com>
- <20210128120130.50aa9a74@eldfell>
- <c95af15d-8ff4-aea0-fa1b-3157845deae1@amd.com>
- <20210129161334.788b8fd0@eldfell>
- <wgUb8smQArgjbRFYMPYVDmukBT-_BrqG2M6XIOkWdBcW_x-m4ORnl3VOvH3J4wrsNGMoOXqMAro0UmkdVXFNso9PEiNCFGEeruibhWsmU34=@emersion.fr>
- <f680ced7-3402-4a1e-4565-35ad7cd0c46d@amd.com>
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=PgAz4MrsS+zW5N77zXxwS56AukbM+WtnyJF1hzHWECk=;
+        b=OdUMHgPxunsg8gexauk9DUW+MhgE8HOENOpkj4aNvAyXgJUmavpKjyiRxctRIxYs6V
+         NNSMiUD2A6hn8VFxNfaFGXysDlihQFDzN/+PMM+SvU2T+hp5lVqyGsEnHueEKbW9Pcig
+         uv0Nf+qWW3rmEIhr/N0fVl7Jea+Czh2JTx+BWmQRQqMwZKTCMMCW1izeFpjc/X5+ZMkv
+         VaWxkR+OWU91GEiW44amPRvpbHkMRhVhf6c04J09M+VRy6Oli6biclbtzz/h+VZ1Texh
+         gmLd8qbhXjevUhVowN1v5wAHx3oRpCs69WBV5Hl2n1VyeFc7+8H1HHJLrunn2dpjnZIX
+         37dw==
+X-Gm-Message-State: AOAM533bDaPfgaFVqBknxE3pCt2KZk2p0vnTf2xr3fblE6jrjRO34eUs
+        7j5jyjdzmnJbrhzNbLF2T1KVbcaq9fpMqDwcG74mBYtuq/CrksosjuG5+XK7E17jnrFQMCXMFp4
+        dajFfzsSdy2Cz2StEjY6ohhSu
+X-Received: by 2002:aa7:cdcd:: with SMTP id h13mr2186440edw.11.1612347834424;
+        Wed, 03 Feb 2021 02:23:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx012jsD6tLqDqC6mBh2rOnYXYjs2Fy2dpQH3GcInyos9pCyFxbGKsOMvEmvYsfA6UWY4tM8Q==
+X-Received: by 2002:aa7:cdcd:: with SMTP id h13mr2186434edw.11.1612347834221;
+        Wed, 03 Feb 2021 02:23:54 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id lz27sm793054ejb.50.2021.02.03.02.23.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 02:23:53 -0800 (PST)
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 5.11-3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Message-ID: <368c6b64-1e5b-743d-e255-7e9bade23238@redhat.com>
+Date:   Wed, 3 Feb 2021 11:23:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f680ced7-3402-4a1e-4565-35ad7cd0c46d@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 03:22:06PM +0100, Christian König wrote:
-> Am 29.01.21 um 15:17 schrieb Simon Ser:
-> > On Friday, January 29th, 2021 at 3:13 PM, Pekka Paalanen <ppaalanen@gmail.com> wrote:
-> > 
-> > > > Re-importing it adds quite a huge CPU overhead to both userspace as well
-> > > > as the kernel.
-> > > Perhaps, but so far it seems no-one has noticed the overhead, with Mesa
-> > > at least.
-> > > 
-> > > I happily stand corrected.
-> > Note, all of this doesn't mean that compositors will stop keeping
-> > DMA-BUF FDs around. They may want to keep them open for other purposes
-> > like importing them into KMS or other EGL displays as needed.
-> 
-> Correct and that's a perfectly valid use case. Just re-importing it on every
-> frame is something we should really try to avoid.
-> 
-> At least with debugging enabled it's massive overhead and maybe even
-> performance penalty when we have to re-create device page tables all the
-> time.
-> 
-> But thinking more about that it is possible that we short-cut this step as
-> long as the original import was still referenced. Otherwise we probably
-> would have noticed this much earlier.
+Hi Linus,
 
-Yeah kernel keeps lots of caches around and just gives you back the
-previous buffer if it's still around. Still probably not the smartest
-idea.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Sorry about the last-minute pull-req. This pull-req contains 2 small but
+important bug fixes.
+
+The hp-wmi change fixes an issue which is actively being hit by users:
+https://bugzilla.redhat.com/show_bug.cgi?id=1918255
+https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/3564
+
+And the dell-wmi-sysman patch fixes a bug in the new dell-wmi-sysman
+driver which causes some systems to hang at boot when the driver loads.
+
+Regards,
+
+Hans
+
+
+The following changes since commit 173aac2fef96972e42d33c0e1189e6f756a0d719:
+
+  platform/x86: thinkpad_acpi: Add P53/73 firmware to fan_quirk_table for dual fan control (2021-01-18 21:42:01 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.11-3
+
+for you to fetch changes up to 215164bfb7144c5890dd8021ff06e486939862d4:
+
+  platform/x86: dell-wmi-sysman: fix a NULL pointer dereference (2021-01-31 22:05:35 +0100)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v5.11-3
+
+2 last minute small but important fixes for v5.11 .
+
+The following is an automated git shortlog grouped by driver:
+
+dell-wmi-sysman:
+ -  fix a NULL pointer dereference
+
+hp-wmi:
+ -  Disable tablet-mode reporting by default
+
+----------------------------------------------------------------
+Hans de Goede (1):
+      platform/x86: hp-wmi: Disable tablet-mode reporting by default
+
+Mario Limonciello (1):
+      platform/x86: dell-wmi-sysman: fix a NULL pointer dereference
+
+ drivers/platform/x86/dell-wmi-sysman/sysman.c |  6 +++++-
+ drivers/platform/x86/hp-wmi.c                 | 14 ++++++++++----
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
