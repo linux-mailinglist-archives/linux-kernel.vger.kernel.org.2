@@ -2,627 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4447C30D7DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174E330D7E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbhBCKpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:45:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233944AbhBCKpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:45:07 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9B0C061786
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:44:27 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id b20so19855329ljo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:44:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rOPBqSfvTUalmlO9KQoQtuiAFEsMX0/0KEkC4CfPQWA=;
-        b=S4QzPy+QJRk25ukwtQ5ax5TH+L6Ih6BmCWVqMVrWIiUXcOF6RZ6ZWd8rQFFGyQsdvC
-         ujcGoFj42zKEkMYxJehzUZD1MK+0UHTF0NtR8iFjnud3HHrcNXF/jDxzyGuK1VVr88GV
-         4HOIfQ6bSNmNK4EuYEMYFvqEIrLR0deuQt8Eo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rOPBqSfvTUalmlO9KQoQtuiAFEsMX0/0KEkC4CfPQWA=;
-        b=mmpXT7/nNdacA3jTDL2uQFp5YddNbId+WVqeotxZyPkhU3/ghMyJDTIY7cADus2vDL
-         b+62nHt6bCidn/QrboPQ6RQr0QWrcyokNJJj84PfZJAXrwpHxWQakZNnUZZzhxvk3tFD
-         Jt7XZX4C1/Ld92kTMLzjh9xV/NgdAIipk5/Q28MO+AqrXdFSpwhSzKsvs2PBctCsZg+c
-         C3FqDEXf619uUpIHLx5Bkw/9dpEUZyGuL0VDb2aRyIstHV43/ziu7UrBYFg0gR96dG5i
-         t2b/+p/Mi90C8LbUWUCqTxP41m/yADppwAcUBGFs9ETyOubWn58X4PfIXD5os8iVXNVX
-         kpKQ==
-X-Gm-Message-State: AOAM533He2qUBYJQ9Lrr5si2fU328wBb0z/CxbKNhE+hzhqio9MDz/DK
-        eQvL0BBGQ5M8V2Qdk6SdRG4CnvHGI4aP0w==
-X-Google-Smtp-Source: ABdhPJxaLV2uFGuzjyEp3WPFB/K3TIrvU/Rt00FjxE3p67bNARbdVpiu5vr+s5JDbl9+9cSvTzJEiA==
-X-Received: by 2002:a2e:b179:: with SMTP id a25mr1376421ljm.425.1612349065172;
-        Wed, 03 Feb 2021 02:44:25 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id v21sm208917ljk.122.2021.02.03.02.44.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 02:44:24 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id v24so32611991lfr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:44:24 -0800 (PST)
-X-Received: by 2002:ac2:5683:: with SMTP id 3mr1366478lfr.332.1612349063531;
- Wed, 03 Feb 2021 02:44:23 -0800 (PST)
+        id S233964AbhBCKp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:45:27 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:47078 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233879AbhBCKpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:45:25 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1l7FeA-0004PP-Vv; Wed, 03 Feb 2021 11:44:31 +0100
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
+ <YBisBkSYPoaOM42F@google.com>
+ <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+ <YBnjso2OeX1/r3Ls@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
+Message-ID: <dd76955e-710a-61b0-9739-28623f985508@maciej.szmigiero.name>
+Date:   Wed, 3 Feb 2021 11:44:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210121061804.26423-1-irui.wang@mediatek.com> <20210121061804.26423-3-irui.wang@mediatek.com>
-In-Reply-To: <20210121061804.26423-3-irui.wang@mediatek.com>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Wed, 3 Feb 2021 19:44:11 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MXqFU+-f4C=BaW9d_KyEUwZVTiBj-dqqxnGP-Zd7YkMVw@mail.gmail.com>
-Message-ID: <CAPBb6MXqFU+-f4C=BaW9d_KyEUwZVTiBj-dqqxnGP-Zd7YkMVw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: mtk-vcodec: Separating mtk encoder driver
-To:     Irui Wang <irui.wang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBnjso2OeX1/r3Ls@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Irui,
+On 03.02.2021 00:43, Sean Christopherson wrote:
+> On Tue, Feb 02, 2021, Maciej S. Szmigiero wrote:
+>> On 02.02.2021 02:33, Sean Christopherson wrote:
+>>>> Making lookup and memslot management operations O(log(n)) brings
+>>>> some performance benefits (tested on a Xeon 8167M machine):
+>>>> 509 slots in use:
+>>>> Test          Before         After		Improvement
+>>>> Map           0,0246s     0,0240s		 2%
+>>>> Unmap         0,0833s     0,0318s		62%
+>>>> Unmap 2M      0,00177s	0,000917s	48%
+>>>> Move active   0,0000959s	0,0000816s	15%
+>>>> Move inactive 0,0000960s	0,0000799s	17%
+>>>
+>>> I assume "move" refers to the gfn?  If so, I believe this can be ignored for the
+>>> most part as it's not a common operation, and already has a lot of leading zeros :-)
+>>
+>> Even if it is not a common operation (today) making it better is
+>> still a good thing.
+>>
+>> The move test result has a lot of leading zeros since it is moving just
+>> a single memslot and that does not take a lot of time in the absolute
+>> sense.
+> 
+> Yes, that's my point.  The absolute time is barely measurable, this is an
+> extremely rare operation, and the optimal approach isn't orders of magnitude
+> faster, i.e. we can comfortably ignore the "move" performance when weighing
+> options.
 
-Thanks for pushing this forward. I had two small conflicts when
-applying this patch to the media tree, so you may want to rebase
-before sending the next version. Please see the comments inline.
+I agree that it isn't the main deciding factor but it still good to make
+it scale better rather than worse, if possible.
 
-On Thu, Jan 21, 2021 at 3:18 PM Irui Wang <irui.wang@mediatek.com> wrote:
+>>>> Slot setup	0,0107s		0,00825s	23%
+>>>
+>>> What does "slot setup" measure?  I assume it's one-time pain?  If so, then we
+>>> can probably ignore this as use cases that care about millisecond improvements
+>>> in boot time are unlikely to have 50 memslots, let alone 500+ memslots.
+>>
+>> This value shows how long it took the test to add all these memslots.
+>>
+>> Strictly speaking, it also includes the time spent allocating
+>> the backing memory and time spent in the (userspace) selftest framework
+>> vm_userspace_mem_region_add() function, but since these operations are
+>> exactly the same for both in-kernel memslots implementations the
+>> difference in results is all due to the new kernel code (that is, this
+>> patch).
+>>
+>> The result also shows how the performance of the create memslot operation
+>> scales with various count of memslots in use (the measurement is always
+>> done with the same guest memory size).
+>>
+>> Hyper-V SynIC may require up to two additional slots per vCPU.
+>> A large guest with with 128 vCPUs will then use 256 memslots for this
+>> alone.
+>> Also, performance improvements add up.
+> 
+> I generally agree, but if this is literally a one time savings of a millisecond
+> or so, for VM with a boot time measured in seconds or even tends of seconds...
 >
-> MTK H264 Encoder(VENC_SYS) and VP8 Encoder(VENC_LT_SYS) are two
-> independent hardware instance. They have their owner interrupt,
-> register mapping, and special clocks.
->
-> This patch seperates them into two drivers:
+>> At (guest) runtime live migration uses the memslot set flags operation
+>> to turn on and off dirty pages logging.
+> 
+> Do you have numbers for the overhead of enabling dirty logging?  I assume the
+> per-memslot overhead will be similr to the "move" microbenchmark?
 
-seperates -> separates
+Will try to measure this, it's not quite the same operation as a move
+since it doesn't need to install a KVM_MEMSLOT_INVALID temporary slot
+and, because the gfn doesn't change, the code uses O(1) rb_replace_node()
+instead of (two) O(log(n)) tree operations.
 
-Also the patch does not result in two drivers, but two devices.
+>> Hot{un,}plug of memory and some other devices (like GPUs) create and
+>> delete memslots, too.
+>>
+>>> I'm not nitpicking the benchmarks to discredit your measurements, rather to
+>>> point out that I suspect the only thing that's "broken" and that anyone truly
+>>> cares about is unmapping, i.e. hva->memslot lookups.  If that is indeed the
+>>> case, would it be sufficient to focus on speeding up _just_ the hva lookups?>
+>>> Specifically, I think we can avoid copying the "active vs. inactive" scheme that
+>>> is used for the main gfn-based array by having the hva tree resolve to an _id_,
+>>> not to the memslot itself. I.e. bounce through id_to_index, which is coupled
+>>> with the main array, so that lookups are always done on the "active" memslots,
+>>> without also having to implement an "inactive" hva tree.
+>>
+>> I guess you mean to still turn id_to_index into a hash table, since
+>> otherwise a VMM which uses just two memslots but numbered 0 and 508
+>> will have a 509-entry id_to_index array allocated.
+> 
+> That should be irrelevant for the purposes of optimizing hva lookups, and mostly
+> irrelevant for optimizing memslot updates.  Using a hash table is almost a pure
+> a memory optimization, it really only matters when the max number of memslots
+> skyrockets, which is a separate discussion from optimizing hva lookups.
 
-> User Call "VIDIOC_QUERYCAP":
-> H264 Encoder return driver name "mtk-vcodec-enc";
-> VP8 Encoder return driver name "mtk-venc-vp8.
+While I agree this is a separate thing from scalable hva lookups it still
+matters for the overall design.
 
-I wonder if we need to use two different names? The driver is the
-same, so it makes sense to me that both devices return
-"mtk-vcodec-enc". Userspace can then list the formats on the CAPTURE
-queue in order to query the supported codecs.
+The current id_to_index array is fundamentally "pay the cost of max
+number of memslots possible regardless how many you use".
 
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
->
-> ---
->  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  10 +-
->  .../platform/mtk-vcodec/mtk_vcodec_enc.c      |  23 +++-
->  .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  | 121 +++++++-----------
->  .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |  40 +-----
->  .../platform/mtk-vcodec/venc/venc_vp8_if.c    |   4 +-
->  5 files changed, 82 insertions(+), 116 deletions(-)
->
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index 3dd010cba23e..1594edcc706d 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -19,6 +19,7 @@
->  #define MTK_VCODEC_DRV_NAME    "mtk_vcodec_drv"
->  #define MTK_VCODEC_DEC_NAME    "mtk-vcodec-dec"
->  #define MTK_VCODEC_ENC_NAME    "mtk-vcodec-enc"
-> +#define MTK_VENC_VP8_NAME      "mtk-venc-vp8"
->  #define MTK_PLATFORM_STR       "platform:mt8173"
->
->  #define MTK_VCODEC_MAX_PLANES  3
-> @@ -193,7 +194,6 @@ struct mtk_vcodec_pm {
->
->         struct mtk_vcodec_clk   venc_clk;
->         struct device   *larbvenc;
-> -       struct device   *larbvenclt;
->         struct device   *dev;
->         struct mtk_vcodec_dev   *mtkdev;
->  };
-> @@ -311,25 +311,27 @@ enum mtk_chip {
->   * @chip: chip this encoder is compatible with
->   *
->   * @uses_ext: whether the encoder uses the extended firmware messaging format
-> - * @has_lt_irq: whether the encoder uses the LT irq
-> + * @name: whether the encoder core is vp8
->   * @min_birate: minimum supported encoding bitrate
->   * @max_bitrate: maximum supported encoding bitrate
->   * @capture_formats: array of supported capture formats
->   * @num_capture_formats: number of entries in capture_formats
->   * @output_formats: array of supported output formats
->   * @num_output_formats: number of entries in output_formats
-> + * @core_id: stand for h264 or vp8 encode index
->   */
->  struct mtk_vcodec_enc_pdata {
->         enum mtk_chip chip;
->
->         bool uses_ext;
-> -       bool has_lt_irq;
-> +       const char *name;
+And it's not only that it takes more memory it also forces memslot
+create / delete / move operations to be O(n) since the indices have to
+be updated.
 
-This new member can be removed if we use the same name for both devices.
+By the way, I think nobody argues here for a bazillion of memslots.
+It is is enough to simply remove the current cap and allow the maximum
+number permitted by the existing KVM API, that is 32k as Vitaly's
+patches recently did.
+Even with 2 MiB blocks this translates into 64 GiB of guest memory.
 
->         unsigned long min_bitrate;
->         unsigned long max_bitrate;
->         const struct mtk_video_fmt *capture_formats;
->         size_t num_capture_formats;
->         const struct mtk_video_fmt *output_formats;
->         size_t num_output_formats;
-> +       int core_id;
->  };
->
->  #define MTK_ENC_CTX_IS_EXT(ctx) ((ctx)->dev->venc_pdata->uses_ext)
-> @@ -361,7 +363,6 @@ struct mtk_vcodec_enc_pdata {
->   *
->   * @dec_irq: decoder irq resource
->   * @enc_irq: h264 encoder irq resource
-> - * @enc_lt_irq: vp8 encoder irq resource
->   *
->   * @dec_mutex: decoder hardware lock
->   * @enc_mutex: encoder hardware lock.
-> @@ -397,7 +398,6 @@ struct mtk_vcodec_dev {
->
->         int dec_irq;
->         int enc_irq;
-> -       int enc_lt_irq;
->
->         struct mutex dec_mutex;
->         struct mutex enc_mutex;
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> index 21de1431cfcb..0da6871b4b39 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> @@ -9,6 +9,7 @@
->  #include <media/v4l2-mem2mem.h>
->  #include <media/videobuf2-dma-contig.h>
->  #include <soc/mediatek/smi.h>
-> +#include <linux/pm_runtime.h>
->
->  #include "mtk_vcodec_drv.h"
->  #include "mtk_vcodec_enc.h"
-> @@ -189,7 +190,10 @@ static int vidioc_enum_fmt_vid_out(struct file *file, void *priv,
->  static int vidioc_venc_querycap(struct file *file, void *priv,
->                                 struct v4l2_capability *cap)
->  {
-> -       strscpy(cap->driver, MTK_VCODEC_ENC_NAME, sizeof(cap->driver));
-> +       const struct mtk_vcodec_enc_pdata *pdata =
-> +               fh_to_ctx(priv)->dev->venc_pdata;
-> +
-> +       strscpy(cap->driver, pdata->name, sizeof(cap->driver));
->         strscpy(cap->bus_info, MTK_PLATFORM_STR, sizeof(cap->bus_info));
->         strscpy(cap->card, MTK_PLATFORM_STR, sizeof(cap->card));
->
-> @@ -797,7 +801,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
->           */
->         if ((ctx->state == MTK_STATE_ABORT) || (ctx->state == MTK_STATE_FREE)) {
->                 ret = -EIO;
-> -               goto err_set_param;
-> +               goto err_start_stream;
->         }
->
->         /* Do the initialization when both start_streaming have been called */
-> @@ -809,6 +813,12 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
->                         return 0;
->         }
->
-> +       ret = pm_runtime_get_sync(&ctx->dev->plat_dev->dev);
-> +       if (ret < 0) {
-> +               mtk_v4l2_err("pm_runtime_get_sync fail %d", ret);
-> +               goto err_start_stream;
-> +       }
+>>> For deletion, seeing the defunct/invalid memslot is not a functional problem;
+>>> it's technically a performance "problem", but one that we already have.  For
+>>> creation, id_to_index will be -1, and so the memslot lookup will return NULL
+>>> until the new memslot is visible.
+>>
+>> This sounds like you would keep the id_to_index array / hash table
+>> separate from the main array as it is in the old code (I read "coupled
+>> with the main array" above as a suggestion to move it to the part that
+>> gets resized when memslots are created or deleted in the current code,
+>> that is struct kvm_memslots).
+> 
+> What I meant by "coupled" is that, in the current code, the id_to_index and
+> main memslots array are updated in tandem, it's impossible for readers to see
+> unsynchronized arrays.
+> 
+>> Then if you create or delete a memslot the memslots located further in
+>> the memslot array (with lower gfn that the processed slot) will have
+>> their indices shifted - you can't atomically update all of them.
+>>
+>> But overall, this solution (and the one with id_to_index moved into the
+>> main array, too) is still O(n) per memslot operation as you still need to
+>> copy the array to either make space for the new memslot or to remove the
+>> hole from the removed memslot.
+> 
+> Yes, but that problem that can be solved separately from the performance issue
+> with hva lookups.
+> 
+>> Due to that scaling issue it's rather hard to use 32k memslots with the
+>> old code, the improvement was like 20+ times there on an early version
+>> of this code.
+>>
+>> And if we start adding special cases for things like flags change or
+>> gfn moves to workaround their scaling issues the code will quickly grow
+>> even more complicated.
+>>
+>>>
+>>> All hva lookups would obviously need to be changed, but the touchpoint for the
+>>> write would be quite small, e.g.
+>>>
+>>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>>> index 8367d88ce39b..c03beb4833b2 100644
+>>> --- a/virt/kvm/kvm_main.c
+>>> +++ b/virt/kvm/kvm_main.c
+>>> @@ -1220,6 +1220,20 @@ static int kvm_set_memslot(struct kvm *kvm,
+>>>           if (r)
+>>>                   goto out_slots;
+>>>
+>>> +       /*
+>>> +        * Update the hva=>id tree if a memslot is being deleted or created.
+>>> +        * No update is required for moving a memslot or changing its flags,
+>>> +        * as those don't affect its _id_.  For deletion, the memslot has been
+>>> +        * zapped and flushed, fast hva lookups are guaranteed to be nops.  For
+>>> +        * creation, the new memslot isn't visible until the final installation
+>>> +        * is complete.  Fast hva lookups may prematurely see the entry, but
+>>> +        * id_to_memslot() will return NULL upon seeing id_to_index[id] == -1.
+>>> +        */
+>>> +       if (change == KVM_MR_DELETE)
+>>> +               kvm_hva_tree_remove(...);
+>>> +       else if (change == KVM_MR_CREATE)
+>>> +               kvm_hva_tree_insert(...);
+>>> +
+>>>           update_memslots(slots, new, change);
+>>>           slots = install_new_memslots(kvm, as_id, slots);
+>>>
+>>>
+>>> I'm not opposed to using more sophisticated storage for the gfn lookups, but
+>>> only if there's a good reason for doing so.  IMO, the rbtree isn't simpler, just
+>>> different.  Memslot modifications are unlikely to be a hot path (and if it is,
+>>> x86's "zap everything" implementation is a far bigger problem), and it's hard to
+>>> beat the memory footprint of a raw array.  That doesn't leave much motivation
+>>> for such a big change to some of KVM's scariest (for me) code.
+>>>
+>>
+>> Improvements can be done step-by-step,
+>> kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in the
+>> future, if necessary.
+>> After all, complains are that this change alone is too big.
+> 
+> It's not simply that it's too big, it's that it solves several problems in
+> a single patch that can, and should, be done in separate patches.
+> 
+> Dumping everything into a single patch makes bisecting nearly worthless, e.g. if
+> fast hva lookups breaks a non-x86 architecture, we should able to bisect to
+> exactly that, not a massive patch that completely rewrites all of the memslot
+> code in one fell swoop.
+> 
+> Mega patches with multiple logical changes are also extremely difficult to
+> review.
+> 
+> See 'Patch preparation' in Documentation/process/5.Posting.rst for more info on
+> splitting up patches.
+> 
+>> I think that if you look not at the patch itself but at the resulting
+>> code the new implementation looks rather straightforward,
+> 
+> Sorry to be blunt, but that's just not how Linux kernel development works.
+> Again, I am not opposed to any particular idea/approach in this patch, but the
+> individual enhancements absolutely need to be split into separate patches.
 
-This does not seem to be related to the split ; why is this necessary?
+I have said I will split these patches in my previous e-mail (see all
+these "will do" after your "E.g. changes that can easily be split out:").
 
-> +
->         mtk_venc_set_param(ctx, &param);
->         ret = venc_if_set_param(ctx, VENC_SET_PARAM_ENC, &param);
->         if (ret) {
-> @@ -835,6 +845,11 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
->         return 0;
->
->  err_set_param:
-> +       ret = pm_runtime_put(&ctx->dev->plat_dev->dev);
-> +       if (ret < 0)
-> +               mtk_v4l2_err("pm_runtime_put fail %d", ret);
-> +
-> +err_start_stream:
->         for (i = 0; i < q->num_buffers; ++i) {
->                 struct vb2_buffer *buf = vb2_get_buffer(q, i);
->
-> @@ -888,6 +903,10 @@ static void vb2ops_venc_stop_streaming(struct vb2_queue *q)
->         if (ret)
->                 mtk_v4l2_err("venc_if_deinit failed=%d", ret);
->
-> +       ret = pm_runtime_put(&ctx->dev->plat_dev->dev);
-> +       if (ret < 0)
-> +               mtk_v4l2_err("pm_runtime_put fail %d", ret);
-> +
->         ctx->state = MTK_STATE_FREE;
->  }
->
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> index dfb42e19bf81..4bee42454253 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> @@ -49,12 +49,15 @@ static const struct mtk_video_fmt mtk_video_formats_output_mt8173[] = {
->         },
->  };
->
-> -static const struct mtk_video_fmt mtk_video_formats_capture_mt8173[] =  {
-> +static const struct mtk_video_fmt mtk_video_formats_capture_mt8173_h264[] =  {
->         {
->                 .fourcc = V4L2_PIX_FMT_H264,
->                 .type = MTK_FMT_ENC,
->                 .num_planes = 1,
->         },
-> +};
-> +
-> +static const struct mtk_video_fmt mtk_video_formats_capture_mt8173_vp8[] =  {
->         {
->                 .fourcc = V4L2_PIX_FMT_VP8,
->                 .type = MTK_FMT_ENC,
-> @@ -110,35 +113,13 @@ static irqreturn_t mtk_vcodec_enc_irq_handler(int irq, void *priv)
->         ctx = dev->curr_ctx;
->         spin_unlock_irqrestore(&dev->irqlock, flags);
->
-> -       mtk_v4l2_debug(1, "id=%d", ctx->id);
-> -       addr = dev->reg_base[VENC_SYS] + MTK_VENC_IRQ_ACK_OFFSET;
-> -
-> -       ctx->irq_status = readl(dev->reg_base[VENC_SYS] +
-> -                               (MTK_VENC_IRQ_STATUS_OFFSET));
-> -
-> -       clean_irq_status(ctx->irq_status, addr);
-> -
-> -       wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED);
-> -       return IRQ_HANDLED;
-> -}
-> -
-> -static irqreturn_t mtk_vcodec_enc_lt_irq_handler(int irq, void *priv)
-> -{
-> -       struct mtk_vcodec_dev *dev = priv;
-> -       struct mtk_vcodec_ctx *ctx;
-> -       unsigned long flags;
-> -       void __iomem *addr;
-> -
-> -       spin_lock_irqsave(&dev->irqlock, flags);
-> -       ctx = dev->curr_ctx;
-> -       spin_unlock_irqrestore(&dev->irqlock, flags);
-> +       mtk_v4l2_debug(1, "id=%d coreid:%d", ctx->id, dev->venc_pdata->core_id);
-> +       addr = dev->reg_base[dev->venc_pdata->core_id] +
-> +                               MTK_VENC_IRQ_ACK_OFFSET;
->
-> -       mtk_v4l2_debug(1, "id=%d", ctx->id);
-> -       ctx->irq_status = readl(dev->reg_base[VENC_LT_SYS] +
-> +       ctx->irq_status = readl(dev->reg_base[dev->venc_pdata->core_id] +
->                                 (MTK_VENC_IRQ_STATUS_OFFSET));
->
-> -       addr = dev->reg_base[VENC_LT_SYS] + MTK_VENC_IRQ_ACK_OFFSET;
-> -
->         clean_irq_status(ctx->irq_status, addr);
->
->         wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED);
-> @@ -293,17 +274,21 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->         dev->venc_pdata = of_device_get_match_data(&pdev->dev);
->         ret = mtk_vcodec_init_enc_pm(dev);
->         if (ret < 0) {
-> -               dev_err(&pdev->dev, "Failed to get mt vcodec clock source!");
-> +               dev_err(&pdev->dev, "Failed to get mtk vcodec clock source!");
->                 goto err_enc_pm;
->         }
->
-> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -       dev->reg_base[VENC_SYS] = devm_ioremap_resource(&pdev->dev, res);
-> -       if (IS_ERR((__force void *)dev->reg_base[VENC_SYS])) {
-> -               ret = PTR_ERR((__force void *)dev->reg_base[VENC_SYS]);
-> +       pm_runtime_enable(&pdev->dev);
-> +
-> +       snprintf(dev->v4l2_dev.name, sizeof(dev->v4l2_dev.name), "%s",
-> +                dev->venc_pdata->name);
-> +
-> +       dev->reg_base[dev->venc_pdata->core_id] =
-> +               devm_platform_ioremap_resource(pdev, 0);
-> +       if (IS_ERR(dev->reg_base[dev->venc_pdata->core_id])) {
-> +               ret = PTR_ERR(dev->reg_base[dev->venc_pdata->core_id]);
->                 goto err_res;
->         }
-> -       mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_SYS]);
->
->         res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
->         if (res == NULL) {
-> @@ -318,44 +303,17 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->                                mtk_vcodec_enc_irq_handler,
->                                0, pdev->name, dev);
->         if (ret) {
-> -               dev_err(&pdev->dev, "Failed to install dev->enc_irq %d (%d)",
-> -                       dev->enc_irq,
-> -                       ret);
-> +               dev_err(&pdev->dev,
-> +                       "Failed to install dev->enc_irq %d (%d) core_id:%d",
-> +                       dev->enc_irq, ret, dev->venc_pdata->core_id);
->                 ret = -EINVAL;
->                 goto err_res;
->         }
->
-> -       if (dev->venc_pdata->has_lt_irq) {
-> -               res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -               dev->reg_base[VENC_LT_SYS] = devm_ioremap_resource(&pdev->dev, res);
-> -               if (IS_ERR((__force void *)dev->reg_base[VENC_LT_SYS])) {
-> -                       ret = PTR_ERR((__force void *)dev->reg_base[VENC_LT_SYS]);
-> -                       goto err_res;
-> -               }
-> -               mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_LT_SYS]);
-> -
-> -               dev->enc_lt_irq = platform_get_irq(pdev, 1);
-> -               irq_set_status_flags(dev->enc_lt_irq, IRQ_NOAUTOEN);
-> -               ret = devm_request_irq(&pdev->dev,
-> -                                      dev->enc_lt_irq,
-> -                                      mtk_vcodec_enc_lt_irq_handler,
-> -                                      0, pdev->name, dev);
-> -               if (ret) {
-> -                       dev_err(&pdev->dev,
-> -                               "Failed to install dev->enc_lt_irq %d (%d)",
-> -                               dev->enc_lt_irq, ret);
-> -                       ret = -EINVAL;
-> -                       goto err_res;
-> -               }
-> -       }
-> -
->         mutex_init(&dev->enc_mutex);
->         mutex_init(&dev->dev_mutex);
->         spin_lock_init(&dev->irqlock);
->
-> -       snprintf(dev->v4l2_dev.name, sizeof(dev->v4l2_dev.name), "%s",
-> -                "[MTK_V4L2_VENC]");
-> -
->         ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
->         if (ret) {
->                 mtk_v4l2_err("v4l2_device_register err=%d", ret);
-> @@ -381,7 +339,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->                                         V4L2_CAP_STREAMING;
->
->         snprintf(vfd_enc->name, sizeof(vfd_enc->name), "%s",
-> -                MTK_VCODEC_ENC_NAME);
-> +                       dev->venc_pdata->name);
+My comments were / are about the whole general design, not that it has
+to be introduced in one patch.
 
-Let's keep the indendation at the same level as before (if we use the
-same driver name for both devices this change is unnecessary though).
+> I focused on the hva tree because I think that has, by far, the best bang for
+> the buck.  The performance benefits are clear, the changes can be done with
+> minimal impact to existing code, and each architcture can opt-in one at a time.
+> What I'm suggesting is that we first get the fast hva lookups merged, and then
+> worry about getting KVM to play nice with tens of thousands of memslots.
 
->         video_set_drvdata(vfd_enc, dev);
->         dev->vfd_enc = vfd_enc;
->         platform_set_drvdata(pdev, dev);
-> @@ -409,8 +367,8 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->                 goto err_enc_reg;
->         }
->
-> -       mtk_v4l2_debug(0, "encoder registered as /dev/video%d",
-> -                       vfd_enc->num);
-> +       mtk_v4l2_debug(0, "encoder %d registered as /dev/video%d",
-> +                      dev->venc_pdata->core_id, vfd_enc->num);
->
->         return 0;
->
-> @@ -429,20 +387,33 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->         return ret;
->  }
->
-> -static const struct mtk_vcodec_enc_pdata mt8173_pdata = {
-> +static const struct mtk_vcodec_enc_pdata mt8173_avc_pdata = {
->         .chip = MTK_MT8173,
-> -       .has_lt_irq = true,
-> -       .capture_formats = mtk_video_formats_capture_mt8173,
-> -       .num_capture_formats = ARRAY_SIZE(mtk_video_formats_capture_mt8173),
-> +       .name = MTK_VCODEC_ENC_NAME,
-> +       .capture_formats = mtk_video_formats_capture_mt8173_h264,
-> +       .num_capture_formats = 1,
+As I wrote above I will split the patch, but I will work on the whole
+series to make sure that the end result still works well.
 
-Can't this be ARRAY_SIZE(mtk_video_formats_capture_mt8173_h264)
-
->         .output_formats = mtk_video_formats_output_mt8173,
->         .num_output_formats = ARRAY_SIZE(mtk_video_formats_output_mt8173),
-> -       .min_bitrate = 1,
-> +       .min_bitrate = 64,
-
-I'm fine with changing the value of min_bitrate, but this should be a
-separate patch.
-
-> +       .max_bitrate = 4000000,
-> +       .core_id = VENC_SYS,
-> +};
-> +
-> +static const struct mtk_vcodec_enc_pdata mt8173_vp8_pdata = {
-> +       .chip = MTK_MT8173,
-> +       .name = MTK_VENC_VP8_NAME,
-> +       .capture_formats = mtk_video_formats_capture_mt8173_vp8,
-> +       .num_capture_formats = 1,
-
-Same here, ARRAY_SIZE(mtk_video_formats_capture_mt8173_vp8)
-
-> +       .output_formats = mtk_video_formats_output_mt8173,
-> +       .num_output_formats = ARRAY_SIZE(mtk_video_formats_output_mt8173),
-> +       .min_bitrate = 64,
->         .max_bitrate = 4000000,
-> +       .core_id = VENC_LT_SYS,
->  };
->
->  static const struct mtk_vcodec_enc_pdata mt8183_pdata = {
->         .chip = MTK_MT8183,
-> -       .has_lt_irq = false,
-> +       .name = MTK_VCODEC_ENC_NAME,
->         .uses_ext = true,
->         .capture_formats = mtk_video_formats_capture_mt8183,
->         .num_capture_formats = ARRAY_SIZE(mtk_video_formats_capture_mt8183),
-> @@ -451,10 +422,14 @@ static const struct mtk_vcodec_enc_pdata mt8183_pdata = {
->         .num_output_formats = ARRAY_SIZE(mtk_video_formats_output_mt8173),
->         .min_bitrate = 64,
->         .max_bitrate = 40000000,
-> +       .core_id = VENC_SYS,
->  };
->
->  static const struct of_device_id mtk_vcodec_enc_match[] = {
-> -       {.compatible = "mediatek,mt8173-vcodec-enc", .data = &mt8173_pdata},
-> +       {.compatible = "mediatek,mt8173-vcodec-avc-enc",
-> +                       .data = &mt8173_avc_pdata},
-
-For backward compatibility let's also match
-"mediatek,mt8173-vcodec-enc" against this platform data.
-
-
-> +       {.compatible = "mediatek,mt8173-vcodec-vp8-enc",
-> +                       .data = &mt8173_vp8_pdata},
->         {.compatible = "mediatek,mt8183-vcodec-enc", .data = &mt8183_pdata},
->         {},
->  };
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-> index 3b7c54d6aa8f..1b2e4930ed27 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
-> @@ -43,23 +43,6 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
->                 return -ENODEV;
->         }
->         pm->larbvenc = &pdev->dev;
-> -
-> -       node = of_parse_phandle(dev->of_node, "mediatek,larb", 1);
-> -       if (!node) {
-> -               mtk_v4l2_err("no mediatek,larb found");
-> -               ret = -ENODEV;
-> -               goto put_larbvenc;
-> -       }
-> -
-> -       pdev = of_find_device_by_node(node);
-> -       of_node_put(node);
-> -       if (!pdev) {
-> -               mtk_v4l2_err("no mediatek,larb device found");
-> -               ret = -ENODEV;
-> -               goto put_larbvenc;
-> -       }
-> -
-> -       pm->larbvenclt = &pdev->dev;
->         pdev = mtkdev->plat_dev;
->         pm->dev = &pdev->dev;
->
-> @@ -71,12 +54,12 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
->                         GFP_KERNEL);
->                 if (!enc_clk->clk_info) {
->                         ret = -ENOMEM;
-> -                       goto put_larbvenclt;
-> +                       goto put_larbvenc;
->                 }
->         } else {
->                 mtk_v4l2_err("Failed to get venc clock count");
->                 ret = -EINVAL;
-> -               goto put_larbvenclt;
-> +               goto put_larbvenc;
->         }
->
->         for (i = 0; i < enc_clk->clk_num; i++) {
-> @@ -85,7 +68,7 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
->                         "clock-names", i, &clk_info->clk_name);
->                 if (ret) {
->                         mtk_v4l2_err("venc failed to get clk name %d", i);
-> -                       goto put_larbvenclt;
-> +                       goto put_larbvenc;
->                 }
->                 clk_info->vcodec_clk = devm_clk_get(&pdev->dev,
->                         clk_info->clk_name);
-> @@ -93,14 +76,12 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
->                         mtk_v4l2_err("venc devm_clk_get (%d)%s fail", i,
->                                 clk_info->clk_name);
->                         ret = PTR_ERR(clk_info->vcodec_clk);
-> -                       goto put_larbvenclt;
-> +                       goto put_larbvenc;
->                 }
->         }
->
->         return 0;
->
-> -put_larbvenclt:
-> -       put_device(pm->larbvenclt);
->  put_larbvenc:
->         put_device(pm->larbvenc);
->         return ret;
-> @@ -108,7 +89,7 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
->
->  void mtk_vcodec_release_enc_pm(struct mtk_vcodec_dev *mtkdev)
->  {
-> -       put_device(mtkdev->pm.larbvenclt);
-> +       pm_runtime_disable(mtkdev->pm.dev);
->         put_device(mtkdev->pm.larbvenc);
->  }
->
-> @@ -130,18 +111,10 @@ void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm)
->         ret = mtk_smi_larb_get(pm->larbvenc);
->         if (ret) {
->                 mtk_v4l2_err("mtk_smi_larb_get larb3 fail %d", ret);
-> -               goto larbvencerr;
-> -       }
-> -       ret = mtk_smi_larb_get(pm->larbvenclt);
-> -       if (ret) {
-> -               mtk_v4l2_err("mtk_smi_larb_get larb4 fail %d", ret);
-> -               goto larbvenclterr;
-> +               goto clkerr;
->         }
->         return;
->
-> -larbvenclterr:
-> -       mtk_smi_larb_put(pm->larbvenc);
-> -larbvencerr:
->  clkerr:
->         for (i -= 1; i >= 0; i--)
->                 clk_disable_unprepare(enc_clk->clk_info[i].vcodec_clk);
-> @@ -153,7 +126,6 @@ void mtk_vcodec_enc_clock_off(struct mtk_vcodec_pm *pm)
->         int i = 0;
->
->         mtk_smi_larb_put(pm->larbvenc);
-> -       mtk_smi_larb_put(pm->larbvenclt);
->         for (i = enc_clk->clk_num - 1; i >= 0; i--)
->                 clk_disable_unprepare(enc_clk->clk_info[i].vcodec_clk);
->  }
-> diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-> index 11abb191ada5..8267a9c4fd25 100644
-> --- a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-> +++ b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-> @@ -367,7 +367,7 @@ static int vp8_enc_encode(void *handle,
->
->         mtk_vcodec_debug_enter(inst);
->
-> -       enable_irq(ctx->dev->enc_lt_irq);
-> +       enable_irq(ctx->dev->enc_irq);
->
->         switch (opt) {
->         case VENC_START_OPT_ENCODE_FRAME:
-> @@ -386,7 +386,7 @@ static int vp8_enc_encode(void *handle,
->
->  encode_err:
->
-> -       disable_irq(ctx->dev->enc_lt_irq);
-> +       disable_irq(ctx->dev->enc_irq);
->         mtk_vcodec_debug_leave(inst);
->
->         return ret;
-> --
-> 2.18.0
->
+Maciej
