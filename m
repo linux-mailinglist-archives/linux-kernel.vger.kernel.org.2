@@ -2,139 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FB230E2EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B0B30E2EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhBCSxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:53:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233034AbhBCSwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:52:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8608864DF2;
-        Wed,  3 Feb 2021 18:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612378312;
-        bh=pdqysl9a+E8+CjpEt22x733DHWioxlkoDBqTzcbX16k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bY/Ya/8jhVTj/b9t5lEyMfF6qRehHUMCuFG+iO4Ro82CQozRL2BpRTFG2yzL/91Ck
-         I/9pW8mcjfxlzTZ6E8R/DJr6pmmR9amt4RzDR6eGR9z4t1VG5tLv20NpOn+ixsoTTV
-         49j1qxSOoPb9PQ8xMtQxGe0ToGYSoC9x+xgyydz+4epSULZz0xZwPwi3fJ7U5k2HYm
-         DqjrvFuehGWk68OMk37BoGvZJ47NX+lxjS/tSt1qHrZS5blkNxhp2WJL77VzcuSnFR
-         908nMt3ag28y/rc/w4pHbaz2vVZ/c0uHwVyXcGwCGMzbaV7FURAgc527I97YEYycWC
-         2t8dNxYLUSjcg==
-Date:   Wed, 3 Feb 2021 11:51:48 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210203185148.GA1711888@localhost>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+        id S233210AbhBCSxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233115AbhBCSwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:52:41 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6E4C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:52:01 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id p15so213934ilq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AZDi8lCrS2NywtnR2RVH/bdowc1KYG9B2acasSvhjxE=;
+        b=dQFpo9GZlg1fMUH3LykZanV1gNjABOvh3vUqtT8oW3vxRdaEud5xnSyj/Eox8b7GsX
+         +PAyVXzPolxEUBdKywO1JZiidlyF2wP4x0my8zRd9XsbtCcSQ/vZ68Jep/4josx+9c+I
+         Mu+sfQx44BYavUOjxBW8V2QdHRKUiL61Jaagln8F8J3cSbhO8q1fveslVwZAM1oFeW2N
+         osTSk2BnMAvVE5M8ZAHlkDNAXS+y/6f743Y9xY5qGR0/0jCgPmeEOweWx1P2jeP2B0Ll
+         D9qmJ2Qf6xcBKiQbny1xYmSn8fjoBQKWE7Ufpxg0OIOF0VBEIj+A5hLoS24JuZN30Izx
+         oRiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AZDi8lCrS2NywtnR2RVH/bdowc1KYG9B2acasSvhjxE=;
+        b=M6OL3aAgYEIsjOy9BITEG3dJvYXKMoJpgrsIYms7M9WUqgA12VCb24vCw442Bb/s2p
+         KqCH2yWPbyIB5BrxX8ezumpsWWuuowqOVgrymWlPKxkrszePeP45NDr1zmuAusrDQ+WV
+         gxQ8SXGtNPYpFPWzOwciIjhMf4B7oKVBX0BkdDUKL+DP5IHNzELfmhRHPa7W0J7bs7ux
+         ZEwdknu+gZG/nz5lyT6fNlJbHlSGEdOnplMk5HtZXTm6LA2H9eFMCG5YhWgO51U0jsd3
+         9mJWQ4KwNpCtulf6IGgnXUf9KAdudbt7zXOBoRvbVrFElfulj+TM6yEeyOIVFDfbZCSW
+         sVqw==
+X-Gm-Message-State: AOAM530R50PxxZDDpEF1svzHY9vOxzsh9IsWQjHw+ljxUfwsPeiNMTFA
+        sGDozyK3HsWxBYQYH/g/liC4Ww05qCIFm3GoFCTFxw==
+X-Google-Smtp-Source: ABdhPJyTrJ10xy5k4wVkQ9ELmn8mTS2TmuEiBPHiJfDnOazCC3FfQGKP3J1+OGRYf2mtmMKemLim9I8+H1OZhiq2UhY=
+X-Received: by 2002:a05:6e02:1888:: with SMTP id o8mr3241146ilu.154.1612378320595;
+ Wed, 03 Feb 2021 10:52:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+References: <20210202185734.1680553-1-bgardon@google.com> <20210202185734.1680553-26-bgardon@google.com>
+ <e87d4a5d-f6ac-677a-87aa-0c30977c92f1@redhat.com>
+In-Reply-To: <e87d4a5d-f6ac-677a-87aa-0c30977c92f1@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 3 Feb 2021 10:51:49 -0800
+Message-ID: <CANgfPd_t1umcmiFzaUwsUwAAvOePbdxn5nY5y9NcoROYv5HEWg@mail.gmail.com>
+Subject: Re: [PATCH v2 25/28] KVM: x86/mmu: Allow zapping collapsible SPTEs to
+ use MMU read lock
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:33:43AM +0100, Ard Biesheuvel wrote:
-> On Mon, 18 Jan 2021 at 22:42, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+On Wed, Feb 3, 2021 at 3:34 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 02/02/21 19:57, Ben Gardon wrote:
+> > @@ -1485,7 +1489,9 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+> >       struct kvm_mmu_page *root;
+> >       int root_as_id;
 > >
-> > On Mon, Jan 18, 2021 at 09:24:09PM +0100, Borislav Petkov wrote:
-> > > > > > As a matter of fact, it seems like the four assertions could be combined
-> > > > > > into:
-> > > > > >       BUILD_BUG_ON((EFI_VA_END & P4D_MASK) != (MODULES_END & P4D_MASK));
-> > > > > >       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
-> > > > > > instead of separately asserting they're the same PGD entry and the same
-> > > > > > P4D entry.
-> > > > > >
-> > > > > > Thanks.
-> > > > >
-> > > > > I actually don't quite get the MODULES_END check -- Ard, do you know
-> > > > > what that's for?
-> > > > >
-> > > >
-> > > > Maybe Boris remembers? He wrote the original code for the 'new' EFI
-> > > > page table layout.
-> > >
-> > > That was added by Kirill for 5-level pgtables:
-> > >
-> > >   e981316f5604 ("x86/efi: Add 5-level paging support")
-> >
-> > That just duplicates the existing pgd_index() check for the p4d_index()
-> > as well. It looks like the original commit adding
-> > efi_sync_low_kernel_mappings() used to copy upto the PGD entry including
-> > MODULES_END:
-> >   d2f7cbe7b26a7 ("x86/efi: Runtime services virtual mapping")
-> > and then Matt changed that when creating efi_mm:
-> >   67a9108ed4313 ("x86/efi: Build our own page table structures")
-> > to use EFI_VA_END instead but have a check that EFI_VA_END is in the
-> > same entry as MODULES_END.
-> >
-> > AFAICT, MODULES_END is only relevant as being something that happens to
-> > be in the top 512GiB, and -1ul would be clearer.
-> >
-> > >
-> > >  Documentation/x86/x86_64/mm.rst should explain the pagetable layout:
-> > >
-> > >    ffffff8000000000 | -512    GB | ffffffeeffffffff |  444 GB | ... unused hole
-> > >    ffffffef00000000 |  -68    GB | fffffffeffffffff |   64 GB | EFI region mapping space
-> > >    ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | ... unused hole
-> > >    ffffffff80000000 |   -2    GB | ffffffff9fffffff |  512 MB | kernel text mapping, mapped to physical address 0
-> > >    ffffffff80000000 |-2048    MB |                  |         |
-> > >    ffffffffa0000000 |-1536    MB | fffffffffeffffff | 1520 MB | module mapping space
-> > >    ffffffffff000000 |  -16    MB |                  |         |
-> > >       FIXADDR_START | ~-11    MB | ffffffffff5fffff | ~0.5 MB | kernel-internal fixmap range, variable size and offset
-> > >
-> > > That thing which starts at -512 GB above is the last PGD on the
-> > > pagetable. In it, between -4G and -68G there are 64G which are the EFI
-> > > region mapping space for runtime services.
-> > >
-> > > Frankly I'm not sure what this thing is testing because the EFI VA range
-> > > is hardcoded and I can't imagine it being somewhere else *except* in the
-> > > last PGD.
-> >
-> > It's just so that someone doesn't just change the #define's for
-> > EFI_VA_END/START and think that it will work, I guess.
-> >
-> > Another reasonable option, for example, would be to reserve an entire
-> > PGD entry, allowing everything but the PGD level to be shared, and
-> > adding the EFI PGD to the pgd_list and getting rid of
-> > efi_sync_low_kernel_mappings() altogether. There aren't that many PGD
-> > entries still unused though, so this is probably not worth it.
-> >
-> 
-> The churn doesn't seem to be worth it, tbh.
-> 
-> So could we get rid of the complexity here, and only build_bug() on
-> the start address of the EFI region being outside the topmost p4d?
-> That should make the PGD test redundant as well.
+> > -     for_each_tdp_mmu_root_yield_safe(kvm, root, false) {
+> > +     read_lock(&kvm->mmu_lock);
+> > +
+> > +     for_each_tdp_mmu_root_yield_safe(kvm, root, true) {
+> >               root_as_id = kvm_mmu_page_as_id(root);
+> >               if (root_as_id != slot->as_id)
+> >                       continue;
+> > @@ -1493,6 +1499,8 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+> >               zap_collapsible_spte_range(kvm, root, slot->base_gfn,
+> >                                          slot->base_gfn + slot->npages);
+> >       }
+> > +
+> > +     read_unlock(&kvm->mmu_lock);
+> >  }
+>
+>
+> I'd prefer the functions to be consistent about who takes the lock,
+> either mmu.c or tdp_mmu.c.  Since everywhere else you're doing it in
+> mmu.c, that would be:
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 0554d9c5c5d4..386ee4b703d9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5567,10 +5567,13 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>         write_lock(&kvm->mmu_lock);
+>         slot_handle_leaf(kvm, (struct kvm_memory_slot *)memslot,
+>                          kvm_mmu_zap_collapsible_spte, true);
+> +       write_unlock(&kvm->mmu_lock);
+>
+> -       if (kvm->arch.tdp_mmu_enabled)
+> +       if (kvm->arch.tdp_mmu_enabled) {
+> +               read_lock(&kvm->mmu_lock);
+>                 kvm_tdp_mmu_zap_collapsible_sptes(kvm, memslot);
+> -       write_unlock(&kvm->mmu_lock);
+> +               read_unlock(&kvm->mmu_lock);
+> +       }
+>   }
+>
+>   void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+>
+> and just lockdep_assert_held_read here.
 
-Was there ever a resolution to this conversation or a patch sent? I am
-still seeing the build failure that Arnd initially sent the patch for.
-x86_64 all{mod,yes}config with clang are going to ship broken in 5.11.
+That makes sense to me, I agree keeping it consistent is probably a good idea.
 
-Cheers,
-Nathan
+>
+> > -             tdp_mmu_set_spte(kvm, &iter, 0);
+> > -
+> > -             spte_set = true;
+>
+> Is it correct to remove this assignment?
+
+No, it was not correct to remove it. Thank you for catching that.
+
+>
+> Paolo
+>
