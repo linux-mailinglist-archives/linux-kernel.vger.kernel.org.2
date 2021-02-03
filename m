@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B4D30E393
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F6730E395
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhBCTul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:50:41 -0500
-Received: from mga11.intel.com ([192.55.52.93]:18472 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhBCTug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:50:36 -0500
-IronPort-SDR: J81d4/ydSLxW8i/XOtHTD2ByVoi7PRI/dsGyjMVhiUQC5crnAED+iMLzZo8NWLGE8cq0adw48M
- x7C20D3u7IhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="177599414"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="177599414"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:48:50 -0800
-IronPort-SDR: zoQlnCm1j/rfJDOAxmNGo3J5o4IUedYmnNWebnncsF5l+E3uZQw2kq+WDPXpvsa3srEGUmLxyF
- 9tQ9+ZtofrNA==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="356138144"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:48:47 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l7O8r-001iQl-0m; Wed, 03 Feb 2021 21:48:45 +0200
-Date:   Wed, 3 Feb 2021 21:48:45 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v4 1/4] lib: vsprintf: scanf: Negative number must have
- field width > 1
-Message-ID: <YBr+HW+uqEJmypGS@smile.fi.intel.com>
-References: <20210203165009.6299-1-rf@opensource.cirrus.com>
+        id S231330AbhBCTvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhBCTvE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:51:04 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1542AC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:50:24 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c84001e2b7e52dd5f0f2b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:1e2b:7e52:dd5f:f2b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9599A1EC0257;
+        Wed,  3 Feb 2021 20:50:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612381822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=N8guk8HFEpl0w+erO6vrJ6FO0v8tWc63A8/S5JJBFRQ=;
+        b=B23t0B4fqLjLTHmEI/t3gQerOfhB5fyrHEyy+UCbaTrZZ+PHbqlHzwJ4VzI2uuyaS4Z3fU
+        mMkP+35nrlEejNFdFRkKOaa9DALiIAP7ilKEm5FYM384WkdYHdah1bV6ghKnmMfYuZ7ZGo
+        lqJjlg73M5j8/RNdkRKb2qtqZyIquvI=
+Date:   Wed, 3 Feb 2021 20:50:24 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 10/11] x86/fault: Don't run fixups for SMAP violations
+Message-ID: <20210203195024.GK13819@zn.tnic>
+References: <cover.1612113550.git.luto@kernel.org>
+ <416aa53570523f2659edf9e39d553160cb253c5f.1612113550.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210203165009.6299-1-rf@opensource.cirrus.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <416aa53570523f2659edf9e39d553160cb253c5f.1612113550.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:50:06PM +0000, Richard Fitzgerald wrote:
-> If a signed number field starts with a '-' the field width must be > 1,
-> or unlimited, to allow at least one digit after the '-'.
+On Sun, Jan 31, 2021 at 09:24:41AM -0800, Andy Lutomirski wrote:
+> A SMAP-violating kernel access is not a recoverable condition.  Imagine
+> kernel code that, outside of a uaccess region, dereferences a pointer to
+> the user range by accident.  If SMAP is on, this will reliably generate
+> as an intentional user access.  This makes it easy for bugs to be
+> overlooked if code is inadequately tested both with and without SMAP.
 > 
-> This patch adds a check for this. If a signed field starts with '-'
-> and field_width == 1 the scanf will quit.
+> We discovered this because BPF can generate invalid accesses to user
+> memory, but those warnings only got printed if SMAP was off.  With this
+> patch, this type of error will be discovered with SMAP on as well.
 > 
-> It is ok for a signed number field to have a field width of 1 if it
-> starts with a digit. In that case the single digit can be converted.
-
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  lib/vsprintf.c | 6 +++++-
+>  arch/x86/mm/fault.c | 6 +++++-
 >  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 3b53c73580c5..28bb26cd1f67 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -3434,8 +3434,12 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
->  		str = skip_spaces(str);
->  
->  		digit = *str;
-> -		if (is_sign && digit == '-')
-> +		if (is_sign && digit == '-') {
-> +			if (field_width == 1)
-> +				break;
-> +
->  			digit = *(str + 1);
-> +		}
->  
->  		if (!digit
->  		    || (base == 16 && !isxdigit(digit))
-> -- 
-> 2.20.1
-> 
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 04cc98ec2423..d39946ad8a91 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -1242,7 +1242,11 @@ void do_user_addr_fault(struct pt_regs *regs,
+>  		     !(error_code & X86_PF_USER) &&
+>  		     !(regs->flags & X86_EFLAGS_AC)))
+>  	{
+	^
+
+Might wanna fix that opening brace too.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
