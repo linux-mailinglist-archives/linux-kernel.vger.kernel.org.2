@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779C30D5F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B1B30D5FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhBCJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:11:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
+        id S233212AbhBCJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:13:48 -0500
+Received: from mga14.intel.com ([192.55.52.115]:30338 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233273AbhBCJIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:08:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D37E664F7C;
-        Wed,  3 Feb 2021 09:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612343270;
-        bh=jSiB2eh7z20wSqXsrq7i3ztg06W8skYeSe5faR9mkQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hDTzMYVB9PSwUe1cB3XZhfs6cjTIOUyzbcJcrExHbrUuDDU1UEs9Eii/UDV1/jT3q
-         paf13rFn0vIPL7c8QXyivyEU3taUsQCeRJ8eB0JVj0jOs4ooXF2SPa6REhpmSwI2rK
-         rpzYLculsPqRPf/IOyS2b9XzpCJLCdz9ygYYAJMI=
-Date:   Wed, 3 Feb 2021 10:07:47 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: usb: generic-ohci: Add missing
- compatible strings
-Message-ID: <YBpn4zqGk6mV0aII@kroah.com>
-References: <20210202175439.3904060-1-robh@kernel.org>
- <20210202175439.3904060-2-robh@kernel.org>
+        id S233105AbhBCJJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:09:59 -0500
+IronPort-SDR: OVpAOo0a2TuvhjGal+0XxaNwxkLaw4UTwNPtPyUZTrwgUwoVJVThOZlo7aIwHATmbI+Wz+Op1v
+ RcKsqSPox5Yg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="180236135"
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="180236135"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:09:16 -0800
+IronPort-SDR: iBUxEd65Y1Bmv38cbCxVhzippc/Vipg9M4cOgIQTCg43ApvuJ47hqTdSrzWSmNnYRRnw8nxedQ
+ QcyQiqxux6KA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="406488887"
+Received: from anand-nuc8i7beh.iind.intel.com ([10.145.162.17])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Feb 2021 01:09:12 -0800
+From:   Anand Moon <anandx.ram.moon@intel.com>
+To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Anand Moon <anandx.ram.moon@intel.com>
+Subject: [PATCH] drm/i915/adl_s: ADL-S platform Update PCI ids for Mobile BGA
+Date:   Wed,  3 Feb 2021 14:40:29 +0530
+Message-Id: <20210203091029.2089-1-anandx.ram.moon@intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202175439.3904060-2-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 11:54:39AM -0600, Rob Herring wrote:
-> The generic OHCI binding needs to document all the specific compatible
-> strings so we can track undocumented compatible strings. Add all the
-> compatible strings from in tree users.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/usb/generic-ohci.yaml | 34 +++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
+As per Bspec: 53655 Update PCI ids for Mobile BGA.
 
-Both look fine to me, do you want me to take this through my trees or
-will you take them?
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Anand Moon <anandx.ram.moon@intel.com>
 
-If you want to, fine with me:
+diff --git a/include/drm/i915_pciids.h b/include/drm/i915_pciids.h
+index ebd0dd1c35b3..3be25768321d 100644
+--- a/include/drm/i915_pciids.h
++++ b/include/drm/i915_pciids.h
+@@ -640,6 +640,8 @@
+ 	INTEL_VGA_DEVICE(0x4681, info), \
+ 	INTEL_VGA_DEVICE(0x4682, info), \
+ 	INTEL_VGA_DEVICE(0x4683, info), \
++	INTEL_VGA_DEVICE(0x4688, info), \
++	INTEL_VGA_DEVICE(0x4689, info), \
+ 	INTEL_VGA_DEVICE(0x4690, info), \
+ 	INTEL_VGA_DEVICE(0x4691, info), \
+ 	INTEL_VGA_DEVICE(0x4692, info), \
+-- 
+2.30.0
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-If not, just let me know and I will pick them up.
-
-thanks,
-
-greg k-h
