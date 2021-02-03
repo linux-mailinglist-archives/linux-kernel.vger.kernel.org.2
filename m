@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157E630D504
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA0030D50D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbhBCIQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:16:48 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33114 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbhBCIQl (ORCPT
+        id S232474AbhBCIUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232242AbhBCIUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:16:41 -0500
-Received: by mail-oi1-f169.google.com with SMTP id j25so25937448oii.0;
-        Wed, 03 Feb 2021 00:16:25 -0800 (PST)
+        Wed, 3 Feb 2021 03:20:11 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064FBC061573;
+        Wed,  3 Feb 2021 00:19:31 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id s24so12752039iob.6;
+        Wed, 03 Feb 2021 00:19:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Nwlpcct/F9cJQ/7dbMVRZOZAh6ZmCNE68LBrwiCRQ3w=;
+        b=iTmKXcVRGgIbvupY209fVzFzdBNIkqDBHPReGxt+iAePvJ6QsdneBuZ3oFJOe2hpGO
+         LeMhmrA0eso6K57FHHZHKaC0k51zcrCIuAFLtlPylxmK6i2Cmh2yBMVbXybpUGU7XOQ/
+         8yE2hszs5Z+Vpx1OsxdpL9q7mLKFA/sNCpWGoz2VdGvDRy6PrqbV3TgBm3Zx7nReOtVg
+         XpCk9zqbFa+lYOrHU52RtknjkCT2HFcPUjedBSqdFs2Y7Bo0yt0PE0dXfygs6kVytzk9
+         I1xMp36y2EW/i8i6Jt/oNChnOxGIwgp4QHNvUIVFy0IePhoFQ/U/Hdhrs+iRMoZD/adR
+         vaCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OMNMC+xpp5BmBErZ7DTtHEEdPkb5Qun0a5vbRXVX3vY=;
-        b=POUgEegnMg7DMDQLrjEjgKdFHfrWjvwj8udpuPYIdEuwBzcLGEv0HtuWkrzYsb+pDp
-         tlN79z4zrt40hE1IYgDWuENhJCz918W/sH0mLMrSfxsLIUyLrgD1qG7lNqjED5724oJH
-         vek8NEL/52PkxUm4zmtpPvZ1hytLDkrzsE8QBafbdBtk5LcR1R7KSuiUicLK7lVTVNL3
-         9ciUS1rXYHwp0aUL0ZCSx2EtRteN8N4iEXFwIMqHnKFrgkY5ue9Y41RztEzChWmCYyFK
-         AaQJsrG42B8qWF9D7nvj1dNV7KbcqxxUlDs/6kXJ7qrhcdfn40soMnth7hUx5FcUNZuI
-         jXDQ==
-X-Gm-Message-State: AOAM532Rxdg1AKi+72YhT+dwmLpqXcsKy8bHewPPY+kqkcUr8KdovIZ4
-        gpUbObOwOqQHnYsxhXfickEFxdI87+QKKGIcF8k=
-X-Google-Smtp-Source: ABdhPJw59iItHayjaGX97phdW1sK3zjTtayzwJ1NUfqJOoKyyAHQO7+Dk/qcLkjM2SfB36dbgq0cCIFHKr1/YJuwhRk=
-X-Received: by 2002:aca:4d8d:: with SMTP id a135mr1200672oib.153.1612340160027;
- Wed, 03 Feb 2021 00:16:00 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Nwlpcct/F9cJQ/7dbMVRZOZAh6ZmCNE68LBrwiCRQ3w=;
+        b=OdTlXg9ZI0RwiZUyRcjeibjHUbZLCgjLH/x6vz/3RhqqHJFlh0R+2lksYGqrEFKjSm
+         bX4YOlpA0SvgaypU3b5+747AqDXFWQDEvklUjyKHxWDhKwf0N6+ncA8DfMGxiqUr1xrs
+         f6X30UIZWSds+y74yW9gdTJKTlVxwddrnxkANEygBH4qSqX79EGP36Tp+l5HuTjiFaNo
+         v9syOnUDPickfmH7d/99Ydn3OaqbSR6YcsWpeOZ4bP4/LD2CtcmAFVc+mdNjVWS6CQb6
+         EWrDkjWmbnJs5+D52yVePyAcFl5j07flQQEQgP8s84sCsTYpmMi7EJFL2Mslx1kZHIto
+         4+BA==
+X-Gm-Message-State: AOAM530hfMcl24WeS5YmYlFusOg6NfWE2yWVyG4jroxmmXRgrr1L8HNm
+        1wkfpBNgxoNgIVCoL6l2kOJVrBhkK2nKQ22wsfvTiejmm1E=
+X-Google-Smtp-Source: ABdhPJxD8V87tad7EkvPiaD2wrK0mSumpXh6jv1ydp2zHS2djx4W+Ya82t7uqoxxwmSeQcAunngr8X5Z4IdJs8jdPm4=
+X-Received: by 2002:a05:6602:2b01:: with SMTP id p1mr1566109iov.156.1612340370361;
+ Wed, 03 Feb 2021 00:19:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com>
- <20210202212231.g5tj3f7tv74gagm6@viti.kaiser.cx> <CAGETcx_cS_Y-1Bw3tNhZRckEQO=yB8UDzNRr+Khs_X2ym7tnwA@mail.gmail.com>
- <CAMuHMdWN4JA4w+6MUAc-ogRAE602G8KSgy+71dtx7QQ60t1XZQ@mail.gmail.com> <CAGETcx8Yai=q+sHiixcv=D=T9r0+X1GZ8LRBc98SX_omYVhavQ@mail.gmail.com>
-In-Reply-To: <CAGETcx8Yai=q+sHiixcv=D=T9r0+X1GZ8LRBc98SX_omYVhavQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Feb 2021 09:15:48 +0100
-Message-ID: <CAMuHMdWyA3y1PYff5X9DoPaj0TREK3jFe_P+e+rNVb1K-kRDbA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20210203075239.5505-1-masahiroy@kernel.org>
+In-Reply-To: <20210203075239.5505-1-masahiroy@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 3 Feb 2021 09:19:19 +0100
+Message-ID: <CA+icZUWpXQZqF+sz9bTv8ZUw2xYKUiCChyu92Zma1y-EtruRLA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>,
+        Mark Wielaard <mark@klomp.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Wed, Feb 3, 2021 at 9:11 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Feb 2, 2021 at 11:55 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Feb 2, 2021 at 11:44 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Tue, Feb 2, 2021 at 1:22 PM Martin Kaiser <martin@kaiser.cx> wrote:
-> > > > Thus wrote Saravana Kannan (saravanak@google.com):
-> > > > All of those drivers have a gpio in
-> > > > their device-tree node, such as
-> > > >
-> > > > my_driver {
-> > > >    gpio_test1 = <&gpio1 0 0>;
-> > > >    ...
-> > > > };
-> > > >
-> > > > with gpio1 from arch/arm/boot/dts/imx25.dtsi.
-> > > >
-> > > > The probe function calls
-> > > >
-> > > > of_get_named_gpio(np, "gpio_test1", 0);
-> > > >
-> > > > to get the gpio. This fails with -EINVAL.
-> > >
-> > > And you didn't see this issue with the fsl,avic patch?
-> > >
-> > > The property you are using is not a standard GPIO binding (-gpios,
-> > > gpio, gpios) and I'm not surprised it's not working. The gpio1 is
-> > > probably getting probe deferred and ends up running after "my_driver".
-> >
-> > So my_driver doesn't support deferred probe, as of_get_named_gpio()
-> > returns -EINVAL instead of -EPROBE_DEFER?
-> > Converting my_driver from of_get_named_gpio() to the gpiod_*() API
-> > should at least make the driver support probe deferral, after which I
-> > expect it to start working again on reprobe?
+On Wed, Feb 3, 2021 at 8:53 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> The way I understood the API/example, you can't just change the code
-> and have it work. The DT itself isn't using standard bindings. And we
+> Sedat Dilek noticed duplicated debug flags passed when building C
+> files with CONFIG_DEBUG_INFO.
+>
+> I do not know much about his build environment, but yes, Kbuild
+> recurses to the top Makefile with some build targets. For example,
+> 'make CC=clang bindeb-pkg' reproduces the issue.
+>
+> With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
+> for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
+> CONFIG_CC_IS_GCC=y.
+>
+> Fix it to reset DEBUG_CFLAGS also when using Clang.
+>
 
-Oh, right.
+Great, Masahiro!
 
-> can't make kernel changes that assume the DT has been changed to match
-> the code. So, the best we could do is have of_get_named_gpio() return
-> -EPROBE_DEFER if it doesn't find the GPIO -- assuming that doesn't
-> break other users. Or have this specific driver remap the -EINVAL to
-> -EPROBE_DEFER.
+I wanted to request an "undrunken" switch for GNU/make :-).
 
-The latter would hide real errors, too, and would cause futile reprobes.
+- Sedat -
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 3d3f67b98ca2..769a38ee81b9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -811,10 +811,12 @@ KBUILD_CFLAGS     += -ftrivial-auto-var-init=zero
+>  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+>  endif
+>
+> +DEBUG_CFLAGS   :=
+> +
+>  # Workaround for GCC versions < 5.0
+>  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
+>  ifdef CONFIG_CC_IS_GCC
+> -DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+> +DEBUG_CFLAGS   += $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+>  endif
+>
+>  ifdef CONFIG_DEBUG_INFO
+> --
+> 2.27.0
+>
