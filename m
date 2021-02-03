@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE19E30D3D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A9330D3E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhBCHHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:07:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        id S232298AbhBCHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhBCHFm (ORCPT
+        with ESMTP id S231913AbhBCHKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:05:42 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BCAC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 23:05:00 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id q72so2434791pjq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 23:05:00 -0800 (PST)
+        Wed, 3 Feb 2021 02:10:18 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E453DC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 23:09:37 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id c13so26402179ybg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 23:09:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gKZOcDhfXnFXqnKqDlQ9UXmyGdMx/grYINFkCv8mdt8=;
-        b=IgUkx0gYfzPr8eTrklb9NuTzfUdBaofL2ZNjmfnSf03PZJr1WCLSvrEfZ/eK0u7js/
-         b9okj5Ba/mUT56qal1j8RStgmAqtCSUB5h9lLad012RkX3fbaC6WGLZf5leDXzgeOYDK
-         q+q+3s+xHy3hdBy9X12S/+3p4dCk5AzrgRmqXvlmZGVW5FVCAz/GWDTGNEyJm/9mPTuo
-         84R2RKTfXLrooKKlyLwZqSddlpgwxfDzWlH5Tle8ZpPNt2R4imOvVhb8TozwN5P/Pc49
-         Mj0powX3PD2QNev14M3bu/UoYQgUFrEoSF3qqxrFOYaXNNsxXND33HB511rqI9Xo9A0J
-         A6iA==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
+        b=ORpIZ9KqvA5JySv1a+xUn5mihk221WQUpgWJVo0oGIZRv5FvZ6QiHJy/rWa+IdEYjI
+         /8JHAUH81DnuGXTBISe7MuVXH1UcJOWYwxV1PZGf3qGUR5pivDIDyLTY1K5RB3RfjS8C
+         qdmy0O+f1yM9NW7yygT+6B3madCzZB+CdnwsAuZo5aU39rSboYuAaW580muhTehu4V3E
+         cigMubeYmMeWUvEC+mhwwHzpJVVgmmeuKNL4xxK0En3ZLAIZpDJxe/TO420R8rs1oIma
+         kUzrgy9y8ml3LVwxWfHb01cEiFrYwFZ5EH0TevmKlL2AdtqBUN0UMrChtJytP1Vhzq2q
+         7K6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gKZOcDhfXnFXqnKqDlQ9UXmyGdMx/grYINFkCv8mdt8=;
-        b=OtBI+W08tb55EYi6IoiiOcyKa68iPmVt+gpHGhQHvV1yHufv7peiUIiZID7rWCsXMk
-         hvw3JzyQZjocPS7rUZLQLd78stRcjc1maJo+uu9fRvk13L2yxNXenOm/P8wNQutD4x7m
-         t9g2Pk/isHDofSiaxoCH5Tm/J6SSShxb3hQ484fGoAcjjtvJ4CnFlqOKd4lmZsy+N/zz
-         20kN2lYFIZkICGN3nN1yHsFvZnW3Vx9MYJX0H3AmBHmyqzlQd+HvLO6YjFJu5/I3QV9n
-         X1Lxy9F4oi/W0r6K9uHx3QiFAdDbmIO/AkwgEy67G7LVktsoW7s93o/2bY8IKaICKlCo
-         xj0A==
-X-Gm-Message-State: AOAM533EcOdj8nW9JBsHj+WwfQJFESbvwg8ZWm5Vz9HaCA2JxdcbUOHC
-        2Au8UhFuA/3uRJY82GmJRe9XQQ==
-X-Google-Smtp-Source: ABdhPJz4XcM6cbEyvmmUURpt4mxND2T1uq0Fq/urnlxGUNBd+QgtvnCzbgUS3cOZxBkS+VOX08dRkw==
-X-Received: by 2002:a17:902:6b87:b029:dc:3402:18af with SMTP id p7-20020a1709026b87b02900dc340218afmr1812366plk.29.1612335899569;
-        Tue, 02 Feb 2021 23:04:59 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:dd26:2871:d4dd:eb32])
-        by smtp.gmail.com with ESMTPSA id x19sm1162839pfp.207.2021.02.02.23.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 23:04:58 -0800 (PST)
-Date:   Tue, 2 Feb 2021 23:04:53 -0800
-From:   Benson Leung <bleung@google.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>, Benson Leung <bleung@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        kyletso@google.com
-Subject: Re: linux-next: build warning after merge of the usb tree
-Message-ID: <YBpLFdkXqpM8T44B@google.com>
-References: <20210203161300.57344f63@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9hhO9SPpJMFov6eg"
-Content-Disposition: inline
-In-Reply-To: <20210203161300.57344f63@canb.auug.org.au>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
+        b=Knr8vSBNLuBK/jtM39S9pAtzCW2Zgjhg233uPiR1GPofFkmiq4IM0zPZ5GuP2DrUoZ
+         VDkwNiLPHMG97d1yCK8CRhYog/EJUkZPhwhIekz9luRSNc6V4mFtpuOaf0kcmGR3nVDK
+         6A7lwyDMxrDtcbR/nSl/P3TrKQLUN5Z/kMg7jzSXmczR+XJe9vqJ92U8j0f/BBbvLxpf
+         jtUuSGhTsBm72CL7k4DINAEhT9X89R8B2+j7tYNnznuXapkygbsGD52MqkxzhaPZQF3e
+         xuzXrSK8u2BWGNuzzjY/PgfNPwwxsB0oSHmTqALOp1eJ8j0hgRMcV9dz7zyWVG0LRBcb
+         nbZw==
+X-Gm-Message-State: AOAM533hhUNgWl+U9X+orCOmhka5G3/KpUpYePVSsS+7FviFt/Q8E47X
+        Kj3Tjv67ex5lu+sBkZcE1VXL/5RssayC80k4nw==
+X-Google-Smtp-Source: ABdhPJypZNI/m4g+qfZiw1c1Kl/BP/d7kUrd1HrLK8IrMqiQE82/eoWXzK8jRUdUY1sUw071wrH5VFpy2dvkgYlXwA==
+Sender: "howardchung via sendgmr" 
+        <howardchung@howardchung-p920.tpe.corp.google.com>
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:c8ff:4e4a:dbd4:e8a6])
+ (user=howardchung job=sendgmr) by 2002:a25:5cd7:: with SMTP id
+ q206mr2627199ybb.150.1612336177210; Tue, 02 Feb 2021 23:09:37 -0800 (PST)
+Date:   Wed,  3 Feb 2021 15:09:29 +0800
+Message-Id: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v1] Bluetooth: Fix crash in mgmt_add_adv_patterns_monitor_complete
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
+Cc:     Howard Chung <howardchung@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If hci_add_adv_monitor is a pending command(e.g. forward to
+msft_add_monitor_pattern), it is possible that
+mgmt_add_adv_patterns_monitor_complete gets called before
+cmd->user_data gets set, which will cause a crash when we
+try to get the moniter handle through cmd->user_data in
+mgmt_add_adv_patterns_monitor_complete.
 
---9hhO9SPpJMFov6eg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This moves the cmd->user_data assignment earlier than
+hci_add_adv_monitor.
 
-Hi,
+RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
+Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
+e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
+7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
+c8
+RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
+RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
+RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
+RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
+R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
+R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000018 CR3: 0000000133612002 CR4:
+00000000003606e0
+Call Trace:
+ ? msft_le_monitor_advertisement_cb+0x111/0x141
+[bluetooth]
+ hci_event_packet+0x425e/0x631c [bluetooth]
+ ? printk+0x59/0x73
+ ? __switch_to_asm+0x41/0x70
+ ?
+msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
+ ? bt_dbg+0xb4/0xbb [bluetooth]
+ ? __switch_to_asm+0x41/0x70
+ hci_rx_work+0x101/0x319 [bluetooth]
+ process_one_work+0x257/0x506
+ worker_thread+0x10d/0x284
+ kthread+0x14c/0x154
+ ? process_one_work+0x506/0x506
+ ? kthread_blkcg+0x2c/0x2c
+ ret_from_fork+0x1f/0x40
 
-On Wed, Feb 03, 2021 at 04:13:00PM +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> After merging the usb tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->=20
-> drivers/usb/typec/class.c: In function 'typec_partner_set_pd_revision':
-> drivers/usb/typec/class.c:763:6: warning: unused variable 'ret' [-Wunused=
--variable]
->   763 |  int ret;
->       |      ^~~
->=20
-> Introduced by commit
->=20
->   29b01295a829 ("usb: typec: Add typec_partner_set_pd_revision")
->=20
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+Signed-off-by: Howard Chung <howardchung@google.com>
+---
 
-Will be fixed by https://lore.kernel.org/r/20210202095512.761214-1-kyletso@=
-google.com,
-already in Greg's usb-testing.
+ net/bluetooth/mgmt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks Kyle for the quick fix yesterday.
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 8ff9c4bb43d11..74971b4bd4570 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -4303,6 +4303,7 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
+ 		goto unlock;
+ 	}
+ 
++	cmd->user_data = m;
+ 	pending = hci_add_adv_monitor(hdev, m, &err);
+ 	if (err) {
+ 		if (err == -ENOSPC || err == -ENOMEM)
+@@ -4330,7 +4331,6 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
+ 
+ 	hci_dev_unlock(hdev);
+ 
+-	cmd->user_data = m;
+ 	return 0;
+ 
+ unlock:
+-- 
+2.30.0.365.g02bc693789-goog
 
-Benson
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---9hhO9SPpJMFov6eg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBpLFQAKCRBzbaomhzOw
-wk1FAQDWVMz1HspioddT4xgWPzZjs8dj1NKByO6VwY/Ya/ZjIAEAgRIX8yyQEAuf
-MEhuQI7xn6Gqqv+YubKIs1IRSnT6RAs=
-=2lGT
------END PGP SIGNATURE-----
-
---9hhO9SPpJMFov6eg--
