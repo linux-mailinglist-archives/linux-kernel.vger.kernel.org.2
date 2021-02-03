@@ -2,230 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5073630E30B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A27430E311
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhBCTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbhBCTF5 (ORCPT
+        id S233015AbhBCTHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:07:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35298 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232924AbhBCTHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:05:57 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F2DC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:05:16 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id e12so394396pls.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:05:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EE8xr8WGSTtKixE8YworouSjrlGN2kJD3jxgfGoDHgE=;
-        b=UEFjhXbHS4GnVyDF/OKRVjVLat60WtlEynnBNIm4xMvIAYfFDxZ/DmT4HXfxrpQ/zo
-         4F2NJt51TWh+FbWeiGdc/y9Q/axfuAnHqQ268gzS0OfSxaYO6n9N3jwHniBl0eP5Ksuc
-         9cJmIjU+dVkoaRlIPAXbW3D2rvXhe5aK+9czpA0OXiR6G0MtCSmgcxQSWyj7hwvpI8/8
-         KoEo14EOqCeN0spKGMr8mXwCti66Y45EVKmLz4hWCSiemgfeBHB6wBAELuM6glK/sZIh
-         bkEULEW5CdTji8ZXEvPudK8n3i7dZfTT2hC/kSlgfnjBNomjktwxKVyHAiWE9z+1dmEu
-         4gyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EE8xr8WGSTtKixE8YworouSjrlGN2kJD3jxgfGoDHgE=;
-        b=gQrBEM7e+UV8UKXY3DEI9/5hWAxTsyiVt03pGVlJ1ayfMqg3bhLwpWbrRvMrpXO3jL
-         4y90ELX0zVfiIbqpQOknu1YFF6xk22aJ8jfiQKBVpPIF4NuFMWEngI9wZ+AAJNwsKU/Q
-         suqtvwBeD4/2D3bDP6mGxBOYNqYeiUFpEj9NSUc4T7r+Nru6pvMNi1WDbIfcgIvPmAzR
-         pUJI4adqZHFANaAFBQVrPKvokZA8GXomG+3uxzGhI43qphxIyfeQJGXMKZUzO5trdo+X
-         tSh+NaMbcMktrFDs01seWGkmsWq9bLEFWrt4KenjWgCSGWER/vMmTBLmY7KCcKX93/no
-         vAyg==
-X-Gm-Message-State: AOAM532yPtBQrEuv9LRtRO7jLysL+IZ+szcnm+iRCZE1MeFKYzxcC2rg
-        xLs6KdXdBM529TzFPlALysX3eQ==
-X-Google-Smtp-Source: ABdhPJzszjqDHIZVTAHhfi1g+ceBJqGxQv3ur8DNrPgD8N5+IQnBrtpXOIzi74TARuyQF0Qu6719mQ==
-X-Received: by 2002:a17:902:8f97:b029:e1:1388:2705 with SMTP id z23-20020a1709028f97b02900e113882705mr4302999plo.56.1612379116413;
-        Wed, 03 Feb 2021 11:05:16 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b17sm2960392pfo.151.2021.02.03.11.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 11:05:15 -0800 (PST)
-Date:   Wed, 3 Feb 2021 12:05:13 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org,
-        Leo Yan <leo.yan@linaro.org>
-Subject: Re: [PATCH V3 07/14] coresight: etm-perf: Handle stale output handles
-Message-ID: <20210203190513.GF1536093@xps15>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-8-git-send-email-anshuman.khandual@arm.com>
+        Wed, 3 Feb 2021 14:07:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612379145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lFt/2RFOzQN6thk0J4a0+YNcEpiz/J/7UyVDz3HjZfM=;
+        b=ix0LqXjjcngVEfBkiUQI9v7QV2yxd2gofbdg/nA7t925ZlGHLUETXjldmHLKtw5X7a+Ct1
+        C5pQY90MVqeUROSdKn/27R638zwbFsfljZ0Tsg9pA3rbfNhWdont9Y/c/0LI+3m/H/xcjb
+        HPAfafrYuDKyC+akdROboKe3ZtPYa9k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-sTIcB_hWN7CUN9FEBbW0aA-1; Wed, 03 Feb 2021 14:05:41 -0500
+X-MC-Unique: sTIcB_hWN7CUN9FEBbW0aA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 127AA1083E90;
+        Wed,  3 Feb 2021 19:05:36 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 61D86709A9;
+        Wed,  3 Feb 2021 19:05:21 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 13:05:18 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <20210203190518.nlwghesq75enas6n@treble>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+ <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1611737738-1493-8-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:25:31PM +0530, Anshuman Khandual wrote:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > Can you pretty please not line-wrap console output? It's unreadable.
 > 
-> The context associated with an ETM for a given perf event
-> includes :
->   - handle -> the perf output handle for the AUX buffer.
->   - the path for the trace components
->   - the buffer config for the sink.
+> GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> Let me know if you'd like me to regenerate the decoded stack.
 > 
-> The path and the buffer config are part of the "aux_priv" data
-> (etm_event_data) setup by the setup_aux() callback, and made available
-> via perf_get_aux(handle).
+> > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+> >
+> > Not sure what tree you're on, but that's not the upstream commit.
 > 
-> Now with a sink supporting IRQ, the sink could "end" an output
-> handle when the buffer reaches the programmed limit and would try
-> to restart a handle. This could fail if there is not enough
-> space left the AUX buffer (e.g, the userspace has not consumed
-> the data). This leaves the "handle" disconnected from the "event"
-> and also the "perf_get_aux()" cleared. This all happens within
-> the sink driver, without the etm_perf driver being aware.
-> Now when the event is actually stopped, etm_event_stop()
-> will need to access the "event_data". But since the handle
-> is not valid anymore, we loose the information to stop the
-> "trace" path. So, we need a reliable way to access the etm_event_data
-> even when the handle may not be active.
+> I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+> added a link to the upstream hash right below.
 > 
-> This patch replaces the per_cpu handle array with a per_cpu context
-> for the ETM, which tracks the "handle" as well as the "etm_event_data".
-> The context notes the etm_event_data at etm_event_start() and clears
-> it at etm_event_stop(). This makes sure that we don't access a
-> stale "etm_event_data" as we are guaranteed that it is not
-> freed by free_aux() as long as the event is active and tracing,
-> also provides us with access to the critical information
-> needed to wind up a session even in the absence of an active
-> output_handle.
+> > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > >
+> > >     tracepoint: Optimize using static_call()
+> > >
+> >
+> > There's a known issue with that patch, can you try:
+> >
+> >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
 > 
-> This is not an issue for the legacy sinks as none of them supports
-> an IRQ and is centrally handled by the etm-perf.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm-perf.c | 45 +++++++++++++++++++++---
->  1 file changed, 40 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index eb9e7e9..a3977b0 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -24,7 +24,26 @@
->  static struct pmu etm_pmu;
->  static bool etm_perf_up;
->  
-> -static DEFINE_PER_CPU(struct perf_output_handle, ctx_handle);
-> +/*
-> + * An ETM context for a running event includes the perf aux handle
-> + * and aux_data. For ETM, the aux_data (etm_event_data), consists of
-> + * the trace path and the sink configuration. The event data is accessible
-> + * via perf_get_aux(handle). However, a sink could "end" a perf output
-> + * handle via the IRQ handler. And if the "sink" encounters a failure
-> + * to "begin" another session (e.g due to lack of space in the buffer),
-> + * the handle will be cleared. Thus, the event_data may not be accessible
-> + * from the handle when we get to the etm_event_stop(), which is required
-> + * for stopping the trace path. The event_data is guaranteed to stay alive
-> + * until "free_aux()", which cannot happen as long as the event is active on
-> + * the ETM. Thus the event_data for the session must be part of the ETM context
-> + * to make sure we can disable the trace path.
-> + */
-> +struct etm_ctxt {
-> +	struct perf_output_handle handle;
-> +	struct etm_event_data *event_data;
-> +};
-> +
-> +static DEFINE_PER_CPU(struct etm_ctxt, etm_ctxt);
->  static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
->  
->  /* ETMv3.5/PTM's ETMCR is 'config' */
-> @@ -332,7 +351,8 @@ static void etm_event_start(struct perf_event *event, int flags)
->  {
->  	int cpu = smp_processor_id();
->  	struct etm_event_data *event_data;
-> -	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
-> +	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
-> +	struct perf_output_handle *handle = &ctxt->handle;
->  	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
->  	struct list_head *path;
-> 
-        if (!csdev)
-                goto fail;
+> I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+> of v5.9 (to make it reproducible), and the patch did not help. Do I
+> need to apply the whole series or something else?
 
-        /*
-         * Something went wrong if an event data is already associated
-         * with a context.
-         */
-        if (WARN_ONE(ctxt->event_data))
-                goto fail;
+Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+It will spit out a bunch of stack data.
+
+
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] Subject: [PATCH] x86/unwind: Add 'unwind_debug' cmdline
+ option
+
+Sometimes the one-line ORC unwinder warnings aren't very helpful.  Take
+the existing frame pointer unwind_dump() and make it useful for all
+unwinders.
+
+I don't want to be too aggressive about enabling the dumps, so for now
+they're only enabled with the use of a new 'unwind_debug' cmdline
+option.  When enabled, it will dump the full contents of the stack when
+an error condition is encountered, or when dump_stack() is called.
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ .../admin-guide/kernel-parameters.txt         |  6 +++
+ arch/x86/include/asm/unwind.h                 |  3 ++
+ arch/x86/kernel/dumpstack.c                   | 39 ++++++++++++++
+ arch/x86/kernel/unwind_frame.c                | 51 +++----------------
+ arch/x86/kernel/unwind_orc.c                  |  5 +-
+ 5 files changed, 58 insertions(+), 46 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 3d6604a949f8..d29689aa62a2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5521,6 +5521,12 @@
+ 	unknown_nmi_panic
+ 			[X86] Cause panic on unknown NMI.
  
-> @@ -374,6 +394,8 @@ static void etm_event_start(struct perf_event *event, int flags)
->  	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
->  		goto fail_disable_path;
->  
-> +	/* Save the event_data for this ETM */
-> +	ctxt->event_data = event_data;
->  out:
->  	return;
->  
-> @@ -392,13 +414,20 @@ static void etm_event_stop(struct perf_event *event, int mode)
->  	int cpu = smp_processor_id();
->  	unsigned long size;
->  	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
-> -	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
-> -	struct etm_event_data *event_data = perf_get_aux(handle);
-> +	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
-> +	struct perf_output_handle *handle = &ctxt->handle;
++	unwind_debug	[X86-64]
++			Enable unwinder debug output.  This can be
++			useful for debugging certain unwinder error
++			conditions, including corrupt stacks and
++			bad/missing unwinder metadata.
++
+ 	usbcore.authorized_default=
+ 			[USB] Default USB device authorization:
+ 			(default -1 = authorized except for wireless USB,
+diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
+index 70fc159ebe69..5101d7ef7912 100644
+--- a/arch/x86/include/asm/unwind.h
++++ b/arch/x86/include/asm/unwind.h
+@@ -123,4 +123,7 @@ static inline bool task_on_another_cpu(struct task_struct *task)
+ #endif
+ }
+ 
++extern bool unwind_debug __ro_after_init;
++void unwind_dump(struct unwind_state *state);
++
+ #endif /* _ASM_X86_UNWIND_H */
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 299c20f0a38b..febfd5b7f62a 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -29,6 +29,42 @@ static int die_counter;
+ 
+ static struct pt_regs exec_summary_regs;
+ 
++bool unwind_debug __ro_after_init;
++static int __init unwind_debug_cmdline(char *str)
++{
++	unwind_debug = true;
++	return 0;
++}
++early_param("unwind_debug", unwind_debug_cmdline);
++
++void unwind_dump(struct unwind_state *state)
++{
++	unsigned long word, *sp;
++	struct stack_info stack_info = {0};
++	unsigned long visit_mask = 0;
++
++	printk_deferred("unwinder dump: stack type:%d next_sp:%p mask:0x%lx graph_idx:%d\n",
++			state->stack_info.type, state->stack_info.next_sp,
++			state->stack_mask, state->graph_idx);
++
++	sp = state->task == current ? __builtin_frame_address(0)
++				    : (void *)state->task->thread.sp;
++
++	for (; sp; sp = PTR_ALIGN(stack_info.next_sp, sizeof(long))) {
++		if (get_stack_info(sp, state->task, &stack_info, &visit_mask))
++			break;
++
++		for (; sp < stack_info.end; sp++) {
++
++			word = READ_ONCE_NOCHECK(*sp);
++
++			printk_deferred("%0*lx: %0*lx (%pB)\n", BITS_PER_LONG/4,
++					(unsigned long)sp, BITS_PER_LONG/4,
++					word, (void *)word);
++		}
++	}
++}
++
+ bool noinstr in_task_stack(unsigned long *stack, struct task_struct *task,
+ 			   struct stack_info *info)
+ {
+@@ -301,6 +337,9 @@ static void show_trace_log_lvl(struct task_struct *task, struct pt_regs *regs,
+ 		if (stack_name)
+ 			printk("%s </%s>\n", log_lvl, stack_name);
+ 	}
++
++	if (unwind_debug)
++		unwind_dump(&state);
+ }
+ 
+ void show_stack(struct task_struct *task, unsigned long *sp,
+diff --git a/arch/x86/kernel/unwind_frame.c b/arch/x86/kernel/unwind_frame.c
+index d7c44b257f7f..6bcdf6ecad65 100644
+--- a/arch/x86/kernel/unwind_frame.c
++++ b/arch/x86/kernel/unwind_frame.c
+@@ -28,48 +28,6 @@ unsigned long *unwind_get_return_address_ptr(struct unwind_state *state)
+ 	return state->regs ? &state->regs->ip : state->bp + 1;
+ }
+ 
+-static void unwind_dump(struct unwind_state *state)
+-{
+-	static bool dumped_before = false;
+-	bool prev_zero, zero = false;
+-	unsigned long word, *sp;
+-	struct stack_info stack_info = {0};
+-	unsigned long visit_mask = 0;
+-
+-	if (dumped_before)
+-		return;
+-
+-	dumped_before = true;
+-
+-	printk_deferred("unwind stack type:%d next_sp:%p mask:0x%lx graph_idx:%d\n",
+-			state->stack_info.type, state->stack_info.next_sp,
+-			state->stack_mask, state->graph_idx);
+-
+-	for (sp = PTR_ALIGN(state->orig_sp, sizeof(long)); sp;
+-	     sp = PTR_ALIGN(stack_info.next_sp, sizeof(long))) {
+-		if (get_stack_info(sp, state->task, &stack_info, &visit_mask))
+-			break;
+-
+-		for (; sp < stack_info.end; sp++) {
+-
+-			word = READ_ONCE_NOCHECK(*sp);
+-
+-			prev_zero = zero;
+-			zero = word == 0;
+-
+-			if (zero) {
+-				if (!prev_zero)
+-					printk_deferred("%p: %0*x ...\n",
+-							sp, BITS_PER_LONG/4, 0);
+-				continue;
+-			}
+-
+-			printk_deferred("%p: %0*lx (%pB)\n",
+-					sp, BITS_PER_LONG/4, word, (void *)word);
+-		}
+-	}
+-}
+-
+ static bool in_entry_code(unsigned long ip)
+ {
+ 	char *addr = (char *)ip;
+@@ -244,7 +202,6 @@ static bool update_stack_state(struct unwind_state *state,
+ 						  addr, addr_p);
+ 	}
+ 
+-	/* Save the original stack pointer for unwind_dump(): */
+ 	if (!state->orig_sp)
+ 		state->orig_sp = frame;
+ 
+@@ -346,13 +303,17 @@ bool unwind_next_frame(struct unwind_state *state)
+ 			"WARNING: kernel stack regs at %p in %s:%d has bad 'bp' value %p\n",
+ 			state->regs, state->task->comm,
+ 			state->task->pid, next_bp);
+-		unwind_dump(state);
++
++		if (unwind_debug)
++			unwind_dump(state);
+ 	} else {
+ 		printk_deferred_once(KERN_WARNING
+ 			"WARNING: kernel stack frame pointer at %p in %s:%d has bad value %p\n",
+ 			state->bp, state->task->comm,
+ 			state->task->pid, next_bp);
+-		unwind_dump(state);
++
++		if (unwind_debug)
++			unwind_dump(state);
+ 	}
+ the_end:
+ 	state->stack_info.type = STACK_TYPE_UNKNOWN;
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 73f800100066..38265eac41dd 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -13,8 +13,11 @@
+ 
+ #define orc_warn_current(args...)					\
+ ({									\
+-	if (state->task == current)					\
++	if (state->task == current) {					\
+ 		orc_warn(args);						\
++		if (unwind_debug)					\
++			unwind_dump(state);				\
++	}								\
+ })
+ 
+ extern int __start_orc_unwind_ip[];
+-- 
+2.29.2
 
-	struct etm_event_data *event_data = perf_get_aux(handle);
->  	struct list_head *path;
->
-
-        if (WARN_ON(event_data && event_data != ctxt->event_data))
-                return;
-
-        event_data = ctxt->event_data;       
-	/* Clear the event_data as this ETM is stopping the trace. */
-	ctxt->event_data = NULL;
-
-With the above:
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-  
->  	if (event->hw.state == PERF_HES_STOPPED)
->  		return;
->  
-> +	/* We must have a valid event_data for a running event */
-> +	if (WARN_ON(!event_data))
-> +		return;
-> +
->  	if (!csdev)
->  		return;
->  
-> @@ -416,7 +445,13 @@ static void etm_event_stop(struct perf_event *event, int mode)
->  	/* tell the core */
->  	event->hw.state = PERF_HES_STOPPED;
->  
-> -	if (mode & PERF_EF_UPDATE) {
-> +	/*
-> +	 * If the handle is not bound to an event anymore
-> +	 * (e.g, the sink driver was unable to restart the
-> +	 * handle due to lack of buffer space), we don't
-> +	 * have to do anything here.
-> +	 */
-> +	if (handle->event && (mode & PERF_EF_UPDATE)) {
->  		if (WARN_ON_ONCE(handle->event != event))
->  			return;
->  
-> -- 
-> 2.7.4
-> 
