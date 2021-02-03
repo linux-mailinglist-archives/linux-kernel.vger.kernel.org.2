@@ -2,78 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4D830E07E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA1F30E083
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhBCRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S231840AbhBCRHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhBCRGO (ORCPT
+        with ESMTP id S229902AbhBCRHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:06:14 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A91C0613ED;
-        Wed,  3 Feb 2021 09:05:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=c5g2NvNSV0wjbVoiArRl3FgyflzlxGlwPgD4zP2xDxs=; b=GHUUpDWKn/e631xLHt0bVBQuvi
-        8HRXLbQWtV0BoCxjAWuGpMWDKy+MwUY9sBtIxA8odgKVhMzm6LVC16DO21UFgc2kxXpjOfdvGGR3F
-        hypW2J8ePEHCLXoLNutbdc1zKS7G6388MvfCEq0xbpyvUfgTo2KFHRuyqjti15uBqKNm4ohvgXsNn
-        odrVOhWXU2TRzlobFOiqiQoLalJhOR0wssAEOuY9STbu2ZYh9vELRU+pDu1ZFn1J9wK9w1fpswMD1
-        /CF5b9UhhXWuhV5HTlu4IMWjxK4OaZiiOc3aPz+AhAsm0R9tiO/H6iXi7RxTvI1Y/48MOOKujgfFK
-        qgNy8OHw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7LaT-0007dq-BQ; Wed, 03 Feb 2021 17:05:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B75930066E;
-        Wed,  3 Feb 2021 18:05:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 41F9E20C633CC; Wed,  3 Feb 2021 18:05:01 +0100 (CET)
-Date:   Wed, 3 Feb 2021 18:05:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
-Message-ID: <YBrXvQHJX1HXLvdf@hirez.programming.kicks-ass.net>
-References: <20210203160517.982448432@goodmis.org>
- <20210203160550.710877069@goodmis.org>
+        Wed, 3 Feb 2021 12:07:00 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D417C061573;
+        Wed,  3 Feb 2021 09:06:20 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id z21so159819pgj.4;
+        Wed, 03 Feb 2021 09:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zw2i9DcKydthS+RWG0igJPT6GlIYIp2vkqtEMC3MV4g=;
+        b=cnU07DYgcc2STvojkqsr0jvFdkNeQFJlC8GouLlAhkMjE1M55TzyKGTTEsRlInwCql
+         SqP5Or894V2nre4E/1Vq7oxY6yGp7UvrxnkW9YxxW2EUiGLsZcPiEBFy7W+SZLSrPeR5
+         +ZLPqHenCTcMzVNW+afcAaqUEXW/CRDTRIzL4sl4EA8oJFx0++9Pr+OOyi3jkS6xRR9I
+         sqYXhWKbbmBsug6Z+HtR5uC3/dWNBRLBTheIYdCrJDXg0jM3z4lr9mCXGPL5B9ln0vV9
+         7H1zzZNPWpHQ92MlGnCGHztgxMyhadTAnHwtr7YSWbOZw0s5zaPMK+uTKo1Hsm+Z6fYl
+         EIxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zw2i9DcKydthS+RWG0igJPT6GlIYIp2vkqtEMC3MV4g=;
+        b=krkqwcapxwWtrK4UcS/5oewFdB5OoyQHYSZO3hbjW3CYkG3TzKViagG8r9H3uj9KDL
+         a42oE97Ki9MXV7cUzTgNecrYK6JTv9C+6hbZOlz2eMDNeJRig8fUR3M/8MctcRJ+Gqco
+         iwl4d8/KZBSFBzA+97zGT4XCGY+eAAHynTmsop11KolmeKxUc27QsH+UdlkY7FkrDFZg
+         P7Y+7hsn3VuD1gA3fQ3HXwq0EzFEXVm+QcFcYSCy5knehgrd98hWtw7oSe23LSUO0NZZ
+         x82utHDWmD747enTtS0rmKVU0j5ehI8zDvhqsCUs7BCVmtLZk3Hm+rrHIV72q6dCZ3s3
+         CPbg==
+X-Gm-Message-State: AOAM533+l2ltrQB7p5PQotZbi0pMvUAEDnI/8Fbbj8q3tFYsDpdsNfTB
+        4+9ylvXYzYErT0VV7HXFdMY7MfUvi5R+6rLrX3q+EXAhdyIsmSnX
+X-Google-Smtp-Source: ABdhPJzAms+xiS71tZmxxZMPUjAfo2Nu1DEIlujDQRLX2BoLYPbc+xbESP5NC2MuoTMyxQyr2DskSCtdIJJ2hxbvlQ0=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr3926341pfk.73.1612371979934; Wed, 03
+ Feb 2021 09:06:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203160550.710877069@goodmis.org>
+References: <20210203155100.15034-1-cezary.rojewski@intel.com>
+In-Reply-To: <20210203155100.15034-1-cezary.rojewski@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 3 Feb 2021 19:06:03 +0200
+Message-ID: <CAHp75VeuL0d48JBBQrb=twQvtwh4E_oB8Aszy+GtszhNWKqAmg@mail.gmail.com>
+Subject: Re: [PATCH] Revert "dmaengine: dw: Enable runtime PM"
+To:     Cezary Rojewski <cezary.rojewski@intel.com>
+Cc:     dmaengine <dmaengine@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        viresh kumar <vireshk@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:05:31AM -0500, Steven Rostedt wrote:
-> [ Note, this version does use undefined compiler behavior (assuming that
->   a stub function with no parameters or return, can be called by a location
->   that thinks it has parameters but still no return value. Static calls
->   do the same thing, so this trick is not without precedent.
+On Wed, Feb 3, 2021 at 5:53 PM Cezary Rojewski
+<cezary.rojewski@intel.com> wrote:
+>
+> This reverts commit 842067940a3e3fc008a60fee388e000219b32632.
+> For some solutions e.g. sound/soc/intel/catpt, DW DMA is part of a
+> compound device (in that very example, domains: ADSP, SSP0, SSP1, DMA0
+> and DMA1 are part of a single entity) rather than being a standalone
+> one. Driver for said device may enlist DMA to transfer data during
+> suspend or resume sequences.
+>
+> Manipulating RPM explicitly in dw's DMA request and release channel
+> functions causes suspend() to also invoke resume() for the exact same
+> device. Similar situation occurs for resume() sequence. Effectively
+> renders device dysfunctional after first suspend() attempt. Revert the
+> change to address the problem.
 
-Specifically it relies on the C ABI being caller cleanup. CDECL is that.
+I kinda had the mixed feelings about this, thanks for the report.
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Fixes tag?
+
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>  drivers/dma/dw/core.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
+> index 19a23767533a..7ab83fe601ed 100644
+> --- a/drivers/dma/dw/core.c
+> +++ b/drivers/dma/dw/core.c
+> @@ -982,11 +982,8 @@ static int dwc_alloc_chan_resources(struct dma_chan *chan)
+>
+>         dev_vdbg(chan2dev(chan), "%s\n", __func__);
+>
+> -       pm_runtime_get_sync(dw->dma.dev);
+> -
+>         /* ASSERT:  channel is idle */
+>         if (dma_readl(dw, CH_EN) & dwc->mask) {
+> -               pm_runtime_put_sync_suspend(dw->dma.dev);
+>                 dev_dbg(chan2dev(chan), "DMA channel not idle?\n");
+>                 return -EIO;
+>         }
+> @@ -1003,7 +1000,6 @@ static int dwc_alloc_chan_resources(struct dma_chan *chan)
+>          * We need controller-specific data to set up slave transfers.
+>          */
+>         if (chan->private && !dw_dma_filter(chan, chan->private)) {
+> -               pm_runtime_put_sync_suspend(dw->dma.dev);
+>                 dev_warn(chan2dev(chan), "Wrong controller-specific data\n");
+>                 return -EINVAL;
+>         }
+> @@ -1047,8 +1043,6 @@ static void dwc_free_chan_resources(struct dma_chan *chan)
+>         if (!dw->in_use)
+>                 do_dw_dma_off(dw);
+>
+> -       pm_runtime_put_sync_suspend(dw->dma.dev);
+> -
+>         dev_vdbg(chan2dev(chan), "%s: done\n", __func__);
+>  }
+>
+> --
+> 2.17.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
