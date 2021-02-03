@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8248430DF31
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD5030DF32
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhBCQHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:07:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35530 "EHLO mail.kernel.org"
+        id S234720AbhBCQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:07:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234813AbhBCQGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234817AbhBCQGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Feb 2021 11:06:39 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17C2164F8C;
+        by mail.kernel.org (Postfix) with ESMTPSA id 22F0B64E42;
         Wed,  3 Feb 2021 16:05:50 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1l7Kf6-009J56-Np; Wed, 03 Feb 2021 11:05:48 -0500
-Message-ID: <20210203160517.982448432@goodmis.org>
+        id 1l7Kf6-009J5c-SV; Wed, 03 Feb 2021 11:05:48 -0500
+Message-ID: <20210203160548.763763707@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 03 Feb 2021 11:05:17 -0500
+Date:   Wed, 03 Feb 2021 11:05:18 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 00/15] tracing: Updates for 5.12
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Rix <trix@redhat.com>
+Subject: [for-next][PATCH 01/15] tracing: Add printf attribute to log function
+References: <20210203160517.982448432@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-Bean Huo (1):
-      tracing: Fix a kernel doc warning
+Attributing the function allows the compiler to more thoroughly
+check the use of the function with -Wformat and similar flags.
 
-Bhaskar Chowdhury (1):
-      tracing: Fix spelling of controlling in uprobes
+Link: https://lkml.kernel.org/r/20201221162715.3757291-1-trix@redhat.com
 
-Colin Ian King (1):
-      tracing: Fix spelling mistake in Kconfig "infinit" -> "infinite"
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ include/linux/trace.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Qiujun Huang (4):
-      tracing: Update trace_ignore_this_task() kernel-doc comment
-      tracing: Remove get/put_cpu() from function_trace_init
-      ring-buffer: Remove cpu_buffer argument from the rb_inc_page()
-      ring-buffer: Drop unneeded check in ring_buffer_resize()
+diff --git a/include/linux/trace.h b/include/linux/trace.h
+index 886a4ffd9d45..be1e130ed87c 100644
+--- a/include/linux/trace.h
++++ b/include/linux/trace.h
+@@ -34,8 +34,9 @@ int unregister_ftrace_export(struct trace_export *export);
+ struct trace_array;
+ 
+ void trace_printk_init_buffers(void);
++__printf(3, 4)
+ int trace_array_printk(struct trace_array *tr, unsigned long ip,
+-		const char *fmt, ...);
++		       const char *fmt, ...);
+ int trace_array_init_printk(struct trace_array *tr);
+ void trace_array_put(struct trace_array *tr);
+ struct trace_array *trace_array_get_by_name(const char *name);
+-- 
+2.29.2
 
-Sebastian Andrzej Siewior (4):
-      tracing: Merge irqflags + preempt counter.
-      tracing: Inline tracing_gen_ctx_flags()
-      tracing: Use in_serving_softirq() to deduct softirq status.
-      tracing: Remove NULL check from current in tracing_generic_entry_update().
 
-Song Chen (1):
-      kernel: trace: preemptirq_delay_test: add cpu affinity
-
-Steven Rostedt (VMware) (1):
-      tracepoint: Do not fail unregistering a probe due to memory failure
-
-Tom Rix (2):
-      tracing: Add printf attribute to log function
-      tracing: Remove definition of DEBUG in trace_mmiotrace.c
-
-----
- include/linux/trace.h                |   3 +-
- include/linux/trace_events.h         |  71 ++++++++++++--
- kernel/trace/Kconfig                 |   6 +-
- kernel/trace/blktrace.c              |  17 ++--
- kernel/trace/preemptirq_delay_test.c |  14 +++
- kernel/trace/ring_buffer.c           |  41 ++++----
- kernel/trace/trace.c                 | 183 ++++++++++++++++-------------------
- kernel/trace/trace.h                 |  57 ++++-------
- kernel/trace/trace_branch.c          |   6 +-
- kernel/trace/trace_event_perf.c      |   5 +-
- kernel/trace/trace_events.c          |  18 ++--
- kernel/trace/trace_events_inject.c   |   6 +-
- kernel/trace/trace_functions.c       |  31 +++---
- kernel/trace/trace_functions_graph.c |  32 +++---
- kernel/trace/trace_hwlat.c           |   7 +-
- kernel/trace/trace_irqsoff.c         |  86 +++++++---------
- kernel/trace/trace_kprobe.c          |  10 +-
- kernel/trace/trace_mmiotrace.c       |  16 +--
- kernel/trace/trace_sched_wakeup.c    |  71 +++++++-------
- kernel/trace/trace_syscalls.c        |  20 ++--
- kernel/trace/trace_uprobe.c          |   6 +-
- kernel/tracepoint.c                  |  80 ++++++++++++---
- 22 files changed, 408 insertions(+), 378 deletions(-)
