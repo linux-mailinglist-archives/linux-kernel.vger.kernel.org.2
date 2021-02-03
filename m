@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D1630D0F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A8830D0F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhBCBnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:43:37 -0500
-Received: from pv50p00im-tydg10011801.me.com ([17.58.6.52]:48132 "EHLO
-        pv50p00im-tydg10011801.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229630AbhBCBnf (ORCPT
+        id S231217AbhBCBpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:45:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25353 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229778AbhBCBpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:43:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1612316554;
-        bh=6t1RFU17SOePPL6+ZA76bZtVpmVDB9u2nd5fGo71KuE=;
-        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-        b=ry7pyJsU1trJcwpLP98ZhCHb6nDA/p+5VfUqj1qxa908XEqGkrH4XQmgYf6vA6RjS
-         qB6Alak7z9ag2TLIeGJBGdsHFgeGQDkcp0bQvcHFzwevd8aurzFvCzsKz9Se3Fwa9h
-         XiCWor8/oS130ZKwvuwDyPthdXzn3aUVGceEoj/BKU3KPuPaPVmcPttq1LuJrlcCdp
-         f9oslEQUizRxXY8CzmU9CW5DWh/SyZuNmSC/zxIeY8IAFRoQZahw9acNESEvb9iKBy
-         flMqG0tGR2CyyPcy+WmqkKQMRS3dknathaazDdWDY5C1DubHr66BgeqDjxXaOqyej6
-         TSzncdlSnC7Sg==
-Received: from [11.240.15.70] (unknown [119.3.119.19])
-        by pv50p00im-tydg10011801.me.com (Postfix) with ESMTPSA id D77EE66053D;
-        Wed,  3 Feb 2021 01:42:31 +0000 (UTC)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] mm/slub: embed __slab_alloc to its caller
-From:   Abel Wu <abel.w@icloud.com>
-In-Reply-To: <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
-Date:   Wed, 3 Feb 2021 09:41:58 +0800
-Cc:     Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, hewenliang4@huawei.com,
-        wuyun.wu@huawei.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+        Tue, 2 Feb 2021 20:45:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612316625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=11xjxPEHKvfx8iE79y189ZKTRIQekUJs8xI62FTi8WA=;
+        b=hycFVo6scLlZujcUXKCqRKHOhqGi767NPknJTpZte0Y7KZx5kckXVExaT9PKl3GcN8reC2
+        CAV9SCTgIdUvzskhDYkmesOHXGYCSmz57lnvXy0+4UTXTz4zBlwGoKXVPkM/mpoppRDkc7
+        yLaBbJF+qaw06k1ZgRjqgxpTIvjWijo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-vcd3ov6kP5asN4yu6jKW9g-1; Tue, 02 Feb 2021 20:43:41 -0500
+X-MC-Unique: vcd3ov6kP5asN4yu6jKW9g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75502DF8AA;
+        Wed,  3 Feb 2021 01:43:39 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EE0C6EF53;
+        Wed,  3 Feb 2021 01:43:34 +0000 (UTC)
+Subject: Re: PROBLEM: Recent raid10 block discard patchset causes filesystem
+ corruption on fstrim
+To:     Matthew Ruffell <matthew.ruffell@canonical.com>,
+        Song Liu <songliubraving@fb.com>
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        Song Liu <song@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, Coly Li <colyli@suse.de>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        "khalid.elmously@canonical.com" <khalid.elmously@canonical.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
+ <EA47EF7A-06D8-4B37-BED7-F04753D70DF5@fb.com>
+ <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
+ <71b9c9df-93a8-165a-d254-746a874f2238@canonical.com>
+From:   Xiao Ni <xni@redhat.com>
+Message-ID: <7fb182e0-a03f-4125-e3db-e9f819e099e4@redhat.com>
+Date:   Wed, 3 Feb 2021 09:43:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
+MIME-Version: 1.0
+In-Reply-To: <71b9c9df-93a8-165a-d254-746a874f2238@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <9A811B32-6E3D-4FE1-98A5-A7922C32CDB4@icloud.com>
-References: <20210202080515.2689-1-abel.w@icloud.com>
- <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
-To:     Christoph Lameter <cl@linux.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-02_13:2021-02-02,2021-02-02 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=633 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102030005
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Feb 2, 2021, at 6:11 PM, Christoph Lameter <cl@linux.com> wrote:
-> 
-> On Tue, 2 Feb 2021, Abel Wu wrote:
-> 
->> Since slab_alloc_node() is the only caller of __slab_alloc(), embed
->> __slab_alloc() to its caller to save function call overhead. This
->> will also expand the caller's code block size a bit, but hackbench
->> tests on both host and guest didn't show a difference w/ or w/o
->> this patch.
-> 
-> slab_alloc_node is an always_inline function. It is intentional that only
-> the fast path was inlined and not the slow path.
 
-Oh I got it. Thanks for your excellent explanation.
 
-Best Regards,
-	Abel
+On 02/02/2021 11:42 AM, Matthew Ruffell wrote:
+> Hi Xiao,
+>
+> On 24/12/20 11:18 pm, Xiao Ni wrote:> The root cause is found. Now we use a similar way with raid0 to handle discard request
+>> for raid10. Because the discard region is very big, we can calculate the start/end address
+>> for each disk. Then we can submit the discard request to each disk. But for raid10, it has
+>> copies. For near layout, if the discard request doesn't align with chunk size, we calculate
+>> a start_disk_offset. Now we only use start_disk_offset for the first disk, but it should be
+>> used for the near copies disks too.
+> Thanks for finding the root cause and making a patch that corrects the offset
+> addresses for multiple disks!
+>
+>> [  789.709501] discard bio start : 70968, size : 191176
+>> [  789.709507] first stripe index 69, start disk index 0, start disk offset 70968
+>> [  789.709509] last stripe index 256, end disk index 0, end disk offset 262144
+>> [  789.709511] disk 0, dev start : 70968, dev end : 262144
+>> [  789.709515] disk 1, dev start : 70656, dev end : 262144
+>>
+>> For example, in this test case, it has 2 near copies. The start_disk_offset for the first disk is 70968.
+>> It should use the same offset address for second disk. But it uses the start address of this chunk.
+>> It discard more region. The patch in the attachment can fix this problem. It split the region that
+>> doesn't align with chunk size.
+> Just wondering, what is the current status of the patchset? Is there anything
+> that I can do to help?
+>
+>> There is another problem. The stripe size should be calculated differently for near layout and far layout.
+>>
+> I can help review the patch and help test the patches anytime. Do you need help
+> with making a patch to calculate the stripe size for near and far layouts?
+>
+> Let me know how you are going with this patchset, and if there is anything I
+> can do for you.
+>
+> Thanks,
+> Matthew
+>
+Hi Matthew
+
+I'm doing the test for the new patch set. I'll send the patch soon 
+again. Thanks for the help.
+
+Regards
+Xiao
+
