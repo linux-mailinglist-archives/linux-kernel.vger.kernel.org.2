@@ -2,132 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444F530D687
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24F030D682
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhBCJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:44:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23804 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229681AbhBCJny (ORCPT
+        id S233021AbhBCJnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBCJnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:43:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612345348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=biSKBCz8mruHfx6T0zzWWZ0kE/fGP6S93LISl+LC4YQ=;
-        b=EIsN3IFbu/MGknE88neWPUOJRFKVuAawtuvg3O4gKL3q292xed5+l/0B8PlqR/6Q4cDmV5
-        4nDIOn1oSQa1zw+b20simLiL9s2zj0oYib/WGZR1C92b+YGl3aOptGxp+IGZEGNK0JWmXL
-        ujgleHvxGSaeMgR87IWepgkwiBnlu1U=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-b2CkWUVrNO6r-7kahe4TAA-1; Wed, 03 Feb 2021 04:42:26 -0500
-X-MC-Unique: b2CkWUVrNO6r-7kahe4TAA-1
-Received: by mail-ed1-f69.google.com with SMTP id ck25so11050698edb.16
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:42:26 -0800 (PST)
+        Wed, 3 Feb 2021 04:43:47 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3379C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:43:06 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id y18so8712930edw.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:43:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5K1Jql4Qu8ghC4/Nv8cwnJc9qqC4VK9QqHHvwmFPkl8=;
+        b=aqJEu/oq0/MQbzpT3jw9MX6uLrVbkC8QZndasPG7U2dOxS7k34lGiitgvDtwdbfKSy
+         htMw/YeUjTifKQ3HLgocLo0Ta0/ZFClVgZcJyvD0pxZjuqPK8o62jtFm9jVp6YbtNg2j
+         pI93MnVzGt641m/tk6zzozv4Da+ehoasxtgBMzkW8SKjanbq8Mf+ZfELU//2UxEsQOge
+         afSmgJEcqdzeM+jH8/u5uU8aSR1XY2090OS0IZ+HHdLRiQhKTat1N243oAo+hmfSaEdQ
+         +EYQ1Kgmz2qn8kQRm1x3S+Fhntxcx6qPXFqm7Ve2Z/+0aLV6QUn/MDhx3+0rhn9m2cKK
+         z5PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=biSKBCz8mruHfx6T0zzWWZ0kE/fGP6S93LISl+LC4YQ=;
-        b=BSaKKy1EBvvG2faoQyl0M5+q9AhgxksDjKCQQ734F4jt7Fvoz/rpSVHBH1iKBmQ+F2
-         IT81M2onHxDCWiyG/LyeZIFAN875Ih8fchTcepWq/A+edjApZF3bGY5kTeOigiWHj+AN
-         qBWGF5MtZtDGC10rLUwrsWsCKJWNE1PuksIJJ732CBUbFitizoL4XIKHwGViAGuDwu4z
-         kPxjk2h6ncafH6o6eX8b6QR3TXjUXFwNANW9bWe84gGI08T3bqwY3lPj0E04esuA0FUp
-         cHuo64eETAY3HmR765oyQ4H+15NUQlUsq/Mo6tCU0UUqNKeWRVX78RVPBgamlPuUAPdG
-         7jWw==
-X-Gm-Message-State: AOAM533BakL+5H9kqOLGNg4UelChVFj3+uuwSukPRm6QGZeXsXypDSc9
-        DlAUW2wS6am1uE9OXczAslPGR7s9sNfaEEbpyKBOSSrs1eYZch2ONfYo1bh/m+XgycqyV1BD8qg
-        E8Dz5qnD2zccn63oM0B64ciLnkfvWz2fJx3zdpfwBaOCfhCBBMXYbQ+0MTaWGx+wk2pZ9/LRdNl
-        pL
-X-Received: by 2002:aa7:d352:: with SMTP id m18mr2081512edr.190.1612345345068;
-        Wed, 03 Feb 2021 01:42:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwyYJCOYFoTShDOJw71pEdhI7iII+5s/dIoyufsv9Eq0TviKQwk3YfrsDwAkPB8fUWslrNJGw==
-X-Received: by 2002:aa7:d352:: with SMTP id m18mr2081484edr.190.1612345344780;
-        Wed, 03 Feb 2021 01:42:24 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t3sm585734eds.89.2021.02.03.01.42.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 01:42:23 -0800 (PST)
-Subject: Re: [PATCH] KVM: vmx/pmu: Add VMCS fields check before exposing
- LBR_FMT
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203065027.314622-1-like.xu@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1fa3086-b95b-58bc-3814-31fe08dc8be6@redhat.com>
-Date:   Wed, 3 Feb 2021 10:42:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5K1Jql4Qu8ghC4/Nv8cwnJc9qqC4VK9QqHHvwmFPkl8=;
+        b=XqZDWCnt8rLYEkDqQ9sEDke/cuuCdqg+QAtKOa58DsPDTSOHldDGJc5cYOymo9coG6
+         oRL7TBPSj3916X9OMeEwS7umdmIc2RiRWvnZ8Po9aOCoWZRGE5b8SDQMc5dSmL5KAO66
+         Dy19ErLH7sHo1UdBQkY/ifD2VbMWZ7AeVUk8P65ySOCkDMJ9HZ6nQjvVn56rvJ2z/qtE
+         hbAdDeS4e7fCDJDYrOYvPZL2K1wnyuQkPe4m3/VnmWiZVt8xS6ED0Q+JtFxsTwCIhyRr
+         XRgxbpOZJuhzV7plP1Eqjq6mpTcJU/4lNgds6suf8+/CzcpVGz6JxBfugDPWQo9QL0nY
+         s59w==
+X-Gm-Message-State: AOAM533v0URv0HtMoIup+IUgHN4HOHWU9HvavhtE6UH8X7oDts0Zp5bb
+        1J4MyDUR1h30gxv5G5U7kgRnpgftqDsygWN7hUlXag==
+X-Google-Smtp-Source: ABdhPJwlkXGdxZAkwVp2jiFsru39QGYjWX7OHGO+SAoFK+mS5LeR+lumA1gD45j5LoR9FnwSRRjaz4MHFrtpiksJnQg=
+X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr2043768edr.23.1612345385379;
+ Wed, 03 Feb 2021 01:43:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210203065027.314622-1-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Feb 2021 15:12:53 +0530
+Message-ID: <CA+G9fYs6k9W2rd-WUJD2ba9a8GgnriHBzdBBO0XJq5U3yXya=A@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/30] 4.14.219-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 07:50, Like Xu wrote:
-> Before KVM exposes guest LBR_FMT perf capabilities, it needs to check
-> whether VMCS has GUEST_IA32_DEBUGCTL guest status field and vmx switch
-> support on IA32_DEBUGCTL MSR (including VM_EXIT_SAVE_DEBUG_CONTROLS
-> and VM_ENTRY_LOAD_DEBUG_CONTROLS). It helps nested LBR enablement.
-> 
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> ---
->   arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-> index d1d77985e889..ac3af06953a8 100644
-> --- a/arch/x86/kvm/vmx/capabilities.h
-> +++ b/arch/x86/kvm/vmx/capabilities.h
-> @@ -378,6 +378,12 @@ static inline bool vmx_pt_mode_is_host_guest(void)
->   	return pt_mode == PT_MODE_HOST_GUEST;
->   }
->   
-> +static inline bool cpu_has_vmx_lbr(void)
-> +{
-> +	return (vmcs_config.vmexit_ctrl & VM_EXIT_SAVE_DEBUG_CONTROLS) &&
-> +		(vmcs_config.vmentry_ctrl & VM_ENTRY_LOAD_DEBUG_CONTROLS);
-> +}
-> +
->   static inline u64 vmx_get_perf_capabilities(void)
->   {
->   	u64 perf_cap = 0;
-> @@ -385,7 +391,8 @@ static inline u64 vmx_get_perf_capabilities(void)
->   	if (boot_cpu_has(X86_FEATURE_PDCM))
->   		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
->   
-> -	perf_cap &= PMU_CAP_LBR_FMT;
-> +	if (cpu_has_vmx_lbr())
-> +		perf_cap &= PMU_CAP_LBR_FMT;
+On Tue, 2 Feb 2021 at 19:22, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.219 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.219-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This is incorrect in the case where cpu_has_vmx_lbr() is false.  You 
-would need something like
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-  	u64 perf_cap = 0;
-	u64 host_perf_cap = 0;
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-  	if (boot_cpu_has(X86_FEATURE_PDCM))
-		rdmsrl(MSR_IA32_PERF_CAPABILITIES, host_perf_cap);
+Summary
+------------------------------------------------------------------------
 
-	if (cpu_has_vmx_lbr())
-		perf_cap |= host_perf_cap & PMU_CAP_LBR_FMT;
+kernel: 4.14.219-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: 17dd434cff6bcaf79221b1a890a9df7ea23a3bd7
+git describe: v4.14.218-31-g17dd434cff6b
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.218-31-g17dd434cff6b
 
-However, KVM won't run without VM_ENTRY_LOAD_DEBUG_CONTROLS and 
-VM_EXIT_SAVE_DEBUG_CONTROLS (see setup_vmcs_config), so this change is 
-not needed either.
+No regressions (compared to build v4.14.218)
 
-Paolo
+No fixes (compared to build v4.14.218)
 
+Ran 43689 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* fwts
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-math-tests
+* ltp-tracing-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-kvm
+* kselftest-vm
+* kselftest-x86
+* ltp-fs-tests
+* ltp-open-posix-tests
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kvm-unit-tests
+* rcutorture
+* ssuite
+* kselftest-kexec
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
