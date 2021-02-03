@@ -2,143 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FAE30E4CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A201030E4D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhBCVQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhBCVQE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:16:04 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6436AC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 13:15:24 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id m22so779187ljj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 13:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i+u6BTILoUVaAAqMvPP05q1+sYeBPgAq4q8dfomuEGM=;
-        b=WEU9PqqZm2T0n4ETvzj8mQa1byAVBWQqIYe3UmQcn18OJkbNKbZTIyyJA1vcHeB9Qh
-         exvPK/JEtrSWN7eF8haKy1SWYJ64eE/yz8Kr6mQ/5HqBIf2LUWRyeyuaTGlpm3LtIdfi
-         QdkMo2BqRJIdo5qA25F+mrnvHdLId1tZ6k2cY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i+u6BTILoUVaAAqMvPP05q1+sYeBPgAq4q8dfomuEGM=;
-        b=dx5LbTpkMWxic6dMgNGqOytyT2ZcOMAZpGu+DzZGTLE+IEz6iYmDQuauXai/84+ePW
-         bdbzJMVpDvMQRTs7BS39wpY8mCxbY/VejuaS4MCYdKKHVb9SgfnY9wbuG60feoSWxAKP
-         AVV2XFcTKMitKsfYKb3RGlJL4N2twvuiH/1lLtBSQHBcGPJ9Ai5QrYyVZ0Ikj5qr7e0l
-         UVt009GeaypOrKWcxhMlnWdIGqcEKqMgLom88HfWow5EVKXInLCND6tCpnsYOucHQZXy
-         3ELhtVV6w4cT/c8EOqkV+EptzMvCk0wQV7y8l1bGe5PKp6wyBF+08k/sVkBOpRuoOsLG
-         PJIg==
-X-Gm-Message-State: AOAM5314ST/tSdmesYu6I77zDpaMV5w8dbjWl3gwQIAzt8kwL4Vi3m+2
-        2uwbqUtyCxErKnzebpRzYjMiDWexptPg5g==
-X-Google-Smtp-Source: ABdhPJwpOJFkwhST65mb+4Tpvjom9Fpdsu2zLFKCBHvpjXMB4jWjA9EJkoqfz2fb8S6Y6BCwcPfPMg==
-X-Received: by 2002:a2e:54d:: with SMTP id 74mr2726052ljf.44.1612386922526;
-        Wed, 03 Feb 2021 13:15:22 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id q1sm349988lfu.48.2021.02.03.13.15.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 13:15:20 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id v24so1260062lfr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 13:15:20 -0800 (PST)
-X-Received: by 2002:ac2:5502:: with SMTP id j2mr2651150lfk.421.1612386919848;
- Wed, 03 Feb 2021 13:15:19 -0800 (PST)
+        id S232366AbhBCVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:16:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230220AbhBCVQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:16:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C3764F5F;
+        Wed,  3 Feb 2021 21:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612386973;
+        bh=qyGKk/hQEG6cbek94cgXEKTdL+C7jug+hSr3zZqKl14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YmSrbTvINCRC/Al+nZkEFLFAo9RhnkBU2TV5gyXLAZTa0DyAZk3nHZn9xlxF5a24a
+         UiFSzcQ1zYhMhQLl935YFFFyeo4RcjjbqIRAmUNSD2QrD2XfQ892f7vlMNtCLocU+k
+         YjM1re+JwC2ALEvo6qq6OtNjJAOxClIWMghmyJ3gazHcq1xEIXOjRA8B4sg9dqdIjB
+         T+D7H06Ks89mpPjpr4clSionOrzZnstYqr/INawYGYd+LK/BuJoUNY3RHUwOwS3I+O
+         bXRMhdpg8FEWiA/+vTtJXHPutZlAwjAbHMvDS+GzycHMvDXg9gwllhK9FH0QNdDChx
+         bc3/6xh8asNKg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7FDE940513; Wed,  3 Feb 2021 18:16:11 -0300 (-03)
+Date:   Wed, 3 Feb 2021 18:16:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 08/24] perf daemon: Add background support
+Message-ID: <20210203211611.GU854763@kernel.org>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-9-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20210203210832.113685-1-peterx@redhat.com> <20210203210832.113685-5-peterx@redhat.com>
-In-Reply-To: <20210203210832.113685-5-peterx@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Feb 2021 13:15:03 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whGvKx2aDhrW4K-PZix+Yt2L=dcv1meQWBiDFrW7ZJ63A@mail.gmail.com>
-Message-ID: <CAHk-=whGvKx2aDhrW4K-PZix+Yt2L=dcv1meQWBiDFrW7ZJ63A@mail.gmail.com>
-Subject: Re: [PATCH 4/4] hugetlb: Do early cow when page pinned on src mm
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Wei Zhang <wzam@amazon.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Gal Pressman <galpress@amazon.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130234856.271282-9-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 1:08 PM Peter Xu <peterx@redhat.com> wrote:
->
-> This is the last missing piece of the COW-during-fork effort when there're
-> pinned pages found.  One can reference 70e806e4e645 ("mm: Do early cow for
-> pinned pages during fork() for ptes", 2020-09-27) for more information, since
-> we do similar things here rather than pte this time, but just for hugetlb.
+Em Sun, Jan 31, 2021 at 12:48:40AM +0100, Jiri Olsa escreveu:
+> Adding support to put daemon process in the background.
+> 
+> It's now enabled by default and -f option is added to
+> keep daemon process on the console for debugging.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-daemon.c | 66 +++++++++++++++++++++++++++++++++++--
+>  1 file changed, 63 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index d0a0a998e073..324666058842 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -488,6 +488,13 @@ static void daemon__kill(struct daemon *daemon)
+>  	daemon__signal(daemon, SIGTERM);
+>  }
+>  
+> +static void __daemon__free(struct daemon *daemon)
+> +{
+> +	free(daemon->config_real);
+> +	free(daemon->config_base);
+> +	free(daemon->base);
+> +}
 
-No issues with the code itself, but..
+Please use zfree(), and also please rename it to __daemon__delete(), in
+other cases this pattern would be daemon__exit(), as the daemon
+structure itself is not being freed, just its members, ditto for
+foo__new() calling foo__init().
 
-Comments are good, but the comments inside this block of code actually
-makes the code *much* harder to read, because now the actual logic is
-much more spread out and you can't see what it does so well.
+> +
+>  static void daemon__free(struct daemon *daemon)
+>  {
+>  	struct session *session, *h;
+> @@ -495,9 +502,7 @@ static void daemon__free(struct daemon *daemon)
+>  	list_for_each_entry_safe(session, h, &daemon->sessions, list)
+>  		session__remove(session);
+>  
+> -	free(daemon->config_real);
+> -	free(daemon->config_base);
+> -	free(daemon->base);
+> +	__daemon__free(daemon);
+>  }
+>  
+>  static void daemon__exit(struct daemon *daemon)
+> @@ -643,10 +648,54 @@ static int setup_config(struct daemon *daemon)
+>  	return daemon->config_real ? 0 : -1;
+>  }
+>  
+> +static int go_background(struct daemon *daemon)
+> +{
+> +	int pid, fd;
+> +
+> +	pid = fork();
+> +	if (pid < 0)
+> +		return -1;
+> +
+> +	if (pid > 0)
+> +		return 1;
+> +
+> +	if (setsid() < 0)
+> +		return -1;
+> +
+> +	umask(0);
+> +
+> +	if (chdir(daemon->base)) {
+> +		perror("failed: chdir");
+> +		return -1;
+> +	}
+> +
+> +	fd = open("output", O_RDWR|O_CREAT|O_TRUNC, 0644);
+> +	if (fd < 0) {
+> +		perror("failed: open");
+> +		return -1;
+> +	}
+> +
+> +	fcntl(fd, F_SETFD, FD_CLOEXEC);
+> +
+> +	close(0);
+> +	dup2(fd, 1);
+> +	dup2(fd, 2);
+> +	close(fd);
+> +
+> +	daemon->out = fdopen(1, "w");
+> +	if (!daemon->out)
+> +		return -1;
+> +
+> +	setbuf(daemon->out, NULL);
+> +	return 0;
+> +}
+> +
+>  static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  		       int argc, const char **argv)
+>  {
+> +	bool foreground = false;
+>  	struct option start_options[] = {
+> +		OPT_BOOLEAN('f', "foreground", &foreground, "stay on console"),
 
-> +                       if (unlikely(page_needs_cow_for_dma(vma, ptepage))) {
-> +                               /* This is very possibly a pinned huge page */
-> +                               if (!prealloc) {
-> +                                       /*
-> +                                        * Preallocate the huge page without
-> +                                        * tons of locks since we could sleep.
-> +                                        * Note: we can't use any reservation
-> +                                        * because the page will be exclusively
-> +                                        * owned by the child later.
-> +                                        */
-> +                                       put_page(ptepage);
-> +                                       spin_unlock(src_ptl);
-> +                                       spin_unlock(dst_ptl);
-> +                                       prealloc = alloc_huge_page(vma, addr, 0);
-> +                                       if (!prealloc) {
-> +                                               /*
-> +                                                * hugetlb_cow() seems to be
-> +                                                * more careful here than us.
-> +                                                * However for fork() we could
-> +                                                * be strict not only because
-> +                                                * no one should be referencing
-> +                                                * the child mm yet, but also
-> +                                                * if resources are rare we'd
-> +                                                * better simply fail the
-> +                                                * fork() even earlier.
-> +                                                */
-> +                                               ret = -ENOMEM;
-> +                                               break;
-> +                                       }
-> +                                       goto again;
-> +                               }
-> +                               /*
-> +                                * We have page preallocated so that we can do
-> +                                * the copy right now.
-> +                                */
-> +                               hugetlb_copy_page(vma, dst_pte, addr, ptepage,
-> +                                                 prealloc);
-> +                               put_page(ptepage);
-> +                               spin_unlock(src_ptl);
-> +                               spin_unlock(dst_ptl);
-> +                               prealloc = NULL;
-> +                               continue;
-> +                       }
 
-Can you move the comment above the code? And I _think_ the prealloc
-conditional could be split up to a helper function (which would help
-more), but maybe there are too many variables for that to be
-practical.
+You forgot to add the entry to the man page
 
-           Linus
+>  		OPT_PARENT(parent_options),
+>  		OPT_END()
+>  	};
+> @@ -667,6 +716,17 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  	if (setup_server_config(daemon))
+>  		return -1;
+>  
+> +	if (!foreground) {
+> +		err = go_background(daemon);
+> +		if (err) {
+> +			/* original process, exit normally */
+> +			if (err == 1)
+> +				err = 0;
+> +			__daemon__free(daemon);
+> +			return err;
+> +		}
+> +	}
+> +
+>  	debug_set_file(daemon->out);
+>  	debug_set_display_time(true);
+>  
+> -- 
+> 2.29.2
+> 
+
+-- 
+
+- Arnaldo
