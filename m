@@ -2,159 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E93C30E23A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6E630E223
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbhBCSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232863AbhBCSNi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:13:38 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EC6C061226
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:12:27 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id u8so226826ior.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t4wenknjZ2bs5eKNUbWK97l2NFAOkxWA8p4z0taSinQ=;
-        b=bK/hwc7BdBaznbintn00c0zRwBKC2JVyZWt36DBGWZYS3p6BVpJeOJEEamHAM+6vyC
-         PXMgKamY4JH2XBuWrtRG8FAQpXZ0SLZ28VkyLw2OPhYx4rxDJ1ScO65tUPG+qdprJ9XJ
-         vV1RasCSNiAfnS8ol5pPlvaIVj8bQiMEHpw8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t4wenknjZ2bs5eKNUbWK97l2NFAOkxWA8p4z0taSinQ=;
-        b=oKVOFwhNcZz2EwRl7ONQca8wpXrqIfhzu3LEMz7Qf0hdwH50TFJlV9Kx3XLvqu+Sfj
-         XvgE1LiJb5qP4xXE8u/p9TcXqw8GBnARUFUlo0s0GGLog2KFIMjwoqMf1ta18ich6sdK
-         6Ae9NmCsHD2H9FxZ9SCu0mFEZZsvE+wYSY1pFCebT18mRnqLqr55wNuZTU1V1evF7VlZ
-         tKrMQmJs1xibdR5IAxM75HMEZmEEckbU5dxgFur89M0f5+U3yU90MHreiVyEcn3rDCDk
-         a5UGYuW92ep6NirgyNns0Xo6XFkitnPmY7ceD6FTIOq2TB/xLESt4cNLtyQtPQv4Tl21
-         RGyw==
-X-Gm-Message-State: AOAM531iokeVynESjP1YOMvDjKwQl3kmBH+DtC6c4hXQ7/D8owECY1w3
-        5upYuQGx0/ELic3oRAbECQFQ3g==
-X-Google-Smtp-Source: ABdhPJzuni/KqIxziQLcVYre754B6JcsdqYKUpMJ3ElrpM0fP5ipHxD7+qBAafURTEbI1MVyvOBomg==
-X-Received: by 2002:a5e:a911:: with SMTP id c17mr2982344iod.20.1612375946517;
-        Wed, 03 Feb 2021 10:12:26 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h21sm399684iob.30.2021.02.03.10.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 10:12:26 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     corbet@lwn.net, gregkh@linuxfoundation.org, peterz@infradead.org,
-        keescook@chromium.org, rafael@kernel.org, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v3 7/7] kobject: convert uevent_seqnum to seqnum_ops
-Date:   Wed,  3 Feb 2021 11:12:03 -0700
-Message-Id: <3ddd122c266e8cb460542d852e9b703c6eef2141.1612314468.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1612314468.git.skhan@linuxfoundation.org>
-References: <cover.1612314468.git.skhan@linuxfoundation.org>
+        id S232738AbhBCSNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:13:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231718AbhBCSMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:12:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C5FF8B15B;
+        Wed,  3 Feb 2021 18:12:13 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 82A5C1E14C4; Wed,  3 Feb 2021 19:12:13 +0100 (CET)
+Date:   Wed, 3 Feb 2021 19:12:13 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     bingjingc <bingjingc@synology.com>, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: [PATCH] parser: Fix kernel-doc markups
+Message-ID: <20210203181213.GB20183@quack2.suse.cz>
+References: <20210129050037.10722-1-bingjingc@synology.com>
+ <f5cd0b56-de00-bc4f-d4c6-9108d7cab780@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5cd0b56-de00-bc4f-d4c6-9108d7cab780@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sequence Number api provides interfaces for unsigned atomic up counters
-leveraging atomic_t and atomic64_t ops underneath.
+On Thu 28-01-21 22:39:46, Randy Dunlap wrote:
+> On 1/28/21 9:00 PM, bingjingc wrote:
+> > From: BingJing Chang <bingjingc@synology.com>
+> > 
+> > Fix existing issues at the kernel-doc markups
+> > 
+> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> > ---
+> >  lib/parser.c | 22 +++++++++++-----------
+> >  1 file changed, 11 insertions(+), 11 deletions(-)
+> > 
+> 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> thanks for the kernel-doc patch.
 
-Convert uevent_seqnum atomic counter to use seqnum_ops.
+Thanks for the patch and review. Since this is somewhat related to the
+match_uint() fixes, I've just picked up this patch to my tree as well since
+I don't think we have a designated lib/parser.c maintainer...
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- include/linux/kobject.h | 3 ++-
- kernel/ksysfs.c         | 3 ++-
- lib/kobject_uevent.c    | 9 ++++++---
- 3 files changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/kobject.h b/include/linux/kobject.h
-index ea30529fba08..8990e40344a2 100644
---- a/include/linux/kobject.h
-+++ b/include/linux/kobject.h
-@@ -27,6 +27,7 @@
- #include <linux/atomic.h>
- #include <linux/workqueue.h>
- #include <linux/uidgid.h>
-+#include <linux/seqnum_ops.h>
- 
- #define UEVENT_HELPER_PATH_LEN		256
- #define UEVENT_NUM_ENVP			64	/* number of env pointers */
-@@ -38,7 +39,7 @@ extern char uevent_helper[];
- #endif
- 
- /* counter to tag the uevent, read only except for the kobject core */
--extern u64 uevent_seqnum;
-+extern struct seqnum64 uevent_seqnum;
- 
- /*
-  * The actions here must match the index to the string array
-diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-index 35859da8bd4f..15836f6e5998 100644
---- a/kernel/ksysfs.c
-+++ b/kernel/ksysfs.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/capability.h>
- #include <linux/compiler.h>
-+#include <linux/seqnum_ops.h>
- 
- #include <linux/rcupdate.h>	/* rcu_expedited and rcu_normal */
- 
-@@ -31,7 +32,7 @@ static struct kobj_attribute _name##_attr = \
- static ssize_t uevent_seqnum_show(struct kobject *kobj,
- 				  struct kobj_attribute *attr, char *buf)
- {
--	return sprintf(buf, "%llu\n", (unsigned long long)uevent_seqnum);
-+	return sprintf(buf, "%llu\n", seqnum64_get(&uevent_seqnum));
- }
- KERNEL_ATTR_RO(uevent_seqnum);
- 
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 7998affa45d4..3a7b2648f084 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -28,9 +28,10 @@
- #include <net/sock.h>
- #include <net/netlink.h>
- #include <net/net_namespace.h>
-+#include <linux/seqnum_ops.h>
- 
- 
--u64 uevent_seqnum;
-+struct seqnum64  uevent_seqnum;
- #ifdef CONFIG_UEVENT_HELPER
- char uevent_helper[UEVENT_HELPER_PATH_LEN] = CONFIG_UEVENT_HELPER_PATH;
- #endif
-@@ -584,7 +585,8 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
- 
- 	mutex_lock(&uevent_sock_mutex);
- 	/* we will send an event, so request a new sequence number */
--	retval = add_uevent_var(env, "SEQNUM=%llu", ++uevent_seqnum);
-+	retval = add_uevent_var(env, "SEQNUM=%llu",
-+				seqnum64_inc(&uevent_seqnum));
- 	if (retval) {
- 		mutex_unlock(&uevent_sock_mutex);
- 		goto exit;
-@@ -687,7 +689,8 @@ static int uevent_net_broadcast(struct sock *usk, struct sk_buff *skb,
- 	int ret;
- 
- 	/* bump and prepare sequence number */
--	ret = snprintf(buf, sizeof(buf), "SEQNUM=%llu", ++uevent_seqnum);
-+	ret = snprintf(buf, sizeof(buf), "SEQNUM=%llu",
-+			seqnum64_inc(&uevent_seqnum));
- 	if (ret < 0 || (size_t)ret >= sizeof(buf))
- 		return -ENOMEM;
- 	ret++;
+								Honza
 -- 
-2.27.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
