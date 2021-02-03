@@ -2,54 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC5D30E81A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF6030D406
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbhBCX5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:57:47 -0500
-Received: from 198-20-226-115.unifiedlayer.com ([198.20.226.115]:41668 "EHLO
-        198-20-226-115.unifiedlayer.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233315AbhBCX5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:57:42 -0500
-X-Greylist: delayed 59540 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 18:57:38 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=carnivalassure.com.bd; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=miRpAdBSO5eDo01VDX+EK9bqGCmqMjXHS3kO16T6iWw=; b=rgk1ikauAU1hvTn54IcRsZV7jN
-        7ew7UnoHYswDbiAn0BwsDPvi1y7NYnu6spVFzd7wuCzuSXaeHSKXCbOKsfovgDS9G8VDov60T9hnO
-        az+ZrAdd9l4q7KVCSxwWKCfCVJbfHTSf42W46YnBkpxHquHw5LLqdFj5EdNb7huiQ1YCWmqOknYH9
-        SyIGPObfTFO7iFaqVfyi8Xbiiafcx4hzvN/iZIY/q1CFEZM+hVR0h+YPMSL3k9qRCiHtO0Ucth7ip
-        RJzG/T6UUDEki2hIinuZoSZa3/L4hnnytmaQT+A2HqKGkNS4nukEOez1R6NMYmAg56m6DyuuzrLgl
-        lDuKQ5eg==;
-Received: from [127.0.0.1] (port=45986 helo=dot.dotlines.com.sg)
-        by dot.dotlines.com.sg with esmtpa (Exim 4.93)
-        (envelope-from <noreply@carnivalassure.com.bd>)
-        id 1l7CVc-0005Wr-DK; Wed, 03 Feb 2021 01:23:28 -0600
+        id S232012AbhBCHZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:25:46 -0500
+Received: from web01.celz5.org ([198.7.62.193]:33394 "EHLO web01.celz5.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231465AbhBCHZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 02:25:45 -0500
+X-Greylist: delayed 80599 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 02:25:44 EST
+Received: from [123.20.28.70] (port=44225 helo=mail.celz5.org)
+        by web01.celz5.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <jolagunju@celz5.org>)
+        id 1l7CX5-0008Bm-8s; Wed, 03 Feb 2021 02:25:02 -0500
+To:     "lintianguo00" <lintianguo00@yahoo.com.cn>,
+        "linuoantenna" <linuoantenna@yahoo.com.cn>,
+        "linux kernel" <linux-kernel@vger.kernel.org>,
+        "linux zhang" <linux_zhang@yahoo.com.cn>
+From:   Baby Sasha <jolagunju@celz5.org>
+Subject: =?UTF-8?Q?RE=3ABaby_Sasha?=
+Message-ID: <a17e19b1-6805-4310-bb85-b8a5c692405a@celz5.org>
+Date:   Tue, 2 Feb 2021 21:24:57 -1000
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
 MIME-Version: 1.0
-Date:   Wed, 03 Feb 2021 01:23:26 -0600
-From:   Francois Pinault <noreply@carnivalassure.com.bd>
-To:     undisclosed-recipients:;
-Subject: Hello/Hallo
-Organization: Donation
-Reply-To: francoispinault1936@outlook.com
-Mail-Reply-To: francoispinault1936@outlook.com
-Message-ID: <1a89ab2763fcfd9504c577b99b1b1baa@carnivalassure.com.bd>
-X-Sender: noreply@carnivalassure.com.bd
-User-Agent: Roundcube Webmail/1.3.15
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - dot.dotlines.com.sg
+X-AntiAbuse: Primary Hostname - web01.celz5.org
 X-AntiAbuse: Original Domain - vger.kernel.org
 X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - carnivalassure.com.bd
-X-Get-Message-Sender-Via: dot.dotlines.com.sg: authenticated_id: noreply@carnivalassure.com.bd
-X-Authenticated-Sender: dot.dotlines.com.sg: noreply@carnivalassure.com.bd
+X-AntiAbuse: Sender Address Domain - celz5.org
+X-Get-Message-Sender-Via: web01.celz5.org: authenticated_id: jolagunju@celz5.org
+X-Authenticated-Sender: web01.celz5.org: jolagunju@celz5.org
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
@@ -57,14 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+https://bit.ly/2MK7z00
 
 
--- 
-Hallo, ich bin Herr Francois Pinault, ich habe Ihnen gespendet. Sie 
-können mein Profil auf Wikipedia, Google oder Forbes überprüfen.
 
-Für Ihren Spendenanspruch und weitere Informationen kontaktieren Sie 
-mich umgehend unter francoispinault1936@outlook.com
 
-Mit freundlichen Grüßen,
-Herr Francois Pinault
+Baby Sasha
+
+
+
+
+
+
+
+
+
+
+
+____________________________________________________________________
+ 
+Jeff Bezos To Step Down As Amazon's CEO 
+Amazon's CEO will be Andy Jassy, the head of its cloud computing division. "As much as I still tap dance into the office, I'm excited about this transition," Bezos says.
+
+EU shellfish import ban indefinite, UK fishing industry told
+The government promises to push Brussels to change its transport rules on scallops, clams and mussels.
+'Almost ended in a physical fight': Axios reporter describes Trump meeting
+Axios reporter Jonathan Swan describes a December 18 meeting between President Donald Trump, White House officials and conspiracy theorists that ended in a profanity-laced shouting match.
+Sturgeon aims for phased return of Scotland schools within three weeks
+A phased return of pupils to classrooms in Scotland could begin from 22 February, the first minister has announced.
+FCC Auctioning $81 in Frequencies for Companies to Build 5G
+The winners of the auction will be announced in the coming weeks, once the assignment phase is completed.
+
+The Latest On The GameStop Stock Market Debacle
+After climbing more than 1,000%, GameStop's stock price reversed course and dropped suddenly when popular stock trading platforms abruptly halted some trades.
+
+Covid: Boris Johnson 'optimistic' about summer holiday prospects
+The PM says it relies on factors such as the vaccine rollout going well and Covid cases coming down.
+Dr. Fauci on what is needed for society to 'get back to normal'
+Dr. Anthony Fauci talks with Don Lemon about how many people need to be vaccinated against the coronavirus before society can "get back to normal."
+Russia's Sputnik V COVID vaccine 91.6% effective with two doses, tests show
+Russia's Sputnik V vaccine is 91.6% effective against coronavirus when two doses are given, according to peer-reviewed interim results from its phase three trial.
+Robinhood Ratings on Google Play Roll Back to One-Star Amid GameStop Frenzy
+The free trading app had been providing easy access for people to buy large amounts of stocks amid a crusade by Redditors against Wall Street, before abruptly curbing it.
