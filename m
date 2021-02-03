@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9539330D34B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6A830D353
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhBCGFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhBCGE6 (ORCPT
+        id S231269AbhBCGQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:16:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12112 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhBCGQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:04:58 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28644C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 22:04:18 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id cl8so2470977pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 22:04:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=20vLb8nYoRvjkPixtWI9JyTtznsxFpVmJabeCI3aLrY=;
-        b=zGGMz/uCsy0DOqmB03VshMAkT5rniOOZV3bCV0tOGZi/hHQ9cjyCqqwzX9DuRBEf4t
-         t8bFIx/1iFpir/3PucbPSQPzBoBje5cXnHmFttoARVScRt6Ifk0qdvFOFirf0DCnyjHT
-         3xw2XT7YtZ8kkho+WAk1TDgSY4ugVW5QSMheAiTEZCmi5fnS9EU/DHz5lyv1RpVTS9kO
-         RjURqEtHyOvoaAgkcAq1uEhuYUGO99s8tnvqW/7YPYbUXlvVyYBWF7WpLIupc2r8RniM
-         DFv8DAK6Una8oUMAIicu+rNxya7V4tz/08nW5tNd0cgE5ndlinOMP/SDh9q1f/i7Z2Tp
-         +vhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=20vLb8nYoRvjkPixtWI9JyTtznsxFpVmJabeCI3aLrY=;
-        b=FLaTISbKr47nmJoJ8JX2EI/PPHPqguo4KKaxaqL9DVIxUV+ix31HnDBu8hADdufztl
-         cXPcnUzmEDFgXT8us8bCeKWYgcZrPodYbD6lcofn5X/Vj0n0KPVDFdFx6Lrl8iBJWM9V
-         1MrfqEeK22rQpB7ow5Bss+whUmNEYDDj0SJlCqezk0gEwyyhdVauFKmgHk9E7x8zunS4
-         iCW8RS2FrYGJYKd8+6HtToEaIVHBLsY3I307wpDCyJ9utnoOjcoHqNyGec7zkCxWW8hx
-         npvcQNTEbNve4zOixfoWCcYxBfcyig8/0jDLUFfvCljWsNdVQRw1v9kr7UoBP7976VzK
-         mSWQ==
-X-Gm-Message-State: AOAM533vXJTY8Wqxz9bdS5gP4YOc2pcuuRmGBaakyd3Lagbs/jl3hBfX
-        Jxz2I5P2N+cJl29GaIoR8jagmQ==
-X-Google-Smtp-Source: ABdhPJxtrX8twjMyPQUKFe6UCeOxc2rSBdHhhqxdLHRiGlFr4M2VYBRQsjmgmKxijcLOYNEVoka3dw==
-X-Received: by 2002:a17:90b:17c7:: with SMTP id me7mr1583302pjb.205.1612332257550;
-        Tue, 02 Feb 2021 22:04:17 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id f7sm770871pjh.45.2021.02.02.22.04.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Feb 2021 22:04:16 -0800 (PST)
-Date:   Wed, 3 Feb 2021 11:34:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Larabel <Michael@phoronix.com>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost
- in schedutil invariant formula
-Message-ID: <20210203060414.hexqlimjol3tdtvq@vireshk-i7>
-References: <20210122204038.3238-1-ggherdovich@suse.cz>
- <20210122204038.3238-2-ggherdovich@suse.cz>
+        Wed, 3 Feb 2021 01:16:11 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DVrwy6ZSrz163Tj;
+        Wed,  3 Feb 2021 14:14:10 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Feb 2021 14:15:19 +0800
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Yang Guo <guoyang2@huawei.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@suse.de>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH] fs/buffer.c: Add checking buffer head stat before clear
+Date:   Wed, 3 Feb 2021 14:14:50 +0800
+Message-ID: <1612332890-57918-1-git-send-email-zhangshaokun@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122204038.3238-2-ggherdovich@suse.cz>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am sorry but I wasn't able to get the full picture (not your fault,
-it is me), but ...
+From: Yang Guo <guoyang2@huawei.com>
 
-On 22-01-21, 21:40, Giovanni Gherdovich wrote:
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index d0a3525ce27f..b96677f6b57e 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -2721,6 +2721,9 @@ int cpufreq_boost_enabled(void)
->  }
->  EXPORT_SYMBOL_GPL(cpufreq_boost_enabled);
->  
-> +DEFINE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
-> +EXPORT_SYMBOL_GPL(cpufreq_amd_max_boost);
-> +
->  /*********************************************************************
->   *               REGISTER / UNREGISTER CPUFREQ DRIVER                *
->   *********************************************************************/
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 9c8b7437b6cd..341cac76d254 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -40,9 +40,14 @@ enum cpufreq_table_sorting {
->  	CPUFREQ_TABLE_SORTED_DESCENDING
->  };
->  
-> +DECLARE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
-> +
-> +#define cpufreq_driver_has_max_boost() static_branch_unlikely(&cpufreq_amd_max_boost)
-> +
+clear_buffer_new() is used to clear buffer new stat. When PAGE_SIZE
+is 64K, most buffer heads in the list are not needed to clear.
+clear_buffer_new() has an enpensive atomic modification operation,
+Let's add checking buffer head before clear it as __block_write_begin_int
+does which is good for performance.
 
-I am not happy with AMD specific code/changes in common parts..
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nick Piggin <npiggin@suse.de>
+Signed-off-by: Yang Guo <guoyang2@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+---
+ fs/buffer.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->  struct cpufreq_cpuinfo {
->  	unsigned int		max_freq;
->  	unsigned int		min_freq;
-> +	unsigned int		max_boost;
->  
->  	/* in 10^(-9) s = nanoseconds */
->  	unsigned int		transition_latency;
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 6931f0cdeb80..541f3db3f576 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -159,8 +159,12 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->  				  unsigned long util, unsigned long max)
->  {
->  	struct cpufreq_policy *policy = sg_policy->policy;
-> -	unsigned int freq = arch_scale_freq_invariant() ?
-> -				policy->cpuinfo.max_freq : policy->cur;
-> +	unsigned int freq, max_freq;
-> +
-> +	max_freq = cpufreq_driver_has_max_boost() ?
-> +			policy->cpuinfo.max_boost : policy->cpuinfo.max_freq;
-
-Also, can't we update max_freq itself from the cpufreq driver? What
-troubles will it cost ?
-
-> +
-> +	freq = arch_scale_freq_invariant() ? max_freq : policy->cur;
->  
->  	freq = map_util_freq(util, freq, max);
->  
-> -- 
-> 2.26.2
-
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 32647d2011df..f1c3a5b27a90 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -2083,7 +2083,8 @@ static int __block_commit_write(struct inode *inode, struct page *page,
+ 			set_buffer_uptodate(bh);
+ 			mark_buffer_dirty(bh);
+ 		}
+-		clear_buffer_new(bh);
++		if (buffer_new(bh))
++			clear_buffer_new(bh);
+ 
+ 		block_start = block_end;
+ 		bh = bh->b_this_page;
 -- 
-viresh
+2.7.4
+
