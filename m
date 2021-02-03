@@ -2,153 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17E330E0E3
+	by mail.lfdr.de (Postfix) with ESMTP id 30A4C30E0E2
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBCRYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:24:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhBCRWU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:22:20 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A587FC0617A9;
-        Wed,  3 Feb 2021 09:21:34 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id s23so162187pgh.11;
-        Wed, 03 Feb 2021 09:21:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WjCWNWtT0pxxhAlETV2zIWjv0Gl4p3lxrm3/RhLgkFI=;
-        b=WOTROWby4+O9mii6I9VKEbRf1e0JneRRZWuOzB+sxeZyY83rimGnXwHvmaiAJl950J
-         UC1zbSHRcY3mTA7B7y5OXXYbolcIsJvey4DCBh5Rx9c8WPmcnqZ8EoMX7SoBo1/dBquC
-         tR1gRLP/wJVJIFcmMJeEliFw3zJ+c6urFzhFbDBrToGBAXbPykkH8hZXQzmV8T5PwuOV
-         ZTYQ445OhWUCveVh+i5qqcAGuex8IQZuctk9F/8j9ZQF2vUTFLPiSFOGi51pyiuqTTet
-         1cWjwGBAO9noeYyjswJyg79dR8Ck0twVz5IdcPGwpVR02yX8Xg1W8CbhBOQe0PhHS1mv
-         Occg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WjCWNWtT0pxxhAlETV2zIWjv0Gl4p3lxrm3/RhLgkFI=;
-        b=G8F28NA3U3XF/dvNrsgU7LSeW4dV+0CLzUiQhTHeOSvy+/T3sDHoDA1C0sqoDrJMf/
-         qnRp6wy9MxfovD73VZJrv0LKZm6IrYjW8e4S6Ct0Mm5LBxqFIENNnO+WrFQds5xBnLCH
-         XyQVgIk6JE+VhF4u6i1BriEWDuSfiCzo1WTBUOwL+nbpm5bU4gsc9M2EqKxVzBHXHb8R
-         /BVJGB23ZX69ZhgWHIB4lJQKm1agCvWxi8qg8z7amDhxXeow6PV7Rrhi4617HEDb7cZN
-         8KbpBAGpEe/l8mG0FYqrETNLYCYAFljfkBqn4x0X8lKS36lWTV8PynpH55mGtiEgYw+C
-         eQ4A==
-X-Gm-Message-State: AOAM5327trkusBOnQClUKH73hWrFfVjrRESP5zni4D6ps+ZgF283sclP
-        qzo0RZTcLV8EcK+cabtcmGU=
-X-Google-Smtp-Source: ABdhPJzqcaYYDKlp3sUAGpXDR3SSEmVgbvV1MQeGqx85pwWP5dg6r1K9s1IWZLx1A1HO79RYXirMpQ==
-X-Received: by 2002:a62:760b:0:b029:1b6:3897:3f86 with SMTP id r11-20020a62760b0000b02901b638973f86mr3803216pfc.24.1612372894244;
-        Wed, 03 Feb 2021 09:21:34 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id x21sm2368636pfn.100.2021.02.03.09.21.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 09:21:32 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v6 PATCH 11/11] mm: vmscan: shrink deferred objects proportional to priority
-Date:   Wed,  3 Feb 2021 09:20:42 -0800
-Message-Id: <20210203172042.800474-12-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210203172042.800474-1-shy828301@gmail.com>
-References: <20210203172042.800474-1-shy828301@gmail.com>
+        id S232322AbhBCRYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:24:08 -0500
+Received: from mail.nic.cz ([217.31.204.67]:43150 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232087AbhBCRWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:22:21 -0500
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id C0EA01420D5;
+        Wed,  3 Feb 2021 18:21:37 +0100 (CET)
+Date:   Wed, 3 Feb 2021 18:21:37 +0100
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from
+ DT
+Message-ID: <20210203182137.339f8470@nic.cz>
+In-Reply-To: <20210203163555.GA23019@duo.ucw.cz>
+References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
+        <20210203142940.GB12369@duo.ucw.cz>
+        <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+        <20210203163555.GA23019@duo.ucw.cz>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of deferred objects might get windup to an absurd number, and it
-results in clamp of slab objects.  It is undesirable for sustaining workingset.
+On Wed, 3 Feb 2021 17:35:55 +0100
+Pavel Machek <pavel@ucw.cz> wrote:
 
-So shrink deferred objects proportional to priority and cap nr_deferred to twice
-of cache items.
+> On Wed 2021-02-03 15:39:59, Sven Schuchmann wrote:
+> > Hello Pavel,
+> >   
+> > > > In order to use a multicolor-led together with a trigger
+> > > > from DT the led needs to have an intensity set to see something.
+> > > > The trigger changes the brightness of the led but if there
+> > > > is no intensity we actually see nothing.
+> > > >
+> > > > This patch adds the ability to set the default intensity
+> > > > of each led so that it is turned on from DT.  
+> > > 
+> > > Do we need this to be configurable from device tree? Can we just set
+> > > it to max or something?
+> > > 
+> > > Aha, this basically sets the initial color for LEDs the monochromatic
+> > > triggers, right?  
+> > 
+> > Let me try to explain in other words: I have one RGB-LED
+> > which consists of 3 Colors. Each of the three colors (Red, Green, Blue) you have
+> > to define in the DT. For example this is my setup for one RGB-LED which I wanted
+> > to show the heartbeat in Red (half intensity):
+> > 
+> >                                 multi-led@3 {
+> >                                         #address-cells = <1>;
+> >                                         #size-cells = <0>;
+> >                                         reg = <0x3>;
+> >                                         color = <LED_COLOR_ID_RGB>;
+> > 
+> >                                         linux,default-trigger = "heartbeat";
+> >                                         function = LED_FUNCTION_HEARTBEAT;
+> > 
+> >                                         led-9 {
+> >                                                 color = <LED_COLOR_ID_RED>;
+> >                                                 default-intensity = <100>;
+> >                                         };
+> > 
+> >                                         led-10 {
+> >                                                 color = <LED_COLOR_ID_GREEN>;
+> >                                         };
+> > 
+> >                                         led-11 {
+> >                                                 color = <LED_COLOR_ID_BLUE>;
+> >                                         };
+> >                                 };
+> > 
+> > If I would not have the default-intensity I would actually see nothing,
+> > since the intensity (which goes from 0-255) of each led is initialized with 0.
+> > 
+> > I hope I could clarify this a little more?  
+> 
+> Yes, sounds reasonable. Could we get default intensity of 100% on all
+> channels if nothing else is specified?
+> 
+> Or maybe simply "if intensity is not specified, start with 100%, and
+> use explicit =0 if other color is expected".
+> 
+> Best regards,
+> 								Pavel
 
-The idea is borrowed fron Dave Chinner's patch:
-https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
+Is the property default-intensity documented in DT bindings?
 
-Tested with kernel build and vfs metadata heavy workload in our production
-environment, no regression is spotted so far.
-
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/vmscan.c | 40 +++++-----------------------------------
- 1 file changed, 5 insertions(+), 35 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 574d920c4cab..d0a86170854b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -649,7 +649,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 	 */
- 	nr = count_nr_deferred(shrinker, shrinkctl);
- 
--	total_scan = nr;
- 	if (shrinker->seeks) {
- 		delta = freeable >> priority;
- 		delta *= 4;
-@@ -663,37 +662,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 		delta = freeable / 2;
- 	}
- 
-+	total_scan = nr >> priority;
- 	total_scan += delta;
--	if (total_scan < 0) {
--		pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
--		       shrinker->scan_objects, total_scan);
--		total_scan = freeable;
--		next_deferred = nr;
--	} else
--		next_deferred = total_scan;
--
--	/*
--	 * We need to avoid excessive windup on filesystem shrinkers
--	 * due to large numbers of GFP_NOFS allocations causing the
--	 * shrinkers to return -1 all the time. This results in a large
--	 * nr being built up so when a shrink that can do some work
--	 * comes along it empties the entire cache due to nr >>>
--	 * freeable. This is bad for sustaining a working set in
--	 * memory.
--	 *
--	 * Hence only allow the shrinker to scan the entire cache when
--	 * a large delta change is calculated directly.
--	 */
--	if (delta < freeable / 4)
--		total_scan = min(total_scan, freeable / 2);
--
--	/*
--	 * Avoid risking looping forever due to too large nr value:
--	 * never try to free more than twice the estimate number of
--	 * freeable entries.
--	 */
--	if (total_scan > freeable * 2)
--		total_scan = freeable * 2;
-+	total_scan = min(total_scan, (2 * freeable));
- 
- 	trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
- 				   freeable, delta, total_scan, priority);
-@@ -732,10 +703,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
- 		cond_resched();
- 	}
- 
--	if (next_deferred >= scanned)
--		next_deferred -= scanned;
--	else
--		next_deferred = 0;
-+	next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
-+	next_deferred = min(next_deferred, (2 * freeable));
-+
- 	/*
- 	 * move the unused scan count back into the shrinker in a
- 	 * manner that handles concurrent updates.
--- 
-2.26.2
-
+Wouldn't it be better if the property was used in the multi-led node
+instead of the channel node? I.e.
+  multi-led@3 {
+    color = <LED_COLOR_ID_RGB>;
+    default-intensity = <100 0 0>;
+  };
