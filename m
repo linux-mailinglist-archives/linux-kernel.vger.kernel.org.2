@@ -2,212 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982D530D54B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA1630D550
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhBCIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbhBCIeN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:34:13 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC7DC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 00:33:32 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id m22so32113410lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 00:33:32 -0800 (PST)
+        id S232807AbhBCIfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:35:21 -0500
+Received: from mail-vi1eur05on2127.outbound.protection.outlook.com ([40.107.21.127]:18976
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232710AbhBCIfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 03:35:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oMSaw8RLcZJm9XYHNqMf2KzDd81eAW+gaxUofxMfmE+kIwzbv605J9vXej0nreYQUmFRZFH0lmSKF8r7J6+c0EJo2R/4q8tBqxfrlwD39CLlFPnUqr5PguYMLdZ4SDtL/YjAEZ9vXUXzvbqUB++VRd7daVuKLNVI9Sq0MmFQF6uMyoOa/1NBbZOIBeHSB2mUtN7nX0c/eS/0OBec3NXtSj+KbFPw9jDIII9oT3CSkoA2x8e8X/Kjjc0FQ93Xb/t8zpPd8OpEalT/GOISnvI/jSphTHefuSB1UEQAvXnGo3YEB2sCIbq3BMbO7JQEgqffe0ambI/QYTZf8AzD0HHS9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cbm+6OHG7Hsit5rbDiWNzN9vof6WsnRbTnD2nK9A3Kc=;
+ b=C0JBXo+yjpuXempAeitDypxw66W7gO7kSaO9zWmGprIgzMmrCq5F4x18SoPKeOrNvh0oGsB3DV80gAwSg4MLfevUnHuTSFYQP+QP4gkZacsoPjLzusqE2zZLClMuwQQpoLpfV1ZB9gYhDyoLuXXdnnpt1ZREgArAz2a2UoQ6ROOjvmOFjLCTn07QmEHBLjAOZRef4s7GZ3SaY9xBxUtVbpEixassHG2bAI28pMbVHi/LneIMHehYWSEPAaay6AMRxmJulPbJ42Yh3cqGqynphPZQ8ouo7SvZGYDdVJuLVRKhIi0aUrQR2fUhzoBK730wIh3g53dSMD8EUCiUTAwDIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 62.153.209.162) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=schleissheimer.de; dmarc=none action=none
+ header.from=schleissheimer.de; dkim=fail (no key for signature)
+ header.d=schleissheimer.de; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=qtec.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=7ShNda3d6u7Ghd1Q9qy6CjLV4Mbe3P/5rnrMwcMJtQ8=;
-        b=L1gYCR/Sgy/ut07TyoVrFoAmyn0RyBOvFpmD3Jc8doGtIKqK93wapddQ/xPV2+wxa8
-         uZbFPd68t5EWHkqbq4sicbKKIe8+b1ETtmkS6gFzaflcWXap0ST932i0kU+YJmdUwe5q
-         5wWHl2p8bSjXa9E/KMPd6ynfxdOGnnclDWPSrUfAZLP9X7hkGtezc1m6e9a302PgxUh7
-         CUhlSLioZ0JKlHyCNL0cRljmISp6CLFHewCW7xWmjqqUY5G3ukUlHLZ3rJLb/Fjr7sF7
-         XaRrCZlh5kKmTNrJu9+EnLlS9j1HK8O6z0zw4wiG5ysgMT4VapZCDa64pQrlwPh4e4db
-         xY/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=7ShNda3d6u7Ghd1Q9qy6CjLV4Mbe3P/5rnrMwcMJtQ8=;
-        b=rbBYYrLaKctRXjscSr3hpV3zAgTP7CKGn2LCV9oTsEMGRGVaYuNeKkJvmz71jigPuJ
-         MJAcdvGN8WnIsM/MZptjmU63mJ+Q1jTewoTpkOVlpkV43j+tlEE+l1/IYh5u2z3U5kZG
-         a5AAMb7YwNaHef2xp96Qa9MVhY/qEaxQYAxcHgZqrnT50NTj1Ajaf1lPTZ5p8mU7oJRh
-         xb9IsFifdqKNksCYpJ1q4OddjTJgNBw5x8vlwQP8AQ//P+h6ee4AFMZk/0V0bDOkwyyM
-         BQ6Xw0CQaS2OtOYJ5JMfgRjlDNvdkVZyzkm8r8lq79jiY6DSonX1sNm/fHOkcYiKTouO
-         Jlxw==
-X-Gm-Message-State: AOAM532IYl5J//P2tFN486YtY9sOVUmQW42oWIDdmC7T7lOBiEgYZf5K
-        mU2F5DulOemwG4pnWQSQh4+MEg+l3HCYKcK88G1mrQ==
-X-Google-Smtp-Source: ABdhPJxTCl+LD1X6OvGkFkhAjDA/55ddLTveroqthDeQFNkC1KR0rc2METhsIXdmtHUha/JdRzcJq7kMNoncPorGejQ=
-X-Received: by 2002:a05:6512:214a:: with SMTP id s10mr1101305lfr.225.1612341210471;
- Wed, 03 Feb 2021 00:33:30 -0800 (PST)
+ d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cbm+6OHG7Hsit5rbDiWNzN9vof6WsnRbTnD2nK9A3Kc=;
+ b=E+qkE5Wx6fBBO9htEm/YfITeuEoAi846KOyHz+Wyamg5EJvqZUjJ7xaiJ0vmin3rynrCyleUT0iURq55xciIDAjR8Hv/R03apcXt9d6+a/BM8KP7a+vJUizg1/gFZqIcbAE+BpbSbQgClsf3wE5+pQYBT5HUsqH5sFuVFFLFEv0=
+Received: from AM0PR02CA0128.eurprd02.prod.outlook.com (2603:10a6:20b:28c::25)
+ by AM4P190MB0081.EURP190.PROD.OUTLOOK.COM (2603:10a6:200:5f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.23; Wed, 3 Feb
+ 2021 08:34:24 +0000
+Received: from HE1EUR04FT027.eop-eur04.prod.protection.outlook.com
+ (2603:10a6:20b:28c:cafe::24) by AM0PR02CA0128.outlook.office365.com
+ (2603:10a6:20b:28c::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend
+ Transport; Wed, 3 Feb 2021 08:34:24 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 62.153.209.162)
+ smtp.mailfrom=schleissheimer.de; vger.kernel.org; dkim=fail (no key for
+ signature) header.d=schleissheimer.de;vger.kernel.org; dmarc=none action=none
+ header.from=schleissheimer.de;
+Received-SPF: Fail (protection.outlook.com: domain of schleissheimer.de does
+ not designate 62.153.209.162 as permitted sender)
+ receiver=protection.outlook.com; client-ip=62.153.209.162;
+ helo=mail.schleissheimer.de;
+Received: from mail.schleissheimer.de (62.153.209.162) by
+ HE1EUR04FT027.mail.protection.outlook.com (10.152.27.30) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11 via Frontend Transport; Wed, 3 Feb 2021 08:34:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=schleissheimer.de; s=dkim1;
+        h=Message-Id:Date:Subject:Cc:To:From; bh=cbm+6OHG7Hsit5rbDiWNzN9vof6WsnRbTnD2nK9A3Kc=;
+        b=cqz6QM/see/WO+40DQs4kCXVAeiORycvdbFdmVp9EbK4IQf4UGON61ghyjYukbdbht+Uo2FGTP+slmlUfRYcp2KLPpahRPofp/9jld/gCbTdntHc3e6QhM1yap9RBXPCAG2R6xM565mj8tkw4IhGliDSe6QSeyee1vEMYJV4/6w=;
+Received: from [192.168.10.165] (port=41938 helo=contiredmine.schleissheimer.de)
+        by mail.schleissheimer.de with esmtp (Exim 4.82_1-5b7a7c0-XX)
+        (envelope-from <schuchmann@schleissheimer.de>)
+        id 1l7Dc4-0001pv-1d; Wed, 03 Feb 2021 09:34:12 +0100
+X-CTCH-RefID: str=0001.0A782F17.601A6004.009B,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+From:   Sven Schuchmann <schuchmann@schleissheimer.de>
+To:     schuchmann@schleissheimer.de
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] leds: lp50xx: remove unused regulator
+Date:   Wed,  3 Feb 2021 08:34:08 +0000
+Message-Id: <20210203083408.2534-1-schuchmann@schleissheimer.de>
+X-Mailer: git-send-email 2.17.1
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-From:   Daniel Gomez <daniel@qtec.com>
-Date:   Wed, 3 Feb 2021 09:33:19 +0100
-Message-ID: <CAH1Ww+TPCSyiaC3oeoWPtsi-vDfDY=K4ByoLD37-onMvsAB5Rg@mail.gmail.com>
-Subject: [amdgpu] deadlock
-To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: ed1a1e27-4a13-4f34-e9ea-08d8c81e8161
+X-MS-TrafficTypeDiagnostic: AM4P190MB0081:
+X-Microsoft-Antispam-PRVS: <AM4P190MB0081C92D3BF41985AE14171CD8B49@AM4P190MB0081.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oo3IEqp7pmkaHYwJvs0p9C9VcmU/m/RqMy8lixrfB7WGsdkCsM6bpfRm7f38a9IfkS8ForhjTw/LzPVa2NnG1e9cuq0h3UctAe4Jur7LjoW5VJi1T0Dx8R2MStd81qvv6lN4yysG0X/ozmuGF+CWX6TfIkkrBMQW8VMQwvpPHx5SQjC+/b5fA3JZdLwsKfHyteWDZqF5oiNsd+8JztkjUXgIib47V/l3T5TB7224R9KGJTlTSmjjAtHN5szhfx78heKMLbkWebpII6EPf2V0iN/olqwbDsXzBhzLLEx39WQLeg0ajoZ3xQSJyozAjojJHeZxjBJd/bJ4Gch0CT/A+F/6AovnrYEAWqu0unDptieqkwlZjS5OiLoNDPLQqWonn5x8el4GQFwfZeLwmmU6jSYMN1fcjh6ybLOMistBpEKD9MswUXEu9qISgBVbdC63c783CwpdaITZSYGNvTvBa0lase3WuY9jFSFWM/9kTp0bwfm05xvT+NHUkec4dr4Ycu71bSvlv/cdA5HQCS3cUGtLYSdfflzPmi0sHnAqqO+PVe/LO/fSYrkDz+aTBE8n31oQmVq+YyT5URTZhALesCrnjYPpXSOqErXM+HwynSJUY3mp538vss7pIguEgtSZGCob6txiHfiiCmlLXlJIUQ==
+X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:mail.schleissheimer.de;CAT:NONE;SFS:(346002)(39830400003)(376002)(396003)(136003)(36840700001)(46966006)(8676002)(70206006)(70586007)(37006003)(9786002)(478600001)(2616005)(54906003)(36756003)(7636003)(26005)(5660300002)(7696005)(83380400001)(186003)(356005)(426003)(336012)(82310400003)(7596003)(2906002)(6666004)(34206002)(36860700001)(4326008)(316002)(47076005)(8936002)(1076003);DIR:OUT;SFP:1102;
+X-OriginatorOrg: schleissheimer.de
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 08:34:21.7217
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed1a1e27-4a13-4f34-e9ea-08d8c81e8161
+X-MS-Exchange-CrossTenant-Id: ba05321a-a007-44df-8805-c7e62d5887b5
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ba05321a-a007-44df-8805-c7e62d5887b5;Ip=[62.153.209.162];Helo=[mail.schleissheimer.de]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR04FT027.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4P190MB0081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+The regulator for vled-supply is unused in the driver.
+It is just assigned from DT and disabled in lp50xx_remove.
+So the code can be removed from the driver.
 
-I have a deadlock with the amdgpu mainline driver when running in parallel =
-two
-OpenCL applications. So far, we've been able to replicate it easily by exec=
-uting
-clinfo and MatrixMultiplication (from AMD opencl-samples). It's quite old t=
-he
-opencl-samples so, if you have any other suggestion for testing I'd be very
-happy to test it as well.
+Part 1 updates the documentation
+Part 2 removes the code
 
-How to replicate the issue:
+Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
 
-# while true; do /usr/bin/MatrixMultiplication --device gpu \
-    --deviceId 0 -x 1000 -y 1000 -z 1000 -q -t -i 50; done
-# while true; do clinfo; done
+---
+ drivers/leds/leds-lp50xx.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-Output:
+diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
+index f13117eed976..b0871495bae3 100644
+--- a/drivers/leds/leds-lp50xx.c
++++ b/drivers/leds/leds-lp50xx.c
+@@ -11,7 +11,6 @@
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+-#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <uapi/linux/uleds.h>
+ 
+@@ -275,7 +274,6 @@ struct lp50xx_led {
+ /**
+  * struct lp50xx -
+  * @enable_gpio: hardware enable gpio
+- * @regulator: LED supply regulator pointer
+  * @client: pointer to the I2C client
+  * @regmap: device register map
+  * @dev: pointer to the devices device struct
+@@ -286,7 +284,6 @@ struct lp50xx_led {
+  */
+ struct lp50xx {
+ 	struct gpio_desc *enable_gpio;
+-	struct regulator *regulator;
+ 	struct i2c_client *client;
+ 	struct regmap *regmap;
+ 	struct device *dev;
+@@ -462,10 +459,6 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
+ 		return ret;
+ 	}
+ 
+-	priv->regulator = devm_regulator_get(priv->dev, "vled");
+-	if (IS_ERR(priv->regulator))
+-		priv->regulator = NULL;
+-
+ 	device_for_each_child_node(priv->dev, child) {
+ 		led = &priv->leds[i];
+ 		ret = fwnode_property_count_u32(child, "reg");
+@@ -583,13 +576,6 @@ static int lp50xx_remove(struct i2c_client *client)
+ 		return ret;
+ 	}
+ 
+-	if (led->regulator) {
+-		ret = regulator_disable(led->regulator);
+-		if (ret)
+-			dev_err(&led->client->dev,
+-				"Failed to disable regulator\n");
+-	}
+-
+ 	mutex_destroy(&led->lock);
+ 
+ 	return 0;
+-- 
+2.17.1
 
-After a minute or less (sometimes could be more) I can see that
-MatrixMultiplication and clinfo hang. In addition, with radeontop you can s=
-ee
-how the Graphics pipe goes from ~50% to 100%. Also the shader clocks
-goes up from ~35% to ~96%.
-
-clinfo keeps printing:
-ioctl(7, DRM_IOCTL_SYNCOBJ_WAIT, 0x7ffe46e5f950) =3D -1 ETIME (Timer expire=
-d)
-
-And MatrixMultiplication prints the following (strace) if you try to
-kill the process:
-
-sched_yield()                           =3D 0
-futex(0x557e945343b8, FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIME, 0,
-NULL, FUTEX_BITSET_MATCH_ANYstrace: Process 651 detached
- <detached ...>
-
-After this, the gpu is not functional at all and you'd need a power cycle r=
-eset
-to restore the system.
-
-Hardware info:
-CPU: AMD Ryzen Embedded V1605B with Radeon Vega Gfx (8) @ 2.000GHz
-GPU: AMD ATI Radeon Vega Series / Radeon Vega Mobile Series
-
-03:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-[AMD/ATI] Raven Ridge [Radeon Vega Series / Radeon Vega Mobile Series]
-(rev 83)
-    DeviceName: Broadcom 5762
-    Subsystem: Advanced Micro Devices, Inc. [AMD/ATI] Raven Ridge
-[Radeon Vega Series / Radeon Vega Mobile Series]
-    Kernel driver in use: amdgpu
-    Kernel modules: amdgpu
-
-Linux kernel info:
-
-root@qt5222:~# uname -a
-Linux qt5222 5.11.0-rc6-qtec-standard #2 SMP Tue Feb 2 09:41:46 UTC
-2021 x86_64 x86_64 x86_64 GNU/Linux
-
-By enabling the kernel locks stats I could see the MatrixMultiplication is
-hanged in the amdgpu_mn_invalidate_gfx function:
-
-[  738.359202] 1 lock held by MatrixMultiplic/653:
-[  738.359206]  #0: ffff88810e364fe0
-(&adev->notifier_lock){+.+.}-{3:3}, at:
-amdgpu_mn_invalidate_gfx+0x34/0xa0 [amdgpu]
-
-I can see in the the amdgpu_mn_invalidate_gfx function: the
-dma_resv_wait_timeout_rcu uses wait_all (fences) and MAX_SCHEDULE_TIMEOUT s=
-o, I
-guess the code gets stuck there waiting forever. According to the
-documentation: "When somebody tries to invalidate the page tables we block =
-the
-update until all operations on the pages in question are completed, then th=
-ose
-pages are marked  as accessed and also dirty if it wasn=E2=80=99t a read on=
-ly access."
-Looks like the fences are deadlocked and therefore, it never returns. Could=
- it
-be possible? any hint to where can I look to fix this?
-
-Thank you  in advance.
-
-Here the full dmesg output:
-
-[  738.337726] INFO: task MatrixMultiplic:653 blocked for more than 122 sec=
-onds.
-[  738.344937]       Not tainted 5.11.0-rc6-qtec-standard #2
-[  738.350384] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  738.358240] task:MatrixMultiplic state:D stack:    0 pid:  653
-ppid:     1 flags:0x00004000
-[  738.358254] Call Trace:
-[  738.358261]  ? dma_fence_default_wait+0x1eb/0x230
-[  738.358276]  __schedule+0x370/0x960
-[  738.358291]  ? dma_fence_default_wait+0x117/0x230
-[  738.358297]  ? dma_fence_default_wait+0x1eb/0x230
-[  738.358305]  schedule+0x51/0xc0
-[  738.358312]  schedule_timeout+0x275/0x380
-[  738.358324]  ? dma_fence_default_wait+0x1eb/0x230
-[  738.358332]  ? mark_held_locks+0x4f/0x70
-[  738.358341]  ? dma_fence_default_wait+0x117/0x230
-[  738.358347]  ? lockdep_hardirqs_on_prepare+0xd4/0x180
-[  738.358353]  ? _raw_spin_unlock_irqrestore+0x39/0x40
-[  738.358362]  ? dma_fence_default_wait+0x117/0x230
-[  738.358370]  ? dma_fence_default_wait+0x1eb/0x230
-[  738.358375]  dma_fence_default_wait+0x214/0x230
-[  738.358384]  ? dma_fence_release+0x1a0/0x1a0
-[  738.358396]  dma_fence_wait_timeout+0x105/0x200
-[  738.358405]  dma_resv_wait_timeout_rcu+0x1aa/0x5e0
-[  738.358421]  amdgpu_mn_invalidate_gfx+0x55/0xa0 [amdgpu]
-[  738.358688]  __mmu_notifier_release+0x1bb/0x210
-[  738.358710]  exit_mmap+0x2f/0x1e0
-[  738.358723]  ? find_held_lock+0x34/0xa0
-[  738.358746]  mmput+0x39/0xe0
-[  738.358756]  do_exit+0x5c3/0xc00
-[  738.358763]  ? find_held_lock+0x34/0xa0
-[  738.358780]  do_group_exit+0x47/0xb0
-[  738.358791]  get_signal+0x15b/0xc50
-[  738.358807]  arch_do_signal_or_restart+0xaf/0x710
-[  738.358816]  ? lockdep_hardirqs_on_prepare+0xd4/0x180
-[  738.358822]  ? _raw_spin_unlock_irqrestore+0x39/0x40
-[  738.358831]  ? ktime_get_mono_fast_ns+0x50/0xa0
-[  738.358844]  ? amdgpu_drm_ioctl+0x6b/0x80 [amdgpu]
-[  738.359044]  exit_to_user_mode_prepare+0xf2/0x1b0
-[  738.359054]  syscall_exit_to_user_mode+0x19/0x60
-[  738.359062]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  738.359069] RIP: 0033:0x7f6b89a51887
-[  738.359076] RSP: 002b:00007f6b82b54b18 EFLAGS: 00000246 ORIG_RAX:
-0000000000000010
-[  738.359086] RAX: fffffffffffffe00 RBX: 00007f6b82b54b50 RCX: 00007f6b89a=
-51887
-[  738.359091] RDX: 00007f6b82b54b50 RSI: 00000000c02064c3 RDI: 00000000000=
-00007
-[  738.359096] RBP: 00000000c02064c3 R08: 0000000000000003 R09: 00007f6b82b=
-54bbc
-[  738.359101] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000165a=
-0bc00
-[  738.359106] R13: 0000000000000007 R14: 0000000000000001 R15: 00000000000=
-00000
-[  738.359129]
-               Showing all locks held in the system:
-[  738.359141] 1 lock held by khungtaskd/54:
-[  738.359148]  #0: ffffffff829f6840 (rcu_read_lock){....}-{1:2}, at:
-debug_show_all_locks+0x15/0x183
-[  738.359187] 1 lock held by systemd-journal/174:
-[  738.359202] 1 lock held by MatrixMultiplic/653:
-[  738.359206]  #0: ffff88810e364fe0
-(&adev->notifier_lock){+.+.}-{3:3}, at:
-amdgpu_mn_invalidate_gfx+0x34/0xa0 [amdgpu]
-
-Daniel
