@@ -2,112 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CED30D1A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9AC30D1A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhBCCfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:35:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhBCCfl (ORCPT
+        id S232180AbhBCChG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:37:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56966 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229690AbhBCCg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:35:41 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A020AC061786
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:35:01 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id t29so15674729pfg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fPQam4ndzft14C3DaSgN+91Ad7etOKCRLDjQjoeYJK8=;
-        b=OTXg56iU1hkJ7HWuwulOElr299NtTWhlmzuxg05V7A+0w9gy8hR5UaKR/v+7dxkzjj
-         +TleqnWVmTiaDeY9JuD5IfUYvbyG/Ijc6FxxDsalbeVNUtGy7JKzklUDbrkTHBS7dO+2
-         We92Bw15uhSbI6UCreDJlwayqFGKbdYK4ggQrMcjTp7cr4WrZPmlD8DL3UaE+XD7bxHj
-         irMFvCkINaLRA9hGsnQaV7h/Yr2C4o60VppLExRZ5ZvJxPSrJYXv7K513Vjy0cMP/KqI
-         mSKetFvsNlk1fyBGXuYXphyzzrAwI8Jk3oVo+3YsvxNRHCJPKcjv6+ijPGEFHsqDE77j
-         LVHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=fPQam4ndzft14C3DaSgN+91Ad7etOKCRLDjQjoeYJK8=;
-        b=sSBC5bIZhkAVLkgwO0Rv25aPWcBJvaFngijLQclXG1ecy/AijcQCJWHMMR/bkNnJcK
-         Am+3/Q7lVbXdlvIcrM2yqOt5KhkPOva0iEMj/exivm/j1Tx1RkhkOP68s+vLZAET8XAi
-         jTrolOHB6gGMhTedOJ8k2WJLYfs9tixJhlScW8B0JJEns0bRVTV7cOcCg4xjciQbkUfT
-         hPR++55WtOZgVbu+HK8Y8T2rPnp/UQqDgzjJ9aNqJtmCy4AaObu+ATSPX69GeosJOXBw
-         jAA1z4POWgrlM4GwjtAyTztiUktGdIodWlkxIBk1ArKNk1QB8uxg/kQpwNV+5Hi2a6z5
-         dl/w==
-X-Gm-Message-State: AOAM530+aWimqO69VEOqCIs+wZ80PIVF89x5a7uPKBS21QbFos0OGSsB
-        8tYmJ4EKWkj/7YhPFoKMm/8i+A==
-X-Google-Smtp-Source: ABdhPJwwzoE5DQ65GzSvq8HYxGVwxgvuO0KnV/mVnlwlTP9TGyTJNOVC4wrBFr+Is9GPBJsZDCBQVg==
-X-Received: by 2002:aa7:9402:0:b029:1c5:4e3e:11ad with SMTP id x2-20020aa794020000b02901c54e3e11admr965443pfo.15.1612319701181;
-        Tue, 02 Feb 2021 18:35:01 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id t206sm275715pgb.84.2021.02.02.18.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 18:35:00 -0800 (PST)
-Date:   Tue, 02 Feb 2021 18:35:00 -0800 (PST)
-X-Google-Original-Date: Tue, 02 Feb 2021 18:34:49 PST (-0800)
-Subject:     Re: Kconfig-induced build errors: CONFIG_PAGE_OFFSET
-In-Reply-To: <mhng-9b4a74fd-62d8-421f-8150-9147da7e39b2@penguin>
-CC:     geert@linux-m68k.org, rdunlap@infradead.org,
-        linux-riscv@lists.infradead.org, aou@eecs.berkeley.edu,
+        Tue, 2 Feb 2021 21:36:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612319730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j31I0qfJW8o1jTsGzPpgphG99t9GEJijgoDVPezyzDs=;
+        b=YTdY2XqgrUYBHAz8DZFD4MkXkfyaKXS/dVRfI3TXx5DFwjzq/FbgdLKc9tBVjc6C93LyNL
+        qvUZKsNQ6MqvGUYvKtqwOOM+Vs6IcMp5OXOCsAJ0XmnSOEtXQI9kaTLlBQckbWGlm0x0oo
+        HgLI+iPzdsXeD6e7Fhgx+5syx9OMyL4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-7J_PbA-0MUaJ6OiPyykl5A-1; Tue, 02 Feb 2021 21:35:29 -0500
+X-MC-Unique: 7J_PbA-0MUaJ6OiPyykl5A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24534107ACE3;
+        Wed,  3 Feb 2021 02:35:28 +0000 (UTC)
+Received: from T590 (ovpn-13-198.pek2.redhat.com [10.72.13.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4EB811F6;
+        Wed,  3 Feb 2021 02:35:22 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 10:35:17 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     David Jeffery <djeffery@redhat.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org
-Message-ID: <mhng-c04f6080-f52b-441b-a4ef-65c4559046f7@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH] block: recalculate segment count for multi-segment
+ discard requests correctly
+Message-ID: <20210203023517.GA948998@T590>
+References: <20210201164850.391332-1-djeffery@redhat.com>
+ <20210202033343.GA165584@T590>
+ <20210202204355.GA31803@redhat>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202204355.GA31803@redhat>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Feb 2021 18:27:42 PST (-0800), Palmer Dabbelt wrote:
-> On Fri, 29 Jan 2021 05:52:51 PST (-0800), geert@linux-m68k.org wrote:
->> Hi Atish,
->>
->> On Thu, Jan 28, 2021 at 9:09 PM Atish Patra <atishp@atishpatra.org> wrote:
->>> On Wed, Jan 27, 2021 at 7:18 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>> > I took a riscv-32 .config from kernel test robot (it was for a clang build)
->>> > and did a "make olddefconfig" (using gcc tools) and got build errors
->>> > due to this config item from arch/riscv/Kconfig;
->>> >
->>> >
->>> > config PAGE_OFFSET
->>> >         hex
->>> >         default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
->>> >         default 0x80000000 if 64BIT && !MMU
->>> >         default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
->>> >         default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->>> >
->>> > PAGE_OFFSET is undefined for the case of 32BIT && MAXPHYSMEM_2GB.
->>>
->>> Because, RV32 doesn't support 2GB physical memory yet.
->>>
->>> The compilation errors can be fixed by not allowing MAXPHYSMEM_2GB for RV32 and
->>> MAXPHYSMEM_1GB for RV64. How about this ?
->>>
->>> --- a/arch/riscv/Kconfig
->>> +++ b/arch/riscv/Kconfig
->>> @@ -253,8 +253,10 @@ choice
->>>         default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
->>>
->>>         config MAXPHYSMEM_1GB
->>> +               depends on 32BIT
->>>                 bool "1GiB"
->>>         config MAXPHYSMEM_2GB
->>> +               depends on 64BIT && CMODEL_MEDLOW
->>>                 bool "2GiB"
->>>         config MAXPHYSMEM_128GB
->>>                 depends on 64BIT && CMODEL_MEDANY
->>
->> Thanks, works fine on litex-vexriscv.
->> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Atish: did I miss an actual patch?  I just see diff here.
+On Tue, Feb 02, 2021 at 03:43:55PM -0500, David Jeffery wrote:
+> On Tue, Feb 02, 2021 at 11:33:43AM +0800, Ming Lei wrote:
+> > 
+> > On Mon, Feb 01, 2021 at 11:48:50AM -0500, David Jeffery wrote:
+> > > When a stacked block device inserts a request into another block device
+> > > using blk_insert_cloned_request, the request's nr_phys_segments field gets
+> > > recalculated by a call to blk_recalc_rq_segments in
+> > > blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+> > > handle multi-segment discards. For disk types which can handle
+> > > multi-segment discards like nvme, this results in discard requests which
+> > > claim a single segment when it should report several, triggering a warning
+> > > in nvme and causing nvme to fail the discard from the invalid state.
+> > > 
+> > >  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+> > >  ...
+> > >  nvme_setup_cmd+0x217/0x270 [nvme_core]
+> > >  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+> > >  __blk_mq_try_issue_directly+0xe7/0x1b0
+> > >  blk_mq_request_issue_directly+0x41/0x70
+> > >  ? blk_account_io_start+0x40/0x50
+> > >  dm_mq_queue_rq+0x200/0x3e0
+> > >  blk_mq_dispatch_rq_list+0x10a/0x7d0
+> > >  ? __sbitmap_queue_get+0x25/0x90
+> > >  ? elv_rb_del+0x1f/0x30
+> > >  ? deadline_remove_request+0x55/0xb0
+> > >  ? dd_dispatch_request+0x181/0x210
+> > >  __blk_mq_do_dispatch_sched+0x144/0x290
+> > >  ? bio_attempt_discard_merge+0x134/0x1f0
+> > >  __blk_mq_sched_dispatch_requests+0x129/0x180
+> > >  blk_mq_sched_dispatch_requests+0x30/0x60
+> > >  __blk_mq_run_hw_queue+0x47/0xe0
+> > >  __blk_mq_delay_run_hw_queue+0x15b/0x170
+> > >  blk_mq_sched_insert_requests+0x68/0xe0
+> > >  blk_mq_flush_plug_list+0xf0/0x170
+> > >  blk_finish_plug+0x36/0x50
+> > >  xlog_cil_committed+0x19f/0x290 [xfs]
+> > >  xlog_cil_process_committed+0x57/0x80 [xfs]
+> > >  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+> > >  xlog_ioend_work+0x2f/0x80 [xfs]
+> > >  process_one_work+0x1b6/0x350
+> > >  worker_thread+0x53/0x3e0
+> > >  ? process_one_work+0x350/0x350
+> > >  kthread+0x11b/0x140
+> > >  ? __kthread_bind_mask+0x60/0x60
+> > >  ret_from_fork+0x22/0x30
+> > > 
+> > > This patch fixes blk_recalc_rq_segments to be aware of devices which can
+> > > have multi-segment discards. It calculates the correct discard segment
+> > > count by counting the number of bio as each discard bio is considered its
+> > > own segment.
+> > > 
+> > > Signed-off-by: David Jeffery <djeffery@redhat.com>
+> > > Tested-by: Laurence Oberman <loberman@redhat.com>
+> > > ---
+> > >  block/blk-merge.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > > 
+> > > diff --git a/block/blk-merge.c b/block/blk-merge.c
+> > > index 808768f6b174..fe7358bd5d09 100644
+> > > --- a/block/blk-merge.c
+> > > +++ b/block/blk-merge.c
+> > > @@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+> > >  
+> > >  	switch (bio_op(rq->bio)) {
+> > >  	case REQ_OP_DISCARD:
+> > > +		if (queue_max_discard_segments(rq->q) > 1) {
+> > > +			struct bio *bio = rq->bio;
+> > > +			for_each_bio(bio)
+> > > +				nr_phys_segs++;
+> > > +			return nr_phys_segs;
+> > > +		}
+> > > +		/* fall through */
+> > >  	case REQ_OP_SECURE_ERASE:
+> > 
+> > REQ_OP_SECURE_ERASE needs to be covered since block layer treats
+> > the two in very similar way from discard viewpoint.
+> > 
+> > Also single range discard should be fixed too, since block layer
+> > thinks single-range discard req segment is 1. Otherwise, the warning in
+> > virtblk_setup_discard_write_zeroes() still may be triggered, at least.
+> > 
+> > 
+> > -- 
+> > Ming
+> >
+> 
+> The return 0 does seem to be an old relic that does not make sense anymore.
+> Moving REQ_OP_SECURE_ERASE to be with discard and removing the old return 0,
+> is this what you had in mind?
+> 
+>  
+> diff --git a/block/blk-merge.c b/block/blk-merge.c
+> index 808768f6b174..68458aa01b05 100644
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -383,8 +383,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+>  	switch (bio_op(rq->bio)) {
+>  	case REQ_OP_DISCARD:
+>  	case REQ_OP_SECURE_ERASE:
+> +		if (queue_max_discard_segments(rq->q) > 1) {
+> +			struct bio *bio = rq->bio;
+> +			for_each_bio(bio)
+> +				nr_phys_segs++;
+> +			return nr_phys_segs;
+> +		}
+> +		/* fall through */
+>  	case REQ_OP_WRITE_ZEROES:
+> -		return 0;
+>  	case REQ_OP_WRITE_SAME:
+>  		return 1;
 
-Never mind, I found it.  Thanks!
+WRITE_SAME uses same buffer, so the nr_segment is still one; WRITE_ZERO
+doesn't need extra payload, so nr_segments is zero, see
+blk_bio_write_zeroes_split(), blk_bio_write_same_split, attempt_merge()
+and blk_rq_merge_ok().
+
+-- 
+Ming
+
