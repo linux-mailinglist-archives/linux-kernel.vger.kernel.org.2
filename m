@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8289930DB9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5CF30DB9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhBCNqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:46:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232080AbhBCNp7 (ORCPT
+        id S232155AbhBCNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232081AbhBCNqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:45:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612359873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cs3iOsJ+hW89JAhUT2y2LCELNvPWgVKRoTFjIBJXhX8=;
-        b=ETLUnUfBRv+4vXFulo5VmH9ds0iGcr0UZKYeF7B/VM1ZdSlaYzKpBzcQFb883OHfm4MlHV
-        7hU9WCO5TtZSq3FNtwWjnzBy7NxsNymi+L/Px0mXj/WM/fgD2asj597tVHgRP0+6aLM+x3
-        uTVXvIeMVl9F63Ntu3nhCOE0s6QSJ8Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-NLGdFd9jMBqdF1Mp1n08mQ-1; Wed, 03 Feb 2021 08:44:31 -0500
-X-MC-Unique: NLGdFd9jMBqdF1Mp1n08mQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9FF9107ACE3;
-        Wed,  3 Feb 2021 13:44:25 +0000 (UTC)
-Received: from [10.36.112.222] (ovpn-112-222.ams2.redhat.com [10.36.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 380F45D9E3;
-        Wed,  3 Feb 2021 13:44:21 +0000 (UTC)
-Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
- <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
- <YBisBkSYPoaOM42F@google.com>
- <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
- <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5efd931f-9d69-2936-89e8-278fe106616d@redhat.com>
-Date:   Wed, 3 Feb 2021 14:44:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 3 Feb 2021 08:46:01 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E494C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:45:20 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id i187so33368551lfd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JJ9DM6PdGtNUfSAd2slUQiJAIPkbwKKdmEnN7FGvrZ0=;
+        b=uEVfZB7kBiGmlTSskPgYFqfoHOxEhUBg8168XNp7rg75oBqZfETuJQEtcgidrVIlN5
+         bonOCowzB2l3esZ/9K+5hC//AzRA+W1w+rAAfgi0RMytY+ZAWSsgMRQQOILg8BnVNT/U
+         fSPU5DbKq0R7X3oLkDeUpOg5fbxHaC4mhUAaMPzMaHwLE8KGruNb956KmZDEMLKJsh5I
+         WyWtbFIDBbtIG4R/KYfR08QZcK3BeUKLpVOKzJ3uV+PGCvyKmB9rX/yCjU4yl36X5gW5
+         feDK3wyTc4oqFsZv+c3Z97PQplmkIQmrz4klyafuD7r032vZAOaPQ1bCBiURWnjmA99F
+         nHnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JJ9DM6PdGtNUfSAd2slUQiJAIPkbwKKdmEnN7FGvrZ0=;
+        b=ti7p2SzeAhCMHp9T+7eiLebrk9uDJw2bvCK/Q1sLVmnW7JcQe3Mr/DOpetYIvX4TDe
+         OGuCjZBK2RVS66Fh78qZXQJ3l6wIMIOJEtOLbp01CTB6x5/T+qtSK0SudWNG2D/Ui892
+         SfEGV8D5O9qXcgToTFgbcqrSI4v7EiQb5lLl6zJ0uIa4Q4HLKV7RMXQEkhqtJPMwv3rN
+         SVExGBHGPL74lTjIZUYjsdGYRcEkjt+VvxHJtJ+KvsjRa7bqO43GvI/1Gct6sU23s2yc
+         Cv7Pysoz9o2KG4RIQiRnGN1dcLECLVj4pF8hgvWJp0muHU2aOVbARaet8ZDanZKJGGQa
+         bCww==
+X-Gm-Message-State: AOAM5324LVwKHn8GgMwm6LPGvMAYONnFNUQFl/Y/VVQwhhvx0YhyXGUw
+        a1DtB6kWeEhBSQxpIa8AJns=
+X-Google-Smtp-Source: ABdhPJzNmUt6lvyWzU0a8N3U8TptpiCzpMbFmkGWvjwRZ7uHY06HaSUbj8k8PxSYm7/KzTlLPQc2/A==
+X-Received: by 2002:a19:ad03:: with SMTP id t3mr1812604lfc.358.1612359918784;
+        Wed, 03 Feb 2021 05:45:18 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.228])
+        by smtp.googlemail.com with ESMTPSA id p10sm259216lji.137.2021.02.03.05.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 05:45:18 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     lkp@intel.com
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
+        snovitoll@gmail.com,
+        syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
+Subject: [PATCH v2] fs/squashfs: restrict length of xattr_ids in read_xattr_id_table
+Date:   Wed,  3 Feb 2021 19:45:16 +0600
+Message-Id: <20210203134516.1697931-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <202102032044.wrsk1CfP-lkp@intel.com>
+References: <202102032044.wrsk1CfP-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> The new implementation also uses standard kernel {rb,interval}-tree
->> and hash table implementation as its basic data structures, so it
->> automatically benefits from any generic improvements to these.
->>
->> All for the low price of just 174 net lines of code added.
-> 
-> I think the best thing to do here is to provide a patch series that
-> splits the individual changes so that they can be reviewed and their
-> separate merits evaluated.
-> 
-> Another thing that I dislike about KVM_SET_USER_MEMORY_REGION is that
-> IMO userspace should provide all memslots at once, for an atomic switch
-> of the whole memory array.  (Or at least I would like to see the code;
-> it might be a bit tricky because you'll need code to compute the
-> difference between the old and new arrays and invoke
-> kvm_arch_prepare/commit_memory_region).  I'm not sure how that would
-> interact with the active/inactive pair that you introduce here.
-> 
+In PATCH v2 fixed return -ENOMEM as error pointer.
 
-+1
+>syzbot found WARNING in squashfs_read_table [1] when length of xattr_ids
+>exceeds KMALLOC_MAX_SIZE in squashfs_read_table() for kmalloc().
+>
+>For other squashfs tables, currently such as boundary is checked with
+>another table's boundaries. Xattr table is the last one, so there is
+>no defined limit. But to avoid order >= MAX_ORDER warning condition,
+>we should restrict SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids) to
+>KMALLOC_MAX_SIZE, and it gives 1024 pages in squashfs_read_table via
+>(length + PAGE_SIZE - 1) >> PAGE_SHIFT.
+>
+>[1]
+>Call Trace:
+> alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+> alloc_pages include/linux/gfp.h:547 [inline]
+> kmalloc_order+0x2e/0xb0 mm/slab_common.c:916
+> kmalloc_order_trace+0x14/0x120 mm/slab_common.c:932
+> kmalloc include/linux/slab.h:559 [inline]
+> squashfs_read_table+0x43/0x1e0 fs/squashfs/cache.c:413
+> squashfs_read_xattr_id_table+0x191/0x220 fs/squashfs/xattr_id.c:81
 
-One issue I am aware of is resizing/splitting slots, especially due to 
-arrays like rmap + dirty bitmaps.
+Reported-by: syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+ fs/squashfs/xattr_id.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-BTW: what are your thoughts regarding converting the rmap array on 
-x86-64 into some dynamic datastructre (xarray etc)? Has that already 
-been discussed?
-
-> Paolo
-> 
-
-
+diff --git a/fs/squashfs/xattr_id.c b/fs/squashfs/xattr_id.c
+index d99e08464554..2462876c66c4 100644
+--- a/fs/squashfs/xattr_id.c
++++ b/fs/squashfs/xattr_id.c
+@@ -78,5 +78,8 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
+ 
+ 	TRACE("In read_xattr_index_table, length %d\n", len);
+ 
++	if (len > KMALLOC_MAX_SIZE)
++		return ERR_PTR(-ENOMEM);
++
+ 	return squashfs_read_table(sb, start + sizeof(*id_table), len);
+ }
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
