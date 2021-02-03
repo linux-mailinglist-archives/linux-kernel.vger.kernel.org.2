@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D9E30DF5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5480430DF5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234843AbhBCQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234542AbhBCQMW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:12:22 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5356AC061573;
-        Wed,  3 Feb 2021 08:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=NEM3B+5uDLhDBQoDrux6VhVo3KJnVlV4DNcGykNwGAQ=; b=xKMfu7bPPtW93HcxNB+zsRWo9
-        NbfYFb5ZBwm/8VBFC60rp9kYL6KqUYhVsLYisSxZ57GgjBv3ZxOlJ/dXWKUixABjQUtdp2lAqfRsE
-        DDDS4DFPtIKy/wDtiH7g4Z1CJYx4jd3go2+TPmELkqY044O/8IhvtoaZwoyQnHUCR618jz3HKxOmj
-        +7bN7ugy8G4RnnTCSnpvlBvQukbv66Tg8hRXvxjtwirveRd0WhUQMx18kGibMj1gIVnGMd+KyXCTX
-        ENIaH7gpj7yUlIh22+fKjP1Ig7MJEyQ23Ne+dsbQixLAjZaMvDFtfp2wVNoeQ3t4bTO1tLm2V2M48
-        2BPD3FVDQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38718)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l7Kkl-0005pO-5I; Wed, 03 Feb 2021 16:11:39 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l7Kkk-0004GQ-15; Wed, 03 Feb 2021 16:11:38 +0000
-Date:   Wed, 3 Feb 2021 16:11:38 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Kostya Porotchkin <kostap@marvell.com>
-Cc:     Baruch Siach <baruch@tkos.co.il>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Stefan Chulski <stefanc@marvell.com>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        Ben Peled <bpeled@marvell.com>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH 02/11] dts: mvebu: Update A8K AP806 SDHCI
- settings
-Message-ID: <20210203161137.GS1463@shell.armlinux.org.uk>
-References: <20210203133138.10754-1-kostap@marvell.com>
- <20210203133138.10754-3-kostap@marvell.com>
- <87h7mtckxe.fsf@tarshish>
- <DM5PR18MB14529A28A31785A574A4DEF5CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
- <20210203143851.GR1463@shell.armlinux.org.uk>
- <DM5PR18MB1452A6CF26E3A54730872A14CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
+        id S234894AbhBCQMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:12:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234403AbhBCQMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:12:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 690FD64F7C;
+        Wed,  3 Feb 2021 16:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612368713;
+        bh=7199PDpVTlqOjnCdGa1C2okl1sOKmVDKqDkYKIiqhaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FuYblYiB5DXGGToKuosdQ/gmxLGmdtzvKntyOdRlqdN9qhhWUAJE3kHa1bOGTmwEQ
+         eL22cLZgiqYFp8YZ3pXeNnElHV48a5UgvsULX6qQ/CuwARYwT47Wo3OGbf4Ek/AGPi
+         I4ohHWcS3JCZPpjDxIlDKePYxucDjQOocD904+jEK/wCPRvIObio8zUzXUIs663RgM
+         FQKTWIjoMnJOVQTdYo+QNvPTnrdR65aYKZNvwGhPMT2QgBfubvcsxh2DXt+s4Tx08N
+         HohfrVM09LweAR6hGFGzdhkee7ZJe5u6AQS46++V8sJY3Z3YefUQLyqyIaDIC18wsc
+         nAnjbTO03hiYw==
+Date:   Wed, 3 Feb 2021 16:11:47 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 26/26] KVM: arm64: Wrap the host with a stage 2
+Message-ID: <20210203161146.GJ18974@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-27-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM5PR18MB1452A6CF26E3A54730872A14CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
+In-Reply-To: <20210108121524.656872-27-qperret@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:50:45PM +0000, Kostya Porotchkin wrote:
-> [KP] So for older systems this "slow mode" parameter could be set on the board level.
-> When it is set in ap80x,dtsi file it downgrades all systems to HS-SDR52, even if they support HS400 on AP side.
-> MacchiatoBIN AP eMMC is connected to 3.3v regulator and has "no-1-8-v" flag set, so it should remain in low speed anyway.
+On Fri, Jan 08, 2021 at 12:15:24PM +0000, Quentin Perret wrote:
+> When KVM runs in protected nVHE mode, make use of a stage 2 page-table
+> to give the hypervisor some control over the host memory accesses. At
+> the moment all memory aborts from the host will be instantly idmapped
+> RWX at stage 2 in a lazy fashion. Later patches will make use of that
+> infrastructure to implement access control restrictions to e.g. protect
+> guest memory from the host.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_cpufeature.h       |   2 +
+>  arch/arm64/kernel/image-vars.h                |   3 +
+>  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  33 +++
+>  arch/arm64/kvm/hyp/nvhe/Makefile              |   2 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   1 +
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c            |   6 +
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 191 ++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/setup.c               |   6 +
+>  arch/arm64/kvm/hyp/nvhe/switch.c              |   7 +-
+>  arch/arm64/kvm/hyp/nvhe/tlb.c                 |   4 +-
+>  10 files changed, 248 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/mem_protect.c
 
-Your reasoning does not make sense.
+[...]
 
-The ap80x.dtsi file does not specify "marvell,xenon-phy-slow-mode".
-It is not specified at this level. It is already specified at board
-level.
+> +void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	enum kvm_pgtable_prot prot;
+> +	u64 far, hpfar, esr, ipa;
+> +	int ret;
+> +
+> +	esr = read_sysreg_el2(SYS_ESR);
+> +	if (!__get_fault_info(esr, &far, &hpfar))
+> +		hyp_panic();
+> +
+> +	prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W | KVM_PGTABLE_PROT_X;
+> +	ipa = (hpfar & HPFAR_MASK) << 8;
+> +	ret = host_stage2_map(ipa, PAGE_SIZE, prot);
 
-Given that Macchiatobin will still use slow mode, why remove the
-marvell,xenon-phy-slow-mode property from this file?
+Can we try to put down a block mapping if the whole thing falls within
+memory?
 
-Also, if you're upgrading ap80x.dtsi to use a bus-width of 8, why
-keep the bus-width specifier of 8 in the board files?
-
-This patch just doesn't make sense, and your responses to our points
-seem to add to the confusion.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Will
