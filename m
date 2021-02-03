@@ -2,47 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CA930D84A
+	by mail.lfdr.de (Postfix) with ESMTP id 73C3D30D84B
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhBCLQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:16:33 -0500
-Received: from verein.lst.de ([213.95.11.211]:50646 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234046AbhBCLQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:16:31 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id ACA1067357; Wed,  3 Feb 2021 12:15:48 +0100 (CET)
-Date:   Wed, 3 Feb 2021 12:15:48 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Filippo Sironi <sironi@amazon.de>
-Cc:     Christoph Hellwig <hch@lst.de>, serebrin@amazon.com,
-        dwmw@amazon.co.uk, kbusch@kernel.org, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: Add 48-bit DMA address quirk
-Message-ID: <20210203111548.GA11075@lst.de>
-References: <20210203094338.19473-1-sironi@amazon.de> <20210203095148.GA8897@lst.de> <0c38f5eb-41ef-7934-940b-77b6e73c5239@amazon.de>
+        id S234134AbhBCLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:17:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234038AbhBCLRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:17:08 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 03:16:25 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id g9so3852741ilc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:16:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=ZM/qrYA+f26OneEUWCg7P5IDWZkLbvPqUfDhvZCU5dWgjujKNTNqtEiUjsOx9b6zgk
+         46m4D8/plbspTOgYfIMSBON7Dp89NJriwycxV8DoEx8JJYgJqCnXSVQk8rijl6hbgTQC
+         QwJvZkSrLLRTD+zozFxp4PVVaeKwYwsl7/a8vKhcN78331tsAXwko3R0FEthYDdg25oM
+         gwvJH+0lxj64/THPNc7r4IIx053WEFmAsxYXkpSYxcN1OdHbxm/4Bzuwe3XziR/toP0Q
+         FgroQa0JY93biuHvDYz9LVdtE/KKx9+sQHePM8OqGqjMzqfIo4WYcuvCKCCCpD4nXTwJ
+         kyDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=I4YJj1J4gbSgHf1pgBYKhkpuylzrat5OljxRNzTDW6R6agrRTkpjiSTnEgAQfrNCdQ
+         aUF+mh2036FBd9bdeajIkSnZ8ccoEF+NcyrtLOl4JG3TZXNzpzhYtx8bk+YgHlBihx5S
+         Ody5z0LsTAai2YPyW3HRuQcJ4O4w0ykBr2w6UdtcaGU5bSmlghtOTnpcgpRYknx/ecRa
+         GnIpw+Mh75sEd9sKVBBHBTEuO1qw4BbHP+l/nXZtxQpi0VT9Y4Dsxhi9P8pfI+bpOnqD
+         RS/dlSBNLLPkjnTivcn/vWCH8CBOShVjU6TPBXkAIapj657ftZ+ruSSG5G3mEPlmkwKE
+         dZOg==
+X-Gm-Message-State: AOAM533C+uNBwDjo3pCvMqIc8xNjRGLd6XBAYwCwwgAMWhkG7EWEZ4J+
+        hIBRfuHkybwvAxdGBqK7nr6SjM5bCbEM9qXwVpI=
+X-Google-Smtp-Source: ABdhPJy89I9D+mtHz5atw6g1gyIHVL0xK00mKb/grntQu+nnCxIPnfaXw6hvtaraXMU9wXuMZvJDjZuSqDlRRBC88SQ=
+X-Received: by 2002:a92:b751:: with SMTP id c17mr2275594ilm.172.1612350985479;
+ Wed, 03 Feb 2021 03:16:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c38f5eb-41ef-7934-940b-77b6e73c5239@amazon.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Received: by 2002:a05:6638:a47:0:0:0:0 with HTTP; Wed, 3 Feb 2021 03:16:25
+ -0800 (PST)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <bbruce539@gmail.com>
+Date:   Wed, 3 Feb 2021 12:16:25 +0100
+Message-ID: <CADiB6Yn=2UzrodPC6i4ADNKrwkBx3f-P+oOyPC4as9qvw=+RWw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 12:12:31PM +0100, Filippo Sironi wrote:
-> I don't disagree on the first part of your sentence, this is a big 
-> oversight.
+Hallo
 
-But it is not what your commit log suggests.
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-> On the other hand, those controllers are out there and are in use by a lot 
-> of customers.  We can keep relying on luck, hoping that customers don't run 
-> into troubles or we can merge a few lines of code :)
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
 
-Your patch does not just quirk a few controllers out there, but all
-current and future controllers with an Amazon vendor ID.  We could
-probably talk about quirking an existing vendor ID or two as long as
-this doesn't happen for future hardware.
+Vielen Dank im Voraus,
+Mr. George Mike,
