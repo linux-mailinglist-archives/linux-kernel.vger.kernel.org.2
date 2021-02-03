@@ -2,87 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B85B30E627
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B5F30E629
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhBCWi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:38:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232201AbhBCWiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:38:52 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2533364D99;
-        Wed,  3 Feb 2021 22:38:10 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 17:38:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        john.ogness@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        akinobu.mita@gmail.com
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks
- all addresses as unhashed
-Message-ID: <20210203173808.03737e03@gandalf.local.home>
-In-Reply-To: <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
-References: <20210202213633.755469-1-timur@kernel.org>
-        <YBpyzxBYIYapHaDT@alley>
-        <YBqlooegQgEfPG4T@alley>
-        <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
-        <202102031201.FFED9547D@keescook>
-        <20210203152513.34492916@gandalf.local.home>
-        <202102031234.9BF349F@keescook>
-        <20210203154727.20946539@gandalf.local.home>
-        <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232963AbhBCWjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:39:39 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:46030 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232201AbhBCWjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:39:36 -0500
+Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 622D22181E;
+        Wed,  3 Feb 2021 14:38:30 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 622D22181E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1612391912;
+        bh=j+UnZiSgRmIkC0CmeKeuMSRROPMc4x/P5c/DCXXDDqU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KqJ7zSZoUk9c7GZabjxm/ZRLWnpZjjkqpJq5pYKsuPiolrsEdsowF3TTAdr9EEPTS
+         +JM+eV8Hu1zER/nK0a2FcOV8JGTctnQ3Pd/qoRAqaTKnkHiBQaa6Rp/YCGhf+p8z7D
+         35bm24Lh9TM0yYDqHrNxd5g883TYJddK0Pd3hXEQ=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: [PATCH v4] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
+Date:   Wed,  3 Feb 2021 14:38:26 -0800
+Message-Id: <20210203223826.21674-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 15:56:20 -0600
-Timur Tabi <timur@kernel.org> wrote:
+Correct compile issue if CONFIG_TTY is not set by
+only adding ttyVK devices if CONFIG_BCM_VK_TTY is set.
 
-> On 2/3/21 2:47 PM, Steven Rostedt wrote:
-> >   static void __init
-> >   plain(void)
-> >   {
-> >   	int err;
-> >   
-> > +	if (debug_never_hash_pointers)
-> > +		return;  
-> 
-> So, I have a stupid question.  What's the best way for test_printf.c to 
-> read the command line parameter?  Should I just do this in vsprintf.c:
-> 
-> /* Disable pointer hashing if requested */
-> static bool debug_never_hash_pointers __ro_after_init;
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 
-It wont be static.
+---
+Changes since v3:
+- Kconfig cleanups below as per Greg's comments
+- changed if BCM_VK to depends on BCM_VK
+- removed default y in CONFIG_BCM_VK_TTY
+- expanded decription of CONFIG_BCM_VK_TTY
+Changes since v2:
+- add CONFIG_BCM_VK_TTY
+- add function and stub for bcm_vk_tty_set_irq_enabled
+Changes since v1:
+- add function stubs rather than compiling out code
+---
+ drivers/misc/bcm-vk/Kconfig      | 12 +++++++++
+ drivers/misc/bcm-vk/Makefile     |  4 +--
+ drivers/misc/bcm-vk/bcm_vk.h     | 42 +++++++++++++++++++++++++++++---
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  5 ++--
+ drivers/misc/bcm-vk/bcm_vk_tty.c |  6 +++++
+ 5 files changed, 61 insertions(+), 8 deletions(-)
 
-> EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
-> 
-> I'm not crazy about exporting this variable to other drivers.  It could 
-> be used to disable hashing by any driver.
+diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
+index 052f6f28b540..68a972772b99 100644
+--- a/drivers/misc/bcm-vk/Kconfig
++++ b/drivers/misc/bcm-vk/Kconfig
+@@ -15,3 +15,15 @@ config BCM_VK
+ 	  accelerators via /dev/bcm-vk.N devices.
+ 
+ 	  If unsure, say N.
++
++config BCM_VK_TTY
++	bool "Enable tty ports on a Broadcom VK Accelerator device"
++	depends on TTY
++	depends on BCM_VK
++	help
++	  Select this option to enable tty support to allow console
++	  access to Broadcom VK Accelerator cards from host.
++
++	  Device node will in the form /dev/bcm-vk.x_ttyVKy where:
++	  x is the instance of the VK card
++	  y is the tty device number on the VK card.
+diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
+index e4a1486f7209..1df2ebe851ca 100644
+--- a/drivers/misc/bcm-vk/Makefile
++++ b/drivers/misc/bcm-vk/Makefile
+@@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
+ bcm_vk-objs := \
+ 	bcm_vk_dev.o \
+ 	bcm_vk_msg.o \
+-	bcm_vk_sg.o \
+-	bcm_vk_tty.o
++	bcm_vk_sg.o
+ 
++bcm_vk-$(CONFIG_BCM_VK_TTY) += bcm_vk_tty.o
+diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
+index 3f37c640a814..a1338f375589 100644
+--- a/drivers/misc/bcm-vk/bcm_vk.h
++++ b/drivers/misc/bcm-vk/bcm_vk.h
+@@ -258,7 +258,11 @@ enum pci_barno {
+ 	BAR_2
+ };
+ 
++#ifdef CONFIG_BCM_VK_TTY
+ #define BCM_VK_NUM_TTY 2
++#else
++#define BCM_VK_NUM_TTY 0
++#endif
+ 
+ struct bcm_vk_tty {
+ 	struct tty_port port;
+@@ -366,11 +370,13 @@ struct bcm_vk {
+ 	struct miscdevice miscdev;
+ 	int devid; /* dev id allocated */
+ 
++#ifdef CONFIG_BCM_VK_TTY
+ 	struct tty_driver *tty_drv;
+ 	struct timer_list serial_timer;
+ 	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
+ 	struct workqueue_struct *tty_wq_thread;
+ 	struct work_struct tty_wq_work;
++#endif
+ 
+ 	/* Reference-counting to handle file operations */
+ 	struct kref kref;
+@@ -501,13 +507,43 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
+ 			     const pid_t pid, const u32 q_num);
+ void bcm_to_v_q_doorbell(struct bcm_vk *vk, u32 q_num, u32 db_val);
+ int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
+-int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
+-void bcm_vk_tty_exit(struct bcm_vk *vk);
+-void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
+ void bcm_vk_hb_init(struct bcm_vk *vk);
+ void bcm_vk_hb_deinit(struct bcm_vk *vk);
+ void bcm_vk_handle_notf(struct bcm_vk *vk);
+ bool bcm_vk_drv_access_ok(struct bcm_vk *vk);
+ void bcm_vk_set_host_alert(struct bcm_vk *vk, u32 bit_mask);
+ 
++#ifdef CONFIG_BCM_VK_TTY
++int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
++void bcm_vk_tty_exit(struct bcm_vk *vk);
++void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk);
++
++static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
++{
++	vk->tty[index].irq_enabled = true;
++}
++#else
++static inline int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
++{
++	return 0;
++}
++
++static inline void bcm_vk_tty_exit(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
++{
++}
++#endif /* CONFIG_BCM_VK_TTY */
++
+ #endif
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+index c3d2bba68ef1..59b4859d68d2 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -1396,7 +1396,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
+ 			goto err_irq;
+ 		}
+-		vk->tty[i].irq_enabled = true;
++		bcm_vk_tty_set_irq_enabled(vk, i);
+ 	}
+ 
+ 	id = ida_simple_get(&bcm_vk_ida, 0, 0, GFP_KERNEL);
+@@ -1580,8 +1580,7 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 
+ 	cancel_work_sync(&vk->wq_work);
+ 	destroy_workqueue(vk->wq_thread);
+-	cancel_work_sync(&vk->tty_wq_work);
+-	destroy_workqueue(vk->tty_wq_thread);
++	bcm_vk_tty_wq_exit(vk);
+ 
+ 	for (i = 0; i < MAX_BAR; i++) {
+ 		if (vk->bar[i])
+diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
+index be3964949b63..4d02692ecfc7 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_tty.c
++++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
+@@ -331,3 +331,9 @@ void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
+ 			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
+ 	}
+ }
++
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++	cancel_work_sync(&vk->tty_wq_work);
++	destroy_workqueue(vk->tty_wq_thread);
++}
+-- 
+2.17.1
 
-But it is set as "__ro_after_init". That is, every module will see it as
-read only. IOW, they wont be able to modify it.
-
-> 
-> AFAIK, the only command-line parameter code that works in drivers is 
-> module_parm, and that expects the module prefix on the command-line.
-
-This is just a constant variable for others to see. The command line itself
-is visible (see saved_command_line, it's even exported to modules in sparc).
-
-
--- Steve
