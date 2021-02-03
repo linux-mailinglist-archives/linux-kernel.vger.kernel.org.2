@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD4230E0F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EE930E0F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhBCR0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:26:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
+        id S232174AbhBCR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:26:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232301AbhBCRYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:24:39 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE9B964F86;
-        Wed,  3 Feb 2021 17:23:55 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 12:23:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
-Message-ID: <20210203122354.5da83b21@gandalf.local.home>
-In-Reply-To: <YBrYx3kCqiEH8HEw@hirez.programming.kicks-ass.net>
-References: <20210203160517.982448432@goodmis.org>
-        <20210203160550.710877069@goodmis.org>
-        <YBrYx3kCqiEH8HEw@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232116AbhBCRZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:25:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B16764F68;
+        Wed,  3 Feb 2021 17:25:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612373104;
+        bh=/yhI2spPcVGMBVmOZvUkwECDxBhVNdZcA9Cpql60alQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q5Psc9RErW69hu2Tr1n6s+KkTUj4xSf0zHcNvDJdxOyrw2F+Ipb905Dw68xwg+Dgc
+         MEV6TVp32DMji47F1WpFteX8ZGBp1IGmR618GmlHPSrzDCYEkiftCGGJrSv0G27gN7
+         A9QHaPGatDcFj+TvMcu19I/IEb+Ir6zRkuXUSgJScgaIbS7pKL2C4Er1G4c8vTrC9n
+         C676XaaTFguU4XtUWtn1fWuiVSmw7RVsZLByOKsuwhkjiMv6hUC9GE1BC/lZv6ao8y
+         ZhTt2fUOJ/l3dIieaH9J1oc9yMqPzu1Y5ctN9/LaFRZw+387zMPWzuow+pTOPdr8EX
+         tehoZ7/GrxRSg==
+Date:   Wed, 3 Feb 2021 17:24:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sharadg@nvidia.com
+Subject: Re: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
+Message-ID: <20210203172415.GH4880@sirena.org.uk>
+References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
+ <1612368575-25991-2-git-send-email-spujar@nvidia.com>
+ <20210203161951.GG4880@sirena.org.uk>
+ <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZYOWEO2dMm2Af3e3"
+Content-Disposition: inline
+In-Reply-To: <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 18:09:27 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
 
-> On Wed, Feb 03, 2021 at 11:05:31AM -0500, Steven Rostedt wrote:
-> > +		if (new) {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if ((old[i].func != tp_func->func
-> > +				     || old[i].data != tp_func->data)
-> > +				    && old[i].func != tp_stub_func)  
-> 
-> logical operators go at the end..
+--ZYOWEO2dMm2Af3e3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Agreed. I just added that "if (new) {" around the original block, didn't
-think about the formatting when doing so.
+On Wed, Feb 03, 2021 at 10:09:01PM +0530, Sameer Pujar wrote:
+> On 2/3/2021 9:49 PM, Mark Brown wrote:
+> > On Wed, Feb 03, 2021 at 09:39:34PM +0530, Sameer Pujar wrote:
 
-> 
-> > +					new[j++] = old[i];
-> > +			new[nr_probes - nr_del].func = NULL;
-> > +			*funcs = new;
-> > +		} else {
-> > +			/*
-> > +			 * Failed to allocate, replace the old function
-> > +			 * with calls to tp_stub_func.
-> > +			 */
-> > +			for (i = 0; old[i].func; i++)  
-> 
-> 							{
-> 
-> > +				if (old[i].func == tp_func->func &&
-> > +				    old[i].data == tp_func->data) {  
-> 
-> like here.
-> 
-> > +					old[i].func = tp_stub_func;
-> > +					/* Set the prio to the next event. */
-> > +					if (old[i + 1].func)
-> > +						old[i].prio =
-> > +							old[i + 1].prio;  
-> 
-> multi line demands { }, but in this case just don't line-break.
+> > > +int graph_remove(struct platform_device *pdev);
 
-Sure.
+> > I think this needs better namespacing if it's going to be exported.
 
-> 
-> > +					else
-> > +						old[i].prio = -1;
-> > +				}  
-> 
-> 			}
-> 
-> > +			*funcs = old;
-> > +		}
-> >  	}
-> >  	debug_print_probes(*funcs);
-> >  	return old;
-> > @@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
-> >  	tp_funcs = rcu_dereference_protected(tp->funcs,
-> >  			lockdep_is_held(&tracepoints_mutex));
-> >  	old = func_remove(&tp_funcs, func);
-> > -	if (IS_ERR(old)) {
-> > -		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-> > +	if (WARN_ON_ONCE(IS_ERR(old)))
-> >  		return PTR_ERR(old);
-> > -	}
-> > +
-> > +	if (tp_funcs == old)
-> > +		/* Failed allocating new tp_funcs, replaced func with stub */
-> > +		return 0;  
-> 
-> { }
+> audio_graph_remove() can be a better choice?
 
-Even if it's just a comment that causes multiple lines? I could just move
-the comment above the if.
+Yeah, that looks reasonable.
 
-This has already been through my test suite, and since the changes
-requested are just formatting and non-functional, I'll just add a clean up
-patch on top.
+--ZYOWEO2dMm2Af3e3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks!
+-----BEGIN PGP SIGNATURE-----
 
--- Steve
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAa3D8ACgkQJNaLcl1U
+h9DgsQf9GzN3MtpiKxC9z9VC6D/VDCcjNVKfBH4n8AsORm22h3JUl7Y5j1VQE1aO
+feY09SDZ/Xyfu868hB3PC2NhljwRUkkA0s8gnCTMvgprT08OjHZDqzi0nQd2Z0BH
+2V5vO7RgGB0jFXEWwIvFM0AqtcufWjUUDKnlbVGSi/rbOrQCiT6zoUC3BJmGmQLP
+DVPeklIGLqLzbwu+OkWzp0ZImxtonyE07PDnuek2MaH/41HoBRbPRrzfgREgzTt3
++QSL8GQecG+2Ia0+4LnCy7g528weLNEFB7HDBtqx4SGMct1lD7xhWTPM89sxNq65
+fIRzGZOE8p1RYsstGe04kKxpHBxB4g==
+=qMSx
+-----END PGP SIGNATURE-----
+
+--ZYOWEO2dMm2Af3e3--
