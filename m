@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A923830DA10
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09AC30DA17
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhBCMq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:46:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43102 "EHLO
+        id S231549AbhBCMqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:46:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40681 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230210AbhBCMnQ (ORCPT
+        by vger.kernel.org with ESMTP id S230249AbhBCMnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:43:16 -0500
+        Wed, 3 Feb 2021 07:43:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612356105;
+        s=mimecast20190719; t=1612356107;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Wb+cqxZ2wA5gXcUiIS8MleIaYQSy1UsirMFGfkGX0v8=;
-        b=iEsaGGNMPmUSNs0KmCPPMKrtSK1NsocDe7pFf98jsuT/jwAQ0ThkAyujn0YyKZFoQ3CvmW
-        VqDhanQAfMKIL2FL9EdFAhiWZKN65sm0EpYgSQNClE2uRxKn11TAeCaQL5t788hbZSK6SO
-        vNGGfNx4gdFv3N8kFqfQyo4GFwpdYLk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-5FlBBxMFM7WX_FQfGn2QZw-1; Wed, 03 Feb 2021 07:41:44 -0500
-X-MC-Unique: 5FlBBxMFM7WX_FQfGn2QZw-1
-Received: by mail-ed1-f72.google.com with SMTP id t9so11415479edd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:41:43 -0800 (PST)
+        bh=MMgdS2XXUW3T8Zs5FriS33C7AhYQ6oZENalDXPTydoE=;
+        b=J0Ipx663PyexXJPzYhd9SAwaCiS1BVa8EO55SXtKL8u5UQeVgH1WU7mpGlRJxridg5t533
+        IfHWZYfD13FFPmiw1qxpl+QBNFO0hNVIlD96iJ8J3+Yy/R+h7gur05jSuRTDaCBMRX1K8J
+        nKcfaXBqgPqBgZ4ReQEJTeE89l6nNFE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-I-_q1HQUNWSRcscnJ1HgKg-1; Wed, 03 Feb 2021 07:41:45 -0500
+X-MC-Unique: I-_q1HQUNWSRcscnJ1HgKg-1
+Received: by mail-ed1-f70.google.com with SMTP id u19so11409549edr.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:41:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Wb+cqxZ2wA5gXcUiIS8MleIaYQSy1UsirMFGfkGX0v8=;
-        b=PMlhHWkVrXObsAFhh5RX8tiYncW7aN3321L1AhYZFTeoLgkzU6zmUKevPHmU482Tjq
-         fHuV3UxqpoMbE15vO1VXQa/qeQM+gXoBa0KEqz6RSIVQ0jkPyBBPhjPG+bLvxuyUMM4s
-         sEySfBRyRWnvLFf2HGZguE3H49KI+nZi9Tgh4h+kBwWwLoEEPf3ZcfOmc/fHDdKQYJ/E
-         oMZdEh086HUPFJ/nEqEIKrstp4BWxqDemViwCGRZV1ysGghthG35v1EpKrkiv7s8zsDy
-         6dZECCCBORwFdTFtWwKD9U9tUkYzoLoWM6XjaqKHhIa17mpkKq5ozziHQRN6g2kC111Y
-         xlrA==
-X-Gm-Message-State: AOAM530pEndBZr7yxGmgrAzoFBgtyzTa0qejU3aj7xqnT9cxZLRwr4fP
-        Nv3c9K1otbiahOwbU8b6HWStpktoFPO6F0QfOqLkodmqIgKtwjek6Z90ETV2hnN0fBgogtTt5O0
-        hCBaD2e87Z/6TgzXL0NK0OFX2
-X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr2682054edb.233.1612356102897;
-        Wed, 03 Feb 2021 04:41:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyNSRfa4/wVXpr7lN9/8YJ4Gq8vE+cyYx7Jg9ogQlftxMWE3S3q7mdb0imovWx4gSSBkaze6g==
-X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr2682047edb.233.1612356102766;
-        Wed, 03 Feb 2021 04:41:42 -0800 (PST)
+        bh=MMgdS2XXUW3T8Zs5FriS33C7AhYQ6oZENalDXPTydoE=;
+        b=eqkuBI1PnL/OERivylKwBWKyfUGN05v8ZH+hMPxf+Oy4SoJ5dCY3fJUoCNyUVjRXcI
+         QFDSPr6vJ+oa4PuANqRdGMskXuUiOvn2LUQE3Ajm/klHshkFF12TOYFNjNtDkVQhkJNA
+         F3qgl1zsryO1Sp2+H7n8nZq9yYqc3lmvv8hUgk9a6IFloEuH7tfYzhCpD2XacRQB5m6y
+         U4UmsWPyAJLfb5qQMcXYg2brltlP92CucmOxX+ucHrviLuhUT+/4j+tD6DrX+mZkoZjQ
+         3R9aYNwkg+8g2BJA4TqoVM8kCw6WebalfXGPP4SFUrLT3jl/tzzHlfsXiX70Sh/4B0jv
+         Xg0w==
+X-Gm-Message-State: AOAM5335wXmRhQQ69sa6JfBYUeEhlxrcQ5upJka5tyX0iUej0itk5tNQ
+        OyCnUZy4p+iKWs6cMGDqjYPTvqmzQZHNOiLGXnE5S4dhR9UtWS1RpFN+h1Lnf3UYGwSuqJqfwL+
+        R+vztMkraY9cxWZWqEWJ4z7tt
+X-Received: by 2002:a17:906:a295:: with SMTP id i21mr3036362ejz.334.1612356104382;
+        Wed, 03 Feb 2021 04:41:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxjYYrOxQUOqkr3O16tiB8L27ZBHg4oeQlYylE+nWOUf6OpV0TCxXzHhcq7WYKB6/vzMH5nTw==
+X-Received: by 2002:a17:906:a295:: with SMTP id i21mr3036353ejz.334.1612356104175;
+        Wed, 03 Feb 2021 04:41:44 -0800 (PST)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id u9sm953320ejc.57.2021.02.03.04.41.41
+        by smtp.gmail.com with ESMTPSA id u9sm953320ejc.57.2021.02.03.04.41.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 04:41:41 -0800 (PST)
+        Wed, 03 Feb 2021 04:41:43 -0800 (PST)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 08/18] gfs2: convert to miscattr
-Date:   Wed,  3 Feb 2021 13:41:02 +0100
-Message-Id: <20210203124112.1182614-9-mszeredi@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>
+Subject: [PATCH 09/18] orangefs: convert to miscattr
+Date:   Wed,  3 Feb 2021 13:41:03 +0100
+Message-Id: <20210203124112.1182614-10-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210203124112.1182614-1-mszeredi@redhat.com>
 References: <20210203124112.1182614-1-mszeredi@redhat.com>
@@ -71,189 +70,183 @@ Use the miscattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Mike Marshall <hubcap@omnibond.com>
 ---
- fs/gfs2/file.c  | 56 ++++++++++++-------------------------------------
- fs/gfs2/inode.c |  4 ++++
- fs/gfs2/inode.h |  2 ++
- 3 files changed, 19 insertions(+), 43 deletions(-)
+ fs/orangefs/file.c  | 79 ---------------------------------------------
+ fs/orangefs/inode.c | 49 ++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 79 deletions(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index b39b339feddc..d54c07965665 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -25,6 +25,7 @@
- #include <linux/dlm_plock.h>
- #include <linux/delay.h>
- #include <linux/backing-dev.h>
-+#include <linux/miscattr.h>
- 
- #include "gfs2.h"
- #include "incore.h"
-@@ -153,9 +154,9 @@ static inline u32 gfs2_gfsflags_to_fsflags(struct inode *inode, u32 gfsflags)
- 	return fsflags;
+diff --git a/fs/orangefs/file.c b/fs/orangefs/file.c
+index ec8ae4257975..8958bf9c5786 100644
+--- a/fs/orangefs/file.c
++++ b/fs/orangefs/file.c
+@@ -375,84 +375,6 @@ static ssize_t orangefs_file_write_iter(struct kiocb *iocb,
+ 	return ret;
  }
  
--static int gfs2_get_flags(struct file *filp, u32 __user *ptr)
-+int gfs2_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+-static int orangefs_getflags(struct inode *inode, unsigned long *uval)
+-{
+-	__u64 val = 0;
+-	int ret;
+-
+-	ret = orangefs_inode_getxattr(inode,
+-				      "user.pvfs2.meta_hint",
+-				      &val, sizeof(val));
+-	if (ret < 0 && ret != -ENODATA)
+-		return ret;
+-	else if (ret == -ENODATA)
+-		val = 0;
+-	*uval = val;
+-	return 0;
+-}
+-
+-/*
+- * Perform a miscellaneous operation on a file.
+- */
+-static long orangefs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-{
+-	struct inode *inode = file_inode(file);
+-	int ret = -ENOTTY;
+-	__u64 val = 0;
+-	unsigned long uval;
+-
+-	gossip_debug(GOSSIP_FILE_DEBUG,
+-		     "orangefs_ioctl: called with cmd %d\n",
+-		     cmd);
+-
+-	/*
+-	 * we understand some general ioctls on files, such as the immutable
+-	 * and append flags
+-	 */
+-	if (cmd == FS_IOC_GETFLAGS) {
+-		ret = orangefs_getflags(inode, &uval);
+-		if (ret)
+-			return ret;
+-		gossip_debug(GOSSIP_FILE_DEBUG,
+-			     "orangefs_ioctl: FS_IOC_GETFLAGS: %llu\n",
+-			     (unsigned long long)uval);
+-		return put_user(uval, (int __user *)arg);
+-	} else if (cmd == FS_IOC_SETFLAGS) {
+-		unsigned long old_uval;
+-
+-		ret = 0;
+-		if (get_user(uval, (int __user *)arg))
+-			return -EFAULT;
+-		/*
+-		 * ORANGEFS_MIRROR_FL is set internally when the mirroring mode
+-		 * is turned on for a file. The user is not allowed to turn
+-		 * on this bit, but the bit is present if the user first gets
+-		 * the flags and then updates the flags with some new
+-		 * settings. So, we ignore it in the following edit. bligon.
+-		 */
+-		if ((uval & ~ORANGEFS_MIRROR_FL) &
+-		    (~(FS_IMMUTABLE_FL | FS_APPEND_FL | FS_NOATIME_FL))) {
+-			gossip_err("orangefs_ioctl: the FS_IOC_SETFLAGS only supports setting one of FS_IMMUTABLE_FL|FS_APPEND_FL|FS_NOATIME_FL\n");
+-			return -EINVAL;
+-		}
+-		ret = orangefs_getflags(inode, &old_uval);
+-		if (ret)
+-			return ret;
+-		ret = vfs_ioc_setflags_prepare(inode, old_uval, uval);
+-		if (ret)
+-			return ret;
+-		val = uval;
+-		gossip_debug(GOSSIP_FILE_DEBUG,
+-			     "orangefs_ioctl: FS_IOC_SETFLAGS: %llu\n",
+-			     (unsigned long long)val);
+-		ret = orangefs_inode_setxattr(inode,
+-					      "user.pvfs2.meta_hint",
+-					      &val, sizeof(val), 0);
+-	}
+-
+-	return ret;
+-}
+-
+ static vm_fault_t orangefs_fault(struct vm_fault *vmf)
  {
--	struct inode *inode = file_inode(filp);
-+	struct inode *inode = d_inode(dentry);
- 	struct gfs2_inode *ip = GFS2_I(inode);
- 	struct gfs2_holder gh;
- 	int error;
-@@ -168,8 +169,7 @@ static int gfs2_get_flags(struct file *filp, u32 __user *ptr)
- 
- 	fsflags = gfs2_gfsflags_to_fsflags(inode, ip->i_diskflags);
- 
--	if (put_user(fsflags, ptr))
--		error = -EFAULT;
-+	miscattr_fill_flags(ma, fsflags);
- 
- 	gfs2_glock_dq(&gh);
- out_uninit:
-@@ -213,33 +213,19 @@ void gfs2_set_inode_flags(struct inode *inode)
-  * @fsflags: The FS_* inode flags passed in
-  *
+ 	struct file *file = vmf->vma->vm_file;
+@@ -660,7 +582,6 @@ const struct file_operations orangefs_file_operations = {
+ 	.read_iter	= orangefs_file_read_iter,
+ 	.write_iter	= orangefs_file_write_iter,
+ 	.lock		= orangefs_lock,
+-	.unlocked_ioctl	= orangefs_ioctl,
+ 	.mmap		= orangefs_file_mmap,
+ 	.open		= generic_file_open,
+ 	.splice_read    = generic_file_splice_read,
+diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
+index 48f0547d4850..84461d2229ac 100644
+--- a/fs/orangefs/inode.c
++++ b/fs/orangefs/inode.c
+@@ -11,6 +11,7 @@
   */
--static int do_gfs2_set_flags(struct file *filp, u32 reqflags, u32 mask,
-+static int do_gfs2_set_flags(struct inode *inode, u32 reqflags, u32 mask,
- 			     const u32 fsflags)
- {
--	struct inode *inode = file_inode(filp);
- 	struct gfs2_inode *ip = GFS2_I(inode);
- 	struct gfs2_sbd *sdp = GFS2_SB(inode);
- 	struct buffer_head *bh;
- 	struct gfs2_holder gh;
- 	int error;
--	u32 new_flags, flags, oldflags;
--
--	error = mnt_want_write_file(filp);
--	if (error)
--		return error;
-+	u32 new_flags, flags;
  
- 	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, 0, &gh);
- 	if (error)
--		goto out_drop_write;
--
--	oldflags = gfs2_gfsflags_to_fsflags(inode, ip->i_diskflags);
--	error = vfs_ioc_setflags_prepare(inode, oldflags, fsflags);
--	if (error)
--		goto out;
--
--	error = -EACCES;
--	if (!inode_owner_or_capable(inode))
--		goto out;
-+		return error;
- 
- 	error = 0;
- 	flags = ip->i_diskflags;
-@@ -252,9 +238,6 @@ static int do_gfs2_set_flags(struct file *filp, u32 reqflags, u32 mask,
- 		goto out;
- 	if (IS_APPEND(inode) && (new_flags & GFS2_DIF_APPENDONLY))
- 		goto out;
--	if (((new_flags ^ flags) & GFS2_DIF_IMMUTABLE) &&
--	    !capable(CAP_LINUX_IMMUTABLE))
--		goto out;
- 	if (!IS_IMMUTABLE(inode)) {
- 		error = gfs2_permission(inode, MAY_WRITE);
- 		if (error)
-@@ -291,20 +274,18 @@ static int do_gfs2_set_flags(struct file *filp, u32 reqflags, u32 mask,
- 	gfs2_trans_end(sdp);
- out:
- 	gfs2_glock_dq_uninit(&gh);
--out_drop_write:
--	mnt_drop_write_file(filp);
- 	return error;
+ #include <linux/bvec.h>
++#include <linux/miscattr.h>
+ #include "protocol.h"
+ #include "orangefs-kernel.h"
+ #include "orangefs-bufmap.h"
+@@ -952,6 +953,52 @@ int orangefs_update_time(struct inode *inode, struct timespec64 *time, int flags
+ 	return __orangefs_setattr(inode, &iattr);
  }
  
--static int gfs2_set_flags(struct file *filp, u32 __user *ptr)
-+int gfs2_miscattr_set(struct dentry *dentry, struct miscattr *ma)
- {
--	struct inode *inode = file_inode(filp);
--	u32 fsflags, gfsflags = 0;
-+	struct inode *inode = d_inode(dentry);
-+	u32 fsflags = ma->flags, gfsflags = 0;
- 	u32 mask;
- 	int i;
- 
--	if (get_user(fsflags, ptr))
--		return -EFAULT;
-+	if (miscattr_has_xattr(ma))
++static int orangefs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
++{
++	u64 val = 0;
++	int ret;
++
++	gossip_debug(GOSSIP_FILE_DEBUG, "%s: called on %pd\n", __func__,
++		     dentry);
++
++	ret = orangefs_inode_getxattr(d_inode(dentry),
++				      "user.pvfs2.meta_hint",
++				      &val, sizeof(val));
++	if (ret < 0 && ret != -ENODATA)
++		return ret;
++
++	gossip_debug(GOSSIP_FILE_DEBUG, "%s: flags=%u\n", __func__, (u32) val);
++
++	miscattr_fill_flags(ma, val);
++	return 0;
++}
++
++static int orangefs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
++{
++	u64 val = 0;
++
++	gossip_debug(GOSSIP_FILE_DEBUG, "%s: called on %pd\n", __func__,
++		     dentry);
++	/*
++	 * ORANGEFS_MIRROR_FL is set internally when the mirroring mode is
++	 * turned on for a file. The user is not allowed to turn on this bit,
++	 * but the bit is present if the user first gets the flags and then
++	 * updates the flags with some new settings. So, we ignore it in the
++	 * following edit. bligon.
++	 */
++	if (miscattr_has_xattr(ma) ||
++	    (ma->flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL | FS_NOATIME_FL | ORANGEFS_MIRROR_FL))) {
++		gossip_err("%s: only supports setting one of FS_IMMUTABLE_FL|FS_APPEND_FL|FS_NOATIME_FL\n",
++			   __func__);
 +		return -EOPNOTSUPP;
- 
- 	for (i = 0; i < ARRAY_SIZE(fsflag_gfs2flag); i++) {
- 		if (fsflags & fsflag_gfs2flag[i].fsflag) {
-@@ -325,7 +306,7 @@ static int gfs2_set_flags(struct file *filp, u32 __user *ptr)
- 		mask &= ~(GFS2_DIF_TOPDIR | GFS2_DIF_INHERIT_JDATA);
- 	}
- 
--	return do_gfs2_set_flags(filp, gfsflags, mask, fsflags);
-+	return do_gfs2_set_flags(inode, gfsflags, mask, fsflags);
- }
- 
- static int gfs2_getlabel(struct file *filp, char __user *label)
-@@ -342,10 +323,6 @@ static int gfs2_getlabel(struct file *filp, char __user *label)
- static long gfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	switch(cmd) {
--	case FS_IOC_GETFLAGS:
--		return gfs2_get_flags(filp, (u32 __user *)arg);
--	case FS_IOC_SETFLAGS:
--		return gfs2_set_flags(filp, (u32 __user *)arg);
- 	case FITRIM:
- 		return gfs2_fitrim(filp, (void __user *)arg);
- 	case FS_IOC_GETFSLABEL:
-@@ -359,13 +336,6 @@ static long gfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- static long gfs2_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	switch(cmd) {
--	/* These are just misnamed, they actually get/put from/to user an int */
--	case FS_IOC32_GETFLAGS:
--		cmd = FS_IOC_GETFLAGS;
--		break;
--	case FS_IOC32_SETFLAGS:
--		cmd = FS_IOC_SETFLAGS;
--		break;
- 	/* Keep this list in sync with gfs2_ioctl */
- 	case FITRIM:
- 	case FS_IOC_GETFSLABEL:
-diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
-index c1b77e8d6b1c..243c3862d43b 100644
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -2145,6 +2145,8 @@ static const struct inode_operations gfs2_file_iops = {
- 	.get_acl = gfs2_get_acl,
- 	.set_acl = gfs2_set_acl,
- 	.update_time = gfs2_update_time,
-+	.miscattr_get = gfs2_miscattr_get,
-+	.miscattr_set = gfs2_miscattr_set,
++	}
++	val = ma->flags;
++	gossip_debug(GOSSIP_FILE_DEBUG, "%s: flags=%u\n", __func__, (u32) val);
++	return orangefs_inode_setxattr(d_inode(dentry),
++				       "user.pvfs2.meta_hint",
++				       &val, sizeof(val), 0);
++}
++
+ /* ORANGEFS2 implementation of VFS inode operations for files */
+ static const struct inode_operations orangefs_file_inode_operations = {
+ 	.get_acl = orangefs_get_acl,
+@@ -961,6 +1008,8 @@ static const struct inode_operations orangefs_file_inode_operations = {
+ 	.listxattr = orangefs_listxattr,
+ 	.permission = orangefs_permission,
+ 	.update_time = orangefs_update_time,
++	.miscattr_get = orangefs_miscattr_get,
++	.miscattr_set = orangefs_miscattr_set,
  };
  
- static const struct inode_operations gfs2_dir_iops = {
-@@ -2166,6 +2168,8 @@ static const struct inode_operations gfs2_dir_iops = {
- 	.set_acl = gfs2_set_acl,
- 	.update_time = gfs2_update_time,
- 	.atomic_open = gfs2_atomic_open,
-+	.miscattr_get = gfs2_miscattr_get,
-+	.miscattr_set = gfs2_miscattr_set,
- };
- 
- static const struct inode_operations gfs2_symlink_iops = {
-diff --git a/fs/gfs2/inode.h b/fs/gfs2/inode.h
-index 8073b8d2c7fa..446fbeb97045 100644
---- a/fs/gfs2/inode.h
-+++ b/fs/gfs2/inode.h
-@@ -110,6 +110,8 @@ extern loff_t gfs2_seek_hole(struct file *file, loff_t offset);
- extern const struct file_operations gfs2_file_fops_nolock;
- extern const struct file_operations gfs2_dir_fops_nolock;
- 
-+extern int gfs2_miscattr_get(struct dentry *dentry, struct miscattr *ma);
-+extern int gfs2_miscattr_set(struct dentry *dentry, struct miscattr *ma);
- extern void gfs2_set_inode_flags(struct inode *inode);
-  
- #ifdef CONFIG_GFS2_FS_LOCKING_DLM
+ static int orangefs_init_iops(struct inode *inode)
 -- 
 2.26.2
 
