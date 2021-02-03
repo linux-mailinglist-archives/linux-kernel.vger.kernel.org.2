@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E6F30DD5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD88830DD5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhBCO5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:57:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233289AbhBCO5X (ORCPT
+        id S233401AbhBCO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233319AbhBCO5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:57:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612364157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rS+uT6I7CZvs7rA5cJQRTM4ulgel3uvO4ETs7pNUH30=;
-        b=DCDwz0iujMzr0iVyaKxrIolJcgDNUO1nHjCRdgJVynWuc5jcJFNtNVLDI95Pv+0xsgo0Op
-        NcriphN2S23U5uAdqb4AHKvWPj09nWe2NGRJF/5z6IbY1b3SCt/TJjlRKACedbnZd8U65P
-        ynG/RBNRRCnNRQ/8hYBogeN9CdbgI7k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-OYu2hsbDOzqHBxOOun8Kew-1; Wed, 03 Feb 2021 09:55:55 -0500
-X-MC-Unique: OYu2hsbDOzqHBxOOun8Kew-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22402801962;
-        Wed,  3 Feb 2021 14:55:54 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3F50357;
-        Wed,  3 Feb 2021 14:55:53 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 08:55:49 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] objtool: Change REG_SP_INDIRECT
-Message-ID: <20210203145549.p2alqmtbbo3z75nl@treble>
-References: <20210203120222.451068583@infradead.org>
- <20210203120401.062155900@infradead.org>
- <20210203144215.4ledy6srx7zwfxde@treble>
- <YBq33lMgoUOnCXPW@hirez.programming.kicks-ass.net>
+        Wed, 3 Feb 2021 09:57:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFACC061573;
+        Wed,  3 Feb 2021 06:56:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jHqPAIZKxcFxf2pPTznII237kT1yeHQ+2XeU1SzqGnM=; b=ciOSmF9ZZGGhdHmfMPhVKouve8
+        lzqP+86x3R6u/INbMdIRkDp2xg1YTnJGUoVefwmZSY4qc4ri6fxz2QvNBNfSzrrRPAuSIJ/k+sXvE
+        WxkwDJ+kaKMslgS3Xq08s0i6t6nR59ZG/8EQRMNWHkJkStlWQmPCP+tZH/9dAvFI5hMKnh6Yp2TRI
+        A8fhym3ddh5QDu75cC4GvPuvccm2Bpt455YOo+v6N2Qf19VA3YAjEsvWccrklOLT5HsoSDG/NBjYy
+        /j57yT6qAH7FiAa4HMBMjN6UmKnzVsgjD70hp+9dLVLnrndyOD4+NMHuf6Yx4wllfXRlGqvs+c1Bw
+        5HmJQR1g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7JZs-00H3eo-Bf; Wed, 03 Feb 2021 14:56:21 +0000
+Date:   Wed, 3 Feb 2021 14:56:20 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
+        Joel Becker <jlbec@evilplan.org>,
+        Matthew Garrett <matthew.garrett@nebula.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
+Message-ID: <20210203145620.GB308988@casper.infradead.org>
+References: <20210203124112.1182614-1-mszeredi@redhat.com>
+ <20210203130501.GY308988@casper.infradead.org>
+ <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
+ <20210203135827.GZ308988@casper.infradead.org>
+ <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
+ <20210203142802.GA308988@casper.infradead.org>
+ <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBq33lMgoUOnCXPW@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:49:02PM +0100, Peter Zijlstra wrote:
-> On Wed, Feb 03, 2021 at 08:42:15AM -0600, Josh Poimboeuf wrote:
-> > On Wed, Feb 03, 2021 at 01:02:23PM +0100, Peter Zijlstra wrote:
-> > > Currently REG_SP_INDIRECT is unused but means (%rsp + offset),
-> > > change it to mean (%rsp) + offset.
-> > > 
-> > > This is somewhat unfortunate, since REG_BP_INDIRECT is used (by DRAP)
-> > > and thus needs to retain the current (%rbp + offset).
-> > 
-> > Offset is going to be zero, should it not work either way?
+On Wed, Feb 03, 2021 at 03:38:54PM +0100, Miklos Szeredi wrote:
+> On Wed, Feb 3, 2021 at 3:28 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Wed, Feb 03, 2021 at 03:13:29PM +0100, Miklos Szeredi wrote:
+> > > On Wed, Feb 3, 2021 at 2:58 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > > Network filesystems frequently need to use the credentials attached to
+> > > > a struct file in order to communicate with the server.  There's no point
+> > > > fighting this reality.
+> > >
+> > > IDGI.  Credentials can be taken from the file and from the task.  In
+> > > this case every filesystem except cifs looks at task creds. Why are
+> > > network filesystem special in this respect?
+> >
+> > I don't necessarily mean 'struct cred'.  I mean "the authentication
+> > that the client has performed to the server".  Which is not a per-task
+> > thing, it's stored in the struct file, which is why we have things like
+> >
+> >         int (*write_begin)(struct file *, struct address_space *mapping,
+> >                                 loff_t pos, unsigned len, unsigned flags,
+> >                                 struct page **pagep, void **fsdata);
+> >
+> > disk filesystems ignore the struct file argument, but network filesystems
+> > very much use it.
 > 
-> For DRAP? I couldn't tell in a hurry. I'm ever quite clear on how DRAP
-> works. Some day, when I figure it out, i'll write a comment.
+> Fine for file I/O.  That's authorized at open time for all
+> filesystems, not just network ones.
 > 
-> Anyway, if it's always 0 for DRAP, then yes, I'll change both.
+> Not fine for metadata operations (IMO).   I.e. ->[gs]etattr() don't
+> take a file argument either, even though on the uAPI there are plenty
+> of open file based variants.
 
-No, what I meant to say is that UNWIND_HINT_INDIRECT is used with no
-arguments, which means that sp_offset is always zero.
+That's a fine statement of principle, but if the filesystem needs to
+contact the server, then your principle must accede to reality.
 
--- 
-Josh
-
+But let's talk specifics.  What does CIFS need to contact the server for?
+Could it be cached earlier?
