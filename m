@@ -2,246 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1A130D226
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586C230D229
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhBCDXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        id S232695AbhBCDYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhBCDWV (ORCPT
+        with ESMTP id S232650AbhBCDYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:22:21 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314F3C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:22:24 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id s5so12377216edw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:22:24 -0800 (PST)
+        Tue, 2 Feb 2021 22:24:05 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAAEC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:24:07 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id t25so16352291pga.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:24:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dGGHehLtQGHqVsPXvFWYMLyI6hzOn4IRNyPittgEkcg=;
-        b=Oz/bo2Xtmace/8RdWyG8lFC6Z6dbBWhyP5Yv3EYkts8uin9AL/HV2yj7KJx8JSkcuU
-         xj1A4XXLc/NLgzQuKjNIl/hqzq6iXROFXnlFu6qrxWmG4u6m5xfa84ROiDIgyvUqpsQ0
-         ooNSPdsUMH4hbUJ+9oPIYqGKQw54BYjputoqkzF0DLOJhwgNOqUC0rJSoz8OAFSz9a6X
-         4pByEA8LyRI8UNOiozk0E5bTSMeHewBHMq+bh7R+rbshA6LVfj8EsksJwEp+l31wzi1M
-         kF2vHfmWXmTQBxuli4FgJieaYTi2DknG4imq4rDVNpUoWRBYMa7si6SQeHfROVJJULtB
-         Bf1w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=On1zDet5C5XO5uxDYXjZhRdQHaYy68DxRjrTnKl1J+8=;
+        b=gWdMhXQvU+4rZPqUFlIJKG1u2ulxygerTLAzdlx6SniUImn7YSdz1o1Fs1h72T42Yp
+         WwLRLYfGW2vYo5LrkR0k1XrBao3m1n/zjqCXY7U3P27TenqKQw0k1vVUim314CvC+XHn
+         KuioxWeVZGcvg4mUNLikbkdj1KUOA49ni5DlmDY2/gaWa1SBKoWilsn7vWvIkxwTKqp4
+         d6wTIwqIFJBY4QhTp4Vg6jQreJRy4Mq81og+DcuxTl32eM9lKiHWIIPAE2o+D8PQtYO3
+         JpB2W34Dlsp4nnzRS5R7KI5cGCvBS7dCjij+sTRouK3RXa4dzEA+cTXCwLe9AJmf+1Oy
+         RAxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dGGHehLtQGHqVsPXvFWYMLyI6hzOn4IRNyPittgEkcg=;
-        b=CAOewUdx5d1i3unXXItItKxxD7v29gm1GDfOV6Ywn2kMWojOZ7mo+gtQRdgtolB2gW
-         miwgpEL/ntinpgYQgkU67Kzb9U5Lu56I1WwQwECA6TC48AnPhky8qICOrBBf702RSysf
-         nAzgEXXyswmLHUcEfqOwau/PwqgF9qKkPNPeGKGa+No4flHShPLUiCScVm8t4ERixpr0
-         vo0yvd95LaUJEwcbk2eEyIuOPskn0H1g9n7FShnD4LcZW2jqwsSImKLxse41xZuYd3AO
-         YwPcn4/Az1pK2/B475BBpI4H9iDlDvadOgy7y7GU1MU56wd2ZoY/42hdiwxBs77TjwSb
-         xktw==
-X-Gm-Message-State: AOAM533iEAe4pTPweuerILjvqAdCqlKZMyBiwDEn5IAgVWTBfJPPfQBc
-        8h4VM4RP8M0IjBlVOjZk9wP+V+ooRZEMkoIe53iaeg==
-X-Google-Smtp-Source: ABdhPJwd3XcMOmp+GxgVhXKlOnN9PiLk2g7/Kp9JYnnsmUbZKXbnTIYa6xt42yVEoZS/WtBXkqMU/pwtXhzXNo4bz4k=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr1077026edd.52.1612322542781;
- Tue, 02 Feb 2021 19:22:22 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=On1zDet5C5XO5uxDYXjZhRdQHaYy68DxRjrTnKl1J+8=;
+        b=U7mCz5kXnpFkXgRjwW76urZ4m/qstiZHDft/JyPditsesWmSgV0QbJEyGff0TYIj0x
+         GKnNz6p0wHHjJAimSFK/jvhGJHyOoorP45lrQ/ORcT5dPIvUW6bkke2M8z6xj8qcGkkW
+         f88QwiSQxfaEHK6X2Rx7Wur0+FHBmRwG6rRBVgI9GsaB3ac1YRASva6sGC2LnRzyHf1a
+         UUBcle6H8W3VcuqFqvgVCazihpHupA3Fnx0dmLGXIlUXuiPNAIdvPWSu2tBZCKyigOeZ
+         yyu19G3WhRKgza57kTykLp9DbortdwFRgJdA5pWt6KR8G3kUObL1VNVU9RR/cmrKaar5
+         NgYA==
+X-Gm-Message-State: AOAM532u7iCNjdhZR45WMTBkIwzuYnJ7DxkccSIJ4tLBF4l/HhZy1oDg
+        syFMeJyNeNH3a4E8XW3W8jk=
+X-Google-Smtp-Source: ABdhPJz1WweBzMVSagrzApnCMbZkw4r3FuWd+T1DZaxXuxPBXErzM27FPqLHgtsz4p0Uj+mtrSEulw==
+X-Received: by 2002:a65:488d:: with SMTP id n13mr1281012pgs.315.1612322647113;
+        Tue, 02 Feb 2021 19:24:07 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id s21sm350802pga.12.2021.02.02.19.24.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 19:24:05 -0800 (PST)
+Date:   Wed, 3 Feb 2021 12:24:03 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
+        willy@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, roman.fietze@magna.com,
+        keescook@chromium.org, john.ogness@linutronix.de,
+        akinobu.mita@gmail.com
+Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+Message-ID: <YBoXUxGBcG97BvML@jagdpanzerIV.localdomain>
+References: <20210202213633.755469-1-timur@kernel.org>
 MIME-Version: 1.0
-References: <20210202132942.915040339@linuxfoundation.org>
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Feb 2021 08:52:11 +0530
-Message-ID: <CA+G9fYv=3eNxNZCiphE=CYd=THHUUa9AV+ohnbRP-2e92kFJhw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/37] 4.19.173-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202213633.755469-1-timur@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 at 19:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.173 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.173-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On (21/02/02 15:36), Timur Tabi wrote:
+> If the make-printk-non-secret command-line parameter is set, then
+> printk("%p") will print addresses as unhashed.  This is useful for
+> debugging purposes.
+> 
+> A large warning message is displayed if this option is enabled,
+> because unhashed addresses, while useful for debugging, exposes
+> kernel addresses which can be a security risk.
+> 
+> Signed-off-by: Timur Tabi <timur@kernel.org>
 
+Looks good to me.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.19.173-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 5230df3466ef513b7813df2e707dc5d4cf7602cc
-git describe: v4.19.172-38-g5230df3466ef
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.172-38-g5230df3466ef
-
-No regressions (compared to build v4.19.172)
-
-No fixes (compared to build v4.19.172)
-
-Ran 48365 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* perf
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-kexec
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* kvm-unit-tests
-* rcutorture
-* prep-tmp-disk
-* ssuite
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+	-ss
