@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F144C30DA22
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE2F30DA2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhBCMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:48:33 -0500
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:5210 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhBCMpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:45:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1612356314; x=1643892314;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JlqT0iY4SMHZ8h4y0c1Zzk0bHiFhUm38Yn3c9enjTFQ=;
-  b=ugmN2wALhS6asTCpzbS0ioFBYr+EGiaC5xRS6LpG2RTPYRCyQec9o2UU
-   fgtW/A4bmt8rsJiyy7ldOi5Q2DM3kdm5ek7T1d9rLCKninT0Bg6gXuQ+P
-   v1mvfab8PQ+d4Tw6U4Rq7KgI/j7PWU8HU/Fh/RILOMPo+yMnQ+H/dBqu1
-   s=;
-X-IronPort-AV: E=Sophos;i="5.79,398,1602547200"; 
-   d="scan'208";a="915324724"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 03 Feb 2021 12:44:19 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id C1510A2243;
-        Wed,  3 Feb 2021 12:44:14 +0000 (UTC)
-Received: from EX13D07UWB004.ant.amazon.com (10.43.161.196) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Feb 2021 12:44:14 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13D07UWB004.ant.amazon.com (10.43.161.196) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 3 Feb 2021 12:44:13 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.1.212.23) by
- mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Wed, 3 Feb 2021 12:44:09 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     <jgg@ziepe.ca>
-CC:     <aarcange@redhat.com>, <akpm@linux-foundation.org>,
-        <gokhale2@llnl.gov>, <hch@lst.de>, <jack@suse.cz>,
-        <jannh@google.com>, <jhubbard@nvidia.com>, <kirill@shutemov.name>,
-        <ktkhai@virtuozzo.com>, <leonro@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <mcfadden8@llnl.gov>, <oleg@redhat.com>, <peterx@redhat.com>,
-        <torvalds@linux-foundation.org>, <wzam@amazon.com>,
-        <yang.shi@linux.alibaba.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Date:   Wed, 3 Feb 2021 14:43:58 +0200
-Message-ID: <20210203124358.59017-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202171327.GN4718@ziepe.ca>
-References: <20210202171327.GN4718@ziepe.ca>
+        id S230154AbhBCMuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:50:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:3947 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhBCMpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:45:54 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DW1bx1lvkz9txxD;
+        Wed,  3 Feb 2021 13:45:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id HjMAXj_hX0ua; Wed,  3 Feb 2021 13:45:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DW1bx0MsNz9txxB;
+        Wed,  3 Feb 2021 13:45:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6C76B8B7E6;
+        Wed,  3 Feb 2021 13:45:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id NgsdGv0kVo9P; Wed,  3 Feb 2021 13:45:02 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3E2FC8B7E5;
+        Wed,  3 Feb 2021 13:45:02 +0100 (CET)
+Subject: Re: [PATCH v10 6/6] powerpc: Book3S 64-bit outline-only KASAN support
+To:     Daniel Axtens <dja@axtens.net>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        kasan-dev@googlegroups.com, aneesh.kumar@linux.ibm.com,
+        bsingharora@gmail.com
+References: <20210203115946.663273-1-dja@axtens.net>
+ <20210203115946.663273-7-dja@axtens.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <4b790789-052f-76de-a289-726517026efd@csgroup.eu>
+Date:   Wed, 3 Feb 2021 13:45:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210203115946.663273-7-dja@axtens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Feb 02, 2021 at 12:05:36PM -0500, Peter Xu wrote:
-> 
->> > Gal, you could also MADV_DONTFORK this range if you are explicitly
->> > allocating them via special mmap.
->> 
->> Yeah I wanted to mention this one too but I just forgot when reply: the issue
->> thread previously pasted smells like some people would like to drop
->> MADV_DONTFORK, but if it's able to still be applied I don't know why
->> not..
-> 
-> I want to drop the MADV_DONTFORK for dynamic data memory allocated by
-> the application layers (eg with malloc) without knowledge of how they
-> will be used.
-> 
-> This case is a buffer internal to the communication system that we
-> know at allocation time how it will be used; so an explicit,
-> deliberate, MADV_DONTFORK is fine
 
-We are referring to libfabric's bounce buffers, correct?
-Libfabric could be considered as the "app" here, it's not clear why these
-buffers should be DONTFORK'd before ibv_reg_mr() but others don't.
 
-Anyway, it should be simple enough to madvise them after allocation, although I
-think it's part of libfabric's generic code (which isn't necessarily used on
-top of rdma-core).
+Le 03/02/2021 à 12:59, Daniel Axtens a écrit :
+> Implement a limited form of KASAN for Book3S 64-bit machines running under
+> the Radix MMU, supporting only outline mode.
+> 
 
-I'll take this discussion with the libfabric guys.
-Thanks Peter and Jason.
+> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+> index a66f435dabbf..9a6fd603f0e7 100644
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -2157,8 +2157,8 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+>   			break;
+>   
+>   		stack = (unsigned long *) sp;
+> -		newsp = stack[0];
+> -		ip = stack[STACK_FRAME_LR_SAVE];
+> +		newsp = READ_ONCE_NOCHECK(stack[0]);
+> +		ip = READ_ONCE_NOCHECK(stack[STACK_FRAME_LR_SAVE]);
+>   		if (!firstframe || ip != lr) {
+>   			printk("%s["REG"] ["REG"] %pS",
+>   				loglvl, sp, ip, (void *)ip);
+> @@ -2176,17 +2176,19 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+>   		 * See if this is an exception frame.
+>   		 * We look for the "regshere" marker in the current frame.
+>   		 */
+> -		if (validate_sp(sp, tsk, STACK_INT_FRAME_SIZE)
+> -		    && stack[STACK_FRAME_MARKER] == STACK_FRAME_REGS_MARKER) {
+> +		if (validate_sp(sp, tsk, STACK_INT_FRAME_SIZE) &&
+> +		    (READ_ONCE_NOCHECK(stack[STACK_FRAME_MARKER]) ==
+> +		     STACK_FRAME_REGS_MARKER)) {
+>   			struct pt_regs *regs = (struct pt_regs *)
+>   				(sp + STACK_FRAME_OVERHEAD);
+>   
+> -			lr = regs->link;
+> +			lr = READ_ONCE_NOCHECK(regs->link);
+>   			printk("%s--- interrupt: %lx at %pS\n",
+> -			       loglvl, regs->trap, (void *)regs->nip);
+> +			       loglvl, READ_ONCE_NOCHECK(regs->trap),
+> +			       (void *)READ_ONCE_NOCHECK(regs->nip));
+>   			__show_regs(regs);
+>   			printk("%s--- interrupt: %lx\n",
+> -			       loglvl, regs->trap);
+> +			       loglvl, READ_ONCE_NOCHECK(regs->trap));
+>   
+>   			firstframe = 1;
+>   		}
+
+
+The above changes look like a bug fix not directly related to KASAN. Should be split out in another 
+patch I think.
+
+Christophe
