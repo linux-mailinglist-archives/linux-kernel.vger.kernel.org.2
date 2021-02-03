@@ -2,158 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479C230E6D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DC530E6F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbhBCXLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:11:04 -0500
-Received: from mga04.intel.com ([192.55.52.120]:38359 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232102AbhBCXHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:07:53 -0500
-IronPort-SDR: VRbjoZM4SWPxKdjU9oTlFQqVdFz4l0xoOMwzc6usmWX0GoQ6MujgL0kZC1syX8ft71M0Md1JyB
- ZMOvIsknbJgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="178573104"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="178573104"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:06:00 -0800
-IronPort-SDR: e0VUiffLUVOp7XfLHnHvDWphV6pFAQIRDgTUONfkaeLvn2AlPZe+ytShYOtermtOoY7E8VSXO2
- ii2Gnsrq9Low==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="414564275"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:05:59 -0800
-Date:   Wed, 3 Feb 2021 15:07:17 -0800 (PST)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     Russ Weight <russell.h.weight@intel.com>
-cc:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
-In-Reply-To: <25ada056-e591-4a6d-2e0e-704b099d00bf@intel.com>
-Message-ID: <alpine.DEB.2.22.394.2102031504300.1186805@rhweight-WRK1>
-References: <20200917183219.3603-1-russell.h.weight@intel.com> <DM6PR11MB38194BD85854B598F1CD97C5853F0@DM6PR11MB3819.namprd11.prod.outlook.com> <8ab0e288-97f0-d167-50f0-624e05d77944@intel.com> <DM6PR11MB3819BC4BFE16A9CBE185EB1185B49@DM6PR11MB3819.namprd11.prod.outlook.com>
- <25ada056-e591-4a6d-2e0e-704b099d00bf@intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S233789AbhBCXOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:14:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55930 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233461AbhBCXN5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:13:57 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 113N5mmx118502;
+        Wed, 3 Feb 2021 18:13:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=iKqIILtW4S73yXe1HmBJvm0g7QX89FYzx94glAKWPeE=;
+ b=CBgmEx0Dp9AyA86hn6Rw6gZqRGhUo/XkpzK9EnZNsXZ8XC2mUEk+JwzkvMq1OoJb9TuA
+ rhpYhbAANMu2jiyDBs1x1CiaYcyq6MIGz3arChFXqiMn5G0u+L3SYKDE4Im3b85EetwJ
+ jhN6ECktcgJhrJkrlgofcd/Gdra4hiY71utK1oV/A+n6XLDVVjhoO7pcq49xunz48LCX
+ 2dBWJc883KFGWcCG2fMJQ4+A+xYymf2XkEPlWGqNIDr0uLp/uwNbCcjISkdtA2EB7D01
+ vUR3MifTX+ZiVSMRg07/fv7GPItKICpUWsOPriPChFKagME0z/tj5vrTnv89mDYOzPnl Og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36g4w28fxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Feb 2021 18:13:13 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 113N5rEc118618;
+        Wed, 3 Feb 2021 18:13:12 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36g4w28fxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Feb 2021 18:13:12 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 113N85GI016463;
+        Wed, 3 Feb 2021 23:13:12 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03dal.us.ibm.com with ESMTP id 36f3kvg8dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Feb 2021 23:13:12 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 113NDAEx35979556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Feb 2021 23:13:10 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D0DD112062;
+        Wed,  3 Feb 2021 23:13:10 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 97444112061;
+        Wed,  3 Feb 2021 23:13:09 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.203.235])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Feb 2021 23:13:09 +0000 (GMT)
+Subject: Re: [PATCH v13 09/15] s390/vfio-ap: allow hot plug/unplug of AP
+ resources using mdev device
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+ <20201223011606.5265-10-akrowiak@linux.ibm.com>
+ <20210112021251.0d989225.pasic@linux.ibm.com>
+ <20210112185550.1ac49768.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <73ad5b17-f252-2aad-1d08-14635c8460ef@linux.ibm.com>
+Date:   Wed, 3 Feb 2021 18:13:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <20210112185550.1ac49768.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-03_09:2021-02-03,2021-02-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ clxscore=1015 impostorscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102030138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Wed, 3 Feb 2021, Russ Weight wrote:
+On 1/12/21 12:55 PM, Halil Pasic wrote:
+> On Tue, 12 Jan 2021 02:12:51 +0100
+> Halil Pasic <pasic@linux.ibm.com> wrote:
+>
+>>> @@ -1347,8 +1437,11 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+>>>   	apqi = AP_QID_QUEUE(q->apqn);
+>>>   	vfio_ap_mdev_reset_queue(apid, apqi, 1);
+>>>   
+>>> -	if (q->matrix_mdev)
+>>> +	if (q->matrix_mdev) {
+>>> +		matrix_mdev = q->matrix_mdev;
+>>>   		vfio_ap_mdev_unlink_queue(q);
+>>> +		vfio_ap_mdev_refresh_apcb(matrix_mdev);
+>>> +	}
+>>>   
+>>>   	kfree(q);
+>>>   	mutex_unlock(&matrix_dev->lock);
+> Shouldn't we first remove the queue from the APCB and then
+> reset? Sorry, I missed this one yesterday.
+
+I agreed to move the reset, however if the remove callback is
+invoked due to a manual unbind of the queue and the queue is
+in use by a guest, the cleanup of the IRQ resources after the
+reset of the queue will not happen because the link from the
+queue to the matrix mdev was removed. Consequently, I'm going
+to have to change the patch 05/15 to split the vfio_ap_mdev_unlink_queue()
+function into two functions: one to remove the link from the matrix mdev to
+the queue; and, one to remove the link from the queue to the matrix
+mdev. Only the first will be used for the remove callback which should
+be fine since the queue object is freed at the end of the remove
+function anyway.
 
 >
->
-> On 2/3/21 1:28 AM, Wu, Hao wrote:
->>> Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
->>>
->>> Sorry for the delay on this patch. It seemed like a lower priority patch than
->>> others, since we haven't seen any issues with current products. Please my
->>> responses inline.
->>>
->>> On 9/17/20 7:08 PM, Wu, Hao wrote:
->>>>> -----Original Message-----
->>>>> From: Russ Weight <russell.h.weight@intel.com>
->>>>> Sent: Friday, September 18, 2020 2:32 AM
->>>>> To: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
->>>>> kernel@vger.kernel.org
->>>>> Cc: trix@redhat.com; lgoncalv@redhat.com; Xu, Yilun <yilun.xu@intel.com>;
->>>>> Wu, Hao <hao.wu@intel.com>; Gerlach, Matthew
->>>>> <matthew.gerlach@intel.com>; Weight, Russell H
->>>>> <russell.h.weight@intel.com>
->>>>> Subject: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
->>>>>
->>>>> Port enable is not complete until ACK = 0. Change
->>>>> __afu_port_enable() to guarantee that the enable process
->>>>> is complete by polling for ACK == 0.
->>>> The description of this port reset ack bit is
->>>>
->>>> " After initiating a Port soft reset, SW should monitor this bit. HW
->>>> will set this bit when all outstanding requests initiated by this port
->>>> have been drained, and the minimum soft reset pulse width has
->>>> elapsed. "
->>>>
->>>> But no description about what to do when clearing a Port soft reset
->>>> to enable the port.
->>>>
->>>> So we need to understand clearly on why we need this change
->>>> (e.g. what may happen without this change), and will it apply for all
->>>> existing DFL devices and future ones, or just for one specific card.
->>>> Could you please help? : )
->>> I touched bases with the hardware engineers. The recommendation to wait
->>> for ACK to be cleared is new with OFS and is documented in the latest
->>> OFS specification as follows (see step #4):
->>>
->>>> 3.7.1 AFU Soft Resets
->>>> Software may cause a soft reset to be issued to the AFU as follows:
->>>> 1. Assert the PortSoftReset field of the PORT_CONTROL register
->>>> 2. Wait for the Port to acknowledge the soft reset by monitoring the
->>>> PortSoftResetAck field of the PORT_CONTROL register, i.e.
->>> PortSoftResetAck=1
->>>> 3. Deasserting the PortSoftReset field
->>>> 4. Wait for the Port to acknowledge the soft reset de-assertion by monitoring
->>> the
->>>> PortSoftResetAck field of the PORT_CONTROL register, i.e.
->>> PortSoftResetAck=0
->>>> This sequence ensures that outstanding transactions are suitably flushed and
->>>> that the FIM minimum reset pulse width is respected. Failing to follow this
->>>> sequence leaves the AFU in an undefined state.
->>> The OFS specification has not been posted publicly, yet.
->>>
->>> Also, this is how it was explained to me:
->>>
->>>> In most scenario, port will be able to get out of reset soon enough
->>>> when SW releases the port reset, especially on all the PAC products
->>>> which have been verified before release.
->>>>
->>>> Polling for HW to clear the ACK is meant to handle the following scenarios:
->>>>
->>>>   * Different platform can take variable period of time to get out of reset
->>>>   * Bug in the HW that hold the port in reset
->>> So this change is not required for the currently released PAC cards,
->>> but it is needed for OFS based products. I don't think there is any reason
->>> to hold off on the patch, as it is still valid for current products.
->> As you know, this driver is used for different cards, and we need to make
->> sure new changes introduced in new version spec, don't break old products
->> as we are sharing the same driver. and we are not sure if in the future some
->> new products but still uses old specs, and then things may be broken if the
->> driver which always perform new flow. Another method is that introduce 1
->> bit in hardware register to tell the driver to perform the additional steps,
->> then it can avoid impacts to the old products. If this can't be done, then
->> we at least need to verify this change on all existing hardware and suggest
->> users to follow new spec only.
->
-> According to the HW engineers, the RTL implementation has not changed; it is
-> the same as the RTL in the current PAC products. Polling for HW to clear the
-> ACK is something we could have (should have?) been doing all along. The timing
+> Regards,
+> Halil
 
-I also confirmed with HW engineers.  The original specification was 
-not precise.  The code should have been doing this all along.
-
-Matthew Gerlach
-
-> hasn't been an issue for the current PAC products, as proven by our testing.
-> However, with OFS we cannot anticipate what the timing will be for customer
-> designed products, so the specification is calling out this requirement as a
-> precaution.
->
-> I am using a development machine that has the older PAC devices installed. I
-> cleared port errors on these cards as a quick check, and the reset completes
-> without hanging - which indicates that the ACK bit is in fact getting cleared.
-> So there is not need for any device-specific conditional statements here.
->
-> - Russ
->
->>
->> Hao
->
->
