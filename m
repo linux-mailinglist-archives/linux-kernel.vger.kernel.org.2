@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBE230DFF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7161A30DFF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBCQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhBCQoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:44:20 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7657C061573;
-        Wed,  3 Feb 2021 08:43:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=0gkoYoi9uQKgwTVu6Rbnyu+k/MFxhUElhBgoTIV0z0E=; b=of9AJ+WVGYyw47J2A5sKzPZKvy
-        Ann4QQDt/QLyKSSLh8/KAtu7qMqRI+ZNuEgJ7HeZEGyoPYtC5A0y5qMPeA7wG9DbOuAZXHKf4krM7
-        FbNXUugI1eb515bNsio6t4d+TGbMqPOHcv+VncHU4iYzxsO7a4go38ephx3BjIlacG368fF0ALjeP
-        k0gKRun3nCsuKSL1f+m0Obtfx1ectkgu2WHnP3yOB0GiOFylyeI8OivMyDaQ1H+03yU7kCCnn0JBZ
-        CId76txbV4JPoYya20Mu/A1QgvTz3X7qsjqyO7dw1OJQNCyLw5FGyTE0JVahgVa8HvaiyIlUoDBse
-        YpaHMzxg==;
-Received: from [2601:1c0:6280:3f0::2a53]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7LFg-0002h9-4y; Wed, 03 Feb 2021 16:43:36 +0000
-Subject: Re: [PATCH] crypto: Fixed optimzation to optimization in the file
- crypto/xor.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210203153933.9443-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <befa11b1-a5e8-5f70-9fb0-fa91b754b571@infradead.org>
-Date:   Wed, 3 Feb 2021 08:43:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S230197AbhBCQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:44:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230168AbhBCQor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:44:47 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1207564F7C;
+        Wed,  3 Feb 2021 16:44:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l7LG1-00Bnsm-Sk; Wed, 03 Feb 2021 16:43:57 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     arnd@arndb.de, Quentin Perret <qperret@google.com>,
+        catalin.marinas@arm.com, will@kernel.org
+Cc:     ardb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH 0/2] KVM: arm64: Stub exports in nvhe code
+Date:   Wed,  3 Feb 2021 16:43:48 +0000
+Message-Id: <161237062025.1419625.13086305573512898143.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210203141931.615898-1-qperret@google.com>
+References: <20210203141931.615898-1-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210203153933.9443-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: arnd@arndb.de, qperret@google.com, catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, kernel-team@android.com, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:39 AM, Bhaskar Chowdhury wrote:
+On Wed, 3 Feb 2021 14:19:29 +0000, Quentin Perret wrote:
+> In the context of the currently ongoing work to remove the host kernel
+> from the TCB under KVM/arm64, I have been trying to wrap the host kernel
+> with a stage 2 page-table -- see [1].
 > 
-> s/optimzation/optimization/
+> Using this infrastructure, I attempted to unmap the .hyp. sections from
+> the host stage 2 as it really shouldn't need to access them. But by
+> doing so, I realized quickly the module loader was getting very confused
+> by the usage of EXPORT_SYMBOL() macros in library functions that have
+> been pulled into the EL2 object, and that we end up linking modules
+> against the EL2 copy of e.g. memset. And so, this series essentially
+> tries to fix this.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> [...]
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Applied to kvm-arm64/misc-5.12, thanks!
 
-Thanks.
+[1/2] asm-generic: export: Stub EXPORT_SYMBOL with __DISABLE_EXPORTS
+      commit: 54effa653246c35997f5e990e0134be5be09f9d1
+[2/2] KVM: arm64: Stub EXPORT_SYMBOL for nVHE EL2 code
+      commit: bbc075e01ceac50e0a8353b520544f3089e94e44
 
-> ---
->  crypto/xor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/crypto/xor.c b/crypto/xor.c
-> index eacbf4f93990..c046d074f522 100644
-> --- a/crypto/xor.c
-> +++ b/crypto/xor.c
-> @@ -95,7 +95,7 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
->  	for (i = 0; i < 3; i++) {
->  		start = ktime_get();
->  		for (j = 0; j < REPS; j++) {
-> -			mb(); /* prevent loop optimzation */
-> +			mb(); /* prevent loop optimization */
->  			tmpl->do_2(BENCH_SIZE, b1, b2);
->  			mb();
->  		}
-> --
-> 2.26.2
-> 
+Cheers,
 
-
+	M.
 -- 
-~Randy
+Without deviation from the norm, progress is not possible.
+
 
