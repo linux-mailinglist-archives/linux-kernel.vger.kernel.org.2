@@ -2,105 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633B330DE0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538DC30DE10
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhBCPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:24:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45120 "EHLO mx2.suse.de"
+        id S234214AbhBCPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:25:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234095AbhBCPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:23:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612365787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v5tD1P3GbXfYcO2FuGCpuZb4rnW2teCslHj/hQe3lGs=;
-        b=rdZk0jcdjjKRvFrQGiajPlzLmPJM6hW7+HYHGXxd21KVeaifUuqZKh5B8+YDOd5rG/VHNx
-        K6UStUoIZI943Dj37YcjQ7hvx/HTjszR6fq+v4bPw/0EHsi1X24UEdACN4/U1LExMJFYc5
-        +dnswT0SuF/EyPD8eQRsmYS3+D5QUEI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3DFA8AC55;
-        Wed,  3 Feb 2021 15:23:07 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 16:23:06 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Peter Jones <pjones@redhat.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-efi@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
-Message-ID: <YBq/2ojccc4ZZp9y@alley>
-References: <20210202070218.856847-1-masahiroy@kernel.org>
- <87eehy27b5.fsf@jogness.linutronix.de>
+        id S233745AbhBCPZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:25:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E86064E50;
+        Wed,  3 Feb 2021 15:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612365898;
+        bh=b6GRiq4QWZI2rziuLd7GuwpX6MNv51A8gcYBBvehiio=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b6Y16Cv346MxftHyKt9CjWlbJT3BUlf8fpmSRvBh9qH1up5WGKfAVm2q0gqQ7fxmW
+         0cPpkWQQtzxsDzT3G422p0zCLvepCyf5ghZd6xCuYNtvNdyrkiDjzYoENxjPUGctAJ
+         l7X6Al+Yjvo0osO70Mn4QGsRq0QlPCyIjo4f/HboaU19+bgKIgKp8bkSsIuS/ysEiM
+         3aTgKiAQu9g7W7hmgzoge1tRFBuzCHajRrhVWfI7+YZZ6LoGiZFMojJEe+UnFvhUsL
+         q/v4Vw2fDx/qmRFmVVpq2GLD4+Qa1PHc3o+YF9LYzaT9TUJks7u33wS6x+CMp6HR2z
+         RhfG/FIp5RF1A==
+Date:   Wed, 3 Feb 2021 15:24:52 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     arnd@arndb.de, maz@kernel.org, catalin.marinas@arm.com,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, ardb@kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/2] asm-generic: export: Stub EXPORT_SYMBOL with
+ __DISABLE_EXPORTS
+Message-ID: <20210203152452.GA18974@willie-the-truck>
+References: <20210203141931.615898-1-qperret@google.com>
+ <20210203141931.615898-2-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87eehy27b5.fsf@jogness.linutronix.de>
+In-Reply-To: <20210203141931.615898-2-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-02-02 09:44:22, John Ogness wrote:
-> On 2021-02-02, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
-> > CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
-> >
-> > When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
-> > all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
-> > used in <linux/printk.h>, which is included from most of source files.
-> >
-> > In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
-> >
-> >   arch/x86/platform/uv/uv_nmi.c
-> >   drivers/firmware/efi/libstub/efi-stub-helper.c
-> >   drivers/tty/sysrq.c
-> >   kernel/printk/printk.c
-> >
-> > So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
-> > kernel, it is enough to recompile those 4 files.
-> >
-> > Remove the CONSOLE_LOGLEVEL_DEFAULT definition from <linux/printk.h>,
-> > and use CONFIG_CONSOLE_LOGLEVEL_DEFAULT directly.
+On Wed, Feb 03, 2021 at 02:19:30PM +0000, Quentin Perret wrote:
+> It is currently possible to stub EXPORT_SYMBOL() macros in C code using
+> __DISABLE_EXPORTS, which is necessary to run in constrained environments
+> such as the EFI stub or the decompressor. But this currently doesn't
+> apply to exports from assembly, which can lead to somewhat confusing
+> situations.
 > 
-> With commit a8fe19ebfbfd ("kernel/printk: use symbolic defines for
-> console loglevels") it can be seen that various drivers used to
-> hard-code their own values. The introduction of the macros in an
-> intuitive location (include/linux/printk.h) made it easier for authors
-> to find/use the various available printk settings and thresholds.
+> Consolidate the __DISABLE_EXPORTS infrastructure by checking it from
+> asm-generic/export.h as well.
 > 
-> Technically there is no problem using Kconfig macros directly. But will
-> authors bother to hunt down available Kconfig settings? Or will they
-> only look in printk.h to see what is available?
-> 
-> IMHO if code wants to use settings from a foreign subsystem, it should
-> be taking those from headers of that subsystem, rather than using some
-> Kconfig settings from that subsystem. Headers exist to make information
-> available to external code. Kconfig (particularly for a subsystem) exist
-> to configure that subsystem.
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  include/asm-generic/export.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I agree with this this view.
+Acked-by: Will Deacon <will@kernel.org>
 
-What about using default_console_loglevel() in the external code?
-It reads the value from an array. This value is initialized to
-CONSOLE_LOGLEVEL_DEFAULT and never modified later.
-
-Best Regards,
-Petr
+Will
