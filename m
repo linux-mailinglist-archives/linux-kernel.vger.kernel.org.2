@@ -2,189 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C39330DBAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCDB30DBBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhBCNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbhBCNrM (ORCPT
+        id S232353AbhBCNsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:48:54 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37455 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232139AbhBCNrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:47:12 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1746EC061786
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:46:48 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id w4so4288786wmi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mmTxJHAG7BsEX/Yjqdov/BgOcZ1IzcMMUHM38mX2sec=;
-        b=qB0oDq1RTsfWgvowujAcezLYRLxOtpcsrCVoX3XJi8oCmR/CberX0JRL59qfNpVuDV
-         aQSkX6rpmB98Hy1XqGiANoIn+BG9XfOu5Px7ajIEu1kUNhVdrcKLL6Kg18g8S6ZArOwc
-         r7pSkfSkuFN6LCuD9rTgxuz6JNeQenXMZk+WIAapYlGyh52pllzEx7jbOp6X9XEPbMew
-         /YXD9LUQtHP0jZseBMh2BbOuDXLReHO8+2wTAm1GD/PNPTmF70Y1xYiVALnzy9csnyNS
-         tvKgeMHHLO1G86DVj6oaJcBkFLmqRTA4yPahKOj3mqSJVWqJyyv3ciUkRpcO7rMRApdC
-         fl3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=mmTxJHAG7BsEX/Yjqdov/BgOcZ1IzcMMUHM38mX2sec=;
-        b=AhSbnjqYgQAK3z5T2o+wqp96aNdk0GemAV0vv/oCJhxgsgugVl5qHTxtyqW4nPDc0s
-         XjJ3arF2PKi75xUChGJDrm5i1CnMCUZQ6N6Pe9hoBjeSsuCfHX11WnxLQaW1sS6xtn9A
-         Tx3ust2Gr7PDQzoB/qH0Ku96/GSJ5LScAIVH0pMeq7QkmFjdL0lqegZ2bP0kh+LJMl4V
-         ppeeKplSVUUFWkQBFlmynupX89zLSpqAzc3xfGPuRvrJbszmzEAxh0+CvYPPz4mL4Bzn
-         RZ53+ciZ1bhgovxj6VU0b09Z2lLHlEhiCqmdcLlze9IiyBpgkpA/aofn47UyCvKcFG9/
-         AmXg==
-X-Gm-Message-State: AOAM531lDTr4gX3c6I36nP0v0rWCoTKgs1742/ABjmSwtMzWsBAcBjr4
-        nXU3RJMdKxar1RwCBhdZ3c4Xib0DMbpsfYG+
-X-Google-Smtp-Source: ABdhPJx3KQn2TI1gBNF9KqD1+7cVwPChsoEAyCpczLY2Qqbxi76gjEbrSX8g4yz+pmbo9toW6rB51g==
-X-Received: by 2002:a1c:cc14:: with SMTP id h20mr2911595wmb.180.1612360006519;
-        Wed, 03 Feb 2021 05:46:46 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id f7sm3513534wre.78.2021.02.03.05.46.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Feb 2021 05:46:45 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH] dt-bindings: spi: zynq: Convert Zynq QSPI binding to yaml
-Date:   Wed,  3 Feb 2021 14:46:44 +0100
-Message-Id: <22ca0a9a15ccdf4b520baacc5ed837f6d3a3f781.1612360002.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 3 Feb 2021 08:47:41 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l7IUe-0008KI-Ao; Wed, 03 Feb 2021 13:46:52 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Sia Jee Heng <jee.heng.sia@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] dmaengine: dw-axi-dmac: remove redundant null check on desc
+Date:   Wed,  3 Feb 2021 13:46:52 +0000
+Message-Id: <20210203134652.22618-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert spi-zynq-qspi.txt to yaml.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+The pointer desc is being null checked twice, the second null check
+is redundant because desc has not been re-assigned between the
+checks. Remove the redundant second null check on desc.
+
+Addresses-Coverity: ("Logically dead code")
+Fixes: ef6fb2d6f1ab ("dmaengine: dw-axi-dmac: simplify descriptor management")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
- .../devicetree/bindings/spi/spi-zynq-qspi.txt | 25 --------
- .../bindings/spi/xlnx,zynq-qspi.yaml          | 59 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 3 files changed, 60 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt b/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
-deleted file mode 100644
-index 16b734ad3102..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--Xilinx Zynq QSPI controller Device Tree Bindings
---------------------------------------------------------------------
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index ac3d81b72a15..d9e4ac3edb4e 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -919,10 +919,6 @@ dma_chan_prep_dma_memcpy(struct dma_chan *dchan, dma_addr_t dst_adr,
+ 		num++;
+ 	}
+ 
+-	/* Total len of src/dest sg == 0, so no descriptor were allocated */
+-	if (unlikely(!desc))
+-		return NULL;
 -
--Required properties:
--- compatible		: Should be "xlnx,zynq-qspi-1.0".
--- reg			: Physical base address and size of QSPI registers map.
--- interrupts		: Property with a value describing the interrupt
--			  number.
--- clock-names		: List of input clock names - "ref_clk", "pclk"
--			  (See clock bindings for details).
--- clocks		: Clock phandles (see clock bindings for details).
--
--Optional properties:
--- num-cs		: Number of chip selects used.
--
--Example:
--	qspi: spi@e000d000 {
--		compatible = "xlnx,zynq-qspi-1.0";
--		reg = <0xe000d000 0x1000>;
--		interrupt-parent = <&intc>;
--		interrupts = <0 19 4>;
--		clock-names = "ref_clk", "pclk";
--		clocks = <&clkc 10>, <&clkc 43>;
--		num-cs = <1>;
--	};
-diff --git a/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
-new file mode 100644
-index 000000000000..03269a7433b3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/xlnx,zynq-qspi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx Zynq QSPI controller
-+
-+description:
-+  The Xilinx Zynq QSPI controller is used to access multi-bit serial flash
-+  memory devices.
-+
-+allOf:
-+  - $ref: "spi-controller.yaml#"
-+
-+maintainers:
-+  - Michal Simek <michal.simek@xilinx.com>
-+
-+# Everything else is described in the common file
-+properties:
-+  compatible:
-+    const: xlnx,zynq-qspi-1.0
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: reference clock
-+      - description: peripheral clock
-+
-+  clock-names:
-+    items:
-+      - const: ref_clk
-+      - const: pclk
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    spi@e000d000 {
-+        compatible = "xlnx,zynq-qspi-1.0";
-+        reg = <0xe000d000 0x1000>;
-+        interrupt-parent = <&intc>;
-+        interrupts = <0 19 4>;
-+        clock-names = "ref_clk", "pclk";
-+        clocks = <&clkc 10>, <&clkc 43>;
-+        num-cs = <1>;
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66428c9..e494b061dcd1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2766,6 +2766,7 @@ W:	http://wiki.xilinx.com
- T:	git https://github.com/Xilinx/linux-xlnx.git
- F:	Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml
- F:	Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
-+F:	Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
- F:	arch/arm/mach-zynq/
- F:	drivers/block/xsysace.c
- F:	drivers/clocksource/timer-cadence-ttc.c
+ 	/* Set end-of-link to the last link descriptor of list */
+ 	set_desc_last(&desc->hw_desc[num - 1]);
+ 	/* Managed transfer list */
 -- 
-2.30.0
+2.29.2
 
