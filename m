@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A05730D3FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830E630D403
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhBCHQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbhBCHQ0 (ORCPT
+        id S232126AbhBCHYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:24:31 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:12031 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhBCHY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:16:26 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC665C061573;
-        Tue,  2 Feb 2021 23:15:46 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id s23so15421028pgh.11;
-        Tue, 02 Feb 2021 23:15:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vCplaxx+G/WjU4K1QFLVkvqSzFQBK1Dh3zZTYlV1r9g=;
-        b=H7MtAneniyH/4SWxkj4bIPDg7tNEFkIJmh/URu3iGiyAFYphZBpJdujnazu09VQck3
-         6u0lD0VnvKZoXmgSzyJzLvqHluXddaEYyZAfF0MX2qNpGe09ihytlVR0eDbuLPdHh6iZ
-         ZSzh0CQ+Y1tKictzkI2yF1z9Y1VyiRMSpGFpKSgvfwu+APdWIVhy0pfkJ2O5BQ7P5n1D
-         haYaPd6W6xc3Kl7B91dBYReDPKHfMwzUn0UrcajujUffzjTk4tp8SKDKMj9Vx9ceITlg
-         OGiCea81wNVbm1Z3T2H6eizyc47z9id8x/EuOELUuD9QPU/fbWhhgr3yKxqIMkoHIS9C
-         j97w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vCplaxx+G/WjU4K1QFLVkvqSzFQBK1Dh3zZTYlV1r9g=;
-        b=lCurIech23kh6Zu7zTKkO/x78ZNSyVFU+0MiOLpzgVGFdIhwKG73/YpLzpcSI/KFA2
-         AiCliG09QK7/282jWOFzT68/T35Em2XA/2t8zBuYENFitSGNWQsGt8K7v6aI0oEJr+4N
-         QbaGGeZlkrS+j2Hbex2OJMI6smb6VvQZuNQw6gIYwIXvyNDptnOlKaEsAkWGO5krBbdb
-         thtoz65VTJEu3ox9IXnWRiqZqq3VnT8KRYdWoy7E1/SvxKvnvzVhcrthpeVG49320cYE
-         yzLqBd+OPeekOnkmiOV7W+mcy+t0vlzD5iM8X72ZUvXjI77KwUusf944QiJjzHqekHq2
-         X5Bg==
-X-Gm-Message-State: AOAM530FFAY/4jk3lXrMMq7+pB8I7TMQOuE6OsIK2AH6H6KwThVl1QCM
-        pLMvCEFKYdBs/UxtPX4uAfY=
-X-Google-Smtp-Source: ABdhPJxF+TLd/Rwb5SOiSykgs+fVTnABwuKomE9qt6YqvQv/LDVptKNkSrO9I7uzHmCXNUsFZqY6Ig==
-X-Received: by 2002:a63:a03:: with SMTP id 3mr2139589pgk.366.1612336546333;
-        Tue, 02 Feb 2021 23:15:46 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:1828:42e5:bdb:81ad])
-        by smtp.gmail.com with ESMTPSA id b206sm1158252pfb.73.2021.02.02.23.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 23:15:45 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: hdlc_x25: Return meaningful error code in x25_open
-Date:   Tue,  2 Feb 2021 23:15:41 -0800
-Message-Id: <20210203071541.86138-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 3 Feb 2021 02:24:26 -0500
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210203072344epoutp03bcf1d6996e041e3de95fe6cf762b18db~gK-sdYPPu1021910219epoutp03I
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:23:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210203072344epoutp03bcf1d6996e041e3de95fe6cf762b18db~gK-sdYPPu1021910219epoutp03I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612337024;
+        bh=rdcUdgO3+bqHaLfClUljUdqQA+bIHHsJ8tMzAtJf2FQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=YBikgMRcVH1uOpCaOvXvy/xXjyi7ZhDae4/75UHenqb7K/8UTwp9QMqwuRLWCDzSU
+         yJfSBmX1oO1du/XePmzmCjXqOZKRN5mZL916QPsuGKq+ADGvTAS+vTiTlWqAtAfL1k
+         MmszIx39OnPuNyfTPzCwjdGAHAc6gAhD3xJZjMOU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210203072343epcas1p181d235124b3d05b237e4623c22c07961~gK-rc2Bsw3208532085epcas1p1m;
+        Wed,  3 Feb 2021 07:23:43 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DVtTB3Vlqz4x9Pv; Wed,  3 Feb
+        2021 07:23:42 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6C.E1.02418.E7F4A106; Wed,  3 Feb 2021 16:23:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210203072341epcas1p186cca2cf8177a31d04f1ede4bb5f1ec7~gK-qbd8mf2905329053epcas1p1m;
+        Wed,  3 Feb 2021 07:23:41 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210203072341epsmtrp2b094d30834c663d3dae1ef7f7616d56a~gK-qacDnI0619906199epsmtrp2J;
+        Wed,  3 Feb 2021 07:23:41 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-eb-601a4f7edcc7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        54.CA.13470.D7F4A106; Wed,  3 Feb 2021 16:23:41 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210203072341epsmtip12f0170e9a74c74c0a7fab3e801bb2dd1~gK-qLZ1Dy0638306383epsmtip1R;
+        Wed,  3 Feb 2021 07:23:41 +0000 (GMT)
+From:   Chanwoo Lee <cw9316.lee@samsung.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        baolin.wang@linaro.org, arnd@arndb.de, cw9316.lee@samsung.com,
+        colyli@suse.de, lee.jones@linaro.org, sartgarg@codeaurora.org,
+        pcc@google.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com
+Subject: [PATCH] mmc: queue: Remove unused define
+Date:   Wed,  3 Feb 2021 16:20:14 +0900
+Message-Id: <20210203072014.30272-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCJsWRmVeSWpSXmKPExsWy7bCmnm6dv1SCwa6fEhYnn6xhs/g76Ri7
+        xaeGK8wW0xvPs1vMONXGarHv2kl2i19/17Nb7Hh+ht3i/tejjBaXd81hszjyv5/Rov/OdTaL
+        GX3fWC2a/uxjsTi+NtyB3+P3r0mMHpf7epk8Fmwq9Vi85yWTx51re9g8+rasYvTYfLra4/Mm
+        uQCOqBybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKDT
+        lRTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhgYFesWJucWleel6yfm5VoYGBkam
+        QJUJORkLVkxhKpjOWXH28WbGBsZb7F2MnBwSAiYSn959YgOxhQR2MEoca4vrYuQCsj8xSuxc
+        +IwRwvnGKLHsagdcx7cVs1khEnuBEnvWskA4XxglFp1cDeRwcLAJaEncPuYN0iAi0MAksWlx
+        KYjNLJAi8arnHQuILSxgKHHg7DqwoSwCqhJH27cxg9i8AtYSZ2Z/ZYJYJi/x534PVFxQ4uTM
+        JywQc+QlmrfOZgbZKyEwk0Ni/6u5LBANLhJHrrdC2cISr45vgbpaSuLzu71sEA3NjBKnZp9j
+        h3BaGCVeX7kBVWUs8enzZ0aQD5gFNCXW79KHCCtK7Pw9lxFiM5/Eu689rCAlEgK8Eh1tQhAl
+        KhJzus6xwez6eOMxVImHxJJmS0jwxkp8O/mJaQKj/Cwk78xC8s4shL0LGJlXMYqlFhTnpqcW
+        GxYYIkfqJkZw8tUy3cE48e0HvUOMTByMhxglOJiVRHhPTRJLEOJNSaysSi3Kjy8qzUktPsRo
+        CgzgicxSosn5wPSfVxJvaGpkbGxsYWJmbmZqrCTOm2TwIF5IID2xJDU7NbUgtQimj4mDU6qB
+        ad3H7ikfP6V/qN0jc+Da2QcuFVmnF/6y+bWR1Va/gVWjlDNSZt6Z34prnl//sGbx6Zi/13gU
+        /zgLf23cwZJexZ3ufHC5Zwi/8vmKisZTMwU1Th/bfkr7qZhXi69lRNJtCWWHM2nLa+MqPFpi
+        gxMLVTPNL/pd2B0g+EjhzEEDo8V/VLb+in6hsizsUIn8wcX1oRVbEzZkPCk8++4jY9/Js8fN
+        ErxVwiqWmXRWq1meT+sTXhtfbOYUJO7YWWn3ty74uzqz+ocXAekqXz58CJ0d90KxUbomLuHS
+        MZler5fHbdTfvJguJ2+p9LvIPc0s9JJ10TXftp/Lb0W4ljHEPc3VPmZwOeHhH+UbOcXpiq1K
+        LMUZiYZazEXFiQDzuv9pRwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnG6tv1SCwZz5JhYnn6xhs/g76Ri7
+        xaeGK8wW0xvPs1vMONXGarHv2kl2i19/17Nb7Hh+ht3i/tejjBaXd81hszjyv5/Rov/OdTaL
+        GX3fWC2a/uxjsTi+NtyB3+P3r0mMHpf7epk8Fmwq9Vi85yWTx51re9g8+rasYvTYfLra4/Mm
+        uQCOKC6blNSczLLUIn27BK6MBSumMBVM56w4+3gzYwPjLfYuRk4OCQETiW8rZrN2MXJxCAns
+        ZpSYfv8dVEJKYvf+82xdjBxAtrDE4cPFEDWfGCW6t98Ai7MJaEncPuYNEhcR6GOSuHt2PhNI
+        L7NAhsS3jyfAbGEBQ4kDZ9eBzWQRUJU42r6NGcTmFbCWODP7KxPELnmJP/d7oOKCEidnPmGB
+        mCMv0bx1NvMERr5ZSFKzkKQWMDKtYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjgYt
+        zR2M21d90DvEyMTBeIhRgoNZSYT31CSxBCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJ
+        pCeWpGanphakFsFkmTg4pRqY3O1aN9/0/7lAxs8u+Een8VaO+i51Fft7TzJMWH/tm19nqfnP
+        bJ/UijOblC1K5otrnT/ndGTPmeh9og1yFbNyGG27DWwurNe6KxiVv1164RqBPbrWvPPXSP85
+        Z+/Qx5y66IaebZH9xoszPhz/e7xDy9XrlmZpW+T3RiuvNpWekndzNwc/d7r9/TufrKTMqkBX
+        VcfT0xT+Fu3Sa8/tuCPuJi+sckrlqP/tnbM+3PRft8mH70Zjf/iZe/l94a82RDPOMJUu4BNa
+        8Weu86lpl0L+1Szp+xHFvD2mn/Hv6Sr3/pWmO/V5sw9fmrA16e26+/fjuft/px5SN3wwWUz9
+        vLb8pvZLNWw5VXJPt91ezG2jxFKckWioxVxUnAgAcbkN7vUCAAA=
+X-CMS-MailID: 20210203072341epcas1p186cca2cf8177a31d04f1ede4bb5f1ec7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210203072341epcas1p186cca2cf8177a31d04f1ede4bb5f1ec7
+References: <CGME20210203072341epcas1p186cca2cf8177a31d04f1ede4bb5f1ec7@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's not meaningful to pass on LAPB error codes to HDLC code or other
-parts of the system, because they will not understand the error codes.
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Instead, use system-wide recognizable error codes.
+MMC_CQE_QUEUE_FULL is not set and is only cleared.
+Therefore, define is unnecessary.
 
-Fixes: f362e5fe0f1f ("wan/hdlc_x25: make lapb params configurable")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 ---
- drivers/net/wan/hdlc_x25.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mmc/core/queue.c | 2 --
+ drivers/mmc/core/queue.h | 1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index bb164805804e..4aaa6388b9ee 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -169,11 +169,11 @@ static int x25_open(struct net_device *dev)
- 
- 	result = lapb_register(dev, &cb);
- 	if (result != LAPB_OK)
--		return result;
-+		return -ENOMEM;
- 
- 	result = lapb_getparms(dev, &params);
- 	if (result != LAPB_OK)
--		return result;
-+		return -EINVAL;
- 
- 	if (state(hdlc)->settings.dce)
- 		params.mode = params.mode | LAPB_DCE;
-@@ -188,7 +188,7 @@ static int x25_open(struct net_device *dev)
- 
- 	result = lapb_setparms(dev, &params);
- 	if (result != LAPB_OK)
--		return result;
-+		return -EINVAL;
- 
- 	return 0;
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index 002426e3cf76..9f37a8b909e8 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -33,8 +33,6 @@ void mmc_cqe_check_busy(struct mmc_queue *mq)
+ {
+ 	if ((mq->cqe_busy & MMC_CQE_DCMD_BUSY) && !mmc_cqe_dcmd_busy(mq))
+ 		mq->cqe_busy &= ~MMC_CQE_DCMD_BUSY;
+-
+-	mq->cqe_busy &= ~MMC_CQE_QUEUE_FULL;
  }
+ 
+ static inline bool mmc_cqe_can_dcmd(struct mmc_host *host)
+diff --git a/drivers/mmc/core/queue.h b/drivers/mmc/core/queue.h
+index fd11491ced9f..57c59b6cb1b9 100644
+--- a/drivers/mmc/core/queue.h
++++ b/drivers/mmc/core/queue.h
+@@ -81,7 +81,6 @@ struct mmc_queue {
+ 	int			in_flight[MMC_ISSUE_MAX];
+ 	unsigned int		cqe_busy;
+ #define MMC_CQE_DCMD_BUSY	BIT(0)
+-#define MMC_CQE_QUEUE_FULL	BIT(1)
+ 	bool			busy;
+ 	bool			use_cqe;
+ 	bool			recovery_needed;
 -- 
-2.27.0
+2.29.0
 
