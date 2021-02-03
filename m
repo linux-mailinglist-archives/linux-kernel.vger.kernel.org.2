@@ -2,149 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C021430D698
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDD430D6A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhBCJrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:47:13 -0500
-Received: from mga07.intel.com ([134.134.136.100]:57354 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233125AbhBCJqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:46:38 -0500
-IronPort-SDR: 9Q6cE8sgMS5geuGshIU0DXXwj1KDqrEITT0bY2wczN5EhoY6N/wnQ+iT6dIXSgv3iVCCPDc63Q
- L47XHkE0WPhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245090923"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="245090923"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:44:51 -0800
-IronPort-SDR: iNEkkA99oJXr/xDktZgAFMc4eOBnxGRRgY49etX9b1grglY7/WxA5QyxJIMgssL9VkZQ3xBgfK
- LaDc4UKIesKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="480285552"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Feb 2021 01:44:48 -0800
-Subject: Re: [PATCH v2] usb: host: xhci: mvebu: make USB 3.0 PHY optional for
- Armada 3720
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jun Li <jun.li@nxp.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Marek Behun <marek.behun@nic.cz>
-References: <20201223162403.10897-1-pali@kernel.org>
- <20210201150803.7305-1-pali@kernel.org> <YBmc8go9W1qZ8WMe@kroah.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <d630ced6-a662-399d-ed1a-184f74489d44@linux.intel.com>
-Date:   Wed, 3 Feb 2021 11:46:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233217AbhBCJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232967AbhBCJsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:48:20 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5848AC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:47:40 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f1so32396731lfu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:47:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0AMrs3JS9ABopxu53Fe4YXqP4fCjBRvXi5TQqbzp9W0=;
+        b=QPYIsTwnlspW+bG26mWcUpY2ycTyNoNCP1QCgGl0vpV/l0fykHWsWaY/LEIRQ23iSp
+         cpyrUPPC51Ayf2WZxSElAx/gPyQTWc8col2KKEWhH1wZUTMrkherZKV4ZjpPWHsqSgBS
+         yHMdw3/N2L6zsv1NgEAZLw6eKqAbyccVRkWWQvvzeFsftiqGB609HbmbBZ8q9yv2esOu
+         yQgi9WMGAA2CV5pQSS6++HnW7EDByF7ysh0B8bOeCfdb6hMRpjKOdHZ7Kmco6tf8EZ7C
+         L3UPT2AGavTMB5sYGOyDTCF0LVM34xaSFgNvuPuE71QrCXHCpSyiB4xbhk4PSU1KNyv+
+         6n4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0AMrs3JS9ABopxu53Fe4YXqP4fCjBRvXi5TQqbzp9W0=;
+        b=R0uvbzMAOxyx5Mm0vspJwysHVbmCFpk41eVdew6fAhlfwGcJuVZj/yX73CeGr8QKhG
+         XEesTK0g+oX3SVLWrh/YZjZd8QopM1tH9YYdTkPjM682UUEvT1MauGRKqnXaCa7qvGwU
+         Gqc2I2zsOR1eZD5jQYUCUP0JNlLrGCyv5jeyRWhBxjD33mrA7j36JqMa1qnzMrHJMZ/d
+         R44+b9hjEuIFreeHk/uAY3Ed8zx+LsYUcGBcZTslZcBm9iaD3wNhEp4EUDSOxGyHK0Aw
+         dVYj9SfNtkGa4DWb3sAToF75he0IIVdW8/LaW/NU/qTY5B97yRnCfkJHNkeZLbC+BLwE
+         wK7g==
+X-Gm-Message-State: AOAM532e+N4+s0xML83I4zJCpjnwm6IEvJeVCTAHVNkbMjKYXBx6JO5b
+        40BS0tnswkavKcQx/+FHNet38y7mHNLSqsAvolipJA==
+X-Google-Smtp-Source: ABdhPJztv0I+QYsdikve3SGTojMXwgToTquGUc4v0DBtcSNNsxTQmHk0jy7ycRIoZeFDI80sw+cXwY6ETR0GQKlogv0=
+X-Received: by 2002:a05:6512:2356:: with SMTP id p22mr1230693lfu.3.1612345658708;
+ Wed, 03 Feb 2021 01:47:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBmc8go9W1qZ8WMe@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAH1Ww+TPCSyiaC3oeoWPtsi-vDfDY=K4ByoLD37-onMvsAB5Rg@mail.gmail.com>
+ <58e41b62-b8e0-b036-c87d-a84d53f5a26e@amd.com> <CAKMK7uGTFYWnBG+JtbAK=zQVT1dT=nKor_SHP-t958oebgn8_A@mail.gmail.com>
+ <fa170c5c-2f46-58ef-6847-e0bc9907fc8b@amd.com> <CAKMK7uE8qNUSNpX3TS6Fgif-6rCc7uZth_-F-kYPrOUSz5K3_A@mail.gmail.com>
+In-Reply-To: <CAKMK7uE8qNUSNpX3TS6Fgif-6rCc7uZth_-F-kYPrOUSz5K3_A@mail.gmail.com>
+From:   Daniel Gomez <daniel@qtec.com>
+Date:   Wed, 3 Feb 2021 10:47:27 +0100
+Message-ID: <CAH1Ww+QhiKYOJTWAigDhC761EhqeCUuh_bdZn=r4DAcEcb5Yyw@mail.gmail.com>
+Subject: Re: [amdgpu] deadlock
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.2.2021 20.41, Greg Kroah-Hartman wrote:
-> On Mon, Feb 01, 2021 at 04:08:03PM +0100, Pali Rohár wrote:
->> Older ATF does not provide SMC call for USB 3.0 phy power on functionality
->> and therefore initialization of xhci-hcd is failing when older version of
->> ATF is used. In this case phy_power_on() function returns -EOPNOTSUPP.
->>
->> [    3.108467] mvebu-a3700-comphy d0018300.phy: unsupported SMC call, try updating your firmware
->> [    3.117250] phy phy-d0018300.phy.0: phy poweron failed --> -95
->> [    3.123465] xhci-hcd: probe of d0058000.usb failed with error -95
->>
->> This patch introduces a new plat_setup callback for xhci platform drivers
->> which is called prior calling usb_add_hcd() function. This function at its
->> beginning skips PHY init if hcd->skip_phy_initialization is set.
->>
->> Current init_quirk callback for xhci platform drivers is called from
->> xhci_plat_setup() function which is called after chip reset completes.
->> It happens in the middle of the usb_add_hcd() function and therefore this
->> callback cannot be used for setting if PHY init should be skipped or not.
->>
->> For Armada 3720 this patch introduce a new xhci_mvebu_a3700_plat_setup()
->> function configured as a xhci platform plat_setup callback. This new
->> function calls phy_power_on() and in case it returns -EOPNOTSUPP then
->> XHCI_SKIP_PHY_INIT quirk is set to instruct xhci-plat to skip PHY
->> initialization.
->>
->> This patch fixes above failure by ignoring 'not supported' error in
->> xhci-hcd driver. In this case it is expected that phy is already power on.
->>
->> It fixes initialization of xhci-hcd on Espressobin boards where is older
->> Marvell's Arm Trusted Firmware without SMC call for USB 3.0 phy power.
->>
->> This is regression introduced in commit bd3d25b07342 ("arm64: dts: marvell:
->> armada-37xx: link USB hosts with their PHYs") where USB 3.0 phy was defined
->> and therefore xhci-hcd on Espressobin with older ATF started failing.
->>
->> Signed-off-by: Pali Rohár <pali@kernel.org>
->> Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
->> Fixes: bd3d25b07342 ("arm64: dts: marvell: armada-37xx: link USB hosts with their PHYs")
->> Cc: <stable@vger.kernel.org> # 5.1+: ea17a0f153af: phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
->> Cc: <stable@vger.kernel.org> # 5.1+: f768e718911e: usb: host: xhci-plat: add priv quirk for skip PHY initialization
-> 
-> 
-> Mathias, any objection for me taking this now to get into 5.11-final?
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Wed, 3 Feb 2021 at 10:17, Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Feb 3, 2021 at 9:51 AM Christian K=C3=B6nig <christian.koenig@amd=
+.com> wrote:
+> >
+> > Am 03.02.21 um 09:48 schrieb Daniel Vetter:
+> > > On Wed, Feb 3, 2021 at 9:36 AM Christian K=C3=B6nig <christian.koenig=
+@amd.com> wrote:
+> > >> Hi Daniel,
+> > >>
+> > >> this is not a deadlock, but rather a hardware lockup.
+> > > Are you sure? Ime getting stuck in dma_fence_wait has generally good
+> > > chance of being a dma_fence deadlock. GPU hang should never result in
+> > > a forever stuck dma_fence.
+> >
+> > Yes, I'm pretty sure. Otherwise the hardware clocks wouldn't go up like
+> > this.
+>
+> Maybe clarifying, could be both. TDR should notice and get us out of
+> this, but if there's a dma_fence deadlock and we can't re-emit or
+> force complete the pending things, then we're stuck for good.
+> -Daniel
+>
+> > Question is rather why we end up in the userptr handling for GFX? Our
+> > ROCm OpenCL stack shouldn't use this.
+> >
+> > > Daniel, can you pls re-hang your machine and then dump backtraces of
+> > > all tasks into dmesg with sysrq-t, and then attach that? Without all
+> > > the backtraces it's tricky to construct the full dependency chain of
+> > > what's going on. Also is this plain -rc6, not some more patches on
+> > > top?
+> >
+> > Yeah, that's still a good idea to have.
 
-No objections, looks good to me.
+Here the full backtrace dmesg logs after the hang:
+https://pastebin.com/raw/kzivm2L3
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+This is another dmesg log with the backtraces after SIGKILL the matrix proc=
+ess:
+(I didn't have the sysrq enable at the time):
+https://pastebin.com/raw/pRBwGcj1
+
+> >
+> > Christian.
+> >
+> > > -Daniel
+> > >
+> > >> Which OpenCl stack are you using?
+> > >>
+> > >> Regards,
+> > >> Christian.
+> > >>
+> > >> Am 03.02.21 um 09:33 schrieb Daniel Gomez:
+> > >>> Hi all,
+> > >>>
+> > >>> I have a deadlock with the amdgpu mainline driver when running in p=
+arallel two
+> > >>> OpenCL applications. So far, we've been able to replicate it easily=
+ by executing
+> > >>> clinfo and MatrixMultiplication (from AMD opencl-samples). It's qui=
+te old the
+> > >>> opencl-samples so, if you have any other suggestion for testing I'd=
+ be very
+> > >>> happy to test it as well.
+> > >>>
+> > >>> How to replicate the issue:
+> > >>>
+> > >>> # while true; do /usr/bin/MatrixMultiplication --device gpu \
+> > >>>       --deviceId 0 -x 1000 -y 1000 -z 1000 -q -t -i 50; done
+> > >>> # while true; do clinfo; done
+> > >>>
+> > >>> Output:
+> > >>>
+> > >>> After a minute or less (sometimes could be more) I can see that
+> > >>> MatrixMultiplication and clinfo hang. In addition, with radeontop y=
+ou can see
+> > >>> how the Graphics pipe goes from ~50% to 100%. Also the shader clock=
+s
+> > >>> goes up from ~35% to ~96%.
+> > >>>
+> > >>> clinfo keeps printing:
+> > >>> ioctl(7, DRM_IOCTL_SYNCOBJ_WAIT, 0x7ffe46e5f950) =3D -1 ETIME (Time=
+r expired)
+> > >>>
+> > >>> And MatrixMultiplication prints the following (strace) if you try t=
+o
+> > >>> kill the process:
+> > >>>
+> > >>> sched_yield()                           =3D 0
+> > >>> futex(0x557e945343b8, FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIM=
+E, 0,
+> > >>> NULL, FUTEX_BITSET_MATCH_ANYstrace: Process 651 detached
+> > >>>    <detached ...>
+> > >>>
+> > >>> After this, the gpu is not functional at all and you'd need a power=
+ cycle reset
+> > >>> to restore the system.
+> > >>>
+> > >>> Hardware info:
+> > >>> CPU: AMD Ryzen Embedded V1605B with Radeon Vega Gfx (8) @ 2.000GHz
+> > >>> GPU: AMD ATI Radeon Vega Series / Radeon Vega Mobile Series
+> > >>>
+> > >>> 03:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> > >>> [AMD/ATI] Raven Ridge [Radeon Vega Series / Radeon Vega Mobile Seri=
+es]
+> > >>> (rev 83)
+> > >>>       DeviceName: Broadcom 5762
+> > >>>       Subsystem: Advanced Micro Devices, Inc. [AMD/ATI] Raven Ridge
+> > >>> [Radeon Vega Series / Radeon Vega Mobile Series]
+> > >>>       Kernel driver in use: amdgpu
+> > >>>       Kernel modules: amdgpu
+> > >>>
+> > >>> Linux kernel info:
+> > >>>
+> > >>> root@qt5222:~# uname -a
+> > >>> Linux qt5222 5.11.0-rc6-qtec-standard #2 SMP Tue Feb 2 09:41:46 UTC
+> > >>> 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > >>>
+> > >>> By enabling the kernel locks stats I could see the MatrixMultiplica=
+tion is
+> > >>> hanged in the amdgpu_mn_invalidate_gfx function:
+> > >>>
+> > >>> [  738.359202] 1 lock held by MatrixMultiplic/653:
+> > >>> [  738.359206]  #0: ffff88810e364fe0
+> > >>> (&adev->notifier_lock){+.+.}-{3:3}, at:
+> > >>> amdgpu_mn_invalidate_gfx+0x34/0xa0 [amdgpu]
+> > >>>
+> > >>> I can see in the the amdgpu_mn_invalidate_gfx function: the
+> > >>> dma_resv_wait_timeout_rcu uses wait_all (fences) and MAX_SCHEDULE_T=
+IMEOUT so, I
+> > >>> guess the code gets stuck there waiting forever. According to the
+> > >>> documentation: "When somebody tries to invalidate the page tables w=
+e block the
+> > >>> update until all operations on the pages in question are completed,=
+ then those
+> > >>> pages are marked  as accessed and also dirty if it wasn=E2=80=99t a=
+ read only access."
+> > >>> Looks like the fences are deadlocked and therefore, it never return=
+s. Could it
+> > >>> be possible? any hint to where can I look to fix this?
+> > >>>
+> > >>> Thank you  in advance.
+> > >>>
+> > >>> Here the full dmesg output:
+> > >>>
+> > >>> [  738.337726] INFO: task MatrixMultiplic:653 blocked for more than=
+ 122 seconds.
+> > >>> [  738.344937]       Not tainted 5.11.0-rc6-qtec-standard #2
+> > >>> [  738.350384] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> > >>> disables this message.
+> > >>> [  738.358240] task:MatrixMultiplic state:D stack:    0 pid:  653
+> > >>> ppid:     1 flags:0x00004000
+> > >>> [  738.358254] Call Trace:
+> > >>> [  738.358261]  ? dma_fence_default_wait+0x1eb/0x230
+> > >>> [  738.358276]  __schedule+0x370/0x960
+> > >>> [  738.358291]  ? dma_fence_default_wait+0x117/0x230
+> > >>> [  738.358297]  ? dma_fence_default_wait+0x1eb/0x230
+> > >>> [  738.358305]  schedule+0x51/0xc0
+> > >>> [  738.358312]  schedule_timeout+0x275/0x380
+> > >>> [  738.358324]  ? dma_fence_default_wait+0x1eb/0x230
+> > >>> [  738.358332]  ? mark_held_locks+0x4f/0x70
+> > >>> [  738.358341]  ? dma_fence_default_wait+0x117/0x230
+> > >>> [  738.358347]  ? lockdep_hardirqs_on_prepare+0xd4/0x180
+> > >>> [  738.358353]  ? _raw_spin_unlock_irqrestore+0x39/0x40
+> > >>> [  738.358362]  ? dma_fence_default_wait+0x117/0x230
+> > >>> [  738.358370]  ? dma_fence_default_wait+0x1eb/0x230
+> > >>> [  738.358375]  dma_fence_default_wait+0x214/0x230
+> > >>> [  738.358384]  ? dma_fence_release+0x1a0/0x1a0
+> > >>> [  738.358396]  dma_fence_wait_timeout+0x105/0x200
+> > >>> [  738.358405]  dma_resv_wait_timeout_rcu+0x1aa/0x5e0
+> > >>> [  738.358421]  amdgpu_mn_invalidate_gfx+0x55/0xa0 [amdgpu]
+> > >>> [  738.358688]  __mmu_notifier_release+0x1bb/0x210
+> > >>> [  738.358710]  exit_mmap+0x2f/0x1e0
+> > >>> [  738.358723]  ? find_held_lock+0x34/0xa0
+> > >>> [  738.358746]  mmput+0x39/0xe0
+> > >>> [  738.358756]  do_exit+0x5c3/0xc00
+> > >>> [  738.358763]  ? find_held_lock+0x34/0xa0
+> > >>> [  738.358780]  do_group_exit+0x47/0xb0
+> > >>> [  738.358791]  get_signal+0x15b/0xc50
+> > >>> [  738.358807]  arch_do_signal_or_restart+0xaf/0x710
+> > >>> [  738.358816]  ? lockdep_hardirqs_on_prepare+0xd4/0x180
+> > >>> [  738.358822]  ? _raw_spin_unlock_irqrestore+0x39/0x40
+> > >>> [  738.358831]  ? ktime_get_mono_fast_ns+0x50/0xa0
+> > >>> [  738.358844]  ? amdgpu_drm_ioctl+0x6b/0x80 [amdgpu]
+> > >>> [  738.359044]  exit_to_user_mode_prepare+0xf2/0x1b0
+> > >>> [  738.359054]  syscall_exit_to_user_mode+0x19/0x60
+> > >>> [  738.359062]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >>> [  738.359069] RIP: 0033:0x7f6b89a51887
+> > >>> [  738.359076] RSP: 002b:00007f6b82b54b18 EFLAGS: 00000246 ORIG_RAX=
+:
+> > >>> 0000000000000010
+> > >>> [  738.359086] RAX: fffffffffffffe00 RBX: 00007f6b82b54b50 RCX: 000=
+07f6b89a51887
+> > >>> [  738.359091] RDX: 00007f6b82b54b50 RSI: 00000000c02064c3 RDI: 000=
+0000000000007
+> > >>> [  738.359096] RBP: 00000000c02064c3 R08: 0000000000000003 R09: 000=
+07f6b82b54bbc
+> > >>> [  738.359101] R10: 0000000000000001 R11: 0000000000000246 R12: 000=
+0000165a0bc00
+> > >>> [  738.359106] R13: 0000000000000007 R14: 0000000000000001 R15: 000=
+0000000000000
+> > >>> [  738.359129]
+> > >>>                  Showing all locks held in the system:
+> > >>> [  738.359141] 1 lock held by khungtaskd/54:
+> > >>> [  738.359148]  #0: ffffffff829f6840 (rcu_read_lock){....}-{1:2}, a=
+t:
+> > >>> debug_show_all_locks+0x15/0x183
+> > >>> [  738.359187] 1 lock held by systemd-journal/174:
+> > >>> [  738.359202] 1 lock held by MatrixMultiplic/653:
+> > >>> [  738.359206]  #0: ffff88810e364fe0
+> > >>> (&adev->notifier_lock){+.+.}-{3:3}, at:
+> > >>> amdgpu_mn_invalidate_gfx+0x34/0xa0 [amdgpu]
+> > >>>
+> > >>> Daniel
+> > >> _______________________________________________
+> > >> dri-devel mailing list
+> > >> dri-devel@lists.freedesktop.org
+> > >> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2F=
+lists.freedesktop.org%2Fmailman%2Flistinfo%2Fdri-devel&amp;data=3D04%7C01%7=
+Cchristian.koenig%40amd.com%7C81203e5bac5841b8e5a108d8c82087a9%7C3dd8961fe4=
+884e608e11a82d994e183d%7C0%7C0%7C637479389339295622%7CUnknown%7CTWFpbGZsb3d=
+8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&=
+amp;sdata=3DRDSxD6OqD8HaOA2VnNfbJwLnKzhCLgOr5SVLjLF91bA%3D&amp;reserved=3D0
+> > >
+> > >
+> >
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
