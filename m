@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A28630E1D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AAF30E1DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhBCSFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbhBCSEi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:04:38 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC7BC06178A;
-        Wed,  3 Feb 2021 10:03:57 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id r77so546328qka.12;
-        Wed, 03 Feb 2021 10:03:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=knMdGUFjPlqzdqo8ypH5SjTLmJUoCilLmnzQ+eFrD0o=;
-        b=NqCGmkeTWcwfTzFskaXWbj5/C0xb4O1mToheHFs34Oygwql4/4o9QL1ugZ6jlloy9z
-         R9BnAvsK4r1kjVQmeEYG37abBdpW8elhTtLyDsy42d8qcX+CDun8iZYdjnv3nzOnI30q
-         7OOfZLQ3lLRE09I29t8umnOkkOIw5o/pj1dm8jbE4gMsbpWHpS8Qnu0Wo3CjqvibwgdT
-         N9jGiK+Z5tMf8fbKfbqA2Y7ENCJxXViKF83xVfv8Vn/APkxWNvOHj4Bmbm2K2pTEWYKa
-         GbRWMhXG5qAyEav1KuPoKgpmYmlaTd5QSZl6/qsshxvRJPXz2PiQJWyQPGhLStyURkkn
-         Wy+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=knMdGUFjPlqzdqo8ypH5SjTLmJUoCilLmnzQ+eFrD0o=;
-        b=eMVOYxAVkCskUnUYSoPhjLxTwGAqrywhV/MMJtnPVipVURLP13DKgY0ndK6Mz9Hvvw
-         OzwOwUIUJ839IFXRhcabnSxp5jqOE5Vc2HiNvd0AnKONWgEE2KUZxpiJavKSiyb2jE1S
-         4qcs5Y33hHxQbxc0VLTCVSlawLzWoHyy3XYR1auiMUM84mDxSf79kUj15VHzwOtuTEzj
-         96bMjpJkU4Xs3H9OUdBdGU5KdifqZSUoDwB9sn/hkif94TPpGtBzHAD81VuwZQxSp69d
-         4sMC+Tx/VwgGX9hAStY+g6a1B70PiHRmo0w8kPD14RLQ2wtOLKZrmCYPVMtz4bHivol5
-         5lbw==
-X-Gm-Message-State: AOAM530KHfDxm0QptWuMgSYfvoNtuxox7wBie/qwDQVDlogHEfRDL/WA
-        VI+u+xthZlcth8Hyk1tkcJw=
-X-Google-Smtp-Source: ABdhPJyBlBUclK7+Yb06W3HeoE6EV16dCjPfoS1qHqIzoWqYlLdeTJeD0z+Ne3mn+2ZRrkk6LFOy3g==
-X-Received: by 2002:a37:8d85:: with SMTP id p127mr3641276qkd.393.1612375436862;
-        Wed, 03 Feb 2021 10:03:56 -0800 (PST)
-Received: from localhost.localdomain ([189.61.66.20])
-        by smtp.gmail.com with ESMTPSA id m10sm1933785qtp.72.2021.02.03.10.03.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 10:03:56 -0800 (PST)
-From:   Saulo Alessandre <saulo.alessandre@gmail.com>
-To:     herbert@gondor.apana.org.au
-Cc:     ardb@kernel.org, daniele.alessandrelli@linux.intel.com,
-        davem@davemloft.net, elena.reshetova@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgross@linux.intel.com, prabhjot.khurana@intel.com,
-        wangzhou1@hisilicon.com, xuzaibo@huawei.com, yumeng18@huawei.com,
-        saulo.alessandre@gmail.com
-Subject: [PATCH v7 4/7] crypto: add ecc curve and expose them
-Date:   Wed,  3 Feb 2021 15:03:44 -0300
-Message-Id: <20210203180344.2418055-1-saulo.alessandre@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210128050354.GA30874@gondor.apana.org.au>
-References: <20210128050354.GA30874@gondor.apana.org.au>
+        id S232263AbhBCSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:06:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232230AbhBCSFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:05:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E879A64F8D;
+        Wed,  3 Feb 2021 18:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612375510;
+        bh=nN7G9KQLLEC2hXxjXAPVce/sjv7lbc72ZvMgGM+YbUw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FteG5V+1q9Q1i1j6qqzoC01a3FgiHgkhX6N6Alr55EDXoqR1CKHnFJPBZbkbShJIz
+         FgybpCDZ+4lZ5LMTESW6MRbrVkWtRfYoVZpRvzgesXTU8oiimNBf0AnMlnBkVPvl+n
+         IzMEAJPCG40o4me9FjLFR6arB0jj/60cs4YtZuiMaVqlPs9qtkQtw1Xg2WR11xf8p1
+         HyaxfLxn1APGKLg+hDGrbBnIOkxn1VUMNlugFqYTVjyWP3eQ4SrvcxBF/Ci70ZUSX3
+         anCYCa92RVLXAjJ03WB1wXkwkdSgBcHqshMPw/kct8McU4rQXUFZSt8apaFBasmZ6U
+         TfZTfid9lAmxA==
+Date:   Wed, 3 Feb 2021 10:05:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+Message-ID: <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
+References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
+        <20210113152625.GB30246@work>
+        <YBGDng3VhE1Yw6zt@kroah.com>
+        <20210201105549.GB108653@thinkpad>
+        <YBfi573Bdfxy0GBt@kroah.com>
+        <20210201121322.GC108653@thinkpad>
+        <20210202042208.GB840@work>
+        <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/2021 02:03, Herbert Xu wrote:
-> On Fri, Jan 22, 2021 at 03:09:52PM +0800, Meng Yu wrote:
->> 1. Add ecc curves(P224, P384, P521) for ECDH;
->
-> OK I think this is getting unwieldy.
->
-> In light of the fact that we already have hardware that supports
-> a specific subset of curves, I think perhaps it would be better
-> to move the curve ID from the key into the algorithm name instead.
->
-I think I understand you, I'm not using ECDH at the moment, but IMHO maybe
-we could use enum OID of oid_registry.h as curve ID and eliminate the 
-duplicate ECC_CURVE_NIST_{...} from ecdh.h. Or perhaps put another param
-in struct ecc_curve with OID, because the name already exists.
+On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:
+> >> Jakub, Dave, Adding you both to get your reviews on this series. I've
+> >> provided an explanation above and in the previous iteration [1].  
+> >
+> >Let's be clear what the review would be for. Yet another QMI chardev 
+> >or the "UCI" direct generic user space to firmware pipe?  
+> 
+> The current patchset only supports QMI channel so I'd request you to
+> review the chardev node created for it. The QMI chardev node created
+> will be unique for the MHI bus and the number of nodes depends on the
+> MHI controllers in the system (typically 1 but not limited). 
 
-> IOW, instead of allocating ecdh, you would allocate ecdh-nist-pXXX.
->
-> Any comments?
-
-I recently sent a patch for the ECDSA signature verification, that use
-the NIST-P curves to check elf32 binary modules and signatures in
-about 450k T-DRE voting machines, in the Brazilian Elections across
-the country. I put the other curves because we started testing them
-(P256, P384) for speed measurement, but we ended up using P521 in our
-production version since 2017 in the 4.9.xxx kernel, and now in 5.4.xxx.
-
-In this patch I'm using akcipher allocate like ecdsa(sha1,sha256,...), 
-because the ecdsa algo is generic, and using the curve name and ndigits
-inside vli_mmod_fast to discover the curve, but I agree the correct way
-would be allocate ecdsa-nist-p521(sha1,...) and have all params for the
-curve inside strut ecc_curve, remembering that we have anothers curves 
-incoming, like Edwards.
-
-regards,
---
-Email: Saulo Alessandre <saulo.alessandre@gmail.com>
-
+If you want to add a MHI QMI driver, please write a QMI-only driver.
+This generic "userspace client interface" driver is a no go. Nobody will
+have the time and attention to police what you throw in there later.
