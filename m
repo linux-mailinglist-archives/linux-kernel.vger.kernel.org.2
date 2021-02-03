@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F16C30D9E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2ADC30DA44
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhBCMiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:38:50 -0500
-Received: from mga02.intel.com ([134.134.136.20]:31173 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhBCMis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:38:48 -0500
-IronPort-SDR: ut+pHBYZv39zJn1U+De3v39w9dqp8i0YrmFLpV+Gy+wIlWUwXH/EplTZzHc1kGt/5QkBuQfG/f
- 6GA2qms1R+Mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="168141275"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="168141275"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 04:38:02 -0800
-IronPort-SDR: zOvKmxyMEh5/wZg7/SDXUExUwH6TO4jXWQDp31ZzbgxqVMYPCooiT3hV10/VaIHvitEvGZ+NAw
- hrDu1BWfMV3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="433390944"
-Received: from unknown (HELO localhost) ([10.239.159.166])
-  by orsmga001.jf.intel.com with ESMTP; 03 Feb 2021 04:38:00 -0800
-Date:   Wed, 3 Feb 2021 20:50:16 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v15 07/14] KVM: VMX: Emulate reads and writes to CET MSRs
-Message-ID: <20210203125016.GA6080@local-michael-cet-test>
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-8-weijiang.yang@intel.com>
- <6a743d57-8128-b5db-ddc1-9dd4c4c1004e@redhat.com>
+        id S230209AbhBCMy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:54:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhBCMvp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:51:45 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30802C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:51:04 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id w11so11527596qvz.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=urlXgvdHZ7AdoyDi5Tr/sMAUoN/vP9RgT+B6nvRJ2zE=;
+        b=Yn2txxbXodlxuZAbDxuOGWoA9dwl42M7uI4+u06CUV9jEufxCRzyG/2wTAw7NbOw52
+         a7/SLoD/I47mklXdOnehEN2fcHzNzp8G8tCZXEC0OYGsxGschUFxCCFrBKuuL3WTZZI2
+         bLzcHyvD82VDjZp1lu439Ig9FhYQU4MXpadbr7KdlnOP5S6qbAhx649sWiOPlvoBxcM6
+         BoKxlrSQV4/n2qLKF5e/Q6TjSJqH5SIFIj1FgsUWC+vdkchJPzskF2vjSulhnJhqvK0q
+         cjgiM/EQvRpxG7PIL+xphAYqzZantmHh0qj7DBRGsspgXuDo6kuwhGUl4Tpqwlg5ZCk6
+         LxTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=urlXgvdHZ7AdoyDi5Tr/sMAUoN/vP9RgT+B6nvRJ2zE=;
+        b=TpkKdKE3ScgKI2isU9DAMAtGN8H2KRsysRomTR+Ez7wV3hNA4wJ9WnIYGsdTFVwH9C
+         5u2Gw7gWPwb4GfwnmrC0Slf2gSF8S/BBLBIDDvDiUnHkxRdCI2obDWx6lKbvBoQp+wjb
+         D1Q0Nwde0+X0yxGK1ftHcuTPxKLcPBMJ9kPr4c+Itqiz+OtAsKE1+VcxYxAY3PKf/euL
+         UZNQ+8Guv6eStNXhgtxFkVGU1qrq0wbvtCNfHW8+UgoZOdE70N5BtFuVovbWo5Pzgz4Z
+         4pWpqh8a3x/SGtMjXtM0RtzpH+xMHx10LSeTHEd10JbpIAzRGVjEvFHU9xs6/gXwZJgA
+         wy/Q==
+X-Gm-Message-State: AOAM530MYsVbIFKGEFR/qYFz+G5+cp2JH5zLvHAAGfVsvLcZAHIFC3zc
+        0wHWKRbJacLtqX0k3+U6TuEvQU3rDUECbGR7wbNa3w==
+X-Google-Smtp-Source: ABdhPJw/PUxPdFP/SwekX/g9mATpsTLw6/Hq/gtawCPPqLL5eLqwbxTmUnop3wu6ToCNY3AhCpfvcY0xs1+jnmLJljo=
+X-Received: by 2002:a0c:ab16:: with SMTP id h22mr2578667qvb.44.1612356663133;
+ Wed, 03 Feb 2021 04:51:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a743d57-8128-b5db-ddc1-9dd4c4c1004e@redhat.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
+ <20201112103125.GV2628@hirez.programming.kicks-ass.net> <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
+ <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
+ <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+ <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+ <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net> <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+In-Reply-To: <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 3 Feb 2021 13:50:51 +0100
+Message-ID: <CACT4Y+Zzp8Ci9D_bvNEDy-Ehb77V5FSbLxtFcS_0awmJq2SJ=g@mail.gmail.com>
+Subject: Re: Process-wide watchpoints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 12:57:41PM +0100, Paolo Bonzini wrote:
-> On 03/02/21 12:34, Yang Weijiang wrote:
-> > MSRs that are switched through XSAVES are especially annoying due to the
-> > possibility of the kernel's FPU being used in IRQ context. Disable IRQs
-> > and ensure the guest's FPU state is loaded when accessing such MSRs.
-> 
-> Good catch!  This should be in x86.h and named kvm_get/set_xsave_msr because
-> it's not VMX specific.  The commit message should also be there as a
-> comment.
-Thanks a lot for reviewing! These words came from Sean! :-D
+On Wed, Feb 3, 2021 at 1:49 PM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> In addition,
-> 
-> > +	case MSR_IA32_S_CET:
-> > +		if (!cet_is_control_msr_accessible(vcpu, msr_info))
-> > +			return 1;
-> > +		msr_info->data = vmcs_readl(GUEST_S_CET);
-> > +		break;
-> > +	case MSR_IA32_U_CET:
-> > +		if (!cet_is_control_msr_accessible(vcpu, msr_info))
-> > +			return 1;
-> > +		vmx_get_xsave_msr(msr_info);
-> > +		break;
-> 
-> these two might as well be the same "case" for symmetry with the handling of
-> WRMSR.
-> 
-> I've fixed this up locally, since these patches will not be pushed to Linus
-> until the corresponding bare metal support is there.
-Got it!
-> 
-> Paolo
+> On Wed, Feb 3, 2021 at 1:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Feb 01, 2021 at 09:50:20AM +0100, Dmitry Vyukov wrote:
+> > > Or, alternatively would it be reasonable for perf to generate SIGTRAP
+> > > directly on watchpoint hit (like ptrace does)? That's what I am
+> > > ultimately trying to do by attaching a bpf program.
+> >
+> > Perf should be able to generate signals, The perf_event_open manpage
+> > lists two ways of trigering signals. The second way doesn't work for
+> > you, due to it not working on inherited counters, but would the first
+> > work?
+> >
+> > That is, set attr::wakeup_events and fcntl(F_SETSIG).
+>
+> The problem is that this sends a signal to the fd owner rather than
+> the thread that hit the breakpoint. At least that's what happened in
+> our tests. We would like to send a signal to the thread that hit the
+> breakpoint.
+
+I think that signal also does not carry the address and other info
+typically present in SIGTRAP/SIGSEGV.
