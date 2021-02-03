@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F4230DE86
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF6D30DE84
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbhBCPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:44:57 -0500
-Received: from mga18.intel.com ([134.134.136.126]:10892 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233470AbhBCPoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:44:23 -0500
-IronPort-SDR: 3mM32C2KvDdW05iB1Fh2sO8NragHbtU7FxrRgvu27NBJc5ZK7mr0o39GpVFLVr25y6O5IjtP04
- vGQStiT9RzMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168741004"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="168741004"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:42:35 -0800
-IronPort-SDR: sF3dU3rJebhEpzkshKFrt1KKvEpsLpzf2jP6SWHyMH/vALA+vcXYHiALWQP6//W5usuxE9LO5r
- 9YiXJamDxwRg==
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="433468509"
-Received: from dmarkey-mobl1.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.21.31])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:42:27 -0800
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     daniele.alessandrelli@intel.com, linux-crypto@vger.kernel.org,
+        id S234544AbhBCPog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234524AbhBCPnB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:43:01 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD59FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:42:20 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id n14so11866457iog.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vAcdvhrgn3rXC6Q/OZSHHLzs1d9b4MZzZSgXPmB7sKg=;
+        b=IAJXaQpFtV/UA0s5wm3pzIyUfJ4n+UICs2o5nWlWeOXFTnhelUNj7ywKThrmil7Dzt
+         JgPjAK/AblTxSTe3SP4I3Hd1z/YFF6Qhtw2KYe7zo6Ro1t4MSAbqjN1T1yD7RO/MVlHx
+         hD8aNfV99yxNk7NHNjpboE92Js4IrPnUPWg5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vAcdvhrgn3rXC6Q/OZSHHLzs1d9b4MZzZSgXPmB7sKg=;
+        b=Cm8BMuTLb5pFbSjzP84mJrZuWqFRZElI9FkWEYF3dU5Tk6mVGhOiSPzbm9RWX63d5G
+         4unu9wr4h0GfDtWjrLluJfcGPP+7ARYRKGScDyySzwf0BmhD2wieIKInu1KHa9Nmetuw
+         9Vk5nDC8ApGJEd17aeIJB2kUCi2WWtdDQ3CBHMCf4fFn6eapCxvbW26Dq1Wto4rcbjnp
+         WNr26vjQpe8MKKveXBHUD0+JWwr4tWZj4xNkGRLy+aCDlIQGYMplgqKBjr5ZYRhXyFOY
+         A2rDsr/sS0f+zR2yPllPQSpI3lb/3i1oEYnnQqZPYcpqeEKAJkFgXrM3A/39Ka7cwZaO
+         aJyg==
+X-Gm-Message-State: AOAM530gYiYJ4+CbxNlBDcWMgBqTh7FGOx5tcCShGSdARTkls2Yr4Z4A
+        yfa4vFPBI8Lr5/0WHFjb5gpb2A==
+X-Google-Smtp-Source: ABdhPJzK04tNfaaoKcB2IAQ97t40HX5xwWRzB6dJMegEFuikYlPvbpeLSSR3kVuKAVgBxP8dlprb2A==
+X-Received: by 2002:a6b:f401:: with SMTP id i1mr2896112iog.142.1612366940299;
+        Wed, 03 Feb 2021 07:42:20 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s10sm1240778iob.47.2021.02.03.07.42.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 07:42:19 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/37] 4.19.173-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: keembay-ocs-aes - Fix 'q' assignment during CCM B0 generation
-Date:   Wed,  3 Feb 2021 15:42:10 +0000
-Message-Id: <20210203154210.246667-1-daniele.alessandrelli@linux.intel.com>
-X-Mailer: git-send-email 2.26.2
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <62c3b6cf-9b6d-70fb-b8dd-21560f99c449@linuxfoundation.org>
+Date:   Wed, 3 Feb 2021 08:42:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+On 2/2/21 6:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.173 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.173-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-In ocs_aes_ccm_write_b0(), 'q' (the octet length of the binary
-representation of the octet length of the payload) is set to 'iv[0]',
-while it should be set to 'iv[0] & 0x7' (i.e., only the last 3
-bits of iv[0] should be used), as documented in NIST Special Publication
-800-38C:
-https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38c.pdf
+Compiled and booted on my test system. No dmesg regressions.
 
-In practice, this is not an issue, since 'iv[0]' is checked to be in the
-range [1-7] by ocs_aes_validate_inputs(), but let's fix the assignment
-anyway, in order to make the code more robust.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
----
- drivers/crypto/keembay/ocs-aes.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/keembay/ocs-aes.c b/drivers/crypto/keembay/ocs-aes.c
-index b85c89477afa..be9f32fc8f42 100644
---- a/drivers/crypto/keembay/ocs-aes.c
-+++ b/drivers/crypto/keembay/ocs-aes.c
-@@ -1080,15 +1080,15 @@ static int ocs_aes_ccm_write_b0(const struct ocs_aes_dev *aes_dev,
- 	/*
- 	 * q is the octet length of Q.
- 	 * q can only be an element of {2, 3, 4, 5, 6, 7, 8} and is encoded as
--	 * q - 1 == iv[0]
-+	 * q - 1 == iv[0] & 0x7;
- 	 */
- 	b0[0] |= iv[0] & 0x7;
- 	/*
- 	 * Copy the Nonce N from IV to B0; N is located in iv[1]..iv[15 - q]
- 	 * and must be copied to b0[1]..b0[15-q].
--	 * q == iv[0] + 1
-+	 * q == (iv[0] & 0x7) + 1
- 	 */
--	q = iv[0] + 1;
-+	q = (iv[0] & 0x7) + 1;
- 	for (i = 1; i <= 15 - q; i++)
- 		b0[i] = iv[i];
- 	/*
--- 
-2.26.2
+thanks,
+-- Shuah
 
