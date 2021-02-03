@@ -2,241 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D8730E3AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E93430E3AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhBCT5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
+        id S231296AbhBCT6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:58:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhBCT5S (ORCPT
+        with ESMTP id S229931AbhBCT60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:57:18 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55119C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:56:38 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id n8so654402qtp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:56:38 -0800 (PST)
+        Wed, 3 Feb 2021 14:58:26 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76BC061573;
+        Wed,  3 Feb 2021 11:57:46 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id m7so1129459oiw.12;
+        Wed, 03 Feb 2021 11:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WbHKCeun4LZ1lqhxKUNNLeH/PFHuKTH7ogRBtILzOXA=;
-        b=V4WcXqEeY5HaXWvXtHi4aq2pHTF0MbNoa2eLSBFJO9xrS1j9OZmzrPNxjRVTIlL+Jr
-         4DAwMaIDrCW5gEsVrU9xmtRc6exC01BNuo/wxezc8H/9T/poiclYpn1CLcFARta6mbWf
-         l1A5ZEGjrHjA3weC/V1WoBPMCZknUDcPx+2Tw=
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T4SSlPqi/d0aRr5sSX2BwpZ1qnFmtPFAXm66EDENBWs=;
+        b=lIfl6EOTuMbmnq7Me/l/OT0fdxOXE1psNiisy+POrxtSIg/Y13k6WDLUyOxMwWO0wN
+         6mtHrNeaL2afQtNpwvaEVKFwsFTwZsmU35hi0D1Rh6ip1UUqcHjqkHRYvDv+18UfMJLo
+         9Cr3S2oLUmDfbOh8G83+tzxI+WJrjvD1tON8h23y6OieKC77a1a27MLM+bHePOCMcUbm
+         qXOcfcpKW43EORBOL2G8XUGXakdI9f4rdLOXKaryqCV8/qerkZDESSEr0j71kI7c2Z0N
+         ogjNneCgDb6bwJlrLvwp6Y9zZr5XfvWW2XbLRFg5hUsBuQ9R1sa03QJNK2mEIIbZbowq
+         maoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WbHKCeun4LZ1lqhxKUNNLeH/PFHuKTH7ogRBtILzOXA=;
-        b=HD2h7As7a4b6tOzBsXZcr6ZqidQM1lYX57y7Nzu6GMwmAh/0IGXXtRKGkl3+Dl7Bmu
-         oAnYxfCm3RTgbgrh8+4Q/YWC5F8FrvwHTJZkMlbpUKyVp+zyU9+vaaUDYPwoHR1Q3qG+
-         r3lyda2aBnewGdU+F7+9dDEhMC2PGoWViUz8b2Pb8/yJJpq31SHfT1PM7Sn9sfsVVr9N
-         8HNGW1fsnkWeLlw2kpj5N1uA1RmuI0Y81JGpDXMMRd4vR9hBDXpQ7MHa1ABqjo7UhoO+
-         hXXMePstU5fpeur20etmW0rS8S88EY9u4ckBZQ23rMpCoZVVgZuqI7ok7AblcRApCKdm
-         YqtQ==
-X-Gm-Message-State: AOAM5330IEjmg+hzJ4d0RjScsHbOd+sDDllGkPw1khJy6Q/uKvLoBV8w
-        1RMsOWKXAEROnET/KuS33bpLHw==
-X-Google-Smtp-Source: ABdhPJwFd6MWwfzPj4Lr0iUp9S35ethbOrep3tSVVZcYwjiVpufU4q0nJnrbwT0HgJ692J1CIWLCtg==
-X-Received: by 2002:ac8:524f:: with SMTP id y15mr4105755qtn.266.1612382197485;
-        Wed, 03 Feb 2021 11:56:37 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:79c3:6d69:c53f:33bd])
-        by smtp.gmail.com with ESMTPSA id j11sm2690375qkm.47.2021.02.03.11.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 11:56:36 -0800 (PST)
-Date:   Wed, 3 Feb 2021 14:56:36 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to
- update_blocked_averages() for NOHZ
-Message-ID: <YBr/9BqaofrBKjll@google.com>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com>
- <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com>
- <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=T4SSlPqi/d0aRr5sSX2BwpZ1qnFmtPFAXm66EDENBWs=;
+        b=ldBE0ItXu7QnIblvFCC4umPOh0XzSDbzmTRypgqSZcq+FXJ9kweZj8HHVdtZoELiMQ
+         D1OygwJGgiQ4L9D/g3vGYzAETI/PM2bOR2aVRjEOUk5fer1u4c3Ia48iiYr8mKPltk9d
+         fPve/lsphFWu2k08yI0qqrT2WOUjOZahJy2uN2nsWxxKubQd5QT/AQOaGXtv/2bCqIYh
+         INQ/sUTbbSPS4Zm9EI6kjg3TzeyLGXYIMGElC7IgdT1G6KaVJQRKFX+tW4mlRGuzBvYK
+         U1lrfIb06px0H9IYhNE3fFUd47ywNMXE83aatAadaxo5YXJvDCpuiMmJyVuA9qXGKAvL
+         mXcA==
+X-Gm-Message-State: AOAM5332vpNldF0nwmztrAahgA7B/PFBsCKWxSbZ3KHbfHLad+PEW6sr
+        ouNESm9B2zrFuHH02uOms1afRFpPvnI=
+X-Google-Smtp-Source: ABdhPJxxybGoMClNvsMY4KfIkETAoKRnHZbK39inds51Er5MkBq1ZhXtkbrtwtkPap4eAbjOKf+lKQ==
+X-Received: by 2002:aca:3bd6:: with SMTP id i205mr3053696oia.82.1612382265638;
+        Wed, 03 Feb 2021 11:57:45 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m10sm653594oim.42.2021.02.03.11.57.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 11:57:44 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/2] hwmon: lm75: Add NXP LM75A to of_match list
+To:     "Matwey V. Kornilov" <matwey.kornilov@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210130103823.28914-1-matwey@sai.msu.ru>
+ <82abc622-a625-b1bc-39b4-f9e1849036ee@roeck-us.net>
+ <CAJs94EbBAK1LAZt4pfbzbUCxJtRo8kTAxdaN=y_gRbuvX0rz8Q@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <2588ea5c-630e-6509-689d-4c8fea358e9b@roeck-us.net>
+Date:   Wed, 3 Feb 2021 11:57:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129172727.GA30719@vingu-book>
+In-Reply-To: <CAJs94EbBAK1LAZt4pfbzbUCxJtRo8kTAxdaN=y_gRbuvX0rz8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 06:27:27PM +0100, Vincent Guittot wrote:
-[...]
-> > update_blocked_averages with preempt and irq off is not a good thing
-> > because we don't manage the number of csf_rq to update and I'm going
-> > to provide a patchset for this
-> 
-> The patch below moves the update of the blocked load of CPUs outside newidle_balance().
-> 
-> Instead, the update is done with the usual idle load balance update. I'm working on an
-> additonnal patch that will select this cpu that is about to become idle, instead of a
-> random idle cpu but this 1st step fixe the problem of lot of update in newly idle.
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-
-I confirmed that with this patch, I don't see the preemptoff issues related
-to update_blocked_averages() anymore (tested using preemptoff tracer).
-
-I went through the patch and it looks correct to me, I will further review it
-and await further reviews from others as well, and then backport the patch to
-our kernels. Thanks Vince and everyone!
-
-Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
-
-
-> ---
->  kernel/sched/fair.c | 32 +++-----------------------------
->  1 file changed, 3 insertions(+), 29 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 197a51473e0c..8200b1d4df3d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7421,8 +7421,6 @@ enum migration_type {
->  #define LBF_NEED_BREAK	0x02
->  #define LBF_DST_PINNED  0x04
->  #define LBF_SOME_PINNED	0x08
-> -#define LBF_NOHZ_STATS	0x10
-> -#define LBF_NOHZ_AGAIN	0x20
->  
->  struct lb_env {
->  	struct sched_domain	*sd;
-> @@ -8426,9 +8424,6 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->  	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
->  		struct rq *rq = cpu_rq(i);
->  
-> -		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq, false))
-> -			env->flags |= LBF_NOHZ_AGAIN;
-> -
->  		sgs->group_load += cpu_load(rq);
->  		sgs->group_util += cpu_util(i);
->  		sgs->group_runnable += cpu_runnable(rq);
-> @@ -8969,11 +8964,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->  	struct sg_lb_stats tmp_sgs;
->  	int sg_status = 0;
->  
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -	if (env->idle == CPU_NEWLY_IDLE && READ_ONCE(nohz.has_blocked))
-> -		env->flags |= LBF_NOHZ_STATS;
-> -#endif
-> -
->  	do {
->  		struct sg_lb_stats *sgs = &tmp_sgs;
->  		int local_group;
-> @@ -9010,15 +9000,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->  	/* Tag domain that child domain prefers tasks go to siblings first */
->  	sds->prefer_sibling = child && child->flags & SD_PREFER_SIBLING;
->  
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -	if ((env->flags & LBF_NOHZ_AGAIN) &&
-> -	    cpumask_subset(nohz.idle_cpus_mask, sched_domain_span(env->sd))) {
-> -
-> -		WRITE_ONCE(nohz.next_blocked,
-> -			   jiffies + msecs_to_jiffies(LOAD_AVG_PERIOD));
-> -	}
-> -#endif
-> -
->  	if (env->sd->flags & SD_NUMA)
->  		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
->  
-> @@ -10547,14 +10528,7 @@ static void nohz_newidle_balance(struct rq *this_rq)
->  		return;
->  
->  	raw_spin_unlock(&this_rq->lock);
-> -	/*
-> -	 * This CPU is going to be idle and blocked load of idle CPUs
-> -	 * need to be updated. Run the ilb locally as it is a good
-> -	 * candidate for ilb instead of waking up another idle CPU.
-> -	 * Kick an normal ilb if we failed to do the update.
-> -	 */
-> -	if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE))
-> -		kick_ilb(NOHZ_STATS_KICK);
-> +	kick_ilb(NOHZ_STATS_KICK);
->  	raw_spin_lock(&this_rq->lock);
->  }
->  
-> @@ -10616,8 +10590,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  			update_next_balance(sd, &next_balance);
->  		rcu_read_unlock();
->  
-> -		nohz_newidle_balance(this_rq);
-> -
->  		goto out;
->  	}
->  
-> @@ -10683,6 +10655,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	if (pulled_task)
->  		this_rq->idle_stamp = 0;
-> +	else
-> +		nohz_newidle_balance(this_rq);
->  
->  	rq_repin_lock(this_rq, rf);
->  
-> -- 
-> 2.17.1
+On 2/3/21 9:13 AM, Matwey V. Kornilov wrote:
 > 
 > 
-> > 
-> > > for this.
-> > >
-> > > > Also update_blocked_averages was supposed called in newlyidle_balance
-> > > > when the coming idle duration is expected to be long enough
-> > >
-> > > No, we do not want the schedule loop to take half a millisecond.
-> > 
-> > keep in mind that you are scaling frequency so everything takes time
-> > at lowest frequency/capacity ...
-> > 
-> > >
-> > > > > > IIUC, your real problem is that newidle_balance is running whereas a
-> > > > > > task is about to wake up on the cpu and we don't abort quickly during
-> > > > > > this load_balance
-> > > > >
-> > > > > Yes.
-> > > > >
-> > > > > > so we could also try to abort earlier in case of newly idle load balance
-> > > > >
-> > > > > I think interrupts are disabled when the load balance runs, so there's no way
-> > > > > for say an audio interrupt to even run in order to wake up a task. How would
-> > > > > you know to abort the new idle load balance?
-> > > > >
-> > > > > Could you elaborate more also on the drawback of the rate limiting patch we
-> > > > > posted? Do you see a side effect?
-> > > >
-> > > > Your patch just tries to hide your problem and not to solve the root cause.
-> > >
-> > > Agreed, the solution presented is a band aid and not a proper fix. It
-> > > was just intended to illustrate the problem and start a discussion. I
-> > > should have marked it RFC for sure.
-> > >
-> > > thanks!
-> > >
-> > > - Joel
+> сб, 30 янв. 2021 г. в 18:41, Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>>:
+>>
+>> On 1/30/21 2:38 AM, Matwey V. Kornilov wrote:
+>> > NXP LM75A is compatible with original LM75A while it has improved
+>> > 11-bit precision.
+>> >
+>> > https://www.nxp.com/docs/en/data-sheet/LM75A.pdf
+>> >
+>> > Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru <mailto:matwey@sai.msu.ru>>
+>> > ---
+>> >  drivers/hwmon/lm75.c | 4 ++++
+>> >  1 file changed, 4 insertions(+)
+>> >
+>> > diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+>> > index 3aa7f9454f57..37dc903ebf54 100644
+>> > --- a/drivers/hwmon/lm75.c
+>> > +++ b/drivers/hwmon/lm75.c
+>> > @@ -699,6 +699,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+>> >               .compatible = "national,lm75b",
+>> >               .data = (void *)lm75b
+>> >       },
+>> > +     {
+>> > +             .compatible = "nxp,lm75a",
+>> > +             .data = (void *)lm75b
+>>
+>> This should get a different identifier (such as lm75a_nxp or whatever)
+>> because otherwise the results would be different on non-devicetree
+>> systems which would only match "lm75a".
+>>
+> 
+> Sorry, I don't understand it. Non-devicetree systems won't use this table at all.
+>  
+... and instantiate the driver with "lm75a", ie differently than on a devicetree
+system. Some purist could then complain that they have to instantiate the driver
+as lm75b even though it is a lm75a to get the higher resolution.
+
+Besides, I just noticed that the resolution for the limit registers for nxp's
+version of LM75A is different than the resolution of the temperature register.
+That means that you'll need a separate entry for this chip anyway,
+one that specifies a .default_resolution of 11 and .resolution_limits of 9.
+
+Making things worse, that also applies to NXP's version of LM75B. And
+the resolution of TI's version of LM75B/C is 9 bit for both temperature
+and limit registers, which does make me wonder where the 11 bit in the
+driver comes from ... oh, yes, that was commit 799fc602143024 ("hwmon:
+(lm75) Add support for the NXP LM75B"). The devicetree table was added later,
+and with that the entry was wrongly attributed to National and not to NXP.
+
+So in reality we'd really need a number of additional entries to
+match sensor and limit resolutions correctly.
+
+National/TI: Resolution is always 9 bit for LM95 and LM95A/B/C.
+NXP: Resolution is 11 bit for temperature, 9 bit for limits for LM75A/B.
+Oh, as it turns out the limit register resolution for NXP's PCT2075 is
+also 9 bit. Sigh.
+
+Guenter
+
+>>
+>> > +     },
+>> >       {
+>> >               .compatible = "maxim,max6625",
+>> >               .data = (void *)max6625
+>> >
+>>
+>> Both "nxp,lm75a" and "nxp,lm75b" need to be added to
+>> Documentation/devicetree/bindings/hwmon/lm75.yaml (in a separate
+>> patch with copy to dt maintainers for review).
+>>
+>> Guenter
+> 
+> 
+> 
+> --
+> With best regards,
+> Matwey V. Kornilov
+
