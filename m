@@ -2,306 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC6D30E772
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E7830E777
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhBCXgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:36:47 -0500
-Received: from rome.phoronix.com ([192.211.48.82]:44970 "EHLO
-        rome.phoronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbhBCXgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:36:42 -0500
-Received: from c-73-176-63-28.hsd1.il.comcast.net ([73.176.63.28]:37276 helo=[192.168.86.21])
-        by rome.phoronix.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <Michael@phoronix.com>)
-        id 1l7RgP-0002T9-IL; Wed, 03 Feb 2021 18:35:37 -0500
-Subject: Re: [PATCH v3 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
- schedutil invariant formula
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-References: <20210203135321.12253-1-ggherdovich@suse.cz>
- <20210203135321.12253-2-ggherdovich@suse.cz>
- <CAJZ5v0g1SWRnV1QfZG3o+hvBg9akakhDMomGCFjwERyG2ENKww@mail.gmail.com>
- <5470319.60Xv9dOaFs@kreacher>
-From:   Michael Larabel <Michael@phoronix.com>
-Message-ID: <563fec57-6417-e875-1788-3773cbfb34be@phoronix.com>
-Date:   Wed, 3 Feb 2021 17:35:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233562AbhBCXhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:37:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:48750 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233465AbhBCXhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:37:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F06A1D6E;
+        Wed,  3 Feb 2021 15:36:16 -0800 (PST)
+Received: from [10.57.47.183] (unknown [10.57.47.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B82EE3F694;
+        Wed,  3 Feb 2021 15:36:15 -0800 (PST)
+Subject: Re: [PATCH V3 07/14] coresight: etm-perf: Handle stale output handles
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org, Leo Yan <leo.yan@linaro.org>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-8-git-send-email-anshuman.khandual@arm.com>
+ <20210203190513.GF1536093@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <b647135d-7d4f-1213-df00-2fd4028a23f3@arm.com>
+Date:   Wed, 3 Feb 2021 23:36:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <5470319.60Xv9dOaFs@kreacher>
+In-Reply-To: <20210203190513.GF1536093@xps15>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - rome.phoronix.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - phoronix.com
-X-Get-Message-Sender-Via: rome.phoronix.com: authenticated_id: michael@phoronix.com
-X-Authenticated-Sender: rome.phoronix.com: michael@phoronix.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 12:25 PM, Rafael J. Wysocki wrote:
-> On Wednesday, February 3, 2021 3:11:37 PM CET Rafael J. Wysocki wrote:
->> On Wed, Feb 3, 2021 at 2:53 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
->> [cut]
+On 2/3/21 7:05 PM, Mathieu Poirier wrote:
+> On Wed, Jan 27, 2021 at 02:25:31PM +0530, Anshuman Khandual wrote:
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
 >>
->>> Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
->>> Fixes: 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
->>> Reported-by: Michael Larabel <Michael@phoronix.com>
->>> Tested-by: Michael Larabel <Michael@phoronix.com>
->>> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
->>> ---
->>>   drivers/cpufreq/acpi-cpufreq.c   | 61 ++++++++++++++++++++++++++++++--
->>>   drivers/cpufreq/cpufreq.c        |  3 ++
->>>   include/linux/cpufreq.h          |  5 +++
->>>   kernel/sched/cpufreq_schedutil.c |  8 +++--
->> I don't really think that it is necessary to modify schedutil to
->> address this issue.
-> So below is a prototype of an alternative fix for the issue at hand.
->
-> I can't really test it here, because there's no _CPC in the ACPI tables of my
-> test machines, so testing it would be appreciated.  However, AFAICS these
-> machines are affected by the performance issue related to the scale-invariance
-> when they are running acpi-cpufreq, so what we are doing here is not entirely
-> sufficient.
+>> The context associated with an ETM for a given perf event
+>> includes :
+>>    - handle -> the perf output handle for the AUX buffer.
+>>    - the path for the trace components
+>>    - the buffer config for the sink.
+>>
+>> The path and the buffer config are part of the "aux_priv" data
+>> (etm_event_data) setup by the setup_aux() callback, and made available
+>> via perf_get_aux(handle).
+>>
+>> Now with a sink supporting IRQ, the sink could "end" an output
+>> handle when the buffer reaches the programmed limit and would try
+>> to restart a handle. This could fail if there is not enough
+>> space left the AUX buffer (e.g, the userspace has not consumed
+>> the data). This leaves the "handle" disconnected from the "event"
+>> and also the "perf_get_aux()" cleared. This all happens within
+>> the sink driver, without the etm_perf driver being aware.
+>> Now when the event is actually stopped, etm_event_stop()
+>> will need to access the "event_data". But since the handle
+>> is not valid anymore, we loose the information to stop the
+>> "trace" path. So, we need a reliable way to access the etm_event_data
+>> even when the handle may not be active.
+>>
+>> This patch replaces the per_cpu handle array with a per_cpu context
+>> for the ETM, which tracks the "handle" as well as the "etm_event_data".
+>> The context notes the etm_event_data at etm_event_start() and clears
+>> it at etm_event_stop(). This makes sure that we don't access a
+>> stale "etm_event_data" as we are guaranteed that it is not
+>> freed by free_aux() as long as the event is active and tracing,
+>> also provides us with access to the critical information
+>> needed to wind up a session even in the absence of an active
+>> output_handle.
+>>
+>> This is not an issue for the legacy sinks as none of them supports
+>> an IRQ and is centrally handled by the etm-perf.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-etm-perf.c | 45 +++++++++++++++++++++---
+>>   1 file changed, 40 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index eb9e7e9..a3977b0 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -24,7 +24,26 @@
+>>   static struct pmu etm_pmu;
+>>   static bool etm_perf_up;
+>>   
+>> -static DEFINE_PER_CPU(struct perf_output_handle, ctx_handle);
+>> +/*
+>> + * An ETM context for a running event includes the perf aux handle
+>> + * and aux_data. For ETM, the aux_data (etm_event_data), consists of
+>> + * the trace path and the sink configuration. The event data is accessible
+>> + * via perf_get_aux(handle). However, a sink could "end" a perf output
+>> + * handle via the IRQ handler. And if the "sink" encounters a failure
+>> + * to "begin" another session (e.g due to lack of space in the buffer),
+>> + * the handle will be cleared. Thus, the event_data may not be accessible
+>> + * from the handle when we get to the etm_event_stop(), which is required
+>> + * for stopping the trace path. The event_data is guaranteed to stay alive
+>> + * until "free_aux()", which cannot happen as long as the event is active on
+>> + * the ETM. Thus the event_data for the session must be part of the ETM context
+>> + * to make sure we can disable the trace path.
+>> + */
+>> +struct etm_ctxt {
+>> +	struct perf_output_handle handle;
+>> +	struct etm_event_data *event_data;
+>> +};
+>> +
+>> +static DEFINE_PER_CPU(struct etm_ctxt, etm_ctxt);
+>>   static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
+>>   
+>>   /* ETMv3.5/PTM's ETMCR is 'config' */
+>> @@ -332,7 +351,8 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>   {
+>>   	int cpu = smp_processor_id();
+>>   	struct etm_event_data *event_data;
+>> -	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
+>> +	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
+>> +	struct perf_output_handle *handle = &ctxt->handle;
+>>   	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
+>>   	struct list_head *path;
+>>
+>          if (!csdev)
+>                  goto fail;
+> 
+>          /*
+>           * Something went wrong if an event data is already associated
+>           * with a context.
+>           */
+>          if (WARN_ONE(ctxt->event_data))
+>                  goto fail;
+>   
+>> @@ -374,6 +394,8 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>   	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>>   		goto fail_disable_path;
+>>   
+>> +	/* Save the event_data for this ETM */
+>> +	ctxt->event_data = event_data;
+>>   out:
+>>   	return;
+>>   
+>> @@ -392,13 +414,20 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>>   	int cpu = smp_processor_id();
+>>   	unsigned long size;
+>>   	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
+>> -	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
+>> -	struct etm_event_data *event_data = perf_get_aux(handle);
+>> +	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
+>> +	struct perf_output_handle *handle = &ctxt->handle;
+> 
+> 	struct etm_event_data *event_data = perf_get_aux(handle);
+>>   	struct list_head *path;
+>>
+> 
+>          if (WARN_ON(event_data && event_data != ctxt->event_data))
+>                  return;
+> 
+>          event_data = ctxt->event_data;
+> 	/* Clear the event_data as this ETM is stopping the trace. */
+> 	ctxt->event_data = NULL;
+> 
+> With the above:
 
 
-I have benchmarks running on several Ryzen and EPYC systems with this 
-patch. The full batch of tests won't be done until tomorrow, but in 
-looking at the data so far from an AMD EPYC 7F72 2P server over the past 
-few hours, this patch does provide fairly comparable numbers to 
-Giovanni's patch. There were a few outliers so far but waiting to see 
-with the complete set of results. At the very least it's clear enough 
-already this new patch is at least an improvement over the current 5.11 
-upstream state with schedutil on AMD.
+I have folded the following changes in :
 
-Michael
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c 
+b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index cf0b0c2d5eed..9f85bf28a82f 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -375,6 +375,10 @@ static void etm_event_start(struct perf_event *event, int flags)
+  	if (!csdev)
+  		goto fail;
 
++	/* Have we messed up our tracking ? */
++	if (WARN_ON(ctxt->event_data))
++		goto fail;
++
+  	/*
+  	 * Deal with the ring buffer API and get a handle on the
+  	 * session's information.
+@@ -432,11 +436,21 @@ static void etm_event_stop(struct perf_event *event, int mode)
+  	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
+  	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
+  	struct perf_output_handle *handle = &ctxt->handle;
+-	struct etm_event_data *event_data = ctxt->event_data;
++	struct etm_event_data *event_data;
+  	struct list_head *path;
 
->
-> It looks like the scale-invariance code should ask the cpufreq driver about
-> the maximum frequency and note that cpufreq drivers may be changed on the
-> fly.
->
-> What the patch below does is to add an extra entry to the frequency table for
-> each CPU to represent the maximum "boost" frequency, so as to cause that
-> frequency to be used as cpuinfo.max_freq.
->
-> The reason why I think it is better to extend the frequency tables instead
-> of simply increasing the frequency for the "P0" entry is because the latter
-> may cause "turbo" frequency to be asked for less often.
->
-> ---
->   drivers/cpufreq/acpi-cpufreq.c |  107 ++++++++++++++++++++++++++++++++++++-----
->   1 file changed, 95 insertions(+), 12 deletions(-)
->
-> Index: linux-pm/drivers/cpufreq/acpi-cpufreq.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/acpi-cpufreq.c
-> +++ linux-pm/drivers/cpufreq/acpi-cpufreq.c
-> @@ -26,6 +26,7 @@
->   #include <linux/uaccess.h>
->   
->   #include <acpi/processor.h>
-> +#include <acpi/cppc_acpi.h>
->   
->   #include <asm/msr.h>
->   #include <asm/processor.h>
-> @@ -53,6 +54,7 @@ struct acpi_cpufreq_data {
->   	unsigned int resume;
->   	unsigned int cpu_feature;
->   	unsigned int acpi_perf_cpu;
-> +	unsigned int first_perf_state;
->   	cpumask_var_t freqdomain_cpus;
->   	void (*cpu_freq_write)(struct acpi_pct_register *reg, u32 val);
->   	u32 (*cpu_freq_read)(struct acpi_pct_register *reg);
-> @@ -221,10 +223,10 @@ static unsigned extract_msr(struct cpufr
->   
->   	perf = to_perf_data(data);
->   
-> -	cpufreq_for_each_entry(pos, policy->freq_table)
-> +	cpufreq_for_each_entry(pos, policy->freq_table + data->first_perf_state)
->   		if (msr == perf->states[pos->driver_data].status)
->   			return pos->frequency;
-> -	return policy->freq_table[0].frequency;
-> +	return policy->freq_table[data->first_perf_state].frequency;
->   }
->   
->   static unsigned extract_freq(struct cpufreq_policy *policy, u32 val)
-> @@ -363,6 +365,7 @@ static unsigned int get_cur_freq_on_cpu(
->   	struct cpufreq_policy *policy;
->   	unsigned int freq;
->   	unsigned int cached_freq;
-> +	unsigned int state;
->   
->   	pr_debug("%s (%d)\n", __func__, cpu);
->   
-> @@ -374,7 +377,11 @@ static unsigned int get_cur_freq_on_cpu(
->   	if (unlikely(!data || !policy->freq_table))
->   		return 0;
->   
-> -	cached_freq = policy->freq_table[to_perf_data(data)->state].frequency;
-> +	state = to_perf_data(data)->state;
-> +	if (state < data->first_perf_state)
-> +		state = data->first_perf_state;
-> +
-> +	cached_freq = policy->freq_table[state].frequency;
->   	freq = extract_freq(policy, get_cur_val(cpumask_of(cpu), data));
->   	if (freq != cached_freq) {
->   		/*
-> @@ -628,16 +635,54 @@ static int acpi_cpufreq_blacklist(struct
->   }
->   #endif
->   
-> +#ifdef CONFIG_ACPI_CPPC_LIB
-> +static u64 get_max_boost_ratio(unsigned int cpu)
-> +{
-> +	struct cppc_perf_caps perf_caps;
-> +	u64 highest_perf, nominal_perf;
-> +	int ret;
-> +
-> +	if (acpi_pstate_strict)
-> +		return 0;
-> +
-> +	ret = cppc_get_perf_caps(cpu, &perf_caps);
-> +	if (ret) {
-> +		pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
-> +			 cpu, ret);
-> +		return 0;
-> +	}
-> +
-> +	highest_perf = perf_caps.highest_perf;
-> +	nominal_perf = perf_caps.nominal_perf;
-> +
-> +	if (!highest_perf || !nominal_perf) {
-> +		pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
-> +		return 0;
-> +	}
-> +
-> +	if (highest_perf < nominal_perf) {
-> +		pr_debug("CPU%d: nominal performance above highest\n", cpu);
-> +		return 0;
-> +	}
-> +
-> +	return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
-> +}
-> +#else
-> +static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-> +#endif
-> +
->   static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->   {
-> -	unsigned int i;
-> -	unsigned int valid_states = 0;
-> -	unsigned int cpu = policy->cpu;
-> +	struct cpufreq_frequency_table *freq_table;
-> +	struct acpi_processor_performance *perf;
->   	struct acpi_cpufreq_data *data;
-> +	unsigned int cpu = policy->cpu;
-> +	struct cpuinfo_x86 *c = &cpu_data(cpu);
-> +	unsigned int valid_states = 0;
->   	unsigned int result = 0;
-> -	struct cpuinfo_x86 *c = &cpu_data(policy->cpu);
-> -	struct acpi_processor_performance *perf;
-> -	struct cpufreq_frequency_table *freq_table;
-> +	unsigned int state_count;
-> +	u64 max_boost_ratio;
-> +	unsigned int i;
->   #ifdef CONFIG_SMP
->   	static int blacklisted;
->   #endif
-> @@ -750,8 +795,20 @@ static int acpi_cpufreq_cpu_init(struct
->   		goto err_unreg;
->   	}
->   
-> -	freq_table = kcalloc(perf->state_count + 1, sizeof(*freq_table),
-> -			     GFP_KERNEL);
-> +	state_count = perf->state_count + 1;
-> +
-> +	max_boost_ratio = get_max_boost_ratio(cpu);
-> +	if (max_boost_ratio) {
-> +		/*
-> +		 * Make a room for one more entry to represent the highest
-> +		 * available "boost" frequency.
-> +		 */
-> +		state_count++;
-> +		valid_states++;
-> +		data->first_perf_state = valid_states;
-> +	}
-> +
-> +	freq_table = kcalloc(state_count, sizeof(*freq_table), GFP_KERNEL);
->   	if (!freq_table) {
->   		result = -ENOMEM;
->   		goto err_unreg;
-> @@ -785,6 +842,30 @@ static int acpi_cpufreq_cpu_init(struct
->   		valid_states++;
->   	}
->   	freq_table[valid_states].frequency = CPUFREQ_TABLE_END;
-> +
-> +	if (max_boost_ratio) {
-> +		unsigned int state = data->first_perf_state;
-> +		unsigned int freq = freq_table[state].frequency;
-> +
-> +		/*
-> +		 * Because the loop above sorts the freq_table entries in the
-> +		 * descending order, freq is the maximum frequency in the table.
-> +		 * Assume that it corresponds to the CPPC nominal frequency and
-> +		 * use it to populate the frequency field of the extra "boost"
-> +		 * frequency entry.
-> +		 */
-> +		freq_table[0].frequency = freq * max_boost_ratio >> SCHED_CAPACITY_SHIFT;
-> +		/*
-> +		 * The purpose of the extra "boost" frequency entry is to make
-> +		 * the rest of cpufreq aware of the real maximum frequency, but
-> +		 * the way to request it is the same as for the first_perf_state
-> +		 * entry that is expected to cover the entire range of "boost"
-> +		 * frequencies of the CPU, so copy the driver_data value from
-> +		 * that entry.
-> +		 */
-> +		freq_table[0].driver_data = freq_table[state].driver_data;
-> +	}
-> +
->   	policy->freq_table = freq_table;
->   	perf->state = 0;
->   
-> @@ -858,8 +939,10 @@ static void acpi_cpufreq_cpu_ready(struc
->   {
->   	struct acpi_processor_performance *perf = per_cpu_ptr(acpi_perf_data,
->   							      policy->cpu);
-> +	struct acpi_cpufreq_data *data = policy->driver_data;
-> +	unsigned int freq = policy->freq_table[data->first_perf_state].frequency;
->   
-> -	if (perf->states[0].core_frequency * 1000 != policy->cpuinfo.max_freq)
-> +	if (perf->states[0].core_frequency * 1000 != freq)
->   		pr_warn(FW_WARN "P-state 0 is not max freq\n");
->   }
->   
->
->
->
++	/*
++	 * If we still have access to the event_data via handle,
++	 * confirm that we haven't messed up the tracking.
++	 */
++	if (handle->event &&
++	    WARN_ON(perf_get_aux(handle) != ctxt->event_data))
++		return;
++
++	event_data = ctxt->event_data;
+  	/* Clear the event_data as this ETM is stopping the trace. */
+  	ctxt->event_data = NULL;
++
+  	if (event->hw.state == PERF_HES_STOPPED)
+  		return;
+
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Thanks
+Suzuki
