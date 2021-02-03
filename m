@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D7B30E26B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A4330E26C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhBCSXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:23:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S233032AbhBCSXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhBCSXI (ORCPT
+        with ESMTP id S229979AbhBCSX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:23:08 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74E2C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:22:27 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id d3so514990lfg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:22:27 -0800 (PST)
+        Wed, 3 Feb 2021 13:23:26 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD37AC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:22:46 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id d15so373874qtw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hHlcDRyvhM2zqRm1jI9KcvPDEhFiC7NxP8UtufY4OdQ=;
-        b=cp0i8wlOP684R3nD42KVLWe3kexEopR7T1+w4UxH+3IIhkP09n3s6eozE2WjsFfXGP
-         omABT1Ufx/64ClZx8w4FJ9iRW0lWcLwmpHeGORJlH+/DdHbB/jazrc2jeys5LMKz7uM9
-         mDMxxLO8dEnHf/mToYXEdOGWSFTFROEq9pMhY=
+        bh=lVuZ2ToAi2wJaDBY4uBWAsbbv7FYhDuwXoMEVKtaX50=;
+        b=kt9gvntHnsgph4IePrJjeMd5T/Z0hFLfadxsM9Zx6DIko11WejgpeFhf+uxhGE7xQx
+         exygpc9awXY1Z4MJ2hC1nfrWHH12EcTBQ2qx+IY7fnGHc1bkpXPvd+SF8PQxm2+Y+Xbh
+         FKNMwOBbVbgVHzuuBIMDxTJkPAVG67dlK9kpPUb1Pt2MDdXp6EGlsAHt7DgT1nTykGHK
+         hdosQ8PusoL2PZ3ysZBeXvdeKNnv+CAjlXECi758zOYkDvDcnHtd983W4Whu0nM0E+I2
+         CgpOzhiMDgFMIyxDomLN4de9SgOLKWLsc9qAswUPb+zJ7tY+SvcHcaLtwK/DyBAlA/K+
+         RcOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hHlcDRyvhM2zqRm1jI9KcvPDEhFiC7NxP8UtufY4OdQ=;
-        b=qgkU0w1lkpge6dtBRG1vApF0owD3zfJ816reb9mLqbXFmYh+Aa6WvKEeA0iN6nGXMm
-         pHQSNhE78nhmce0151KpiEdSB4NpmCaf6Wf/5XBl/6QZtejHLFk1sA/+hzkTGc2a87C4
-         Qp1Y9pm2iz9bbzmllDCHtuIyAvVHzFQCU6QwvRJPRWYzqaFdkUgZOWPS3a5jUcHMQyMs
-         baYgbpothiMkkwhytPo2EAyBYRpVhgxmI736qx9j1/i4vB08YMQihULSRsaWPuNaQYZq
-         TOFSN+s7FaZrD2fx3mQDaLKxZ8CUTc3WWWfLbBv21U+52e0InKsOUVPMTO/oyPZUE2/4
-         d/uQ==
-X-Gm-Message-State: AOAM530CIKBvZLDDwW83+40evHDwFzy8fLNwoKJdO/goMxBH7v/eCa9K
-        +FqupDhgsjlR/YlXeMfveP2T1aSHa37GKg==
-X-Google-Smtp-Source: ABdhPJywFR282sMGgNIKw3utUtebH8FbDk9vjdYZyr3NNH5dkRPLzSo8pV2vx3qHAamBin42iVlIsg==
-X-Received: by 2002:ac2:43ce:: with SMTP id u14mr2490545lfl.93.1612376545723;
-        Wed, 03 Feb 2021 10:22:25 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id o18sm331270ljc.44.2021.02.03.10.22.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 10:22:24 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id u25so594536lfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:22:24 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr2375495lfu.40.1612376544422;
- Wed, 03 Feb 2021 10:22:24 -0800 (PST)
+        bh=lVuZ2ToAi2wJaDBY4uBWAsbbv7FYhDuwXoMEVKtaX50=;
+        b=AfBpK8Zjw9t3stMobWXuLY0lbDJ2tPRgqqFAwaoOf0w9g1byI6MpaYbZmsg31rcFpt
+         kLnv8l4NLXZn31hdUYDA0xDUN58UjKuI+Vmmj0C47WyW99ThqOOXyhwF6nq/xp3m9g81
+         /uFtaoaXQx6hYBUlkSRwhhjjkEthDIIak85D6f90a+xBOLxignJoBdedRzhq1SreD1Hs
+         Py2DHxa4UvWhyHMUwnYX8p9fhenbTI0qEqdnD8FwhjQXXaRB3a3hELHkzCKYSu9SKEQW
+         mQPznOXdPteK5I+DGKFyHqlPslGkqhHZckT67z2OrJgPP+y8XlrzDSS/I/LGJufE8Nzy
+         HgOw==
+X-Gm-Message-State: AOAM532/7cAzOezCAoWYsafB99xXPSb5ZJyzo9ICNC0xOvu4EihB7oDu
+        /atDyUvmdE6BefOdv2MrZsr4VTwUK4DccCnDo6MA7g==
+X-Google-Smtp-Source: ABdhPJzpQYizDiF/DtT99RZLiZIESuBNe9bf+IuZNplJY4FcPoEPNwmeoK3j0y7ZV9Xo0vCljWKoZyfW6uzYDZTTZ6g=
+X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr3541176qtw.337.1612376565582;
+ Wed, 03 Feb 2021 10:22:45 -0800 (PST)
 MIME-Version: 1.0
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
- <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
- <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
- <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
- <CAHk-=wgOp10DO9jtMC=B=RoTLWe7MFTS5pH4JeZ78-tbqTY1vw@mail.gmail.com>
- <87h7mtc9pr.fsf_-_@collabora.com> <CAHk-=wjFV8j03vyvuY4qhKnJ6Vy2DLfjzgTJ1n+LO9EsVsJmDg@mail.gmail.com>
- <CALCETrWpouBd+DqVu594B-94MQH_D0D7sECXZHEoAa+=X-_0=A@mail.gmail.com>
-In-Reply-To: <CALCETrWpouBd+DqVu594B-94MQH_D0D7sECXZHEoAa+=X-_0=A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Feb 2021 10:22:08 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj3j8Fb-5FM8y+Oz+QWQ61ZxS5JW7da+dQeXrOYnOc19Q@mail.gmail.com>
-Message-ID: <CAHk-=wj3j8Fb-5FM8y+Oz+QWQ61ZxS5JW7da+dQeXrOYnOc19Q@mail.gmail.com>
-Subject: Re: [PATCH] entry: Fix missed trap after single-step on system call return
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kyle Huey <me@kylehuey.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
+References: <CACT4Y+YytChe9Tv5etacBL4snEDu+A2fNzF4zKiKtfmH0C0roQ@mail.gmail.com>
+ <20210203160543.GA19512@duo.ucw.cz> <20210203172834.GA3943@mipc>
+In-Reply-To: <20210203172834.GA3943@mipc>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 3 Feb 2021 19:22:34 +0100
+Message-ID: <CACT4Y+bkQOAwAwEnRoZVwKM2sDpHW3bzeWdga4MhxhERvZKT+Q@mail.gmail.com>
+Subject: Re: syzbot reporting less duplicates
+To:     bobwxc <bobwxc@email.cn>
+Cc:     Pavel Machek <pavel@ucw.cz>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 10:18 AM Andy Lutomirski <luto@kernel.org> wrote:
+On Wed, Feb 3, 2021 at 6:39 PM bobwxc <bobwxc@email.cn> wrote:
 >
-> So if we want to reliably single-step a system call and trap after the
-> system call, we just need to synthesize a trap on the way out.
+> On Wed, Feb 03, 2021 at 05:05:43PM +0100, Pavel Machek wrote:
+> > On Mon 2021-02-01 11:52:12, Dmitry Vyukov wrote:
+> > Could we please get common prefix (like syzbot: KASAN:....) so that
+> > the bulk of emails is easier to remove?
+> There are several bots testing on the kernel, maybe we should give a prefix
+> format for all bot.
+> Also we can use mail-address to fliter email, but it's still a little
+> inconvenient.
 
-Well, I think Gabriel's patch does exactly that, due to how
-SYSCALL_EXIT_TRAP is set. It looks like subsequent system calls will
-work exactly the way the concurrent system call case (that Kyle's test
-did) does.
+Hi Pavel, bobwxc,
 
-So it all _looks_ sane to me, but this is one of those "it needs testing".
+Yes, I was wondering if syzbot in From/To/CC can be used for
+filtering? I assume email clients that can filter based on subject can
+also filter based on From/To/CC.
+Does anybody filter syzbot emails? Maybe you can share what works best?
 
-               Linus
+I am not sure a common prefix for all bots is useful because it
+supports only all or nothing. There are also some bots that
+maintainers use now that seem to be fundamental to the process, if one
+is ignoring them, then they are effectively ignoring what the
+maintainer is saying.
