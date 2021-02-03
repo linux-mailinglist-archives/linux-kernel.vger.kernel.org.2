@@ -2,56 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3569230DEA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB9F30DE8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbhBCPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:49:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhBCPor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:44:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46D7564E0A;
-        Wed,  3 Feb 2021 15:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612367046;
-        bh=Wx3uhEVr4dAabl5Vw/AVDqFVSRVLFPvfx+P67v5LI3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eLdzUFB8dOPaD1ydu1lZfsTR126sjcY83eFBXPA1QH7gJOpwedsAOQKjtZF1d5Qrj
-         qDFYiB8gnQJGD5dp9X0Osjl9eo/Nj2+9ycdFIrNo9sJEx/gMkvbBgFwtAOdVrUgzVE
-         0zFh+yvzHZFCur+9QAQfN6wznkvZ5yOxR1MVFHS4=
-Date:   Wed, 3 Feb 2021 16:44:04 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        andriy.shevchenko@linux.intel.com, bobo.shaobowang@huawei.com
-Subject: Re: [PATCH 1/2] misc/pvpanic: split-up generic and platform
- dependent code
-Message-ID: <YBrExCSbFu/SCcpW@kroah.com>
-References: <1612363439-26656-1-git-send-email-mihai.carabas@oracle.com>
- <1612363439-26656-2-git-send-email-mihai.carabas@oracle.com>
+        id S234599AbhBCPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234114AbhBCPpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:45:32 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1814AC0613D6;
+        Wed,  3 Feb 2021 07:44:52 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id u16so135310qvo.9;
+        Wed, 03 Feb 2021 07:44:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=967+scZz5c/VMb8QxhN8JJ1TyJw7YVtgje+ictxSWfE=;
+        b=W9cR27rS5wSTdzg8SX5V048E11ydpWYV5g8B/Th/mXLyO6MZ1UWYb5JS21T3E00Zwc
+         vqIrQmZcJYa/RiD0Akt2OZerYzoIorG8EzCiKZ1AKeEkiWR2n96lVZmmyCX6QESOgnJE
+         8oGj7+/OpBUr2/RMtsVK2HKy8qXp7LnXWCaVkfnh2deNxD1Q0A7h9o/s4CFzd4wYvCKM
+         TDm0/J/9zuQs9VKQ5sJ2vEDi/Sx1IWZs55QZ3arnhKXar/5YPBufBZMk4HpyPtytNjWa
+         Y0peHCe9jXTKw81c2hrnye4Ho/ghzSWnX7t8GObYSqMFAjf946hBSn0cg5pXS+GNkIT/
+         i4Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=967+scZz5c/VMb8QxhN8JJ1TyJw7YVtgje+ictxSWfE=;
+        b=tYtr7mTV2c2/CoPO7TSP86CwDIzrtQYT523LJYxAbVnNJsMO5m5sukgOGaIUr7yuDP
+         e4NhayUTxAzVGLcx+tghwCV4sqvDWolsdnPxG1mNjooNMpXAsTas6Q2DAlr4MoKGyPmT
+         /2ekf0lRm5zvEbVMxbJq/geDn9+Oak5qBOwpBofn6vk3VKR8zx3f9fdQuGrKDBR7FI0R
+         oKm3g4YcSeN3MUas5Xcg4aMgZLBtgQT4C3S0fZ9x7OmOuTc+PWyCg4ikRceRCzpEUk8V
+         KC3o0bNQvXk6CiRnjJUJHOrieIm9JpN9OHo79298L22MCt9NOtw/ut4FSeB/hlplncw0
+         w+sA==
+X-Gm-Message-State: AOAM531rJmv/3eDnLWqjQzP2NPKpOtRoYYAr9i2EgEPpPekpuQ5SxLEh
+        fMYDOFTG3h78gNOPWJ8JVNI=
+X-Google-Smtp-Source: ABdhPJxxJXDZSqwfz04ep3TuMOEDWyxgzktejYV0vydgtNU+CgmdshqXj4Yl+ltDhDwRo8wCC23M8Q==
+X-Received: by 2002:a05:6214:1103:: with SMTP id e3mr3428912qvs.12.1612367091437;
+        Wed, 03 Feb 2021 07:44:51 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.139])
+        by smtp.gmail.com with ESMTPSA id g11sm1560043qto.89.2021.02.03.07.44.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 07:44:50 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robert.moore@intel.com, erik.kaneda@intel.com,
+        rafael.j.wysocki@intel.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] include: acpi:  Correct spelling in the file acoutput.h is optimzation to optimization
+Date:   Wed,  3 Feb 2021 21:14:37 +0530
+Message-Id: <20210203154437.15949-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612363439-26656-2-git-send-email-mihai.carabas@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:43:58PM +0200, Mihai Carabas wrote:
-> Split-up generic and platform dependent code in order to introduce pvpanic pci
-> device driver later.
 
-What is "later"?
+s/optimzation/optimization/
 
-And did you just create a new driver/module in this change?  Why?
-And how did you test?  This new module looks to probably taint the
-kernel, correct?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/acpi/acoutput.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How about doing this at the very least, 2 patches, one to move to the
-new directory, and the second to split into two modules.  And of course,
-please TEST THIS!
+diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
+index c5d900c0ecda..1ba212372e79 100644
+--- a/include/acpi/acoutput.h
++++ b/include/acpi/acoutput.h
+@@ -362,7 +362,7 @@
+  *
+  * A less-safe version of the macros is provided for optional use if the
+  * compiler uses excessive CPU stack (for example, this may happen in the
+- * debug case if code optimzation is disabled.)
++ * debug case if code optimization is disabled.)
+  */
 
-thanks,
+ /* Exit trace helper macro */
+--
+2.26.2
 
-greg k-h
