@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE9B30DBED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3292230DBD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhBCNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:54:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232535AbhBCNwt (ORCPT
+        id S232331AbhBCNvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:51:37 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:44260 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhBCNvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:52:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612360283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6DhEofLaMJjZ1tt7Cq7N3qGi1/742c/Y3DEA1AwMW1g=;
-        b=APrikD6t86edAmILKfOvMfbU0RCW1hqkhtvbxUDLYXf/gZz49cCtnAGkQZ/G6IbTrK1yC8
-        tY5DnmaNgoUP5vkcFC2jOKfQ19Trgj2v0xU+HxM8AVsx1UL7o48YC6DfS3L6UKjTo/ZUtt
-        3JWITAG5wWJxdRFKLsNSkA8mlli+RG4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-HP9GlbT5M_6piQiyeC5QbQ-1; Wed, 03 Feb 2021 08:50:26 -0500
-X-MC-Unique: HP9GlbT5M_6piQiyeC5QbQ-1
-Received: by mail-qt1-f200.google.com with SMTP id w3so16987760qti.17
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:50:26 -0800 (PST)
+        Wed, 3 Feb 2021 08:51:18 -0500
+Received: by mail-ot1-f45.google.com with SMTP id e70so23335942ote.11;
+        Wed, 03 Feb 2021 05:51:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6DhEofLaMJjZ1tt7Cq7N3qGi1/742c/Y3DEA1AwMW1g=;
-        b=jB5ejpv8uR0OeFDHGJH4wibDn5eTH9A5f6SJsxpikSuwDnC7XnveMmzsNLyxPFF2LE
-         Lz/Hq1qpHtlyK7qR1c+3ZaS/4vj/QPl/EeG4uPfLAcmsoZ5VKtrEmIYkTvOLxt/oIuNk
-         jzRVA7XWsP/Uw8/zgGlVpxXs7EeV8eRk25T/HRsO6ikIYS8mOT2RHW9RcCn80yDISz7S
-         rp+hhS+dOZwYvSDafQ2TboQaq52X33OleojNhqnrpEy6OjgwvAFh00QCojivn4FZ+lAR
-         utARr/uNSTLHSfvappkuzyDsTnHmuHqx1WMdZRYk3sZpD4g382TCSlgfAzpVdqrkS89X
-         halA==
-X-Gm-Message-State: AOAM531xh1Ihu/nc03+YlXYKbF/8OWAN/PF6XeFtLe0F3hCmIyRDXi3m
-        pP3itsfx7ODfRoVTBKq71fcwsxM7RGNhcQOLTjkxRUVR1LcrD+ElQ19AQUAAAyNIqbcjfzhW6EQ
-        M/TxaS/uLN4URUwc5w+s87oO+
-X-Received: by 2002:ae9:ed04:: with SMTP id c4mr2457901qkg.289.1612360225727;
-        Wed, 03 Feb 2021 05:50:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzdpG6zb1OO0QuYugj8PvmHLYZmdPd2y0ikD+0cdb6QgqAXJKDD8pYPXUAgkWzhbsUrGx0R8A==
-X-Received: by 2002:ae9:ed04:: with SMTP id c4mr2457888qkg.289.1612360225548;
-        Wed, 03 Feb 2021 05:50:25 -0800 (PST)
-Received: from loberhel7laptop ([2600:6c64:4e7f:cee0:ccad:a4ca:9a69:d8bc])
-        by smtp.gmail.com with ESMTPSA id 75sm1349448qta.68.2021.02.03.05.50.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 05:50:24 -0800 (PST)
-Message-ID: <de50b6b8c867ec1f88df54f92134a99b086da8ac.camel@redhat.com>
-Subject: Re: [PATCH] block: recalculate segment count for multi-segment
- discard requests correctly
-From:   Laurence Oberman <loberman@redhat.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        David Jeffery <djeffery@redhat.com>
-Cc:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 03 Feb 2021 08:50:22 -0500
-In-Reply-To: <BYAPR04MB4965222989DE60A2F198358286B49@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210201164850.391332-1-djeffery@redhat.com>
-         <20210202033343.GA165584@T590> <20210202204355.GA31803@redhat>
-         <20210203023517.GA948998@T590>
-         <BYAPR04MB4965222989DE60A2F198358286B49@BYAPR04MB4965.namprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t8HkciKMM6o9dgVPvicJ6NQscrL/NEhPkMR7TexeH8o=;
+        b=Iv8jUhHiFJjOgjVpp2JT/dmqWs/EQx3jNR4zgiATv8y33L1ojJsGNYEmMft4f+wVvq
+         +eRIsz4f9K9KujJMdphSS6cGTgscOKVWY+QzKLkhOK42NMKRvjSRShEMqkIBDdoiKJpz
+         WbCNpOXr8L7AXw4Yz9VMQEIE7cisWEYoE2flgT+slJ4qaWRbF9cUnqyuEyG39M6BFYzS
+         Xn930h9APOYrcbDbjojJzhznby3Cu/GADCxHMNjkkuEClVZHyTRJZGTUxeKt7pLGSCOV
+         /hHBKIErG7spoYtcCkpcj4RCpiyENQHEe9g9PtzuK0aLBm22u64DlTn9YLqx40k366kU
+         /Uag==
+X-Gm-Message-State: AOAM530HiQyCNsOW20LOEPAwubf430jtiezF5ndZxC82rHPK0EEEsbjx
+        ax/97H985/QdNczB0jgA6jc3+LpGWx9A7+4eyxUWaO37
+X-Google-Smtp-Source: ABdhPJy/w6aat1SNPMJE/L6i1l3uurPRYogijtTl2hxq2ZlTgvLCSnwnTz5m6d4DxbBI39pPaNNaOQ8Qz07h19BezGQ=
+X-Received: by 2002:a05:6830:2313:: with SMTP id u19mr2184762ote.321.1612360236609;
+ Wed, 03 Feb 2021 05:50:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202125032.64982-1-heikki.krogerus@linux.intel.com>
+ <20210202125032.64982-2-heikki.krogerus@linux.intel.com> <CAJZ5v0gMEBV=Gm-R=5zkN-J_p7cMTBwoOJrv=ec1j6SfSYRg_w@mail.gmail.com>
+ <20210202150102.GA1687065@kuha.fi.intel.com> <CAJZ5v0hVZBhqzLPGPHDZYPcYyJPfwgYwjzKGYaUMZOBw7Eh7CQ@mail.gmail.com>
+ <20210203094535.GC1687065@kuha.fi.intel.com>
+In-Reply-To: <20210203094535.GC1687065@kuha.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 3 Feb 2021 14:50:24 +0100
+Message-ID: <CAJZ5v0j6oY=hXOJtoJ=_vdWqwLDDAO8SJoG1N3nehaAcAz8G8w@mail.gmail.com>
+Subject: Re: [PATCH 1/6] software node: Provide replacement for device_add_properties()
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-03 at 03:15 +0000, Chaitanya Kulkarni wrote:
-> On 2/2/21 18:39, Ming Lei wrote:
-> > +		/* fall through */
-> >  	case REQ_OP_WRITE_ZEROES:
-> > -		return 0;
-> 
-> I don't think returning 1 for write-zeroes is right,
-> did you test this patch with write-zeores enabled controller with
-> the right fs that triggers this behavior ?
-> 
-> 
-I tested the first iteration of the patch fully mounting an XFS file
-system with -o discard and creating and deleting files.
-That was our specific RHEL8 failure we were handling here with David's
-first submission.
+On Wed, Feb 3, 2021 at 10:45 AM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Tue, Feb 02, 2021 at 05:08:40PM +0100, Rafael J. Wysocki wrote:
+> > It looks like there is a use case that cannot be addressed by using
+> > device_add_properties() and that's why you need this new function.
+> >
+> > Can you describe that use case, please, and explain what the problem
+> > with using device_add_properties() in it is?
+>
+> The problem with device_add_properties() is that it gives false
+> impression that the device properties are somehow directly attached to
+> the devices, which is not true. Now, that should not be a major issue,
+> but it seems that it is. I think Lee Jones basically used that as an
+> argument to refuse changes (and pretty minor changes) that would have
+> allowed us to use software nodes with the MFD drivers.
+>
+> Nevertheless, I was not planning to provide a replacement for it
+> originally. We do in any case have the real issue caused by that
+> device_remove_properties() call in device_del() which has to be fixed.
 
-I can test his most recent, I have not done that yet.
-Again, please follow up with exactly what you want based against
-David's patch and I can test that.
+What's that issue, specifically?
 
-Regards
-Laurence 
+> I started to fix that by moving device_add_properties() under
+> drivers/base/swnode.c so I can implement it like I've implemented now
+> that new function, but after that when I started to tackle the second
+> issue by removing the subsystem wrappers like
+> platform_device_add_device_properties() and replacing them with things
+> like platform_device_add_software_node() in order to give the drivers
+> a chance to actually use software nodes, I realised that there isn't
+> much use for device_add_properties() after that.
+>
+> Also, even though I'm not super happy about adding more API to this
+> thing, this function - device_create_managed_software_node() - I do
+> like. Not only is it implemented so that we don't have to rely on
+> anything else in drivers core in order to achieve the lifetime link
+> with the device, it is also much more descriptive. The function name
+> alone does not leave any questions about what is going to happen if
+> that function is called. You'll end up with a software node that just
+> happens to be attached to the device.
+>
+> On top of those two things, by adding the new function it also gives
+> me a nice stepping stone to do these changes in the normal stages:
+>
+>         1. Add feature/modification.
+>         2. Convert users.
+>         3. Cleanup.
+>
+> And finally, even though we may not have any users left for
+> device_add_properties() after I have updated all the subsystems and
+> drivers, this new function will still be useful. That is because, even
+> though it can be used as a drop-in replacement for
+> device_add_properties(), it does add that one small but important
+> change. It allows the nodes created with it to be part of node
+> hierarchy, and that alone is useful to me, and I'm planning on using
+> that feature later.
+>
+> I'm sorry about the long explanation.
 
+No need to be sorry,  now I know what this really is about. :-)
+
+I'm not against this patch, but I IMO the "motivation" part of the
+changelog needs to be improved.
+
+If the final goal is to get rid of device_add_properties(), please
+spell it out and say what problems there are with it and why the new
+function will be better.
