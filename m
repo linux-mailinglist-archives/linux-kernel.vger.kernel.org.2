@@ -2,76 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F9E30D679
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 444F530D687
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhBCJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:39:49 -0500
-Received: from m12-12.163.com ([220.181.12.12]:34717 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhBCJjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:39:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=g8PWqoI20i8BSk2IAz
-        VGLC769qLzNVxCHDwI8LL+ATk=; b=ahRXfSbkODICFxecWmv72xBVf9b4pQtQIK
-        HB9XHSj76grbe5wbbDklOmqX0UgkjPbf/JxjoU6FHQGoochujxxMuqYXqqlDdume
-        PyAcferc/iCdfN37swp/eZCs82ZtqaPqrNNBFIrj//DUBDW9Noo1lxUOiCXb45+5
-        j5WSyxav4=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowADn74cXbxpgDlgPPA--.114S2;
-        Wed, 03 Feb 2021 17:38:32 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: pn533: Fix typo issue
-Date:   Wed,  3 Feb 2021 17:38:42 +0800
-Message-Id: <20210203093842.11180-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DMCowADn74cXbxpgDlgPPA--.114S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Wry5Wr17Gr1rWFyUJrb_yoW8JFykpF
-        ZF9ryayr18C3yqya1DGF4UZ345WFsrArySgFs0q347XF45JFykJFs5Kayq9r1xXrWktF1a
-        va9IgFs8Wa45JFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bO0PhUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHRgusVSIpQXFOAAAsb
+        id S233343AbhBCJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:44:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23804 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229681AbhBCJny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:43:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612345348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=biSKBCz8mruHfx6T0zzWWZ0kE/fGP6S93LISl+LC4YQ=;
+        b=EIsN3IFbu/MGknE88neWPUOJRFKVuAawtuvg3O4gKL3q292xed5+l/0B8PlqR/6Q4cDmV5
+        4nDIOn1oSQa1zw+b20simLiL9s2zj0oYib/WGZR1C92b+YGl3aOptGxp+IGZEGNK0JWmXL
+        ujgleHvxGSaeMgR87IWepgkwiBnlu1U=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-b2CkWUVrNO6r-7kahe4TAA-1; Wed, 03 Feb 2021 04:42:26 -0500
+X-MC-Unique: b2CkWUVrNO6r-7kahe4TAA-1
+Received: by mail-ed1-f69.google.com with SMTP id ck25so11050698edb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:42:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=biSKBCz8mruHfx6T0zzWWZ0kE/fGP6S93LISl+LC4YQ=;
+        b=BSaKKy1EBvvG2faoQyl0M5+q9AhgxksDjKCQQ734F4jt7Fvoz/rpSVHBH1iKBmQ+F2
+         IT81M2onHxDCWiyG/LyeZIFAN875Ih8fchTcepWq/A+edjApZF3bGY5kTeOigiWHj+AN
+         qBWGF5MtZtDGC10rLUwrsWsCKJWNE1PuksIJJ732CBUbFitizoL4XIKHwGViAGuDwu4z
+         kPxjk2h6ncafH6o6eX8b6QR3TXjUXFwNANW9bWe84gGI08T3bqwY3lPj0E04esuA0FUp
+         cHuo64eETAY3HmR765oyQ4H+15NUQlUsq/Mo6tCU0UUqNKeWRVX78RVPBgamlPuUAPdG
+         7jWw==
+X-Gm-Message-State: AOAM533BakL+5H9kqOLGNg4UelChVFj3+uuwSukPRm6QGZeXsXypDSc9
+        DlAUW2wS6am1uE9OXczAslPGR7s9sNfaEEbpyKBOSSrs1eYZch2ONfYo1bh/m+XgycqyV1BD8qg
+        E8Dz5qnD2zccn63oM0B64ciLnkfvWz2fJx3zdpfwBaOCfhCBBMXYbQ+0MTaWGx+wk2pZ9/LRdNl
+        pL
+X-Received: by 2002:aa7:d352:: with SMTP id m18mr2081512edr.190.1612345345068;
+        Wed, 03 Feb 2021 01:42:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyYJCOYFoTShDOJw71pEdhI7iII+5s/dIoyufsv9Eq0TviKQwk3YfrsDwAkPB8fUWslrNJGw==
+X-Received: by 2002:aa7:d352:: with SMTP id m18mr2081484edr.190.1612345344780;
+        Wed, 03 Feb 2021 01:42:24 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t3sm585734eds.89.2021.02.03.01.42.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 01:42:23 -0800 (PST)
+Subject: Re: [PATCH] KVM: vmx/pmu: Add VMCS fields check before exposing
+ LBR_FMT
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203065027.314622-1-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f1fa3086-b95b-58bc-3814-31fe08dc8be6@redhat.com>
+Date:   Wed, 3 Feb 2021 10:42:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210203065027.314622-1-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On 03/02/21 07:50, Like Xu wrote:
+> Before KVM exposes guest LBR_FMT perf capabilities, it needs to check
+> whether VMCS has GUEST_IA32_DEBUGCTL guest status field and vmx switch
+> support on IA32_DEBUGCTL MSR (including VM_EXIT_SAVE_DEBUG_CONTROLS
+> and VM_ENTRY_LOAD_DEBUG_CONTROLS). It helps nested LBR enablement.
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>   arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+> index d1d77985e889..ac3af06953a8 100644
+> --- a/arch/x86/kvm/vmx/capabilities.h
+> +++ b/arch/x86/kvm/vmx/capabilities.h
+> @@ -378,6 +378,12 @@ static inline bool vmx_pt_mode_is_host_guest(void)
+>   	return pt_mode == PT_MODE_HOST_GUEST;
+>   }
+>   
+> +static inline bool cpu_has_vmx_lbr(void)
+> +{
+> +	return (vmcs_config.vmexit_ctrl & VM_EXIT_SAVE_DEBUG_CONTROLS) &&
+> +		(vmcs_config.vmentry_ctrl & VM_ENTRY_LOAD_DEBUG_CONTROLS);
+> +}
+> +
+>   static inline u64 vmx_get_perf_capabilities(void)
+>   {
+>   	u64 perf_cap = 0;
+> @@ -385,7 +391,8 @@ static inline u64 vmx_get_perf_capabilities(void)
+>   	if (boot_cpu_has(X86_FEATURE_PDCM))
+>   		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+>   
+> -	perf_cap &= PMU_CAP_LBR_FMT;
+> +	if (cpu_has_vmx_lbr())
+> +		perf_cap &= PMU_CAP_LBR_FMT;
 
-change 'piority' to 'priority'
-change 'succesfult' to 'successful'
+This is incorrect in the case where cpu_has_vmx_lbr() is false.  You 
+would need something like
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/pn533/pn533.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+  	u64 perf_cap = 0;
+	u64 host_perf_cap = 0;
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index f7464bd..f1469ac 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -513,7 +513,7 @@ static int pn533_send_cmd_async(struct pn533 *dev, u8 cmd_code,
- /*
-  * pn533_send_cmd_direct_async
-  *
-- * The function sends a piority cmd directly to the chip omitting the cmd
-+ * The function sends a priority cmd directly to the chip omitting the cmd
-  * queue. It's intended to be used by chaining mechanism of received responses
-  * where the host has to request every single chunk of data before scheduling
-  * next cmd from the queue.
-@@ -615,7 +615,7 @@ static int pn533_send_sync_complete(struct pn533 *dev, void *_arg,
-  *     as it's been already freed at the beginning of RX path by
-  *     async_complete_cb.
-  *
-- *  3. valid pointer in case of succesfult RX path
-+ *  3. valid pointer in case of successful RX path
-  *
-  *  A caller has to check a return value with IS_ERR macro. If the test pass,
-  *  the returned pointer is valid.
--- 
-1.9.1
+  	if (boot_cpu_has(X86_FEATURE_PDCM))
+		rdmsrl(MSR_IA32_PERF_CAPABILITIES, host_perf_cap);
 
+	if (cpu_has_vmx_lbr())
+		perf_cap |= host_perf_cap & PMU_CAP_LBR_FMT;
+
+However, KVM won't run without VM_ENTRY_LOAD_DEBUG_CONTROLS and 
+VM_EXIT_SAVE_DEBUG_CONTROLS (see setup_vmcs_config), so this change is 
+not needed either.
+
+Paolo
 
