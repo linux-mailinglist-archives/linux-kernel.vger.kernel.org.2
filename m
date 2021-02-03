@@ -2,70 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5690330D365
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAC930D361
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhBCG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:29:06 -0500
-Received: from m12-14.163.com ([220.181.12.14]:58960 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhBCG2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:28:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=3PjaSyTPIF/0eA0o6d
-        2SeGzWaUYGs51QsvtN6khf1pE=; b=TWPFLVzzzFAqhbfZT/mDeERBmfj4sxWmdC
-        bVYHMwQnbl53pB2vFtnMwoQJN3AZvSEFl/6kzlIa06ys8Nn4YV1r0yvscJO05Iwv
-        UIamMfyXSx2tsWbHcfReVDxxeifdU/vohWwdomjt/UhE1HGHuYF1o7W7B6AJ9ZxP
-        bWfbnvCkI=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.230])
-        by smtp10 (Coremail) with SMTP id DsCowADH3ko6QhpgbEunjA--.285S2;
-        Wed, 03 Feb 2021 14:27:07 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     amitkarwar@gmail.com, siva8118@gmail.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        id S231593AbhBCG26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:28:58 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:33278 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230098AbhBCG2w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:28:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UNkCTfN_1612333671;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNkCTfN_1612333671)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Feb 2021 14:28:04 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     tyreld@linux.ibm.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] rsi: remove redundant assignment
-Date:   Wed,  3 Feb 2021 14:27:17 +0800
-Message-Id: <20210203062717.1228-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowADH3ko6QhpgbEunjA--.285S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxWF1kZw1xWw1fKF4UJwb_yoW3Krb_ur
-        10qF4fWrWkG3W8Kryj9FW3Zr9Iya4UW3WrGw4qq3yfGryUtrZxAw15Crn3J3yDG34jvr9x
-        Gws7uryIva43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe-yCJUUUUU==
-X-Originating-IP: [119.137.55.230]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRRsusVl91EvVBwAAso
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: ibmvfc: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Wed,  3 Feb 2021 14:27:49 +0800
+Message-Id: <1612333669-103403-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Fix the following coccicheck warning:
 
-INVALID_QUEUE has been used as a return value,it is not necessary to
-assign it to q_num,so just return INVALID_QUEUE.
+./drivers/scsi/ibmvscsi/ibmvfc.c: WARNING: use scnprintf or
+sprintf.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/net/wireless/rsi/rsi_91x_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_core.c b/drivers/net/wireless/rsi/rsi_91x_core.c
-index 2d49c5b..a48e616 100644
---- a/drivers/net/wireless/rsi/rsi_91x_core.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_core.c
-@@ -193,8 +193,7 @@ static u8 rsi_core_determine_hal_queue(struct rsi_common *common)
- 		if (recontend_queue)
- 			goto get_queue_num;
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 65f168c..99f5575 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3038,8 +3038,7 @@ static ssize_t ibmvfc_show_host_partition_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
  
--		q_num = INVALID_QUEUE;
--		return q_num;
-+		return INVALID_QUEUE;
- 	}
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.partition_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.partition_name);
+ }
  
- 	common->selected_qnum = q_num;
+ static ssize_t ibmvfc_show_host_device_name(struct device *dev,
+@@ -3048,8 +3047,7 @@ static ssize_t ibmvfc_show_host_device_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.device_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.device_name);
+ }
+ 
+ static ssize_t ibmvfc_show_host_loc_code(struct device *dev,
+@@ -3058,8 +3056,7 @@ static ssize_t ibmvfc_show_host_loc_code(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.port_loc_code);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.port_loc_code);
+ }
+ 
+ static ssize_t ibmvfc_show_host_drc_name(struct device *dev,
+@@ -3068,8 +3065,7 @@ static ssize_t ibmvfc_show_host_drc_name(struct device *dev,
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
+-			vhost->login_buf->resp.drc_name);
++	return sysfs_emit(buf, "%s\n", vhost->login_buf->resp.drc_name);
+ }
+ 
+ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+@@ -3077,7 +3073,7 @@ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
++	return sysfs_emit(buf, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
+ }
+ 
+ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+@@ -3085,7 +3081,7 @@ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
++	return sysfs_emit(buf, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
+ }
+ 
+ /**
+@@ -3105,7 +3101,7 @@ static ssize_t ibmvfc_show_log_level(struct device *dev,
+ 	int len;
+ 
+ 	spin_lock_irqsave(shost->host_lock, flags);
+-	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->log_level);
++	len = sysfs_emit(buf, "%d\n", vhost->log_level);
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ 	return len;
+ }
 -- 
-1.9.1
-
+1.8.3.1
 
