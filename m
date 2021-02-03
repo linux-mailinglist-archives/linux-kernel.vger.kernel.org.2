@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684A230E2F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D23D730E2F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhBCS72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:59:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38302 "EHLO mail.kernel.org"
+        id S232677AbhBCTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:00:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:45304 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhBCS7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:59:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F9D64F61;
-        Wed,  3 Feb 2021 18:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612378723;
-        bh=PEYBOm0OePsiPNwQdE6LWS8QVtji2a0NydsNbpbrheA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YrCJmRIfdfesjuEHIh5wXyFNyprTKwZEUK2NZM3r7LKXVCvzPSc7wSM+DLKbKaxtX
-         MceRUV9/p8f6dyB7mdkb4fkf3qMINUAbnDrDMi7FIphV8WGp80jdCmMhdvtnU6mZik
-         49DbSe2IktGSDlgN6JRay37YcYdljSAQmXBidcRXQ5EjgRfAacXUaqiIxGfxXM5/Qv
-         SQtuNB+rSMR8lvT9rdKx3QuVzifwMV4zxWKf70H77igztHVB8NllFInGH1SzyW7X95
-         yJkFTbsLrTBaDD5ABNwqT7q2BBbKj1vDQj7e9xhLFiPHMNvXLaYMIVNYhBl6vbgxTn
-         W8tVELKgU/h/A==
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        keescook@chromium.org, john.ogness@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        akinobu.mita@gmail.com
-References: <20210202213633.755469-1-timur@kernel.org>
- <YBpyzxBYIYapHaDT@alley> <YBqlooegQgEfPG4T@alley>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
-Date:   Wed, 3 Feb 2021 12:58:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231202AbhBCS76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:59:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8514811FB;
+        Wed,  3 Feb 2021 10:59:12 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85C293F719;
+        Wed,  3 Feb 2021 10:59:10 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        bigeasy@linutronix.de, swood@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [RFC PATCH] sched/core: Fix premature p->migration_pending completion
+In-Reply-To: <20210203172344.uzq2iod4g46ffame@e107158-lin>
+References: <20210127193035.13789-1-valentin.schneider@arm.com> <20210203172344.uzq2iod4g46ffame@e107158-lin>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Wed, 03 Feb 2021 18:59:08 +0000
+Message-ID: <jhjft2d2d1f.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YBqlooegQgEfPG4T@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:31 AM, Petr Mladek wrote:
-> Also please make sure that lib/test_printf.c will work with
-> the new option.
+On 03/02/21 17:23, Qais Yousef wrote:
+> On 01/27/21 19:30, Valentin Schneider wrote:
+>> Fiddling some more with a TLA+ model of set_cpus_allowed_ptr() & friends
+>> unearthed one more outstanding issue. This doesn't even involve
+>> migrate_disable(), but rather affinity changes and execution of the stopper
+>> racing with each other.
+>> 
+>> My own interpretation of the (lengthy) TLA+ splat (note the potential for
+>> errors at each level) is:
+>> 
+>>   Initial conditions:
+>>     victim.cpus_mask = {CPU0, CPU1}
+>> 
+>>   CPU0                             CPU1                             CPU<don't care>
+>> 
+>>   switch_to(victim)
+>> 								    set_cpus_allowed(victim, {CPU1})
+>> 								      kick CPU0 migration_cpu_stop({.dest_cpu = CPU1})
+>>   switch_to(stopper/0)
+>> 								    // e.g. CFS load balance
+>> 								    move_queued_task(CPU0, victim, CPU1);
+>> 				   switch_to(victim)
+>> 								    set_cpus_allowed(victim, {CPU0});
+>> 								      task_rq_unlock();
+>>   migration_cpu_stop(dest_cpu=CPU1)
+>
+> This migration stop is due to set_cpus_allowed(victim, {CPU1}), right?
+>
 
-As you suspected, it doesn't work:
+Right
 
-[  206.966478] test_printf: loaded.
-[  206.966528] test_printf: plain 'p' does not appear to be hashed
-[  206.966740] test_printf: failed 1 out of 388 tests
+>>     task_rq(p) != rq && pending
+>>       kick CPU1 migration_cpu_stop({.dest_cpu = CPU1})
+>> 
+>> 				   switch_to(stopper/1)
+>> 				   migration_cpu_stop(dest_cpu=CPU1)
+>
+> And this migration stop is due to set_cpus_allowed(victim, {CPU0}), right?
+>
 
-What should I do about this?
+Nein! This is a retriggering of the "current" stopper (triggered by
+set_cpus_allowed(victim, {CPU1})), see the tail of that
 
-On one hand, it is working as expected: %p is not hashed, and that 
-should be a warning.
+  else if (dest_cpu < 0 || pending)
 
-On the other hand, maybe test_printf should be aware of the command line 
-parameter and test to make sure that %p is NOT hashed?
+branch in migration_cpu_stop(), is what I'm trying to hint at with that 
+
+task_rq(p) != rq && pending
+
+> If I didn't miss something, then dest_cpu should be CPU0 too, not CPU1 and the
+> task should be moved back to CPU0 as expected?
+>
+> Thanks
+>
+> --
+> Qais Yousef
