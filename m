@@ -2,501 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BBF30D18D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D3E30D194
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhBCC3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhBCC3I (ORCPT
+        id S231436AbhBCC3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:29:54 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21474 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229690AbhBCC3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:29:08 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3D9C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:28:28 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id q20so15669243pfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:28:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=HnzPpOzgB6GpoPKygr8yIDPTQcszOo6lFCt60Q8mrDw=;
-        b=rrLIZEY7ctIYh57bi/f2BbLRcKllUsJM9qOstCYgM+izVvC4mcVlQ7+kGDgrTHtqPV
-         Y/z+rhwFLqJXYcPJHosYQmhM+TFYgGs1ds5FhF98GplhbAiiGClgL+5F8uMOBGbhNJTK
-         JV4VR/S07O46PI7KE3doHRGmAPIPvWLIHJWGk33u8bXlQso+a03anMxjGzzECFvyUw8g
-         wd38mJC4QjhtmGki6nkHqSF/YFsLqzGaHb4kFVmKVcxQEMNJlGjSqI8YLCPASR2e8TjH
-         BwE5FExLJhwncE5ADpXbDcQvtXjzwX0gRLJ4pvCi9XvGqs3f9jpt281/WLINmsMQ2GvE
-         SHpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=HnzPpOzgB6GpoPKygr8yIDPTQcszOo6lFCt60Q8mrDw=;
-        b=MMfDSkETXZ8wnQDdeo+vjmDOtMEyoS1hHZ9svAXOig/yysvxMsLWJQ5EvHzKNI1XSR
-         kOWuE3DFebvJYIYHnVkPgdzlCrb8PozT64PLlRvX7zJcg75vZFLPuAeq688Y/FnZ6ME6
-         eLHfcBidpGmn/HrY6diWXswtdJE9LKHDNDicVEAn/RDhmsq54uCQZOFwe3TERONPvtZF
-         jz67sqe29TvHCIA/pqNhtgtSym4o6rcWLTnYIjWc5IDLDgwmqGLPTkc32eM8kFAi12GF
-         zpX15JLg6oPgJ9bvxUplEucbx4paijD2m8yNt8o35sHBCCHolIJA3Ihy6W7WS0h3C1My
-         pVqA==
-X-Gm-Message-State: AOAM531qjVFUVnz8/Agi39QxUJcvYktgJxjF9SgE7DBG6ZNoXYYYqiP4
-        qnXrq1ekvPzur4/A8fyKglR0F8hPZAuvIg==
-X-Google-Smtp-Source: ABdhPJwgwhY9sJINzIUxS1EdkapgwboT89Kb6iYvWqaunSTbCtijUkcOGIfgoKmZ3tehNnF5AmrVPA==
-X-Received: by 2002:a62:64c9:0:b029:1b9:6b48:7901 with SMTP id y192-20020a6264c90000b02901b96b487901mr1079161pfb.0.1612319307638;
-        Tue, 02 Feb 2021 18:28:27 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a22sm286923pjh.5.2021.02.02.18.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 18:28:27 -0800 (PST)
-Date:   Tue, 02 Feb 2021 18:28:27 -0800 (PST)
-X-Google-Original-Date: Tue, 02 Feb 2021 18:20:03 PST (-0800)
-Subject:     Re: [PATCH v4] RISC-V: Implement ASID allocator
-In-Reply-To: <20210121135016.34718-1-anup.patel@wdc.com>
-Message-ID: <mhng-c559982c-2b4c-4270-8b42-5ad5fdb3d1dd@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Anup Patel <Anup.Patel@wdc.com>
+        Tue, 2 Feb 2021 21:29:49 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1132Q833002594;
+        Tue, 2 Feb 2021 18:29:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=UyikSY9c2CyK14yztGolAG6yxN2SE3+M5dkc3tRuvBU=;
+ b=Jc/aoqFWSrNhfb6Yokv7YqwlCNhSSrrG2308Qymtq471i1pelHXYerJeO8FgYqQITeVE
+ Mf0Of4JEoxmC3ZiXkEBmGmgMetawU1Jmf2lnGsKiAbXw0cFqRwdt/xYIUq4VEerWbVdy
+ d7CnYd1Vvh8O8uv5h+3m/4hGp+w0FBVBMVY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36fj01896j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 02 Feb 2021 18:29:00 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 2 Feb 2021 18:28:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n6CayDW1O0Qwkk5tBqDQMYs8h0YhaZJaMqjIb5GynDWTSbAItJ429iYUkjVHHb//1BJlVzJReeQeaTlXXSUg2OiXcIHyoc5DDHDNGpYJ8khCVkKcq4bLdgjLntXklu4sp7mojl0NdPvyrkHDNovD+uL4XSWcQVmm9j6DVY/WzqFP8oSzHozk6Rq/w9+PHQgNOBLs/IT+Zu4HcEx2FHo6l7q2HGngJn5se4NWSGd9pnpTSXEi+9xByL1KeX9XRDZsukwdz6Sn+5GbXSkWDppGu80XdXnKZmTdtdSFiaayuFc/xI0wRzWh77Xy/Q6nRnoRHDllcNBgwiHkpEmbHBtqRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyikSY9c2CyK14yztGolAG6yxN2SE3+M5dkc3tRuvBU=;
+ b=GiMfQcgnRWVmsvYOMLTYSRn8IIdDThUFJXNUyRM2KAPmzpOhU9t0Ky/DKpyPjA7xHi8dNXLUUbIjWdZqwPVWUfAPF/Ra0nEeQLOhbY56+gHIhukP8GDXuPGsssLn3BPI1N9txrbhWaqyAsXXKv3K2hWqusQ9UuGgHbG7zYd2Nz9OBoeAlNB/AaXFm7m7J8oesnaaSxBnCYmXpm6vnQo0+Vu451SXRsz+zRmVvmBmlCHFFBHsNJZ0N6XdHcpkpO4aAgS2Urfdx3FCLCmy58wJhJA8CUon8fF8RR4688lK6cC4jwplUT8gx6odKBvMfbS7j+vU2XmBQ/0fUUiGvR3Pew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyikSY9c2CyK14yztGolAG6yxN2SE3+M5dkc3tRuvBU=;
+ b=T4uPRSduQDXHw6fTaE4dg2MoWb5rKzdWQeUZo16QXGq9rukhA6cnfGP3exZNz2jq2IGWzSnxmwuU8/QBTpSy1nkhr2IpImz7aYXSwC8OdfcTCYw/fNX5LKDOym9vt23GrBe1fIDLLBwzPApkSeYvnfMHe8M+Q7JpZQP4toOJctA=
+Authentication-Results: cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3143.namprd15.prod.outlook.com (2603:10b6:a03:b5::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Wed, 3 Feb
+ 2021 02:28:57 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3805.028; Wed, 3 Feb 2021
+ 02:28:57 +0000
+Date:   Tue, 2 Feb 2021 18:28:53 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+Message-ID: <20210203022853.GG1812008@carbon.dhcp.thefacebook.com>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-2-hannes@cmpxchg.org>
+ <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
+X-Originating-IP: [2620:10d:c090:400::5:52e4]
+X-ClientProxiedBy: SJ0PR05CA0185.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::10) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:52e4) by SJ0PR05CA0185.namprd05.prod.outlook.com (2603:10b6:a03:330::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.8 via Frontend Transport; Wed, 3 Feb 2021 02:28:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 52bfd306-107c-4052-530c-08d8c7eb753f
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3143:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB314385D4114A2ADD2BDEDA78BEB49@BYAPR15MB3143.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dMurKx8j8d+I4OHX7XTz4P4bCxl7Tg2mth4iJ+F/PS7hdQMPWl1guY0ZZVtJHDsTacPIQSiK+h96O6p6OWojh5kYtH8fzXv0/BkTwKyHcesx1JVH39J04n32yNplL/Ol4cpeAf+cOLjF/rAgQ9NlasTxTtBPn195/gDvSls+07Hrw+B3GgdcZJpa03IB5wcP5KiM1lMXRU+hE0UnpmYLjQ08ybC9mV+z+yNnzo9CjFP5F1DCIsVQDsuoxK069+ijXJsCmQGPdx4THqN8dtw75y3TxEF6+olVZPiaRdgOKaEfplRPgKD7arNMM5zMzAVIwNTtMA5b7VNrJ+9df7nNmZlSgr9GVUV1sO0n3mdwZ2f7Fm51PV9Kz2rqsbwwP0xV6biQ9WVZCkOmsbkiRqX1WbkW4O7VUhUBkKRMPK98oLcntd5Zz3j0zuFbKPtpFq50lbc1oENxObrfJ8lG1nzUyMTrwuVB+8UYTW7/zb2nTmB0gW9DJ7zWY/+DgigarQ/xp1DFX5fK7WBg+rdsbyoang==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(346002)(396003)(376002)(4326008)(66556008)(316002)(66476007)(6666004)(86362001)(5660300002)(83380400001)(6916009)(8676002)(186003)(16526019)(8936002)(7696005)(52116002)(55016002)(66946007)(6506007)(54906003)(478600001)(1076003)(2906002)(9686003)(33656002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+qY5KrCsru4rT0h3IzBLmgol97r59Z8i3wSE0EnDSYMnIP+p7p6uDmPc0qYe?=
+ =?us-ascii?Q?W7qFtdkOS+kuJRydWlKuzBxye3lO1BOy5KeDW+CPR5VzFSCM7gRq9jN8O0L4?=
+ =?us-ascii?Q?4FUdOiQ5R/fdVBhC+p/OJ/7nkHGyfFgh5jjvx5iZE5BOLLw3iFadwoeLVtDD?=
+ =?us-ascii?Q?XmYVKiQFWZOYQToO9Cfl90bSJFCRIRJWo5ICpqahX9v2l2TfBoKIww+TUBFS?=
+ =?us-ascii?Q?luW7T6OpX6NORegDFjrQG51HuPm6ROBSxP7YEudNEeV8syjb5EWHl9J25nTp?=
+ =?us-ascii?Q?2Ay3ryucsP85Fh9WSgeuC+hkLz8G0ZhiWYSpxO750cdI9EkUW6Bb6saa3pVk?=
+ =?us-ascii?Q?rtRzk3jyVvnLwFLNBORDkVRSuNZulLcmVfJ0pBJCbUBzKDgdc0RJaPc5JPwn?=
+ =?us-ascii?Q?b4tq99ul//vu/MBbgWNpE134dsjMbIY4/5slCu89rantjEO9OKofYsVYssBk?=
+ =?us-ascii?Q?C9lzgPoxxJcs4AnVIoBwtgDp6YmdZLEH4E8gHW8CiV3ypWuZ91ilaYKuiUMS?=
+ =?us-ascii?Q?puucTbj43B9bDltr+UwZ8vScnvczsxhse32+4nK6uPNFxXJMvYZgXiZROOUZ?=
+ =?us-ascii?Q?eAISwMgb2PHs+5TeA71dhjR+8TIpDn1px+1ZWeDowm24SkjNT/gIBtmT8ecj?=
+ =?us-ascii?Q?rxO0+BvLltfoO9ll7GMQx4xiUU6qJCcUTUpBNaNveieR5rMNCYWXz9AosoZU?=
+ =?us-ascii?Q?ijnOoHMwqrqBXbr7glzbdGFJJsZJHeBMiTDG3O/6C9wG++ev4gSvfQBSIL42?=
+ =?us-ascii?Q?OfXwzJebsKMEv/oUNQR/85FdTTnNn1wgLPeWaZ3XKSkX3nv+vjTsLmbQqcv4?=
+ =?us-ascii?Q?Ktw6ZIZ+bn6PU+NG0qeg+NxQZFNIoY5SLA7cyLiIYO6slygAWcV4EKASsNyX?=
+ =?us-ascii?Q?mCkF31Tnk7x8EA7b8MKl8lRdUcpN/6ZMqkektqhJqG2HZjOsE7G/RuBoD9Qw?=
+ =?us-ascii?Q?kCoNbNklKeJrwzC2186s1ev6wo7KUrGgZ47aNQS2ZaZFsdvUbrxlbuGT6UyX?=
+ =?us-ascii?Q?ugwdnvUf6yEuAzvQYpVMDxXOUSNaUvTLI+HLwhKUM6A17Me/khUN35RoCWWR?=
+ =?us-ascii?Q?pM72POktRBgplavonT6wP8qv5gixMj/LaY/hSbU3hIX+2odIdg0=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52bfd306-107c-4052-530c-08d8c7eb753f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 02:28:57.2660
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 44HhOBNotDbxeIwmzU81E4f3J1iWtQIzGgs7KNJIRcTYWaw7r+fEbTgdW22UsEuR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3143
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-02_13:2021-02-02,2021-02-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ impostorscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=906 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102030009
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 05:50:16 PST (-0800), Anup Patel wrote:
-> Currently, we do local TLB flush on every MM switch. This is very harsh on
-> performance because we are forcing page table walks after every MM switch.
->
-> This patch implements ASID allocator for assigning an ASID to a MM context.
-> The number of ASIDs are limited in HW so we create a logical entity named
-> CONTEXTID for assigning to MM context. The lower bits of CONTEXTID are ASID
-> and upper bits are VERSION number. The number of usable ASID bits supported
-> by HW are detected at boot-time by writing 1s to ASID bits in SATP CSR.
->
-> We allocate new CONTEXTID on first MM switch for a MM context where the
-> ASID is allocated from an ASID bitmap and VERSION is provide by an atomic
-> counter. At time of allocating new CONTEXTID, if we run out of available
-> ASIDs then:
-> 1. We flush the ASID bitmap
-> 2. Increment current VERSION atomic counter
-> 3. Re-allocate ASID from ASID bitmap
-> 4. Flush TLB on all CPUs
-> 5. Try CONTEXTID re-assignment on all CPUs
->
-> Please note that we don't use ASID #0 because it is used at boot-time by
-> all CPUs for initial MM context. Also, newly created context is always
-> assigned CONTEXTID #0 (i.e. VERSION #0 and ASID #0) which is an invalid
-> context in our implementation.
->
-> Using above approach, we have virtually infinite CONTEXTIDs on-top-of
-> limited number of HW ASIDs. This approach is inspired from ASID allocator
-> used for Linux ARM/ARM64 but we have adapted it for RISC-V. Overall, this
-> ASID allocator helps us reduce rate of local TLB flushes on every CPU
-> thereby increasing performance.
->
-> This patch is tested on QEMU virt machine, Spike and SiFive Unleashed
-> board. On QEMU virt machine, we see some (3-5% approx) performance
-> improvement with SW emulated TLBs provided by QEMU. Unfortunately,
-> the ASID bits of the SATP CSR are not implemented on Spike and SiFive
-> Unleashed board so we don't see any change in performance. On real
-> HW having all ASID bits implemented, the performance gains will be
-> much more due improved sharing of TLB among different processes.
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> ---
-> Changes since v3:
-> - Rebased on Linux-5.11-rc4. The previous v3 patch (almost 2 years back)
->   was basd on Linux-5.1-rc2
-> - Updated implementation to consider NoMMU kernel
-> - Converted use_asid_allocator boolean flag into static key
-> - Improved boot-time print in asids_init() to show number of ASID bits
-> - Access SATP CSR by number instead of old CSR name "sptbr"
->
-> Changes since v2:
-> - Move to lazy TLB flushing because we get slow path warnings if we
->   use flush_tlb_all()
-> - Don't set ASID bits to all 1s in head.s. Instead just do it on
->   boot CPU calling asids_init() for determining number of HW ASID bits
-> - Make CONTEXT version comparison more readable in set_mm_asid()
-> - Fix typo in __flush_context()
->
-> Changes since v1:
-> - We adapt good aspects from Gary Guo's ASID allocator implementation
->   and provide due credit to him by adding his SoB.
-> - Track ASIDs active during context flush and mark them as reserved
-> - Set ASID bits to all 1s to simplify number of ASID bit detection
-> - Use atomic_long_t instead of atomic64_t for being 32bit friendly
-> - Use unsigned long instead of u64 for being 32bit friendly
-> - Use flush_tlb_all() instead of lazy local_tlb_flush_all() at time
->   of context flush
->
-> This patch is based on Linux-5.11-rc4 and can be found in the
-> riscv_asid_allocator_v4 branch of https://github.com/avpatel/linux.git
-> ---
->  arch/riscv/include/asm/csr.h         |   6 +
->  arch/riscv/include/asm/mmu.h         |   2 +
->  arch/riscv/include/asm/mmu_context.h |  10 +
->  arch/riscv/mm/context.c              | 261 ++++++++++++++++++++++++++-
->  4 files changed, 275 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index cec462e198ce..caadfc1d7487 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -41,10 +41,16 @@
->  #define SATP_PPN	_AC(0x003FFFFF, UL)
->  #define SATP_MODE_32	_AC(0x80000000, UL)
->  #define SATP_MODE	SATP_MODE_32
-> +#define SATP_ASID_BITS	9
-> +#define SATP_ASID_SHIFT	22
-> +#define SATP_ASID_MASK	_AC(0x1FF, UL)
->  #else
->  #define SATP_PPN	_AC(0x00000FFFFFFFFFFF, UL)
->  #define SATP_MODE_39	_AC(0x8000000000000000, UL)
->  #define SATP_MODE	SATP_MODE_39
-> +#define SATP_ASID_BITS	16
-> +#define SATP_ASID_SHIFT	44
-> +#define SATP_ASID_MASK	_AC(0xFFFF, UL)
->  #endif
->
->  /* Exception cause high bit - is an interrupt if set */
-> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
-> index dabcf2cfb3dc..0099dc116168 100644
-> --- a/arch/riscv/include/asm/mmu.h
-> +++ b/arch/riscv/include/asm/mmu.h
-> @@ -12,6 +12,8 @@
->  typedef struct {
->  #ifndef CONFIG_MMU
->  	unsigned long	end_brk;
-> +#else
-> +	atomic_long_t id;
->  #endif
->  	void *vdso;
->  #ifdef CONFIG_SMP
-> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-> index 250defa06f3a..b0659413a080 100644
-> --- a/arch/riscv/include/asm/mmu_context.h
-> +++ b/arch/riscv/include/asm/mmu_context.h
-> @@ -23,6 +23,16 @@ static inline void activate_mm(struct mm_struct *prev,
->  	switch_mm(prev, next, NULL);
->  }
->
-> +#define init_new_context init_new_context
-> +static inline int init_new_context(struct task_struct *tsk,
-> +			struct mm_struct *mm)
-> +{
-> +#ifdef CONFIG_MMU
-> +	atomic_long_set(&mm->context.id, 0);
-> +#endif
-> +	return 0;
-> +}
-> +
->  #include <asm-generic/mmu_context.h>
->
->  #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 613ec81a8979..6216fed8f9cc 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -2,13 +2,269 @@
->  /*
->   * Copyright (C) 2012 Regents of the University of California
->   * Copyright (C) 2017 SiFive
-> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
->   */
->
-> +#include <linux/bitops.h>
-> +#include <linux/cpumask.h>
->  #include <linux/mm.h>
-> +#include <linux/percpu.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/static_key.h>
->  #include <asm/tlbflush.h>
->  #include <asm/cacheflush.h>
->  #include <asm/mmu_context.h>
->
-> +#ifdef CONFIG_MMU
-> +
-> +static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
-> +
-> +static unsigned long asid_bits;
-> +static unsigned long num_asids;
-> +static unsigned long asid_mask;
-> +
-> +static atomic_long_t current_version;
-> +
-> +static DEFINE_RAW_SPINLOCK(context_lock);
-> +static cpumask_t context_tlb_flush_pending;
-> +static unsigned long *context_asid_map;
-> +
-> +static DEFINE_PER_CPU(atomic_long_t, active_context);
-> +static DEFINE_PER_CPU(unsigned long, reserved_context);
-> +
-> +static bool check_update_reserved_context(unsigned long cntx,
-> +					  unsigned long newcntx)
-> +{
-> +	int cpu;
-> +	bool hit = false;
-> +
-> +	/*
-> +	 * Iterate over the set of reserved CONTEXT looking for a match.
-> +	 * If we find one, then we can update our mm to use new CONTEXT
-> +	 * (i.e. the same CONTEXT in the current_version) but we can't
-> +	 * exit the loop early, since we need to ensure that all copies
-> +	 * of the old CONTEXT are updated to reflect the mm. Failure to do
-> +	 * so could result in us missing the reserved CONTEXT in a future
-> +	 * version.
-> +	 */
-> +	for_each_possible_cpu(cpu) {
-> +		if (per_cpu(reserved_context, cpu) == cntx) {
-> +			hit = true;
-> +			per_cpu(reserved_context, cpu) = newcntx;
-> +		}
-> +	}
-> +
-> +	return hit;
-> +}
-> +
-> +/* Note: must be called with context_lock held */
+On Tue, Feb 02, 2021 at 03:07:47PM -0800, Roman Gushchin wrote:
+> On Tue, Feb 02, 2021 at 01:47:40PM -0500, Johannes Weiner wrote:
+> > The memcg hotunplug callback erroneously flushes counts on the local
+> > CPU, not the counts of the CPU going away; those counts will be lost.
+> > 
+> > Flush the CPU that is actually going away.
+> > 
+> > Also simplify the code a bit by using mod_memcg_state() and
+> > count_memcg_events() instead of open-coding the upward flush - this is
+> > comparable to how vmstat.c handles hotunplug flushing.
+> 
+> To the whole series: it's really nice to have an accurate stats at
+> non-leaf levels. Just as an illustration: if there are 32 CPUs and
+> 1000 sub-cgroups (which is an absolutely realistic number, because
+> often there are many dying generations of each cgroup), the error
+> margin is 3.9GB. It makes all numbers pretty much random and all
+> possible tests extremely flaky.
 
-These are usually better expressed as lockdep assertions.  I don't see any 
-reason why they wouldn't work here.
+Btw, I was just looking into kmem kselftests failures/flakiness,
+which is caused by exactly this problem: without waiting for the
+finish of dying cgroups reclaim, we can't make any reliable assumptions
+about what to expect from memcg stats.
 
-> +static void __flush_context(void)
-> +{
-> +	int i;
-> +	unsigned long cntx;
-> +
-> +	/* Update the list of reserved ASIDs and the ASID bitmap. */
-> +	bitmap_clear(context_asid_map, 0, num_asids);
-> +
-> +	/* Mark already active ASIDs as used */
-> +	for_each_possible_cpu(i) {
-> +		cntx = atomic_long_xchg_relaxed(&per_cpu(active_context, i), 0);
-> +		/*
-> +		 * If this CPU has already been through a rollover, but
-> +		 * hasn't run another task in the meantime, we must preserve
-> +		 * its reserved CONTEXT, as this is the only trace we have of
-> +		 * the process it is still running.
-> +		 */
-> +		if (cntx == 0)
-> +			cntx = per_cpu(reserved_context, i);
-> +
-> +		__set_bit(cntx & asid_mask, context_asid_map);
-> +		per_cpu(reserved_context, i) = cntx;
-> +	}
-> +
-> +	/* Mark ASID #0 as used because it is used at boot-time */
-> +	__set_bit(0, context_asid_map);
-> +
-> +	/* Queue a TLB invalidation for each CPU on next context-switch */
-> +	cpumask_setall(&context_tlb_flush_pending);
-> +}
-> +
-> +/* Note: must be called with context_lock held */
-> +static unsigned long __new_context(struct mm_struct *mm)
-> +{
-> +	static u32 cur_idx = 1;
-> +	unsigned long cntx = atomic_long_read(&mm->context.id);
-> +	unsigned long asid, ver = atomic_long_read(&current_version);
-> +
-> +	if (cntx != 0) {
-> +		unsigned long newcntx = ver | (cntx & asid_mask);
-> +
-> +		/*
-> +		 * If our current CONTEXT was active during a rollover, we
-> +		 * can continue to use it and this was just a false alarm.
-> +		 */
-> +		if (check_update_reserved_context(cntx, newcntx))
-> +			return newcntx;
-> +
-> +		/*
-> +		 * We had a valid CONTEXT in a previous life, so try to
-> +		 * re-use it if possible.
-> +		 */
-> +		if (!__test_and_set_bit(cntx & asid_mask, context_asid_map))
-> +			return newcntx;
-> +	}
-> +
-> +	/*
-> +	 * Allocate a free ASID. If we can't find one then increment
-> +	 * current_version and flush all ASIDs.
-> +	 */
-> +	asid = find_next_zero_bit(context_asid_map, num_asids, cur_idx);
-> +	if (asid != num_asids)
-> +		goto set_asid;
-> +
-> +	/* We're out of ASIDs, so increment current_version */
-> +	ver = atomic_long_add_return_relaxed(num_asids, &current_version);
-> +
-> +	/* Flush everything  */
-> +	__flush_context();
-> +
-> +	/* We have more ASIDs than CPUs, so this will always succeed */
-> +	asid = find_next_zero_bit(context_asid_map, num_asids, 1);
-> +
-> +set_asid:
-> +	__set_bit(asid, context_asid_map);
-> +	cur_idx = asid;
-> +	return asid | ver;
-> +}
-> +
-> +static void set_mm_asid(struct mm_struct *mm, unsigned int cpu)
-> +{
-> +	unsigned long flags;
-> +	bool need_flush_tlb = false;
-> +	unsigned long cntx, old_active_cntx;
-> +
-> +	cntx = atomic_long_read(&mm->context.id);
-> +
-> +	/*
-> +	 * If our active_context is non-zero and the context matches the
-> +	 * current_version, then we update the active_context entry with a
-> +	 * relaxed cmpxchg.
-> +	 *
-> +	 * Following is how we handle racing with a concurrent rollover:
-> +	 *
-> +	 * - We get a zero back from the cmpxchg and end up waiting on the
-> +	 *   lock. Taking the lock synchronises with the rollover and so
-> +	 *   we are forced to see the updated verion.
-> +	 *
-> +	 * - We get a valid context back from the cmpxchg then we continue
-> +	 *   using old ASID because __flush_context() would have marked ASID
-> +	 *   of active_context as used and next context switch we will
-> +	 *   allocate new context.
-> +	 */
-> +	old_active_cntx = atomic_long_read(&per_cpu(active_context, cpu));
-> +	if (old_active_cntx &&
-> +	    ((cntx & ~asid_mask) == atomic_long_read(&current_version)) &&
-> +	    atomic_long_cmpxchg_relaxed(&per_cpu(active_context, cpu),
-> +					old_active_cntx, cntx))
-> +		goto switch_mm_fast;
-> +
-> +	raw_spin_lock_irqsave(&context_lock, flags);
-> +
-> +	/* Check that our ASID belongs to the current_version. */
-> +	cntx = atomic_long_read(&mm->context.id);
-> +	if ((cntx & ~asid_mask) != atomic_long_read(&current_version)) {
-> +		cntx = __new_context(mm);
-> +		atomic_long_set(&mm->context.id, cntx);
-> +	}
-> +
-> +	if (cpumask_test_and_clear_cpu(cpu, &context_tlb_flush_pending))
-> +		need_flush_tlb = true;
-> +
-> +	atomic_long_set(&per_cpu(active_context, cpu), cntx);
-> +
-> +	raw_spin_unlock_irqrestore(&context_lock, flags);
-> +
-> +switch_mm_fast:
-> +	csr_write(CSR_SATP, virt_to_pfn(mm->pgd) |
-> +		  ((cntx & asid_mask) << SATP_ASID_SHIFT) |
-> +		  SATP_MODE);
-> +
-> +	if (need_flush_tlb)
-> +		local_flush_tlb_all();
-> +}
-> +
-> +static void set_mm_noasid(struct mm_struct *mm)
-> +{
-> +	/* Switch the page table and blindly nuke entire local TLB */
-> +	csr_write(CSR_SATP, virt_to_pfn(mm->pgd) | SATP_MODE);
-> +	local_flush_tlb_all();
-> +}
-> +
-> +static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
-> +{
-> +	if (static_branch_unlikely(&use_asid_allocator))
-> +		set_mm_asid(mm, cpu);
-> +	else
-> +		set_mm_noasid(mm);
-> +}
-> +
-> +static int asids_init(void)
-> +{
-> +	unsigned long old;
-> +
-> +	/* Figure-out number of ASID bits in HW */
-> +	old = csr_read(CSR_SATP);
-> +	asid_bits = old | (SATP_ASID_MASK << SATP_ASID_SHIFT);
-> +	csr_write(CSR_SATP, asid_bits);
-> +	asid_bits = (csr_read(CSR_SATP) >> SATP_ASID_SHIFT)  & SATP_ASID_MASK;
-> +	asid_bits = fls_long(asid_bits);
-> +	csr_write(CSR_SATP, old);
-> +
-> +	/*
-> +	 * In the process of determining number of ASID bits (above)
-> +	 * we polluted the TLB of current HART so let's do TLB flushed
-> +	 * to remove unwanted TLB enteries.
-> +	 */
-> +	local_flush_tlb_all();
-> +
-> +	/* Pre-compute ASID details */
-> +	num_asids = 1 << asid_bits;
-> +	asid_mask = num_asids - 1;
-> +
-> +	/*
-> +	 * Use ASID allocator only if number of HW ASIDs are
-> +	 * at-least twice more than CPUs
-> +	 */
-> +	if (num_asids > (2 * num_possible_cpus())) {
-> +		atomic_long_set(&current_version, num_asids);
-> +
-> +		context_asid_map = kcalloc(BITS_TO_LONGS(num_asids),
-> +				   sizeof(*context_asid_map), GFP_KERNEL);
-> +		if (!context_asid_map)
-> +			panic("Failed to allocate bitmap for %lu ASIDs\n",
-> +			      num_asids);
-> +
-> +		__set_bit(0, context_asid_map);
-> +
-> +		static_branch_enable(&use_asid_allocator);
-> +
-> +		pr_info("ASID allocator using %lu bits (%lu entries)\n",
-> +			asid_bits, num_asids);
-> +	} else {
-> +		pr_info("ASID allocator disabled\n");
-> +	}
-> +
-> +	return 0;
-> +}
-> +early_initcall(asids_init);
-> +#else
-> +static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
-> +{
-> +	/* Nothing to do here when there is no MMU */
-> +}
-> +#endif
-> +
->  /*
->   * When necessary, performs a deferred icache flush for the given MM context,
->   * on the local CPU.  RISC-V has no direct mechanism for instruction cache
-> @@ -58,10 +314,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->  	cpumask_clear_cpu(cpu, mm_cpumask(prev));
->  	cpumask_set_cpu(cpu, mm_cpumask(next));
->
-> -#ifdef CONFIG_MMU
-> -	csr_write(CSR_SATP, virt_to_pfn(next->pgd) | SATP_MODE);
-> -	local_flush_tlb_all();
-> -#endif
-> +	set_mm(next, cpu);
->
->  	flush_icache_deferred(next);
->  }
-
-So I know we'd said before that we weren't going to take this until there's 
-hardware, but I think the QEMU support is good enough -- I don't really care if 
-the ISA says this might change, it's been in there for long enough.
-
-Aside from the assertions
-
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-LMK if you're going to send a v5 or you want me to just fix it up.
-
-Thanks!
+So looking forward to have this patchset merged!
