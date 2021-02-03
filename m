@@ -2,864 +2,1664 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A261030E300
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85FB30E305
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhBCTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
+        id S232705AbhBCTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhBCTCc (ORCPT
+        with ESMTP id S229606AbhBCTDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:02:32 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C806C061786
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:01:52 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id v19so359996pgj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:01:52 -0800 (PST)
+        Wed, 3 Feb 2021 14:03:46 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86BFC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:03:05 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 190so788213wmz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:03:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lDxDAnnqnOo7ujPzNRqlXw7rq7vDB876Vjj3hoOFOtk=;
-        b=b9Ws/fWLEZDqcYF3V57A3Budmb2gdeJqB+iOL2CQPU6lO44QO/O3DECjgW0JwE9stR
-         QwBlV7brNTWK72cb/5ScL8uw8lUp2KLAUyWZn46F73cp32xtImfDJ/Sm90c3HUjq3ezf
-         xiwyEtk0R+xtcguvmKsnSB/zlwExrWCaybrRBU1fOaBpMGGbtB4DpxouY4NjwBPkubX7
-         j2CWSSM6zJof4Y1BpBY8wwy3lr/MHiQx4k38bJW+WP7XvofHcSW6gCmVCkuP5YN1ooFD
-         lIUu/yAq9EHq+EHUVmLM+oNMnEjejeMBeO93SKHWXq+hZjARGgit8baJ7Bv1rXJdrI4T
-         VtDg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B55qaL82sOvTQs23b/0DmwSxbldHQVJUUJUdNL9oOp4=;
+        b=Y0tMAMX6xzg4ykdh8I/bfgtgjWivUR30iPdYyA+2YqueqFodrC8yA29qit+a2i8hB6
+         bFtEFIAF7rKXWmeT+OKP8J+KWEiB8G/3jgR2NqbLetw6Qa5ROelfZYvg4U41zCk69QNX
+         xHl8mmgd7tuyD7V6AKFQ0pJ+Q/JBUj37kHOGkSs+V+EzHzjF+4UWbNiFur8/f9rXWdcF
+         JRT4aT1tlI1W/crRwZgESP0G4/l+rK0ewJ1pcutEPzOtj7N0skrdmt7ti+CmhuzIxxv/
+         NcJ1WsGYMGbfT3kRYmUwqIRBEUjpmB1WaFUGhl2rB2BcIhoDuzweMxi2rmmBUXP0Up3K
+         hOCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lDxDAnnqnOo7ujPzNRqlXw7rq7vDB876Vjj3hoOFOtk=;
-        b=gEJqUdzse6oSWhxJAva5VBbf2T/ac1dzcuXoKRKvvkzLmmf7JenNyUeMdw1CKgO6a0
-         lOyIut2jWTBBToDFXdqD46I2/ptkxRv4lu76tBZqYR0inD1QZvODF0sKO/FqjrXYRHTJ
-         PCELiM13Y5yXGvdHPAur10ILgBYu69sCKpD01n+GT5N6nea/atHiwP2AOZ0Rugbpd5iM
-         1bipYVar7hbo7Ff6/+u39Tbkq+BCFbc2S4LGIcPj3kK8FbWArvw+FidwvwnrFHHIaZSn
-         HVwr8mxFqLCHL0pp4MtSDpj4WmA3w6ge+QsNEW5oaucUYUrm2AMFS0emH7UX0sqUaP0z
-         0k3w==
-X-Gm-Message-State: AOAM530JLYFNT9yPHV4GdYe6jWZ9E+/WazQ1C4Wm7uavCaTScrswjUPi
-        ArH+AMQFtD7gNueRerNHyyw=
-X-Google-Smtp-Source: ABdhPJxS5Nmn0WkYYsCHGooJus2gkhDPtezhmTvif9pU7zbvhQhflhmJ5iLeBi+BbUYczNxYgHcutg==
-X-Received: by 2002:a62:2702:0:b029:1d1:b92a:ef2a with SMTP id n2-20020a6227020000b02901d1b92aef2amr3259813pfn.5.1612378911636;
-        Wed, 03 Feb 2021 11:01:51 -0800 (PST)
-Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
-        by smtp.gmail.com with ESMTPSA id 129sm2907306pfw.86.2021.02.03.11.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 11:01:50 -0800 (PST)
-From:   sonicadvance1@gmail.com
-X-Google-Original-From: Sonicadvance1@gmail.com
-Cc:     amanieu@gmail.com, Ryan Houdek <Sonicadvance1@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Steven Price <steven.price@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Matteo Croce <mcroce@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] [RFC] arm64: Exposes support for 32-bit syscalls
-Date:   Wed,  3 Feb 2021 11:01:21 -0800
-Message-Id: <20210203190135.64839-1-Sonicadvance1@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210202165437.334515-1-Sonicadvance1@gmail.com>
-References: <20210202165437.334515-1-Sonicadvance1@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B55qaL82sOvTQs23b/0DmwSxbldHQVJUUJUdNL9oOp4=;
+        b=B0dNqllf+WzM7aSdkQ0R6A3lhBbDSyKK2ZdEY/pJoC5QlfzJp2wASZawX6DBTXbNRT
+         FMFMaJTh/8PfNww/jGFC4aaKgFHEp/9xogiUWbFCHc5GdjDOM1/1BOl3i7pnQghmn+Y8
+         Ofx7jT9TKiK7wS6zrKCDerTFxsuMbRftijDxez46tbPXkituK+MPf1uXt0CfnlLxxV+/
+         geyznNNGolIHusFj9jgQ2squqXioRRXDMZiFi8si2EtiZOgnL83hw2j2pxsSNGpiE39j
+         15TUsj3dG7SOkp+boJLgxwTpOOIOsvxCoIbZUysJ8f9XB0Qy1CFpSbXL+SMTwBrQhakQ
+         SgHw==
+X-Gm-Message-State: AOAM533cwoImifKXHDJZwppRqLxY0PEob1SafzZEYlvMIR5GdoucBwVq
+        7wTc/Rh2IWDstKINAZ4y5XHVI0J1grUWkDkXVxDyxJ3QWYw=
+X-Google-Smtp-Source: ABdhPJznptyFvlMyFxnINB2bSrayLYNf7gSzYPhBwxKErpyX61V2VfpLRX91uvZAo0vnntoNV7wPo0tKnSItk3eZhxI=
+X-Received: by 2002:a1c:ac86:: with SMTP id v128mr4113527wme.76.1612378982464;
+ Wed, 03 Feb 2021 11:03:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210203052659.2975736-1-irogers@google.com> <20210203052659.2975736-2-irogers@google.com>
+ <20210203162058.GE854763@kernel.org>
+In-Reply-To: <20210203162058.GE854763@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 3 Feb 2021 11:02:50 -0800
+Message-ID: <CAP-5=fWTZ2hXhYP3R7LA9ecwQ_Bo8S11=8z=cFYBEHY3sEqL8g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf parse-events: Break out tracepoint and printing.
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryan Houdek <Sonicadvance1@gmail.com>
+On Wed, Feb 3, 2021 at 8:21 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Tue, Feb 02, 2021 at 09:26:59PM -0800, Ian Rogers escreveu:
+> > Move print_*_events functions out of parse-events.c into a new
+> > print-events.c. Move tracepoint code into tracepoint.c or
+> > trace-event-info.c (sole user). This reduces the dependencies of
+> > parse-events.c and makes it more amenable to being a library in the
+> > future.
+> > Remove some unnecessary definitions from parse-events.h. Fix a
+> > checkpatch.pl warning on using unsigned rather than unsigned int.
+>
+> Thanks, applied.
 
-Sorry about the noise. I obviously don't work in this ecosystem.
+(Re-send enabling plain text mode)
 
-The problem:
-We need to support 32-bit processes running under a userspace
-compatibility layer. The compatibility layer is a AArch64 process.
-This means exposing the 32bit compatibility syscalls to userspace.
+Wow, cool :-) I wasn't sure about the macros in the headers. Are you
+staging these patches before pushing to your perf/core or using
+tmp.perf/core ? I know you mentioned a different approach. When I look
+at:
 
-Why do we need compatibility layers?
-There are ARMv8 CPUs that only support AArch64 but still need to run
-AArch32 applications.
-Cortex-A34/R82 and other cores are prime examples of this.
-Additionally if a user is needing to run legacy 32-bit x86 software, it
-needs the same compatibility layer.
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/
 
-Who does this matter to?
-Any user that has a specific need to run legacy 32-bit software under a
-compatibility layer.
-Not all software is open source or easy to convert to 64bit, it's
-something we need to live with.
-Professional software and the gaming ecosystem is rife with this.
+I don't see anything newer than 9 days.
 
-What applications have tried to work around this problem?
-FEX emulator (1) - Userspace x86 to AArch64 compatibility layer
-Tango binary translator (2) - AArch32 to AArch64 compatibility layer
-QEmu (3) - Not really but they do some userspace ioctl emulation
+Thanks,
+Ian
 
-What problems did they hit?
-FEX and Tango hit problems with emulating memory related syscalls.
-- Emulating 32-bit mmap, mremap, shmat in userspace changes behaviour
-All three hit issues with ioctl emulation
-- ioctls are free to do what they want including allocating memory and
-returning opaque structures with pointers.
-
-With this patch we will be exposing the compatibility syscall table
-through the regular syscall svc API. There is prior art here where on
-x86-64 they also expose the compatibility tables.
-The justification for this is that we need to maintain support for 32bit
-application compatibility going in to the foreseeable future.
-Userspace does almost all of the heavy lifting here, especially when the
-hardware no longer supports the 32bit use case.
-
-A couple of caveats to this approach.
-Userspace must know that this doesn't solve structure alignment problems
-for the x86->AArch64 (1) case.
-The API for this changes from syscall number in x8 to x7 to match
-AArch32 syscall semantics
-This is now exposing the compat syscalls to userspace, but for the sake
-of userspace compatibility it is a necessary evil.
-
-Why does the upstream kernel care?
-I believe every user wants to have their software ecosystem continue
-working if they are in a mixed AArch32/AArch64 world even when they are
-running AArch64 only hardware. The kernel should facilitate a good user
-experience.
-
-External Resources
-(1) https://github.com/FEX-Emu/FEX
-(2) https://www.amanieusystems.com/
-(3) https://www.qemu.org/
-
-Further reading
-- https://github.com/FEX-Emu/FEX/wiki/32Bit-x86-Woes
-- Original patch: https://github.com/Amanieu/linux/commit/b4783002afb0
-
-Changes in v2:
-- Removed a tangential code path to make this more concise
-  - Now doesn't cover Tango's full use case
-  - This is purely for conciseness sake, easy enough to add back
-- Cleaned up commit message
-Signed-off-by: Ryan Houdek <Sonicadvance1@gmail.com>
----
- arch/arm64/Kconfig                   |   9 +
- arch/arm64/include/asm/compat.h      |  20 +++
- arch/arm64/include/asm/exception.h   |   2 +-
- arch/arm64/include/asm/mmu.h         |   7 +
- arch/arm64/include/asm/pgtable.h     |  10 ++
- arch/arm64/include/asm/processor.h   |   6 +-
- arch/arm64/include/asm/thread_info.h |   7 +
- arch/arm64/kernel/asm-offsets.c      |   3 +
- arch/arm64/kernel/entry-common.c     |   9 +-
- arch/arm64/kernel/fpsimd.c           |   2 +-
- arch/arm64/kernel/hw_breakpoint.c    |   2 +-
- arch/arm64/kernel/perf_regs.c        |   2 +-
- arch/arm64/kernel/process.c          |  13 +-
- arch/arm64/kernel/ptrace.c           |   6 +-
- arch/arm64/kernel/signal.c           |   2 +-
- arch/arm64/kernel/syscall.c          |  41 ++++-
- arch/arm64/mm/mmap.c                 | 249 +++++++++++++++++++++++++++
- 17 files changed, 369 insertions(+), 21 deletions(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1515f6f153a0..9832f05daaee 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1147,6 +1147,15 @@ config XEN
- 	help
- 	  Say Y if you want to run Linux in a Virtual Machine on Xen on ARM64.
- 
-+config ARM_COMPAT_DISPATCH
-+	bool "32bit syscall dispatch table"
-+	depends on COMPAT && ARM64
-+	default y
-+	help
-+	  Kernel support for exposing the 32-bit syscall dispatch table to
-+	  userspace.
-+	  For dynamically translating 32-bit applications to a 64-bit process.
-+
- config FORCE_MAX_ZONEORDER
- 	int
- 	default "14" if (ARM64_64K_PAGES && TRANSPARENT_HUGEPAGE)
-diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
-index 23a9fb73c04f..d00c6f427999 100644
---- a/arch/arm64/include/asm/compat.h
-+++ b/arch/arm64/include/asm/compat.h
-@@ -180,10 +180,30 @@ struct compat_shmid64_ds {
- 
- static inline int is_compat_task(void)
- {
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	/* It is compatible if Tango, 32bit compat, or 32bit thread */
-+	return current_thread_info()->compat_syscall_flags != 0 || test_thread_flag(TIF_32BIT);
-+#else
- 	return test_thread_flag(TIF_32BIT);
-+#endif
- }
- 
- static inline int is_compat_thread(struct thread_info *thread)
-+{
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	/* It is compatible if Tango, 32bit compat, or 32bit thread */
-+	return thread->compat_syscall_flags != 0 || test_ti_thread_flag(thread, TIF_32BIT);
-+#else
-+	return test_ti_thread_flag(thread, TIF_32BIT);
-+#endif
-+}
-+
-+static inline int is_aarch32_compat_task(void)
-+{
-+	return test_thread_flag(TIF_32BIT);
-+}
-+
-+static inline int is_aarch32_compat_thread(struct thread_info *thread)
- {
- 	return test_ti_thread_flag(thread, TIF_32BIT);
- }
-diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-index 99b9383cd036..f2c94b44b51c 100644
---- a/arch/arm64/include/asm/exception.h
-+++ b/arch/arm64/include/asm/exception.h
-@@ -45,7 +45,7 @@ void do_sysinstr(unsigned int esr, struct pt_regs *regs);
- void do_sp_pc_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
- void bad_el0_sync(struct pt_regs *regs, int reason, unsigned int esr);
- void do_cp15instr(unsigned int esr, struct pt_regs *regs);
--void do_el0_svc(struct pt_regs *regs);
-+void do_el0_svc(struct pt_regs *regs, unsigned int iss);
- void do_el0_svc_compat(struct pt_regs *regs);
- void do_ptrauth_fault(struct pt_regs *regs, unsigned int esr);
- #endif	/* __ASM_EXCEPTION_H */
-diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-index b2e91c187e2a..0744db65c0a9 100644
---- a/arch/arm64/include/asm/mmu.h
-+++ b/arch/arm64/include/asm/mmu.h
-@@ -27,6 +27,9 @@ typedef struct {
- 	refcount_t	pinned;
- 	void		*vdso;
- 	unsigned long	flags;
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	unsigned long	compat_mmap_base;
-+#endif
- } mm_context_t;
- 
- /*
-@@ -79,6 +82,10 @@ extern void *fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot);
- extern void mark_linear_text_alias_ro(void);
- extern bool kaslr_requires_kpti(void);
- 
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+extern void process_init_compat_mmap(void);
-+#endif
-+
- #define INIT_MM_CONTEXT(name)	\
- 	.pgd = init_pg_dir,
- 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 4ff12a7adcfd..5e7662c2675c 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -974,6 +974,16 @@ static inline bool arch_faults_on_old_pte(void)
- }
- #define arch_faults_on_old_pte arch_faults_on_old_pte
- 
-+/*
-+ * We provide our own arch_get_unmapped_area to handle 32-bit mmap calls from
-+ * tango.
-+ */
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+#define HAVE_ARCH_UNMAPPED_AREA
-+#define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
-+#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
-+#endif
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_PGTABLE_H */
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index fce8cbecd6bc..03c05cd19f87 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -175,7 +175,7 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
- #define task_user_tls(t)						\
- ({									\
- 	unsigned long *__tls;						\
--	if (is_compat_thread(task_thread_info(t)))			\
-+	if (is_aarch32_compat_thread(task_thread_info(t)))			\
- 		__tls = &(t)->thread.uw.tp2_value;			\
- 	else								\
- 		__tls = &(t)->thread.uw.tp_value;			\
-@@ -256,8 +256,8 @@ extern struct task_struct *cpu_switch_to(struct task_struct *prev,
- #define task_pt_regs(p) \
- 	((struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1)
- 
--#define KSTK_EIP(tsk)	((unsigned long)task_pt_regs(tsk)->pc)
--#define KSTK_ESP(tsk)	user_stack_pointer(task_pt_regs(tsk))
-+#define KSTK_EIP(tsk)  ((unsigned long)task_pt_regs(tsk)->pc)
-+#define KSTK_ESP(tsk)  user_stack_pointer(task_pt_regs(tsk))
- 
- /*
-  * Prefetching support
-diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-index 1fbab854a51b..cb04c7c4df38 100644
---- a/arch/arm64/include/asm/thread_info.h
-+++ b/arch/arm64/include/asm/thread_info.h
-@@ -41,6 +41,9 @@ struct thread_info {
- #endif
- 		} preempt;
- 	};
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	int			compat_syscall_flags;	/* 32-bit compat syscall */
-+#endif
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	void			*scs_base;
- 	void			*scs_sp;
-@@ -107,6 +110,10 @@ void arch_release_task_struct(struct task_struct *tsk);
- 				 _TIF_SYSCALL_TRACEPOINT | _TIF_SECCOMP | \
- 				 _TIF_SYSCALL_EMU)
- 
-+#define TIF_COMPAT_32BITSYSCALL 0 /* Trivial 32bit compatible syscall */
-+
-+#define _TIF_COMPAT_32BITSYSCALL (1 << TIF_COMPAT_32BITSYSCALL)
-+
- #ifdef CONFIG_SHADOW_CALL_STACK
- #define INIT_SCS							\
- 	.scs_base	= init_shadow_call_stack,			\
-diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-index 7d32fc959b1a..742203cff128 100644
---- a/arch/arm64/kernel/asm-offsets.c
-+++ b/arch/arm64/kernel/asm-offsets.c
-@@ -34,6 +34,9 @@ int main(void)
- #ifdef CONFIG_ARM64_SW_TTBR0_PAN
-   DEFINE(TSK_TI_TTBR0,		offsetof(struct task_struct, thread_info.ttbr0));
- #endif
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+  DEFINE(TI_COMPAT_SYSCALL,	offsetof(struct task_struct, thread_info.compat_syscall_flags));
-+#endif
- #ifdef CONFIG_SHADOW_CALL_STACK
-   DEFINE(TSK_TI_SCS_BASE,	offsetof(struct task_struct, thread_info.scs_base));
-   DEFINE(TSK_TI_SCS_SP,		offsetof(struct task_struct, thread_info.scs_sp));
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 43d4c329775f..6d98a9c6fafd 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -228,12 +228,12 @@ static void notrace el0_dbg(struct pt_regs *regs, unsigned long esr)
- }
- NOKPROBE_SYMBOL(el0_dbg);
- 
--static void notrace el0_svc(struct pt_regs *regs)
-+static void notrace el0_svc(struct pt_regs *regs, unsigned int iss)
- {
- 	if (system_uses_irq_prio_masking())
- 		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
- 
--	do_el0_svc(regs);
-+	do_el0_svc(regs, iss);
- }
- NOKPROBE_SYMBOL(el0_svc);
- 
-@@ -251,7 +251,10 @@ asmlinkage void notrace el0_sync_handler(struct pt_regs *regs)
- 
- 	switch (ESR_ELx_EC(esr)) {
- 	case ESR_ELx_EC_SVC64:
--		el0_svc(regs);
-+		/* Redundant masking here to show we are getting ISS mask
-+		 * Then we are pulling the imm16 out of it for SVC64
-+		 */
-+		el0_svc(regs, (esr & ESR_ELx_ISS_MASK) & 0xffff);
- 		break;
- 	case ESR_ELx_EC_DABT_LOW:
- 		el0_da(regs, esr);
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 062b21f30f94..a35ab449a466 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -937,7 +937,7 @@ void fpsimd_release_task(struct task_struct *dead_task)
- void do_sve_acc(unsigned int esr, struct pt_regs *regs)
- {
- 	/* Even if we chose not to use SVE, the hardware could still trap: */
--	if (unlikely(!system_supports_sve()) || WARN_ON(is_compat_task())) {
-+	if (unlikely(!system_supports_sve()) || WARN_ON(is_aarch32_compat_task())) {
- 		force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
- 		return;
- 	}
-diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-index 712e97c03e54..37c9349c4999 100644
---- a/arch/arm64/kernel/hw_breakpoint.c
-+++ b/arch/arm64/kernel/hw_breakpoint.c
-@@ -168,7 +168,7 @@ static int is_compat_bp(struct perf_event *bp)
- 	 * deprecated behaviour if we use unaligned watchpoints in
- 	 * AArch64 state.
- 	 */
--	return tsk && is_compat_thread(task_thread_info(tsk));
-+	return tsk && is_aarch32_compat_thread(task_thread_info(tsk));
- }
- 
- /**
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index f6f58e6265df..c4b061f0d182 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -66,7 +66,7 @@ int perf_reg_validate(u64 mask)
- 
- u64 perf_reg_abi(struct task_struct *task)
- {
--	if (is_compat_thread(task_thread_info(task)))
-+	if (is_aarch32_compat_thread(task_thread_info(task)))
- 		return PERF_SAMPLE_REGS_ABI_32;
- 	else
- 		return PERF_SAMPLE_REGS_ABI_64;
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index a47a40ec6ad9..9c0775babbd0 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -314,7 +314,7 @@ static void tls_thread_flush(void)
- {
- 	write_sysreg(0, tpidr_el0);
- 
--	if (is_compat_task()) {
-+	if (is_aarch32_compat_task()) {
- 		current->thread.uw.tp_value = 0;
- 
- 		/*
-@@ -409,7 +409,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
- 		*task_user_tls(p) = read_sysreg(tpidr_el0);
- 
- 		if (stack_start) {
--			if (is_compat_thread(task_thread_info(p)))
-+			if (is_aarch32_compat_thread(task_thread_info(p)))
- 				childregs->compat_sp = stack_start;
- 			else
- 				childregs->sp = stack_start;
-@@ -453,7 +453,7 @@ static void tls_thread_switch(struct task_struct *next)
- {
- 	tls_preserve_current_state();
- 
--	if (is_compat_thread(task_thread_info(next)))
-+	if (is_aarch32_compat_thread(task_thread_info(next)))
- 		write_sysreg(next->thread.uw.tp_value, tpidrro_el0);
- 	else if (!arm64_kernel_unmapped_at_el0())
- 		write_sysreg(0, tpidrro_el0);
-@@ -619,7 +619,12 @@ unsigned long arch_align_stack(unsigned long sp)
-  */
- void arch_setup_new_exec(void)
- {
--	current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	process_init_compat_mmap();
-+	current_thread_info()->compat_syscall_flags = 0;
-+#endif
-+
-+	current->mm->context.flags = is_aarch32_compat_task() ? MMCF_AARCH32 : 0;
- 
- 	ptrauth_thread_init_user(current);
- 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index f49b349e16a3..2e3c242941d1 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -175,7 +175,7 @@ static void ptrace_hbptriggered(struct perf_event *bp,
- 	const char *desc = "Hardware breakpoint trap (ptrace)";
- 
- #ifdef CONFIG_COMPAT
--	if (is_compat_task()) {
-+	if (is_aarch32_compat_task()) {
- 		int si_errno = 0;
- 		int i;
- 
-@@ -1725,7 +1725,7 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- 	 */
- 	if (is_compat_task())
- 		return &user_aarch32_view;
--	else if (is_compat_thread(task_thread_info(task)))
-+	else if (is_aarch32_compat_thread(task_thread_info(task)))
- 		return &user_aarch32_ptrace_view;
- #endif
- 	return &user_aarch64_view;
-@@ -1906,7 +1906,7 @@ int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
- 	/* https://lore.kernel.org/lkml/20191118131525.GA4180@willie-the-truck */
- 	user_regs_reset_single_step(regs, task);
- 
--	if (is_compat_thread(task_thread_info(task)))
-+	if (is_aarch32_compat_thread(task_thread_info(task)))
- 		return valid_compat_regs(regs);
- 	else
- 		return valid_native_regs(regs);
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index a8184cad8890..e6462b32effa 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -813,7 +813,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 	/*
- 	 * Set up the stack frame
- 	 */
--	if (is_compat_task()) {
-+	if (is_aarch32_compat_task()) {
- 		if (ksig->ka.sa.sa_flags & SA_SIGINFO)
- 			ret = compat_setup_rt_frame(usig, ksig, oldset, regs);
- 		else
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index e4c0dadf0d92..6857dad5df8e 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -21,7 +21,7 @@ static long do_ni_syscall(struct pt_regs *regs, int scno)
- {
- #ifdef CONFIG_COMPAT
- 	long ret;
--	if (is_compat_task()) {
-+	if (is_aarch32_compat_task()) {
- 		ret = compat_arm_syscall(regs, scno);
- 		if (ret != -ENOSYS)
- 			return ret;
-@@ -167,6 +167,9 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 		local_daif_mask();
- 		flags = current_thread_info()->flags;
- 		if (!has_syscall_work(flags) && !(flags & _TIF_SINGLESTEP)) {
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+			current_thread_info()->compat_syscall_flags = 0;
-+#endif
- 			/*
- 			 * We're off to userspace, where interrupts are
- 			 * always enabled after we restore the flags from
-@@ -180,6 +183,9 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 
- trace_exit:
- 	syscall_trace_exit(regs);
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	current_thread_info()->compat_syscall_flags = 0;
-+#endif
- }
- 
- static inline void sve_user_discard(void)
-@@ -199,10 +205,39 @@ static inline void sve_user_discard(void)
- 	sve_user_disable();
- }
- 
--void do_el0_svc(struct pt_regs *regs)
-+void do_el0_svc(struct pt_regs *regs, unsigned int iss)
- {
- 	sve_user_discard();
--	el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-+	/* XXX: Which style is more ideal to take here? */
-+#if 0
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+	/* Hardcode syscall 0x8000'0000 to be a 32bit support syscall */
-+	if (regs->regs[8] == 0x80000000) {
-+		current_thread_info()->compat_syscall_flags = _TIF_COMPAT_32BITSYSCALL;
-+		el0_svc_common(regs, regs->regs[7], __NR_compat_syscalls,
-+			       compat_sys_call_table);
-+
-+	} else
-+#endif
-+		el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-+#else
-+	switch (iss) {
-+	/* SVC #1 is now a 32bit support syscall
-+	 * Any other SVC ISS falls down the regular syscall code path
-+	 */
-+	case 1:
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+		current_thread_info()->compat_syscall_flags = _TIF_COMPAT_32BITSYSCALL;
-+		el0_svc_common(regs, regs->regs[7], __NR_compat_syscalls,
-+			       compat_sys_call_table);
-+#else
-+		return -ENOSYS;
-+#endif
-+		break;
-+	default:
-+		el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-+	}
-+#endif
- }
- 
- #ifdef CONFIG_COMPAT
-diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
-index 3028bacbc4e9..857aa03a3ac2 100644
---- a/arch/arm64/mm/mmap.c
-+++ b/arch/arm64/mm/mmap.c
-@@ -17,6 +17,8 @@
- #include <linux/io.h>
- #include <linux/personality.h>
- #include <linux/random.h>
-+#include <linux/security.h>
-+#include <linux/hugetlb.h>
- 
- #include <asm/cputype.h>
- 
-@@ -68,3 +70,250 @@ int devmem_is_allowed(unsigned long pfn)
- }
- 
- #endif
-+
-+#ifdef CONFIG_ARM_COMPAT_DISPATCH
-+
-+/* Definitions for compat syscall guest mmap area */
-+#define COMPAT_MIN_GAP			(SZ_128M)
-+#define COMPAT_STACK_TOP		0xffff0000
-+#define COMPAT_MAX_GAP			(COMPAT_STACK_TOP/6*5)
-+#define COMPAT_TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE_32 / 4)
-+#define COMPAT_STACK_RND_MASK		(0x7ff >> (PAGE_SHIFT - 12))
-+
-+#ifndef arch_get_mmap_end
-+#define arch_get_mmap_end(addr)	(TASK_SIZE)
-+#endif
-+
-+#ifndef arch_get_mmap_base
-+#define arch_get_mmap_base(addr, base) (base)
-+#endif
-+
-+static int mmap_is_legacy(unsigned long rlim_stack)
-+{
-+	if (current->personality & ADDR_COMPAT_LAYOUT)
-+		return 1;
-+
-+	if (rlim_stack == RLIM_INFINITY)
-+		return 1;
-+
-+	return sysctl_legacy_va_layout;
-+}
-+
-+static unsigned long compat_mmap_base(unsigned long rnd, unsigned long gap)
-+{
-+	unsigned long pad = stack_guard_gap;
-+
-+	/* Account for stack randomization if necessary */
-+	if (current->flags & PF_RANDOMIZE)
-+		pad += (COMPAT_STACK_RND_MASK << PAGE_SHIFT);
-+
-+	/* Values close to RLIM_INFINITY can overflow. */
-+	if (gap + pad > gap)
-+		gap += pad;
-+
-+	if (gap < COMPAT_MIN_GAP)
-+		gap = COMPAT_MIN_GAP;
-+	else if (gap > COMPAT_MAX_GAP)
-+		gap = COMPAT_MAX_GAP;
-+
-+	return PAGE_ALIGN(COMPAT_STACK_TOP - gap - rnd);
-+}
-+
-+void process_init_compat_mmap(void)
-+{
-+	unsigned long random_factor = 0UL;
-+	unsigned long rlim_stack = rlimit(RLIMIT_STACK);
-+
-+	if (current->flags & PF_RANDOMIZE) {
-+		random_factor = (get_random_long() &
-+			((1UL << mmap_rnd_compat_bits) - 1)) << PAGE_SHIFT;
-+	}
-+
-+	if (mmap_is_legacy(rlim_stack)) {
-+		current->mm->context.compat_mmap_base =
-+			COMPAT_TASK_UNMAPPED_BASE + random_factor;
-+	} else {
-+		current->mm->context.compat_mmap_base =
-+			compat_mmap_base(random_factor, rlim_stack);
-+	}
-+}
-+
-+/* Get an address range which is currently unmapped.
-+ * For shmat() with addr=0.
-+ *
-+ * Ugly calling convention alert:
-+ * Return value with the low bits set means error value,
-+ * ie
-+ *	if (ret & ~PAGE_MASK)
-+ *		error = ret;
-+ *
-+ * This function "knows" that -ENOMEM has the bits set.
-+ */
-+unsigned long
-+arch_get_unmapped_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma, *prev;
-+	struct vm_unmapped_area_info info;
-+	const unsigned long mmap_end = arch_get_mmap_end(addr);
-+	bool bad_addr = false;
-+
-+	if (len > mmap_end - mmap_min_addr)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Ensure that translated processes do not allocate the last
-+	 * page of the 32-bit address space, or anything above it.
-+	 */
-+	if (is_compat_task())
-+		bad_addr = addr + len > TASK_SIZE_32;
-+
-+	if (flags & MAP_FIXED)
-+		return bad_addr ? -ENOMEM : addr;
-+
-+	if (addr && !bad_addr) {
-+		addr = PAGE_ALIGN(addr);
-+		vma = find_vma_prev(mm, addr, &prev);
-+		if (mmap_end - len >= addr && addr >= mmap_min_addr &&
-+		    (!vma || addr + len <= vm_start_gap(vma)) &&
-+		    (!prev || addr >= vm_end_gap(prev)))
-+			return addr;
-+	}
-+
-+	info.flags = 0;
-+	info.length = len;
-+	if (is_compat_task()) {
-+		info.low_limit = mm->context.compat_mmap_base;
-+		info.high_limit = TASK_SIZE_32;
-+	} else {
-+		info.low_limit = mm->mmap_base;
-+		info.high_limit = mmap_end;
-+	}
-+	info.align_mask = 0;
-+	return vm_unmapped_area(&info);
-+}
-+
-+/*
-+ * This mmap-allocator allocates new areas top-down from below the
-+ * stack's low limit (the base):
-+ */
-+unsigned long
-+arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
-+			  unsigned long len, unsigned long pgoff,
-+			  unsigned long flags)
-+{
-+
-+	struct vm_area_struct *vma, *prev;
-+	struct mm_struct *mm = current->mm;
-+	struct vm_unmapped_area_info info;
-+	const unsigned long mmap_end = arch_get_mmap_end(addr);
-+	bool bad_addr = false;
-+
-+	/* requested length too big for entire address space */
-+	if (len > mmap_end - mmap_min_addr)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Ensure that translated processes do not allocate the last
-+	 * page of the 32-bit address space, or anything above it.
-+	 */
-+	if (is_compat_task())
-+		bad_addr = addr + len > TASK_SIZE_32;
-+
-+	if (flags & MAP_FIXED)
-+		return bad_addr ? -ENOMEM : addr;
-+
-+	/* requesting a specific address */
-+	if (addr && !bad_addr) {
-+		addr = PAGE_ALIGN(addr);
-+		vma = find_vma_prev(mm, addr, &prev);
-+		if (mmap_end - len >= addr && addr >= mmap_min_addr &&
-+				(!vma || addr + len <= vm_start_gap(vma)) &&
-+				(!prev || addr >= vm_end_gap(prev)))
-+			return addr;
-+	}
-+
-+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-+	info.length = len;
-+	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-+	if (is_compat_task())
-+		info.high_limit = mm->context.compat_mmap_base;
-+	else
-+		info.high_limit = arch_get_mmap_base(addr, mm->mmap_base);
-+	info.align_mask = 0;
-+	addr = vm_unmapped_area(&info);
-+
-+	/*
-+	 * A failed mmap() very likely causes application failure,
-+	 * so fall back to the bottom-up function here. This scenario
-+	 * can happen with large stack limits and large mmap()
-+	 * allocations.
-+	 */
-+	if (offset_in_page(addr)) {
-+		VM_BUG_ON(addr != -ENOMEM);
-+		info.flags = 0;
-+		if (is_compat_task()) {
-+			info.low_limit = COMPAT_TASK_UNMAPPED_BASE;
-+			info.high_limit = TASK_SIZE_32;
-+		} else {
-+			info.low_limit = TASK_UNMAPPED_BASE;
-+			info.high_limit = mmap_end;
-+		}
-+		addr = vm_unmapped_area(&info);
-+	}
-+
-+	return addr;
-+}
-+
-+unsigned long
-+hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma;
-+	struct hstate *h = hstate_file(file);
-+	struct vm_unmapped_area_info info;
-+	bool bad_addr = false;
-+
-+	if (len & ~huge_page_mask(h))
-+		return -EINVAL;
-+	if (len > TASK_SIZE)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Ensure that translated processes do not allocate the last
-+	 * page of the 32-bit address space, or anything above it.
-+	 */
-+	if (is_compat_task())
-+		bad_addr = addr + len > TASK_SIZE_32;
-+
-+	if (flags & MAP_FIXED) {
-+		if (prepare_hugepage_range(file, addr, len))
-+			return -EINVAL;
-+		return bad_addr ? -ENOMEM : addr;
-+	}
-+
-+	if (addr && !bad_addr) {
-+		addr = ALIGN(addr, huge_page_size(h));
-+		vma = find_vma(mm, addr);
-+		if (TASK_SIZE - len >= addr &&
-+		    (!vma || addr + len <= vm_start_gap(vma)))
-+			return addr;
-+	}
-+
-+	info.flags = 0;
-+	info.length = len;
-+	if (is_compat_task()) {
-+		info.low_limit = COMPAT_TASK_UNMAPPED_BASE;
-+		info.high_limit = TASK_SIZE_32;
-+	} else {
-+		info.low_limit = TASK_UNMAPPED_BASE;
-+		info.high_limit = TASK_SIZE;
-+	}
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+	return vm_unmapped_area(&info);
-+}
-+
-+#endif
--- 
-2.27.0
-
+>
+> - Arnaldo
+>
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-list.c          |   2 +-
+> >  tools/perf/builtin-lock.c          |   1 +
+> >  tools/perf/builtin-timechart.c     |   1 +
+> >  tools/perf/builtin-trace.c         |   1 +
+> >  tools/perf/util/Build              |   2 +
+> >  tools/perf/util/parse-events.c     | 620 +----------------------------
+> >  tools/perf/util/parse-events.h     |  29 --
+> >  tools/perf/util/print-events.c     | 472 ++++++++++++++++++++++
+> >  tools/perf/util/print-events.h     |  21 +
+> >  tools/perf/util/trace-event-info.c |  94 +++++
+> >  tools/perf/util/tracepoint.c       |  63 +++
+> >  tools/perf/util/tracepoint.h       |  25 ++
+> >  12 files changed, 687 insertions(+), 644 deletions(-)
+> >  create mode 100644 tools/perf/util/print-events.c
+> >  create mode 100644 tools/perf/util/print-events.h
+> >  create mode 100644 tools/perf/util/tracepoint.c
+> >  create mode 100644 tools/perf/util/tracepoint.h
+> >
+> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+> > index 10ab5e40a34f..91327a321c36 100644
+> > --- a/tools/perf/builtin-list.c
+> > +++ b/tools/perf/builtin-list.c
+> > @@ -10,7 +10,7 @@
+> >   */
+> >  #include "builtin.h"
+> >
+> > -#include "util/parse-events.h"
+> > +#include "util/print-events.h"
+> >  #include "util/pmu.h"
+> >  #include "util/debug.h"
+> >  #include "util/metricgroup.h"
+> > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> > index a2f1e53f37a7..486123cb106e 100644
+> > --- a/tools/perf/builtin-lock.c
+> > +++ b/tools/perf/builtin-lock.c
+> > @@ -13,6 +13,7 @@
+> >  #include <subcmd/pager.h>
+> >  #include <subcmd/parse-options.h>
+> >  #include "util/trace-event.h"
+> > +#include "util/tracepoint.h"
+> >
+> >  #include "util/debug.h"
+> >  #include "util/session.h"
+> > diff --git a/tools/perf/builtin-timechart.c b/tools/perf/builtin-timechart.c
+> > index 4e380e7b5230..cdebcf26f408 100644
+> > --- a/tools/perf/builtin-timechart.c
+> > +++ b/tools/perf/builtin-timechart.c
+> > @@ -35,6 +35,7 @@
+> >  #include "util/tool.h"
+> >  #include "util/data.h"
+> >  #include "util/debug.h"
+> > +#include "util/tracepoint.h"
+> >  #include <linux/err.h>
+> >
+> >  #ifdef LACKS_OPEN_MEMSTREAM_PROTOTYPE
+> > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> > index 85b6a46e85b6..b3b9fa1c7731 100644
+> > --- a/tools/perf/builtin-trace.c
+> > +++ b/tools/perf/builtin-trace.c
+> > @@ -53,6 +53,7 @@
+> >  #include "trace-event.h"
+> >  #include "util/parse-events.h"
+> >  #include "util/bpf-loader.h"
+> > +#include "util/tracepoint.h"
+> >  #include "callchain.h"
+> >  #include "print_binary.h"
+> >  #include "string2.h"
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 188521f34347..c2c9f3f490e8 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -23,6 +23,8 @@ perf-y += llvm-utils.o
+> >  perf-y += mmap.o
+> >  perf-y += memswap.o
+> >  perf-y += parse-events.o
+> > +perf-y += print-events.o
+> > +perf-y += tracepoint.o
+> >  perf-y += perf_regs.o
+> >  perf-y += path.o
+> >  perf-y += print_binary.o
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index 42c84adeb2fb..5d5ebb700ef2 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -5,42 +5,34 @@
+> >  #include <dirent.h>
+> >  #include <errno.h>
+> >  #include <sys/ioctl.h>
+> > -#include <sys/types.h>
+> > -#include <sys/stat.h>
+> > -#include <fcntl.h>
+> >  #include <sys/param.h>
+> >  #include "term.h"
+> > -#include "build-id.h"
+> >  #include "evlist.h"
+> >  #include "evsel.h"
+> > -#include <subcmd/pager.h>
+> >  #include <subcmd/parse-options.h>
+> >  #include "parse-events.h"
+> > -#include <subcmd/exec-cmd.h>
+> >  #include "string2.h"
+> > -#include "strlist.h"
+> > -#include "symbol.h"
+> > -#include "header.h"
+> >  #include "bpf-loader.h"
+> >  #include "debug.h"
+> >  #include <api/fs/tracing_path.h>
+> >  #include <perf/cpumap.h>
+> >  #include "parse-events-bison.h"
+> > -#define YY_EXTRA_TYPE void*
+> >  #include "parse-events-flex.h"
+> >  #include "pmu.h"
+> > -#include "thread_map.h"
+> > -#include "probe-file.h"
+> >  #include "asm/bug.h"
+> >  #include "util/parse-branch-options.h"
+> > -#include "metricgroup.h"
+> >  #include "util/evsel_config.h"
+> >  #include "util/event.h"
+> > -#include "util/pfm.h"
+> >  #include "perf.h"
+> > +#include "tracepoint.h"
+> >
+> >  #define MAX_NAME_LEN 100
+> >
+> > +struct perf_pmu_event_symbol {
+> > +     char    *symbol;
+> > +     enum perf_pmu_event_symbol_type type;
+> > +};
+> > +
+> >  #ifdef PARSER_DEBUG
+> >  extern int parse_events_debug;
+> >  #endif
+> > @@ -155,35 +147,6 @@ struct event_symbol event_symbols_sw[PERF_COUNT_SW_MAX] = {
+> >  #define PERF_EVENT_TYPE(config)              __PERF_EVENT_FIELD(config, TYPE)
+> >  #define PERF_EVENT_ID(config)                __PERF_EVENT_FIELD(config, EVENT)
+> >
+> > -#define for_each_subsystem(sys_dir, sys_dirent)                      \
+> > -     while ((sys_dirent = readdir(sys_dir)) != NULL)         \
+> > -             if (sys_dirent->d_type == DT_DIR &&             \
+> > -                 (strcmp(sys_dirent->d_name, ".")) &&        \
+> > -                 (strcmp(sys_dirent->d_name, "..")))
+> > -
+> > -static int tp_event_has_id(const char *dir_path, struct dirent *evt_dir)
+> > -{
+> > -     char evt_path[MAXPATHLEN];
+> > -     int fd;
+> > -
+> > -     snprintf(evt_path, MAXPATHLEN, "%s/%s/id", dir_path, evt_dir->d_name);
+> > -     fd = open(evt_path, O_RDONLY);
+> > -     if (fd < 0)
+> > -             return -EINVAL;
+> > -     close(fd);
+> > -
+> > -     return 0;
+> > -}
+> > -
+> > -#define for_each_event(dir_path, evt_dir, evt_dirent)                \
+> > -     while ((evt_dirent = readdir(evt_dir)) != NULL)         \
+> > -             if (evt_dirent->d_type == DT_DIR &&             \
+> > -                 (strcmp(evt_dirent->d_name, ".")) &&        \
+> > -                 (strcmp(evt_dirent->d_name, "..")) &&       \
+> > -                 (!tp_event_has_id(dir_path, evt_dirent)))
+> > -
+> > -#define MAX_EVENT_LENGTH 512
+> > -
+> >  void parse_events__handle_error(struct parse_events_error *err, int idx,
+> >                               char *str, char *help)
+> >  {
+> > @@ -217,92 +180,6 @@ void parse_events__handle_error(struct parse_events_error *err, int idx,
+> >       err->num_errors++;
+> >  }
+> >
+> > -struct tracepoint_path *tracepoint_id_to_path(u64 config)
+> > -{
+> > -     struct tracepoint_path *path = NULL;
+> > -     DIR *sys_dir, *evt_dir;
+> > -     struct dirent *sys_dirent, *evt_dirent;
+> > -     char id_buf[24];
+> > -     int fd;
+> > -     u64 id;
+> > -     char evt_path[MAXPATHLEN];
+> > -     char *dir_path;
+> > -
+> > -     sys_dir = tracing_events__opendir();
+> > -     if (!sys_dir)
+> > -             return NULL;
+> > -
+> > -     for_each_subsystem(sys_dir, sys_dirent) {
+> > -             dir_path = get_events_file(sys_dirent->d_name);
+> > -             if (!dir_path)
+> > -                     continue;
+> > -             evt_dir = opendir(dir_path);
+> > -             if (!evt_dir)
+> > -                     goto next;
+> > -
+> > -             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > -
+> > -                     scnprintf(evt_path, MAXPATHLEN, "%s/%s/id", dir_path,
+> > -                               evt_dirent->d_name);
+> > -                     fd = open(evt_path, O_RDONLY);
+> > -                     if (fd < 0)
+> > -                             continue;
+> > -                     if (read(fd, id_buf, sizeof(id_buf)) < 0) {
+> > -                             close(fd);
+> > -                             continue;
+> > -                     }
+> > -                     close(fd);
+> > -                     id = atoll(id_buf);
+> > -                     if (id == config) {
+> > -                             put_events_file(dir_path);
+> > -                             closedir(evt_dir);
+> > -                             closedir(sys_dir);
+> > -                             path = zalloc(sizeof(*path));
+> > -                             if (!path)
+> > -                                     return NULL;
+> > -                             if (asprintf(&path->system, "%.*s", MAX_EVENT_LENGTH, sys_dirent->d_name) < 0) {
+> > -                                     free(path);
+> > -                                     return NULL;
+> > -                             }
+> > -                             if (asprintf(&path->name, "%.*s", MAX_EVENT_LENGTH, evt_dirent->d_name) < 0) {
+> > -                                     zfree(&path->system);
+> > -                                     free(path);
+> > -                                     return NULL;
+> > -                             }
+> > -                             return path;
+> > -                     }
+> > -             }
+> > -             closedir(evt_dir);
+> > -next:
+> > -             put_events_file(dir_path);
+> > -     }
+> > -
+> > -     closedir(sys_dir);
+> > -     return NULL;
+> > -}
+> > -
+> > -struct tracepoint_path *tracepoint_name_to_path(const char *name)
+> > -{
+> > -     struct tracepoint_path *path = zalloc(sizeof(*path));
+> > -     char *str = strchr(name, ':');
+> > -
+> > -     if (path == NULL || str == NULL) {
+> > -             free(path);
+> > -             return NULL;
+> > -     }
+> > -
+> > -     path->system = strndup(name, str - name);
+> > -     path->name = strdup(str+1);
+> > -
+> > -     if (path->system == NULL || path->name == NULL) {
+> > -             zfree(&path->system);
+> > -             zfree(&path->name);
+> > -             zfree(&path);
+> > -     }
+> > -
+> > -     return path;
+> > -}
+> > -
+> >  const char *event_type(int type)
+> >  {
+> >       switch (type) {
+> > @@ -2451,491 +2328,6 @@ int exclude_perf(const struct option *opt,
+> >                                         NULL);
+> >  }
+> >
+> > -static const char * const event_type_descriptors[] = {
+> > -     "Hardware event",
+> > -     "Software event",
+> > -     "Tracepoint event",
+> > -     "Hardware cache event",
+> > -     "Raw hardware event descriptor",
+> > -     "Hardware breakpoint",
+> > -};
+> > -
+> > -static int cmp_string(const void *a, const void *b)
+> > -{
+> > -     const char * const *as = a;
+> > -     const char * const *bs = b;
+> > -
+> > -     return strcmp(*as, *bs);
+> > -}
+> > -
+> > -/*
+> > - * Print the events from <debugfs_mount_point>/tracing/events
+> > - */
+> > -
+> > -void print_tracepoint_events(const char *subsys_glob, const char *event_glob,
+> > -                          bool name_only)
+> > -{
+> > -     DIR *sys_dir, *evt_dir;
+> > -     struct dirent *sys_dirent, *evt_dirent;
+> > -     char evt_path[MAXPATHLEN];
+> > -     char *dir_path;
+> > -     char **evt_list = NULL;
+> > -     unsigned int evt_i = 0, evt_num = 0;
+> > -     bool evt_num_known = false;
+> > -
+> > -restart:
+> > -     sys_dir = tracing_events__opendir();
+> > -     if (!sys_dir)
+> > -             return;
+> > -
+> > -     if (evt_num_known) {
+> > -             evt_list = zalloc(sizeof(char *) * evt_num);
+> > -             if (!evt_list)
+> > -                     goto out_close_sys_dir;
+> > -     }
+> > -
+> > -     for_each_subsystem(sys_dir, sys_dirent) {
+> > -             if (subsys_glob != NULL &&
+> > -                 !strglobmatch(sys_dirent->d_name, subsys_glob))
+> > -                     continue;
+> > -
+> > -             dir_path = get_events_file(sys_dirent->d_name);
+> > -             if (!dir_path)
+> > -                     continue;
+> > -             evt_dir = opendir(dir_path);
+> > -             if (!evt_dir)
+> > -                     goto next;
+> > -
+> > -             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > -                     if (event_glob != NULL &&
+> > -                         !strglobmatch(evt_dirent->d_name, event_glob))
+> > -                             continue;
+> > -
+> > -                     if (!evt_num_known) {
+> > -                             evt_num++;
+> > -                             continue;
+> > -                     }
+> > -
+> > -                     snprintf(evt_path, MAXPATHLEN, "%s:%s",
+> > -                              sys_dirent->d_name, evt_dirent->d_name);
+> > -
+> > -                     evt_list[evt_i] = strdup(evt_path);
+> > -                     if (evt_list[evt_i] == NULL) {
+> > -                             put_events_file(dir_path);
+> > -                             goto out_close_evt_dir;
+> > -                     }
+> > -                     evt_i++;
+> > -             }
+> > -             closedir(evt_dir);
+> > -next:
+> > -             put_events_file(dir_path);
+> > -     }
+> > -     closedir(sys_dir);
+> > -
+> > -     if (!evt_num_known) {
+> > -             evt_num_known = true;
+> > -             goto restart;
+> > -     }
+> > -     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > -     evt_i = 0;
+> > -     while (evt_i < evt_num) {
+> > -             if (name_only) {
+> > -                     printf("%s ", evt_list[evt_i++]);
+> > -                     continue;
+> > -             }
+> > -             printf("  %-50s [%s]\n", evt_list[evt_i++],
+> > -                             event_type_descriptors[PERF_TYPE_TRACEPOINT]);
+> > -     }
+> > -     if (evt_num && pager_in_use())
+> > -             printf("\n");
+> > -
+> > -out_free:
+> > -     evt_num = evt_i;
+> > -     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > -             zfree(&evt_list[evt_i]);
+> > -     zfree(&evt_list);
+> > -     return;
+> > -
+> > -out_close_evt_dir:
+> > -     closedir(evt_dir);
+> > -out_close_sys_dir:
+> > -     closedir(sys_dir);
+> > -
+> > -     printf("FATAL: not enough memory to print %s\n",
+> > -                     event_type_descriptors[PERF_TYPE_TRACEPOINT]);
+> > -     if (evt_list)
+> > -             goto out_free;
+> > -}
+> > -
+> > -/*
+> > - * Check whether event is in <debugfs_mount_point>/tracing/events
+> > - */
+> > -
+> > -int is_valid_tracepoint(const char *event_string)
+> > -{
+> > -     DIR *sys_dir, *evt_dir;
+> > -     struct dirent *sys_dirent, *evt_dirent;
+> > -     char evt_path[MAXPATHLEN];
+> > -     char *dir_path;
+> > -
+> > -     sys_dir = tracing_events__opendir();
+> > -     if (!sys_dir)
+> > -             return 0;
+> > -
+> > -     for_each_subsystem(sys_dir, sys_dirent) {
+> > -             dir_path = get_events_file(sys_dirent->d_name);
+> > -             if (!dir_path)
+> > -                     continue;
+> > -             evt_dir = opendir(dir_path);
+> > -             if (!evt_dir)
+> > -                     goto next;
+> > -
+> > -             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > -                     snprintf(evt_path, MAXPATHLEN, "%s:%s",
+> > -                              sys_dirent->d_name, evt_dirent->d_name);
+> > -                     if (!strcmp(evt_path, event_string)) {
+> > -                             closedir(evt_dir);
+> > -                             closedir(sys_dir);
+> > -                             return 1;
+> > -                     }
+> > -             }
+> > -             closedir(evt_dir);
+> > -next:
+> > -             put_events_file(dir_path);
+> > -     }
+> > -     closedir(sys_dir);
+> > -     return 0;
+> > -}
+> > -
+> > -static bool is_event_supported(u8 type, unsigned config)
+> > -{
+> > -     bool ret = true;
+> > -     int open_return;
+> > -     struct evsel *evsel;
+> > -     struct perf_event_attr attr = {
+> > -             .type = type,
+> > -             .config = config,
+> > -             .disabled = 1,
+> > -     };
+> > -     struct perf_thread_map *tmap = thread_map__new_by_tid(0);
+> > -
+> > -     if (tmap == NULL)
+> > -             return false;
+> > -
+> > -     evsel = evsel__new(&attr);
+> > -     if (evsel) {
+> > -             open_return = evsel__open(evsel, NULL, tmap);
+> > -             ret = open_return >= 0;
+> > -
+> > -             if (open_return == -EACCES) {
+> > -                     /*
+> > -                      * This happens if the paranoid value
+> > -                      * /proc/sys/kernel/perf_event_paranoid is set to 2
+> > -                      * Re-run with exclude_kernel set; we don't do that
+> > -                      * by default as some ARM machines do not support it.
+> > -                      *
+> > -                      */
+> > -                     evsel->core.attr.exclude_kernel = 1;
+> > -                     ret = evsel__open(evsel, NULL, tmap) >= 0;
+> > -             }
+> > -             evsel__delete(evsel);
+> > -     }
+> > -
+> > -     perf_thread_map__put(tmap);
+> > -     return ret;
+> > -}
+> > -
+> > -void print_sdt_events(const char *subsys_glob, const char *event_glob,
+> > -                   bool name_only)
+> > -{
+> > -     struct probe_cache *pcache;
+> > -     struct probe_cache_entry *ent;
+> > -     struct strlist *bidlist, *sdtlist;
+> > -     struct strlist_config cfg = {.dont_dupstr = true};
+> > -     struct str_node *nd, *nd2;
+> > -     char *buf, *path, *ptr = NULL;
+> > -     bool show_detail = false;
+> > -     int ret;
+> > -
+> > -     sdtlist = strlist__new(NULL, &cfg);
+> > -     if (!sdtlist) {
+> > -             pr_debug("Failed to allocate new strlist for SDT\n");
+> > -             return;
+> > -     }
+> > -     bidlist = build_id_cache__list_all(true);
+> > -     if (!bidlist) {
+> > -             pr_debug("Failed to get buildids: %d\n", errno);
+> > -             return;
+> > -     }
+> > -     strlist__for_each_entry(nd, bidlist) {
+> > -             pcache = probe_cache__new(nd->s, NULL);
+> > -             if (!pcache)
+> > -                     continue;
+> > -             list_for_each_entry(ent, &pcache->entries, node) {
+> > -                     if (!ent->sdt)
+> > -                             continue;
+> > -                     if (subsys_glob &&
+> > -                         !strglobmatch(ent->pev.group, subsys_glob))
+> > -                             continue;
+> > -                     if (event_glob &&
+> > -                         !strglobmatch(ent->pev.event, event_glob))
+> > -                             continue;
+> > -                     ret = asprintf(&buf, "%s:%s@%s", ent->pev.group,
+> > -                                     ent->pev.event, nd->s);
+> > -                     if (ret > 0)
+> > -                             strlist__add(sdtlist, buf);
+> > -             }
+> > -             probe_cache__delete(pcache);
+> > -     }
+> > -     strlist__delete(bidlist);
+> > -
+> > -     strlist__for_each_entry(nd, sdtlist) {
+> > -             buf = strchr(nd->s, '@');
+> > -             if (buf)
+> > -                     *(buf++) = '\0';
+> > -             if (name_only) {
+> > -                     printf("%s ", nd->s);
+> > -                     continue;
+> > -             }
+> > -             nd2 = strlist__next(nd);
+> > -             if (nd2) {
+> > -                     ptr = strchr(nd2->s, '@');
+> > -                     if (ptr)
+> > -                             *ptr = '\0';
+> > -                     if (strcmp(nd->s, nd2->s) == 0)
+> > -                             show_detail = true;
+> > -             }
+> > -             if (show_detail) {
+> > -                     path = build_id_cache__origname(buf);
+> > -                     ret = asprintf(&buf, "%s@%s(%.12s)", nd->s, path, buf);
+> > -                     if (ret > 0) {
+> > -                             printf("  %-50s [%s]\n", buf, "SDT event");
+> > -                             free(buf);
+> > -                     }
+> > -                     free(path);
+> > -             } else
+> > -                     printf("  %-50s [%s]\n", nd->s, "SDT event");
+> > -             if (nd2) {
+> > -                     if (strcmp(nd->s, nd2->s) != 0)
+> > -                             show_detail = false;
+> > -                     if (ptr)
+> > -                             *ptr = '@';
+> > -             }
+> > -     }
+> > -     strlist__delete(sdtlist);
+> > -}
+> > -
+> > -int print_hwcache_events(const char *event_glob, bool name_only)
+> > -{
+> > -     unsigned int type, op, i, evt_i = 0, evt_num = 0;
+> > -     char name[64];
+> > -     char **evt_list = NULL;
+> > -     bool evt_num_known = false;
+> > -
+> > -restart:
+> > -     if (evt_num_known) {
+> > -             evt_list = zalloc(sizeof(char *) * evt_num);
+> > -             if (!evt_list)
+> > -                     goto out_enomem;
+> > -     }
+> > -
+> > -     for (type = 0; type < PERF_COUNT_HW_CACHE_MAX; type++) {
+> > -             for (op = 0; op < PERF_COUNT_HW_CACHE_OP_MAX; op++) {
+> > -                     /* skip invalid cache type */
+> > -                     if (!evsel__is_cache_op_valid(type, op))
+> > -                             continue;
+> > -
+> > -                     for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
+> > -                             __evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
+> > -                             if (event_glob != NULL && !strglobmatch(name, event_glob))
+> > -                                     continue;
+> > -
+> > -                             if (!is_event_supported(PERF_TYPE_HW_CACHE,
+> > -                                                     type | (op << 8) | (i << 16)))
+> > -                                     continue;
+> > -
+> > -                             if (!evt_num_known) {
+> > -                                     evt_num++;
+> > -                                     continue;
+> > -                             }
+> > -
+> > -                             evt_list[evt_i] = strdup(name);
+> > -                             if (evt_list[evt_i] == NULL)
+> > -                                     goto out_enomem;
+> > -                             evt_i++;
+> > -                     }
+> > -             }
+> > -     }
+> > -
+> > -     if (!evt_num_known) {
+> > -             evt_num_known = true;
+> > -             goto restart;
+> > -     }
+> > -     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > -     evt_i = 0;
+> > -     while (evt_i < evt_num) {
+> > -             if (name_only) {
+> > -                     printf("%s ", evt_list[evt_i++]);
+> > -                     continue;
+> > -             }
+> > -             printf("  %-50s [%s]\n", evt_list[evt_i++],
+> > -                             event_type_descriptors[PERF_TYPE_HW_CACHE]);
+> > -     }
+> > -     if (evt_num && pager_in_use())
+> > -             printf("\n");
+> > -
+> > -out_free:
+> > -     evt_num = evt_i;
+> > -     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > -             zfree(&evt_list[evt_i]);
+> > -     zfree(&evt_list);
+> > -     return evt_num;
+> > -
+> > -out_enomem:
+> > -     printf("FATAL: not enough memory to print %s\n", event_type_descriptors[PERF_TYPE_HW_CACHE]);
+> > -     if (evt_list)
+> > -             goto out_free;
+> > -     return evt_num;
+> > -}
+> > -
+> > -static void print_tool_event(const char *name, const char *event_glob,
+> > -                          bool name_only)
+> > -{
+> > -     if (event_glob && !strglobmatch(name, event_glob))
+> > -             return;
+> > -     if (name_only)
+> > -             printf("%s ", name);
+> > -     else
+> > -             printf("  %-50s [%s]\n", name, "Tool event");
+> > -
+> > -}
+> > -
+> > -void print_tool_events(const char *event_glob, bool name_only)
+> > -{
+> > -     print_tool_event("duration_time", event_glob, name_only);
+> > -     if (pager_in_use())
+> > -             printf("\n");
+> > -}
+> > -
+> > -void print_symbol_events(const char *event_glob, unsigned type,
+> > -                             struct event_symbol *syms, unsigned max,
+> > -                             bool name_only)
+> > -{
+> > -     unsigned int i, evt_i = 0, evt_num = 0;
+> > -     char name[MAX_NAME_LEN];
+> > -     char **evt_list = NULL;
+> > -     bool evt_num_known = false;
+> > -
+> > -restart:
+> > -     if (evt_num_known) {
+> > -             evt_list = zalloc(sizeof(char *) * evt_num);
+> > -             if (!evt_list)
+> > -                     goto out_enomem;
+> > -             syms -= max;
+> > -     }
+> > -
+> > -     for (i = 0; i < max; i++, syms++) {
+> > -
+> > -             if (event_glob != NULL && syms->symbol != NULL &&
+> > -                 !(strglobmatch(syms->symbol, event_glob) ||
+> > -                   (syms->alias && strglobmatch(syms->alias, event_glob))))
+> > -                     continue;
+> > -
+> > -             if (!is_event_supported(type, i))
+> > -                     continue;
+> > -
+> > -             if (!evt_num_known) {
+> > -                     evt_num++;
+> > -                     continue;
+> > -             }
+> > -
+> > -             if (!name_only && strlen(syms->alias))
+> > -                     snprintf(name, MAX_NAME_LEN, "%s OR %s", syms->symbol, syms->alias);
+> > -             else
+> > -                     strlcpy(name, syms->symbol, MAX_NAME_LEN);
+> > -
+> > -             evt_list[evt_i] = strdup(name);
+> > -             if (evt_list[evt_i] == NULL)
+> > -                     goto out_enomem;
+> > -             evt_i++;
+> > -     }
+> > -
+> > -     if (!evt_num_known) {
+> > -             evt_num_known = true;
+> > -             goto restart;
+> > -     }
+> > -     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > -     evt_i = 0;
+> > -     while (evt_i < evt_num) {
+> > -             if (name_only) {
+> > -                     printf("%s ", evt_list[evt_i++]);
+> > -                     continue;
+> > -             }
+> > -             printf("  %-50s [%s]\n", evt_list[evt_i++], event_type_descriptors[type]);
+> > -     }
+> > -     if (evt_num && pager_in_use())
+> > -             printf("\n");
+> > -
+> > -out_free:
+> > -     evt_num = evt_i;
+> > -     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > -             zfree(&evt_list[evt_i]);
+> > -     zfree(&evt_list);
+> > -     return;
+> > -
+> > -out_enomem:
+> > -     printf("FATAL: not enough memory to print %s\n", event_type_descriptors[type]);
+> > -     if (evt_list)
+> > -             goto out_free;
+> > -}
+> > -
+> > -/*
+> > - * Print the help text for the event symbols:
+> > - */
+> > -void print_events(const char *event_glob, bool name_only, bool quiet_flag,
+> > -                     bool long_desc, bool details_flag, bool deprecated)
+> > -{
+> > -     print_symbol_events(event_glob, PERF_TYPE_HARDWARE,
+> > -                         event_symbols_hw, PERF_COUNT_HW_MAX, name_only);
+> > -
+> > -     print_symbol_events(event_glob, PERF_TYPE_SOFTWARE,
+> > -                         event_symbols_sw, PERF_COUNT_SW_MAX, name_only);
+> > -     print_tool_events(event_glob, name_only);
+> > -
+> > -     print_hwcache_events(event_glob, name_only);
+> > -
+> > -     print_pmu_events(event_glob, name_only, quiet_flag, long_desc,
+> > -                     details_flag, deprecated);
+> > -
+> > -     if (event_glob != NULL)
+> > -             return;
+> > -
+> > -     if (!name_only) {
+> > -             printf("  %-50s [%s]\n",
+> > -                    "rNNN",
+> > -                    event_type_descriptors[PERF_TYPE_RAW]);
+> > -             printf("  %-50s [%s]\n",
+> > -                    "cpu/t1=v1[,t2=v2,t3 ...]/modifier",
+> > -                    event_type_descriptors[PERF_TYPE_RAW]);
+> > -             if (pager_in_use())
+> > -                     printf("   (see 'man perf-list' on how to encode it)\n\n");
+> > -
+> > -             printf("  %-50s [%s]\n",
+> > -                    "mem:<addr>[/len][:access]",
+> > -                     event_type_descriptors[PERF_TYPE_BREAKPOINT]);
+> > -             if (pager_in_use())
+> > -                     printf("\n");
+> > -     }
+> > -
+> > -     print_tracepoint_events(NULL, NULL, name_only);
+> > -
+> > -     print_sdt_events(NULL, NULL, name_only);
+> > -
+> > -     metricgroup__print(true, true, NULL, name_only, details_flag);
+> > -
+> > -     print_libpfm_events(name_only, long_desc);
+> > -}
+> > -
+> >  int parse_events__is_hardcoded_term(struct parse_events_term *term)
+> >  {
+> >       return term->type_term != PARSE_EVENTS__TERM_TYPE_USER;
+> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> > index e80c9b74f2f2..7cea425e80f9 100644
+> > --- a/tools/perf/util/parse-events.h
+> > +++ b/tools/perf/util/parse-events.h
+> > @@ -11,7 +11,6 @@
+> >  #include <linux/perf_event.h>
+> >  #include <string.h>
+> >
+> > -struct list_head;
+> >  struct evsel;
+> >  struct evlist;
+> >  struct parse_events_error;
+> > @@ -19,14 +18,6 @@ struct parse_events_error;
+> >  struct option;
+> >  struct perf_pmu;
+> >
+> > -struct tracepoint_path {
+> > -     char *system;
+> > -     char *name;
+> > -     struct tracepoint_path *next;
+> > -};
+> > -
+> > -struct tracepoint_path *tracepoint_id_to_path(u64 config);
+> > -struct tracepoint_path *tracepoint_name_to_path(const char *name);
+> >  bool have_tracepoints(struct list_head *evlist);
+> >
+> >  const char *event_type(int type);
+> > @@ -46,8 +37,6 @@ int parse_events_terms(struct list_head *terms, const char *str);
+> >  int parse_filter(const struct option *opt, const char *str, int unset);
+> >  int exclude_perf(const struct option *opt, const char *arg, int unset);
+> >
+> > -#define EVENTS_HELP_MAX (128*1024)
+> > -
+> >  enum perf_pmu_event_symbol_type {
+> >       PMU_EVENT_SYMBOL_ERR,           /* not a PMU EVENT */
+> >       PMU_EVENT_SYMBOL,               /* normal style PMU event */
+> > @@ -55,11 +44,6 @@ enum perf_pmu_event_symbol_type {
+> >       PMU_EVENT_SYMBOL_SUFFIX,        /* suffix of pre-suf style event */
+> >  };
+> >
+> > -struct perf_pmu_event_symbol {
+> > -     char    *symbol;
+> > -     enum perf_pmu_event_symbol_type type;
+> > -};
+> > -
+> >  enum {
+> >       PARSE_EVENTS__TERM_TYPE_NUM,
+> >       PARSE_EVENTS__TERM_TYPE_STR,
+> > @@ -216,8 +200,6 @@ void parse_events_update_lists(struct list_head *list_event,
+> >  void parse_events_evlist_error(struct parse_events_state *parse_state,
+> >                              int idx, const char *str);
+> >
+> > -void print_events(const char *event_glob, bool name_only, bool quiet,
+> > -               bool long_desc, bool details_flag, bool deprecated);
+> >
+> >  struct event_symbol {
+> >       const char      *symbol;
+> > @@ -225,18 +207,7 @@ struct event_symbol {
+> >  };
+> >  extern struct event_symbol event_symbols_hw[];
+> >  extern struct event_symbol event_symbols_sw[];
+> > -void print_symbol_events(const char *event_glob, unsigned type,
+> > -                             struct event_symbol *syms, unsigned max,
+> > -                             bool name_only);
+> > -void print_tool_events(const char *event_glob, bool name_only);
+> > -void print_tracepoint_events(const char *subsys_glob, const char *event_glob,
+> > -                          bool name_only);
+> > -int print_hwcache_events(const char *event_glob, bool name_only);
+> > -void print_sdt_events(const char *subsys_glob, const char *event_glob,
+> > -                   bool name_only);
+> > -int is_valid_tracepoint(const char *event_string);
+> >
+> > -int valid_event_mount(const char *eventfs);
+> >  char *parse_events_formats_error_string(char *additional_terms);
+> >
+> >  void parse_events_print_error(struct parse_events_error *err,
+> > diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
+> > new file mode 100644
+> > index 000000000000..584888353d13
+> > --- /dev/null
+> > +++ b/tools/perf/util/print-events.c
+> > @@ -0,0 +1,472 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <dirent.h>
+> > +#include <errno.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <sys/param.h>
+> > +
+> > +#include <api/fs/tracing_path.h>
+> > +#include <linux/perf_event.h>
+> > +#include <linux/zalloc.h>
+> > +#include <subcmd/pager.h>
+> > +
+> > +#include "build-id.h"
+> > +#include "debug.h"
+> > +#include "evsel.h"
+> > +#include "metricgroup.h"
+> > +#include "parse-events.h"
+> > +#include "pmu.h"
+> > +#include "print-events.h"
+> > +#include "probe-file.h"
+> > +#include "string2.h"
+> > +#include "strlist.h"
+> > +#include "thread_map.h"
+> > +#include "tracepoint.h"
+> > +#include "pfm.h"
+> > +
+> > +#define MAX_NAME_LEN 100
+> > +
+> > +static int cmp_string(const void *a, const void *b)
+> > +{
+> > +     const char * const *as = a;
+> > +     const char * const *bs = b;
+> > +
+> > +     return strcmp(*as, *bs);
+> > +}
+> > +
+> > +static const char * const event_type_descriptors[] = {
+> > +     "Hardware event",
+> > +     "Software event",
+> > +     "Tracepoint event",
+> > +     "Hardware cache event",
+> > +     "Raw hardware event descriptor",
+> > +     "Hardware breakpoint",
+> > +};
+> > +
+> > +/*
+> > + * Print the events from <debugfs_mount_point>/tracing/events
+> > + */
+> > +void print_tracepoint_events(const char *subsys_glob,
+> > +                          const char *event_glob, bool name_only)
+> > +{
+> > +     DIR *sys_dir, *evt_dir;
+> > +     struct dirent *sys_dirent, *evt_dirent;
+> > +     char evt_path[MAXPATHLEN];
+> > +     char *dir_path;
+> > +     char **evt_list = NULL;
+> > +     unsigned int evt_i = 0, evt_num = 0;
+> > +     bool evt_num_known = false;
+> > +
+> > +restart:
+> > +     sys_dir = tracing_events__opendir();
+> > +     if (!sys_dir)
+> > +             return;
+> > +
+> > +     if (evt_num_known) {
+> > +             evt_list = zalloc(sizeof(char *) * evt_num);
+> > +             if (!evt_list)
+> > +                     goto out_close_sys_dir;
+> > +     }
+> > +
+> > +     for_each_subsystem(sys_dir, sys_dirent) {
+> > +             if (subsys_glob != NULL &&
+> > +                 !strglobmatch(sys_dirent->d_name, subsys_glob))
+> > +                     continue;
+> > +
+> > +             dir_path = get_events_file(sys_dirent->d_name);
+> > +             if (!dir_path)
+> > +                     continue;
+> > +             evt_dir = opendir(dir_path);
+> > +             if (!evt_dir)
+> > +                     goto next;
+> > +
+> > +             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > +                     if (event_glob != NULL &&
+> > +                         !strglobmatch(evt_dirent->d_name, event_glob))
+> > +                             continue;
+> > +
+> > +                     if (!evt_num_known) {
+> > +                             evt_num++;
+> > +                             continue;
+> > +                     }
+> > +
+> > +                     snprintf(evt_path, MAXPATHLEN, "%s:%s",
+> > +                              sys_dirent->d_name, evt_dirent->d_name);
+> > +
+> > +                     evt_list[evt_i] = strdup(evt_path);
+> > +                     if (evt_list[evt_i] == NULL) {
+> > +                             put_events_file(dir_path);
+> > +                             goto out_close_evt_dir;
+> > +                     }
+> > +                     evt_i++;
+> > +             }
+> > +             closedir(evt_dir);
+> > +next:
+> > +             put_events_file(dir_path);
+> > +     }
+> > +     closedir(sys_dir);
+> > +
+> > +     if (!evt_num_known) {
+> > +             evt_num_known = true;
+> > +             goto restart;
+> > +     }
+> > +     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > +     evt_i = 0;
+> > +     while (evt_i < evt_num) {
+> > +             if (name_only) {
+> > +                     printf("%s ", evt_list[evt_i++]);
+> > +                     continue;
+> > +             }
+> > +             printf("  %-50s [%s]\n", evt_list[evt_i++],
+> > +                             event_type_descriptors[PERF_TYPE_TRACEPOINT]);
+> > +     }
+> > +     if (evt_num && pager_in_use())
+> > +             printf("\n");
+> > +
+> > +out_free:
+> > +     evt_num = evt_i;
+> > +     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > +             zfree(&evt_list[evt_i]);
+> > +     zfree(&evt_list);
+> > +     return;
+> > +
+> > +out_close_evt_dir:
+> > +     closedir(evt_dir);
+> > +out_close_sys_dir:
+> > +     closedir(sys_dir);
+> > +
+> > +     printf("FATAL: not enough memory to print %s\n",
+> > +                     event_type_descriptors[PERF_TYPE_TRACEPOINT]);
+> > +     if (evt_list)
+> > +             goto out_free;
+> > +}
+> > +
+> > +void print_sdt_events(const char *subsys_glob, const char *event_glob,
+> > +                   bool name_only)
+> > +{
+> > +     struct probe_cache *pcache;
+> > +     struct probe_cache_entry *ent;
+> > +     struct strlist *bidlist, *sdtlist;
+> > +     struct strlist_config cfg = {.dont_dupstr = true};
+> > +     struct str_node *nd, *nd2;
+> > +     char *buf, *path, *ptr = NULL;
+> > +     bool show_detail = false;
+> > +     int ret;
+> > +
+> > +     sdtlist = strlist__new(NULL, &cfg);
+> > +     if (!sdtlist) {
+> > +             pr_debug("Failed to allocate new strlist for SDT\n");
+> > +             return;
+> > +     }
+> > +     bidlist = build_id_cache__list_all(true);
+> > +     if (!bidlist) {
+> > +             pr_debug("Failed to get buildids: %d\n", errno);
+> > +             return;
+> > +     }
+> > +     strlist__for_each_entry(nd, bidlist) {
+> > +             pcache = probe_cache__new(nd->s, NULL);
+> > +             if (!pcache)
+> > +                     continue;
+> > +             list_for_each_entry(ent, &pcache->entries, node) {
+> > +                     if (!ent->sdt)
+> > +                             continue;
+> > +                     if (subsys_glob &&
+> > +                         !strglobmatch(ent->pev.group, subsys_glob))
+> > +                             continue;
+> > +                     if (event_glob &&
+> > +                         !strglobmatch(ent->pev.event, event_glob))
+> > +                             continue;
+> > +                     ret = asprintf(&buf, "%s:%s@%s", ent->pev.group,
+> > +                                     ent->pev.event, nd->s);
+> > +                     if (ret > 0)
+> > +                             strlist__add(sdtlist, buf);
+> > +             }
+> > +             probe_cache__delete(pcache);
+> > +     }
+> > +     strlist__delete(bidlist);
+> > +
+> > +     strlist__for_each_entry(nd, sdtlist) {
+> > +             buf = strchr(nd->s, '@');
+> > +             if (buf)
+> > +                     *(buf++) = '\0';
+> > +             if (name_only) {
+> > +                     printf("%s ", nd->s);
+> > +                     continue;
+> > +             }
+> > +             nd2 = strlist__next(nd);
+> > +             if (nd2) {
+> > +                     ptr = strchr(nd2->s, '@');
+> > +                     if (ptr)
+> > +                             *ptr = '\0';
+> > +                     if (strcmp(nd->s, nd2->s) == 0)
+> > +                             show_detail = true;
+> > +             }
+> > +             if (show_detail) {
+> > +                     path = build_id_cache__origname(buf);
+> > +                     ret = asprintf(&buf, "%s@%s(%.12s)", nd->s, path, buf);
+> > +                     if (ret > 0) {
+> > +                             printf("  %-50s [%s]\n", buf, "SDT event");
+> > +                             free(buf);
+> > +                     }
+> > +                     free(path);
+> > +             } else
+> > +                     printf("  %-50s [%s]\n", nd->s, "SDT event");
+> > +             if (nd2) {
+> > +                     if (strcmp(nd->s, nd2->s) != 0)
+> > +                             show_detail = false;
+> > +                     if (ptr)
+> > +                             *ptr = '@';
+> > +             }
+> > +     }
+> > +     strlist__delete(sdtlist);
+> > +}
+> > +
+> > +static bool is_event_supported(u8 type, unsigned int config)
+> > +{
+> > +     bool ret = true;
+> > +     int open_return;
+> > +     struct evsel *evsel;
+> > +     struct perf_event_attr attr = {
+> > +             .type = type,
+> > +             .config = config,
+> > +             .disabled = 1,
+> > +     };
+> > +     struct perf_thread_map *tmap = thread_map__new_by_tid(0);
+> > +
+> > +     if (tmap == NULL)
+> > +             return false;
+> > +
+> > +     evsel = evsel__new(&attr);
+> > +     if (evsel) {
+> > +             open_return = evsel__open(evsel, NULL, tmap);
+> > +             ret = open_return >= 0;
+> > +
+> > +             if (open_return == -EACCES) {
+> > +                     /*
+> > +                      * This happens if the paranoid value
+> > +                      * /proc/sys/kernel/perf_event_paranoid is set to 2
+> > +                      * Re-run with exclude_kernel set; we don't do that
+> > +                      * by default as some ARM machines do not support it.
+> > +                      *
+> > +                      */
+> > +                     evsel->core.attr.exclude_kernel = 1;
+> > +                     ret = evsel__open(evsel, NULL, tmap) >= 0;
+> > +             }
+> > +             evsel__delete(evsel);
+> > +     }
+> > +
+> > +     perf_thread_map__put(tmap);
+> > +     return ret;
+> > +}
+> > +
+> > +int print_hwcache_events(const char *event_glob, bool name_only)
+> > +{
+> > +     unsigned int type, op, i, evt_i = 0, evt_num = 0;
+> > +     char name[64];
+> > +     char **evt_list = NULL;
+> > +     bool evt_num_known = false;
+> > +
+> > +restart:
+> > +     if (evt_num_known) {
+> > +             evt_list = zalloc(sizeof(char *) * evt_num);
+> > +             if (!evt_list)
+> > +                     goto out_enomem;
+> > +     }
+> > +
+> > +     for (type = 0; type < PERF_COUNT_HW_CACHE_MAX; type++) {
+> > +             for (op = 0; op < PERF_COUNT_HW_CACHE_OP_MAX; op++) {
+> > +                     /* skip invalid cache type */
+> > +                     if (!evsel__is_cache_op_valid(type, op))
+> > +                             continue;
+> > +
+> > +                     for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
+> > +                             __evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
+> > +                             if (event_glob != NULL && !strglobmatch(name, event_glob))
+> > +                                     continue;
+> > +
+> > +                             if (!is_event_supported(PERF_TYPE_HW_CACHE,
+> > +                                                     type | (op << 8) | (i << 16)))
+> > +                                     continue;
+> > +
+> > +                             if (!evt_num_known) {
+> > +                                     evt_num++;
+> > +                                     continue;
+> > +                             }
+> > +
+> > +                             evt_list[evt_i] = strdup(name);
+> > +                             if (evt_list[evt_i] == NULL)
+> > +                                     goto out_enomem;
+> > +                             evt_i++;
+> > +                     }
+> > +             }
+> > +     }
+> > +
+> > +     if (!evt_num_known) {
+> > +             evt_num_known = true;
+> > +             goto restart;
+> > +     }
+> > +     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > +     evt_i = 0;
+> > +     while (evt_i < evt_num) {
+> > +             if (name_only) {
+> > +                     printf("%s ", evt_list[evt_i++]);
+> > +                     continue;
+> > +             }
+> > +             printf("  %-50s [%s]\n", evt_list[evt_i++],
+> > +                             event_type_descriptors[PERF_TYPE_HW_CACHE]);
+> > +     }
+> > +     if (evt_num && pager_in_use())
+> > +             printf("\n");
+> > +
+> > +out_free:
+> > +     evt_num = evt_i;
+> > +     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > +             zfree(&evt_list[evt_i]);
+> > +     zfree(&evt_list);
+> > +     return evt_num;
+> > +
+> > +out_enomem:
+> > +     printf("FATAL: not enough memory to print %s\n", event_type_descriptors[PERF_TYPE_HW_CACHE]);
+> > +     if (evt_list)
+> > +             goto out_free;
+> > +     return evt_num;
+> > +}
+> > +
+> > +static void print_tool_event(const char *name, const char *event_glob,
+> > +                          bool name_only)
+> > +{
+> > +     if (event_glob && !strglobmatch(name, event_glob))
+> > +             return;
+> > +     if (name_only)
+> > +             printf("%s ", name);
+> > +     else
+> > +             printf("  %-50s [%s]\n", name, "Tool event");
+> > +
+> > +}
+> > +
+> > +void print_tool_events(const char *event_glob, bool name_only)
+> > +{
+> > +     print_tool_event("duration_time", event_glob, name_only);
+> > +     if (pager_in_use())
+> > +             printf("\n");
+> > +}
+> > +
+> > +void print_symbol_events(const char *event_glob, unsigned int type,
+> > +                      struct event_symbol *syms, unsigned int max,
+> > +                      bool name_only)
+> > +{
+> > +     unsigned int i, evt_i = 0, evt_num = 0;
+> > +     char name[MAX_NAME_LEN];
+> > +     char **evt_list = NULL;
+> > +     bool evt_num_known = false;
+> > +
+> > +restart:
+> > +     if (evt_num_known) {
+> > +             evt_list = zalloc(sizeof(char *) * evt_num);
+> > +             if (!evt_list)
+> > +                     goto out_enomem;
+> > +             syms -= max;
+> > +     }
+> > +
+> > +     for (i = 0; i < max; i++, syms++) {
+> > +
+> > +             if (event_glob != NULL && syms->symbol != NULL &&
+> > +                 !(strglobmatch(syms->symbol, event_glob) ||
+> > +                   (syms->alias && strglobmatch(syms->alias, event_glob))))
+> > +                     continue;
+> > +
+> > +             if (!is_event_supported(type, i))
+> > +                     continue;
+> > +
+> > +             if (!evt_num_known) {
+> > +                     evt_num++;
+> > +                     continue;
+> > +             }
+> > +
+> > +             if (!name_only && strlen(syms->alias))
+> > +                     snprintf(name, MAX_NAME_LEN, "%s OR %s", syms->symbol, syms->alias);
+> > +             else
+> > +                     strlcpy(name, syms->symbol, MAX_NAME_LEN);
+> > +
+> > +             evt_list[evt_i] = strdup(name);
+> > +             if (evt_list[evt_i] == NULL)
+> > +                     goto out_enomem;
+> > +             evt_i++;
+> > +     }
+> > +
+> > +     if (!evt_num_known) {
+> > +             evt_num_known = true;
+> > +             goto restart;
+> > +     }
+> > +     qsort(evt_list, evt_num, sizeof(char *), cmp_string);
+> > +     evt_i = 0;
+> > +     while (evt_i < evt_num) {
+> > +             if (name_only) {
+> > +                     printf("%s ", evt_list[evt_i++]);
+> > +                     continue;
+> > +             }
+> > +             printf("  %-50s [%s]\n", evt_list[evt_i++], event_type_descriptors[type]);
+> > +     }
+> > +     if (evt_num && pager_in_use())
+> > +             printf("\n");
+> > +
+> > +out_free:
+> > +     evt_num = evt_i;
+> > +     for (evt_i = 0; evt_i < evt_num; evt_i++)
+> > +             zfree(&evt_list[evt_i]);
+> > +     zfree(&evt_list);
+> > +     return;
+> > +
+> > +out_enomem:
+> > +     printf("FATAL: not enough memory to print %s\n", event_type_descriptors[type]);
+> > +     if (evt_list)
+> > +             goto out_free;
+> > +}
+> > +
+> > +/*
+> > + * Print the help text for the event symbols:
+> > + */
+> > +void print_events(const char *event_glob, bool name_only, bool quiet_flag,
+> > +                     bool long_desc, bool details_flag, bool deprecated)
+> > +{
+> > +     print_symbol_events(event_glob, PERF_TYPE_HARDWARE,
+> > +                         event_symbols_hw, PERF_COUNT_HW_MAX, name_only);
+> > +
+> > +     print_symbol_events(event_glob, PERF_TYPE_SOFTWARE,
+> > +                         event_symbols_sw, PERF_COUNT_SW_MAX, name_only);
+> > +     print_tool_events(event_glob, name_only);
+> > +
+> > +     print_hwcache_events(event_glob, name_only);
+> > +
+> > +     print_pmu_events(event_glob, name_only, quiet_flag, long_desc,
+> > +                     details_flag, deprecated);
+> > +
+> > +     if (event_glob != NULL)
+> > +             return;
+> > +
+> > +     if (!name_only) {
+> > +             printf("  %-50s [%s]\n",
+> > +                    "rNNN",
+> > +                    event_type_descriptors[PERF_TYPE_RAW]);
+> > +             printf("  %-50s [%s]\n",
+> > +                    "cpu/t1=v1[,t2=v2,t3 ...]/modifier",
+> > +                    event_type_descriptors[PERF_TYPE_RAW]);
+> > +             if (pager_in_use())
+> > +                     printf("   (see 'man perf-list' on how to encode it)\n\n");
+> > +
+> > +             printf("  %-50s [%s]\n",
+> > +                    "mem:<addr>[/len][:access]",
+> > +                     event_type_descriptors[PERF_TYPE_BREAKPOINT]);
+> > +             if (pager_in_use())
+> > +                     printf("\n");
+> > +     }
+> > +
+> > +     print_tracepoint_events(NULL, NULL, name_only);
+> > +
+> > +     print_sdt_events(NULL, NULL, name_only);
+> > +
+> > +     metricgroup__print(true, true, NULL, name_only, details_flag);
+> > +
+> > +     print_libpfm_events(name_only, long_desc);
+> > +}
+> > diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-events.h
+> > new file mode 100644
+> > index 000000000000..cf64e8129c1b
+> > --- /dev/null
+> > +++ b/tools/perf/util/print-events.h
+> > @@ -0,0 +1,21 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __PERF_PRINT_EVENTS_H
+> > +#define __PERF_PRINT_EVENTS_H
+> > +
+> > +#include <stdbool.h>
+> > +
+> > +struct event_symbol;
+> > +
+> > +void print_events(const char *event_glob, bool name_only, bool quiet,
+> > +               bool long_desc, bool details_flag, bool deprecated);
+> > +int print_hwcache_events(const char *event_glob, bool name_only);
+> > +void print_sdt_events(const char *subsys_glob, const char *event_glob,
+> > +                   bool name_only);
+> > +void print_symbol_events(const char *event_glob, unsigned int type,
+> > +                      struct event_symbol *syms, unsigned int max,
+> > +                      bool name_only);
+> > +void print_tool_events(const char *event_glob, bool name_only);
+> > +void print_tracepoint_events(const char *subsys_glob, const char *event_glob,
+> > +                          bool name_only);
+> > +
+> > +#endif /* __PERF_PRINT_EVENTS_H */
+> > diff --git a/tools/perf/util/trace-event-info.c b/tools/perf/util/trace-event-info.c
+> > index a65f65d0857e..fbc6d14aabbb 100644
+> > --- a/tools/perf/util/trace-event-info.c
+> > +++ b/tools/perf/util/trace-event-info.c
+> > @@ -19,16 +19,24 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/zalloc.h>
+> >  #include <internal/lib.h> // page_size
+> > +#include <sys/param.h>
+> >
+> >  #include "trace-event.h"
+> > +#include "tracepoint.h"
+> >  #include <api/fs/tracing_path.h>
+> >  #include "evsel.h"
+> >  #include "debug.h"
+> >
+> >  #define VERSION "0.6"
+> > +#define MAX_EVENT_LENGTH 512
+> >
+> >  static int output_fd;
+> >
+> > +struct tracepoint_path {
+> > +     char *system;
+> > +     char *name;
+> > +     struct tracepoint_path *next;
+> > +};
+> >
+> >  int bigendian(void)
+> >  {
+> > @@ -400,6 +408,92 @@ put_tracepoints_path(struct tracepoint_path *tps)
+> >       }
+> >  }
+> >
+> > +static struct tracepoint_path *tracepoint_id_to_path(u64 config)
+> > +{
+> > +     struct tracepoint_path *path = NULL;
+> > +     DIR *sys_dir, *evt_dir;
+> > +     struct dirent *sys_dirent, *evt_dirent;
+> > +     char id_buf[24];
+> > +     int fd;
+> > +     u64 id;
+> > +     char evt_path[MAXPATHLEN];
+> > +     char *dir_path;
+> > +
+> > +     sys_dir = tracing_events__opendir();
+> > +     if (!sys_dir)
+> > +             return NULL;
+> > +
+> > +     for_each_subsystem(sys_dir, sys_dirent) {
+> > +             dir_path = get_events_file(sys_dirent->d_name);
+> > +             if (!dir_path)
+> > +                     continue;
+> > +             evt_dir = opendir(dir_path);
+> > +             if (!evt_dir)
+> > +                     goto next;
+> > +
+> > +             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > +
+> > +                     scnprintf(evt_path, MAXPATHLEN, "%s/%s/id", dir_path,
+> > +                               evt_dirent->d_name);
+> > +                     fd = open(evt_path, O_RDONLY);
+> > +                     if (fd < 0)
+> > +                             continue;
+> > +                     if (read(fd, id_buf, sizeof(id_buf)) < 0) {
+> > +                             close(fd);
+> > +                             continue;
+> > +                     }
+> > +                     close(fd);
+> > +                     id = atoll(id_buf);
+> > +                     if (id == config) {
+> > +                             put_events_file(dir_path);
+> > +                             closedir(evt_dir);
+> > +                             closedir(sys_dir);
+> > +                             path = zalloc(sizeof(*path));
+> > +                             if (!path)
+> > +                                     return NULL;
+> > +                             if (asprintf(&path->system, "%.*s", MAX_EVENT_LENGTH, sys_dirent->d_name) < 0) {
+> > +                                     free(path);
+> > +                                     return NULL;
+> > +                             }
+> > +                             if (asprintf(&path->name, "%.*s", MAX_EVENT_LENGTH, evt_dirent->d_name) < 0) {
+> > +                                     zfree(&path->system);
+> > +                                     free(path);
+> > +                                     return NULL;
+> > +                             }
+> > +                             return path;
+> > +                     }
+> > +             }
+> > +             closedir(evt_dir);
+> > +next:
+> > +             put_events_file(dir_path);
+> > +     }
+> > +
+> > +     closedir(sys_dir);
+> > +     return NULL;
+> > +}
+> > +
+> > +static struct tracepoint_path *tracepoint_name_to_path(const char *name)
+> > +{
+> > +     struct tracepoint_path *path = zalloc(sizeof(*path));
+> > +     char *str = strchr(name, ':');
+> > +
+> > +     if (path == NULL || str == NULL) {
+> > +             free(path);
+> > +             return NULL;
+> > +     }
+> > +
+> > +     path->system = strndup(name, str - name);
+> > +     path->name = strdup(str+1);
+> > +
+> > +     if (path->system == NULL || path->name == NULL) {
+> > +             zfree(&path->system);
+> > +             zfree(&path->name);
+> > +             zfree(&path);
+> > +     }
+> > +
+> > +     return path;
+> > +}
+> > +
+> >  static struct tracepoint_path *
+> >  get_tracepoints_path(struct list_head *pattrs)
+> >  {
+> > diff --git a/tools/perf/util/tracepoint.c b/tools/perf/util/tracepoint.c
+> > new file mode 100644
+> > index 000000000000..89ef56c43311
+> > --- /dev/null
+> > +++ b/tools/perf/util/tracepoint.c
+> > @@ -0,0 +1,63 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include "tracepoint.h"
+> > +
+> > +#include <errno.h>
+> > +#include <fcntl.h>
+> > +#include <stdio.h>
+> > +#include <sys/param.h>
+> > +#include <unistd.h>
+> > +
+> > +#include <api/fs/tracing_path.h>
+> > +
+> > +int tp_event_has_id(const char *dir_path, struct dirent *evt_dir)
+> > +{
+> > +     char evt_path[MAXPATHLEN];
+> > +     int fd;
+> > +
+> > +     snprintf(evt_path, MAXPATHLEN, "%s/%s/id", dir_path, evt_dir->d_name);
+> > +     fd = open(evt_path, O_RDONLY);
+> > +     if (fd < 0)
+> > +             return -EINVAL;
+> > +     close(fd);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/*
+> > + * Check whether event is in <debugfs_mount_point>/tracing/events
+> > + */
+> > +int is_valid_tracepoint(const char *event_string)
+> > +{
+> > +     DIR *sys_dir, *evt_dir;
+> > +     struct dirent *sys_dirent, *evt_dirent;
+> > +     char evt_path[MAXPATHLEN];
+> > +     char *dir_path;
+> > +
+> > +     sys_dir = tracing_events__opendir();
+> > +     if (!sys_dir)
+> > +             return 0;
+> > +
+> > +     for_each_subsystem(sys_dir, sys_dirent) {
+> > +             dir_path = get_events_file(sys_dirent->d_name);
+> > +             if (!dir_path)
+> > +                     continue;
+> > +             evt_dir = opendir(dir_path);
+> > +             if (!evt_dir)
+> > +                     goto next;
+> > +
+> > +             for_each_event(dir_path, evt_dir, evt_dirent) {
+> > +                     snprintf(evt_path, MAXPATHLEN, "%s:%s",
+> > +                              sys_dirent->d_name, evt_dirent->d_name);
+> > +                     if (!strcmp(evt_path, event_string)) {
+> > +                             closedir(evt_dir);
+> > +                             closedir(sys_dir);
+> > +                             return 1;
+> > +                     }
+> > +             }
+> > +             closedir(evt_dir);
+> > +next:
+> > +             put_events_file(dir_path);
+> > +     }
+> > +     closedir(sys_dir);
+> > +     return 0;
+> > +}
+> > diff --git a/tools/perf/util/tracepoint.h b/tools/perf/util/tracepoint.h
+> > new file mode 100644
+> > index 000000000000..c4a110fe87d7
+> > --- /dev/null
+> > +++ b/tools/perf/util/tracepoint.h
+> > @@ -0,0 +1,25 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __PERF_TRACEPOINT_H
+> > +#define __PERF_TRACEPOINT_H
+> > +
+> > +#include <dirent.h>
+> > +#include <string.h>
+> > +
+> > +int tp_event_has_id(const char *dir_path, struct dirent *evt_dir);
+> > +
+> > +#define for_each_event(dir_path, evt_dir, evt_dirent)                \
+> > +     while ((evt_dirent = readdir(evt_dir)) != NULL)         \
+> > +             if (evt_dirent->d_type == DT_DIR &&             \
+> > +                 (strcmp(evt_dirent->d_name, ".")) &&        \
+> > +                 (strcmp(evt_dirent->d_name, "..")) &&       \
+> > +                 (!tp_event_has_id(dir_path, evt_dirent)))
+> > +
+> > +#define for_each_subsystem(sys_dir, sys_dirent)                      \
+> > +     while ((sys_dirent = readdir(sys_dir)) != NULL)         \
+> > +             if (sys_dirent->d_type == DT_DIR &&             \
+> > +                 (strcmp(sys_dirent->d_name, ".")) &&        \
+> > +                 (strcmp(sys_dirent->d_name, "..")))
+> > +
+> > +int is_valid_tracepoint(const char *event_string);
+> > +
+> > +#endif /* __PERF_TRACEPOINT_H */
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
+>
+> --
+>
+> - Arnaldo
