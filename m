@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14D030E61E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE27230E620
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhBCWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:34:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        id S232990AbhBCWe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:34:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45279 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232679AbhBCWeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:34:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF9164F60;
-        Wed,  3 Feb 2021 22:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612391603;
-        bh=SU93X/dLj/O4dxzL3tZabdkks0gkHS7Hl/zs63xxgoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CytkYwap+IhyrXIUEDb8dD+v96QlEtYPxdQBuKIJziszhiAFt6Gn7qFSKDSYRatxZ
-         PLYzHpuHA4OgBZshJ1bU2yqbDkUnM7DKvbibTZrvynkt3I4CMKC3RU1eCchwYGzCgw
-         CgimbjuNBn+CB3bjX7CXgjbMT4aD8F13FVDD7fj8=
-Date:   Wed, 3 Feb 2021 23:33:21 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        id S232866AbhBCWeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:34:22 -0500
+IronPort-SDR: 86tdHmc3RFuPjEMuV6t4nX3OiRu2f8B1NZxHF62YIaimUWMWLdQfWeKuUDLjoD3sruzyEBdcB7
+ Lc7D67BmXEZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168812233"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="168812233"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:33:35 -0800
+IronPort-SDR: BiTfgGiCuRiqnGGyD3oA/vCjTN/Corbs6i2mXb3+HOgc5kWbqRa+FmYIfR4oPjm/0n1Piije2p
+ E78hn2W/98zA==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="392673483"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:33:33 -0800
+From:   ira.weiny@intel.com
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RESEND v4 1/6] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <YBsksQC980VNVPqd@kroah.com>
-References: <cover.1612390291.git.gustavo.pimentel@synopsys.com>
- <bba090c3d9d3d90fb2dfe5f2aaa52c155d87958f.1612390291.git.gustavo.pimentel@synopsys.com>
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs/coredump: Use kmap_local_page()
+Date:   Wed,  3 Feb 2021 14:33:28 -0800
+Message-Id: <20210203223328.558945-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bba090c3d9d3d90fb2dfe5f2aaa52c155d87958f.1612390291.git.gustavo.pimentel@synopsys.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:12:46PM +0100, Gustavo Pimentel wrote:
-> +	/* Sysfs */
-> +	err = sysfs_create_group(&pdev->dev.kobj, &xdata_attr_group);
-> +	if (err)
-> +		return err;
-> +
-> +	err = sysfs_create_link(kernel_kobj, &pdev->dev.kobj,
-> +				DW_XDATA_DRIVER_NAME);
-> +	if (err)
-> +		return err;
+From: Ira Weiny <ira.weiny@intel.com>
 
-Huge hint, if you EVER call sysfs_* in a driver, you are doing something
-wrong.
+In dump_user_range() there is no reason for the mapping to be global.
+Use kmap_local_page() rather than kmap.
 
-You just raced userspace and lost, use the default attribute group for
-your driver so that the driver core can automatically create the needed
-sysfs files.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ fs/coredump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And drop the symlink, that's just crazy, never do that, I don't think
-it's doing what you think it is doing, not to mention you did not
-document it...
+diff --git a/fs/coredump.c b/fs/coredump.c
+index a2f6ecc8e345..53f63e176a2a 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -894,10 +894,10 @@ int dump_user_range(struct coredump_params *cprm, unsigned long start,
+ 		 */
+ 		page = get_dump_page(addr);
+ 		if (page) {
+-			void *kaddr = kmap(page);
++			void *kaddr = kmap_local_page(page);
+ 
+ 			stop = !dump_emit(cprm, kaddr, PAGE_SIZE);
+-			kunmap(page);
++			kunmap_local(kaddr);
+ 			put_page(page);
+ 		} else {
+ 			stop = !dump_skip(cprm, PAGE_SIZE);
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
-thanks,
-
-greg k-h
