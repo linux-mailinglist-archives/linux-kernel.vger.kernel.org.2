@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1F30D68D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508B030D66A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhBCJpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:45:43 -0500
-Received: from mga01.intel.com ([192.55.52.88]:52802 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233105AbhBCJpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:45:20 -0500
-IronPort-SDR: PYaT1jFMCjp+wM77q3CSY+H1DJq9Kh8R2MjuAfmS5uzkjyi7T2AQhm5s221/FFcT/sq3xrZdcU
- YYEFH8RMvbBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="199968631"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="199968631"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:42:16 -0800
-IronPort-SDR: S8NKJpoHR43yahxBwwC489fxvEByvmCjRfpxvztC3wxCj3ILzn+/ozMqSz2X29tHWIIO8gVudD
- irHWAJwHvnfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="480285048"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Feb 2021 01:42:14 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, Yian Chen <yian.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 3/3] iommu/vt-d: Apply SATC policy
-Date:   Wed,  3 Feb 2021 17:33:28 +0800
-Message-Id: <20210203093329.1617808-4-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210203093329.1617808-1-baolu.lu@linux.intel.com>
-References: <20210203093329.1617808-1-baolu.lu@linux.intel.com>
+        id S231389AbhBCJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhBCJgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:36:48 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8220CC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:36:08 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id e18so27465107lja.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6GnRcNKibxztYcvUQzDGCgHL6AviuIrNT8YjYqp4o+g=;
+        b=FULorK8vsWlfT9sFbadP6z4zJxOs9AiVRnvUe7J2rfjR8hquBrIAC9NlypGz9UeYow
+         fXSHbY/48b4B5FIWctnJBzdDTMZq9tEReP6vEhxmitTovmHof64D1sG8EOw5cefbG83b
+         b6WHunVOHISOl9wNdGRCjou+X/7CDB2GZGoy1u48n6WpbKI7eHXwxjaSrEfO+KrQAeGa
+         MiIrxSEsA6COQt6+e85FcGXmmkpNbcJ6g/AC8Pvg2DqvXoSiLe8ytw/3OA8kIkmwOMSD
+         yBCRLiGLJ8rT5lH/iTbOBidfsCnzjchOZKQeN/OhXQqHkDq0+TtRW3ouM6MyzaxbLyzz
+         Rqvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6GnRcNKibxztYcvUQzDGCgHL6AviuIrNT8YjYqp4o+g=;
+        b=luA8x/joA5yAdWRU8TCEu2UxsJ7a9ybFeEIbGz/1xOxt7A/covvwLqj0pdYWwk0kt/
+         0SHTCtQ7jmdaYGYzOna+9v3wwk5mglaL2MGGLjlhhceVp7D92/lhTFZ4gJWsx72wZ45G
+         55r0oELS3haM2S75Y96WtszhSp/8DFFgndxQJqfpNfe2A8a2DbixbDrfFjNZPXoo1AWQ
+         QMGgcwuSEWBeOXvMWRD/JTf317GwzvZF4toZoyRV1tVrx/ZhdAk5smyK4F4mTm6V8SUu
+         FTZpxlQtjdYwZM0AAXMWWnlh6uvSckVYdUleTowMEjiImO9kXz95BWZ54e/wSA7p9TBn
+         Hhdw==
+X-Gm-Message-State: AOAM532kcmuJIGDF20gnZEsyvBgmwAPbS/H5m29ovBOwMgfVKqZuJelC
+        Sg2+Y0dkRS4V5DGjKzMl/iPOR29co9yg5WqzMd/keg==
+X-Google-Smtp-Source: ABdhPJy4FflXpUjChVW+K6gb6Ck95k2cKDdhJLsDyahupxAN2akbTAdmitGaAnNIhYk43WdM7SiuRSAXZjsbLKYTmG8=
+X-Received: by 2002:a2e:8746:: with SMTP id q6mr1238712ljj.326.1612344967044;
+ Wed, 03 Feb 2021 01:36:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210202205544.24812-1-robh@kernel.org>
+In-Reply-To: <20210202205544.24812-1-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Feb 2021 10:35:56 +0100
+Message-ID: <CACRpkdZF1zvykXj58oKjBVqomH86BSW8N=noDs8q3BA--CLAvw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: Fix undocumented compatible strings in examples
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yian Chen <yian.chen@intel.com>
+On Tue, Feb 2, 2021 at 9:55 PM Rob Herring <robh@kernel.org> wrote:
 
-Starting from Intel VT-d v3.2, Intel platform BIOS can provide a new SATC
-table structure. SATC table lists a set of SoC integrated devices that
-require ATC to work (VT-d specification v3.2, section 8.8). Furthermore,
-the new version of IOMMU supports SoC device ATS in both its Scalable mode
-and legacy mode.
+> Running 'dt-validate -m' will flag any compatible strings missing a schema.
+> Fix all the errors found in DT binding examples. Most of these are just
+> typos.
+>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Daniel Palmer <daniel@thingy.jp>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Avi Fishman <avifishman70@gmail.com>
+> Cc: Tomer Maimon <tmaimon77@gmail.com>
+> Cc: Tali Perry <tali.perry1@gmail.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Cc: Vincent Cheng <vincent.cheng.xh@renesas.com>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-watchdog@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-When IOMMU is working in scalable mode, software must enable device ATS
-support. On the other hand, when IOMMU is in legacy mode for whatever
-reason, the hardware managed ATS will automatically take effect and the
-SATC required devices can work transparently to the software. As the
-result, software shouldn't enable ATS on that device, otherwise duplicate
-device TLB invalidations will occur.
+Ooops.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Yian Chen <yian.chen@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 73 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index ee0932307d64..3e30c340e6a9 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -872,6 +872,60 @@ static bool iommu_is_dummy(struct intel_iommu *iommu, struct device *dev)
- 	return false;
- }
- 
-+static bool iommu_support_ats(struct intel_iommu *iommu)
-+{
-+	return ecap_dev_iotlb_support(iommu->ecap);
-+}
-+
-+static bool device_support_ats(struct pci_dev *dev)
-+{
-+	return pci_ats_supported(dev) && dmar_find_matched_atsr_unit(dev);
-+}
-+
-+static int segment_atc_required(u16 segment)
-+{
-+	struct acpi_dmar_satc *satc;
-+	struct dmar_satc_unit *satcu;
-+	int ret = 1;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(satcu, &dmar_satc_units, list) {
-+		satc = container_of(satcu->hdr, struct acpi_dmar_satc, header);
-+		if (satcu->atc_required && satcu->devices_cnt &&
-+		    satc->segment == segment)
-+			goto out;
-+	}
-+	ret = 0;
-+out:
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
-+static int device_atc_required(struct pci_dev *dev)
-+{
-+	struct dmar_satc_unit *satcu;
-+	struct acpi_dmar_satc *satc;
-+	struct device *tmp;
-+	int i, ret = 1;
-+
-+	dev = pci_physfn(dev);
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(satcu, &dmar_satc_units, list) {
-+		satc = container_of(satcu->hdr, struct acpi_dmar_satc, header);
-+		if (!satcu->atc_required ||
-+		    satc->segment != pci_domain_nr(dev->bus))
-+			continue;
-+
-+		for_each_dev_scope(satcu->devices, satcu->devices_cnt, i, tmp)
-+			if (to_pci_dev(tmp) == dev)
-+				goto out;
-+	}
-+	ret = 0;
-+out:
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
- struct intel_iommu *device_to_iommu(struct device *dev, u8 *bus, u8 *devfn)
- {
- 	struct dmar_drhd_unit *drhd = NULL;
-@@ -2555,10 +2609,16 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 	if (dev && dev_is_pci(dev)) {
- 		struct pci_dev *pdev = to_pci_dev(info->dev);
- 
--		if (ecap_dev_iotlb_support(iommu->ecap) &&
--		    pci_ats_supported(pdev) &&
--		    dmar_find_matched_atsr_unit(pdev))
--			info->ats_supported = 1;
-+		/*
-+		 * Support ATS by default if it's supported by both IOMMU and
-+		 * client sides, except that the device's ATS is required by
-+		 * ACPI/SATC but the IOMMU scalable mode is disabled. In that
-+		 * case the hardware managed ATS will be automatically used.
-+		 */
-+		if (iommu_support_ats(iommu) && device_support_ats(pdev)) {
-+			if (!device_atc_required(pdev) || sm_supported(iommu))
-+				info->ats_supported = 1;
-+		}
- 
- 		if (sm_supported(iommu)) {
- 			if (pasid_supported(iommu)) {
-@@ -3155,6 +3215,11 @@ static int __init init_dmars(void)
- 	 * endfor
- 	 */
- 	for_each_drhd_unit(drhd) {
-+		if (pci_ats_disabled() && segment_atc_required(drhd->segment)) {
-+			pr_warn("Scalable mode disabled -- Use hardware managed ATS because PCIe ATS is disabled but some devices in PCIe segment 0x%x require it.",
-+				drhd->segment);
-+			intel_iommu_sm = 0;
-+		}
- 		/*
- 		 * lock not needed as this is only incremented in the single
- 		 * threaded kernel __init code path all other access are read
--- 
-2.25.1
-
+Yours,
+Linus Walleij
