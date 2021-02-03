@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A247B30DCA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A6D30DC86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhBCOYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:24:55 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45708 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbhBCOYe (ORCPT
+        id S232408AbhBCOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:20:13 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12017 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231629AbhBCOUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:24:34 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1FA421C0BB5; Wed,  3 Feb 2021 15:23:37 +0100 (CET)
-Date:   Wed, 3 Feb 2021 15:23:36 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] leds: lp50xx: remove unused regulator
-Message-ID: <20210203142336.GA12369@duo.ucw.cz>
-References: <20210203083408.2534-1-schuchmann@schleissheimer.de>
- <20210203090249.GA14154@amd>
- <2e9dff78-7fde-404d-6fad-6aeedf1145d1@ti.com>
+        Wed, 3 Feb 2021 09:20:10 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DW3gL4wXYzjJNq;
+        Wed,  3 Feb 2021 22:18:06 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Feb 2021 22:19:17 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <palmer@dabbelt.com>, <atish.patra@wdc.com>,
+        <linux-riscv@lists.infradead.org>
+CC:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        <linux-kernel@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH -next] RISCV: Add some depends for NUMA
+Date:   Wed, 3 Feb 2021 22:23:43 +0800
+Message-ID: <20210203142343.59781-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Content-Disposition: inline
-In-Reply-To: <2e9dff78-7fde-404d-6fad-6aeedf1145d1@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The numa feature is useless for riscv32 platform(MAXPHYSMEM_1GB if 32bit),
+and it should depends on SMP feature, this also fix the build error,
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  riscv64-buildroot-linux-gnu-ld: mm/page_alloc.o: in function `.L0 ':
+  page_alloc.c:(.text+0x4808): undefined reference to `node_reclaim_distance'
 
-On Wed 2021-02-03 07:49:35, Dan Murphy wrote:
-> Pavel
->=20
-> On 2/3/21 3:02 AM, Pavel Machek wrote:
-> > On Wed 2021-02-03 08:34:08, Sven Schuchmann wrote:
-> > > The regulator for vled-supply is unused in the driver.
-> > > It is just assigned from DT and disabled in lp50xx_remove.
-> > > So the code can be removed from the driver.
-> > Dan, what is going on here? Do we need to also enable the regulator,
-> > or is the removal correct thing to do?
-> >=20
-> I think it would be better to do an enable as opposed to removing the cod=
-e.
->=20
-> This would be needed especially in applications that have to meet strict
-> power management requirements.
->=20
-> Users may want to disable or enable the regulator during suspend/resume.
-> Otherwise it would be considered always-on and the regulator does not need
-> to be populated.
+Fixes: 4f0e8eef772e ("riscv: Add numa support for riscv64 platform")
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ arch/riscv/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Do you have set up where this is needed and you can test this? Will
-you submit the fixes?
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 22fa17898d29..ac7f5801bd82 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -312,6 +312,8 @@ endchoice
+ # Common NUMA Features
+ config NUMA
+ 	bool "NUMA Memory Allocation and Scheduler Support"
++	depends on SMP
++	depends on 64BIT
+ 	select GENERIC_ARCH_NUMA
+ 	select OF_NUMA
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
+-- 
+2.26.2
 
-Best regards,
-
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBqx6AAKCRAw5/Bqldv6
-8jFQAKCyPEEBmWIfS2dealtjPjKjlpJHBACeOJjX45J5QLjGO8fmQ0dbBipQBEw=
-=u8q6
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
