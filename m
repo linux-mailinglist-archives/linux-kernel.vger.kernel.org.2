@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EEC30DFFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5168D30E00B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBCQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:47:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229638AbhBCQr2 (ORCPT
+        id S231210AbhBCQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:50:34 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33876 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhBCQuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:47:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612370761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2IpYhJIVwRhODxe05ALBJDVQ3g0p1rJxJONUIEZyW1I=;
-        b=iTuxflgqawvT/My3MRg9nziKTt4TgpWZC39wlTAluwO83WxFnyBsLSJzzMqQGlNtDYw8Ri
-        XalCFiSjRk2x/sOaDLfm+nk2bfhXCiArhzh2Hq4BHaMydPPfNwiwEKKBr8aFE9WcGOUAD4
-        xBtd6FcBQvbZWXtctM7lzWUZNAjN+vE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-u7Oarx0dNVeYmPRidIlOFg-1; Wed, 03 Feb 2021 11:45:57 -0500
-X-MC-Unique: u7Oarx0dNVeYmPRidIlOFg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5230D1E19;
-        Wed,  3 Feb 2021 16:45:56 +0000 (UTC)
-Received: from localhost (ovpn-115-141.ams2.redhat.com [10.36.115.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13D941971C;
-        Wed,  3 Feb 2021 16:45:52 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 16:45:51 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
-Message-ID: <20210203164551.GG74271@stefanha-x1.localdomain>
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-9-sgarzare@redhat.com>
- <20210202093412.GA243557@stefanha-x1.localdomain>
- <20210202154950.g3rclpigyaigzfgo@steredhat>
+        Wed, 3 Feb 2021 11:50:24 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113Gcwgs157095;
+        Wed, 3 Feb 2021 16:48:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=7PpAYVzyIqIJ+B85/c1uwsNEo+c61KKpGfHeJdunKKY=;
+ b=ayVRKQaMadiGFbxDog4vECX5QTZSO8bYUT/djkAaoJhoSsyiGnz9ZR7oaWd3bCCSjxcJ
+ s7is/Z/gPjcGm82/sdCMlMdrnUZu7SH5RfI+DKZVwRsSrbNEvrjjCoG8wrjXmc/T6VO5
+ jwAaaCss/qDAdIfjpwVjs7N4rJSBIBxFNxwQwCUofBJwG+rI+YKLC2vmcanmolPprp6G
+ hesG19ptDvetV4+wlW4ngXUQuxfB7m1HtDWsmWAQ534gOyhC3uXFDcnJHAa63Q0xp3I1
+ q+VQvtN+QW9AW1xW2oSYNaWcf23t7JNGwC77GWb6OSQlB0pJHHTjXxEd6QnmdInqGQMO xQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36cydm11y5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Feb 2021 16:48:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113Gf4BX168170;
+        Wed, 3 Feb 2021 16:46:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 36dhc1chvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Feb 2021 16:46:51 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 113GkeAR006957;
+        Wed, 3 Feb 2021 16:46:41 GMT
+Received: from [10.175.189.55] (/10.175.189.55)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Feb 2021 08:46:40 -0800
+Subject: Re: [PATCH v8 02/14] mm/gup: check every subpage of a compound page
+ during isolation
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org, James Morris <jmorris@namei.org>
+References: <20210125194751.1275316-1-pasha.tatashin@soleen.com>
+ <20210125194751.1275316-3-pasha.tatashin@soleen.com>
+ <05a66361-214c-2afe-22e4-12862ea1e4e2@oracle.com>
+ <CA+CK2bBSJ7T=jsukntQGqO0DoWE_MnhDwtHv-6rfXAPvznKh0Q@mail.gmail.com>
+ <ce96a71d-845b-b8d2-92d3-fc7336a765c5@oracle.com>
+Message-ID: <9f021b82-8618-3cd4-28df-1d6a9bd749cf@oracle.com>
+Date:   Wed, 3 Feb 2021 16:46:32 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qf1oXS95uex85X0R"
-Content-Disposition: inline
-In-Reply-To: <20210202154950.g3rclpigyaigzfgo@steredhat>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <ce96a71d-845b-b8d2-92d3-fc7336a765c5@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102030100
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102030100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/3/21 3:32 PM, Joao Martins wrote:
+> On 2/3/21 2:51 PM, Pavel Tatashin wrote:
+>> On Wed, Feb 3, 2021 at 8:23 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>>> On 1/25/21 7:47 PM, Pavel Tatashin wrote:
+>>> for compound pages but when !is_transparent_hugepage(head) or just PageHuge(head) like:
+>>>
+>>> +               if (!is_transparent_hugepage(head) && PageCompound(page))
+>>> +                       i += (compound_nr(head) - (pages[i] - head));
+>>>
+>>> Or making specific to hugetlbfs:
+>>>
+>>> +               if (PageHuge(head))
+>>> +                       i += (compound_nr(head) - (pages[i] - head));
+>>
+>> Yes, this is reasonable optimization. I will submit a follow up patch
+>> against linux-next.
 
---Qf1oXS95uex85X0R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Realized it late, but the previous step was already broken. And I inherited its brokeness,
+when copy-pasting the deleted chunk:
 
-On Tue, Feb 02, 2021 at 04:49:50PM +0100, Stefano Garzarella wrote:
-> On Tue, Feb 02, 2021 at 09:34:12AM +0000, Stefan Hajnoczi wrote:
-> > On Thu, Jan 28, 2021 at 03:41:25PM +0100, Stefano Garzarella wrote:
-> > > +static void vdpasim_blk_work(struct work_struct *work)
-> > > +{
-> > > +	struct vdpasim *vdpasim =3D container_of(work, struct vdpasim, work=
-);
-> > > +	u8 status =3D VIRTIO_BLK_S_OK;
-> > > +	int i;
-> > > +
-> > > +	spin_lock(&vdpasim->lock);
-> > > +
-> > > +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
-> > > +		goto out;
-> > > +
-> > > +	for (i =3D 0; i < VDPASIM_BLK_VQ_NUM; i++) {
-> > > +		struct vdpasim_virtqueue *vq =3D &vdpasim->vqs[i];
-> > > +
-> > > +		if (!vq->ready)
-> > > +			continue;
-> > > +
-> > > +		while (vringh_getdesc_iotlb(&vq->vring, &vq->out_iov,
-> > > +					    &vq->in_iov, &vq->head,
-> > > +					    GFP_ATOMIC) > 0) {
-> > > +			int write;
-> > > +
-> > > +			vq->in_iov.i =3D vq->in_iov.used - 1;
-> > > +			write =3D vringh_iov_push_iotlb(&vq->vring, &vq->in_iov,
-> > > +						      &status, 1);
-> > > +			if (write <=3D 0)
-> > > +				break;
-> >=20
-> > This code looks fragile:
-> >=20
-> > 1. Relying on unsigned underflow and the while loop in
-> >   vringh_iov_push_iotlb() to handle the case where in_iov.used =3D=3D 0=
- is
-> >   risky and could break.
-> >=20
-> > 2. Does this assume that the last in_iov element has size 1? For
-> >   example, the guest driver may send a single "in" iovec with size 513
-> >   when reading 512 bytes (with an extra byte for the request status).
-> >=20
-> > Please validate inputs fully, even in test/development code, because
-> > it's likely to be copied by others when writing production code (or
-> > deployed in production by unsuspecting users) :).
->=20
-> Perfectly agree on that, so I addressed these things, also following your
-> review on the previous version, on the next patch of this series:
-> "vdpa_sim_blk: implement ramdisk behaviour".
->=20
-> Do you think should I move these checks in this patch?
->=20
-> I did this to leave Max credit for this patch and add more code to emulat=
-e a
-> ramdisk in later patches.
+The @step should be capped at the remaining pages to iterate:
 
-You could update the commit description so it's clear that input
-validation is missing and will be added in the next commit.
+	i += min(nr_pages - i, compound_nr(head) - (pages[i] - head));
 
-Stefan
-
---Qf1oXS95uex85X0R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmAa0z8ACgkQnKSrs4Gr
-c8gfeAf+KJnbrDqgPwA7UnFlz8Vzfoi8tWfYt0wDorjtnjO0BmxywU4lo4ruVui5
-PM5ofCTMTdCWC1+fpZkFuJr3md8MQ8l/loQgm1h6R2FUC5ch8MJWspP5fEbC1cJL
-DevHe2XjGmiJwqJFudMDuWXYYMC8XdGzxnQuRXR/8adH0blrA8iRi98K/NVexQ5l
-TB/aN2ymwY2+8zRJetD2bk/ECpQYYoLEwBNBJ7VMyalnn77avf7Z9i0X8GeylmZQ
-mmcxs5BmSljciCuHi66qcUlgmdrHpDw9OO6ETWZ2vo424e9foP20+gLybW8p+lDJ
-cmrxN9N8P1781eXozZdVgklesyU1Ow==
-=Ruvz
------END PGP SIGNATURE-----
-
---Qf1oXS95uex85X0R--
-
+  Joao
