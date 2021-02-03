@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF13130DC88
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD0330DC8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhBCOUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S232704AbhBCOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhBCOUQ (ORCPT
+        with ESMTP id S232604AbhBCOUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:20:16 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7DCC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 06:19:36 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id j204so3329647wmj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 06:19:36 -0800 (PST)
+        Wed, 3 Feb 2021 09:20:18 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F9AC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 06:19:37 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id l3so17923964qvz.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 06:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=2YqmStJHtmDLb9ca8pHnXTtS9p5W2yatBMAuEkk2twc=;
-        b=swt8i8oh/CahxjCm1i2LWz1PAhEJPYcgCpXP0sqxpm2LUsKOEQR/Tv0qTZc/ayZXro
-         fM/xy/OMrvadN/XfZfFqE9II1fKG4oA2GlksIBodsSYBYT2mQdY2QmCpAWh+A33rzzL5
-         GBiuyPnm5s8VHkJgbxLVNkw+yIUI3Zicnnyitub/KQvWRFCUrkmL+zNaLx2zGrWCUXaC
-         VxvambATQYjvSZI9oXIdrBvrKIuvZMvY2pdDM60IB/BE1kKNHUXBK29B6uGPOMVY+nc5
-         fvb5tienhYATycUO0iLqHIzDap95urS27UIbmZIvUgzX0u7Xs21ZzMPJLuQDzcL3a4Gs
-         0Hwg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=gdNxs8YaM69sWh4jREuvK0RFhtTc9iQ+3CErelD+Kuw=;
+        b=mapOjrW3gKFKnloS39F2W/uU3TREbERLKqranHIMK4eMaLBf9/3W3R/SSpftpGEZmX
+         v/mRBr3ytvTjl0sEkgsidsX/VDNWn/k1P/l0e3MfQgqHgtMUcTBpqKAKHaBoL7Nq4kHj
+         wFL3UWu/k8cMoyiGQwsIIeUMRoKQoSYr2i+qhXKvL/AKFFA8+qszCNQzfHVFjnmVe4jJ
+         tzHoSa3TdvGCDOGbg9U2CvbX94ij2yFbQiqLTa2BGRO1XYbWIw+xuAk6P26e9K/gxA4w
+         5jWtkfQKy3/4xt+RUgH8l+8yT96jc/AWbu1WzuDjD2o+w1/e8y0E3Ix7JOiOSctW1+yq
+         7tZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=2YqmStJHtmDLb9ca8pHnXTtS9p5W2yatBMAuEkk2twc=;
-        b=Vnx77+bV20ifM/7FRmpangUTP5w2qfsxJ4GU86S50MidDS3CFXM924Do9kRup0UjZP
-         iom5KaaXHSA+kDxrSJru5ORjmj2u/tZM3jqhyS/xFr62oxa7CBE4qgP9eFT/Jf9wcudX
-         K5S7d4yyEXU7cZUqU4tNu9jxd6d3opVHpxk7kD8iWud6etxuDyTVKO5HK/RPAkJ6GIux
-         8WNiVSOH86I7dRB8s9k1hbmVmYLXnp/xPkYglfc7iUNaTOyjzL9NpHuxEUxBsNXNEHKC
-         3IXdJD6NyveQ+0n/TIThEy1A+qLH13G0p7WmBzn9qddPQRzMLVmDH50DyURiy+NKmso3
-         LwAA==
-X-Gm-Message-State: AOAM533/p/iGRaGttAcF14hLVIn3sCvj/izngHcvULHXzrfafpYMx09I
-        dWn6Pa2QayZug6iyedx4P7QYsodslgfI
-X-Google-Smtp-Source: ABdhPJzQ47fLWpATF9oviOBeGLZ6a+5wZlOoYomkHouoJDdnNHFlCRVtBHfc0HOJyC8UgG5y/ze+CK1Gxa5x
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=gdNxs8YaM69sWh4jREuvK0RFhtTc9iQ+3CErelD+Kuw=;
+        b=OpFwSOdsmh7mOvLW/WlorLfmIBN1gk+OzLPz5Mzk5dlbYR0zjOrm+NgjGDoTVEw122
+         Swi6vknp7bJ9CVxwIapAgU9rpFRDHbG7Q8hpFmMQGEdmaB/P5fi9P4ARZUJoPyYW5sUG
+         KVOfQCLh9TEDLxBdaQbfFIZHSvevwNZea5+j/0FR4e2Ckyf0xaDTN7ysaFO5EW/CQ9RL
+         t6XhKw8j9ra0VPRn0nOVtqsCG39jHEFNZDtgaeldUGMCki1R4rh4jP0yK69aBC+mbc1Y
+         uYXeGIFukRTaPTNG0sls6fyg3jPGnFzW8qjJmNoDe4MwNuam40bOp/esuQdTbzdAvxZ3
+         PYmQ==
+X-Gm-Message-State: AOAM533k+EPKlu1/goLw1gA1B+nZNakoT04+jc0a6zyiT7SYxBRgDygP
+        T06VLTBa9WS88pfzFIHmIiSuoc/vdgdS
+X-Google-Smtp-Source: ABdhPJzB8Ow/F/CZOHVjcn9iuSTID9Tc1GsdyyhMrHAiA0JbUl8qtRteULcOWo7SJFI+fo/OhTgbHaHKfLBI
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:4303:: with SMTP id
- q3mr3048441wma.3.1612361974461; Wed, 03 Feb 2021 06:19:34 -0800 (PST)
-Date:   Wed,  3 Feb 2021 14:19:29 +0000
-Message-Id: <20210203141931.615898-1-qperret@google.com>
+ (user=qperret job=sendgmr) by 2002:a0c:83a4:: with SMTP id
+ k33mr3010478qva.1.1612361976798; Wed, 03 Feb 2021 06:19:36 -0800 (PST)
+Date:   Wed,  3 Feb 2021 14:19:30 +0000
+In-Reply-To: <20210203141931.615898-1-qperret@google.com>
+Message-Id: <20210203141931.615898-2-qperret@google.com>
 Mime-Version: 1.0
+References: <20210203141931.615898-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH 0/2] KVM: arm64: Stub exports in nvhe code
+Subject: [PATCH 1/2] asm-generic: export: Stub EXPORT_SYMBOL with __DISABLE_EXPORTS
 From:   Quentin Perret <qperret@google.com>
 To:     arnd@arndb.de, maz@kernel.org, catalin.marinas@arm.com,
         will@kernel.org
@@ -63,41 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+It is currently possible to stub EXPORT_SYMBOL() macros in C code using
+__DISABLE_EXPORTS, which is necessary to run in constrained environments
+such as the EFI stub or the decompressor. But this currently doesn't
+apply to exports from assembly, which can lead to somewhat confusing
+situations.
 
-In the context of the currently ongoing work to remove the host kernel
-from the TCB under KVM/arm64, I have been trying to wrap the host kernel
-with a stage 2 page-table -- see [1].
+Consolidate the __DISABLE_EXPORTS infrastructure by checking it from
+asm-generic/export.h as well.
 
-Using this infrastructure, I attempted to unmap the .hyp. sections from
-the host stage 2 as it really shouldn't need to access them. But by
-doing so, I realized quickly the module loader was getting very confused
-by the usage of EXPORT_SYMBOL() macros in library functions that have
-been pulled into the EL2 object, and that we end up linking modules
-against the EL2 copy of e.g. memset. And so, this series essentially
-tries to fix this.
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ include/asm-generic/export.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- - Patch 01 changes asm-generic/export.h to ensure we respect
-   __DISABLE_EXPORTS even for asm exports;
-
- - and patch 02 makes use of it for all of the nVHE EL2 code.
-
-This was tested on aml-s905x-cc, which now successfully loads kernel
-modules with .hyp.text unmapped from the host.
-
-Thanks,
-Quentin
-
-[1] https://lore.kernel.org/kvmarm/20210108121524.656872-1-qperret@google.com/
-
-Quentin Perret (2):
-  asm-generic: export: Stub EXPORT_SYMBOL with __DISABLE_EXPORTS
-  KVM: arm64: Stub EXPORT_SYMBOL for nVHE EL2 code
-
- arch/arm64/kvm/hyp/nvhe/Makefile | 4 ++--
- include/asm-generic/export.h     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
+diff --git a/include/asm-generic/export.h b/include/asm-generic/export.h
+index 365345f9a9e3..07a36a874dca 100644
+--- a/include/asm-generic/export.h
++++ b/include/asm-generic/export.h
+@@ -33,7 +33,7 @@
+  */
+ 
+ .macro ___EXPORT_SYMBOL name,val,sec
+-#ifdef CONFIG_MODULES
++#if defined(CONFIG_MODULES) && !defined(__DISABLE_EXPORTS)
+ 	.section ___ksymtab\sec+\name,"a"
+ 	.balign KSYM_ALIGN
+ __ksymtab_\name:
 -- 
 2.30.0.365.g02bc693789-goog
 
