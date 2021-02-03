@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAE130D957
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6BC30D964
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhBCL7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:59:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47941 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234421AbhBCL7M (ORCPT
+        id S234442AbhBCMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234162AbhBCMAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:59:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612353466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u9U3VSpDQSD/KsDApyXK6tPmD8iQWbI6YSpXdCHYYUY=;
-        b=X/HUiZoJvKm98YdQ25FvH9g5FxnfxRhR/dqVXXn7yTdmtlkLGd/a8UakGuII2q6lhoCHdc
-        HYfCo2thn2+FLZnz8F4jKc9Iy+hCSNp4RxiDMCEPBuqy+F6R65HtL1BThkZK7kpgFDRUKQ
-        NFwjAaQcqqwIAbJiLt5lChIaNzA3iJo=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-fi-yIYANMjSVqJyk0rNURw-1; Wed, 03 Feb 2021 06:57:44 -0500
-X-MC-Unique: fi-yIYANMjSVqJyk0rNURw-1
-Received: by mail-ej1-f72.google.com with SMTP id eb5so2147525ejc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:57:44 -0800 (PST)
+        Wed, 3 Feb 2021 07:00:35 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595ACC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 03:59:55 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id y142so8510175pfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4uA7JS93JPw+++xZutM775VMPEwshLnvxHWwIlWPugU=;
+        b=d2+USt6GcAhvlOc8tGw3hsChBNWfxsSnLznhf7fC6VHAyqS/x37U9wf21RzuKaqpEc
+         Gu0rihcnDrxrnxt7uXUJl7jBPFQtpBns9Hw96l3h5hWQzQWSyLODxP1tOdU1uv+uslnQ
+         P5cHSHV0uzntCFocPks3q0MkcoC4SwzEGPyBo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=u9U3VSpDQSD/KsDApyXK6tPmD8iQWbI6YSpXdCHYYUY=;
-        b=oB68gS8Q/JiJcpSFcVEWQ/82WQ4ErrtTf+Pf+BWRHTn684AG4Zg2ZQUi7O/rfAIovs
-         TNoOOjrY64oAgQSQScV1Xl2enIJS51GcKHwBiwG62DbHOM2aSkVdQsH9+2wCqJ6j3m9p
-         K4RVWxRCOZQHlhn61mdIixtU5vyUvWvgwokbGQwlZq4uU4g7xp9h8WHBKQXHYtxeviZu
-         k1RpNpHaaHIuW7RsR97f/TqPSh03GQq+kRiSHTuOVWaK+LGp9XSbplo+DtzrxjgNhlDU
-         zWQkG3UKFyDYrxj1RibRiw3V2iMxUFfcgyE9jQZeJDFVtfxzcotWlTYhIJmDOfhCXwCz
-         skGg==
-X-Gm-Message-State: AOAM533lVE0KE+bZ35S5KcV+JcPo1f8mo+FbaCEb9zQyyDM7z+zzAHOk
-        IfRIcJgWH/05vPKYfNu9TUOj14+gfB3rl1yNSOpkYdoaSXXL2Iuc575/9FTRsxgXaeB+P94a4Td
-        XUZgukGdyWahXxlmhEf7JB6oP
-X-Received: by 2002:a05:6402:1642:: with SMTP id s2mr2435753edx.360.1612353463638;
-        Wed, 03 Feb 2021 03:57:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwVkfWTIEQrO9vWCZ2vQ13K+3xHCWHXMLYnnJhZzDcuCEnWeDXkP6kDbAirVUMBgxJrne/hcQ==
-X-Received: by 2002:a05:6402:1642:: with SMTP id s2mr2435745edx.360.1612353463498;
-        Wed, 03 Feb 2021 03:57:43 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r4sm757194edv.27.2021.02.03.03.57.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 03:57:42 -0800 (PST)
-Subject: Re: [PATCH v15 07/14] KVM: VMX: Emulate reads and writes to CET MSRs
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yu.c.zhang@linux.intel.com
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-8-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6a743d57-8128-b5db-ddc1-9dd4c4c1004e@redhat.com>
-Date:   Wed, 3 Feb 2021 12:57:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=4uA7JS93JPw+++xZutM775VMPEwshLnvxHWwIlWPugU=;
+        b=oYBV2fTrqy8MrtfNSz7gQ0wrSnXjqiBxxlgM0lsEPJ9+srLvAe+4jt1arrCwsF5CiK
+         D8Q5hJPxXgYg/292n93R+CeI4lVNqEoeRN77Vlv/DvIlkPC4m+5eirKHTC1yqJuOqu0t
+         k8sdNY9ZPleuv//NUVnyEc5Bhc18t1Rkoux1rlxghwRkm3v40Dxpx9WfEbRAAQwcyqgZ
+         HKLxRWoL9NkGc2jgR4TAQodD+Ye1W2p8O3gvRv8BuX3xe6zukhldaNdtwW1n3vP0V4up
+         l8j8bjmMzz0DuJZ7pi2l/VIzsH5lc5plZLBu02CJC6natsAObv9wVDTP5yT8PpYPiu6A
+         FcLw==
+X-Gm-Message-State: AOAM533zOswoejlKs6Bk+os/8C48n4KxyxdQKIK0i3Dbic9wPJPgxlsc
+        1ozfJb0IWnD+w2pxviB7IW+3R85/h2dTaA==
+X-Google-Smtp-Source: ABdhPJytDZ4HM1r1NSCsMK44ojj+trhGOJ6I1kDuMv1LN3tUVACngwIVni/g2RNcS/9H77+1iU6anA==
+X-Received: by 2002:a63:ca51:: with SMTP id o17mr3244885pgi.314.1612353594659;
+        Wed, 03 Feb 2021 03:59:54 -0800 (PST)
+Received: from localhost (2001-44b8-1113-6700-1c59-4eca-f876-fd51.static.ipv6.internode.on.net. [2001:44b8:1113:6700:1c59:4eca:f876:fd51])
+        by smtp.gmail.com with ESMTPSA id h190sm2196512pfe.158.2021.02.03.03.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 03:59:54 -0800 (PST)
+From:   Daniel Axtens <dja@axtens.net>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@linux.ibm.com,
+        bsingharora@gmail.com
+Cc:     Daniel Axtens <dja@axtens.net>
+Subject: [PATCH v10 0/6] KASAN for powerpc64 radix
+Date:   Wed,  3 Feb 2021 22:59:40 +1100
+Message-Id: <20210203115946.663273-1-dja@axtens.net>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210203113421.5759-8-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 12:34, Yang Weijiang wrote:
-> MSRs that are switched through XSAVES are especially annoying due to 
-> the possibility of the kernel's FPU being used in IRQ context. Disable 
-> IRQs and ensure the guest's FPU state is loaded when accessing such MSRs.
+Building on the work of Christophe, Aneesh and Balbir, I've ported
+KASAN to 64-bit Book3S kernels running on the Radix MMU.
 
-Good catch!  This should be in x86.h and named kvm_get/set_xsave_msr 
-because it's not VMX specific.  The commit message should also be there 
-as a comment.
+v10 rebases on top of next-20210125, fixing things up to work on top
+of the latest changes, and fixing some review comments from
+Christophe. I have tested host and guest with 64k pages for this spin.
 
-In addition,
+It does not apply to powerpc/next, sorry: there are conflicting kasan
+changes staged in next.
 
-> +	case MSR_IA32_S_CET:
-> +		if (!cet_is_control_msr_accessible(vcpu, msr_info))
-> +			return 1;
-> +		msr_info->data = vmcs_readl(GUEST_S_CET);
-> +		break;
-> +	case MSR_IA32_U_CET:
-> +		if (!cet_is_control_msr_accessible(vcpu, msr_info))
-> +			return 1;
-> +		vmx_get_xsave_msr(msr_info);
-> +		break;
+There is now only 1 failing KUnit test: kasan_global_oob - gcc puts
+the ASAN init code in a section called '.init_array'. Powerpc64 module
+loading code goes through and _renames_ any section beginning with
+'.init' to begin with '_init' in order to avoid some complexities
+around our 24-bit indirect jumps. This means it renames '.init_array'
+to '_init_array', and the generic module loading code then fails to
+recognise the section as a constructor and thus doesn't run it. This
+hack dates back to 2003 and so I'm not going to try to unpick it in
+this series. (I suspect this may have previously worked if the code
+ended up in .ctors rather than .init_array but I don't keep my old
+binaries around so I have no real way of checking.)
 
-these two might as well be the same "case" for symmetry with the 
-handling of WRMSR.
+(The previously failing stack tests are now skipped due to more
+accurate configuration settings.)
 
-I've fixed this up locally, since these patches will not be pushed to 
-Linus until the corresponding bare metal support is there.
+Details from v9: This is a significant reworking of the previous
+versions. Instead of the previous approach which supported inline
+instrumentation, this series provides only outline instrumentation.
 
-Paolo
+To get around the problem of accessing the shadow region inside code we run
+with translations off (in 'real mode'), we we restrict checking to when
+translations are enabled. This is done via a new hook in the kasan core and
+by excluding larger quantites of arch code from instrumentation. The upside
+is that we no longer require that you be able to specify the amount of
+physically contiguous memory on the system at compile time. Hopefully this
+is a better trade-off. More details in patch 6.
 
+kexec works. Both 64k and 4k pages work. Running as a KVM host works, but
+nothing in arch/powerpc/kvm is instrumented. It's also potentially a bit
+fragile - if any real mode code paths call out to instrumented code, things
+will go boom.
+
+Kind regards,
+Daniel
