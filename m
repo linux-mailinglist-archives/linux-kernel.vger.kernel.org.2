@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F2430D703
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E0830D706
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhBCKGN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Feb 2021 05:06:13 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:47809 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233404AbhBCKGK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:06:10 -0500
-X-Originating-IP: 86.210.203.150
-Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6CF792000E;
-        Wed,  3 Feb 2021 10:05:23 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 11:05:22 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org
-Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
- unavailable
-Message-ID: <20210203110522.12f2b326@xps13>
-In-Reply-To: <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
-References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
-        <20210201151824.5a9dca4a@xps13>
-        <20210202041614.GA840@work>
-        <20210202091459.0c41a769@xps13>
-        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233663AbhBCKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:07:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233592AbhBCKHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:07:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B216024A;
+        Wed,  3 Feb 2021 10:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612346783;
+        bh=/EURuZNeGu0ap6ghqbj8w47olfrSXpAmMx9BST4FI40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hvK19omVP7DG+xpldCjNoTm4UJiEaQcvEggP1+ILqvkdTwsKLnCZwuzEab9Pjl1GA
+         R1rRBS2VyuR8gWeOpIx3Xj+atNrn269Omb4hhYMp60dONuJYVPzgHGfiraDScO6tdk
+         bmq0Sx2pY5rn4+0PqAuLqj1M1o5aPLpcdmO/epS4=
+Date:   Wed, 3 Feb 2021 11:06:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
+        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mj0123.lee@samsung.com, osandov@fb.com,
+        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v4 2/2] bio: add limit_bio_size sysfs
+Message-ID: <YBp1nC+/P9Qcwzzm@kroah.com>
+References: <YBpmQhqx4pvUh//a@kroah.com>
+ <CGME20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9@epcas1p2.samsung.com>
+ <20210203092247.29258-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203092247.29258-1-nanich.lee@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan,
-
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-03 Feb 2021 15:28:20 +0530:
-
-> Hi Miquel, 
+On Wed, Feb 03, 2021 at 06:22:47PM +0900, Changheun Lee wrote:
+> Add limit_bio_size block sysfs node to limit bio size.
+> Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
+> And bio max size will be limited by queue max sectors via
+> QUEUE_FLAG_LIMIT_BIO_SIZE set.
 > 
-> On 2 February 2021 1:44:59 PM IST, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >Hi Manivannan,
-> >
-> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Tue,
-> >2 Feb 2021 09:46:14 +0530:
-> >  
-> >> Hi,
-> >> 
-> >> On Mon, Feb 01, 2021 at 03:18:24PM +0100, Miquel Raynal wrote:  
-> >> > Hi Manivannan,
-> >> > 
-> >> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on  
-> >Sat,  
-> >> > 30 Jan 2021 09:24:12 +0530:
-> >> >     
-> >> > > The bbt pointer will be unavailable when NAND_SKIP_BBTSCAN option  
-> >is  
-> >> > > set for a NAND chip. The intention is to skip scanning for the  
-> >bad  
-> >> > > blocks during boot time.    
-> >> > 
-> >> > I don't have the same understanding: this flag skips the bad block
-> >> > table scan, not the bad block scan. We do want to scan all the  
-> >devices  
-> >> > in order to construct a RAM based table.
-> >> >     
-> >> > > However, the MTD core will call
-> >> > > _block_isreserved() and _block_isbad() callbacks unconditionally  
-> >for  
-> >> > > the rawnand devices due to the callbacks always present while  
-> >collecting  
-> >> > > the ecc stats.
-> >> > > 
-> >> > > The _block_isreserved() callback for rawnand will bail out if bbt
-> >> > > pointer is not available. But _block_isbad() will continue  
-> >without  
-> >> > > checking for it. So this contradicts with the NAND_SKIP_BBTSCAN  
-> >option  
-> >> > > since the bad block check will happen anyways (ie., not much  
-> >difference  
-> >> > > between scanning for bad blocks and checking each block for bad  
-> >ones).  
-> >> > > 
-> >> > > Hence, do not check for the bad block if bbt pointer is  
-> >unavailable.    
-> >> > 
-> >> > Not checking for bad blocks at all feels insane. I don't really get  
-> >the  
-> >> > scope and goal of such change?
-> >> >     
-> >> 
-> >> The issue I encountered is, on the Telit FN980 device one of the
-> >> partition seems to be protected. So trying to read the bad blocks in
-> >> that partition makes the device to reboot during boot.  
-> >
-> >o_O
-> >
-> >Reading a protected block makes the device to reboot?
-> >
-> >What is the exact device? Can you share the datasheet? Is this behavior
-> >expected? Because it seems really broken to me, a read should not
-> >trigger *anything* that bad.
-> >  
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> ---
+>  block/blk-sysfs.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> I got more information from the vendor, Telit. The access to the 3rd partition is protected by Trustzone and any access in non privileged mode (where Linux kernel runs) causes kernel panic and the device reboots. 
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index b513f1683af0..840d97f427e6 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+>  QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+>  QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
+>  QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
+> +QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
+>  #undef QUEUE_SYSFS_BIT_FNS
+>  
+>  static ssize_t queue_zoned_show(struct request_queue *q, char *page)
+> @@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
+>  QUEUE_RW_ENTRY(queue_iostats, "iostats");
+>  QUEUE_RW_ENTRY(queue_random, "add_random");
+>  QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
+> +QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
+>  
+>  static struct attribute *queue_attrs[] = {
+>  	&queue_requests_entry.attr,
+> @@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
+>  	&queue_rq_affinity_entry.attr,
+>  	&queue_iostats_entry.attr,
+>  	&queue_stable_writes_entry.attr,
+> +	&queue_limit_bio_size_entry.attr,
 
-Ok, so this is not a chip feature but more a host constraint.
+Still no documentation for this new file?
 
-In this case it would be a good idea to add a host DT property which
-describes the zone to avoid accessing it. Something like:
+That's not allowed :(
 
-	secure-area/secure-section = <start length>;
-
-From the core perspective, we should parse this property early enough
-and return -EIO when trying to access this area.
-
-Does this solution sound reasonable to you?
-
-Thanks,
-Miquèl
+greg k-h
