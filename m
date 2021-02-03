@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CDD30DF55
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D973030DF5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhBCQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:11:46 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7510 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhBCQKp (ORCPT
+        id S234953AbhBCQM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:12:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234977AbhBCQLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:10:45 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601acad90001>; Wed, 03 Feb 2021 08:10:01 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
- 2021 16:10:01 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 3 Feb 2021 16:09:58 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 2/2] ASoC: tegra: Add driver remove() callback
-Date:   Wed, 3 Feb 2021 21:39:35 +0530
-Message-ID: <1612368575-25991-3-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
-References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
+        Wed, 3 Feb 2021 11:11:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612368609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Md5deGFTlNwWnMdHSwnNKkej1rIsSFXY3oqRw/3YWT0=;
+        b=PH14XHQoAB+Qn41y6WQZwuhGSpzdoON9tQlxsfV+EqJLHXqTfnX2+zZ/AO0myRDPp2oOyw
+        NYNKkRlhLONaiq2c1AhGJlI92bvTDLgN8XQ3vo7PjFED1CoYiyV9ovR4S12VQ03zpUoSA3
+        6skj8rfUpMcVCmsmkGJAVw7PsDdnJP4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-Cw8jCwDsPEmEHOoAb7OFcw-1; Wed, 03 Feb 2021 11:10:05 -0500
+X-MC-Unique: Cw8jCwDsPEmEHOoAb7OFcw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07BEE6D4E0;
+        Wed,  3 Feb 2021 16:10:03 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7AF005FC3A;
+        Wed,  3 Feb 2021 16:09:56 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 11:09:55 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Damien.LeMoal@wdc.com, hare@suse.de, ming.lei@redhat.com,
+        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
+        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
+        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pavgel.tide@veeam.com
+Subject: Re: [PATCH v4 3/6] block: add blk_mq_is_queue_frozen()
+Message-ID: <20210203160955.GA21359@redhat.com>
+References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+ <1612367638-3794-4-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612368601; bh=PjUOj+qZWimYXJl6j0hq0SkuuiLq1QiE8oYFb4NR7Ig=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=Yq2cMGL1tb4WqGuqAl12zqEaeQN+bQG6fC7vvt10ES+WwvHjjIOmzzT/kFbnO1KU5
-         R0aF4HzZ2ZRQsQ3DKnjZah1nQ3Hmb3WA/XQVi3aANfC65RqF4paIa+l1R0HvdZTc1R
-         Ps/EfeIwkeecCa6LbUVJjjukeKgIwiEhYo7Y/0kPT+ESkP1cOcNtR9TXUPGSWCPekm
-         SujFPThaejc8zg45IPcdtEzspiX1jMqhYE107y+jysZ9vdq7fNPFqMQBRFM7IAef+V
-         TmrPaRhM7FLQx0Tckiywv6cvseKwKsU1lOtUpvp46DNhd+7k3MGasgO1F9sEaF60H3
-         7qae5XgLWvGpA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612367638-3794-4-git-send-email-sergei.shtepa@veeam.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is cleanup required, related to release of phandles, during driver
-removal and hence point remove function pointer to graph_remove().
+On Wed, Feb 03 2021 at 10:53am -0500,
+Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/soc/tegra/tegra_audio_graph_card.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> blk_mq_is_queue_frozen() allow to assert that the queue is frozen.
+> 
+> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> ---
+>  block/blk-mq.c         | 13 +++++++++++++
+>  include/linux/blk-mq.h |  1 +
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index f285a9123a8b..924ec26fae5f 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -161,6 +161,19 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+>  }
+>  EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
+>  
+> +
+> +bool blk_mq_is_queue_frozen(struct request_queue *q)
+> +{
+> +	bool ret;
+> +
+> +	mutex_lock(&q->mq_freeze_lock);
+> +	ret = percpu_ref_is_dying(&q->q_usage_counter) && percpu_ref_is_zero(&q->q_usage_counter);
+> +	mutex_unlock(&q->mq_freeze_lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
+> +
+>  /*
+>   * Guarantee no request is in use, so we can change any data structure of
+>   * the queue afterward.
+> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+> index d705b174d346..9d1e8c4e922e 100644
+> --- a/include/linux/blk-mq.h
+> +++ b/include/linux/blk-mq.h
+> @@ -525,6 +525,7 @@ void blk_freeze_queue_start(struct request_queue *q);
+>  void blk_mq_freeze_queue_wait(struct request_queue *q);
+>  int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+>  				     unsigned long timeout);
+> +bool blk_mq_is_queue_frozen(struct request_queue *q);
+>  
+>  int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
+>  void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
+> -- 
+> 2.20.1
+> 
 
-diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-index 9e43f16..f43d302 100644
---- a/sound/soc/tegra/tegra_audio_graph_card.c
-+++ b/sound/soc/tegra/tegra_audio_graph_card.c
-@@ -2,7 +2,7 @@
- //
- // tegra_audio_graph_card.c - Audio Graph based Tegra Machine Driver
- //
--// Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
-+// Copyright (c) 2020-2021 NVIDIA CORPORATION.  All rights reserved.
- 
- #include <linux/math64.h>
- #include <linux/module.h>
-@@ -243,6 +243,7 @@ static struct platform_driver tegra_audio_graph_card = {
- 		.of_match_table = graph_of_tegra_match,
- 	},
- 	.probe = tegra_audio_graph_probe,
-+	.remove = graph_remove,
- };
- module_platform_driver(tegra_audio_graph_card);
- 
--- 
-2.7.4
+This needs to come before patch 2 (since patch 2 uses it).
+
+Mike
 
