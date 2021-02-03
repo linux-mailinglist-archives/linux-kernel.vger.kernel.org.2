@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E2330E020
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D5430DC67
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBCQwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:52:36 -0500
-Received: from m12-18.163.com ([220.181.12.18]:40539 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230440AbhBCQw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:52:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=iUx7s
-        +/DKVp3DxsSpc1Y2LnuMJ54yLkUM+yW3DiA9Nk=; b=lrvnskDhqqKaUHxSlVVp7
-        1MfLch+NMMsP32dMjoUitzrLBN6uGeVFtsSjTvPGKIYRTjR7XBVardXEqaWPfZrK
-        xKrvujJDobg4NlsCVCGIyBimMEglVRPJhSgNxgRvI3gEqWJPNp3MBif3nUb09/oR
-        HwPPkcJn63CCOaGSey3zTc=
-Received: from [192.168.31.187] (unknown [117.139.251.135])
-        by smtp14 (Coremail) with SMTP id EsCowAAX_9yArxpgKMnQSQ--.6413S2;
-        Wed, 03 Feb 2021 22:13:21 +0800 (CST)
-Subject: Re: [PATCH] arm64/ptdump:display the Linear Mapping start marker
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hailong Liu <liu.hailong6@zte.com.cn>
-References: <20210202150749.10104-1-liuhailongg6@163.com>
- <c032e6aa-7101-fb3c-09be-425d77877efe@infradead.org>
-From:   Hailong Liu <liuhailongg6@163.com>
-Message-ID: <6c9d204f-4693-7878-d0d0-e4f0c0bdbfd7@163.com>
-Date:   Wed, 3 Feb 2021 22:13:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232618AbhBCOOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhBCOOV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:14:21 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0853EC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 06:13:41 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id i12so10171433vsq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 06:13:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oU/93QWt8YD3nG8PHbG11kP76EWEDbpdRCYhJ3RyBck=;
+        b=CygF7dll1G/EwG+5W21ESZpamAdSlACPUFFLe2p4fkqUqTCWph28NUWHtSaiWo3Rxz
+         176M5KpldgkGY8hxk7MapWqHFed12+0rnJQEYCAeYkExDwgVm0A3cm50zNQHtoyGCNLN
+         HaeaVLW1ZeZtSqfZOSi4e1NCP9cWgSGl0mr6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oU/93QWt8YD3nG8PHbG11kP76EWEDbpdRCYhJ3RyBck=;
+        b=VokfGHpQtJUNObuoHm/7O+ZAWj70wohegXltNVKYUUWIyg4gPkVnsHUG+76irjMA0q
+         q+8Iwi6wR7d1tAfGtOrqaH4DRdIdSm2j+bM/DIXks8vSTpDJIMnPpJwEYF6HRQjrQLgz
+         GJyIBtLSxDNZ6GyF3rUPVTcXiVPhu9ftBgBE38hCFYN/C0PwPgJn5xavqXQVnycsH7uf
+         d9CAMaYnnH9aPLSxY1I0Sj12nF/AWm2QfNZJlXACPWvKlfAUxZySXdR+8InXHVUuVSjO
+         qkjEVIcUzJXBz9SVBvBcC7DNPXbj9BXdd8nvu5HLNT4+Fd7LPypgPz9B9+4y1/o5CHRL
+         rdZQ==
+X-Gm-Message-State: AOAM531Z5tukZzhuBl9ZAVF5disTlaFuY1CCVHDBGk6zrATG95LJAxtl
+        9fBTrFDdOcUlPm79Pzu/iEX5Q+2ovGsLv70VqJ+Q4g==
+X-Google-Smtp-Source: ABdhPJxlAevD2fHZxIrX0U8Fn6wG9CNNASVAX+XdxlFkf+8NhyoTK/DaYvyPKuoYvls2PXAUx9+TV01qLOO4lMFYwgU=
+X-Received: by 2002:a67:ea05:: with SMTP id g5mr1576931vso.47.1612361620214;
+ Wed, 03 Feb 2021 06:13:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c032e6aa-7101-fb3c-09be-425d77877efe@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: EsCowAAX_9yArxpgKMnQSQ--.6413S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUgeT5DUUUU
-X-Originating-IP: [117.139.251.135]
-X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/xtbBFQEuYFXlnx+9swAAsk
+References: <20210203124112.1182614-1-mszeredi@redhat.com> <20210203130501.GY308988@casper.infradead.org>
+ <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com> <20210203135827.GZ308988@casper.infradead.org>
+In-Reply-To: <20210203135827.GZ308988@casper.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 3 Feb 2021 15:13:29 +0100
+Message-ID: <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
+Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
+        Joel Becker <jlbec@evilplan.org>,
+        Matthew Garrett <matthew.garrett@nebula.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 3:39 AM, Randy Dunlap wrote:
-> On 2/2/21 7:07 AM, Hailong Liu wrote:
->> From: Hailong Liu <liu.hailong6@zte.com.cn>
->>
->> The current /sys/kernel/debug/kernel_page_tables does not display the
->> *Linear Mapping start* marker on arm64, which I think should be paired
->> with the *Linear Mapping start* marker.
-> 
-> paired with itself?  just asking.
-Oh,sorry, it's a mistake. My original intention is to express that "start"
-paired with "end".
+On Wed, Feb 3, 2021 at 2:58 PM Matthew Wilcox <willy@infradead.org> wrote:
 
-Thanks for pointing out my mistake, and thank Will for fixing this.
+> Network filesystems frequently need to use the credentials attached to
+> a struct file in order to communicate with the server.  There's no point
+> fighting this reality.
 
+IDGI.  Credentials can be taken from the file and from the task.  In
+this case every filesystem except cifs looks at task creds. Why are
+network filesystem special in this respect?
+
+Thanks,
+Miklos
