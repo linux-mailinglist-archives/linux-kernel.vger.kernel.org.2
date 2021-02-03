@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB46430E4A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3D230E4AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhBCVIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:08:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35784 "EHLO mail.kernel.org"
+        id S232131AbhBCVJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:09:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230220AbhBCVIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:08:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A107764F43;
-        Wed,  3 Feb 2021 21:08:00 +0000 (UTC)
+        id S231921AbhBCVJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:09:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E2D64F43;
+        Wed,  3 Feb 2021 21:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612386481;
-        bh=X++DCBsFSqm6GeJb1wRNId0elKmC5l4WSOzoH81rAEM=;
+        s=k20201202; t=1612386523;
+        bh=OWUM42k3R9oUeyVrDRlJgBtJLkDRDpWuISrG00E4kDw=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=QaQAXbGfBGb9PwLBEzZlSrCPhUdHjbS2TMJH8Al8LdQbQ7PFBZNIURyoumzdyzlm6
-         pUQzdcNQLP6QA1xSG6xQULbo70o0DUC79qzDY+YIkz08JZV5u7zFjRHxVamzS+r0ri
-         hrtObF9Nr2HSwP15JXnUgcJdgM0raFLeVuXCnMNsU/2SQS5PayRx+9JQNLGNGWNi6d
-         T4qpVObWgNMM1c5jl5tCa578bfGQGM9bOlDJEgWLz6ngWoW9ivMnblA0yD8HCRbFTh
-         s/OcTtCax+bzRSikwcco7k+MqYGhvJSPCux3Jx/yxBXDIB+VmvqPXXLU4yYX8qK94J
-         EtR3C83/LHB2A==
+        b=g5jNmtUPxn6a5xxZL6XHEhkNtXM7X9FQCKyQPTWnLFPz8nxTqz9BKzwFCbbMeqXND
+         XsVC84+4dHnKJ7SkkTcXsxVgSaqWjb0Qu+JlSfMp/eSBUDcp24n3bniNlon/6qjxJb
+         IeqVvyu/SicDQaRiREYQlQuChi+0eclx589ZIncHrsHUBUITaUxr2gWZpTC5U9k+TZ
+         KjoGBOh4CvtHqtizJBpOaqbElv6xOmPc1Xkm4UoCvzQwyrqwY/wZmnjjn4KYL7qD2M
+         uR4XkxX4gEO3e+VUEOOV7JK8/Cyg/udFt/2zY03KqfEhIpAqVorJgExsqWWRpMgcNq
+         RZCutVxpVKQJg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
-Cc:     tiwai@suse.com, yang.jie@linux.intel.com,
-        liam.r.girdwood@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
-Message-Id: <161238642667.34424.5355030176481154960.b4-ty@kernel.org>
-Date:   Wed, 03 Feb 2021 21:07:06 +0000
+To:     Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Timon Baetz <timon.baetz@protonmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+In-Reply-To: <20210130172747.2022977-1-timon.baetz@protonmail.com>
+References: <20210130172747.2022977-1-timon.baetz@protonmail.com>
+Subject: Re: (subset) [PATCH 0/3] charger-supply for max8997_charger
+Message-Id: <161238647515.34533.13734452545880023914.b4-ty@kernel.org>
+Date:   Wed, 03 Feb 2021 21:07:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,18 +44,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 16:01:21 +0800, Yang Li wrote:
-> Eliminate the following coccicheck warning:
-> ./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
+On Sat, 30 Jan 2021 17:28:49 +0000, Timon Baetz wrote:
+> Based on the discussion from [0] add an optional DT property to retrieve
+> the regulator used for charging control in the max8997_charger driver.
+> 
+> [0] https://lore.kernel.org/lkml/20210118124505.GG4455@sirena.org.uk/
+> 
+> 
+> Timon Baetz (3):
+>   regulator: dt-bindings: Document charger-supply for max8997
+>   ARM: dts: exynos: Add charger supply for I9100
+>   power: supply: max8997_charger: Switch to new binding
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: Intel: catpt: remove unneeded semicolon
-      commit: e01a03db74a88084fb91a4ff18bb8d47a1e12f62
+[1/3] regulator: dt-bindings: Document charger-supply for max8997
+      commit: 41a8a027f4d3f81d83b8942ef29f84223ca35ffc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
