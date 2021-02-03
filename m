@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5232530D7A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56EC30D7A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhBCKgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:36:22 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55050 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233773AbhBCKgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:36:04 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv_NffBpg_6MCAA--.3274S3;
-        Wed, 03 Feb 2021 18:35:11 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] MIPS: relocatable: Use __kaslr_offset in show_kernel_relocation
-Date:   Wed,  3 Feb 2021 18:35:10 +0800
-Message-Id: <1612348510-29569-2-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1612348510-29569-1-git-send-email-hejinyang@loongson.cn>
-References: <1612348510-29569-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxv_NffBpg_6MCAA--.3274S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Xry7CFWDKr18KFykGFy7trb_yoW8Jr1xpr
-        srX34DtrsxWw1kJayqqa4v9ry3JayDW3yfuFsrK34rXasaqF15Jayfur1rW3yjvry09F4f
-        Zr1YqrWIvw4kAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBjb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_Jrv_JF4l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bO739UUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S233857AbhBCKgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233782AbhBCKf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:35:59 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8D9C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:35:18 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id l12so27671516ljc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:35:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jvFZh+9sq3EVUiluhTslZPK6kn/ZGqF1TeBKf+Rojcw=;
+        b=YiILlAmfZ3yy+1B/8bwJ3zLup/iLDn4rbqi25FoNOnOg0bn0iB4io6oVPCZgmSKCGu
+         av5hBwJC4n2jKCCA+OuStPnb6TyxQg5Ko3n3WfCCrNMq++8a8kpL/7tRgBqSmtxB9hRX
+         mq/DG2kFVJGp8fSASnJfT0Ma5BW6m7aCbTpJATX/jYOx0cy9pYLqA7yaIPgA8UTWNY+j
+         iP/Wwa3p86mcyAuUPsAyt899SxH8Bo0dX2T4/w/mT9ltOCPsf19OHHAkHCnx5koCtyxm
+         HWbZuU0W7dPfIUfHA1cKxSAqEBjAIKOh3MFJe4fUhoS+4qoqHFpUiQ4S7ndg4eZh2EhJ
+         WeZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jvFZh+9sq3EVUiluhTslZPK6kn/ZGqF1TeBKf+Rojcw=;
+        b=EcBSzsQRDI3Fis5zhQWPa9/3JkwghtNW2Iv2Vwb3388Fe/123yA+3xD/ykKvrBgYix
+         5hWKJxTBwc4igZNQKSqZFbe4YG1F0HgnjN7WoVmAf++anmca3jJ6ziSZg31kneD4j33N
+         3+xSCOBmEr0/G5ZifKoDnLR00j7d0GEdA//NKG4Ai9NHWDOBIiy4oS9KhlMeQXa7yEzC
+         GEPGeZX+ss/7+tAOIihO0Ai3Y+GNTTsdzekXJw4nClVO8UolbqF0KMtqGG6btgOXM7mz
+         GsKZTW7KAvr1b1XnzfwFS7UMbME8N6Fc/Gf1XxRbDeQMy/exUjYPPEU9sSpdxLPSAS0O
+         Eq+w==
+X-Gm-Message-State: AOAM5308w/2b7jUMzBNxKBmpqZ8tUTDxJZiHodm0OJ0nMJJRt6Crp7I3
+        jGoEeShKM7Up2UtwQYns9/WUFZ2J6sf4bXYF
+X-Google-Smtp-Source: ABdhPJzuVt4hHInKhBix3eeSvYdG1aAU8uIJMHvVibyL6XIv9gBLN7+as/YfXE0Ba0OjS69589hRDQ==
+X-Received: by 2002:a2e:9893:: with SMTP id b19mr1288102ljj.317.1612348517264;
+        Wed, 03 Feb 2021 02:35:17 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.228])
+        by smtp.googlemail.com with ESMTPSA id f6sm207558lje.127.2021.02.03.02.35.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 02:35:16 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     phillip@squashfs.org.uk
+Cc:     linux-kernel@vger.kernel.org,
+        syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
+Subject: [PATCH] fs/squashfs: restrict length of xattr_ids in read_xattr_id_table
+Date:   Wed,  3 Feb 2021 16:35:13 +0600
+Message-Id: <20210203103513.1510005-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of the VMLINUX_LOAD_ADDRESS macro is the (unsigned long long)
-in 32bits kernel but (unsigned long) in the 64-bit kernel. Although there
-is no error here, avoid using it to calculate kaslr_offset. And here we
-may need is that the address of __kaslr_offset rather than (void *)offset.
+syzbot found WARNING in squashfs_read_table [1] when length of xattr_ids
+exceeds KMALLOC_MAX_SIZE in squashfs_read_table() for kmalloc().
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+For other squashfs tables, currently such as boundary is checked with
+another table's boundaries. Xattr table is the last one, so there is
+no defined limit. But to avoid order >= MAX_ORDER warning condition,
+we should restrict SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids) to
+KMALLOC_MAX_SIZE, and it gives 1024 pages in squashfs_read_table via
+(length + PAGE_SIZE - 1) >> PAGE_SHIFT.
+
+[1]
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:916
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:932
+ kmalloc include/linux/slab.h:559 [inline]
+ squashfs_read_table+0x43/0x1e0 fs/squashfs/cache.c:413
+ squashfs_read_xattr_id_table+0x191/0x220 fs/squashfs/xattr_id.c:81
+
+Reported-by: syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
- arch/mips/kernel/relocate.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ fs/squashfs/xattr_id.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 95abb9c..52018a3 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -430,13 +430,9 @@ void *__init relocate_kernel(void)
-  */
- static void show_kernel_relocation(const char *level)
- {
--	unsigned long offset;
--
--	offset = __pa_symbol(_text) - __pa_symbol(VMLINUX_LOAD_ADDRESS);
--
--	if (IS_ENABLED(CONFIG_RELOCATABLE) && offset > 0) {
-+	if (__kaslr_offset > 0) {
- 		printk(level);
--		pr_cont("Kernel relocated by 0x%pK\n", (void *)offset);
-+		pr_cont("Kernel relocated by 0x%pK\n", &__kaslr_offset);
- 		pr_cont(" .text @ 0x%pK\n", _text);
- 		pr_cont(" .data @ 0x%pK\n", _sdata);
- 		pr_cont(" .bss  @ 0x%pK\n", __bss_start);
+diff --git a/fs/squashfs/xattr_id.c b/fs/squashfs/xattr_id.c
+index d99e08464554..6bb51cd3d5c1 100644
+--- a/fs/squashfs/xattr_id.c
++++ b/fs/squashfs/xattr_id.c
+@@ -78,5 +78,8 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
+ 
+ 	TRACE("In read_xattr_index_table, length %d\n", len);
+ 
++	if (len > KMALLOC_MAX_SIZE)
++		return -ENOMEM;
++
+ 	return squashfs_read_table(sb, start + sizeof(*id_table), len);
+ }
 -- 
-2.1.0
+2.25.1
 
