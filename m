@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DD330E3DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AA30E3D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhBCUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:08:44 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:36166 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhBCUIe (ORCPT
+        id S231694AbhBCUH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhBCUHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:08:34 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113K4EEq064527;
-        Wed, 3 Feb 2021 20:07:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=vZEiDU8hQT1UhocoLYdWh7SyEagKbQkYSVRWu2mgg74=;
- b=H7jrVtQ4rlAoqdfgK2tbVUqouj8mPov9s4UpOnZn1tUG6Ve4R7S57r6fp0FGSY17hX4W
- 1AgHjIMp2maWZXS7RSNxzGVv2iokb8NRx6XpU80GX7kIkyJTdsJjEYjDFwV35gdKycC5
- TLq335ZPD9zx+8k7L1vMgObSpyRJHEXrcvZGBrVnYTT9f2TLVKeryl8lhCeCFFk7cB6v
- RWPceW+x5yodpsaXo3yWhYu733hpbJdQlivA83EFK41rR62cLxs0DPLcYVuSonJXqTwD
- PJElzy78ZsYcDm4k4ZqHRqfJPoTvK1+fAAulGyRmVeLX3UzmYt24IixC7vvEDrug/zlz HA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36cxvr4qa3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 20:07:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113JuHNM179710;
-        Wed, 3 Feb 2021 20:05:42 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 36dh7u2rwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 20:05:42 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 113K5c8j029149;
-        Wed, 3 Feb 2021 20:05:39 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Feb 2021 12:05:37 -0800
-Date:   Wed, 3 Feb 2021 23:05:29 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        James Hu <james.hu@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] misc: bcm-vk: Fix a couple error codes in probe()
-Message-ID: <20210203200529.GH20820@kadam>
-References: <YBpyEbmz00rjvT9S@mwanda>
- <55880105-a097-0268-de54-478d7dbae084@broadcom.com>
+        Wed, 3 Feb 2021 15:07:52 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A4CC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:07:12 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id q12so941617lfo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kpfh9SxqhbXVAvduWXLkt3nG5WWOIvz3WkEIu4NNz7c=;
+        b=O9vxx80gl/k9keknQ6fiZPXocJOOncAcdeIZ6akawRcVRBFNzF5hhkdAGj3EKxTDVO
+         0tXEKP9WD5HDHhwvfLBaLBjdXeGl1DsU5Pi/lyCQ2ckXXfJb/LYkljHjpjOKECkyDWdg
+         3Go0y3vjTAMTEfVdFupLN71dukSnZnXC92wMg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kpfh9SxqhbXVAvduWXLkt3nG5WWOIvz3WkEIu4NNz7c=;
+        b=Dox7jrZgO8ngypqdmGAFWHgmb/sXVg/4y9sBP7IvcDDb5P2bSyKmC3cvsRRzOgv9r/
+         Ij2jjiy5Ga5ID5yLs/yJA2och0cy2g48/KaR5LYUe3MjgITGbVo6RnH5xBbzA5GmTkn8
+         iuS3tYvtzgSZZejV/YJ11R32cSaJEFF6h0DEeYBum2W0mN1CmSzSR9HGgCQ9ftL63qoC
+         yDsHrcDsXglJhDpJdYtmfeRC3Ui2X0edqzT01GJAmgyYraXawR/Ug1gGw7yvtPrhLryC
+         jC4wfhQlbDYaCNJorsD2VKQbH70jgCZKzZnTMPlp9558ceV1D8EAgT/KaKO3r1im/weo
+         o9AQ==
+X-Gm-Message-State: AOAM531BccZbZl5YE7vNZDGG54gZEUJz2WADuBoKi9iRl9CWaoiV14pC
+        DUHypI7PZucNvO0WHZ1BsUyExuP2NoxhLg==
+X-Google-Smtp-Source: ABdhPJzI+PXyFCOBxouc9CvmFGQ1yoUmEhSMsraZkvGXADhOy9HNfjqa5OEdsVb3EIDkkacjBB+kXQ==
+X-Received: by 2002:a19:c519:: with SMTP id w25mr2661147lfe.16.1612382829694;
+        Wed, 03 Feb 2021 12:07:09 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id a10sm338781lfs.18.2021.02.03.12.07.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 12:07:08 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id a8so984367lfi.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:07:08 -0800 (PST)
+X-Received: by 2002:ac2:4436:: with SMTP id w22mr2548053lfl.41.1612382828438;
+ Wed, 03 Feb 2021 12:07:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55880105-a097-0268-de54-478d7dbae084@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030117
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102030118
+References: <8a358ee4-56bc-8e64-3176-88fd0d66176f@linuxfoundation.org>
+In-Reply-To: <8a358ee4-56bc-8e64-3176-88fd0d66176f@linuxfoundation.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Feb 2021 12:06:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg983RfAiSSo4zLMADEfzLEuoBi+rye30Zrq7Bor8zg_Q@mail.gmail.com>
+Message-ID: <CAHk-=wg983RfAiSSo4zLMADEfzLEuoBi+rye30Zrq7Bor8zg_Q@mail.gmail.com>
+Subject: Re: Linux 5.11-rc6 compile error
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:15:35AM -0800, Scott Branden wrote:
-> Thanks Dan,
-> 
-> On 2021-02-03 6:42 a.m., Dan Carpenter wrote:
-> > These errors should return negative error codes instead of returning
-> > success.
-> Do you have a script running to report such issues or just manually reviewing
-> to find such paths?
+On Wed, Feb 3, 2021 at 11:58 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> ld: arch/x86/built-in.a: member arch/x86/kernel/pci-swiotlb.o in archive
+> is not an object
+> make: *** [Makefile:1170: vmlinux] Error 1
 
-Yeah.  This is a new Smatch check.  The heuristic is this:
+That honestly sounds like something went wrong earlier - things like
+doing a system upgrade in the middle of the build, or perhaps running
+out of disk space or similar.
 
-	<-- ret is not set within 3 lines of the goto
-	goto label;  <-- we hit a goto
+I've not seen any other reports of the same, and google doesn't find
+anything like that either.
 
+Does it keep happening if you do a "git clean -dqfx" to make sure you
+have no old corrupt object files sound and re-do the whole build?
 
-	return 0;  <-- success path right before the cleanup block
-
-label:	<-- labels
-	return ret;  <-- This return has to sometimes returns negatives
-
-regards,
-dan carpenter
-
+            Linus
