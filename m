@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398C530D81C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E4C30D820
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhBCLEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:04:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233827AbhBCLEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:04:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C16E664E42;
-        Wed,  3 Feb 2021 11:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612350242;
-        bh=nTKbJIzMVgfvkQz2CHCRBxy6K5TLiaBik2oQ2yvXaVk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uubw5WQjqVOHLWytf9ROZ8n2LxH4R5ANttzp/WETJ8tW/jtRyvNC47akzw7zFgImO
-         ExdWweW4OmW2Nn/8WZvR7wReKC9btWwT3ZUwzmkcl+JpO40di0a1nt+tQBbAed2Idu
-         k8mmuj6fOC+2Av+xku9AvEF5iN01xxWBYdmFsTQW+uDfI6BPux2AhsuFXgzBvz+eKt
-         De42EuniitBDQwLLXw56+CS7Eb3lnFZe/Y2pgO9QFSIRcu4ue1nZS7Ypgq0YivQUmq
-         9u4H6rl7Yx4QORnySHxK0NN5rC1Y5qxXLg/MJcGlucgLNfrimvAKSRN4v6oTyeq1Sg
-         aQWvo5yTA8Swg==
-Date:   Wed, 3 Feb 2021 16:33:58 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/3] soundwire: bus: clear bus clash interrupt before the
- mask is enabled
-Message-ID: <20210203110358.GL2771@vkoul-mobl>
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
- <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
- <20210201102844.GU2771@vkoul-mobl>
- <20210201103825.GV2771@vkoul-mobl>
- <7c4e1163-a6b3-2886-1963-7e2847dc2836@linux.intel.com>
- <20210202043909.GG2771@vkoul-mobl>
- <4117cd57-1643-758f-b59c-ac507a6f5ed2@linux.intel.com>
+        id S233967AbhBCLHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:07:07 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:42626 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233839AbhBCLHG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:07:06 -0500
+Date:   Wed, 03 Feb 2021 11:06:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612350384;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XdPGkYJTZTbVxZ9DKMjF1sG7BkpdM3iM4N+HvJFd28o=;
+        b=RboukP3PMrDi4HJeCIBBe3zd05XGjH4jgRyM4L3u71K4zxl+RkGe4isx6kRHwnG+BJUVF9
+        T0WgzexQIDMUFspMFjYOXNnSbnI30au/Q3t7PRKUQxW4Ogy2FmD/is/e1momF+eo2Ug88j
+        at1fkzvYjbY4A5qoVqk0ZkPiBKBjYtBQiTTx8CFBCmB32MlLLvUkEX5BJSaGVT1xN90PXy
+        qXVHPfCgOUeTJMKfX+GUT75gP38X7HGk1NbPzBWyO+2qFp3Bb7pnekjVg1IZKON0qSjZYi
+        nV8keTLBTDLm1iPDA37q2DoYfP1R68rdHX77mIxPHL1V5sRqOI+rKEGeKPRt1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612350384;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XdPGkYJTZTbVxZ9DKMjF1sG7BkpdM3iM4N+HvJFd28o=;
+        b=L0Vi8RrFEUNmez4XhNFCJYvERGunF5X+jAo+xAcEnfXAZOPRxvrwfopsulyO2dTISzy9lR
+        T+NbUrcMGdnfZmCg==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] tools/power/turbostat: Fallback to an MSR read for EPB
+Cc:     Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210127132444.981120-1-dedekind1@gmail.com>
+References: <20210127132444.981120-1-dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4117cd57-1643-758f-b59c-ac507a6f5ed2@linux.intel.com>
+Message-ID: <161235038377.23325.12734433059631581902.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-02-21, 10:52, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 2/1/21 10:39 PM, Vinod Koul wrote:
-> > On 01-02-21, 10:18, Pierre-Louis Bossart wrote:
-> > > On 2/1/21 4:38 AM, Vinod Koul wrote:
-> > > > On 01-02-21, 15:58, Vinod Koul wrote:
-> > > > > On 26-01-21, 16:37, Bard Liao wrote:
-> > > > 
-> > > > > >    struct sdw_master_prop {
-> > > > > >    	u32 revision;
-> > > > > > @@ -421,8 +422,11 @@ struct sdw_master_prop {
-> > > > > >    	u32 err_threshold;
-> > > > > >    	u32 mclk_freq;
-> > > > > >    	bool hw_disabled;
-> > > > > > +	u32 quirks;
-> > > > > 
-> > > > > Can we do u64 here please.. I dont know where we would end up.. but
-> > > > > would hate if we start running out of space ..
-> > > No objection.
-> > > 
-> > > > Also, is the sdw_master_prop right place for a 'quirk' property. I think
-> > > > we can use sdw_master_device or sdw_bus as this seems like a bus
-> > > > quirk..?
-> > > 
-> > > It's already part of sdw_bus
-> > 
-> > Right, but the point is that the properties were mostly derived from
-> > DiSco, so am bit skeptical about it adding it there..
-> 
-> Oh, I am planning to contribute such quirks as MIPI DisCo properties for the
-> next revision of the document (along with a capability to disable a link).
-> This was not intended to remain Linux- or Intel-specific.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Okay lets keep it in properties then
+Commit-ID:     7f1b11ba3564a391169420d98162987a12d0795d
+Gitweb:        https://git.kernel.org/tip/7f1b11ba3564a391169420d98162987a12d0795d
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Thu, 28 Jan 2021 20:28:56 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 03 Feb 2021 11:58:19 +01:00
 
--- 
-~Vinod
+tools/power/turbostat: Fallback to an MSR read for EPB
+
+Commit
+
+  6d6501d912a9 ("tools/power/turbostat: Read energy_perf_bias from sysfs")
+
+converted turbostat to read the energy_perf_bias value from sysfs.
+However, older kernels which do not have that file yet, would fail. For
+those, fall back to the MSR reading.
+
+Fixes: 6d6501d912a9 ("tools/power/turbostat: Read energy_perf_bias from sysfs")
+Reported-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210127132444.981120-1-dedekind1@gmail.com
+---
+ tools/power/x86/turbostat/turbostat.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 389ea52..a7c4f07 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -1834,12 +1834,15 @@ int get_mp(int cpu, struct msr_counter *mp, unsigned long long *counterp)
+ int get_epb(int cpu)
+ {
+ 	char path[128 + PATH_BYTES];
++	unsigned long long msr;
+ 	int ret, epb = -1;
+ 	FILE *fp;
+ 
+ 	sprintf(path, "/sys/devices/system/cpu/cpu%d/power/energy_perf_bias", cpu);
+ 
+-	fp = fopen_or_die(path, "r");
++	fp = fopen(path, "r");
++	if (!fp)
++		goto msr_fallback;
+ 
+ 	ret = fscanf(fp, "%d", &epb);
+ 	if (ret != 1)
+@@ -1848,6 +1851,11 @@ int get_epb(int cpu)
+ 	fclose(fp);
+ 
+ 	return epb;
++
++msr_fallback:
++	get_msr(cpu, MSR_IA32_ENERGY_PERF_BIAS, &msr);
++
++	return msr & 0xf;
+ }
+ 
+ void get_apic_id(struct thread_data *t)
