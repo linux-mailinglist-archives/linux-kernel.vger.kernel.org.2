@@ -2,189 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FEE30E090
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2817530E092
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhBCRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:10:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:43790 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhBCRKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:10:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84F0CD6E;
-        Wed,  3 Feb 2021 09:09:20 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2C223F719;
-        Wed,  3 Feb 2021 09:09:18 -0800 (PST)
-Date:   Wed, 3 Feb 2021 17:09:16 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        id S232060AbhBCRKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231761AbhBCRKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:10:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0E1C061573;
+        Wed,  3 Feb 2021 09:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J4K2nebfZ5sj1F2zLOnhiqiETjsh6I5r3Rd8GZdqQ/Q=; b=SHmozGM1UpKuswJmoH+fXAkDyK
+        GhygfNUmsfed3rJRVxv7MSXU6KbeWlA2+cTj0faaOwIqD1luySI5VbAdgP7Q3QhDoF8hxcBin0cdC
+        2foVHWuDO5WF3j9YbJ6FyBnqvvMdcN/gyFD+fUS+/RRzOwNVrE3r3pOERzVBVryUB+7XeZHr3dcPZ
+        Rb6OKxS6zECMOeN1RmhVGuHy1doMCzQLQU+QXS2ID5k23+hzf7tDdroB1BMJXbcK+BLCnXtBxS+ZI
+        Hmi+ycXgNUfeJHojgxFsBgkMAV3Xp6gZVmoAwjXdH2KlxvnyGj/GE3090yY8+NbpzMf+NlMzhkYDR
+        fwWaI0vA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7Lei-00HEDQ-Vn; Wed, 03 Feb 2021 17:09:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DB57D305C1C;
+        Wed,  3 Feb 2021 18:09:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AB74F20C633CC; Wed,  3 Feb 2021 18:09:27 +0100 (CET)
+Date:   Wed, 3 Feb 2021 18:09:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to
- update_blocked_averages() for NOHZ
-Message-ID: <20210203170916.ows7d2b56t34i2w4@e107158-lin>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com>
- <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com>
- <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
+        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
+        Matt Mullins <mmullins@mmlx.us>
+Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
+ probe due to memory failure
+Message-ID: <YBrYx3kCqiEH8HEw@hirez.programming.kicks-ass.net>
+References: <20210203160517.982448432@goodmis.org>
+ <20210203160550.710877069@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210129172727.GA30719@vingu-book>
+In-Reply-To: <20210203160550.710877069@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/29/21 18:27, Vincent Guittot wrote:
-> The patch below moves the update of the blocked load of CPUs outside newidle_balance().
-> 
-> Instead, the update is done with the usual idle load balance update. I'm working on an
-> additonnal patch that will select this cpu that is about to become idle, instead of a
-> random idle cpu but this 1st step fixe the problem of lot of update in newly idle.
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 32 +++-----------------------------
->  1 file changed, 3 insertions(+), 29 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 197a51473e0c..8200b1d4df3d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7421,8 +7421,6 @@ enum migration_type {
->  #define LBF_NEED_BREAK	0x02
->  #define LBF_DST_PINNED  0x04
->  #define LBF_SOME_PINNED	0x08
-> -#define LBF_NOHZ_STATS	0x10
-> -#define LBF_NOHZ_AGAIN	0x20
->  
->  struct lb_env {
->  	struct sched_domain	*sd;
-> @@ -8426,9 +8424,6 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->  	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
->  		struct rq *rq = cpu_rq(i);
->  
-> -		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq, false))
-> -			env->flags |= LBF_NOHZ_AGAIN;
-> -
->  		sgs->group_load += cpu_load(rq);
->  		sgs->group_util += cpu_util(i);
->  		sgs->group_runnable += cpu_runnable(rq);
-> @@ -8969,11 +8964,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->  	struct sg_lb_stats tmp_sgs;
->  	int sg_status = 0;
->  
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -	if (env->idle == CPU_NEWLY_IDLE && READ_ONCE(nohz.has_blocked))
-> -		env->flags |= LBF_NOHZ_STATS;
-> -#endif
-> -
->  	do {
->  		struct sg_lb_stats *sgs = &tmp_sgs;
->  		int local_group;
-> @@ -9010,15 +9000,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->  	/* Tag domain that child domain prefers tasks go to siblings first */
->  	sds->prefer_sibling = child && child->flags & SD_PREFER_SIBLING;
->  
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -	if ((env->flags & LBF_NOHZ_AGAIN) &&
-> -	    cpumask_subset(nohz.idle_cpus_mask, sched_domain_span(env->sd))) {
-> -
-> -		WRITE_ONCE(nohz.next_blocked,
-> -			   jiffies + msecs_to_jiffies(LOAD_AVG_PERIOD));
-> -	}
-> -#endif
-> -
->  	if (env->sd->flags & SD_NUMA)
->  		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
->  
-> @@ -10547,14 +10528,7 @@ static void nohz_newidle_balance(struct rq *this_rq)
->  		return;
->  
->  	raw_spin_unlock(&this_rq->lock);
-> -	/*
-> -	 * This CPU is going to be idle and blocked load of idle CPUs
-> -	 * need to be updated. Run the ilb locally as it is a good
-> -	 * candidate for ilb instead of waking up another idle CPU.
-> -	 * Kick an normal ilb if we failed to do the update.
-> -	 */
-> -	if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE))
+On Wed, Feb 03, 2021 at 11:05:31AM -0500, Steven Rostedt wrote:
+> +		if (new) {
+> +			for (i = 0; old[i].func; i++)
+> +				if ((old[i].func != tp_func->func
+> +				     || old[i].data != tp_func->data)
+> +				    && old[i].func != tp_stub_func)
 
-Since we removed the call to this function (which uses this_rq)
+logical operators go at the end..
 
-> -		kick_ilb(NOHZ_STATS_KICK);
-> +	kick_ilb(NOHZ_STATS_KICK);
+> +					new[j++] = old[i];
+> +			new[nr_probes - nr_del].func = NULL;
+> +			*funcs = new;
+> +		} else {
+> +			/*
+> +			 * Failed to allocate, replace the old function
+> +			 * with calls to tp_stub_func.
+> +			 */
+> +			for (i = 0; old[i].func; i++)
 
-And unconditionally call kick_ilb() which will find a suitable cpu to run the
-lb at regardless what this_rq is.
+							{
 
-Doesn't the below become unnecessary now?
+> +				if (old[i].func == tp_func->func &&
+> +				    old[i].data == tp_func->data) {
 
-	  10494         /*
-	  10495          * This CPU doesn't want to be disturbed by scheduler
-	  10496          * housekeeping
-	  10497          */
-	  10498         if (!housekeeping_cpu(this_cpu, HK_FLAG_SCHED))
-	  10499                 return;
-	  10500
-	  10501         /* Will wake up very soon. No time for doing anything else*/
-	  10502         if (this_rq->avg_idle < sysctl_sched_migration_cost)
-	  10503                 return;
+like here.
 
-And we can drop this_rq arg altogether?
+> +					old[i].func = tp_stub_func;
+> +					/* Set the prio to the next event. */
+> +					if (old[i + 1].func)
+> +						old[i].prio =
+> +							old[i + 1].prio;
 
->  	raw_spin_lock(&this_rq->lock);
->  }
->  
-> @@ -10616,8 +10590,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  			update_next_balance(sd, &next_balance);
->  		rcu_read_unlock();
->  
-> -		nohz_newidle_balance(this_rq);
-> -
->  		goto out;
+multi line demands { }, but in this case just don't line-break.
+
+> +					else
+> +						old[i].prio = -1;
+> +				}
+
+			}
+
+> +			*funcs = old;
+> +		}
 >  	}
->  
-> @@ -10683,6 +10655,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	if (pulled_task)
->  		this_rq->idle_stamp = 0;
-> +	else
-> +		nohz_newidle_balance(this_rq);
+>  	debug_print_probes(*funcs);
+>  	return old;
+> @@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+>  	tp_funcs = rcu_dereference_protected(tp->funcs,
+>  			lockdep_is_held(&tracepoints_mutex));
+>  	old = func_remove(&tp_funcs, func);
+> -	if (IS_ERR(old)) {
+> -		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
+> +	if (WARN_ON_ONCE(IS_ERR(old)))
+>  		return PTR_ERR(old);
+> -	}
+> +
+> +	if (tp_funcs == old)
+> +		/* Failed allocating new tp_funcs, replaced func with stub */
+> +		return 0;
 
-Since nohz_newidle_balance() will not do any real work now, I couldn't figure
-out what moving this here achieves. Fault from my end to parse the change most
-likely :-)
-
-Joel can still test this patch as is of course. This is just an early review
-since I already spent the time trying to understand it.
-
-Thanks
-
---
-Qais Yousef
-
->  
->  	rq_repin_lock(this_rq, rf);
->  
-> -- 
-> 2.17.1
+{ }
