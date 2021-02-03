@@ -2,198 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9577330E78B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC58B30E79C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhBCXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:38:13 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12351 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbhBCXiJ (ORCPT
+        id S233857AbhBCXk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233830AbhBCXkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:38:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601b33b80001>; Wed, 03 Feb 2021 15:37:28 -0800
-Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
- 2021 23:37:27 +0000
-Subject: Re: [PATCH 3/4] mm/gup: add a range variant of
- unpin_user_pages_dirty_lock()
-To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-4-joao.m.martins@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <5e372e25-7202-e0b6-0763-d267698db5b6@nvidia.com>
-Date:   Wed, 3 Feb 2021 15:37:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Wed, 3 Feb 2021 18:40:23 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80887C061573;
+        Wed,  3 Feb 2021 15:39:40 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id cl8so622457pjb.0;
+        Wed, 03 Feb 2021 15:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WfSI0hyPUdRFKgVdTfoAk9cB/Ccm0yFjJ+ceEr+djhM=;
+        b=p6xUeqmr1Q0qmWWgOqqwYh5gD1KetiycNwa230vEpEyg4YRRlSZmX5rmg/rNjo3gJn
+         GIf2deXivzte4vXUG+Wn79RZX5IQkiF9bKF3UNeNxqrQsiterFZutK/vk7oVV2r9NaM1
+         6ASnlFDPKokxK3sFj/tjoT4tjbD9LTFGze8HdMWi4n8vUXf1517waQu/vfdqav0Mv4JM
+         R321o1IdwCwwEzRFUjE94Y6ULxTpdrBhchZj/KNRviNXGSqVFv/jKd4WpV3jMYFs4l9B
+         YFjePos7T92nI72XCdbrquh/os8vdL6uZuyp0iSrZaqkPHG3cKm3EixBiBmrGLXOi8bI
+         aFHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WfSI0hyPUdRFKgVdTfoAk9cB/Ccm0yFjJ+ceEr+djhM=;
+        b=FGNi2IaLq9Yi7tC9PcqnbvT8lgKidPQyaZDjHD/HiXnslcnZVL1CbfK83Or/D88ToI
+         9XkhQ1Nko0QMp9v5FXKkX/CnaSf4EBYwbJnQbLWoNS9z1hmzc1OPRg8Oolr0sKEuJE0J
+         nzIDpzdFDQDpphmesMJXF4zLoaR+4q8RM1d3o51S3U6LmglzN0TeHslxPslXCVDBCcRS
+         jhpI0SOFL4J9dEFvNsuxoBW01CjagrNLXP8+vO5Y4FBcrfiS72dToRyMt1dmIYp3QuCv
+         vn9GyKTGZg5Dcs5FftwwgLLlSOs0nY7kALZybh8GvHyuoI2b3N5uWyLr/uhTDT0FdSAa
+         Itsg==
+X-Gm-Message-State: AOAM533pFAvFk/b633PSqFC4QqFm7YBHeAW9r5eNk2WstJ0Osrt99j16
+        u91x4TCqveLBglPaWSLRXc0=
+X-Google-Smtp-Source: ABdhPJyjE+rH5FcVzwCSRNgHNRq3ElbU07nceJl/1zliEwg1n3jaLI48gwvZypgPQo00D7tCYiR8OA==
+X-Received: by 2002:a17:90b:188d:: with SMTP id mn13mr5500281pjb.215.1612395580045;
+        Wed, 03 Feb 2021 15:39:40 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:598:57c0:5d30:3614])
+        by smtp.gmail.com with ESMTPSA id l14sm3011307pjy.15.2021.02.03.15.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 15:39:39 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 3 Feb 2021 15:39:37 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] mm: fs: Invalidate BH LRU during page migration
+Message-ID: <YBs0Od0NVfwJhVfx@google.com>
+References: <cover.1612248395.git.cgoldswo@codeaurora.org>
+ <695193a165bf538f35de84334b4da2cc3544abe0.1612248395.git.cgoldswo@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210203220025.8568-4-joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612395448; bh=qmULijZhnU2V5sy1R2oqyUqss+1cKK98EBpQ9ju3bbA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=sRmiPr89EHkBrP1GmMCoZXLqZ8VNSxITNjBQAusN3GvzxUWFBhrL2lcJWkF2P+kIy
-         9l/L96pp283mqBsKXSdXMP0B7cEfRLetUuITXjeswSnr8XLx0P4/UIvKie54tKU1mf
-         RpmbXU9qWq5buJRRakkHwQhFKSy9loIcIm/yezE7DT0hw6LsMEcHUL4OVD68nONe+4
-         5yc2+k/QQrp9pk3u0lIFjE8/A8jeBAMHka7l5ndPFJtTbRlCzg3Nzc/W6CJBNCIGM6
-         vnm3YQcA8HDupkLPIGStYq25sRtz4qCPmfPCh2wom3KbLqf+xlQhZr8JM0Iq56otyK
-         dKoU440SkQ1xA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <695193a165bf538f35de84334b4da2cc3544abe0.1612248395.git.cgoldswo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 2:00 PM, Joao Martins wrote:
-> Add a unpin_user_page_range() API which takes a starting page
-> and how many consecutive pages we want to dirty.
-> 
-> Given that we won't be iterating on a list of changes, change
-> compound_next() to receive a bool, whether to calculate from the starting
-> page, or walk the page array. Finally add a separate iterator,
+On Mon, Feb 01, 2021 at 10:55:47PM -0800, Chris Goldsworthy wrote:
+> Pages containing buffer_heads that are in the buffer_head LRU cache
+> will be pinned and thus cannot be migrated.  Correspondingly,
+> invalidate the BH LRU before a migration starts and stop any
+> buffer_head from being cached in the LRU, until migration has
+> finished.
 
-A bool arg is sometimes, but not always, a hint that you really just want
-a separate set of routines. Below...
+Thanks for the work, Chris. I have a few of comments below.
 
-> for_each_compound_range() that just operate in page ranges as opposed
-> to page array.
 > 
-> For users (like RDMA mr_dereg) where each sg represents a
-> contiguous set of pages, we're able to more efficiently unpin
-> pages without having to supply an array of pages much of what
-> happens today with unpin_user_pages().
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
 > ---
->   include/linux/mm.h |  2 ++
->   mm/gup.c           | 48 ++++++++++++++++++++++++++++++++++++++--------
->   2 files changed, 42 insertions(+), 8 deletions(-)
+>  fs/buffer.c                 |  6 ++++++
+>  include/linux/buffer_head.h |  3 +++
+>  include/linux/migrate.h     |  2 ++
+>  mm/migrate.c                | 18 ++++++++++++++++++
+>  mm/page_alloc.c             |  3 +++
+>  mm/swap.c                   |  3 +++
+>  6 files changed, 35 insertions(+)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a608feb0d42e..b76063f7f18a 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
->   void unpin_user_page(struct page *page);
->   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   				 bool make_dirty);
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty);
->   void unpin_user_pages(struct page **pages, unsigned long npages);
->   
->   /**
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 971a24b4b73f..1b57355d5033 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -215,11 +215,16 @@ void unpin_user_page(struct page *page)
->   }
->   EXPORT_SYMBOL(unpin_user_page);
->   
-> -static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
-> +static inline unsigned int count_ntails(struct page **pages,
-> +					unsigned long npages, bool range)
->   {
-> -	struct page *head = compound_head(pages[0]);
-> +	struct page *page = pages[0], *head = compound_head(page);
->   	unsigned int ntails;
->   
-> +	if (range)
-> +		return (!PageCompound(head) || compound_order(head) <= 1) ? 1 :
-> +		   min_t(unsigned int, (head + compound_nr(head) - page), npages);
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 96c7604..39ec4ec 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1289,6 +1289,8 @@ static inline void check_irqs_on(void)
+>  #endif
+>  }
+>  
+> +bool bh_migration_done = true;
 
-Here, you clearly should use a separate set of _range routines. Because you're basically
-creating two different routines here! Keep it simple.
-
-Once you're in a separate routine, you might feel more comfortable expanding that to
-a more readable form, too:
-
-	if (!PageCompound(head) || compound_order(head) <= 1)
-		return 1;
-
-	return min_t(unsigned int, (head + compound_nr(head) - page), npages);
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+How about "bh_lru_disable"?
 
 > +
->   	for (ntails = 1; ntails < npages; ntails++) {
->   		if (compound_head(pages[ntails]) != head)
->   			break;
-> @@ -229,20 +234,32 @@ static inline unsigned int count_ntails(struct page **pages, unsigned long npage
->   }
->   
->   static inline void compound_next(unsigned long i, unsigned long npages,
-> -				 struct page **list, struct page **head,
-> -				 unsigned int *ntails)
-> +				 struct page **list, bool range,
-> +				 struct page **head, unsigned int *ntails)
->   {
-> +	struct page *p, **next = &p;
+>  /*
+>   * Install a buffer_head into this cpu's LRU.  If not already in the LRU, it is
+>   * inserted at the front, and the buffer_head at the back if any is evicted.
+> @@ -1303,6 +1305,9 @@ static void bh_lru_install(struct buffer_head *bh)
+>  	check_irqs_on();
+>  	bh_lru_lock();
+>  
+> +	if (!bh_migration_done)
+> +		goto out;
 > +
->   	if (i >= npages)
->   		return;
->   
-> -	*ntails = count_ntails(list + i, npages - i);
-> -	*head = compound_head(list[i]);
-> +	if (range)
-> +		*next = *list + i;
-> +	else
-> +		next = list + i;
+
+Let's add why we want it in the description in bh_lru_install's description.
+
+>  	b = this_cpu_ptr(&bh_lrus);
+>  	for (i = 0; i < BH_LRU_SIZE; i++) {
+>  		swap(evictee, b->bhs[i]);
+> @@ -1313,6 +1318,7 @@ static void bh_lru_install(struct buffer_head *bh)
+>  	}
+>  
+>  	get_bh(bh);
+> +out:
+>  	bh_lru_unlock();
+>  	brelse(evictee);
+>  }
+> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+> index 6b47f94..ae4eb6d 100644
+> --- a/include/linux/buffer_head.h
+> +++ b/include/linux/buffer_head.h
+> @@ -193,6 +193,9 @@ void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
+>  		  gfp_t gfp);
+>  struct buffer_head *__bread_gfp(struct block_device *,
+>  				sector_t block, unsigned size, gfp_t gfp);
 > +
-> +	*ntails = count_ntails(next, npages - i, range);
-> +	*head = compound_head(*next);
->   }
->   
-> +#define for_each_compound_range(i, list, npages, head, ntails) \
-> +	for (i = 0, compound_next(i, npages, list, true, &head, &ntails); \
-> +	     i < npages; i += ntails, \
-> +	     compound_next(i, npages, list, true,  &head, &ntails))
+> +extern bool bh_migration_done;
 > +
->   #define for_each_compound_head(i, list, npages, head, ntails) \
-> -	for (i = 0, compound_next(i, npages, list, &head, &ntails); \
-> +	for (i = 0, compound_next(i, npages, list, false, &head, &ntails); \
->   	     i < npages; i += ntails, \
-> -	     compound_next(i, npages, list, &head, &ntails))
-> +	     compound_next(i, npages, list, false,  &head, &ntails))
->   
->   /**
->    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
-> @@ -306,6 +323,21 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   }
->   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
->   
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty)
+>  void invalidate_bh_lrus(void);
+>  struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
+>  void free_buffer_head(struct buffer_head * bh);
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index 3a38963..9e4a2dc 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -46,6 +46,7 @@ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+>  extern void putback_movable_page(struct page *page);
+>  
+>  extern void migrate_prep(void);
+> +extern void migrate_finish(void);
+>  extern void migrate_prep_local(void);
+>  extern void migrate_page_states(struct page *newpage, struct page *page);
+>  extern void migrate_page_copy(struct page *newpage, struct page *page);
+> @@ -67,6 +68,7 @@ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  	{ return -EBUSY; }
+>  
+>  static inline int migrate_prep(void) { return -ENOSYS; }
+> +static inline int migrate_finish(void) { return -ENOSYS; }
+>  static inline int migrate_prep_local(void) { return -ENOSYS; }
+>  
+>  static inline void migrate_page_states(struct page *newpage, struct page *page)
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index a69da8a..08c981d 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -64,6 +64,19 @@
+>   */
+>  void migrate_prep(void)
+>  {
+> +	bh_migration_done = false;
+> +
+> +	/*
+> +	 * This barrier ensures that callers of bh_lru_install() between
+> +	 * the barrier and the call to invalidate_bh_lrus() read
+> +	 *  bh_migration_done() as false.
+> +	 */
+> +	/*
+> +	 * TODO: Remove me? lru_add_drain_all() already has an smp_mb(),
+> +	 * but it would be good to ensure that the barrier isn't forgotten.
+> +	 */
+> +	smp_mb();
+> +
+>  	/*
+>  	 * Clear the LRU lists so pages can be isolated.
+>  	 * Note that pages may be moved off the LRU after we have
+> @@ -73,6 +86,11 @@ void migrate_prep(void)
+>  	lru_add_drain_all();
+>  }
+>  
+> +void migrate_finish(void)
 > +{
-> +	unsigned long index;
-> +	struct page *head;
-> +	unsigned int ntails;
-> +
-> +	for_each_compound_range(index, &page, npages, head, ntails) {
-> +		if (make_dirty && !PageDirty(head))
-> +			set_page_dirty_lock(head);
-> +		put_compound_head(head, ntails, FOLL_PIN);
-> +	}
+> +	bh_migration_done = true;
 > +}
-> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
 > +
->   /**
->    * unpin_user_pages() - release an array of gup-pinned pages.
->    * @pages:  array of pages to be marked dirty and released.
-> 
+>  /* Do the necessary work of migrate_prep but not if it involves other CPUs */
+>  void migrate_prep_local(void)
+>  {
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 6446778..e4cb959 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8493,6 +8493,9 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+>  				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+>  	}
+> +
+> +	migrate_finish();
+> +
+>  	if (ret < 0) {
+>  		putback_movable_pages(&cc->migratepages);
+>  		return ret;
+> diff --git a/mm/swap.c b/mm/swap.c
+> index 31b844d..97efc49 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/hugetlb.h>
+>  #include <linux/page_idle.h>
+>  #include <linux/local_lock.h>
+> +#include <linux/buffer_head.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -759,6 +760,8 @@ void lru_add_drain_all(void)
+>  	if (WARN_ON(!mm_percpu_wq))
+>  		return;
+>  
+> +	invalidate_bh_lrus();
+
+Instead of adding a new IPI there, how about adding need_bh_lru_drain(cpu)
+in lru_add_drain_all and then calls invalidate_bh_lru in lru_add_drain_cpu?
+Not a strong but looks like more harmonized with existing LRU draining
+code.
+
+Thanks for the work.
