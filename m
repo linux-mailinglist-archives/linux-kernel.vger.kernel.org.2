@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB9F30DE8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA0930DE91
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbhBCPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbhBCPpc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:45:32 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1814AC0613D6;
-        Wed,  3 Feb 2021 07:44:52 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id u16so135310qvo.9;
-        Wed, 03 Feb 2021 07:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=967+scZz5c/VMb8QxhN8JJ1TyJw7YVtgje+ictxSWfE=;
-        b=W9cR27rS5wSTdzg8SX5V048E11ydpWYV5g8B/Th/mXLyO6MZ1UWYb5JS21T3E00Zwc
-         vqIrQmZcJYa/RiD0Akt2OZerYzoIorG8EzCiKZ1AKeEkiWR2n96lVZmmyCX6QESOgnJE
-         8oGj7+/OpBUr2/RMtsVK2HKy8qXp7LnXWCaVkfnh2deNxD1Q0A7h9o/s4CFzd4wYvCKM
-         TDm0/J/9zuQs9VKQ5sJ2vEDi/Sx1IWZs55QZ3arnhKXar/5YPBufBZMk4HpyPtytNjWa
-         Y0peHCe9jXTKw81c2hrnye4Ho/ghzSWnX7t8GObYSqMFAjf946hBSn0cg5pXS+GNkIT/
-         i4Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=967+scZz5c/VMb8QxhN8JJ1TyJw7YVtgje+ictxSWfE=;
-        b=tYtr7mTV2c2/CoPO7TSP86CwDIzrtQYT523LJYxAbVnNJsMO5m5sukgOGaIUr7yuDP
-         e4NhayUTxAzVGLcx+tghwCV4sqvDWolsdnPxG1mNjooNMpXAsTas6Q2DAlr4MoKGyPmT
-         /2ekf0lRm5zvEbVMxbJq/geDn9+Oak5qBOwpBofn6vk3VKR8zx3f9fdQuGrKDBR7FI0R
-         oKm3g4YcSeN3MUas5Xcg4aMgZLBtgQT4C3S0fZ9x7OmOuTc+PWyCg4ikRceRCzpEUk8V
-         KC3o0bNQvXk6CiRnjJUJHOrieIm9JpN9OHo79298L22MCt9NOtw/ut4FSeB/hlplncw0
-         w+sA==
-X-Gm-Message-State: AOAM531rJmv/3eDnLWqjQzP2NPKpOtRoYYAr9i2EgEPpPekpuQ5SxLEh
-        fMYDOFTG3h78gNOPWJ8JVNI=
-X-Google-Smtp-Source: ABdhPJxxJXDZSqwfz04ep3TuMOEDWyxgzktejYV0vydgtNU+CgmdshqXj4Yl+ltDhDwRo8wCC23M8Q==
-X-Received: by 2002:a05:6214:1103:: with SMTP id e3mr3428912qvs.12.1612367091437;
-        Wed, 03 Feb 2021 07:44:51 -0800 (PST)
-Received: from localhost.localdomain ([156.146.36.139])
-        by smtp.gmail.com with ESMTPSA id g11sm1560043qto.89.2021.02.03.07.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 07:44:50 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     robert.moore@intel.com, erik.kaneda@intel.com,
-        rafael.j.wysocki@intel.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] include: acpi:  Correct spelling in the file acoutput.h is optimzation to optimization
-Date:   Wed,  3 Feb 2021 21:14:37 +0530
-Message-Id: <20210203154437.15949-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S234491AbhBCPqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:46:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234185AbhBCPpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:45:38 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E17D64F5D;
+        Wed,  3 Feb 2021 15:44:57 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l7KKt-00Bn8e-1e; Wed, 03 Feb 2021 15:44:55 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Feb 2021 15:44:54 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     guoren@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] drivers/irqchip: Fixup csky,mpintc compile error with
+ CPU_CK610
+In-Reply-To: <20210203134834.2367593-1-guoren@kernel.org>
+References: <20210203134834.2367593-1-guoren@kernel.org>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <652791212cbf9c05a9d83b6da5a83520@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: guoren@kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, guoren@linux.alibaba.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-03 13:48, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> The irq-csky-mpintc.c only could support CPU_CK860 and it will
+> compile error with CPU_CK610.
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/irqchip/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index b147f22a78f4..9be2dd5c6380 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -433,7 +433,7 @@ config QCOM_PDC
+> 
+>  config CSKY_MPINTC
+>  	bool "C-SKY Multi Processor Interrupt Controller"
+> -	depends on CSKY
+> +	depends on CSKY && CPU_CK860
+>  	help
+>  	  Say yes here to enable C-SKY SMP interrupt controller driver used
+>  	  for C-SKY SMP system.
 
-s/optimzation/optimization/
+I'm not convinced this is the right fix.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- include/acpi/acoutput.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You already select CSKY_MPINTC only when CPU_CK860 is selected,
+so preventing the user from selecting it should simply be a matter
+of dropping the string after bool.
 
-diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
-index c5d900c0ecda..1ba212372e79 100644
---- a/include/acpi/acoutput.h
-+++ b/include/acpi/acoutput.h
-@@ -362,7 +362,7 @@
-  *
-  * A less-safe version of the macros is provided for optional use if the
-  * compiler uses excessive CPU stack (for example, this may happen in the
-- * debug case if code optimzation is disabled.)
-+ * debug case if code optimization is disabled.)
-  */
+Thanks,
 
- /* Exit trace helper macro */
---
-2.26.2
+         M.
 
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 94920a51c628..2e7b562bbaac 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -432,7 +432,7 @@ config QCOM_PDC
+  	  IRQs for Qualcomm Technologies Inc (QTI) mobile chips.
+
+  config CSKY_MPINTC
+-	bool "C-SKY Multi Processor Interrupt Controller"
++	bool
+  	depends on CSKY
+  	help
+  	  Say yes here to enable C-SKY SMP interrupt controller driver used
+
+-- 
+Jazz is not dead. It just smells funny...
