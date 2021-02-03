@@ -2,179 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B7730DFC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A11930DFCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233395AbhBCQeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
+        id S233788AbhBCQew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhBCQeC (ORCPT
+        with ESMTP id S230180AbhBCQed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:34:02 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4F8C061573;
-        Wed,  3 Feb 2021 08:33:21 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id 7so25151868wrz.0;
-        Wed, 03 Feb 2021 08:33:21 -0800 (PST)
+        Wed, 3 Feb 2021 11:34:33 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8470C061786;
+        Wed,  3 Feb 2021 08:33:53 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id a19so282810qka.2;
+        Wed, 03 Feb 2021 08:33:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LwYk9IXStRn7SgUS76qHSJjRJWVhTr/k7WOX+m0XO/w=;
-        b=SGkrJiRz0EXbG18IdOW96od8R9qUqlm+EbdrudIW+hhxa3+h5Dp6C/bXdl+0Ctno4k
-         cMK0B8PXbT4TziWpFCeQ/P2g8rHYglYb/6fZ6tGZbfXLDvUTmDU9e2No+SZOXvFLNIWV
-         8u1f4DXym0ddMiXYQ/HPT3fWZi+QaoqL42jWTFKZgVav9a/4W644Clsn/Ss2h8INIZVJ
-         mxR4z6H8AjhUSgqGNItQQfHDGPLuRXHSnQPgcBHfPc5vVPuJp6y20hS6F4wFiZQrZxnp
-         EDx4nyvtiuedyyJCIsRavGHzw4v6nvEf+owm4qSO4FCoHQmL5F6+h2im4klJds/98OKa
-         4ISA==
+        h=from:to:cc:subject:date:message-id;
+        bh=CnmcPCrNkYlOAKp0TeVXo4eNgCaDjLZITNcPd4Ycqpk=;
+        b=s3sFCaxmvisX+PBcIC7OMJ+1p8o/D2AywhXWE4Tzyg675Jgj/13ioZOql1XNJkeKyy
+         AYnL3/u4IY7fm7E1XPW/dLUSJUUCV9NDXsGYNN4eRTKlBg6yWs2Yb/hvt/oNftySEaIw
+         3AZ+nmHWgFVQjj5DK7E4qIzJYI7igwFYuq219MJ48cMxPhx5lacVjZxI9PDTKHWY8pEg
+         hmpIIx0MA7erEheWe63cfKm50g8I5hFr48rYSkUBkkFWPmX5d35vU18lMnaXjq+b4eL5
+         Q/FslB4de8wVSBxJMXz8RuD/L8hj1tiRBNM8P8mGmsl9vb7ih17K1NWWjHqPBba7CjAM
+         PqRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LwYk9IXStRn7SgUS76qHSJjRJWVhTr/k7WOX+m0XO/w=;
-        b=E4xg8dgMWcPB7bH3KYF8iq9x+7HdSjufvAstvzrgQ3z0segTjjTrH94wFizyXNlgoh
-         g/XNSzJGT9E/jcvq4EHkO6sgfNkwoFC+2j2O9FAB6EDy+ipZl7RqUZoSNftYl872G6BO
-         uSwvcvqTljMkT8fNBMUnDTjlv7pdrq7yhdYtUGHP4srZT392/EiQv4hv4vHfiQezYvag
-         WUu3blsM4eLeCOrtVuMbFIBvNIhe2LOAcpFqQWqcQYbiQKMeVQwb0rlAqAHRKMehYY82
-         8cVxoX+A62TUQXweIT+X3yRdLcEUXP+89lzwyUG0gFGdXsb9BJXv8RE1/ruNqo42Bxo0
-         mbMg==
-X-Gm-Message-State: AOAM532beXSIBe3981uLVN+OCUgr1AgY9WHsN1IcSd6PZlstFaurRpbO
-        GAb3yueZmzQfr727YMB44Uo=
-X-Google-Smtp-Source: ABdhPJxO4gMeXrlYm6a9K277Pj1yr4Bzb6rdNQsXLKYXSLYB7eI3tKUXsq3Z1TwO3brUy3ilCdrZDg==
-X-Received: by 2002:a5d:58c2:: with SMTP id o2mr4446825wrf.31.1612370000447;
-        Wed, 03 Feb 2021 08:33:20 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id r124sm3344257wmr.16.2021.02.03.08.33.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CnmcPCrNkYlOAKp0TeVXo4eNgCaDjLZITNcPd4Ycqpk=;
+        b=HJeOU8RB44slZ6i5q3fzll321yFppiFS5nqNbwv21h0gf06dWtBC6VxuRZXfLqVLvr
+         QaKvZ587IUTrd2Nt2otVXWFesvGVmYGXC6wS81JJGvueb+yY2OondLrJMglRArO7ZetJ
+         nWwlPB19f2xtmURR2cXfkhK92UBGd9x2f7/pGNA05n/2c0xEY3oQ512hcUs8whI8L+J3
+         g+pQqRpYVTNFxvAzGZJst8fUTg5/1S56V4kiGc0T0xf7kK9Ltf6CsH8nuNE/scKy/CfT
+         SlQ5GcBI0Jn9kXju0ech6elLUdhsSBU5+g4a/vhnl8Knv4x47YCkgYponxuu8Jcvuwfd
+         kbOA==
+X-Gm-Message-State: AOAM532oxuvZO/nl8upuj6OT8CBM8fFNQsWrSy/IGMGwk/FyorHsbP3R
+        onW9L0pDfe/wQxz2GGrJAXGK+VKPjcg=
+X-Google-Smtp-Source: ABdhPJwUFklIEeVdPq27NlqwhPYvH8uz9dFYESjlSJyzlnInL5YblHliuTp2Kr+ZHnsJbQvje0r34g==
+X-Received: by 2002:a05:620a:530:: with SMTP id h16mr3377043qkh.136.1612370032688;
+        Wed, 03 Feb 2021 08:33:52 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id e5sm1719093qtp.86.2021.02.03.08.33.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 08:33:18 -0800 (PST)
-Date:   Wed, 3 Feb 2021 17:33:16 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Ban Tao <fengzheng923@gmail.com>, mripard@kernel.org,
-        wens@csie.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
-Message-ID: <YBrQTM5iADZgA2v1@ulmo>
-References: <20210203125317.1975-1-fengzheng923@gmail.com>
- <20210203151200.fdzzq23teoypbxad@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AGCAPFBM7w9A+AcG"
-Content-Disposition: inline
-In-Reply-To: <20210203151200.fdzzq23teoypbxad@pengutronix.de>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+        Wed, 03 Feb 2021 08:33:52 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
+Date:   Wed,  3 Feb 2021 11:33:48 -0500
+Message-Id: <20210203163348.30686-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
---AGCAPFBM7w9A+AcG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We have observed that under certain repeatable circumstances, the CODA
+mem2mem device consistently generates corrupted frames. This happens only
+on an i.MX6qp (Plus) - the classic imx6q is not affected.
 
-On Wed, Feb 03, 2021 at 04:12:00PM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> On Wed, Feb 03, 2021 at 08:53:17PM +0800, Ban Tao wrote:
-[...]
-> > +#define PWM_GET_CLK_OFFSET(chan)	(0x20 + ((chan >> 1) * 0x4))
-> > +#define PWM_CLK_APB_SCR			BIT(7)
-> > +#define PWM_DIV_M			0
-> > +#define PWM_DIV_M_WIDTH			0x4
-> > +
-> > +#define PWM_CLK_REG			0x40
-> > +#define PWM_CLK_GATING			BIT(0)
-> > +
-> > +#define PWM_ENABLE_REG			0x80
-> > +#define PWM_EN				BIT(0)
-> > +
-> > +#define PWM_CTL_REG(chan)		(0x100 + 0x20 * chan)
-> > +#define PWM_ACT_STA			BIT(8)
-> > +#define PWM_PRESCAL_K			0
-> > +#define PWM_PRESCAL_K_WIDTH		0x8
-> > +
-> > +#define PWM_PERIOD_REG(chan)		(0x104 + 0x20 * chan)
-> > +#define PWM_ENTIRE_CYCLE		16
-> > +#define PWM_ENTIRE_CYCLE_WIDTH		0x10
-> > +#define PWM_ACT_CYCLE			0
-> > +#define PWM_ACT_CYCLE_WIDTH		0x10
->=20
-> Please use a driver specific prefix for these defines.
+This happens when the virtual X screen is wider than 0x900 pixels (1).
 
-These are nice and to the point, so I think it'd be fine to leave these
-as-is. Unless of course if they conflict with something from the PWM
-core, which I don't think any of these do.
+Quite strange, because CODA is a mem2mem device, and is presumably not touching
+any of the IPU/GPU2D/GPU3D infrastructure used by X. Except if there is a hidden
+dependency somehow.
 
-> > +struct sun50i_pwm_data {
-> > +	unsigned int npwm;
-> > +};
-> > +
-> > +struct sun50i_pwm_chip {
-> > +	struct pwm_chip chip;
-> > +	struct clk *clk;
-> > +	struct reset_control *rst_clk;
-> > +	void __iomem *base;
-> > +	const struct sun50i_pwm_data *data;
-> > +};
-> > +
-> > +static inline struct sun50i_pwm_chip *sun50i_pwm_from_chip(struct pwm_=
-chip *chip)
-> > +{
-> > +	return container_of(chip, struct sun50i_pwm_chip, chip);
-> > +}
+I have captured and visualized generated CODA frames as follows:
+gst-launch-1.0 playbin uri=file:///home/default/nycTrain1080p.mp4 flags=0x45
+    video-sink='multifilesink location=frame%d.yuv'
+See (2) for how I converted the raw YUV frame to a PNG image.
 
-I wanted to reply to Uwe's comment on v1 but you sent this before I got
-around to it, so I'll mention it here. I recognize the usefulness of
-having a common prefix for function names, though admittedly it's not
-totally necessary in these drivers because these are all local symbols.
-But it does makes things a bit consistent and helps when looking at
-backtraces and such, so that's all good.
+For example, the following will break CODA mpeg4 decode (width >= 0x900):
+# xrandr --fb 2400x1088
+Screen 0: minimum 1 x 1, current 2400 x 1088, maximum 4096 x 4096
+HDMI1 disconnected (normal left inverted right x axis y axis)
+LVDS1 connected primary 1280x800+0+0 (normal left inverted right x axis y axis) 0mm x 0mm
+   1280x800      59.79*+
 
-That said, I consider these casting helpers a bit of a special case
-because they usually won't show up in backtraces, or anywhere else for
-that matter. Traditionally these have been named to_*(), so it'd be
-entirely consistent to keep doing that.
+Resulting frame when dumped with multifilesink (NOT written to the display):
+https://gitlab.com/TheSven73/coda-investigation/-/blob/master/stripes.png
 
-But I don't have any strong objections to this variant either, so pick
-whichever you want. Although, please, nobody take that as a hint that
-any existing helpers should be converted.
+And the following will restore CODA mpeg4 decode (width < 0x900):
+# xrandr --fb 2300x1088
+Screen 0: minimum 1 x 1, current 2300 x 1088, maximum 4096 x 4096
+HDMI1 disconnected (normal left inverted right x axis y axis)
+LVDS1 connected primary 1280x800+0+0 (normal left inverted right x axis y axis) 0mm x 0mm
+   1280x800      59.79*+
 
-[...]
-> > +static int sun50i_pwm_probe(struct platform_device *pdev)
-> > +{
-> > +	struct sun50i_pwm_chip *pwm;
->=20
-> "pwm" isn't a good name, in PWM code this name is usually used for
-> struct pwm_device pointers (and sometimes the global pwm id). I usually
-> use "ddata" for driver data (and would have called "sun50i_pwm_chip"
-> "sun50i_pwm_ddata" instead). Another common name is "priv".
+Resulting frame when dumped with multifilesink (NOT written to the display):
+https://gitlab.com/TheSven73/coda-investigation/-/blob/master/ok.png
 
-This driver already declares sun50i_pwm_data for per-SoC data, so having
-a struct sun50i_pwm_ddata would just be confusing. sun50i_pwm_chip is
-consistent with what other drivers name this, so I think that's fine.
+Additional info:
+- only the virtual X screen width seems to trigger the issue, it is
+  independent of the height.
+- issue seems independent of the pixel format. Forcing CODA to output NV12
+  shows the same behaviour.
 
-Agreed on "pwm" being a bad choice here, though.
+System description:
+- i.MX6 QuadPlus:
+[    0.144518] CPU identified as i.MX6QP, silicon rev 1.1
+- mainline Linux v5.9.16 with a small private patchset on top
+  (patchset does not touch CODA)
+- CODA960 silicon contained within i.MX6 QuadPlus:
+[ 4798.510033] coda 2040000.vpu: Firmware code revision: 46076
+[ 4798.515916] coda 2040000.vpu: Initialized CODA960.
+[ 4798.520779] coda 2040000.vpu: Firmware version: 3.1.1
+- gstreamer from buildroot:
+gst-launch-1.0 version 1.16.2
+GStreamer 1.16.2
+- X from buildroot, using armada and etnadrm_gpu plugins:
+X.Org X Server 1.20.7
+X Protocol Version 11, Revision 0
+[    99.527] (II) LoadModule: "armada"
+[    99.527] (II) Loading /usr/lib/xorg/modules/drivers/armada_drv.so
+[    99.538] (II) Module armada: vendor="X.Org Foundation"
+[    99.538] 	compiled for 1.20.7, module version = 0.0.0
+[    99.538] 	Module class: X.Org Video Driver
+[    99.538] 	ABI class: X.Org Video Driver, version 24.1
+[    99.538] (II) armada: Support for Marvell LCD Controller: 88AP510
+[    99.539] (II) armada: Support for Freescale IPU: i.MX6
+[    99.545] (II) armada(0): Added screen for KMS device /dev/dri/card1
+[    99.561] (II) armada(0): hardware: imx-drm
+[    99.563] (**) armada(0): Option "AccelModule" "etnadrm_gpu"
+[    99.563] (II) Loading sub module "etnadrm_gpu"
+[    99.563] (II) LoadModule: "etnadrm_gpu"
+[    99.564] (II) Loading /usr/lib/xorg/modules/drivers/etnadrm_gpu.so
+[    99.576] (II) Module Etnaviv GPU driver (DRM): vendor="X.Org Foundation"
+[    99.576] 	compiled for 1.20.7, module version = 0.0.0
 
-Thierry
 
---AGCAPFBM7w9A+AcG
-Content-Type: application/pgp-signature; name="signature.asc"
+(1) When using multiple displays, the virtual X screen is typically the bounding
+    rectangle which includes all screens. That's why it can become wider than
+    1920 pixels.
 
------BEGIN PGP SIGNATURE-----
+(2)
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAa0EkACgkQ3SOs138+
-s6EjvhAAgI1CKlBx/Bl0vTUGrzdegos3MfgicgCq4dYzmsaFqrGrhWFOxBtdYiZG
-RO8mFFROyI93fbezPVPjcw60zrETEQj6mu8MIo48a56OowcIEOl2UE1ySfN0QibZ
-p2MiDmOSSGc1ij4ux8lh7KB0hMdwVMtzRaJms1WzWkP7ieGCoaNua5cXUjXRagu5
-8+/xnuKTq1f4dDshr0BV5w+TFTW1aruA2VsXnsIt2vEcPXzN9Wcj5F5407EQGVC9
-XGhFT9OGdz2sfI6gg5HrXnzAG4bGiYzO5Hon6y0Ql/CiYyg5ce6nKYXSiBoKbbJQ
-2lrD63+4PlFROyS7yjJsTGRHBZ3nefxq6WAVTls2jtunrTM8L1OSGXZ+W+s+ENWe
-31crGvxyXLygAYOI2BQ5p/IVlYBhlbK4AP1zEhKaOtq6WuCZnzYpwMpyqXlRjvHe
-E+y3CPfaJe2IRG5S9W5QoldNWyDazUi0n5B7jfWlwOr5eqZnheNvRABoeZNttjUf
-lWKIn73nJxT4sii1JMjQ4j2xX7PZASPQAmDab3i+oVNorD69dJVe6x/8+VJNC1hQ
-8BVcyq8gxI9moyaaFysMn5tdj/7vAcZNyCVvMVR6GsNvtdbKVo35rbJSRHNaBRbs
-aucaodxJryNKtd6+Z5tYPT/SljThWBSnb+AaLYGeaqy7H60g2y0=
-=lGYg
------END PGP SIGNATURE-----
+# Convert raw YUYV to PNG
+# Python, runs out of the box on a stock Google Colab notebook
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
 
---AGCAPFBM7w9A+AcG--
+img = np.fromfile('frame1.yuv', dtype=np.uint8)
+# YUYV has two 8-bit channels per pixel
+img.shape = (1088, 1920, 2)
+
+img2 = cv2.cvtColor(img, cv2.COLOR_YUV2RGB_YUYV)
+plt.imshow(img2)
+matplotlib.image.imsave('frame1.png', img2)
+
+To: Philipp Zabel <p.zabel@pengutronix.de>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: linux-media@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
