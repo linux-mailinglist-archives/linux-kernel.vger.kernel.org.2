@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6AA30E7FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9644330E7FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhBCXzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
+        id S233429AbhBCX4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbhBCXzF (ORCPT
+        with ESMTP id S231696AbhBCX4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:55:05 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7390BC061573;
-        Wed,  3 Feb 2021 15:54:25 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id z32so1149919qtd.8;
-        Wed, 03 Feb 2021 15:54:25 -0800 (PST)
+        Wed, 3 Feb 2021 18:56:36 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F5AC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:55:56 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id i8so2006522ejc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:55:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OUI1E35qY/dHj3kcH37Zi8kcJp7vpT/9jcqiIwQAQvE=;
-        b=TxEh/JreknrjRSNDom2j5/kMNVU7wh21VYavcbJvG0BD/dn7T/528rdhp15EIkOETH
-         4QaBU7AfwVIW+eQmj+nOjqt7x8oolTX9mOyLbaI8bKU2lvo5+G+XRqscQ52/RirtpwUi
-         +prCYIWAZH4wQPEgxPqPqv9zJbQslJ15LbZ0Gott3tcWmr38VctPv9w+U7hlC/SM3BPQ
-         yir0lDZYd1Pmx/c59UQxvJAmVJ9GiqY3LpNLib3i2QOx3fii0WJ6HK7EnNXRAVRIH8xA
-         odq8UPI8BXOXfyLMsaEECd1K5b+egPSXNPkGE5fSfwG2g9YtiG2VxtWUP2FWfd7uePF0
-         rd2g==
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXB9D1nDfOLyhyhmoOAMcF3XxJqUZI6h6Q/nQ7sUHPQ=;
+        b=bP3wdUZxDzflTRAwpugTbr9SOTaqZynXn2N+WUuZ4A9thV2sTa0Z+vD00cTclkBmOG
+         fAF4dMeLOsOnPQrOPa297G5pDr6J+n7BMzQfeIfWIVVLi2STL4AnYbupmvCuFAe7Jw3p
+         jSATtb38L7sS/oNWq2rDkHjx6uUEqqDos7EGJx4KrhTR0/ZiPaH+uMI5MfnaR1dsj5Vo
+         pKLyLrpXqIIi+DjqKFlJnQMOAnTHadN0bOynA2lYHg0QSNIvadhnF6YmaGwtAasLYMrA
+         NpKeBV6d3mQkN/kil6sL8j0lXIzSiGPhLqC0GXAzVvuXINcf1YEw42PUqsE3++Uk1M/T
+         WPVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=OUI1E35qY/dHj3kcH37Zi8kcJp7vpT/9jcqiIwQAQvE=;
-        b=G7Xo08TcwS/z5zqN8n8nAOZztdSpDvSx94A5O3aKzpnEdIj3ZFDZlCRm5bL3GPrRkk
-         BONKYd5GKh8R9OhX1tTD00cYg8hN9loer9Rslyjcb3rqB75xKgVT0LrYsrgrESdf1fy0
-         8IjBfgAU/CdUSVklRTWia5QzXGTaLPTD3hbFLDcAVJeL5NgoTTws9GneLsJTHwKpozso
-         IOAxX0AdBeGruRVO7NvSPeMLAvlM0fD8/WrpoT2jNZfIZT2aD1J7MMKeBdPfrB9rrvae
-         yK7vDObuehwxoKDQiQE5nyFRmWL/8PNGmYITaLgNSzPEIaXiiDVnx1sghku3fN+b0DIm
-         2MHw==
-X-Gm-Message-State: AOAM530RdL1tHis2NgbL6KrgcVhBmVoe7fw1rXla1QUFbTP7Ic6IN4hn
-        bXVk8SFApfHA9He2p49K2Zc=
-X-Google-Smtp-Source: ABdhPJwmC6TaVPyOk1l55Ge1hcsD88Zrat52GUmn3fp+Ua/83f8TjE4XRr4p5uLzR5CO6D5y3dBlbg==
-X-Received: by 2002:aed:212d:: with SMTP id 42mr4825134qtc.106.1612396464784;
-        Wed, 03 Feb 2021 15:54:24 -0800 (PST)
-Received: from Gentoo ([138.199.13.179])
-        by smtp.gmail.com with ESMTPSA id o5sm3375672qko.85.2021.02.03.15.54.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 15:54:23 -0800 (PST)
-Date:   Thu, 4 Feb 2021 05:24:14 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     ysato@users.sourceforge.jp, dalias@libc.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: sh: kernel: Change to correct spelling archtecture
- to architecture in the file relocate_kernel.S
-Message-ID: <YBs3pgKHxqMqH8sf@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, ysato@users.sourceforge.jp,
-        dalias@libc.org, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203152521.16776-1-unixbhaskar@gmail.com>
- <31ad117d-b025-2214-cccb-deeaee6036be@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXB9D1nDfOLyhyhmoOAMcF3XxJqUZI6h6Q/nQ7sUHPQ=;
+        b=D07NXU6wn1P8NxxiGhyj1Qjggrsoj/jkFOoJKsXdMJR8Ek0X8bgdhnZu4DP3GHsrp8
+         LAFeuF6tqz0HDOj5C04jm54QxIMEsk3DnF8phE2g9K0nocLzbktLufril6rqH3H50qwK
+         2rh/of4df9IO9cIhntVv2PvJbAylODinhZrnkuJ7rOOWvEI1BBgv/Ars+dSMTxAy96mb
+         Xuk+ciO5aA0yOLChHwNr3KujIm0nwlE0l3XGsgXVeSUqLK1Szz9/Bdck38koMOhoaEsF
+         Ncg9zH2cU+1qMr3eILdJ0TQsiEhQu2/+NOVtZV9+DSeJFN+JBEsglcdCEIKMfD1aluVK
+         Yi2w==
+X-Gm-Message-State: AOAM533aBsvnMwwbA+1zL6PaUmndrpJOMrn1665diUDQ5/FfC2kQSOr0
+        Cau25uai4L8GzC+MOVACUL7+bQTSQkKJ+wfGd9jo3w==
+X-Google-Smtp-Source: ABdhPJy7GBDgONXJ/ZN1jKQZvonAHDNfTk9fMNFmMxmQWQAg4Nzootr0sIu8PZXpHj7+vb7WrSKByspMGG8yxAdI0nI=
+X-Received: by 2002:a17:906:27d7:: with SMTP id k23mr5679195ejc.300.1612396554765;
+ Wed, 03 Feb 2021 15:55:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sUL2F4YP//m70vi0"
-Content-Disposition: inline
-In-Reply-To: <31ad117d-b025-2214-cccb-deeaee6036be@infradead.org>
+References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
+ <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
+ <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
+ <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
+ <CAHk-=wgOp10DO9jtMC=B=RoTLWe7MFTS5pH4JeZ78-tbqTY1vw@mail.gmail.com>
+ <87h7mtc9pr.fsf_-_@collabora.com> <CAP045Ao=WK7whYP2mT5Nx4zxsJTO=8A4eXWdeB4MM=MOYDoGTQ@mail.gmail.com>
+In-Reply-To: <CAP045Ao=WK7whYP2mT5Nx4zxsJTO=8A4eXWdeB4MM=MOYDoGTQ@mail.gmail.com>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Wed, 3 Feb 2021 15:55:43 -0800
+Message-ID: <CAP045ApGeWQDJXbMUm230aRceJpSX46dfyjX7G7iypNe93Kc9Q@mail.gmail.com>
+Subject: Re: [PATCH] entry: Fix missed trap after single-step on system call return
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---sUL2F4YP//m70vi0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 09:58 Wed 03 Feb 2021, Randy Dunlap wrote:
->On 2/3/21 7:25 AM, Bhaskar Chowdhury wrote:
+On Wed, Feb 3, 2021 at 10:11 AM Kyle Huey <me@kylehuey.com> wrote:
 >
->Normally a patch description is required <here>.
+> On Wed, Feb 3, 2021 at 10:00 AM Gabriel Krisman Bertazi
+> <krisman@collabora.com> wrote:
+> > This seems to pass Kyle's test case.  Kyle, can you verify it works with
+> > rr?
 >
->If the patch committer wants to take it as is, the typo
->fix LGTM.
->
+> I will test it later today.
 
-I am so sorry..will fix this ...thank you Randy
+I have verified that a) the test case I sent earlier passes now and b)
+all rr tests pass now.
 
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  arch/sh/kernel/relocate_kernel.S | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/sh/kernel/relocate_kernel.S b/arch/sh/kernel/relocate_kernel.S
->> index d9bf2b727b42..deda2f60a8f2 100644
->> --- a/arch/sh/kernel/relocate_kernel.S
->> +++ b/arch/sh/kernel/relocate_kernel.S
->> @@ -3,7 +3,7 @@
->>   * relocate_kernel.S - put the kernel image in place to boot
->>   * 2005.9.17 kogiidena@eggplant.ddo.jp
->>   *
->> - * LANDISK/sh4 is supported. Maybe, SH archtecture works well.
->> + * LANDISK/sh4 is supported. Maybe, SH architecture works well.
->>   *
->>   * 2009-03-18 Magnus Damm - Added Kexec Jump support
->>   */
->> --
->> 2.26.2
->
->--
->~Randy
->
+Tested-by: Kyle Huey <me@kylehuey.com>
 
---sUL2F4YP//m70vi0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAbN6UACgkQsjqdtxFL
-KRWqxQgAlvfgVshKcHUWP1D4isG7NUbTKOpSPEOt6ZoKhPmVijuq/3Vqi37cbYVK
-qqsFJkF7GcsTLFrok86JZeYsiGv8TWAPaU1HG8OUhb5o9IIxFxH1S+nwJj8VY1kO
-QznLrzi9tRlX4KEYelwgGji9OeI3XCSF0BxShhrmbsB6kd99tP7bqmhVBa6ZfRK+
-VbYg/SiAU3jMDKt4VOQxvOLdKXYP1kQNhy2SVBkIFmAOUH/1TrxEDZMlD80RfwJF
-tm2MBC4Aj7RMHZAiUyKl937snhMakB2aGMeNZLPq8MYtetgpsnV3M+RQ0GN/Iff6
-mWP2U2hWqJPz6YeDPcE4iRh/NvP2cw==
-=ZeJX
------END PGP SIGNATURE-----
-
---sUL2F4YP//m70vi0--
+- Kyle
