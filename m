@@ -2,174 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C8C30DE7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A40E30DE77
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhBCPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbhBCPlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:41:02 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on072b.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED913C0617A7;
-        Wed,  3 Feb 2021 07:40:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WIgF4DRngqGWaEgkTaB2NZoEurOGDGnPRmSC1goP2YEtNU2Rlv93W+NxK+BdQdvaUVZjYlqtCuDHN+7TqmzqR4DYBY847DEpqHt2AJdH604m1WfwtYJ8Fx1x95mkWXqcNc0N1Sm4BLosIKHju194TUoiZXvhcHhhskF0v5UZQYYzR7Y/StvLdGmv5tFjD3iPNgi+zVug/WoA8zWkPHdLDRohSvVQqMKKGvp/UCP4GZaBLz+LdInMwW5wFqJzVnKWSn+hvAyKgSqTrM1p/glWVuatRLfp33UyrKdvBXoQbufcIGbG+20O8hIy3KHq9cglXVJtkx3l3yX1hx0nLPwZXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LNJKGMOVr1s7ykYmRKZzd43izq03pbmQAMY7+AmmQbU=;
- b=We/Clcd/RRGkLY+xByK2bs1kaFTGWgWDjCfo84qO6l64jWUJsYupG3hZGVkY06/G4ndLycGnNw/i0ONLke32fLAsInigo6giVRpZGsxEcT+HU85qeQy0B6EaQgSPrl8f3Krb7jmWx0e1L4waG7vcNeG+eFK9C1baxDPWv93Gn6fStN9EJqD10LlCueK+RkXzxx6vpWm0PzdyXeACjpasCzIFMFGZCM9bwBOEJABkH2IVNNhA7C2Xfiw6PgoKC0qQuvKN3NHkpfMBi7t/i72h2zyccll8K9vgnxVWBQs/b5uHgu1KZyRbt1D+P5Cpo6lOsMDu//Qn1P0aXzHXJiGeAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=schleissheimer.de; dmarc=pass action=none
- header.from=schleissheimer.de; dkim=pass header.d=schleissheimer.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LNJKGMOVr1s7ykYmRKZzd43izq03pbmQAMY7+AmmQbU=;
- b=jf4tUIxTf3UpTJ9asr/N9iIt14b497BTh0lO0Kk78Gr2eFOVP0s4OqgmqxhRl4oW1JYJFDM30+EkUSp3bMSSFrYUaB096I1CZsetMxdUPnI6i2ZHo0YZxg4ztYHPwyHU74bQ35EhQStFr27pykHmEI92JHo4BerzWgSFbqAnWeg=
-Received: from DB8P190MB0634.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:12d::21)
- by DBAP190MB0886.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:1b0::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Wed, 3 Feb
- 2021 15:40:00 +0000
-Received: from DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
- ([fe80::fc76:b821:1966:db40]) by DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
- ([fe80::fc76:b821:1966:db40%9]) with mapi id 15.20.3805.027; Wed, 3 Feb 2021
- 15:40:00 +0000
-From:   Sven Schuchmann <schuchmann@schleissheimer.de>
-To:     Pavel Machek <pavel@ucw.cz>
-CC:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH v1] leds: lp50xx: add setting of default intensity from DT
-Thread-Topic: [PATCH v1] leds: lp50xx: add setting of default intensity from
- DT
-Thread-Index: AQHW7lFOn/1Jlt56EkOy+ZVk/3cx2qpGlWAAgAAP4bA=
-Date:   Wed, 3 Feb 2021 15:39:59 +0000
-Message-ID: <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
-References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
- <20210203142940.GB12369@duo.ucw.cz>
-In-Reply-To: <20210203142940.GB12369@duo.ucw.cz>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ucw.cz; dkim=none (message not signed)
- header.d=none;ucw.cz; dmarc=none action=none header.from=schleissheimer.de;
-x-originating-ip: [62.153.209.162]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c7638c5e-44b6-4e09-eb71-08d8c859f75e
-x-ms-traffictypediagnostic: DBAP190MB0886:
-x-microsoft-antispam-prvs: <DBAP190MB0886333E371803BA956ACEB8D9B49@DBAP190MB0886.EURP190.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SbBAZOke0PRGkLb6kxIKZSfPq1BmXXHtDQUj6r09Lcixk3T5iokpe8fbV4QU2Fnx4ihFHRgZQdyOKK/nI62d+dWbF3d0XwlvUBS0LBPL7iFYieTlbPRY6ra97lJjaXBJt+1zg+UZD3rC7K4SrpWRvd/SSiqbm/Ta+fqwOI/G6CaHI0Kxp6bVrfhBOGpeTv117Ccc3goi4vdQrQWgGHQMZ+6XbcQezgW6eTtWv046WjQEUWARqmbEWQ17bxsjGl2GnHRGKz7gjS81bI91TU2nMxX3NAYB2xJQsmys88UQSwq4o61Fai8XXmHu4jrs9YIs7T0MGVsCpv8QRpY28JTT56/ZxfPAu72Ples6+qFEQjp/VjBeLMp6ed1swpUPGwA82dMErPYYu+pnhcPB6xREkeATVV7Vw7mF78pDY/ekIUhURzzBmKD4rVL9RFgG6LIqbS19L2tdYoejipuKXH0ri989foWVDnEmizmJLfahwEELSLbM18tn1jcgSv/OUp66k2j5RjTSRCp+9lTi0kHdbQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8P190MB0634.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(136003)(346002)(39830400003)(316002)(54906003)(86362001)(6506007)(478600001)(52536014)(55016002)(186003)(8676002)(9686003)(66946007)(2906002)(71200400001)(26005)(66476007)(76116006)(8936002)(7696005)(66556008)(64756008)(66446008)(4326008)(33656002)(5660300002)(6916009)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?G/7sLxgUUkR3y5Uc4Hlr046vUUdJD2Sqks1jB9L+V/A437T2U7i7o11zTIEH?=
- =?us-ascii?Q?GmR4QMRfxkStt7qsT0a/e16B890tt/A9e+v/KctyPVW+jIyWBUsB1+aZEnMH?=
- =?us-ascii?Q?6xVIupo5sthNfnPGoAZZY9HO1Sk+elteL9nzjKCFGgTMR3KkNUa2PFEckwqA?=
- =?us-ascii?Q?FCPwW9gVpUdBsFhpbH6AsQ+gyAzf4kVHIpc/zmsWe1eKlf7tYhmvPaOaYyUm?=
- =?us-ascii?Q?yJLma2KifJjQQ4eaQKBEq2U3qhn4+k4DNS6HDJGX13DzZS8QZaZ2RzBKVzj0?=
- =?us-ascii?Q?3MEZGnckDEWRQu7d5J1YTpTnXP6Q5MBNLH1p0nH0rb9nyAeYxWXb7+hQMbjX?=
- =?us-ascii?Q?EIo4IZy+bpkji6lRU1M/9Fc/kPyWu2pcDkEC8NSDngbeMh1hBDqDVKtDGPjO?=
- =?us-ascii?Q?TiFunNZiRf+aZ+kn2gVapMQ+056hRj8D11h5dL4CNd9Ctd1OsrfqM6UU2AfN?=
- =?us-ascii?Q?vp5WgtjiIQiyK1Jxm8CcgZ7fM1oJzst/tBwDu7T24Y2bcQcD5h9oFVIrGmOz?=
- =?us-ascii?Q?t/HqTsqHiqkdXbsIHadAKMPG/O1p9AEJuguPGxg+w21C68cL1zzz2vAahAPC?=
- =?us-ascii?Q?Q5zpzM/lcRNlppfssgKuApsgC2O2YbkBco0UCBcYSP/GwofG6+w2A9eMyVNp?=
- =?us-ascii?Q?gIX5O95FhxOPterb1EcYH9QcVei4iF39ipf5CmWLZOtZKCQTTH5M6Xd1tdGa?=
- =?us-ascii?Q?CfW8pHZ1CukyNAZwn5YTZ78v+1PFOECqB+13yOejAX+sdrSWq2uUAuIKkSvq?=
- =?us-ascii?Q?xRHomLxDYgSY1GYnMOU7NROabQiJ00FducirB+/A6XsKGTaDj+yE3ORELYVa?=
- =?us-ascii?Q?CFV/dIuxXCFX3Ndl3fYJuCTf8oLi2OQNm1pryBhuJYOopsPM4he9eNYLYst7?=
- =?us-ascii?Q?xZvHHtXpPxlKOBlsAhXhwPQaMhHeoIyUkS2cTpGw6xnwcJBF3g0R4p4ufD/S?=
- =?us-ascii?Q?E2US4TdcifC9FdrOuqNCJl5ZM8uN5ryUriX9rw5ZDqW6wXSNLFw3l3J23gYP?=
- =?us-ascii?Q?3rb3DtrD38iiE6NecmZM6EnNneaaexFmVXYbdqhdKocY9VSnyFKta0mqzU32?=
- =?us-ascii?Q?pciCrkvV/L/fV6E15JYxwFKDHgr0vuURqPos/TfQgVBwueuFcMjvZlU1hjEc?=
- =?us-ascii?Q?9A1TIovrSlMK65n8mihSpbpYgW2eWuwnk2VnsnpDl0L/ElDK+f6MrEEwKqOf?=
- =?us-ascii?Q?tkd14SlDzQSLEhTPNGW5VZYY3f0t9XFtJpxAq7r8S94PFlqAhvxRnXT+Arxc?=
- =?us-ascii?Q?jvHisflI+C5ZdaOylkkRFO/Cf48gBX89XbRL46o1o3DvypLPfwiwL3WuMuhx?=
- =?us-ascii?Q?DELrRL06lG2Lrc4EkemAYuFb?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234408AbhBCPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:42:50 -0500
+Received: from mga12.intel.com ([192.55.52.136]:64399 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233963AbhBCPku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:40:50 -0500
+IronPort-SDR: DfDsVsfpjLo8Avqbz3XdEHNhJs1zvDqIeEvau4akULVRKaG6iAQ1+RoYF9VQxV8p0XNrZgjva9
+ 9vaYQiKiiKSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160225206"
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="160225206"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:40:09 -0800
+IronPort-SDR: oh277XBymVCt5plIHwEc8xj46wRGJpga3Sjs4sy6kfIpA290VrN3LH/EIB6HsXBv0U+fH4QDaN
+ vKgLql+j4T6g==
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="356063094"
+Received: from pmehra-mobl.amr.corp.intel.com (HELO [10.255.230.38]) ([10.255.230.38])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:40:08 -0800
+Subject: Re: [PATCH] x86/fpu: Use consistent test for X86_FEATURE_XSAVES
+To:     Borislav Petkov <bp@suse.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     x86@kernel.org, luto@kernel.org, mingo@kernel.org,
+        tglx@linutronix.de, len.brown@intel.com, ravi.v.shankar@intel.com,
+        linux-kernel@vger.kernel.org
+References: <20210203024052.15789-1-chang.seok.bae@intel.com>
+ <20210203112340.GA11823@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <87e436d0-d2ca-8c28-442b-1b45111b6081@intel.com>
+Date:   Wed, 3 Feb 2021 07:40:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: schleissheimer.de
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7638c5e-44b6-4e09-eb71-08d8c859f75e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 15:39:59.9966
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: ba05321a-a007-44df-8805-c7e62d5887b5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XCk6AMwLE/OZvwwWX4Wxd6OnKyECCVLb0YFClc6RJDy/EFe/KE2KGHKDnh0WaicugdpJF/+yeL7LYqDOtY/6TGIXbQHuPXgKI6JCKqWhubk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAP190MB0886
+In-Reply-To: <20210203112340.GA11823@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pavel,
+On 2/3/21 3:23 AM, Borislav Petkov wrote:
+>> -/*
+>> - * 'XSAVES' implies two different things:
+>> - * 1. saving of supervisor/system state
+>> - * 2. using the compacted format
+>> - *
+>> - * Use this function when dealing with the compacted format so
+>> - * that it is obvious which aspect of 'XSAVES' is being handled
+>> - * by the calling code.
+> @dhansen, are you still hung up on that "obvious aspect" or can we kill
+> this?
 
-> > In order to use a multicolor-led together with a trigger
-> > from DT the led needs to have an intensity set to see something.
-> > The trigger changes the brightness of the led but if there
-> > is no intensity we actually see nothing.
-> >
-> > This patch adds the ability to set the default intensity
-> > of each led so that it is turned on from DT.
->=20
-> Do we need this to be configurable from device tree? Can we just set
-> it to max or something?
->=20
-> Aha, this basically sets the initial color for LEDs the monochromatic
-> triggers, right?
+I still want the compacted-format handling code to be marked.  You can
+do that with new comments:
 
-Let me try to explain in other words: I have one RGB-LED
-which consists of 3 Colors. Each of the three colors (Red, Green, Blue) you=
- have
-to define in the DT. For example this is my setup for one RGB-LED which I w=
-anted
-to show the heartbeat in Red (half intensity):
+	/* Note: XSAVES always uses compacted format: */
+	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
 
-                                multi-led@3 {
-                                        #address-cells =3D <1>;
-                                        #size-cells =3D <0>;
-                                        reg =3D <0x3>;
-                                        color =3D <LED_COLOR_ID_RGB>;
+or, leave it as-is:
 
-                                        linux,default-trigger =3D "heartbea=
-t";
-                                        function =3D LED_FUNCTION_HEARTBEAT=
-;
+	if (using_compacted_format()) {
+	...
 
-                                        led-9 {
-                                                color =3D <LED_COLOR_ID_RED=
->;
-                                                default-intensity =3D <100>=
-;
-                                        };
-
-                                        led-10 {
-                                                color =3D <LED_COLOR_ID_GRE=
-EN>;
-                                        };
-
-                                        led-11 {
-                                                color =3D <LED_COLOR_ID_BLU=
-E>;
-                                        };
-                                };
-
-If I would not have the default-intensity I would actually see nothing,
-since the intensity (which goes from 0-255) of each led is initialized with=
- 0.
-
-I hope I could clarify this a little more?
-
-Best Regards,
-
-   Sven
+Otherwise, we assume that every human being that looks at this code
+*KNOWS* that XSAVES==compacted.  That's not a great assumption.
