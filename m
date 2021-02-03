@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EF430D8A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C48730D8A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbhBCL1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:27:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
+        id S234319AbhBCL2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbhBCLYn (ORCPT
+        with ESMTP id S234255AbhBCL0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:24:43 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025DBC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 03:24:03 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id q7so23752186wre.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cw7UIydNqpTnPNbV9Dais44nPvIYJ47KoXAvHqGkryY=;
-        b=HWw52il3iu9wL7OqkJttQDQGWCtAyonYBAhCxe/hnPMkHVk1zPWSifDqxe6gNJaSvf
-         1TexbQktppsNld7d9+ONa4uBR1idm9hdcjtVxvBXQH73T2SneYH4x8jPUYkrYLF+jMrZ
-         Opg3baywHqhO0PlmX3VuAZCOM98Mq8QrKOWtSQx3EJTZ0YaVxxxtwxzV+FEQtYmfa9ka
-         aVMwvpTEbOENcY7ua4zPn5Ha4o205CWHZ6rEM00z/CqcBg1uuiE6f82oZKPCNj+JARg/
-         Z6X6pGU0MaqNme+ljDbxac4buNc3XbD0P4ezZz9ILmgObsFqy8TRKYjrztAq1QFYHfp4
-         z6vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cw7UIydNqpTnPNbV9Dais44nPvIYJ47KoXAvHqGkryY=;
-        b=lAY/vAP+eKa1oX7HoxueIfI7k2SNXjCwmzn5chhaSab+PlEx6hasg5lo8+lN2y2XdW
-         Y2uaGlolCbQRWrBfh+2Wena2+rkCSOUB/RHVJwy/LeoxpX03FMqAln8vnyjg3/K9jw5f
-         v8Hz0Hr73wegR09UPOb9TPaxD8Uy6QwL6eFqpzs4Hf7tFp3uXM9sSZ20T6oVpx7Z5hPH
-         vIyEdKZdpDPoh5+Da54iWq20TvFXuQ4jtxi3qy2/lA6OinbLQdSLh4rRtRNNQ1peLHUS
-         Ut3wT4akW0LrDr4GmhJOBDleAqdG0S6p319udkWTbDqqO3lbVDjiMfHKNwYkUmHTpuHT
-         8S+w==
-X-Gm-Message-State: AOAM530FHz/F0bYCgcuFuvug3ZV0DD3+/xjOCki2v7T03B5+m95B3NQn
-        8ilcdnZ5RKbdeBIu2CPlkPxA0L2JDI9B9g==
-X-Google-Smtp-Source: ABdhPJzwXjlrTH8kNM50GBnKNvDqQJSZbArmyTMX9cF4llfTBsQ6uE0Q3W/8dJzLNwFTFoBS40t2Ew==
-X-Received: by 2002:adf:ecd2:: with SMTP id s18mr2952704wro.311.1612351441721;
-        Wed, 03 Feb 2021 03:24:01 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id j14sm3389443wrd.36.2021.02.03.03.24.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 03:24:00 -0800 (PST)
-Date:   Wed, 3 Feb 2021 11:23:59 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     samirweng1979 <samirweng1979@163.com>
-Cc:     jason.wessel@windriver.com, dianders@chromium.org,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: Re: [PATCH] kernel: debug: fix typo issue
-Message-ID: <20210203112359.cdy73gw4wip5cnyn@maple.lan>
-References: <20210203081034.9004-1-samirweng1979@163.com>
+        Wed, 3 Feb 2021 06:26:17 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA156C061794;
+        Wed,  3 Feb 2021 03:24:32 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C06581F451BB;
+        Wed,  3 Feb 2021 11:24:28 +0000 (GMT)
+Date:   Wed, 3 Feb 2021 12:24:22 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        richard@nod.at
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org
+Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
+ unavailable
+Message-ID: <20210203122422.6963b0ed@collabora.com>
+In-Reply-To: <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
+References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
+        <20210201151824.5a9dca4a@xps13>
+        <20210202041614.GA840@work>
+        <20210202091459.0c41a769@xps13>
+        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
+        <20210203110522.12f2b326@xps13>
+        <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+        <20210203111914.1c2f68f6@collabora.com>
+        <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203081034.9004-1-samirweng1979@163.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:10:34PM +0800, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, 03 Feb 2021 16:22:42 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+
+> On 3 February 2021 3:49:14 PM IST, Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> >On Wed, 03 Feb 2021 15:42:02 +0530
+> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> >  
+> >> >> 
+> >> >> I got more information from the vendor, Telit. The access to the  
+> >3rd    
+> >> >partition is protected by Trustzone and any access in non privileged
+> >> >mode (where Linux kernel runs) causes kernel panic and the device
+> >> >reboots.   
+> >
+> >Out of curiosity, is it a per-CS-line thing or is this section
+> >protected on all CS?
+> >  
 > 
-> change 'regster' to 'register'.
-> 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> Sorry, I didn't get your question. 
 
-It looks like the Subject line might not be correct for this patch?
-
-Is it really the first time this patch has been circulated or should it
-have been tagged RESEND or v2?
-
-
-Daniel.
-
-
-> ---
->  kernel/debug/gdbstub.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
-> index a77df59..e149a0a 100644
-> --- a/kernel/debug/gdbstub.c
-> +++ b/kernel/debug/gdbstub.c
-> @@ -595,7 +595,7 @@ static char *gdb_hex_reg_helper(int regnum, char *out)
->  			    dbg_reg_def[i].size);
->  }
->  
-> -/* Handle the 'p' individual regster get */
-> +/* Handle the 'p' individual register get */
->  static void gdb_cmd_reg_get(struct kgdb_state *ks)
->  {
->  	unsigned long regnum;
-> @@ -610,7 +610,7 @@ static void gdb_cmd_reg_get(struct kgdb_state *ks)
->  	gdb_hex_reg_helper(regnum, remcom_out_buffer);
->  }
->  
-> -/* Handle the 'P' individual regster set */
-> +/* Handle the 'P' individual register set */
->  static void gdb_cmd_reg_set(struct kgdb_state *ks)
->  {
->  	unsigned long regnum;
-> -- 
-> 1.9.1
-> 
-> 
+The qcom controller can handle several chips, each connected through a
+different CS (chip-select) line, right? I'm wondering if the firmware
+running in secure mode has the ability to block access for a specific
+CS line or if all CS lines have the same constraint. That will impact
+the way you describe it in your DT (in one case the secure-region
+property should be under the controller node, in the other case it
+should be under the NAND chip node).
