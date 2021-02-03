@@ -2,83 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A4330E26C
+	by mail.lfdr.de (Postfix) with ESMTP id F0C5130E26E
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbhBCSXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        id S233048AbhBCSX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhBCSX0 (ORCPT
+        with ESMTP id S229979AbhBCSXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:23:26 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD37AC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:22:46 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id d15so373874qtw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:22:46 -0800 (PST)
+        Wed, 3 Feb 2021 13:23:51 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008B1C061573;
+        Wed,  3 Feb 2021 10:23:10 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id m12so165678pjs.4;
+        Wed, 03 Feb 2021 10:23:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lVuZ2ToAi2wJaDBY4uBWAsbbv7FYhDuwXoMEVKtaX50=;
-        b=kt9gvntHnsgph4IePrJjeMd5T/Z0hFLfadxsM9Zx6DIko11WejgpeFhf+uxhGE7xQx
-         exygpc9awXY1Z4MJ2hC1nfrWHH12EcTBQ2qx+IY7fnGHc1bkpXPvd+SF8PQxm2+Y+Xbh
-         FKNMwOBbVbgVHzuuBIMDxTJkPAVG67dlK9kpPUb1Pt2MDdXp6EGlsAHt7DgT1nTykGHK
-         hdosQ8PusoL2PZ3ysZBeXvdeKNnv+CAjlXECi758zOYkDvDcnHtd983W4Whu0nM0E+I2
-         CgpOzhiMDgFMIyxDomLN4de9SgOLKWLsc9qAswUPb+zJ7tY+SvcHcaLtwK/DyBAlA/K+
-         RcOw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yCdeRlqf1Ez5EWdgyadi9rsJ0++scf5qFxbzWDIFxEQ=;
+        b=TPA6w9fp8xhZu5B1ZWQZg7KeOq2w/a+zpOtjxCCpSUKjY0oHscjXdfBi4Org6eRAxg
+         T+PXJPyyD3AjEKVIfSHPwDwNoTPXRlqYBu8jUkCWRpAA+8Fxy3vvO3ZAofd951yU2si2
+         cWbyv0Mm4aVhwNA7pW7OWYAX+zVydbcw0U/zqvLEJju34jyAGcjwxMIyiFKMjBADRu4V
+         34EOLK9Wg1JA2wXAPNZA70VuIh4uQot9dvHFJ1y+HLjMX0gIiADrvcBIzD/7GAg8l1Cz
+         +/pORIcejJxt7D1ilVr8VKd3CC1SH+h0wYmxVUEJm4zWFxTyG6QzZvfYr2tZq5eU94CP
+         9DbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lVuZ2ToAi2wJaDBY4uBWAsbbv7FYhDuwXoMEVKtaX50=;
-        b=AfBpK8Zjw9t3stMobWXuLY0lbDJ2tPRgqqFAwaoOf0w9g1byI6MpaYbZmsg31rcFpt
-         kLnv8l4NLXZn31hdUYDA0xDUN58UjKuI+Vmmj0C47WyW99ThqOOXyhwF6nq/xp3m9g81
-         /uFtaoaXQx6hYBUlkSRwhhjjkEthDIIak85D6f90a+xBOLxignJoBdedRzhq1SreD1Hs
-         Py2DHxa4UvWhyHMUwnYX8p9fhenbTI0qEqdnD8FwhjQXXaRB3a3hELHkzCKYSu9SKEQW
-         mQPznOXdPteK5I+DGKFyHqlPslGkqhHZckT67z2OrJgPP+y8XlrzDSS/I/LGJufE8Nzy
-         HgOw==
-X-Gm-Message-State: AOAM532/7cAzOezCAoWYsafB99xXPSb5ZJyzo9ICNC0xOvu4EihB7oDu
-        /atDyUvmdE6BefOdv2MrZsr4VTwUK4DccCnDo6MA7g==
-X-Google-Smtp-Source: ABdhPJzpQYizDiF/DtT99RZLiZIESuBNe9bf+IuZNplJY4FcPoEPNwmeoK3j0y7ZV9Xo0vCljWKoZyfW6uzYDZTTZ6g=
-X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr3541176qtw.337.1612376565582;
- Wed, 03 Feb 2021 10:22:45 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yCdeRlqf1Ez5EWdgyadi9rsJ0++scf5qFxbzWDIFxEQ=;
+        b=I07mdC2f5KfAWBzwwBKChdrdhsr7nETMIQoB/Jj0K5ZQ7wRtg5mF0toduUbKCQzhzM
+         YIny7cgbhjRDVgVaapwksooA3qdlNfkLGgs+3KVbOa2hE7t3oTXWrLdunvLHDbsTef0P
+         jkmkdhwLEwiZDETE4dLGuOOYZ1JtT6MUiye2z41fKW3d5vftQSBJGC5AINCHXEgbkkZb
+         vQiv0Bw2hmVGZ2AqusFxY98X4UnDu3lVICJIG8rtBAyDxVgXjRhiCUmOh7/mkCwwdQ5q
+         ZpwhV6dYUGVAWbab+7rcxKqdA15b6SJ5FVRBU5vo59RNqn0CmEZLrFE+u/zFNdH/H6iL
+         NHMg==
+X-Gm-Message-State: AOAM530D1E2LmAyT+cQE8I0+dJR65kp/JGd0vDUJd8A27SAKD3NdlMTh
+        NuXNWt8ZPX4Qju1ZDyewpo4=
+X-Google-Smtp-Source: ABdhPJy3qm82BJojc5RJI3EB86KaOPfjxImGciD4QhikErRNih/b7hbgmPO2GrUkqP99aSIp1GWg+g==
+X-Received: by 2002:a17:90b:19cb:: with SMTP id nm11mr4198702pjb.168.1612376590515;
+        Wed, 03 Feb 2021 10:23:10 -0800 (PST)
+Received: from [10.67.49.228] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l3sm3660181pgn.8.2021.02.03.10.23.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 10:23:09 -0800 (PST)
+Subject: Re: [PATCH] MIPS: of: Introduce helper function to get DTB
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+References: <20210127132431.143374-1-tsbogend@alpha.franken.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
+ xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
+ X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
+ AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
+ ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
+ SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
+ nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
+ qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz7QnRmxvcmlhbiBG
+ YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+iGYEExECACYCGyMGCwkIBwMCBBUCCAME
+ FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
+ 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSC5BA0ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
+ WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
+ pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
+ hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
+ OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
+ Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
+ oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
+ 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
+ BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
+ +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
+ FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
+ 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
+ vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
+ WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
+ HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
+ HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
+ Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
+ kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
+ aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
+ y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU4hPBBgRAgAPAhsMBQJU
+ X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
+ HGuUuzv+GKZ6nsysJ7kCDQRXG8fwARAA6q/pqBi5PjHcOAUgk2/2LR5LjjesK50bCaD4JuNc
+ YDhFR7Vs108diBtsho3w8WRd9viOqDrhLJTroVckkk74OY8r+3t1E0Dd4wHWHQZsAeUvOwDM
+ PQMqTUBFuMi6ydzTZpFA2wBR9x6ofl8Ax+zaGBcFrRlQnhsuXLnM1uuvS39+pmzIjasZBP2H
+ UPk5ifigXcpelKmj6iskP3c8QN6x6GjUSmYx+xUfs/GNVSU1XOZn61wgPDbgINJd/THGdqiO
+ iJxCLuTMqlSsmh1+E1dSdfYkCb93R/0ZHvMKWlAx7MnaFgBfsG8FqNtZu3PCLfizyVYYjXbV
+ WO1A23riZKqwrSJAATo5iTS65BuYxrFsFNPrf7TitM8E76BEBZk0OZBvZxMuOs6Z1qI8YKVK
+ UrHVGFq3NbuPWCdRul9SX3VfOunr9Gv0GABnJ0ET+K7nspax0xqq7zgnM71QEaiaH17IFYGS
+ sG34V7Wo3vyQzsk7qLf9Ajno0DhJ+VX43g8+AjxOMNVrGCt9RNXSBVpyv2AMTlWCdJ5KI6V4
+ KEzWM4HJm7QlNKE6RPoBxJVbSQLPd9St3h7mxLcne4l7NK9eNgNnneT7QZL8fL//s9K8Ns1W
+ t60uQNYvbhKDG7+/yLcmJgjF74XkGvxCmTA1rW2bsUriM533nG9gAOUFQjURkwI8jvMAEQEA
+ AYkCaAQYEQIACQUCVxvH8AIbAgIpCRBhV5kVtWN2DsFdIAQZAQIABgUCVxvH8AAKCRCH0Jac
+ RAcHBIkHD/9nmfog7X2ZXMzL9ktT++7x+W/QBrSTCTmq8PK+69+INN1ZDOrY8uz6htfTLV9+
+ e2W6G8/7zIvODuHk7r+yQ585XbplgP0V5Xc8iBHdBgXbqnY5zBrcH+Q/oQ2STalEvaGHqNoD
+ UGyLQ/fiKoLZTPMur57Fy1c9rTuKiSdMgnT0FPfWVDfpR2Ds0gpqWePlRuRGOoCln5GnREA/
+ 2MW2rWf+CO9kbIR+66j8b4RUJqIK3dWn9xbENh/aqxfonGTCZQ2zC4sLd25DQA4w1itPo+f5
+ V/SQxuhnlQkTOCdJ7b/mby/pNRz1lsLkjnXueLILj7gNjwTabZXYtL16z24qkDTI1x3g98R/
+ xunb3/fQwR8FY5/zRvXJq5us/nLvIvOmVwZFkwXc+AF+LSIajqQz9XbXeIP/BDjlBNXRZNdo
+ dVuSU51ENcMcilPr2EUnqEAqeczsCGpnvRCLfVQeSZr2L9N4svNhhfPOEscYhhpHTh0VPyxI
+ pPBNKq+byuYPMyk3nj814NKhImK0O4gTyCK9b+gZAVvQcYAXvSouCnTZeJRrNHJFTgTgu6E0
+ caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
+ 6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <7c092a6d-30f5-df2e-fa38-4b5196ce2c2f@gmail.com>
+Date:   Wed, 3 Feb 2021 10:23:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CACT4Y+YytChe9Tv5etacBL4snEDu+A2fNzF4zKiKtfmH0C0roQ@mail.gmail.com>
- <20210203160543.GA19512@duo.ucw.cz> <20210203172834.GA3943@mipc>
-In-Reply-To: <20210203172834.GA3943@mipc>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 3 Feb 2021 19:22:34 +0100
-Message-ID: <CACT4Y+bkQOAwAwEnRoZVwKM2sDpHW3bzeWdga4MhxhERvZKT+Q@mail.gmail.com>
-Subject: Re: syzbot reporting less duplicates
-To:     bobwxc <bobwxc@email.cn>
-Cc:     Pavel Machek <pavel@ucw.cz>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210127132431.143374-1-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 6:39 PM bobwxc <bobwxc@email.cn> wrote:
->
-> On Wed, Feb 03, 2021 at 05:05:43PM +0100, Pavel Machek wrote:
-> > On Mon 2021-02-01 11:52:12, Dmitry Vyukov wrote:
-> > Could we please get common prefix (like syzbot: KASAN:....) so that
-> > the bulk of emails is easier to remove?
-> There are several bots testing on the kernel, maybe we should give a prefix
-> format for all bot.
-> Also we can use mail-address to fliter email, but it's still a little
-> inconvenient.
+On 1/27/21 5:24 AM, Thomas Bogendoerfer wrote:
+> Selection of the DTB to be used was burried in more or less readable
+> code in head.S. Move this code into a inline helper function and
+> use it.
+> 
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
 
-Hi Pavel, bobwxc,
+>  arch/mips/bmips/setup.c               |  7 +++---
 
-Yes, I was wondering if syzbot in From/To/CC can be used for
-filtering? I assume email clients that can filter based on subject can
-also filter based on From/To/CC.
-Does anybody filter syzbot emails? Maybe you can share what works best?
+^--
 
-I am not sure a common prefix for all bots is useful because it
-supports only all or nothing. There are also some bots that
-maintainers use now that seem to be fundamental to the process, if one
-is ignoring them, then they are effectively ignoring what the
-maintainer is saying.
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
