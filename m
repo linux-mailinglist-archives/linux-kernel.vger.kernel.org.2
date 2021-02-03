@@ -2,156 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A7730E757
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A3230E75F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhBCX2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbhBCX22 (ORCPT
+        id S233682AbhBCX3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:29:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232880AbhBCX3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:28:28 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745A2C061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:27:48 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id e9so730902plh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:27:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+eX+hFOL+CzxhxR9XSBHmfjn0y1EEXuMNIwlju1/yaQ=;
-        b=GCIJY1mPpwom81hK+0og/pl+ty+bruNLoSFs6eBbr/UK3w1EV+KchotabN4dUoX5JV
-         nqRtBEHnCYnWmTl5C4dLUFJOU+8RWIk1Enm5mSbSkKkKikUOc+ZSeaGMtY6DUjz5CvMM
-         Jzk864oLOyfKp6vxnCQelH7zCrng3H0uf1S1JvGcXHo41Lfc/Pqv86EqXL54RSBXORyQ
-         LZYoNQvPYaPN0WPstjOsfbUM3ONnBPr9cNWDDzHjl5ugnWPu+OCumNNfW0ZeOsJKmu2m
-         o3JTzR75HY1DZWWcTSfByb5JfxcdwhkOdQZhPjfEH63BOdHWvg2/ExuSMjSJLozXfTUY
-         lagw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+eX+hFOL+CzxhxR9XSBHmfjn0y1EEXuMNIwlju1/yaQ=;
-        b=IPLs/ZVGP2lwJJDEzG4D/S/OXeO+OCmLCjQS3MwCwuCtwBlDP1s6OfEYHhTg1000Yh
-         IDj996gEJzZ5lCYkM28KDmotF5nMTRCQO5eViDSR7hlhM15FKQ3cWAMGGmlkduF2GcX9
-         3p5daG6rZEF7Wys1zqnKKZKExCbNQ+K0LX7XcPotaiEJW4g/Ep7rEgp5/OkeIc50kaN7
-         RRquBYqp8WCT6nzvWxXBBRN7pzM/LI49rZHfnkEVVySUTe9VSSO6IHL5agFW+F/W6/ZA
-         jr3EDjfrIyPXeTJk075KjhauAH84hdiS/GoFihjoyWCasQgtD5iXq3gkmO6sDMNWBzu1
-         mdhw==
-X-Gm-Message-State: AOAM533uHCimLEPkzrhqdalRkoh4WpgoJSHJjepqSHZt3HFxlPIRF+kP
-        4eF3/CnUwNFDT84N1qo+nsjbzYCKm+AYoABe7v0oUw==
-X-Google-Smtp-Source: ABdhPJwOowM66m5rTohXOgCIMzAFO+95LzXmMwz6a7J1M5NbrhheXFjbFn2owXNZjmbpvejVR+BC/bm9wzJF0FGlwUo=
-X-Received: by 2002:a17:90a:db05:: with SMTP id g5mr5573673pjv.32.1612394867235;
- Wed, 03 Feb 2021 15:27:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-3-ndesaulniers@google.com> <CAK7LNAQW3XtBGAg6u+86wGc0tizDyezZ_f61JjkT15QH5BtGjA@mail.gmail.com>
-In-Reply-To: <CAK7LNAQW3XtBGAg6u+86wGc0tizDyezZ_f61JjkT15QH5BtGjA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 3 Feb 2021 15:27:34 -0800
-Message-ID: <CAKwvOdnFQ+Y+QzHLVs-XNFtbNL8s236x6zS3QAkQ-unPvhbfEA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Clifton <nickc@redhat.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Wed, 3 Feb 2021 18:29:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612394884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qk0MRndwsudTUKG83wO3htOmgtnK5DShnl+yULNhutc=;
+        b=Eazmsv3WGJRWmge5fhdyuOhFf9l/nWodnrm3fBI0ai9xKJli0aJVzLjou3ymW0UShMKBZO
+        h/hI6/Yi7s05wJL3BCua7Ta0QbP/V2jodCxLBS3nUXk2PliZgE/qI7koQUwkmmCOVGu9Re
+        /0SYmPvTQQcATmuWRqlSDVzAzsodLAw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-sP3f55tYM9yrX1Mu_6I9qQ-1; Wed, 03 Feb 2021 18:28:00 -0500
+X-MC-Unique: sP3f55tYM9yrX1Mu_6I9qQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA5B41083E9D;
+        Wed,  3 Feb 2021 23:27:55 +0000 (UTC)
+Received: from treble (ovpn-113-81.rdu2.redhat.com [10.10.113.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 27B245C1B4;
+        Wed,  3 Feb 2021 23:27:44 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 17:27:35 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <20210203232735.nw73kugja56jp4ls@treble>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+ <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble>
+ <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 3:07 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Nick, the patch set is getting simpler and simpler,
-> and almost good enough to be merged.
-
-I agree.  I think Sedat pointed out a binutils 2.35.2 release; thanks
-to Nick Clifton for that.
-
->
->
-> Please let me ask two questions below.
->
-> There has been a lot of discussion, and
-> I might have missed the context.
->
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
-> >           It makes the debug information larger, but it significantly
-> >           improves the success of resolving variables in gdb on optimized code.
+On Wed, Feb 03, 2021 at 02:41:53PM -0800, Ivan Babrou wrote:
+> On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 > >
-> > +config DEBUG_INFO_DWARF5
-> > +       bool "Generate DWARF Version 5 debuginfo"
-> > +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
->
-> Q1.
->
-> This  "CC_IS_GCC ||" was introduced by v4.
->
-> GCC never outputs '.file 0', which is why
-> this test is only needed for Clang, correct?
+> > On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > > > Can you pretty please not line-wrap console output? It's unreadable.
+> > >
+> > > GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> > > Let me know if you'd like me to regenerate the decoded stack.
+> > >
+> > > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+> > > >
+> > > > Not sure what tree you're on, but that's not the upstream commit.
+> > >
+> > > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+> > > added a link to the upstream hash right below.
+> > >
+> > > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > > > >
+> > > > >     tracepoint: Optimize using static_call()
+> > > > >
+> > > >
+> > > > There's a known issue with that patch, can you try:
+> > > >
+> > > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+> > >
+> > > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+> > > of v5.9 (to make it reproducible), and the patch did not help. Do I
+> > > need to apply the whole series or something else?
+> >
+> > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> > It will spit out a bunch of stack data.
+> 
+> Here's the three I'm building:
+> 
+> * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> 
+> It contains:
+> 
+> * v5.9 tag as the base
+> * static_call-2020-10-12 tag
+> * dm-crypt patches to reproduce the issue with KASAN
+> * x86/unwind: Add 'unwind_debug' cmdline option
+> * tracepoint: Fix race between tracing and removing tracepoint
+> 
+> The very same issue can be reproduced on 5.10.11 with no patches,
+> but I'm going with 5.9, since it boils down to static call changes.
+> 
+> Here's the decoded stack from the kernel with unwind debug enabled:
+> 
+> * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+> 
+> See my first email for the exact commands that trigger this.
 
-This test script is only needed when compiling with clang but without
-its integrated assembler.  It checks that when clang is used as the
-driver, but GAS is used as the assembler, that GAS will be able to
-decode the DWARF v5 assembler additions Clang will produce without
-needing an explicit -Wa,-gdwarf-5 flag passed.
+Thanks.  Do you happen to have the original dmesg, before running it
+through the post-processing script?
 
-Technically, it is unnecessary for `LLVM=1 LLVM_IAS=1` or `CC=clang
-LLVM_IAS=1` (ie. clang+clang's integrated assembler).  But there is no
-way to express AS_IS_IAS today in KConfig (similar to
-CC_IS_{GCC|CLANG} or LD_IS_LLD).  I don't think that's necessary;
-whether or not clang's integrated assembler is used, when using clang,
-run the simple check.
 
-> > --- /dev/null
-> > +++ b/scripts/test_dwarf5_support.sh
-> > @@ -0,0 +1,8 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
-> > +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
-> > +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
->
->
-> I saw the following links in v6.
->
-> https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> https://sourceware.org/bugzilla/show_bug.cgi?id=25614
->
-> They were dropped in v7. Why?
->
-> I just thought they were good to know...
+I assume you're using decode_stacktrace.sh?  It could use some
+improvement, it's stripping the function offset.
 
-While having fixes for those bugs is required, technically
-https://sourceware.org/bugzilla/show_bug.cgi?id=25611 is the latest
-bug which was fixed.  Testing for a fix of
-https://sourceware.org/bugzilla/show_bug.cgi?id=25611 implies that
-fixes for 25612 and 25614 exist due to the order they were fixed in
-GAS.  Technically, you could argue that this script is quite GAS
-centric; given an arbitrary "assembler" the test should check a few
-things.  Realistically, I think that's overkill based on what
-assemblers are in use today; we can always grow the script should we
-identify other tests additional assemblers may need to pass, but until
-then, I suspect YAGNI.  Maybe there's a more precise name for the
-script to reflect that, but that gets close to "what color shall we
-paint the bikeshed?"  Given the number of folks on the thread, plz no.
+Also spaces are getting inserted in odd places, messing the alignment.
+
+[  137.291837][    C0] ffff88809c409858: d7c4f3ce817a1700 (0xd7c4f3ce817a1700)
+[  137.291837][    C0] ffff88809c409860: 0000000000000000 (0x0)
+[  137.291839][    C0] ffff88809c409868: 00000000ffffffff (0xffffffff)
+[ 137.291841][ C0] ffff88809c409870: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+[ 137.291843][ C0] ffff88809c409878: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+[  137.291844][    C0] ffff88809c409880: ffff88809c409ac8 (0xffff88809c409ac8)
+[  137.291845][    C0] ffff88809c409888: 0000000000000086 (0x86)
+
 -- 
-Thanks,
-~Nick Desaulniers
+Josh
+
