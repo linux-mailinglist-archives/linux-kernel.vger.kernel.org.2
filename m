@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEF330E420
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6BA30E428
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhBCUfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        id S232069AbhBCUln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbhBCUfu (ORCPT
+        with ESMTP id S231951AbhBCUll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:35:50 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A991C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:35:10 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id w14so595896pfi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:35:10 -0800 (PST)
+        Wed, 3 Feb 2021 15:41:41 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585EEC061573;
+        Wed,  3 Feb 2021 12:41:01 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id y11so1221137otq.1;
+        Wed, 03 Feb 2021 12:41:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ctpZix2vdpsWlT58CTksomBebLVeiR0jpEeIeen1iD4=;
-        b=R+iJ2/PVt8eXXtNb0UBgNjBP3+Ne7x/JiSY+KQ/U0xq8U7bdSk9jxNoz10LRy/yK1N
-         6qXw5MZn5Zsso4+1uPJzvjCXAack+UHQ3H66wH4hmCOCXVTM8zlwiH5i9KQgKxGpHF5y
-         AE5VKH3s+FuYVSovVvsXwXsHGgLNGxO+gb9xA=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UNibgpzZ+wKYerZBUsbUOnMvTsohX21Q5tS+gbnhFhU=;
+        b=aTw+d8DrLjvhNA7TORn7T+2/RCUq4c5E8sS1tDvvP8qYKXL6+K+5WQsipBNE/bADz6
+         KoYsic/ynbJ8NP9TzfyvZ+fgcqlqLdT3EMyUIXAZfYMh4EomvtIIn5LBEZ0SYJt4DVXE
+         DesN1i5v8xsgtEUTV+Rz1K1p8y2j3BY8MKkVz+KomYhGFk4BN5jBwzlWdzmV3gkr8h4v
+         HZIqqpNRyCYH0qkLeO4re5WaX/ngrfMcg/DD2jO8m8fpSzr58ILxLKUjwOWQnYUofZP8
+         K2GVi0aZmIidyLk8AStTGU/y5+ngHzAGK+R+8hMRsfCMe25RaWWUOTDOJx2B9+vj6ple
+         0P9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ctpZix2vdpsWlT58CTksomBebLVeiR0jpEeIeen1iD4=;
-        b=l807t7uwP1oeK92LpiBIG/Q3jtsQtxKkhOQKcbzvpMRXesoY7SdBku1vbAqHIatemX
-         LnJxlRkUY16cpVj6KMGLDBHpiVdl8AX5PnK2W8JUWFrriLSlikkiuTN8NhuxIHplAoTy
-         CCXN6+en+Wwt/nZ09GkfJcmGX8+QtY4DQOUt/hOOEDPErMHrnSKpuvKqcQOYdAFx9O2B
-         CtrhwnwhraVle+adSYBNYPVooqbOgY6enm37xd6XQ2ePRPnXoMoz9bFj2dnquj/wFJJY
-         9GNLp3PnMYCKSDbQf1RPBnV4xnil7FxOVDXWjB1/4jaoYPgJbZaSWez9lsR3kQLYSZqL
-         PnJw==
-X-Gm-Message-State: AOAM532D+1n9tSeUlvVw7QE22grvAFG0uznBC1VD70+R3RRUshhd0z2h
-        CEQWuueCH++pBY/Mc3kzLDTmRA==
-X-Google-Smtp-Source: ABdhPJwXUA/dXsJaA9jxmgNGitJw3u7SCmOQCBw4IiJAy6ZehY0vVxUrfwPVtq4pl873LCWPMm3J0g==
-X-Received: by 2002:aa7:904c:0:b029:1c9:c2ed:b229 with SMTP id n12-20020aa7904c0000b02901c9c2edb229mr4806193pfo.11.1612384509887;
-        Wed, 03 Feb 2021 12:35:09 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 34sm3968558pgn.56.2021.02.03.12.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 12:35:08 -0800 (PST)
-Date:   Wed, 3 Feb 2021 12:35:07 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        john.ogness@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        akinobu.mita@gmail.com
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-Message-ID: <202102031234.9BF349F@keescook>
-References: <20210202213633.755469-1-timur@kernel.org>
- <YBpyzxBYIYapHaDT@alley>
- <YBqlooegQgEfPG4T@alley>
- <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
- <202102031201.FFED9547D@keescook>
- <20210203152513.34492916@gandalf.local.home>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UNibgpzZ+wKYerZBUsbUOnMvTsohX21Q5tS+gbnhFhU=;
+        b=GEoynndtpzGjy2w5dlrl+PRb1rVGASY6bpEaeO/8VyNuEQRCMXbdZgMjTPAp6nb5Vy
+         AUqglrfGCxUu2CFGW1Qj+ui+LaoomrZGM2uPfAQwxTfVwDikNBhWb4Aet2dB8YSYiLYi
+         J4L7XLJDtclDawrWiLeUZK7oorkAUq53anRf+yuPXfAZtdmXbb3f4aK9SvDepPCmirM9
+         +PwO1z+BaqZfPByudjO/j6H3C4pbghTnzSzmCeCGnrjFFPfraPS3GLXsxfXDOKLR1Xno
+         F+8BpS2IBQlWiVZblScu/5JBIPlwHLxzlNTuwqfvZ9JyucGibZBklbSgsK0VKyT/birt
+         StZQ==
+X-Gm-Message-State: AOAM530sO0/iMupgBlPiLhipu45cjIH7zm7yKL2ZoZgwr14Y5akYxSXH
+        liy/b9RqLHr689dFTSJereoL73MXiKk=
+X-Google-Smtp-Source: ABdhPJxMYC76dnTpsx4wapLKPw4PBihTx6DK4gLJH9UfBvhMYmB7Wxcpok8MNF7/A4lHIGsky+ndYw==
+X-Received: by 2002:a05:6830:134d:: with SMTP id r13mr3336582otq.140.1612384860767;
+        Wed, 03 Feb 2021 12:41:00 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j16sm671831oib.52.2021.02.03.12.40.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Feb 2021 12:40:59 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 3 Feb 2021 12:40:58 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/28] 4.4.255-rc1 review
+Message-ID: <20210203204058.GA106766@roeck-us.net>
+References: <20210202132941.180062901@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203152513.34492916@gandalf.local.home>
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:25:13PM -0500, Steven Rostedt wrote:
-> On Wed, 3 Feb 2021 12:02:05 -0800
-> Kees Cook <keescook@chromium.org> wrote:
+On Tue, Feb 02, 2021 at 02:38:20PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.255 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > On Wed, Feb 03, 2021 at 12:58:41PM -0600, Timur Tabi wrote:
-> > > On 2/3/21 7:31 AM, Petr Mladek wrote:  
-> > > > Also please make sure that lib/test_printf.c will work with
-> > > > the new option.  
-> > > 
-> > > As you suspected, it doesn't work:
-> > > 
-> > > [  206.966478] test_printf: loaded.
-> > > [  206.966528] test_printf: plain 'p' does not appear to be hashed
-> > > [  206.966740] test_printf: failed 1 out of 388 tests
-> > > 
-> > > What should I do about this?
-> > > 
-> > > On one hand, it is working as expected: %p is not hashed, and that should be
-> > > a warning.
-> > > 
-> > > On the other hand, maybe test_printf should be aware of the command line
-> > > parameter and test to make sure that %p is NOT hashed?  
-> > 
-> > It seems like it'd be best for the test to fail, yes? It _is_ a problem
-> > that %p is unhashed; it's just that the failure was intended.
-> > 
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
 > 
-> I disagree.
-> 
-> With a big notice that all pointers of unhashed, I don't think we need to
-> print it failed when we expect it to fail.
-> 
-> If anything, skip the test and state:
-> 
->   test_printf: hash test skipped because "make-printk-non-secret" is on the
->   command line.
 
-Yeah, I'm fine with "fail" or "skip". "pass" is mainly what I don't
-like. :)
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 328 pass: 328 fail: 0
 
--- 
-Kees Cook
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
