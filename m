@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9CC30DA00
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4595B30DA05
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhBCMn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:43:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27419 "EHLO
+        id S230355AbhBCMoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:44:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41449 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229748AbhBCMnE (ORCPT
+        by vger.kernel.org with ESMTP id S229807AbhBCMnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:43:04 -0500
+        Wed, 3 Feb 2021 07:43:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612356097;
+        s=mimecast20190719; t=1612356099;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wWk1RSGz/Jz1PF065AWjCmG/GJbgGhKZIRIwvxP81a4=;
-        b=C8Ncg3mJTxX6yIF6NUZSXUH8Zb04S6dM6KBLz2Jo7UzGsMKFSf+fZVoJw3Du++sp/xfLYG
-        6EIz9I1ZLm7/ABYbMH3y/MbLLRmw4E6FY+doRVJhOSFjylFxQYm93EidPrvHKX/VTfdoqU
-        eaptpPN4Ts6gx32Gh0vUYp8JaXTzjgg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-CX33e9K4N2OTfwQv4ZRUnw-1; Wed, 03 Feb 2021 07:41:36 -0500
-X-MC-Unique: CX33e9K4N2OTfwQv4ZRUnw-1
-Received: by mail-ed1-f70.google.com with SMTP id j12so11368479edq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:41:36 -0800 (PST)
+        bh=VSTGdlhf01vnqUGzMAyHoVvvPnSsrRjLGDiMeUTOedI=;
+        b=VfmTSGs3CSYfIGz4X1VF/aBIgh+LKm4bS36MkUHIMng7OUwkkohe5Ju+qikzNz/WUCu3tT
+        /ezt2cUrnQ7B1+0oNbF0azMePvC/G4M7Buz2KZxnxoJRemOTz0cRvcAT7hgUFL4K774Rju
+        RrxQkQ3Rw3stl8JP8yTZpgW0/QZv6qI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-xHTiJ6_SPpa6DdbqojIPHA-1; Wed, 03 Feb 2021 07:41:37 -0500
+X-MC-Unique: xHTiJ6_SPpa6DdbqojIPHA-1
+Received: by mail-ed1-f72.google.com with SMTP id b1so713940edt.22
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:41:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wWk1RSGz/Jz1PF065AWjCmG/GJbgGhKZIRIwvxP81a4=;
-        b=Y0QVTm0ze/04/DMNfb/XFEbJ+Gs7yRtCsjcdcVTBRkikHqS/G4aCiWGCxHrtIPURv2
-         7/of34onGHfy5w7TzO+QMfaN0sIh+5+qNH7MSb2vYJb5OoDHFGIgdhHz6uSREBPRI3Bf
-         xcPwId8UH653Prn0nKlhypAmj9r7W7h4xAxGeJKxchkcqfBgealqsBLG7stivNpFbnCZ
-         Q143ZKxgsMOD6nIsveXIcFYJiAlkCHe5mXo+3FLLQGFxGakWlN/qiWxio1ipSVyw/ocO
-         V1KHBTeGAO3r2WS+gA54D2aLcrgSP4aItB/dq3wwZb9Oao3fTBIicrLcaq5AQ//ukR55
-         rpNQ==
-X-Gm-Message-State: AOAM530Bmab4LPH1iiZEGj0JnJWnkqtERUREtS8Vmo78fcibx6jhsQW8
-        3dqIuCD23D97RngB69tMtZipJlTst1u2f2TJmjouNpTTWyilx2Mbjjis83CmQXaTyWe98ZcuPTa
-        faIusDZOPac+ryBxA7405aJC3
-X-Received: by 2002:a05:6402:19bd:: with SMTP id o29mr1173248edz.161.1612356095380;
-        Wed, 03 Feb 2021 04:41:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy0ZqqxVNF/MjgsNMqM5xSpWLx6WXKdNxXfxnE8UaVmVCbfajooXPLjbg1McUTjkz0/wBZ1IQ==
-X-Received: by 2002:a05:6402:19bd:: with SMTP id o29mr1173241edz.161.1612356095271;
-        Wed, 03 Feb 2021 04:41:35 -0800 (PST)
+        bh=VSTGdlhf01vnqUGzMAyHoVvvPnSsrRjLGDiMeUTOedI=;
+        b=nVj0ajD0/EybyVDnv8NI5kw+upEzQI84whcVpS2c0IyiPrdmDDl2P9NLbdrut3DaHL
+         fAF3NMGTTd2ZRDvZI5I6za3XW0fzhaGIlE0eTZuNAJJmvdmC/bHyHnepbsBeBmFmqWaL
+         nts5xTrW2pAkMvC6juxX0L4LxokHNYjTDimqGF6MhId0E146o6cSkr3JmZ4TKpjoIhVK
+         PQu72xXY2k6IfS9+e3TtavkHQVgCPkKvXCRaRo5cdkH+FqHXWZfLQKdKr1J6HX4ZL2aO
+         FXB0+eMJDM7Bk0WkW4izA60iznv+5Jhs2iuzZ/4wSlx8ak4sA3heE4S5mxN6U5dKXD+j
+         ZdDQ==
+X-Gm-Message-State: AOAM533m4mpf8MDvDgRVMtSdjia4dDKL+0sGlpSsMeynWhkdVjFkRc5a
+        aIH8F1roL4CANSz3DSoUAmzmIX2JWcOYumX0AYs7mUe/IvZlzavshH3fpvYOK1IjeMk7b2QlEvT
+        0O+O2KTq1kSKpIh1UCPaWhAaN
+X-Received: by 2002:a17:906:39d0:: with SMTP id i16mr3004864eje.18.1612356096406;
+        Wed, 03 Feb 2021 04:41:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjV8uvWB/fRXlmYx4vCxkD9enIBDh1ypEAriqn3tbCGU4b83tHq+/gJ+/PIR9rlHwXi3gDig==
+X-Received: by 2002:a17:906:39d0:: with SMTP id i16mr3004856eje.18.1612356096230;
+        Wed, 03 Feb 2021 04:41:36 -0800 (PST)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id u9sm953320ejc.57.2021.02.03.04.41.34
+        by smtp.gmail.com with ESMTPSA id u9sm953320ejc.57.2021.02.03.04.41.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 04:41:34 -0800 (PST)
+        Wed, 03 Feb 2021 04:41:35 -0800 (PST)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>
-Subject: [PATCH 02/18] ecryptfs: stack miscattr ops
-Date:   Wed,  3 Feb 2021 13:40:56 +0100
-Message-Id: <20210203124112.1182614-3-mszeredi@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 03/18] ovl: stack miscattr
+Date:   Wed,  3 Feb 2021 13:40:57 +0100
+Message-Id: <20210203124112.1182614-4-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210203124112.1182614-1-mszeredi@redhat.com>
 References: <20210203124112.1182614-1-mszeredi@redhat.com>
@@ -69,64 +69,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Add stacking for the miscattr operations.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Tyler Hicks <code@tyhicks.com>
 ---
- fs/ecryptfs/inode.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ fs/overlayfs/dir.c       |  2 ++
+ fs/overlayfs/inode.c     | 43 ++++++++++++++++++++++++++++++++++++++++
+ fs/overlayfs/overlayfs.h |  2 ++
+ 3 files changed, 47 insertions(+)
 
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 58d0f7187997..6ed24fc0e5f3 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -18,6 +18,7 @@
- #include <linux/fs_stack.h>
- #include <linux/slab.h>
- #include <linux/xattr.h>
+diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+index 28a075b5f5b2..77c6b44f8d83 100644
+--- a/fs/overlayfs/dir.c
++++ b/fs/overlayfs/dir.c
+@@ -1300,4 +1300,6 @@ const struct inode_operations ovl_dir_inode_operations = {
+ 	.listxattr	= ovl_listxattr,
+ 	.get_acl	= ovl_get_acl,
+ 	.update_time	= ovl_update_time,
++	.miscattr_get	= ovl_miscattr_get,
++	.miscattr_set	= ovl_miscattr_set,
+ };
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index d739e14c6814..97d36d1f28c3 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -11,6 +11,7 @@
+ #include <linux/posix_acl.h>
+ #include <linux/ratelimit.h>
+ #include <linux/fiemap.h>
 +#include <linux/miscattr.h>
- #include <asm/unaligned.h>
- #include "ecryptfs_kernel.h"
+ #include "overlayfs.h"
  
-@@ -1097,6 +1098,22 @@ static int ecryptfs_removexattr(struct dentry *dentry, struct inode *inode,
- 	return rc;
+ 
+@@ -495,6 +496,46 @@ static int ovl_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 	return err;
  }
  
-+static int ecryptfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
++int ovl_miscattr_set(struct dentry *dentry, struct miscattr *ma)
 +{
-+	return vfs_miscattr_get(ecryptfs_dentry_to_lower(dentry), ma);
++	struct inode *inode = d_inode(dentry);
++	struct dentry *upperdentry;
++	const struct cred *old_cred;
++	int err;
++
++	err = ovl_want_write(dentry);
++	if (err)
++		goto out;
++
++	err = ovl_copy_up(dentry);
++	if (!err) {
++		upperdentry = ovl_dentry_upper(dentry);
++
++		old_cred = ovl_override_creds(inode->i_sb);
++		/* err = security_file_ioctl(real.file, cmd, arg); */
++		err = vfs_miscattr_set(upperdentry, ma);
++		revert_creds(old_cred);
++		ovl_copyflags(ovl_inode_real(inode), inode);
++	}
++	ovl_drop_write(dentry);
++out:
++	return err;
 +}
 +
-+static int ecryptfs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
++int ovl_miscattr_get(struct dentry *dentry, struct miscattr *ma)
 +{
-+	struct dentry *lower_dentry = ecryptfs_dentry_to_lower(dentry);
-+	int rc;
++	struct inode *inode = d_inode(dentry);
++	struct dentry *realdentry = ovl_dentry_real(dentry);
++	const struct cred *old_cred;
++	int err;
 +
-+	rc = vfs_miscattr_set(lower_dentry, ma);
-+	fsstack_copy_attr_all(d_inode(dentry), d_inode(lower_dentry));
++	old_cred = ovl_override_creds(inode->i_sb);
++	err = vfs_miscattr_get(realdentry, ma);
++	revert_creds(old_cred);
 +
-+	return rc;
++	return err;
 +}
 +
- const struct inode_operations ecryptfs_symlink_iops = {
- 	.get_link = ecryptfs_get_link,
- 	.permission = ecryptfs_permission,
-@@ -1118,6 +1135,8 @@ const struct inode_operations ecryptfs_dir_iops = {
- 	.permission = ecryptfs_permission,
- 	.setattr = ecryptfs_setattr,
- 	.listxattr = ecryptfs_listxattr,
-+	.miscattr_get = ecryptfs_miscattr_get,
-+	.miscattr_set = ecryptfs_miscattr_set,
+ static const struct inode_operations ovl_file_inode_operations = {
+ 	.setattr	= ovl_setattr,
+ 	.permission	= ovl_permission,
+@@ -503,6 +544,8 @@ static const struct inode_operations ovl_file_inode_operations = {
+ 	.get_acl	= ovl_get_acl,
+ 	.update_time	= ovl_update_time,
+ 	.fiemap		= ovl_fiemap,
++	.miscattr_get	= ovl_miscattr_get,
++	.miscattr_set	= ovl_miscattr_set,
  };
  
- const struct inode_operations ecryptfs_main_iops = {
-@@ -1125,6 +1144,8 @@ const struct inode_operations ecryptfs_main_iops = {
- 	.setattr = ecryptfs_setattr,
- 	.getattr = ecryptfs_getattr,
- 	.listxattr = ecryptfs_listxattr,
-+	.miscattr_get = ecryptfs_miscattr_get,
-+	.miscattr_set = ecryptfs_miscattr_set,
- };
+ static const struct inode_operations ovl_symlink_inode_operations = {
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+index b487e48c7fd4..d3ad02c34cca 100644
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
+@@ -509,6 +509,8 @@ int __init ovl_aio_request_cache_init(void);
+ void ovl_aio_request_cache_destroy(void);
+ long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ long ovl_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
++int ovl_miscattr_get(struct dentry *dentry, struct miscattr *ma);
++int ovl_miscattr_set(struct dentry *dentry, struct miscattr *ma);
  
- static int ecryptfs_xattr_get(const struct xattr_handler *handler,
+ /* copy_up.c */
+ int ovl_copy_up(struct dentry *dentry);
 -- 
 2.26.2
 
