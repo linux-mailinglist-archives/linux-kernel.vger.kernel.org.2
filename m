@@ -2,158 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B8730D676
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9116330D640
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhBCJj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:39:26 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:29544 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbhBCJjV (ORCPT
+        id S233260AbhBCJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233196AbhBCJYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:39:21 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210203093838epoutp02a614bf398934519f0f976372883f42f4~gM1e0zSKa2524525245epoutp02L
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 09:38:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210203093838epoutp02a614bf398934519f0f976372883f42f4~gM1e0zSKa2524525245epoutp02L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612345118;
-        bh=++Jnb3SqoJaKXZ2SwuM4efupS68kYYz0Kg14bYc0z1k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f4YGsWKHxRSce9baGr9hwT5FKueXznfmOBb22afwuUWLaFpbutFgZym/boBcP/7LJ
-         2DdYBLzLS6ni1FDuCYieinBI7nY/gEYu+3a9pPbCINEjPxNHQJ4DfjAWbyReLmemZV
-         7EocNEDnUzkenvRKRtyT8u+k6x1muAawtFCYNxbc=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210203093837epcas1p3cde587ad432277e767b65539c8057de4~gM1eNH3GS1876818768epcas1p3B;
-        Wed,  3 Feb 2021 09:38:37 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.160]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DVxSr2Ckxz4x9Q3; Wed,  3 Feb
-        2021 09:38:36 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CE.CE.63458.C1F6A106; Wed,  3 Feb 2021 18:38:36 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9~gM1cWcHSB1322013220epcas1p27;
-        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210203093835epsmtrp1e0af78c4d2cb5b81b577e5f66dd467ca~gM1cTWyH70886908869epsmtrp1V;
-        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
-X-AuditID: b6c32a36-6c9ff7000000f7e2-ca-601a6f1c67e6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3E.5E.08745.B1F6A106; Wed,  3 Feb 2021 18:38:35 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210203093835epsmtip203e0316ecaa2edc1409ef6193337ae94~gM1cGcN7J1238212382epsmtip2S;
-        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, mj0123.lee@samsung.com,
-        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: [PATCH v4 2/2] bio: add limit_bio_size sysfs
-Date:   Wed,  3 Feb 2021 18:22:47 +0900
-Message-Id: <20210203092247.29258-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <YBpmQhqx4pvUh//a@kroah.com>
+        Wed, 3 Feb 2021 04:24:46 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F45C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:24:06 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id w18so16250050pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zmEy+MM4K3YkzTAoCzjXjvWdqyK8YoxPSSq7rOO1Ck4=;
+        b=NEpsgWWF/Vr7FJ8ymDS5oltb6nI4gFB86S/58dHPgy+mZDSALuh7MhPPqyusAqs6nG
+         yqmeJlLN/OmeoLtgLU0gnKO7PZRop7QFARQAEgLD4NVouUt6F3dyf0aLTo9ZIrseEEDU
+         Rlr7QpLIiTI8sC5kRWUg5WAVlW8euzvFfSRXQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zmEy+MM4K3YkzTAoCzjXjvWdqyK8YoxPSSq7rOO1Ck4=;
+        b=DW93OggGroZZ2GjJLWeEuWhUbiQdx87w5U3y0S564W+vCMRsiDMNDPOdT4bQz6XfIN
+         vNuoMnZKykBXkQEjh8h2tjZx+HVBCkVjIguZ8fug/FsEr7hAqrN4S5rDUZdEDxik/Xpw
+         azjrDOnnIzgvztjSsm/N7BwYYEFADlmiz45thyIiJNXHDQbkPNPkUccH/XtehL60kMjX
+         R1wWMg0Hf497MJhoG8aSm9r9ifx/GpU+GOPV4TDvbKfnrZD7QgpZPEjWYauWU79Pt+2O
+         YKEzXYS9zJC+BNEEO23JrKLKauRuD2tw5NoTNZzmIjZSirzrG8lfgWPLDGfLoxlM28ky
+         KxmQ==
+X-Gm-Message-State: AOAM531SlzHl1NWYhVnm7G8DS9zLk3d6YE68p2EYalaeA9ioWzfmzl/X
+        Yqq2QwqdlQzVVqgAAMjWJYjBUVYr8KHPQQ==
+X-Google-Smtp-Source: ABdhPJx/ThGdGiVmzVs8W3gH8WUwX5Zzb6zCDKnO5/Qdo5QFC8/oLJNS8v92G3o/lBaWZ0rkN0vtNQ==
+X-Received: by 2002:a63:e30d:: with SMTP id f13mr2677675pgh.39.1612344245931;
+        Wed, 03 Feb 2021 01:24:05 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:743e:7944:50c8:ff72])
+        by smtp.gmail.com with ESMTPSA id u20sm932294pjy.36.2021.02.03.01.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 01:24:05 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        "MyungJoo Ham )" <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH v5 0/3] Add required-opps support to devfreq passive gov
+Date:   Wed,  3 Feb 2021 17:23:57 +0800
+Message-Id: <20210203092400.1791884-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc3rbe8ujeCkgx8YAu5t/iFBbauEMZDFiXJcZQ9z+WNyWcgNX
-        IPS1XspkMRMGIq8pYKa8qsg6WAoLW3kMGCBBibyzyYApQ0AwyAwPYaiIj7W9kPHf9/zy+Z7v
-        +f3OOUJMPIdLhIm6ZMaoozUU7spvurlXGrxbL4mRrbxyQ+XWJoBqJi7i6Nz5pzyU8X0djvoL
-        Knkof/YbAXqVe5+H1qZZ1H5vHxpuLcdR16UMHrpSX46h0ckBAt28P8JH05ZCDA31rgjQ1ZlD
-        6EV1N0BLz8cI1Nd8CUN17ev4IR9VYcYioWopnSBU9T8GqoYHTSqbNQdX3TDXEqqljhFcdaHB
-        ClSrNj/V+c48XrTrSc3BBIaOY4wBjC5WH5eoi4+kPvxIHaVWhsrkwfJ3URgVoKO1TCR15Fh0
-        8NFEjb1BKiCF1pjspWiaZan97x006k3JTECCnk2OpBhDnMYglxmkLK1lTbp4aaxeGy6XyUKU
-        djJGk2AZmiYM026ne66189NAsWsucBFC8gD8Y7mMnwtchWKyGcArN6YIbrECYGdJN89BiclV
-        AG//q9lypNcPYxzUCuDjJ+WbdjtkKzRjDgong+CFhXu4Q3uTfnB2/KXTgZGPMHg5+28n5EUq
-        4a3+B06IT+6Bk+U99rpQKCIj4NqjVC7NHz78ttqJu5B74UZ2nsChRaQn7C2Z5Ts0ZmcyGsuc
-        +0NyWQif3+kRcOYjsMYyxuO0F/zndgPBaQmcv5hFcIY8ADOyrgFuUQCgZa5q06GAK6urwHEi
-        zB5d17qfK78FWzbMgEv2gItr+QIHAkkRzM4Sc8g7cCBzEtvKmvuphcchKtj4enOiZ6C5opYo
-        AAGl29op3dZO6f+5FQCzgp2MgdXGM6zcELL9hm3A+eIDQ5tB0cKytAvwhKALQCFGeYv6inbG
-        iEVxdOpXjFGvNpo0DNsFlPZZF2ISn1i9/cvoktVyZYhCoUAHQsNClQrKV0TLptRiMp5OZpIY
-        xsAYt3w8oYskjZczaAqfXP3i6YuYpr9Sg4Oidi2dOBz02iPL5Ft5OnNmULvw+WjHb4nXR5NO
-        ZR73E6GCH+Z2DY1HsUbt2fSzJyb+3ONDpK0V/67hb2BjFVRi6UyJ55fqoRSbQiltMyepW5Oi
-        LVe91ht7dx8dO4m+9qt/m4rN0hK2u5N3r88Pvlmcoo+z7hPdlhqTxTqV8GyE8D7z3SkgPdfR
-        HX/MPWK80irx35H/5n3dZ1UNcwPRd1C/qFOLX37CBgZaeR88Jm/9mv7zLzm+aaLwiE93PHMf
-        8fT3eLhcpPZJmflYEJL2iZzcV1HT1rw+ffil4kGx1dhcTcwb8NoqY1lYm7m9z801Fq+j+GwC
-        LQ/EjCz9H98aPyl6BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsWy7bCSvK50vlSCwfI2VYs5q7YxWqy+289m
-        0dr+jcmiefF6NovTExYxWfQ8aWK1+Nt1j8ni68Nii723tC0u75rDZnFocjOTxfTNc5gtrt0/
-        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW6/f+ZHMQ9ZjY/I7dY+es
-        u+wem1doeVw+W+qxaVUnm8f+uWvYPd7vu8rm0bdlFaPH501yHu0HupkCuKK4bFJSczLLUov0
-        7RK4Mpace8he8JC74sT8vSwNjDO4uhg5OSQETCQaN19m7mLk4hAS2MEoMWP+NGaIhJTE8RNv
-        WbsYOYBsYYnDh4shaj4ySvzq/cEKUsMmoCPR9/YWG4gtIiAn8eT2H7BBzAJNLBLXz69mBEkI
-        C5hKHDn9CKyIRUBV4v6cE8wgQ3kFrCW+vqiE2CUv8bR3OdheTgFNid8d3WDzhQQ0JH6d6gVr
-        5RUQlDg58wkLiM0MVN+8dTbzBEaBWUhSs5CkFjAyrWKUTC0ozk3PLTYsMMpLLdcrTswtLs1L
-        10vOz93ECI5ELa0djHtWfdA7xMjEwXiIUYKDWUmE99QksQQh3pTEyqrUovz4otKc1OJDjNIc
-        LErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamFapPeLbqVy3uyXc42U4c42X2c9O5S1KCncu
-        r49pWzORiyP/QdZ04cC28s15DRU5E2u49c50uSv9WN3Ln/W5+QTfEyfOmgp5tTO6326VzPsy
-        2aV6vj9P18aSyEV3DabXWfVyzZk77eCjq/tVr0p5XLSTvtqpW8Iqc6v855aOFSvSjp5UPtW0
-        8u/qbRI7rjm9Y/DUrj6mnWwS8PB0aFDc9GlfctewX5vicbLq/sy1UlFOZ/0rs1eUa/8tXzrh
-        4yfv5auObyr9O89M5dra8sYpgSEqTrF/N3xL7fqesVMkalGWc8aHjY4p2df/3M2UV9X6bNzF
-        eG9Huoj71qWVc/5383zPVuGQ79fycbjNe9l/qxJLcUaioRZzUXEiACQ6ogMzAwAA
-X-CMS-MailID: 20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9
-References: <YBpmQhqx4pvUh//a@kroah.com>
-        <CGME20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add limit_bio_size block sysfs node to limit bio size.
-Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
-And bio max size will be limited by queue max sectors via
-QUEUE_FLAG_LIMIT_BIO_SIZE set.
+The devfreq passive governor scales the frequency of a "child" device based
+on the current frequency of a "parent" device (not parent/child in the
+sense of device hierarchy). As of today, the passive governor requires one
+of the following to work correctly:
+1. The parent and child device have the same number of frequencies
+2. The child device driver passes a mapping function to translate from
+   parent frequency to child frequency.
 
-Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
----
- block/blk-sysfs.c | 3 +++
- 1 file changed, 3 insertions(+)
+When (1) is not true, (2) is the only option right now. But often times,
+all that is required is a simple mapping from parent's frequency to child's
+frequency.
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index b513f1683af0..840d97f427e6 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
- QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
- QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
- QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
-+QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
- #undef QUEUE_SYSFS_BIT_FNS
- 
- static ssize_t queue_zoned_show(struct request_queue *q, char *page)
-@@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
- QUEUE_RW_ENTRY(queue_iostats, "iostats");
- QUEUE_RW_ENTRY(queue_random, "add_random");
- QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
-+QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
- 
- static struct attribute *queue_attrs[] = {
- 	&queue_requests_entry.attr,
-@@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
- 	&queue_rq_affinity_entry.attr,
- 	&queue_iostats_entry.attr,
- 	&queue_stable_writes_entry.attr,
-+	&queue_limit_bio_size_entry.attr,
- 	&queue_random_entry.attr,
- 	&queue_poll_entry.attr,
- 	&queue_wc_entry.attr,
+Since OPPs already support pointing to other "required-opps", add support
+for using that to map from parent device frequency to child device
+frequency. That way, every child device driver doesn't have to implement a
+separate mapping function anytime (1) isn't true.
+
+Some common (but not comprehensive) reason for needing a devfreq passive
+governor to adjust the frequency of one device based on another are:
+
+1. These were the combination of frequencies that were validated/screened
+   during the manufacturing process.
+2. These are the sensible performance combinations between two devices
+   interacting with each other. So that when one runs fast the other
+   doesn't become the bottleneck.
+3. Hardware bugs requiring some kind of frequency ratio between devices.
+
+For example, the following mapping can't be captured in DT as it stands
+today because the parent and child device have different number of OPPs.
+But with this patch series, this mapping can be captured cleanly.
+
+In arch/arm64/boot/dts/exynos/exynos5433-bus.dtsi you have something
+like this with the following changes:
+
+	bus_g2d_400: bus0 {
+		compatible = "samsung,exynos-bus";
+		clocks = <&cmu_top CLK_ACLK_G2D_400>;
+		clock-names = "bus";
+		operating-points-v2 = <&bus_g2d_400_opp_table>;
+		status = "disabled";
+	};
+
+	bus_noc2: bus9 {
+		compatible = "samsung,exynos-bus";
+		clocks = <&cmu_mif CLK_ACLK_BUS2_400>;
+		clock-names = "bus";
+		operating-points-v2 = <&bus_noc2_opp_table>;
+		status = "disabled";
+	};
+
+	bus_g2d_400_opp_table: opp_table2 {
+		compatible = "operating-points-v2";
+		opp-shared;
+
+		opp-400000000 {
+			opp-hz = /bits/ 64 <400000000>;
+			opp-microvolt = <1075000>;
+			required-opps = <&noc2_400>;
+		};
+		opp-267000000 {
+			opp-hz = /bits/ 64 <267000000>;
+			opp-microvolt = <1000000>;
+			required-opps = <&noc2_200>;
+		};
+		opp-200000000 {
+			opp-hz = /bits/ 64 <200000000>;
+			opp-microvolt = <975000>;
+			required-opps = <&noc2_200>;
+		};
+		opp-160000000 {
+			opp-hz = /bits/ 64 <160000000>;
+			opp-microvolt = <962500>;
+			required-opps = <&noc2_134>;
+		};
+		opp-134000000 {
+			opp-hz = /bits/ 64 <134000000>;
+			opp-microvolt = <950000>;
+			required-opps = <&noc2_134>;
+		};
+		opp-100000000 {
+			opp-hz = /bits/ 64 <100000000>;
+			opp-microvolt = <937500>;
+			required-opps = <&noc2_100>;
+		};
+	};
+
+	bus_noc2_opp_table: opp_table6 {
+		compatible = "operating-points-v2";
+
+		noc2_400: opp-400000000 {
+			opp-hz = /bits/ 64 <400000000>;
+		};
+		noc2_200: opp-200000000 {
+			opp-hz = /bits/ 64 <200000000>;
+		};
+		noc2_134: opp-134000000 {
+			opp-hz = /bits/ 64 <134000000>;
+		};
+		noc2_100: opp-100000000 {
+			opp-hz = /bits/ 64 <100000000>;
+		};
+	};
+
+-Saravana
+
+v4 -> v5:
+- drop patch "OPP: Improve required-opps linking" and rebase to 
+  https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
+- Compare pointers in dev_pm_opp_xlate_required_opp().
+
+v3 -> v4:
+- Fixed documentation comments
+- Fixed order of functions in .h file
+- Renamed the new xlate API
+- Caused _set_required_opps() to fail if all required opps tables aren't
+  linked.
+v2 -> v3:
+- Rebased onto linux-next.
+- Added documentation comment for new fields.
+- Added support for lazy required-opps linking.
+- Updated Ack/Reviewed-bys.
+v1 -> v2:
+- Cached OPP table reference in devfreq to avoid looking up every time.
+- Renamed variable in passive governor to be more intuitive.
+- Updated cover letter with examples.
+
+Saravana Kannan (3):
+  OPP: Add function to look up required OPP's for a given OPP
+  PM / devfreq: Cache OPP table reference in devfreq
+  PM / devfreq: Add required OPPs support to passive governor
+
+ drivers/devfreq/devfreq.c          |  6 ++++
+ drivers/devfreq/governor_passive.c | 20 ++++++++---
+ drivers/opp/core.c                 | 58 ++++++++++++++++++++++++++++++
+ include/linux/devfreq.h            |  2 ++
+ include/linux/pm_opp.h             | 11 ++++++
+ 5 files changed, 92 insertions(+), 5 deletions(-)
+
 -- 
-2.28.0
+2.30.0.365.g02bc693789-goog
 
