@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E85530DE73
+	by mail.lfdr.de (Postfix) with ESMTP id DF62730DE74
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhBCPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S234568AbhBCPmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234288AbhBCPjS (ORCPT
+        with ESMTP id S234466AbhBCPkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:39:18 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD7C061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:38:36 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id p15so22057417ilq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:38:36 -0800 (PST)
+        Wed, 3 Feb 2021 10:40:35 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAF1C061573;
+        Wed,  3 Feb 2021 07:39:53 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id w20so15606113qta.0;
+        Wed, 03 Feb 2021 07:39:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2XdbfI16WJbR6LSg9tBZS+BqrfD2/1ScjFS440UM0KE=;
-        b=E5KVmQN8h1Pgzo+oy/kc0MNevkV4u8gnmPcDMgtxBG/TVWs4/jMswlZoF/TuhknEMb
-         yxzHe9jTE1vMt4uNuVG/KkhU6evwJSmtCO35JgO3Y4+pD2iVX8Y+scvbCHT+C52qHAnM
-         zhfUTpNf4jbckd/huHzw4urQwJDH3xfRWykm0=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Szz2d5g4+tntyXnCUwRqwxbX80mODpAHIKwbZzrC9Ic=;
+        b=nUlTmPut9KdlDq/IaDkdCQSR39emnvn700krfch+1X+lppYOABQxM+XaxNDp0ngVEv
+         kMyclZ7vgPTB92D6RgXJqW2YaMlNquRY50u4TJQtkizqPEQgK1O4SIXsaL8PQESXy8Vd
+         T83HGP46Tb5KxQ3S9XNTYpG4dvzmHPlyr3cmLTGQwlthEY2+60ytIpYAja/YF5GyOj4g
+         cgl74pvMyq07klF1g6mI42wS5oZqr+ossU7qtgHdK+fmRD7Rr0skrrNH7FY+hzZRGHH7
+         999w6aZb1jgB8RIjMmVCsPLsJabAT/OryGoXU5zgfGnmSkE/+WMLtDXqArZW+ZCLccr6
+         mpnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2XdbfI16WJbR6LSg9tBZS+BqrfD2/1ScjFS440UM0KE=;
-        b=OGALftJP0G8AZC+fC+kqJq78YGZ2vYBVcaMsf8ZyE7M9O3PU3ogy5PKjDlAgmSLARl
-         OPcjZCmyiDB/xJnMjpexdbegknuf4Nx3fIpgfXxylcugPutFyhfI6e4iWKKwt/UkcQu0
-         hhTrKc5pOWU74B1baIwck41KRTUIAhFX4r6t1KElmt0+hQDsl2XUOF2ggwv+70mEO48n
-         d+YlXWj3LTZ5TsnXKuy0mN8FvSOm17xsNR3lfmTFXc+re56ATl78xXFy2jQKyS3LRxOc
-         ejJgsVQQsSYQYf6c/m56I6SPobpfJw4J5G9tXT/8eYzjv+edyRX9NQKn6f1Ctpaaj4GH
-         DaHA==
-X-Gm-Message-State: AOAM531kKN0xfW9mW6h4LDuY0mPcVlX3h5DPn5JRL55bEPGZiAU+Jpu+
-        hdTNlU2bJBC+QcWN4v2vY93Xhw==
-X-Google-Smtp-Source: ABdhPJw2rUpzn/QOzVxe12w3qE3Bn1DOeh/cH98+MIzA8KN9qHhXN1iHa4ZNYIrkMKSAgI0sAPq0Rw==
-X-Received: by 2002:a92:d80d:: with SMTP id y13mr2914482ilm.299.1612366715953;
-        Wed, 03 Feb 2021 07:38:35 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f8sm1196834ioh.42.2021.02.03.07.38.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 07:38:35 -0800 (PST)
-Subject: Re: [PATCH 5.4 00/61] 5.4.95-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e0d89c59-77b7-b5cb-eafd-f8f0af815175@linuxfoundation.org>
-Date:   Wed, 3 Feb 2021 08:38:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        bh=Szz2d5g4+tntyXnCUwRqwxbX80mODpAHIKwbZzrC9Ic=;
+        b=W0FgA5hSJdLIfB0CQJRjcuSpMiGrtvY4W/AeJoV75twK3QLFierP7wi6Z47PCIWgwd
+         ZAi9uAONiia1zCUodCKD3x0SIiLyBvR4f6RAf5WsglfBu1EVVL/v6Hp5py/cDfa+xhTl
+         xzWbIR1A/l8LMVFjqXnWky2NpHOPQ4KZHvH1hOfBsmrgg2OrcSO5k31FJXyXpkizZgAP
+         oSip3Rm3Za1+U61XC5puXjiWxZ0+GUMMAu86sXmSTNHzBw5zGTwRQXLHgARpaKDxsh/U
+         vCq0q6qFixk6gOZx80MTgn2KC/WC6eOhq9yAjfwy0L4J20Al4heVMUb3PS1PkAE2O7mg
+         DpPQ==
+X-Gm-Message-State: AOAM532rl0x41j5cSunWFp8pt+u6dNrjxg+W5nz3QLl1PZzNdZq/+pqv
+        zsWUkKiPrHFoG+F396XwZ6k=
+X-Google-Smtp-Source: ABdhPJwKPfqoGBqizojzqGe7DRza1dTy/1sxx3WKAZHnMV5KcR/hBuhGfIDxohTlBqnBmij39yAG4g==
+X-Received: by 2002:ac8:4517:: with SMTP id q23mr2970684qtn.284.1612366793161;
+        Wed, 03 Feb 2021 07:39:53 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.139])
+        by smtp.gmail.com with ESMTPSA id t71sm1903316qka.86.2021.02.03.07.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 07:39:51 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] crypto: Fixed optimzation to optimization in the file crypto/xor.c
+Date:   Wed,  3 Feb 2021 21:09:33 +0530
+Message-Id: <20210203153933.9443-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 6:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.95 release.
-> There are 61 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.95-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
+s/optimzation/optimization/
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ crypto/xor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
--- Shuah
+diff --git a/crypto/xor.c b/crypto/xor.c
+index eacbf4f93990..c046d074f522 100644
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -95,7 +95,7 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 	for (i = 0; i < 3; i++) {
+ 		start = ktime_get();
+ 		for (j = 0; j < REPS; j++) {
+-			mb(); /* prevent loop optimzation */
++			mb(); /* prevent loop optimization */
+ 			tmpl->do_2(BENCH_SIZE, b1, b2);
+ 			mb();
+ 		}
+--
+2.26.2
 
