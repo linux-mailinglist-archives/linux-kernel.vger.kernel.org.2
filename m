@@ -2,171 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6B930D53A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0F730D546
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhBCIaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S232699AbhBCId0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:33:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbhBCIad (ORCPT
+        with ESMTP id S232492AbhBCIdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:30:33 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE90FC061573;
-        Wed,  3 Feb 2021 00:29:52 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id k25so25914707oik.13;
-        Wed, 03 Feb 2021 00:29:52 -0800 (PST)
+        Wed, 3 Feb 2021 03:33:24 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7771DC06178A;
+        Wed,  3 Feb 2021 00:32:06 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id e133so13497798iof.8;
+        Wed, 03 Feb 2021 00:32:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fw7mhJ/ALXeJZR+44OFAC0sbpDziXpuDZAubERRVzFg=;
-        b=Gf4D99yyAGOZ90xVmedTlmHqUPxdM+6hM26isYs20UlmBRFXHcIHNUMpo72aolFpcP
-         8D/v/2G6lKq9u/93G2AcMlmE9SPD2mgCAKX7NbV4qrJ3YRlFmvD4BPVXeWq301FClRsM
-         y9jxMdbOdkQXEwmh70WVeWxMH3kFRroAyUf3Jh893QymPpT2Jn95lQ1XNn5YDNnXFRSX
-         4VDvaQfBcQGtB32mHEEPokjc0knJ37BSW2fajRDHzxR6MQna/o9SMl4902qbGe10iHY7
-         zisckfJj2pnkG+quwEg6t03KcL2TVS0yN98jEoVji33sE7MCDp+zhKLLQtyqKRZnrgRT
-         pCXw==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Xl7tdjaRBbAIoUBy33ehOqMQfuVpZM9WRqZuHrL1130=;
+        b=fYoUbYVIdYbqHfNuDnfDDMFYNor2qE7r+CeHDRbhfVBaBRU67SSeWYYE0pX2fxdPsc
+         JmWaxyGV5SSKbQVIxvSbzT3ldFD9dkbQZn+6g20yyeLBzqnnVJzbp2kqa2dtS9bgaDy4
+         y+DAKdr+RPyF0bNFoM6msrAtiHnCZFI6qDqEw9SibYcZq6nCodcUNaCMiyoEj4NM4uNR
+         Yg10R66P7G7an9K6YXDb34GqMo5GgOq24MzI6Eb+WT64cps46RPi8uEYXfIjb2pIyrNV
+         u905PesB+FQARfyDAKoXwXwflCZ1GvjZQKcw6BqLmA51G5bZt1656R2XvuPUxBZwFG85
+         rBKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fw7mhJ/ALXeJZR+44OFAC0sbpDziXpuDZAubERRVzFg=;
-        b=g6yU4I4Bf1U/1cKCm8sEbUKoGFmplAaFr+vX7XZS43G2cDh4AF6by5orsoWLvcXFLf
-         C/nMit/0MX5H9qF1Uwj7duwEMl1mR39Ch353bfVFlMlNXbpBj5vMeT/uoRXsTzk/gbYr
-         4zkQQNpxKsGwd0SgNCbTM0TLMaOj0ln+vgV2q+FGPELnQHKtc4RONKQ0Cj6k2t5CLtR7
-         1uMPwN0f8ei+6pIJS/MEQENRKIUF18ggioc/SMKDNGVxHdUzL4HEVdAeHH2X28lOShB+
-         0ouQsE2M4QL9rhHowlL1XGdQ/FM2NROCKthytLsZQKN0jeSvtK51c2jSXIGlWQNY0oZW
-         CIoQ==
-X-Gm-Message-State: AOAM533ceS+bjga10ETmI+hU1yRe1L3ULIHSF56LFt/ZPsTIY04k0f6p
-        xFdk3wNuGTn2giiXoRUvO1jtH90s4T576Ruj3nU=
-X-Google-Smtp-Source: ABdhPJyoWWtBttqrhsG53CwbEqSmRLh1H8YTHimPEVkBZhFUCZ+sKisqTESaxWyAlhg6iF9K81LGmeIyGJN5AGQfyK0=
-X-Received: by 2002:aca:4454:: with SMTP id r81mr1268682oia.129.1612340992276;
- Wed, 03 Feb 2021 00:29:52 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Xl7tdjaRBbAIoUBy33ehOqMQfuVpZM9WRqZuHrL1130=;
+        b=rDbUXAwf0uQro/8EvMjtxDa7KS0FONzLiMzCZijyxAEt1dnN3upXGJkgkE7fUQ/Okl
+         VLGn8T1wrCf12wfeHJ07xa3PtYXXhJH7pxbftrrzenoxKOjRVkTSh2lDMuM0lJabni/F
+         c31PD2OlDuvGLU1NS2lFXrNx5zT7G79aezrl/Jmt66T7xcWvNsvksYwOrScJP9K6+sR+
+         maIPEcEuRPkAldH3KyzlXDAxrMVaK2uou12GDi8UFWAnSE8w/0Fo+whOfVmGZG5FNBpB
+         O+nETMm1gRWmlacSFBTLmuKLpjY3sy9+T2An6pBTjt2HutbtUQ1Xwm37uSugAykNrwiN
+         +HZQ==
+X-Gm-Message-State: AOAM533EVBoWvD6BI7+tafBDWLc2Ybr/49km9SKd7lmsBoj6J2DCqEM3
+        yYNQ2f0TN2+tb/ihO3lNR/W+GxS56Z0tn8mVRWY=
+X-Google-Smtp-Source: ABdhPJzsAZtBBc6tOJ4anuAwy4HVDfqaUisO41SoAoId9HJNCXVjyHV7EcXFyMEUcgnvPUlR6r7pSzF3rOoBj18AUJ4=
+X-Received: by 2002:a6b:f112:: with SMTP id e18mr1565166iog.57.1612341125809;
+ Wed, 03 Feb 2021 00:32:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202184434.42644-1-swboyd@chromium.org> <20210202184434.42644-3-swboyd@chromium.org>
-In-Reply-To: <20210202184434.42644-3-swboyd@chromium.org>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 3 Feb 2021 09:29:40 +0100
-Message-ID: <CAFqH_52xjAmjWu3DFuFyqQBDYFccZXYp=8wcXVOr4H5deRa2bw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: iio: Add cros ec proximity yaml doc
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210203075239.5505-1-masahiroy@kernel.org>
+In-Reply-To: <20210203075239.5505-1-masahiroy@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 3 Feb 2021 09:31:54 +0100
+Message-ID: <CA+icZUW-uObu=7xpqUqKTASmBfEgLKMrKgmR_uhmHBN-EwpBVA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>,
+        Mark Wielaard <mark@klomp.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-Missatge de Stephen Boyd <swboyd@chromium.org> del dia dt., 2 de febr.
-2021 a les 19:53:
+On Wed, Feb 3, 2021 at 8:53 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Some cros ECs support a front proximity MKBP event via
-> 'EC_MKBP_FRONT_PROXIMITY'. Add a DT binding to document this feature via
-> a node that is a child of the main cros_ec device node. Devices that
-> have this ability will describe this in firmware.
+> Sedat Dilek noticed duplicated debug flags passed when building C
+> files with CONFIG_DEBUG_INFO.
 >
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: <devicetree@vger.kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> I do not know much about his build environment, but yes, Kbuild
+> recurses to the top Makefile with some build targets. For example,
+> 'make CC=clang bindeb-pkg' reproduces the issue.
+>
+> With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
+> for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
+> CONFIG_CC_IS_GCC=y.
+>
+> Fix it to reset DEBUG_CFLAGS also when using Clang.
+>
+> Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks for adding a full example, IIRC this is preferred by Rob and we
-are also trying to apply this rule on all the cros-ec related
-bindings, so the dt_bindings_check really checks a full example. From
-my side looks good to me.
+That fixes the issue for me:
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Without patch:
+
+... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -g -gdwarf-5
+-gz=zlib -pg -mfentry ...
+
+With this patch:
+... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -pg -mfentry ...
+
+The relevant Kconfigs:
+
+$ grep DEBUG_INFO .config | grep ^CONFIG
+CONFIG_DEBUG_INFO=y
+CONFIG_DEBUG_INFO_COMPRESSED=y
+CONFIG_DEBUG_INFO_DWARF5=y
+
+Latest make-line:
+
+$ /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-4-amd64-clang12-
+cfi-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+KBUILD_BUILD_USER=sedat.dilek@gmail.com
+KBUILD_BUILD_TIMESTAMP=2021-02-03 bindeb-pkg
+KDEB_PKGVERSION=5.11.0~rc6-4~bull
+seye+dileks1
+
+Feel free to add my...
+
+   Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+Thanks again Masahiro.
+
+- Sedat -
 
 > ---
->  .../google,cros-ec-mkbp-proximity.yaml        | 46 +++++++++++++++++++
->  .../bindings/mfd/google,cros-ec.yaml          |  3 ++
->  2 files changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
 >
-> diff --git a/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
-> new file mode 100644
-> index 000000000000..d82b929af445
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/iio/proximity/google,cros-ec-mkbp-proximity.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ChromeOS EC MKBP Proximity Sensor
-> +
-> +maintainers:
-> +  - Stephen Boyd <swboyd@chromium.org>
-> +  - Benson Leung <bleung@chromium.org>
-> +  - Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> +
-> +description: |
-> +  Google's ChromeOS EC sometimes has the ability to detect user proximity.
-> +  This is implemented on the EC as near/far logic and exposed to the OS
-> +  via an MKBP switch bit.
-> +
-> +properties:
-> +  compatible:
-> +    const: google,cros-ec-mkbp-proximity
-> +
-> +  label:
-> +    description: Name for proximity sensor
-> +
-> +required:
-> +  - compatible
-> +
-> +unevaluatedProperties: false
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      ec@0 {
-> +        compatible = "google,cros-ec-spi";
-> +        reg = <0>;
-> +        proximity {
-> +          compatible = "google,cros-ec-mkbp-proximity";
-> +          label = "proximity-wifi-lte";
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> index 76bf16ee27ec..479a9f15de32 100644
-> --- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-> @@ -94,6 +94,9 @@ properties:
->    keyboard-controller:
->      $ref: "/schemas/input/google,cros-ec-keyb.yaml#"
+>  Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> +  proximity:
-> +    $ref: "/schemas/iio/proximity/google,cros-ec-mkbp-proximity.yaml#"
+> diff --git a/Makefile b/Makefile
+> index 3d3f67b98ca2..769a38ee81b9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -811,10 +811,12 @@ KBUILD_CFLAGS     += -ftrivial-auto-var-init=zero
+>  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+>  endif
+>
+> +DEBUG_CFLAGS   :=
 > +
->    codecs:
->      type: object
->      additionalProperties: false
+>  # Workaround for GCC versions < 5.0
+>  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
+>  ifdef CONFIG_CC_IS_GCC
+> -DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+> +DEBUG_CFLAGS   += $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+>  endif
+>
+>  ifdef CONFIG_DEBUG_INFO
 > --
-> https://chromeos.dev
+> 2.27.0
 >
