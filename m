@@ -2,314 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C0430E344
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6951230E347
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhBCT3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        id S230298AbhBCTaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhBCT3l (ORCPT
+        with ESMTP id S229519AbhBCTaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:29:41 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6AFC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:29:00 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id 19so913836qkh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:29:00 -0800 (PST)
+        Wed, 3 Feb 2021 14:30:07 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261DCC0613ED;
+        Wed,  3 Feb 2021 11:29:26 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id s3so1019588edi.7;
+        Wed, 03 Feb 2021 11:29:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bmms0fzvUjR75dfmgs0kGwS6rjCbP/52m4So/y4HVvM=;
-        b=gYSgK0gIuSwC4MR8b1ha8o1O5skM+u6OGQPPKd1JfA9gHEfNzzpzOofqkyrPL99bAA
-         PYrjpu5CjEhy7VuUcyXyzDhUrUqyLUWJslY3N9x9T5c8erN8+AjNdahmGcA90fCNl/hz
-         +2toLFZnJ6iMJkNgKB9Ek8sKpmQslsQGgLQpLNrc1HU+UHSQhlukpWEBuMSCnvweruJH
-         OmlXFjZluyacyfZGkaWMlOQBx9aA5SgkmlmxYIzqDrxFU4WsIyxU+HO7rqvuK67xpuqc
-         Q9Spp+H1qGJz90Z+rhAY+Bh72nlDZw1fha8e/wnuZn8POMDKFxmZHPer3554W6P7lbAq
-         0KAw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kganplicPJBtwsmEI4JfIkH23qpfQn4/Bhh9N1J6RWQ=;
+        b=EqmWumb9cTIW9KJ2CVDuCnJaWM2zg+pHCTuTha9gAHKaBxe0BkB5pm5AJQBxOBwl1+
+         zGTpq98Fd/5P/sAjjPnQKKZEm68D4d0ztJTITQfF6woINj/19E1T3RfePPdGCILg7jYs
+         UncM5PNCRC9MpvI+Cz/2fi8kJV8zPaTTk42H1huobWoiM2/R/6ClQ9wDH8ucEtxt82bt
+         ferhpwG66ZFHpv3gd30U/7M6Ol4ohTJlaaaMglTu2nNNq+6bVzZozzusQXcejz50feWg
+         rHRMGQkZOYOtzklaQe+mj8wQcFs7lwrFWueXZwaezS8/aPm4oST9oSVt9gPisOO0mW1T
+         Ielg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Bmms0fzvUjR75dfmgs0kGwS6rjCbP/52m4So/y4HVvM=;
-        b=eZYZBmtnS7QYSgCBZmF/+vvFfVqWdF9vH+t9c7x7Dei84rYy4+hIXKfwuEm1YE6bBN
-         WtuIURVDGjN0VvpuMFQB0aDBzvlqiUsuFTw5YE07EFbEoUUVf3IuA0UCu+TJlc8+8ZT2
-         6e25RH1i/ptLg8QFYk6s7VqcM/YFHvJ6cTS3M5l0/d0gaE0HE5uWCKiWTTo3/wjCRWFE
-         ca49ujTg71JKKTiWF/dps4axFQYdSKL5ltxIQduRjpJlLzl+kShpRNTp75mrHfOvVUw8
-         Qs0J9MFajZ53t0EfBbo69ztYLeCMBLZ6K0tV7fy6Y7jzqtUVkEzCdB3vh/Kv4SPd19o6
-         toiw==
-X-Gm-Message-State: AOAM533/zZE7GywxaIGcm2WW6Iue1X1Amof4LHSHHVihzqJBlFigAzle
-        66ewMPFbBpv7NGx7LxviI4Q=
-X-Google-Smtp-Source: ABdhPJx8oFde8jHBR85NuDeSaOsqP7wYgh7W2jL6D7gcQ7AHIbZ3pDOVJRtR1ry6z4eU2hUMGm3qfA==
-X-Received: by 2002:a37:d03:: with SMTP id 3mr4229514qkn.45.1612380539669;
-        Wed, 03 Feb 2021 11:28:59 -0800 (PST)
-Received: from fedora (209-6-208-110.s8556.c3-0.smr-cbr2.sbo-smr.ma.cable.rcncustomer.com. [209.6.208.110])
-        by smtp.gmail.com with ESMTPSA id w91sm2165236qte.83.2021.02.03.11.28.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 11:28:58 -0800 (PST)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Wed, 3 Feb 2021 14:28:56 -0500
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Dmitry Vyukov <dvyukov@google.com>, rjw@rjwysocki.net
-Cc:     George Kennedy <george.kennedy@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>, pjones@redhat.com,
-        konrad@kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iscsi_ibft: KASAN false positive failure occurs in
- ibft_init()
-Message-ID: <20210203192856.GA324708@fedora>
-References: <1611684201-16262-1-git-send-email-george.kennedy@oracle.com>
- <YBG0glwiK1wyJTeN@Konrads-MacBook-Pro.local>
- <CACT4Y+a48smtXc6qJy9Wthwuqjk2gh6o7BK1tfWW46g7D_r-Lg@mail.gmail.com>
- <cc712c9c-7786-bb26-7082-04e564df98aa@oracle.com>
- <CACT4Y+bPDvmwk38DrKfGV8cbtS_abAMDCqr9OigcPfep0uk5AQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kganplicPJBtwsmEI4JfIkH23qpfQn4/Bhh9N1J6RWQ=;
+        b=VFzHfgJNXl2XeIHQjUqGBzperHi/dyIaQEu4TxJymEPpM9K3LNsEJLwOO7LFhJeSKy
+         L6QUa0aYqAgacUQGvn229TxWMgw/ZSDYVnaLPFxrWoZP6w1ZxuYWEOX10THUFfOPK8Pn
+         eG4VRxnoDBA/ikYjYWdbHsZQlrDFOwfNLZMrHkeJNjqqlz9fbAed4/eK26v98rLLZhAE
+         tP4gsbkKb5Aa9l1tVl+Qqnr4euLINjRZ6zckuzeZ/qz84Y9avoHMkpw8aCt4rTGhpOfI
+         zmm6O/prbbTpYP4Fvvk2+IES82JNTKZFesTNIAupT4tsmb/3ka/AKRqSq4a8p/t+nSxx
+         8d9Q==
+X-Gm-Message-State: AOAM531aZD+PnNx1uvTWpzw3iqBbfCJWrTn+nmAVtt90EWsPDvCKAu5t
+        yF5IslYXKmHKqPLzueuFLHU=
+X-Google-Smtp-Source: ABdhPJx6nqFq5SK0benwWJ8qvmP4f/eNKzmsfV2KZjJ7c4flbUDcLi90U5agyYDzv1FmC08eaFqurA==
+X-Received: by 2002:aa7:d6d4:: with SMTP id x20mr4838119edr.8.1612380564813;
+        Wed, 03 Feb 2021 11:29:24 -0800 (PST)
+Received: from [192.168.10.61] (74-13-107-185.static.kviknet.dk. [185.107.13.74])
+        by smtp.gmail.com with ESMTPSA id f6sm1377348edk.13.2021.02.03.11.29.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 11:29:24 -0800 (PST)
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base CPU
+ speed to 800 MHz from 1000 MHz
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andre Heider <a.heider@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?Q?G=c3=a9rald_Kerma?= <gerald@gk2.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Konstantin Porotchkin <kostap@marvell.com>
+References: <20210114124032.12765-1-pali@kernel.org>
+From:   Anders Trier Olesen <anders.trier.olesen@gmail.com>
+Message-ID: <cf766197-666f-3d7d-3b9e-ba512619004e@gmail.com>
+Date:   Wed, 3 Feb 2021 20:29:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bPDvmwk38DrKfGV8cbtS_abAMDCqr9OigcPfep0uk5AQ@mail.gmail.com>
+In-Reply-To: <20210114124032.12765-1-pali@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Dmitry, Rafael, George, please see below..
+Hi Marek & Pali
 
-On Wed, Jan 27, 2021 at 10:10:07PM +0100, Dmitry Vyukov wrote:
-> On Wed, Jan 27, 2021 at 9:01 PM George Kennedy
-> <george.kennedy@oracle.com> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > On 1/27/2021 1:48 PM, Dmitry Vyukov wrote:
-> >
-> > On Wed, Jan 27, 2021 at 7:44 PM Konrad Rzeszutek Wilk
-> > <konrad.wilk@oracle.com> wrote:
-> >
-> > On Tue, Jan 26, 2021 at 01:03:21PM -0500, George Kennedy wrote:
-> >
-> > During boot of kernel with CONFIG_KASAN the following KASAN false
-> > positive failure will occur when ibft_init() reads the
-> > ACPI iBFT table: BUG: KASAN: use-after-free in ibft_init
-> >
-> > The ACPI iBFT table is not allocated, and the iscsi driver uses
-> > a pointer to it to calculate checksum, etc. KASAN complains
-> > about this pointer with use-after-free, which this is not.
-> >
-> > Andrey, Alexander, Dmitry,
-> >
-> > I think this is the right way for this, but was wondering if you have
-> > other suggestions?
-> >
-> > Thanks!
-> >
-> > Hi George, Konrad,
-> >
-> > Please provide a sample KASAN report and kernel version to match line numbers.
-> >
-> > 5.4.17-2102.200.0.0.20210106_0000
-> >
-> > [   24.413536] iBFT detected.
-> > [   24.414074]
-> > ==================================================================
-> > [   24.407342] BUG: KASAN: use-after-free in ibft_init+0x134/0xb8b
-> > [   24.407342] Read of size 4 at addr ffff8880be452004 by task swapper/0/1
-> > [   24.407342]
-> > [   24.407342] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.4.17-2102.200.0.0.20210106_0000.syzk #1
-> > [   24.407342] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-> > [   24.407342] Call Trace:
-> > [   24.407342]  dump_stack+0xd4/0x119
-> > [   24.407342]  ? ibft_init+0x134/0xb8b
-> > [   24.407342]  print_address_description.constprop.6+0x20/0x220
-> > [   24.407342]  ? ibft_init+0x134/0xb8b
-> > [   24.407342]  ? ibft_init+0x134/0xb8b
-> > [   24.407342]  __kasan_report.cold.9+0x37/0x77
-> > [   24.407342]  ? ibft_init+0x134/0xb8b
-> > [   24.407342]  kasan_report+0x14/0x1b
-> > [   24.407342]  __asan_report_load_n_noabort+0xf/0x11
-> > [   24.407342]  ibft_init+0x134/0xb8b
-> > [   24.407342]  ? dmi_sysfs_init+0x1a5/0x1a5
-> > [   24.407342]  ? dmi_walk+0x72/0x89
-> > [   24.407342]  ? ibft_check_initiator_for+0x159/0x159
-> > [   24.407342]  ? rvt_init_port+0x110/0x101
-> > [   24.407342]  ? ibft_check_initiator_for+0x159/0x159
-> > [   24.407342]  do_one_initcall+0xc3/0x44d
-> > [   24.407342]  ? perf_trace_initcall_level+0x410/0x405
-> > [   24.407342]  kernel_init_freeable+0x551/0x673
-> > [   24.407342]  ? start_kernel+0x94b/0x94b
-> > [   24.407342]  ? __sanitizer_cov_trace_const_cmp1+0x1a/0x1c
-> > [   24.407342]  ? __kasan_check_write+0x14/0x16
-> > [   24.407342]  ? rest_init+0xe6/0xe6
-> > [   24.407342]  kernel_init+0x16/0x1bd
-> > [   24.407342]  ? rest_init+0xe6/0xe6
-> > [   24.407342]  ret_from_fork+0x2b/0x36
-> > [   24.407342]
-> > [   24.407342] The buggy address belongs to the page:
-> > [   24.407342] page:ffffea0002f91480 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1
-> > [   24.407342] flags: 0xfffffc0000000()
-> > [   24.407342] raw: 000fffffc0000000 ffffea0002fca588 ffffea0002fb1a88 0000000000000000
-> > [   24.407342] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-> > [   24.407342] page dumped because: kasan: bad access detected
-> > [   24.407342]
-> > [   24.407342] Memory state around the buggy address:
-> > [   24.407342]  ffff8880be451f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > [   24.407342]  ffff8880be451f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > [   24.407342] >ffff8880be452000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > [   24.407342]                    ^
-> > [   24.407342]  ffff8880be452080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > [   24.407342]  ffff8880be452100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > [   24.407342]
-> > ==================================================================
-> > [   24.407342] Disabling lock debugging due to kernel taint
-> > [   24.451021] Kernel panic - not syncing: panic_on_warn set ...
-> > [   24.452002] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G    B 5.4.17-2102.200.0.0.20210106_0000.syzk #1
-> > [   24.452002] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-> > [   24.452002] Call Trace:
-> > [   24.452002]  dump_stack+0xd4/0x119
-> > [   24.452002]  ? ibft_init+0x102/0xb8b
-> > [   24.452002]  panic+0x28f/0x6e0
-> > [   24.452002]  ? __warn_printk+0xe0/0xe0
-> > [   24.452002]  ? ibft_init+0x134/0xb8b
-> > [   24.452002]  ? add_taint+0x68/0xb3
-> > [   24.452002]  ? add_taint+0x68/0xb3
-> > [   24.452002]  ? ibft_init+0x134/0xb8b
-> > [   24.452002]  ? ibft_init+0x134/0xb8b
-> > [   24.452002]  end_report+0x4c/0x54
-> > [   24.452002]  __kasan_report.cold.9+0x55/0x77
-> > [   24.452002]  ? ibft_init+0x134/0xb8b
-> > [   24.452002]  kasan_report+0x14/0x1b
-> > [   24.452002]  __asan_report_load_n_noabort+0xf/0x11
-> > [   24.452002]  ibft_init+0x134/0xb8b
-> > [   24.452002]  ? dmi_sysfs_init+0x1a5/0x1a5
-> > [   24.452002]  ? dmi_walk+0x72/0x89
-> > [   24.452002]  ? ibft_check_initiator_for+0x159/0x159
-> > [   24.452002]  ? rvt_init_port+0x110/0x101
-> > [   24.452002]  ? ibft_check_initiator_for+0x159/0x159
-> > [   24.452002]  do_one_initcall+0xc3/0x44d
-> > [   24.452002]  ? perf_trace_initcall_level+0x410/0x405
-> > [   24.452002]  kernel_init_freeable+0x551/0x673
-> > [   24.452002]  ? start_kernel+0x94b/0x94b
-> > [   24.452002]  ? __sanitizer_cov_trace_const_cmp1+0x1a/0x1c
-> > [   24.452002]  ? __kasan_check_write+0x14/0x16
-> > [   24.452002]  ? rest_init+0xe6/0xe6
-> > [   24.452002]  kernel_init+0x16/0x1bd
-> > [   24.452002]  ? rest_init+0xe6/0xe6
-> > [   24.452002]  ret_from_fork+0x2b/0x36
-> > [   24.452002] Dumping ftrace buffer:
-> > [   24.452002] ---------------------------------
-> > [   24.452002] swapper/-1         1.... 24564337us : rdmaip_init: 2924: rdmaip_init: Active Bonding is DISABLED
-> > [   24.452002] ---------------------------------
-> > [   24.452002] Kernel Offset: disabled
-> > [   24.452002] Rebooting in 1 seconds..
-> >
-> > Why does KASAN think the address is freed? For that to happen that
-> > memory should have been freed. I don't remember any similar false
-> > positives from KASAN, so this looks a bit suspicious.
-> >
-> > I'm not sure why KASAN thinks the address is freed. There are other modules where KASAN/KCOV is disabled on boot.
-> > Could this be for a similar reason?
+On 1/14/21 1:40 PM, Pali Rohár wrote:
+> Hello!
 > 
-> Most of these files are disabled because they cause recursion in
-> instrumentation, or execute too early in bootstrap process (before
-> kasan_init).
+> The armada-37xx-cpufreq driver changes base CPU speed from 1000 MHz to
+> 800 MHz on EspressoBIN and Turris MOX. The commit message in patch 2/10
+> explains why and how can this be discovered.
 > 
-> Somehow the table pointer in ibft_init points to a freed page. I
-> tracked it down to here:
-> https://elixir.bootlin.com/linux/v5.4.17/source/drivers/acpi/acpica/tbutils.c#L399
-> but I can't find where this table_desc->pointer comes from. Perhaps it
+> That patch 2/10 led us to discover another bug, in the SOC itself,
+> that causes the CPU to behave weirdly when frequency changes to 1 GHz.
+> A similar erratum is documented by Marvell but only for systems where
+> base frequency is 1.2 GHz.
+> 
+> We've discovered that to make cpufreq scaling stable on Armada 3720
+> systems with base frequency 1 GHz, we also have to set voltage levels
+> for L0 and L1 loads to at least 1108 mV. We were led to this by patch we
+> found in Marvell kernel fork. Fix is in the patch 4/10.
+> 
+> https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/dc33b62c90696afb6adc7dbcc4ebbd48bedec269
+> 
+> During fixing this voltage issue for 1 GHz we discovered another bug in
+> armada-37xx-cpufreq driver that causes CPU instability. Erratum for VDD
+> stabilization was improperly implemented, details are in patch 6/10.
+> 
+> This patch series is also available in my git tree in branch a3720-cpufreq-issues:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
+> 
+> We have tested this patch series on Espressobin v5 and Turris MOX
+> boards. If you have other Armada 3720 boards (Espressobin v5/v7, uDPU,
+> Devel Board, ...) then it will be nice to do an additional tests and
+> check if instability issues are finally fixed.
+> 
+> There is a discussion on armbian forum that Espressobin v7 is unstable
+> when running at 1 GHz and in this thread was also mentioned above
+> voltage patch from Marvell kernel fork:
+> 
+> https://forum.armbian.com/topic/10429-how-to-make-espressobin-v7-stable/
+> 
+> Marek & Pali
+> 
+> 
+> Marek Behún (3):
+>    arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
+>    cpufreq: armada-37xx: Fix setting TBG parent for load levels
+>    clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
+>      clock
+> 
+> Pali Rohár (7):
+>    cpufreq: armada-37xx: Fix the AVS value for loads L0 and L1
+>    clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
+>      1 GHz
+>    clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
+>      to L0
+>    cpufreq: armada-37xx: Fix driver cleanup when registration failed
+>    cpufreq: armada-37xx: Fix determining base CPU frequency
+>    cpufreq: armada-37xx: Remove cur_frequency variable
+>    cpufreq: armada-37xx: Fix module unloading
+> 
+>   arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
+>   drivers/clk/mvebu/armada-37xx-periph.c       |  83 ++++++++-------
+>   drivers/cpufreq/armada-37xx-cpufreq.c        | 100 ++++++++++++++-----
+>   3 files changed, 124 insertions(+), 62 deletions(-)
+> 
 
-It is what the BIOS generated. It usually points to some memory
-location in right under 4GB and the BIOS stashes the DSDT, iBFT, and
-other tables in there.
+Thank you for looking at this problem!
 
-> uses some allocation method that's not supported by KASAN? However,
-> it's the only such case that I've seen, so it's a bit weird. Could it
-> use something like memblock_alloc? Or maybe that page was in fact
-> freed?... Too bad KASAN does not print free stack for pages, maybe
-> it's not too hard to do if CONFIG_PAGE_OWNER is enabled...
+I have tested your a3720-cpufreq-issues branch on my Espressobin v7 (1GB 
+variant) with the ondemand governor. No issues so far.
 
-Hm, there is a comment in the acpi_get_table speaking about the
-requirement of having a acpi_put_table and:
+root@espressobin:~# uname -a
+Linux espressobin 5.11.0-rc1+ #1 SMP PREEMPT Sun Jan 31 23:35:17 CET
+2021 aarch64 aarch64 aarch64 GNU/Linux
+root@espressobin:~# cpufreq-info
+cpufrequtils 008: cpufreq-info (C) Dominik Brodowski 2004-2009
+Report errors and bugs to cpufreq@vger.kernel.org, please.
+analyzing CPU 0:
+    driver: cpufreq-dt
+    CPUs which run at the same hardware frequency: 0 1
+    CPUs which need to have their frequency coordinated by software: 0 1
+    maximum transition latency: 0.97 ms.
+    hardware limits: 200 MHz - 1000 MHz
+    available frequency steps: 200 MHz, 250 MHz, 500 MHz, 1000 MHz
+    available cpufreq governors: conservative, ondemand, userspace,
+powersave, performance, schedutil
+    current policy: frequency should be within 200 MHz and 1000 MHz.
+                    The governor "ondemand" may decide which speed to use
+                    within this range.
+    current CPU frequency is 1000 MHz (asserted by call to hardware).
+    cpufreq stats: 200 MHz:34.71%, 250 MHz:13.20%, 500 MHz:6.26%, 1000
+MHz:45.83%  (2015)
+analyzing CPU 1:
+    driver: cpufreq-dt
+    CPUs which run at the same hardware frequency: 0 1
+    CPUs which need to have their frequency coordinated by software: 0 1
+    maximum transition latency: 0.97 ms.
+    hardware limits: 200 MHz - 1000 MHz
+    available frequency steps: 200 MHz, 250 MHz, 500 MHz, 1000 MHz
+    available cpufreq governors: conservative, ondemand, userspace,
+powersave, performance, schedutil
+    current policy: frequency should be within 200 MHz and 1000 MHz.
+                    The governor "ondemand" may decide which speed to use
+                    within this range.
+    current CPU frequency is 500 MHz (asserted by call to hardware).
+    cpufreq stats: 200 MHz:34.71%, 250 MHz:13.20%, 500 MHz:6.26%, 1000
+MHz:45.83%  (2015)
+
+root@espressobin:~# 7za b
+
+7-Zip (a) [64] 16.02 : Copyright (c) 1999-2016 Igor Pavlov : 2016-05-21
+p7zip Version 16.02 (locale=en_US.UTF-8,Utf16=on,HugeFiles=on,64 bits,2
+CPUs LE)
+
+LE
+CPU Freq:   974   997   993   996   997   997   996   997
+
+RAM size:     983 MB,  # CPU hardware threads:   2
+RAM usage:    441 MB,  # Benchmark threads:      2
+
+                         Compressing  |                  Decompressing
+Dict     Speed Usage    R/U Rating  |      Speed Usage    R/U Rating
+           KiB/s     %   MIPS   MIPS  |      KiB/s     %   MIPS   MIPS
+
+22:        879   153    560    856  |      21904   199    941   1870
+23:        871   154    576    888  |      21518   199    938   1863
+24:        863   154    603    928  |      21147   199    935   1857
+25:        857   154    634    979  |      20885   199    934   1859
+----------------------------------  | ------------------------------
+Avr:             154    593    913  |              199    937   1862
+Tot:             176    765   1387
 
 
- * DESCRIPTION: Finds and verifies an ACPI table. Table must be in the
- *              RSDT/XSDT.
- *              Note that an early stage acpi_get_table() call must be paired
- *              with an early stage acpi_put_table() call. otherwise the table
- *              pointer mapped by the early stage mapping implementation may be
- *              erroneously unmapped by the late stage unmapping implementation
- *              in an acpi_put_table() invoked during the late stage.
- *
+Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
 
-Which would imply that I should use acpi_put_table in the error path
-(see below a patch), but also copy the structure instead of depending
-on ACPI keeping it mapped for me. I think.
-
-CC-ing Rafeal.
-
-
-From c37da50fdfc62cd4f7b23562b55661478c90a17d Mon Sep 17 00:00:00 2001
-From: Konrad Rzeszutek Wilk <konrad@darnok.org>
-Date: Tue, 2 Feb 2021 17:28:28 +0000
-Subject: [PATCH] ibft: Put ibft_addr back
-
-Signed-off-by: Konrad Rzeszutek Wilk <konrad@darnok.org>
----
- drivers/firmware/iscsi_ibft.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
-index 7127a04..2a1a033 100644
---- a/drivers/firmware/iscsi_ibft.c
-+++ b/drivers/firmware/iscsi_ibft.c
-@@ -811,6 +811,10 @@ static void ibft_cleanup(void)
- 		ibft_unregister();
- 		iscsi_boot_destroy_kset(boot_kset);
- 	}
-+	if (ibft_addr) {
-+		acpi_put_table((struct acpi_table_header *)ibft_addr);
-+		ibft_addr = NULL;
-+	}
- }
- 
- static void __exit ibft_exit(void)
-@@ -835,13 +839,15 @@ static void __init acpi_find_ibft_region(void)
- {
- 	int i;
- 	struct acpi_table_header *table = NULL;
-+	acpi_status status;
- 
- 	if (acpi_disabled)
- 		return;
- 
- 	for (i = 0; i < ARRAY_SIZE(ibft_signs) && !ibft_addr; i++) {
--		acpi_get_table(ibft_signs[i].sign, 0, &table);
--		ibft_addr = (struct acpi_table_ibft *)table;
-+		status = acpi_get_table(ibft_signs[i].sign, 0, &table);
-+		if (ACPI_SUCCESS(status))
-+			ibft_addr = (struct acpi_table_ibft *)table;
- 	}
- }
- #else
-@@ -870,12 +876,13 @@ static int __init ibft_init(void)
- 
- 		rc = ibft_check_device();
- 		if (rc)
--			return rc;
-+			goto out_free;
- 
- 		boot_kset = iscsi_boot_create_kset("ibft");
--		if (!boot_kset)
--			return -ENOMEM;
--
-+		if (!boot_kset) {
-+			rc = -ENOMEM;
-+			goto out_free;
-+		}
- 		/* Scan the IBFT for data and register the kobjects. */
- 		rc = ibft_register_kobjects(ibft_addr);
- 		if (rc)
--- 
-1.8.3.1
-
+Thanks,
+Anders Trier Olesen
