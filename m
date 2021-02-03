@@ -2,126 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E868230E4C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F5030E4CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhBCVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:14:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S232024AbhBCVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:14:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229897AbhBCVOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:14:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E67C64F5F;
-        Wed,  3 Feb 2021 21:13:23 +0000 (UTC)
+        id S231511AbhBCVOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:14:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B79864F68;
+        Wed,  3 Feb 2021 21:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612386806;
-        bh=VS8yGGa3Q4OSZtI8MdKl0s1r50NHskoTYCo1kYP5p3U=;
+        s=k20201202; t=1612386841;
+        bh=lA4McbKIlkxQCZe88nfh96Wue8zLfQaSVULHSMtZtZw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hrMa8Jay8pHUd7P774ypjFN+qs8pzMW+5LMIunYpx8GhSTh22IlURyZWABK4NPWPH
-         XZbp7u8J0nYW9OJQR86rxEaoASK4n/w9dSSl/eP6q4DdGRbT83z3UzlunEdodcDxtn
-         Yf8RgMT5ZJERTnkAtaWBAk4BUwdAFq0hEFf8r1aEb/hUbIULBZf2FTdmcoN7bWVwxL
-         ZPaHTc+AJqa9FjEEUq/px1svUn0Gyiwr4saTl4ymC3wqSqzVl5hdtr4SkXCteL1AFZ
-         WlEg6q6aANTkVXmj/l0fesDklhPJd9V8OqZczp+l2PsCzHbu2AWmWVsBlRqrYXB/1A
-         sVUPmvKCX7T7A==
-Date:   Wed, 3 Feb 2021 21:13:19 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        b=uiXskF6aZXumJcuxzW8XlQ//iMMr7tFWcGQFqpDqwmNR6+Dox8fWjAA1DlpG9wew+
+         1vA3FDYVi0YbSSQ990GHexbvofZUn3mlS3sgBu1dxzuwdVJwgFfCNLW8e7cY3Q3vkc
+         3OAltag4Pkv8tsZ6DgB25XToYdObWg9cuK3Dx2+y9NE6NtFTAFK86q16jM2amy371/
+         rlClKD6kj5HEz0xS9UVc0hpBqy89HKBX9oGQGe/QgFtUmkmx9hfhu09emhYO8le+QM
+         ZxO2cfkWTeGLCTGeblZSU2fYOREQWZCYrahyZkcDOpI3d5CKFrzoG/MWx6jOBlHT5I
+         IJwyWaxJwBvew==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1643040513; Wed,  3 Feb 2021 18:13:59 -0300 (-03)
+Date:   Wed, 3 Feb 2021 18:13:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 06/21] arm64: Move VHE-specific SPE setup to
- mutate_to_vhe()
-Message-ID: <20210203211319.GA19694@willie-the-truck>
-References: <20210201115637.3123740-1-maz@kernel.org>
- <20210201115637.3123740-7-maz@kernel.org>
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 07/24] perf daemon: Add config file change check
+Message-ID: <20210203211359.GT854763@kernel.org>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-8-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201115637.3123740-7-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210130234856.271282-8-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On Mon, Feb 01, 2021 at 11:56:22AM +0000, Marc Zyngier wrote:
-> There isn't much that a VHE kernel needs on top of whatever has
-> been done for nVHE, so let's move the little we need to the
-> VHE stub (the SPE setup), and drop the init_el2_state macro.
+Em Sun, Jan 31, 2021 at 12:48:39AM +0100, Jiri Olsa escreveu:
+> Adding support to detect daemon's config file changes
+> and re-read the configuration when that happens.
 > 
-> No expected functional change.
+> Using inotify file descriptor pluged into the main
+> fdarray object for polling.
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Acked-by: David Brazdil <dbrazdil@google.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Example:
+> 
+>   # cat ~/.perfconfig
+>   [daemon]
+>   base=/opt/perfdata
+> 
+>   [session-cycles]
+>   run = -m 10M -e cycles --overwrite --switch-output -a
+> 
+> Starting the daemon:
+> 
+>   # perf daemon start
+> 
+> Check sessions:
+> 
+>   # perf daemon
+>   [772262:daemon] base: /opt/perfdata
+>   [772263:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+> 
+> Change '-m 10M' to '-m 20M', and check daemon log:
+> 
+>   # tail -f /opt/perfdata/output
+>   [2021-01-02 20:31:41.234045] daemon started (pid 772262)
+>   [2021-01-02 20:31:41.235072] reconfig: ruining session [cycles:772263]: -m 10M -e cycles --overwrite --switch-output -a
+>   [2021-01-02 20:32:08.310137] reconfig: session 'cycles' killed
+>   [2021-01-02 20:32:08.310847] reconfig: ruining session [cycles:772338]: -m 20M -e cycles --overwrite --switch-output -a
+> 
+> And the session list:
+> 
+>   # perf daemon
+>   [772262:daemon] base: /opt/perfdata
+>   [772338:cycles] perf record -m 20M -e cycles --overwrite --switch-output -a
+> 
+> Note the changed '-m 20M' option is in place.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  arch/arm64/kernel/hyp-stub.S | 28 +++++++++++++++++++++++++---
->  1 file changed, 25 insertions(+), 3 deletions(-)
+>  tools/perf/builtin-daemon.c | 99 +++++++++++++++++++++++++++++++++++--
+>  1 file changed, 96 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-> index 373ed2213e1d..6b5c73cf9d52 100644
-> --- a/arch/arm64/kernel/hyp-stub.S
-> +++ b/arch/arm64/kernel/hyp-stub.S
-> @@ -92,9 +92,6 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
->  	msr	hcr_el2, x0
->  	isb
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index be2ade9967b3..d0a0a998e073 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -10,6 +10,8 @@
+>  #include <stdio.h>
+>  #include <unistd.h>
+>  #include <errno.h>
+> +#include <sys/inotify.h>
+> +#include <libgen.h>
+>  #include <sys/types.h>
+>  #include <sys/socket.h>
+>  #include <sys/un.h>
+> @@ -73,6 +75,7 @@ struct session {
+>  struct daemon {
+>  	const char		*config;
+>  	char			*config_real;
+> +	char			*config_base;
+>  	const char		*base_user;
+>  	char			*base;
+>  	struct list_head	 sessions;
+> @@ -493,6 +496,7 @@ static void daemon__free(struct daemon *daemon)
+>  		session__remove(session);
 >  
-> -	// Doesn't do much on VHE, but still, worth a shot
-> -	init_el2_state vhe
-> -
->  	// Use the EL1 allocated stack, per-cpu offset
->  	mrs	x0, sp_el1
->  	mov	sp, x0
-> @@ -107,6 +104,31 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
->  	mrs_s	x0, SYS_VBAR_EL12
->  	msr	vbar_el1, x0
+>  	free(daemon->config_real);
+> +	free(daemon->config_base);
+>  	free(daemon->base);
+
+Please replace those with zfree()
+
+>  }
 >  
-> +	// Fixup SPE configuration, if supported...
-> +	mrs	x1, id_aa64dfr0_el1
-> +	ubfx	x1, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
-> +	mov	x2, xzr
-> +	cbz	x1, skip_spe
+> @@ -535,6 +539,83 @@ static int daemon__reconfig(struct daemon *daemon)
+>  	return 0;
+>  }
+>  
+> +static int setup_config_changes(struct daemon *daemon)
+> +{
+> +	char *basen = strdup(daemon->config_real);
+> +	char *dirn  = strdup(daemon->config_real);
+> +	char *base, *dir;
+> +	int fd, wd;
 > +
-> +	// ... and not owned by EL3
-> +	mrs_s	x0, SYS_PMBIDR_EL1
-> +	and	x0, x0, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
-> +	cbnz	x0, skip_spe
+> +	if (!dirn || !basen)
+> +		return -ENOMEM;
+
+This may leak one of them
+
 > +
-> +	// Let the SPE driver in control of the sampling
-> +	mrs_s	x0, SYS_PMSCR_EL1
-> +	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PCT_SHIFT)
-> +	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PA_SHIFT)
-> +	msr_s	SYS_PMSCR_EL1, x0
+> +	fd = inotify_init1(IN_NONBLOCK|O_CLOEXEC);
+> +	if (fd < 0) {
+> +		perror("failed: inotify_init");
+> +		return -1;
+> +	}
 
-Why do we need to touch pmscr_el1 at all? The SPE driver should take care of
-that, no? If you drop the pmscr_el1 accesses, I think you can drop the
-pmbidr_el1 check as well. And actually, then why even check dfr0? Doing the
-bic for the mdcr_el1.e2pb bits is harmless.
+Cool that inotify is being used here :-)
 
-> +	mov	x2, #MDCR_EL2_TPMS
 > +
-> +skip_spe:
-> +	// For VHE, use EL2 translation and disable access from EL1
-> +	mrs	x0, mdcr_el2
-> +	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
-> +	orr	x0, x0, x2
-> +	msr	mdcr_el2, x0
+> +	dir = dirname(dirn);
+> +	base = basename(basen);
+> +	pr_debug("config file: %s, dir: %s\n", base, dir);
+> +
+> +	wd = inotify_add_watch(fd, dir, IN_CLOSE_WRITE);
+> +	if (wd >= 0) {
+> +		daemon->config_base = strdup(base);
+> +		if (!daemon->config_base) {
+> +			close(fd);
+> +			wd = -1;
+> +		}
+> +	} else {
+> +		perror("failed: inotify_add_watch");
+> +	}
+> +
+> +	free(basen);
+> +	free(dirn);
+> +	return wd < 0 ? -1 : fd;
+> +}
+> +
+> +static bool process_inotify_event(struct daemon *daemon, char *buf, ssize_t len)
+> +{
+> +	char *p = buf;
+> +
+> +	while (p < (buf + len)) {
+> +		struct inotify_event *event = (struct inotify_event *) p;
+> +
+> +		/*
+> +		 * We monitor config directory, check if our
+> +		 * config file was changes.
+> +		 */
+> +		if ((event->mask & IN_CLOSE_WRITE) &&
+> +		    !(event->mask & IN_ISDIR)) {
+> +			if (!strcmp(event->name, daemon->config_base))
+> +				return true;
+> +		}
+> +		p += sizeof(*event) + event->len;
+> +	}
+> +	return false;
+> +}
+> +
+> +static int handle_config_changes(struct daemon *daemon, int conf_fd,
+> +				 bool *config_changed)
+> +{
+> +	char buf[4096];
+> +	ssize_t len;
+> +
+> +	while (!(*config_changed)) {
+> +		len = read(conf_fd, buf, sizeof(buf));
+> +		if (len == -1) {
+> +			if (errno != EAGAIN) {
+> +				perror("failed: read");
+> +				return -1;
+> +			}
+> +			return 0;
+> +		}
+> +		*config_changed = process_inotify_event(daemon, buf, len);
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int setup_config(struct daemon *daemon)
+>  {
+>  	if (daemon->base_user) {
+> @@ -569,8 +650,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  		OPT_PARENT(parent_options),
+>  		OPT_END()
+>  	};
+> -	int sock_fd = -1;
+> -	int sock_pos;
+> +	int sock_fd = -1, conf_fd = -1;
+> +	int sock_pos, file_pos;
+>  	struct fdarray fda;
+>  	int err = 0;
+>  
+> @@ -591,16 +672,24 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  
+>  	pr_info("daemon started (pid %d)\n", getpid());
+>  
+> -	fdarray__init(&fda, 1);
+> +	fdarray__init(&fda, 2);
+>  
+>  	sock_fd = setup_server_socket(daemon);
+>  	if (sock_fd < 0)
+>  		goto out;
+>  
+> +	conf_fd = setup_config_changes(daemon);
+> +	if (conf_fd < 0)
+> +		goto out;
+> +
+>  	sock_pos = fdarray__add(&fda, sock_fd, POLLIN|POLLERR|POLLHUP, 0);
+>  	if (sock_pos < 0)
+>  		goto out;
+>  
+> +	file_pos = fdarray__add(&fda, conf_fd, POLLIN|POLLERR|POLLHUP, 0);
+> +	if (file_pos < 0)
+> +		goto out;
+> +
+>  	signal(SIGINT, sig_handler);
+>  	signal(SIGTERM, sig_handler);
+>  
+> @@ -612,6 +701,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  
+>  			if (fda.entries[sock_pos].revents & POLLIN)
+>  				err = handle_server_socket(daemon, sock_fd);
+> +			if (fda.entries[file_pos].revents & POLLIN)
+> +				err = handle_config_changes(daemon, conf_fd, &reconfig);
+>  
+>  			if (reconfig)
+>  				err = setup_server_config(daemon);
+> @@ -625,6 +716,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  
+>  	if (sock_fd != -1)
+>  		close(sock_fd);
+> +	if (conf_fd != -1)
+> +		close(conf_fd);
+>  
+>  	pr_info("daemon exited\n");
+>  	fclose(daemon->out);
+> -- 
+> 2.29.2
+> 
 
-Doesn't this undo the setting of mdcr_el2.hpmn if SPE is not present or
-unavailable? (This wouldn't be an issue if we removed the skip_spe paths
-altogether).
+-- 
 
-Will
+- Arnaldo
