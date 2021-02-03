@@ -2,256 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A522430D1F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5E630D1F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhBCDGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        id S232511AbhBCDG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:06:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhBCDGG (ORCPT
+        with ESMTP id S232482AbhBCDGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 22:06:06 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34CCC06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:05:27 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id sa23so16984267ejb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:05:27 -0800 (PST)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2E0C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:05:44 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id j11so11044985plt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:05:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bTXKeC/FJjwVsNQpdbqIvZbsTcSxubzadb/mfFc5/ZA=;
-        b=Dt84TITp4FNe9hBic5NhBTLIiPWAHxrQXFZZvvv/nh1GVdWyX+rKqSdQJobSrmTUgh
-         657UNyItTcm6EUYlXO8P1kdAv0u+M3qX+46pvMjrvBX3mywkF/dvQRJC880eW7On5ib+
-         8DebcnqCW4rANSE2v6cDuref2QS7ZtJOke80emEYruHAV2nIo8/ZQpQK4wSYwIRBsKv4
-         XvAIN2ucny2arjKomv0m8gJhqw6seTnWApOKKtvjc7koT9MUA4lb/2osB0fTVi5TyFZe
-         ztaacw5I3Z22tJWtQ625GTfbNq8RdjxilLdkR0IxGH+XSFcwfhHCOtI6zcPWhlJ93mBw
-         mx8w==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZMWBq3ACFJJAx15ObrNGTwgdYr+KZMK5JwRK+RWgkj4=;
+        b=UZ4hGLaf9PMkrkN83mYnxJXlf++H0dMxr/g9Y9bTLNpi0TBE2iTtTeNtV3Xb8wna5J
+         4itg59xQJS97+0zFCzOedMXSau4kmkEtJ9oFLTjn3YiT2gqSVBEopZBVP04xkHc46hKy
+         0WY+BorERSVJVGmmkD0ZLeGpapb657WKCn39plFzKSd6IQt1ivzztc8fHNXeXtvSt0Cq
+         0Q/yXBlE0WIHhTrcNXwvidyCWtKl4lLPu0J7iY/nqtnCBuwmUCSkk7NU5NB8qreOXims
+         AMg4fkZojCg/uyAcQuu0jmY9AozZ1c9E0PRZVlc1hRx4tRI2+1fCs0IkY+6NhSNzVxga
+         TozA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bTXKeC/FJjwVsNQpdbqIvZbsTcSxubzadb/mfFc5/ZA=;
-        b=tsWzrQuLBXjcLxd/3mpgw6K2f9Uf0GNTExTquQHaKKL3NQU292YC2EYmJuZTfMpso7
-         EtZK7VkSUD131RpzJxnqw3eWtyi4b83BlMK9cqhWAhXsdHsqUASnO/oxmrG2hgG88bGr
-         z0HgA5lT4ZqyQZu+94LqrPd9cMMlIW/2h8LazWmJJr+jum3hMBsSbLQ7tcpQY9VR6YU3
-         3blLXJWHT15DRvWqIX0nP5JHXqZpLLg8cHHIIvGRu0Fekr2zAxOXBmifXt6HuokFhTEG
-         gMJsxYdy7Ukk6qmatkx8YXzrsNX4xih/m+7eaE66PB6b00bj+qekcsRPG18s/ULennLG
-         w1cg==
-X-Gm-Message-State: AOAM530U7BgoFXHkPbdtAp4FgeJSCPBOmeVFubU08+5n4ef8VX4brXJo
-        UOGkh6JQHgIrJqnFpe1eu0IyXSbDd2iP98vB6U3kBw==
-X-Google-Smtp-Source: ABdhPJzGwGCAgwPrGFzBCbIyUmp9xOTDU1fgz8pagXGTYxaD7BDdCjJaE2euD0C1B5X/QIl8vKqrIhE3T+zXPJDDVno=
-X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr1068491ejb.287.1612321526571;
- Tue, 02 Feb 2021 19:05:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20210202132957.692094111@linuxfoundation.org>
-In-Reply-To: <20210202132957.692094111@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Feb 2021 08:35:15 +0530
-Message-ID: <CA+G9fYt2uhMnUT-PjHXs=5FQdTLycBoZb1znu3zpN-kvY+cKKA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/142] 5.10.13-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ZMWBq3ACFJJAx15ObrNGTwgdYr+KZMK5JwRK+RWgkj4=;
+        b=ekcCpGQ5K1cBXWXo2zf7TsrRrbZrX9tgJum0FWmnAh5gaIb7OMYug02MXtrJmFpm73
+         ARcXzA9hFR1gemQoTo1gUjKOr1Wz2T6M4TJnWgrXahIn4sazQCBpzTgmVeu+Wf9aif5t
+         Ho4qZpWoJpQpuwc6VPIj09Ew2LHAdJzIHdrR22gIzWtz0Qz8MwLVzxN194xdT9pf5MHU
+         ZsiVpeG3Iyfm3IL2HmQMD+rC4EntgRZXLUO+phaeW0wq61O1kRtQQ5yVnIl2yDsj2sF4
+         2ywSKd4c7Ik7+aDqKaThbGj0PkxQ9ZBuCXeiL0rN4SoFAl1n4a0ZPgRGCrb4xYHTdEuF
+         6lDg==
+X-Gm-Message-State: AOAM532NXnu1OEJOKU1EEmzIgFSJnSc1F3VlFxLu/fAbKKVfskcq1LtV
+        gy7lF7mDzgpIfsgqqi0JOa18BQ==
+X-Google-Smtp-Source: ABdhPJzgKeAv3HDKvjGTFSaVzyDdJXRgRIHq2ify9sDpRJUoN3Yie4IWt1vmIbnRLWqV+R9QPytFYA==
+X-Received: by 2002:a17:902:241:b029:de:17d3:423e with SMTP id 59-20020a1709020241b02900de17d3423emr1138151plc.44.1612321543577;
+        Tue, 02 Feb 2021 19:05:43 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id n73sm329565pfd.109.2021.02.02.19.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 19:05:42 -0800 (PST)
+Date:   Tue, 02 Feb 2021 19:05:42 -0800 (PST)
+X-Google-Original-Date: Tue, 02 Feb 2021 19:05:31 PST (-0800)
+Subject:     Re: [PATCH] riscv: kasan: remove unneeded semicolon
+In-Reply-To: <1612245119-116845-1-git-send-email-yang.lee@linux.alibaba.com>
+CC:     aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, kasan-dev@googlegroups.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yang.lee@linux.alibaba.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     yang.lee@linux.alibaba.com
+Message-ID: <mhng-1a6dd811-fd09-409c-a664-7bbd9f9d8315@penguin>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 at 19:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, 01 Feb 2021 21:51:59 PST (-0800), yang.lee@linux.alibaba.com wrote:
+> Eliminate the following coccicheck warning:
+> ./arch/riscv/mm/kasan_init.c:103:2-3: Unneeded semicolon
 >
-> This is the start of the stable review cycle for the 5.10.13 release.
-> There are 142 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/riscv/mm/kasan_init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-> Anything received after that time might be too late.
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index a8a2ffd..fac437a 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -100,7 +100,7 @@ void __init kasan_init(void)
+>  			break;
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.13-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+>  		populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
+> -	};
+> +	}
 >
-> thanks,
->
-> greg k-h
->
+>  	for (i = 0; i < PTRS_PER_PTE; i++)
+>  		set_pte(&kasan_early_shadow_pte[i],
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------
-
-kernel: 5.10.13-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: b34e59747fbb2a46f329a8562d3fd5ec6e24b2a1
-git describe: v5.10.12-143-gb34e59747fbb
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.12-143-gb34e59747fbb
-
-No regressions (compared to build v5.10.12)
-
-No fixes (compared to build v5.10.12)
-
-
-Ran 52801 total tests in the following environments and test suites.
-
-Environments
--------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
-------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-kvm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-tc-testing
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* fwts
-* kselftest-bpf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* ltp-commands-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* libhugetlbfs
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* perf
-* kvm-unit-tests
-* kunit
-* rcutorture
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* ssuite
-
--
-Linaro LKFT
-https://lkft.linaro.org
+Thanks, this is on fixes.
