@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01C730D2C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8601530D2CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBCFKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 00:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhBCFK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 00:10:27 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C12C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 21:09:46 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id b20so18988762ljo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 21:09:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=3dAY8YO6G9p6ngSgiNgV4nCMNx3x+FV26+F75ZS1ED8=;
-        b=GUTbkPAqoHX2nOQS6m8ZHbKBoD/juPciVpPrJcMyejoj5FE4ABIOlkBrc4lghOPJMe
-         PFEDD356DA0UoACvLed7e6uJEqAiTASk44nI1eMxa7zuDTVLadPgC+36ge0F0Nua9Ouf
-         W1FZEsvt7Yd/vNeqM2ou5fomz9/cPD3GK3Za7Ik2EsFolFu+Ai0c3DbTBmzhEas9x5nC
-         07JyU6K3Sdx7tEVSGKJJMuvPO8No091a+bkXpHruHs9EYUxJWuPmXlff8hUHJl0xbekn
-         flD/8yEQY3asFXYga6NkxQZJvV+/BjmIcaFsnaHWga2ZiW60hDaxsj7MkEsg3LQw4kAM
-         7R3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=3dAY8YO6G9p6ngSgiNgV4nCMNx3x+FV26+F75ZS1ED8=;
-        b=hG8EIvfojQFd/lkrdIiijNtufof/FSeGq4rgNxV53/M0deahXAusZKYh1aVu/0bqEm
-         ZAkwgF+Y087z3cuDFB7Llr1ybR84Iy5SSmY4Gy/ZMcIG4J9DefC0Gra049d1kYrdu/RF
-         z3TTfQejKfnl6SVhG3NtsrLul+EZzPn5DufdMg6R7HIEFP5xm5jSVSNHPpO+Gd+ja8pA
-         oQOxYvrPsPETN7hJr+vRY0dizM7+VZl4WZ8lYYTtg8cw4A+7T0Wm6bJFvwuBW/ICjnb5
-         Z1rsMn0VF9lbvYdWWg3j2wJy7GZGhtFDs0/xi8b1NXeGNVbC8BD5Qb0TX3MKZQsiaVAM
-         Bo2A==
-X-Gm-Message-State: AOAM530YIde3xhmovvdyGEMdHCK/Rww4mJaB8+u5QR+M87/t2eFxhSM0
-        EYCTFUAl8wsPyW5wenq/5RYxjs05y0QMUlM6XGA=
-X-Google-Smtp-Source: ABdhPJwepviAUsfwUMMv+h+YV+wWxhdVmuA/k9kjcR7ytIlHNGnPrfkyf7zKffKRG35LeFHPxEfJXq/QrbalOUgPhiI=
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr732558ljp.97.1612328984744;
- Tue, 02 Feb 2021 21:09:44 -0800 (PST)
+        id S230186AbhBCFNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 00:13:46 -0500
+Received: from ozlabs.org ([203.11.71.1]:53729 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhBCFNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 00:13:44 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DVqZP6r5gz9tjx;
+        Wed,  3 Feb 2021 16:13:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612329182;
+        bh=sYwKvKMTt9Vma6vmeisb33yV/bsixp32y/csPvOdFCc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=S0k2wS4fnTh7Nh+KGOimd6mcuMdI6tJig3WnYBMPGncFslAu6AR5FqVfyTvwOp1E8
+         Uf9WevH1OSz4F5V7SMusvHITLgXHTst5n30bq106wpqLSkcX0HbJQCoqE+75wrtgiW
+         V7Umlxtz7kF8M+aISq/3jECN6LXSGZDZ7hnoI2VrjiGjdrDUJBu785BY26r+CCeQai
+         oOcSSp8qLAzYWx4L8G6SrA3wPteadP7bt1FPtKuKxe3xbOP8n2oXeIKM4jBRT89Pli
+         QbqKS1OBeW/TMN7lJvLOYp2BKDDH8z1j+p0SBEBqG4iOm0mSuovZrJwVO4Q/2IVJsL
+         5x5p1L2+erQWA==
+Date:   Wed, 3 Feb 2021 16:13:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the usb tree
+Message-ID: <20210203161300.57344f63@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:a19:c20a:0:0:0:0:0 with HTTP; Tue, 2 Feb 2021 21:09:43 -0800 (PST)
-Reply-To: graceobia001@gmail.com
-From:   Grace Obia <esther2020js@gmail.com>
-Date:   Wed, 3 Feb 2021 05:09:43 +0000
-Message-ID: <CAB5wrYC-UFbW1ZuBp0uHHXz73mZT66=cCrManULjO_zsZgZSGQ@mail.gmail.com>
-Subject: Alasan saya yang jelas untuk menghubungi Anda
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/dMOvVGJcTqKIZw/WNSFJipH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Alasan saya yang jelas untuk menghubungi Anda
+--Sig_/dMOvVGJcTqKIZw/WNSFJipH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Halo, nama saya Grace Obia, profil Anda benar-benar membuat saya
-terkesan dan saya ingin tahu dan mempelajari lebih lanjut tentang
-Anda, mungkin Anda dapat menghubungi saya di id email saya
-(graceobia001@gmail.com) sehingga saya dapat mengirimi Anda foto-foto
-saya untuk Anda tahu dengan siapa Anda berbicara.
+Hi all,
 
-Alasan saya yang jelas untuk menghubungi Anda Saya adalah seorang
-gadis berusia 22 tahun yatim piatu, Orang tua saya baru saja meninggal
-karena COVID 19, tetapi saya memiliki perusahaan keamanan swasta di
-sini $ 7,500.000.00 (Tujuh Juta
+After merging the usb tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-Lima Ratus Ribu US dollar) yang saya warisi dari almarhum ayah saya Rafael Obia.
+drivers/usb/typec/class.c: In function 'typec_partner_set_pd_revision':
+drivers/usb/typec/class.c:763:6: warning: unused variable 'ret' [-Wunused-v=
+ariable]
+  763 |  int ret;
+      |      ^~~
 
-Uang ini disimpan di perusahaan keuangan di Pantai Gading; Saya ingin
-menginvestasikan dana di negara Anda dengan persetujuan, kerja sama,
-bantuan, saran, dan
+Introduced by commit
 
-Tolong.
+  29b01295a829 ("usb: typec: Add typec_partner_set_pd_revision")
 
-Bagaimanapun saya senang untuk membuka komunikasi dengan Anda, untuk
-mengantisipasi komitmen murni Anda untuk mewujudkan impian saya
-mentransfer uang ini kepada Anda.
+--=20
+Cheers,
+Stephen Rothwell
 
-negara.
+--Sig_/dMOvVGJcTqKIZw/WNSFJipH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Kedua, atas penerimaan penuh Anda untuk bekerja dengan saya mengenai
-tujuan ini, mohon tunjukkan minat Anda dengan membalas saya sehingga
-saya akan memberi Anda
+-----BEGIN PGP SIGNATURE-----
 
-informasi yang diperlukan dan detail tentang cara melangkah lebih
-jauh. Saya siap menawarkan 25% jumlah total uang kepada Anda pada
-transfer akhir uang
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAaMNwACgkQAVBC80lX
+0GydfAf/dJkYrj8TP3SVXgQBhvZX/V8mcYiRmLqBw+pwNkBFksYXn3LtMpnzCBY+
+h/o7Umh6ZB9GAsKUKwWzvePnG4BXR16AHAgmLcRhu1zBHZO+nCPdbSPHGmLu1UAX
+xP2dRtKx1T+pnzzdP3iyI6g3g4izWLaFzwpNegErmscZ/z2F4Y7U2jkTc/PQMB2K
+ieKstGes9vPFjMGzEtCFQkCvSpRAMWACL6PXsz2MuHV1QcrCSnWWF2iT7TM9UUH8
+MS7UBXQmrIrHahqFNBEBo0+/BjQxgOLUtyebavkl1pfndvp5qUKp4uilbSjwyaTE
+0br2k+wLlR2iBw9WzhCN2vMvmCRstQ==
+=mVGj
+-----END PGP SIGNATURE-----
 
-ke rekening bank Anda.
-
-Saya menunggu tanggapan mendesak Anda termasuk detail berikut.
-
-
-1) Nama lengkap Anda
-
-2) Alamat lengkap
-
-3) Nomor telepon
-
-4) Alamat Anda
-
-5) Pekerjaan
-
-6) Usia
-
-Salam terbaik saya untuk Anda dan seluruh keluarga Anda.
-
-Saya membutuhkan bimbingan Anda.
-Terima kasih
-Grace Obia
+--Sig_/dMOvVGJcTqKIZw/WNSFJipH--
