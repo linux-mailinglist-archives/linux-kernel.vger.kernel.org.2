@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FB030D740
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE1430D754
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhBCKRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:17:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232865AbhBCKRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 340B664E3E;
-        Wed,  3 Feb 2021 10:16:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612347379;
-        bh=JiQd1AVXeEdpEBGNqD2D+wZ+wH51zt/0P+o9Tb1P56c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gnN5UB9yoV5OXihVhGd5KxypFuR0QjRFq4L6Slxp+HQAnhEBHuScRHbXKEinyPa1H
-         Voi4CAxi9qqVZTcBVb+tN+mHpZJXgrJLyzWtJgUF+j/ltj8KjjSacT2htWiKqsKkWz
-         l1QCCdGQ0Hy55WjiHMNMpVEi/Yxd+zqgvG/uaQJexTtHSBiQIGfcx3yt+w07WaH2Dw
-         hxW0zgqpuY5O1YfP+VKwDXsmQTyKYrcd9h8HSC8Geu2DWRa+f3AHemPoFsj3OX1NJs
-         WyjsrbL8AkyLqsNexUxI49UXEfMw2bCD6TLVNXOzTo7Yh93lzaE11GFMDK5ZVVUHmf
-         4mu+O0XFY2gmw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
-        Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Simon Horman <horms@verge.net.au>
-Subject: [PATCH net-next v1 0/4] Fix W=1 compilation warnings in net/* folder
-Date:   Wed,  3 Feb 2021 12:16:08 +0200
-Message-Id: <20210203101612.4004322-1-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233702AbhBCKUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233488AbhBCKUA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:20:00 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EE2C061573;
+        Wed,  3 Feb 2021 02:19:19 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D17DB1F452BC;
+        Wed,  3 Feb 2021 10:19:17 +0000 (GMT)
+Date:   Wed, 3 Feb 2021 11:19:14 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
+ unavailable
+Message-ID: <20210203111914.1c2f68f6@collabora.com>
+In-Reply-To: <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
+        <20210201151824.5a9dca4a@xps13>
+        <20210202041614.GA840@work>
+        <20210202091459.0c41a769@xps13>
+        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
+        <20210203110522.12f2b326@xps13>
+        <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, 03 Feb 2021 15:42:02 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
 
-Changelog:
-v1:
- * Removed Fixes lines.
- * Changed target from net to be net-next.
- * Patch 1: Moved function declaration to be outside config instead
-   games with if/endif.
- * Patch 3: Moved declarations to new header file.
-v0: https://lore.kernel.org/lkml/20210202135544.3262383-1-leon@kernel.org
-------------------------------------------------------------------
-Hi,
+> >> 
+> >> I got more information from the vendor, Telit. The access to the 3rd  
+> >partition is protected by Trustzone and any access in non privileged
+> >mode (where Linux kernel runs) causes kernel panic and the device
+> >reboots. 
 
-This short series fixes W=1 compilation warnings which I experienced
-when tried to compile net/* folder.
+Out of curiosity, is it a per-CS-line thing or is this section
+protected on all CS?
 
-Thanks
+> >
+> >Ok, so this is not a chip feature but more a host constraint.
+> >
+> >In this case it would be a good idea to add a host DT property which
+> >describes the zone to avoid accessing it. Something like:
+> >
+> >	secure-area/secure-section = <start length>;
+> >
+> >From the core perspective, we should parse this property early enough
+> >and return -EIO when trying to access this area.
 
-Leon Romanovsky (4):
-  ipv6: silence compilation warning for non-IPV6 builds
-  ipv6: move udp declarations to net/udp.h
-  net/core: move gro function declarations to separate header
-  netfilter: move handlers to net/ip_vs.h
-
- include/linux/icmpv6.h          |  2 +-
- include/net/gro.h               | 12 ++++++++++++
- include/net/ip_vs.h             | 11 +++++++++++
- include/net/udp.h               |  3 +++
- net/core/dev.c                  |  7 +------
- net/ipv6/ip6_input.c            |  3 +--
- net/netfilter/ipvs/ip_vs_core.c | 12 ------------
- 7 files changed, 29 insertions(+), 21 deletions(-)
- create mode 100644 include/net/gro.h
-
---
-2.29.2
-
+FWIW, I'm not sure making it part of the core is a good idea, at least
+not until we have a different platform with a same needs. The
+controller driver can parse it and return -EACCESS (or -EIO) when this
+section is accessed.
