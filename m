@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D973030DF5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D9E30DF5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhBCQM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:12:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39921 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234977AbhBCQLg (ORCPT
+        id S234843AbhBCQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:12:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234542AbhBCQMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:11:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612368609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Md5deGFTlNwWnMdHSwnNKkej1rIsSFXY3oqRw/3YWT0=;
-        b=PH14XHQoAB+Qn41y6WQZwuhGSpzdoON9tQlxsfV+EqJLHXqTfnX2+zZ/AO0myRDPp2oOyw
-        NYNKkRlhLONaiq2c1AhGJlI92bvTDLgN8XQ3vo7PjFED1CoYiyV9ovR4S12VQ03zpUoSA3
-        6skj8rfUpMcVCmsmkGJAVw7PsDdnJP4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-Cw8jCwDsPEmEHOoAb7OFcw-1; Wed, 03 Feb 2021 11:10:05 -0500
-X-MC-Unique: Cw8jCwDsPEmEHOoAb7OFcw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07BEE6D4E0;
-        Wed,  3 Feb 2021 16:10:03 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7AF005FC3A;
-        Wed,  3 Feb 2021 16:09:56 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 11:09:55 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Damien.LeMoal@wdc.com, hare@suse.de, ming.lei@redhat.com,
-        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
-        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
-        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pavgel.tide@veeam.com
-Subject: Re: [PATCH v4 3/6] block: add blk_mq_is_queue_frozen()
-Message-ID: <20210203160955.GA21359@redhat.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
- <1612367638-3794-4-git-send-email-sergei.shtepa@veeam.com>
+        Wed, 3 Feb 2021 11:12:22 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5356AC061573;
+        Wed,  3 Feb 2021 08:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=NEM3B+5uDLhDBQoDrux6VhVo3KJnVlV4DNcGykNwGAQ=; b=xKMfu7bPPtW93HcxNB+zsRWo9
+        NbfYFb5ZBwm/8VBFC60rp9kYL6KqUYhVsLYisSxZ57GgjBv3ZxOlJ/dXWKUixABjQUtdp2lAqfRsE
+        DDDS4DFPtIKy/wDtiH7g4Z1CJYx4jd3go2+TPmELkqY044O/8IhvtoaZwoyQnHUCR618jz3HKxOmj
+        +7bN7ugy8G4RnnTCSnpvlBvQukbv66Tg8hRXvxjtwirveRd0WhUQMx18kGibMj1gIVnGMd+KyXCTX
+        ENIaH7gpj7yUlIh22+fKjP1Ig7MJEyQ23Ne+dsbQixLAjZaMvDFtfp2wVNoeQ3t4bTO1tLm2V2M48
+        2BPD3FVDQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38718)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7Kkl-0005pO-5I; Wed, 03 Feb 2021 16:11:39 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7Kkk-0004GQ-15; Wed, 03 Feb 2021 16:11:38 +0000
+Date:   Wed, 3 Feb 2021 16:11:38 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Kostya Porotchkin <kostap@marvell.com>
+Cc:     Baruch Siach <baruch@tkos.co.il>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "jaz@semihalf.com" <jaz@semihalf.com>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        Nadav Haklai <nadavh@marvell.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Stefan Chulski <stefanc@marvell.com>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        Ben Peled <bpeled@marvell.com>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH 02/11] dts: mvebu: Update A8K AP806 SDHCI
+ settings
+Message-ID: <20210203161137.GS1463@shell.armlinux.org.uk>
+References: <20210203133138.10754-1-kostap@marvell.com>
+ <20210203133138.10754-3-kostap@marvell.com>
+ <87h7mtckxe.fsf@tarshish>
+ <DM5PR18MB14529A28A31785A574A4DEF5CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
+ <20210203143851.GR1463@shell.armlinux.org.uk>
+ <DM5PR18MB1452A6CF26E3A54730872A14CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612367638-3794-4-git-send-email-sergei.shtepa@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <DM5PR18MB1452A6CF26E3A54730872A14CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03 2021 at 10:53am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+On Wed, Feb 03, 2021 at 02:50:45PM +0000, Kostya Porotchkin wrote:
+> [KP] So for older systems this "slow mode" parameter could be set on the board level.
+> When it is set in ap80x,dtsi file it downgrades all systems to HS-SDR52, even if they support HS400 on AP side.
+> MacchiatoBIN AP eMMC is connected to 3.3v regulator and has "no-1-8-v" flag set, so it should remain in low speed anyway.
 
-> blk_mq_is_queue_frozen() allow to assert that the queue is frozen.
-> 
-> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> ---
->  block/blk-mq.c         | 13 +++++++++++++
->  include/linux/blk-mq.h |  1 +
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index f285a9123a8b..924ec26fae5f 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -161,6 +161,19 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
->  }
->  EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
->  
-> +
-> +bool blk_mq_is_queue_frozen(struct request_queue *q)
-> +{
-> +	bool ret;
-> +
-> +	mutex_lock(&q->mq_freeze_lock);
-> +	ret = percpu_ref_is_dying(&q->q_usage_counter) && percpu_ref_is_zero(&q->q_usage_counter);
-> +	mutex_unlock(&q->mq_freeze_lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
-> +
->  /*
->   * Guarantee no request is in use, so we can change any data structure of
->   * the queue afterward.
-> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-> index d705b174d346..9d1e8c4e922e 100644
-> --- a/include/linux/blk-mq.h
-> +++ b/include/linux/blk-mq.h
-> @@ -525,6 +525,7 @@ void blk_freeze_queue_start(struct request_queue *q);
->  void blk_mq_freeze_queue_wait(struct request_queue *q);
->  int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
->  				     unsigned long timeout);
-> +bool blk_mq_is_queue_frozen(struct request_queue *q);
->  
->  int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
->  void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
-> -- 
-> 2.20.1
-> 
+Your reasoning does not make sense.
 
-This needs to come before patch 2 (since patch 2 uses it).
+The ap80x.dtsi file does not specify "marvell,xenon-phy-slow-mode".
+It is not specified at this level. It is already specified at board
+level.
 
-Mike
+Given that Macchiatobin will still use slow mode, why remove the
+marvell,xenon-phy-slow-mode property from this file?
 
+Also, if you're upgrading ap80x.dtsi to use a bus-width of 8, why
+keep the bus-width specifier of 8 in the board files?
+
+This patch just doesn't make sense, and your responses to our points
+seem to add to the confusion.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
