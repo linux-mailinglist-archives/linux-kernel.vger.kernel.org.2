@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092930D2A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 05:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA72F30D2A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 05:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhBCE3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 23:29:23 -0500
-Received: from mail-qv1-f43.google.com ([209.85.219.43]:36533 "EHLO
-        mail-qv1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhBCE3V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 23:29:21 -0500
-Received: by mail-qv1-f43.google.com with SMTP id es14so11094857qvb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 20:29:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZ0Z/pcttK9roAn4kNrNhpDQo1APxg3TKDvnfDsc7+s=;
-        b=ckBHsE5FAbTa2hSwh7aTwu3Jv8/guy9XmyvrRQ1XNt0yo7bltiGnth40zv+lcBnbRs
-         EvhFaXakt+/FT9fsiADWiwrArHvtFkIPeHX/cP5E53Agcbp5G8VHVgfL8LCyWMzIUE2z
-         nefDpHzoU1bDZmcmN4g+Eq2sZR4/TE9BAMVfmA7wIIQFP8PrBNVS8bhwr3pKihDrSmeW
-         xvg9m3lztrsXcaluuhEvaHJUfyWknlzSE9ouNkIWB6WBM07CyU9NANCsZmrrxiZo9BCE
-         0vtSuvPry5ttn4N6m00+skwjXC9PSw0AfKJQ1MWdQY3DqtSyCX35Dq7w8amF/3qmNYRk
-         iEjQ==
-X-Gm-Message-State: AOAM533HtCcEWJRvIb0YCJ+NJyP2WtB0PkPgdt0UouJEPd6hnlzrd780
-        OAd2a7z9HIkVfpjSJQj/SO+9o9CLxfWGUlvC0mM=
-X-Google-Smtp-Source: ABdhPJy9pZ9mhM9JWIB2RqWzQhqROqB+S47F38lJT1VG8sRNfd5Cw8bd/AFLr3iExUXdl3Ss7A/uhUxq8NYoaxgWA6g=
-X-Received: by 2002:a05:6214:21a5:: with SMTP id t5mr1351302qvc.20.1612326520068;
- Tue, 02 Feb 2021 20:28:40 -0800 (PST)
+        id S231626AbhBCEZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 23:25:18 -0500
+Received: from mail-dm6nam11on2050.outbound.protection.outlook.com ([40.107.223.50]:24512
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232629AbhBCEYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 23:24:10 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VObtyokFobYKfWgi3YF3KhMOICmrzdzuadzb+3VNAifiyxdhIkys2g49Nz0OOiGle8vWwCHZagToYzqrv8j7B5mmPvL2OiH5L67tQfZpJ72UKI0Uh/gSqc48sgCk+7qebsPcvHR0DzDNCAXLTZhSRny9BNhSvZ3E4J7PR2M893WT4yajaESnmpvsydaxDqo8FFAp+9va+ZkNHkuUNIeXWhNWk8sDsYyjxi2fuZzxcudvty0X1EEOYEIt4KhN75GhuED827VHkPm7QsIBcYw3Zi7lMrFdRGV81AcyXmLltar1krrSBidnBht/8xEdnSXSuvW+aNSYk45+pKHx13YxwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xy2ievFtS8mlw6+04NHXBrHLNcWQXHvdLt2t/yoBg20=;
+ b=JCuxSW74gYhp4t+i+1EOWn8ivdy0Ko20sU5GysCSgKJrBjfPxtg33sr5lE+KeLmxViw7DNFZJpODG7EClyQaoH09b5gn2USx5Yv4Rq4pBJcfCKgxw6Xg51BjOllEu7VzU+s+AHAm/xwQcyXzSQf+HmJjhp7DvTuexiU55SfuiVEVmcrnsYAYs1PCrlMU5oVyNkf/vtkwU4cBn22gwZQnKMZOmpjP32AJ3vQGKGN+rXoSjtL7d+w9BR2hz53kEuV1jdqigWLocZSfC+Ezmkhtdm71923pwRcWxF7nIZBvd+eAIZNFxqPz4TUaMinIZBF+cffe9G5EiOwRb8xaJKu72w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xy2ievFtS8mlw6+04NHXBrHLNcWQXHvdLt2t/yoBg20=;
+ b=mKoBNkmOsg5384ROC4v0eHM/Q2EDN2mzHMc8IAOm6AUGEO5wIOlMlwSyCASrI6dlxyxq+SnwHj8hClkCv0r7fjdDoCUcdfM+RSuBTZSppii2oKvWisHB8XpS1SSkaaVRTdyPnYlO48wJJfL+m8o6+3Gmx5lrN6wWBJ5wx8E0lSY=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by SJ0PR11MB5069.namprd11.prod.outlook.com (2603:10b6:a03:2ad::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Wed, 3 Feb
+ 2021 04:22:56 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::95a3:653e:2078:fb4]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::95a3:653e:2078:fb4%6]) with mapi id 15.20.3805.028; Wed, 3 Feb 2021
+ 04:22:56 +0000
+From:   yanfei.xu@windriver.com
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/hugetlb: remove duplicate codes of setting compound_nr
+Date:   Wed,  3 Feb 2021 12:40:55 +0800
+Message-Id: <20210203044055.89618-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR0401CA0002.apcprd04.prod.outlook.com
+ (2603:1096:202:2::12) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-References: <20210113080128.10286-1-jslaby@suse.cz> <20210113104618.GB1331835@krava>
- <d6001540-c028-8728-413b-273a11d00ffe@suse.cz>
-In-Reply-To: <d6001540-c028-8728-413b-273a11d00ffe@suse.cz>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 3 Feb 2021 13:28:28 +0900
-Message-ID: <CAM9d7chXhSO0-haNn9WegP-CH4tqNBmMMgjhStZdiHjzCjTjKw@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Resolve symbols against debug file first
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpg-core1.wrs.com (60.247.85.82) by HK2PR0401CA0002.apcprd04.prod.outlook.com (2603:1096:202:2::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Wed, 3 Feb 2021 04:22:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 39f42c72-5bdf-4771-e2ad-08d8c7fb618a
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB5069:
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB5069904D83667183CA0D6DE8E4B49@SJ0PR11MB5069.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:274;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4n/F5GbA41sy2ggmUq2dKSL8sutayBGeLscemaXvsMkdN0qG8BxtqCWo0AOlB0QN/o//4OPlSMvL01EFzixe/+p70/Emydvn+NjGiGTidoors8p/1Tpq16m8UMO6bPmonq6Nq6Scxay1dcHXtGrjMCnp5zmuQzx43D3psYKi9Y0AKWB1XKtLCeBuh0flNlRzOkXkYjmrbzB1EPPAxVYxVTTYGCbrIFXPn7RnZoDuhxMETA6wbxDljIwKhC4RwsMJhBTGOatRmiTVrR8w7jVB0m0KVvYzlfBf9rnD70P0z0RaE2jlZGhZPnkrNic+xCJgdtEVrw2Rk7HZ+OODVlsAoYJSfnoPhsNk7DHgDoFDgxJyEXEWDFvU1imOrLnUHgPlijoiz+q8vggIACAOU/gVtnoDanCtixYYDiXNDpS6FQyIKfEV78m250+E0rfNoyurgVpCzwfWv3jOFZ8ZlL2cP1LEiUOLf95Z5htwzVdJkOcNyNuwkz6QNogbtFODvHMtcY7aXo5ZiE459YhDFfOCbw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(346002)(366004)(376002)(136003)(2906002)(66476007)(86362001)(6506007)(1076003)(4744005)(8676002)(66946007)(5660300002)(478600001)(26005)(4326008)(66556008)(16526019)(83380400001)(6512007)(36756003)(52116002)(316002)(9686003)(6486002)(186003)(956004)(2616005)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4AsfG6GQM4EUHyEWsE1n/MbY47Ai+QqqMeVvP/faVvGVlwxD8e9AvUo/sgzT?=
+ =?us-ascii?Q?pcfq1nb+gga0lBwqTdy+iwb7w11O19cEqibJWDNCBg5SNPYKNkqXfo6vnwgW?=
+ =?us-ascii?Q?aLvBs/25/hT+hAeq726TBBf1ZSZezzoff/IJ4gF5S7CxWkFV9xu2YFqPJkrY?=
+ =?us-ascii?Q?fusv5OS6i3tZpTWpoHqn1sWHf+025rFJABXhCjvGOuOGWWnGg09YOrHJYPYp?=
+ =?us-ascii?Q?WCc3/Bid8Duvxs63y7huDtVOFAy++njTnlt9KFZQao/0m6amhv/Q+xUG++ZK?=
+ =?us-ascii?Q?R8idzVFroV3woUjRsuFBieB+uOLgkKkAWtRjAEqxzTSrjpt9xh452NC9hXf6?=
+ =?us-ascii?Q?TBgsQ4YpxIBNMRfZLVJuJPpa9hfo7Q3a+c+S0LhN3MjBcyY8+pQZqmlnwGRz?=
+ =?us-ascii?Q?psi7Vm3WTKGIbvhSryG3PGofgONAzUOXUpgm4rvSKYGFGJ1KXRu6lijU7lyb?=
+ =?us-ascii?Q?kTZKf/IZNd6V/URUiMdCVAF1Z3ac00vnDSMOPTfM3CIQhbWEB7LyLOxLVph4?=
+ =?us-ascii?Q?4BZgn4LxLV+OZEoINC4DyP52smtRqe507N9amN0C0cgE8v2EkDDzMRHxmA0Z?=
+ =?us-ascii?Q?C5VOb+p/lmz9gRf/JvJZSM3ojf9qphXAy6OpzeEp1KtSS42wPIdEsMcJRRFo?=
+ =?us-ascii?Q?bYhmqIfTwSHHWvqFrim7oSe5e97TsMCsRc7hxPCJeSPCFijQKB7tGiXSyQIt?=
+ =?us-ascii?Q?uzhK+WmOhgle7SODDIJc2sy0+VuJAZjmVR3OyXFfPmKl7Uf1WrkbgoNh1sTW?=
+ =?us-ascii?Q?cQ7PWls0wNP+H4ZTo8PjqFaBs4w8NbUxUCrQhDyLc4QXFRQJKg/66ggL2wFv?=
+ =?us-ascii?Q?BAN2VDP/1gxwF7KS/7InYaefx8dHHX1DH/zcQibrNW2/UnW+JTw4cutYtVKi?=
+ =?us-ascii?Q?/zKqlVbb7BflwHfHDFvmZZjE4t2Lj5Rm+srP2FHrM6a4So+4ZOuCWCZ/voTn?=
+ =?us-ascii?Q?P3h5AAUmuxaPlyVuTnT6E0p/hDnX2mWGuHTcFCZ9RUCLKTejwuKCh1DmyMWW?=
+ =?us-ascii?Q?Bbh3a+94jHvo4kVtI7YZCNXatIt7GcbZYy3/XARovy3ELIjeUZIQ4vfdHfMf?=
+ =?us-ascii?Q?LDDO9/z2?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39f42c72-5bdf-4771-e2ad-08d8c7fb618a
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 04:22:56.5572
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G9PBCGRknBaSh2HpjM8pYmFAZGtEX8wQK8Sau1CFUzGkX73i76Mo9pQStPoSznwtgAymwuTOHSLaySR3s7rgzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-On Thu, Jan 28, 2021 at 7:43 PM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> On 13. 01. 21, 11:46, Jiri Olsa wrote:
-> > On Wed, Jan 13, 2021 at 09:01:28AM +0100, Jiri Slaby wrote:
-> >> With LTO, there are symbols like these:
-> >> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
-> >>   10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
-> >>
-> >> This comes from a runtime/debug split done by the standard way:
-> >> objcopy --only-keep-debug $runtime $debug
-> >> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
-> >>
-> >> perf currently cannot resolve such symbols (relicts of LTO), as section
-> >> 29 exists only in the debug file (29 is .debug_info). And perf resolves
-> >> symbols only against runtime file. This results in all symbols from such
-> >> a library being unresolved:
-> >>       0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
-> >>
-> >> So try resolving against the debug file first. And only if it fails (the
-> >> section has NOBITS set), try runtime file. We can do this, as "objcopy
-> >> --only-keep-debug" per documentation preserves all sections, but clears
-> >> data of some of them (the runtime ones) and marks them as NOBITS.
-> >>
-> >> The correct result is now:
-> >>       0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
-> >>
-> >> Note that these LTO symbols are properly skipped anyway as they belong
-> >> neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
-> >> secstrs) is true).
-> >>
-> >> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> >> Cc: Peter Zijlstra <peterz@infradead.org>
-> >> Cc: Ingo Molnar <mingo@redhat.com>
-> >> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> >> Cc: Mark Rutland <mark.rutland@arm.com>
-> >> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> >> Cc: Jiri Olsa <jolsa@redhat.com>
-> >> Cc: Namhyung Kim <namhyung@kernel.org>
-> >> ---
-> >>   tools/perf/util/symbol-elf.c | 10 +++++++++-
-> >>   1 file changed, 9 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> >> index f3577f7d72fe..a31b716fa61c 100644
-> >> --- a/tools/perf/util/symbol-elf.c
-> >> +++ b/tools/perf/util/symbol-elf.c
-> >> @@ -1226,12 +1226,20 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
-> >>              if (sym.st_shndx == SHN_ABS)
-> >>                      continue;
-> >>
-> >> -            sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> >> +            sec = elf_getscn(syms_ss->elf, sym.st_shndx);
-> >>              if (!sec)
-> >>                      goto out_elf_end;
-> >
-> > we iterate symbols from syms_ss, so the fix seems to be correct
-> > to call elf_getscn on syms_ss, not on runtime_ss as we do now
-> >
-> > I'd think this worked only when runtime_ss == syms_ss
-> >
-> >>
-> >>              gelf_getshdr(sec, &shdr);
-> >>
-> >> +            if (shdr.sh_type == SHT_NOBITS) {
-> >> +                    sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> >> +                    if (!sec)
-> >> +                            goto out_elf_end;
-> >> +
-> >> +                    gelf_getshdr(sec, &shdr);
-> >> +            }
-> >
-> > is that fallback necessary? the symbol is from syms_ss
->
-> To resume this and answer:
->
-> Yes, the fallback is necessary.
->
-> It's because syms_ss section header has NOBITS set for the sections, so
-> file offset is not incremented. So shdr.sh_offset (the file offset) used
-> further in dso__load_sym has different values for syms and runtime. The
-> syms_ss (the NOBITS) one is invalid as it has 0x1000 here. The runtime
-> one contains good values (like 000509d0 here):
->
-> .text         00082560  00000000000509d0  00000000000509d0  [-00001000-]
->   {+000509d0+}  2**4
->
-> That is, without the fallback, the computed symbol address is wrong.
+set_compound_order() set both of page's compound_order and
+compound_nr. It's no need to assign to compound_nr again, so
+remove it.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+ mm/hugetlb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Namhyung
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index a3e4fa2c5e94..ac249b1583de 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1228,7 +1228,6 @@ static void destroy_compound_gigantic_page(struct page *page,
+ 	}
+ 
+ 	set_compound_order(page, 0);
+-	page[1].compound_nr = 0;
+ 	__ClearPageHead(page);
+ }
+ 
+-- 
+2.27.0
+
