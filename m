@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACED430E340
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F7430E34B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhBCT2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhBCT1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:27:51 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC16C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:27:10 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id q20so461321pfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 11:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JvxyoG9Ug7rD2/QwyyqWOcJJzbOkgd8c1QabMsrGK+4=;
-        b=wbLe/h7fZW5nuvUmAaSsEyaZ7RpzIuLEKRn7oWLXHzPrSJ9gcmGZb6gEsvu7NWUeoh
-         M80XTZDflp5g8PLYsyX4tspBLbPJYwnsAjnMUCsik23dF/hObd7Cep5Xt1ylznZj7QON
-         RbxTJ+HzscH3wctX+qUSETrlkGHNg9hzMCvly0ZScGMEsC8gG0nOCrqiWrZODTxr9tAf
-         GNr/Zoo9aG+SHB0sRr1nsqaCYf9o4avxgAWSiosaYAERhqNlHp9c11G9uNWZWP1J5wUk
-         GrkMmGKgsiA22X9Jhgn3KF+bxfgjNzDLNMh8NM+5s7st6zcw4Oh9vzqalzyEhyOFXAjk
-         7C+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JvxyoG9Ug7rD2/QwyyqWOcJJzbOkgd8c1QabMsrGK+4=;
-        b=RaZ13o6lTqR3XuQdxy7PNnVIOaGFoc4yrbcyZ44/j8R+CLmNMGcDcH+NFzrQdKC1Zp
-         qGUtCTxYlPpXVkUkrqBx7cav67MC2sFSqBalnJvCLTdVY+nNIJaUA78l7aUifFY0g4ss
-         VMFr7MrMDpDTewqDUAzxXYa739GQBc6tcA5AvNboNav3CNv0jvjsrUghpsDghQKctvlK
-         1K1oxk6VdxFtxgxeqRXVQKm35d5+lTSNyDPnONRAFHoRG0gYHAWl+tgYY0nLsZElhnpP
-         X/Rxbyc4ug57VEqHus9zMjaWVl8G8IMIJr6a3AOx+czLYQomnmktM0/17nWXG20S2sOD
-         KVJw==
-X-Gm-Message-State: AOAM531hwdUyfnvIo/T8w92haePi5K79QByqOms9F6+/NYq87yBYtGm9
-        zB06AlyW2qboHWZJIZZdJNY/qQ==
-X-Google-Smtp-Source: ABdhPJx2eX0AFr/RFnr8uK0lyitK4xaSk/d2OQaMpOV5TL5Wgvs15NKxIjyU70od3pXEKUP6SNmu6A==
-X-Received: by 2002:a63:4644:: with SMTP id v4mr5246382pgk.440.1612380430481;
-        Wed, 03 Feb 2021 11:27:10 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id q2sm3111565pfg.190.2021.02.03.11.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 11:27:09 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Artem Lapkin <email2tema@gmail.com>, narmstrong@baylibre.com
-Cc:     linux-arm-kernel@lists.infradead.org, christianshewitt@gmail.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        jbrunet@baylibre.com, art@khadas.com,
-        martin.blumenstingl@googlemail.com, gouwa@khadas.com,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        nick@khadas.com
-Subject: Re: [PATCH] arm64: dts: meson: fix broken wifi node for Khadas VIM3L
-Date:   Wed,  3 Feb 2021 11:27:08 -0800
-Message-Id: <161238042310.26843.5846763712461703228.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210129085041.1408540-1-art@khadas.com>
-References: <20210129085041.1408540-1-art@khadas.com>
+        id S231194AbhBCTar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:30:47 -0500
+Received: from mga18.intel.com ([134.134.136.126]:30692 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229786AbhBCTan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:30:43 -0500
+IronPort-SDR: CNw7G5hJFnGzUVH4rmO9d5UzyOkX4Sm1bUN3PJazDMd3jbox54D2VtQyJBxfPJokHSZPD9iCYI
+ hGIDomCS8+pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168784355"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="168784355"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:28:36 -0800
+IronPort-SDR: od/aZTTHZ9FaVq7O9SUj0+tIh5pwUZAfqJ4P2WeFNLVVAIGpYDYzY/G5ZtVmePZmyHE7+R7n+5
+ KVe0NDq9umHQ==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="480462331"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:28:32 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l7NpF-001iAN-Az; Wed, 03 Feb 2021 21:28:29 +0200
+Date:   Wed, 3 Feb 2021 21:28:29 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
+Message-ID: <YBr5Xdwy5lhfJpsD@smile.fi.intel.com>
+References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
+ <20210126082101.GD4903@dell>
+ <YA/xfxcwCabETug6@smile.fi.intel.com>
+ <YBhLuNZ7xmHdhurU@smile.fi.intel.com>
+ <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
+ <20210202081519.GY4774@dell>
+ <CAJZ5v0hJ94YM_bjOQ=bB7esLaxJjErSfGeYk+y3HOybBEEDOWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hJ94YM_bjOQ=bB7esLaxJjErSfGeYk+y3HOybBEEDOWw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 16:50:40 +0800, Artem Lapkin wrote:
-> move &sd_emmc_a ... from /* */ commented area, because cant load wifi fw
-> without sd-uhs-sdr50 option on VIM3L
+On Wed, Feb 03, 2021 at 08:05:55PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Feb 2, 2021 at 9:15 AM Lee Jones <lee.jones@linaro.org> wrote:
+
+...
+
+> This series has been applied as 5.12 material and will show up in
+> linux-next on Friday if all goes well.
 > 
-> [   11.686590] brcmfmac: brcmf_chip_cores_check: CPU core not detected
-> [   11.696382] brcmfmac: brcmf_sdio_probe_attach: brcmf_chip_attach failed!
-> [   11.706240] brcmfmac: brcmf_sdio_probe: brcmf_sdio_probe_attach failed
-> [   11.715890] brcmfmac: brcmf_ops_sdio_probe: F2 error, probe failed -19...
-> [   13.718424] brcmfmac: brcmf_chip_recognition: chip backplane type 15 is not supported
+> I can export an immutable branch with these commits if need be, in
+> which case please let me know.
 
-Applied, thanks!
+I guess it makes sense just in case of a formal pinning, but if SFI will go
+through your tree, the only potential consumer will be that tree.
 
-[1/1] arm64: dts: meson: fix broken wifi node for Khadas VIM3L
-      commit: 39be8f441f78908e97ff913571e10ec03387a63a
+> Andy, please proceed with the SFI support removal submission.
 
-Best regards,
+Will do, thanks all!
+
 -- 
-Kevin Hilman <khilman@baylibre.com>
+With Best Regards,
+Andy Shevchenko
+
+
