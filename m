@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C01630D438
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7673C30D46D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhBCHqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:46:17 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37381 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbhBCHqO (ORCPT
+        id S232324AbhBCHzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:55:24 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:41915 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231983AbhBCHzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:46:14 -0500
-Received: by mail-ot1-f50.google.com with SMTP id h14so22523530otr.4;
-        Tue, 02 Feb 2021 23:45:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tl2HQz+y+iOPiQILzhqqnPhDi9CBql1fJsRNfHL12Q0=;
-        b=oG1RRYBkkmvma1MULMt1aKqHDeMoY1evle65gjdANYEFWaWWH0wus0ZJ8qCInGbIsp
-         N0rRHPSgv+tjG00/QuNvDSbxc7rpKrH6eMezJavMsCKsIQQ3EyPeCPk6iaTHVdvknEdd
-         mm3PLcEtaZijCJuhasM4MxXlZ9wRrNMBy6RrCF/+oK34qHauYuKiHEZkvuB+H5Q50mBF
-         JnRKI4zs1uki2KK+AAQcHIWfv5hlJVHAMrfzR1DhjQqwngC4dIjnTpPiICFf4wD7fxS8
-         YrMzVsnMnUTDPWVknsiw24nus5UhV5fgbNdx7kh2tmWikh1lez/OHpt/gkT5zdMOCo2S
-         g9zg==
-X-Gm-Message-State: AOAM530Wxc9VpWTyZOLljS9fKcdIUoCoYWF1NrZA35vrDfEx7bCoxUJC
-        zuOEv0XSA5r1QKtzAtBvgDBe3hokI2rglbnFy8Y=
-X-Google-Smtp-Source: ABdhPJx9yZoxbg+9CSe33TkzPC+sv+1KS9raIvmdY3DrG/UQPjHtQB4ehiLgkRgipyn5NeUe8XLh5bBW9yzj3ZDOG3A=
-X-Received: by 2002:a9d:3604:: with SMTP id w4mr1148270otb.107.1612338333629;
- Tue, 02 Feb 2021 23:45:33 -0800 (PST)
+        Wed, 3 Feb 2021 02:55:22 -0500
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7CrV-0000mf-2a; Wed, 03 Feb 2021 08:46:05 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7CrM-0005LW-0J; Wed, 03 Feb 2021 08:45:56 +0100
+Date:   Wed, 3 Feb 2021 08:45:55 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>,
+        Eric Anholt <eric@anholt.net>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        linux-spi@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-rtc@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Leach <mike.leach@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Brown <broonie@kernel.org>, linux-fbdev@vger.kernel.org,
+        Matt Mackall <mpm@selenic.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-watchdog@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-mmc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 0/5] amba: minor fix and various cleanups
+Message-ID: <20210203074555.tusulu3iqg5wgxeb@pengutronix.de>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202104915.GK1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20210202192016.49028-1-swboyd@chromium.org> <CAMuHMdWKr5q1OrwJ5DEnFvqYYXJqXhH_isKQnJozf5tu=ZVViA@mail.gmail.com>
- <CAK8P3a0AETMRBJ3=kFi1zJUR3tywGz5aOx_uBYOVuJ7=d_peog@mail.gmail.com>
-In-Reply-To: <CAK8P3a0AETMRBJ3=kFi1zJUR3tywGz5aOx_uBYOVuJ7=d_peog@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Feb 2021 08:45:22 +0100
-Message-ID: <CAMuHMdVP9tEpQpGNe9pupeDHinm_vzRsc7HAfk-d5wm8bXk3Gg@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: da7218: Drop CONFIG_OF ifdef
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>, Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, kernel test robot <lkp@intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nnu6wqtgppbbywlf"
+Content-Disposition: inline
+In-Reply-To: <20210202104915.GK1463@shell.armlinux.org.uk>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
 
-On Tue, Feb 2, 2021 at 9:50 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Tue, Feb 2, 2021 at 9:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Feb 2, 2021 at 8:20 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > This reverts commit a06cd8cf97a3 ("ASoC: da7218: skip of_device_id table
-> > > when !CONFIG_OF") because we want to make of_match_device() stop using
-> > > of_match_ptr() internally, confusing compilers and causing ifdef
-> a> > pollution.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > Cc: Mark Brown <broonie@kernel.org>
-> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> >
-> > Thanks for your patch!
-> >
-> > > ---
-> > >
-> > > Changes from v1:
-> > >  * Dropped of_match_ptr() in driver too
-> > >
-> > >  sound/soc/codecs/da7218.c | 4 +---
-> > >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > >
-> > > diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-> > > index 2bfafbe9e3dc..83cace9d0139 100644
-> > > --- a/sound/soc/codecs/da7218.c
-> > > +++ b/sound/soc/codecs/da7218.c
-> > > @@ -2278,14 +2278,12 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
-> > >   * DT
-> > >   */
-> > >
-> > > -#ifdef CONFIG_OF
-> > >  static const struct of_device_id da7218_of_match[] = {
-> > >         { .compatible = "dlg,da7217", .data = (void *) DA7217_DEV_ID },
-> > >         { .compatible = "dlg,da7218", .data = (void *) DA7218_DEV_ID },
-> > >         { }
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, da7218_of_match);
-> > > -#endif
-> > >
-> > >  static inline int da7218_of_get_id(struct device *dev)
-> > >  {
-> > > @@ -3311,7 +3309,7 @@ MODULE_DEVICE_TABLE(i2c, da7218_i2c_id);
-> > >  static struct i2c_driver da7218_i2c_driver = {
-> > >         .driver = {
-> > >                 .name = "da7218",
-> > > -               .of_match_table = of_match_ptr(da7218_of_match),
-> > > +               .of_match_table = da7218_of_match,
-> >
-> > This does mean the compiler can no longer optimize the table away
-> > in the CONFIG_OF=n case. Is that intentional?
->
-> It already couldn't do that because of the other reference.
+--nnu6wqtgppbbywlf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But that will be fixed by the conversion to of_device_get_match_data(),
-right?
+Hello,
 
-> In general, I don't see much value in optimizing the match table
-> away regardless, since most drivers that have one do not work
-> without a devicetree anyway. It seems that this could in theory
-> work using a locally defined platform device, but I don't see any
-> such users in the mainline kernel.
+we already talked about this via irc, but for the record and the benefit
+of others:
 
-For platform devices, limited to one SoC or SoC family, I agree.
+On Tue, Feb 02, 2021 at 10:49:15AM +0000, Russell King - ARM Linux admin wr=
+ote:
+> I think you need to have a 6th patch which moves the
+> probe/remove/shutdown methods into the bus_type - if you're setting
+> them for every struct device_driver, then there's no point doing that
+> and they may as well be in the bus_type.
 
-Given this is an i2c driver with a MODULE_DEVICE_TABLE listing multiple
-entries, I wouldn't be surprised if there are out-of-tree users, using
-i2c_register_board_info() or echo > /sys/.../new_device.
+This is implemented in patch 5 already.
 
-Gr{oetje,eeting}s,
+Best regards
+Uwe
 
-                        Geert
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--nnu6wqtgppbbywlf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAaVLAACgkQwfwUeK3K
+7AlQLgf+P1DKYj6OELp8rvge2qlgjLziflPm/vmYKoER7GP62xMAt1jHBWvMgDLx
+SQfCWfc7aNauEmrPFy3TDOyu3SrNFjDVRf3DfOGZ+VpYmmtyUJihjezhbbhpysK5
+Pchia3IjZ0wVWPBC0mb8a1o5w1GQ7l49/QaVZ6buVR+RoNYiKGFdiKcEc8JB+c19
+s2ksv2HXH9eB66fQ+yNQY7W2lNiK98iTc0txk+lhP2wRnFXHPMgqQhFb3j2wt7Or
+ix27mqEX40GyAOv+Xmam2NtjLRM5WD4zflnasEKvxQoa0Qe0mpR6aSKIotUmM4yi
+oNcARpnSdJUwDrfHL0GDd9ksOomPMA==
+=r9/H
+-----END PGP SIGNATURE-----
+
+--nnu6wqtgppbbywlf--
