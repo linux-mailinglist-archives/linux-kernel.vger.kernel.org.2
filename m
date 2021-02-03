@@ -2,253 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56A330E02B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8971330E02C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhBCQxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:53:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
+        id S231430AbhBCQxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhBCQxX (ORCPT
+        with ESMTP id S231189AbhBCQxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:53:23 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FDEC0613ED;
-        Wed,  3 Feb 2021 08:52:43 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id s3so376619edi.7;
-        Wed, 03 Feb 2021 08:52:43 -0800 (PST)
+        Wed, 3 Feb 2021 11:53:25 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ED3C061786;
+        Wed,  3 Feb 2021 08:52:44 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id l12so417166edt.3;
+        Wed, 03 Feb 2021 08:52:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YTHvbCjsK4omUl0IWdkmKq6VQg+YpFZVHA+6d5ZU9mk=;
-        b=dLlP1Rw8f9InY/ONO5KbGh4Qrp4V9j1Sl6zGeIjzqXvRtN1eIbpWEg6xEXNPo9PXW7
-         eCzVSU9dF+vMckZbQiOV3/HO/jmk2H13S8JkLOFr5iI7E53VDBLKZMzbWBMegh50QdrE
-         +Z5ExbqDh9Wxj+IEi5TOPRlCksfOfI6oS6ysd/T0zK/nkIH6ii1NlGyl2d4nHgFIJ8Wu
-         f9d6CVjAMiPIygI2ZEeZhSuVu0bgT/Tlshb213briU8cnFbdWFagFtL/FpuFfNfxzPmh
-         5OKcsh6MY3m573z+7HMUYv0vgo5P62FkNEg1C2E06tPSme1DqmiQ2YQJSyx7MIgKZtUB
-         e0HQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Ys/VQGPiREa+h0MAtH2I4XvmYWibwwkYiM5czLMJuJk=;
+        b=kLczZU+fIKxCtDITXrU9NjPYFNAmqVmmvR/jj+cM8geQgo+lXHwtNjMTb16KlQnHIu
+         pU0+ZZT9rFufIohTq1Qaf+qIUUyvKUKLnBVIHpbKbRPbFM44z/iQ8faQH0URgMrvY+yZ
+         h1j82bXv2krygtiMxoZ6ZPE6+lgrvUOyhpN37JpMJVCnWv0SEnxIwj8NIiBW1nv4KKE3
+         pkbToYnvWt/L0g5G5neuQPIXRqIF5N9g3JkwZZvin5VDWR1LwEfM3pKncmJa9xktaHtK
+         V18Yo+6NxxZc/9m/igs5oQIgt8aM/zMbDtM/ZzdHubxFO6X4CPZHTNyiu2Z++6N96XvR
+         evJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YTHvbCjsK4omUl0IWdkmKq6VQg+YpFZVHA+6d5ZU9mk=;
-        b=SpKYk0euM6BdMySMbCwFvTS8ib1IxyY2WnvsvZF+DGPzjpEOEp/vkavw8yY8XQ3EOq
-         8kg8jMrO6+c8ZcQOxR/6i87+5oBbysLFs6/QZHLfpiK+OSkAVdWI0YVcjZ9acS1uiIRX
-         hgDo+4N+G6jyj6BDMuNQOMKmdN8rabqfZWhVyUTgHujC02BdwBOK7CaV8HLf8u7FRgLH
-         pnMc8AFrX1sYqhL/SBpxG2Stbrkp2B3ajpGP2eYOaed5iOxh+GlP2Cj/KO/UYRsOBoo+
-         Skk+R2KXJPJLmaTg0ZbjkldrfeBd+Erqzf2+FeNYgqm/u/HKC37uMYS6J0j5jdd9ZZWl
-         m8Kg==
-X-Gm-Message-State: AOAM532Bb1E3LHZbit2Rtmt7DshN7U6ZSQzaUamxgnjdCpob3SBKu2sP
-        1WyAri1U0lJIPnAm8MyyZnuR5NxR7do=
-X-Google-Smtp-Source: ABdhPJy20Qd5tp6E67FLuATwBrfP19QrqbJ+90f7gWEVIWsDr5KHgPyNFDX/HfHywdP7MaLXxgJIdw==
-X-Received: by 2002:a05:6402:3510:: with SMTP id b16mr3858988edd.242.1612371162281;
-        Wed, 03 Feb 2021 08:52:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Ys/VQGPiREa+h0MAtH2I4XvmYWibwwkYiM5czLMJuJk=;
+        b=BRGVb0p76/L+Ggb0uX3A6HjhZU6YDuEbL3mComXMX6+tP9nvnXxLz0W5cQSRc4Kb5B
+         xWd5aNpn6iCWA+2MGGWx4TXsXP1HC44Qx3QqRE2yaSeVVAIpgFExplKq5KOEK1JTRXQm
+         7zKzU04dgIfNvlZpbHZL29Ir+wM5bd0iogO8oWU/8UfujetaR0fbWxCHfmgN7lT/2Sfz
+         yO0BPQeaDaLTQal7npmn+y4ci2/MpxB8ImMYMWjARPB2XbkPiUu9/1slu3c2o3Io/+kR
+         FBwibWEMdJoI0v+mfwUQlqIQRyZ8Gft/TPFcOOVQ2HvjjlzXM5wioQrpJSl9FiHaftg7
+         nl4w==
+X-Gm-Message-State: AOAM531+6ffJwiJOgtvL4qasHQjoFUM0RZgRz/uoFWiyQ+sfYgvLv6Fn
+        k/LBTwQjBBUDv1aekTEqECU=
+X-Google-Smtp-Source: ABdhPJyAJHrejCaAmgSXJCqUoPQPrKTjd2/8fLX5UD5nb+2dN1A+dLM2ocKQn36u+tvSV5aDeCIMgQ==
+X-Received: by 2002:aa7:dd49:: with SMTP id o9mr3920660edw.14.1612371163223;
+        Wed, 03 Feb 2021 08:52:43 -0800 (PST)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id a25sm1135471eds.48.2021.02.03.08.52.40
+        by smtp.gmail.com with ESMTPSA id a25sm1135471eds.48.2021.02.03.08.52.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 08:52:41 -0800 (PST)
+        Wed, 03 Feb 2021 08:52:42 -0800 (PST)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
         linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/7] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
-Date:   Wed,  3 Feb 2021 17:52:27 +0100
-Message-Id: <20210203165233.22177-1-jbx6244@gmail.com>
+Subject: [PATCH v2 2/7] arm64: dts: rockchip: restyle rk3399 usbdrd3_0 node
+Date:   Wed,  3 Feb 2021 17:52:28 +0100
+Message-Id: <20210203165233.22177-2-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210203165233.22177-1-jbx6244@gmail.com>
+References: <20210203165233.22177-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the past Rockchip dwc3 usb nodes were manually checked.
-With the conversion of snps,dwc3.yaml as common document
-we now can convert rockchip,dwc3.txt to yaml as well.
-Remove node wrapper.
-
-Added properties for rk3399 are:
-  power-domains
-  resets
-  reset-names
+For rk3399 dwc3 usb the wrapper node for only clocks makes no sense,
+so restyle the rk3399 usbdrd3_0 node before more new SoC types are
+added with the same IP.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
- .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 103 +++++++++++++++++++++
- 2 files changed, 103 insertions(+), 56 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
- create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+ arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts |  6 +---
+ .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts  |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi   |  4 ---
+ arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts   |  6 +---
+ .../boot/dts/rockchip/rk3399-pinebook-pro.dts      |  4 ---
+ .../arm64/boot/dts/rockchip/rk3399-puma-haikou.dts |  4 ---
+ arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi    |  4 ---
+ arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    |  2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi   |  4 ---
+ arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi  |  6 +---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 37 ++++++++--------------
+ .../boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     |  4 ---
+ 18 files changed, 24 insertions(+), 95 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-deleted file mode 100644
-index 945204932..000000000
---- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--Rockchip SuperSpeed DWC3 USB SoC controller
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
+index 1ce85a581..95110d065 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
+@@ -153,7 +153,7 @@
+ 	status = "okay";
+ };
+ 
+-&usbdrd_dwc3_0 {
++&usbdrd3_0 {
+ 	dr_mode = "host";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
+index 6db18808b..4017b0e8c 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
+@@ -773,12 +773,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
 -
--Required properties:
--- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
--- clocks:	A list of phandle + clock-specifier pairs for the
--		clocks listed in clock-names
--- clock-names:	Should contain the following:
--  "ref_clk"	Controller reference clk, have to be 24 MHz
--  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
--  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
--		operation and >= 30MHz for HS operation
--  "grf_clk"	Controller grf clk
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "otg";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+index 32dcaf210..e42783cb7 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+@@ -618,13 +618,9 @@ ap_i2c_audio: &i2c8 {
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
++	dr_mode = "host";
+ 	extcon = <&usbc_extcon0>;
+-};
 -
--Required child node:
--A child node must exist to represent the core DWC3 IP block. The name of
--the node is not important. The content of the node is defined in dwc3.txt.
+-&usbdrd_dwc3_0 {
+ 	status = "okay";
+-	dr_mode = "host";
+ };
+ 
+ &vopb {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
+index 341d074ed..daf14f732 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
+@@ -731,12 +731,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
 -
--Phy documentation is provided in the following places:
--Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
--Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+index 635afdd99..d028285fb 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+@@ -797,12 +797,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
 -
--Example device nodes:
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "otg";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
+index 1fa80ac15..1c0b48a71 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
+@@ -611,12 +611,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
 -
--	usbdrd3_0: usb@fe800000 {
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "otg";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+index 76a8b40a9..90a6ea1d7 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+@@ -715,10 +715,6 @@
+ 	status = "okay";
+ };
+ 
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+-};
+-
+ &usbdrd_dwc3_1 {
+ 	dr_mode = "host";
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
+index ad7c4d008..7b633622c 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
+@@ -854,12 +854,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+index 219b7507a..f00e11075 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+@@ -1086,10 +1086,6 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+ 	dr_mode = "host";
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+index a8d363568..35780506c 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+@@ -223,10 +223,6 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+ 	dr_mode = "otg";
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+index 20309076d..4d30c1b32 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+@@ -792,10 +792,6 @@
+ 	status = "okay";
+ };
+ 
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+-};
+-
+ &usbdrd3_1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+index fb7599f07..69c067dd1 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+@@ -668,12 +668,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+index b20774081..20c3ef9fc 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+@@ -164,7 +164,7 @@
+ 	};
+ };
+ 
+-&usbdrd_dwc3_0 {
++&usbdrd3_0 {
+ 	dr_mode = "otg";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
+index 5e3ac589b..3920dcbd1 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
+@@ -635,10 +635,6 @@
+ 	status = "okay";
+ };
+ 
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+-};
+-
+ &usbdrd3_1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+index 580972459..564b56810 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+@@ -817,12 +817,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+index 701a567d7..2e76f178e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+@@ -614,12 +614,8 @@
+ };
+ 
+ &usbdrd3_0 {
+-	status = "okay";
+-};
+-
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usbdrd3_1 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index db75c7e85..5045e002a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -394,39 +394,28 @@
+ 	};
+ 
+ 	usbdrd3_0: usb@fe800000 {
 -		compatible = "rockchip,rk3399-dwc3";
--		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
--			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
--		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "grf_clk";
 -		#address-cells = <2>;
 -		#size-cells = <2>;
 -		ranges;
--		usbdrd_dwc3_0: dwc3@fe800000 {
++		compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
++		reg = <0x0 0xfe800000 0x0 0x100000>;
++		interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
+ 			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
+ 			 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
+ 		clock-names = "ref_clk", "suspend_clk",
+ 			      "bus_clk", "aclk_usb3_rksoc_axi_perf",
+ 			      "aclk_usb3", "grf_clk";
++		dr_mode = "otg";
++		phys = <&u2phy0_otg>, <&tcphy0_usb3>;
++		phy-names = "usb2-phy", "usb3-phy";
++		phy_type = "utmi_wide";
++		power-domains = <&power RK3399_PD_USB3>;
+ 		resets = <&cru SRST_A_USB3_OTG0>;
+ 		reset-names = "usb3-otg";
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis_enblslpm_quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
++		snps,dis-u2-freeclk-exists-quirk;
++		snps,dis_u2_susphy_quirk;
+ 		status = "disabled";
+-
+-		usbdrd_dwc3_0: usb@fe800000 {
 -			compatible = "snps,dwc3";
 -			reg = <0x0 0xfe800000 0x0 0x100000>;
--			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&cru SCLK_USB3OTG0_REF>, <&cru ACLK_USB3OTG0>,
+-				 <&cru SCLK_USB3OTG0_SUSPEND>;
+-			clock-names = "ref", "bus_early", "suspend";
 -			dr_mode = "otg";
+-			phys = <&u2phy0_otg>, <&tcphy0_usb3>;
+-			phy-names = "usb2-phy", "usb3-phy";
+-			phy_type = "utmi_wide";
+-			snps,dis_enblslpm_quirk;
+-			snps,dis-u2-freeclk-exists-quirk;
+-			snps,dis_u2_susphy_quirk;
+-			snps,dis-del-phy-power-chg-quirk;
+-			snps,dis-tx-ipgap-linecheck-quirk;
+-			power-domains = <&power RK3399_PD_USB3>;
+-			status = "disabled";
 -		};
--	};
+ 	};
+ 
+ 	usbdrd3_1: usb@fe900000 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
+index 7257494d2..810fb7880 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
+@@ -454,10 +454,6 @@
+ 	status = "okay";
+ };
+ 
+-&usbdrd_dwc3_0 {
+-	status = "okay";
+-};
 -
--	usbdrd3_1: usb@fe900000 {
--		compatible = "rockchip,rk3399-dwc3";
--		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
--			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
--		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "grf_clk";
--		#address-cells = <2>;
--		#size-cells = <2>;
--		ranges;
--		usbdrd_dwc3_1: dwc3@fe900000 {
--			compatible = "snps,dwc3";
--			reg = <0x0 0xfe900000 0x0 0x100000>;
--			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
--			dr_mode = "otg";
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-new file mode 100644
-index 000000000..fdf9497bc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-@@ -0,0 +1,103 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip SuperSpeed DWC3 USB SoC controller
-+
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
-+
-+description:
-+      The common content of the node is defined in snps,dwc3.yaml.
-+
-+      Phy documentation is provided in the following places.
-+
-+      USB2.0 PHY
-+      Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-+
-+      Type-C PHY
-+      Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
-+
-+allOf:
-+  - $ref: snps,dwc3.yaml#
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - rockchip,rk3399-dwc3
-+      - const: snps,dwc3
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description:
-+          Controller reference clock, must to be 24 MHz
-+      - description:
-+          Controller suspend clock, must to be 24 MHz or 32 KHz
-+      - description:
-+          Master/Core clock, must to be >= 62.5 MHz for SS
-+          operation and >= 30MHz for HS operation
-+      - description:
-+          Controller aclk_usb3_rksoc_axi_perf clock
-+      - description:
-+          Controller aclk_usb3 clock
-+      - description:
-+          Controller grf clock
-+
-+  clock-names:
-+    items:
-+      - const: ref_clk
-+      - const: suspend_clk
-+      - const: bus_clk
-+      - const: aclk_usb3_rksoc_axi_perf
-+      - const: aclk_usb3
-+      - const: grf_clk
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: usb3-otg
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3399-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    bus {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      usbdrd3_0: usb@fe800000 {
-+        compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
-+        reg = <0x0 0xfe800000 0x0 0x100000>;
-+        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
-+                 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
-+                 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
-+        clock-names = "ref_clk", "suspend_clk",
-+                      "bus_clk", "aclk_usb3_rksoc_axi_perf",
-+                      "aclk_usb3", "grf_clk";
-+        dr_mode = "otg";
-+      };
-+    };
+ &vbus_host {
+ 	enable-active-high;
+ 	gpio = <&gpio4 RK_PD1 GPIO_ACTIVE_HIGH>; /* USB1_EN_OC# */
 -- 
 2.11.0
 
