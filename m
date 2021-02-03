@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E2530E2EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BC330E2F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhBCSyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S232447AbhBCS5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBCSyN (ORCPT
+        with ESMTP id S229638AbhBCS5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:54:13 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD06C0613D6;
-        Wed,  3 Feb 2021 10:53:33 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id q7so385824wre.13;
-        Wed, 03 Feb 2021 10:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hCI6ZiNImno66RrVehBGLrYLxtapcVm5zzLIRSnM/WU=;
-        b=VCJ3330ilMlz+QT2OkDv5eR7bQwxwP0yJ4r1r8eJsgHMjJ4mxac6onJBjDTVewEAfM
-         diCPP7S02OhDsvmYqjgXAQNgAT6ONwiqutI/wpFQJwODGEkQi8Rpxx3+aMu/v5rkwQ1K
-         45o2B+snceo73W6d6J014W8pBSQ0p7DLFKxbtZT9EEQzRft4f0AVfA5sBCmfgTlpCJJV
-         y9/CGdMTWRA1Og+Lu/BYKrPGAgFBPZ0X3T8CBXUugd26gfroT2zpWJXg44RjxtBBjLb5
-         pkDo417TWzy3ABdFkyjkU/vjhEVXOGC5GYv3cR8DdEBN4pkGA9LFw7qMilUoL4B+V9nr
-         Hpaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hCI6ZiNImno66RrVehBGLrYLxtapcVm5zzLIRSnM/WU=;
-        b=e3kLRVaGmec4HfwTywG5bNHz+YR3NTBGoerezmXKov5evIYZAWmYaZiizCkinhUn+O
-         4FWXFSh60jxO8gS0LBg6kT9OqCNQ30viS3NhlQfoBmThwzixvZC2pBNpcQCSXRmDiOOd
-         yg0Q02vLnnAuESujjGfk82gSowjzDjpHV/EEEj9YZi+66RLu80yk8doaBSAuhwJjjbzn
-         SdkHegV3avhFnKcRUydXXbQ3/6D0r/OwymiaZIqQCvwZgQUHPTO2DO+2369dbu/+1NFS
-         kdXwZfPklFcZGlkIk0wOZGI4NmzPfKNK33uPRt/QHa6hIC29ApT1iWanJyqnSDfctwzU
-         Qt7w==
-X-Gm-Message-State: AOAM5300CAEzvXCM6NQrd9ETjvolljHzGG9MuuAMdppMThmeYWnVp7Cm
-        D0YyqtYuqoTI5+XKP6WSyHUmMPaPnBcfhoX+pYs=
-X-Google-Smtp-Source: ABdhPJyHLzSa0ru1ema9q6kVyMifJqigYStPu+h+0FBA1tpzSHcRislqBSWzhsMgmuJKF7sU+drOE/JpGjgTQCLonYE=
-X-Received: by 2002:adf:ed02:: with SMTP id a2mr5098155wro.197.1612378411971;
- Wed, 03 Feb 2021 10:53:31 -0800 (PST)
+        Wed, 3 Feb 2021 13:57:09 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65D4C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:56:29 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c84009b5670f942e9d280.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:9b56:70f9:42e9:d280])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6055B1EC04BF;
+        Wed,  3 Feb 2021 19:56:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612378588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=K8nOFh6JLe/Vzhm200Cg+IJZ6YmWcAnqNRvjfWkQIzQ=;
+        b=gkaMfCMlEu1dP1MvbpwbjAB/U+aYwSg6kCiZjmG+oaS8kgTiR1lInlaRVXGTAfntzYWyv4
+        1PsqF6ShTpOOyVvhHqlx9pNxadXZM3UK+/sXPorMPT5qbx3H8zvgUrfkndWOOmWaRkD5o7
+        uwbLuFJdX0rjRewfUawE3r8x8R8CZ8w=
+Date:   Wed, 3 Feb 2021 19:56:25 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 07/11] x86/fault: Split the OOPS code out from
+ no_context()
+Message-ID: <20210203185517.GH13819@zn.tnic>
+References: <cover.1612113550.git.luto@kernel.org>
+ <c5f715daf95fc7e94e279f0486908b53e1cdba3c.1612113550.git.luto@kernel.org>
 MIME-Version: 1.0
-References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
- <MN2PR11MB3662C081B6CDB8BC1143380FFAB79@MN2PR11MB3662.namprd11.prod.outlook.com>
- <CAGngYiVvuNYC4WPCRfPOfjr98S_BGBNGjPze11AiHY9Pq1eJsA@mail.gmail.com> <MN2PR11MB3662E5A8E190F8F43F348E72FAB69@MN2PR11MB3662.namprd11.prod.outlook.com>
-In-Reply-To: <MN2PR11MB3662E5A8E190F8F43F348E72FAB69@MN2PR11MB3662.namprd11.prod.outlook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 3 Feb 2021 13:53:21 -0500
-Message-ID: <CAGngYiVK5=vggym5LiqvjiRVTSWscc=CgX6UPOBkZpknuLC62Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
-To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c5f715daf95fc7e94e279f0486908b53e1cdba3c.1612113550.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Bryan. I will prepare a v2 early next week.
+On Sun, Jan 31, 2021 at 09:24:38AM -0800, Andy Lutomirski wrote:
+> Not all callers of no_context() want to run exception fixups.
+> Separate the OOPS code out from the fixup code in no_context().
+> 
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/x86/mm/fault.c | 116 +++++++++++++++++++++++---------------------
+>  1 file changed, 62 insertions(+), 54 deletions(-)
+> 
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 1939e546beae..6f43d080e1e8 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -618,53 +618,20 @@ static void set_signal_archinfo(unsigned long address,
+>  }
+>  
+>  static noinline void
+> -no_context(struct pt_regs *regs, unsigned long error_code,
+> -	   unsigned long address, int signal, int si_code)
+> +page_fault_oops(struct pt_regs *regs, unsigned long error_code,
 
-Would Microchip be able to donate some time to test v2? My own tests
-are certainly not perfect. Various stress tests across architectures
-(intel/arm) would help create confidence in the multi-buffer frame
-implementation. Perhaps Microchip has various test rigs already set
-up?
+Not sure about this name - it still tries to recover:
+efi_recover_from_page_fault().
 
-After all, absence of bugs is more important than speed improvements.
+Judging by where it is called, maybe no_context_tail() or
+no_context_oops() or no_context_finish_me_already()...
+
+Yah, I haz no better idea. :-\
+
+...
+
+> @@ -739,6 +692,61 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+>  	oops_end(flags, regs, sig);
+>  }
+>  
+> +static noinline void
+> +no_context(struct pt_regs *regs, unsigned long error_code,
+> +	   unsigned long address, int signal, int si_code)
+> +{
+> +	if (user_mode(regs)) {
+> +		/*
+> +		 * This is an implicit supervisor-mode access from user
+> +		 * mode.  Bypass all the kernel-mode recovery code and just
+> +		 * OOPS.
+> +		 */
+> +		goto oops;
+
+Just do
+
+		return page_fault_oops(...);
+
+here and get rid of the label.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
