@@ -2,59 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BFF30D062
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B594230D065
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbhBCAls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 19:41:48 -0500
-Received: from mga18.intel.com ([134.134.136.126]:23758 "EHLO mga18.intel.com"
+        id S233084AbhBCAn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 19:43:58 -0500
+Received: from mga01.intel.com ([192.55.52.88]:19869 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232956AbhBCAlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:41:46 -0500
-IronPort-SDR: 749fQ67NyaAnw9rEKY5zcVvR3X/ABGRa50W0i7tZV1JnL0Qrse898X7mpPApLnGj8HCYpRiNgw
- jTo3b8c9PCvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="168637249"
+        id S232042AbhBCAn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 19:43:56 -0500
+IronPort-SDR: qyMd1dSr95PX7xOurQUiry1MCScBpd2B0Jp+24w1zPiaPFEdK8ipxJg/HoI21qfgrlL29oNWDd
+ W6+My09Qg37Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="199900288"
 X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="168637249"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:41:05 -0800
-IronPort-SDR: fSThS5KHbBwVnaWg9jcAyeGQDN3wDWbEJq30e1UJftbL+ccoYFmeFU8bO4UzxOSd4TV3sniJSO
- 7FR8nRmJ2LvQ==
+   d="scan'208";a="199900288"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:43:15 -0800
+IronPort-SDR: ATT8iQVTdrmPQKmLYtFMZMEpW+MP2cCKqWAsJo8788cZ89brJxwKEg+6rkcTaRjoqUDDfPnpnJ
+ HXsThYyLiEVw==
 X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="392022012"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.212.172.218])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:41:04 -0800
-Date:   Tue, 2 Feb 2021 16:41:04 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>,
-        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
-        <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>
-Subject: Re: [Patch v3 net-next 0/7] ethtool support for fec and link
- configuration
-Message-ID: <20210202164104.0000180b@intel.com>
-In-Reply-To: <1612157084-101715-1-git-send-email-hkelam@marvell.com>
-References: <1612157084-101715-1-git-send-email-hkelam@marvell.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+   d="scan'208";a="433130789"
+Received: from capeter1-mobl.amr.corp.intel.com (HELO [10.212.5.169]) ([10.212.5.169])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:43:15 -0800
+Subject: Re: [RFC][PATCH 05/13] mm/numa: automatically generate node migration
+ order
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003421.45897BF4@viggo.jf.intel.com>
+ <CAHbLzkoB98YY0amBWTGcDPStcy1c35CC8D5MPMbVxzRKqVA0Cg@mail.gmail.com>
+ <317d4c23-76a7-b653-87a4-bab642fa1717@intel.com>
+ <CAHbLzkqrPvY4Zb17AGJi1Zi7OV9WDUTEpj5DpfWY9c2WHzPBYw@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <d0ea8634-3fca-68ff-cd39-b3304880295f@intel.com>
+Date:   Tue, 2 Feb 2021 16:43:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHbLzkqrPvY4Zb17AGJi1Zi7OV9WDUTEpj5DpfWY9c2WHzPBYw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hariprasad Kelam wrote:
+On 2/2/21 9:46 AM, Yang Shi wrote:
+> On Mon, Feb 1, 2021 at 11:13 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>> On 1/29/21 12:46 PM, Yang Shi wrote:
+>> ...
+>>>>  int next_demotion_node(int node)
+>>>>  {
+>>>> -       return node_demotion[node];
+>>>> +       /*
+>>>> +        * node_demotion[] is updated without excluding
+>>>> +        * this function from running.  READ_ONCE() avoids
+>>>> +        * reading multiple, inconsistent 'node' values
+>>>> +        * during an update.
+>>>> +        */
+>>> Don't we need a smp_rmb() here? The single write barrier might be not
+>>> enough in migration target set. Typically a write barrier should be
+>>> used in pairs with a read barrier.
+>> I don't think we need one, practically.
+>>
+>> Since there is no locking against node_demotion[] updates, although a
+>> smp_rmb() would ensure that this read is up-to-date, it could change
+>> freely after the smp_rmb().
+> Yes, but this should be able to guarantee we see "disable + after"
+> state. Isn't it more preferred?
 
-> This series of patches add support for forward error correction(fec) and
-> physical link configuration. Patches 1&2 adds necessary mbox handlers for fec
-> mode configuration request and to fetch stats. Patch 3 registers driver
-> callbacks for fec mode configuration and display. Patch 4&5 adds support of mbox
-> handlers for configuring link parameters like speed/duplex and autoneg etc.
-> Patche 6&7 registers driver callbacks for physical link configuration.
+I'm debating how much of this is theoretical versus actually applicable
+to what we have in the kernel.  But, I'm generally worried about code
+like this that *looks* innocuous:
 
-For the series, in addition to the fact that Willem already replied to
-the previous posting of v3 that it looked good.
+	int terminal_node = start_node;
+	int next_node = next_demotion_node(start_node);
+        while (next_node != NUMA_NO_NODE) {
+		next_node = terminal_node;
+                terminal_node = next_demotion_node(terminal_node);
+        }
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+That could loop forever if it doesn't go out to memory during each loop.
+
+However, if node_demotion[] *is* read on every trip through the loop, it
+will eventually terminate.  READ_ONCE() can guarantee that, as could
+compiler barriers like smp_rmb().
+
+But, after staring at it for a while, I think RCU may be the most
+clearly correct way to solve the problem.  Or, maybe just throw in the
+towel and do a spinlock like a normal human being. :)
+
+Anyway, here's what I was thinking I'd do with RCU:
+
+ 1. node_demotion[] starts off in a "before" state
+ 2. Writers to node_demotion[] first set the whole array such that
+    it will not induce cycles, like setting every member to
+    NUMA_NO_NODE. (the "disable" state)
+ 3. Writer calls synchronize_rcu().  After it returns, no readers can
+    observe the "before" values.
+ 4. Writer sets the actual values it wants.  (the "after" state)
+ 5. Readers use rcu_read_lock() over any critical section where they
+    read the array.  They are guaranteed to only see one of the two
+    adjacent states (before+disabled, or disabled+after), but never
+    before+after within one RCU read-side critical section.
+ 6. Readers use READ_ONCE() or some other compiler directive to ensure
+    the compiler does not reorder or combine reads from multiple,
+    adjacent RCU read-side critical sections.
+
+Although, after writing this, plain old locks are sounding awfully tempting.
