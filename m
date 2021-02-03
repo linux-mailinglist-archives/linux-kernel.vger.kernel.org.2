@@ -2,141 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B70A30DB13
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FF730DB2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhBCNZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhBCNZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:25:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B98B64E38;
-        Wed,  3 Feb 2021 13:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612358706;
-        bh=O+kH3ITMKM6l1qByP0zBPlBOwdqr6u5g3w5pGD/SwUQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lgT6NiD7VBQPkUvT3PWCsWepLwf0wZjPA04mmgILMbuu7mstJm+/URQifNaA5yfyS
-         bnOXqGpWZ93yC79I35DDrkqT/22f+c1RfFvyBrUvAFvojeSqH+l67sV07IsHZoM02G
-         e/CNoLAK0EPx0i7rz43keO59N3n7dpFLo0Il9iLb66HKCLtbsEiZf8ssVmm14LEST/
-         hk34fEaYRBkqfoQQEEP5+vIqx3/tHmdskVTFiI8CSIWBQ3XQa4hijc3wIqMXE1rkVN
-         DRRfcno+FZBDHLFi3VNwVYv0IuyR5Qr09VqrzbrXDSYmniPXf8J4EXuopCoC43djgm
-         zAQot7XdsNp+Q==
-Date:   Wed, 3 Feb 2021 22:25:02 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, srikar@linux.vnet.ibm.com,
-        adrian.hunter@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf probe: Added protection to avoid endless loop
-Message-Id: <20210203222502.a8b9b7bf8fba4e0ba0fe5681@kernel.org>
-In-Reply-To: <20210203022507.677283-1-Jianlin.Lv@arm.com>
-References: <20210203022507.677283-1-Jianlin.Lv@arm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231828AbhBCN0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:26:49 -0500
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:36678 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231781AbhBCN0p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:26:45 -0500
+Received: by mail-wm1-f43.google.com with SMTP id i9so5229102wmq.1;
+        Wed, 03 Feb 2021 05:26:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y4q+v0wWRtdknCDT+I8fxPC73fGYrwzICDkzu3nG7So=;
+        b=LAl2mYNV2CThFCk3/DvRkzFp9K8toivjFzUMuyEL55AnRk0j1Md6rJ3ODnkkQGibp1
+         BBGxE8iexOXcCXarOuhKvYG2HmnVWPhEBH/DZhzpR5E8VRA7ch+AUZdRgfqauS9jHOme
+         m7yQpcATyg1w4uCE8FPxjzMSWRlH5Yz4PW4V+po3RD1+dj7IOw783IbgxGirlW8P4jxT
+         pDOoYftGjgrKqSKZKM/SuD1mvnx5J/dAS5DY6uEHc7gOl08FsfvKbQCIUE++oPaD8kzO
+         qW8odTTXpLqUPvSYqAhUEzq5edUKUwK8VljRjzKUrrK8PrQuE4ovSseDdvDftyc7EDi1
+         OXwA==
+X-Gm-Message-State: AOAM531Ta9HeFIhylXRZBX+PmjJrg3ByOPLpEhC4WSYMbAb0LrHKn+N1
+        H3CU5alt3sehAMXVfyHC7R4=
+X-Google-Smtp-Source: ABdhPJwiz7s1Ug8HtLd4gUb16Jr0f9pGdBe1ZBy1T+U3CwviMLRzhjyaq+LqZ4t04TpHEaWB6Fr6RA==
+X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr2894128wmg.42.1612358763107;
+        Wed, 03 Feb 2021 05:26:03 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 62sm2937981wmd.34.2021.02.03.05.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 05:26:02 -0800 (PST)
+Date:   Wed, 3 Feb 2021 13:26:01 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v5 13/16] asm-generic/hyperv: introduce hv_device_id and
+ auxiliary structures
+Message-ID: <20210203132601.ftpwgs57qtok47cg@liuwe-devbox-debian-v2>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-14-wei.liu@kernel.org>
+ <MWHPR21MB1593959647DA60219E19C25ED7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210202170248.4hds554cyxpuayqc@liuwe-devbox-debian-v2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202170248.4hds554cyxpuayqc@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Feb 2021 10:25:07 +0800
-Jianlin Lv <Jianlin.Lv@arm.com> wrote:
-
-> if dwarf_offdie() return NULL, the continue statement forces the next
-> iteration of the loop without update variable off. It will cause an
-> endless loop in the process of traversing the compilation unit.
-> So added exception protection for loop CUs.
-
-Good catch!
-
+On Tue, Feb 02, 2021 at 05:02:48PM +0000, Wei Liu wrote:
+> On Tue, Jan 26, 2021 at 01:26:52AM +0000, Michael Kelley wrote:
+> > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
+> > > 
+> > > We will need to identify the device we want Microsoft Hypervisor to
+> > > manipulate.  Introduce the data structures for that purpose.
+> > > 
+> > > They will be used in a later patch.
+> > > 
+> > > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > > ---
+> > >  include/asm-generic/hyperv-tlfs.h | 79 +++++++++++++++++++++++++++++++
+> > >  1 file changed, 79 insertions(+)
+> > > 
+> > > diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> > > index 8423bf53c237..42ff1326c6bd 100644
+> > > --- a/include/asm-generic/hyperv-tlfs.h
+> > > +++ b/include/asm-generic/hyperv-tlfs.h
+> > > @@ -623,4 +623,83 @@ struct hv_set_vp_registers_input {
+> > >  	} element[];
+> > >  } __packed;
+> > > 
+> > > +enum hv_device_type {
+> > > +	HV_DEVICE_TYPE_LOGICAL = 0,
+> > > +	HV_DEVICE_TYPE_PCI = 1,
+> > > +	HV_DEVICE_TYPE_IOAPIC = 2,
+> > > +	HV_DEVICE_TYPE_ACPI = 3,
+> > > +};
+> > > +
+> > > +typedef u16 hv_pci_rid;
+> > > +typedef u16 hv_pci_segment;
+> > > +typedef u64 hv_logical_device_id;
+> > > +union hv_pci_bdf {
+> > > +	u16 as_uint16;
+> > > +
+> > > +	struct {
+> > > +		u8 function:3;
+> > > +		u8 device:5;
+> > > +		u8 bus;
+> > > +	};
+> > > +} __packed;
+> > > +
+> > > +union hv_pci_bus_range {
+> > > +	u16 as_uint16;
+> > > +
+> > > +	struct {
+> > > +		u8 subordinate_bus;
+> > > +		u8 secondary_bus;
+> > > +	};
+> > > +} __packed;
+> > > +
+> > > +union hv_device_id {
+> > > +	u64 as_uint64;
+> > > +
+> > > +	struct {
+> > > +		u64 :62;
+> > > +		u64 device_type:2;
+> > > +	};
+> > 
+> > Are the above 4 lines extraneous junk? 
+> > If not, a comment would be helpful.  And we
+> > would normally label the 62 bit field as 
+> > "reserved0" or something similar.
+> > 
 > 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> ---
->  tools/perf/util/probe-finder.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> No. It is not junk. I got this from a header in tree.
 > 
-> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-> index 76dd349aa48d..887bffb1cc58 100644
-> --- a/tools/perf/util/probe-finder.c
-> +++ b/tools/perf/util/probe-finder.c
-> @@ -1156,7 +1156,7 @@ static int debuginfo__find_probe_location(struct debuginfo *dbg,
->  	Dwarf_Die *diep;
->  	int ret = 0;
->  
-> -	off = 0;
-> +	noff = 0;
->  	pf->lcache = intlist__new(NULL);
->  	if (!pf->lcache)
->  		return -ENOMEM;
-> @@ -1184,7 +1184,7 @@ static int debuginfo__find_probe_location(struct debuginfo *dbg,
->  	}
->  
->  	/* Loop on CUs (Compilation Unit) */
-> -	while (!dwarf_nextcu(dbg->dbg, off, &noff, &cuhl, NULL, NULL, NULL)) {
-> +	while (!dwarf_nextcu(dbg->dbg, off = noff, &noff, &cuhl, NULL, NULL, NULL)) {
-
-I don't like to update variable in function argument, 
-
-I would rather like below code;
-
->  		/* Get the DIE(Debugging Information Entry) of this CU */
->  		diep = dwarf_offdie(dbg->dbg, off + cuhl, &pf->cu_die);
-  		if (!diep) {
-+			off = noff;
-			continue;
-		}
-
-Or, "goto next;" and
-
-> @@ -1208,7 +1208,6 @@ static int debuginfo__find_probe_location(struct debuginfo *dbg,
->  			if (ret < 0)
->  				break;
->  		}
-
-next:
-
-> -		off = noff;
->  	}
->  
->  found:
-> @@ -1919,7 +1918,7 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
->  {
->  	struct line_finder lf = {.lr = lr, .found = 0};
->  	int ret = 0;
-> -	Dwarf_Off off = 0, noff;
-> +	Dwarf_Off off = 0, noff = 0;
->  	size_t cuhl;
->  	Dwarf_Die *diep;
->  	const char *comp_dir;
-> @@ -1943,6 +1942,7 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
->  
->  	/* Loop on CUs (Compilation Unit) */
->  	while (!lf.found && ret >= 0) {
-> +		off = noff;
-
-Here too.
-Can you update it?
-
-Thank you,
-
->  		if (dwarf_nextcu(dbg->dbg, off, &noff, &cuhl,
->  				 NULL, NULL, NULL) != 0)
->  			break;
-> @@ -1967,7 +1967,6 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
->  				ret = find_line_range_by_line(NULL, &lf);
->  			}
->  		}
-> -		off = noff;
->  	}
->  
->  found:
-> -- 
-> 2.25.1
+> I am inclined to just drop this hunk. If that breaks things, I will use
+> "reserved0".
 > 
 
+It turns out adding reserved0 is required. Dropping this hunk does not
+work.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Wei.
