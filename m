@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91E430D7BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0290830D795
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhBCKhu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Feb 2021 05:37:50 -0500
-Received: from wildebeest.demon.nl ([212.238.236.112]:37974 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhBCKhp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:37:45 -0500
-X-Greylist: delayed 355 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 05:37:45 EST
-Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 28BF9304481E;
-        Wed,  3 Feb 2021 11:31:08 +0100 (CET)
-Received: by tarox.wildebeest.org (Postfix, from userid 1000)
-        id 16C714000C6A; Wed,  3 Feb 2021 11:31:08 +0100 (CET)
-Message-ID: <544278979063fbee59f7e8d82c88ba3293380d57.camel@klomp.org>
-Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
-From:   Mark Wielaard <mark@klomp.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Date:   Wed, 03 Feb 2021 11:31:07 +0100
-In-Reply-To: <20210203075239.5505-1-masahiroy@kernel.org>
-References: <20210203075239.5505-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+        id S233875AbhBCKcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:32:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233555AbhBCKcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:32:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B09D664E38;
+        Wed,  3 Feb 2021 10:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612348296;
+        bh=CYVgOCDOrg5Ej4JSZWXzmO4nRwEV0xspTKLDaP80Qqk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cRZA8g71/ZrpNE0lonjdkXJkp+AzevRm6bF6qQ1cCtuFPsH6w3rga4p+owHR0xSbI
+         QXIBxiCgeN4kKKcmrEYBQ6AWsSIIU6pIY+gTf1WWuvEjRj3njhz557b097L13FNfg6
+         Ztw7ZvL8iEAu3V1mhJrj6CMXaAPtC0JqhemMAatA=
+Date:   Wed, 3 Feb 2021 11:31:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RFC PATCH v2 1/3] dt-bindings: usb: mtk-xhci: add compatible
+ for mt8195
+Message-ID: <YBp7hnyPJwgK598V@kroah.com>
+References: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
-
-On Wed, 2021-02-03 at 16:52 +0900, Masahiro Yamada wrote:
-> With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-
-> assignments
-> for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
-> CONFIG_CC_IS_GCC=y.
+On Wed, Feb 03, 2021 at 06:26:40PM +0800, Chunfeng Yun wrote:
+> There are 4 USB controllers on MT8195, the controllers (IP1~IP3,
+> exclude IP0) have a wrong default SOF/ITP interval which is
+> calculated from the frame counter clock 24Mhz by default, but
+> in fact, the frame counter clock is 48Mhz, so we should set
+> the accurate interval according to 48Mhz. Here add a new compatible
+> for MT8195, it's also supported in driver. But the first controller
+> (IP0) has no such issue, we prefer to use generic compatible,
+> e.g. mt8192's compatible.
 > 
-> Fix it to reset DEBUG_CFLAGS also when using Clang.
-> 
-> [...] 
-> +DEBUG_CFLAGS	:=
-> +
->  # Workaround for GCC versions < 5.0
->  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
->  ifdef CONFIG_CC_IS_GCC
-> -DEBUG_CFLAGS	:= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
-> +DEBUG_CFLAGS	+= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
->  endif
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: no changes
 
-Yes, this makes sense given that the original code, before commit
-121c5d08d53c did always set DEBUG_CFLAGS without checking for
-CONFIG_CC_IS_GCC. So it behaved like the above code does.
+Note, I do not apply patches with "RFC" as obviously you do not think
+they are worthy of being applied.  I don't see what you are asking to be
+done with this set of patches, please explain?
 
-Reviewed-by: Mark Wielaard <mark@klomp.org>
+thanks,
 
-Thanks,
-
-Mark
+greg k-h
