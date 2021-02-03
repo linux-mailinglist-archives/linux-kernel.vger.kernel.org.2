@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA2D30E54F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A9D30E569
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhBCV51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:57:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232430AbhBCV5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:57:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C3364D90;
-        Wed,  3 Feb 2021 21:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612389383;
-        bh=KlqMz0AxDAOewwpGjJMp9MSlBYUAqgp9ZkKxph73xJk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hsz8CLyqqjck4bzLjA1rUO2vj3NHLNp+ADj16T6Jv3rjoLQKWc013iaR9ISh+glcF
-         w75zcKGZKpk5/9M/8/fVJnvADPEO5j4+ffFLS1MK0ybu/tmBP1jCQFlGEfx1dg/T2z
-         S1Yl25qfwaKMKe21n16App3VbJcx7MQrfoq6BBjlEJjCmQz8LZGH4K/soSlaHW0V/i
-         imM7AdA9HHCCGjOpwOtTd9wB4SQsqfXxvCuBKLOV/FAwHnlPIQIHrl0oFq+g/rWE6F
-         MKqHJNqZpXvur1adiaMWcQjHmO8OiLS93PQAmQThBB8Ba8XIE2wkqtqm+j8MJUDg8W
-         JtbU9LOyyJfFA==
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        john.ogness@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        akinobu.mita@gmail.com
-References: <20210202213633.755469-1-timur@kernel.org>
- <YBpyzxBYIYapHaDT@alley> <YBqlooegQgEfPG4T@alley>
- <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
- <202102031201.FFED9547D@keescook>
- <20210203152513.34492916@gandalf.local.home> <202102031234.9BF349F@keescook>
- <20210203154727.20946539@gandalf.local.home>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
-Date:   Wed, 3 Feb 2021 15:56:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210203154727.20946539@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232292AbhBCV7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:59:50 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:52188 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232549AbhBCV7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:59:16 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 806C4C0111;
+        Wed,  3 Feb 2021 21:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1612389495; bh=21k8tX4RGiOVgJbGOCzP5GHVanYEIotdSyZRgKlTQls=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lzZjnHn9ALv3nd81X9ahGCxzacxy7564skkU3NRi2IrsdnEEv5IMOOOncYxGzjOcw
+         VW1fMjiYCG25Nw/Arj9ksA4Mhq4H5JO8qkwIghNGPPIhot+ZxXMI1ROM/RMw/xEomc
+         la6+0G9d2xAWBA0GbNq/OZfU5deaUmfnzQjPBiR9stkWiNvNcyJK0mkiMYWMyBZYZQ
+         NdOC4mPlQvkmRnEtCkqLDsJaCnFwP4csZffcfmx9O8oUkt/lihj39/aGjt+3aKAMgU
+         7gH0YOfRguoi5rei+SEgZ4um1obupB4W3wtacnzXwHuCuMp3XJ0xwPXYrcUM1+Y1bj
+         +euvCwwaanO4A==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id EC22AA0249;
+        Wed,  3 Feb 2021 21:58:13 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v4 00/15] dmaengine: dw-edma: HDMA support
+Date:   Wed,  3 Feb 2021 22:57:51 +0100
+Message-Id: <cover.1612389406.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds the HDMA support, as long the IP design has set
+the compatible register map parameter, which allows compatibility at
+some degree for the existing Synopsys DesignWare eDMA driver that is
+already available on the Kernel.
 
+The HDMA "Hyper-DMA" IP is an enhancement of the eDMA "embedded-DMA" IP.
 
-On 2/3/21 2:47 PM, Steven Rostedt wrote:
->   static void __init
->   plain(void)
->   {
->   	int err;
->   
-> +	if (debug_never_hash_pointers)
-> +		return;
+This new improvement comes with a PCI DVSEC that allows to the driver
+recognize and switch behavior if it's an eDMA or an HDMA, becoming
+retrocompatible, in the absence of this DVSEC, the driver will assume
+that is an eDMA IP.
 
-So, I have a stupid question.  What's the best way for test_printf.c to 
-read the command line parameter?  Should I just do this in vsprintf.c:
+It also adds the interleaved support, since it will be similar to the
+current scatter-gather implementation.
 
-/* Disable pointer hashing if requested */
-static bool debug_never_hash_pointers __ro_after_init;
-EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
+As well fixes/improves some abnormal behaviors not detected before, such as:
+ - crash on loading/unloading driver
+ - memory space definition for the data area and for the linked list space
+ - scatter-gather address calculation on 32 bits platforms
+ - minor comment and variable reordering
 
-I'm not crazy about exporting this variable to other drivers.  It could 
-be used to disable hashing by any driver.
+Changes:
+ V2: Applied changes based on Bjorn Helgaas' review
+     Rebased patches on top of v5.11-rc1 version
+ V3: Applied changes based on Lukas Wunner' review
+ V4: Fix a typo detected by kernel test robot
 
-AFAIK, the only command-line parameter code that works in drivers is 
-module_parm, and that expects the module prefix on the command-line.
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+
+Gustavo Pimentel (15):
+  dmaengine: dw-edma: Add writeq() and readq() for 64 bits architectures
+  dmaengine: dw-edma: Fix comments offset characters' alignment
+  dmaengine: dw-edma: Add support for the HDMA feature
+  PCI: Add pci_find_vsec_capability() to find a specific VSEC
+  dmaengine: dw-edma: Add PCIe VSEC data retrieval support
+  dmaengine: dw-edma: Add device_prep_interleave_dma() support
+  dmaengine: dw-edma: Improve number of channels check
+  dmaengine: dw-edma: Reorder variables to keep consistency
+  dmaengine: dw-edma: Improve the linked list and data blocks definition
+  dmaengine: dw-edma: Change linked list and data blocks offset and
+    sizes
+  dmaengine: dw-edma: Move struct dentry variable from static definition
+    into dw_edma struct
+  dmaengine: dw-edma: Fix crash on loading/unloading driver
+  dmaengine: dw-edma: Change DMA abreviation from lower into upper case
+  dmaengine: dw-edma: Revert fix scatter-gather address calculation
+  dmaengine: dw-edma: Add pcim_iomap_table return checker
+
+ drivers/dma/dw-edma/dw-edma-core.c       | 178 +++++++++++-------
+ drivers/dma/dw-edma/dw-edma-core.h       |  37 ++--
+ drivers/dma/dw-edma/dw-edma-pcie.c       | 275 +++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.c    | 300 ++++++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.h    |   2 +-
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.c |  77 ++++----
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.h |   4 +-
+ drivers/dma/dw-edma/dw-edma-v0-regs.h    | 291 +++++++++++++++++++-----------
+ drivers/pci/pci.c                        |  34 ++++
+ include/linux/pci.h                      |   2 +
+ include/uapi/linux/pci_regs.h            |   6 +
+ 11 files changed, 851 insertions(+), 355 deletions(-)
+
+-- 
+2.7.4
+
