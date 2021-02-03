@@ -2,63 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7267D30E28A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5CC30E292
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhBCSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhBCSa4 (ORCPT
+        id S232695AbhBCSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:32:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232145AbhBCScV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:30:56 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429B8C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:30:16 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id o12so771166ote.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hEe3LKST1YHcfKQNO2v4b7c0gwVjN8GSIL8jKaA5Cfo=;
-        b=ie1t7tv30f1+Kl61SxX+cXlirmj3FIWBalujA9MEeMhB41z62szQ2QLCu5q+lxLWv+
-         oVj4s9MFBx5q6M1frsxeVMzHnzWoMik3k5FEuuru82EObZlkAVI1zWWLXRIFUnj4MhK/
-         4J9S9fNg6y35WabREdeEpPQLO2SmuJdJPcq4Q=
+        Wed, 3 Feb 2021 13:32:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612377055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TiOisWoMM5J0+N5wrdR7qjGRMcCnnxa5MwmQ2/1A7Ww=;
+        b=XqoUUP8S+eCfDG1g7ePQ9oF1eIoTIPClV0Xyg4LGCZDGotxzYsaz/AzmA2USRAQ+7kIiuv
+        I/nHwDXbvkfUSCWO2cMOxZrlVJp2YFurav2AbCnILFPZLdiQroFWb2VojR2zIsw+/Rb29f
+        cEoOmbcqXisMEA9OqLSbla9D2det5eY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-LRuGz08NP2WZrhxM1Rv6Zw-1; Wed, 03 Feb 2021 13:30:53 -0500
+X-MC-Unique: LRuGz08NP2WZrhxM1Rv6Zw-1
+Received: by mail-ed1-f69.google.com with SMTP id g6so404718edy.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:30:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hEe3LKST1YHcfKQNO2v4b7c0gwVjN8GSIL8jKaA5Cfo=;
-        b=WGhuedF7zqCq/fMxCARqejyUA6f/Orf34oXE3YcRLyobAQnc3dumlfbvbeXjvVZnLH
-         5NeJ8xqXn+YJcBtCFpVt8oWus4pWTaTz0i5WSqiRBh2PywXL6n0wRICP+wN+4PSQD63N
-         t86HiNBM3czjyRJqMhOfga3J86JK1810TMBbWRKVYsBBB2sjAcDJDWHeJp4nY36dLpCL
-         /cS69PUGZmkGONBQ52EiK7VIXdYoyyHOIMw+kTvFBvQmGEc8lmMXlEHVIGiZfrW3ejMt
-         9ai+emmbPtFqbqZlDrRFuKlpS9qtdOXjN3Gvpoy+cPgmGi0IoYqwDDhylnyPMjrUX4WN
-         UEMg==
-X-Gm-Message-State: AOAM531kJjcipsBC2vA7Bff4jDUPJdu2IGlMLy627SnL522oDYWe1Vxk
-        QRm3AU9BLGuGO1sv+KItZ6ZVFg==
-X-Google-Smtp-Source: ABdhPJwJMmiOYDPicXwu33oqs9TY/hmcKJC1b+3L8fpmMemBdalMXX5WbxiE5C9+96fCPMhs7DwTzQ==
-X-Received: by 2002:a9d:7088:: with SMTP id l8mr2850061otj.333.1612377015508;
-        Wed, 03 Feb 2021 10:30:15 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o98sm587061ota.0.2021.02.03.10.30.14
+        bh=TiOisWoMM5J0+N5wrdR7qjGRMcCnnxa5MwmQ2/1A7Ww=;
+        b=QoDKeiyRu1EHZJPtaOSqTqZjbC/Fxi18n4L3jAlbjArLyz9kFNvKnFu2K/iwiRfvGp
+         RaI1vUsy1OG4bED3WGKS9qg+Itdf/Yb0xFMl8M6L6VhcebcvBhG9GL7WBvF8+Eu0yg/N
+         Tp+EDZa6tZDPi4Q6ELE35LUdoszR6B4dP+vs+ov9fbrdXAOpkkgYyhVIuS1q44T3HSBr
+         5w5sRvmBNIe3LdZax0hNXyvGVB4EenziUCGLGTJ9UdQ1KDgmGQj0Z3QLat9/zImNVhbj
+         XAswFKNRVHd4jZRWw2qyCI65UdOIR09nOv4Gf2uMSVx69vfqn0j0xikQ9wSn6vPI2ekK
+         rVZA==
+X-Gm-Message-State: AOAM530JW+z3ro5+yYRsY25y7i/UlMKgJIN8bxpRwx/mvEut0Yge0dtK
+        +AuTza6yRByUvE6JZuzQeIfPXr8OuFF13Q7hRGdXSH3VEUqfvr6aYozDhhon3Zuns8R66vzyn4c
+        yjG17AK28XSMAeKTgZFiIRMNA
+X-Received: by 2002:a17:906:2b11:: with SMTP id a17mr4461048ejg.203.1612377052471;
+        Wed, 03 Feb 2021 10:30:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxuzKzmIpNThLgL2hkQbClOrns4+7OkKK8je1Ds3SP1NLbweMJ1vlqIoalInh1oEg4EUt/rnw==
+X-Received: by 2002:a17:906:2b11:: with SMTP id a17mr4461028ejg.203.1612377052335;
+        Wed, 03 Feb 2021 10:30:52 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c18sm1263910edu.20.2021.02.03.10.30.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 10:30:14 -0800 (PST)
-Subject: Re: [PATCH] selftests: breakpoints: Fix wrong argument of ptrace()
- when single step
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1612341547-22225-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f91f1e69-310e-5256-de6e-9bceeaa7b205@linuxfoundation.org>
-Date:   Wed, 3 Feb 2021 11:30:13 -0700
+        Wed, 03 Feb 2021 10:30:51 -0800 (PST)
+Subject: Re: [PATCH v2 23/28] KVM: x86/mmu: Allow parallel page faults for the
+ TDP MMU
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-24-bgardon@google.com>
+ <d2c4ae90-1e60-23ed-4bda-24cf88db04c9@redhat.com>
+ <CANgfPd-ELyPrn5z0N+o8R6Ci=O25XF+EDU-HDGgvVXGV7uF-dQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <39751a29-3a47-a108-f626-8abf0008ea09@redhat.com>
+Date:   Wed, 3 Feb 2021 19:30:50 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <1612341547-22225-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <CANgfPd-ELyPrn5z0N+o8R6Ci=O25XF+EDU-HDGgvVXGV7uF-dQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,33 +84,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 1:39 AM, Tiezhu Yang wrote:
-> According to the error message, the first argument of ptrace() should be
-> PTRACE_SINGLESTEP instead of PTRACE_CONT when ptrace single step.
+On 03/02/21 18:46, Ben Gardon wrote:
+> enum kvm_mmu_lock_mode lock_mode =
+> get_mmu_lock_mode_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
+> ....
+> kvm_mmu_lock_for_mode(lock_mode);
 > 
-> Fixes: f43365ee17f8 ("selftests: arm64: add test for unaligned/inexact watchpoint handling")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   tools/testing/selftests/breakpoints/breakpoint_test_arm64.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-> index ad41ea6..2f4d4d6 100644
-> --- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-> +++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-> @@ -143,7 +143,7 @@ static bool run_test(int wr_size, int wp_size, int wr, int wp)
->   	if (!set_watchpoint(pid, wp_size, wp))
->   		return false;
->   
-> -	if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
-> +	if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) < 0) {
->   		ksft_print_msg(
->   			"ptrace(PTRACE_SINGLESTEP) failed: %s\n",
->   			strerror(errno));
-> 
+> Not sure if either of those are actually clearer, but the latter
+> trends in the direction the RCF took, having an enum to capture
+> read/write and whether or not yo yield in a lock mode parameter.
 
-Right before this it does a set_watchpoint(). PTRACE_CONT is what
-makes sense to me. Error might be the one that is incorrect here?
+Could be a possibility.  Also:
 
-thanks,
--- Shuah
+enum kvm_mmu_lock_mode lock_mode =
+   kvm_mmu_lock_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
+
+kvm_mmu_unlock(vcpu->kvm, lock_mode);
+
+Anyway it can be done on top.
+
+Paolo
+
