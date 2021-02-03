@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926E630D981
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BD830D986
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbhBCMIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234407AbhBCMI1 (ORCPT
+        id S234489AbhBCMJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:09:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234238AbhBCMJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:08:27 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAF7C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:07:46 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id a25so27989613ljn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:07:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=k8SC04zhe46BAeBAdwY60XqdkZ6XgYx/7aKDZO/PFl4=;
-        b=BoPzZRF8SSfs4Z15ztBzd67Z5x2sMZh/mMzxYrbAuuNWUs+PvrkTRdIsKdv0OlRjS1
-         qeH6/xocFPc1rFA8y/CNRWEMgyYVevIdljOfeYq1z2WWlMW261yqalpDfSrpdaCXNFZ7
-         v2QOQVlvPextTTRC/8HGF9jeokPn/VchzkagwkSV7xRdtKk6Ggpu6htu2o3q9UAb/iHP
-         GPE1BfmWJMcLzdTyugZXYJLHpAShPAH0kkqU+TNeZRGMK0UNN37oycr4PERkS1o+cC4S
-         xhWcNqhYMSlHRkYt4/mm0AsWP4z6Muh754tNKNecyNeQrqd1r2WzFS5D9CyHXz5CIDkH
-         Sdcw==
+        Wed, 3 Feb 2021 07:09:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612354078;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SrvxDfDLxZDeRFfsO00vBgZ9Ba/y5cDui2XTUBzZ7SE=;
+        b=dH/17FQZZeYw4aufQK6MQt2XlufsdQEkUU06zbYYNJQX9LPu9VmXOG3bfA3f7wkZ7r9B+K
+        FIOYPlSaZCksWotNccD+L85RQZNcp57zBDSwz5vVqEWxycJT8qQBZippMjBes019sdbgq1
+        UtAHx24YuqivH5wu0xSIBGGwGuGwkoI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-SyjUe-29NcKZ8Te3gp8_6Q-1; Wed, 03 Feb 2021 07:07:56 -0500
+X-MC-Unique: SyjUe-29NcKZ8Te3gp8_6Q-1
+Received: by mail-ed1-f70.google.com with SMTP id m18so11337948edp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:07:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=k8SC04zhe46BAeBAdwY60XqdkZ6XgYx/7aKDZO/PFl4=;
-        b=j9TLp9bBmJHalRLZM6s9IIsTeLJqGtJMtvAaqIYJ6dDzPCq3PiErkR0tdYAUnUekf/
-         YkjYY5gtYRVYgp3BDtO1yyVZy2F4aYoQ2lDhvFz8vyL0Fa9GpjI2ofZ8W8/sI1yOSNas
-         O4w24F3ZHF/id8f8Z3R+uLI0/qegt6pkKb7UTujtVd4I61gkKrJ7S7zGey9Eke+WLtbk
-         e+L0Wf96Ml+jaLbBHLMTkdlcj6U3EH0FOqs8eHfxB7b/sXSsk9hxa3kRy3ZZh+4tOMec
-         G1TPOsmX5WzsmvM1jp0prDqCeUlWEXrnac9jpz4tt2HsAS+BICcVycyJUmECKvoLB/d4
-         6Z/A==
-X-Gm-Message-State: AOAM530u9F+XIQwhG56LXzNoU7G7WAYd99uoet5anLLz/xj2BGvrP8Eh
-        vuADfWw9p13k1ea2zM/jNSzxCw==
-X-Google-Smtp-Source: ABdhPJwIlOOYtdIyE88BPsfaFbyDb4ITgksGHQng78HRe9TYrxbQ8xRnRodUUqlHuLT2fzTkh2C8uA==
-X-Received: by 2002:a2e:8350:: with SMTP id l16mr1601390ljh.403.1612354065230;
-        Wed, 03 Feb 2021 04:07:45 -0800 (PST)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id u12sm223794lff.250.2021.02.03.04.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 04:07:44 -0800 (PST)
-Date:   Wed, 3 Feb 2021 13:07:42 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Elvira Khabirova <e.khabirova@omprussia.ru>
-Subject: [GIT PULL] TEE housekeeping for v5.12
-Message-ID: <20210203120742.GA3624453@jade>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SrvxDfDLxZDeRFfsO00vBgZ9Ba/y5cDui2XTUBzZ7SE=;
+        b=Eb81VUUYWoUL455PcJukipGZWVMU2cfD2q4SLgGMb6blFyDz9Amw1XaV9lspK5Tlfh
+         F/Y6PUzPCnE7uk586gmn4ugGvYkCsSyRIEW5jMiCdaNrVM+CHp12XHuqF93/IYwyMvMB
+         1zsUJrSlXGMvfrhtgg0nL67xM+cqmRw/ZtU+T/lRqcJsR/+v5rSiuZQFg99AlyX6CRqZ
+         Uk6twVA+KiEOy8P/sNXwuj+inGY50RaOQHp63ZNvEPyJgt7ydYwmiD+I0bcLwMl3gk81
+         l9p/gEhmbWqQmA8QzhNpzHkxgZVu6CkQsHCcBLPVSsO9qhEP0lKctSivQC/ZVpp9vmQw
+         WNbw==
+X-Gm-Message-State: AOAM533ecFiTDYQZzxJLlyWopUovK25r28K1E0kT/TKoi3CBVtxw1Ox0
+        2rA1aksgv3H5gV1rv1z/oYNJuO23MKQD20Yy3Y021daN63cSIK2pOWe3zBwqJ+mmsGcPT5BawkC
+        iQ+qby5CtKx+mAwW01MIIh2E3
+X-Received: by 2002:aa7:c682:: with SMTP id n2mr2626964edq.27.1612354075322;
+        Wed, 03 Feb 2021 04:07:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwab3gwwD2lNmoJMyvUrcXBXIlmu3OP2NO56BrtfHb8dPrg5oZWPTPbqhHovoD08f1EUzfkOg==
+X-Received: by 2002:aa7:c682:: with SMTP id n2mr2626934edq.27.1612354075090;
+        Wed, 03 Feb 2021 04:07:55 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b17sm763438edv.56.2021.02.03.04.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 04:07:54 -0800 (PST)
+Subject: Re: [PATCH v15 14/14] KVM: x86: Save/Restore GUEST_SSP to/from SMRAM
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        jmattson@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yu.c.zhang@linux.intel.com
+References: <20210203113421.5759-1-weijiang.yang@intel.com>
+ <20210203113421.5759-15-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <55e43685-f4a7-b068-8d4c-931b8789f031@redhat.com>
+Date:   Wed, 3 Feb 2021 13:07:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210203113421.5759-15-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On 03/02/21 12:34, Yang Weijiang wrote:
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 22eb6b8626a8..f63b713cd71f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8592,6 +8592,16 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu, char *buf)
+>   
+>   	for (i = 0; i < 6; i++)
+>   		enter_smm_save_seg_64(vcpu, buf, i);
+> +
+> +	if (kvm_cet_supported()) {
+> +		struct msr_data msr;
+> +
+> +		msr.index = MSR_KVM_GUEST_SSP;
+> +		msr.host_initiated = true;
+> +		/* GUEST_SSP is stored in VMCS at vm-exit. */
+> +		kvm_x86_ops.get_msr(vcpu, &msr);
+> +		put_smstate(u64, buf, 0x7ec8, msr.data);
+> +	}
+>   }
+>   #endif
+>   
+> 
 
-Please pull these patches fixing some comment typos and also a larger
-patch syncing some internal OP-TEE driver headers with OP-TEE OS.
+0x7ec8 is used for I/O instruction restart and auto-halt restart. 
+0x7f08 is a free spot.  We should really document the KVM state save 
+area format.
 
-Thanks,
-Jens
+Paolo
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
-
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
-
-are available in the Git repository at:
-
-  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-housekeeping-for-v5.12
-
-for you to fetch changes up to 617d8e8b347edcee6da38df0aeb671fc9c9ba19c:
-
-  optee: sync OP-TEE headers (2021-02-02 14:50:41 +0100)
-
-----------------------------------------------------------------
-TEE subsystem housekeeping
-
-- Fixes some comment typos in header files
-- Updates to use flexible-array member instead of zero-length array
-- Syncs internal OP-TEE headers with the ones from OP-TEE OS
-
-----------------------------------------------------------------
-Bjorn Helgaas (1):
-      tee: optee: fix 'physical' typos
-
-Elvira Khabirova (1):
-      tee: fix some comment typos in header files
-
-Jens Wiklander (1):
-      optee: sync OP-TEE headers
-
-Tian Tao (1):
-      drivers: optee: use flexible-array member instead of zero-length array
-
- drivers/tee/optee/optee_msg.h     | 158 +++-----------------------------------
- drivers/tee/optee/optee_rpc_cmd.h | 103 +++++++++++++++++++++++++
- drivers/tee/optee/optee_smc.h     |  72 +++++++++++------
- drivers/tee/optee/rpc.c           |  39 +++++-----
- include/linux/tee_drv.h           |   2 +-
- include/uapi/linux/tee.h          |   2 +-
- 6 files changed, 183 insertions(+), 193 deletions(-)
- create mode 100644 drivers/tee/optee/optee_rpc_cmd.h
