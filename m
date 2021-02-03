@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430EB30DBEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B3030DBF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhBCNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:54:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232361AbhBCNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:53:16 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232000AbhBCNzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:55:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55203 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232577AbhBCNy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:54:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612360381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=px52d5AvHJ49VuQLZY1SD+L1Jaeps3GqOjk9GodXnr4=;
+        b=FgZGHP7XbgZZk9ZVqprZg9f5/2lr56gToFIJslQ2xj+8UcdCw2N+ojLJJ5YuhMfWmE98T/
+        fkqYt+mlG/AZIeK/6WD6zLPYsPAr94eQ7hllDOB7P+h8dSOjvP/KnyABDzY/O6B1z4iEcj
+        yhVwbaHYSvnnVuB9CvRMpGHzLiXq7lg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-s_XPbuV3NQCubAgtjZxbDg-1; Wed, 03 Feb 2021 08:52:50 -0500
+X-MC-Unique: s_XPbuV3NQCubAgtjZxbDg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14FDF64DDA;
-        Wed,  3 Feb 2021 13:52:33 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 08:52:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210203085232.402e2e35@oasis.local.home>
-In-Reply-To: <20210203223328.9e99548d19d482ac2e2cda81@kernel.org>
-References: <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210129140103.3ce971b7@gandalf.local.home>
-        <20210129162454.293523c6@gandalf.local.home>
-        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-        <20210130074410.6384c2e2@oasis.local.home>
-        <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
-        <20210202095249.5abd6780@gandalf.local.home>
-        <YBmBu0c24RjNYFet@hirez.programming.kicks-ass.net>
-        <20210202115623.08e8164d@gandalf.local.home>
-        <YBmaStZn9XEU0QE+@hirez.programming.kicks-ass.net>
-        <20210202160513.38ada3a7@gandalf.local.home>
-        <20210203223328.9e99548d19d482ac2e2cda81@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DF0180196F;
+        Wed,  3 Feb 2021 13:52:47 +0000 (UTC)
+Received: from [10.36.112.222] (ovpn-112-222.ams2.redhat.com [10.36.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 922C519C59;
+        Wed,  3 Feb 2021 13:52:43 +0000 (UTC)
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
+ <YBisBkSYPoaOM42F@google.com>
+ <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+ <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
+ <5efd931f-9d69-2936-89e8-278fe106616d@redhat.com>
+ <307603f3-52a8-7464-ba98-06cbe4ddd408@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
+Message-ID: <b9aacf06-de2b-b831-6210-25191dd1b0ac@redhat.com>
+Date:   Wed, 3 Feb 2021 14:52:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <307603f3-52a8-7464-ba98-06cbe4ddd408@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 22:33:28 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Ah, that is what I worried about. ftrace and kprobes handler usually want to
-> know "what is the actual status of the system where the probe hits".
+On 03.02.21 14:46, Paolo Bonzini wrote:
+> On 03/02/21 14:44, David Hildenbrand wrote:
+>> BTW: what are your thoughts regarding converting the rmap array on
+>> x86-64 into some dynamic datastructre (xarray etc)? Has that already
+>> been discussed?
 > 
-> If the new kernel_exception_enter() for ftrace/kprobes or any other kernel
-> instrumention does
-> 
->   __preempt_count_add(KEX_OFFSET + NMI_OFFSET + HARDIRQ_OFFSET);
-> 
-> And we can distinguish the KEX from NMI, and get the original status of the context.
-> What would you think about?
+> Hasn't been discussed---as always, showing the code would be the best
+> way to start a discussion. :)
 
-Oh, that reminds me about the obvious difference between an NMI and a
-ftrace handler. A ftrace handler doesn't disable interrupts nor
-preemption. Thus, if you set "in_nmi" to a ftrace handler, and an
-interrupt (or NMI) comes in, then any ftrace handlers called by the
-interrupt / NMI will be ignored, since it will think it is recursing
-from NMI context.
+If only a workday would have more hours :)
 
--- Steve
+> 
+> However, note that the TDP MMU does not need an rmap at all.  Since that
+> one is getting ready to become the default, the benefits of working on
+> the rmap would be quite small and only affect nested virtualization.
+
+Right, but we currently always have to allocate it.
+
+8 bytes per 4k page, 8 bytes per 2M page, 8 bytes per 1G page.
+
+The 4k part alone is 0.2% of the memblock size.
+
+For a 1 TB memslot we might "waste" > 2 GB on rmap arrays.
+
+(that's why I am asking :) )
+
+-- 
+Thanks,
+
+David / dhildenb
+
