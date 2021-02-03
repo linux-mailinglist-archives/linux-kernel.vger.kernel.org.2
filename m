@@ -2,182 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C68630E3D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCEE30E3E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhBCUIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbhBCUIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:08:13 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB53AC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:07:32 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c84001e2b7e52dd5f0f2b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:1e2b:7e52:dd5f:f2b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 883071EC0257;
-        Wed,  3 Feb 2021 21:07:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612382851;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=38wSyikznTFpte5lV/T1Lvh18Tw8swoxpSZ+gkgknlo=;
-        b=dZvypFna//c08ncXVryx5AG5dIQVW6R8A6tN+ZysYxCtfKs50ZtzAG1NcgGqazKDVQp0rf
-        hVREjyKrmXWgaigc7Z6YwhO5vM0IUgQm1yyEhs+7PR2wyKZkkLmOPzOct/jqzVF6MTYTcN
-        hqv6wzxiu1w+aY7YA7lc06BxT8HBwok=
-Date:   Wed, 3 Feb 2021 21:07:29 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 09/11] x86/fault: Rename no_context() to
- kernelmode_fixup_or_oops()
-Message-ID: <20210203200729.GL13819@zn.tnic>
-References: <20210203193949.GI13819@zn.tnic>
- <88AA1DD6-615B-4049-B335-F2F40F85EF08@amacapital.net>
+        id S231923AbhBCUKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:10:37 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:56606 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhBCUK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:10:29 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1l7OT4-0005c4-67; Wed, 03 Feb 2021 21:09:38 +0100
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
+ <YBisBkSYPoaOM42F@google.com>
+ <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+ <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
+Message-ID: <b3b1a203-f492-1a7a-a486-b84590a03c11@maciej.szmigiero.name>
+Date:   Wed, 3 Feb 2021 21:09:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <88AA1DD6-615B-4049-B335-F2F40F85EF08@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:53:03AM -0800, Andy Lutomirski wrote:
-> I feel like that would be more obfuscated — then the function would
-> return without fixing anything for usermode faults, return after
-> fixing it for kernel mode faults, or oops.
+On 03.02.2021 14:41, Paolo Bonzini wrote:
+> On 02/02/21 23:42, Maciej S. Szmigiero wrote:
+>>> I'm not opposed to using more sophisticated storage for the gfn lookups, but only if there's a good reason for doing so.  IMO, the
+>>> rbtree isn't simpler, just different.
+> 
+> And it also has worse cache utilization than an array, due to memory footprint (as you point out below) but also pointer chasing.
 
-You practically pretty much have it already with the WARN_ON_ONCE. And
-you can make the thing return 1 to denote it was in user_mode() and 0
-otherwise. IINMSO, something like this:
+The best data structure here would probably be something like a dense
+B-tree.
 
----
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 08f5f74cf989..2b86d541b181 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -692,11 +692,12 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- 	oops_end(flags, regs, sig);
- }
- 
--static noinline void
-+static noinline int
- kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
- 			 unsigned long address, int signal, int si_code)
- {
--	WARN_ON_ONCE(user_mode(regs));
-+	if (WARN_ON_ONCE(user_mode(regs)))
-+		return 1;
- 
- 	/* Are we prepared to handle this kernel fault? */
- 	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
-@@ -706,7 +707,7 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
- 		 * task context.
- 		 */
- 		if (in_interrupt())
--			return;
-+			return 0;
- 
- 		/*
- 		 * Per the above we're !in_interrupt(), aka. task context.
-@@ -726,7 +727,7 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
- 		/*
- 		 * Barring that, we can do the fixup and be happy.
- 		 */
--		return;
-+		return 0;
- 	}
- 
- 	/*
-@@ -734,9 +735,11 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
- 	 * instruction.
- 	 */
- 	if (is_prefetch(regs, error_code, address))
--		return;
-+		return 0;
- 
- 	page_fault_oops(regs, error_code, address);
-+
-+	return 0;
- }
- 
- /*
-@@ -781,10 +784,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- {
- 	struct task_struct *tsk = current;
- 
--	if (!user_mode(regs)) {
--		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
-+	if (!kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code))
- 		return;
--	}
- 
- 	if (!(error_code & X86_PF_USER)) {
- 		/* Implicit user access to kernel memory -- just oops */
-@@ -913,10 +914,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- 	  vm_fault_t fault)
- {
- 	/* Kernel mode? Handle exceptions or die: */
--	if (!user_mode(regs)) {
--		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
-+	if (!kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR))
- 		return;
--	}
- 
- 	/* User-space => ok to do another page fault: */
- 	if (is_prefetch(regs, error_code, address))
-@@ -1378,10 +1377,8 @@ void do_user_addr_fault(struct pt_regs *regs,
- 		 * Quick path to respond to signals.  The core mm code
- 		 * has unlocked the mm for us if we get here.
- 		 */
--		if (!user_mode(regs))
--			kernelmode_fixup_or_oops(regs, error_code, address,
--						 SIGBUS, BUS_ADRERR);
--		return;
-+		if (!kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR))
-+			return;
- 	}
- 
- 	/*
-@@ -1399,18 +1396,15 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	if (likely(!(fault & VM_FAULT_ERROR)))
- 		return;
- 
--	if (fatal_signal_pending(current) && !user_mode(regs)) {
--		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
--		return;
-+	if (fatal_signal_pending(current)) {
-+		if (!kernelmode_fixup_or_oops(regs, error_code, address, 0, 0))
-+			return;
- 	}
- 
- 	if (fault & VM_FAULT_OOM) {
- 		/* Kernel mode? Handle exceptions or die: */
--		if (!user_mode(regs)) {
--			kernelmode_fixup_or_oops(regs, error_code, address,
--						 SIGSEGV, SEGV_MAPERR);
-+		if (!kernelmode_fixup_or_oops(regs, error_code, address, SIGSEGV, SEGV_MAPERR))
- 			return;
--		}
- 
- 		/*
- 		 * We ran out of memory, call the OOM killer, and return the
+Unfortunately, there seems to be no such thing currently in the kernel,
+and designing a good generic implementation would be a major challenge on
+its own.
 
--- 
-Regards/Gruss,
-    Boris.
+However, even an ordinary rbtree still gets a decent performance here.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+But nothing stops us from switching the underlying tree implementation
+in the future.
+
+>>> Memslot modifications are
+>>> unlikely to be a hot path (and if it is, x86's "zap everything"
+>>> implementation is a far bigger problem), and it's hard to beat the
+>>> memory footprint of a raw array.  That doesn't leave much motivation for such a big change to some of KVM's scariest (for me)
+>>> code.
+>>>
+>>
+>> Improvements can be done step-by-step, kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in
+>> the future, if necessary. After all, complains are that this change
+>> alone is too big.
+>>
+>> I think that if you look not at the patch itself but at the
+>> resulting code the new implementation looks rather straightforward,
+>> there are comments at every step in kvm_set_memslot() to explain
+>> exactly what is being done. Not only it already scales well, but it
+>> is also flexible to accommodate further improvements or even new
+>> operations.
+>>
+>> The new implementation also uses standard kernel {rb,interval}-tree
+>> and hash table implementation as its basic data structures, so it automatically benefits from any generic improvements to these.
+>>
+>> All for the low price of just 174 net lines of code added.
+> 
+> I think the best thing to do here is to provide a patch series that splits the individual changes so that they can be reviewed and their separate merits evaluated.
+
+Yes, I will split the series into separate patches.
+
+> Another thing that I dislike about KVM_SET_USER_MEMORY_REGION is that
+> IMO userspace should provide all memslots at once, for an atomic switch 
+> of the whole memory array. (Or at least I would like to see the code;
+> it might be a bit tricky because you'll need code to compute the
+> difference between the old and new arrays and invoke
+> kvm_arch_prepare/commit_memory_region).
+>> I'm not sure how that would interact with the active/inactive pair that
+> you introduce here.
+
+That was my observation too, but since that's an API change it will
+require a careful upfront design discussion since it will be hard or
+even impossible to change in the future.
+
+I guess you are thinking about something like KVM_SET_USER_MEMORY_REGIONS
+that atomically switches the current memslot set (or array) with the
+provided one.
+
+For this, the implementation will need to do a diff since we want to
+keep things like arch data for the existing memslots that are also in
+the new set.
+
+Doing a diff is necessarily O(k + n), where is k is the total number of
+memslots in the system and n is the number of memslots in the request.
+
+So if one wants to change flags on 10 memslots with 100 memslots in the
+system he will still pay the price of going through all the 100
+memslots in the system and in the request.
+
+I had actually something like KVM_CHANGE_USER_MEMORY_REGIONS in mind
+where the caller asks KVM to atomically perform the requested changes to
+the current set.
+That's just O(n), where is n is the number of memslots (or changes) in
+the request.
+
+I'm assuming the new memslots implementation here, in the old
+array-based implementation this is still O(k + n) as the memslot array
+will have to be copied anyway.
+
+In any case, with the new implementation, the two memslot sets are
+enough to implement any number of atomic changes with maximum two
+active <-> inactive set swaps per the whole call, just as the code
+currently does.
+
+The exception here might be multiple conflicting changes in one
+changeset (like: add a memslot, then move it, then delete).
+
+But that's a simple thing to solve: we can allow just one operation
+per memslot per changeset - I don't see a reason why anybody would
+need more.
+
+> 
+> Paolo
+> 
+
+Thanks,
+Maciej
