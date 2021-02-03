@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEAF30DC3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B850830DC0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232723AbhBCOHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:07:13 -0500
-Received: from mga06.intel.com ([134.134.136.31]:50302 "EHLO mga06.intel.com"
+        id S232263AbhBCN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:59:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:40636 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhBCOG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:06:57 -0500
-IronPort-SDR: gUkjARQ9dLSVzq0CHyo477+/7v7N51NOf8XZbHH8HKWhnOTZdbUsLu9PrQXqTlV6ZB0t7oHFaF
- ULLKnYxzkNRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="242555134"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="242555134"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 06:03:54 -0800
-IronPort-SDR: C3doJmNYuXbGOy+oZ4nO3lskPms/uDl+mx+Xy4Uho6Fm4uWlDl6VRCmDUn1xCrecBTqm43NLYE
- OfUY3VVq76MA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="371490702"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Feb 2021 06:03:52 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] KVM: x86: Expose Architectural LBR CPUID and its XSAVES bit
-Date:   Wed,  3 Feb 2021 21:57:14 +0800
-Message-Id: <20210203135714.318356-5-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210203135714.318356-1-like.xu@linux.intel.com>
-References: <20210203135714.318356-1-like.xu@linux.intel.com>
+        id S231869AbhBCN7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:59:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8148F13D5;
+        Wed,  3 Feb 2021 05:58:29 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.11.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A40443F73B;
+        Wed,  3 Feb 2021 05:58:25 -0800 (PST)
+Date:   Wed, 3 Feb 2021 13:58:22 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Bill Wendling <morbo@google.com>, swine@google.com,
+        yonghyun@google.com
+Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
+ switch table on arm64
+Message-ID: <20210203135822.GN55896@C02TD0UTHF1T.local>
+References: <20210120173800.1660730-13-jthierry@redhat.com>
+ <20210127221557.1119744-1-ndesaulniers@google.com>
+ <20210127232651.rj3mo7c2oqh4ytsr@treble>
+ <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
+ <20210201214423.dhsma73k7ccscovm@treble>
+ <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
+ <671f1aa9-975e-1bda-6768-259adbdc24c8@redhat.com>
+ <CAKwvOdkqWyDbAvMJAd6gkc2QAEL7DiZg6_uRJ6NUE4tCip4Jvw@mail.gmail.com>
+ <20210203001414.idjrcrki7wmhndre@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203001414.idjrcrki7wmhndre@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CPUID.(EAX=07H, ECX=0):EDX[19] is exposed to 1, the KVM supports Arch
-LBRs and CPUID leaf 01CH indicates details of the Arch LBRs capabilities.
-As the first step, KVM only exposes the current LBR depth on the host for
-guest, which is likely to be the maximum supported value on the host.
+On Tue, Feb 02, 2021 at 06:14:14PM -0600, Josh Poimboeuf wrote:
+> On Tue, Feb 02, 2021 at 03:01:22PM -0800, Nick Desaulniers wrote:
+> > > >> Thus far we've been able to successfully reverse engineer it on x86,
+> > > >> though it hasn't been easy.
+> > > >>
+> > > >> There were some particulars for arm64 which made doing so impossible.
+> > > >> (I don't remember the details.)
+> > >
+> > > The main issue is that the tables for arm64 have more indirection than x86.
+> > 
+> > I wonder if PAC or BTI also make this slightly more complex?  PAC at
+> > least has implications for unwinders, IIUC.
+> 
+> What is PAC/BTI?
 
-If KVM supports XSAVES, the CPUID.(EAX=0DH, ECX=1):EDX:ECX[bit 15]
-is also exposed to 1, which means the availability of support for Arch
-LBR configuration state save and restore. When available, guest software
-operating at CPL=0 can use XSAVES/XRSTORS manage supervisor state
-component Arch LBR for own purposes once IA32_XSS [bit 15] is set.
-XSAVE support for Arch LBRs is enumerated in CPUID.(EAX=0DH, ECX=0FH).
+PAC is "Pointer Authentication Codes". The gist is that we munge some
+bits in pointers when they get stored in memory (called "signing"), and
+undo that with a check (called "authentication") when reading from
+memory, in order to detect unexpected modification. There's some new
+instructions that may exist in function prologues and epilogues, etc.
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kvm/cpuid.c   | 23 +++++++++++++++++++++++
- arch/x86/kvm/vmx/vmx.c |  2 ++
- arch/x86/kvm/x86.c     | 10 +++++++++-
- 3 files changed, 34 insertions(+), 1 deletion(-)
+There's a basic introduction at:
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 944f518ca91b..900149eec42d 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -778,6 +778,29 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 			entry->edx = 0;
- 		}
- 		break;
-+	/* Architectural LBR */
-+	case 0x1c:
-+	{
-+		u64 lbr_depth_mask = 0;
-+
-+		if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR)) {
-+			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
-+			break;
-+		}
-+
-+		/*
-+		 * KVM only exposes the maximum supported depth,
-+		 * which is also the fixed value used on the host.
-+		 *
-+		 * KVM doesn't allow VMM user sapce to adjust depth
-+		 * per guest, because the guest LBR emulation depends
-+		 * on the implementation of the host LBR driver.
-+		 */
-+		lbr_depth_mask = 1UL << fls(entry->eax & 0xff);
-+		entry->eax &= ~0xff;
-+		entry->eax |= lbr_depth_mask;
-+		break;
-+	}
- 	/* Intel PT */
- 	case 0x14:
- 		if (!kvm_cpu_cap_has(X86_FEATURE_INTEL_PT)) {
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 9ddf0a14d75c..c22175d9564e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7498,6 +7498,8 @@ static __init void vmx_set_cpu_caps(void)
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
- 	if (vmx_pt_mode_is_host_guest())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-+	if (cpu_has_vmx_arch_lbr())
-+		kvm_cpu_cap_check_and_set(X86_FEATURE_ARCH_LBR);
- 
- 	if (vmx_umip_emulated())
- 		kvm_cpu_cap_set(X86_FEATURE_UMIP);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 667d0042d0b7..107f2e72f526 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10385,8 +10385,16 @@ int kvm_arch_hardware_setup(void *opaque)
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
- 		supported_xss = 0;
--	else
-+	else {
- 		supported_xss &= host_xss;
-+		/*
-+		 * The host doesn't always set ARCH_LBR bit to hoss_xss since this
-+		 * Arch_LBR component is used on demand in the Arch LBR driver.
-+		 * Check e649b3f0188f "Support dynamic supervisor feature for LBR".
-+		 */
-+		if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
-+			supported_xss |= XFEATURE_MASK_LBR;
-+	}
- 
- 	/* Update CET features now that supported_xss is finalized. */
- 	if (!kvm_cet_supported()) {
--- 
-2.29.2
+https://events.static.linuxfound.org/sites/events/files/slides/slides_23.pdf
+https://www.kernel.org/doc/html/latest/arm64/pointer-authentication.html
 
+Return address signing/authentication uses the SP as an input, so
+without knowing the SP something was signed against it's not possible to
+alter it reliably (or to check it). The arm64 unwinder ignores the PAC
+bits, and ftrace uses patchable-function-entry so that we don't have to
+do anything special to manipulate the return address.
+
+Today the ABI used by the kernel doesn't mess with the pointers used in
+jump tables, but that may come in future as toolchain folk are working
+to define an ABI that might.
+
+BTI is "Branch Target Identification", which is a bit like CET's
+indirect branch tracking -- indirect branches need to land on a specific
+instruction, or they'll raise an exception.
+
+Thanks,
+Mark.
