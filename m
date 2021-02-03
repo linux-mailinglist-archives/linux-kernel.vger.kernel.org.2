@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC85F30DEF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFC530DEF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbhBCP6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:58:37 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:44424 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbhBCP4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:56:05 -0500
-Received: by mail-oi1-f173.google.com with SMTP id n7so296941oic.11;
-        Wed, 03 Feb 2021 07:55:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qT9vhKEcJnv2UxHfk3LsH4oahpbnsqDoYZLdzv8tkwQ=;
-        b=YCZJ1yp85PvCKJN7RAdn+4VEigPGpegOt2q/tut50IqCuAFWiO1topmTGZQ7Y8e14N
-         RmJF6Bblo/B7D48QIiAG9sEfVgOB4qYTwNObAKUd9XMDrwP4Z0CfOolEkL+WD1okGXpU
-         sz+biOuKuoB/1jTAqeG0HlwZp1714Ud90/Sg22EVD/TLOhRau3YrvQFGJUfjH6QY1qUQ
-         EBDLPt+eweof8NpOr/gRsDK1DyjjWy/kq0NWUiehPcn/6HZPw+F7nnv4cvpvedBPGc+p
-         Memp5xX+UcC/LJY/Aam5aNJgJTLKr+lmqSjjiV9WWpgT02zDk8vrjVusJ6PDI62Oct48
-         iQQw==
-X-Gm-Message-State: AOAM533b2I7bGEo3hw3v6/mIth82iIPKKHFI1b62M5w+kvVcFITRjxuC
-        rvuRRCB0nb4iPVEFxKbbeg==
-X-Google-Smtp-Source: ABdhPJxmOBQcH5R+lFiUlGBqVbuj5kwZxcJFcUI25C3II5lOgKlwz+nfG7ePzMnfdKQ5jcv5RyiyOg==
-X-Received: by 2002:aca:4e13:: with SMTP id c19mr2424431oib.66.1612367721055;
-        Wed, 03 Feb 2021 07:55:21 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o14sm481868oof.38.2021.02.03.07.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 07:55:19 -0800 (PST)
-Received: (nullmailer pid 1895243 invoked by uid 1000);
-        Wed, 03 Feb 2021 15:55:17 -0000
-Date:   Wed, 3 Feb 2021 09:55:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Vincent Cheng <vincent.cheng.xh@renesas.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: Fix errors in 'if' schemas
-Message-ID: <20210203155517.GC3706951@robh.at.kernel.org>
-References: <20210202205544.24812-1-robh@kernel.org>
- <20210202205544.24812-3-robh@kernel.org>
- <CAMuHMdVvtUvrQh3-3kxaqqWvHnF_UOQmt-6jq_GkX8g=cszUug@mail.gmail.com>
+        id S234675AbhBCP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:58:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234699AbhBCP5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:57:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2ABE64D90;
+        Wed,  3 Feb 2021 15:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612367782;
+        bh=iqZEmEMfQVbGhNOvrmiywegPN/XO5IkB/s/O37rDgDo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oQETclcCklKxjatzOTdvcf3oRfofVwOL5h4ZheCcP+bELF9XrnlVJ++fAqoPOVEuO
+         +2xhvJca3GOKM6xsNhgd02eWrhOP1Aj22g0QNFMEk1mzzWzvZd40THn9me/dnvivr+
+         pe+pbO3dEst/Tt/twV4HR0NjE19LX4WwCiPPcXaU/3Gclz7KC0YFeZuOG656WzWIpF
+         LG40diET7n3y1TnWXqOzdvTQWP83x92ZqKnaFDw66H9wBvNYQO8zYAmQgoiQ7aFzv+
+         ILP/1EpGhRi+9HbsHGEv49NjTalEofGHLoO2Q2zd25qlnekUPxoLOOkb8CHKMsjzS+
+         2LCb84mj9D8fg==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l7KWB-000363-CJ; Wed, 03 Feb 2021 16:56:36 +0100
+Date:   Wed, 3 Feb 2021 16:56:35 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jens Frederich <jfrederich@gmail.com>,
+        Jon Nettleton <jon.nettleton@gmail.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/apic/of: Fix CPU devicetree-node lookups
+Message-ID: <YBrHs7UJNkkLpagx@hovoldconsulting.com>
+References: <20201210133910.4229-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdVvtUvrQh3-3kxaqqWvHnF_UOQmt-6jq_GkX8g=cszUug@mail.gmail.com>
+In-Reply-To: <20201210133910.4229-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 09:01:23AM +0100, Geert Uytterhoeven wrote:
-> Hi Rob,
+On Thu, Dec 10, 2020 at 02:39:10PM +0100, Johan Hovold wrote:
+> Architectures that describe the CPU topology in devicetree and that do
+> not have an identity mapping between physical and logical CPU ids need
+> to override the default implementation of arch_match_cpu_phys_id().
 > 
-> On Tue, Feb 2, 2021 at 9:55 PM Rob Herring <robh@kernel.org> wrote:
-> > Properties in if/then schemas weren't getting checked by the meta-schemas.
-> > Enabling meta-schema checks finds several errors.
-> >
-> > The use of an 'items' schema (as opposed to the list form) is wrong in
-> > some cases as it applies to all entries. 'contains' is the correct schema
-> > to use in the case of multiple entries.
+> Failing to do so breaks CPU devicetree-node lookups using
+> of_get_cpu_node() and of_cpu_device_node_get() which several drivers
+> rely on. It also causes the CPU struct devices exported through sysfs to
+> point to the wrong devicetree nodes.
 > 
-> > Signed-off-by: Rob Herring <robh@kernel.org>
+> On x86, CPUs are described in devicetree using their APIC ids and those
+> do not generally coincide with the logical ids, even if CPU0 typically
+> uses APIC id 0. Add the missing implementation of
+> arch_match_cpu_phys_id() so that CPU-node lookups work also with SMP.
 > 
-> Thanks for your patch!
+> Apart from fixing the broken sysfs devicetree-node links this likely do
+> not affect users of mainline kernels as the above mentioned drivers are
+> currently not used on x86 as far as I know.
 > 
-> > --- a/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml
-> > +++ b/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml
-> > @@ -81,9 +81,8 @@ properties:
-> >  if:
-> >    properties:
-> >      compatible:
-> > -      items:
-> > -        enum:
-> > -          - renesas,usb2-phy-r7s9210
-> > +      contains:
-> > +        const: renesas,usb2-phy-r7s9210
+> Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
+> Cc: stable <stable@vger.kernel.org>     # 4.17
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
 > 
-> Single entry, so "contains" not needed?
+> Thomas,
+> 
+> Hope this looks better to you.
+> 
+> My use case for this is still out-of-tree, but since CPU-node lookup is
+> generic functionality and with observable impact also for mainline users
+> (sysfs) I added a stable tag.
 
-No, you are misunderstanding how these work. 'contains' means at least 
-one entry in an array passes with the subschema. In this case, 
-'renesas,usb2-phy-r7s9210' must appear somewhere in the 'compatible' 
-values. (Before, it said *every* entry must be 
-'renesas,usb2-phy-r7s9210'.) As there is a fallback compatible, we need 
-'contains'.
+Did you have a chance to look at this one yet?
 
-> > --- a/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml
-> > +++ b/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml
-> > @@ -76,11 +76,10 @@ required:
-> >  if:
-> >    properties:
-> >      compatible:
-> > -      items:
-> > -        enum:
-> > -          - renesas,pfc-r8a73a4
-> > -          - renesas,pfc-r8a7740
-> > -          - renesas,pfc-sh73a0
-> > +      enum:
-> > +        - renesas,pfc-r8a73a4
-> > +        - renesas,pfc-r8a7740
-> > +        - renesas,pfc-sh73a0
+Johan
+
+> Changes in v2
+>  - rewrite commit message
+>  - add Fixes tag
+>  - add stable tag for the benefit of out-of-tree users
 > 
-> Missing "contains"?
-
-No. In this case, 'compatible' is always a single entry, so no 
-'contains' needed (but would work). If compatible is one of these 3 
-strings, then the 'if' is true.
-
-The original way would actually work in this case (i.e. is valid 
-json-schema), but we require 'items' to have a size (maxItems/minItems) 
-in our meta-schema.
-
-Rob
+> 
+>  arch/x86/kernel/apic/apic.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+> index b3eef1d5c903..19c0119892dd 100644
+> --- a/arch/x86/kernel/apic/apic.c
+> +++ b/arch/x86/kernel/apic/apic.c
+> @@ -2311,6 +2311,11 @@ static int cpuid_to_apicid[] = {
+>  	[0 ... NR_CPUS - 1] = -1,
+>  };
+>  
+> +bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
+> +{
+> +	return phys_id == cpuid_to_apicid[cpu];
+> +}
+> +
+>  #ifdef CONFIG_SMP
+>  /**
+>   * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
