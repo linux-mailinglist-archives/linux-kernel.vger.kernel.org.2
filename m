@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D4730E7AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A9D30E7B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhBCXlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:41:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233830AbhBCXks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:40:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id EC29664F6A;
-        Wed,  3 Feb 2021 23:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612395608;
-        bh=q9BxotSLBBSN8u2Vr9VcUeYX7bXPSF7tTXaw7RBTLS4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IuBHEyptqLsCyt1jR6LYEDFASPrbvnNcPL6EA0komEblBWgokNoHNOZn9+ER76eAx
-         roky4DXNtDHJYXd8bE4xFNomHoHtZAqCV+wrllbXg1Dr9U/UU66HgaYTwkSI18Ygyk
-         gqwdi74zogtRLaRGWIjoYSYU2TLMbowAyT8o7vDjvPfuf/Unh1xZEnqQMgtrB0+xoV
-         BjKjIe9OmRyEvFaulTIA/muOCqBM32sqRY1uZwgKOvrc2tyqDzY1FvAprg38rXO61W
-         SqMZUOHarLxFZvVvJeVldmKRaZl1i5S6ykKR03rnkanPdLYWZgXxDS/StiBmH00jU+
-         ThiWbc6GWyObg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E0D83609E3;
-        Wed,  3 Feb 2021 23:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: usb: cdc_ncm: use new API for bh tasklet
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161239560791.28685.2748394162925651238.git-patchwork-notify@kernel.org>
-Date:   Wed, 03 Feb 2021 23:40:07 +0000
-References: <20210130234637.26505-1-kernel@esmil.dk>
-In-Reply-To: <20210130234637.26505-1-kernel@esmil.dk>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        oliver@neukum.org, davem@davemloft.net, kuba@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+        id S233290AbhBCXmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233979AbhBCXmE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:42:04 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FC5C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:41:23 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id gx14so601007pjb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:41:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=oHeR63Z70RmJTg5fFSLB2/8dgbWutAkfv569ssbNMXI=;
+        b=JYPUMPkqABAnb5/flE82Sn6uvfOXjCLZTpcUa6yZZrhDq5iYl6ShdaJcK3XmpiD1JD
+         5MRQhz1XM+afe6tGFkKg6wnsMIGnLnGdObZzTO9551umR8SRxiAT/25cuDjBSFGn6weR
+         rI9ffgcozjThBlP5HIGMtIPS8lVen1lvP2Sd+ntnvQEEqlNp379IMr1jwtnttTeLvk1t
+         V5GfmFj8WL2EgfLnoCRmHzWAzUrrf5M46DV7IkReb6t3POXfNvW+rzs1w9QRg0A5/JoQ
+         qgwoMk+0CdKpxUmJAq1eM4uHmllV7UQxUOfko4J6Nvq9+oVL3nQSS6ducTfwNLdJO2+J
+         7O6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=oHeR63Z70RmJTg5fFSLB2/8dgbWutAkfv569ssbNMXI=;
+        b=gFZvEz6Ce7Taxtfle1duuqMZnjKkTH9R7UcV+HOchJwI7yMvmAhjPNdW5ZwB3rryFp
+         cr5HhIzLzXyrP36hltQXe8KKE0NVRco6sOZPedaP6Iyhvt9TMuESxyY34l4NSKWxNSeL
+         KnVT7oUfHKYS0yqAbZ4K1qtStEo4jWbaVRyE1myqmATFHpT49u+wKwYQBMpqhXWHBZ/L
+         A9N8iLBuYzjPo84nHvIhImfWGDNwjJZhb7NWwdioz1P0RMLGKrnMRAyFMMk/JwdFvucU
+         65Jebo+DD4lUlMCRCUlgsfgXGBbrY0oFTSQpM0wJCrCSgQkEY/b0Zb9gynj0V3vDIIsZ
+         cY6g==
+X-Gm-Message-State: AOAM532F8+RPEz37crQQyW84tAwHbeMnm3AHct0XoOEBISiobyIt0NLY
+        g0W0EN/E8kQVdPzRUIam2ExrTKRWPevn/w==
+X-Google-Smtp-Source: ABdhPJxiTiWA1uh8AnL+mr3jabdh6XqrJho714zWuMgZyOhxQZavXF8ldV7RwMIh2728yoDJ3/VqsGrS4yAr8Q==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:bd7a:7717:5b5b:de27])
+ (user=dlatypov job=sendgmr) by 2002:a63:703:: with SMTP id
+ 3mr6023570pgh.272.1612395683077; Wed, 03 Feb 2021 15:41:23 -0800 (PST)
+Date:   Wed,  3 Feb 2021 15:41:13 -0800
+Message-Id: <20210203234116.839819-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH 0/3] kunit: support running subsets of test suites from
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+When using `kunit.py run` to run tests, users must populate a
+`kunitconfig` file to select the options the tests are hidden behind and
+all their dependencies.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+The patch [1] to allow specifying a path to kunitconfig promises to make
+this nicer as we can have checked in files corresponding to different
+sets of tests.
 
-On Sun, 31 Jan 2021 00:46:37 +0100 you wrote:
-> This converts the driver to use the new tasklet API introduced in
-> commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
-> 
-> It is unfortunate that we need to add a pointer to the driver context to
-> get back to the usbnet device, but the space will be reclaimed once
-> there are no more users of the old API left and we can remove the data
-> value and flag from the tasklet struct.
-> 
-> [...]
+But it's still annoying 
+1) when trying to run a subet of tests
+2) when you want to run tests that don't have such a pre-existing
+kunitconfig and selecting all the necessary options is tricky.
 
-Here is the summary with links:
-  - net: usb: cdc_ncm: use new API for bh tasklet
-    https://git.kernel.org/netdev/net-next/c/4f4e54366eae
+This patch series aims to alleviate both:
+1) `kunit.py run 'my-suite-*'`
+I.e. use my current kunitconfig, but just run suites that match this glob
+2) `kunit.py run --alltests 'my-suite-*'`
+I.e. use allyesconfig so I don't have to worry about writing a
+kunitconfig at all (this is a bit overkill, but it works!)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+See the first commit message for more details and discussion about
+future work.
 
+This patch series also includes a bugfix for a latent bug that can't be
+triggered right now but has worse consequences as a result of the
+changes needed to plumb in this suite name glob.
+
+[1] https://lore.kernel.org/linux-kselftest/20210201205514.3943096-1-dlatypov@google.com/
+
+Daniel Latypov (3):
+  kunit: add kunit.filter_glob cmdline option to filter suites
+  kunit: tool: add support for filtering suites by glob
+  kunit: tool: fix unintentional statefulness in run_kernel()
+
+ lib/kunit/Kconfig                   |  1 +
+ lib/kunit/executor.c                | 85 ++++++++++++++++++++++++++---
+ tools/testing/kunit/kunit.py        | 21 +++++--
+ tools/testing/kunit/kunit_kernel.py |  6 +-
+ 4 files changed, 99 insertions(+), 14 deletions(-)
+
+
+base-commit: 88bb507a74ea7d75fa49edd421eaa710a7d80598
+-- 
+2.30.0.365.g02bc693789-goog
 
