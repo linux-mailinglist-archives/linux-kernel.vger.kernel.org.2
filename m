@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F234030DEBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABA430DEBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234583AbhBCPwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:52:38 -0500
-Received: from mga14.intel.com ([192.55.52.115]:56154 "EHLO mga14.intel.com"
+        id S234628AbhBCPx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:53:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:42452 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234581AbhBCPv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:51:59 -0500
-IronPort-SDR: LXYbgyfYxjThyU5IExZb/r+EjoyXeoTLi6WJe1VAsTF0lFTCcFq1q7a0eHY9RvASxRa2/aKhG2
- f9+Kq24zLvgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="180289529"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="180289529"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:51:06 -0800
-IronPort-SDR: gr3vgGA40Dbfo+0IP4OhWCYenyInI3rtxhNbxSCaHNk1ZshJISO9zhnwt2BBv+QFa6Sl3Ubzu1
- 42glqzY3Yk2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="414099822"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Feb 2021 07:51:04 -0800
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-To:     dmaengine@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, dan.j.williams@intel.com,
-        andriy.shevchenko@linux.intel.com, vireshk@kernel.org,
-        vkoul@kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH] Revert "dmaengine: dw: Enable runtime PM"
-Date:   Wed,  3 Feb 2021 16:51:00 +0100
-Message-Id: <20210203155100.15034-1-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S234666AbhBCPwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:52:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2D7311FB;
+        Wed,  3 Feb 2021 07:51:23 -0800 (PST)
+Received: from [10.57.35.108] (unknown [10.57.35.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B4913F719;
+        Wed,  3 Feb 2021 07:51:22 -0800 (PST)
+Subject: Re: [PATCH V3 04/14] coresight: ete: Add support for ETE sysreg
+ access
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-5-git-send-email-anshuman.khandual@arm.com>
+ <20210202175241.GC1536093@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <c5e68822-2407-e72e-d31e-620ffc08294c@arm.com>
+Date:   Wed, 3 Feb 2021 15:51:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210202175241.GC1536093@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 842067940a3e3fc008a60fee388e000219b32632.
-For some solutions e.g. sound/soc/intel/catpt, DW DMA is part of a
-compound device (in that very example, domains: ADSP, SSP0, SSP1, DMA0
-and DMA1 are part of a single entity) rather than being a standalone
-one. Driver for said device may enlist DMA to transfer data during
-suspend or resume sequences.
+On 2/2/21 5:52 PM, Mathieu Poirier wrote:
+> On Wed, Jan 27, 2021 at 02:25:28PM +0530, Anshuman Khandual wrote:
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> Add support for handling the system registers for Embedded Trace
+>> Extensions (ETE). ETE shares most of the registers with ETMv4 except
+>> for some and also adds some new registers. Re-arrange the ETMv4x list
+>> to share the common definitions and add the ETE sysreg support.
+>>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 32 +++++++++++++
+>>   drivers/hwtracing/coresight/coresight-etm4x.h      | 52 ++++++++++++++++++----
+>>   2 files changed, 75 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 9edf8be..9e92d2a 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -114,6 +114,38 @@ void etm4x_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit)
+>>   	}
+>>   }
+>>   
+>> +u64 ete_sysreg_read(u32 offset, bool _relaxed, bool _64bit)
+>> +{
+>> +	u64 res = 0;
+>> +
+>> +	switch (offset) {
+>> +	ETE_READ_CASES(res)
+>> +	default :
+>> +		WARN_ONCE(1, "ete: trying to read unsupported register @%x\n",
+>> +			 offset);
+> 
+> Alignment
+> 
+>> +	}
+>> +
+>> +	if (!_relaxed)
+>> +		__iormb(res);	/* Imitate the !relaxed I/O helpers */
+>> +
+>> +	return res;
+>> +}
+>> +
+>> +void ete_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit)
+>> +{
+>> +	if (!_relaxed)
+>> +		__iowmb();	/* Imitate the !relaxed I/O helpers */
+>> +	if (!_64bit)
+>> +		val &= GENMASK(31, 0);
+>> +
+>> +	switch (offset) {
+>> +	ETE_WRITE_CASES(val)
+>> +	default :
+>> +		WARN_ONCE(1, "ete: trying to write to unsupported register @%x\n",
+>> +			offset);
+> 
+> Alignment
+> 
+>> +	}
+>> +}
+> 
+> The etm4x_sysreg_xyz() equivalent of these use a pr_warn_ratelimited() rather
+> than a WARN_ONE().
+> 
+> With that:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Manipulating RPM explicitly in dw's DMA request and release channel
-functions causes suspend() to also invoke resume() for the exact same
-device. Similar situation occurs for resume() sequence. Effectively
-renders device dysfunctional after first suspend() attempt. Revert the
-change to address the problem.
+Converted to pr_warn_ratelimited() to both instances and fixed Alignment
 
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- drivers/dma/dw/core.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 19a23767533a..7ab83fe601ed 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -982,11 +982,8 @@ static int dwc_alloc_chan_resources(struct dma_chan *chan)
- 
- 	dev_vdbg(chan2dev(chan), "%s\n", __func__);
- 
--	pm_runtime_get_sync(dw->dma.dev);
--
- 	/* ASSERT:  channel is idle */
- 	if (dma_readl(dw, CH_EN) & dwc->mask) {
--		pm_runtime_put_sync_suspend(dw->dma.dev);
- 		dev_dbg(chan2dev(chan), "DMA channel not idle?\n");
- 		return -EIO;
- 	}
-@@ -1003,7 +1000,6 @@ static int dwc_alloc_chan_resources(struct dma_chan *chan)
- 	 * We need controller-specific data to set up slave transfers.
- 	 */
- 	if (chan->private && !dw_dma_filter(chan, chan->private)) {
--		pm_runtime_put_sync_suspend(dw->dma.dev);
- 		dev_warn(chan2dev(chan), "Wrong controller-specific data\n");
- 		return -EINVAL;
- 	}
-@@ -1047,8 +1043,6 @@ static void dwc_free_chan_resources(struct dma_chan *chan)
- 	if (!dw->in_use)
- 		do_dw_dma_off(dw);
- 
--	pm_runtime_put_sync_suspend(dw->dma.dev);
--
- 	dev_vdbg(chan2dev(chan), "%s: done\n", __func__);
- }
- 
--- 
-2.17.1
+Cheers
+Suzuki
 
