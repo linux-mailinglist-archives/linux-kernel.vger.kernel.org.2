@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D98A30E28E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B102230E28D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhBCScN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:32:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232145AbhBCSb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:31:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B10AB64EA1
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612377076;
-        bh=qgQXHCOO+dJ+yb7nrlrPLjaNfhwMNTK/2D37AWkM2GU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b4uhGDj52vIKbtPiEWqq6RhUatbEdurtjYlGgyr7LWPklmvbj2u1z3+Lx/k8RQt1T
-         HZyqx68WLYsu0TznjDJ4lHXrDYntGoKDBbhRJbobky+2Wimi2VREIb0PAqlN2675og
-         yel0vm/LPzBvVmayjkxbnfd1aLeDkst1I/ksdo8xNE7QQiN++Vk5S9f6/rE0g7RxVW
-         CNsnE3vQA9eiJdh+dYpOaM1CJzZRrh8QDUsYjDhbx83MMfxkt4LlijKd+Ye5miJ6dO
-         32WsIbWjST/lwfcIqaPl5Q31R+Sr31uywgKs8ywZ/frDesQ3LJQKNykE3EdgTCIbqe
-         qcRKP1h0Vzd9w==
-Received: by mail-oo1-f50.google.com with SMTP id 123so101518ooi.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:31:16 -0800 (PST)
-X-Gm-Message-State: AOAM531zeKtd7YF7g69eNM9F6GHbO18AFXkyDAMjsMcrhe3YKmenugGS
-        V5uCWuJ5BM1H9N/QJ8Lenjs/PiLxXt9KsczwmqU=
-X-Google-Smtp-Source: ABdhPJzwd5KGkhGPt/OEU87BbYt91cpEEmblkRtD+YcxL6JmFSvKeQgDP7VxawLeDkwKP+ZjxzWQ0TT7IuF1t2mYdTQ=
-X-Received: by 2002:a05:6820:283:: with SMTP id q3mr2987191ood.13.1612377075690;
- Wed, 03 Feb 2021 10:31:15 -0800 (PST)
+        id S232555AbhBCScH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232224AbhBCSb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:31:58 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DDAC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:31:18 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id u20so325556iot.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5icF/SSv4kj7JR39aT9z2fccgv7ASkGrVR8k5iH/1WA=;
+        b=oHANDXKgkccZkGxdARQzM+C8j1KtV8+qVeHfLOl+R2MlUSfMyNS33V0/FVTyzAHW80
+         +v4pCrqxhOCeHIklQuOltb1b0EUMAhpLlhmBz/uiMItDp0YtJHV4Es4GseeCuUS/d+vd
+         8czbzffcUC3iUpDVQjibd8qse1v8bSb8+xoeA9YMDpbawL3VO6lQlLvDkmuw6bKCiY9Q
+         YabtLYhSEAMl9R45N8RpUGOQtcJazzLVIaEHPFBMZJAW7R95nhDxApm0ORBlqQJ32Rf6
+         8LKMQVD1oAj+5aLJd3yPD6lTJN+r6QikWV4OjuvtZP7fIoUzWkQy3KX3WxhzkY3uiiDo
+         wxpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5icF/SSv4kj7JR39aT9z2fccgv7ASkGrVR8k5iH/1WA=;
+        b=lvir63ZSlxlnroSd9ulLf9IUvY7ZCVmHDqpEhnExIo5SbfjCE4DYbjpaR9mgrzKu4T
+         BnZF0hW1zLiK8ai+4Hg3SUN/7xRt9BD1Dl7M+FFh9knmmbvOWIVb1UK2AqhvHbaPuOGu
+         v1WRizssU5N+nWQcfkDEfB8utPNcQVamb+cnjIREoOfPnOSsQjX5JJo1qia4hN17BfVS
+         0+XBGapI95L3YX53TAWPj9nbMEQqaX6axCNnoR8TJgZr/u6fJ22fAiF43FyENBXG/OGm
+         hGUP0TYH90RxuCGyBldoCx6eB7vLBU7NdDG2tPGRoYVXDGpQ8tqVAepHon97BRVbN30A
+         MqRA==
+X-Gm-Message-State: AOAM531a8q+gLmhivpuGJE3mqSqtMGj780WMfqRenFIs9By4U6qoplfk
+        U6km/MP1PhHdfrUkAJiPd7+5QNocF10a0WjsYHUkaYIuxX0=
+X-Google-Smtp-Source: ABdhPJzQoZV4k1ugfFEi2DC1BuUtnOS7uLutKuW1+SQxdmZzsKib3pbK8GKmpe+1mBaQKg64w7mZ1jAj6EhztWYQ+gQ=
+X-Received: by 2002:a02:a718:: with SMTP id k24mr4132560jam.25.1612377077474;
+ Wed, 03 Feb 2021 10:31:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210109103252.812517-1-lecopzer@gmail.com>
-In-Reply-To: <20210109103252.812517-1-lecopzer@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 3 Feb 2021 19:31:04 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE3NHBt2YdQ4ESygRZUdUZbpD66rZ6wziPi8OAqfKvNJQ@mail.gmail.com>
-Message-ID: <CAMj1kXE3NHBt2YdQ4ESygRZUdUZbpD66rZ6wziPi8OAqfKvNJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
-To:     Lecopzer Chen <lecopzer@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
+References: <20210202185734.1680553-1-bgardon@google.com> <20210202185734.1680553-25-bgardon@google.com>
+ <813695b1-bcfc-73ea-f9fe-76ffd42044cd@redhat.com>
+In-Reply-To: <813695b1-bcfc-73ea-f9fe-76ffd42044cd@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 3 Feb 2021 10:31:06 -0800
+Message-ID: <CANgfPd9OTKUJfnuRtMguC7kBf1GZz5Ba0yT1ssX29YQ2Zm54aA@mail.gmail.com>
+Subject: Re: [PATCH v2 24/28] KVM: x86/mmu: Allow zap gfn range to operate
+ under the mmu read lock
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Jan 2021 at 11:33, Lecopzer Chen <lecopzer@gmail.com> wrote:
+On Wed, Feb 3, 2021 at 3:26 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> ("kasan: support backing vmalloc space with real shadow memory")
+> On 02/02/21 19:57, Ben Gardon wrote:
+> > +#ifdef CONFIG_LOCKDEP
+> > +     if (shared)
+> > +             lockdep_assert_held_read(&kvm->mmu_lock);
+> > +     else
+> > +             lockdep_assert_held_write(&kvm->mmu_lock);
+> > +#endif /* CONFIG_LOCKDEP */
 >
-> Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-> but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-> by not to populate the vmalloc area except for kimg address.
->
-> Test environment:
->     4G and 8G Qemu virt,
->     39-bit VA + 4k PAGE_SIZE with 3-level page table,
->     test by lib/test_kasan.ko and lib/test_kasan_module.ko
->
-> It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL
-> and randomize module region inside vmalloc area.
->
->
-> [1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
->
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> Acked-by: Andrey Konovalov <andreyknvl@google.com>
-> Tested-by: Andrey Konovalov <andreyknvl@google.com>
->
->
-> v2 -> v1
->         1. kasan_init.c tweak indent
->         2. change Kconfig depends only on HAVE_ARCH_KASAN
->         3. support randomized module region.
->
-> v1:
-> https://lore.kernel.org/lkml/20210103171137.153834-1-lecopzer@gmail.com/
->
-> Lecopzer Chen (4):
->   arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
->   arm64: kasan: abstract _text and _end to KERNEL_START/END
->   arm64: Kconfig: support CONFIG_KASAN_VMALLOC
->   arm64: kaslr: support randomized module area with KASAN_VMALLOC
->
+> Also, there's no need for the #ifdef here.
 
-I failed to realize that VMAP_STACK and KASAN are currently mutually
-exclusive on arm64, and that this series actually fixes that, which is
-a big improvement, so it would make sense to call that out.
+I agree, I must have misinterpreted some feedback on a previous commit
+and gone overboard with it.
 
-This builds and runs fine for me on a VM running under KVM.
 
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
+> Do we want a helper
+> kvm_lockdep_assert_mmu_lock_held(struct kvm *kvm, bool shared)?
+
+There are only two places that try to assert both ways as far as I can
+see on a cursory check, but it couldn't hurt.
+
+>
+> Paolo
+>
