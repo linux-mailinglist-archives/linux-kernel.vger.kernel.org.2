@@ -2,131 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E663530DC41
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33D530DC43
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhBCOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:08:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52720 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232306AbhBCOH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:07:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0008FACB0;
-        Wed,  3 Feb 2021 14:07:17 +0000 (UTC)
-Subject: Re: [PATCH v5 4/6] drm/qxl: handle shadow in primary destroy
-To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        id S232458AbhBCOKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:10:00 -0500
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:43054 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232499AbhBCOJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:09:50 -0500
+Received: by mail-wr1-f53.google.com with SMTP id z6so24400223wrq.10;
+        Wed, 03 Feb 2021 06:09:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=A7NdKPFVZmzRdCrC5SRoIaasaHnznmEayh0x0PGuBTA=;
+        b=feQF8TgmgvMWXTAgeEA74jLQatxpzclMBJve54rTcQ8V8U4IXDniVeSQSPgC9lTnc1
+         vu/Fxacmfmm2P967wzwUWxyk7vHTquMwyearpHBALpXEmRDXng/yO9VkdWXVZXKq1Jk9
+         Rw47Y0j8lRkx3rTLZOVkkBunzHzEIlPVjqGrV/4Y+ZtgoqtGfCG1l2zsKeJLOJAeMOfj
+         jLoiRTFxDJRcR+tsMkTER26lqj2rOvmGRvetQH0hfeJAg9nDcRsxvm8VqrLhH/cx0JrE
+         uWhud++8GoeHRe7sJwCssUOfBCPnFZSVtVuOXxyD3lxrx0i7hHUyCTcwm384nNRKH48B
+         6HqA==
+X-Gm-Message-State: AOAM530G7pz1R/Ouv8ID3EeK/2fH1GA0b2w5XIlx0ydHs8gc9gyc0qQu
+        sO1H1ke1IIMjYIB3prHWGsn26ZdS7wA=
+X-Google-Smtp-Source: ABdhPJy9Az99qBaTfuXfDsvznn2GuE5+jkwlgksTiOBdWpqqeZNnvtVlZ2lin2xQpct0gYlRpWksfQ==
+X-Received: by 2002:a5d:4242:: with SMTP id s2mr3809982wrr.108.1612361348006;
+        Wed, 03 Feb 2021 06:09:08 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u10sm2754907wmj.40.2021.02.03.06.09.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 06:09:07 -0800 (PST)
+Date:   Wed, 3 Feb 2021 14:09:06 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
         <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210203131615.1714021-1-kraxel@redhat.com>
- <20210203131615.1714021-5-kraxel@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <a47d7646-d34e-8a5a-eb66-6b7e0f3aa777@suse.de>
-Date:   Wed, 3 Feb 2021 15:07:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v5 13/16] asm-generic/hyperv: introduce hv_device_id and
+ auxiliary structures
+Message-ID: <20210203140906.g35zr7366hh7p5f3@liuwe-devbox-debian-v2>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-14-wei.liu@kernel.org>
+ <MWHPR21MB1593959647DA60219E19C25ED7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210202170248.4hds554cyxpuayqc@liuwe-devbox-debian-v2>
+ <20210203132601.ftpwgs57qtok47cg@liuwe-devbox-debian-v2>
+ <CAK8P3a0m8jEij-RdP1PTcNcJW2+mXQ1dA4=s+JLXhnv+NyFiHw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210203131615.1714021-5-kraxel@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="zVkp2LbXeo9xdK24qHbVhhpFZXgl64cyQ"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0m8jEij-RdP1PTcNcJW2+mXQ1dA4=s+JLXhnv+NyFiHw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zVkp2LbXeo9xdK24qHbVhhpFZXgl64cyQ
-Content-Type: multipart/mixed; boundary="VtRkb7Y62egMcaLwIsPWaCXoVqjlYGBKM";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <a47d7646-d34e-8a5a-eb66-6b7e0f3aa777@suse.de>
-Subject: Re: [PATCH v5 4/6] drm/qxl: handle shadow in primary destroy
-References: <20210203131615.1714021-1-kraxel@redhat.com>
- <20210203131615.1714021-5-kraxel@redhat.com>
-In-Reply-To: <20210203131615.1714021-5-kraxel@redhat.com>
+On Wed, Feb 03, 2021 at 02:49:53PM +0100, Arnd Bergmann wrote:
+> On Wed, Feb 3, 2021 at 2:26 PM Wei Liu <wei.liu@kernel.org> wrote:
+> > On Tue, Feb 02, 2021 at 05:02:48PM +0000, Wei Liu wrote:
+> > > On Tue, Jan 26, 2021 at 01:26:52AM +0000, Michael Kelley wrote:
+> > > > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
+> > > > > +union hv_device_id {
+> > > > > + u64 as_uint64;
+> > > > > +
+> > > > > + struct {
+> > > > > +         u64 :62;
+> > > > > +         u64 device_type:2;
+> > > > > + };
+> > > >
+> > > > Are the above 4 lines extraneous junk?
+> > > > If not, a comment would be helpful.  And we
+> > > > would normally label the 62 bit field as
+> > > > "reserved0" or something similar.
+> > > >
+> > >
+> > > No. It is not junk. I got this from a header in tree.
+> > >
+> > > I am inclined to just drop this hunk. If that breaks things, I will use
+> > > "reserved0".
+> > >
+> >
+> > It turns out adding reserved0 is required. Dropping this hunk does not
+> > work.
+> 
+> Generally speaking, bitfields are not great for specifying binary interfaces,
+> as the actual bit order can differ by architecture. The normal way we get
+> around it in the kernel is to use basic integer types and define macros
+> for bit masks. Ideally, each such field should also be marked with a
+> particular endianess as __le64 or __be64, in case this is ever used with
+> an Arm guest running a big-endian kernel.
 
---VtRkb7Y62egMcaLwIsPWaCXoVqjlYGBKM
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Thanks for the information.
 
+I think we will need to wait until Microsoft Hypervisor clearly defines
+the endianess in its header(s) before we can make changes to the copy in
+Linux.
 
+> 
+> That said, if you do not care about the specific order of the bits, having
+> anonymous bitfields for the reserved members is fine, I don't see a
+> reason to name it as reserved.
 
-Am 03.02.21 um 14:16 schrieb Gerd Hoffmann:
-> qxl_primary_atomic_disable must check whenever the framebuffer bo has a=
+Michael, let me know what you think. I'm not too fussed either way.
 
-> shadow surface and in case it has check the shadow primary status.
+Wei.
 
-I believe you :)
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
->=20
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->   drivers/gpu/drm/qxl/qxl_display.c | 2 ++
->   1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
-l_display.c
-> index 60331e31861a..f5ee8cd72b5b 100644
-> --- a/drivers/gpu/drm/qxl/qxl_display.c
-> +++ b/drivers/gpu/drm/qxl/qxl_display.c
-> @@ -562,6 +562,8 @@ static void qxl_primary_atomic_disable(struct drm_p=
-lane *plane,
->   	if (old_state->fb) {
->   		struct qxl_bo *bo =3D gem_to_qxl_bo(old_state->fb->obj[0]);
->  =20
-> +		if (bo->shadow)
-> +			bo =3D bo->shadow;
->   		if (bo->is_primary) {
->   			qxl_io_destroy_primary(qdev);
->   			bo->is_primary =3D false;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---VtRkb7Y62egMcaLwIsPWaCXoVqjlYGBKM--
-
---zVkp2LbXeo9xdK24qHbVhhpFZXgl64cyQ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAarhQFAwAAAAAACgkQlh/E3EQov+B5
-0Q//QF3+DxUtgM4jYfWiDkOHWVPkTilkocbU+UmeJ4FeVVTtpsBpmVkMnZgJINaapQhY1NUnpI6k
-hpvgCT+tekKDBOZutLQXWWPy5T1r7Smrhip8Db1BzElpkl7XK0ONQ5b2EqmfLCfVv53pBKR7nSov
-1nFv8gCLQwmAUkeW5Rw1SRlXioQbs5ByeD5anVHUKsDMoovDyflyfgRG1P+z1KA9CB5d3vaH0wTS
-AHGednnr0q9GeVeLHN9UCKzIXF0zClSZ7DovbPgmcTYS3TDjU8JNPf8qfjMJyhocTS9n036At65X
-kIbK7HxblJtmUmJ2cTRkmxgou0mqtbD2PTYyHTvMEQwQCUP9kRU3/rMlhEVtiOxHpOw9RxcApXta
-GOTVQZSgHhZ/ukfZg65fltF7Gm5jCUSaaqSs/00tuUN9ACpoCyTEc2e/ubwxvx4J1vqDka9wpTZv
-7BtAdpu+En5NjYYsSGrsr87OObNx334zYQN2knzyI1ah3lvQ5vs9qxkgmHcRzK+e7iop3HWqak3g
-MTn7DEK4X4A7ASH0F7c/bgMhtk5fAJAFNLXXid/7f2kiY0LeR0JwTGFUJBX0uzV7O0Bt7kW57Zpi
-LyCuF22UrSGlW5FOQN5EDqck5F9I4mNkB+WpbE3RiMx7jjTX3gL6K4/fSvDXbMo4ICW30BwvSKra
-7sk=
-=dwrl
------END PGP SIGNATURE-----
-
---zVkp2LbXeo9xdK24qHbVhhpFZXgl64cyQ--
+> 
+>       Arnd
