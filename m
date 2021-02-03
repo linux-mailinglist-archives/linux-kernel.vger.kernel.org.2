@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1B330D75F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D70130D764
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhBCKWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:22:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:37324 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233405AbhBCKWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:22:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EEE7BD6E;
-        Wed,  3 Feb 2021 02:21:49 -0800 (PST)
-Received: from [10.57.13.36] (unknown [10.57.13.36])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A47C3F719;
-        Wed,  3 Feb 2021 02:21:47 -0800 (PST)
-Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
- devfreq struct
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
- <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
- <20210126104001.20361-2-lukasz.luba@arm.com>
- <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
-Date:   Wed, 3 Feb 2021 10:21:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233765AbhBCKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233488AbhBCKYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:24:24 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F984C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:23:44 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id f16so4895032wmq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:23:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YVcGpKd8+eC2YQ5xYyo7fYllHOO2iPEn0qmRLD8c4tk=;
+        b=XcTmJyWd74nvKmKqGb0lHYbm4BberuwObLIrEVZVDU5MFPGSgRvwBVl691DtsVL32v
+         PoxSztsiW9kqnY7fWODTxJQ24Xut19EQmALlq/oOlmCC/lE28uXGaC0MT/lTB3vpqnHz
+         OO6YtZ53iIHcnPn/3H7K8/Ji389pkKLCfJXYw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=YVcGpKd8+eC2YQ5xYyo7fYllHOO2iPEn0qmRLD8c4tk=;
+        b=I6MQ6v6MrUlauVv/BFZ4lhV0Bzy2F/dLk4aHFQuD6exn84DeUWWD0/cX2SMqyaBLhC
+         3emArAlgtG44y2tGUrON1V5pD8iOWmy8XS0gjcLttQFMvaJ5hogjrrO6Ak1pt8nao5jI
+         9az7tL4l952r01thZu0ieNpEiLrHVQCGLj0qhFhP/uS3dy2qcAboGeYxxEWgV/qHNbBc
+         ECHrLkkCyrDgeOwKAqtnkI7worYRvi7InDx3fh1JuoL4ieR/jtbYrthIFh6OnGqF3UjN
+         7sbbIIaU0Q8blcfBeZJ8RkpiY4u3Je3CLPxuaPmBbGtjnNRf+2MtUSYTqjRJ2yE9gH+1
+         1Mcw==
+X-Gm-Message-State: AOAM533LdwXEkDtQCaQ1z5IvLKwVO+IN7GpiCn3Dgz6xR6GHYl6YjjcE
+        ImT6ZEFr7p7m6MMb172R8CH+IA==
+X-Google-Smtp-Source: ABdhPJwiI5aD5dqY1ckorWBWkPtWhv80Z2HTWzG7jeWjpVya/U1sTYHLj7xvi3ENjtXKYY1O+EVTCA==
+X-Received: by 2002:a7b:c3ca:: with SMTP id t10mr1325153wmj.138.1612347823070;
+        Wed, 03 Feb 2021 02:23:43 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b3sm2351907wme.32.2021.02.03.02.23.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 02:23:42 -0800 (PST)
+Date:   Wed, 3 Feb 2021 11:23:39 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Simon Ser <contact@emersion.fr>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        dri-devel@lists.freedesktop.org, Andrei Vagin <avagin@gmail.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Hui Su <sh_def@163.com>,
+        Michel Lespinasse <walken@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        kernel-team <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, linaro-mm-sig@lists.linaro.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
+Message-ID: <YBp5qzLBBMJE0Yhn@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        dri-devel@lists.freedesktop.org, Andrei Vagin <avagin@gmail.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Hui Su <sh_def@163.com>,
+        Michel Lespinasse <walken@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        kernel-team <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210126225138.1823266-1-kaleshsingh@google.com>
+ <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
+ <YBFG/zBxgnapqLAK@dhcp22.suse.cz>
+ <ea04b552-7345-b7d5-60fe-7a22515ea63a@amd.com>
+ <20210128120130.50aa9a74@eldfell>
+ <c95af15d-8ff4-aea0-fa1b-3157845deae1@amd.com>
+ <20210129161334.788b8fd0@eldfell>
+ <wgUb8smQArgjbRFYMPYVDmukBT-_BrqG2M6XIOkWdBcW_x-m4ORnl3VOvH3J4wrsNGMoOXqMAro0UmkdVXFNso9PEiNCFGEeruibhWsmU34=@emersion.fr>
+ <f680ced7-3402-4a1e-4565-35ad7cd0c46d@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f680ced7-3402-4a1e-4565-35ad7cd0c46d@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chanwoo,
-
-Thank you for looking at this.
-
-On 2/3/21 10:11 AM, Chanwoo Choi wrote:
-> Hi Lukasz,
+On Fri, Jan 29, 2021 at 03:22:06PM +0100, Christian König wrote:
+> Am 29.01.21 um 15:17 schrieb Simon Ser:
+> > On Friday, January 29th, 2021 at 3:13 PM, Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> > 
+> > > > Re-importing it adds quite a huge CPU overhead to both userspace as well
+> > > > as the kernel.
+> > > Perhaps, but so far it seems no-one has noticed the overhead, with Mesa
+> > > at least.
+> > > 
+> > > I happily stand corrected.
+> > Note, all of this doesn't mean that compositors will stop keeping
+> > DMA-BUF FDs around. They may want to keep them open for other purposes
+> > like importing them into KMS or other EGL displays as needed.
 > 
-> When accessing the max_freq and min_freq at devfreq-cooling.c,
-> even if can access 'user_max_freq' and 'lock' by using the 'devfreq' instance,
-> I think that the direct access of variables (lock/user_max_freq/user_min_freq)
-> of struct devfreq are not good.
+> Correct and that's a perfectly valid use case. Just re-importing it on every
+> frame is something we should really try to avoid.
 > 
-> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
-> notification with following changes of 'struct devfreq_freq'?
+> At least with debugging enabled it's massive overhead and maybe even
+> performance penalty when we have to re-create device page tables all the
+> time.
+> 
+> But thinking more about that it is possible that we short-cut this step as
+> long as the original import was still referenced. Otherwise we probably
+> would have noticed this much earlier.
 
-I like the idea with devfreq notification. I will have to go through the
-code to check that possibility.
-
-> Also, need to add codes into devfreq_set_target() for initializing
-> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
-> notification.
-> 
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index 147a229056d2..d5726592d362 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -207,6 +207,8 @@ struct devfreq {
->   struct devfreq_freqs {
->          unsigned long old;
->          unsigned long new;
-> +       unsigned long new_max_freq;
-> +       unsigned long new_min_freq;
->   };
-> 
-> 
-> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
-> You can get the current max_freq/min_freq by using the following steps:
-> 
-> 	get_freq_range(devfreq, &min_freq, &max_freq);
-> 	dev_pm_opp_find_freq_floor(pdev, &min_freq);
-> 	dev_pm_opp_find_freq_floor(pdev, &max_freq);
-> 
-> So that you can get the 'max_freq/min_freq' and then
-> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
-> with them as following:
-> 
-> in devfreq_set_target()
-> 	get_freq_range(devfreq, &min_freq, &max_freq);
-> 	dev_pm_opp_find_freq_floor(pdev, &min_freq);
-> 	dev_pm_opp_find_freq_floor(pdev, &max_freq);
-> 	freqs.new_max_freq = min_freq;
-> 	freqs.new_max_freq = max_freq;
-> 	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
-
-I will plumb it in and check that option. My concern is that function
-get_freq_range() would give me the max_freq value from PM QoS, which
-might be my thermal limit - lower that user_max_freq. Then I still
-need
-
-I've been playing with PM QoS notifications because I thought it would
-be possible to be notified in thermal for all new set values - even from
-devfreq sysfs user max_freq write, which has value higher that the
-current limit set by thermal governor. Unfortunately PM QoS doesn't
-send that information by design. PM QoS also by desing won't allow
-me to check first two limits in the plist - which would be thermal
-and user sysfs max_freq.
-
-I will experiment with this notifications and share the results.
-That you for your comments.
-
-Regards,
-Lukasz
+Yeah kernel keeps lots of caches around and just gives you back the
+previous buffer if it's still around. Still probably not the smartest
+idea.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
