@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9778B30D453
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0540C30D456
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhBCHwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:52:17 -0500
-Received: from mga07.intel.com ([134.134.136.100]:49033 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232324AbhBCHwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:52:14 -0500
-IronPort-SDR: xxXxpoHb+dN0yN3kJB04/qHo0VR6G6TF9+TpX6jAI6C4nlPzPuAwqMi120F9Yl0Cl9yFTvcSsb
- 3rk42sg03tbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245078093"
-X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
-   d="scan'208";a="245078093"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 23:51:28 -0800
-IronPort-SDR: eFdof2FlssRgAq8Fa5iupXCCkvInYVQK+hXF0eLep1xe1yz/J4YHZRzqCNc99/eSKohLTHZELU
- BdT4htmcxCBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
-   d="scan'208";a="372285419"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by orsmga002.jf.intel.com with ESMTP; 02 Feb 2021 23:51:26 -0800
-Subject: Re: [PATCH 0/4] scsi: ufs-debugfs: Add UFS Exception Event reporting
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20210119141542.3808-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <778bb78a-5ba1-85e8-aa71-832a0c3693f4@intel.com>
-Date:   Wed, 3 Feb 2021 09:51:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S232415AbhBCHwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:52:34 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12385 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232367AbhBCHw1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 02:52:27 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DVv3y4b2Rz7gQj;
+        Wed,  3 Feb 2021 15:50:22 +0800 (CST)
+Received: from [10.174.179.241] (10.174.179.241) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Feb 2021 15:51:36 +0800
+Subject: Re: [PATCH] wireless: fix typo issue
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        samirweng1979 <samirweng1979@163.com>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        wengjianfeng <wengjianfeng@yulong.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+References: <20210203070025.17628-1-samirweng1979@163.com>
+ <9200710b2d9dafea4bfae4bb449a55fb44245d04.camel@sipsolutions.net>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <74d4dfc5-51ae-5f53-6210-2cc14da55dcb@huawei.com>
+Date:   Wed, 3 Feb 2021 15:51:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210119141542.3808-1-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <9200710b2d9dafea4bfae4bb449a55fb44245d04.camel@sipsolutions.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/01/21 4:15 pm, Adrian Hunter wrote:
-> Hi
+On 2021/2/3 15:33, Johannes Berg wrote:
+> On Wed, 2021-02-03 at 15:00 +0800, samirweng1979 wrote:
+>> From: wengjianfeng <wengjianfeng@yulong.com>
+>>
+>> change 'iff' to 'if'.
+>>
+>> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+>> ---
+>>  net/wireless/chan.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/wireless/chan.c b/net/wireless/chan.c
+>> index 285b807..2f17edf 100644
+>> --- a/net/wireless/chan.c
+>> +++ b/net/wireless/chan.c
+>> @@ -1084,7 +1084,7 @@ bool cfg80211_chandef_usable(struct wiphy *wiphy,
+>>   * associated to an AP on the same channel or on the same UNII band
+>>   * (assuming that the AP is an authorized master).
+>>   * In addition allow operation on a channel on which indoor operation is
+>> - * allowed, iff we are currently operating in an indoor environment.
+>> + * allowed, if we are currently operating in an indoor environment.
+>>   */
 > 
-> Here are patches to add a tracepoint for UFS Exception Events and to allow
-> users to enable specific exception events without affecting the driver's
-> use of exception events.
-> 
-> 
-> Adrian Hunter (4):
->       scsi: ufs: Add exception event tracepoint
->       scsi: ufs: Add exception event definitions
->       scsi: ufs-debugfs: Add user-defined exception_event_mask
->       scsi: ufs-debugfs: Add user-defined exception event rate limiting
-> 
->  drivers/scsi/ufs/ufs-debugfs.c | 90 ++++++++++++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufs-debugfs.h |  2 +
->  drivers/scsi/ufs/ufs.h         | 10 ++++-
->  drivers/scsi/ufs/ufshcd.c      | 87 +++++++++++++++++++++++++---------------
->  drivers/scsi/ufs/ufshcd.h      | 26 +++++++++++-
->  include/trace/events/ufs.h     | 21 ++++++++++
->  6 files changed, 201 insertions(+), 35 deletions(-)
+> I suspect that was intentional, as a common abbreviation for "if and
+> only if".
 
-Any comments on this?
+Yep. iff --> if and only if from:
+https://mathvault.ca/math-glossary/#iff
+
+> 
+> johannes
+> 
+> .
+> 
+
