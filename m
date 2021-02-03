@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0FE30E7B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D430E7BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhBCXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:42:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S234053AbhBCXmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbhBCXmG (ORCPT
+        with ESMTP id S234037AbhBCXm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:42:06 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B7CC061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:41:25 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id r18so1180910qta.19
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:41:25 -0800 (PST)
+        Wed, 3 Feb 2021 18:42:28 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBB6C06178A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:41:27 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 134so1505461ybd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:41:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=wZJ3xIt4HVxcRfrrlRk8Ya59f1V5w/lhWnv38F4pYvc=;
-        b=UkTHiUYpKPQSoeKDXPIxe6OhbAOMqXIP6wUV1FWPmmIvdnKphrOdl2DCtBgVEWPh0O
-         CivO25vQCoczYUz799OAjvd2I2wCkQvrMGpmAdJXtPcptcUA9GyEx/EGdF67aEWLmpYX
-         72Tzs8iBSfG2cJJCvqwh5FF4nJFfgGdUEEZFc6BEQLYG3hrT8kmJ/OXpkoSepceSo0o5
-         W3AprQKK3yqdjr/Vy8/UY9EaXUF7JrTBmkzUmeIjYbOME9wgJa7g6QE2UeJqjWCLJNZp
-         gkHt5C3fi/FoQtj067vRhfqhyawElcf23v69FA5hZBW9bpF0j5SHNypAxnULkCuScrWq
-         O1mw==
+        bh=uAmCYhAQV4UKau9nAZmt7fCkOD0B6TnSTE34tccNud4=;
+        b=khcVyMAhcRUhcRKjiYExHRTX599riVykuibmOlmjuLDyGQ7heA6O9/c17by2GHvWio
+         uZMLRuxnMQbWTBTDV5Er2N/LxNCIz+9h/hDqZhWjbiyP8rCQVNByddttghKten/C61hp
+         2yW/M4qHlTH0uxEAenlgxgRReF8f5qDJGycbbf183aPuOltUBtLfVYxyfVOJ34dGDzvK
+         wCqaIXmsBBzvR1+oZbgUhlFVPoJxgYYZlHX2wBsJkbGoNZes9oIJ+1ueda0j4qR9FJky
+         CIhpCB/sraLJsV3auOxJUxpirza0Da8yB4zWiRTbH6pAJZh4sRNPl8gkqpT/27t58EIV
+         8EbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=wZJ3xIt4HVxcRfrrlRk8Ya59f1V5w/lhWnv38F4pYvc=;
-        b=mCdCQ2i6KodXp1RYbk3tRSTsvA9HkP8nAjaqgnrUbZO1+379oHFD63nHQxqK3y4S8a
-         /VJLj2IljwGsjc+JmnGDQTQ4ArBVPd+frlscL1z1mfxNzNhzaE3sCZI9BYBeWhbf6OlR
-         L2PdfzV0E+eg15THM/Wg1lMmLEF+CrbMsgn/cZjQa6PhNT8PBUvFGDUwv/V4Eb15AmuP
-         LAl+WmyaT82RY8B0dE2Xd+PpgkUw5ObEVe1c/7W5m9pxVrznQUaVN0crYjEClsmPaBzo
-         zhG54Qx5CDDWJnTsJW4uEgNDGMqCysIRku6O9xZ4EU1MaAYjicHEOrM8e8y/jn2CDtmp
-         puOQ==
-X-Gm-Message-State: AOAM531sJFF+clOlODSbibDBBmEGT/3AQGpCT58i2ee8RgaTYOCCuDMi
-        E4jDTrtXuJdlSPytFAF0acgPntX5kMaWQQ==
-X-Google-Smtp-Source: ABdhPJwV3sjtxyuxBYvuOQs+8e7t2WCFFoUA9583ENMJlaKHPKJa8w7lPdLSKI7NQ5/XChwx20agiTq/ETcxJw==
+        bh=uAmCYhAQV4UKau9nAZmt7fCkOD0B6TnSTE34tccNud4=;
+        b=fzMYS+498D/yxL0LNkRkbviNwylHu1qSndZ6Z4GAOKBHt3Hi2KS89V2rdnGEbMxvXc
+         se9JEnnAIU6Hz9IcxrEjtAe3jgOro1N154F7i++TxCdDlLMQtL74L3TcdfYU1iXUkLMn
+         ik+Js0BxVFHZB3qy03D03P8AAtmYUCCTRfHwFiEo2XdDg6wZ7MzpWGN2BlU2Ts/wUTTc
+         KZBaymsYSNSKROoeDrlvqPUgsuLuWElq56yIWTIztfp2zW/2FlCs4c69ZhWkTfxL1Lym
+         6vpOYq4vuQvtpFXMkkuKVauUuXO/JMJGK6nIcL/6cI14/tdiDnoFZcFZ/T0nH3hTJaXJ
+         n4oA==
+X-Gm-Message-State: AOAM530b1KM3SIxcCss6xtkxbFeR8Dm1CMwi0TLUYisY1rpGKssvNlXg
+        aW+llYEaFGf4T7xh0C8uTU1OVrFFU2kV9g==
+X-Google-Smtp-Source: ABdhPJzguVHff2mKhgY6sDYZaNTFV2HUrt3mLlKkcyy7ArbznJ8pWP/ETNS6YCCPd0sbSkJyhRqjGlov7uINdQ==
 Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
 X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:bd7a:7717:5b5b:de27])
- (user=dlatypov job=sendgmr) by 2002:a0c:eb4c:: with SMTP id
- c12mr4987586qvq.62.1612395684811; Wed, 03 Feb 2021 15:41:24 -0800 (PST)
-Date:   Wed,  3 Feb 2021 15:41:14 -0800
+ (user=dlatypov job=sendgmr) by 2002:a25:6ad6:: with SMTP id
+ f205mr7633339ybc.41.1612395686696; Wed, 03 Feb 2021 15:41:26 -0800 (PST)
+Date:   Wed,  3 Feb 2021 15:41:15 -0800
 In-Reply-To: <20210203234116.839819-1-dlatypov@google.com>
-Message-Id: <20210203234116.839819-2-dlatypov@google.com>
+Message-Id: <20210203234116.839819-3-dlatypov@google.com>
 Mime-Version: 1.0
 References: <20210203234116.839819-1-dlatypov@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH 1/3] kunit: add kunit.filter_glob cmdline option to filter suites
+Subject: [PATCH 2/3] kunit: tool: add support for filtering suites by glob
 From:   Daniel Latypov <dlatypov@google.com>
 To:     brendanhiggins@google.com, davidgow@google.com
 Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
@@ -62,172 +62,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-E.g. specifying this would run suites with "list" in their name.
-  kunit.filter_glob=list*
+This allows running different subsets of tests, e.g.
 
-Note: the executor prints out a TAP header that includes the number of
-suites we intend to run.
-So unless we want to report empty results for filtered-out suites, we
-need to do the filtering here in the executor.
-It's also probably better in the executor since we most likely don't
-want any filtering to apply to tests built as modules.
+$ ./tools/testing/kunit/kunit.py build
+$ ./tools/testing/kunit/kunit.py exec 'list*'
+$ ./tools/testing/kunit/kunit.py exec 'kunit*'
 
-This code does add a CONFIG_GLOB=y dependency for CONFIG_KUNIT=y.
-But the code seems light enough that it shouldn't be an issue.
-
-For now, we only filter on suite names so we don't have to create copies
-of the suites themselves, just the array (of arrays) holding them.
-
-The name is rather generic since in the future, we could consider
-extending it to a syntax like:
-  kunit.filter_glob=<suite_glob>.<test_glob>
-E.g. to run all the del list tests
-  kunit.filter_glob=list-kunit-test.*del*
-
-But at the moment, it's far easier to manually comment out test cases in
-test files as opposed to messing with sets of Kconfig entries to select
-specific suites.
-So even just doing this makes using kunit far less annoying.
+This passes the "kunit_filter.glob" commandline option to the UML
+kernel, which currently only supports filtering by suite name.
 
 Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- lib/kunit/Kconfig    |  1 +
- lib/kunit/executor.c | 91 +++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 83 insertions(+), 9 deletions(-)
+ tools/testing/kunit/kunit.py        | 21 ++++++++++++++++-----
+ tools/testing/kunit/kunit_kernel.py |  4 +++-
+ 2 files changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-index 00909e6a2443..0b5dfb001bac 100644
---- a/lib/kunit/Kconfig
-+++ b/lib/kunit/Kconfig
-@@ -4,6 +4,7 @@
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index e808a47c839b..a15ee33bb1f5 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -28,12 +28,12 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
+ 			       ['jobs', 'build_dir', 'alltests',
+ 				'make_options'])
+ KunitExecRequest = namedtuple('KunitExecRequest',
+-			      ['timeout', 'build_dir', 'alltests'])
++			      ['timeout', 'build_dir', 'alltests', 'filter_glob'])
+ KunitParseRequest = namedtuple('KunitParseRequest',
+ 			       ['raw_output', 'input_data', 'build_dir', 'json'])
+ KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
+-					   'build_dir', 'alltests', 'json',
+-					   'make_options'])
++					   'build_dir', 'alltests', 'filter_glob',
++					   'json', 'make_options'])
  
- menuconfig KUNIT
- 	tristate "KUnit - Enable support for unit tests"
-+	select GLOB if KUNIT=y
- 	help
- 	  Enables support for kernel unit tests (KUnit), a lightweight unit
- 	  testing and mocking framework for the Linux kernel. These tests are
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index a95742a4ece7..25a891285816 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
+ KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
  
- #include <kunit/test.h>
-+#include <linux/glob.h>
-+#include <linux/moduleparam.h>
+@@ -93,6 +93,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	test_start = time.time()
+ 	result = linux.run_kernel(
+ 		timeout=None if request.alltests else request.timeout,
++                filter_glob=request.filter_glob,
+ 		build_dir=request.build_dir)
  
- /*
-  * These symbols point to the .kunit_test_suites section and are defined in
-@@ -11,14 +13,79 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+ 	test_end = time.time()
+@@ -149,7 +150,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 		return build_result
  
- #if IS_BUILTIN(CONFIG_KUNIT)
+ 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
+-					request.alltests)
++					request.alltests, request.filter_glob)
+ 	exec_result = exec_tests(linux, exec_request)
+ 	if exec_result.status != KunitStatus.SUCCESS:
+ 		return exec_result
+@@ -197,6 +198,14 @@ def add_exec_opts(parser) -> None:
+ 			    type=int,
+ 			    default=300,
+ 			    metavar='timeout')
++	parser.add_argument('filter_glob',
++			    help='maximum number of seconds to allow for all tests '
++			    'to run. This does not include time taken to build the '
++			    'tests.',
++			    type=str,
++			    nargs='?',
++			    default='',
++			    metavar='filter_glob')
  
--static void kunit_print_tap_header(void)
-+static char *filter_glob;
-+module_param(filter_glob, charp, 0);
-+
-+static struct kunit_suite * const *
-+kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
-+{
-+	int i, n = 0;
-+	struct kunit_suite **filtered;
-+
-+	n = 0;
-+	for (i = 0; subsuite[i] != NULL; ++i) {
-+		if (glob_match(filter_glob, subsuite[i]->name))
-+			++n;
-+	}
-+
-+	if (n == 0)
-+		return NULL;
-+
-+	filtered = kmalloc_array(n + 1, sizeof(*filtered), GFP_KERNEL);
-+	if (!filtered)
-+		return NULL;
-+
-+	n = 0;
-+	for (i = 0; subsuite[i] != NULL; ++i) {
-+		if (glob_match(filter_glob, subsuite[i]->name))
-+			filtered[n++] = subsuite[i];
-+	}
-+	filtered[n] = NULL;
-+
-+	return filtered;
-+}
-+
-+struct suite_set {
-+	struct kunit_suite * const * const *start;
-+	struct kunit_suite * const * const *end;
-+};
-+
-+static struct suite_set kunit_filter_suites(void)
-+{
-+	int i;
-+	struct kunit_suite * const **copy, * const *filtered_subsuite;
-+	struct suite_set filtered;
-+
-+	const size_t max = __kunit_suites_end - __kunit_suites_start;
-+
-+	if (!filter_glob) {
-+		filtered.start = __kunit_suites_start;
-+		filtered.end = __kunit_suites_end;
-+		return filtered;
-+	}
-+
-+	copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
-+	filtered.start = copy;
-+	if (!copy) { /* won't be able to run anything, return an empty set */
-+		filtered.end = copy;
-+		return filtered;
-+	}
-+
-+	for (i = 0; i < max; ++i) {
-+		filtered_subsuite = kunit_filter_subsuite(__kunit_suites_start[i]);
-+		if (filtered_subsuite)
-+			*copy++ = filtered_subsuite;
-+	}
-+	filtered.end = copy;
-+	return filtered;
-+}
-+
-+static void kunit_print_tap_header(struct suite_set *suite_set)
- {
- 	struct kunit_suite * const * const *suites, * const *subsuite;
- 	int num_of_suites = 0;
+ def add_parse_opts(parser) -> None:
+ 	parser.add_argument('--raw_output', help='don\'t format output from kernel',
+@@ -263,6 +272,7 @@ def main(argv, linux=None):
+ 				       cli_args.jobs,
+ 				       cli_args.build_dir,
+ 				       cli_args.alltests,
++				       cli_args.filter_glob,
+ 				       cli_args.json,
+ 				       cli_args.make_options)
+ 		result = run_tests(linux, request)
+@@ -304,7 +314,8 @@ def main(argv, linux=None):
  
--	for (suites = __kunit_suites_start;
--	     suites < __kunit_suites_end;
--	     suites++)
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
- 		for (subsuite = *suites; *subsuite != NULL; subsuite++)
- 			num_of_suites++;
+ 		exec_request = KunitExecRequest(cli_args.timeout,
+ 						cli_args.build_dir,
+-						cli_args.alltests)
++						cli_args.alltests,
++						cli_args.filter_glob)
+ 		exec_result = exec_tests(linux, exec_request)
+ 		parse_request = KunitParseRequest(cli_args.raw_output,
+ 						  exec_result.result,
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 2076a5a2d060..71b1942f5ccd 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -199,8 +199,10 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return self.validate_config(build_dir)
  
-@@ -30,12 +97,18 @@ int kunit_run_all_tests(void)
- {
- 	struct kunit_suite * const * const *suites;
- 
--	kunit_print_tap_header();
-+	struct suite_set suite_set = kunit_filter_suites();
-+
-+	kunit_print_tap_header(&suite_set);
-+
-+	for (suites = suite_set.start; suites < suite_set.end; suites++)
-+		__kunit_test_suites_init(*suites);
- 
--	for (suites = __kunit_suites_start;
--	     suites < __kunit_suites_end;
--	     suites++)
--			__kunit_test_suites_init(*suites);
-+	if (filter_glob) { /* a copy was made of each array */
-+		for (suites = suite_set.start; suites < suite_set.end; suites++)
-+			kfree(suites);
-+		kfree(suite_set.start);
-+	}
- 
- 	return 0;
- }
+-	def run_kernel(self, args=[], build_dir='', timeout=None) -> Iterator[str]:
++	def run_kernel(self, args=[], build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
+ 		args.extend(['mem=1G', 'console=tty'])
++		if filter_glob:
++			args.append('kunit.filter_glob='+filter_glob)
+ 		self._ops.linux_bin(args, timeout, build_dir)
+ 		outfile = get_outfile_path(build_dir)
+ 		subprocess.call(['stty', 'sane'])
 -- 
 2.30.0.365.g02bc693789-goog
 
