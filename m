@@ -2,76 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1542230D134
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1820C30D136
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhBCCA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhBCCAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:00:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id F21E864F7C;
-        Wed,  3 Feb 2021 02:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612317611;
-        bh=AfJ8todIRiNP4HHEFY0agqhM0+tc5VMp8hn1tFwBK58=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DkUxOCnxOIORsAqSrRJBKdGp5g5Arl4xHtgobHor8X2JN9vHw3+ot6ukdqsUUTTjJ
-         1XHxxN7ItmRUtYqqZCo5w84rOY4OAw9sMeUC/8Do8F76tUxFxLYkCTyFPTTi0J50nj
-         H5jHK0wul9/H3Spps/ZahfWwauid/3cjYJt6OaCcknwqLZCrsDhy7dAOSppxETWhrs
-         7QjVptPFfmX9nlTEh++Jn9Txo+t+ptLDVGwM1agaNFgiIHshC8OR3SloorwRz9xBHo
-         WaQ0/yy13BfSWm1h7UDVk73FP/nNZeHFtKvg7e1AC/40+JcEPhDyfB3Fd8vnLTIbc8
-         Etgg/3o8LuieQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB8C8609E3;
-        Wed,  3 Feb 2021 02:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231652AbhBCCCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhBCCCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 21:02:25 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DB1C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:01:44 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id g10so22449001wrx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:01:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S0yBDDhldxV2iYO/cPqiZyNYzasLg78o0532MxoSErU=;
+        b=eAuIujLJCRK5VQOo+RNddxdqNVmp3sP1qQVEwIO9l9WbKBk0/gGRR960Ty08EC+CrH
+         XH1nxsTbHUbu9a99l5EmZorf1CbkbxKs9qmCBgxVOMv5a3AGYYFKtuY7zk24lNJw5nwK
+         Ob6gUUMSjbMN6Ckq3GWVioxrsCT9wOMoeDTzWqlvHVcqXiTrezqiOSC0X8vvZR7a3Pyr
+         PRJ8eq3hwxfc3ho/5KQo6qpuDcXOQYnwj/LhB1g7vNYD/N32+EDbiv4po67v0tLMA4Hr
+         kdRiP2VRHvMmDRC0xeGyASke+cUDH05ejmIqcGQhkhwiXmhUwHAdG5IPZiSyvc+tfXfb
+         sdDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S0yBDDhldxV2iYO/cPqiZyNYzasLg78o0532MxoSErU=;
+        b=aLMKRzGVFlCFdTT1F53eBvcErhrcdfQq0+o1RtqgJopU1ANa1u17Bzp1+sYkzHMU3N
+         nko9dxjYB44asa5y7+rWW3reds/NccRYoy+T8f0WxgrouyhS03K4//mDuzuAoQclIt39
+         tDkjVVvHe3QaRUoz0nsxn6kKnUCb+Ftu/79pOOaAdCE+t4gS3kHetYouHQ1AHU5dfRQ6
+         p8cBfSPdYhHNkSN3wvGBvOCNfTV5f/YvGClvUeohHut+m4Dh5l5Lw6S0LUv50XTW7T7z
+         xDTG3Jpee7tNKbB7P6RPlF6VOBtLEm2Oi+H5mCXfa0W1rF5VkPOfAv0fNSlp7CqRqeQc
+         GDWA==
+X-Gm-Message-State: AOAM532TvwL6ZW1Zs8IgjSpbCFRuMcCnpeJkk2V7qwLsttk2VANRZm4c
+        +tbU33Vyklrem62ilrEmm8zNxDWXuMToWYub6hA=
+X-Google-Smtp-Source: ABdhPJw9Id8axukVCAonwmQRkPgcERoEcRLs+rhZDJalpYUGlTlJWcz/mFvRDYk7EUyZHTT7KOcMsDH2LSlq54cLsIs=
+X-Received: by 2002:a5d:52c5:: with SMTP id r5mr818861wrv.208.1612317703287;
+ Tue, 02 Feb 2021 18:01:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: fix up truesize of cloned skb in
- skb_prepare_for_shift()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161231761089.3354.12212298299944124109.git-patchwork-notify@kernel.org>
-Date:   Wed, 03 Feb 2021 02:00:10 +0000
-References: <20210201160420.2826895-1-elver@google.com>
-In-Reply-To: <20210201160420.2826895-1-elver@google.com>
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        davem@davemloft.net, kuba@kernel.org, jonathan.lemon@gmail.com,
-        willemb@google.com, linmiaohe@huawei.com, gnault@redhat.com,
-        dseok.yi@samsung.com, kyk.segfault@gmail.com,
-        viro@zeniv.linux.org.uk, netdev@vger.kernel.org, glider@google.com,
-        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
-        edumazet@google.com
+References: <20210127105121.20345-1-lukasz.luba@arm.com> <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
+ <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com> <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
+ <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
+In-Reply-To: <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Wed, 3 Feb 2021 10:01:31 +0800
+Message-ID: <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
+Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, lima@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Christian Hewitt <christianshewitt@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, Feb 2, 2021 at 10:02 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+>
+> On 2/2/21 1:01 AM, Qiang Yu wrote:
+> > Hi Lukasz,
+> >
+> > Thanks for the explanation. So the deferred timer option makes a mistake that
+> > when GPU goes from idle to busy for only one poll periodic, in this
+> > case 50ms, right?
+>
+> Not exactly. Driver sets the polling interval to 50ms (in this case)
+> because it needs ~3-frame average load (in 60fps). I have discovered the
+> issue quite recently that on systems with 2 CPUs or more, the devfreq
+> core is not monitoring the devices even for seconds. Therefore, we might
+> end up with quite big amount of work that GPU is doing, but we don't
+> know about it. Devfreq core didn't check <- timer didn't fired. Then
+> suddenly that CPU, which had the deferred timer registered last time,
+> is waking up and timer triggers to check our device. We get the stats,
+> but they might be showing load from 1sec not 50ms. We feed them into
+> governor. Governor sees the new load, but was tested and configured for
+> 50ms, so it might try to rise the frequency to max. The GPU work might
+> be already lower and there is no need for such freq. Then the CPU goes
+> idle again, so no devfreq core check for next e.g. 1sec, but the
+> frequency stays at max OPP and we burn power.
+>
+> So, it's completely unreliable. We might stuck at min frequency and
+> suffer the frame drops, or sometimes stuck to max freq and burn more
+> power when there is no such need.
+>
+> Similar for thermal governor, which is confused by this old stats and
+> long period stats, longer than 50ms.
+>
+> Stats from last e.g. ~1sec tells you nothing about real recent GPU
+> workload.
+Oh, right, I missed this case.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+>
+> > But delayed timer will wakeup CPU every 50ms even when system is idle, will this
+> > cause more power consumption for the case like phone suspend?
+>
+> No, in case of phone suspend it won't increase the power consumption.
+> The device won't be woken up, it will stay in suspend.
+I mean the CPU is waked up frequently by timer when phone suspend,
+not the whole device (like the display).
 
-On Mon,  1 Feb 2021 17:04:20 +0100 you wrote:
-> Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
-> cloning an skb, save and restore truesize after pskb_expand_head(). This
-> can occur if the allocator decides to service an allocation of the same
-> size differently (e.g. use a different size class, or pass the
-> allocation on to KFENCE).
-> 
-> Because truesize is used for bookkeeping (such as sk_wmem_queued), a
-> modified truesize of a cloned skb may result in corrupt bookkeeping and
-> relevant warnings (such as in sk_stream_kill_queues()).
-> 
-> [...]
+Seems it's better to have deferred timer when device is suspended for
+power saving,
+and delayed timer when device in working state. User knows this and
+can use sysfs
+to change it.
 
-Here is the summary with links:
-  - [net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
-    https://git.kernel.org/netdev/net-next/c/097b9146c0e2
+Set the delayed timer as default is reasonable, so patch is:
+Reviewed-by: Qiang Yu <yuq825@gmail.com>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regards,
+Qiang
 
-
+>
+> Regards,
+> Lukasz
+>
+>
+> >
+> > Regards,
+> > Qiang
+> >
+> >
+> > On Mon, Feb 1, 2021 at 5:53 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Hi Qiang,
+> >>
+> >> On 1/30/21 1:51 PM, Qiang Yu wrote:
+> >>> Thanks for the patch. But I can't observe any difference on glmark2
+> >>> with or without this patch.
+> >>> Maybe you can provide other test which can benefit from it.
+> >>
+> >> This is a design problem and has impact on the whole system.
+> >> There is a few issues. When the device is not checked and there are
+> >> long delays between last check and current, the history is broken.
+> >> It confuses the devfreq governor and thermal governor (Intelligent Power
+> >> Allocation (IPA)). Thermal governor works on stale stats data and makes
+> >> stupid decisions, because there is no new stats (device not checked).
+> >> Similar applies to devfreq simple_ondemand governor, where it 'tires' to
+> >> work on a loooong period even 3sec and make prediction for the next
+> >> frequency based on it (which is broken).
+> >>
+> >> How it should be done: constant reliable check is needed, then:
+> >> - period is guaranteed and has fixed size, e.g 50ms or 100ms.
+> >> - device status is quite recent so thermal devfreq cooling provides
+> >>     'fresh' data into thermal governor
+> >>
+> >> This would prevent odd behavior and solve the broken cases.
+> >>
+> >>>
+> >>> Considering it will wake up CPU more frequently, and user may choose
+> >>> to change this by sysfs,
+> >>> I'd like to not apply it.
+> >>
+> >> The deferred timer for GPU is wrong option, for UFS or eMMC makes more
+> >> sense. It's also not recommended for NoC busses. I've discovered that
+> >> some time ago and proposed to have option to switch into delayed timer.
+> >> Trust me, it wasn't obvious to find out that this missing check has
+> >> those impacts. So the other engineers or users might not know that some
+> >> problems they faces (especially when the device load is changing) is due
+> >> to this delayed vs deffered timer and they will change it in the sysfs.
+> >>
+> >> Regards,
+> >> Lukasz
+> >>
+> >>>
+> >>> Regards,
+> >>> Qiang
+> >>>
