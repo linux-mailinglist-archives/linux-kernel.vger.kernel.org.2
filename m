@@ -2,270 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA5430D515
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB37130D50F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhBCIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:22:24 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57999 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232493AbhBCIWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:22:22 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNkcr5h_1612340378;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNkcr5h_1612340378)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Feb 2021 16:19:43 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     sathya.prakash@broadcom.com
-Cc:     sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] scsi: mpt3sas: convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Wed,  3 Feb 2021 16:19:36 +0800
-Message-Id: <1612340376-1549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232557AbhBCIVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:21:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35566 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231929AbhBCIVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 03:21:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5AEB8AC3A;
+        Wed,  3 Feb 2021 08:20:22 +0000 (UTC)
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_drm/nouveau=3a_remove_set_but_not_used_?=
+ =?UTF-8?Q?variable_=e2=80=98pdev=e2=80=99_in_nouveau=5fbios=5finit?=
+To:     Ye Bin <yebin10@huawei.com>, bskeggs@redhat.com, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Hulk Robot <hulkci@huawei.com>
+References: <20210123013014.3815870-1-yebin10@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <aa1dc788-bc47-ac8e-73a9-067be8b6ba7a@suse.de>
+Date:   Wed, 3 Feb 2021 09:20:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210123013014.3815870-1-yebin10@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6
+Content-Type: multipart/mixed; boundary="1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Ye Bin <yebin10@huawei.com>, bskeggs@redhat.com, airlied@linux.ie,
+ daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+ nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: Hulk Robot <hulkci@huawei.com>
+Message-ID: <aa1dc788-bc47-ac8e-73a9-067be8b6ba7a@suse.de>
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_drm/nouveau=3a_remove_set_but_not_used_?=
+ =?UTF-8?Q?variable_=e2=80=98pdev=e2=80=99_in_nouveau=5fbios=5finit?=
+References: <20210123013014.3815870-1-yebin10@huawei.com>
+In-Reply-To: <20210123013014.3815870-1-yebin10@huawei.com>
 
-./drivers/scsi/ufs/ufshcd.c: WARNING: use scnprintf or sprintf.
+--1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/scsi/mpt3sas/mpt3sas_ctl.c | 71 ++++++++++++++++++--------------------
- 1 file changed, 33 insertions(+), 38 deletions(-)
+Applied to drm-misc-next. Thanks for the patch!
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-index c8a0ce1..1371831 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -2746,11 +2746,11 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%02d.%02d.%02d.%02d\n",
--	    (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
--	    (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
--	    (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
--	    ioc->facts.FWVersion.Word & 0x000000FF);
-+	return sysfs_emit(buf, "%02d.%02d.%02d.%02d\n",
-+			  (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
-+			  (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
-+			  (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
-+			  ioc->facts.FWVersion.Word & 0x000000FF);
- }
- static DEVICE_ATTR_RO(version_fw);
- 
-@@ -2771,11 +2771,11 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 
- 	u32 version = le32_to_cpu(ioc->bios_pg3.BiosVersion);
- 
--	return snprintf(buf, PAGE_SIZE, "%02d.%02d.%02d.%02d\n",
--	    (version & 0xFF000000) >> 24,
--	    (version & 0x00FF0000) >> 16,
--	    (version & 0x0000FF00) >> 8,
--	    version & 0x000000FF);
-+	return sysfs_emit(buf, "%02d.%02d.%02d.%02d\n",
-+			  (version & 0xFF000000) >> 24,
-+			  (version & 0x00FF0000) >> 16,
-+			  (version & 0x0000FF00) >> 8,
-+			   version & 0x000000FF);
- }
- static DEVICE_ATTR_RO(version_bios);
- 
-@@ -2794,8 +2794,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%03x.%02x\n",
--	    ioc->facts.MsgVersion, ioc->facts.HeaderVersion >> 8);
-+	return sysfs_emit(buf, "%03x.%02x\n", ioc->facts.MsgVersion, ioc->facts.HeaderVersion >> 8);
- }
- static DEVICE_ATTR_RO(version_mpi);
- 
-@@ -2833,8 +2832,8 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%08xh\n",
--	    le32_to_cpu(ioc->iounit_pg0.NvdataVersionPersistent.Word));
-+	return sysfs_emit(buf, "%08xh\n",
-+			  le32_to_cpu(ioc->iounit_pg0.NvdataVersionPersistent.Word));
- }
- static DEVICE_ATTR_RO(version_nvdata_persistent);
- 
-@@ -2853,8 +2852,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%08xh\n",
--	    le32_to_cpu(ioc->iounit_pg0.NvdataVersionDefault.Word));
-+	return sysfs_emit(buf, "%08xh\n", le32_to_cpu(ioc->iounit_pg0.NvdataVersionDefault.Word));
- }
- static DEVICE_ATTR_RO(version_nvdata_default);
- 
-@@ -2933,7 +2931,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->io_missing_delay);
-+	return sysfs_emit(buf, "%02d\n", ioc->io_missing_delay);
- }
- static DEVICE_ATTR_RO(io_delay);
- 
-@@ -2955,7 +2953,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->device_missing_delay);
-+	return sysfs_emit(buf, "%02d\n", ioc->device_missing_delay);
- }
- static DEVICE_ATTR_RO(device_delay);
- 
-@@ -2976,7 +2974,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->facts.RequestCredit);
-+	return sysfs_emit(buf, "%02d\n", ioc->facts.RequestCredit);
- }
- static DEVICE_ATTR_RO(fw_queue_depth);
- 
-@@ -2998,8 +2996,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%016llx\n",
--	    (unsigned long long)ioc->sas_hba.sas_address);
-+	return sysfs_emit(buf, "0x%016llx\n", (unsigned long long)ioc->sas_hba.sas_address);
- }
- static DEVICE_ATTR_RO(host_sas_address);
- 
-@@ -3018,7 +3015,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%08xh\n", ioc->logging_level);
-+	return sysfs_emit(buf, "%08xh\n", ioc->logging_level);
- }
- static ssize_t
- logging_level_store(struct device *cdev, struct device_attribute *attr,
-@@ -3054,7 +3051,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->fwfault_debug);
-+	return sysfs_emit(buf, "%d\n", ioc->fwfault_debug);
- }
- static ssize_t
- fwfault_debug_store(struct device *cdev, struct device_attribute *attr,
-@@ -3091,7 +3088,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->ioc_reset_count);
-+	return sysfs_emit(buf, "%d\n", ioc->ioc_reset_count);
- }
- static DEVICE_ATTR_RO(ioc_reset_count);
- 
-@@ -3119,7 +3116,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 	else
- 		reply_queue_count = 1;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", reply_queue_count);
-+	return sysfs_emit(buf, "%d\n", reply_queue_count);
- }
- static DEVICE_ATTR_RO(reply_queue_count);
- 
-@@ -3191,7 +3188,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
- 
- 	/* BRM status is in bit zero of GPIOVal[24] */
- 	backup_rail_monitor_status = le16_to_cpu(io_unit_pg3->GPIOVal[24]);
--	rc = snprintf(buf, PAGE_SIZE, "%d\n", (backup_rail_monitor_status & 1));
-+	rc = sysfs_emit(buf, "%d\n", (backup_rail_monitor_status & 1));
- 
-  out:
- 	kfree(io_unit_pg3);
-@@ -3249,7 +3246,7 @@ struct DIAG_BUFFER_START {
- 		size = le32_to_cpu(request_data->Size);
- 
- 	ioc->ring_buffer_sz = size;
--	return snprintf(buf, PAGE_SIZE, "%d\n", size);
-+	return sysfs_emit(buf, "%d\n", size);
- }
- static DEVICE_ATTR_RO(host_trace_buffer_size);
- 
-@@ -3336,12 +3333,12 @@ struct DIAG_BUFFER_START {
- 	if ((!ioc->diag_buffer[MPI2_DIAG_BUF_TYPE_TRACE]) ||
- 	   ((ioc->diag_buffer_status[MPI2_DIAG_BUF_TYPE_TRACE] &
- 	    MPT3_DIAG_BUFFER_IS_REGISTERED) == 0))
--		return snprintf(buf, PAGE_SIZE, "off\n");
-+		return sysfs_emit(buf, "off\n");
- 	else if ((ioc->diag_buffer_status[MPI2_DIAG_BUF_TYPE_TRACE] &
- 	    MPT3_DIAG_BUFFER_IS_RELEASED))
--		return snprintf(buf, PAGE_SIZE, "release\n");
-+		return sysfs_emit(buf, "release\n");
- 	else
--		return snprintf(buf, PAGE_SIZE, "post\n");
-+		return sysfs_emit(buf, "post\n");
- }
- 
- static ssize_t
-@@ -3677,7 +3674,7 @@ struct DIAG_BUFFER_START {
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n", ioc->drv_support_bitmap);
-+	return sysfs_emit(buf, "0x%08x\n", ioc->drv_support_bitmap);
- }
- static DEVICE_ATTR_RO(drv_support_bitmap);
- 
-@@ -3697,7 +3694,7 @@ struct DIAG_BUFFER_START {
- 	struct Scsi_Host *shost = class_to_shost(cdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->enable_sdev_max_qd);
-+	return sysfs_emit(buf, "%d\n", ioc->enable_sdev_max_qd);
- }
- 
- /**
-@@ -3835,8 +3832,8 @@ struct device_attribute *mpt3sas_host_attrs[] = {
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
- 
--	return snprintf(buf, PAGE_SIZE, "0x%016llx\n",
--	    (unsigned long long)sas_device_priv_data->sas_target->sas_address);
-+	return sysfs_emit(buf, "0x%016llx\n",
-+			  (unsigned long long)sas_device_priv_data->sas_target->sas_address);
- }
- static DEVICE_ATTR_RO(sas_address);
- 
-@@ -3857,8 +3854,7 @@ struct device_attribute *mpt3sas_host_attrs[] = {
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
- 
--	return snprintf(buf, PAGE_SIZE, "0x%04x\n",
--	    sas_device_priv_data->sas_target->handle);
-+	return sysfs_emit(buf, "0x%04x\n", sas_device_priv_data->sas_target->handle);
- }
- static DEVICE_ATTR_RO(sas_device_handle);
- 
-@@ -3877,8 +3873,7 @@ struct device_attribute *mpt3sas_host_attrs[] = {
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n",
--			sas_device_priv_data->ncq_prio_enable);
-+	return sysfs_emit(buf, "%d\n", sas_device_priv_data->ncq_prio_enable);
- }
- 
- static ssize_t
--- 
-1.8.3.1
+Am 23.01.21 um 02:30 schrieb Ye Bin:
+> Fix follow warning:
+> drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable =E2=80=
+=98pdev=E2=80=99 set but not used [-Wunused-but-set-variable]
+>    struct pci_dev *pdev;
+>                    ^~~~
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
+>   1 file changed, 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/n=
+ouveau/nouveau_bios.c
+> index 7cc683b8dc7a..e8c445eb1100 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_bios.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
+> @@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
+>   {
+>   	struct nouveau_drm *drm =3D nouveau_drm(dev);
+>   	struct nvbios *bios =3D &drm->vbios;
+> -	struct pci_dev *pdev;
+>   	int ret;
+>  =20
+>   	/* only relevant for PCI devices */
+>   	if (!dev_is_pci(dev->dev))
+>   		return 0;
+> -	pdev =3D to_pci_dev(dev->dev);
+>  =20
+>   	if (!NVInitVBIOS(dev))
+>   		return -ENODEV;
+>=20
 
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk--
+
+--rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAaXMUFAwAAAAAACgkQlh/E3EQov+D7
+ZxAAxLjMylCx6YFYx6DLkHXiemXHddeNdKImp91LogDAOIXpRgBwOi20RoRKzEHF3wuRHBr3mQbn
+FbLzxYBdu4Hc+CMSuZwLdg5GaICjhuvB6KXsZwEfpDOCpaPsduT6FKWMYCqscDY36Vb6e11mGgUd
+ua/tgcPTxJML1pV/GKYTch8rS+OJ2fUxXqRuNQTmipjaIaM8F6s4n1255kwVQCYa6aKjy0aFHm5f
+qf5Uk8XiWhSbmw5lO31+6oynLJHA4Q2BpBtPmAr4Abw9cR+UIn7MbywA+JFiYT6TV2bcWXb2uK+8
+3dRWW8SizsqQtElS7vN9PBiPcDW9YMX6fcHj8PO2Xtqw6kYlgejS0jPuPOkTtECeuKbBlGtut7r0
+7LL8uHs4fsvTGB+RmTKdEn/hI5ubHbE8R2x+EXWpNA+3ItzOlV6a75S/ShNcAVXZc3hB2KsNEnje
+GwpP+NmlJUC7BXlbuPSRlC7AZjSzxV0Ukffk7vVqzF0cVyHPwJJNzSwRU4Ct20+5d7J9+pcXrk4x
+7iACRs4e/5qkPdQYtdE0O4iwUeq9XdxDEuXWFS9e6t1SHP3hXndRfoMFNaqKNtDWGCK+hN7bhKfS
+2Bq9356np4qmoyTm9M1MS1+SsH1AB6azfqboJ7QV9KYRDYXQmBvDMeJcV2qaAxtwwWfQcp7pKNd3
+new=
+=Nb9N
+-----END PGP SIGNATURE-----
+
+--rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6--
