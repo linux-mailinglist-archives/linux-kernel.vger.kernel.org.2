@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C3D30D84B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C1430D866
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhBCLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbhBCLRI (ORCPT
+        id S234166AbhBCLTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:19:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234112AbhBCLSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:17:08 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 03:16:25 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id g9so3852741ilc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=ZM/qrYA+f26OneEUWCg7P5IDWZkLbvPqUfDhvZCU5dWgjujKNTNqtEiUjsOx9b6zgk
-         46m4D8/plbspTOgYfIMSBON7Dp89NJriwycxV8DoEx8JJYgJqCnXSVQk8rijl6hbgTQC
-         QwJvZkSrLLRTD+zozFxp4PVVaeKwYwsl7/a8vKhcN78331tsAXwko3R0FEthYDdg25oM
-         gwvJH+0lxj64/THPNc7r4IIx053WEFmAsxYXkpSYxcN1OdHbxm/4Bzuwe3XziR/toP0Q
-         FgroQa0JY93biuHvDYz9LVdtE/KKx9+sQHePM8OqGqjMzqfIo4WYcuvCKCCCpD4nXTwJ
-         kyDA==
+        Wed, 3 Feb 2021 06:18:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612351046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YDwwnV6oAoWgNtINek2BnDn+JyBU0+eXPvom2Xfx5pY=;
+        b=esJ1Mpz+PkdJTken4H+RaUKcWmJA6Vyu1tMRlZvELPo0gj/8WH+Sj+cpGS2DzF/UH3jFQ2
+        4EW9R6hW9S2ioLZVwnrRJ09H0EkdSuX7bk9J+LKaRCY7wXugduE4HRPofX/+ojH0Jv6ygh
+        vmz1UJHcrs40lUeUUtQNh3VsD9IFAhY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-pBUcpqVYOtKOAmMlYT_qcA-1; Wed, 03 Feb 2021 06:17:24 -0500
+X-MC-Unique: pBUcpqVYOtKOAmMlYT_qcA-1
+Received: by mail-ej1-f72.google.com with SMTP id aq28so751101ejc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:17:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=I4YJj1J4gbSgHf1pgBYKhkpuylzrat5OljxRNzTDW6R6agrRTkpjiSTnEgAQfrNCdQ
-         aUF+mh2036FBd9bdeajIkSnZ8ccoEF+NcyrtLOl4JG3TZXNzpzhYtx8bk+YgHlBihx5S
-         Ody5z0LsTAai2YPyW3HRuQcJ4O4w0ykBr2w6UdtcaGU5bSmlghtOTnpcgpRYknx/ecRa
-         GnIpw+Mh75sEd9sKVBBHBTEuO1qw4BbHP+l/nXZtxQpi0VT9Y4Dsxhi9P8pfI+bpOnqD
-         RS/dlSBNLLPkjnTivcn/vWCH8CBOShVjU6TPBXkAIapj657ftZ+ruSSG5G3mEPlmkwKE
-         dZOg==
-X-Gm-Message-State: AOAM533C+uNBwDjo3pCvMqIc8xNjRGLd6XBAYwCwwgAMWhkG7EWEZ4J+
-        hIBRfuHkybwvAxdGBqK7nr6SjM5bCbEM9qXwVpI=
-X-Google-Smtp-Source: ABdhPJy89I9D+mtHz5atw6g1gyIHVL0xK00mKb/grntQu+nnCxIPnfaXw6hvtaraXMU9wXuMZvJDjZuSqDlRRBC88SQ=
-X-Received: by 2002:a92:b751:: with SMTP id c17mr2275594ilm.172.1612350985479;
- Wed, 03 Feb 2021 03:16:25 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YDwwnV6oAoWgNtINek2BnDn+JyBU0+eXPvom2Xfx5pY=;
+        b=S0RDylTkCArcKPHsIPPfsoB4GAZbviAH86t6ReEUI7745vKW/DBx5QTfzPIpik4I+W
+         kXQxJ9nUE4uPEOGW14ooTxxTveZTmBGyHbqDGDcwl8CNROwUlqnLTm5P2rVXidajZzCZ
+         jrUnEFv4PWcNoPG5Z41RS9UDespGc85ql3q7sZ5c/IAkk3Deib9cBOfupEUGAaUb3HNy
+         yf3AEGeyQyAdi66Gj4phhHJrkOMrWhybuJKMxo9NQT0O5nmblVk/y9OQ0zjeakisZY+V
+         7txM47eFbd8gqj4m5WAhjPVpuS6H61NmdSUC0yicd2ZS0lJ2k7eRn7m5vOBXXi8ocSA0
+         mkLQ==
+X-Gm-Message-State: AOAM530uJlNNTeYuVXSziit270tmEv5VTF/qmN8kBkqV7Dav6CHSkTzs
+        tXRJNKV8EkETXZqPxMeE0iSkD9chj5rvppwkt4jeDRAU8wC5lz3XMoTxtsZZ0zO/MI+vr6M1OOW
+        H2hJ48gt2T9I4lCNYYfpwrjjo
+X-Received: by 2002:a50:fd84:: with SMTP id o4mr2377545edt.340.1612351043441;
+        Wed, 03 Feb 2021 03:17:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx6DJB/yfWm5CLZI+cgY4t/zSaoLhE/4PGymObqGlzKNfu+A+pz91uz/yL9ObXeu3kpsxISnQ==
+X-Received: by 2002:a50:fd84:: with SMTP id o4mr2377519edt.340.1612351043304;
+        Wed, 03 Feb 2021 03:17:23 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r9sm856518eju.74.2021.02.03.03.17.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 03:17:22 -0800 (PST)
+Subject: Re: [PATCH v2 22/28] KVM: x86/mmu: Mark SPTEs in disconnected pages
+ as removed
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-23-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cb7108c7-e4f2-ea59-24f4-7c7da45054a8@redhat.com>
+Date:   Wed, 3 Feb 2021 12:17:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Received: by 2002:a05:6638:a47:0:0:0:0 with HTTP; Wed, 3 Feb 2021 03:16:25
- -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <bbruce539@gmail.com>
-Date:   Wed, 3 Feb 2021 12:16:25 +0100
-Message-ID: <CADiB6Yn=2UzrodPC6i4ADNKrwkBx3f-P+oOyPC4as9qvw=+RWw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210202185734.1680553-23-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+On 02/02/21 19:57, Ben Gardon wrote:
+> 
+> +			 * Marking the SPTE as a removed SPTE is not
+> +			 * strictly necessary here as the MMU lock should
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+"should" is a bit too weak---the point of !shared is that the MMU lock 
+*will* stop other threads from concurrent modifications of the SPTEs.
 
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7031@gmail.com
+Paolo
 
-Vielen Dank im Voraus,
-Mr. George Mike,
+> +			 * stop other threads from concurrentrly modifying
+> +			 * this SPTE. Using the removed SPTE value keeps
+> +			 * the shared and non-atomic cases consistent and
+> +			 * simplifies the function.
+> +			 */
+> +			WRITE_ONCE(*sptep, REMOVED_SPTE);
+
+
