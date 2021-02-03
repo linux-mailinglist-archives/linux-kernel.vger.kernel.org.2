@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8840030E631
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B85B30E627
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhBCWms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:42:48 -0500
-Received: from mga09.intel.com ([134.134.136.24]:17747 "EHLO mga09.intel.com"
+        id S232772AbhBCWi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:38:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232366AbhBCWmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:42:47 -0500
-IronPort-SDR: t53lsOkC9sj1ChBx4ht4N9NQbYDknvHup0vu6HhfgBCIgarVRyta0jCOG1QzmqOe8I6pgX3Nbm
- wkxE635xxf8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="181273267"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="181273267"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:40:59 -0800
-IronPort-SDR: TtacJnWk72BvWYP2DAq1xKzUirP6z7z8Fo1El2bt+KEKb/YVL07kfuYhaM+k5LCNtIWmEsBSX8
- olp8VJbJzqDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="356923330"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 03 Feb 2021 14:40:58 -0800
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, peterz@infradead.org, eranian@google.com,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf evsel: Add a check in the error path for the auxiliary event
-Date:   Wed,  3 Feb 2021 14:37:06 -0800
-Message-Id: <1612391826-27714-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S232201AbhBCWiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:38:52 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2533364D99;
+        Wed,  3 Feb 2021 22:38:10 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 17:38:08 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
+        willy@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, roman.fietze@magna.com,
+        john.ogness@linutronix.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        akinobu.mita@gmail.com
+Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks
+ all addresses as unhashed
+Message-ID: <20210203173808.03737e03@gandalf.local.home>
+In-Reply-To: <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
+References: <20210202213633.755469-1-timur@kernel.org>
+        <YBpyzxBYIYapHaDT@alley>
+        <YBqlooegQgEfPG4T@alley>
+        <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
+        <202102031201.FFED9547D@keescook>
+        <20210203152513.34492916@gandalf.local.home>
+        <202102031234.9BF349F@keescook>
+        <20210203154727.20946539@gandalf.local.home>
+        <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Wed, 3 Feb 2021 15:56:20 -0600
+Timur Tabi <timur@kernel.org> wrote:
 
-Current perf assumes that the ENODATA is a unique error code for the
-auxiliary event on Sapphire Rapids. The assumption is good for now, but
-this is fragile. In the future, someone may not remember that the
-ENODATA is for the auxiliary event on Sapphire Rapids, and reuse it for
-other purposes. The error message for the auxiliary event may be
-mistakenly displayed.
+> On 2/3/21 2:47 PM, Steven Rostedt wrote:
+> >   static void __init
+> >   plain(void)
+> >   {
+> >   	int err;
+> >   
+> > +	if (debug_never_hash_pointers)
+> > +		return;  
+> 
+> So, I have a stupid question.  What's the best way for test_printf.c to 
+> read the command line parameter?  Should I just do this in vsprintf.c:
+> 
+> /* Disable pointer hashing if requested */
+> static bool debug_never_hash_pointers __ro_after_init;
 
-Add a check to identify the auxiliary event case.
+It wont be static.
 
-Suggested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- tools/perf/util/evsel.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
+> 
+> I'm not crazy about exporting this variable to other drivers.  It could 
+> be used to disable hashing by any driver.
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 844aebd..30b5452 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -48,6 +48,7 @@
- #include "util.h"
- #include "../perf-sys.h"
- #include "util/parse-branch-options.h"
-+#include "pmu.h"
- #include <internal/xyarray.h>
- #include <internal/lib.h>
- 
-@@ -2735,8 +2736,10 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
- 			return scnprintf(msg, size, "The 'aux_output' feature is not supported, update the kernel.");
- 		break;
- 	case ENODATA:
--		return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
--				 "Please add an auxiliary event in front of the load latency event.");
-+		if (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_SRC && pmu_have_event("cpu", "mem-loads-aux")) {
-+			return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
-+					 "Please add an auxiliary event in front of the load latency event.");
-+		}
- 	default:
- 		break;
- 	}
--- 
-2.7.4
+But it is set as "__ro_after_init". That is, every module will see it as
+read only. IOW, they wont be able to modify it.
 
+> 
+> AFAIK, the only command-line parameter code that works in drivers is 
+> module_parm, and that expects the module prefix on the command-line.
+
+This is just a constant variable for others to see. The command line itself
+is visible (see saved_command_line, it's even exported to modules in sparc).
+
+
+-- Steve
