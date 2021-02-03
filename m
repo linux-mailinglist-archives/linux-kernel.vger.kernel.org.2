@@ -2,82 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E250030DFD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5540730DFDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhBCQf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhBCQfL (ORCPT
+        id S234600AbhBCQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:37:20 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45752 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231799AbhBCQgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:35:11 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80AFC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=GmYMNHTsJklH1Fxq78vOuT9014qZSaw9UoGazr/WP5Y=; b=0BU5fJYLPGQOuGhl97HJuDHwaY
-        uvyhzetaHTNTn/HkffpTnslMIk1ZfxWWwR5veIvvXJ0a2g40S/j5gGww6cLB8Em1/bGAf82jIDXL6
-        iq87+x6WHCm9R5b6SDD3d4er3wsjwZdBxadYTF5h2t6xqkX177i9wLpylvGKVu+MhbL3RIuox96yW
-        PMDDdG3ulRNySvuY4shB4GTMFUa4evIUlmu/6l2feRFcYCCsVPmtjVFUgue6peRVucBCtWnDN1FFf
-        WS8MYeIVJxxTufRF8bhk8NWM8wcQxYeFl9Tek9oEv0mjBoTVuIAL9iyuMUk9E2xLxEqRm+EulSgB9
-        1nBi1nhg==;
-Received: from [2601:1c0:6280:3f0::2a53]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7L6q-0002E0-MU; Wed, 03 Feb 2021 16:34:29 +0000
-Subject: Re: [PATCH] nvmem: Kconfig: Correct typo in NVMEM_RMEM
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210203102932.7277-1-nsaenzjulienne@suse.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <79c10761-5383-0c9c-0181-ab37d93b2f79@infradead.org>
-Date:   Wed, 3 Feb 2021 08:34:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 3 Feb 2021 11:36:54 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id EDDE21C0B9C; Wed,  3 Feb 2021 17:35:55 +0100 (CET)
+Date:   Wed, 3 Feb 2021 17:35:55 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from DT
+Message-ID: <20210203163555.GA23019@duo.ucw.cz>
+References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
+ <20210203142940.GB12369@duo.ucw.cz>
+ <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <20210203102932.7277-1-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
+Content-Disposition: inline
+In-Reply-To: <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 2:29 AM, Nicolas Saenz Julienne wrote:
-> s/drivers/driver/ as the configuration selects a single driver.
-> 
-> Fixes: 2bf4fd065384 ("nvmem: Add driver to expose reserved memory as nvmem")
-> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Wed 2021-02-03 15:39:59, Sven Schuchmann wrote:
+> Hello Pavel,
+>=20
+> > > In order to use a multicolor-led together with a trigger
+> > > from DT the led needs to have an intensity set to see something.
+> > > The trigger changes the brightness of the led but if there
+> > > is no intensity we actually see nothing.
+> > >
+> > > This patch adds the ability to set the default intensity
+> > > of each led so that it is turned on from DT.
+> >=20
+> > Do we need this to be configurable from device tree? Can we just set
+> > it to max or something?
+> >=20
+> > Aha, this basically sets the initial color for LEDs the monochromatic
+> > triggers, right?
+>=20
+> Let me try to explain in other words: I have one RGB-LED
+> which consists of 3 Colors. Each of the three colors (Red, Green, Blue) y=
+ou have
+> to define in the DT. For example this is my setup for one RGB-LED which I=
+ wanted
+> to show the heartbeat in Red (half intensity):
+>=20
+>                                 multi-led@3 {
+>                                         #address-cells =3D <1>;
+>                                         #size-cells =3D <0>;
+>                                         reg =3D <0x3>;
+>                                         color =3D <LED_COLOR_ID_RGB>;
+>=20
+>                                         linux,default-trigger =3D "heartb=
+eat";
+>                                         function =3D LED_FUNCTION_HEARTBE=
+AT;
+>=20
+>                                         led-9 {
+>                                                 color =3D <LED_COLOR_ID_R=
+ED>;
+>                                                 default-intensity =3D <10=
+0>;
+>                                         };
+>=20
+>                                         led-10 {
+>                                                 color =3D <LED_COLOR_ID_G=
+REEN>;
+>                                         };
+>=20
+>                                         led-11 {
+>                                                 color =3D <LED_COLOR_ID_B=
+LUE>;
+>                                         };
+>                                 };
+>=20
+> If I would not have the default-intensity I would actually see nothing,
+> since the intensity (which goes from 0-255) of each led is initialized wi=
+th 0.
+>=20
+> I hope I could clarify this a little more?
 
-> ---
->  drivers/nvmem/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-> index fecc19b884bf..75d2594c16e1 100644
-> --- a/drivers/nvmem/Kconfig
-> +++ b/drivers/nvmem/Kconfig
-> @@ -273,7 +273,7 @@ config SPRD_EFUSE
->  config NVMEM_RMEM
->  	tristate "Reserved Memory Based Driver Support"
->  	help
-> -	  This drivers maps reserved memory into an nvmem device. It might be
-> +	  This driver maps reserved memory into an nvmem device. It might be
->  	  useful to expose information left by firmware in memory.
->  
->  	  This driver can also be built as a module. If so, the module
-> 
+Yes, sounds reasonable. Could we get default intensity of 100% on all
+channels if nothing else is specified?
 
+Or maybe simply "if intensity is not specified, start with 100%, and
+use explicit =3D0 if other color is expected".
 
--- 
-~Randy
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBrQ6wAKCRAw5/Bqldv6
+8oYqAJ9zXvIQPTznpEndEdPE2Ht/6128KACgo1CHMC/SmJsoqpFkMhE2SgSlehc=
+=SBrF
+-----END PGP SIGNATURE-----
+
+--ZGiS0Q5IWpPtfppv--
