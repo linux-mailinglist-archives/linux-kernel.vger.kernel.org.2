@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5CF30DB9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F5F30DBBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhBCNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhBCNqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:46:01 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E494C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:45:20 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id i187so33368551lfd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JJ9DM6PdGtNUfSAd2slUQiJAIPkbwKKdmEnN7FGvrZ0=;
-        b=uEVfZB7kBiGmlTSskPgYFqfoHOxEhUBg8168XNp7rg75oBqZfETuJQEtcgidrVIlN5
-         bonOCowzB2l3esZ/9K+5hC//AzRA+W1w+rAAfgi0RMytY+ZAWSsgMRQQOILg8BnVNT/U
-         fSPU5DbKq0R7X3oLkDeUpOg5fbxHaC4mhUAaMPzMaHwLE8KGruNb956KmZDEMLKJsh5I
-         WyWtbFIDBbtIG4R/KYfR08QZcK3BeUKLpVOKzJ3uV+PGCvyKmB9rX/yCjU4yl36X5gW5
-         feDK3wyTc4oqFsZv+c3Z97PQplmkIQmrz4klyafuD7r032vZAOaPQ1bCBiURWnjmA99F
-         nHnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JJ9DM6PdGtNUfSAd2slUQiJAIPkbwKKdmEnN7FGvrZ0=;
-        b=ti7p2SzeAhCMHp9T+7eiLebrk9uDJw2bvCK/Q1sLVmnW7JcQe3Mr/DOpetYIvX4TDe
-         OGuCjZBK2RVS66Fh78qZXQJ3l6wIMIOJEtOLbp01CTB6x5/T+qtSK0SudWNG2D/Ui892
-         SfEGV8D5O9qXcgToTFgbcqrSI4v7EiQb5lLl6zJ0uIa4Q4HLKV7RMXQEkhqtJPMwv3rN
-         SVExGBHGPL74lTjIZUYjsdGYRcEkjt+VvxHJtJ+KvsjRa7bqO43GvI/1Gct6sU23s2yc
-         Cv7Pysoz9o2KG4RIQiRnGN1dcLECLVj4pF8hgvWJp0muHU2aOVbARaet8ZDanZKJGGQa
-         bCww==
-X-Gm-Message-State: AOAM5324LVwKHn8GgMwm6LPGvMAYONnFNUQFl/Y/VVQwhhvx0YhyXGUw
-        a1DtB6kWeEhBSQxpIa8AJns=
-X-Google-Smtp-Source: ABdhPJzNmUt6lvyWzU0a8N3U8TptpiCzpMbFmkGWvjwRZ7uHY06HaSUbj8k8PxSYm7/KzTlLPQc2/A==
-X-Received: by 2002:a19:ad03:: with SMTP id t3mr1812604lfc.358.1612359918784;
-        Wed, 03 Feb 2021 05:45:18 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.228])
-        by smtp.googlemail.com with ESMTPSA id p10sm259216lji.137.2021.02.03.05.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 05:45:18 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     lkp@intel.com
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
-        snovitoll@gmail.com,
-        syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
-Subject: [PATCH v2] fs/squashfs: restrict length of xattr_ids in read_xattr_id_table
-Date:   Wed,  3 Feb 2021 19:45:16 +0600
-Message-Id: <20210203134516.1697931-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <202102032044.wrsk1CfP-lkp@intel.com>
-References: <202102032044.wrsk1CfP-lkp@intel.com>
+        id S232335AbhBCNsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:48:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232170AbhBCNru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:47:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E501C64E36;
+        Wed,  3 Feb 2021 13:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612360029;
+        bh=IsUgXomeNp/1DGOHqfSSLc4znx0drWy8FvO9N7bp848=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bCL9ixA2RBf9S/jDNygs2Q3o10TvABw+g4gApdPzd9IT4GxK0mXKTxAYHAH8KDcyK
+         ElYUom2CXU5iALJ1gD+bZPJF5K9SkZXxJLepORTY1BRXJAfMWVkA3lVT5rqy/UlczK
+         5j8al5UB3OxVyiUbCvFLmkYr2vLctUZREY8Ub1WrsXwAe5IQFWRLq+FgLNnQOBrEYG
+         RokpEFyQ1K3OXMJfIW1QyJmuKhgNsyCPfZcO9nv8q9VMojavdccWdYvf6Z2+BNl1Qj
+         A7uJ7f+b0OpTQF3XT2OvRo1c5v4XWtTtwKFoDhHlv0a0c1m/UAoKRHaAvG39zfQSQW
+         dhgsr5vWI2ggQ==
+Date:   Wed, 3 Feb 2021 13:46:20 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 09/11] PCI: dwc: pcie-kirin: allow using multiple
+ reset GPIOs
+Message-ID: <20210203134620.GE4880@sirena.org.uk>
+References: <cover.1612335031.git.mchehab+huawei@kernel.org>
+ <4fb97b1fc3fe6df9a2fea8f96bdef433e75463a6.1612335031.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zaRBsRFn0XYhEU69"
+Content-Disposition: inline
+In-Reply-To: <4fb97b1fc3fe6df9a2fea8f96bdef433e75463a6.1612335031.git.mchehab+huawei@kernel.org>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In PATCH v2 fixed return -ENOMEM as error pointer.
 
->syzbot found WARNING in squashfs_read_table [1] when length of xattr_ids
->exceeds KMALLOC_MAX_SIZE in squashfs_read_table() for kmalloc().
->
->For other squashfs tables, currently such as boundary is checked with
->another table's boundaries. Xattr table is the last one, so there is
->no defined limit. But to avoid order >= MAX_ORDER warning condition,
->we should restrict SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids) to
->KMALLOC_MAX_SIZE, and it gives 1024 pages in squashfs_read_table via
->(length + PAGE_SIZE - 1) >> PAGE_SHIFT.
->
->[1]
->Call Trace:
-> alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
-> alloc_pages include/linux/gfp.h:547 [inline]
-> kmalloc_order+0x2e/0xb0 mm/slab_common.c:916
-> kmalloc_order_trace+0x14/0x120 mm/slab_common.c:932
-> kmalloc include/linux/slab.h:559 [inline]
-> squashfs_read_table+0x43/0x1e0 fs/squashfs/cache.c:413
-> squashfs_read_xattr_id_table+0x191/0x220 fs/squashfs/xattr_id.c:81
+--zaRBsRFn0XYhEU69
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reported-by: syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
- fs/squashfs/xattr_id.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Wed, Feb 03, 2021 at 08:01:53AM +0100, Mauro Carvalho Chehab wrote:
 
-diff --git a/fs/squashfs/xattr_id.c b/fs/squashfs/xattr_id.c
-index d99e08464554..2462876c66c4 100644
---- a/fs/squashfs/xattr_id.c
-+++ b/fs/squashfs/xattr_id.c
-@@ -78,5 +78,8 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
- 
- 	TRACE("In read_xattr_index_table, length %d\n", len);
- 
-+	if (len > KMALLOC_MAX_SIZE)
-+		return ERR_PTR(-ENOMEM);
-+
- 	return squashfs_read_table(sb, start + sizeof(*id_table), len);
- }
--- 
-2.25.1
+> +	reg = devm_regulator_get_optional(dev, "pci");
+> +	if (IS_ERR_OR_NULL(reg)) {
+> +		if (PTR_ERR(reg) == -EPROBE_DEFER)
+> +		    return PTR_ERR(reg);
+> +	} else {
+> +		ret = regulator_enable(reg);
 
+This is still misuse of regulator_get_optional() for the same reason.
+
+--zaRBsRFn0XYhEU69
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAaqSsACgkQJNaLcl1U
+h9DCKAf/fhZGpW2GymYrExkqL7V0WXt/lzd0cIz9uLBciSnaG7ffrNwNwldbL/x4
+GKofFl/RbxIDWTBdNHcZ1uVFG25lJqHX6H+bVwxBS8dsuAWHOTLWV4KxWf45rPGs
+Rud1saSyfttl967Jf5X0xcA/9Ckx5D0eWzdIUFZEQ1C4GJd8yR0oD21arwj5H2bS
+uZuBNb60Mf8cUEwtJDg88gt3abU8YWYzXLFflW6TJ9ZhhHGSkuSU2GDUrYSyQ7RG
+QNWAzloYWQ/HQgPj1MJHLodUrQ4xk8pEQCTAbTcwN2p9PQkYeBbeY5NtA+IqbmB7
+dqighPpO0laQZMM3cht9uR4obHsAdQ==
+=Io+1
+-----END PGP SIGNATURE-----
+
+--zaRBsRFn0XYhEU69--
