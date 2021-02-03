@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0540C30D456
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111D330D465
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhBCHwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:52:34 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12385 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbhBCHw1 (ORCPT
+        id S232304AbhBCHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:54:47 -0500
+Received: from conuserg-11.nifty.com ([210.131.2.78]:34336 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232160AbhBCHyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:52:27 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DVv3y4b2Rz7gQj;
-        Wed,  3 Feb 2021 15:50:22 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 3 Feb 2021 15:51:36 +0800
-Subject: Re: [PATCH] wireless: fix typo issue
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        samirweng1979 <samirweng1979@163.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        wengjianfeng <wengjianfeng@yulong.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-References: <20210203070025.17628-1-samirweng1979@163.com>
- <9200710b2d9dafea4bfae4bb449a55fb44245d04.camel@sipsolutions.net>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <74d4dfc5-51ae-5f53-6210-2cc14da55dcb@huawei.com>
-Date:   Wed, 3 Feb 2021 15:51:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 3 Feb 2021 02:54:46 -0500
+Received: from grover.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 1137qgIr002018;
+        Wed, 3 Feb 2021 16:52:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 1137qgIr002018
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612338763;
+        bh=BHikcps5Egh9U8s8X6kTCoeloxrM5VMBhf3jGdV23oU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RJoPgfyplpQnXFZR8Ehp2P+z6sDqERJXG+jL8xBU6//OgmZwXS2QUZNdCb/dFRQg7
+         k03LL29IDRbh+mzP9uwkH0Ek2ag2KZwua5NePQjOUA3qoHBU9ctqjCsjyAIB62W7Px
+         fTMfs6QNGbLNlxr4Oc44fSdm0OQVz1QwyOXRxOAnZ7+eZOHYBC4I4gNtyxltci98Pv
+         wPizpB8TT1ozyCzMspvW1SC5VJRi/4WXM576B3hZJSMGL3Zw2nfCVPbiNFviMkJ58B
+         7XLkRG16XNnWEH7DmAonjSnYuaH/jLW/D6/ZcQuJ2nFlOPXXX0/1ym0szhssgvgv+A
+         pEkCvFNGtGPyA==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>,
+        Mark Wielaard <mark@klomp.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
+Date:   Wed,  3 Feb 2021 16:52:39 +0900
+Message-Id: <20210203075239.5505-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <9200710b2d9dafea4bfae4bb449a55fb44245d04.camel@sipsolutions.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/3 15:33, Johannes Berg wrote:
-> On Wed, 2021-02-03 at 15:00 +0800, samirweng1979 wrote:
->> From: wengjianfeng <wengjianfeng@yulong.com>
->>
->> change 'iff' to 'if'.
->>
->> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
->> ---
->>  net/wireless/chan.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/wireless/chan.c b/net/wireless/chan.c
->> index 285b807..2f17edf 100644
->> --- a/net/wireless/chan.c
->> +++ b/net/wireless/chan.c
->> @@ -1084,7 +1084,7 @@ bool cfg80211_chandef_usable(struct wiphy *wiphy,
->>   * associated to an AP on the same channel or on the same UNII band
->>   * (assuming that the AP is an authorized master).
->>   * In addition allow operation on a channel on which indoor operation is
->> - * allowed, iff we are currently operating in an indoor environment.
->> + * allowed, if we are currently operating in an indoor environment.
->>   */
-> 
-> I suspect that was intentional, as a common abbreviation for "if and
-> only if".
+Sedat Dilek noticed duplicated debug flags passed when building C
+files with CONFIG_DEBUG_INFO.
 
-Yep. iff --> if and only if from:
-https://mathvault.ca/math-glossary/#iff
+I do not know much about his build environment, but yes, Kbuild
+recurses to the top Makefile with some build targets. For example,
+'make CC=clang bindeb-pkg' reproduces the issue.
 
-> 
-> johannes
-> 
-> .
-> 
+With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
+for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
+CONFIG_CC_IS_GCC=y.
+
+Fix it to reset DEBUG_CFLAGS also when using Clang.
+
+Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 3d3f67b98ca2..769a38ee81b9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -811,10 +811,12 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
+ KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+ endif
+ 
++DEBUG_CFLAGS	:=
++
+ # Workaround for GCC versions < 5.0
+ # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
+ ifdef CONFIG_CC_IS_GCC
+-DEBUG_CFLAGS	:= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
++DEBUG_CFLAGS	+= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+ endif
+ 
+ ifdef CONFIG_DEBUG_INFO
+-- 
+2.27.0
 
