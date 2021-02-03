@@ -2,171 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD95930D731
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FB030D740
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhBCKQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhBCKQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:16:27 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C4BC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:15:45 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id c4so20779112wru.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:15:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a321zpi9EYFPKrHa/w5wiDf7FzXZmd2yWZ5PnRvh2oY=;
-        b=RCZYqjo8I8AawXH9nn6NQo2bQR2kzFkM3XePpRANJJFh+lczMkaDb319tOYYIL1zXa
-         yxn6aF18WkJpG3iAp/H1LKgx52iDyHPIS7MGdZknlRvHXfaNZJXshs8+A0/iv6kNsVrB
-         JXrIIwgJ+TTIv7ID15/NbNfrIDf5JA+9CfuIY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=a321zpi9EYFPKrHa/w5wiDf7FzXZmd2yWZ5PnRvh2oY=;
-        b=qahUuyVsci0h3w3NH85BzpjEe7D/tEHe8oEf2Qz83Zv7cUOFhfOsyn1xxX7n124JfW
-         UcJ/yGPOZHs8E9gZfNn4W3wAs9N8miX5GPSEirO3X1iZYC7lK0wnccIWACBVeuvy/6oI
-         gNFB3rqO1fhnZEAI9Ckj6oeZJHYHJsMT/UCGH9Rk60sIoWoHKpUkydJ1NtaX7KLqk4qY
-         JD9IjKXF6cY5a3FZJassv/PkuCCL1O0qugPFIuAhJ2iOKHlEzsdKGUTgLOV7MIO1G53l
-         tD3NsEF5/pPVcXSt0Bdnu3yf6ICariYUZ9He2sdrM+IfeozD93AmgV6Kcn6tKjvT/DzF
-         sgpg==
-X-Gm-Message-State: AOAM532ioeYONopO9t3PHPQrS5BN6KTgFLGK+X04QBXA7gwUoG0I8w4N
-        HMpSnZakzit3nG5uSpFdmkPIOw==
-X-Google-Smtp-Source: ABdhPJzHB+ffvr9s3UM8FPaGZKcUXhORlDn7t4V0qu+UbQAlINgveENCa31EtHjKs1ycCeGI9sFg6g==
-X-Received: by 2002:adf:f743:: with SMTP id z3mr2655431wrp.165.1612347344092;
-        Wed, 03 Feb 2021 02:15:44 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f4sm2825617wrs.34.2021.02.03.02.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 02:15:43 -0800 (PST)
-Date:   Wed, 3 Feb 2021 11:15:41 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 5/5] drm/qxl: properly free qxl releases
-Message-ID: <YBp3zQqomQziZbPT@phenom.ffwll.local>
-Mail-Followup-To: Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" <spice-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210126165812.1661512-1-kraxel@redhat.com>
- <20210126165812.1661512-6-kraxel@redhat.com>
+        id S233790AbhBCKRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:17:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232865AbhBCKRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:17:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 340B664E3E;
+        Wed,  3 Feb 2021 10:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612347379;
+        bh=JiQd1AVXeEdpEBGNqD2D+wZ+wH51zt/0P+o9Tb1P56c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gnN5UB9yoV5OXihVhGd5KxypFuR0QjRFq4L6Slxp+HQAnhEBHuScRHbXKEinyPa1H
+         Voi4CAxi9qqVZTcBVb+tN+mHpZJXgrJLyzWtJgUF+j/ltj8KjjSacT2htWiKqsKkWz
+         l1QCCdGQ0Hy55WjiHMNMpVEi/Yxd+zqgvG/uaQJexTtHSBiQIGfcx3yt+w07WaH2Dw
+         hxW0zgqpuY5O1YfP+VKwDXsmQTyKYrcd9h8HSC8Geu2DWRa+f3AHemPoFsj3OX1NJs
+         WyjsrbL8AkyLqsNexUxI49UXEfMw2bCD6TLVNXOzTo7Yh93lzaE11GFMDK5ZVVUHmf
+         4mu+O0XFY2gmw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: [PATCH net-next v1 0/4] Fix W=1 compilation warnings in net/* folder
+Date:   Wed,  3 Feb 2021 12:16:08 +0200
+Message-Id: <20210203101612.4004322-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126165812.1661512-6-kraxel@redhat.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 05:58:12PM +0100, Gerd Hoffmann wrote:
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->  drivers/gpu/drm/qxl/qxl_drv.h     |  1 +
->  drivers/gpu/drm/qxl/qxl_kms.c     | 22 ++++++++++++++++++++--
->  drivers/gpu/drm/qxl/qxl_release.c |  2 ++
->  3 files changed, 23 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/qxl/qxl_drv.h b/drivers/gpu/drm/qxl/qxl_drv.h
-> index 01354b43c413..1c57b587b6a7 100644
-> --- a/drivers/gpu/drm/qxl/qxl_drv.h
-> +++ b/drivers/gpu/drm/qxl/qxl_drv.h
-> @@ -214,6 +214,7 @@ struct qxl_device {
->  	spinlock_t	release_lock;
->  	struct idr	release_idr;
->  	uint32_t	release_seqno;
-> +	atomic_t	release_count;
->  	spinlock_t release_idr_lock;
->  	struct mutex	async_io_mutex;
->  	unsigned int last_sent_io_cmd;
-> diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
-> index 4a60a52ab62e..f177f72bfc12 100644
-> --- a/drivers/gpu/drm/qxl/qxl_kms.c
-> +++ b/drivers/gpu/drm/qxl/qxl_kms.c
-> @@ -25,6 +25,7 @@
->  
->  #include <linux/io-mapping.h>
->  #include <linux/pci.h>
-> +#include <linux/delay.h>
->  
->  #include <drm/drm_drv.h>
->  #include <drm/drm_managed.h>
-> @@ -286,8 +287,25 @@ int qxl_device_init(struct qxl_device *qdev,
->  
->  void qxl_device_fini(struct qxl_device *qdev)
->  {
-> -	qxl_bo_unref(&qdev->current_release_bo[0]);
-> -	qxl_bo_unref(&qdev->current_release_bo[1]);
-> +	int cur_idx, try;
-> +
-> +	for (cur_idx = 0; cur_idx < 3; cur_idx++) {
-> +		if (!qdev->current_release_bo[cur_idx])
-> +			continue;
-> +		qxl_bo_unpin(qdev->current_release_bo[cur_idx]);
-> +		qxl_bo_unref(&qdev->current_release_bo[cur_idx]);
-> +		qdev->current_release_bo_offset[cur_idx] = 0;
-> +		qdev->current_release_bo[cur_idx] = NULL;
-> +	}
-> +
-> +	/*
-> +	 * Ask host to release resources (+fill release ring),
-> +	 * then wait for the release actually happening.
-> +	 */
-> +	qxl_io_notify_oom(qdev);
-> +	for (try = 0; try < 20 && atomic_read(&qdev->release_count) > 0; try++)
-> +		msleep(20);
+From: Leon Romanovsky <leonro@nvidia.com>
 
-A bit icky, why not use a wait queue or something like that instead of
-hand-rolling this? Not for perf reasons, just so it's a bit clear who
-waits for whom and why.
--Daniel
+Changelog:
+v1:
+ * Removed Fixes lines.
+ * Changed target from net to be net-next.
+ * Patch 1: Moved function declaration to be outside config instead
+   games with if/endif.
+ * Patch 3: Moved declarations to new header file.
+v0: https://lore.kernel.org/lkml/20210202135544.3262383-1-leon@kernel.org
+------------------------------------------------------------------
+Hi,
 
-> +
->  	qxl_gem_fini(qdev);
->  	qxl_bo_fini(qdev);
->  	flush_work(&qdev->gc_work);
-> diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qxl_release.c
-> index 28013fd1f8ea..43a5436853b7 100644
-> --- a/drivers/gpu/drm/qxl/qxl_release.c
-> +++ b/drivers/gpu/drm/qxl/qxl_release.c
-> @@ -196,6 +196,7 @@ qxl_release_free(struct qxl_device *qdev,
->  		qxl_release_free_list(release);
->  		kfree(release);
->  	}
-> +	atomic_dec(&qdev->release_count);
->  }
->  
->  static int qxl_release_bo_alloc(struct qxl_device *qdev,
-> @@ -344,6 +345,7 @@ int qxl_alloc_release_reserved(struct qxl_device *qdev, unsigned long size,
->  			*rbo = NULL;
->  		return idr_ret;
->  	}
-> +	atomic_inc(&qdev->release_count);
->  
->  	mutex_lock(&qdev->release_mutex);
->  	if (qdev->current_release_bo_offset[cur_idx] + 1 >= releases_per_bo[cur_idx]) {
-> -- 
-> 2.29.2
-> 
+This short series fixes W=1 compilation warnings which I experienced
+when tried to compile net/* folder.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks
+
+Leon Romanovsky (4):
+  ipv6: silence compilation warning for non-IPV6 builds
+  ipv6: move udp declarations to net/udp.h
+  net/core: move gro function declarations to separate header
+  netfilter: move handlers to net/ip_vs.h
+
+ include/linux/icmpv6.h          |  2 +-
+ include/net/gro.h               | 12 ++++++++++++
+ include/net/ip_vs.h             | 11 +++++++++++
+ include/net/udp.h               |  3 +++
+ net/core/dev.c                  |  7 +------
+ net/ipv6/ip6_input.c            |  3 +--
+ net/netfilter/ipvs/ip_vs_core.c | 12 ------------
+ 7 files changed, 29 insertions(+), 21 deletions(-)
+ create mode 100644 include/net/gro.h
+
+--
+2.29.2
+
