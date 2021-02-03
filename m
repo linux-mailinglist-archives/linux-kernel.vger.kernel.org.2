@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B0330D081
+	by mail.lfdr.de (Postfix) with ESMTP id 924B030D082
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhBCAvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 19:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbhBCAu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:50:56 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9276CC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:50:16 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id cl8so2097403pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 16:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WrIVK8sDseMlS4o9lz0V6MRsGpJ6jWjlISOO9cArdaE=;
-        b=SWSiiHtZvYGMNzfqn0C705T+byGm0SCksZTFqTryqHaM/C6AJ2+ZFyZfH977qTEzUb
-         S+fzKzvzpBfi9CqT6vS20/vSqQ3Pgf9kx+tWZTe7I7oF+n7AL3aNgDDxxV/YNFIDK463
-         IDXak76GlG862GDExIWJUcWa9x1fedwPFH+1o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WrIVK8sDseMlS4o9lz0V6MRsGpJ6jWjlISOO9cArdaE=;
-        b=unVfw5maaquOGWCNDLKNGvrIRkaLHqDPRX/5gYzPoKs6PYoQiZiUVfJuxaCtaAMN0h
-         qy0Nc3FDDEcRXSOFvqhr7rivMaueCMZNn7UL6k0EZ3MieUEbIiwkl8pVJr+5LXayDM3U
-         qxzQpgppSZb+UIRxaXolCZqZlDLsvde5aEEIhtsC1C9t+OKGco4L03QsglI7PaB+f4+G
-         TiAP/PTezQrPqojZF+SqsmdJtR3fqOS4WO7EbXpfQLHHENcv86/qIjzqcozgVf41GcJI
-         yVO+RTp8dC7sXRM4E7mYWH11ou9ozggpX0ehqvacrBRnsyifa9fz0nw/OWtiKpIvzO9T
-         0FJQ==
-X-Gm-Message-State: AOAM533hnnuYjF5gTLQ+0a2hB/jl31ThylbG8ODqMDyDcYb3Skq8js60
-        dfDWY8UaunS/VJ4vzztW5K8MCw==
-X-Google-Smtp-Source: ABdhPJwUtVndBlHghaUzgOXZqCD8uLRkChgDzib4W7gmbknEoDqpUtRqOAYHnIJg9ki5c/5sOFwvKQ==
-X-Received: by 2002:a17:902:a614:b029:e1:5b43:956a with SMTP id u20-20020a170902a614b02900e15b43956amr846276plq.38.1612313415034;
-        Tue, 02 Feb 2021 16:50:15 -0800 (PST)
-Received: from benl-m5lvdt.local ([2600:1700:87d0:94f:dd59:3fb8:f6a9:fc02])
-        by smtp.gmail.com with ESMTPSA id z11sm169589pfk.97.2021.02.02.16.50.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 16:50:14 -0800 (PST)
-Subject: Re: [PATCH v2 5/5] interconnect: qcom: Add MSM8939 interconnect
- provider driver
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Jun Nie <jun.nie@linaro.org>, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh@kernel.org
-Cc:     shawn.guo@linaro.org
-References: <20201204075345.5161-1-jun.nie@linaro.org>
- <20201204075345.5161-6-jun.nie@linaro.org>
- <d869ea94b3b1c73800a5c3b855cb6f280be6c185.camel@mailoo.org>
- <a88b39dd-1c50-8aff-f85e-27086db9b040@linaro.org>
-From:   Benjamin Li <benl@squareup.com>
-Message-ID: <7630c4aa-b023-55a6-e2aa-37a7538c6b45@squareup.com>
-Date:   Tue, 2 Feb 2021 16:50:12 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S231638AbhBCAv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 19:51:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232464AbhBCAvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 19:51:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2296B64F6C;
+        Wed,  3 Feb 2021 00:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612313421;
+        bh=2oAL83AQgZdUauXSnwoYlspPoPdvBJyWIbDVFHX5qsU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=A0tIeYeRMoA140byXMHql45K5kNvUvn0icP2FobnhEP2chqdBo66zwhY3b22cyVpc
+         Zfv2ABXjVzpsfw+hmTkcqB/izAEdeATxFNT/thJ4jdNki2NESgUTBfmRdzuOyPQOeO
+         zDH2jlzpblgIhUShb7F74bh9bD3wICImio8OUdKiwSMVyuT7qkZLqhqVo6PqRi3TaJ
+         EmHUbhRlLVhKRzn8WZq6jBOYVXRHK0N9ibsnmfZ/vcY+N8WEyuUpln2ljTzyn32wJp
+         bXnW3ltnLkkGjVCUELNOGkUGCNjHqs4wTY+LdnSfvClLGEvXu1iQVXwCmhR7/OSSRa
+         reMnngmVtsi4A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D5D6C3522865; Tue,  2 Feb 2021 16:50:20 -0800 (PST)
+Date:   Tue, 2 Feb 2021 16:50:20 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        ak@linux.intel.com, clm@fb.com
+Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
+ to fuzz per-CPU clock checking
+Message-ID: <20210203005020.GI2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
+ <20210202170635.24839-4-paulmck@kernel.org>
+ <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <a88b39dd-1c50-8aff-f85e-27086db9b040@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/5/21 5:54 AM, Georgi Djakov wrote:
-> On 1/2/21 13:08, Vincent Knecht wrote:
->> Le vendredi 04 décembre 2020 à 15:53 +0800, Jun Nie a écrit :
->>> Add driver for the Qualcomm interconnect buses found in MSM8939 based
->>> platforms. The topology consists of four NoCs that are controlled by
->>> a remote processor that collects the aggregated bandwidth for each
->>> master-slave pairs.
->>>
->>> Signed-off-by: Jun Nie <jun.nie@linaro.org>
->>
->> Shouldn't some rpm ids be changed like they were for msm8916 in the following patch ?
->> c497f9322af9 ("interconnect: qcom: msm8916: Remove rpm-ids from non-RPM nodes")
->> https://patchwork.kernel.org/project/linux-arm-msm/patch/20201112105140.10092-1-georgi.djakov@linaro.org/
+On Tue, Feb 02, 2021 at 11:51:02AM -0800, Randy Dunlap wrote:
+> On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > Code that checks for clock desynchronization must itself be tested, so
+> > this commit creates a new clocksource.inject_delay_shift_percpu= kernel
+> > boot parameter that adds or subtracts a large value from the check read,
+> > using the specified bit of the CPU ID to determine whether to add or
+> > to subtract.
+> > 
+> > Cc: John Stultz <john.stultz@linaro.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: Mark Rutland <Mark.Rutland@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Andi Kleen <ak@linux.intel.com>
+> > Reported-by: Chris Mason <clm@fb.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+> >  kernel/time/clocksource.c                       | 10 +++++++++-
+> >  2 files changed, 18 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 9965266..f561e94 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -593,6 +593,15 @@
+> >  			times the value specified for inject_delay_freq
+> >  			of consecutive non-delays.
+> >  
+> > +	clocksource.inject_delay_shift_percpu= [KNL]
+> > +			Shift count to obtain bit from CPU number to
+> > +			determine whether to shift the time of the per-CPU
+> > +			clock under test ahead or behind.  For example,
 > 
-> Maybe they should. I don't have the hardware to try it, but the test will be
-> to just add the NoC DT nodes, enable the driver and inspect the boot log for
-> messages like:
-> [    2.926647] qcom_icc_rpm_smd_send mas X error -6
+> It's a good think that you give an example -- it helps a little bit.
+> That sentence above needs to be rewritten...
+
+That is a bit obscure, now that you mention it.
+
+> > +			setting this to the value four will result in
+> > +			alternating groups of 16 CPUs shifting ahead and
+> > +			the rest of the CPUs shifting behind.  The default
+> > +			value of -1 disable this type of error injection.
 > 
-> Thanks,
-> Georgi
+> 			            disables
 
-Hi Vincent & Georgi,
+Good eyes!
 
-Thanks, I ran your suggestion on an MSM8939 board (with an additional
-change to print slave IDs as well). Results:
+So how about like this?
 
-[    1.901376] qcom_icc_rpm_smd_send slv 24 error -6
-[    2.005977] qcom_icc_rpm_smd_send mas 20 error -6
-[    2.010250] qcom_icc_rpm_smd_send slv 20 error -6
-[    2.014684] qcom_icc_rpm_smd_send slv 106 error -6
-[    2.019338] qcom_icc_rpm_smd_send slv 107 error -6
-[    2.024615] qcom_icc_rpm_smd_send slv 29 error -6
-[    2.028782] qcom_icc_rpm_smd_send mas 3 error -6
-[    2.034657] qcom_icc_rpm_smd_send mas 100 error -6
-(and there's another slv 131 that's hidden by the mas 100 failure)
+	clocksource.inject_delay_shift_percpu= [KNL]
+			Clocksource delay injection partitions the CPUs
+			into two sets, one whose clocks are moved ahead
+			and the other whose clocks are moved behind.
+			This kernel parameter selects the CPU-number
+			bit that determines which of these two sets the
+			corresponding CPU is placed into.  For example,
+			setting this parameter to the value four will
+			result in the first set containing alternating
+			groups of 16 CPUs whose clocks are moved ahead,
+			while the second set will contain the rest of
+			the CPUs, whose clocks are moved behind.
 
-Jun, I'll send you the patch I tested with to silence all these errors,
-if you want to just squash that into the next version of your patchset.
+			The default value of -1 disables this type of
+			error injection.
 
-Ben
+							Thanx, Paul
+
+> > +
+> >  	clocksource.max_read_retries= [KNL]
+> >  			Number of clocksource_watchdog() retries due to
+> >  			external delays before the clock will be marked
+> 
+> 
+> -- 
+> ~Randy
+> 
