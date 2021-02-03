@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D61130D98A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E646B30D98D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234377AbhBCMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:10:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36988 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhBCMKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:10:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612354172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gKqIUoUlL8R76kxwkZS//+2tVOQRZKxuwAdDoVgDGVc=;
-        b=mxvYYdsWkKnOLbAAY2Xq93W86QtxGZG9WZBc2Cc9sS5vqXt3wUWDhs4DwbnmfVD6tvAGG0
-        lS5OJmRviEMD44E4iBuZm462q2JlcFLn8YYCSpZ5+zJQC2fMRyJYklkp59wywSxIFouSEb
-        IneXY25y0nuwemPLYik6lohSpv88DtM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DB6EEAD26;
-        Wed,  3 Feb 2021 12:09:31 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 13:09:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <YBqSejZ3XbUKFudR@dhcp22.suse.cz>
-References: <20210202124857.GN242749@kernel.org>
- <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
- <YBlUXdwV93xMIff6@dhcp22.suse.cz>
- <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
- <YBlgCl8MQuuII22w@dhcp22.suse.cz>
- <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
- <YBlicIupOyPF9f3D@dhcp22.suse.cz>
- <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
- <20210202181546.GO242749@kernel.org>
- <f26a17366194880d58e67d10cb5d7d7fdf2f3c19.camel@linux.ibm.com>
+        id S234475AbhBCMKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234151AbhBCMKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:10:38 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C242DC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:09:57 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id a12so32988945lfb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:09:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=pv1qciXbuEXdJ686V9ClECcdM/TT1AFBeAb3316YkDo=;
+        b=be9HmGyubkh2mJwqE28CDJr937G7MiPdy0oXglGV6mdW5A71v9Nz8VwFUVXPx9VSjk
+         4VTkRA3KgdvxNDCJlEZs12xcsk1f9KEkP20PUSbNnr7Zn76cXRGjF9mrgILapZzvd/n3
+         rt1wzOkL8JAsWBAaARiQBWfpCSrG8/AvmcTV027IrwRd9s62EJ4SatogWi/oOXg71bx0
+         XEfAAZJe+xHak4SXETmwmyX5WfRfnMss9IB7glmH1+B3B8QZzj0IqgtfL7ZE6ToRmEmu
+         Bubwm/KNhEoKLreZFn0XjL1zYX2JYr7nUF8Dv00ILjn5Jwwreu3pW5CA+kAhlPOVHI7i
+         ax6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=pv1qciXbuEXdJ686V9ClECcdM/TT1AFBeAb3316YkDo=;
+        b=rUw4XcQTAcpNKyMg5ZeEkuKhEWTIaLLLkA9TJy/9VJnmr/zm31icN29W4AVtiEc1KF
+         tD/xtVVmrH4y4F5vhYyEFmqoqmwVMCCS+HHZl3mR2OqeouCpTpTk1A1yvXqYoaxgiHvd
+         7PmNJ3FFJ+rNam0352LTBuqlwPhhGGCJkOvuPMPvR+fRLbaMO5NpvCJCYHPRVFHMKWjk
+         x2UO3MUy1a8hKtAaKX0GLXgDYDQD3/Wul//W3KdeXx73vRyEgmbCJviUockwhaDqGkXp
+         huFE4HAf3QLopG6MouFVaMTJxRvvPZWh2yGjqZSzwz66t4z87s1ggWzdVyKT03+bYeif
+         Pcdw==
+X-Gm-Message-State: AOAM5314UTXlcefjbD8lyyoDXGFRVHy43pFkYf4o9csbwyzpCGeE5MjH
+        yacHbVviC2hFZPHxYaoUqJqgKQ==
+X-Google-Smtp-Source: ABdhPJybRZzGpTiMX5nvQjiDuUczL+iSxnRQlwBPmLzDZwU7MLBda/LI3lJUp+t2+7nGnEPsRgJ/3Q==
+X-Received: by 2002:a05:6512:2004:: with SMTP id a4mr1590639lfb.212.1612354196266;
+        Wed, 03 Feb 2021 04:09:56 -0800 (PST)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id j8sm224571lfm.79.2021.02.03.04.09.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 04:09:55 -0800 (PST)
+Date:   Wed, 3 Feb 2021 13:09:53 +0100
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] OP-TEE fix for v5.12
+Message-ID: <20210203120953.GB3624453@jade>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f26a17366194880d58e67d10cb5d7d7fdf2f3c19.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-02-21 10:55:40, James Bottomley wrote:
-> On Tue, 2021-02-02 at 20:15 +0200, Mike Rapoport wrote:
-> > On Tue, Feb 02, 2021 at 03:34:29PM +0100, David Hildenbrand wrote:
-> > > On 02.02.21 15:32, Michal Hocko wrote:
-> > > > On Tue 02-02-21 15:26:20, David Hildenbrand wrote:
-> > > > > On 02.02.21 15:22, Michal Hocko wrote:
-> > > > > > On Tue 02-02-21 15:12:21, David Hildenbrand wrote:
-> > > > > > [...]
-> > > > > > > I think secretmem behaves much more like longterm GUP right
-> > > > > > > now
-> > > > > > > ("unmigratable", "lifetime controlled by user space",
-> > > > > > > "cannot go on
-> > > > > > > CMA/ZONE_MOVABLE"). I'd either want to reasonably well
-> > > > > > > control/limit it or
-> > > > > > > make it behave more like mlocked pages.
-> > > > > > 
-> > > > > > I thought I have already asked but I must have forgotten. Is
-> > > > > > there any
-> > > > > > actual reason why the memory is not movable? Timing attacks?
-> > > > > 
-> > > > > I think the reason is simple: no direct map, no copying of
-> > > > > memory.
-> > > > 
-> > > > This is an implementation detail though and not something
-> > > > terribly hard
-> > > > to add on top later on. I was more worried there would be really
-> > > > fundamental reason why this is not possible. E.g. security
-> > > > implications.
-> > > 
-> > > I don't remember all the details. Let's see what Mike thinks
-> > > regarding
-> > > migration (e.g., security concerns).
-> > 
-> > Thanks for considering me a security expert :-)
-> > 
-> > Yet, I cannot estimate how dangerous is the temporal exposure of
-> > this data to the kernel via the direct map in the simple
-> > map/copy/unmap
-> > sequence.
-> 
-> Well the safest security statement is that we never expose the data to
-> the kernel because it's a very clean security statement and easy to
-> enforce. It's also the easiest threat model to analyse.   Once we do
-> start exposing the secret to the kernel it alters the threat profile
-> and the analysis and obviously potentially provides the ROP gadget to
-> an attacker to do the same. Instinct tells me that the loss of
-> security doesn't really make up for the ability to swap or migrate but
-> if there were a case for doing the latter, it would have to be a
-> security policy of the user (i.e. a user should be able to decide their
-> data is too sensitive to expose to the kernel).
+Hello arm-soc maintainers,
 
-The security/threat model should be documented in the changelog as
-well. I am not a security expert but I would tend to agree that not
-allowing even temporal mapping for data copying (in the kernel) is the
-most robust approach. Whether that is generally necessary for users I do
-not know.
+Please pull this small fix removing an unnecessary call to need_resched()
+before cond_resched() while the OP-TEE driver is handing a RPC.
 
-From the API POV I think it makes sense to have two
-modes. NEVER_MAP_IN_KERNEL which would imply no migrateability, no
-copy_{from,to}_user, no gup or any other way for the kernel to access
-content of the memory. Maybe even zero the content on the last unmap to
-never allow any data leak. ALLOW_TEMPORARY would unmap the page from
-the direct mapping but it would still allow temporary mappings for
-data copying inside the kernel (thus allow CoW, copy*user, migration).
-Which one should be default and which an opt-in I do not know. A less
-restrictive mode to be default and the more restrictive an opt-in via
-flags makes a lot of sense to me though.
+Thanks,
+Jens
 
--- 
-Michal Hocko
-SUSE Labs
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/optee-fix-cond-resched-call-for-v5.12
+
+for you to fetch changes up to 958567600517fd15b7f35ca1a8be0104f0eb0686:
+
+  tee: optee: remove need_resched() before cond_resched() (2021-02-03 08:11:11 +0100)
+
+----------------------------------------------------------------
+Remove unnecessary need_resched() before cond_resched()
+
+----------------------------------------------------------------
+Jens Wiklander (1):
+      tee: optee: remove need_resched() before cond_resched()
+
+Rouven Czerwinski (1):
+      tee: optee: replace might_sleep with cond_resched
+
+ drivers/tee/optee/call.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
