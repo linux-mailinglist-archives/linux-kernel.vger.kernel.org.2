@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5510730E248
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E93C30E23A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhBCSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:15:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S232760AbhBCSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbhBCSNt (ORCPT
+        with ESMTP id S232863AbhBCSNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:13:49 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BC6C06121F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:12:25 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id g7so141383iln.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:12:25 -0800 (PST)
+        Wed, 3 Feb 2021 13:13:38 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EC6C061226
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:12:27 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id u8so226826ior.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:12:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gUxAyPrY9bzYiy2Y6nOYwDKwIFGYOoQbH3S8TsMIGGo=;
-        b=LR/v+EQTUWjnJKFoLH/BjXkI1v2ATxLTA/9R548MdtOmefM0aLvLpv9/MWD9oW1GOH
-         QKHPDO+ry0fgYGWTAPMeVT8xDgc/shSmWyNzLIxY3W5EHahxOmylIUosLP1esDVrOSi5
-         ZEML4NYRuBEf1RSlpmX0w4jdLCcyxu2NrMaeU=
+        bh=t4wenknjZ2bs5eKNUbWK97l2NFAOkxWA8p4z0taSinQ=;
+        b=bK/hwc7BdBaznbintn00c0zRwBKC2JVyZWt36DBGWZYS3p6BVpJeOJEEamHAM+6vyC
+         PXMgKamY4JH2XBuWrtRG8FAQpXZ0SLZ28VkyLw2OPhYx4rxDJ1ScO65tUPG+qdprJ9XJ
+         vV1RasCSNiAfnS8ol5pPlvaIVj8bQiMEHpw8M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gUxAyPrY9bzYiy2Y6nOYwDKwIFGYOoQbH3S8TsMIGGo=;
-        b=cJhmvmuZ6Lf76fowovFMAH4kdS0lEZsNLtlgC28rLBAJ9fvhgy4yJCh9NOAhSfPgNC
-         6XJ4EYeY0jjEF8hLK+S9ZevcSf7JbNm99saJljGergcGqs5ykwVnFWsYwXWAVC5eWNyY
-         AeucYTuGifFsetVPJ5rEZRh91QsfIL8VrD9qxSPwmP7AlF9l2raFBDlaBqMI8cNcRgqQ
-         5NCMQV9eeP2XiKG87A8tq0888TBxtOR+7YvtvuEN1j5marsBzvDxqJ7zZZyym78iBFlK
-         8YYrGyJJ0GT1jIH00zjM5Vh/ixYFUXfJ72zTM65HhHY9yG6cvwi+W+QQs0+tXMcMzkHF
-         WIFg==
-X-Gm-Message-State: AOAM531vW1OSS43eTJl12nYjLknU16wz/M1ifahtYyWFEWlyCSIMxWML
-        Zi13z5GoioVq9bz/sv4zmMMy2g==
-X-Google-Smtp-Source: ABdhPJw0eL16dUnCKGI3iOotRcsblpIUnhTWl5T5z/Kvix9OHdAsThLGIlz4f64aUNb4fUBUNPr/dw==
-X-Received: by 2002:a05:6e02:1311:: with SMTP id g17mr3521304ilr.47.1612375944759;
-        Wed, 03 Feb 2021 10:12:24 -0800 (PST)
+        bh=t4wenknjZ2bs5eKNUbWK97l2NFAOkxWA8p4z0taSinQ=;
+        b=oKVOFwhNcZz2EwRl7ONQca8wpXrqIfhzu3LEMz7Qf0hdwH50TFJlV9Kx3XLvqu+Sfj
+         XvgE1LiJb5qP4xXE8u/p9TcXqw8GBnARUFUlo0s0GGLog2KFIMjwoqMf1ta18ich6sdK
+         6Ae9NmCsHD2H9FxZ9SCu0mFEZZsvE+wYSY1pFCebT18mRnqLqr55wNuZTU1V1evF7VlZ
+         tKrMQmJs1xibdR5IAxM75HMEZmEEckbU5dxgFur89M0f5+U3yU90MHreiVyEcn3rDCDk
+         a5UGYuW92ep6NirgyNns0Xo6XFkitnPmY7ceD6FTIOq2TB/xLESt4cNLtyQtPQv4Tl21
+         RGyw==
+X-Gm-Message-State: AOAM531iokeVynESjP1YOMvDjKwQl3kmBH+DtC6c4hXQ7/D8owECY1w3
+        5upYuQGx0/ELic3oRAbECQFQ3g==
+X-Google-Smtp-Source: ABdhPJzuni/KqIxziQLcVYre754B6JcsdqYKUpMJ3ElrpM0fP5ipHxD7+qBAafURTEbI1MVyvOBomg==
+X-Received: by 2002:a5e:a911:: with SMTP id c17mr2982344iod.20.1612375946517;
+        Wed, 03 Feb 2021 10:12:26 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h21sm399684iob.30.2021.02.03.10.12.23
+        by smtp.gmail.com with ESMTPSA id h21sm399684iob.30.2021.02.03.10.12.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 10:12:24 -0800 (PST)
+        Wed, 03 Feb 2021 10:12:26 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
 To:     corbet@lwn.net, gregkh@linuxfoundation.org, peterz@infradead.org,
         keescook@chromium.org, rafael@kernel.org, lenb@kernel.org,
@@ -53,9 +53,9 @@ Cc:     Shuah Khan <skhan@linuxfoundation.org>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
         devel@driverdev.osuosl.org
-Subject: [PATCH v3 6/7] drivers/staging/rtl8188eu: convert event_seq to use seqnum_ops
-Date:   Wed,  3 Feb 2021 11:12:02 -0700
-Message-Id: <5bee25950b546b28e03a7c71cb494ff1b2ded083.1612314468.git.skhan@linuxfoundation.org>
+Subject: [PATCH v3 7/7] kobject: convert uevent_seqnum to seqnum_ops
+Date:   Wed,  3 Feb 2021 11:12:03 -0700
+Message-Id: <3ddd122c266e8cb460542d852e9b703c6eef2141.1612314468.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1612314468.git.skhan@linuxfoundation.org>
 References: <cover.1612314468.git.skhan@linuxfoundation.org>
@@ -66,115 +66,95 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Sequence Number api provides interfaces for unsigned atomic up counters
-leveraging atomic_t and atomic64_t ops underneath. Convert it to use
-seqnum_ops.
+leveraging atomic_t and atomic64_t ops underneath.
 
-event_seq atomic_t variables are atomic counters. Convert them to use
-seqnum_ops.
+Convert uevent_seqnum atomic counter to use seqnum_ops.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 23 ++++++++++++++-----
- .../staging/rtl8188eu/include/rtw_mlme_ext.h  |  3 ++-
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ include/linux/kobject.h | 3 ++-
+ kernel/ksysfs.c         | 3 ++-
+ lib/kobject_uevent.c    | 9 ++++++---
+ 3 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-index 8794907a39f4..2fa5a8c44d28 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-@@ -7,6 +7,7 @@
- #define _RTW_MLME_EXT_C_
- 
- #include <linux/ieee80211.h>
+diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+index ea30529fba08..8990e40344a2 100644
+--- a/include/linux/kobject.h
++++ b/include/linux/kobject.h
+@@ -27,6 +27,7 @@
+ #include <linux/atomic.h>
+ #include <linux/workqueue.h>
+ #include <linux/uidgid.h>
 +#include <linux/seqnum_ops.h>
- #include <asm/unaligned.h>
  
- #include <osdep_service.h>
-@@ -3860,7 +3861,7 @@ static void init_mlme_ext_priv_value(struct adapter *padapter)
- 		_12M_RATE_, _24M_RATE_, 0xff,
- 	};
+ #define UEVENT_HELPER_PATH_LEN		256
+ #define UEVENT_NUM_ENVP			64	/* number of env pointers */
+@@ -38,7 +39,7 @@ extern char uevent_helper[];
+ #endif
  
--	atomic_set(&pmlmeext->event_seq, 0);
-+	seqnum32_init(&pmlmeext->event_seq, 0);
- 	pmlmeext->mgnt_seq = 0;/* reset to zero when disconnect at client mode */
+ /* counter to tag the uevent, read only except for the kobject core */
+-extern u64 uevent_seqnum;
++extern struct seqnum64 uevent_seqnum;
  
- 	pmlmeext->cur_channel = padapter->registrypriv.channel;
-@@ -4189,7 +4190,9 @@ void report_survey_event(struct adapter *padapter,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct survey_event);
- 	pc2h_evt_hdr->ID = _Survey_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc(&pmlmeext->event_seq);
- 
- 	psurvey_evt = (struct survey_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 
-@@ -4239,7 +4242,9 @@ void report_surveydone_event(struct adapter *padapter)
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct surveydone_event);
- 	pc2h_evt_hdr->ID = _SurveyDone_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc(&pmlmeext->event_seq);
- 
- 	psurveydone_evt = (struct surveydone_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	psurveydone_evt->bss_cnt = pmlmeext->sitesurvey_res.bss_cnt;
-@@ -4283,7 +4288,9 @@ void report_join_res(struct adapter *padapter, int res)
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct joinbss_event);
- 	pc2h_evt_hdr->ID = _JoinBss_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc(&pmlmeext->event_seq);
- 
- 	pjoinbss_evt = (struct joinbss_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	memcpy((unsigned char *)(&pjoinbss_evt->network.network), &pmlmeinfo->network, sizeof(struct wlan_bssid_ex));
-@@ -4333,7 +4340,9 @@ void report_del_sta_event(struct adapter *padapter, unsigned char *MacAddr,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct stadel_event);
- 	pc2h_evt_hdr->ID = _DelSTA_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc(&pmlmeext->event_seq);
- 
- 	pdel_sta_evt = (struct stadel_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	ether_addr_copy((unsigned char *)(&pdel_sta_evt->macaddr), MacAddr);
-@@ -4386,7 +4395,9 @@ void report_add_sta_event(struct adapter *padapter, unsigned char *MacAddr,
- 	pc2h_evt_hdr = (struct C2HEvent_Header *)(pevtcmd);
- 	pc2h_evt_hdr->len = sizeof(struct stassoc_event);
- 	pc2h_evt_hdr->ID = _AddSTA_EVT_;
--	pc2h_evt_hdr->seq = atomic_inc_return(&pmlmeext->event_seq);
-+
-+	/* seq is unsigned int seq:8 */
-+	pc2h_evt_hdr->seq = seqnum32_inc(&pmlmeext->event_seq);
- 
- 	padd_sta_evt = (struct stassoc_event *)(pevtcmd + sizeof(struct C2HEvent_Header));
- 	ether_addr_copy((unsigned char *)(&padd_sta_evt->macaddr), MacAddr);
-diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-index b11a6886a083..09b7e3bb2738 100644
---- a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
-@@ -7,6 +7,7 @@
- #ifndef __RTW_MLME_EXT_H_
- #define __RTW_MLME_EXT_H_
- 
+ /*
+  * The actions here must match the index to the string array
+diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
+index 35859da8bd4f..15836f6e5998 100644
+--- a/kernel/ksysfs.c
++++ b/kernel/ksysfs.c
+@@ -17,6 +17,7 @@
+ #include <linux/sched.h>
+ #include <linux/capability.h>
+ #include <linux/compiler.h>
 +#include <linux/seqnum_ops.h>
- #include <osdep_service.h>
- #include <drv_types.h>
- #include <wlan_bssdef.h>
-@@ -393,7 +394,7 @@ struct p2p_oper_class_map {
- struct mlme_ext_priv {
- 	struct adapter	*padapter;
- 	u8	mlmeext_init;
--	atomic_t	event_seq;
-+	struct	seqnum32 event_seq;
- 	u16	mgnt_seq;
  
- 	unsigned char	cur_channel;
+ #include <linux/rcupdate.h>	/* rcu_expedited and rcu_normal */
+ 
+@@ -31,7 +32,7 @@ static struct kobj_attribute _name##_attr = \
+ static ssize_t uevent_seqnum_show(struct kobject *kobj,
+ 				  struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%llu\n", (unsigned long long)uevent_seqnum);
++	return sprintf(buf, "%llu\n", seqnum64_get(&uevent_seqnum));
+ }
+ KERNEL_ATTR_RO(uevent_seqnum);
+ 
+diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
+index 7998affa45d4..3a7b2648f084 100644
+--- a/lib/kobject_uevent.c
++++ b/lib/kobject_uevent.c
+@@ -28,9 +28,10 @@
+ #include <net/sock.h>
+ #include <net/netlink.h>
+ #include <net/net_namespace.h>
++#include <linux/seqnum_ops.h>
+ 
+ 
+-u64 uevent_seqnum;
++struct seqnum64  uevent_seqnum;
+ #ifdef CONFIG_UEVENT_HELPER
+ char uevent_helper[UEVENT_HELPER_PATH_LEN] = CONFIG_UEVENT_HELPER_PATH;
+ #endif
+@@ -584,7 +585,8 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
+ 
+ 	mutex_lock(&uevent_sock_mutex);
+ 	/* we will send an event, so request a new sequence number */
+-	retval = add_uevent_var(env, "SEQNUM=%llu", ++uevent_seqnum);
++	retval = add_uevent_var(env, "SEQNUM=%llu",
++				seqnum64_inc(&uevent_seqnum));
+ 	if (retval) {
+ 		mutex_unlock(&uevent_sock_mutex);
+ 		goto exit;
+@@ -687,7 +689,8 @@ static int uevent_net_broadcast(struct sock *usk, struct sk_buff *skb,
+ 	int ret;
+ 
+ 	/* bump and prepare sequence number */
+-	ret = snprintf(buf, sizeof(buf), "SEQNUM=%llu", ++uevent_seqnum);
++	ret = snprintf(buf, sizeof(buf), "SEQNUM=%llu",
++			seqnum64_inc(&uevent_seqnum));
+ 	if (ret < 0 || (size_t)ret >= sizeof(buf))
+ 		return -ENOMEM;
+ 	ret++;
 -- 
 2.27.0
 
