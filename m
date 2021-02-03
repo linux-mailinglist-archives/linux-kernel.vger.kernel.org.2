@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160E230D050
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943AD30D055
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhBCAcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 19:32:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
+        id S232339AbhBCAeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 19:34:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232349AbhBCAcT (ORCPT
+        with ESMTP id S231127AbhBCAeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:32:19 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE06FC061786
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:31:38 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id g14so15723081qtu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 16:31:38 -0800 (PST)
+        Tue, 2 Feb 2021 19:34:08 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA833C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:33:26 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id b9so13275241ejy.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 16:33:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=5KtTzd9k+c9bS2Y/wk34+i/vvyNbysJG7UZJv8N2Wp4=;
-        b=oNXRZrunpy+nJxCNVG2DVespyvOU6v+/PBcSm/lmaxwIlZyPY+Y+aGI83iN/QE12TQ
-         /9B5j+GzglaY+R0ZfttfhxpqWqSdb8Mhk5fb+2BB6mUU3pAKYZ4YkOotTy5PPFko52Yw
-         DjiUxnZm5/e875fNSMeJZUpfPmcgyFUAHmh7OGgzKQMnmFkSDTyR+23aDUO7XbQpLyJ/
-         ODLwOmX6057PVKLp4hTX/hoK0O+U8lfiVVL2hxkockdBfgWJvRtI34i+fdKn9nJsjv6I
-         DrqX9S8rzdrQ6xlTKqKv6sGUpn32curAQw3IMOe9YcnA/sGJg2xlAFdtgblXQs264SLf
-         TFKQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z+13UOGCC7I+iljuuHXBZA6fphrD3cnMtJ966bWAe3g=;
+        b=L87PxLNy3JVeC8VgaY4K6vYiAWo1G859Ngjl11rO1vgIE+Q927EVX8nWD8PXvIDmTw
+         KF+qo3Jske7uyXdDaq4Qv86iy+TpPjMFNeadxFHvS1sEH3a/jnqxxNWNdBJ0SKiKk7tV
+         mdBYoKgGq1kd0Gywr5xWzHYJzD9u7HD2X1aOUwHQ1YKap1gSKY3xhbSicU9UVOPCdJaX
+         +TnjoNq9b+OZTMvFvLQiWk3yF3P809NQnmwDTIqU26DIJYSS66eHIJc8OGnQW6Gyc1EU
+         rX3hTwxdg3gdnoNg50ntpFVKeYLhk9I7ca0e8RJA+d48yaS1cT/nvfPFclyWm7SHb0TF
+         9pJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5KtTzd9k+c9bS2Y/wk34+i/vvyNbysJG7UZJv8N2Wp4=;
-        b=FySsphWgg7G0H1wxUjAghN4mFMzjhh6fRA8XzYD5KQUZTZbx6k2WiaWMcy1N0wo8xv
-         v1Hh7LGnFfSzPa+pAHA1Td5gZw9VOjr+fXbLhSGEpMzdH75xvXXptYUoSrr2QgIJoC7G
-         WB12rvdOCxhbfNroeYs5ZUA2PWRZinfKwPTtNbBVrAVas0niqKKO7DaxgM8uf8kpEx/W
-         8eKtiXma1IBh+WG7HrMRijltY+TMMS8t2dQ2jN3hVMaFUzT2k47xDKiZc3c+zp8yZh+u
-         5wegZIUbOJpP+qgKNKPGtVg2bA8OPj7ypo8VTVwYUn3FuotA4s90pnpM4OUojCDLeWMs
-         zCUw==
-X-Gm-Message-State: AOAM533VIbmlZX6mmliCc120DxND4CKPu91dR3a77ujD6ncVC63f+sRU
-        rv7rRwhZ+EPvuFXwTD62rOWtjQXDVvE=
-X-Google-Smtp-Source: ABdhPJwlIrpFiCM10hcfIL1xRHkC2ka4Rp5OqMsb623obcfa1dzEsxG62HhtetSAvxKOVvEOcxKdtwB6Ytc=
-Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:9194:cd6:1ec:3e2d])
- (user=surenb job=sendgmr) by 2002:a0c:8365:: with SMTP id j92mr418503qva.19.1612312297983;
- Tue, 02 Feb 2021 16:31:37 -0800 (PST)
-Date:   Tue,  2 Feb 2021 16:31:34 -0800
-In-Reply-To: <20210203003134.2422308-1-surenb@google.com>
-Message-Id: <20210203003134.2422308-2-surenb@google.com>
-Mime-Version: 1.0
-References: <20210203003134.2422308-1-surenb@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 2/2] dma-buf: heaps: Map system heap pages as managed by
- linux vm
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     sumit.semwal@linaro.org
-Cc:     akpm@linux-foundation.org, hch@infradead.org, lmark@codeaurora.org,
-        labbott@redhat.com, Brian.Starkey@arm.com, john.stultz@linaro.org,
-        christian.koenig@amd.com, cgoldswo@codeaurora.org,
-        orjan.eide@arm.com, robin.murphy@arm.com, jajones@nvidia.com,
-        minchan@kernel.org, hridya@google.com, sspatil@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        surenb@google.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z+13UOGCC7I+iljuuHXBZA6fphrD3cnMtJ966bWAe3g=;
+        b=hkApq3lcFh56KU1zw6Ml4Qahr0a4Koq9If+oiA441U/T/IlFPxB87i+3l+oKWUiTxE
+         3nY69F09QaAKxXLDIeroajb5IBJL+WaDDjqZkVk8OSb9DkxW9ovhVNJlefY9YQta2c4K
+         Bxw4GFGnkPfwAVLUwSbRCoO8ycpYzIR8BPDIPLtzNggM3H86dVIyrnAYp1d0/68bRfDe
+         4wnVjg1WwhxBIXhbrRSxXTYOGoJX6dbmfYpAJk+4Cg0k03B7CkjVo0XFUvWGDXVKlQ2Z
+         9smmMaUP7YTIQWWOLAYH+9Zvn7mRfSt0EsOqcftmApFrVKA0YAG0hM6C4gKBR01+38t7
+         9sQg==
+X-Gm-Message-State: AOAM530PHBV1t8AS8PBEK00JqSpyIT8VTC4O5wY0U2Sg+N3OhjJ2wQCY
+        KX9POIEc6amhBbs/6tVhhoD4ZarctyxpM01xJJY=
+X-Google-Smtp-Source: ABdhPJzbDVdYiWc6xmBFTMIEEpr2atHpxPzwcj5CyseOV1v3Bm60OiC0TKbqos0bNluJExG0dUR+CAKHxhTcJEdwLWY=
+X-Received: by 2002:a17:906:3ad0:: with SMTP id z16mr587105ejd.72.1612312405694;
+ Tue, 02 Feb 2021 16:33:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20210122084321.24012-1-a.fatoum@pengutronix.de>
+In-Reply-To: <20210122084321.24012-1-a.fatoum@pengutronix.de>
+From:   Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date:   Wed, 3 Feb 2021 03:33:14 +0300
+Message-ID: <CALT56yMudd0jKx8TiWvSrsE-Y3efhnFwNYcgkDiExcZONNBt3A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dm crypt: replaced #if defined with IS_ENABLED
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        kernel@pengutronix.de, Arnd Bergmann <arnd@arndb.de>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently system heap maps its buffers with VM_PFNMAP flag using
-remap_pfn_range. This results in such buffers not being accounted
-for in PSS calculations because vm treats this memory as having no
-page structs. Without page structs there are no counters representing
-how many processes are mapping a page and therefore PSS calculation
-is impossible.
-Historically, ION driver used to map its buffers as VM_PFNMAP areas
-due to memory carveouts that did not have page structs [1]. That
-is not the case anymore and it seems there was desire to move away
-from remap_pfn_range [2].
-Dmabuf system heap design inherits this ION behavior and maps its
-pages using remap_pfn_range even though allocated pages are backed
-by page structs.
-Replace remap_pfn_range with vm_insert_page, following Laura's suggestion
-in [1]. This would allow correct PSS calculation for dmabufs.
+=D0=BF=D1=82, 22 =D1=8F=D0=BD=D0=B2. 2021 =D0=B3. =D0=B2 11:43, Ahmad Fatou=
+m <a.fatoum@pengutronix.de>:
+>
+> IS_ENABLED(CONFIG_ENCRYPTED_KEYS) is true whether the option is built-in
+> or a module, so use it instead of #if defined checking for each
+> separately.
+>
+> The other #if was to avoid a static function defined, but unused
+> warning. As we now always build the callsite when the function
+> is defined, we can remove that first #if guard.
+>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-[2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-(sorry, could not find lore links for these discussions)
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Suggested-by: Laura Abbott <labbott@kernel.org>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
-v1 posted at: https://lore.kernel.org/patchwork/patch/1372409/
 
-changes in v2:
-- removed VM_PFNMAP clearing part of the patch, per Minchan and Christoph
-- created prerequisite patch to replace BUG_ON with WARN_ON_ONCE, per Christoph
-
- drivers/dma-buf/heaps/system_heap.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 17e0e9a68baf..4983f18cc2ce 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -203,8 +203,7 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
- 	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
- 		struct page *page = sg_page_iter_page(&piter);
- 
--		ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
--				      vma->vm_page_prot);
-+		ret = vm_insert_page(vma, addr, page);
- 		if (ret)
- 			return ret;
- 		addr += PAGE_SIZE;
--- 
-2.30.0.365.g02bc693789-goog
-
+--=20
+With best wishes
+Dmitry
