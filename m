@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E0630DD22
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D13B30DD24
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhBCOoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:44:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:42798 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbhBCOn4 (ORCPT
+        id S233065AbhBCOpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:45:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28889 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232286AbhBCOoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:43:56 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113EddLW124085;
-        Wed, 3 Feb 2021 14:43:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5t4O+GIexDFCZs7Qyj87f4qgjjlUM1s/DGwBFjRwnos=;
- b=oT3yFpbY53FL535i6zqjrmzFhjsxUCDQI8zJhGV1S2TKxJj+jBVDXfcrKycNrq17YUOn
- y8kmrT+Ojf+KsxlNkRUwgu6oZ8OLYTgqNHNGtYqtGAHkQhQnTvxBpgSmEPJs3wzuQ8OF
- VjCa+pZUGMuayWkBQGImRjrn1FekpJHUIduKLqT+/ZlSXaOXwkJkd9ojlymj/Mo6uu5N
- T2JbSy8bEZqptBOR0Yj83U9R2/J2vy/Gp8Mj/UtBo+elQosCrz4lcQbZeYWtiLn/S/PF
- FEE9V5wzB594fdmA4KdTLOSwvvHQvrwXRni64vqm8vo5j56ZkHW6juGxxnA5Z5aUh+/C Kw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 36cvyb0mt9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 14:43:09 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113EeHd2124705;
-        Wed, 3 Feb 2021 14:43:05 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 36dh7tjjyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 14:43:05 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 113Eh3iB000517;
-        Wed, 3 Feb 2021 14:43:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Feb 2021 06:43:02 -0800
-Date:   Wed, 3 Feb 2021 17:42:53 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        James Hu <james.hu@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] misc: bcm-vk: Fix a couple error codes in probe()
-Message-ID: <YBpyEbmz00rjvT9S@mwanda>
+        Wed, 3 Feb 2021 09:44:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612363409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FnKWIbAvlReT+a8OV1eghAeUCiuhQjhUDbs/VIFt6oA=;
+        b=f4TiYHlt5CDkR4Sq9OMCIc0bxugE2hYixv0k/Gxq4N2fzigut7xrqSChyoLDvBjOGiTZ/a
+        bu9QESL904KGPCuBu4uBLRWFdtMg2kFknchNTVq7x16ytJw21nKRmiqhpCAVOuTzjyJLJp
+        MeBkVa/sVmcLyuMNEjIepulwVNY706E=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-QIzF9btSOc6-7Ahz54oLYQ-1; Wed, 03 Feb 2021 09:43:27 -0500
+X-MC-Unique: QIzF9btSOc6-7Ahz54oLYQ-1
+Received: by mail-ed1-f69.google.com with SMTP id b1so980048edt.22
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 06:43:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FnKWIbAvlReT+a8OV1eghAeUCiuhQjhUDbs/VIFt6oA=;
+        b=hj/p6D+V+Y+O1+AV2U9F/qCTZxhgncViS17oWcfFrNQiW76y8KB06CAT5vQTb/nay0
+         KknQ8GmmDID1uQ/vI2LZIh67lvNsgVBLLWHLaJqwvWbPAH4h1RNn6JCif4P022iUvJ21
+         gFH+YQ2m7ZIClhmgd9xvBhQBGWnvMxktVQ3ZcgVQ4Y6Af3/hyIzXB8L48DLUQQLBNI8i
+         9VU9FKi2NJwf4jwCaRc/OnYn9T7hrK8Nv7YAu68h+unM5FuCKDUH2Z2qhZmJ/bf9PfM3
+         yHU7Qa0SriQ3j8Ro01zVz8KQ736DcXTnJgwzuaKtp6n2jGs6PDive5ob6a4mKHcKUm5A
+         /qbA==
+X-Gm-Message-State: AOAM531BoAy3l0XLvgo47bANYGVqTAFCGu0+J1reC6fF0qbYx8hs+iAI
+        ifexWa+rsJMXnKoeV8jaluZ1I1XklQfk364uLiBgKH2GtTwMI9PZt30TJBycGpf7PBIzzvJ9UpP
+        1TSITRYC/G5Y9TfxrFvbMktiZvUygFRRSlXErLZ5vQ0qOixMln2CvdAyScddhKcWVvkqROyGNBj
+        Uf
+X-Received: by 2002:a17:906:2898:: with SMTP id o24mr3437053ejd.215.1612363406413;
+        Wed, 03 Feb 2021 06:43:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjSatodhbf1eKBAM0/fZuokcjFJSmbxbPgnrq5jXK5sygUQkllM/cjNhFTky/9dYepGP8yCw==
+X-Received: by 2002:a17:906:2898:: with SMTP id o24mr3437016ejd.215.1612363406155;
+        Wed, 03 Feb 2021 06:43:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x17sm957498edd.76.2021.02.03.06.43.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 06:43:24 -0800 (PST)
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Make HVA handler retpoline-friendly
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <c3f775de-9cb5-5f30-3fbc-a5e80c1654de@redhat.com>
+ <771da54d-0601-ccd2-8edf-814086739e53@maciej.szmigiero.name>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7b15ae06-4b56-0259-6950-6781622020ab@redhat.com>
+Date:   Wed, 3 Feb 2021 15:43:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030092
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030092
+In-Reply-To: <771da54d-0601-ccd2-8edf-814086739e53@maciej.szmigiero.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These errors should return negative error codes instead of returning
-success.
+On 01/02/21 16:19, Maciej S. Szmigiero wrote:
+> On 01.02.2021 09:21, Paolo Bonzini wrote:
+>> On 01/02/21 09:13, Maciej S. Szmigiero wrote:
+>>>   static int kvm_handle_hva_range(struct kvm *kvm,
+>>>                   unsigned long start,
+>>>                   unsigned long end,
+>>> @@ -1495,8 +1534,9 @@ static int kvm_handle_hva_range(struct kvm *kvm,
+>>
+>>
+>>> -static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned 
+>>> long start,
+>>> -        unsigned long end, unsigned long data,
+>>> -        int (*handler)(struct kvm *kvm, struct kvm_memory_slot *slot,
+>>> -                   struct kvm_mmu_page *root, gfn_t start,
+>>> -                   gfn_t end, unsigned long data))
+>>> -{
+>>
+>> Can you look into just marking these functions __always_inline?  This 
+>> should help the compiler change (*handler)(...) into a regular 
+>> function call.
+> 
+> That looks even better - I see the compiler then turns the indirect call
+> into a direct one.
+> 
+> Will change to __always_inline instead of static dispatch in the next
+> version.
+> Thanks for the pointer.
 
-Fixes: 064ffc7c3939 ("misc: bcm-vk: add autoload support")
-Fixes: 522f692686a7 ("misc: bcm-vk: add Broadcom VK driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/misc/bcm-vk/bcm_vk_dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Feel free to send this separately as it's a self-contained change.
 
-diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index c3d2bba68ef1..a82a8927d92b 100644
---- a/drivers/misc/bcm-vk/bcm_vk_dev.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -1358,6 +1358,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		vk->bar[i] = pci_ioremap_bar(pdev, i * 2);
- 		if (!vk->bar[i]) {
- 			dev_err(dev, "failed to remap BAR%d\n", i);
-+			err = -ENOMEM;
- 			goto err_iounmap;
- 		}
- 	}
-@@ -1463,7 +1464,8 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	boot_status = vkread32(vk, BAR_0, BAR_BOOT_STATUS);
- 	if (auto_load) {
- 		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
--			if (bcm_vk_trigger_autoload(vk))
-+			err = bcm_vk_trigger_autoload(vk);
-+			if (err)
- 				goto err_bcm_vk_tty_exit;
- 		} else {
- 			dev_err(dev,
--- 
-2.30.0
+Thanks,
+
+Paolo
 
