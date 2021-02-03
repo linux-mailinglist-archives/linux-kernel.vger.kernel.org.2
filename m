@@ -2,416 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA40430E2E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D625E30E2C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhBCSwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:52:31 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:54380 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhBCSv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:51:59 -0500
-Received: from 89-64-80-249.dynamic.chello.pl (89.64.80.249) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id 0926f76eb9bd3a2d; Wed, 3 Feb 2021 19:51:16 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH v3 4/5] ACPI: video: Clean up printing messages
-Date:   Wed, 03 Feb 2021 19:48:33 +0100
-Message-ID: <1924490.ZvBDFke9FE@kreacher>
-In-Reply-To: <1961054.9MKZ8ejxOh@kreacher>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher> <1961054.9MKZ8ejxOh@kreacher>
+        id S232313AbhBCSt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:49:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhBCStY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:49:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 910D464DE1;
+        Wed,  3 Feb 2021 18:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612378123;
+        bh=XKJddM4Inmkq4KHX8HcKQt/b0ST36GmjTbUJvWsFPEU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qG6MVI5QKtlfKG59JK4dlrshVDoU5GrypplHguciDCYsSA05Nv42GHR1zf5kWOmDo
+         uaqjGMYTFGprge8U9k8NPAnSlcZ4EScKgyZ78jHBDeFfVu8saJ+86mkoSEPZVI034O
+         SAVJXN3R6MpqCI17EKTJgw4j88MdF1OB5PItvWqO4leBYuJhxRKf8tA0KmeLa4qo4Q
+         L6H3oKDckOyxw+SF9lrkGTSSGATSuzUXd06/4gin7hkfiRPGLads5kEb5jpm37ispN
+         zrXdnZw0x38PoXhK4ZNtg+2eQlXYqBqaHe0xgFF6jQdq5FLkgIgEjwapW/VT3qgqbK
+         e+wZNWpnknc7A==
+Date:   Wed, 3 Feb 2021 11:48:40 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Brian Geffon <bgeffon@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
+Message-ID: <20210203184840.GA1711681@localhost>
+References: <20201230154104.522605-1-arnd@kernel.org>
+ <20210112191634.GA1587546@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112191634.GA1587546@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Jan 12, 2021 at 12:16:34PM -0700, Nathan Chancellor wrote:
+> On Wed, Dec 30, 2020 at 04:40:40PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > clang cannt evaluate this function argument at compile time
+> > when the function is not inlined, which leads to a link
+> > time failure:
+> > 
+> > ld.lld: error: undefined symbol: __compiletime_assert_414
+> > >>> referenced by mremap.c
+> > >>>               mremap.o:(get_extent) in archive mm/built-in.a
+> > 
+> > Mark the function as __always_inline to avoid it.
+> > 
+> > Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> I would like to see some movement on getting this fixed in 5.11. As it
+> stands, this is one of three __compiletime_assert references with
+> CONFIG_UBSAN_UNSIGNED_OVERFLOW. If we want to keep the BUILD_BUG()
+> around, I think this is fine. Alternatively, turning it into a runtime
+> check would be fine too.
+> 
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Replace the ACPI_DEBUG_PRINT() instances in acpi_video.c with
-acpi_handle_debug() calls and the ACPI_EXCEPTION()/ACPI_ERROR()/
-ACPI_WARNING() instances in there with acpi_handle_info() calls,
-which among other things causes the excessive log levels of those
-messages to be increased.
+Ping? It is pretty late into the 5.11 cycle and this is still broken.
 
-Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-used any more from acpi_video.c, drop the no longer needed
-ACPI_VIDEO_COMPONENT definition from the headers and update the
-documentation accordingly.
+Cheers,
+Nathan
 
-While at it, add a pr_fmt() definition to acpi_video.c, replace the
-direct printk() invocations in there with acpi_handle_info() or
-pr_info() (and reduce the excessive log level where applicable) and
-drop the PREFIX sybmbol definition which is not necessary any more
-from acpi_video.c.
-
-Also make unrelated janitorial changes to fix up white space and
-use ACPI_FAILURE() instead of negating ACPI_SUCCESS().
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v2 -> v3: Replace more !ACPI_SUCCESS() instances with ACPI_FAILURE().
-
-v1 -> v2: Changelog update.
-
----
- Documentation/firmware-guide/acpi/debug.rst |    1 
- drivers/acpi/acpi_video.c                   |   99 ++++++++++++++--------------
- drivers/acpi/sysfs.c                        |    1 
- include/acpi/acpi_drivers.h                 |    1 
- 4 files changed, 51 insertions(+), 51 deletions(-)
-
-Index: linux-pm/drivers/acpi/acpi_video.c
-===================================================================
---- linux-pm.orig/drivers/acpi/acpi_video.c
-+++ linux-pm/drivers/acpi/acpi_video.c
-@@ -7,6 +7,8 @@
-  *  Copyright (C) 2006 Thomas Tuttle <linux-kernel@ttuttle.net>
-  */
- 
-+#define pr_fmt(fmt) "ACPI: video: " fmt
-+
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-@@ -26,16 +28,11 @@
- #include <acpi/video.h>
- #include <linux/uaccess.h>
- 
--#define PREFIX "ACPI: "
--
- #define ACPI_VIDEO_BUS_NAME		"Video Bus"
- #define ACPI_VIDEO_DEVICE_NAME		"Video Device"
- 
- #define MAX_NAME_LEN	20
- 
--#define _COMPONENT		ACPI_VIDEO_COMPONENT
--ACPI_MODULE_NAME("video");
--
- MODULE_AUTHOR("Bruno Ducrot");
- MODULE_DESCRIPTION("ACPI Video Driver");
- MODULE_LICENSE("GPL");
-@@ -326,11 +323,11 @@ acpi_video_device_lcd_query_levels(acpi_
- 	*levels = NULL;
- 
- 	status = acpi_evaluate_object(handle, "_BCL", NULL, &buffer);
--	if (!ACPI_SUCCESS(status))
-+	if (ACPI_FAILURE(status))
- 		return status;
- 	obj = (union acpi_object *)buffer.pointer;
- 	if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
--		printk(KERN_ERR PREFIX "Invalid _BCL data\n");
-+		acpi_handle_info(handle, "Invalid _BCL data\n");
- 		status = -EFAULT;
- 		goto err;
- 	}
-@@ -354,7 +351,7 @@ acpi_video_device_lcd_set_level(struct a
- 	status = acpi_execute_simple_method(device->dev->handle,
- 					    "_BCM", level);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_ERROR((AE_INFO, "Evaluating _BCM failed"));
-+		acpi_handle_info(device->dev->handle, "_BCM evaluation failed\n");
- 		return -EIO;
- 	}
- 
-@@ -368,7 +365,7 @@ acpi_video_device_lcd_set_level(struct a
- 			return 0;
- 		}
- 
--	ACPI_ERROR((AE_INFO, "Current brightness invalid"));
-+	acpi_handle_info(device->dev->handle, "Current brightness invalid\n");
- 	return -EINVAL;
- }
- 
-@@ -622,9 +619,8 @@ acpi_video_device_lcd_get_level_current(
- 			 * BQC returned an invalid level.
- 			 * Stop using it.
- 			 */
--			ACPI_WARNING((AE_INFO,
--				      "%s returned an invalid level",
--				      buf));
-+			acpi_handle_info(device->dev->handle,
-+					 "%s returned an invalid level", buf);
- 			device->cap._BQC = device->cap._BCQ = 0;
- 		} else {
- 			/*
-@@ -635,7 +631,8 @@ acpi_video_device_lcd_get_level_current(
- 			 * ACPI video backlight still works w/ buggy _BQC.
- 			 * http://bugzilla.kernel.org/show_bug.cgi?id=12233
- 			 */
--			ACPI_WARNING((AE_INFO, "Evaluating %s failed", buf));
-+			acpi_handle_info(device->dev->handle,
-+					 "%s evaluation failed", buf);
- 			device->cap._BQC = device->cap._BCQ = 0;
- 		}
- 	}
-@@ -675,7 +672,7 @@ acpi_video_device_EDID(struct acpi_video
- 	if (obj && obj->type == ACPI_TYPE_BUFFER)
- 		*edid = obj;
- 	else {
--		printk(KERN_ERR PREFIX "Invalid _DDC data\n");
-+		acpi_handle_info(device->dev->handle, "Invalid _DDC data\n");
- 		status = -EFAULT;
- 		kfree(obj);
- 	}
-@@ -827,10 +824,9 @@ int acpi_video_get_levels(struct acpi_de
- 	int result = 0;
- 	u32 value;
- 
--	if (!ACPI_SUCCESS(acpi_video_device_lcd_query_levels(device->handle,
--								&obj))) {
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Could not query available "
--						"LCD brightness level\n"));
-+	if (ACPI_FAILURE(acpi_video_device_lcd_query_levels(device->handle, &obj))) {
-+		acpi_handle_debug(device->handle,
-+				  "Could not query available LCD brightness level\n");
- 		result = -ENODEV;
- 		goto out;
- 	}
-@@ -842,7 +838,6 @@ int acpi_video_get_levels(struct acpi_de
- 
- 	br = kzalloc(sizeof(*br), GFP_KERNEL);
- 	if (!br) {
--		printk(KERN_ERR "can't allocate memory\n");
- 		result = -ENOMEM;
- 		goto out;
- 	}
-@@ -863,7 +858,7 @@ int acpi_video_get_levels(struct acpi_de
- 	for (i = 0; i < obj->package.count; i++) {
- 		o = (union acpi_object *)&obj->package.elements[i];
- 		if (o->type != ACPI_TYPE_INTEGER) {
--			printk(KERN_ERR PREFIX "Invalid data\n");
-+			acpi_handle_info(device->handle, "Invalid data\n");
- 			continue;
- 		}
- 		value = (u32) o->integer.value;
-@@ -900,7 +895,8 @@ int acpi_video_get_levels(struct acpi_de
- 			br->levels[i] = br->levels[i - level_ac_battery];
- 		count += level_ac_battery;
- 	} else if (level_ac_battery > ACPI_VIDEO_FIRST_LEVEL)
--		ACPI_ERROR((AE_INFO, "Too many duplicates in _BCL package"));
-+		acpi_handle_info(device->handle,
-+				 "Too many duplicates in _BCL package");
- 
- 	/* Check if the _BCL package is in a reversed order */
- 	if (max_level == br->levels[ACPI_VIDEO_FIRST_LEVEL]) {
-@@ -910,8 +906,8 @@ int acpi_video_get_levels(struct acpi_de
- 		     sizeof(br->levels[ACPI_VIDEO_FIRST_LEVEL]),
- 		     acpi_video_cmp_level, NULL);
- 	} else if (max_level != br->levels[count - 1])
--		ACPI_ERROR((AE_INFO,
--			    "Found unordered _BCL package"));
-+		acpi_handle_info(device->handle,
-+				 "Found unordered _BCL package");
- 
- 	br->count = count;
- 	*dev_br = br;
-@@ -989,9 +985,9 @@ set_level:
- 	if (result)
- 		goto out_free_levels;
- 
--	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--			  "found %d brightness levels\n",
--			  br->count - ACPI_VIDEO_FIRST_LEVEL));
-+	acpi_handle_debug(device->dev->handle, "found %d brightness levels\n",
-+			  br->count - ACPI_VIDEO_FIRST_LEVEL);
-+
- 	return 0;
- 
- out_free_levels:
-@@ -1023,7 +1019,8 @@ static void acpi_video_device_find_cap(s
- 	if (acpi_has_method(device->dev->handle, "_BQC")) {
- 		device->cap._BQC = 1;
- 	} else if (acpi_has_method(device->dev->handle, "_BCQ")) {
--		printk(KERN_WARNING FW_BUG "_BCQ is used instead of _BQC\n");
-+		acpi_handle_info(device->dev->handle,
-+				 "_BCQ is used instead of _BQC\n");
- 		device->cap._BCQ = 1;
- 	}
- 
-@@ -1083,8 +1080,7 @@ static int acpi_video_bus_check(struct a
- 	/* Does this device support video switching? */
- 	if (video->cap._DOS || video->cap._DOD) {
- 		if (!video->cap._DOS) {
--			printk(KERN_WARNING FW_BUG
--				"ACPI(%s) defines _DOD but not _DOS\n",
-+			pr_info(FW_BUG "ACPI(%s) defines _DOD but not _DOS\n",
- 				acpi_device_bid(video->device));
- 		}
- 		video->flags.multihead = 1;
-@@ -1272,7 +1268,8 @@ acpi_video_device_bind(struct acpi_video
- 		ids = &video->attached_array[i];
- 		if (device->device_id == (ids->value.int_val & 0xffff)) {
- 			ids->bind_info = device;
--			ACPI_DEBUG_PRINT((ACPI_DB_INFO, "device_bind %d\n", i));
-+			acpi_handle_debug(video->device->handle, "%s: %d\n",
-+					  __func__, i);
- 		}
- 	}
- }
-@@ -1324,20 +1321,22 @@ static int acpi_video_device_enumerate(s
- 		return AE_NOT_EXIST;
- 
- 	status = acpi_evaluate_object(video->device->handle, "_DOD", NULL, &buffer);
--	if (!ACPI_SUCCESS(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _DOD"));
-+	if (ACPI_FAILURE(status)) {
-+		acpi_handle_info(video->device->handle,
-+				 "_DOD evaluation failed: %s\n",
-+				 acpi_format_exception(status));
- 		return status;
- 	}
- 
- 	dod = buffer.pointer;
- 	if (!dod || (dod->type != ACPI_TYPE_PACKAGE)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Invalid _DOD data"));
-+		acpi_handle_info(video->device->handle, "Invalid _DOD data\n");
- 		status = -EFAULT;
- 		goto out;
- 	}
- 
--	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Found %d video heads in _DOD\n",
--			  dod->package.count));
-+	acpi_handle_debug(video->device->handle, "Found %d video heads in _DOD\n",
-+			  dod->package.count);
- 
- 	active_list = kcalloc(1 + dod->package.count,
- 			      sizeof(struct acpi_video_enumerated_device),
-@@ -1352,15 +1351,18 @@ static int acpi_video_device_enumerate(s
- 		obj = &dod->package.elements[i];
- 
- 		if (obj->type != ACPI_TYPE_INTEGER) {
--			printk(KERN_ERR PREFIX
--				"Invalid _DOD data in element %d\n", i);
-+			acpi_handle_info(video->device->handle,
-+					 "Invalid _DOD data in element %d\n", i);
- 			continue;
- 		}
- 
- 		active_list[count].value.int_val = obj->integer.value;
- 		active_list[count].bind_info = NULL;
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "dod element[%d] = %d\n", i,
--				  (int)obj->integer.value));
-+
-+		acpi_handle_debug(video->device->handle,
-+				  "_DOD element[%d] = %d\n", i,
-+				  (int)obj->integer.value);
-+
- 		count++;
- 	}
- 
-@@ -1451,7 +1453,8 @@ acpi_video_switch_brightness(struct work
- 
- out:
- 	if (result)
--		printk(KERN_ERR PREFIX "Failed to switch the brightness\n");
-+		acpi_handle_info(device->dev->handle,
-+				 "Failed to switch brightness\n");
- }
- 
- int acpi_video_get_edid(struct acpi_device *device, int type, int device_id,
-@@ -1601,8 +1604,8 @@ static void acpi_video_bus_notify(struct
- 		break;
- 
- 	default:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "Unsupported event [0x%x]\n", event));
-+		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
-+				  event);
- 		break;
- 	}
- 
-@@ -1675,8 +1678,7 @@ static void acpi_video_device_notify(acp
- 		keycode = KEY_DISPLAY_OFF;
- 		break;
- 	default:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "Unsupported event [0x%x]\n", event));
-+		acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
- 		break;
- 	}
- 
-@@ -1812,11 +1814,12 @@ static void acpi_video_dev_register_back
- 			&device->cooling_dev->device.kobj,
- 			"thermal_cooling");
- 	if (result)
--		printk(KERN_ERR PREFIX "Create sysfs link\n");
-+		pr_info("sysfs link creation failed\n");
-+
- 	result = sysfs_create_link(&device->cooling_dev->device.kobj,
- 			&device->dev->dev.kobj, "device");
- 	if (result)
--		printk(KERN_ERR PREFIX "Create sysfs link\n");
-+		pr_info("Reverse sysfs link creation failed\n");
- }
- 
- static void acpi_video_run_bcl_for_osi(struct acpi_video_bus *video)
-@@ -2030,7 +2033,7 @@ static int acpi_video_bus_add(struct acp
- 				acpi_video_bus_match, NULL,
- 				device, NULL);
- 	if (status == AE_ALREADY_EXISTS) {
--		printk(KERN_WARNING FW_BUG
-+		pr_info(FW_BUG
- 			"Duplicate ACPI video bus devices for the"
- 			" same VGA controller, please try module "
- 			"parameter \"video.allow_duplicates=1\""
-@@ -2073,7 +2076,7 @@ static int acpi_video_bus_add(struct acp
- 	if (error)
- 		goto err_put_video;
- 
--	printk(KERN_INFO PREFIX "%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
-+	pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
- 	       ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
- 	       video->flags.multihead ? "yes" : "no",
- 	       video->flags.rom ? "yes" : "no",
-Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-===================================================================
---- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-+++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-@@ -59,7 +59,6 @@ shows the supported mask values, current
-     ACPI_SYSTEM_COMPONENT           0x02000000
-     ACPI_THERMAL_COMPONENT          0x04000000
-     ACPI_MEMORY_DEVICE_COMPONENT    0x08000000
--    ACPI_VIDEO_COMPONENT            0x10000000
-     ACPI_PROCESSOR_COMPONENT        0x20000000
- 
- debug_level
-Index: linux-pm/drivers/acpi/sysfs.c
-===================================================================
---- linux-pm.orig/drivers/acpi/sysfs.c
-+++ linux-pm/drivers/acpi/sysfs.c
-@@ -59,7 +59,6 @@ static const struct acpi_dlayer acpi_deb
- 	ACPI_DEBUG_INIT(ACPI_SYSTEM_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_THERMAL_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_MEMORY_DEVICE_COMPONENT),
--	ACPI_DEBUG_INIT(ACPI_VIDEO_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_PROCESSOR_COMPONENT),
- };
- 
-Index: linux-pm/include/acpi/acpi_drivers.h
-===================================================================
---- linux-pm.orig/include/acpi/acpi_drivers.h
-+++ linux-pm/include/acpi/acpi_drivers.h
-@@ -22,7 +22,6 @@
- #define ACPI_SYSTEM_COMPONENT		0x02000000
- #define ACPI_THERMAL_COMPONENT		0x04000000
- #define ACPI_MEMORY_DEVICE_COMPONENT	0x08000000
--#define ACPI_VIDEO_COMPONENT		0x10000000
- #define ACPI_PROCESSOR_COMPONENT	0x20000000
- 
- /*
-
-
-
+> > ---
+> >  mm/mremap.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index c5590afe7165..1cb464a07184 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -336,8 +336,9 @@ enum pgt_entry {
+> >   * valid. Else returns a smaller extent bounded by the end of the source and
+> >   * destination pgt_entry.
+> >   */
+> > -static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
+> > -			unsigned long old_end, unsigned long new_addr)
+> > +static __always_inline unsigned long get_extent(enum pgt_entry entry,
+> > +			unsigned long old_addr, unsigned long old_end,
+> > +			unsigned long new_addr)
+> >  {
+> >  	unsigned long next, extent, mask, size;
+> >  
+> > -- 
+> > 2.29.2
+>  
