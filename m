@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5CC30E292
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D98A30E28E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhBCSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:32:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232145AbhBCScV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:32:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612377055;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TiOisWoMM5J0+N5wrdR7qjGRMcCnnxa5MwmQ2/1A7Ww=;
-        b=XqoUUP8S+eCfDG1g7ePQ9oF1eIoTIPClV0Xyg4LGCZDGotxzYsaz/AzmA2USRAQ+7kIiuv
-        I/nHwDXbvkfUSCWO2cMOxZrlVJp2YFurav2AbCnILFPZLdiQroFWb2VojR2zIsw+/Rb29f
-        cEoOmbcqXisMEA9OqLSbla9D2det5eY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-LRuGz08NP2WZrhxM1Rv6Zw-1; Wed, 03 Feb 2021 13:30:53 -0500
-X-MC-Unique: LRuGz08NP2WZrhxM1Rv6Zw-1
-Received: by mail-ed1-f69.google.com with SMTP id g6so404718edy.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:30:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TiOisWoMM5J0+N5wrdR7qjGRMcCnnxa5MwmQ2/1A7Ww=;
-        b=QoDKeiyRu1EHZJPtaOSqTqZjbC/Fxi18n4L3jAlbjArLyz9kFNvKnFu2K/iwiRfvGp
-         RaI1vUsy1OG4bED3WGKS9qg+Itdf/Yb0xFMl8M6L6VhcebcvBhG9GL7WBvF8+Eu0yg/N
-         Tp+EDZa6tZDPi4Q6ELE35LUdoszR6B4dP+vs+ov9fbrdXAOpkkgYyhVIuS1q44T3HSBr
-         5w5sRvmBNIe3LdZax0hNXyvGVB4EenziUCGLGTJ9UdQ1KDgmGQj0Z3QLat9/zImNVhbj
-         XAswFKNRVHd4jZRWw2qyCI65UdOIR09nOv4Gf2uMSVx69vfqn0j0xikQ9wSn6vPI2ekK
-         rVZA==
-X-Gm-Message-State: AOAM530JW+z3ro5+yYRsY25y7i/UlMKgJIN8bxpRwx/mvEut0Yge0dtK
-        +AuTza6yRByUvE6JZuzQeIfPXr8OuFF13Q7hRGdXSH3VEUqfvr6aYozDhhon3Zuns8R66vzyn4c
-        yjG17AK28XSMAeKTgZFiIRMNA
-X-Received: by 2002:a17:906:2b11:: with SMTP id a17mr4461048ejg.203.1612377052471;
-        Wed, 03 Feb 2021 10:30:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxuzKzmIpNThLgL2hkQbClOrns4+7OkKK8je1Ds3SP1NLbweMJ1vlqIoalInh1oEg4EUt/rnw==
-X-Received: by 2002:a17:906:2b11:: with SMTP id a17mr4461028ejg.203.1612377052335;
-        Wed, 03 Feb 2021 10:30:52 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c18sm1263910edu.20.2021.02.03.10.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 10:30:51 -0800 (PST)
-Subject: Re: [PATCH v2 23/28] KVM: x86/mmu: Allow parallel page faults for the
- TDP MMU
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-24-bgardon@google.com>
- <d2c4ae90-1e60-23ed-4bda-24cf88db04c9@redhat.com>
- <CANgfPd-ELyPrn5z0N+o8R6Ci=O25XF+EDU-HDGgvVXGV7uF-dQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <39751a29-3a47-a108-f626-8abf0008ea09@redhat.com>
-Date:   Wed, 3 Feb 2021 19:30:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232631AbhBCScN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:32:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232145AbhBCSb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:31:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B10AB64EA1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612377076;
+        bh=qgQXHCOO+dJ+yb7nrlrPLjaNfhwMNTK/2D37AWkM2GU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b4uhGDj52vIKbtPiEWqq6RhUatbEdurtjYlGgyr7LWPklmvbj2u1z3+Lx/k8RQt1T
+         HZyqx68WLYsu0TznjDJ4lHXrDYntGoKDBbhRJbobky+2Wimi2VREIb0PAqlN2675og
+         yel0vm/LPzBvVmayjkxbnfd1aLeDkst1I/ksdo8xNE7QQiN++Vk5S9f6/rE0g7RxVW
+         CNsnE3vQA9eiJdh+dYpOaM1CJzZRrh8QDUsYjDhbx83MMfxkt4LlijKd+Ye5miJ6dO
+         32WsIbWjST/lwfcIqaPl5Q31R+Sr31uywgKs8ywZ/frDesQ3LJQKNykE3EdgTCIbqe
+         qcRKP1h0Vzd9w==
+Received: by mail-oo1-f50.google.com with SMTP id 123so101518ooi.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:31:16 -0800 (PST)
+X-Gm-Message-State: AOAM531zeKtd7YF7g69eNM9F6GHbO18AFXkyDAMjsMcrhe3YKmenugGS
+        V5uCWuJ5BM1H9N/QJ8Lenjs/PiLxXt9KsczwmqU=
+X-Google-Smtp-Source: ABdhPJzwd5KGkhGPt/OEU87BbYt91cpEEmblkRtD+YcxL6JmFSvKeQgDP7VxawLeDkwKP+ZjxzWQ0TT7IuF1t2mYdTQ=
+X-Received: by 2002:a05:6820:283:: with SMTP id q3mr2987191ood.13.1612377075690;
+ Wed, 03 Feb 2021 10:31:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd-ELyPrn5z0N+o8R6Ci=O25XF+EDU-HDGgvVXGV7uF-dQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210109103252.812517-1-lecopzer@gmail.com>
+In-Reply-To: <20210109103252.812517-1-lecopzer@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 3 Feb 2021 19:31:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE3NHBt2YdQ4ESygRZUdUZbpD66rZ6wziPi8OAqfKvNJQ@mail.gmail.com>
+Message-ID: <CAMj1kXE3NHBt2YdQ4ESygRZUdUZbpD66rZ6wziPi8OAqfKvNJQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
+To:     Lecopzer Chen <lecopzer@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 18:46, Ben Gardon wrote:
-> enum kvm_mmu_lock_mode lock_mode =
-> get_mmu_lock_mode_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
-> ....
-> kvm_mmu_lock_for_mode(lock_mode);
-> 
-> Not sure if either of those are actually clearer, but the latter
-> trends in the direction the RCF took, having an enum to capture
-> read/write and whether or not yo yield in a lock mode parameter.
+On Sat, 9 Jan 2021 at 11:33, Lecopzer Chen <lecopzer@gmail.com> wrote:
+>
+> Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> ("kasan: support backing vmalloc space with real shadow memory")
+>
+> Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> by not to populate the vmalloc area except for kimg address.
+>
+> Test environment:
+>     4G and 8G Qemu virt,
+>     39-bit VA + 4k PAGE_SIZE with 3-level page table,
+>     test by lib/test_kasan.ko and lib/test_kasan_module.ko
+>
+> It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL
+> and randomize module region inside vmalloc area.
+>
+>
+> [1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
+>
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Acked-by: Andrey Konovalov <andreyknvl@google.com>
+> Tested-by: Andrey Konovalov <andreyknvl@google.com>
+>
+>
+> v2 -> v1
+>         1. kasan_init.c tweak indent
+>         2. change Kconfig depends only on HAVE_ARCH_KASAN
+>         3. support randomized module region.
+>
+> v1:
+> https://lore.kernel.org/lkml/20210103171137.153834-1-lecopzer@gmail.com/
+>
+> Lecopzer Chen (4):
+>   arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+>   arm64: kasan: abstract _text and _end to KERNEL_START/END
+>   arm64: Kconfig: support CONFIG_KASAN_VMALLOC
+>   arm64: kaslr: support randomized module area with KASAN_VMALLOC
+>
 
-Could be a possibility.  Also:
+I failed to realize that VMAP_STACK and KASAN are currently mutually
+exclusive on arm64, and that this series actually fixes that, which is
+a big improvement, so it would make sense to call that out.
 
-enum kvm_mmu_lock_mode lock_mode =
-   kvm_mmu_lock_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
+This builds and runs fine for me on a VM running under KVM.
 
-kvm_mmu_unlock(vcpu->kvm, lock_mode);
-
-Anyway it can be done on top.
-
-Paolo
-
+Tested-by: Ard Biesheuvel <ardb@kernel.org>
