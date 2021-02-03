@@ -2,601 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B457430E4C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E868230E4C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhBCVNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:13:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
+        id S232201AbhBCVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:14:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231506AbhBCVM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:12:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D1264F5F;
-        Wed,  3 Feb 2021 21:12:14 +0000 (UTC)
+        id S229897AbhBCVOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:14:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E67C64F5F;
+        Wed,  3 Feb 2021 21:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612386734;
-        bh=E4GHOAt4hGTzxu03yRFLFvgjr9wXxRxZd/pe6odgPf8=;
+        s=k20201202; t=1612386806;
+        bh=VS8yGGa3Q4OSZtI8MdKl0s1r50NHskoTYCo1kYP5p3U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CXyCB/5PA2TY+Cb+IhpN8SiYpmLRR+ImApGu9u6FyAsd7yAuI+i2EuukULmXtLa00
-         buswULOEVdeKMq9sq8Nm+hc62byiI1yHSPZoj62ZkseMuSFf5njzkOJfTExC7T4nQL
-         7B2egHn97hR4fA6i+GgF7QhWGlWo0axp6WiR4mvAp44Ktby2thfExjEXTTVPmsCl6N
-         dJ+xbWdQDOhMBD5LqYOkLMfv4OvGUEqa3sDZOvUpKDpAN+yIH+HjeBmSjmnvcYo+ZY
-         4dUfVj18wivThELiP2CzKOw6LEER9KrJ9XjqKuQSAicCyGMlUxsmGCEj/A/4eZFYWx
-         wLNFBKpAL1zMg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 665C140513; Wed,  3 Feb 2021 18:12:11 -0300 (-03)
-Date:   Wed, 3 Feb 2021 18:12:11 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
+        b=hrMa8Jay8pHUd7P774ypjFN+qs8pzMW+5LMIunYpx8GhSTh22IlURyZWABK4NPWPH
+         XZbp7u8J0nYW9OJQR86rxEaoASK4n/w9dSSl/eP6q4DdGRbT83z3UzlunEdodcDxtn
+         Yf8RgMT5ZJERTnkAtaWBAk4BUwdAFq0hEFf8r1aEb/hUbIULBZf2FTdmcoN7bWVwxL
+         ZPaHTc+AJqa9FjEEUq/px1svUn0Gyiwr4saTl4ymC3wqSqzVl5hdtr4SkXCteL1AFZ
+         WlEg6q6aANTkVXmj/l0fesDklhPJd9V8OqZczp+l2PsCzHbu2AWmWVsBlRqrYXB/1A
+         sVUPmvKCX7T7A==
+Date:   Wed, 3 Feb 2021 21:13:19 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 06/24] perf daemon: Add config file support
-Message-ID: <20210203211211.GS854763@kernel.org>
-References: <20210129134855.195810-1-jolsa@redhat.com>
- <20210130234856.271282-1-jolsa@kernel.org>
- <20210130234856.271282-7-jolsa@kernel.org>
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v6 06/21] arm64: Move VHE-specific SPE setup to
+ mutate_to_vhe()
+Message-ID: <20210203211319.GA19694@willie-the-truck>
+References: <20210201115637.3123740-1-maz@kernel.org>
+ <20210201115637.3123740-7-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130234856.271282-7-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210201115637.3123740-7-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jan 31, 2021 at 12:48:38AM +0100, Jiri Olsa escreveu:
-> Adding support to configure daemon with config file.
+Hi Marc,
+
+On Mon, Feb 01, 2021 at 11:56:22AM +0000, Marc Zyngier wrote:
+> There isn't much that a VHE kernel needs on top of whatever has
+> been done for nVHE, so let's move the little we need to the
+> VHE stub (the SPE setup), and drop the init_el2_state macro.
 > 
-> Each client or server invocation of perf daemon needs to know the
-> base directory, where all sessions data is stored.
+> No expected functional change.
 > 
-> The base is defined with:
-> 
->   daemon.base
->     Base path for daemon data. All sessions data are stored under
->     this path.
-> 
-> The daemon allows to create record sessions. Each session is a
-> record command spawned and monitored by perf daemon.
-> 
-> The session is defined with:
-> 
->   session-<NAME>.run
->     Defines new record session for daemon. The value is record's
->     command line without the 'record' keyword.
-> 
-> Example:
-> 
->   # cat ~/.perfconfig
->   [daemon]
->   base=/opt/perfdata
-> 
->   [session-cycles]
->   run = -m 10M -e cycles --overwrite --switch-output -a
-> 
->   [session-sched]
->   run = -m 20M -e sched:* --overwrite --switch-output -a
-> 
-> Example above defines '/opt/perfdata' as a base directory
-> and 2 record sessions.
-> 
->   # perf daemon start
->   [2021-01-28 19:47:33.454413] daemon started (pid 16015)
->   [2021-01-28 19:47:33.455910] reconfig: ruining session [cycles:16016]: -m 10M -e cycles --overwrite --switch-output -a
->   [2021-01-28 19:47:33.456599] reconfig: ruining session [sched:16017]: -m 20M -e sched:* --overwrite --switch-output -a
-> 
->   # ps -ef | grep perf
->   ... perf daemon start
->   ... /home/jolsa/.../perf record -m 20M -e cycles --overwrite --switch-output -a
->   ... /home/jolsa/.../perf record -m 20M -e sched:* --overwrite --switch-output -a
-> 
-> The base directory is populated with:
-> 
->   # find /opt/perfdata/
->   /opt/perfdata/
->   /opt/perfdata/control                    <- control socket
->   /opt/perfdata/session-cycles             <- data for session 'cycles':
->   /opt/perfdata/session-cycles/output      <-   perf record output
->   /opt/perfdata/session-cycles/perf.data   <-   perf data
->   /opt/perfdata/session-sched              <- ditto for session 'sched'
->   /opt/perfdata/session-sched/output
->   /opt/perfdata/session-sched/perf.data
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Acked-by: David Brazdil <dbrazdil@google.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 > ---
->  tools/perf/builtin-daemon.c | 353 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 351 insertions(+), 2 deletions(-)
+>  arch/arm64/kernel/hyp-stub.S | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index eada3ceb9b0c..be2ade9967b3 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -1,6 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <subcmd/parse-options.h>
->  #include <api/fd/array.h>
-> +#include <linux/zalloc.h>
-> +#include <linux/string.h>
->  #include <linux/limits.h>
->  #include <string.h>
->  #include <signal.h>
-> @@ -13,22 +15,74 @@
->  #include <sys/un.h>
->  #include <sys/stat.h>
->  #include <poll.h>
-> +#include <sys/stat.h>
->  #include "builtin.h"
->  #include "perf.h"
->  #include "debug.h"
->  #include "config.h"
->  #include "util.h"
+> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> index 373ed2213e1d..6b5c73cf9d52 100644
+> --- a/arch/arm64/kernel/hyp-stub.S
+> +++ b/arch/arm64/kernel/hyp-stub.S
+> @@ -92,9 +92,6 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	msr	hcr_el2, x0
+>  	isb
 >  
-> +#define SESSION_OUTPUT  "output"
-> +
-> +/*
-> + * Session states:
-> + *
-> + *   OK       - session is up and running
-> + *   RECONFIG - session is pending for reconfiguration,
-> + *              new values are already loaded in session object
-> + *   KILL     - session is pending to be killed
-> + *
-> + * Session object life and its state is maintained by
-> + * following functions:
-> + *
-> + *  setup_server_config
-> + *    - reads config file and setup session objects
-> + *      with following states:
-> + *
-> + *      OK       - no change needed
-> + *      RECONFIG - session needs to be changed
-> + *                 (run variable changed)
-> + *      KILL     - session needs to be killed
-> + *                 (session is no longer in config file)
-> + *
-> + *  daemon__reconfig
-> + *    - scans session objects and does following actions
-> + *      for states:
-> + *
-> + *      OK       - skip
-> + *      RECONFIG - session is killed and re-run with new config
-> + *      KILL     - session is killed
-> + *
-> + *    - all sessions have OK state on the function exit
-> + */
-> +enum session_state {
-> +	SESSION_STATE__OK,
-> +	SESSION_STATE__RECONFIG,
-> +	SESSION_STATE__KILL,
-> +};
-> +
-> +struct session {
-> +	char			*base;
-> +	char			*name;
-> +	char			*run;
-> +	int			 pid;
-> +	struct list_head	 list;
-> +	enum session_state	 state;
-> +};
-> +
->  struct daemon {
->  	const char		*config;
->  	char			*config_real;
->  	const char		*base_user;
->  	char			*base;
-> +	struct list_head	 sessions;
->  	FILE			*out;
->  	char			 perf[PATH_MAX];
->  };
+> -	// Doesn't do much on VHE, but still, worth a shot
+> -	init_el2_state vhe
+> -
+>  	// Use the EL1 allocated stack, per-cpu offset
+>  	mrs	x0, sp_el1
+>  	mov	sp, x0
+> @@ -107,6 +104,31 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	mrs_s	x0, SYS_VBAR_EL12
+>  	msr	vbar_el1, x0
 >  
-> -static struct daemon __daemon = { };
-> +static struct daemon __daemon = {
-> +	.sessions = LIST_HEAD_INIT(__daemon.sessions),
-> +};
->  
->  static const char * const daemon_usage[] = {
->  	"perf daemon start [<options>]",
-> @@ -43,6 +97,128 @@ static void sig_handler(int sig __maybe_unused)
->  	done = true;
->  }
->  
-> +static struct session*
-> +daemon__add_session(struct daemon *config, char *name)
-> +{
-> +	struct session *session;
+> +	// Fixup SPE configuration, if supported...
+> +	mrs	x1, id_aa64dfr0_el1
+> +	ubfx	x1, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
+> +	mov	x2, xzr
+> +	cbz	x1, skip_spe
 > +
-> +	session = zalloc(sizeof(*session));
+> +	// ... and not owned by EL3
+> +	mrs_s	x0, SYS_PMBIDR_EL1
+> +	and	x0, x0, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
+> +	cbnz	x0, skip_spe
+> +
+> +	// Let the SPE driver in control of the sampling
+> +	mrs_s	x0, SYS_PMSCR_EL1
+> +	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PCT_SHIFT)
+> +	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PA_SHIFT)
+> +	msr_s	SYS_PMSCR_EL1, x0
 
-	
-	struct session *session = zalloc(sizeof(*session));
+Why do we need to touch pmscr_el1 at all? The SPE driver should take care of
+that, no? If you drop the pmscr_el1 accesses, I think you can drop the
+pmbidr_el1 check as well. And actually, then why even check dfr0? Doing the
+bic for the mdcr_el1.e2pb bits is harmless.
 
-> +	if (!session)
-> +		return NULL;
+> +	mov	x2, #MDCR_EL2_TPMS
 > +
-> +	session->name = strdup(name);
-> +	if (!session->name) {
-> +		free(session);
-> +		return NULL;
-> +	}
-> +
-> +	session->pid = -1;
-> +	list_add_tail(&session->list, &config->sessions);
-> +	return session;
-> +}
-> +
-> +static struct session*
+> +skip_spe:
+> +	// For VHE, use EL2 translation and disable access from EL1
+> +	mrs	x0, mdcr_el2
+> +	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
+> +	orr	x0, x0, x2
+> +	msr	mdcr_el2, x0
 
-add space after type name
+Doesn't this undo the setting of mdcr_el2.hpmn if SPE is not present or
+unavailable? (This wouldn't be an issue if we removed the skip_spe paths
+altogether).
 
-   static struct session *
-
-And we could have it in the same line:
-
-  static struct session *daemon__find_session(struct daemon *daemon, char *name)
-
-> +daemon__find_session(struct daemon *daemon, char *name)
-> +{
-> +	struct session *session;
-> +
-> +	list_for_each_entry(session, &daemon->sessions, list) {
-> +		if (!strcmp(session->name, name))
-> +			return session;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static int get_session_name(const char *var, char *session, int len)
-> +{
-> +	const char *p = var + sizeof("session-") - 1;
-> +
-> +	while (*p != '.' && *p != 0x0 && len--)
-> +		*session++ = *p++;
-> +
-> +	*session = 0;
-> +	return *p == '.' ? 0 : -EINVAL;
-> +}
-> +
-> +static int session_config(struct daemon *daemon, const char *var, const char *value)
-> +{
-> +	struct session *session;
-> +	char name[100];
-> +
-> +	if (get_session_name(var, name, sizeof(name)))
-
-Good , using sizeof () :)
-
-> +		return -EINVAL;
-> +
-> +	var = strchr(var, '.');
-> +	if (!var)
-> +		return -EINVAL;
-> +
-> +	var++;
-> +
-> +	session = daemon__find_session(daemon, name);
-> +
-> +	if (!session) {
-> +		/* New session is defined. */
-> +		session = daemon__add_session(daemon, name);
-> +		if (!session)
-> +			return -ENOMEM;
-> +
-> +		pr_debug("reconfig: found new session %s\n", name);
-> +
-> +		/* Trigger reconfig to start it. */
-> +		session->state = SESSION_STATE__RECONFIG;
-> +	} else if (session->state == SESSION_STATE__KILL) {
-> +		/* Current session is defined, no action needed. */
-> +		pr_debug("reconfig: found current session %s\n", name);
-> +		session->state = SESSION_STATE__OK;
-> +	}
-> +
-> +	if (!strcmp(var, "run")) {
-> +		bool same = false;
-> +
-> +		if (session->run)
-> +			same = !strcmp(session->run, value);
-> +
-> +		if (!same) {
-> +			if (session->run) {
-> +				free(session->run);
-> +				pr_debug("reconfig: session %s is changed\n", name);
-> +			}
-> +
-> +			session->run = strdup(value);
-> +			if (!session->run)
-> +				return -ENOMEM;
-> +
-> +			/*
-> +			 * Either new or changed run value is defined,
-> +			 * trigger reconfig for the session.
-> +			 */
-> +			session->state = SESSION_STATE__RECONFIG;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int server_config(const char *var, const char *value, void *cb)
-> +{
-> +	struct daemon *daemon = cb;
-> +
-> +	if (strstarts(var, "session-"))
-> +		return session_config(daemon, var, value);
-> +	else if (!strcmp(var, "daemon.base") && !daemon->base_user) {
-
-if else uses {}, if should too
-
-> +		if (daemon->base && strcmp(daemon->base, value)) {
-> +			pr_err("failed: can't redefine base, bailing out\n");
-> +			return -EINVAL;
-> +		}
-> +		daemon->base = strdup(value);
-> +		if (!daemon->base)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int client_config(const char *var, const char *value, void *cb)
->  {
->  	struct daemon *daemon = cb;
-> @@ -87,6 +263,91 @@ static int setup_client_config(struct daemon *daemon)
->  	return err ?: check_base(daemon);
->  }
->  
-> +static int setup_server_config(struct daemon *daemon)
-> +{
-> +	struct perf_config_set *set;
-> +	struct session *session;
-> +	int err = -ENOMEM;
-> +
-> +	pr_debug("reconfig: started\n");
-> +
-> +	/*
-> +	 * Mark all sessions for kill, the server config
-> +	 * will set following states, see explanation at
-> +	 * enum session_state declaration.
-> +	 */
-> +	list_for_each_entry(session, &daemon->sessions, list)
-> +		session->state = SESSION_STATE__KILL;
-> +
-> +	set = perf_config_set__load_file(daemon->config_real);
-> +	if (set) {
-> +		err = perf_config_set(set, server_config, daemon);
-> +		perf_config_set__delete(set);
-> +	}
-> +
-> +	return err ?: check_base(daemon);
-> +}
-> +
-> +static int session__run(struct session *session, struct daemon *daemon)
-> +{
-> +	char buf[PATH_MAX];
-> +	char **argv;
-> +	int argc, fd;
-> +
-> +	if (asprintf(&session->base, "%s/session-%s",
-> +		     daemon->base, session->name) < 0) {
-> +		perror("failed: asprintf");
-> +		return -1;
-> +	}
-> +
-> +	if (mkdir(session->base, 0755) && errno != EEXIST) {
-> +		perror("failed: mkdir");
-> +		return -1;
-> +	}
-> +
-> +	session->pid = fork();
-> +	if (session->pid < 0)
-> +		return -1;
-> +	if (session->pid > 0) {
-> +		pr_info("reconfig: ruining session [%s:%d]: %s\n",
-> +			session->name, session->pid, session->run);
-> +		return 0;
-> +	}
-> +
-> +	if (chdir(session->base)) {
-> +		perror("failed: chdir");
-> +		return -1;
-> +	}
-> +
-> +	fd = open("/dev/null", O_RDONLY);
-> +	if (fd < 0) {
-> +		perror("failed: open /dev/null");
-> +		return -1;
-> +	}
-> +
-> +	dup2(fd, 0);
-> +	close(fd);
-> +
-> +	fd = open(SESSION_OUTPUT, O_RDWR|O_CREAT|O_TRUNC, 0644);
-> +	if (fd < 0) {
-> +		perror("failed: open session output");
-> +		return -1;
-> +	}
-> +
-> +	dup2(fd, 1);
-> +	dup2(fd, 2);
-> +	close(fd);
-> +
-> +	scnprintf(buf, sizeof(buf), "%s record %s", daemon->perf, session->run);
-> +
-> +	argv = argv_split(buf, &argc);
-> +	if (!argv)
-> +		exit(-1);
-> +
-> +	exit(execve(daemon->perf, argv, NULL));
-> +	return -1;
-> +}
-> +
->  static int setup_server_socket(struct daemon *daemon)
->  {
->  	struct sockaddr_un addr;
-> @@ -185,17 +446,95 @@ static int setup_client_socket(struct daemon *daemon)
->  	return fd;
->  }
->  
-> +static int session__signal(struct session *session, int sig)
-> +{
-> +	if (session->pid < 0)
-> +		return -1;
-> +	return kill(session->pid, sig);
-> +}
-> +
-> +static void session__kill(struct session *session)
-> +{
-> +	session__signal(session, SIGTERM);
-> +}
-> +
-> +static void daemon__signal(struct daemon *daemon, int sig)
-> +{
-> +	struct session *session;
-> +
-> +	list_for_each_entry(session, &daemon->sessions, list)
-> +		session__signal(session, sig);
-> +}
-> +
-> +static void session__free(struct session *session)
-> +{
-> +	free(session->base);
-> +	free(session->name);
-> +	free(session->run);
-
-zfree() so that if there is some dangling pointer to session, we'll get
-NULL derefs
-
-> +	free(session);
-> +}
-> +
-> +static void session__remove(struct session *session)
-> +{
-> +	list_del(&session->list);
-
-list_del_init
-
-> +	session__free(session);
-> +}
-> +
-> +static void daemon__kill(struct daemon *daemon)
-> +{
-> +	daemon__signal(daemon, SIGTERM);
-> +}
-> +
->  static void daemon__free(struct daemon *daemon)
->  {
-> +	struct session *session, *h;
-> +
-> +	list_for_each_entry_safe(session, h, &daemon->sessions, list)
-> +		session__remove(session);
-
-Wouldn't be better to have:
-
-	 list_for_each_entry_safe(session, h, &daemon->sessions, list) {
-	 	list_del_init(&session->list);
-		session__free(session);
-	 }
-
-Because naming that function "session__remove()" one thinks it is being
-removed from some data structure, but not that it is being as well
-deleted.
-
-Please rename session__free() to session__delete() to keep it consistent
-with other places.
-
-> +
->  	free(daemon->config_real);
->  	free(daemon->base);
->  }
->  
->  static void daemon__exit(struct daemon *daemon)
->  {
-> +	daemon__kill(daemon);
->  	daemon__free(daemon);
-
-Ditto for daemon__free(): please rename it to daemon__delete()
-
->  }
->  
-> +static int daemon__reconfig(struct daemon *daemon)
-> +{
-> +	struct session *session, *n;
-> +
-> +	list_for_each_entry_safe(session, n, &daemon->sessions, list) {
-> +		/* No change. */
-> +		if (session->state == SESSION_STATE__OK)
-> +			continue;
-> +
-> +		/* Remove session. */
-> +		if (session->state == SESSION_STATE__KILL) {
-> +			if (session->pid > 0) {
-> +				session__kill(session);
-> +				pr_info("reconfig: session '%s' killed\n", session->name);
-> +			}
-> +			session__remove(session);
-> +			continue;
-> +		}
-> +
-> +		/* Reconfig session. */
-> +		if (session->pid > 0) {
-> +			session__kill(session);
-> +			pr_info("reconfig: session '%s' killed\n", session->name);
-> +		}
-> +		if (session__run(session, daemon))
-> +			return -1;
-> +
-> +		session->state = SESSION_STATE__OK;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int setup_config(struct daemon *daemon)
->  {
->  	if (daemon->base_user) {
-> @@ -244,6 +583,9 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  		return -1;
->  	}
->  
-> +	if (setup_server_config(daemon))
-> +		return -1;
-> +
->  	debug_set_file(daemon->out);
->  	debug_set_display_time(true);
->  
-> @@ -263,9 +605,16 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  	signal(SIGTERM, sig_handler);
->  
->  	while (!done && !err) {
-> -		if (fdarray__poll(&fda, -1)) {
-> +		err = daemon__reconfig(daemon);
-> +
-> +		if (!err && fdarray__poll(&fda, -1)) {
-> +			bool reconfig = false;
-> +
->  			if (fda.entries[sock_pos].revents & POLLIN)
->  				err = handle_server_socket(daemon, sock_fd);
-> +
-> +			if (reconfig)
-> +				err = setup_server_config(daemon);
->  		}
->  	}
->  
-> -- 
-> 2.29.2
-> 
-
--- 
-
-- Arnaldo
+Will
