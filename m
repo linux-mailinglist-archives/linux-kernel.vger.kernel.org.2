@@ -2,224 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5128230E485
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4866E30E4A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbhBCVAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhBCU76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:59:58 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357DDC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:59:17 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l7PF4-0004aP-6a; Wed, 03 Feb 2021 21:59:14 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l7PF3-0001Si-9a; Wed, 03 Feb 2021 21:59:13 +0100
-Date:   Wed, 3 Feb 2021 21:59:13 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Ban Tao <fengzheng923@gmail.com>
-Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mripard@kernel.org, wens@csie.org, kernel@pengutronix.de
-Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
-Message-ID: <20210203205913.dvmppahnkmcj2dac@pengutronix.de>
-References: <20210203125317.1975-1-fengzheng923@gmail.com>
- <20210203151200.fdzzq23teoypbxad@pengutronix.de>
- <YBrQTM5iADZgA2v1@ulmo>
+        id S232619AbhBCVFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232131AbhBCVFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:05:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C1DC64F5F;
+        Wed,  3 Feb 2021 21:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612386268;
+        bh=qsbKc8aThntRBC7TogbJV5CusIEYBF5lycpVC9RdzFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LQ69KK9UzZYangL7RKk86dbbWO8t9HUQTxp8f5U3KrCI9vE9o8+FBVwtbnwVLorgM
+         RhCZF2OVSMEpgP4SeEgi3uPtxL8frgTx7KecybGu9wkANVqSPezsL3JWEEg0wbvdCo
+         P20ZTLwZ1/zbJ2advxhv1CofRH/8sCElDdEpO9TeIbfusjXKqjHdbGFBGhqp4WNprq
+         e9IAvNzTxJSfOvS8HibTK86JRwcUtwLihRucSpAwy2gxYCuVund5lEbicNsGHxEpKa
+         5kDv2JNop8nkJqE9psZ30XDuJplDdkupLKCNFHz2I4RPhGwTNwXBRFu5iBvAqL3ATg
+         DFbx4YiUkMO2Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D48E340513; Wed,  3 Feb 2021 18:04:23 -0300 (-03)
+Date:   Wed, 3 Feb 2021 18:04:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 04/24] perf daemon: Add server socket support
+Message-ID: <20210203210423.GQ854763@kernel.org>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-5-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cnkbjtn2mnqxloiw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBrQTM5iADZgA2v1@ulmo>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210130234856.271282-5-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Sun, Jan 31, 2021 at 12:48:36AM +0100, Jiri Olsa escreveu:
+> Add support to create server socket that listens for client
+> commands and process them.
+> 
+> This patch adds only the core support, all commands using
+> this functionality are coming in following patches.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-daemon.c | 101 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 100 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 8d0ac44ec808..756d60616d7d 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <subcmd/parse-options.h>
+> +#include <api/fd/array.h>
+>  #include <linux/limits.h>
+>  #include <string.h>
+>  #include <signal.h>
+> @@ -7,6 +8,10 @@
+>  #include <stdio.h>
+>  #include <unistd.h>
+>  #include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <sys/un.h>
+> +#include <poll.h>
+>  #include "builtin.h"
+>  #include "perf.h"
+>  #include "debug.h"
+> @@ -37,6 +42,78 @@ static void sig_handler(int sig __maybe_unused)
+>  	done = true;
+>  }
+>  
+> +static int setup_server_socket(struct daemon *daemon)
+> +{
+> +	struct sockaddr_un addr;
+> +	char path[100];
+> +	int fd;
+> +
+> +	fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
---cnkbjtn2mnqxloiw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Minor, combine decl with use, since line isn't long and its one after
+the other, i.e.:
 
-Hello Thierry, hello Ban,
+	int fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
-On Wed, Feb 03, 2021 at 05:33:16PM +0100, Thierry Reding wrote:
-> On Wed, Feb 03, 2021 at 04:12:00PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Wed, Feb 03, 2021 at 08:53:17PM +0800, Ban Tao wrote:
-> [...]
-> > > +#define PWM_GET_CLK_OFFSET(chan)	(0x20 + ((chan >> 1) * 0x4))
-> > > +#define PWM_CLK_APB_SCR			BIT(7)
-> > > +#define PWM_DIV_M			0
-> > > +#define PWM_DIV_M_WIDTH			0x4
-> > > +
-> > > +#define PWM_CLK_REG			0x40
-> > > +#define PWM_CLK_GATING			BIT(0)
-> > > +
-> > > +#define PWM_ENABLE_REG			0x80
-> > > +#define PWM_EN				BIT(0)
-> > > +
-> > > +#define PWM_CTL_REG(chan)		(0x100 + 0x20 * chan)
-> > > +#define PWM_ACT_STA			BIT(8)
-> > > +#define PWM_PRESCAL_K			0
-> > > +#define PWM_PRESCAL_K_WIDTH		0x8
-> > > +
-> > > +#define PWM_PERIOD_REG(chan)		(0x104 + 0x20 * chan)
-> > > +#define PWM_ENTIRE_CYCLE		16
-> > > +#define PWM_ENTIRE_CYCLE_WIDTH		0x10
-> > > +#define PWM_ACT_CYCLE			0
-> > > +#define PWM_ACT_CYCLE_WIDTH		0x10
-> >=20
-> > Please use a driver specific prefix for these defines.
->=20
-> These are nice and to the point, so I think it'd be fine to leave these
-> as-is. Unless of course if they conflict with something from the PWM
-> core, which I don't think any of these do.
+> +	if (fd < 0) {
+> +		fprintf(stderr, "socket: %s\n", strerror(errno));
+> +		return -1;
+> +	}
+> +
+> +	fcntl(fd, F_SETFD, FD_CLOEXEC);
 
-In my eyes PWM_CLK_REG, PWM_CLK_GATING, PWM_ENABLE_REG and PWM_EN are
-not so nice. pwm-sun4i.c has already PWM_EN, pwm-mtk-disp.c has
-DISP_PWM_EN, pwm-zx.c has ZX_PWM_EN, pwm-berlin.c has BERLIN_PWM_EN.
-Luckily most of them already use a prefix. So it doesn't conflict with
-the core, but might with other drivers. And also if you only care about
-conflicts with the core, using a prefix is the future-proof strategy.
-For tools like ctags and cscope a unique name is great, too.
+Don't we have to check its return?
 
-Also comparing
+> +
+> +	scnprintf(path, PATH_MAX, "%s/control", daemon->base);
 
-	tmp |=3D BIT_CH(PWM_EN, pwm->hwpwm);
+Humm the safe thing here is to use:
 
-with (say)
+	scnprintf(path, sizeof(path), "%s/control", daemon->base);
 
-	tmp |=3D BIT_CH(SUN5I_PWM_PWM_EN, pwm->hwpwm);
+Using it like that would avoid the bug in your code, as path has only
+100 bytes, not PATH_MAX bytes ;-)
 
-I prefer the latter as it is obvious that this is a driver specific
-constant.
+> +
+> +	memset(&addr, 0, sizeof(addr));
+> +	addr.sun_family = AF_UNIX;
+> +
+> +	strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
 
-Having said that, I'm also a fan of having the register name in the bit
-field define to simplify spotting errors like 4b75f8000361 ("serial:
-imx: Fix DCD reading").
+strncpy may end up not adding the final \0 see the NOTES in its man
+page. Consider using strlcpy instead. See:
 
-So looking at:
+  bef0b8970f27da5c ("perf probe: Fix unchecked usage of strncpy()")
 
-+       /* disable pwm controller */
-+       tmp =3D sun50i_pwm_readl(sun50i_pwm, PWM_ENABLE_REG);
-+       tmp &=3D ~BIT_CH(PWM_EN, pwm->hwpwm);
-+       sun50i_pwm_writel(sun50i_pwm, tmp, PWM_ENABLE_REG);
+> +	unlink(path);
+> +
+> +	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+> +		perror("failed: bind");
+> +		return -1;
+> +	}
+> +
+> +	if (listen(fd, 1) == -1) {
+> +		perror("failed: listen");
+> +		return -1;
+> +	}
+> +
+> +	return fd;
+> +}
+> +
+> +union cmd {
+> +	int cmd;
+> +};
+> +
+> +static int handle_server_socket(struct daemon *daemon __maybe_unused, int sock_fd)
+> +{
+> +	int ret = -EINVAL, fd;
+> +	union cmd cmd;
+> +	FILE *out;
+> +
+> +	fd = accept(sock_fd, NULL, NULL);
+> +	if (fd < 0) {
+> +		fprintf(stderr, "accept: %s\n", strerror(errno));
+> +		return -1;
+> +	}
+> +
+> +	if (sizeof(cmd) != read(fd, &cmd, sizeof(cmd))) {
+> +		fprintf(stderr, "read: %s\n", strerror(errno));
 
-my preferred version would be instead:
+close fd
 
-+       /* disable pwm controller */
-+       enable =3D sun50i_pwm_readl(sun50i_pwm, SUN50I_REG_PWM_ENABLE);
-+       enable &=3D ~SUN50I_REG_PWM_ENABLE_EN(pwm->hwpwm);
-+       sun50i_pwm_writel(sun50i_pwm, enable, SUN50I_REG_PWM_ENABLE);
+> +		return -1;
+> +	}
+> +
+> +	out = fdopen(fd, "w");
+> +	if (!out) {
+> +		perror("failed: fdopen");
 
-where variable name, register name and bitfield name are obviously
-matching.
+close fd
 
-> > > +struct sun50i_pwm_data {
-> > > +	unsigned int npwm;
-> > > +};
-> > > +
-> > > +struct sun50i_pwm_chip {
-> > > +	struct pwm_chip chip;
-> > > +	struct clk *clk;
-> > > +	struct reset_control *rst_clk;
-> > > +	void __iomem *base;
-> > > +	const struct sun50i_pwm_data *data;
-> > > +};
-> > > +
-> > > +static inline struct sun50i_pwm_chip *sun50i_pwm_from_chip(struct pw=
-m_chip *chip)
-> > > +{
-> > > +	return container_of(chip, struct sun50i_pwm_chip, chip);
-> > > +}
->=20
-> I wanted to reply to Uwe's comment on v1 but you sent this before I got
-> around to it, so I'll mention it here. I recognize the usefulness of
-> having a common prefix for function names, though admittedly it's not
-> totally necessary in these drivers because these are all local symbols.
-> But it does makes things a bit consistent and helps when looking at
-> backtraces and such, so that's all good.
->=20
-> That said, I consider these casting helpers a bit of a special case
-> because they usually won't show up in backtraces, or anywhere else for
-> that matter. Traditionally these have been named to_*(), so it'd be
-> entirely consistent to keep doing that.
->=20
-> But I don't have any strong objections to this variant either, so pick
-> whichever you want. Although, please, nobody take that as a hint that
-> any existing helpers should be converted.
+I.e. goto out_close;
 
-@Thierry: I don't understand your motivation to write this. For me
-consistence is a quite important aspect. Obviously for you it's less so
-and the code presented here over-fulfils your standards. So everything
-is fine as is, isn't it?
+> +		return -1;
+> +	}
+> +
+> +	switch (cmd.cmd) {
+> +	default:
+> +		break;
+> +	}
+> +
+> +	fclose(out);
 
-I think using a rule like "A common prefix for driver specific functions"
-consistently is easier than allowing some exceptions. There is no gain
-in not using the prefix, so IMHO keep the rules simple without
-exceptions.
+out_close:
 
-> [...]
-> > > +static int sun50i_pwm_probe(struct platform_device *pdev)
-> > > +{
-> > > +	struct sun50i_pwm_chip *pwm;
-> >=20
-> > "pwm" isn't a good name, in PWM code this name is usually used for
-> > struct pwm_device pointers (and sometimes the global pwm id). I usually
-> > use "ddata" for driver data (and would have called "sun50i_pwm_chip"
-> > "sun50i_pwm_ddata" instead). Another common name is "priv".
->=20
-> This driver already declares sun50i_pwm_data for per-SoC data, so having
-> a struct sun50i_pwm_ddata would just be confusing.
+> +	close(fd);
+> +	return ret;
+> +}
+> +
+>  static void daemon__free(struct daemon *daemon)
+>  {
+>  	free(daemon->config_real);
+> @@ -82,6 +159,9 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  		OPT_PARENT(parent_options),
+>  		OPT_END()
+>  	};
+> +	int sock_fd = -1;
+> +	int sock_pos;
+> +	struct fdarray fda;
+>  	int err = 0;
+>  
+>  	argc = parse_options(argc, argv, start_options, daemon_usage, 0);
+> @@ -98,15 +178,34 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  
+>  	pr_info("daemon started (pid %d)\n", getpid());
+>  
+> +	fdarray__init(&fda, 1);
+> +
+> +	sock_fd = setup_server_socket(daemon);
+> +	if (sock_fd < 0)
+> +		goto out;
+> +
+> +	sock_pos = fdarray__add(&fda, sock_fd, POLLIN|POLLERR|POLLHUP, 0);
+> +	if (sock_pos < 0)
+> +		goto out;
+> +
+>  	signal(SIGINT, sig_handler);
+>  	signal(SIGTERM, sig_handler);
+>  
+>  	while (!done && !err) {
+> -		sleep(1);
+> +		if (fdarray__poll(&fda, -1)) {
+> +			if (fda.entries[sock_pos].revents & POLLIN)
+> +				err = handle_server_socket(daemon, sock_fd);
+> +		}
+>  	}
+>  
+> +out:
+> +	fdarray__exit(&fda);
+> +
+>  	daemon__exit(daemon);
+>  
+> +	if (sock_fd != -1)
+> +		close(sock_fd);
+> +
+>  	pr_info("daemon exited\n");
+>  	fclose(daemon->out);
+>  	return err;
+> -- 
+> 2.29.2
+> 
 
-Agreed. So maybe pick a better name for sun50i_pwm_data; my suggestion
-would be sun50i_pwm_soc_info.
+-- 
 
-> sun50i_pwm_chip is consistent with what other drivers name this, so I
-> think that's fine.
-
-Either the name is good, then this alone justifies to use it. If however
-the name is bad, it IMHO doesn't matter if others use the same bad
-naming scheme and you better don't use it. So please don't let us
-consider it a good name *only* because it's used in several other
-places.
-
-@Ban: You see Thierry and I don't agree in every aspect. So please take
-the feedback you get from us as cause for thought and then try to come
-up with a v3 with choices you can justify.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cnkbjtn2mnqxloiw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAbDp4ACgkQwfwUeK3K
-7AnekAf7BqfAWUcGh30G1jKekk2BUgMaHdj/otMHwLUZ5Y9f+9PsQgpg0E+wl8J1
-LrdWA6wAp8ejVmho8Cpoxm+BvnIxM6msm51pyTxNdttL0z+oob1lEYi/FiCoKHX8
-LU6wu4v2PlEdwPAPH3c3uDuy2DzvBQCrJ3riRff6IQI6gjMSnIicqwmz3m7mYfXd
-IJ8HAir3MgvwIJvE0AbXBEEspWEjgFzfS2Cm86AaGC5ib/J66WDK2NOwgCekK3zY
-yfd42xqid45JXIClzEdVT/hwlgeGfbqIxgk+3wGWqP02YBnTs7XGq8B0e56aBzkv
-ID5f9QCVk+l7LUoht9IJ65sSwpcPuw==
-=n0pZ
------END PGP SIGNATURE-----
-
---cnkbjtn2mnqxloiw--
+- Arnaldo
