@@ -2,76 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA8E30DF8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BD230DF8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhBCQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:19:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232630AbhBCQTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:19:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A950064F74;
-        Wed,  3 Feb 2021 16:19:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612369151;
-        bh=K6U4CHFRSskkHz3ojBSXooC5+ftYU+xqIVYffsb/J7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IU5XKFkj/iqkEqoTsfqYNVRfsDWZGJsNQfECfvbfUyrFmbNbEAERjV7i3iTFl83se
-         5xpPixgtzlLJoa90NZ73qeMpzoffYJCj8kBhIGqVOwNksTKg6k2ARHvejlulyi2lw3
-         qWGrNHkItntZNV88TNjLIH1BG2vL7Tr6j0GMEdgqb5N1McIUDcYfDCcGo7ImueSEO6
-         NbFRogi58P0LATTq3uJ5cvtCRWk6SREF0HJmwMeTv7vsm5kQewUwb20ydliRVcbuXR
-         Yn0cmTcdD2eSKbyQ0MPA+JAr33R8nVyjbBFfRhPIs3Co1WiB2S3Qy0jNC8WSAdZqJb
-         jjpwAO83O7YeQ==
-Date:   Wed, 3 Feb 2021 16:18:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com
-Subject: Re: [PATCH v6 29/37] regulator: scmi: port driver to the new
- scmi_voltage_proto_ops interface
-Message-ID: <20210203161822.GF4880@sirena.org.uk>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
- <20210202221555.41167-30-cristian.marussi@arm.com>
+        id S233837AbhBCQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:20:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23374 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233185AbhBCQUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:20:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612369127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M/MGhUnU/5e7dA2ClMOCmGk1NNyNlDc/BZFcD6gBEds=;
+        b=QjVr3OD+gEHXfZfzjREoDV/SVsEe52ydt3X5zru4BednPQfUl66eZdrzrTz4tHrnmziOXe
+        nTkiawkKx98ceLHByu65h8LOvQM/nuFgP+5TEt9HPBC7XARqwyeV5KSW80JV3OkNZREngI
+        IdhPUUf7QRBSJh6upXHLqNZzd6OBeP4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-D2m6RiGDN0arEoEDfvYHLg-1; Wed, 03 Feb 2021 11:18:45 -0500
+X-MC-Unique: D2m6RiGDN0arEoEDfvYHLg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EA36801960;
+        Wed,  3 Feb 2021 16:18:43 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 02FAC1971C;
+        Wed,  3 Feb 2021 16:18:36 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 11:18:36 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Damien.LeMoal@wdc.com, hare@suse.de, ming.lei@redhat.com,
+        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
+        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
+        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pavgel.tide@veeam.com
+Subject: Re: [PATCH v4 2/6] block: add blk_interposer
+Message-ID: <20210203161836.GB21359@redhat.com>
+References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+ <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XStn23h1fwudRqtG"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202221555.41167-30-cristian.marussi@arm.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 03 2021 at 10:53am -0500,
+Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
---XStn23h1fwudRqtG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> blk_interposer allows to intercept bio requests, remap bio to another devices or add new bios.
+> 
+> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> ---
+>  block/bio.c               |  2 +
+>  block/blk-core.c          | 33 ++++++++++++++++
+>  block/genhd.c             | 82 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/blk_types.h |  6 ++-
+>  include/linux/genhd.h     | 18 +++++++++
+>  5 files changed, 139 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index 1f2cc1fbe283..f6f135eb84b5 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -684,6 +684,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+>  	bio_set_flag(bio, BIO_CLONED);
+>  	if (bio_flagged(bio_src, BIO_THROTTLED))
+>  		bio_set_flag(bio, BIO_THROTTLED);
+> +	if (bio_flagged(bio_src, BIO_INTERPOSED))
+> +		bio_set_flag(bio, BIO_INTERPOSED);
+>  	bio->bi_opf = bio_src->bi_opf;
+>  	bio->bi_ioprio = bio_src->bi_ioprio;
+>  	bio->bi_write_hint = bio_src->bi_write_hint;
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index 7663a9b94b80..c84bc42ba88b 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -1032,6 +1032,32 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
+>  	return ret;
+>  }
+>  
+> +static blk_qc_t __submit_bio_interposed(struct bio *bio)
+> +{
+> +	struct bio_list bio_list[2] = { };
+> +	blk_qc_t ret = BLK_QC_T_NONE;
+> +
+> +	current->bio_list = bio_list;
+> +	if (likely(bio_queue_enter(bio) == 0)) {
+> +		struct gendisk *disk = bio->bi_disk;
+> +
+> +		if (likely(blk_has_interposer(disk))) {
+> +			bio_set_flag(bio, BIO_INTERPOSED);
+> +			disk->interposer->ip_submit_bio(bio);
+> +		} else /* interposer was removed */
+> +			bio_list_add(&current->bio_list[0], bio);
 
-On Tue, Feb 02, 2021 at 10:15:47PM +0000, Cristian Marussi wrote:
-> Port driver to the new SCMI Voltage interface based on protocol handles
-> and common devm_get_ops().
+style nit:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+} else {
+	/* interposer was removed */
+	bio_list_add(&current->bio_list[0], bio);
+}
 
---XStn23h1fwudRqtG
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+> +		blk_queue_exit(disk->queue);
+> +	}
+> +	current->bio_list = NULL;
+> +
+> +	/* Resubmit remaining bios */
+> +	while ((bio = bio_list_pop(&bio_list[0])))
+> +		ret = submit_bio_noacct(bio);
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+>   * @bio:  The bio describing the location in memory and on the device.
+> @@ -1057,6 +1083,13 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+>  		return BLK_QC_T_NONE;
+>  	}
+>  
+> +	/*
+> +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
+> +	 * created by the blk_interposer do not get to it for processing.
+> +	 */
+> +	if (blk_has_interposer(bio->bi_disk) &&
+> +	    !bio_flagged(bio, BIO_INTERPOSED))
+> +		return __submit_bio_interposed(bio);
+>  	if (!bio->bi_disk->fops->submit_bio)
+>  		return __submit_bio_noacct_mq(bio);
+>  	return __submit_bio_noacct(bio);
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 419548e92d82..39785a3ef703 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -30,6 +30,7 @@
+>  static struct kobject *block_depr;
+>  
+>  DECLARE_RWSEM(bdev_lookup_sem);
+> +DEFINE_MUTEX(bdev_interposer_mutex);
 
------BEGIN PGP SIGNATURE-----
+Seems you're using this mutex to protect access to disk->interposer in
+attach/detach.  This is to prevent attach/detach races to same device?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAazM0ACgkQJNaLcl1U
-h9ChAwf/cxgDKr121Q/m1iRu5q9YDrCu7Jcisy3H6oadOX0rjeXSapqJpZApRFfN
-cquj6jpO6WDB3nPwlQ3Lgn43IOdYTN81/2oqUD42Y5m8PoD3ysFEwH1/oL+bdXsr
-4hFujXc3qsd5QUxt2SY1QVMyvZgXy43Yx3FVqGwn9wa8cKrhvfjwhJ2e6ROFNn6y
-E+BPhA0mpkWK9eAl2bh6qCiutJjLtYru07Ryxpc+U9jYsEdmakloIFqNnG6Wbd4L
-nTQr5ghP5oCn8kP3Hs8zz4J5mXdO5/D3bqvJ3g52qwFNEl7bHvZKK5nRecPMYE85
-FsJlgFw6zCCgZM1yVLOWuNOAiW+uig==
-=s9fz
------END PGP SIGNATURE-----
+Thankfully attach/detach isn't in the bio submission fast path but it'd
+be helpful to document what this mutex is protecting).
 
---XStn23h1fwudRqtG--
+A storm of attach or detach will all hit this global mutex though...
+
+Mike
+
