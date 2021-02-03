@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AAF30E1DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9249F30E206
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhBCSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:06:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
+        id S232947AbhBCSIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:08:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34606 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232230AbhBCSFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:05:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E879A64F8D;
-        Wed,  3 Feb 2021 18:05:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612375510;
-        bh=nN7G9KQLLEC2hXxjXAPVce/sjv7lbc72ZvMgGM+YbUw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FteG5V+1q9Q1i1j6qqzoC01a3FgiHgkhX6N6Alr55EDXoqR1CKHnFJPBZbkbShJIz
-         FgybpCDZ+4lZ5LMTESW6MRbrVkWtRfYoVZpRvzgesXTU8oiimNBf0AnMlnBkVPvl+n
-         IzMEAJPCG40o4me9FjLFR6arB0jj/60cs4YtZuiMaVqlPs9qtkQtw1Xg2WR11xf8p1
-         HyaxfLxn1APGKLg+hDGrbBnIOkxn1VUMNlugFqYTVjyWP3eQ4SrvcxBF/Ci70ZUSX3
-         anCYCa92RVLXAjJ03WB1wXkwkdSgBcHqshMPw/kct8McU4rQXUFZSt8apaFBasmZ6U
-         TfZTfid9lAmxA==
-Date:   Wed, 3 Feb 2021 10:05:08 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
-        <20210113152625.GB30246@work>
-        <YBGDng3VhE1Yw6zt@kroah.com>
-        <20210201105549.GB108653@thinkpad>
-        <YBfi573Bdfxy0GBt@kroah.com>
-        <20210201121322.GC108653@thinkpad>
-        <20210202042208.GB840@work>
-        <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
+        id S232648AbhBCSHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:07:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B1AFACB7;
+        Wed,  3 Feb 2021 18:06:26 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D85D31E14C4; Wed,  3 Feb 2021 19:06:25 +0100 (CET)
+Date:   Wed, 3 Feb 2021 19:06:25 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     bingjingc <bingjingc@synology.com>
+Cc:     viro@zeniv.linux.org.uk, jack@suse.com, jack@suse.cz,
+        axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cccheng@synology.com,
+        robbieko@synology.com, willy@infradead.org, rdunlap@infradead.org,
+        miklos@szeredi.hu
+Subject: Re: [PATCH v3 0/3] handle large user and group ID for isofs and udf
+Message-ID: <20210203180625.GA20183@quack2.suse.cz>
+References: <20210129045148.10155-1-bingjingc@synology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129045148.10155-1-bingjingc@synology.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:
-> >> Jakub, Dave, Adding you both to get your reviews on this series. I've
-> >> provided an explanation above and in the previous iteration [1].  
-> >
-> >Let's be clear what the review would be for. Yet another QMI chardev 
-> >or the "UCI" direct generic user space to firmware pipe?  
+On Fri 29-01-21 12:51:48, bingjingc wrote:
+> From: BingJing Chang <bingjingc@synology.com>
 > 
-> The current patchset only supports QMI channel so I'd request you to
-> review the chardev node created for it. The QMI chardev node created
-> will be unique for the MHI bus and the number of nodes depends on the
-> MHI controllers in the system (typically 1 but not limited). 
+> The uid/gid (unsigned int) of a domain user may be larger than INT_MAX.
+> The parse_options of isofs and udf will return 0, and mount will fail
+> with -EINVAL. These patches try to handle large user and group ID.
+> 
+> BingJing Chang (3):
+>   parser: add unsigned int parser
+>   isofs: handle large user and group ID
+>   udf: handle large user and group ID
 
-If you want to add a MHI QMI driver, please write a QMI-only driver.
-This generic "userspace client interface" driver is a no go. Nobody will
-have the time and attention to police what you throw in there later.
+Thanks for the patches. I've added these three patches to my tree.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
