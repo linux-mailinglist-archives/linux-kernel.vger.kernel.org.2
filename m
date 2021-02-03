@@ -2,189 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CB930D722
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D1630D6D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhBCKM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhBCKMv (ORCPT
+        id S233618AbhBCJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:56:59 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:12487 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233090AbhBCJ4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:12:51 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F6C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:12:11 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id z21so17010591pgj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=Jj5P/+FGKB+Gx/8nToaLLeEz9vFqyWcYXQiDNxG9J9c=;
-        b=m5IL6Z7rCQYN/Fj8ZKWDB8gQoOgWX6QRwxPqBgNFcyGr45TD20iVxc0EqHk+JbBscm
-         Oe3G0AgcSOHjcjkUlQY8AShMbWE4/wPzGpASS3wssxEzKBzN75giqDQZBLPIP+evMnG+
-         a0zU7aInwHO2DJBPZexzCRonTzRqlDHz/GBcCYTFkoMDyWVek4PzMtqmMcsm4h8nPgPe
-         Cl3qR203m5WUtsxLGV7hswqtoeycf3HrnMBHYPD/g3IQcSUFIznuNyb2KERjxNZFxYXU
-         idO5YBEKAXLpsaoJYDS5A3qyI9YWmo0FeJZXhkX6mreOX9O/TvpN34RL7vz4OSa5wRjm
-         qRRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=Jj5P/+FGKB+Gx/8nToaLLeEz9vFqyWcYXQiDNxG9J9c=;
-        b=c6f/CAr4GHy7lu0gzoL6PjtKG344UPE/HlsKjd9yj3CivwgxbMtnd7VxC/AYt2loft
-         WK8yGy51vRk8vnFoTeWXp4sz5d4fuoY3yxsvsKzdvGSWmccaKEcJZLwvydbu73gIRm0O
-         m//zQwMExT6SFNODwLfPmrcT38hyTFWFxP0YFf1Q9sEfStbyppFkanX43/IqU+NHucro
-         hSqjS1SjzK39HJfzxJBztqHamtx0Mi/Tqc1mowihienQuJq4xzt3U9M4FPyqSrBj5/pz
-         4PI1wmM7NULjfB/HSuGT6Xt8fLJW2r3e/EsFvi9SyFDFz+zxG8FSh2LqNzPzvgbKEtEz
-         DAxg==
-X-Gm-Message-State: AOAM532Agop0a5X1oaW2j81TkAKce/F08uAwLWHSc2URlBk87qdhrB+U
-        RP6nmu7oZzj31/5akaiQORrG
-X-Google-Smtp-Source: ABdhPJz/JdTHb2LWEEGIyYASRUhlaQG7crk7c3TVHaxEj38YS7W8P72bn162d6OF16rO8b9q0C/ZyQ==
-X-Received: by 2002:a62:1dd7:0:b029:1be:ef0d:9507 with SMTP id d206-20020a621dd70000b02901beef0d9507mr2424246pfd.62.1612347131212;
-        Wed, 03 Feb 2021 02:12:11 -0800 (PST)
-Received: from ?IPv6:2409:4072:619f:ff99:700b:51f3:e28:b00? ([2409:4072:619f:ff99:700b:51f3:e28:b00])
-        by smtp.gmail.com with ESMTPSA id dw23sm1688325pjb.3.2021.02.03.02.12.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 02:12:10 -0800 (PST)
-Date:   Wed, 03 Feb 2021 15:42:02 +0530
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210203110522.12f2b326@xps13>
-References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org> <20210201151824.5a9dca4a@xps13> <20210202041614.GA840@work> <20210202091459.0c41a769@xps13> <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org> <20210203110522.12f2b326@xps13>
+        Wed, 3 Feb 2021 04:56:45 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210203095602epoutp04fcd50a985466392e991096afcdae3a80~gNErc5Afq0225802258epoutp04n
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 09:56:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210203095602epoutp04fcd50a985466392e991096afcdae3a80~gNErc5Afq0225802258epoutp04n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612346162;
+        bh=5txFI09a+8AU1fdzCnILiMFbp7szUbOK8oquhsvC3OM=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Ss7fjcnLgTMaiJyV2AiE0USOzmBYHvxW8mDxHJPhmW2MkXgEojoOibAYGZo1JfciE
+         D1AIur95gjilSAcNRjuxU7WFjwQ1uPWybJ+/ffwKvlK4DTZZAldNbq8vf5biFIKN4B
+         keBqSfBELcDR832q1o6iRA0VSkmxGIvRCmL4tSew=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210203095602epcas1p2102350de75915bea06e28c4728c9f506~gNEq8meEX0793507935epcas1p2k;
+        Wed,  3 Feb 2021 09:56:02 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DVxrv1srGz4x9Q8; Wed,  3 Feb
+        2021 09:55:59 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F9.EA.09582.F237A106; Wed,  3 Feb 2021 18:55:59 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210203095558epcas1p30425a4bd729286df4c4528d9b64b07f9~gNEn11WBH2914529145epcas1p3b;
+        Wed,  3 Feb 2021 09:55:58 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210203095558epsmtrp1ad93217681cad635779eead8ea04d5ca~gNEn1B0MV1652916529epsmtrp1m;
+        Wed,  3 Feb 2021 09:55:58 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-0f-601a732f66aa
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        37.EF.08745.E237A106; Wed,  3 Feb 2021 18:55:58 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210203095558epsmtip1f9b28145a07028212dc84f1fd3748e9a~gNEnh0S2s1394313943epsmtip1U;
+        Wed,  3 Feb 2021 09:55:58 +0000 (GMT)
+Subject: Re: [PATCH v5 0/3] Add required-opps support to devfreq passive gov
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        "MyungJoo Ham )" <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <880f4827-3255-c860-7d9a-36477ff02db0@samsung.com>
+Date:   Wed, 3 Feb 2021 19:12:07 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is unavailable
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Message-ID: <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+In-Reply-To: <20210203092400.1791884-1-hsinyi@chromium.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmvq5+sVSCwf3bXBYTWrczW5xtesNu
+        cXnXHDaLz71HGC1uN65gs3jz4yyTxZnTl1gtug79ZbP4d20ji8XmB8fYHLg8ZjdcZPFYsKnU
+        Y9OqTjaPLVfbWTz6tqxi9Dh+YzuTx+dNcgHsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZm
+        Boa6hpYW5koKeYm5qbZKLj4Bum6ZOUDnKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
+        UnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM2a8/sFaME2jorX/InsDY7N8FyMnh4SAicSa
+        Ld3sXYxcHEICOxglDp7cxQThfGKU2PX8O5TzmVHi06YjrDAtzR0nWSESuxgl3jx/DuW8Z5R4
+        8aOfEaRKWMBH4uq5/2C2iECqxN7fq9lAipgFepkkJixoB0uwCWhJ7H9xgw3E5hdQlLj64zFY
+        nFfATuLFhr/sIDaLgIrEj46TLCC2qECYxMltLVA1ghInZz4BinNwcApYSzy+6wcSZhYQl7j1
+        ZD4ThC0vsf3tHGaQvRICRzgk+g90Qr3gIrFryXk2CFtY4tXxLewQtpTEy/42KLtaYuXJI2wQ
+        zR2MElv2X4BqNpbYv3QyE8hiZgFNifW79CHCihI7f89lhFjMJ/Huaw8rSImEAK9ER5sQRImy
+        xOUHd5kgbEmJxe2dbBMYlWYh+WYWkhdmIXlhFsKyBYwsqxjFUguKc9NTiw0LjJGjexMjOO1q
+        me9gnPb2g94hRiYOxkOMEhzMSiK8pyaJJQjxpiRWVqUW5ccXleakFh9iNAWG70RmKdHkfGDi
+        zyuJNzQ1MjY2tjAxNDM1NFQS500yeBAvJJCeWJKanZpakFoE08fEwSnVwHS70jLxvdDWv90R
+        S9uZjJZMlztlcSJ74p6q56xTX0ouC/+5MpNZtoXtsO1FHfutjzJn3bo7a81k3TA5vUum6W7z
+        2pd8NfrDEfJn7YeV95olyxI4xPj+XRD8u9pXQC7u0Q2u1eoLz9mZOce1zowK3hi4I0D26a7E
+        nVOfLTyZo2Ny4XSpOk9qzauvekd/OFrPczH4mVqaxxzXO/XIN+8vPV65vbryH9KnfrSYvvVm
+        7/b7PR8qOe1+xf21dLdWPXtM788GZ68deh2HFLv0HbYHPc79cztJer3Iq3f1x0plF7BturN8
+        cTib56pHHL+/P1tbVFsrcTD68f9Hj19c391xv+xeWOtNg9cBTDYr5iovErmnxFKckWioxVxU
+        nAgAZbjZN0QEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsWy7bCSnK5esVSCwe9NWhYTWrczW5xtesNu
+        cXnXHDaLz71HGC1uN65gs3jz4yyTxZnTl1gtug79ZbP4d20ji8XmB8fYHLg8ZjdcZPFYsKnU
+        Y9OqTjaPLVfbWTz6tqxi9Dh+YzuTx+dNcgHsUVw2Kak5mWWpRfp2CVwZM17/YC2YplHR2n+R
+        vYGxWb6LkZNDQsBEornjJGsXIxeHkMAORonT8xtYIRKSEtMuHmXuYuQAsoUlDh8uhqh5yyjR
+        93w+M0iNsICPxNVz/xlBbBGBVImJzd1sIEXMAv1MEr/mLGOB6OhjlLjyuJEFpIpNQEti/4sb
+        bCA2v4CixNUfj8G6eQXsJF5s+MsOYrMIqEj86DgJVi8qECaxc8ljJogaQYmTM5+wgFzEKWAt
+        8fiuH0iYWUBd4s+8S8wQtrjErSfzmSBseYntb+cwT2AUnoWkexaSlllIWmYhaVnAyLKKUTK1
+        oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4/rS0djDuWfVB7xAjEwfjIUYJDmYlEd5Tk8QS
+        hHhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamCyiWaK2Z7Q
+        qWc35fjBLWGbL8x6u/9tlIzmFrmej1Pz9wm7X0/a+V7l3A7DQ0tF382V4Ki9Ismw/WFFfMgJ
+        uYd6To/12Mz5jLpsXZze+XDEOh23fr9B+LlztfxEiQLXBStzxHYe6dz90pxNK3P6qttMKVHl
+        Z163bYjxLFq0qkg6fu2SeKv/YjZrUu7fio8+XBpU/4znt5XS6Zvfd+3ce0PNperunCsTe/gt
+        v2jrCYmnen3c+vrC29/PxDY9ertC7Z/PlyYp63unjzY96XiwSK9j9bzi56f8Nu74betYOKPj
+        /gulBY+CdJ59mmV3OGjZ7qer3zHptD7n/67Cqf5rhoanmMHH0kzR2dfmcGUXPGAPUGIpzkg0
+        1GIuKk4EAH94ye0uAwAA
+X-CMS-MailID: 20210203095558epcas1p30425a4bd729286df4c4528d9b64b07f9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210203092602epcas1p1550c96a2ed1b0b6d0a0f9f750cb76e45
+References: <CGME20210203092602epcas1p1550c96a2ed1b0b6d0a0f9f750cb76e45@epcas1p1.samsung.com>
+        <20210203092400.1791884-1-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,=20
+Hi Hsin-Yi,
 
-On 3 February 2021 3:35:22 PM IST, Miquel Raynal <miquel=2Eraynal@bootlin=
-=2Ecom> wrote:
->Hi Manivannan,
->
->Manivannan Sadhasivam <manivannan=2Esadhasivam@linaro=2Eorg> wrote on Wed=
-,
->03 Feb 2021 15:28:20 +0530:
->
->> Hi Miquel,=20
->>=20
->> On 2 February 2021 1:44:59 PM IST, Miquel Raynal
-><miquel=2Eraynal@bootlin=2Ecom> wrote:
->> >Hi Manivannan,
->> >
->> >Manivannan Sadhasivam <manivannan=2Esadhasivam@linaro=2Eorg> wrote on
->Tue,
->> >2 Feb 2021 09:46:14 +0530:
->> > =20
->> >> Hi,
->> >>=20
->> >> On Mon, Feb 01, 2021 at 03:18:24PM +0100, Miquel Raynal wrote: =20
->> >> > Hi Manivannan,
->> >> >=20
->> >> > Manivannan Sadhasivam <manivannan=2Esadhasivam@linaro=2Eorg> wrote
->on =20
->> >Sat, =20
->> >> > 30 Jan 2021 09:24:12 +0530:
->> >> >    =20
->> >> > > The bbt pointer will be unavailable when NAND_SKIP_BBTSCAN
->option =20
->> >is =20
->> >> > > set for a NAND chip=2E The intention is to skip scanning for the
->=20
->> >bad =20
->> >> > > blocks during boot time=2E   =20
->> >> >=20
->> >> > I don't have the same understanding: this flag skips the bad
->block
->> >> > table scan, not the bad block scan=2E We do want to scan all the =
-=20
->> >devices =20
->> >> > in order to construct a RAM based table=2E
->> >> >    =20
->> >> > > However, the MTD core will call
->> >> > > _block_isreserved() and _block_isbad() callbacks
->unconditionally =20
->> >for =20
->> >> > > the rawnand devices due to the callbacks always present while=20
->
->> >collecting =20
->> >> > > the ecc stats=2E
->> >> > >=20
->> >> > > The _block_isreserved() callback for rawnand will bail out if
->bbt
->> >> > > pointer is not available=2E But _block_isbad() will continue =20
->> >without =20
->> >> > > checking for it=2E So this contradicts with the
->NAND_SKIP_BBTSCAN =20
->> >option =20
->> >> > > since the bad block check will happen anyways (ie=2E, not much =
-=20
->> >difference =20
->> >> > > between scanning for bad blocks and checking each block for
->bad =20
->> >ones)=2E =20
->> >> > >=20
->> >> > > Hence, do not check for the bad block if bbt pointer is =20
->> >unavailable=2E   =20
->> >> >=20
->> >> > Not checking for bad blocks at all feels insane=2E I don't really
->get =20
->> >the =20
->> >> > scope and goal of such change?
->> >> >    =20
->> >>=20
->> >> The issue I encountered is, on the Telit FN980 device one of the
->> >> partition seems to be protected=2E So trying to read the bad blocks
->in
->> >> that partition makes the device to reboot during boot=2E =20
->> >
->> >o_O
->> >
->> >Reading a protected block makes the device to reboot?
->> >
->> >What is the exact device? Can you share the datasheet? Is this
->behavior
->> >expected? Because it seems really broken to me, a read should not
->> >trigger *anything* that bad=2E
->> > =20
->>=20
->> I got more information from the vendor, Telit=2E The access to the 3rd
->partition is protected by Trustzone and any access in non privileged
->mode (where Linux kernel runs) causes kernel panic and the device
->reboots=2E=20
->
->Ok, so this is not a chip feature but more a host constraint=2E
->
->In this case it would be a good idea to add a host DT property which
->describes the zone to avoid accessing it=2E Something like:
->
->	secure-area/secure-section =3D <start length>;
->
->From the core perspective, we should parse this property early enough
->and return -EIO when trying to access this area=2E
->
->Does this solution sound reasonable to you?
->
+Thanks for the patch. I already reviewed this patch.
+But, I'll check these again and test it. 
 
-This sounds good to me=2E I'll give it a go and share the patch soon=2E=20
+On 2/3/21 6:23 PM, Hsin-Yi Wang wrote:
+> The devfreq passive governor scales the frequency of a "child" device based
+> on the current frequency of a "parent" device (not parent/child in the
+> sense of device hierarchy). As of today, the passive governor requires one
+> of the following to work correctly:
+> 1. The parent and child device have the same number of frequencies
+> 2. The child device driver passes a mapping function to translate from
+>    parent frequency to child frequency.
+> 
+> When (1) is not true, (2) is the only option right now. But often times,
+> all that is required is a simple mapping from parent's frequency to child's
+> frequency.
+> 
+> Since OPPs already support pointing to other "required-opps", add support
+> for using that to map from parent device frequency to child device
+> frequency. That way, every child device driver doesn't have to implement a
+> separate mapping function anytime (1) isn't true.
+> 
+> Some common (but not comprehensive) reason for needing a devfreq passive
+> governor to adjust the frequency of one device based on another are:
+> 
+> 1. These were the combination of frequencies that were validated/screened
+>    during the manufacturing process.
+> 2. These are the sensible performance combinations between two devices
+>    interacting with each other. So that when one runs fast the other
+>    doesn't become the bottleneck.
+> 3. Hardware bugs requiring some kind of frequency ratio between devices.
+> 
+> For example, the following mapping can't be captured in DT as it stands
+> today because the parent and child device have different number of OPPs.
+> But with this patch series, this mapping can be captured cleanly.
+> 
+> In arch/arm64/boot/dts/exynos/exynos5433-bus.dtsi you have something
+> like this with the following changes:
+> 
+> 	bus_g2d_400: bus0 {
+> 		compatible = "samsung,exynos-bus";
+> 		clocks = <&cmu_top CLK_ACLK_G2D_400>;
+> 		clock-names = "bus";
+> 		operating-points-v2 = <&bus_g2d_400_opp_table>;
+> 		status = "disabled";
+> 	};
+> 
+> 	bus_noc2: bus9 {
+> 		compatible = "samsung,exynos-bus";
+> 		clocks = <&cmu_mif CLK_ACLK_BUS2_400>;
+> 		clock-names = "bus";
+> 		operating-points-v2 = <&bus_noc2_opp_table>;
+> 		status = "disabled";
+> 	};
+> 
+> 	bus_g2d_400_opp_table: opp_table2 {
+> 		compatible = "operating-points-v2";
+> 		opp-shared;
+> 
+> 		opp-400000000 {
+> 			opp-hz = /bits/ 64 <400000000>;
+> 			opp-microvolt = <1075000>;
+> 			required-opps = <&noc2_400>;
+> 		};
+> 		opp-267000000 {
+> 			opp-hz = /bits/ 64 <267000000>;
+> 			opp-microvolt = <1000000>;
+> 			required-opps = <&noc2_200>;
+> 		};
+> 		opp-200000000 {
+> 			opp-hz = /bits/ 64 <200000000>;
+> 			opp-microvolt = <975000>;
+> 			required-opps = <&noc2_200>;
+> 		};
+> 		opp-160000000 {
+> 			opp-hz = /bits/ 64 <160000000>;
+> 			opp-microvolt = <962500>;
+> 			required-opps = <&noc2_134>;
+> 		};
+> 		opp-134000000 {
+> 			opp-hz = /bits/ 64 <134000000>;
+> 			opp-microvolt = <950000>;
+> 			required-opps = <&noc2_134>;
+> 		};
+> 		opp-100000000 {
+> 			opp-hz = /bits/ 64 <100000000>;
+> 			opp-microvolt = <937500>;
+> 			required-opps = <&noc2_100>;
+> 		};
+> 	};
+> 
+> 	bus_noc2_opp_table: opp_table6 {
+> 		compatible = "operating-points-v2";
+> 
+> 		noc2_400: opp-400000000 {
+> 			opp-hz = /bits/ 64 <400000000>;
+> 		};
+> 		noc2_200: opp-200000000 {
+> 			opp-hz = /bits/ 64 <200000000>;
+> 		};
+> 		noc2_134: opp-134000000 {
+> 			opp-hz = /bits/ 64 <134000000>;
+> 		};
+> 		noc2_100: opp-100000000 {
+> 			opp-hz = /bits/ 64 <100000000>;
+> 		};
+> 	};
+> 
+> -Saravana
+> 
+> v4 -> v5:
+> - drop patch "OPP: Improve required-opps linking" and rebase to 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
+> - Compare pointers in dev_pm_opp_xlate_required_opp().
+> 
+> v3 -> v4:
+> - Fixed documentation comments
+> - Fixed order of functions in .h file
+> - Renamed the new xlate API
+> - Caused _set_required_opps() to fail if all required opps tables aren't
+>   linked.
+> v2 -> v3:
+> - Rebased onto linux-next.
+> - Added documentation comment for new fields.
+> - Added support for lazy required-opps linking.
+> - Updated Ack/Reviewed-bys.
+> v1 -> v2:
+> - Cached OPP table reference in devfreq to avoid looking up every time.
+> - Renamed variable in passive governor to be more intuitive.
+> - Updated cover letter with examples.
+> 
+> Saravana Kannan (3):
+>   OPP: Add function to look up required OPP's for a given OPP
+>   PM / devfreq: Cache OPP table reference in devfreq
+>   PM / devfreq: Add required OPPs support to passive governor
+> 
+>  drivers/devfreq/devfreq.c          |  6 ++++
+>  drivers/devfreq/governor_passive.c | 20 ++++++++---
+>  drivers/opp/core.c                 | 58 ++++++++++++++++++++++++++++++
+>  include/linux/devfreq.h            |  2 ++
+>  include/linux/pm_opp.h             | 11 ++++++
+>  5 files changed, 92 insertions(+), 5 deletions(-)
+> 
 
-Thanks,=20
-Mani
 
->Thanks,
->Miqu=C3=A8l
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
