@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502C530E570
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF8330E55D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhBCWAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:00:32 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:60294 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232676AbhBCV71 (ORCPT
+        id S232552AbhBCV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:59:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232249AbhBCV7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:59:27 -0500
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 88665404A2;
-        Wed,  3 Feb 2021 21:58:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1612389507; bh=RPtJq9pnB6c2RL81eMcBv6mkc0ffZocP1N1iwYCqspQ=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=kX3rv6W8jpQMgcUnj1fJtWr7khaXJiGnxuK/XNzQky87qosdjILdZuuZzX2XWHG49
-         z9PUg2lReIHRlQTsJECetpah4VOdnKmzou+QHvpVDANsX2K5o+1cXn+aNJpF6cTMYj
-         3F0sAvlm3+DFitGo1bP/oFAfj73yFKgJPW0yd+JBLqhgF3j4+Xz8R5dgdDEs0vqR29
-         FU2gVJG1UbhlKiUFgcDrQACvUSF7z4D/ohk3ll+HdlyNeOqiHGooaa/9zKJc/nvKOc
-         IBPrUO7Pd6+KVI3K9c1Ys2h30kTXv4ji0TjXAK7jwWRijewCdUxm3EpMthno/FEzVj
-         ZyheGfgmaZbew==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 60E24A024B;
-        Wed,  3 Feb 2021 21:58:26 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Subject: [PATCH v4 15/15] dmaengine: dw-edma: Add pcim_iomap_table return checker
-Date:   Wed,  3 Feb 2021 22:58:06 +0100
-Message-Id: <ceb5eb396e417f9e45d39fd5ef565ba77aae6a63.1612389406.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1612389406.git.gustavo.pimentel@synopsys.com>
-References: <cover.1612389406.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1612389406.git.gustavo.pimentel@synopsys.com>
-References: <cover.1612389406.git.gustavo.pimentel@synopsys.com>
+        Wed, 3 Feb 2021 16:59:12 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00032C061786
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 13:58:31 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w18so707543pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 13:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:to:date:message-id:user-agent;
+        bh=NZyBJaM1wJYJrM3N9nWdphIUZzNaZF7K0cw+Alsw60s=;
+        b=YuOUTknzG6QCCWY+6/9xwyK6R03ljdXy/eo0oFI/N+6GwosnDa5CyqQSfRHomVRq5Y
+         /QU7kuuwvyKHdo8lw5/0kfKeynARxii+bcfHMWHLjs9pAUBAC1hEJdjvZFQ4lTU08YcK
+         JPPSVfydjzgAxHpwSzs/Slc3zbOWlaxSXZv/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:to:date:message-id:user-agent;
+        bh=NZyBJaM1wJYJrM3N9nWdphIUZzNaZF7K0cw+Alsw60s=;
+        b=s7H32sW6z3zEhs55qoPaqiQi5zd+UN0qwac9l/udWRLJ2qbaFw46DiSB0FWs6yWex6
+         Myg7dA6kSXSZMG8E3v8f+eo5GpEZnC3d29U1Q1j5w3/2PB4XcR0lR9/64q1DVV1Nkzwo
+         vR79umex/KorI+9LDtTp7BoR9e8uzCu/Z+14OFXOj/KefHLljZiigwLC20hzaAiC2YZm
+         khGLLJjMOJiNork0iwO7sluL748IFsEq4RnuENrxmTbQqyJqZK5lk3HYvUSfzcqUrkLm
+         Facap87RpHVDfATwd/DstrK9WgxBp5k+6BFBPtPu9Vk6ghKmQowyZqyg2GfX/IZs5vuT
+         w5jw==
+X-Gm-Message-State: AOAM531pkGxfQGnMDxOHXBfgHzEH1qt8+rYI278T/q+l87GrXH5oT1Fk
+        2FvrDpPl0AS1Gw5wFsRCbv12h7vB3kW6Lg==
+X-Google-Smtp-Source: ABdhPJzk7PmvKQQrV2P9s6wrj8xy2r8VnWspZmZ4jUzlRnhKwjl19rpVf2Q70wAcSJtijokb8iTr1w==
+X-Received: by 2002:a65:6207:: with SMTP id d7mr6025724pgv.92.1612389511562;
+        Wed, 03 Feb 2021 13:58:31 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3571:bd6e:ee19:b59f])
+        by smtp.gmail.com with ESMTPSA id o20sm3953813pgn.6.2021.02.03.13.58.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 13:58:30 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAF6AEGvTrfYYTfReGbAm9zcBNhjZvX0tko4kZUeQcyNZv4cM6w@mail.gmail.com>
+References: <20210125234901.2730699-1-swboyd@chromium.org> <YBlz8Go2DseRWuOa@phenom.ffwll.local> <CAF6AEGuWhGuzxsBquj-WLSwa83r+zO7jAQ9ten2m+2KtoGpYSw@mail.gmail.com> <YBp2h2cVXrF6lBno@phenom.ffwll.local> <CAF6AEGvTrfYYTfReGbAm9zcBNhjZvX0tko4kZUeQcyNZv4cM6w@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Date:   Wed, 03 Feb 2021 13:58:28 -0800
+Message-ID: <161238950899.76967.16385691346035591773@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Detected by CoverityScan CID 16555 ("Dereference null return")
+Quoting Rob Clark (2021-02-03 09:29:09)
+> On Wed, Feb 3, 2021 at 2:10 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Tue, Feb 02, 2021 at 08:51:25AM -0800, Rob Clark wrote:
+> > > On Tue, Feb 2, 2021 at 7:46 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Mon, Jan 25, 2021 at 03:49:01PM -0800, Stephen Boyd wrote:
+> > > > > This is because lockdep thinks all the locks taken in lock_crtcs(=
+) are
+> > > > > the same lock, when they actually aren't. That's because we call
+> > > > > mutex_init() in msm_kms_init() and that assigns on static key for=
+ every
+> > > > > lock initialized in this loop. Let's allocate a dynamic number of
+> > > > > lock_class_keys and assign them to each lock so that lockdep can =
+figure
+> > > > > out an AA deadlock isn't possible here.
+> > > > >
+> > > > > Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver w=
+ith async layer updates")
+> > > > > Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+> > > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > >
+> > > > This smells like throwing more bad after initial bad code ...
+> > > >
+> > > > First a rant: https://blog.ffwll.ch/2020/08/lockdep-false-positives=
+.html
+> >
+> > Some technical on the patch itself: I think you want
+> > mutex_lock_nested(crtc->lock, drm_crtc_index(crtc)), not your own locki=
+ng
+> > classes hand-rolled. It's defacto the same, but much more obviously
+> > correct since self-documenting.
+>=20
+> hmm, yeah, that is a bit cleaner.. but this patch is already on
+> msm-next, maybe I'll add a patch on top to change it
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- drivers/dma/dw-edma/dw-edma-pcie.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
-index 686b4ff..7445033 100644
---- a/drivers/dma/dw-edma/dw-edma-pcie.c
-+++ b/drivers/dma/dw-edma/dw-edma-pcie.c
-@@ -238,6 +238,9 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 	dw->rd_ch_cnt = vsec_data.rd_ch_cnt;
- 
- 	dw->rg_region.vaddr = pcim_iomap_table(pdev)[vsec_data.rg.bar];
-+	if (!dw->rg_region.vaddr)
-+		return -ENOMEM;
-+
- 	dw->rg_region.vaddr += vsec_data.rg.off;
- 	dw->rg_region.paddr = pdev->resource[vsec_data.rg.bar].start;
- 	dw->rg_region.paddr += vsec_data.rg.off;
-@@ -250,12 +253,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 		struct dw_edma_block *dt_block = &vsec_data.dt_wr[i];
- 
- 		ll_region->vaddr = pcim_iomap_table(pdev)[ll_block->bar];
-+		if (!ll_region->vaddr)
-+			return -ENOMEM;
-+
- 		ll_region->vaddr += ll_block->off;
- 		ll_region->paddr = pdev->resource[ll_block->bar].start;
- 		ll_region->paddr += ll_block->off;
- 		ll_region->sz = ll_block->sz;
- 
- 		dt_region->vaddr = pcim_iomap_table(pdev)[dt_block->bar];
-+		if (!dt_region->vaddr)
-+			return -ENOMEM;
-+
- 		dt_region->vaddr += dt_block->off;
- 		dt_region->paddr = pdev->resource[dt_block->bar].start;
- 		dt_region->paddr += dt_block->off;
-@@ -269,12 +278,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 		struct dw_edma_block *dt_block = &vsec_data.dt_rd[i];
- 
- 		ll_region->vaddr = pcim_iomap_table(pdev)[ll_block->bar];
-+		if (!ll_region->vaddr)
-+			return -ENOMEM;
-+
- 		ll_region->vaddr += ll_block->off;
- 		ll_region->paddr = pdev->resource[ll_block->bar].start;
- 		ll_region->paddr += ll_block->off;
- 		ll_region->sz = ll_block->sz;
- 
- 		dt_region->vaddr = pcim_iomap_table(pdev)[dt_block->bar];
-+		if (!dt_region->vaddr)
-+			return -ENOMEM;
-+
- 		dt_region->vaddr += dt_block->off;
- 		dt_region->paddr = pdev->resource[dt_block->bar].start;
- 		dt_region->paddr += dt_block->off;
--- 
-2.7.4
-
+How many CRTCs are there? The subclass number tops out at 8, per
+MAX_LOCKDEP_SUBCLASSES so if we have more than that many bits possible
+then it will fail.
