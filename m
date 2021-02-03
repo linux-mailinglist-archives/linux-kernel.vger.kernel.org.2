@@ -2,300 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB8D30E195
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F402130E1CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhBCR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:58:14 -0500
-Received: from mail.efficios.com ([167.114.26.124]:57748 "EHLO
+        id S232587AbhBCSDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:03:40 -0500
+Received: from mail.efficios.com ([167.114.26.124]:57972 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhBCR6K (ORCPT
+        with ESMTP id S232425AbhBCR62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:58:10 -0500
+        Wed, 3 Feb 2021 12:58:28 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EAD922E1B81;
-        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+        by mail.efficios.com (Postfix) with ESMTP id CA6822E156D;
+        Wed,  3 Feb 2021 12:57:46 -0500 (EST)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Laf33Bz6ph5V; Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+        with ESMTP id cz6j4qh-4907; Wed,  3 Feb 2021 12:57:46 -0500 (EST)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3A8F32E1B08;
-        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3A8F32E1B08
+        by mail.efficios.com (Postfix) with ESMTP id 735CC2E16F5;
+        Wed,  3 Feb 2021 12:57:46 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 735CC2E16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1612375045;
-        bh=+Qap7N2Y/QmVqgqw+bVa1bnoy5TmfjVjhj7na064KEk=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=dOFQGDDKyyE2kjOazY1VDl/JsFGLVRbVBZVoCesYWWf2WNd8aqI3/z32qGsvFO/dK
-         YYIJTVzftkNRZMfQ6Jzaj9Woc9pr7HBCt3n4x7PO1+bQmuhile/fCdlUE0JqRMQAoB
-         vF50DRX+wvWaIrU2/mTrdEnFZOU+GlVyADVPW6CacmpKvL76gDh78fbq6OF7tr7QEq
-         HHTTeNOCatEYjuVJO2m2PHGzyYW6BWDfOeJmn2UuujkISHCzouk79FPheykY5Liv5P
-         E783dsRkSk7uhKiluz2e77C7lhpi4ZqFATE0SSJ+PZTf29SjyUDTVnVyLmQeuG5IQ2
-         8KVPBt6BNyDOQ==
+        s=default; t=1612375066;
+        bh=eBUJaqfV2UW2Ob4Bvu50jTCHuc1hDcJt6nquQMk4gEw=;
+        h=From:To:Date:Message-Id:MIME-Version;
+        b=OG9vfN0HpNb1IAese6IM0ipEH0T6p3B5vKPd1Whz5zLuSVrfXtt0KBhmiymNEXV6E
+         +f2AQpo/gQ94RogzW3VawMYcItWOTqSFgtp5F8D3D8DxnebRKI+5j2Qvf3fnhNa8/P
+         hqhvVOCocBRCqfY2aBDodEkdLdbcfh4XhJNv6wrukT6gcbu/B8KCcBLJUMSz432FlX
+         Ph8eSQC2+B3ZJ5cjbPoihrfSFVc8UUZ7LFCoLUqOXgrUB5uLhZLdrP82JDiZSbYBdd
+         0wX9y9gjanr6H+kyUS+2CFbjvIN0ZG0k5b5fwG6nofolfOb2/xLBs7bnBi7R0dVW03
+         Dq/uP9cTlhoTA==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JOJTxMAyXdTv; Wed,  3 Feb 2021 12:57:25 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 0FFD42E1959;
-        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
-Date:   Wed, 3 Feb 2021 12:57:24 -0500 (EST)
+        with ESMTP id qRiv_J2Rp7hO; Wed,  3 Feb 2021 12:57:46 -0500 (EST)
+Received: from thinkos.etherlink (unknown [192.222.236.144])
+        by mail.efficios.com (Postfix) with ESMTPSA id 50E4E2E167B;
+        Wed,  3 Feb 2021 12:57:46 -0500 (EST)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Message-ID: <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
+To:     rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH 1/1] tracepoint: cleanup: do not fail unregistration
+Date:   Wed,  3 Feb 2021 12:57:41 -0500
+Message-Id: <20210203175741.20665-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210203160550.710877069@goodmis.org>
-References: <20210203160517.982448432@goodmis.org> <20210203160550.710877069@goodmis.org>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
+References: <20210203160550.710877069@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3996)
-Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory failure
-Thread-Index: GtmxsYito0gcoBg/ByOH+HQKBrh4xA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch is only compile-tested.
 
-
------ On Feb 3, 2021, at 11:05 AM, rostedt rostedt@goodmis.org wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> The list of tracepoint callbacks is managed by an array that is protected
-> by RCU. To update this array, a new array is allocated, the updates are
-> copied over to the new array, and then the list of functions for the
-> tracepoint is switched over to the new array. After a completion of an RCU
-> grace period, the old array is freed.
-> 
-> This process happens for both adding a callback as well as removing one.
-> But on removing a callback, if the new array fails to be allocated, the
-> callback is not removed, and may be used after it is freed by the clients
-> of the tracepoint.
-> 
-> There's really no reason to fail if the allocation for a new array fails
-> when removing a function. Instead, the function can simply be replaced by a
-> stub function that could be cleaned up on the next modification of the
-> array. That is, instead of calling the function registered to the
-> tracepoint, it would call a stub function in its place.
-> 
-> Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-> Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
-> Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
-> Link: https://lkml.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
-> 
-> [ Note, this version does use undefined compiler behavior (assuming that
->  a stub function with no parameters or return, can be called by a location
->  that thinks it has parameters but still no return value. Static calls
->  do the same thing, so this trick is not without precedent.
-> 
->  There's another solution that uses RCU tricks and is more complex, but
->  can be an alternative if this solution becomes an issue.
-> 
->  Link: https://lore.kernel.org/lkml/20210127170721.58bce7cc@gandalf.local.home/
-> ]
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@chromium.org>
-> Cc: netdev <netdev@vger.kernel.org>
-> Cc: bpf <bpf@vger.kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-> Reported-by: Matt Mullins <mmullins@mmlx.us>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Tested-by: Matt Mullins <mmullins@mmlx.us>
-> ---
-> kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
-> 1 file changed, 64 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 7261fa0f5e3c..e8f20ae29c18 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -53,6 +53,12 @@ struct tp_probes {
-> 	struct tracepoint_func probes[];
-> };
-> 
-> +/* Called in removal of a func but failed to allocate a new tp_funcs */
-> +static void tp_stub_func(void)
-> +{
-> +	return;
-> +}
-> +
-> static inline void *allocate_probes(int count)
-> {
-> 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-> @@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct
-> tracepoint_func *tp_func,
-> {
-> 	struct tracepoint_func *old, *new;
-> 	int nr_probes = 0;
-> +	int stub_funcs = 0;
-> 	int pos = -1;
-> 
-> 	if (WARN_ON(!tp_func->func))
-> @@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct
-> tracepoint_func *tp_func,
-> 			if (old[nr_probes].func == tp_func->func &&
-> 			    old[nr_probes].data == tp_func->data)
-> 				return ERR_PTR(-EEXIST);
-> +			if (old[nr_probes].func == tp_stub_func)
-> +				stub_funcs++;
-> 		}
-> 	}
-> -	/* + 2 : one for new probe, one for NULL func */
-> -	new = allocate_probes(nr_probes + 2);
-> +	/* + 2 : one for new probe, one for NULL func - stub functions */
-> +	new = allocate_probes(nr_probes + 2 - stub_funcs);
-> 	if (new == NULL)
-> 		return ERR_PTR(-ENOMEM);
-> 	if (old) {
-> -		if (pos < 0) {
-> +		if (stub_funcs) {
-
-Considering that we end up implementing a case where we carefully copy over
-each item, I recommend we replace the two "memcpy" branches by a single item-wise
-implementation. It's a slow-path anyway, and reducing the overall complexity
-is a benefit for slow paths. Fewer bugs, less code to review, and it's easier to
-reach a decent testing state-space coverage.
-
-> +			/* Need to copy one at a time to remove stubs */
-> +			int probes = 0;
-> +
-> +			pos = -1;
-> +			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> +				if (old[nr_probes].func == tp_stub_func)
-> +					continue;
-> +				if (pos < 0 && old[nr_probes].prio < prio)
-> +					pos = probes++;
-> +				new[probes++] = old[nr_probes];
-> +			}
-> +			nr_probes = probes;
-
-Repurposing "nr_probes" from accounting for the number of items in the old
-array to counting the number of items in the new array in the middle of the
-function is confusing.
-
-> +			if (pos < 0)
-> +				pos = probes;
-> +			else
-> +				nr_probes--; /* Account for insertion */
-
-This is probably why you need to play tricks with nr_probes here.
-
-> +		} else if (pos < 0) {
-> 			pos = nr_probes;
-> 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
-> 		} else {
-> @@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
-> 	/* (N -> M), (N > 1, M >= 0) probes */
-> 	if (tp_func->func) {
-> 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> -			if (old[nr_probes].func == tp_func->func &&
-> -			     old[nr_probes].data == tp_func->data)
-> +			if ((old[nr_probes].func == tp_func->func &&
-> +			     old[nr_probes].data == tp_func->data) ||
-> +			    old[nr_probes].func == tp_stub_func)
-> 				nr_del++;
-> 		}
-> 	}
-> @@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
-> 		/* N -> M, (N > 1, M > 0) */
-> 		/* + 1 for NULL */
-> 		new = allocate_probes(nr_probes - nr_del + 1);
-> -		if (new == NULL)
-> -			return ERR_PTR(-ENOMEM);
-> -		for (i = 0; old[i].func; i++)
-> -			if (old[i].func != tp_func->func
-> -					|| old[i].data != tp_func->data)
-> -				new[j++] = old[i];
-> -		new[nr_probes - nr_del].func = NULL;
-> -		*funcs = new;
-> +		if (new) {
-> +			for (i = 0; old[i].func; i++)
-> +				if ((old[i].func != tp_func->func
-> +				     || old[i].data != tp_func->data)
-> +				    && old[i].func != tp_stub_func)
-> +					new[j++] = old[i];
-> +			new[nr_probes - nr_del].func = NULL;
-> +			*funcs = new;
-> +		} else {
-> +			/*
-> +			 * Failed to allocate, replace the old function
-> +			 * with calls to tp_stub_func.
-> +			 */
-> +			for (i = 0; old[i].func; i++)
-> +				if (old[i].func == tp_func->func &&
-> +				    old[i].data == tp_func->data) {
-> +					old[i].func = tp_stub_func;
-
-This updates "func" while readers are loading it concurrently. I would recommend
-using WRITE_ONCE here paired with READ_ONCE within __traceiter_##_name.
-
-> +					/* Set the prio to the next event. */
-
-I don't get why the priority needs to be changed here. Could it simply stay
-at its original value ? It's already in the correct priority order anyway.
-
-> +					if (old[i + 1].func)
-> +						old[i].prio =
-> +							old[i + 1].prio;
-> +					else
-> +						old[i].prio = -1;
-> +				}
-> +			*funcs = old;
-
-I'm not sure what setting *funcs to old achieves ? Isn't it already pointing
-to old ?
-
-I'll send a patch which applies on top of yours implementing my recommendations.
-It shrinks the code complexity nicely:
-
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+---
  include/linux/tracepoint.h |  2 +-
  kernel/tracepoint.c        | 80 +++++++++++++-------------------------
  2 files changed, 28 insertions(+), 54 deletions(-)
 
-Thanks,
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 0f21617f1a66..fae8d6d9588c 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -308,7 +308,7 @@ static inline struct tracepoint *tracepoint_ptr_deref=
+(tracepoint_ptr_t *p)
+ 		it_func_ptr =3D						\
+ 			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
+ 		do {							\
+-			it_func =3D (it_func_ptr)->func;			\
++			it_func =3D READ_ONCE((it_func_ptr)->func);	\
+ 			__data =3D (it_func_ptr)->data;			\
+ 			((void(*)(void *, proto))(it_func))(__data, args); \
+ 		} while ((++it_func_ptr)->func);			\
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 3e261482296c..b1bec710f68a 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -136,9 +136,10 @@ func_add(struct tracepoint_func **funcs, struct trac=
+epoint_func *tp_func,
+ 	 int prio)
+ {
+ 	struct tracepoint_func *old, *new;
+-	int nr_probes =3D 0;
+-	int stub_funcs =3D 0;
+-	int pos =3D -1;
++	int iter_probes =3D 0;	/* Iterate over old probe array. */
++	int nr_old_probes =3D 0;	/* Count non-stub functions in old. */
++	int nr_new_probes =3D 0;	/* Count functions in new. */
++	int pos =3D -1;		/* Insert position in new. */
+=20
+ 	if (WARN_ON(!tp_func->func))
+ 		return ERR_PTR(-EINVAL);
+@@ -147,54 +148,34 @@ func_add(struct tracepoint_func **funcs, struct tra=
+cepoint_func *tp_func,
+ 	old =3D *funcs;
+ 	if (old) {
+ 		/* (N -> N+1), (N !=3D 0, 1) probes */
+-		for (nr_probes =3D 0; old[nr_probes].func; nr_probes++) {
+-			/* Insert before probes of lower priority */
+-			if (pos < 0 && old[nr_probes].prio < prio)
+-				pos =3D nr_probes;
+-			if (old[nr_probes].func =3D=3D tp_func->func &&
+-			    old[nr_probes].data =3D=3D tp_func->data)
++		for (iter_probes =3D 0; old[iter_probes].func; iter_probes++) {
++			if (old[iter_probes].func =3D=3D tp_stub_func)
++				continue;	/* Skip stub functions. */
++			if (old[iter_probes].func =3D=3D tp_func->func &&
++			    old[iter_probes].data =3D=3D tp_func->data)
+ 				return ERR_PTR(-EEXIST);
+-			if (old[nr_probes].func =3D=3D tp_stub_func)
+-				stub_funcs++;
++			/* Insert before probes of lower priority */
++			if (pos < 0 && old[iter_probes].prio < prio)
++				pos =3D nr_old_probes;
++			nr_old_probes++;
+ 		}
+ 	}
+-	/* + 2 : one for new probe, one for NULL func - stub functions */
+-	new =3D allocate_probes(nr_probes + 2 - stub_funcs);
++	/* + 2 : one for new probe, one for NULL func */
++	new =3D allocate_probes(nr_old_probes + 2);
+ 	if (new =3D=3D NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 	if (old) {
+-		if (stub_funcs) {
+-			/* Need to copy one at a time to remove stubs */
+-			int probes =3D 0;
+-
+-			pos =3D -1;
+-			for (nr_probes =3D 0; old[nr_probes].func; nr_probes++) {
+-				if (old[nr_probes].func =3D=3D tp_stub_func)
+-					continue;
+-				if (pos < 0 && old[nr_probes].prio < prio)
+-					pos =3D probes++;
+-				new[probes++] =3D old[nr_probes];
+-			}
+-			nr_probes =3D probes;
+-			if (pos < 0)
+-				pos =3D probes;
+-			else
+-				nr_probes--; /* Account for insertion */
+-
+-		} else if (pos < 0) {
+-			pos =3D nr_probes;
+-			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
+-		} else {
+-			/* Copy higher priority probes ahead of the new probe */
+-			memcpy(new, old, pos * sizeof(struct tracepoint_func));
+-			/* Copy the rest after it. */
+-			memcpy(new + pos + 1, old + pos,
+-			       (nr_probes - pos) * sizeof(struct tracepoint_func));
++		for (iter_probes =3D 0; old[iter_probes].func; iter_probes++) {
++			if (old[iter_probes].func =3D=3D tp_stub_func)
++				continue;		/* Skip stub functions. */
++			if (nr_new_probes !=3D pos)
++				new[nr_new_probes] =3D old[iter_probes];
++			nr_new_probes++;
+ 		}
+ 	} else
+ 		pos =3D 0;
+ 	new[pos] =3D *tp_func;
+-	new[nr_probes + 1].func =3D NULL;
++	new[nr_new_probes + 1].func =3D NULL;
+ 	*funcs =3D new;
+ 	debug_print_probes(*funcs);
+ 	return old;
+@@ -238,9 +219,9 @@ static void *func_remove(struct tracepoint_func **fun=
+cs,
+ 		new =3D allocate_probes(nr_probes - nr_del + 1);
+ 		if (new) {
+ 			for (i =3D 0; old[i].func; i++)
+-				if ((old[i].func !=3D tp_func->func
+-				     || old[i].data !=3D tp_func->data)
+-				    && old[i].func !=3D tp_stub_func)
++				if ((old[i].func !=3D tp_func->func ||
++				     old[i].data !=3D tp_func->data) &&
++				    old[i].func !=3D tp_stub_func)
+ 					new[j++] =3D old[i];
+ 			new[nr_probes - nr_del].func =3D NULL;
+ 			*funcs =3D new;
+@@ -251,15 +232,8 @@ static void *func_remove(struct tracepoint_func **fu=
+ncs,
+ 			 */
+ 			for (i =3D 0; old[i].func; i++)
+ 				if (old[i].func =3D=3D tp_func->func &&
+-				    old[i].data =3D=3D tp_func->data) {
+-					old[i].func =3D tp_stub_func;
+-					/* Set the prio to the next event. */
+-					if (old[i + 1].func)
+-						old[i].prio =3D
+-							old[i + 1].prio;
+-					else
+-						old[i].prio =3D -1;
+-				}
++				    old[i].data =3D=3D tp_func->data)
++					WRITE_ONCE(old[i].func, tp_stub_func);
+ 			*funcs =3D old;
+ 		}
+ 	}
+--=20
+2.20.1
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
