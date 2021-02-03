@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490A230E6EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB8B30E692
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbhBCXNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:13:23 -0500
-Received: from mga09.intel.com ([134.134.136.24]:18999 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233484AbhBCXAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:00:36 -0500
-IronPort-SDR: q6yeBnW0TVPKURu5OqXBYgoZuNibVud/LzKVInEW/Z6wnWphs31dtAqhwQRVGfFuJmjTb8i7Rj
- hEzG1TkIZpng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="181275677"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="181275677"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:59:43 -0800
-IronPort-SDR: HKyLgSeePrWa9UUvtrIEA/AJaKsT0VkROxeCWAPLsUYgTiJDmXCLhNurah2ITnFnhc+m8++NQH
- xpPyd3dLjJbg==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="392698034"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:59:42 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v19 7/7] x86/vdso: Insert endbr32/endbr64 to vDSO
-Date:   Wed,  3 Feb 2021 14:59:02 -0800
-Message-Id: <20210203225902.479-8-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210203225902.479-1-yu-cheng.yu@intel.com>
-References: <20210203225902.479-1-yu-cheng.yu@intel.com>
+        id S233112AbhBCXCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:02:53 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11023 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhBCXAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:00:44 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601b2af10000>; Wed, 03 Feb 2021 15:00:01 -0800
+Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
+ 2021 23:00:01 +0000
+Subject: Re: [PATCH 1/4] mm/gup: add compound page list iterator
+To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210203220025.8568-1-joao.m.martins@oracle.com>
+ <20210203220025.8568-2-joao.m.martins@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <955dbe68-7302-a8bc-f0b5-e9032d7f190e@nvidia.com>
+Date:   Wed, 3 Feb 2021 15:00:01 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210203220025.8568-2-joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612393201; bh=GuboAPGdFAJEcRrueyWlGFwtNTZuZ5B0TDKDNKYBHvU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=mQzhCI696vm94Sa3p78Z7Gskyb/1gBUUyHmSuvieget9Rc7vwBpU7w1r0NFB6C6VN
+         6aAvOwvLi6U22aNNpBQ7zdVKsYmFcFYFbiYYK2/d0hDMVNzD3HVapXC2aols9M9ZFx
+         FDC4YTZlnb+Up0ADqnFggTaVjcMnd4TldxjnKzsMmSXq8NpwDfX91XoGtosal3fcDy
+         7vQ1cQz5G25oUkJWRRln+qLOYfC0Ck4gG+5sitFYByg1lN4pdGGjfliZDvYdE7HECH
+         Sikh51jbn4HEimv2sbOTSpP+3ot5se9i9fck6gxuUyABSz+vAW1V5loRYOPukKIZEM
+         FsqxeTUionwTQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H.J. Lu" <hjl.tools@gmail.com>
+On 2/3/21 2:00 PM, Joao Martins wrote:
+> Add an helper that iterates over head pages in a list of pages. It
+> essentially counts the tails until the next page to process has a
+> different head that the current. This is going to be used by
+> unpin_user_pages() family of functions, to batch the head page refcount
+> updates once for all passed consecutive tail pages.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> ---
+>   mm/gup.c | 29 +++++++++++++++++++++++++++++
+>   1 file changed, 29 insertions(+)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index d68bcb482b11..4f88dcef39f2 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
+>   }
+>   EXPORT_SYMBOL(unpin_user_page);
+>   
+> +static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
 
-When Indirect Branch Tracking (IBT) is enabled, vDSO functions may be
-called indirectly, and must have ENDBR32 or ENDBR64 as the first
-instruction.  The compiler must support -fcf-protection=branch so that it
-can be used to compile vDSO.
+Silly naming nit: could we please name this function count_pagetails()? count_ntails
+is a bit redundant, plus slightly less clear.
 
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Acked-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/entry/vdso/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+> +{
+> +	struct page *head = compound_head(pages[0]);
+> +	unsigned int ntails;
+> +
+> +	for (ntails = 1; ntails < npages; ntails++) {
+> +		if (compound_head(pages[ntails]) != head)
+> +			break;
+> +	}
+> +
+> +	return ntails;
+> +}
+> +
+> +static inline void compound_next(unsigned long i, unsigned long npages,
+> +				 struct page **list, struct page **head,
+> +				 unsigned int *ntails)
+> +{
+> +	if (i >= npages)
+> +		return;
+> +
+> +	*ntails = count_ntails(list + i, npages - i);
+> +	*head = compound_head(list[i]);
+> +}
+> +
+> +#define for_each_compound_head(i, list, npages, head, ntails) \
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 02e3e42f380b..ff7b56feb5c3 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -93,6 +93,10 @@ endif
- 
- $(vobjs): KBUILD_CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS) $(RETPOLINE_CFLAGS),$(KBUILD_CFLAGS)) $(CFL)
- 
-+ifdef CONFIG_X86_CET
-+$(vobjs) $(vobjs32): KBUILD_CFLAGS += -fcf-protection=branch
-+endif
-+
- #
- # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
- #
+When using macros, which are dangerous in general, you have to worry about
+things like name collisions. I really dislike that C has forced this unsafe
+pattern upon us, but of course we are stuck with it, for iterator helpers.
+
+Given that we're stuck, you should probably use names such as __i, __list, etc,
+in the the above #define. Otherwise you could stomp on existing variables.
+
+> +	for (i = 0, compound_next(i, npages, list, &head, &ntails); \
+> +	     i < npages; i += ntails, \
+> +	     compound_next(i, npages, list, &head, &ntails))
+> +
+>   /**
+>    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
+>    * @pages:  array of pages to be maybe marked dirty, and definitely released.
+> 
+
+thanks,
 -- 
-2.21.0
-
+John Hubbard
+NVIDIA
