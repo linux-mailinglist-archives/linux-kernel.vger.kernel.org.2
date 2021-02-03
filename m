@@ -2,74 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7161A30DFF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EEC30DFFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhBCQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:44:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhBCQor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:44:47 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230128AbhBCQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:47:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42153 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229638AbhBCQr2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:47:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612370761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IpYhJIVwRhODxe05ALBJDVQ3g0p1rJxJONUIEZyW1I=;
+        b=iTuxflgqawvT/My3MRg9nziKTt4TgpWZC39wlTAluwO83WxFnyBsLSJzzMqQGlNtDYw8Ri
+        XalCFiSjRk2x/sOaDLfm+nk2bfhXCiArhzh2Hq4BHaMydPPfNwiwEKKBr8aFE9WcGOUAD4
+        xBtd6FcBQvbZWXtctM7lzWUZNAjN+vE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-u7Oarx0dNVeYmPRidIlOFg-1; Wed, 03 Feb 2021 11:45:57 -0500
+X-MC-Unique: u7Oarx0dNVeYmPRidIlOFg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1207564F7C;
-        Wed,  3 Feb 2021 16:44:00 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l7LG1-00Bnsm-Sk; Wed, 03 Feb 2021 16:43:57 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     arnd@arndb.de, Quentin Perret <qperret@google.com>,
-        catalin.marinas@arm.com, will@kernel.org
-Cc:     ardb@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH 0/2] KVM: arm64: Stub exports in nvhe code
-Date:   Wed,  3 Feb 2021 16:43:48 +0000
-Message-Id: <161237062025.1419625.13086305573512898143.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210203141931.615898-1-qperret@google.com>
-References: <20210203141931.615898-1-qperret@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5230D1E19;
+        Wed,  3 Feb 2021 16:45:56 +0000 (UTC)
+Received: from localhost (ovpn-115-141.ams2.redhat.com [10.36.115.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 13D941971C;
+        Wed,  3 Feb 2021 16:45:52 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 16:45:51 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
+Message-ID: <20210203164551.GG74271@stefanha-x1.localdomain>
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-9-sgarzare@redhat.com>
+ <20210202093412.GA243557@stefanha-x1.localdomain>
+ <20210202154950.g3rclpigyaigzfgo@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: arnd@arndb.de, qperret@google.com, catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, kernel-team@android.com, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Qf1oXS95uex85X0R"
+Content-Disposition: inline
+In-Reply-To: <20210202154950.g3rclpigyaigzfgo@steredhat>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 14:19:29 +0000, Quentin Perret wrote:
-> In the context of the currently ongoing work to remove the host kernel
-> from the TCB under KVM/arm64, I have been trying to wrap the host kernel
-> with a stage 2 page-table -- see [1].
-> 
-> Using this infrastructure, I attempted to unmap the .hyp. sections from
-> the host stage 2 as it really shouldn't need to access them. But by
-> doing so, I realized quickly the module loader was getting very confused
-> by the usage of EXPORT_SYMBOL() macros in library functions that have
-> been pulled into the EL2 object, and that we end up linking modules
-> against the EL2 copy of e.g. memset. And so, this series essentially
-> tries to fix this.
-> 
-> [...]
 
-Applied to kvm-arm64/misc-5.12, thanks!
+--Qf1oXS95uex85X0R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/2] asm-generic: export: Stub EXPORT_SYMBOL with __DISABLE_EXPORTS
-      commit: 54effa653246c35997f5e990e0134be5be09f9d1
-[2/2] KVM: arm64: Stub EXPORT_SYMBOL for nVHE EL2 code
-      commit: bbc075e01ceac50e0a8353b520544f3089e94e44
+On Tue, Feb 02, 2021 at 04:49:50PM +0100, Stefano Garzarella wrote:
+> On Tue, Feb 02, 2021 at 09:34:12AM +0000, Stefan Hajnoczi wrote:
+> > On Thu, Jan 28, 2021 at 03:41:25PM +0100, Stefano Garzarella wrote:
+> > > +static void vdpasim_blk_work(struct work_struct *work)
+> > > +{
+> > > +	struct vdpasim *vdpasim =3D container_of(work, struct vdpasim, work=
+);
+> > > +	u8 status =3D VIRTIO_BLK_S_OK;
+> > > +	int i;
+> > > +
+> > > +	spin_lock(&vdpasim->lock);
+> > > +
+> > > +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
+> > > +		goto out;
+> > > +
+> > > +	for (i =3D 0; i < VDPASIM_BLK_VQ_NUM; i++) {
+> > > +		struct vdpasim_virtqueue *vq =3D &vdpasim->vqs[i];
+> > > +
+> > > +		if (!vq->ready)
+> > > +			continue;
+> > > +
+> > > +		while (vringh_getdesc_iotlb(&vq->vring, &vq->out_iov,
+> > > +					    &vq->in_iov, &vq->head,
+> > > +					    GFP_ATOMIC) > 0) {
+> > > +			int write;
+> > > +
+> > > +			vq->in_iov.i =3D vq->in_iov.used - 1;
+> > > +			write =3D vringh_iov_push_iotlb(&vq->vring, &vq->in_iov,
+> > > +						      &status, 1);
+> > > +			if (write <=3D 0)
+> > > +				break;
+> >=20
+> > This code looks fragile:
+> >=20
+> > 1. Relying on unsigned underflow and the while loop in
+> >   vringh_iov_push_iotlb() to handle the case where in_iov.used =3D=3D 0=
+ is
+> >   risky and could break.
+> >=20
+> > 2. Does this assume that the last in_iov element has size 1? For
+> >   example, the guest driver may send a single "in" iovec with size 513
+> >   when reading 512 bytes (with an extra byte for the request status).
+> >=20
+> > Please validate inputs fully, even in test/development code, because
+> > it's likely to be copied by others when writing production code (or
+> > deployed in production by unsuspecting users) :).
+>=20
+> Perfectly agree on that, so I addressed these things, also following your
+> review on the previous version, on the next patch of this series:
+> "vdpa_sim_blk: implement ramdisk behaviour".
+>=20
+> Do you think should I move these checks in this patch?
+>=20
+> I did this to leave Max credit for this patch and add more code to emulat=
+e a
+> ramdisk in later patches.
 
-Cheers,
+You could update the commit description so it's clear that input
+validation is missing and will be added in the next commit.
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+Stefan
 
+--Qf1oXS95uex85X0R
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmAa0z8ACgkQnKSrs4Gr
+c8gfeAf+KJnbrDqgPwA7UnFlz8Vzfoi8tWfYt0wDorjtnjO0BmxywU4lo4ruVui5
+PM5ofCTMTdCWC1+fpZkFuJr3md8MQ8l/loQgm1h6R2FUC5ch8MJWspP5fEbC1cJL
+DevHe2XjGmiJwqJFudMDuWXYYMC8XdGzxnQuRXR/8adH0blrA8iRi98K/NVexQ5l
+TB/aN2ymwY2+8zRJetD2bk/ECpQYYoLEwBNBJ7VMyalnn77avf7Z9i0X8GeylmZQ
+mmcxs5BmSljciCuHi66qcUlgmdrHpDw9OO6ETWZ2vo424e9foP20+gLybW8p+lDJ
+cmrxN9N8P1781eXozZdVgklesyU1Ow==
+=Ruvz
+-----END PGP SIGNATURE-----
+
+--Qf1oXS95uex85X0R--
 
