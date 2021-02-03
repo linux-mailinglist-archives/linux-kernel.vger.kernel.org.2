@@ -2,265 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446B330DE3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F01330DE44
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhBCPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:33:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233666AbhBCPc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:32:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE08A64E0A;
-        Wed,  3 Feb 2021 15:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612366305;
-        bh=bHk3MAJefGi29p8CkNqUBrcGux4IJL+yp5wmEqIttbY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UIKhMApMJbhWoR39hsVRU2nnuRGMZ7R+kdCmmdUFHHszReGleMxYEYRQMm+T6mNzd
-         UxBbh9ZVRwzjHd46nKudViopC8J30ZUHTjw8es4Snh0bcMPT22jQsMYfsc54pPtWko
-         tWSc3AJm6DgDW7NlJ/vgFV4reApE33G4C5W/S/rKFLbmKrAMmVH3QUvZS8gZdECoqx
-         VgbPFdirmgRzCZthQZrRC6vYByWgLA2kD5KnxwOCit8jPImI5+B//gLduvqpUn80XI
-         rqtt588qXOjj13kyZjH9UXWAgVW6pVCSXN3Plpfnph3HiiU2dILwfXTk9OmYv4+xF6
-         pOeHmU5w/+huA==
-Date:   Wed, 3 Feb 2021 15:31:39 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
+        id S234242AbhBCPfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234359AbhBCPco (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:32:44 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1576C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:32:03 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id a1so24859535wrq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m3hMLAUjNEbRoV1KbnJIsefJTccBHrhGuifAQXw+Kb0=;
+        b=NWGEYDLPDRWjhShRjdLmf72LluMf6MkMxvS+wVbWXaf6OsXVaZzd0wZZ+G3ceDBq7w
+         ok61INFDuAUi84sYsopWinBCxNZ8qYQmDwDwmY7xHDI1vk3AxPEQJM+fpxa+A/f871yV
+         NSHgCYQEOSX6tL+bmmuZE9QOpvCJ4BFu+gt9Ry5FyoshR3ZMvK5LbN4pEZ1kGW1qcF8k
+         +V9UKlOmdYbB62xj9uJTO45/92LMaXuX7PPHKEjDQjtPdUKNgM43rwFqT7o92kxraAFw
+         XZW3FWq2GHKPf5RlhguNGOwsZ27QZ2AUH4it9LQtCGzFD3j/mTVo0HkwcJX+CRKfHRng
+         afXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=m3hMLAUjNEbRoV1KbnJIsefJTccBHrhGuifAQXw+Kb0=;
+        b=DOxfECpQl9VH5DRT5JNCQ/SloGNxzkZHR5nMAFnyHyDNPge/j1ZtHJXmH1ZAsAxZ1P
+         sQ+IBMLWq8S3mE7Y+2HIe92xwz6xUkjMX4GfcVivJTPt2s71VdOxxpJR5HAP8m9vcNq2
+         ru4kkDFAUXMRr6fJbzj5j+581BUzt5TTf1fyEPYAAxvS39Jx+KjWZrxRiHgddJQHjHDz
+         3KTK59/B7W7juAi+aDhfVDGrAbpba7MSQPlpkqYgyqlcubRLWjvXzDuKKbwjdbpAT7LZ
+         UAGuOaRggJVrMuUPqlb2bhfiSYTpqeMYwXlzSRTIL73cK5eCSTwP+SBeQauDZiQMjSKW
+         QK/w==
+X-Gm-Message-State: AOAM5324pjGtNqrjiYJA1rki6/flE8v1+6sf63B+5+pHMsDCnkcM3/Qe
+        po8v236El51TLveTbx437drxtw==
+X-Google-Smtp-Source: ABdhPJwq0DqLE250OUgOrPtpNgjrck9kELfDUILO3Az2ckr/7OkWfBxEcKvi0nYPXy2sVvcHMJG+VA==
+X-Received: by 2002:adf:fa8b:: with SMTP id h11mr4284888wrr.114.1612366321734;
+        Wed, 03 Feb 2021 07:32:01 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:b1de:c7d:30ce:1840])
+        by smtp.gmail.com with ESMTPSA id h14sm3084106wmq.45.2021.02.03.07.32.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 07:32:00 -0800 (PST)
+Date:   Wed, 3 Feb 2021 16:31:54 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 17/26] KVM: arm64: Elevate Hyp mappings creation
- at EL2
-Message-ID: <20210203153138.GB18974@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-18-qperret@google.com>
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/12] kasan: ensure poisoning size alignment
+Message-ID: <YBrB6g9e+636CyFh@elver.google.com>
+References: <cover.1612208222.git.andreyknvl@google.com>
+ <fee7c8c751dbf871e957935c347fcf7f1ca49beb.1612208222.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-18-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <fee7c8c751dbf871e957935c347fcf7f1ca49beb.1612208222.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:15PM +0000, Quentin Perret wrote:
-> Previous commits have introduced infrastructure at EL2 to enable the Hyp
-> code to manage its own memory, and more specifically its stage 1 page
-> tables. However, this was preliminary work, and none of it is currently
-> in use.
+On Mon, Feb 01, 2021 at 08:43PM +0100, Andrey Konovalov wrote:
+> A previous changes d99f6a10c161 ("kasan: don't round_up too much")
+> attempted to simplify the code by adding a round_up(size) call into
+> kasan_poison(). While this allows to have less round_up() calls around
+> the code, this results in round_up() being called multiple times.
 > 
-> Put all of this together by elevating the hyp mappings creation at EL2
-> when memory protection is enabled. In this case, the host kernel running
-> at EL1 still creates _temporary_ Hyp mappings, only used while
-> initializing the hypervisor, but frees them right after.
+> This patch removes round_up() of size from kasan_poison() and ensures
+> that all callers round_up() the size explicitly. This patch also adds
+> WARN_ON() alignment checks for address and size to kasan_poison() and
+> kasan_unpoison().
 > 
-> As such, all calls to create_hyp_mappings() after kvm init has finished
-> turn into hypercalls, as the host now has no 'legal' way to modify the
-> hypevisor page tables directly.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
+Reviewed-by: Marco Elver <elver@google.com>
+
 > ---
->  arch/arm64/include/asm/kvm_mmu.h |  1 -
->  arch/arm64/kvm/arm.c             | 62 +++++++++++++++++++++++++++++---
->  arch/arm64/kvm/mmu.c             | 34 ++++++++++++++++++
->  3 files changed, 92 insertions(+), 5 deletions(-)
+>  mm/kasan/common.c |  9 ++++++---
+>  mm/kasan/kasan.h  | 33 ++++++++++++++++++++-------------
+>  mm/kasan/shadow.c | 37 ++++++++++++++++++++++---------------
+>  3 files changed, 48 insertions(+), 31 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-> index d7ebd73ec86f..6c8466a042a9 100644
-> --- a/arch/arm64/include/asm/kvm_mmu.h
-> +++ b/arch/arm64/include/asm/kvm_mmu.h
-> @@ -309,6 +309,5 @@ static __always_inline void __load_guest_stage2(struct kvm_s2_mmu *mmu)
->  	 */
->  	asm(ALTERNATIVE("nop", "isb", ARM64_WORKAROUND_SPECULATIVE_AT));
->  }
-> -
->  #endif /* __ASSEMBLY__ */
->  #endif /* __ARM64_KVM_MMU_H__ */
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 6af9204bcd5b..e524682c2ccf 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -1421,7 +1421,7 @@ static void cpu_prepare_hyp_mode(int cpu)
->  	kvm_flush_dcache_to_poc(params, sizeof(*params));
->  }
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index a51d6ea580b0..5691cca69397 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -261,7 +261,8 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
 >  
-> -static void cpu_init_hyp_mode(void)
-> +static void kvm_set_hyp_vector(void)
-
-Please do something about the naming: now we have both cpu_set_hyp_vector()
-and kvm_set_hyp_vector()!
-
+>  void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
 >  {
->  	struct kvm_nvhe_init_params *params;
->  	struct arm_smccc_res res;
-> @@ -1439,6 +1439,11 @@ static void cpu_init_hyp_mode(void)
->  	params = this_cpu_ptr_nvhe_sym(kvm_init_params);
->  	arm_smccc_1_1_hvc(KVM_HOST_SMCCC_FUNC(__kvm_hyp_init), virt_to_phys(params), &res);
->  	WARN_ON(res.a0 != SMCCC_RET_SUCCESS);
-> +}
-> +
-> +static void cpu_init_hyp_mode(void)
-> +{
-> +	kvm_set_hyp_vector();
->  
->  	/*
->  	 * Disabling SSBD on a non-VHE system requires us to enable SSBS
-> @@ -1481,7 +1486,10 @@ static void cpu_set_hyp_vector(void)
->  	struct bp_hardening_data *data = this_cpu_ptr(&bp_hardening_data);
->  	void *vector = hyp_spectre_vector_selector[data->slot];
->  
-> -	*this_cpu_ptr_hyp_sym(kvm_hyp_vector) = (unsigned long)vector;
-> +	if (!is_protected_kvm_enabled())
-> +		*this_cpu_ptr_hyp_sym(kvm_hyp_vector) = (unsigned long)vector;
-> +	else
-> +		kvm_call_hyp_nvhe(__pkvm_cpu_set_vector, data->slot);
-
-*Very* minor nit, but it might be cleaner to have static inline functions
-with the same prototypes as the hypercalls, just to make the code even
-easier to read. e.g
-
-	if (!is_protected_kvm_enabled())
-		_cpu_set_vector(data->slot);
-	else
-		kvm_call_hyp_nvhe(__pkvm_cpu_set_vector, data->slot);
-
-you could then conceivably wrap that in a macro and avoid having the
-"is_protected_kvm_enabled()" checks explicit every time.
-
+> -	kasan_poison(object, cache->object_size, KASAN_KMALLOC_REDZONE);
+> +	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> +			KASAN_KMALLOC_REDZONE);
 >  }
 >  
->  static void cpu_hyp_reinit(void)
-> @@ -1489,13 +1497,14 @@ static void cpu_hyp_reinit(void)
->  	kvm_init_host_cpu_context(&this_cpu_ptr_hyp_sym(kvm_host_data)->host_ctxt);
->  
->  	cpu_hyp_reset();
-> -	cpu_set_hyp_vector();
->  
->  	if (is_kernel_in_hyp_mode())
->  		kvm_timer_init_vhe();
->  	else
->  		cpu_init_hyp_mode();
->  
-> +	cpu_set_hyp_vector();
-> +
->  	kvm_arm_init_debug();
->  
->  	if (vgic_present)
-> @@ -1714,13 +1723,52 @@ static int copy_cpu_ftr_regs(void)
->  	return 0;
->  }
->  
-> +static int kvm_hyp_enable_protection(void)
-> +{
-> +	void *per_cpu_base = kvm_ksym_ref(kvm_arm_hyp_percpu_base);
-> +	int ret, cpu;
-> +	void *addr;
-> +
-> +	if (!is_protected_kvm_enabled())
-> +		return 0;
-
-Maybe I'm hung up on my previous suggestion, but I feel like we shouldn't
-get here if protected kvm isn't enabled.
-
-> +	if (!hyp_mem_base)
-> +		return -ENOMEM;
-> +
-> +	addr = phys_to_virt(hyp_mem_base);
-> +	ret = create_hyp_mappings(addr, addr + hyp_mem_size - 1, PAGE_HYP);
-> +	if (ret)
-> +		return ret;
-> +
-> +	preempt_disable();
-> +	kvm_set_hyp_vector();
-> +	ret = kvm_call_hyp_nvhe(__pkvm_init, hyp_mem_base, hyp_mem_size,
-> +				num_possible_cpus(), kern_hyp_va(per_cpu_base));
-
-Would it make sense for the __pkvm_init() hypercall to set the vector as
-well, so that we wouldn't need to disable preemption over two hypercalls?
-
-Failing that, maybe move the whole preempt_disable/enable sequence into
-another function.
-
-> +	preempt_enable();
-> +	if (ret)
-> +		return ret;
-> +
-> +	free_hyp_pgds();
-> +	for_each_possible_cpu(cpu)
-> +		free_page(per_cpu(kvm_arm_hyp_stack_page, cpu));
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * Inits Hyp-mode on all online CPUs
->   */
->  static int init_hyp_mode(void)
->  {
->  	int cpu;
-> -	int err = 0;
-> +	int err = -ENOMEM;
-> +
-> +	/*
-> +	 * The protected Hyp-mode cannot be initialized if the memory pool
-> +	 * allocation has failed.
-> +	 */
-> +	if (is_protected_kvm_enabled() && !hyp_mem_base)
-> +		return err;
->  
->  	/*
->  	 * Copy the required CPU feature register in their EL2 counterpart
-> @@ -1854,6 +1902,12 @@ static int init_hyp_mode(void)
->  	for_each_possible_cpu(cpu)
->  		cpu_prepare_hyp_mode(cpu);
->  
-> +	err = kvm_hyp_enable_protection();
-> +	if (err) {
-> +		kvm_err("Failed to enable hyp memory protection: %d\n", err);
-> +		goto out_err;
-> +	}
-> +
->  	return 0;
->  
->  out_err:
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 3cf9397dabdb..9d4c9251208e 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -225,15 +225,39 @@ void free_hyp_pgds(void)
->  	if (hyp_pgtable) {
->  		kvm_pgtable_hyp_destroy(hyp_pgtable);
->  		kfree(hyp_pgtable);
-> +		hyp_pgtable = NULL;
+>  /*
+> @@ -348,7 +349,8 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>  		return true;
 >  	}
->  	mutex_unlock(&kvm_hyp_pgd_mutex);
+>  
+> -	kasan_poison(object, cache->object_size, KASAN_KMALLOC_FREE);
+> +	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> +			KASAN_KMALLOC_FREE);
+>  
+>  	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
+>  		return false;
+> @@ -490,7 +492,8 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  	/* Poison the aligned part of the redzone. */
+>  	redzone_start = round_up((unsigned long)(object + size),
+>  				KASAN_GRANULE_SIZE);
+> -	redzone_end = (unsigned long)object + cache->object_size;
+> +	redzone_end = round_up((unsigned long)(object + cache->object_size),
+> +				KASAN_GRANULE_SIZE);
+>  	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
+>  			   KASAN_KMALLOC_REDZONE);
+>  
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 6a2882997f23..2f7400a3412f 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -321,30 +321,37 @@ static inline u8 kasan_random_tag(void) { return 0; }
+>  
+>  #ifdef CONFIG_KASAN_HW_TAGS
+>  
+> -static inline void kasan_poison(const void *address, size_t size, u8 value)
+> +static inline void kasan_poison(const void *addr, size_t size, u8 value)
+>  {
+> -	address = kasan_reset_tag(address);
+> +	addr = kasan_reset_tag(addr);
+>  
+>  	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+> -	if (is_kfence_address(address))
+> +	if (is_kfence_address(addr))
+>  		return;
+>  
+> -	hw_set_mem_tag_range((void *)address,
+> -			round_up(size, KASAN_GRANULE_SIZE), value);
+> +	if (WARN_ON((u64)addr & KASAN_GRANULE_MASK))
+> +		return;
+> +	if (WARN_ON(size & KASAN_GRANULE_MASK))
+> +		return;
+> +
+> +	hw_set_mem_tag_range((void *)addr, size, value);
 >  }
 >  
-> +static bool kvm_host_owns_hyp_mappings(void)
-> +{
-> +	if (static_branch_likely(&kvm_protected_mode_initialized))
-> +		return false;
+> -static inline void kasan_unpoison(const void *address, size_t size)
+> +static inline void kasan_unpoison(const void *addr, size_t size)
+>  {
+> -	u8 tag = get_tag(address);
+> +	u8 tag = get_tag(addr);
+>  
+> -	address = kasan_reset_tag(address);
+> +	addr = kasan_reset_tag(addr);
+>  
+>  	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+> -	if (is_kfence_address(address))
+> +	if (is_kfence_address(addr))
+>  		return;
+>  
+> -	hw_set_mem_tag_range((void *)address,
+> -			round_up(size, KASAN_GRANULE_SIZE), tag);
+> +	if (WARN_ON((u64)addr & KASAN_GRANULE_MASK))
+> +		return;
+> +	size = round_up(size, KASAN_GRANULE_SIZE);
 > +
-> +	/*
-> +	 * This can happen at boot time when __create_hyp_mappings() is called
-> +	 * after the hyp protection has been enabled, but the static key has
-> +	 * not been flipped yet.
-> +	 */
-> +	if (!hyp_pgtable && is_protected_kvm_enabled())
-> +		return false;
+> +	hw_set_mem_tag_range((void *)addr, size, tag);
+>  }
+>  
+>  static inline bool kasan_byte_accessible(const void *addr)
+> @@ -361,7 +368,7 @@ static inline bool kasan_byte_accessible(const void *addr)
+>  /**
+>   * kasan_poison - mark the memory range as unaccessible
+>   * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> - * @size - range size
+> + * @size - range size, must be aligned to KASAN_GRANULE_SIZE
+>   * @value - value that's written to metadata for the range
+>   *
+>   * The size gets aligned to KASAN_GRANULE_SIZE before marking the range.
+> @@ -371,7 +378,7 @@ void kasan_poison(const void *addr, size_t size, u8 value);
+>  /**
+>   * kasan_unpoison - mark the memory range as accessible
+>   * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> - * @size - range size
+> + * @size - range size, can be unaligned
+>   *
+>   * For the tag-based modes, the @size gets aligned to KASAN_GRANULE_SIZE before
+>   * marking the range.
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 1ed7817e4ee6..c97f51c557ea 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -69,7 +69,7 @@ void *memcpy(void *dest, const void *src, size_t len)
+>  	return __memcpy(dest, src, len);
+>  }
+>  
+> -void kasan_poison(const void *address, size_t size, u8 value)
+> +void kasan_poison(const void *addr, size_t size, u8 value)
+>  {
+>  	void *shadow_start, *shadow_end;
+>  
+> @@ -78,55 +78,62 @@ void kasan_poison(const void *address, size_t size, u8 value)
+>  	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
+>  	 * addresses to this function.
+>  	 */
+> -	address = kasan_reset_tag(address);
+> +	addr = kasan_reset_tag(addr);
+>  
+>  	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+> -	if (is_kfence_address(address))
+> +	if (is_kfence_address(addr))
+>  		return;
+>  
+> -	size = round_up(size, KASAN_GRANULE_SIZE);
+> -	shadow_start = kasan_mem_to_shadow(address);
+> -	shadow_end = kasan_mem_to_shadow(address + size);
+> +	if (WARN_ON((u64)addr & KASAN_GRANULE_MASK))
+> +		return;
+> +	if (WARN_ON(size & KASAN_GRANULE_MASK))
+> +		return;
 > +
-> +	BUG_ON(!hyp_pgtable);
-
-Can we fail more gracefully, e.g. by continuing without KVM?
-
-Will
+> +	shadow_start = kasan_mem_to_shadow(addr);
+> +	shadow_end = kasan_mem_to_shadow(addr + size);
+>  
+>  	__memset(shadow_start, value, shadow_end - shadow_start);
+>  }
+>  EXPORT_SYMBOL(kasan_poison);
+>  
+>  #ifdef CONFIG_KASAN_GENERIC
+> -void kasan_poison_last_granule(const void *address, size_t size)
+> +void kasan_poison_last_granule(const void *addr, size_t size)
+>  {
+>  	if (size & KASAN_GRANULE_MASK) {
+> -		u8 *shadow = (u8 *)kasan_mem_to_shadow(address + size);
+> +		u8 *shadow = (u8 *)kasan_mem_to_shadow(addr + size);
+>  		*shadow = size & KASAN_GRANULE_MASK;
+>  	}
+>  }
+>  #endif
+>  
+> -void kasan_unpoison(const void *address, size_t size)
+> +void kasan_unpoison(const void *addr, size_t size)
+>  {
+> -	u8 tag = get_tag(address);
+> +	u8 tag = get_tag(addr);
+>  
+>  	/*
+>  	 * Perform shadow offset calculation based on untagged address, as
+>  	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
+>  	 * addresses to this function.
+>  	 */
+> -	address = kasan_reset_tag(address);
+> +	addr = kasan_reset_tag(addr);
+>  
+>  	/*
+>  	 * Skip KFENCE memory if called explicitly outside of sl*b. Also note
+>  	 * that calls to ksize(), where size is not a multiple of machine-word
+>  	 * size, would otherwise poison the invalid portion of the word.
+>  	 */
+> -	if (is_kfence_address(address))
+> +	if (is_kfence_address(addr))
+> +		return;
+> +
+> +	if (WARN_ON((u64)addr & KASAN_GRANULE_MASK))
+>  		return;
+>  
+> -	/* Unpoison round_up(size, KASAN_GRANULE_SIZE) bytes. */
+> -	kasan_poison(address, size, tag);
+> +	/* Unpoison all granules that cover the object. */
+> +	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag);
+>  
+>  	/* Partially poison the last granule for the generic mode. */
+>  	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> -		kasan_poison_last_granule(address, size);
+> +		kasan_poison_last_granule(addr, size);
+>  }
+>  
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
