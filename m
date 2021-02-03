@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDBF30E2B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCE330E2BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhBCSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:44:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:45082 "EHLO foss.arm.com"
+        id S233103AbhBCSpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232879AbhBCSoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:44:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B1E7143D;
-        Wed,  3 Feb 2021 10:43:27 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE3A63F719;
-        Wed,  3 Feb 2021 10:43:25 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 0/8] sched/fair: misfit task load-balance tweaks
-In-Reply-To: <20210203151400.ommltjjyuok4yj5e@e107158-lin>
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210203151400.ommltjjyuok4yj5e@e107158-lin>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Wed, 03 Feb 2021 18:43:23 +0000
-Message-ID: <jhjim792dro.mognet@arm.com>
+        id S233087AbhBCSoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:44:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B41B264DA1;
+        Wed,  3 Feb 2021 18:44:13 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 18:44:11 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: [GIT PULL] arm64 fixes for 5.11-rc7
+Message-ID: <20210203184408.GA5226@gaia>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+Hi Linus,
 
-On 03/02/21 15:14, Qais Yousef wrote:
-> On 01/28/21 18:31, Valentin Schneider wrote:
->> Hi folks,
->> 
->> Here is this year's series of misfit changes. On the menu:
->> 
->> o Patch 1 is an independent active balance cleanup
->> o Patch 2 adds some more sched_asym_cpucapacity static branches
->> o Patch 3 introduces yet another margin for capacity to capacity
->>   comparisons
->> o Patches 4-6 build on top of patch 3 and change capacity comparisons
->>   throughout misfit load balancing  
->> o Patches 7-8 fix some extra misfit issues I've been seeing on "real"
->>   workloads.
->> 
->> IMO the somewhat controversial bit is patch 3, because it attempts to solve
->> margin issues by... Adding another margin. This does solve issues on
->> existing platforms (e.g. Pixel4), but we'll be back to square one the day
->> some "clever" folks spin a platform with two different CPU capacities less than
->> 5% apart.
->
-> One more margin is a cause of apprehension to me. But in this case I think it
-> is the appropriate thing to do now. I can't think of a scenario where this
-> could hurt.
->
+Please pull the arm64 fixes below. Thanks.
 
-Thanks for having a look!
+The following changes since commit a1df829ead5877d4a1061e976a50e2e665a16f24:
 
-> Thanks
->
-> --
-> Qais Yousef
+  ACPI/IORT: Do not blindly trust DMA masks from firmware (2021-01-27 12:26:24 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+
+for you to fetch changes up to 22cd5edb2d9c6d68b6ac0fc9584104d88710fa57:
+
+  arm64: Use simpler arithmetics for the linear map macros (2021-02-02 17:45:09 +0000)
+
+----------------------------------------------------------------
+Fix the arm64 linear map range detection for tagged addresses and
+replace the bitwise operations with subtract (virt_addr_valid(),
+__is_lm_address(), __lm_to_phys()).
+
+----------------------------------------------------------------
+Catalin Marinas (2):
+      arm64: Do not pass tagged addresses to __is_lm_address()
+      arm64: Use simpler arithmetics for the linear map macros
+
+ arch/arm64/include/asm/memory.h | 6 +++---
+ arch/arm64/mm/physaddr.c        | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+Catalin
