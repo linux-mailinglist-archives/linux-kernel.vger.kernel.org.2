@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60CF30E2EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E2530E2EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhBCSya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S231202AbhBCSyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhBCSyD (ORCPT
+        with ESMTP id S229683AbhBCSyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:54:03 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7262BC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:53:19 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id f63so386857pfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:53:19 -0800 (PST)
+        Wed, 3 Feb 2021 13:54:13 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD06C0613D6;
+        Wed,  3 Feb 2021 10:53:33 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id q7so385824wre.13;
+        Wed, 03 Feb 2021 10:53:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dzT+zXS02AtWyri914T4RsybmYHwYLbz9EWKPRFdXXk=;
-        b=LTV2jY7OP8MRqDVetuT8spPDkWetfx03dGt3EVUYfPjNPWzYtxcebRq9p+eTwnmfA8
-         AtP4dGBBZH7vWOtm8Uwfo1u6KhoAaIZvRyo1hEfOdFi7dG0q9KS+67NPvo7taFJbjI2E
-         A8RPRqYU630/EkxrpThbfq2xo5q0vEU7dnO1I=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hCI6ZiNImno66RrVehBGLrYLxtapcVm5zzLIRSnM/WU=;
+        b=VCJ3330ilMlz+QT2OkDv5eR7bQwxwP0yJ4r1r8eJsgHMjJ4mxac6onJBjDTVewEAfM
+         diCPP7S02OhDsvmYqjgXAQNgAT6ONwiqutI/wpFQJwODGEkQi8Rpxx3+aMu/v5rkwQ1K
+         45o2B+snceo73W6d6J014W8pBSQ0p7DLFKxbtZT9EEQzRft4f0AVfA5sBCmfgTlpCJJV
+         y9/CGdMTWRA1Og+Lu/BYKrPGAgFBPZ0X3T8CBXUugd26gfroT2zpWJXg44RjxtBBjLb5
+         pkDo417TWzy3ABdFkyjkU/vjhEVXOGC5GYv3cR8DdEBN4pkGA9LFw7qMilUoL4B+V9nr
+         Hpaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dzT+zXS02AtWyri914T4RsybmYHwYLbz9EWKPRFdXXk=;
-        b=m0D2SyzhhHsxAyhIVtf3nVbvEiFcatjWavc9aw03WuETValt7MuL0VZoybAy8HqxpL
-         4kKUaT+YarU1fmfEOvMcTIOYVhivizVD0OZkBXbjJrr12HzD+5IlGlx286JUTXm8Wie9
-         /GY+EycJzBU61JmOXn7Ak4c1k1fBgCVjK9db54IY74HAt5i4Vy9lA9mvdYLzPeXLwo3B
-         xffeeowtVoTjNsYAzgQXQ25IP+9AU8CVFE5niXPrNVRlHci6d3QDvyJi3fE04hbanTS+
-         5S5CbP3iP2jEI4bpjBrA+8eiMmM3up8rmdtwei3PbUSxn8Q3u0X/frkwThGqLXaoHc2R
-         A+Pw==
-X-Gm-Message-State: AOAM532qzxrjt/Zn26CrkzbTM2diGetpbMOgrj/czGnR5eYUdkPNQUV+
-        d7+EiAcY43Uo8J0KoYvqyy7O4w==
-X-Google-Smtp-Source: ABdhPJw6qtA6XXf+bOOkWXfhEVNcBeKb7xGPOAptplAWZ2eUzFpuxEg7zjxnEaLgPCkPgd6qn5w4Kw==
-X-Received: by 2002:a65:654e:: with SMTP id a14mr5124637pgw.265.1612378399056;
-        Wed, 03 Feb 2021 10:53:19 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b18sm3078716pfi.173.2021.02.03.10.53.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 10:53:18 -0800 (PST)
-Date:   Wed, 3 Feb 2021 10:53:17 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        roman.fietze@magna.com, John Ogness <john.ogness@linutronix.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-Message-ID: <202102031052.36869CC@keescook>
-References: <20210202201846.716915-1-timur@kernel.org>
- <202102021351.AEDE896AB3@keescook>
- <9ce56a1c-9ea6-996b-84c6-cfde908c2ecd@kernel.org>
- <20210202173436.6516c676@gandalf.local.home>
- <CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hCI6ZiNImno66RrVehBGLrYLxtapcVm5zzLIRSnM/WU=;
+        b=e3kLRVaGmec4HfwTywG5bNHz+YR3NTBGoerezmXKov5evIYZAWmYaZiizCkinhUn+O
+         4FWXFSh60jxO8gS0LBg6kT9OqCNQ30viS3NhlQfoBmThwzixvZC2pBNpcQCSXRmDiOOd
+         yg0Q02vLnnAuESujjGfk82gSowjzDjpHV/EEEj9YZi+66RLu80yk8doaBSAuhwJjjbzn
+         SdkHegV3avhFnKcRUydXXbQ3/6D0r/OwymiaZIqQCvwZgQUHPTO2DO+2369dbu/+1NFS
+         kdXwZfPklFcZGlkIk0wOZGI4NmzPfKNK33uPRt/QHa6hIC29ApT1iWanJyqnSDfctwzU
+         Qt7w==
+X-Gm-Message-State: AOAM5300CAEzvXCM6NQrd9ETjvolljHzGG9MuuAMdppMThmeYWnVp7Cm
+        D0YyqtYuqoTI5+XKP6WSyHUmMPaPnBcfhoX+pYs=
+X-Google-Smtp-Source: ABdhPJyHLzSa0ru1ema9q6kVyMifJqigYStPu+h+0FBA1tpzSHcRislqBSWzhsMgmuJKF7sU+drOE/JpGjgTQCLonYE=
+X-Received: by 2002:adf:ed02:: with SMTP id a2mr5098155wro.197.1612378411971;
+ Wed, 03 Feb 2021 10:53:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com>
+References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
+ <MN2PR11MB3662C081B6CDB8BC1143380FFAB79@MN2PR11MB3662.namprd11.prod.outlook.com>
+ <CAGngYiVvuNYC4WPCRfPOfjr98S_BGBNGjPze11AiHY9Pq1eJsA@mail.gmail.com> <MN2PR11MB3662E5A8E190F8F43F348E72FAB69@MN2PR11MB3662.namprd11.prod.outlook.com>
+In-Reply-To: <MN2PR11MB3662E5A8E190F8F43F348E72FAB69@MN2PR11MB3662.namprd11.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 3 Feb 2021 13:53:21 -0500
+Message-ID: <CAGngYiVK5=vggym5LiqvjiRVTSWscc=CgX6UPOBkZpknuLC62Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
+To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 02:51:00PM -0800, Linus Torvalds wrote:
-> On Tue, Feb 2, 2021 at 2:34 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> >   "I also suspect that everybody has already accepted that KASLR isn't
-> >    really working locally anyway (due to all the hw leak models with
-> >    cache and TLB timing), so anybody who can look at kernel messages
-> >    already probably could figure most of those things out."
-> 
-> Honestly, if you have to pass a kernel command line, and there's a big
-> notice in the kernel messages about this, I no longer care.
+Thank you Bryan. I will prepare a v2 early next week.
 
-Okay, cool; it's fine by me too. I prefer this kind of "boot into debug
-mode" switch to having lots of %px scattered around in questionable
-places. :)
+Would Microchip be able to donate some time to test v2? My own tests
+are certainly not perfect. Various stress tests across architectures
+(intel/arm) would help create confidence in the multi-buffer frame
+implementation. Perhaps Microchip has various test rigs already set
+up?
 
-I will update the %p deprecation docs.
-
--- 
-Kees Cook
+After all, absence of bugs is more important than speed improvements.
