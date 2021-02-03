@@ -2,227 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24F030D682
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8F30D68A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233021AbhBCJnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhBCJnr (ORCPT
+        id S233135AbhBCJpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:45:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47592 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233206AbhBCJow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:43:47 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3379C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:43:06 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id y18so8712930edw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5K1Jql4Qu8ghC4/Nv8cwnJc9qqC4VK9QqHHvwmFPkl8=;
-        b=aqJEu/oq0/MQbzpT3jw9MX6uLrVbkC8QZndasPG7U2dOxS7k34lGiitgvDtwdbfKSy
-         htMw/YeUjTifKQ3HLgocLo0Ta0/ZFClVgZcJyvD0pxZjuqPK8o62jtFm9jVp6YbtNg2j
-         pI93MnVzGt641m/tk6zzozv4Da+ehoasxtgBMzkW8SKjanbq8Mf+ZfELU//2UxEsQOge
-         afSmgJEcqdzeM+jH8/u5uU8aSR1XY2090OS0IZ+HHdLRiQhKTat1N243oAo+hmfSaEdQ
-         +EYQ1Kgmz2qn8kQRm1x3S+Fhntxcx6qPXFqm7Ve2Z/+0aLV6QUn/MDhx3+0rhn9m2cKK
-         z5PQ==
+        Wed, 3 Feb 2021 04:44:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612345406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8JlE3EMtIPG4yCYd+JdmIn+AhVOjwW2E0U1D9Qnw6LQ=;
+        b=fi8SRjoTf88esqi5Iog2hXOBp8sF8wzuibrvOntX1BhugDiliFGlcA5RMwqYyPdsMZ/LN1
+        OonDCQpBmfP0QifWlzbxWU0ScW3g4o6HI19DxzCUwYPEIY3IK5qcZmlbGHgOw04LVamIGg
+        oVEixwP6pbbkC93/Iyu3pJwUQZMbBMk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-6AKbNT1oNl6F8s0749jYxw-1; Wed, 03 Feb 2021 04:43:22 -0500
+X-MC-Unique: 6AKbNT1oNl6F8s0749jYxw-1
+Received: by mail-ed1-f70.google.com with SMTP id ay16so2238187edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:43:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5K1Jql4Qu8ghC4/Nv8cwnJc9qqC4VK9QqHHvwmFPkl8=;
-        b=XqZDWCnt8rLYEkDqQ9sEDke/cuuCdqg+QAtKOa58DsPDTSOHldDGJc5cYOymo9coG6
-         oRL7TBPSj3916X9OMeEwS7umdmIc2RiRWvnZ8Po9aOCoWZRGE5b8SDQMc5dSmL5KAO66
-         Dy19ErLH7sHo1UdBQkY/ifD2VbMWZ7AeVUk8P65ySOCkDMJ9HZ6nQjvVn56rvJ2z/qtE
-         hbAdDeS4e7fCDJDYrOYvPZL2K1wnyuQkPe4m3/VnmWiZVt8xS6ED0Q+JtFxsTwCIhyRr
-         XRgxbpOZJuhzV7plP1Eqjq6mpTcJU/4lNgds6suf8+/CzcpVGz6JxBfugDPWQo9QL0nY
-         s59w==
-X-Gm-Message-State: AOAM533v0URv0HtMoIup+IUgHN4HOHWU9HvavhtE6UH8X7oDts0Zp5bb
-        1J4MyDUR1h30gxv5G5U7kgRnpgftqDsygWN7hUlXag==
-X-Google-Smtp-Source: ABdhPJwlkXGdxZAkwVp2jiFsru39QGYjWX7OHGO+SAoFK+mS5LeR+lumA1gD45j5LoR9FnwSRRjaz4MHFrtpiksJnQg=
-X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr2043768edr.23.1612345385379;
- Wed, 03 Feb 2021 01:43:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8JlE3EMtIPG4yCYd+JdmIn+AhVOjwW2E0U1D9Qnw6LQ=;
+        b=Tb9wBY8dISupfIH/Bx3QEVCIGTLYu6cuhmA+DY3x7EGkYUCqewzVpBJyXu0bv4/Pqz
+         tv99P0m6bzH5QdiA7lPWldH4OS1FU1dFWoSPBQZUgTNjHI/p8WT2+3/SNEuCNwWiBPWc
+         PKw3NEt0cfWtbcb+XWG/2qqF1R2tHh8HM7ur1NwumWdh6znQ370PIXmC1hPkr6Bazdoo
+         gboL0mOo6NQpWZM13a54Ip7i1HsLKXEyaE7Vht48lg2r1FFwSESDMlQUm2pRDXJPfHYH
+         sTy99KaLl2PWikYjPPYo40wiuUdrJEb2r8q9rBpERR37JE70V72HJZfKbwsLVK7F9pyV
+         drJA==
+X-Gm-Message-State: AOAM530KTcFedC9MZyd3C7lmmq6A7ibbP1JWyb++16ykz/2+5BQ7K22W
+        1z/qN125TEftobq1Yw5/qAvFj7Pe3YqXNOJUKnnzPhuRw4xUr51eoO5ixfoCdcPPjPuTNspX3Zy
+        0r5TGhvSq9/mHJMcVPtG/zSIc
+X-Received: by 2002:a17:907:f81:: with SMTP id kb1mr2297887ejc.466.1612345401122;
+        Wed, 03 Feb 2021 01:43:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyE4w0SXKWGuwkGTges5EuIVt6D0Y/P3+luaD05sg14cWZ/nhDE7xP9Qy9/NVNV/hAIky3YOg==
+X-Received: by 2002:a17:907:f81:: with SMTP id kb1mr2297878ejc.466.1612345400921;
+        Wed, 03 Feb 2021 01:43:20 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j23sm599190edv.45.2021.02.03.01.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 01:43:20 -0800 (PST)
+Subject: Re: [PATCH v2 10/28] KVM: x86/mmu: Fix TDP MMU zap collapsible SPTEs
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-11-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dbb72860-3f3a-e1e7-361f-2961a5a526c1@redhat.com>
+Date:   Wed, 3 Feb 2021 10:43:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210202132942.138623851@linuxfoundation.org>
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Feb 2021 15:12:53 +0530
-Message-ID: <CA+G9fYs6k9W2rd-WUJD2ba9a8GgnriHBzdBBO0XJq5U3yXya=A@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/30] 4.14.219-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210202185734.1680553-11-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 at 19:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.219 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.219-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 02/02/21 19:57, Ben Gardon wrote:
+> There is a bug in the TDP MMU function to zap SPTEs which could be
+> replaced with a larger mapping which prevents the function from doing
+> anything. Fix this by correctly zapping the last level SPTEs.
+> 
+> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   arch/x86/kvm/mmu/tdp_mmu.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index c3075fb568eb..e3066d08c1dc 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1098,8 +1098,8 @@ bool kvm_tdp_mmu_slot_set_dirty(struct kvm *kvm, struct kvm_memory_slot *slot)
+>   }
+>   
+>   /*
+> - * Clear non-leaf entries (and free associated page tables) which could
+> - * be replaced by large mappings, for GFNs within the slot.
+> + * Clear leaf entries which could be replaced by large mappings, for
+> + * GFNs within the slot.
+>    */
+>   static void zap_collapsible_spte_range(struct kvm *kvm,
+>   				       struct kvm_mmu_page *root,
+> @@ -1111,7 +1111,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+>   
+>   	tdp_root_for_each_pte(iter, root, start, end) {
+>   		if (!is_shadow_present_pte(iter.old_spte) ||
+> -		    is_last_spte(iter.old_spte, iter.level))
+> +		    !is_last_spte(iter.old_spte, iter.level))
+>   			continue;
+>   
+>   		pfn = spte_to_pfn(iter.old_spte);
+> 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Queued for 5.11-rc, thanks.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Paolo
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.219-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 17dd434cff6bcaf79221b1a890a9df7ea23a3bd7
-git describe: v4.14.218-31-g17dd434cff6b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.218-31-g17dd434cff6b
-
-No regressions (compared to build v4.14.218)
-
-No fixes (compared to build v4.14.218)
-
-Ran 43689 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* fwts
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-math-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-kvm
-* kselftest-vm
-* kselftest-x86
-* ltp-fs-tests
-* ltp-open-posix-tests
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kvm-unit-tests
-* rcutorture
-* ssuite
-* kselftest-kexec
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
