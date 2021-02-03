@@ -2,252 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BF630DC5B
+	by mail.lfdr.de (Postfix) with ESMTP id E330B30DC5C
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhBCOMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:12:35 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:40989 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhBCOMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:12:30 -0500
-Received: by mail-oi1-f172.google.com with SMTP id m13so26802558oig.8;
-        Wed, 03 Feb 2021 06:12:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o9ddqgzFC/SZO6LcLdybWIESwjtMUBkI/PLFuncKY08=;
-        b=ISVd+s0zY9ybLogszykFXh6ucbj2JQPklXMrky4ol6OXe/Of8+lvPYkLkGcBckuEXQ
-         15+1+k+Ej7cDilluoUkU6lakMsBzut3+SMYG+n6huREVii+lAYUADrr35KhqyLRhLu6C
-         GhDB2LitsUsSjnkqcZqsze88PmYgGpa+gZFmJiT2V0V4H3JuvEc3dmRWbPfwaKrdbo5H
-         8+m78N35PaOmgunUPyz7z8QV2rVKgcieXrsAMATSYG4pcS7qPHS4kTPIvorPE9dHcywc
-         huUMs20sGh/QHXswkdNelp1MrRQuabu+kUwnqXKRGc6y2NMSF892/rf74e5TAMnWAM3P
-         za+A==
-X-Gm-Message-State: AOAM5334uY88XpTU7Y0VD81JwrkE6CIUmZX35en6R9C92XfZn4zKl5Bs
-        CcE8NrOmvIh3fdzsCRBJCC7dFC8f4Y1y+m4/idM=
-X-Google-Smtp-Source: ABdhPJwqxsTTzb4IEEfpmwJUAb1fAaIb7+JNDrqajYj4O7cUdqU84yofMbf21jTrBvyYcI4gC5vrzpTNcdH/629pnZY=
-X-Received: by 2002:aca:d14:: with SMTP id 20mr2105841oin.157.1612361508548;
- Wed, 03 Feb 2021 06:11:48 -0800 (PST)
+        id S231880AbhBCOM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:12:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55312 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232805AbhBCOMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:12:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 737A8ACBA;
+        Wed,  3 Feb 2021 14:12:02 +0000 (UTC)
+Subject: Re: [PATCH v5 5/6] drm/qxl: properly free qxl releases
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210203131615.1714021-1-kraxel@redhat.com>
+ <20210203131615.1714021-6-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <cbcd0aff-0794-69d8-f51a-bb85e3346400@suse.de>
+Date:   Wed, 3 Feb 2021 15:12:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210203135321.12253-1-ggherdovich@suse.cz> <20210203135321.12253-2-ggherdovich@suse.cz>
-In-Reply-To: <20210203135321.12253-2-ggherdovich@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 3 Feb 2021 15:11:37 +0100
-Message-ID: <CAJZ5v0g1SWRnV1QfZG3o+hvBg9akakhDMomGCFjwERyG2ENKww@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
- schedutil invariant formula
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Larabel <Michael@phoronix.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210203131615.1714021-6-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 2:53 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S
+Content-Type: multipart/mixed; boundary="cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>, open list
+ <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <cbcd0aff-0794-69d8-f51a-bb85e3346400@suse.de>
+Subject: Re: [PATCH v5 5/6] drm/qxl: properly free qxl releases
+References: <20210203131615.1714021-1-kraxel@redhat.com>
+ <20210203131615.1714021-6-kraxel@redhat.com>
+In-Reply-To: <20210203131615.1714021-6-kraxel@redhat.com>
 
-[cut]
+--cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
-> Fixes: 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
-> Reported-by: Michael Larabel <Michael@phoronix.com>
-> Tested-by: Michael Larabel <Michael@phoronix.com>
-> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+
+
+Am 03.02.21 um 14:16 schrieb Gerd Hoffmann:
+> Reorganize qxl_device_fini() a bit.
+> Add missing unpin() calls.
+>=20
+> Count releases.  Add wait queue for releases.  That way
+> qxl_device_fini() can easily wait until everything is
+> ready for proper shutdown.
+>=20
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
 > ---
->  drivers/cpufreq/acpi-cpufreq.c   | 61 ++++++++++++++++++++++++++++++--
->  drivers/cpufreq/cpufreq.c        |  3 ++
->  include/linux/cpufreq.h          |  5 +++
->  kernel/sched/cpufreq_schedutil.c |  8 +++--
+>   drivers/gpu/drm/qxl/qxl_drv.h     |  2 ++
+>   drivers/gpu/drm/qxl/qxl_cmd.c     |  1 +
+>   drivers/gpu/drm/qxl/qxl_irq.c     |  1 +
+>   drivers/gpu/drm/qxl/qxl_kms.c     | 22 ++++++++++++++++++++--
+>   drivers/gpu/drm/qxl/qxl_release.c |  2 ++
+>   5 files changed, 26 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_drv.h b/drivers/gpu/drm/qxl/qxl_dr=
+v.h
+> index 01354b43c413..6dd57cfb2e7c 100644
+> --- a/drivers/gpu/drm/qxl/qxl_drv.h
+> +++ b/drivers/gpu/drm/qxl/qxl_drv.h
+> @@ -214,6 +214,8 @@ struct qxl_device {
+>   	spinlock_t	release_lock;
+>   	struct idr	release_idr;
+>   	uint32_t	release_seqno;
+> +	atomic_t	release_count;
+> +	wait_queue_head_t release_event;
+>   	spinlock_t release_idr_lock;
+>   	struct mutex	async_io_mutex;
+>   	unsigned int last_sent_io_cmd;
+> diff --git a/drivers/gpu/drm/qxl/qxl_cmd.c b/drivers/gpu/drm/qxl/qxl_cm=
+d.c
+> index 54e3c3a97440..7e22a81bfb36 100644
+> --- a/drivers/gpu/drm/qxl/qxl_cmd.c
+> +++ b/drivers/gpu/drm/qxl/qxl_cmd.c
+> @@ -254,6 +254,7 @@ int qxl_garbage_collect(struct qxl_device *qdev)
+>   		}
+>   	}
+>  =20
+> +	wake_up_all(&qdev->release_event);
+>   	DRM_DEBUG_DRIVER("%d\n", i);
+>  =20
+>   	return i;
+> diff --git a/drivers/gpu/drm/qxl/qxl_irq.c b/drivers/gpu/drm/qxl/qxl_ir=
+q.c
+> index ddf6588a2a38..d312322cacd1 100644
+> --- a/drivers/gpu/drm/qxl/qxl_irq.c
+> +++ b/drivers/gpu/drm/qxl/qxl_irq.c
+> @@ -87,6 +87,7 @@ int qxl_irq_init(struct qxl_device *qdev)
+>   	init_waitqueue_head(&qdev->display_event);
+>   	init_waitqueue_head(&qdev->cursor_event);
+>   	init_waitqueue_head(&qdev->io_cmd_event);
+> +	init_waitqueue_head(&qdev->release_event);
+>   	INIT_WORK(&qdev->client_monitors_config_work,
+>   		  qxl_client_monitors_config_work_func);
+>   	atomic_set(&qdev->irq_received, 0);
+> diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_km=
+s.c
+> index 4a60a52ab62e..616aea948863 100644
+> --- a/drivers/gpu/drm/qxl/qxl_kms.c
+> +++ b/drivers/gpu/drm/qxl/qxl_kms.c
+> @@ -286,8 +286,26 @@ int qxl_device_init(struct qxl_device *qdev,
+>  =20
+>   void qxl_device_fini(struct qxl_device *qdev)
+>   {
+> -	qxl_bo_unref(&qdev->current_release_bo[0]);
+> -	qxl_bo_unref(&qdev->current_release_bo[1]);
+> +	int cur_idx;
+> +
+> +	for (cur_idx =3D 0; cur_idx < 3; cur_idx++) {
+> +		if (!qdev->current_release_bo[cur_idx])
+> +			continue;
+> +		qxl_bo_unpin(qdev->current_release_bo[cur_idx]);
+> +		qxl_bo_unref(&qdev->current_release_bo[cur_idx]);
+> +		qdev->current_release_bo_offset[cur_idx] =3D 0;
+> +		qdev->current_release_bo[cur_idx] =3D NULL;
+> +	}
+> +
+> +	/*
+> +	 * Ask host to release resources (+fill release ring),
+> +	 * then wait for the release actually happening.
+> +	 */
+> +	qxl_io_notify_oom(qdev);
+> +	wait_event_timeout(qdev->release_event,
+> +			   atomic_read(&qdev->release_count) =3D=3D 0,
+> +			   HZ);
+> +
+>   	qxl_gem_fini(qdev);
+>   	qxl_bo_fini(qdev);
+>   	flush_work(&qdev->gc_work);
+> diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qx=
+l_release.c
+> index 28013fd1f8ea..43a5436853b7 100644
+> --- a/drivers/gpu/drm/qxl/qxl_release.c
+> +++ b/drivers/gpu/drm/qxl/qxl_release.c
+> @@ -196,6 +196,7 @@ qxl_release_free(struct qxl_device *qdev,
+>   		qxl_release_free_list(release);
+>   		kfree(release);
+>   	}
+> +	atomic_dec(&qdev->release_count);
+>   }
+>  =20
+>   static int qxl_release_bo_alloc(struct qxl_device *qdev,
+> @@ -344,6 +345,7 @@ int qxl_alloc_release_reserved(struct qxl_device *q=
+dev, unsigned long size,
+>   			*rbo =3D NULL;
+>   		return idr_ret;
+>   	}
+> +	atomic_inc(&qdev->release_count);
+>  =20
+>   	mutex_lock(&qdev->release_mutex);
+>   	if (qdev->current_release_bo_offset[cur_idx] + 1 >=3D releases_per_b=
+o[cur_idx]) {
+>=20
 
-I don't really think that it is necessary to modify schedutil to
-address this issue.
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
->  4 files changed, 73 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> index 1e4fbb002a31..a5facc6cad16 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -26,6 +26,7 @@
->  #include <linux/uaccess.h>
->
->  #include <acpi/processor.h>
-> +#include <acpi/cppc_acpi.h>
->
->  #include <asm/msr.h>
->  #include <asm/processor.h>
-> @@ -628,11 +629,57 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
->  }
->  #endif
->
-> +#ifdef CONFIG_ACPI_CPPC_LIB
-> +static bool amd_max_boost(unsigned int max_freq,
-> +                         unsigned int *max_boost)
 
-Is there anything specific to AMD CPUs in this function?
+--cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ--
 
-> +{
-> +       struct cppc_perf_caps perf_caps;
-> +       u64 highest_perf, nominal_perf, perf_ratio;
-> +       int ret;
-> +
-> +       ret = cppc_get_perf_caps(0, &perf_caps);
-> +       if (ret) {
-> +               pr_debug("Could not retrieve perf counters (%d)\n", ret);
-> +               return false;
-> +       }
-> +
-> +       highest_perf = perf_caps.highest_perf;
-> +       nominal_perf = perf_caps.nominal_perf;
-> +
-> +       if (!highest_perf || !nominal_perf) {
-> +               pr_debug("Could not retrieve highest or nominal performance\n");
-> +               return false;
-> +       }
-> +
-> +       perf_ratio = div_u64(highest_perf * SCHED_CAPACITY_SCALE, nominal_perf);
+--P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Why do you use SCHED_CAPACITY_SCALE here?  And why does this multiply
-instead of shifting?
+-----BEGIN PGP SIGNATURE-----
 
-> +       if (perf_ratio <= SCHED_CAPACITY_SCALE) {
-> +               pr_debug("Either perf_ratio is 0, or nominal >= highest performance\n");
-> +               return false;
-> +       }
-> +
-> +       *max_boost = max_freq * perf_ratio >> SCHED_CAPACITY_SHIFT;
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAarzEFAwAAAAAACgkQlh/E3EQov+Ca
+8A/+Kt/gdssrZcE0FhwfqHXDkIHMDFZwgofwKLvcfXuuddrlNc/iu3wm5FOXv+fEkf1JlhxUYA8s
+7jUHy8Nx8f8+IauLGfE7kv84pMvNNdTSL66c/JxHQVTj6QQl1mJi3S5jtCB3hGNAQo3YcpFGvJ8b
++3WmUSaQDc+hfpBf1pkhnCRJyFGe7H7OR1TEYExMckE7Ex38RMzKdvFPXIalowFnd21DVe3jPb2x
+Sb5OBsfZNgOEb4XSzttgA7paS9YXfaKYhkaba/Y6GpPfi6dDlaB7vTsGZSFtdXqpW4ohk6huU9AK
+XJb5VI3MSRWY3ek85Wna0R+Kwet31Gzb0YDfnPmzbrIdj6gLc3jeHW03In1k2WHmLmR/u7RlYz2R
+f6ux8oLbZDV+SrechzMp2qD531uIhvRUGbnrp2nX7qjQld1Z0isKjSJJ8q0wIQF3JdMf/lBKQQHA
+gX/9SqXnWPm8dO8d1ko5IVqeum59phpUVzq8NuZKVcFMyDcq2I0dINtfB1c+lSLI0TElygUE0yMY
+wqwOYDB3N16/ZUCrkbjqYXzZ2N88jQ+qUus5Gie1LVub7XnUo+ITfjnWTBuxQ4w6lwzcP7W86kRB
+/LB0AiyxscdMTQcX79N2OGp1Mscg9exXSrYVJLJIc0lVtdcqY2R1qj6lpsCuMjeXXmY+Xr1e68sZ
+oFo=
+=4dIi
+-----END PGP SIGNATURE-----
 
-Is this assuming that max_freq corresponds to nominal_perf?
-
-> +       if (!*max_boost) {
-> +               pr_debug("max_boost seems to be zero\n");
-> +               return false;
-
-So this function may just return the max_boost value with 0 meaning a failure.
-
-> +       }
-> +
-> +       return true;
-> +}
-> +#else
-> +static bool amd_max_boost(unsigned int max_freq,
-> +                         unsigned int *max_boost)
-> +{
-> +       return false;
-> +}
-> +#endif
-> +
->  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  {
->         unsigned int i;
->         unsigned int valid_states = 0;
->         unsigned int cpu = policy->cpu;
-> +       unsigned int freq, max_freq = 0;
-> +       unsigned int max_boost;
->         struct acpi_cpufreq_data *data;
->         unsigned int result = 0;
->         struct cpuinfo_x86 *c = &cpu_data(policy->cpu);
-> @@ -779,15 +826,25 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->                     freq_table[valid_states-1].frequency / 1000)
->                         continue;
->
-> +               freq = perf->states[i].core_frequency * 1000;
->                 freq_table[valid_states].driver_data = i;
-> -               freq_table[valid_states].frequency =
-> -                   perf->states[i].core_frequency * 1000;
-> +               freq_table[valid_states].frequency = freq;
-> +
-> +               if (freq > max_freq)
-> +                       max_freq = freq;
-> +
->                 valid_states++;
->         }
->         freq_table[valid_states].frequency = CPUFREQ_TABLE_END;
->         policy->freq_table = freq_table;
->         perf->state = 0;
->
-> +       if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
-> +           amd_max_boost(max_freq, &max_boost)) {
-
-AFAICS, the issue is not limited to AMD CPUs .
-
-> +               policy->cpuinfo.max_boost = max_boost;
-> +               static_branch_enable(&cpufreq_amd_max_boost);
-> +       }
-> +
->         switch (perf->control_register.space_id) {
->         case ACPI_ADR_SPACE_SYSTEM_IO:
->                 /*
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index d0a3525ce27f..b96677f6b57e 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -2721,6 +2721,9 @@ int cpufreq_boost_enabled(void)
->  }
->  EXPORT_SYMBOL_GPL(cpufreq_boost_enabled);
->
-> +DEFINE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
-> +EXPORT_SYMBOL_GPL(cpufreq_amd_max_boost);
-> +
->  /*********************************************************************
->   *               REGISTER / UNREGISTER CPUFREQ DRIVER                *
->   *********************************************************************/
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 9c8b7437b6cd..341cac76d254 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -40,9 +40,14 @@ enum cpufreq_table_sorting {
->         CPUFREQ_TABLE_SORTED_DESCENDING
->  };
->
-> +DECLARE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
-> +
-> +#define cpufreq_driver_has_max_boost() static_branch_unlikely(&cpufreq_amd_max_boost)
-> +
->  struct cpufreq_cpuinfo {
->         unsigned int            max_freq;
->         unsigned int            min_freq;
-> +       unsigned int            max_boost;
->
->         /* in 10^(-9) s = nanoseconds */
->         unsigned int            transition_latency;
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 6931f0cdeb80..541f3db3f576 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -159,8 +159,12 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->                                   unsigned long util, unsigned long max)
->  {
->         struct cpufreq_policy *policy = sg_policy->policy;
-> -       unsigned int freq = arch_scale_freq_invariant() ?
-> -                               policy->cpuinfo.max_freq : policy->cur;
-> +       unsigned int freq, max_freq;
-> +
-> +       max_freq = cpufreq_driver_has_max_boost() ?
-> +                       policy->cpuinfo.max_boost : policy->cpuinfo.max_freq;
-> +
-> +       freq = arch_scale_freq_invariant() ? max_freq : policy->cur;
->
->         freq = map_util_freq(util, freq, max);
->
-> --
+--P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S--
