@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560CD30D65C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B8730D676
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhBCJbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:31:21 -0500
-Received: from polaris.svanheule.net ([84.16.241.116]:59658 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbhBCJag (ORCPT
+        id S233020AbhBCJj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:39:26 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:29544 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231355AbhBCJjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:30:36 -0500
-X-Greylist: delayed 366 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 04:30:35 EST
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eaff:9701:9f3c:99a2:7251:cce9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id E09C21C8C19;
-        Wed,  3 Feb 2021 10:23:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1612344226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=72bGU27IKTK7uzsu+gYNWJLAfcIFrJlPlB1wOH6GCHs=;
-        b=QLydjcwv3LnxbcHoWxeTSZN2VJ6PmyY4JcYu0MJeX+x17kufLQVFzC8fxEDO6XiQKlgc4t
-        ss7e9+q9AGdQX7SpNDh6VVo2nN4IQK+bd3IkspqxKAZ8Ec4EseREIHhHGjTwjdsHzKqDua
-        jQwigajQakMcSHK/nkKd2RCDps350e25801J8ltzfLGlx7wdOsov1kIkZBvj8OJWTyqkxC
-        Ho0nIXSfweO3DronbGZaDq7Ynd8YETgv08F980/KiTD67Q+TgwLehUl42RigXZ7DBHPj/K
-        6rbwm0z7mjQM7IAlQJCOjqHyPYaaeYMc6HXAFurYgRkEsZiH1dbbDyuvUHbVEw==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     linux-mips@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH] MIPS: ralink: manage low reset lines
-Date:   Wed,  3 Feb 2021 10:21:41 +0100
-Message-Id: <20210203092140.12458-1-sander@svanheule.net>
-X-Mailer: git-send-email 2.29.2
+        Wed, 3 Feb 2021 04:39:21 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210203093838epoutp02a614bf398934519f0f976372883f42f4~gM1e0zSKa2524525245epoutp02L
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 09:38:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210203093838epoutp02a614bf398934519f0f976372883f42f4~gM1e0zSKa2524525245epoutp02L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612345118;
+        bh=++Jnb3SqoJaKXZ2SwuM4efupS68kYYz0Kg14bYc0z1k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f4YGsWKHxRSce9baGr9hwT5FKueXznfmOBb22afwuUWLaFpbutFgZym/boBcP/7LJ
+         2DdYBLzLS6ni1FDuCYieinBI7nY/gEYu+3a9pPbCINEjPxNHQJ4DfjAWbyReLmemZV
+         7EocNEDnUzkenvRKRtyT8u+k6x1muAawtFCYNxbc=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210203093837epcas1p3cde587ad432277e767b65539c8057de4~gM1eNH3GS1876818768epcas1p3B;
+        Wed,  3 Feb 2021 09:38:37 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DVxSr2Ckxz4x9Q3; Wed,  3 Feb
+        2021 09:38:36 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CE.CE.63458.C1F6A106; Wed,  3 Feb 2021 18:38:36 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9~gM1cWcHSB1322013220epcas1p27;
+        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210203093835epsmtrp1e0af78c4d2cb5b81b577e5f66dd467ca~gM1cTWyH70886908869epsmtrp1V;
+        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-ca-601a6f1c67e6
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3E.5E.08745.B1F6A106; Wed,  3 Feb 2021 18:38:35 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210203093835epsmtip203e0316ecaa2edc1409ef6193337ae94~gM1cGcN7J1238212382epsmtip2S;
+        Wed,  3 Feb 2021 09:38:35 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
+        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mj0123.lee@samsung.com,
+        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+Subject: [PATCH v4 2/2] bio: add limit_bio_size sysfs
+Date:   Wed,  3 Feb 2021 18:22:47 +0900
+Message-Id: <20210203092247.29258-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <YBpmQhqx4pvUh//a@kroah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc3rbe8ujeCkgx8YAu5t/iFBbauEMZDFiXJcZQ9z+WNyWcgNX
+        IPS1XspkMRMGIq8pYKa8qsg6WAoLW3kMGCBBibyzyYApQ0AwyAwPYaiIj7W9kPHf9/zy+Z7v
+        +f3OOUJMPIdLhIm6ZMaoozUU7spvurlXGrxbL4mRrbxyQ+XWJoBqJi7i6Nz5pzyU8X0djvoL
+        Knkof/YbAXqVe5+H1qZZ1H5vHxpuLcdR16UMHrpSX46h0ckBAt28P8JH05ZCDA31rgjQ1ZlD
+        6EV1N0BLz8cI1Nd8CUN17ev4IR9VYcYioWopnSBU9T8GqoYHTSqbNQdX3TDXEqqljhFcdaHB
+        ClSrNj/V+c48XrTrSc3BBIaOY4wBjC5WH5eoi4+kPvxIHaVWhsrkwfJ3URgVoKO1TCR15Fh0
+        8NFEjb1BKiCF1pjspWiaZan97x006k3JTECCnk2OpBhDnMYglxmkLK1lTbp4aaxeGy6XyUKU
+        djJGk2AZmiYM026ne66189NAsWsucBFC8gD8Y7mMnwtchWKyGcArN6YIbrECYGdJN89BiclV
+        AG//q9lypNcPYxzUCuDjJ+WbdjtkKzRjDgong+CFhXu4Q3uTfnB2/KXTgZGPMHg5+28n5EUq
+        4a3+B06IT+6Bk+U99rpQKCIj4NqjVC7NHz78ttqJu5B74UZ2nsChRaQn7C2Z5Ts0ZmcyGsuc
+        +0NyWQif3+kRcOYjsMYyxuO0F/zndgPBaQmcv5hFcIY8ADOyrgFuUQCgZa5q06GAK6urwHEi
+        zB5d17qfK78FWzbMgEv2gItr+QIHAkkRzM4Sc8g7cCBzEtvKmvuphcchKtj4enOiZ6C5opYo
+        AAGl29op3dZO6f+5FQCzgp2MgdXGM6zcELL9hm3A+eIDQ5tB0cKytAvwhKALQCFGeYv6inbG
+        iEVxdOpXjFGvNpo0DNsFlPZZF2ISn1i9/cvoktVyZYhCoUAHQsNClQrKV0TLptRiMp5OZpIY
+        xsAYt3w8oYskjZczaAqfXP3i6YuYpr9Sg4Oidi2dOBz02iPL5Ft5OnNmULvw+WjHb4nXR5NO
+        ZR73E6GCH+Z2DY1HsUbt2fSzJyb+3ONDpK0V/67hb2BjFVRi6UyJ55fqoRSbQiltMyepW5Oi
+        LVe91ht7dx8dO4m+9qt/m4rN0hK2u5N3r88Pvlmcoo+z7hPdlhqTxTqV8GyE8D7z3SkgPdfR
+        HX/MPWK80irx35H/5n3dZ1UNcwPRd1C/qFOLX37CBgZaeR88Jm/9mv7zLzm+aaLwiE93PHMf
+        8fT3eLhcpPZJmflYEJL2iZzcV1HT1rw+ffil4kGx1dhcTcwb8NoqY1lYm7m9z801Fq+j+GwC
+        LQ/EjCz9H98aPyl6BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsWy7bCSvK50vlSCwfI2VYs5q7YxWqy+289m
+        0dr+jcmiefF6NovTExYxWfQ8aWK1+Nt1j8ni68Nii723tC0u75rDZnFocjOTxfTNc5gtrt0/
+        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW6/f+ZHMQ9ZjY/I7dY+es
+        u+wem1doeVw+W+qxaVUnm8f+uWvYPd7vu8rm0bdlFaPH501yHu0HupkCuKK4bFJSczLLUov0
+        7RK4Mpace8he8JC74sT8vSwNjDO4uhg5OSQETCQaN19m7mLk4hAS2MEoMWP+NGaIhJTE8RNv
+        WbsYOYBsYYnDh4shaj4ySvzq/cEKUsMmoCPR9/YWG4gtIiAn8eT2H7BBzAJNLBLXz69mBEkI
+        C5hKHDn9CKyIRUBV4v6cE8wgQ3kFrCW+vqiE2CUv8bR3OdheTgFNid8d3WDzhQQ0JH6d6gVr
+        5RUQlDg58wkLiM0MVN+8dTbzBEaBWUhSs5CkFjAyrWKUTC0ozk3PLTYsMMpLLdcrTswtLs1L
+        10vOz93ECI5ELa0djHtWfdA7xMjEwXiIUYKDWUmE99QksQQh3pTEyqrUovz4otKc1OJDjNIc
+        LErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamFapPeLbqVy3uyXc42U4c42X2c9O5S1KCncu
+        r49pWzORiyP/QdZ04cC28s15DRU5E2u49c50uSv9WN3Ln/W5+QTfEyfOmgp5tTO6326VzPsy
+        2aV6vj9P18aSyEV3DabXWfVyzZk77eCjq/tVr0p5XLSTvtqpW8Iqc6v855aOFSvSjp5UPtW0
+        8u/qbRI7rjm9Y/DUrj6mnWwS8PB0aFDc9GlfctewX5vicbLq/sy1UlFOZ/0rs1eUa/8tXzrh
+        4yfv5auObyr9O89M5dra8sYpgSEqTrF/N3xL7fqesVMkalGWc8aHjY4p2df/3M2UV9X6bNzF
+        eG9Huoj71qWVc/5383zPVuGQ79fycbjNe9l/qxJLcUaioRZzUXEiACQ6ogMzAwAA
+X-CMS-MailID: 20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9
+References: <YBpmQhqx4pvUh//a@kroah.com>
+        <CGME20210203093835epcas1p2e86a35ba3012882950abc7013cae59b9@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reset lines with indices smaller than 8 are currently considered invalid
-by the rt2880-reset reset controller.
+Add limit_bio_size block sysfs node to limit bio size.
+Queue flag QUEUE_FLAG_LIMIT_BIO_SIZE will be set if limit_bio_size is set.
+And bio max size will be limited by queue max sectors via
+QUEUE_FLAG_LIMIT_BIO_SIZE set.
 
-The MT7621 SoC uses a number of these low reset lines. The DTS defines
-reset lines "hsdma", "fe", and "mcm" with respective values 5, 6, and 2.
-As a result of the above restriction, these resets cannot be asserted or
-de-asserted by the reset controller. In cases where the bootloader does
-not de-assert these lines, this results in e.g. the MT7621's internal
-switch staying in reset.
-
-Change the reset controller to only ignore the system reset, so all
-reset lines with index greater than 0 are considered valid.
-
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
+Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
 ---
-This patch was tested on a TP-Link EAP235-Wall, with an MT7621DA SoC.
-The bootloader on this device would leave reset line 2 ("mcm") asserted,
-which caused the internal switch to be unresponsive on an uninterrupted
-boot from flash.
+ block/blk-sysfs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-When tftpboot was used in the bootloader to load an initramfs, it did
-initialise the internal switch, and cleared the mcm reset line. In this
-case the switch could be used from the OS. With this patch applied, the
-switch works both in an initramfs, and when (cold) booting from flash.
-
- arch/mips/ralink/reset.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/ralink/reset.c b/arch/mips/ralink/reset.c
-index 8126f1260407..274d33078c5e 100644
---- a/arch/mips/ralink/reset.c
-+++ b/arch/mips/ralink/reset.c
-@@ -27,7 +27,7 @@ static int ralink_assert_device(struct reset_controller_dev *rcdev,
- {
- 	u32 val;
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index b513f1683af0..840d97f427e6 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
+ QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
+ QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
+ QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
++QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
+ #undef QUEUE_SYSFS_BIT_FNS
  
--	if (id < 8)
-+	if (id == 0)
- 		return -1;
+ static ssize_t queue_zoned_show(struct request_queue *q, char *page)
+@@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
+ QUEUE_RW_ENTRY(queue_iostats, "iostats");
+ QUEUE_RW_ENTRY(queue_random, "add_random");
+ QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
++QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
  
- 	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
-@@ -42,7 +42,7 @@ static int ralink_deassert_device(struct reset_controller_dev *rcdev,
- {
- 	u32 val;
- 
--	if (id < 8)
-+	if (id == 0)
- 		return -1;
- 
- 	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
+ static struct attribute *queue_attrs[] = {
+ 	&queue_requests_entry.attr,
+@@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
+ 	&queue_rq_affinity_entry.attr,
+ 	&queue_iostats_entry.attr,
+ 	&queue_stable_writes_entry.attr,
++	&queue_limit_bio_size_entry.attr,
+ 	&queue_random_entry.attr,
+ 	&queue_poll_entry.attr,
+ 	&queue_wc_entry.attr,
 -- 
-2.29.2
+2.28.0
 
