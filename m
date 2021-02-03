@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ADB30DFD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EE630DFD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhBCQgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S234577AbhBCQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:36:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbhBCQfR (ORCPT
+        with ESMTP id S234257AbhBCQfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:35:17 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F279DC06178A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:34:36 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id a20so370pjs.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 08:34:36 -0800 (PST)
+        Wed, 3 Feb 2021 11:35:21 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27D1C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:34:40 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id v19so51668pgj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 08:34:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=squareup.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tDdfcsBZJuJtkpBOSJDEI0wgJxTXViUcOD8MHou6QmE=;
-        b=VXtxZbi8AtZyMZJpc50pEvpcML6zaCXy49jNoMowkU5wXzOsZgefVdUPQHgGHCEr3B
-         VX/+A3V9YXOgufIR6vLDsozEfwkoAZ/C1d88U1v/Wkhpp93O57e5bVOJgh4lDGnRF7W+
-         6IRdn4Htmw5yyWbTH2IP++5A1kQzyq0CkCkuo=
+        bh=jB5LniiJVJBhga+KqtjyHJhSLFg6O06N5hOGcOS8Mo0=;
+        b=IhCfDX9FMqbywbKhoTeq5CpvYQa1Psp9hJuE1uJrOqwkKrhrrvWmMoe8m6iol0kbps
+         HxbaRc17fVXZpZyPm77VCnP4cOecqSZ9x4wyiFpM6WHPC344z/eB/OYcCILta/N1CMor
+         Siz04H8TaB1YW00cQ/gGUN7LfU1PPhOMAtZw0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=tDdfcsBZJuJtkpBOSJDEI0wgJxTXViUcOD8MHou6QmE=;
-        b=e1vpeKKMCgqAp0LliMLLGEndQ+oOS/n7DKC1j6p8m87kHNTzfoz3tMcvETF/mKtwpc
-         0EUlo+6mAr8+1L/B8gLzuEgpPaDRubja31ZT/rrHk0AavLqCpVlCHAKxC4EZRLctybcM
-         fR69EZLDyW6Z1kX45JoGC2bTzihHBX95ZcUtRzELmKlGMdIVE07ittZlcMwHCZYGfD1Y
-         6LNb1wXb1XuJjgCnoY33TGIxKugI4DIX4HZjQ2YZUdp41mXrT5WE4JgNaJ9QhFwLse4Y
-         aTy2b7hhBze2AUUW5NzoDHQJuQYyxYmzLL0eJ++Yj27aMISCEUBvqzTZ6zhGzhghnqDO
-         9WAQ==
-X-Gm-Message-State: AOAM530XunxOGDDQEuclj9xITWTaA/7ufZyc/VeQLEmdzHHd85Uohgn+
-        pmP8COWt5v/GncuU/K5H2glStg==
-X-Google-Smtp-Source: ABdhPJwHW/bPgjpIW8uXFOPagPYKISILCxeoo1NzldsvLxwfQdCWM66jZLnLeBPCfTIPz2JEdYXQHQ==
-X-Received: by 2002:a17:90b:4acd:: with SMTP id mh13mr3913378pjb.229.1612370076555;
-        Wed, 03 Feb 2021 08:34:36 -0800 (PST)
+        bh=jB5LniiJVJBhga+KqtjyHJhSLFg6O06N5hOGcOS8Mo0=;
+        b=IzQ0jXdQeIM5p/e7e4h1qAqMWlhHyFbObyoHhxOQ3iKCDiZq2YE5EbiOkwmBm7+0cq
+         fWF6lPmlqWwvceNwx8CDKpOtE9boWWjQoYJEApUO5s2S4hNRsWKHnusGtnO/QRIld6sj
+         JMXAwhS22AS1ytj37lhB4+koLesC32eh+aXvfs+njhzzFoXpyFToDtz4ZWky7WYJJ5G4
+         Ogney0hfuixISPzu3RvkOVKCrovNQs74jvAOA9QCM49UoWGM1LnrwbuIYl4zW4ha+yoN
+         xWvUaJZatzSTsf74XvQlLsoUxvwfaNBUHjE10fbFMiglQUfkpS6rZr38F94fFjHV+CxA
+         6DQg==
+X-Gm-Message-State: AOAM533C4NlexZBTP7yHrcfcj30noDAgBnmchLl2jOEkO1gp1hJqQ9qb
+        lAjtuBSltS3NGS0q5gFTVlyopg==
+X-Google-Smtp-Source: ABdhPJx7Zq3RnTesy0436dDHJJQa7PqeTbE+LE0OfBYli2Lu0V/+suOkUkkgdXNm1RDt++BQwlY6ug==
+X-Received: by 2002:a63:fe05:: with SMTP id p5mr4446854pgh.161.1612370080390;
+        Wed, 03 Feb 2021 08:34:40 -0800 (PST)
 Received: from localhost (162-207-206-139.lightspeed.sntcca.sbcglobal.net. [162.207.206.139])
-        by smtp.gmail.com with ESMTPSA id y6sm2754285pfn.123.2021.02.03.08.34.34
+        by smtp.gmail.com with ESMTPSA id p2sm2620288pjj.0.2021.02.03.08.34.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 08:34:35 -0800 (PST)
+        Wed, 03 Feb 2021 08:34:39 -0800 (PST)
 From:   Benjamin Li <benl@squareup.com>
 To:     Georgi Djakov <georgi.djakov@linaro.org>
 Cc:     square@linaro.org, kernel@squareup.com,
@@ -53,9 +53,9 @@ Cc:     square@linaro.org, kernel@squareup.com,
         Georgi Djakov <djakov@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] interconnect: qcom: icc-rpm: record slave RPM id in error log
-Date:   Wed,  3 Feb 2021 08:34:06 -0800
-Message-Id: <20210203163407.9222-2-benl@squareup.com>
+Subject: [PATCH 2/2] interconnect: qcom: msm8939: remove rpm-ids from non-RPM nodes
+Date:   Wed,  3 Feb 2021 08:34:07 -0800
+Message-Id: <20210203163407.9222-3-benl@squareup.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210203163407.9222-1-benl@squareup.com>
 References: <20210203163407.9222-1-benl@squareup.com>
@@ -63,28 +63,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add slave RPM ID to assist with identifying incorrect RPM config.
+Changes corresponding to commit c497f9322af9 ("interconnect: qcom: msm8916:
+Remove rpm-ids from non-RPM nodes") to remove this log spam on 8939:
+
+[    1.901376] qcom_icc_rpm_smd_send slv 24 error -6
+[    2.005977] qcom_icc_rpm_smd_send mas 20 error -6
+[    2.010250] qcom_icc_rpm_smd_send slv 20 error -6
+[    2.014684] qcom_icc_rpm_smd_send slv 106 error -6
+[    2.019338] qcom_icc_rpm_smd_send slv 107 error -6
+[    2.024615] qcom_icc_rpm_smd_send slv 29 error -6
+[    2.028782] qcom_icc_rpm_smd_send mas 3 error -6
+[    2.034657] qcom_icc_rpm_smd_send mas 100 error -6
+(plus another slv 131 that's hidden by the mas 100 failure)
 
 Signed-off-by: Benjamin Li <benl@squareup.com>
 ---
- drivers/interconnect/qcom/icc-rpm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/interconnect/qcom/msm8939.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
-index cc6095492cbe..54de49ca7808 100644
---- a/drivers/interconnect/qcom/icc-rpm.c
-+++ b/drivers/interconnect/qcom/icc-rpm.c
-@@ -59,8 +59,8 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
- 					    qn->slv_rpm_id,
- 					    sum_bw);
- 		if (ret) {
--			pr_err("qcom_icc_rpm_smd_send slv error %d\n",
--			       ret);
-+			pr_err("qcom_icc_rpm_smd_send slv %d error %d\n",
-+			       qn->slv_rpm_id, ret);
- 			return ret;
- 		}
- 	}
+diff --git a/drivers/interconnect/qcom/msm8939.c b/drivers/interconnect/qcom/msm8939.c
+index dfbec30ed149..20f31a1b4192 100644
+--- a/drivers/interconnect/qcom/msm8939.c
++++ b/drivers/interconnect/qcom/msm8939.c
+@@ -131,7 +131,7 @@ DEFINE_QNODE(mas_pcnoc_sdcc_1, MSM8939_MASTER_SDCC_1, 8, -1, -1, MSM8939_PNOC_IN
+ DEFINE_QNODE(mas_pcnoc_sdcc_2, MSM8939_MASTER_SDCC_2, 8, -1, -1, MSM8939_PNOC_INT_1);
+ DEFINE_QNODE(mas_qdss_bam, MSM8939_MASTER_QDSS_BAM, 8, -1, -1, MSM8939_SNOC_QDSS_INT);
+ DEFINE_QNODE(mas_qdss_etr, MSM8939_MASTER_QDSS_ETR, 8, -1, -1, MSM8939_SNOC_QDSS_INT);
+-DEFINE_QNODE(mas_snoc_cfg, MSM8939_MASTER_SNOC_CFG, 4, 20, -1, MSM8939_SLAVE_SRVC_SNOC);
++DEFINE_QNODE(mas_snoc_cfg, MSM8939_MASTER_SNOC_CFG, 4, -1, -1, MSM8939_SLAVE_SRVC_SNOC);
+ DEFINE_QNODE(mas_spdm, MSM8939_MASTER_SPDM, 4, -1, -1, MSM8939_PNOC_MAS_0);
+ DEFINE_QNODE(mas_tcu0, MSM8939_MASTER_TCU0, 16, -1, -1, MSM8939_SLAVE_EBI_CH0, MSM8939_BIMC_SNOC_MAS, MSM8939_SLAVE_AMPSS_L2);
+ DEFINE_QNODE(mas_usb_hs1, MSM8939_MASTER_USB_HS1, 4, -1, -1, MSM8939_PNOC_MAS_1);
+@@ -156,14 +156,14 @@ DEFINE_QNODE(pcnoc_snoc_mas, MSM8939_PNOC_SNOC_MAS, 8, 29, -1, MSM8939_PNOC_SNOC
+ DEFINE_QNODE(pcnoc_snoc_slv, MSM8939_PNOC_SNOC_SLV, 8, -1, 45, MSM8939_SNOC_INT_0, MSM8939_SNOC_INT_BIMC, MSM8939_SNOC_INT_1);
+ DEFINE_QNODE(qdss_int, MSM8939_SNOC_QDSS_INT, 8, -1, -1, MSM8939_SNOC_INT_0, MSM8939_SNOC_INT_BIMC);
+ DEFINE_QNODE(slv_apps_l2, MSM8939_SLAVE_AMPSS_L2, 16, -1, -1, 0);
+-DEFINE_QNODE(slv_apss, MSM8939_SLAVE_APSS, 4, -1, 20, 0);
++DEFINE_QNODE(slv_apss, MSM8939_SLAVE_APSS, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_audio, MSM8939_SLAVE_LPASS, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_bimc_cfg, MSM8939_SLAVE_BIMC_CFG, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_blsp_1, MSM8939_SLAVE_BLSP_1, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_boot_rom, MSM8939_SLAVE_BOOT_ROM, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_camera_cfg, MSM8939_SLAVE_CAMERA_CFG, 4, -1, -1, 0);
+-DEFINE_QNODE(slv_cats_0, MSM8939_SLAVE_CATS_128, 16, -1, 106, 0);
+-DEFINE_QNODE(slv_cats_1, MSM8939_SLAVE_OCMEM_64, 8, -1, 107, 0);
++DEFINE_QNODE(slv_cats_0, MSM8939_SLAVE_CATS_128, 16, -1, -1, 0);
++DEFINE_QNODE(slv_cats_1, MSM8939_SLAVE_OCMEM_64, 8, -1, -1, 0);
+ DEFINE_QNODE(slv_clk_ctl, MSM8939_SLAVE_CLK_CTL, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_crypto_0_cfg, MSM8939_SLAVE_CRYPTO_0_CFG, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_dehr_cfg, MSM8939_SLAVE_DEHR_CFG, 4, -1, -1, 0);
+@@ -187,20 +187,20 @@ DEFINE_QNODE(slv_sdcc_2, MSM8939_SLAVE_SDCC_2, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_security, MSM8939_SLAVE_SECURITY, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_snoc_cfg, MSM8939_SLAVE_SNOC_CFG, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_spdm, MSM8939_SLAVE_SPDM, 4, -1, -1, 0);
+-DEFINE_QNODE(slv_srvc_snoc, MSM8939_SLAVE_SRVC_SNOC, 8, -1, 29, 0);
++DEFINE_QNODE(slv_srvc_snoc, MSM8939_SLAVE_SRVC_SNOC, 8, -1, -1, 0);
+ DEFINE_QNODE(slv_tcsr, MSM8939_SLAVE_TCSR, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_tlmm, MSM8939_SLAVE_TLMM, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_usb_hs1, MSM8939_SLAVE_USB_HS1, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_usb_hs2, MSM8939_SLAVE_USB_HS2, 4, -1, -1, 0);
+ DEFINE_QNODE(slv_venus_cfg, MSM8939_SLAVE_VENUS_CFG, 4, -1, -1, 0);
+-DEFINE_QNODE(snoc_bimc_0_mas, MSM8939_SNOC_BIMC_0_MAS, 16, 3, -1, MSM8939_SNOC_BIMC_0_SLV);
+-DEFINE_QNODE(snoc_bimc_0_slv, MSM8939_SNOC_BIMC_0_SLV, 16, -1, 24, MSM8939_SLAVE_EBI_CH0);
++DEFINE_QNODE(snoc_bimc_0_mas, MSM8939_SNOC_BIMC_0_MAS, 16, -1, -1, MSM8939_SNOC_BIMC_0_SLV);
++DEFINE_QNODE(snoc_bimc_0_slv, MSM8939_SNOC_BIMC_0_SLV, 16, -1, -1, MSM8939_SLAVE_EBI_CH0);
+ DEFINE_QNODE(snoc_bimc_1_mas, MSM8939_SNOC_BIMC_1_MAS, 16, 76, -1, MSM8939_SNOC_BIMC_1_SLV);
+ DEFINE_QNODE(snoc_bimc_1_slv, MSM8939_SNOC_BIMC_1_SLV, 16, -1, 104, MSM8939_SLAVE_EBI_CH0);
+ DEFINE_QNODE(snoc_bimc_2_mas, MSM8939_SNOC_BIMC_2_MAS, 16, -1, -1, MSM8939_SNOC_BIMC_2_SLV);
+ DEFINE_QNODE(snoc_bimc_2_slv, MSM8939_SNOC_BIMC_2_SLV, 16, -1, -1, MSM8939_SLAVE_EBI_CH0);
+ DEFINE_QNODE(snoc_int_0, MSM8939_SNOC_INT_0, 8, 99, 130, MSM8939_SLAVE_QDSS_STM, MSM8939_SLAVE_IMEM, MSM8939_SNOC_PNOC_MAS);
+-DEFINE_QNODE(snoc_int_1, MSM8939_SNOC_INT_1, 8, 100, 131, MSM8939_SLAVE_APSS, MSM8939_SLAVE_CATS_128, MSM8939_SLAVE_OCMEM_64);
++DEFINE_QNODE(snoc_int_1, MSM8939_SNOC_INT_1, 8, -1, -1, MSM8939_SLAVE_APSS, MSM8939_SLAVE_CATS_128, MSM8939_SLAVE_OCMEM_64);
+ DEFINE_QNODE(snoc_int_bimc, MSM8939_SNOC_INT_BIMC, 8, 101, 132, MSM8939_SNOC_BIMC_1_MAS);
+ DEFINE_QNODE(snoc_pcnoc_mas, MSM8939_SNOC_PNOC_MAS, 8, -1, -1, MSM8939_SNOC_PNOC_SLV);
+ DEFINE_QNODE(snoc_pcnoc_slv, MSM8939_SNOC_PNOC_SLV, 8, -1, -1, MSM8939_PNOC_INT_0);
 -- 
 2.17.1
 
