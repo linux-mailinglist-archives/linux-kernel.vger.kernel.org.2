@@ -2,152 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C2530DD4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBE230DD44
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhBCOw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        id S233391AbhBCOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbhBCOwv (ORCPT
+        with ESMTP id S233026AbhBCOw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:52:51 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84673C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 06:52:09 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id b9so16618550ejy.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 06:52:09 -0800 (PST)
+        Wed, 3 Feb 2021 09:52:27 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C859EC061573;
+        Wed,  3 Feb 2021 06:51:46 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id i20so86164otl.7;
+        Wed, 03 Feb 2021 06:51:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ba8vo7NYBPo9eSD9iOWqZ0kAa5nRbWhxZY4okQVnGnw=;
-        b=kabU4DJVcmFBq7Y/Y5iY/7dh3vcJdF72Bi6T33jpaCj1V26uxUKBXh1yOn5EA8wwlm
-         /+xBYhOekNZRvBc1hobzHgb4+0FgkyDE+jt/TEMFdCRxDCAPoG+/L4TCs5MdVBOk1kgI
-         yvHaN0O7w+ZJwAz1QB54rkyZLH2uyg+Qp5Fw0ZxIZc19NV/skkUUHB2fi7a6iEQGtx+h
-         sO+l+EY5zNKxiTg9dV0wXzHynAABbrarCWdlBcYumPEZOgXBsUs8kPLaCROsqPa4dLs4
-         Tt1tki7Aetn+Rysl2ZK6MvVicNY0q72pvToY74ctM7GWm6X9w5xCVvSlPQ545FqVh69n
-         /opA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BRejbMppl3GOr40VHRSG/ViReSyva6umu7DgyW7KvL8=;
+        b=I62tbZ/KgBL57yQJJ96NvX5FIBOPy3iM6O9E5607p8fJaxmkSqbIOh2HK4M+Ch0eo2
+         LxEIK76+/MTj4qlPjpX90Za/6ztCnGAN7NQB8xJqiZjE7r/c/dNYMy4nWY1SMyr5qC4O
+         I1fLUe9JuoEET3Ng0wvsnodZB2+TQhQZ/a4Kz8mmtTly82LhYoP3PKWCbtscf6wD1bAv
+         5ihpkm0wF2Je6N6xnkjDlgAOM36N8Ehghi0VArTvhKMPqqellXCw2t0Ugo7dw5Xlzybs
+         5RIY1Araa9+qB3ygG6T/fYqrBndy9BzMNNiPAlsYtRe54Dv/d/Fx4yoY5pdcPG8x4FJH
+         wG/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ba8vo7NYBPo9eSD9iOWqZ0kAa5nRbWhxZY4okQVnGnw=;
-        b=gIhl0P6pu7/GE8FJbavZI17CjJGt++mzz3RFqOs3vCPKqAY5E9Oq8930sV15qK4i73
-         Sxro7rwsJ7klwJ+diHUy0TdccYweMbs/V2NcmKW68ykbHr7AUPFzdFy+mGVLboFVa67O
-         cbLZINVP47Rsjiehat3TvVZ/YpKkhn6k9rqJ5OERnP1ZvYnDo+/AlHYMi/Td3G5sXJdW
-         wdg+HLxHLf54h05y65dxthZQ+4QGx10vuiyYp/4bRi/b3GL02lIapB+sH1nEjUejyjJ9
-         MwiOAjUR5BceDJ6PW0ynKIbS9CZo2zuuy3Qgb/owRHJr1wIZhC+R6KpOGwcvn7QgQobI
-         gY7Q==
-X-Gm-Message-State: AOAM5328nUV6Ojy3uMdvfg51BU8L8Gm0KXIaXh0ixIKCATXCZyi0uffQ
-        tGJ7FNfmaekz3FMwa9+ui4w+sK2I96D2WtzFtKZnRg==
-X-Google-Smtp-Source: ABdhPJwDEE6FfRYKexhd7R5DOEGVnNd4L8WynkLlX3PUiXSfp1YsW6WZeZoAOwShPU8WkJdcJtYI8XYp1uZ5i8UmZts=
-X-Received: by 2002:a17:906:eddd:: with SMTP id sb29mr3441623ejb.383.1612363928105;
- Wed, 03 Feb 2021 06:52:08 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BRejbMppl3GOr40VHRSG/ViReSyva6umu7DgyW7KvL8=;
+        b=TNeUP1JQ4Go8meTHw+J33CoJGmvQdWzOojEOMYDxeB17u3aZTDXNpEB3+dcSKJ13Zj
+         +mvJLodDTJpdAe9eeY5voxv6/stRn6Lh2j952q2jaxrTGvwfswoY+ygZDkvW6jEZvjp0
+         QZDURCdGukQNJzxC2mWQtbj59j1Yx8g3Hfp8aH117KYnzrVzuhisU02N/vSmuE+tlvxs
+         zzYV/PUdeODuuHgiMOcQtOQogVXXPY8hnZ6v+em2duSUeoK5R4Oe0EpkdIZ5Fx0fdURg
+         yiuvH4yJnXCrW92QtfTGSPLtYIiTd9lpbVQ1Qaq19NPDvhwEcMrI9phnEwocUxLw4hj4
+         wZUQ==
+X-Gm-Message-State: AOAM533zeSvHUC74b1ou7MVks8h3o1skRyxeFvjHslCBw03YS/GV6WxI
+        hNZ8J3VIZLbAo98flhn5sp0=
+X-Google-Smtp-Source: ABdhPJybpn87WDF/YX1SjCKImWLRZK8nGsvxetJ3HkHDT55b1TINbO5FihfC7//g0Ih5lZ/NrXjscg==
+X-Received: by 2002:a9d:51ca:: with SMTP id d10mr1129574oth.327.1612363906270;
+        Wed, 03 Feb 2021 06:51:46 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z20sm448531oth.55.2021.02.03.06.51.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Feb 2021 06:51:45 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 3 Feb 2021 06:51:43 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Kyle Tso <kyletso@google.com>, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, robh+dt@kernel.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/8] usb: typec: Manage SVDM version
+Message-ID: <20210203145143.GA58095@roeck-us.net>
+References: <20210202161733.932215-1-kyletso@google.com>
+ <20210202161733.932215-2-kyletso@google.com>
+ <20210203124724.GD1687065@kuha.fi.intel.com>
 MIME-Version: 1.0
-References: <20210125194751.1275316-1-pasha.tatashin@soleen.com>
- <20210125194751.1275316-3-pasha.tatashin@soleen.com> <05a66361-214c-2afe-22e4-12862ea1e4e2@oracle.com>
-In-Reply-To: <05a66361-214c-2afe-22e4-12862ea1e4e2@oracle.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 3 Feb 2021 09:51:32 -0500
-Message-ID: <CA+CK2bBSJ7T=jsukntQGqO0DoWE_MnhDwtHv-6rfXAPvznKh0Q@mail.gmail.com>
-Subject: Re: [PATCH v8 02/14] mm/gup: check every subpage of a compound page
- during isolation
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org, James Morris <jmorris@namei.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203124724.GD1687065@kuha.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 8:23 AM Joao Martins <joao.m.martins@oracle.com> wrote:
->
-> On 1/25/21 7:47 PM, Pavel Tatashin wrote:
-> > When pages are isolated in check_and_migrate_movable_pages() we skip
-> > compound number of pages at a time. However, as Jason noted, it is
-> > not necessary correct that pages[i] corresponds to the pages that
-> > we skipped. This is because it is possible that the addresses in
-> > this range had split_huge_pmd()/split_huge_pud(), and these functions
-> > do not update the compound page metadata.
-> >
-> > The problem can be reproduced if something like this occurs:
-> >
-> > 1. User faulted huge pages.
-> > 2. split_huge_pmd() was called for some reason
-> > 3. User has unmapped some sub-pages in the range
-> > 4. User tries to longterm pin the addresses.
-> >
-> > The resulting pages[i] might end-up having pages which are not compound
-> > size page aligned.
-> >
-> > Fixes: aa712399c1e8 ("mm/gup: speed up check_and_migrate_cma_pages() on huge page")
-> > Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+On Wed, Feb 03, 2021 at 02:47:24PM +0200, Heikki Krogerus wrote:
+> Hi Kyle,
+> 
+> On Wed, Feb 03, 2021 at 12:17:26AM +0800, Kyle Tso wrote:
+> > PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
+> >   6.4.4.2.3 Structured VDM Version
+> >   "The Structured VDM Version field of the Discover Identity Command
+> >   sent and received during VDM discovery Shall be used to determine the
+> >   lowest common Structured VDM Version supported by the Port Partners or
+> >   Cable Plug and Shall continue to operate using this Specification
+> >   Revision until they are Detached."
+> > 
+> > Add a variable in typec_capability to specify the highest SVDM version
+> > supported by the port and another variable in typec_port to cache the
+> > negotiated SVDM version between the port partners.
+> > 
+> > Also add setter/getter functions for the negotiated SVDM version.
+> > 
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
 > > ---
->
-> [...]
->
-> >               /*
-> >                * If we get a page from the CMA zone, since we are going to
-> >                * be pinning these entries, we might as well move them out
-> > @@ -1599,8 +1596,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
-> >                               }
-> >                       }
-> >               }
-> > -
-> > -             i += step;
-> >       }
-> >
->
+> >  drivers/usb/typec/class.c | 13 +++++++++++++
+> >  include/linux/usb/typec.h | 10 ++++++++++
+> >  2 files changed, 23 insertions(+)
+> > 
+> > diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> > index b6ceab3dc16b..42d1be1eece9 100644
+> > --- a/drivers/usb/typec/class.c
+> > +++ b/drivers/usb/typec/class.c
+> > @@ -51,6 +51,7 @@ struct typec_port {
+> >  	enum typec_role			vconn_role;
+> >  	enum typec_pwr_opmode		pwr_opmode;
+> >  	enum typec_port_type		port_type;
+> > +	enum usb_pd_svdm_ver		svdm_version;
+> >  	struct mutex			port_type_lock;
+> 
+> I just realized that you are storing that in the port object. I guess
+> we don't have to change this right now, but it would have been more
+> clear to store that in the partner object IMO.
+> 
+> >  	enum typec_orientation		orientation;
+> > @@ -1841,6 +1842,18 @@ int typec_find_port_data_role(const char *name)
+> >  }
+> >  EXPORT_SYMBOL_GPL(typec_find_port_data_role);
+> >  
+> > +void typec_set_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver ver)
+> > +{
+> > +	port->svdm_version = ver;
+> > +}
+> > +EXPORT_SYMBOL_GPL(typec_set_svdm_version);
+> > +
+> > +enum usb_pd_svdm_ver typec_get_svdm_version(struct typec_port *port)
+> > +{
+> > +	return port->svdm_version;
+> > +}
+> > +EXPORT_SYMBOL_GPL(typec_get_svdm_version);
+> 
+> You need to document those exported functions! You need to do that in
+> any case, but in this case it's very important, because the purpose of
+> these functions is not clear from the ctx.
 
-Hi Joao,
+Thinking about it, would it make make sense to define the functions as
+static inline ?
 
-> With this, longterm gup will 'regress' for hugetlbfs e.g. from ~6k -> 32k usecs when
-> pinning a 16G hugetlb file.
+Thanks,
+Guenter
 
-Estimate or you actually measured?
-
->
-
-> Splitting can only occur on THP right? If so, perhaps we could retain the @step increment
-
-Yes, I do not think we can split HugePage, only THP.
-
-> for compound pages but when !is_transparent_hugepage(head) or just PageHuge(head) like:
->
-> +               if (!is_transparent_hugepage(head) && PageCompound(page))
-> +                       i += (compound_nr(head) - (pages[i] - head));
->
-> Or making specific to hugetlbfs:
->
-> +               if (PageHuge(head))
-> +                       i += (compound_nr(head) - (pages[i] - head));
-
-Yes, this is reasonable optimization. I will submit a follow up patch
-against linux-next.
-
-Thank you,
-Pasha
+> 
+> I'm sorry for noticing that so late. Since you do need to fix that,
+> please see if you can also store that detail in the partner device
+> object instead of the port object.
+> 
+> thanks,
+> 
+> -- 
+> heikki
