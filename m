@@ -2,76 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A838A30D532
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD13C30D4BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhBCI2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:28:54 -0500
-Received: from m12-14.163.com ([220.181.12.14]:58511 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232747AbhBCI2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:28:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=mtMy2P9jjgqfFmMk3y
-        hlRujJxHh6bWkdOTjukmlG++E=; b=CC9fNEKTUBC7nBGZ6wFAaqSVPHwMqhSnEs
-        Wh336cjM9UTr5fCSMWzbFwtLRYRfBvv4OfR8e2e3qMSUiHa2nHjcH0X9KWaQV7cI
-        O0pQtca2qNnVTnfAMAaGxv4Gjkbkhwd57sJPBSC9hiFUZrWaqMZRxyHjUU47JOcJ
-        HZCaeg7sU=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.230])
-        by smtp10 (Coremail) with SMTP id DsCowAAXJVFvWhpgu7a0jA--.183S2;
-        Wed, 03 Feb 2021 16:10:25 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] kernel: debug: fix typo issue
-Date:   Wed,  3 Feb 2021 16:10:34 +0800
-Message-Id: <20210203081034.9004-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowAAXJVFvWhpgu7a0jA--.183S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw45tr13Zr13WF4rKrg_yoWDGFc_ZF
-        s2vrn5uF47Xr1akry7G3Z8Zryvq345Ka9ag3W2vayIyryYyFZ8C34F9Fn3Gr15Wr45XryU
-        Grn0vr43trWUCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUec_-DUUUUU==
-X-Originating-IP: [119.137.55.230]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBEREusVaEC0TiXwAAs-
+        id S232631AbhBCIMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:12:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59627 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232579AbhBCIMV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 03:12:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612339854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qxlXtUCPUeDfRWWdGs58ehxYjicvlUrYs8aprR3WwAE=;
+        b=XJtnqlg5aTvBtbWzC57vY78urAR7wdgdjrlrHiAmPi4kL193eAuLoB2Knf3WTpcRvYN0M6
+        /u8r8mhPH6TC6AUpitgXD6+MkuWLTG7hRInOebpOH5mVYzW4YmeOxzNktLwXY5786fOYjs
+        WUNmxI/h2AXtlG/ICtVKqPCykwIJN/U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-xrpJwDpgMcmQeXUK6NpWmw-1; Wed, 03 Feb 2021 03:10:53 -0500
+X-MC-Unique: xrpJwDpgMcmQeXUK6NpWmw-1
+Received: by mail-ed1-f71.google.com with SMTP id i4so5001459edt.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 00:10:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qxlXtUCPUeDfRWWdGs58ehxYjicvlUrYs8aprR3WwAE=;
+        b=BziLBG3aDpywl2RdZbAy0CgeWXeA+vLH5cBIa+u4HMWro++UTi7Pvfcn0BW9AGonxE
+         n7TlcWLsWvJuhwAbQM2Xp2s87AHfKlY8DFqxOHz/l8UiTIAadFl3y6PJ2iYmjhQFbB7Q
+         UgkasGpR47mAUEKm+Uw/MnPRrFspBg8bprcdtrOr8zt8csmX34+GbM6pf4oXV1de+npw
+         K0xCixl4wBaLGVlXP9bePYz1lLTVNTzrZwve9Bf7EC97Kis6MBmrTl8qnEjpyEB+Pul8
+         wW1y0/9aaRWFs1F8xjdlDsVyziWQ7sWBkERxWYKBp0WF/VwMEHlz7ubznoOkS/DFid7J
+         mgeA==
+X-Gm-Message-State: AOAM532QIjRi1mVTlRgiyUhM7epv0N3dXF/PlMQhnV+W2kQiCZSh3AmS
+        CHBAVv5XMQFEocyJvMZr8DtkTrNfYd8GD5EmHTWXp+y3gt94LTL89WPgvdOfQ6iN4psf8RjraFM
+        YPqt3txtR9P0c51u3aEKyN71hZJrj2+IVp91JNDXcRPBRADd/VjoddszUyWbzboCamC1nL0+bd0
+        wH
+X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2089436eje.317.1612339851688;
+        Wed, 03 Feb 2021 00:10:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzYcHpwc0BPgrV3N2uDbuR6bYtfOV5NkueP9/jpG4V6U9MMpK9Zj+GI5O9JjhnaMhgYAv3E9g==
+X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2089410eje.317.1612339851484;
+        Wed, 03 Feb 2021 00:10:51 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o10sm625592eju.89.2021.02.03.00.10.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 00:10:50 -0800 (PST)
+Subject: Re: [PATCH v4 0/3] KVM: SVM: Refactor vcpu_load/put to use
+ vmload/vmsave for host state
+To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210202190126.2185715-1-michael.roth@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bad29417-94de-bbf6-a2ea-765bfc78f25b@redhat.com>
+Date:   Wed, 3 Feb 2021 09:10:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210202190126.2185715-1-michael.roth@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On 02/02/21 20:01, Michael Roth wrote:
+> Hi Sean, Paolo,
+> 
+> Following up from previous v3 discussion:
+> 
+>    https://lore.kernel.org/kvm/X%2FSfw15OWarseivB@google.com/
+> 
+> I got bit in internal testing by a bug in v3 of this series that Sean had
+> already pointed out in v3 comments, so I thought it might be good to go
+> ahead and send a v4 with those fixes included. I also saw that Sean's vmsave
+> helpers are now in kvm/queue, so I've rebased these on top of those, and
+> made use of the new vmsave/vmload helpers:
+> 
+>    https://lore.kernel.org/kvm/8880fedc-14aa-1f14-b87b-118ebe0932a2@redhat.com/
+> 
+> Thanks!
+> 
+> -Mike
+> 
+> = Overview =
+> 
+> This series re-works the SVM KVM implementation to use vmload/vmsave to
+> handle saving/restoring additional host MSRs rather than explicit MSR
+> read/writes, resulting in a significant performance improvement for some
+> specific workloads and simplifying some of the save/load code (PATCH 1).
+> 
+> With those changes some commonalities emerge between SEV-ES and normal
+> vcpu_load/vcpu_put paths, which we then take advantage of to share more code,
+> as well as refactor them in a way that more closely aligns with the VMX
+> implementation (PATCH 2 and 3).
 
-change 'regster' to 'register'.
+Queued, thanks.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- kernel/debug/gdbstub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Paolo
 
-diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
-index a77df59..e149a0a 100644
---- a/kernel/debug/gdbstub.c
-+++ b/kernel/debug/gdbstub.c
-@@ -595,7 +595,7 @@ static char *gdb_hex_reg_helper(int regnum, char *out)
- 			    dbg_reg_def[i].size);
- }
- 
--/* Handle the 'p' individual regster get */
-+/* Handle the 'p' individual register get */
- static void gdb_cmd_reg_get(struct kgdb_state *ks)
- {
- 	unsigned long regnum;
-@@ -610,7 +610,7 @@ static void gdb_cmd_reg_get(struct kgdb_state *ks)
- 	gdb_hex_reg_helper(regnum, remcom_out_buffer);
- }
- 
--/* Handle the 'P' individual regster set */
-+/* Handle the 'P' individual register set */
- static void gdb_cmd_reg_set(struct kgdb_state *ks)
- {
- 	unsigned long regnum;
--- 
-1.9.1
-
+> v4:
+>   - rebased on kvm/queue
+>   - use sme_page_pa() when accessing save area (Sean)
+>   - make sure vmload during host reboot is handled (Sean)
+>   - introduce vmload() helper like we have with vmsave(), use that instead
+>     of moving the introduce to ASM (Sean)
+> 
+> v3:
+>   - rebased on kvm-next
+>   - remove uneeded braces from host MSR save/load loops (Sean)
+>   - use page_to_phys() in place of page_to_pfn() and shifting (Sean)
+>   - use stack instead of struct field to cache host save area outside of
+>     per-cpu storage, and pass as an argument to __svm_vcpu_run() to
+>     handle the VMLOAD in ASM code rather than inlining ASM (Sean/Andy)
+>   - remove now-uneeded index/sev_es_restored fields from
+>     host_save_user_msrs list
+>   - move host-saving/guest-loading of registers to prepare_guest_switch(),
+>     and host-loading of registers to prepare_host_switch, for both normal
+>     and sev-es paths (Sean)
+> 
+> v2:
+>   - rebase on latest kvm/next
+>   - move VMLOAD to just after vmexit so we can use it to handle all FS/GS
+>     host state restoration and rather than relying on loadsegment() and
+>     explicit write to MSR_GS_BASE (Andy)
+>   - drop 'host' field from struct vcpu_svm since it is no longer needed
+>     for storing FS/GS/LDT state (Andy)
+> 
+>   arch/x86/kvm/svm/sev.c     |  30 +-----------------------------
+>   arch/x86/kvm/svm/svm.c     | 107 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------
+>   arch/x86/kvm/svm/svm.h     |  29 +++++------------------------
+>   arch/x86/kvm/svm/svm_ops.h |   5 +++++
+>   4 files changed, 67 insertions(+), 104 deletions(-)
+> 
+> 
 
