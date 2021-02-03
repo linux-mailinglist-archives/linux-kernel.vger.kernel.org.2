@@ -2,411 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A539D30E7BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9577330E78B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhBCXmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:42:35 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59322 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbhBCXmP (ORCPT
+        id S233657AbhBCXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:38:13 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12351 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232322AbhBCXiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:42:15 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113NAGKe046541;
-        Wed, 3 Feb 2021 23:40:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=corp-2020-01-29;
- bh=T1bb0XTc3eHB9TaU/o5/wnJRnLYt5yXAz2mfRftNqPk=;
- b=AQgAsmYNKDuhJEXkKCCLjZ4btVMHNAaabw7AQaLEHjRQ1DxQ6rsmXgUd7yOAwDKP9eE6
- /jn8Fue+dSJnNLWUz8OvbspBrcSBTd2mFnhKJJYcoRiHLkKv0pQ8floQsGn4dTpuwT0r
- XCDo8DnyDk48OzkHCP/OfGRAcLmqeSD7XxwLuh5HakhRJ5fe0Xig1IQqnm5Sxz235Ir8
- mKVab/Wc+yzfaXw0POZyJ5aL5Tt0Magst+aUTkPD5NEilXYr61/hnUQYX8qpWRJVIPie
- lYzpfQkSuh7hAS2ER2mkomqrQd0Q61hS4+sZxC14yRf+48hMe4kXNeamnh4m+vxdT9M4 3w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36cxvr5fk6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 23:40:15 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113NBZKB083400;
-        Wed, 3 Feb 2021 23:38:14 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by aserp3030.oracle.com with ESMTP id 36dh1rp0e3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 23:38:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bzvh6TTjCKW6F/TBlPDxODMljmdU5b4U3YAZ35m4YjhLwwteroxdqRsIJXe6JrhtN/uUMUOElMzdZF1C1ENAr/iL1fuHxcW3WJ9TRa2Y0XqOGJ2RXu4LZVIpUtij3CG7vhsmbZ1bGXtFSLQSpltPFLoYkclDIu0iNCjpPLnCFanCiIOQeozHW9gQkSabewgu0PiVkxwh2PAy2tiAC2ZMA4AA/5FujqwuP3Nlw9VXAGOYvJkIEMSbYJTTzYk4PkLiBnJZ210q0KU4xFKDBtqO2M/kgU6/BGf2v2p/32pOyIlvd4KGSKYlFzG8qCSOW5qaNusG35HP52alvI07I30YpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1bb0XTc3eHB9TaU/o5/wnJRnLYt5yXAz2mfRftNqPk=;
- b=NsRvqL3XdcmO+sHJOG6vt9wkb0lFGLkVs6UQrK32rQH1C6R8jsab1XeW9C+xmQrrhtcwtO5GxWPtzwIXzsM8O9wJTXQuqvAStPW7TRG97ZtI5TvX4TDX6474kqE5dKXn6VUYTXneJWWSzuWVrQRtaDNPHYyje0YbkIJyeB0DNXmsHkgkcQhXEOq3Mo/jyelM3Gwashr8bKF3DUTo1jq+QEbtnAJ01VklerV71acJhDvDy7a/Ire8LPupCxJia7la3+S9IN8ZGoTIvoRHTyek2iSGphT1pDOi/CDJt7lme8U5szvXIZQNUyJQ0o071z+guAhUzAl1uYzMbs5TORkCbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1bb0XTc3eHB9TaU/o5/wnJRnLYt5yXAz2mfRftNqPk=;
- b=SH5E9mnI9UFqO/gUOeqFccVa5MYZdZsvoeyx68oFPHzx3hPsNVbSgm9Rh0xvUBc3Y2BlVvygdWv1haxHsNTj+TY77T6AJnfyqKjAeQADPPtP4bn59/aq76NOgrPOqOgNASnEzJEpRGcsQNg612h1i32PshXf4qIM/gTJXU7V5V8=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by SJ0PR10MB4784.namprd10.prod.outlook.com (2603:10b6:a03:2d4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Wed, 3 Feb
- 2021 23:38:11 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::b52e:bdd3:d193:4d14]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::b52e:bdd3:d193:4d14%7]) with mapi id 15.20.3805.026; Wed, 3 Feb 2021
- 23:38:11 +0000
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, nouveau@lists.freedesktop.org,
-        x86@kernel.org, xen-devel@lists.xenproject.org
-Cc:     linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
-        akpm@linux-foundation.org, benh@kernel.crashing.org,
-        bskeggs@redhat.com, bhelgaas@google.com, bp@alien8.de,
-        boris.ostrovsky@oracle.com, hch@lst.de, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, hpa@zytor.com, mingo@kernel.org,
-        mingo@redhat.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, jgross@suse.com,
-        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        matthew.auld@intel.com, mpe@ellerman.id.au, rppt@kernel.org,
-        paulus@samba.org, peterz@infradead.org, robin.murphy@arm.com,
-        rodrigo.vivi@intel.com, sstabellini@kernel.org,
-        bauerman@linux.ibm.com, tsbogend@alpha.franken.de,
-        tglx@linutronix.de, ulf.hansson@linaro.org, joe.jin@oracle.com,
-        thomas.lendacky@amd.com
-Subject: [PATCH RFC v1 6/6] xen-swiotlb: enable 64-bit xen-swiotlb
-Date:   Wed,  3 Feb 2021 15:37:09 -0800
-Message-Id: <20210203233709.19819-7-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210203233709.19819-1-dongli.zhang@oracle.com>
-References: <20210203233709.19819-1-dongli.zhang@oracle.com>
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.16]
-X-ClientProxiedBy: CH0PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:610:b0::13) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        Wed, 3 Feb 2021 18:38:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601b33b80001>; Wed, 03 Feb 2021 15:37:28 -0800
+Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
+ 2021 23:37:27 +0000
+Subject: Re: [PATCH 3/4] mm/gup: add a range variant of
+ unpin_user_pages_dirty_lock()
+To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210203220025.8568-1-joao.m.martins@oracle.com>
+ <20210203220025.8568-4-joao.m.martins@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <5e372e25-7202-e0b6-0763-d267698db5b6@nvidia.com>
+Date:   Wed, 3 Feb 2021 15:37:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (138.3.200.16) by CH0PR03CA0008.namprd03.prod.outlook.com (2603:10b6:610:b0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Wed, 3 Feb 2021 23:38:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a6f39ca-831d-4584-1671-08d8c89cc4a6
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4784:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB47843A529EE3238F834D6E8CF0B49@SJ0PR10MB4784.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:136;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g1MdwF09ZQsQBk3V9QOQLj3Q2J4L21DedJnj5zLtjikYKElnwxG4upLd7TjhmJPnAU7VpjSHxPeJkqoPBRqm6qLeK0CHlFugspJnxi0iJI55XYooo19FwHgiOqBWBro0DzURhQTcUKHg2pt6GcgakcdWtajKr7YhF2oMlQ9TwO3PVCjJBIHzVB9ARp0nbm7zuhWes6OM0DRHYiZShiKkwZu7s9DdAyEDvWn/Gl0ZL4waWfYydjw/WkEc5/ennCc9OVPn+TREYJxjo1DWlOpdvMoTMaiSx8AjE+9jEXwuXzWLjL3qbTLDi6ktPwxxXGQs8U3Irr5/M7ar7bmutYlTQ2ed6ghggKY+GkYuKZFNMtieoWviD0NZJ01fhMAb5gbdJWAM4p1gONjFeoyWColerWY0LMjTOXUAp3dPN8tNJCXJ//c8+I3jztzLAk5mNt4e8uVOFDvvw+5Ri8EtVZZgmhOTrLSuo/OqSS6VgrbK7WOcJCGAIwNtW19s81SglVsppCFxB/JYDVlfn/XzOiteTG9HHCwH7jJTeIGHi0vZYowFiLlsq0xIt5bSbDcpMaMnWCnR5Cj//oWPXtmR2wvTgnI8gqLb36wjoJGn9DZCM2o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(396003)(376002)(346002)(83380400001)(316002)(5660300002)(956004)(66946007)(6506007)(86362001)(7406005)(1076003)(66476007)(8676002)(186003)(26005)(36756003)(7416002)(478600001)(2906002)(66556008)(8936002)(6486002)(16526019)(69590400011)(4326008)(6512007)(44832011)(921005)(2616005)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?v4+k5MesDHa1MVSGi/UHPtmaF26L/lVN8GcJ71CBITc1I1MM0IDFIyBYytE4?=
- =?us-ascii?Q?53IGo7YT2EKkghBW/3Sk9E+bozL8K8Q/9nt64yNP1VUKTKWcNXGh0x3n6L54?=
- =?us-ascii?Q?xVW44nCRVbatRJqN678ro8ZSzYt+2fRymUty+3o8u/17/PwxyEk9Ady2ePJu?=
- =?us-ascii?Q?MOCoTjqlbeIOOmbEC/N28xw5dHvOPOovzSUgb9BAxSKqZmaCGbKEKN2DT/bR?=
- =?us-ascii?Q?zqtS1Di8iAHNISKyT5Kia3S5FQ31jIr8lU9eM3naCerZx5CWbllDRJPUggXy?=
- =?us-ascii?Q?PDUKaAxh4cXAaHrxbUuSXPbWSf2dHDC/0daQlqTmIDOHhAzikT+ON4WOwr19?=
- =?us-ascii?Q?NAfx9YwHYZjSnq7QmKuypvDXn/4sFWZ036E16UhM22ZhF3yCJSsT3DjLdG8U?=
- =?us-ascii?Q?tOX4toyIsdgCmi7p5QlaizYNgW+RH61ZTyCbLfrdr/vqHzBb7i9rreaXl+1c?=
- =?us-ascii?Q?guCiLvEr5Go5xNdVG4uR7NyDFOlzkkVsbMfELRCU0p1mRPrIQdx6GL7zHrWH?=
- =?us-ascii?Q?LhATraTb6GMS48zXasH4Dla6lHfNT/es/ZkxUzm5az8Zdjsb76SNDY6Qy0U9?=
- =?us-ascii?Q?dVdWc5Wr/3tykSq/9BWFCam6QyHfXpzywRf5L/GutdWeL2qGZqKhTaUTXeGH?=
- =?us-ascii?Q?EGF9kybhdDX9WoEPRubZZkhbyNiMckO0VrgM333uXg5hUIhn8B+PqVQen7cM?=
- =?us-ascii?Q?0Yf1gM25kWnPI3xofo9GasPaYo/sS+suvzIvlhb2ApKpM6Rc4MCuXBM8KsXR?=
- =?us-ascii?Q?BMlDEGL0r32OC2U3k4ymsoa2g5qKu7wKo3KGE6iz6Ya8AkYKuoW4nUzA9F4P?=
- =?us-ascii?Q?aSeXvt2DyQABYPMdHHv0KPr9+b4R5tmZoteVrUkzO/IDIxlQAXE/0MOQs2aR?=
- =?us-ascii?Q?jwCOMJIruq+MmWnpzVoZ5Wkmc8RWspNBAP+lJpmBZcIUeuUp0Z8vKzuqSteA?=
- =?us-ascii?Q?2Cp+CP+6w/Vxi22Q1FuM16M5VQ0xW2fIukRt0PSMYAsj9qZln0bvBSCk4r32?=
- =?us-ascii?Q?Tzd2Gh0o0RoulKFMNHy6Y2VjnRy43NW+4INplMPcCZXk7WjQgKv7YOEj3syO?=
- =?us-ascii?Q?x9uYpUo5?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a6f39ca-831d-4584-1671-08d8c89cc4a6
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 23:38:11.4626
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r1RSaXkF0zyFxShGIWuzhyAUNVmLQ3O5X3zrZzuMcrJieYM/HHT4wwktIQz2k01o9UKkfGFBJpMRNiO3jThp5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4784
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102030143
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102030143
+In-Reply-To: <20210203220025.8568-4-joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612395448; bh=qmULijZhnU2V5sy1R2oqyUqss+1cKK98EBpQ9ju3bbA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=sRmiPr89EHkBrP1GmMCoZXLqZ8VNSxITNjBQAusN3GvzxUWFBhrL2lcJWkF2P+kIy
+         9l/L96pp283mqBsKXSdXMP0B7cEfRLetUuITXjeswSnr8XLx0P4/UIvKie54tKU1mf
+         RpmbXU9qWq5buJRRakkHwQhFKSy9loIcIm/yezE7DT0hw6LsMEcHUL4OVD68nONe+4
+         5yc2+k/QQrp9pk3u0lIFjE8/A8jeBAMHka7l5ndPFJtTbRlCzg3Nzc/W6CJBNCIGM6
+         vnm3YQcA8HDupkLPIGStYq25sRtz4qCPmfPCh2wom3KbLqf+xlQhZr8JM0Iq56otyK
+         dKoU440SkQ1xA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to enable the 64-bit xen-swiotlb buffer.
+On 2/3/21 2:00 PM, Joao Martins wrote:
+> Add a unpin_user_page_range() API which takes a starting page
+> and how many consecutive pages we want to dirty.
+> 
+> Given that we won't be iterating on a list of changes, change
+> compound_next() to receive a bool, whether to calculate from the starting
+> page, or walk the page array. Finally add a separate iterator,
 
-For Xen PVM DMA address, the 64-bit device will be able to allocate from
-64-bit swiotlb buffer.
+A bool arg is sometimes, but not always, a hint that you really just want
+a separate set of routines. Below...
 
-Cc: Joe Jin <joe.jin@oracle.com>
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
----
- drivers/xen/swiotlb-xen.c | 117 ++++++++++++++++++++++++--------------
- 1 file changed, 74 insertions(+), 43 deletions(-)
+> for_each_compound_range() that just operate in page ranges as opposed
+> to page array.
+> 
+> For users (like RDMA mr_dereg) where each sg represents a
+> contiguous set of pages, we're able to more efficiently unpin
+> pages without having to supply an array of pages much of what
+> happens today with unpin_user_pages().
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> ---
+>   include/linux/mm.h |  2 ++
+>   mm/gup.c           | 48 ++++++++++++++++++++++++++++++++++++++--------
+>   2 files changed, 42 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index a608feb0d42e..b76063f7f18a 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
+>   void unpin_user_page(struct page *page);
+>   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   				 bool make_dirty);
+> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
+> +				      bool make_dirty);
+>   void unpin_user_pages(struct page **pages, unsigned long npages);
+>   
+>   /**
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 971a24b4b73f..1b57355d5033 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -215,11 +215,16 @@ void unpin_user_page(struct page *page)
+>   }
+>   EXPORT_SYMBOL(unpin_user_page);
+>   
+> -static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
+> +static inline unsigned int count_ntails(struct page **pages,
+> +					unsigned long npages, bool range)
+>   {
+> -	struct page *head = compound_head(pages[0]);
+> +	struct page *page = pages[0], *head = compound_head(page);
+>   	unsigned int ntails;
+>   
+> +	if (range)
+> +		return (!PageCompound(head) || compound_order(head) <= 1) ? 1 :
+> +		   min_t(unsigned int, (head + compound_nr(head) - page), npages);
 
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index e18cae693cdc..c9ab07809e32 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -108,27 +108,36 @@ static int is_xen_swiotlb_buffer(struct device *dev, dma_addr_t dma_addr)
- 	unsigned long bfn = XEN_PFN_DOWN(dma_to_phys(dev, dma_addr));
- 	unsigned long xen_pfn = bfn_to_local_pfn(bfn);
- 	phys_addr_t paddr = (phys_addr_t)xen_pfn << XEN_PAGE_SHIFT;
-+	int i;
- 
- 	/* If the address is outside our domain, it CAN
- 	 * have the same virtual address as another address
- 	 * in our domain. Therefore _only_ check address within our domain.
- 	 */
--	if (pfn_valid(PFN_DOWN(paddr))) {
--		return paddr >= virt_to_phys(xen_io_tlb_start[SWIOTLB_LO]) &&
--		       paddr < virt_to_phys(xen_io_tlb_end[SWIOTLB_LO]);
--	}
-+	if (!pfn_valid(PFN_DOWN(paddr)))
-+		return 0;
-+
-+	for (i = 0; i < swiotlb_nr; i++)
-+		if (paddr >= virt_to_phys(xen_io_tlb_start[i]) &&
-+		    paddr < virt_to_phys(xen_io_tlb_end[i]))
-+			return 1;
-+
- 	return 0;
- }
- 
- static int
--xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
-+xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs,
-+		  enum swiotlb_t type)
- {
- 	int i, rc;
- 	int dma_bits;
- 	dma_addr_t dma_handle;
- 	phys_addr_t p = virt_to_phys(buf);
- 
--	dma_bits = get_order(IO_TLB_SEGSIZE << IO_TLB_SHIFT) + PAGE_SHIFT;
-+	if (type == SWIOTLB_HI)
-+		dma_bits = max_dma_bits[SWIOTLB_HI];
-+	else
-+		dma_bits = get_order(IO_TLB_SEGSIZE << IO_TLB_SHIFT) + PAGE_SHIFT;
- 
- 	i = 0;
- 	do {
-@@ -139,7 +148,7 @@ xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
- 				p + (i << IO_TLB_SHIFT),
- 				get_order(slabs << IO_TLB_SHIFT),
- 				dma_bits, &dma_handle);
--		} while (rc && dma_bits++ < max_dma_bits[SWIOTLB_LO]);
-+		} while (rc && dma_bits++ < max_dma_bits[type]);
- 		if (rc)
- 			return rc;
- 
-@@ -147,16 +156,17 @@ xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
- 	} while (i < nslabs);
- 	return 0;
- }
--static unsigned long xen_set_nslabs(unsigned long nr_tbl)
-+
-+static unsigned long xen_set_nslabs(unsigned long nr_tbl, enum swiotlb_t type)
- {
- 	if (!nr_tbl) {
--		xen_io_tlb_nslabs[SWIOTLB_LO] = (64 * 1024 * 1024 >> IO_TLB_SHIFT);
--		xen_io_tlb_nslabs[SWIOTLB_LO] = ALIGN(xen_io_tlb_nslabs[SWIOTLB_LO],
-+		xen_io_tlb_nslabs[type] = (64 * 1024 * 1024 >> IO_TLB_SHIFT);
-+		xen_io_tlb_nslabs[type] = ALIGN(xen_io_tlb_nslabs[type],
- 						      IO_TLB_SEGSIZE);
- 	} else
--		xen_io_tlb_nslabs[SWIOTLB_LO] = nr_tbl;
-+		xen_io_tlb_nslabs[type] = nr_tbl;
- 
--	return xen_io_tlb_nslabs[SWIOTLB_LO] << IO_TLB_SHIFT;
-+	return xen_io_tlb_nslabs[type] << IO_TLB_SHIFT;
- }
- 
- enum xen_swiotlb_err {
-@@ -180,23 +190,24 @@ static const char *xen_swiotlb_error(enum xen_swiotlb_err err)
- 	}
- 	return "";
- }
--int __ref xen_swiotlb_init(int verbose, bool early)
-+
-+static int xen_swiotlb_init_type(int verbose, bool early, enum swiotlb_t type)
- {
- 	unsigned long bytes, order;
- 	int rc = -ENOMEM;
- 	enum xen_swiotlb_err m_ret = XEN_SWIOTLB_UNKNOWN;
- 	unsigned int repeat = 3;
- 
--	xen_io_tlb_nslabs[SWIOTLB_LO] = swiotlb_nr_tbl(SWIOTLB_LO);
-+	xen_io_tlb_nslabs[type] = swiotlb_nr_tbl(type);
- retry:
--	bytes = xen_set_nslabs(xen_io_tlb_nslabs[SWIOTLB_LO]);
--	order = get_order(xen_io_tlb_nslabs[SWIOTLB_LO] << IO_TLB_SHIFT);
-+	bytes = xen_set_nslabs(xen_io_tlb_nslabs[type], type);
-+	order = get_order(xen_io_tlb_nslabs[type] << IO_TLB_SHIFT);
- 
- 	/*
- 	 * IO TLB memory already allocated. Just use it.
- 	 */
--	if (io_tlb_start[SWIOTLB_LO] != 0) {
--		xen_io_tlb_start[SWIOTLB_LO] = phys_to_virt(io_tlb_start[SWIOTLB_LO]);
-+	if (io_tlb_start[type] != 0) {
-+		xen_io_tlb_start[type] = phys_to_virt(io_tlb_start[type]);
- 		goto end;
- 	}
- 
-@@ -204,81 +215,95 @@ int __ref xen_swiotlb_init(int verbose, bool early)
- 	 * Get IO TLB memory from any location.
- 	 */
- 	if (early) {
--		xen_io_tlb_start[SWIOTLB_LO] = memblock_alloc(PAGE_ALIGN(bytes),
-+		xen_io_tlb_start[type] = memblock_alloc(PAGE_ALIGN(bytes),
- 						  PAGE_SIZE);
--		if (!xen_io_tlb_start[SWIOTLB_LO])
-+		if (!xen_io_tlb_start[type])
- 			panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
- 			      __func__, PAGE_ALIGN(bytes), PAGE_SIZE);
- 	} else {
- #define SLABS_PER_PAGE (1 << (PAGE_SHIFT - IO_TLB_SHIFT))
- #define IO_TLB_MIN_SLABS ((1<<20) >> IO_TLB_SHIFT)
- 		while ((SLABS_PER_PAGE << order) > IO_TLB_MIN_SLABS) {
--			xen_io_tlb_start[SWIOTLB_LO] = (void *)xen_get_swiotlb_free_pages(order);
--			if (xen_io_tlb_start[SWIOTLB_LO])
-+			xen_io_tlb_start[type] = (void *)xen_get_swiotlb_free_pages(order);
-+			if (xen_io_tlb_start[type])
- 				break;
- 			order--;
- 		}
- 		if (order != get_order(bytes)) {
- 			pr_warn("Warning: only able to allocate %ld MB for software IO TLB\n",
- 				(PAGE_SIZE << order) >> 20);
--			xen_io_tlb_nslabs[SWIOTLB_LO] = SLABS_PER_PAGE << order;
--			bytes = xen_io_tlb_nslabs[SWIOTLB_LO] << IO_TLB_SHIFT;
-+			xen_io_tlb_nslabs[type] = SLABS_PER_PAGE << order;
-+			bytes = xen_io_tlb_nslabs[type] << IO_TLB_SHIFT;
- 		}
- 	}
--	if (!xen_io_tlb_start[SWIOTLB_LO]) {
-+	if (!xen_io_tlb_start[type]) {
- 		m_ret = XEN_SWIOTLB_ENOMEM;
- 		goto error;
- 	}
- 	/*
- 	 * And replace that memory with pages under 4GB.
- 	 */
--	rc = xen_swiotlb_fixup(xen_io_tlb_start[SWIOTLB_LO],
-+	rc = xen_swiotlb_fixup(xen_io_tlb_start[type],
- 			       bytes,
--			       xen_io_tlb_nslabs[SWIOTLB_LO]);
-+			       xen_io_tlb_nslabs[type],
-+			       type);
- 	if (rc) {
- 		if (early)
--			memblock_free(__pa(xen_io_tlb_start[SWIOTLB_LO]),
-+			memblock_free(__pa(xen_io_tlb_start[type]),
- 				      PAGE_ALIGN(bytes));
- 		else {
--			free_pages((unsigned long)xen_io_tlb_start[SWIOTLB_LO], order);
--			xen_io_tlb_start[SWIOTLB_LO] = NULL;
-+			free_pages((unsigned long)xen_io_tlb_start[type], order);
-+			xen_io_tlb_start[type] = NULL;
- 		}
- 		m_ret = XEN_SWIOTLB_EFIXUP;
- 		goto error;
- 	}
- 	if (early) {
--		if (swiotlb_init_with_tbl(xen_io_tlb_start[SWIOTLB_LO],
--					  xen_io_tlb_nslabs[SWIOTLB_LO],
--					  SWIOTLB_LO, verbose))
-+		if (swiotlb_init_with_tbl(xen_io_tlb_start[type],
-+					  xen_io_tlb_nslabs[type],
-+					  type, verbose))
- 			panic("Cannot allocate SWIOTLB buffer");
- 		rc = 0;
- 	} else
--		rc = swiotlb_late_init_with_tbl(xen_io_tlb_start[SWIOTLB_LO],
--						xen_io_tlb_nslabs[SWIOTLB_LO],
--						SWIOTLB_LO);
-+		rc = swiotlb_late_init_with_tbl(xen_io_tlb_start[type],
-+						xen_io_tlb_nslabs[type],
-+						type);
- 
- end:
--	xen_io_tlb_end[SWIOTLB_LO] = xen_io_tlb_start[SWIOTLB_LO] + bytes;
-+	xen_io_tlb_end[type] = xen_io_tlb_start[type] + bytes;
- 	if (!rc)
--		swiotlb_set_max_segment(PAGE_SIZE, SWIOTLB_LO);
-+		swiotlb_set_max_segment(PAGE_SIZE, type);
- 
- 	return rc;
- error:
- 	if (repeat--) {
--		xen_io_tlb_nslabs[SWIOTLB_LO] = max(1024UL, /* Min is 2MB */
--					(xen_io_tlb_nslabs[SWIOTLB_LO] >> 1));
-+		xen_io_tlb_nslabs[type] = max(1024UL, /* Min is 2MB */
-+					(xen_io_tlb_nslabs[type] >> 1));
- 		pr_info("Lowering to %luMB\n",
--			(xen_io_tlb_nslabs[SWIOTLB_LO] << IO_TLB_SHIFT) >> 20);
-+			(xen_io_tlb_nslabs[type] << IO_TLB_SHIFT) >> 20);
- 		goto retry;
- 	}
- 	pr_err("%s (rc:%d)\n", xen_swiotlb_error(m_ret), rc);
- 	if (early)
- 		panic("%s (rc:%d)", xen_swiotlb_error(m_ret), rc);
- 	else
--		free_pages((unsigned long)xen_io_tlb_start[SWIOTLB_LO], order);
-+		free_pages((unsigned long)xen_io_tlb_start[type], order);
- 	return rc;
- }
- 
-+int __ref xen_swiotlb_init(int verbose, bool early)
-+{
-+	int i, rc;
-+
-+	for (i = 0; i < swiotlb_nr; i++) {
-+		rc = xen_swiotlb_init_type(verbose, early, i);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+
- static void *
- xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
- 			   dma_addr_t *dma_handle, gfp_t flags,
-@@ -566,7 +591,13 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
- static int
- xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
- {
--	return xen_virt_to_bus(hwdev, xen_io_tlb_end[SWIOTLB_LO] - 1) <= mask;
-+	int i;
-+
-+	for (i = 0; i < swiotlb_nr; i++)
-+		if (xen_virt_to_bus(hwdev, xen_io_tlb_end[i] - 1) <= mask)
-+			return true;
-+
-+	return false;
- }
- 
- const struct dma_map_ops xen_swiotlb_dma_ops = {
+Here, you clearly should use a separate set of _range routines. Because you're basically
+creating two different routines here! Keep it simple.
+
+Once you're in a separate routine, you might feel more comfortable expanding that to
+a more readable form, too:
+
+	if (!PageCompound(head) || compound_order(head) <= 1)
+		return 1;
+
+	return min_t(unsigned int, (head + compound_nr(head) - page), npages);
+
+
+thanks,
 -- 
-2.17.1
+John Hubbard
+NVIDIA
 
+> +
+>   	for (ntails = 1; ntails < npages; ntails++) {
+>   		if (compound_head(pages[ntails]) != head)
+>   			break;
+> @@ -229,20 +234,32 @@ static inline unsigned int count_ntails(struct page **pages, unsigned long npage
+>   }
+>   
+>   static inline void compound_next(unsigned long i, unsigned long npages,
+> -				 struct page **list, struct page **head,
+> -				 unsigned int *ntails)
+> +				 struct page **list, bool range,
+> +				 struct page **head, unsigned int *ntails)
+>   {
+> +	struct page *p, **next = &p;
+> +
+>   	if (i >= npages)
+>   		return;
+>   
+> -	*ntails = count_ntails(list + i, npages - i);
+> -	*head = compound_head(list[i]);
+> +	if (range)
+> +		*next = *list + i;
+> +	else
+> +		next = list + i;
+> +
+> +	*ntails = count_ntails(next, npages - i, range);
+> +	*head = compound_head(*next);
+>   }
+>   
+> +#define for_each_compound_range(i, list, npages, head, ntails) \
+> +	for (i = 0, compound_next(i, npages, list, true, &head, &ntails); \
+> +	     i < npages; i += ntails, \
+> +	     compound_next(i, npages, list, true,  &head, &ntails))
+> +
+>   #define for_each_compound_head(i, list, npages, head, ntails) \
+> -	for (i = 0, compound_next(i, npages, list, &head, &ntails); \
+> +	for (i = 0, compound_next(i, npages, list, false, &head, &ntails); \
+>   	     i < npages; i += ntails, \
+> -	     compound_next(i, npages, list, &head, &ntails))
+> +	     compound_next(i, npages, list, false,  &head, &ntails))
+>   
+>   /**
+>    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
+> @@ -306,6 +323,21 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   }
+>   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
+>   
+> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
+> +				      bool make_dirty)
+> +{
+> +	unsigned long index;
+> +	struct page *head;
+> +	unsigned int ntails;
+> +
+> +	for_each_compound_range(index, &page, npages, head, ntails) {
+> +		if (make_dirty && !PageDirty(head))
+> +			set_page_dirty_lock(head);
+> +		put_compound_head(head, ntails, FOLL_PIN);
+> +	}
+> +}
+> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
+> +
+>   /**
+>    * unpin_user_pages() - release an array of gup-pinned pages.
+>    * @pages:  array of pages to be marked dirty and released.
+> 
