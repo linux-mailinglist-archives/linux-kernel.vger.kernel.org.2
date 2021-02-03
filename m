@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927DD30DB75
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31EC30DB7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBCNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:38:30 -0500
-Received: from verein.lst.de ([213.95.11.211]:51287 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231567AbhBCNh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:37:59 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6150367357; Wed,  3 Feb 2021 14:37:12 +0100 (CET)
-Date:   Wed, 3 Feb 2021 14:37:12 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Marc Orr <marcorr@google.com>, Christoph Hellwig <hch@lst.de>,
-        m.szyprowski@samsung.com, Robin Murphy <robin.murphy@arm.com>,
-        gregkh@linuxfoundation.org, Saravana Kannan <saravanak@google.com>,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        jroedel@suse.de, iommu@lists.linux-foundation.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] Adding
- device_dma_parameters->offset_preserve_mask to NVMe driver.
-Message-ID: <20210203133712.GA24674@lst.de>
-References: <20210201183017.3339130-1-jxgao@google.com> <20210201183017.3339130-4-jxgao@google.com> <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com> <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com> <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
+        id S232070AbhBCNjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:39:46 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35570 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232025AbhBCNja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:39:30 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6A0F11C0B79; Wed,  3 Feb 2021 14:38:29 +0100 (CET)
+Date:   Wed, 3 Feb 2021 14:38:29 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     syzbot <syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com>,
+        syzkaller@googlegroups.com
+Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rjw@rjwysocki.net,
+        syzkaller-bugs@googlegroups.com
+Subject: syzbot spam -- is it useful? time to ban them from the list? [was
+ Re: kernel BUG in memory_bm_free]
+Message-ID: <20210203133829.GA5952@duo.ucw.cz>
+References: <0000000000009c21de05ba6849e7@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
 Content-Disposition: inline
-In-Reply-To: <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <0000000000009c21de05ba6849e7@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please try with this extra patch:
 
----
-From 212764c3c15ce859e6f55d2146f450ea4ca6fdb9 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 3 Feb 2021 14:27:13 +0100
-Subject: nvme-pci: fix 2nd PRP setup in nvme_setup_prp_simple
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Use the dma address instead of the bio_vec offset for the arithmetics
-to find the address for the 2nd PRP.
+On Tue 2021-02-02 21:59:17, syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    3aaf0a27 Merge tag 'clang-format-for-linux-v5.11-rc7' of =
+g..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17ef6108d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D10152c2ea1635=
+1e7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D5ecbe63baca4375=
+85bd4
+> userspace arch: arm64
+>=20
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-Fixes: dff824b2aadb ("nvme-pci: optimize mapping of small single segment requests")
-Reported-by: Jianxiong Gao <jxgao@google.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/nvme/host/pci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 30e45f7e0f750c..4ae51735d72f4a 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -808,8 +808,7 @@ static blk_status_t nvme_setup_prp_simple(struct nvme_dev *dev,
- 		struct bio_vec *bv)
- {
- 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
--	unsigned int offset = bv->bv_offset & (NVME_CTRL_PAGE_SIZE - 1);
--	unsigned int first_prp_len = NVME_CTRL_PAGE_SIZE - offset;
-+	dma_addr_t next_prp;
- 
- 	iod->first_dma = dma_map_bvec(dev->dev, bv, rq_dma_dir(req), 0);
- 	if (dma_mapping_error(dev->dev, iod->first_dma))
-@@ -817,8 +816,9 @@ static blk_status_t nvme_setup_prp_simple(struct nvme_dev *dev,
- 	iod->dma_len = bv->bv_len;
- 
- 	cmnd->dptr.prp1 = cpu_to_le64(iod->first_dma);
--	if (bv->bv_len > first_prp_len)
--		cmnd->dptr.prp2 = cpu_to_le64(iod->first_dma + first_prp_len);
-+	next_prp = round_down(iod->first_dma + bv->bv_len, NVME_CTRL_PAGE_SIZE);
-+	if (next_prp > iod->first_dma)
-+		cmnd->dptr.prp2 = cpu_to_le64(next_prp);
- 	return BLK_STS_OK;
- }
- 
--- 
-2.29.2
+Important: Follow netiquette. You are sending automated emails to people
+that did not consent to it. You are not even providing unsubscribe
+link. That's actually illegal here.
 
+Put real name of person responsible in the email. Put [syzbot] in the
+subject so that it and any resulting replies can be filtered out.
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBqnVQAKCRAw5/Bqldv6
+8kweAJ420oF32VQxYNg+V4NqoDXNy4l6TwCggaLpGEFXo4QcWBE1/d1PSfVr36g=
+=Au3W
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
