@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8268330D994
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC30030D99B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhBCMMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:12:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57318 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234394AbhBCMMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:12:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612354264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eNrxU4m48kCXgurPGNqZF1Ysv2wFEFXV5yTwl2DTSK0=;
-        b=EQU0z0ijHF7r1OUVTCF7kIDAcErDjYnFcMR5VJBBxllsGurHDgDA0lDNwjy96uVHmgOcfU
-        I/hC2aXfJ8ikP6Bxt3D136dLvlKucZYn7ed5UKoPKl+7JHYhLjFmcPqO1ST7x14kvGeFik
-        jPo5hzF67xc6bUInH4VAXcnS6dr2thM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-3ARbPb0hPUGPiQWh5VTj4g-1; Wed, 03 Feb 2021 07:11:02 -0500
-X-MC-Unique: 3ARbPb0hPUGPiQWh5VTj4g-1
-Received: by mail-ed1-f70.google.com with SMTP id f21so11401825edx.23
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:11:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNrxU4m48kCXgurPGNqZF1Ysv2wFEFXV5yTwl2DTSK0=;
-        b=Y+OlZyu2PUtNTrKCLz0ZfJfDYI97EmcDFnmZQ6MCV4enU0CnTvcBTHBC/8m9CCLvbM
-         2MawK4ip+GCdjvsvKNwGj4vRIb1Qh6EXBtDC8Rp19IE18ltUiUcuBa4uMIvI1zwNY1n7
-         akBGiyTZ/32EN5uLWNpPH3u1a3HEv5f+ckds5BUKS5RugE78BBJUDirBgBj/vvkJuU9H
-         ikvcoFR6eJrwLFAAPr7k/MxFOKQkndan0lkwk/CwO4axIAwesjoX0GCZW8GdftjMK2/W
-         PrMpMyehSNT7w7Z8DBy95qB4cFyVeRSyTWQoNVXZe8+GxZgcn7WHWK1LoLqCXhoyir2M
-         ummw==
-X-Gm-Message-State: AOAM531DkfSwHkaWq1nJnjtOG8bbNkLq43HlNWBDzYbHyriR3zgkzIle
-        kJD1Cbt+zTNm4hZlUX000vumMIQaEjxjZZY1sK+tpmEHaPCrQu9uwZ0QLPvYpCDMHeaV8vxvZGs
-        NtrRYZnCK0tQTEofzKf/6r6fqAUvWacaZOQhqPZ+EVMMp3btkDUn1Wo16NwVd9LirTL9h5kHA4W
-        2b
-X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr2655196edv.19.1612354261266;
-        Wed, 03 Feb 2021 04:11:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxVY6WTifrvLloI9VZH53nxwFUdupvWyj8T1hKEqfyzVNm9BOeA7KMLBND0m5A15QUVT1xy7w==
-X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr2655173edv.19.1612354261102;
-        Wed, 03 Feb 2021 04:11:01 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id u9sm918518ejc.57.2021.02.03.04.11.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 04:11:00 -0800 (PST)
-Subject: Re: [PATCH] platform/x86/intel-uncore-freq: Add Sapphire Rapids
- server support
-To:     Artem Bityutskiy <dedekind1@gmail.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210203114320.1398801-1-dedekind1@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <957581dd-bf8f-de6e-22dd-a0102d5de01f@redhat.com>
-Date:   Wed, 3 Feb 2021 13:10:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234415AbhBCMOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:14:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234184AbhBCMOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:14:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9180A64E46;
+        Wed,  3 Feb 2021 12:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612354409;
+        bh=5QiK5T7XOA7CP/CKThYIvBvkEYWSKxRHcveuJn05EsI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t3Q0YB2pp7v88vq8VN9SLYJu5AxStVFQdo1mVWPGR2kRfq+unf/obg5IJN6Hx0IeJ
+         BfJqxV7IDeneaBuc3LXECgh5CQt7ARuvgc653Fl+Sb8hRvv7rQQAqR0C48UOigMcMH
+         HjBERLPEOa5eolMMAg4iOGpBJ7yfmUXyaxZls4PIJfAujDl7X3xcfU+nTAzbOhnev4
+         /8hWeUR/wpAOtB9KjLB2Zr7oGYgKX/pwM3uLxBSKEU1o7vXar9cdo/Fj++EPWomuds
+         r9jySfGk3hfyZkaqlemQR1T6eeSzYzAemef+5+uG4+uQxDBk7LIzM+xTTOSubvpNoB
+         66d3+RVMEKf6Q==
+Date:   Wed, 3 Feb 2021 12:12:40 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>
+Subject: Re: [PATCH AUTOSEL 5.10 02/25] regulator: core: avoid
+ regulator_resolve_supply() race condition
+Message-ID: <20210203121240.GA4880@sirena.org.uk>
+References: <20210202150615.1864175-1-sashal@kernel.org>
+ <20210202150615.1864175-2-sashal@kernel.org>
+ <20210202161243.GD5154@sirena.org.uk>
+ <20210203010421.GT4035784@sasha-vm>
 MIME-Version: 1.0
-In-Reply-To: <20210203114320.1398801-1-dedekind1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+In-Reply-To: <20210203010421.GT4035784@sasha-vm>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 2/3/21 12:43 PM, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> Sapphire Rapids uncore frequency control is the same as Skylake and Ice Lake.
-> Add the Sapphire Rapids CPU model number to the match array.
-> 
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+On Tue, Feb 02, 2021 at 08:04:21PM -0500, Sasha Levin wrote:
+> On Tue, Feb 02, 2021 at 04:12:43PM +0000, Mark Brown wrote:
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+> > This introduces a lockdep warning, there's a follow up commit if you
+> > want to backport it or it should be fine to just not backport either.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+> Okay, I'll see if it made it next week before I queue it up. Thanks!
 
-Regards,
+The fix was sent in the same pull request so it's already there.
 
-Hans
+--XsQoSWH+UP9D9v3l
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAakzcACgkQJNaLcl1U
+h9CvSQf6Aw/QQan9eBC4yp3OiHNWFd/wqy45djyf5mw5JxKSMqs49WxyLyKHiVS0
+WwvBb5nE+IlSZzifYNaFIIyJRGsPf6NCemcgRwMxNZ+Wiy4A1fSKOtQNOufQTkpP
+8lIMevGLG8lf7lBKi6JhCqvy9SxBOvrfpYj9NuIKRClwc5zsALf9Ruk5TftYCbrE
+xPcY/UBTDaGx3OxO+UeRvXkXDbVn8xlNGfSMp93v5j2FEFYGFaswHLK1lhsAlAoa
+Fx1KUQn7ok51EZKv++O6KeMzEk9IlQ40+GSI/5NgCvWzyuUTCf1dQYTPteZn9+Th
+5wFoqni5nwQHa1qtK5sIyCAPoqNysw==
+=+dWX
+-----END PGP SIGNATURE-----
 
-> ---
->  drivers/platform/x86/intel-uncore-frequency.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/x86/intel-uncore-frequency.c b/drivers/platform/x86/intel-uncore-frequency.c
-> index 12d5ab7e1f5d..3ee4c5c8a64f 100644
-> --- a/drivers/platform/x86/intel-uncore-frequency.c
-> +++ b/drivers/platform/x86/intel-uncore-frequency.c
-> @@ -377,6 +377,7 @@ static const struct x86_cpu_id intel_uncore_cpu_ids[] = {
->  	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,	NULL),
->  	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,	NULL),
->  	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,	NULL),
-> +	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, NULL),
->  	{}
->  };
->  
-> 
-
+--XsQoSWH+UP9D9v3l--
