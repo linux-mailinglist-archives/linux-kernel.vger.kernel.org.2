@@ -2,145 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2DC30D0CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7D630D0CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhBCB3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:29:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S231128AbhBCBaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:30:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229778AbhBCB3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:29:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04ABF64F4C;
-        Wed,  3 Feb 2021 01:28:49 +0000 (UTC)
+        id S229778AbhBCBaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 20:30:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 264E664E3D;
+        Wed,  3 Feb 2021 01:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612315730;
-        bh=n/k8xGF6YjG7foOcHD5rJG7qc0kZXb2dYJ70lCaKG50=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bCZXegLWZazwiuvYKZatUZAWLDIdj5t/yc4Q/d9YvkaqcMxRwYHTnqa5upRZyqOkI
-         sjTdv4A2KkcaqalmJjLyGj0UNuhCeQ+Mk3lvAsotakn6KKIVfJgVcIe7DVDza1O4gI
-         T4HOSPH7PCJVK1yPTrdHhfz+cageosJDRNtDCCNJ4M8T/QNfnYKt5slYy9xtqTVljf
-         cW11JOBisZFlMT/xehM7Ps+sGN2hnTXkMlr4xyhBsK9VvL5BS/trYSDsyNk+XyTxxV
-         qXXIlWk5YBAZ8R79W+4LbRfnyOs+1dJbyc8+WZ+4ID1tVpD6DD+Lkqg2qRVliLKVUw
-         PME072/99vKGw==
-Date:   Wed, 3 Feb 2021 03:28:43 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: Re: [PATCH v2 2/3] tpm: Provide a function tpm_chip_free() to free
- tpm chips
-Message-ID: <YBn8S8rY2wvv9A8A@kernel.org>
-References: <1612303743-29017-1-git-send-email-LinoSanfilippo@gmx.de>
- <1612303743-29017-3-git-send-email-LinoSanfilippo@gmx.de>
+        s=k20201202; t=1612315760;
+        bh=vosx4JH15veIveNb+50DKtCa0cHZifhgUeN1VEmiuzA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k7q/6d+EEQOXGQgF92sEipnrq3BaA2YhbyCauHwzxWebHOrzd6k0kjh5JUh9bWb5o
+         YUcweAP5m58Yla2fpYNYKSepzdmQMiamJm0USsxVeoFK0DVJj9Fsp0CX0afTjVkbCo
+         rz9AIfSYkQdBi2KM/NCyRnzTsA1WvtQA17dWSF5ueR80YBnTd1oHAiqM4bK2yjSJya
+         XcRAioLiPVC9QRURUcN/Dwo8+SR4zquJ087aUv/5mL9im97STpsZKkgI2cNw0hOuWk
+         2b01od4W9TkW4NgQr2kdGN/dCJFQnv2XiFV3heqhJdJRhq5bXqpCkTCNKliVc+eMGC
+         DQQSWfNVLQDwA==
+Date:   Tue, 2 Feb 2021 17:29:19 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <willemdebruijn.kernel@gmail.com>,
+        <andrew@lunn.ch>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>
+Subject: Re: [Patch v3 net-next 7/7] octeontx2-pf: ethtool physical link
+ configuration
+Message-ID: <20210202172919.466bddcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1612098665-187767-8-git-send-email-hkelam@marvell.com>
+References: <1612098665-187767-1-git-send-email-hkelam@marvell.com>
+        <1612098665-187767-8-git-send-email-hkelam@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612303743-29017-3-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 11:09:02PM +0100, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+On Sun, 31 Jan 2021 18:41:05 +0530 Hariprasad Kelam wrote:
+> From: Christina Jacob <cjacob@marvell.com>
 > 
-> Provide a function tpm_chip_free() as a counterpart to tpm_chip_alloc().
-> The function hides the internals of freeing a struct tpm_chip instance
-> by putting the device references which are part of this structure.
+> Register set_link_ksetting callback with driver such that
+> link configurations parameters like advertised mode,speed, duplex
+> and autoneg can be configured.
 > 
-> Use the new function at the appropriate places.
+> below command
+> ethtool -s eth0 advertise 0x1 speed 10 duplex full autoneg on
 > 
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-
-I prefer open coding here.
-
-/Jarkko
-
+> Signed-off-by: Christina Jacob <cjacob@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
 > ---
->  drivers/char/tpm/tpm-chip.c       | 16 ++++++++++++++++
->  drivers/char/tpm/tpm.h            |  1 +
->  drivers/char/tpm/tpm_ftpm_tee.c   |  6 ++----
->  drivers/char/tpm/tpm_vtpm_proxy.c |  3 +--
->  4 files changed, 20 insertions(+), 6 deletions(-)
+>  .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  | 67 ++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
 > 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 3ace199..777baae 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -402,6 +402,22 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
->  EXPORT_SYMBOL_GPL(tpm_chip_alloc);
->  
->  /**
-> + * tpm_chip_free() - free an instance of struct tpm_chip that has been
-> + * allocated with tpm_chip_alloc() before.
-> + * @chip: chip to free
-> + *
-> + * Frees an instance of struct tpm_chip by releasing internal device references.
-> + * This function is used to hide the internals needed to free a struct tpm_chip
-> + * instance thas has been allocated with tpm_chip_alloc() before.
-> + */
-> +void tpm_chip_free(struct tpm_chip *chip)
-> +{
-> +	put_device(&chip->devs);
-> +	put_device(&chip->dev);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_chip_free);
-> +
-> +/**
->   * tpmm_chip_alloc() - allocate a new struct tpm_chip instance
->   * @pdev: parent device to which the chip is associated
->   * @ops: struct tpm_class_ops instance
-> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> index 947d1db..e6bb6ae 100644
-> --- a/drivers/char/tpm/tpm.h
-> +++ b/drivers/char/tpm/tpm.h
-> @@ -199,6 +199,7 @@ void tpm_put_ops(struct tpm_chip *chip);
->  
->  struct tpm_chip *tpm_chip_alloc(struct device *dev,
->  				const struct tpm_class_ops *ops);
-> +void tpm_chip_free(struct tpm_chip *chip);
->  struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
->  				 const struct tpm_class_ops *ops);
->  int tpm_chip_register(struct tpm_chip *chip);
-> diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
-> index 82858c2..47ffaae 100644
-> --- a/drivers/char/tpm/tpm_ftpm_tee.c
-> +++ b/drivers/char/tpm/tpm_ftpm_tee.c
-> @@ -285,8 +285,7 @@ static int ftpm_tee_probe(struct device *dev)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+> index d637815..74a62de 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+> @@ -1170,6 +1170,72 @@ static int otx2_get_link_ksettings(struct net_device *netdev,
 >  	return 0;
->  
->  out_chip:
-> -	put_device(&pvt_data->chip->dev);
-> -	put_device(&pvt_data->chip->devs);
-> +	tpm_chip_free(chip);
->  out_chip_alloc:
->  	tee_shm_free(pvt_data->shm);
->  out_shm_alloc:
-> @@ -319,8 +318,7 @@ static int ftpm_tee_remove(struct device *dev)
->  	tpm_chip_unregister(pvt_data->chip);
->  
->  	/* frees chip */
-> -	put_device(&pvt_data->chip->devs);
-> -	put_device(&pvt_data->chip->dev);
-> +	tpm_chip_free(pvt_data->chip);
->  
->  	/* Free the shared memory pool */
->  	tee_shm_free(pvt_data->shm);
-> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-> index 97b60f8..f887bb3 100644
-> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
-> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-> @@ -520,8 +520,7 @@ static struct proxy_dev *vtpm_proxy_create_proxy_dev(void)
->   */
->  static inline void vtpm_proxy_delete_proxy_dev(struct proxy_dev *proxy_dev)
->  {
-> -	put_device(&proxy_dev->chip->devs);
-> -	put_device(&proxy_dev->chip->dev); /* frees chip */
-> +	tpm_chip_free(proxy_dev->chip);
->  	kfree(proxy_dev);
 >  }
 >  
-> -- 
-> 2.7.4
-> 
+> +static void otx2_get_advertised_mode(const struct ethtool_link_ksettings *cmd,
+> +				     u64 *mode)
+> +{
+> +	u32 bit_pos;
+> +
+> +	/* Firmware does not support requesting multiple advertised modes
+> +	 * return first set bit
+> +	 */
+> +	bit_pos = find_first_bit(cmd->link_modes.advertising,
+> +				 __ETHTOOL_LINK_MODE_MASK_NBITS);
+> +	if (bit_pos != __ETHTOOL_LINK_MODE_MASK_NBITS)
+> +		*mode = bit_pos;
+> +}
+> +
+> +static int otx2_set_link_ksettings(struct net_device *netdev,
+> +				   const struct ethtool_link_ksettings *cmd)
+> +{
+> +	struct otx2_nic *pf = netdev_priv(netdev);
+> +	struct ethtool_link_ksettings req_ks;
+> +	struct ethtool_link_ksettings cur_ks;
+> +	struct cgx_set_link_mode_req *req;
+> +	struct mbox *mbox = &pf->mbox;
+> +	int err = 0;
+> +
+> +	/* save requested link settings */
+> +	memcpy(&req_ks, cmd, sizeof(struct ethtool_link_ksettings));
+
+Why do you make this copy? The comment above does not help at all.
+
+> +	memset(&cur_ks, 0, sizeof(struct ethtool_link_ksettings));
+> +
+> +	if (!ethtool_validate_speed(cmd->base.speed) ||
+> +	    !ethtool_validate_duplex(cmd->base.duplex))
+> +		return -EINVAL;
+> +
+> +	if (cmd->base.autoneg != AUTONEG_ENABLE &&
+> +	    cmd->base.autoneg != AUTONEG_DISABLE)
+> +		return -EINVAL;
+> +
+> +	otx2_get_link_ksettings(netdev, &cur_ks);
+> +
+> +	/* Check requested modes against supported modes by hardware */
+> +	if (!bitmap_subset(req_ks.link_modes.advertising,
+> +			   cur_ks.link_modes.supported,
+> +			   __ETHTOOL_LINK_MODE_MASK_NBITS))
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&mbox->lock);
+> +	req = otx2_mbox_alloc_msg_cgx_set_link_mode(&pf->mbox);
+> +	if (!req) {
+> +		err = -ENOMEM;
+> +		goto end;
+> +	}
+> +
+> +	req->args.speed = req_ks.base.speed;
+> +	/* firmware expects 1 for half duplex and 0 for full duplex
+> +	 * hence inverting
+> +	 */
+> +	req->args.duplex = req_ks.base.duplex ^ 0x1;
+> +	req->args.an = req_ks.base.autoneg;
+> +	otx2_get_advertised_mode(&req_ks, &req->args.mode);
+
+But that only returns the first bit set. What does the device actually
+do? What if the user cleared a middle bit?
+
+> +	err = otx2_sync_mbox_msg(&pf->mbox);
+> +end:
+> +	mutex_unlock(&mbox->lock);
+> +	return err;
+> +}
+> +
+>  static const struct ethtool_ops otx2_ethtool_ops = {
+>  	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+>  				     ETHTOOL_COALESCE_MAX_FRAMES,
+> @@ -1200,6 +1266,7 @@ static const struct ethtool_ops otx2_ethtool_ops = {
+>  	.get_fecparam		= otx2_get_fecparam,
+>  	.set_fecparam		= otx2_set_fecparam,
+>  	.get_link_ksettings     = otx2_get_link_ksettings,
+> +	.set_link_ksettings     = otx2_set_link_ksettings,
+>  };
+>  
+>  void otx2_set_ethtool_ops(struct net_device *netdev)
+
