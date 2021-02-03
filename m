@@ -2,186 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0066130E370
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AAD30E388
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhBCTmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:42:38 -0500
-Received: from mga18.intel.com ([134.134.136.126]:31775 "EHLO mga18.intel.com"
+        id S231422AbhBCTrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:47:47 -0500
+Received: from mga11.intel.com ([192.55.52.93]:18261 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhBCTmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:42:32 -0500
-IronPort-SDR: MF7m5DVHJ9MqvZJjqp1rOvQ1Y9goDrDYOivSPOWi/UOmQv+uAa0cvb3+jdf+XRJ2dHwsvCiaSi
- jjxJREMdDDxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168786540"
+        id S230316AbhBCTrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:47:45 -0500
+IronPort-SDR: P6sBy8oVp7lJxv2SfAbickprf4PC2+uscnmncNlkJBAcmGBdusj84Y9sMk0iq2F83PTcp165IR
+ 7NyQA1Adxs8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="177598988"
 X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="168786540"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:42:12 -0800
-IronPort-SDR: 5PXk2IM/lL7HaK0MhY3Qyh8dIXUEIa71n2wUZ67klgH2pq/sIM5IXz8kGgGiG5t6xtWepomcl/
- GbHMGxsFrRYg==
+   d="scan'208";a="177598988"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:46:00 -0800
+IronPort-SDR: 52iZM3s5rqgq2q8OLsrcAFLChzcxau/Kc78SOcYDoaRtcA2xFR6v0I+Yl6o7qK5x0SHVfNJz+y
+ FgRyqPFbRwSA==
 X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="576012095"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:42:12 -0800
-Date:   Wed, 3 Feb 2021 11:42:11 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Prathu Baronia <prathubaronia2011@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
-        Prathu Baronia <prathu.baronia@oneplus.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH v2 1/1] mm: Optimizing hugepage zeroing in arm64
-Message-ID: <20210203194211.GE3200985@iweiny-DESK2.sc.intel.com>
-References: <20210202074225.7244-1-prathu.baronia@oneplus.com>
- <20210202074225.7244-2-prathu.baronia@oneplus.com>
- <20210202200354.GB3200985@iweiny-DESK2.sc.intel.com>
- <CAJp9fscSi1yqcZagc7HzKV1h99X0wP6FWuQx8OpnqwgSp8yA5A@mail.gmail.com>
+   d="scan'208";a="480467147"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:45:58 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l7O67-001iOT-2g; Wed, 03 Feb 2021 21:45:55 +0200
+Date:   Wed, 3 Feb 2021 21:45:55 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        shuah@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field
+ widths in vsscanf
+Message-ID: <YBr9c44Dvq1ZNrEa@smile.fi.intel.com>
+References: <20210203165009.6299-1-rf@opensource.cirrus.com>
+ <20210203165009.6299-2-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJp9fscSi1yqcZagc7HzKV1h99X0wP6FWuQx8OpnqwgSp8yA5A@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20210203165009.6299-2-rf@opensource.cirrus.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:08:08PM +0530, Prathu Baronia wrote:
->    Hey Ira,
->    I looked at your below-mentioned patch and I agree that the
->    above-mentioned functions also need modification similar to
->    clear_user_highpage().
->    Would it be okay with you if I send your patch again with a modified
->    commit message by adding my data and maintaining your authorship?
->    [1]https://lore.kernel.org/lkml/20201210171834.2472353-2-ira.weiny@intel.com/
+On Wed, Feb 03, 2021 at 04:50:07PM +0000, Richard Fitzgerald wrote:
+> The existing code attempted to handle numbers by doing a strto[u]l(),
+> ignoring the field width, and then repeatedly dividing to extract the
+> field out of the full converted value. If the string contains a run of
+> valid digits longer than will fit in a long or long long, this would
+> overflow and no amount of dividing can recover the correct value.
+> 
+> This patch fixes vsscanf to obey number field widths when parsing
 
-Sure.  I have not changed the patch at all from that version.
+vsscanf()
 
-Andrew, will this be going through your tree?  If not who?
+> the number.
+> 
+> A new _parse_integer_limit() is added that takes a limit for the number
+> of characters to parse. The number field conversion in vsscanf is changed
+> to use this new function.
+> 
+> If a number starts with a radix prefix, the field width  must be long
+> enough for at last one digit after the prefix. If not, it will be handled
+> like this:
+> 
+>  sscanf("0x4", "%1i", &i): i=0, scanning continues with the 'x'
+>  sscanf("0x4", "%2i", &i): i=0, scanning continues with the '4'
+> 
+> This is consistent with the observed behaviour of userland sscanf.
+> 
+> Note that this patch does NOT fix the problem of a single field value
+> overflowing the target type. So for example:
+> 
+>   sscanf("123456789abcdef", "%x", &i);
+> 
+> Will not produce the correct result because the value obviously overflows
+> INT_MAX. But sscanf will report a successful conversion.
 
-If you take the above patch I can drop it from the series I'm about to submit
-to convert btrfs kmaps.
+...
 
-Ira
+> +	for (; max_chars > 0; max_chars--) {
 
->    Regards,
->    Prathu Baronia
-> 
->    On Wed, Feb 3, 2021 at 1:33 AM Ira Weiny <[2]ira.weiny@intel.com> wrote:
-> 
->      On Tue, Feb 02, 2021 at 01:12:24PM +0530, Prathu Baronia wrote:
->      > In !HIGHMEM cases, specially in 64-bit architectures, we don't need
->      temp
->      > mapping of pages. Hence, k(map|unmap)_atomic() acts as nothing more
->      than
->      > multiple barrier() calls, for example for a 2MB hugepage in
->      > clear_huge_page() these are called 512 times i.e. to map and unmap
->      each
->      > subpage that means in total 2048 barrier calls. This called for
->      > optimization. Simply getting VADDR from page in the form of
->      kmap_local_*
->      > APIs does the job for us.  We profiled clear_huge_page() using ftrace
->      > and observed an improvement of 62%.
-> 
->      Nice!
-> 
->      >
->      > Setup:-
->      > Below data has been collected on Qualcomm's SM7250 SoC THP enabled
->      > (kernel
->      > v4.19.113) with only CPU-0(Cortex-A55) and CPU-7(Cortex-A76) switched
->      on
->      > and set to max frequency, also DDR set to perf governor.
->      >
->      > FTRACE Data:-
->      >
->      > Base data:-
->      > Number of iterations: 48
->      > Mean of allocation time: 349.5 us
->      > std deviation: 74.5 us
->      >
->      > v1 data:-
->      > Number of iterations: 48
->      > Mean of allocation time: 131 us
->      > std deviation: 32.7 us
->      >
->      > The following simple userspace experiment to allocate
->      > 100MB(BUF_SZ) of pages and writing to it gave us a good insight,
->      > we observed an improvement of 42% in allocation and writing timings.
->      > -------------------------------------------------------------
->      > Test code snippet
->      > -------------------------------------------------------------
->      >       clock_start();
->      >       buf = malloc(BUF_SZ); /* Allocate 100 MB of memory */
->      >
->      >         for(i=0; i < BUF_SZ_PAGES; i++)
->      >         {
->      >                 *((int *)(buf + (i*PAGE_SIZE))) = 1;
->      >         }
->      >       clock_end();
->      > -------------------------------------------------------------
->      >
->      > Malloc test timings for 100MB anon allocation:-
->      >
->      > Base data:-
->      > Number of iterations: 100
->      > Mean of allocation time: 31831 us
->      > std deviation: 4286 us
->      >
->      > v1 data:-
->      > Number of iterations: 100
->      > Mean of allocation time: 18193 us
->      > std deviation: 4915 us
->      >
->      > Reported-by: Chintan Pandya <[3]chintan.pandya@oneplus.com>
->      > Signed-off-by: Prathu Baronia <[4]prathu.baronia@oneplus.com>
-> 
->      Reviewed-by: Ira Weiny <[5]ira.weiny@intel.com>
-> 
->      FWIW, I have the same change in a patch in my kmap() changes branch. 
->      However,
->      my patch also changes clear_highpage(), zero_user_segments(),
->      copy_user_highpage(), and copy_highpage().
-> 
->      Would changing those help you as well?
-> 
->      Ira
-> 
->      > ---
->      >  include/linux/highmem.h | 4 ++--
->      >  1 file changed, 2 insertions(+), 2 deletions(-)
->      >
->      > diff --git a/include/linux/highmem.h b/include/linux/highmem.h
->      > index d2c70d3772a3..444df139b489 100644
->      > --- a/include/linux/highmem.h
->      > +++ b/include/linux/highmem.h
->      > @@ -146,9 +146,9 @@ static inline void
->      invalidate_kernel_vmap_range(void *vaddr, int size)
->      >  #ifndef clear_user_highpage
->      >  static inline void clear_user_highpage(struct page *page, unsigned
->      long vaddr)
->      >  {
->      > -     void *addr = kmap_atomic(page);
->      > +     void *addr = kmap_local_page(page);
->      >       clear_user_page(addr, vaddr, page);
->      > -     kunmap_atomic(addr);
->      > +     kunmap_local(addr);
->      >  }
->      >  #endif
->      > 
->      > --
->      > 2.17.1
->      >
-> 
-> References
-> 
->    Visible links
->    1. https://lore.kernel.org/lkml/20201210171834.2472353-2-ira.weiny@intel.com/
->    2. mailto:ira.weiny@intel.com
->    3. mailto:chintan.pandya@oneplus.com
->    4. mailto:prathu.baronia@oneplus.com
->    5. mailto:ira.weiny@intel.com
+Less fragile is to write
+
+	while (max_chars--)
+
+This allows max_char to be an unsigned type.
+
+Moreover...
+
+> +	return _parse_integer_limit(s, base, p, INT_MAX);
+
+You have inconsistency with INT_MAX vs, size_t above.
+
+...
+
+> +unsigned int _parse_integer_limit(const char *s, unsigned int base,
+> +				  unsigned long long *res, size_t max_chars);
+
+Also, can you leave res on previous line, so it will be easier to see what's
+the difference with the original one?
+
+>  unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long *res);
+
+...
+
+> -	unsigned long long result;
+> +	const char *cp;
+> +	unsigned long long result = 0ULL;
+>  	unsigned int rv;
+>  
+> -	cp = _parse_integer_fixup_radix(cp, &base);
+> -	rv = _parse_integer(cp, base, &result);
+
+> +	if (max_chars == 0) {
+> +		cp = startp;
+> +		goto out;
+> +	}
+
+It's redundant if I'm not mistaken.
+
+> +	cp = _parse_integer_fixup_radix(startp, &base);
+> +	if ((cp - startp) >= max_chars) {
+> +		cp = startp + max_chars;
+> +		goto out;
+> +	}
+
+This will be exactly the same, no?
+
+Moreover you will have while (max_chars--) in the _limit() variant which is
+also a no-op.
+
+...
+
+> -
+
+Unrelated change.
+
+> +out:
+>  	if (endp)
+>  		*endp = (char *)cp;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
