@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C0530E53D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA2D30E54F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhBCVzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:55:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42392 "EHLO mail.kernel.org"
+        id S232507AbhBCV51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:57:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229897AbhBCVz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:55:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29A664F6C;
-        Wed,  3 Feb 2021 21:54:48 +0000 (UTC)
+        id S232430AbhBCV5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:57:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64C3364D90;
+        Wed,  3 Feb 2021 21:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612389289;
-        bh=Qiz8MokgGBvGwkrU9ihniujcsOk/Nkcte47kBrXcYkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B+WwauRu+ZWiuFTJALuFrywN0e9jHN59j51oBYr/Vmcf8Jibicp09+UjpgHkpLAf2
-         bBh7dN/pixZMx3Fn5PeNVvn4phhOc5jnIC5Saav6I8qPfEAF2GYVoP557i+jtnnK9X
-         QWiQ6zXquX8PGxbfOT/OVtZAUNURamgC0QSNrtS236dekOPZtlrpWwI0c7LI7Ztqjb
-         5oqMYfrtnGgcFu8zRsDp59pNKkNKZx4mB/4GYbtTMRS2MhjMw1cZpcVjcDYeAnAjFs
-         WmfA47qr2hMbyIodJI/8I4nBhorsekjO0qibvaUKpDqcRI61jSJfobbHSdAf8dyKs8
-         d80ZhK1pL2Q6g==
-Date:   Wed, 3 Feb 2021 23:54:42 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, stable@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] x86/sgx: Fix use-after-free in
- sgx_mmu_notifier_release()
-Message-ID: <YBsbojMEeq3pCNhy@kernel.org>
-References: <20210128125823.18660-1-jarkko@kernel.org>
- <9dd2a962-2328-8784-9aed-b913502e1102@intel.com>
- <fa43948ba860d6ac99adabad3d8b6ff11f5d2239.camel@kernel.org>
- <8df884af-825e-bae0-f0c3-c3e97f48d138@intel.com>
+        s=k20201202; t=1612389383;
+        bh=KlqMz0AxDAOewwpGjJMp9MSlBYUAqgp9ZkKxph73xJk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hsz8CLyqqjck4bzLjA1rUO2vj3NHLNp+ADj16T6Jv3rjoLQKWc013iaR9ISh+glcF
+         w75zcKGZKpk5/9M/8/fVJnvADPEO5j4+ffFLS1MK0ybu/tmBP1jCQFlGEfx1dg/T2z
+         S1Yl25qfwaKMKe21n16App3VbJcx7MQrfoq6BBjlEJjCmQz8LZGH4K/soSlaHW0V/i
+         imM7AdA9HHCCGjOpwOtTd9wB4SQsqfXxvCuBKLOV/FAwHnlPIQIHrl0oFq+g/rWE6F
+         MKqHJNqZpXvur1adiaMWcQjHmO8OiLS93PQAmQThBB8Ba8XIE2wkqtqm+j8MJUDg8W
+         JtbU9LOyyJfFA==
+Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
+        willy@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, roman.fietze@magna.com,
+        john.ogness@linutronix.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        akinobu.mita@gmail.com
+References: <20210202213633.755469-1-timur@kernel.org>
+ <YBpyzxBYIYapHaDT@alley> <YBqlooegQgEfPG4T@alley>
+ <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
+ <202102031201.FFED9547D@keescook>
+ <20210203152513.34492916@gandalf.local.home> <202102031234.9BF349F@keescook>
+ <20210203154727.20946539@gandalf.local.home>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <a6556624-71d5-e689-5273-693c69c77c9e@kernel.org>
+Date:   Wed, 3 Feb 2021 15:56:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8df884af-825e-bae0-f0c3-c3e97f48d138@intel.com>
+In-Reply-To: <20210203154727.20946539@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 07:46:48AM -0800, Dave Hansen wrote:
-> On 1/30/21 11:20 AM, Jarkko Sakkinen wrote:
-> ...
-> > Example scenario would such that all removals "side-channel" through
-> > the notifier callback. Then mmu_notifier_unregister() gets called
-> > exactly zero times. No MMU notifier srcu sync would be then happening.
-> > 
-> > NOTE: There's bunch of other examples, I'm just giving one.
-> 
-> Could you flesh this out a bit?  I don't quite understand the scenario
-> from what you describe above.
-> 
-> In any case, I'm open to other implementations that fix the race we know
-> about.  If you think you have a better fix, I'm happy to review it and
-> make sure it closes the other race.
 
-I'll bake up a new patch. Generally speaking, I think why this has been so
-difficult, is because of a chicken-egg-problem. The whole issue should be
-sorted when a new entry is first added to the mm_list, i.e. increase the
-refcount for each added entry.
 
-/Jarkko
+On 2/3/21 2:47 PM, Steven Rostedt wrote:
+>   static void __init
+>   plain(void)
+>   {
+>   	int err;
+>   
+> +	if (debug_never_hash_pointers)
+> +		return;
+
+So, I have a stupid question.  What's the best way for test_printf.c to 
+read the command line parameter?  Should I just do this in vsprintf.c:
+
+/* Disable pointer hashing if requested */
+static bool debug_never_hash_pointers __ro_after_init;
+EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
+
+I'm not crazy about exporting this variable to other drivers.  It could 
+be used to disable hashing by any driver.
+
+AFAIK, the only command-line parameter code that works in drivers is 
+module_parm, and that expects the module prefix on the command-line.
