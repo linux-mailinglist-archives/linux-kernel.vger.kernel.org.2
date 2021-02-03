@@ -2,161 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BE630D3DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FDF30D393
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhBCHIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:08:30 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:39169 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhBCHI2 (ORCPT
+        id S231743AbhBCG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhBCG5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:08:28 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210203070744epoutp047b2dc0114e4cac1788d18c4297c1b87f~gKxuwFfJ23022030220epoutp04d
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:07:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210203070744epoutp047b2dc0114e4cac1788d18c4297c1b87f~gKxuwFfJ23022030220epoutp04d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612336064;
-        bh=VJliMWnZXZoAle13sep0eHx4MFHDiIudRhjQVhWLeIg=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=GIk8OdjOuZVkMjNV+5cLDGkrnI6jjMAOA+m1z/kTHvCcUr35UCN/xGR/Y3Vv3lm82
-         JNfXUifvGkKWrzhn64KQBQ0CMlpgsuK74ogNRd82k+IZnI00LE71+rPZPd6FLk66Fe
-         /v0sjaqw0rNzDHFouXy6oICuJfZBtiRIxxBCQp60=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210203070743epcas1p2983886d0fe889b0d568d59254f3dd212~gKxuFiqlt0292402924epcas1p2L;
-        Wed,  3 Feb 2021 07:07:43 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DVt6k3r7Hz4x9Pt; Wed,  3 Feb
-        2021 07:07:42 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6F.1A.10463.EBB4A106; Wed,  3 Feb 2021 16:07:42 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210203070741epcas1p20ce8cc24d06b3c82d735dff59f0459de~gKxsV-gXB1007210072epcas1p2N;
-        Wed,  3 Feb 2021 07:07:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210203070741epsmtrp293b3a62b892050b07edb948c44a22c76~gKxsU4nnO3168731687epsmtrp2B;
-        Wed,  3 Feb 2021 07:07:41 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-2e-601a4bbee78b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        67.C9.08745.DBB4A106; Wed,  3 Feb 2021 16:07:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.101.61]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210203070741epsmtip177e197484a4290c3dd868e3c7015fb61~gKxsCoSfR3029230292epsmtip1_;
-        Wed,  3 Feb 2021 07:07:41 +0000 (GMT)
-From:   DooHyun Hwang <dh0421.hwang@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, asutoshd@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, adrian.hunter@intel.com, satyat@google.com
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com,
-        DooHyun Hwang <dh0421.hwang@samsung.com>
-Subject: [PATCH] scsi: ufs: Add total count for each error history
-Date:   Wed,  3 Feb 2021 15:53:46 +0900
-Message-Id: <20210203065346.26606-1-dh0421.hwang@samsung.com>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta1ATVxjt3V02AQZnC4KX6JSYUSsokACBqwVan12rU2k7tk5nbNiQLWBD
-        ksmDQvsHi8NDkZeDraFpRQF5qJmmgUJGwKYPiGPBlgoWLQqDBaU8JEMpitgNq1P+ne9859wz
-        33fvFeL+o6RImK4xsnoNo5aQPkTzD6HS8Pa9omRprms1co1cINHdr5pJ1JbXJUD352+Q6Puh
-        QgLNWGu90BdX87xQe59LgB49sQrQiNWMo4Kmkxg6e7MZQy2j1wTI8SQXQ72OL0l0vL+FROc7
-        FzFU0vgniT5baCdQ37UuL1TT9AdA3/72D/FaEN1bfAKjz9hM9LnL9zHa1lBI0qVnrwD6qKuD
-        oOesBST98N4AQRfbGwDttr1E5185jiX5vq+OT2MZFasXs5oUrSpdk5og2fuOYodCHiuVhcu2
-        oDiJWMNksAmSnfuSwnenq7lxJeJMRm3iqCTGYJBEJsbrtSYjK07TGowJElanUutkUl2Egckw
-        mDSpESnajK0yqTRKzimT1WnVuW/rin2zJmv+BjmgyvsY8BZCKgYuWtowD/anWgD8t/KNY8CH
-        wzMAdvTUCfjCDWBOjxl/7lgYGiT4hgPAwd5TOG/nVPW3lo4lqQh4+USDl0e0kmrH4O36DsxT
-        4NRDAKsGxkmPKoDaDm8P2JbCCWo9LJqrXOL9qAQ4nDeK8XEhcOFOEc7zL0LX6RHCg3GOz22q
-        xD2HQmpaCHsqCwnesBP+mr8AeBwAH3TaBTwWQfdkG8nj4wCWOBN5cymAvZ1FzxrRcMbt5sxC
-        LiEUWh2RPL0Wtj62AD54BZycLfLySCDlBwvy/HnJBnhucY6TCDi8Bh7x5VkaDha1PlvvIWhx
-        loNSEGJeNox52TDm/2PPALwBBLE6Q0Yqa5DpYpbfqQ0svfgw1AIsE9MRToAJgRNAIS5Z6Xe1
-        PCjZ30/FZH/C6rUKvUnNGpxAzq23DBcFpmi5L6MxKmTyqOjoaBQTGxcrj5as8lNK7yr8qVTG
-        yH7EsjpW/9yHCb1FOdgOuOdD65RjW+iN809tk/tfCdRV2LMst0rk07VjvbHBW7v3vxXsMFyi
-        O1zZY8Fy8fqKkIP4A7Fy01/zVQWDAUceFW/sO5WlFDtO/9SlOvzN0OHq+rDP54xlMbEXNrz7
-        5ljT9uyadbWP+2VVwt0R7q+Hp6KUm/atSN3yS1LrwfCTkePrbI0bSSG8eHQmF//Zstn+o3Lq
-        48Cn9p61yuuO2bqpS6tNRP71pO/y9ZVdPdsKN/c7f2/pIGOa49LLh1+37/pgDztbVXOveyJ+
-        Fe0b+LLWtgtUzysZ9QEzFux6VZGTeei9NZ/WWsMjp7pfUImSLzI3+w7UNGa6ZibKfCrG79Qt
-        JifGSQhDGiMLw/UG5j/EhdDkegQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsWy7bCSnO5eb6kEg6uzDC1OPlnDZvFg3jY2
-        i71tJ9gtXv68ymZx8GEni8Wn9ctYLWacamO12HftJLvFr7/r2S2erJ/FbNGxdTKTxaIb25gs
-        djw/w26x628zk8XlXXPYLLqv72CzWH78H5NF/+q7bBZNf/axWFw7c4LVYunWm4wWmy99Y3EQ
-        87jc18vksWBTqcfiPS+ZPDat6mTzmLDoAKNHy8n9LB7f13eweXx8eovFo2/LKkaPz5vkPNoP
-        dDMFcEdx2aSk5mSWpRbp2yVwZSxpDiro4654t/QNYwPjQs4uRk4OCQETiT8P77GA2EICOxgl
-        3v2KgIjLSHTf38vexcgBZAtLHD5c3MXIBVTykVHif+taVpAaNgE9iT29q1hBEiIC55gkbs9b
-        wgjiMAv8ZpSY9KOZHaRKWMBJ4s6tTUwgNouAqkTP99lsIDavgK3Eo7bnTBDb5CX+3O9hhogL
-        Spyc+QTsImagePPW2cwTGPlmIUnNQpJawMi0ilEytaA4Nz232LDAKC+1XK84Mbe4NC9dLzk/
-        dxMjOOq0tHYw7ln1Qe8QIxMH4yFGCQ5mJRHeU5PEEoR4UxIrq1KL8uOLSnNSiw8xSnOwKInz
-        Xug6GS8kkJ5YkpqdmlqQWgSTZeLglGpg2tmbHlv2veVt5MG6H0833XdNDJx3+Wmg2+sF/jYp
-        T1tF/4ucN+j49jopsnf28u8+5b+nifZ1SF96/SZh947fTzuPb6q/xPR77r5yUfvZfv+2rtGd
-        Fm65nW3LH+lD1+RuGzUG6/W2L3ny6/BJN7/FDCd+l6sssspd+tDqyXSvyw8k59wqmBB+/Ktz
-        FHNY9Z8Xvxcec3coX8ra1yQqq3ZTKOX07BeTjD2Tl7w4uib25Iczi97uusQlNf8x57658XoB
-        lufFLb5YSR254LGRi/P456Py0xUXnNqztLvHZ4r9mVedPLdjTH5YdWocWmf9rb6xzPma/MzH
-        vDPjV938sCHlrqHyJ791Ira688o8Kp+aFwkrsRRnJBpqMRcVJwIADD8TgSkDAAA=
-X-CMS-MailID: 20210203070741epcas1p20ce8cc24d06b3c82d735dff59f0459de
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210203070741epcas1p20ce8cc24d06b3c82d735dff59f0459de
-References: <CGME20210203070741epcas1p20ce8cc24d06b3c82d735dff59f0459de@epcas1p2.samsung.com>
+        Wed, 3 Feb 2021 01:57:51 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2064C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 22:57:10 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x4so4331755ybj.22
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 22:57:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
+        b=tfjQFmZuBFZHJuQTjSVhg3ixz+DnPLN/S9VEIvqbIxFzeoWNgV77XNtiyL9ixPO4Tb
+         dz0un2MfXWvAwVLGdjRh/++XmGFZd948pQuQFXv6vBXBjSlmZWraR0aKplDotFXISRP3
+         PeaaH93UfYOEVLcTJI3ORIUPgyXvtocYdiJV0Rzzn/CVwSvbupy+oy554e7WbzRO8+sk
+         mBMRaneAEtmswh0W3dKwol0esz25Gaupy0pjB6oF9Z2y+Gx8h+HzW/iChV83VZoVLDMJ
+         ehusselEhRZwCjTxFbKkR7wDR4RiJEaZHPGDsLcrWuNkLWdNWH0IIC74zkgZdeTrh0BK
+         sZ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
+        b=jZsfqLQNlPutgA/7UrCJ9jZa34T47iiAsCCqmUOA0DAP5FflGXTMQ22zr/1OwY71vK
+         O5L2ZcZKHxUGVzFtDZRfuZsecgAXNPsiLJeBH6OKvUWUircjW0wTwk3+OkV4ML1YfVGY
+         JmM0xU9w9nFykBlwCcjzRlVn9DjB0FOo2JwJCA0d5PlXDPrFQH9goU6L6AcwEnHa0Ng2
+         wT9BlwMwG7T66F5uFd26bd+vpA2O8PzTvJv+BEBOvoySfe6YEX3mufq/L8c/BUS4biml
+         r4mD25SrEt/yiFqXKNnMiAM2sCOyr8A6aoj0DiPegEVmgovQWuJXBLQYCTndqQU5j+rM
+         Qa+A==
+X-Gm-Message-State: AOAM531vUi4H6H0eT0ID8JPlpknvJGIVhZfRz5yrKl0Rj3ZT3gDN/oov
+        JqoFDhKeBkL5PURxxBq/fe10jEZRjOIwHUlsow==
+X-Google-Smtp-Source: ABdhPJxSiqk8gZYYdNVJFLC3BUkDqUVnJelM3j+yz+P8URDuHFvJS7qJyIaFDqLtAWy+TUl7m+Am741X6VRHRXrL9A==
+Sender: "howardchung via sendgmr" 
+        <howardchung@howardchung-p920.tpe.corp.google.com>
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:c8ff:4e4a:dbd4:e8a6])
+ (user=howardchung job=sendgmr) by 2002:a25:ca8c:: with SMTP id
+ a134mr2589170ybg.106.1612335430056; Tue, 02 Feb 2021 22:57:10 -0800 (PST)
+Date:   Wed,  3 Feb 2021 14:56:44 +0800
+Message-Id: <20210203145558.Bluez.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [Bluez PATCH v1] Bluetooth: Fix crash in mgmt_add_adv_patterns_monitor_complete
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
+Cc:     Howard Chung <howardchung@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the total error history count is unknown because the error history
-records only the number of UFS_EVENT_HIST_LENGTH, add a member to count
-each error history.
+If hci_add_adv_monitor is a pending command(e.g. forward to
+msft_add_monitor_pattern), it is possible that
+mgmt_add_adv_patterns_monitor_complete gets called before
+cmd->user_data gets set, which will cause a crash when we
+try to get the moniter handle through cmd->user_data in
+mgmt_add_adv_patterns_monitor_complete.
 
-Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+This moves the cmd->user_data assignment earlier than
+hci_add_adv_monitor.
+
+RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
+Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
+e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
+7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
+c8
+RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
+RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
+RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
+RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
+R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
+R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000018 CR3: 0000000133612002 CR4:
+00000000003606e0
+Call Trace:
+ ? msft_le_monitor_advertisement_cb+0x111/0x141
+[bluetooth]
+ hci_event_packet+0x425e/0x631c [bluetooth]
+ ? printk+0x59/0x73
+ ? __switch_to_asm+0x41/0x70
+ ?
+msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
+ ? bt_dbg+0xb4/0xbb [bluetooth]
+ ? __switch_to_asm+0x41/0x70
+ hci_rx_work+0x101/0x319 [bluetooth]
+ process_one_work+0x257/0x506
+ worker_thread+0x10d/0x284
+ kthread+0x14c/0x154
+ ? process_one_work+0x506/0x506
+ ? kthread_blkcg+0x2c/0x2c
+ ret_from_fork+0x1f/0x40
+
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+Signed-off-by: Howard Chung <howardchung@google.com>
 ---
- drivers/scsi/ufs/ufshcd.c | 3 +++
- drivers/scsi/ufs/ufshcd.h | 1 +
- 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index fb32d122f2e3..7ebc892553fc 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -437,6 +437,8 @@ static void ufshcd_print_evt(struct ufs_hba *hba, u32 id,
+ net/bluetooth/mgmt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 8ff9c4bb43d11..74971b4bd4570 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -4303,6 +4303,7 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
+ 		goto unlock;
+ 	}
  
- 	if (!found)
- 		dev_err(hba->dev, "No record of %s\n", err_name);
-+	else
-+		dev_err(hba->dev, "%s: total count=%u\n", err_name, e->count);
- }
++	cmd->user_data = m;
+ 	pending = hci_add_adv_monitor(hdev, m, &err);
+ 	if (err) {
+ 		if (err == -ENOSPC || err == -ENOMEM)
+@@ -4330,7 +4331,6 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
  
- static void ufshcd_print_evt_hist(struct ufs_hba *hba)
-@@ -4544,6 +4546,7 @@ void ufshcd_update_evt_hist(struct ufs_hba *hba, u32 id, u32 val)
- 	e->val[e->pos] = val;
- 	e->tstamp[e->pos] = ktime_get();
- 	e->pos = (e->pos + 1) % UFS_EVENT_HIST_LENGTH;
-+	e->count++;
+ 	hci_dev_unlock(hdev);
  
- 	ufshcd_vops_event_notify(hba, id, &val);
- }
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index aa9ea3552323..df28d3fc89a5 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -450,6 +450,7 @@ struct ufs_event_hist {
- 	int pos;
- 	u32 val[UFS_EVENT_HIST_LENGTH];
- 	ktime_t tstamp[UFS_EVENT_HIST_LENGTH];
-+	u32 count;
- };
+-	cmd->user_data = m;
+ 	return 0;
  
- /**
+ unlock:
 -- 
-2.29.0
+2.30.0.365.g02bc693789-goog
 
