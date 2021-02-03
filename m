@@ -2,61 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0B830E71B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9E030E727
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhBCXQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:16:58 -0500
-Received: from relay08.th.seeweb.it ([5.144.164.169]:55187 "EHLO
-        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbhBCXQs (ORCPT
+        id S233857AbhBCXSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233858AbhBCXRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:16:48 -0500
-Received: from localhost.localdomain (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 01ED43F419;
-        Thu,  4 Feb 2021 00:15:41 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/disp/mdp5: mdp5_cfg: Fix msm8974v2 max_clk
-Date:   Thu,  4 Feb 2021 00:15:36 +0100
-Message-Id: <20210203231537.77851-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.0
+        Wed, 3 Feb 2021 18:17:18 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D6EC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:16:38 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id o63so810173pgo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wll2IwjnBP1ph+olB4IOjZDnzGBUCfeA4SIYv2XGwvY=;
+        b=L805BloRtBtPlJIIokA0buZ9FzfGZwJCsIbvjlgsLGB4UVShVw05gdvo8m41brHXWy
+         b9SuUS8kL1Re6gQ3Et/tLjDlqUmw9hSqsUydFnf6n+SrGOzkgydTgRA1rhjC+7GmMAjN
+         Hj3qhphMEI+bsWHlBwha58ateol6XcHO/EUBdlDD09GWSQEmehAPy/rZM3sNrIAJDQvl
+         ugYLw4+tsXvqaEYGAlIVlzuBC+jGMHWQsd4qSqYt72VUixNO8IDG8uHjURkLFoKBZRAg
+         wQ85GiAlF5/T3Mu6AC83aUt9QNqinr56PIJLskxDJj+Hoxx8wJCZt4x94ldlfT11IMUN
+         D2MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wll2IwjnBP1ph+olB4IOjZDnzGBUCfeA4SIYv2XGwvY=;
+        b=bzbJnNBFDrd0tlOs546MryajVeNIP4QoUAGd5s9cIxkYhyok4BfvQd2l1QY3YrBT75
+         gXMpGtLlYVo0tja7o8WLRSpDJkz+fZ/Jo2q4qdaHQFmAA5bf2I2+7Dcy23kx2j5r6yP+
+         O44tsC7RU4+lGaun93q3OBan6D4AuAc+V7sBIX/LttnZrWDE5SPErGH81abRvqxcBhcB
+         6KXwCpkQEtkDiWwOGVI3KAqeCVQ0cYg+gnxQuyFJF8TOclAbMuz/mt80w3KN21WzqzQM
+         AxkB0Js5r8pb1Rr89b+tucQpd0CrhdB4mvvMbqY4IIgGCLQG6xVS/FSccVDubqp5LwKv
+         oHJA==
+X-Gm-Message-State: AOAM531sQtYRiml5JlYrCJNdDoRdFme1fL5lbqrRv8mVINAQFaRHIQe/
+        1lNifLBA9e/nIG/C/tdJ3mv/lQ9VksMpTmVoKyTbOA==
+X-Google-Smtp-Source: ABdhPJzJqfGaHJq2+ldqU34HwtWmuioZbE1mfnsdG3PMKurMneO3/jhV3Y1DFK4wKF5E7LWNv5iglwn5lhJUI7IiFvU=
+X-Received: by 2002:a62:838d:0:b029:1ba:9b85:2eac with SMTP id
+ h135-20020a62838d0000b02901ba9b852eacmr5312098pfe.36.1612394197279; Wed, 03
+ Feb 2021 15:16:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-2-ndesaulniers@google.com> <20210130015222.GC2709570@localhost>
+ <CAK7LNARfu-wqW9hfnoeeahiNPbwt4xhoWdxXtK8qjVfEi=7OOg@mail.gmail.com>
+In-Reply-To: <CAK7LNARfu-wqW9hfnoeeahiNPbwt4xhoWdxXtK8qjVfEi=7OOg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 3 Feb 2021 15:16:24 -0800
+Message-ID: <CAKwvOd=YVDS8tjnN6kFqe2FAhfSzVg870VsSvkNuvVZ7X6BrVg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maximum mdp clock rate on msm8974v2 is 320MHz. Fix it.
+On Wed, Feb 3, 2021 at 2:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote=
+:
+>
+> On Sat, Jan 30, 2021 at 10:52 AM Nathan Chancellor <nathan@kernel.org> wr=
+ote:
+> >
+> > On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
+> > > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
+> > > the default. Does so in a way that's forward compatible with existing
+> > > configs, and makes adding future versions more straightforward.
+> > >
+> > > GCC since ~4.8 has defaulted to this DWARF version implicitly.
+> > >
+> > > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > > Suggested-by: Fangrui Song <maskray@google.com>
+> > > Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> > One comment below:
+> >
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> >
+> > > ---
+> > >  Makefile          |  5 ++---
+> > >  lib/Kconfig.debug | 16 +++++++++++-----
+> > >  2 files changed, 13 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 95ab9856f357..d2b4980807e0 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -830,9 +830,8 @@ ifneq ($(LLVM_IAS),1)
+> > >  KBUILD_AFLAGS        +=3D -Wa,-gdwarf-2
+> >
+> > It is probably worth a comment somewhere that assembly files will still
+> > have DWARF v2.
+>
+> I agree.
+> Please noting the reason will be helpful.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Via a comment in the source, or in the commit message?
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-index dfffd9cf0613..bd07d2e1ad90 100644
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-+++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-@@ -177,7 +177,7 @@ static const struct mdp5_cfg_hw msm8x74v2_config = {
- 			[3] = INTF_HDMI,
- 		},
- 	},
--	.max_clk = 200000000,
-+	.max_clk = 320000000,
- };
- 
- static const struct mdp5_cfg_hw apq8084_config = {
--- 
-2.30.0
+>
+> Could you summarize Jakub's comment in short?
+> https://patchwork.kernel.org/project/linux-kbuild/patch/20201022012106.18=
+75129-1-ndesaulniers@google.com/#23727667
 
+Via a comment in the source, or in the commit message?
+
+> One more question.
+>
+>
+> Can we remove -g option like follows?
+>
+>
+>  ifdef CONFIG_DEBUG_INFO_SPLIT
+>  DEBUG_CFLAGS   +=3D -gsplit-dwarf
+> -else
+> -DEBUG_CFLAGS   +=3D -g
+>  endif
+>
+>
+>
+>
+>
+> In the current mainline code,
+> -g is the only debug option
+> if CONFIG_DEBUG_INFO_DWARF4 is disabled.
+>
+>
+> The GCC manual says:
+> https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Debugging-Options.html#Debu=
+gging-Options
+>
+>
+> -g
+>
+>     Produce debugging information in the operating system=E2=80=99s
+>     native format (stabs, COFF, XCOFF, or DWARF).
+>     GDB can work with this debugging information.
+>
+>
+> Of course, we expect the -g option will produce
+> the debug info in the DWARF format.
+>
+>
+>
+>
+>
+> With this patch set applied, it is very explicit.
+>
+> Only the format type, but also the version.
+>
+> The compiler will be given either
+> -gdwarf-4 or -gdwarf-5,
+> making the -g option redundant, I think.
+
+Can I provide that as a separate patch?  I don't want any breakage
+from that to delay DWARF v5 support further.  If so, should it be the
+first patch or last?
+--=20
+Thanks,
+~Nick Desaulniers
