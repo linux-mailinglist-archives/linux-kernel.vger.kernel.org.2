@@ -2,351 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C42A30DDA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CED730DDCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhBCPI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:08:58 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:38651 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbhBCPFm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:05:42 -0500
-Received: by mail-wm1-f43.google.com with SMTP id y187so5560061wmd.3;
-        Wed, 03 Feb 2021 07:05:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hbJXzw0UowgMUob9pK4uT7G84VESooch1ip/ykVSsiQ=;
-        b=GRi0Ujp9/aX5lArAOrw27YfarkZdj7wn9kyClAJlRrylf8KHMzjYGNVvNGUEpfbFjC
-         AOSubHXi+F+PDBjxrT3Q8k4UbS2ZMxqO93dsDblefXfq5aU6B/LOHt31EEg9INuOZ76h
-         PYxHSR7OwFP7kObWCneTGgb8hyTa5mzj/2LeSnchxwzzcodI7QvqoqPJYOjuG7YT2R+O
-         Du2kKHdxEBC1OQ+r5PNSn4HxyknRX73lRewGeRjdIhMklgxod6hWobvRF94CarlHPJ6y
-         tG655P8YUjjUGdxG9FiFCNryTZByF3qR9bbzKERcQ6ubvqPevhK8WDmTrXvlclp2+cyH
-         87Hw==
-X-Gm-Message-State: AOAM530dNslecaR/+xKtyhonCTyT79RdPzGFRVgkYJLhUATFvIoPaRi/
-        Of7uwdDttpX4GUAWS63WIPuImxGIJn4=
-X-Google-Smtp-Source: ABdhPJyy6ecwJQUFDg9XI/456EKZZHiKadIMwaOz5QKlJF+6cB2z6pJtMie5r+VdUXeOUQmElCfdmw==
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr3199593wme.76.1612364697971;
-        Wed, 03 Feb 2021 07:04:57 -0800 (PST)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r17sm4051704wro.46.2021.02.03.07.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 07:04:57 -0800 (PST)
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        pasha.tatashin@soleen.com, Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS)
-Subject: [PATCH v6 16/16] iommu/hyperv: setup an IO-APIC IRQ remapping domain for root partition
-Date:   Wed,  3 Feb 2021 15:04:35 +0000
-Message-Id: <20210203150435.27941-17-wei.liu@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210203150435.27941-1-wei.liu@kernel.org>
-References: <20210203150435.27941-1-wei.liu@kernel.org>
+        id S233634AbhBCPPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:15:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40704 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233983AbhBCPFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:05:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3CB7AC6E;
+        Wed,  3 Feb 2021 15:04:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 02A751E14B6; Wed,  3 Feb 2021 16:04:48 +0100 (CET)
+Date:   Wed, 3 Feb 2021 16:04:48 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
+        Joel Becker <jlbec@evilplan.org>,
+        Matthew Garrett <matthew.garrett@nebula.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Subject: Re: [PATCH 01/18] vfs: add miscattr ops
+Message-ID: <20210203150448.GD7094@quack2.suse.cz>
+References: <20210203124112.1182614-1-mszeredi@redhat.com>
+ <20210203124112.1182614-2-mszeredi@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203124112.1182614-2-mszeredi@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like MSI/MSI-X, IO-APIC interrupts are remapped by Microsoft
-Hypervisor when Linux runs as the root partition. Implement an IRQ
-domain to handle mapping and unmapping of IO-APIC interrupts.
+Hi Miklos!
 
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
-v6:
-1. Simplify code due to changes in a previous patch.
----
- arch/x86/hyperv/irqdomain.c     |  25 +++++
- arch/x86/include/asm/mshyperv.h |   4 +
- drivers/iommu/hyperv-iommu.c    | 177 +++++++++++++++++++++++++++++++-
- 3 files changed, 203 insertions(+), 3 deletions(-)
+On Wed 03-02-21 13:40:55, Miklos Szeredi wrote:
+> There's a substantial amount of boilerplate in filesystems handling
+> FS_IOC_[GS]ETFLAGS/ FS_IOC_FS[GS]ETXATTR ioctls.
+> 
+> Also due to userspace buffers being involved in the ioctl API this is
+> difficult to stack, as shown by overlayfs issues related to these ioctls.
+> 
+> Introduce a new internal API named "miscattr" (fsxattr can be confused with
+> xattr, xflags is inappropriate, since this is more than just flags).
+> 
+> There's significant overlap between flags and xflags and this API handles
+> the conversions automatically, so filesystems may choose which one to use.
+> 
+> In ->miscattr_get() a hint is provided to the filesystem whether flags or
+> xattr are being requested by userspace, but in this series this hint is
+> ignored by all filesystems, since generating all the attributes is cheap.
+> 
+> If a filesystem doesn't implemement the miscattr API, just fall back to
+> f_op->ioctl().  When all filesystems are converted, the fallback can be
+> removed.
+> 
+> 32bit compat ioctls are now handled by the generic code as well.
+> 
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 
-diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-index 117f17e8c88a..0cabc9aece38 100644
---- a/arch/x86/hyperv/irqdomain.c
-+++ b/arch/x86/hyperv/irqdomain.c
-@@ -360,3 +360,28 @@ struct irq_domain * __init hv_create_pci_msi_domain(void)
- }
- 
- #endif /* CONFIG_PCI_MSI */
-+
-+int hv_unmap_ioapic_interrupt(int ioapic_id, struct hv_interrupt_entry *entry)
-+{
-+	union hv_device_id device_id;
-+
-+	device_id.as_uint64 = 0;
-+	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-+	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-+
-+	return hv_unmap_interrupt(device_id.as_uint64, entry);
-+}
-+EXPORT_SYMBOL_GPL(hv_unmap_ioapic_interrupt);
-+
-+int hv_map_ioapic_interrupt(int ioapic_id, bool level, int cpu, int vector,
-+		struct hv_interrupt_entry *entry)
-+{
-+	union hv_device_id device_id;
-+
-+	device_id.as_uint64 = 0;
-+	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-+	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-+
-+	return hv_map_interrupt(device_id, level, cpu, vector, entry);
-+}
-+EXPORT_SYMBOL_GPL(hv_map_ioapic_interrupt);
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index ccc849e25d5e..345d7c6f8c37 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -263,6 +263,10 @@ static inline void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
- 
- struct irq_domain *hv_create_pci_msi_domain(void);
- 
-+int hv_map_ioapic_interrupt(int ioapic_id, bool level, int vcpu, int vector,
-+		struct hv_interrupt_entry *entry);
-+int hv_unmap_ioapic_interrupt(int ioapic_id, struct hv_interrupt_entry *entry);
-+
- #else /* CONFIG_HYPERV */
- static inline void hyperv_init(void) {}
- static inline void hyperv_setup_mmu_ops(void) {}
-diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-index 1d21a0b5f724..e285a220c913 100644
---- a/drivers/iommu/hyperv-iommu.c
-+++ b/drivers/iommu/hyperv-iommu.c
-@@ -20,6 +20,7 @@
- #include <asm/io_apic.h>
- #include <asm/irq_remapping.h>
- #include <asm/hypervisor.h>
-+#include <asm/mshyperv.h>
- 
- #include "irq_remapping.h"
- 
-@@ -115,30 +116,43 @@ static const struct irq_domain_ops hyperv_ir_domain_ops = {
- 	.free = hyperv_irq_remapping_free,
- };
- 
-+static const struct irq_domain_ops hyperv_root_ir_domain_ops;
- static int __init hyperv_prepare_irq_remapping(void)
- {
- 	struct fwnode_handle *fn;
- 	int i;
-+	const char *name;
-+	const struct irq_domain_ops *ops;
- 
- 	if (!hypervisor_is_type(X86_HYPER_MS_HYPERV) ||
- 	    x86_init.hyper.msi_ext_dest_id() ||
- 	    !x2apic_supported())
- 		return -ENODEV;
- 
--	fn = irq_domain_alloc_named_id_fwnode("HYPERV-IR", 0);
-+	if (hv_root_partition) {
-+		name = "HYPERV-ROOT-IR";
-+		ops = &hyperv_root_ir_domain_ops;
-+	} else {
-+		name = "HYPERV-IR";
-+		ops = &hyperv_ir_domain_ops;
-+	}
-+
-+	fn = irq_domain_alloc_named_id_fwnode(name, 0);
- 	if (!fn)
- 		return -ENOMEM;
- 
- 	ioapic_ir_domain =
- 		irq_domain_create_hierarchy(arch_get_ir_parent_domain(),
--				0, IOAPIC_REMAPPING_ENTRY, fn,
--				&hyperv_ir_domain_ops, NULL);
-+				0, IOAPIC_REMAPPING_ENTRY, fn, ops, NULL);
- 
- 	if (!ioapic_ir_domain) {
- 		irq_domain_free_fwnode(fn);
- 		return -ENOMEM;
- 	}
- 
-+	if (hv_root_partition)
-+		return 0; /* The rest is only relevant to guests */
-+
- 	/*
- 	 * Hyper-V doesn't provide irq remapping function for
- 	 * IO-APIC and so IO-APIC only accepts 8-bit APIC ID.
-@@ -166,4 +180,161 @@ struct irq_remap_ops hyperv_irq_remap_ops = {
- 	.enable			= hyperv_enable_irq_remapping,
- };
- 
-+/* IRQ remapping domain when Linux runs as the root partition */
-+struct hyperv_root_ir_data {
-+	u8 ioapic_id;
-+	bool is_level;
-+	struct hv_interrupt_entry entry;
-+};
-+
-+static void
-+hyperv_root_ir_compose_msi_msg(struct irq_data *irq_data, struct msi_msg *msg)
-+{
-+	u64 status;
-+	u32 vector;
-+	struct irq_cfg *cfg;
-+	int ioapic_id;
-+	struct cpumask *affinity;
-+	int cpu;
-+	struct hv_interrupt_entry entry;
-+	struct hyperv_root_ir_data *data = irq_data->chip_data;
-+	struct IO_APIC_route_entry e;
-+
-+	cfg = irqd_cfg(irq_data);
-+	affinity = irq_data_get_effective_affinity_mask(irq_data);
-+	cpu = cpumask_first_and(affinity, cpu_online_mask);
-+
-+	vector = cfg->vector;
-+	ioapic_id = data->ioapic_id;
-+
-+	if (data->entry.source == HV_DEVICE_TYPE_IOAPIC
-+	    && data->entry.ioapic_rte.as_uint64) {
-+		entry = data->entry;
-+
-+		status = hv_unmap_ioapic_interrupt(ioapic_id, &entry);
-+
-+		if (status != HV_STATUS_SUCCESS)
-+			pr_debug("%s: unexpected unmap status %lld\n", __func__, status);
-+
-+		data->entry.ioapic_rte.as_uint64 = 0;
-+		data->entry.source = 0; /* Invalid source */
-+	}
-+
-+
-+	status = hv_map_ioapic_interrupt(ioapic_id, data->is_level, cpu,
-+					vector, &entry);
-+
-+	if (status != HV_STATUS_SUCCESS) {
-+		pr_err("%s: map hypercall failed, status %lld\n", __func__, status);
-+		return;
-+	}
-+
-+	data->entry = entry;
-+
-+	/* Turn it into an IO_APIC_route_entry, and generate MSI MSG. */
-+	e.w1 = entry.ioapic_rte.low_uint32;
-+	e.w2 = entry.ioapic_rte.high_uint32;
-+
-+	memset(msg, 0, sizeof(*msg));
-+	msg->arch_data.vector = e.vector;
-+	msg->arch_data.delivery_mode = e.delivery_mode;
-+	msg->arch_addr_lo.dest_mode_logical = e.dest_mode_logical;
-+	msg->arch_addr_lo.dmar_format = e.ir_format;
-+	msg->arch_addr_lo.dmar_index_0_14 = e.ir_index_0_14;
-+}
-+
-+static int hyperv_root_ir_set_affinity(struct irq_data *data,
-+		const struct cpumask *mask, bool force)
-+{
-+	struct irq_data *parent = data->parent_data;
-+	struct irq_cfg *cfg = irqd_cfg(data);
-+	int ret;
-+
-+	ret = parent->chip->irq_set_affinity(parent, mask, force);
-+	if (ret < 0 || ret == IRQ_SET_MASK_OK_DONE)
-+		return ret;
-+
-+	send_cleanup_vector(cfg);
-+
-+	return 0;
-+}
-+
-+static struct irq_chip hyperv_root_ir_chip = {
-+	.name			= "HYPERV-ROOT-IR",
-+	.irq_ack		= apic_ack_irq,
-+	.irq_set_affinity	= hyperv_root_ir_set_affinity,
-+	.irq_compose_msi_msg	= hyperv_root_ir_compose_msi_msg,
-+};
-+
-+static int hyperv_root_irq_remapping_alloc(struct irq_domain *domain,
-+				     unsigned int virq, unsigned int nr_irqs,
-+				     void *arg)
-+{
-+	struct irq_alloc_info *info = arg;
-+	struct irq_data *irq_data;
-+	struct hyperv_root_ir_data *data;
-+	int ret = 0;
-+
-+	if (!info || info->type != X86_IRQ_ALLOC_TYPE_IOAPIC || nr_irqs > 1)
-+		return -EINVAL;
-+
-+	ret = irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, arg);
-+	if (ret < 0)
-+		return ret;
-+
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+		return -ENOMEM;
-+	}
-+
-+	irq_data = irq_domain_get_irq_data(domain, virq);
-+	if (!irq_data) {
-+		kfree(data);
-+		irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+		return -EINVAL;
-+	}
-+
-+	data->ioapic_id = info->devid;
-+	data->is_level = info->ioapic.is_level;
-+
-+	irq_data->chip = &hyperv_root_ir_chip;
-+	irq_data->chip_data = data;
-+
-+	return 0;
-+}
-+
-+static void hyperv_root_irq_remapping_free(struct irq_domain *domain,
-+				 unsigned int virq, unsigned int nr_irqs)
-+{
-+	struct irq_data *irq_data;
-+	struct hyperv_root_ir_data *data;
-+	struct hv_interrupt_entry *e;
-+	int i;
-+
-+	for (i = 0; i < nr_irqs; i++) {
-+		irq_data = irq_domain_get_irq_data(domain, virq + i);
-+
-+		if (irq_data && irq_data->chip_data) {
-+			data = irq_data->chip_data;
-+			e = &data->entry;
-+
-+			if (e->source == HV_DEVICE_TYPE_IOAPIC
-+			      && e->ioapic_rte.as_uint64)
-+				hv_unmap_ioapic_interrupt(data->ioapic_id,
-+							&data->entry);
-+
-+			kfree(data);
-+		}
-+	}
-+
-+	irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+}
-+
-+static const struct irq_domain_ops hyperv_root_ir_domain_ops = {
-+	.select = hyperv_irq_remapping_select,
-+	.alloc = hyperv_root_irq_remapping_alloc,
-+	.free = hyperv_root_irq_remapping_free,
-+};
-+
- #endif
+Getting rid of the boilerplate code and improving stacking of these calls
+look like a nice goal to me :) Some technical comments below.
+
+> +/**
+> + * miscattr_fill_xflags - initialize miscattr with xflags
+> + * @ma:		miscattr pointer
+> + * @xflags:	FS_XFLAG_* flags
+> + *
+> + * Set ->fsx_xflags, ->xattr_valid and ->flags (translated xflags).  All
+> + * other fields are zeroed.
+> + */
+> +void miscattr_fill_xflags(struct miscattr *ma, u32 xflags)
+
+Maybe call this miscattr_fill_from_xflags() and the next function
+miscattr_fill_from_flags()? At least to me it would be clearer when I want
+to use which function just by looking at the name...
+
+> +{
+> +	memset(ma, 0, sizeof(*ma));
+> +	ma->xattr_valid = true;
+> +	ma->fsx_xflags = xflags;
+> +	if (ma->fsx_xflags & FS_XFLAG_IMMUTABLE)
+> +		ma->flags |= FS_IMMUTABLE_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_APPEND)
+> +		ma->flags |= FS_APPEND_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_SYNC)
+> +		ma->flags |= FS_SYNC_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_NOATIME)
+> +		ma->flags |= FS_NOATIME_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_NODUMP)
+> +		ma->flags |= FS_NODUMP_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_DAX)
+> +		ma->flags |= FS_DAX_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_PROJINHERIT)
+> +		ma->flags |= FS_PROJINHERIT_FL;
+> +}
+> +EXPORT_SYMBOL(miscattr_fill_xflags);
+> +
+> +/**
+> + * miscattr_fill_flags - initialize miscattr with flags
+> + * @ma:		miscattr pointer
+> + * @flags:	FS_*_FL flags
+> + *
+> + * Set ->flags, ->flags_valid and ->fsx_xflags (translated flags).
+> + * All other fields are zeroed.
+> + */
+> +void miscattr_fill_flags(struct miscattr *ma, u32 flags)
+> +{
+> +	memset(ma, 0, sizeof(*ma));
+> +	ma->flags_valid = true;
+> +	ma->flags = flags;
+> +	if (ma->flags & FS_SYNC_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_SYNC;
+> +	if (ma->flags & FS_IMMUTABLE_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_IMMUTABLE;
+> +	if (ma->flags & FS_APPEND_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_APPEND;
+> +	if (ma->flags & FS_NODUMP_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_NODUMP;
+> +	if (ma->flags & FS_NOATIME_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_NOATIME;
+> +	if (ma->flags & FS_DAX_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_DAX;
+> +	if (ma->flags & FS_PROJINHERIT_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_PROJINHERIT;
+> +}
+> +EXPORT_SYMBOL(miscattr_fill_flags);
+> +
+> +/**
+> + * vfs_miscattr_get - retrieve miscellaneous inode attributes
+> + * @dentry:	the object to retrieve from
+> + * @ma:		miscattr pointer
+> + *
+> + * Call i_op->miscattr_get() callback, if exists.
+> + *
+> + * Returns 0 on success, or a negative error on failure.
+> + */
+> +int vfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+> +{
+> +	struct inode *inode = d_inode(dentry);
+> +
+> +	if (d_is_special(dentry))
+> +		return -ENOTTY;
+> +
+> +	if (!inode->i_op->miscattr_get)
+> +		return -ENOIOCTLCMD;
+> +
+> +	memset(ma, 0, sizeof(*ma));
+
+So here we clear whole 'ma' but callers already set e.g. xattr_valid field
+and cleared the 'ma' as well which just looks silly...
+
+> +	return inode->i_op->miscattr_get(dentry, ma);
+> +}
+> +EXPORT_SYMBOL(vfs_miscattr_get);
+
+...
+
+> +/*
+> + * Generic function to check FS_IOC_FSSETXATTR/FS_IOC_SETFLAGS values and reject
+> + * any invalid configurations.
+> + *
+> + * Note: must be called with inode lock held.
+> + */
+> +static int miscattr_set_prepare(struct inode *inode,
+> +			      const struct miscattr *old_ma,
+> +			      struct miscattr *ma)
+> +{
+> +	int err;
+> +
+> +	/*
+> +	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
+> +	 * the relevant capability.
+> +	 */
+> +	if ((ma->flags ^ old_ma->flags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
+> +	    !capable(CAP_LINUX_IMMUTABLE))
+> +		return -EPERM;
+> +
+> +	err = fscrypt_prepare_setflags(inode, old_ma->flags, ma->flags);
+> +	if (err)
+> +		return err;
+> +
+> +	/*
+> +	 * Project Quota ID state is only allowed to change from within the init
+> +	 * namespace. Enforce that restriction only if we are trying to change
+> +	 * the quota ID state. Everything else is allowed in user namespaces.
+> +	 */
+> +	if (current_user_ns() != &init_user_ns) {
+> +		if (old_ma->fsx_projid != ma->fsx_projid)
+> +			return -EINVAL;
+> +		if ((old_ma->fsx_xflags ^ ma->fsx_xflags) &
+> +				FS_XFLAG_PROJINHERIT)
+> +			return -EINVAL;
+> +	}
+> +
+> +	/* Check extent size hints. */
+> +	if ((ma->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	if ((ma->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
+> +			!S_ISDIR(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	if ((ma->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+> +	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * It is only valid to set the DAX flag on regular files and
+> +	 * directories on filesystems.
+> +	 */
+> +	if ((ma->fsx_xflags & FS_XFLAG_DAX) &&
+> +	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+> +		return -EINVAL;
+> +
+> +	/* Extent size hints of zero turn off the flags. */
+> +	if (ma->fsx_extsize == 0)
+> +		ma->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+> +	if (ma->fsx_cowextsize == 0)
+> +		ma->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * vfs_miscattr_set - change miscellaneous inode attributes
+> + * @dentry:	the object to change
+> + * @ma:		miscattr pointer
+> + *
+> + * After verifying permissions, call i_op->miscattr_set() callback, if
+> + * exists.
+> + *
+> + * Verifying attributes involves retrieving current attributes with
+> + * i_op->miscattr_get(), this also allows initilaizing attributes that have
+> + * not been set by the caller to current values.  Inode lock is held
+> + * thoughout to prevent racing with another instance.
+> + *
+> + * Returns 0 on success, or a negative error on failure.
+> + */
+> +int vfs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
+> +{
+> +	struct inode *inode = d_inode(dentry);
+> +	struct miscattr old_ma = {};
+> +	int err;
+> +
+> +	if (d_is_special(dentry))
+> +		return -ENOTTY;
+> +
+> +	if (!inode->i_op->miscattr_set)
+> +		return -ENOIOCTLCMD;
+> +
+> +	if (!inode_owner_or_capable(inode))
+> +		return -EPERM;
+> +
+> +	inode_lock(inode);
+> +	err = vfs_miscattr_get(dentry, &old_ma);
+> +	if (!err) {
+> +		/* initialize missing bits from old_ma */
+> +		if (ma->flags_valid) {
+> +			ma->fsx_xflags |= old_ma.fsx_xflags & ~FS_XFLAG_COMMON;
+> +			ma->fsx_extsize = old_ma.fsx_extsize;
+> +			ma->fsx_nextents = old_ma.fsx_nextents;
+> +			ma->fsx_projid = old_ma.fsx_projid;
+> +			ma->fsx_cowextsize = old_ma.fsx_cowextsize;
+> +		} else {
+> +			ma->flags |= old_ma.flags & ~FS_COMMON_FL;
+> +		}
+> +		err = miscattr_set_prepare(inode, &old_ma, ma);
+> +		if (!err)
+> +			err = inode->i_op->miscattr_set(dentry, ma);
+
+So I somewhat wonder here - not all filesystems support all the xflags or
+other extended attributes. Currently these would be just silently ignored
+AFAICT. Which seems a bit dangerous to me - most notably because it makes
+future extensions of these filesystems difficult. So how are we going to go
+about this? Is every filesystem supposed to check what it supports and
+refuse other stuff (but currently e.g. your ext2 conversion patch doesn't do
+that AFAICT)? Shouldn't we make things easier for filesystems to provide a
+bitmask of changing fields (instead of flags / xflags bools) so that they
+can refuse unsupported stuff with a single mask check?
+
+To make things more complex, ext2/4 has traditionally silently cleared
+unknown flags for setflags but not for setxflags. Unlike e.g. XFS which
+refuses unknown flags.
+
+								Honza
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
