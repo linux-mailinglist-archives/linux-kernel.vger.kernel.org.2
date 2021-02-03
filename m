@@ -2,209 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF0A30D104
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804D230D10A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhBCBtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:49:55 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:59736 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhBCBty (ORCPT
+        id S229621AbhBCBuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231174AbhBCBub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:49:54 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNj9AmY_1612316912;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNj9AmY_1612316912)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Feb 2021 09:48:32 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     martin.petersen@oracle.com
-Cc:     jejb@linux.ibm.com, brking@us.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] scsi: remove unneeded semicolon
-Date:   Wed,  3 Feb 2021 09:48:31 +0800
-Message-Id: <1612316911-69531-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 2 Feb 2021 20:50:31 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4509BC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 17:49:51 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b8so13551018plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 17:49:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8F+I6p5K2e1VnHWUFWnXn/ovc04lUJB16jXKpwFUrSQ=;
+        b=Wj+X3aGeVZvj0hwhbqCTuZQbtuMmdgKkpOXLPdveSET7zoS5QvkZDdDQkKk4+kSPn4
+         hbCXu5J8BjHUImNyimZNG1O3FlthdVBdUnfOeI/lSwYJjVuAcQFOq5Xia8P5uw4Akd+1
+         5/gupU6XHyeEi6QAXvhwPnWS/MGnxWHsaJ3Rc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8F+I6p5K2e1VnHWUFWnXn/ovc04lUJB16jXKpwFUrSQ=;
+        b=O0RrfqFuRB1QD5eDiWaioVplT3C22jgi4QruGL94FdojhYjC4qJzBHyi1/g1j/kRUF
+         SDgeUbfcNj42/wJzQWPNPUQTyAyMnGsoqo88AdxmD27VusrXhL9Dr7qCRjaS/PRgyog4
+         Fo4UvTcJF2qMyYmDWAiljoD3xuwffmOMoUTwTygYL2pXrQFSVBTp9K0dR8ldxSVpdmsH
+         FKTePmaCHFL+if6O1m2/tkvxVuv/+pbpvPN6ZzKHhwYGtniavDxQS0SFQftYXnOj6Mmb
+         3M2gD9dgKDr3lXg22e1OzJBSQh3yvB73V9y28sCCvVNzrqJL5co3yYwiL/WLeFz9aWtg
+         6PEw==
+X-Gm-Message-State: AOAM531GWt809MpVpKVyl7XtunaCRC+NIl737XyXiRxESCPJmGvqZVOV
+        LEQYf47xQKNkXtaT4/9bZDPBfrf5noXTRg==
+X-Google-Smtp-Source: ABdhPJx76P8iwJ/6a3TmwNwT4j9QnvPQJT/hAPyOSdqZzLclvKWEv8PhxjUdCGwAlLsIbfbX27UQTw==
+X-Received: by 2002:a17:902:c24b:b029:e1:8c46:f876 with SMTP id 11-20020a170902c24bb02900e18c46f876mr768919plg.15.1612316990374;
+        Tue, 02 Feb 2021 17:49:50 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:b5ef:2e43:a515:f29c])
+        by smtp.gmail.com with ESMTPSA id w19sm225918pgf.23.2021.02.02.17.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 17:49:49 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>
+Subject: [PATCH 1/2] platform/chrome: cros_ec: Import Type C control command
+Date:   Tue,  2 Feb 2021 17:49:36 -0800
+Message-Id: <20210203014939.741065-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./drivers/scsi/qlogicpti.c:1153:3-4: Unneeded semicolon
-./drivers/scsi/pmcraid.c:5090:2-3: Unneeded semicolon
-./drivers/scsi/ipr.h:1979:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:287:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:327:3-4: Unneeded semicolon
-./drivers/scsi/aha1542.c:389:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:487:3-4: Unneeded semicolon
-./drivers/scsi/aha1542.c:498:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:533:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:548:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:575:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:598:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:631:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:649:2-3: Unneeded semicolon
-./drivers/scsi/aha1542.c:667:2-3: Unneeded semicolon
+This command is used to communicate with the Chrome Embedded Controller
+(EC) regarding USB Type C events and state.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+These header updates are included in the latest Chrome OS EC headers [1]
+
+[1]
+https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/include/ec_commands.h
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
 ---
- drivers/scsi/aha1542.c   | 24 ++++++++++++------------
- drivers/scsi/ipr.h       |  2 +-
- drivers/scsi/pmcraid.c   |  2 +-
- drivers/scsi/qlogicpti.c |  2 +-
- 4 files changed, 15 insertions(+), 15 deletions(-)
+ .../linux/platform_data/cros_ec_commands.h    | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
-index dc5667a..e322347 100644
---- a/drivers/scsi/aha1542.c
-+++ b/drivers/scsi/aha1542.c
-@@ -284,7 +284,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 		if (flag & SCRD)
- 			printk("SCRD ");
- 		printk("status %02x\n", inb(STATUS(sh->io_port)));
--	};
-+	}
- #endif
- 	number_serviced = 0;
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index d3c40220b281..a95dc22a5463 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -5578,6 +5578,32 @@ struct ec_response_typec_discovery {
+ 	struct svid_mode_info svids[0];
+ } __ec_align1;
  
-@@ -324,7 +324,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 			if (!number_serviced)
- 				shost_printk(KERN_WARNING, sh, "interrupt received, but no mail.\n");
- 			return IRQ_HANDLED;
--		};
-+		}
- 
- 		mbo = (scsi2int(mb[mbi].ccbptr) - (unsigned long)aha1542->ccb_handle) / sizeof(struct ccb);
- 		mbistatus = mb[mbi].status;
-@@ -386,7 +386,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 						   far as queuecommand is concerned */
- 		my_done(tmp_cmd);
- 		number_serviced++;
--	};
-+	}
- }
- 
- static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
-@@ -484,7 +484,7 @@ static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
- 		scsi_for_each_sg(cmd, sg, sg_count, i) {
- 			any2scsi(acmd->chain[i].dataptr, sg_dma_address(sg));
- 			any2scsi(acmd->chain[i].datalen, sg_dma_len(sg));
--		};
-+		}
- 		any2scsi(ccb[mbo].datalen, sg_count * sizeof(struct chain));
- 		any2scsi(ccb[mbo].dataptr, acmd->chain_handle);
- #ifdef DEBUG
-@@ -495,7 +495,7 @@ static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
- 		ccb[mbo].op = 0;	/* SCSI Initiator Command */
- 		any2scsi(ccb[mbo].datalen, 0);
- 		any2scsi(ccb[mbo].dataptr, 0);
--	};
-+	}
- 	ccb[mbo].idlun = (target & 7) << 5 | direction | (lun & 7);	/*SCSI Target Id */
- 	ccb[mbo].rsalen = 16;
- 	ccb[mbo].linkptr[0] = ccb[mbo].linkptr[1] = ccb[mbo].linkptr[2] = 0;
-@@ -530,7 +530,7 @@ static void setup_mailboxes(struct Scsi_Host *sh)
- 		any2scsi(aha1542->mb[i].ccbptr,
- 			 aha1542->ccb_handle + i * sizeof(struct ccb));
- 		aha1542->mb[AHA1542_MAILBOXES + i].status = 0;
--	};
-+	}
- 	aha1542_intr_reset(sh->io_port);	/* reset interrupts, so they don't block */
- 	any2scsi(mb_cmd + 2, aha1542->mb_handle);
- 	if (aha1542_out(sh->io_port, mb_cmd, 5))
-@@ -545,7 +545,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_RETCONF);
- 	aha1542_in(sh->io_port, inquiry_result, 3, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -572,7 +572,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine DMA channel.\n");
- 		return -1;
--	};
-+	}
- 	switch (inquiry_result[1]) {
- 	case 0x40:
- 		sh->irq = 15;
-@@ -595,7 +595,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine IRQ level.\n");
- 		return -1;
--	};
-+	}
- 	sh->this_id = inquiry_result[2] & 7;
- 	return 0;
- }
-@@ -628,7 +628,7 @@ static int aha1542_mbenable(struct Scsi_Host *sh)
- 
- 		if (aha1542_out(sh->io_port, mbenable_cmd, 3))
- 			goto fail;
--	};
-+	}
- 	while (0) {
- fail:
- 		shost_printk(KERN_ERR, sh, "Mailbox init failed\n");
-@@ -646,7 +646,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_INQUIRY);
- 	aha1542_in(sh->io_port, inquiry_result, 4, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -664,7 +664,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	if (inquiry_result[0] == 0x43) {
- 		shost_printk(KERN_INFO, sh, "Emulation mode not supported for AHA-1740 hardware, use aha1740 driver instead.\n");
- 		return 1;
--	};
-+	}
- 
- 	/* Always call this - boards that do not support extended bios translation
- 	   will ignore the command, and we will set the proper default */
-diff --git a/drivers/scsi/ipr.h b/drivers/scsi/ipr.h
-index 783ee03..6c29113 100644
---- a/drivers/scsi/ipr.h
-+++ b/drivers/scsi/ipr.h
-@@ -1976,7 +1976,7 @@ static inline int ipr_sdt_is_fmt2(u32 sdt_word)
- 	case IPR_SDT_FMT2_BAR5_SEL:
- 	case IPR_SDT_FMT2_EXP_ROM_SEL:
- 		return 1;
--	};
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-index 834556e..44e9709 100644
---- a/drivers/scsi/pmcraid.c
-+++ b/drivers/scsi/pmcraid.c
-@@ -5087,7 +5087,7 @@ static int pmcraid_init_instance(struct pci_dev *pdev, struct Scsi_Host *host,
- 			mapped_pci_addr + chip_cfg->ioa_host_mask_clr;
- 		pint_regs->global_interrupt_mask_reg =
- 			mapped_pci_addr + chip_cfg->global_intr_mask;
--	};
-+	}
- 
- 	pinstance->ioa_reset_attempts = 0;
- 	init_waitqueue_head(&pinstance->reset_wait_q);
-diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
-index d84e218..3da58263 100644
---- a/drivers/scsi/qlogicpti.c
-+++ b/drivers/scsi/qlogicpti.c
-@@ -1150,7 +1150,7 @@ static struct scsi_cmnd *qlogicpti_intr_handler(struct qlogicpti *qpti)
- 		case COMMAND_ERROR:
- 		case COMMAND_PARAM_ERROR:
- 			break;
--		};
-+		}
- 		sbus_writew(0, qpti->qregs + SBUS_SEMAPHORE);
- 	}
- 
++
++/* USB Type-C commands for AP-controlled device policy. */
++#define EC_CMD_TYPEC_CONTROL 0x0132
++
++enum typec_control_command {
++	TYPEC_CONTROL_COMMAND_EXIT_MODES,
++	TYPEC_CONTROL_COMMAND_CLEAR_EVENTS,
++	TYPEC_CONTROL_COMMAND_ENTER_MODE,
++};
++
++struct ec_params_typec_control {
++	uint8_t port;
++	uint8_t command;	/* enum typec_control_command */
++	uint16_t reserved;
++
++	/*
++	 * This section will be interpreted based on |command|. Define a
++	 * placeholder structure to avoid having to increase the size and bump
++	 * the command version when adding new sub-commands.
++	 */
++	union {
++		uint32_t clear_events_mask;
++		uint8_t mode_to_enter;      /* enum typec_mode */
++		uint8_t placeholder[128];
++	};
++} __ec_align1;
+ /*
+  * Gather all status information for a port.
+  *
 -- 
-1.8.3.1
+2.30.0.365.g02bc693789-goog
 
