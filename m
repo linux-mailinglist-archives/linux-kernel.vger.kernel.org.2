@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C22630D65E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5686030D662
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhBCJbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:31:46 -0500
-Received: from mga09.intel.com ([134.134.136.24]:1714 "EHLO mga09.intel.com"
+        id S233371AbhBCJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:33:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54596 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhBCJb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:31:27 -0500
-IronPort-SDR: h7ahegZIXWRP8N0RdS7NEhFq+oIOMinabFryahx9A02tBBVz4YUvrKuuoqkEe2vEuDrjC37J/V
- OnLTHNEURdvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="181158846"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="181158846"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:29:40 -0800
-IronPort-SDR: KJ4lPYHXMdgVlZDMopX9R1W9FxG2zKCK7WQjxWzNe5xTjj0hgL6ICLr74GV11Dy7omu2s2mCZm
- RvnaXcSvfKAw==
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="371352426"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.211]) ([10.254.210.211])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 01:29:38 -0800
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        Yian Chen <yian.chen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] iommu/vt-d: Add support for ACPI/SATC table
-To:     Christoph Hellwig <hch@infradead.org>
-References: <20210202044057.615277-1-baolu.lu@linux.intel.com>
- <20210203084128.GA3916610@infradead.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <18fc34e2-18db-d6f8-1011-a2cb8df85ed5@linux.intel.com>
-Date:   Wed, 3 Feb 2021 17:29:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233511AbhBCJcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:32:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 56585AD24;
+        Wed,  3 Feb 2021 09:31:37 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 10:31:36 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 10/13] module: pass struct find_symbol_args to
+ find_symbol
+In-Reply-To: <20210203090418.GA7833@lst.de>
+Message-ID: <alpine.LSU.2.21.2102031031120.24713@pobox.suse.cz>
+References: <20210202121334.1361503-1-hch@lst.de> <20210202121334.1361503-11-hch@lst.de> <alpine.LSU.2.21.2102021504550.570@pobox.suse.cz> <20210203090418.GA7833@lst.de>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210203084128.GA3916610@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Wed, 3 Feb 2021, Christoph Hellwig wrote:
 
-On 2021/2/3 16:41, Christoph Hellwig wrote:
-> On Tue, Feb 02, 2021 at 12:40:54PM +0800, Lu Baolu wrote:
->> Intel platform VT-d (v3.2) comes with a new type of DMAR subtable
->> SATC. The SATC table includes a list of SoC integrated devices
->> that require SATC. OS software can use this table to enable ATS
->> only for the devices in the list.
+> FYI, this is the updated version:
 > 
-> This all sounds like gibberish. Please expand and if necessary explain
-> acronyms when first used in each commit log / cover letter.
+> ---
+> >From 664ca3378deac7530fe8fc15fe73d583d3333df2 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Wed, 20 Jan 2021 14:58:27 +0100
+> Subject: module: pass struct find_symbol_args to find_symbol
 > 
+> Simplify the calling convention by passing the find_symbol_args structure
+> to find_symbol instead of initializing it inside the function.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I will rephrase the words.
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 
-Best regards,
-baolu
+M
