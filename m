@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9835D30D12C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9768E30D120
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhBCB5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhBCB5E (ORCPT
+        id S231511AbhBCB4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:56:48 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12009 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhBCB4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:57:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAC7C0613D6;
-        Tue,  2 Feb 2021 17:56:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QFRyLZQvy4ORvvMG6SE1r1pZqMndDwp/jNnta/YZPo8=; b=HdDDoWTb8bo9AwL1G5w2J7c9ny
-        j9Kua+EMQKkyR33mcx4U6ibju3pWjrJGQa02FxuTrLNz9NBpwLaKOvLfpaXV22U0v1Sx6SUkWumSy
-        b+9rFFzl8yXHvy1u97aR2dVMeG2MC+qkdmQoNwdKcSMBjvjrsnZDKdAQVIDt/wtpYp0unwvRLJ4UC
-        m86VphVHnSR9fSiWoorXllaHjnU3wmYZU3k5LO7GZD+v1R/y8v3lDqvGEZdCzjy5bU8uc9DjdlI9G
-        DG7cOhCNVxr7TcvyPCzO5Topma3ZvmP8uG91WBbYdaAb7AGxYKJLcWJFwRgRGCzQYpYBlutPt9UOz
-        c4nNEUFA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l77Ob-00G1Gl-Gl; Wed, 03 Feb 2021 01:55:54 +0000
-Date:   Wed, 3 Feb 2021 01:55:53 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     sumit.semwal@linaro.org, akpm@linux-foundation.org,
-        hch@infradead.org, lmark@codeaurora.org, labbott@redhat.com,
-        Brian.Starkey@arm.com, john.stultz@linaro.org,
-        christian.koenig@amd.com, cgoldswo@codeaurora.org,
-        orjan.eide@arm.com, robin.murphy@arm.com, jajones@nvidia.com,
-        minchan@kernel.org, hridya@google.com, sspatil@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/2] mm: replace BUG_ON in vm_insert_page with a return
- of an error
-Message-ID: <20210203015553.GX308988@casper.infradead.org>
-References: <20210203003134.2422308-1-surenb@google.com>
+        Tue, 2 Feb 2021 20:56:46 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVl9d6GdbzjHrd;
+        Wed,  3 Feb 2021 09:54:45 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Feb 2021 09:56:02 +0800
+Subject: Re: [PATCH v2 3/5] ACPI: button: Clean up printing messages
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Joe Perches" <joe@perches.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <1735040.lGk2htMl04@kreacher>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <87d81a42-205d-ec4e-c308-f2a96f56f96c@huawei.com>
+Date:   Wed, 3 Feb 2021 09:56:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203003134.2422308-1-surenb@google.com>
+In-Reply-To: <1735040.lGk2htMl04@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 04:31:33PM -0800, Suren Baghdasaryan wrote:
-> Replace BUG_ON(vma->vm_flags & VM_PFNMAP) in vm_insert_page with
-> WARN_ON_ONCE and returning an error. This is to ensure users of the
-> vm_insert_page that set VM_PFNMAP are notified of the wrong flag usage
-> and get an indication of an error without panicing the kernel.
-> This will help identifying drivers that need to clear VM_PFNMAP before
-> using dmabuf system heap which is moving to use vm_insert_page.
+On 2021/2/3 2:17, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Replace the ACPI_DEBUG_PRINT() instance in button.c with an
+> acpi_handle_debug() call, drop the _COMPONENT and ACPI_MODULE_NAME()
+> definitions that are not used any more, drop the no longer needed
+> ACPI_BUTTON_COMPONENT definition from the headers and update the
+> documentation accordingly.
+> 
+> While at it, replace the direct printk() invocations with pr_info()
+> (that changes the excessive log level for some of them too) and drop
+> the unneeded PREFIX sybmbol definition from battery.c.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-NACK.
-
-The system may not _panic_, but it is clearly now _broken_.  The device
-doesn't work, and so the system is useless.  You haven't really improved
-anything here.  Just bloated the kernel with yet another _ONCE variable
-that in a normal system will never ever ever be triggered.
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
