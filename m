@@ -2,65 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F9D30E369
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6F030E36E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBCTkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231345AbhBCTjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:39:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id CA88F64F5C;
-        Wed,  3 Feb 2021 19:38:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612381124;
-        bh=XU6nicR5fKlkjssiR2CSUxT8bquhNZ5d3iyQxLVhry8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fqvQm5xed9z1hdI9axpPxnJ2lAtG8PVSLKGMwggSz4BKaKUeFFirT67JvTMqix16r
-         GuJw574JxnEQllgs5UBlOGdhSkgpbdYxUpcJ98NUb2P1uJbPxYkexA2CRQcuY46/Ig
-         s8R5zzzAWS91HGWmijDBbAnQslz8Lt5Bp39YwOmoV+zDKvivXLFluyBu6uEmjWzJag
-         fqWmrt70M+MuEQLmenpO72w19aHsoTf4790fBMAdxu3oDHDSpKgjIgXrtoBcs3flg1
-         aP+iZRJZKEb90U/LtB4Fv4cA48/lBiXe9h7GnDNEr/Gt8YusUu3cHoLZUXi+39E8z4
-         ExZTn0qlPBB0g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C5454609E3;
-        Wed,  3 Feb 2021 19:38:44 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Fixes for 5.11-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210203095119.6627cd56@gandalf.local.home>
-References: <20210203095119.6627cd56@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210203095119.6627cd56@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc5
-X-PR-Tracked-Commit-Id: c8b186a8d54d7e12d28e9f9686cb00ff18fc2ab2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dbc15d24f9fa6f25723ef750b65b98bfcd3d3910
-Message-Id: <161238112480.20071.1935445830669072437.pr-tracker-bot@kernel.org>
-Date:   Wed, 03 Feb 2021 19:38:44 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        id S231710AbhBCTl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhBCTkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:40:46 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01206C06178A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:39:55 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c84001e2b7e52dd5f0f2b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:1e2b:7e52:dd5f:f2b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 88B1A1EC0258;
+        Wed,  3 Feb 2021 20:39:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612381193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Qv5Dh7DuwVDnvyl4tcF6oCRho3YBLCJ94rnb64aZIHA=;
+        b=OriZ6AgK1L7KbbFlaUxioWxqJNO7TTETXQ8GxUwRWHvLOQviyWBb+pTNkAVoJ3CODOKFdU
+        co+Qg7q9q4wRKPMb+sNGsv7cu0fLQTIDD91CmXFp+xNHaoFNKdLTUFMSCeFZq/7tM884Ac
+        M5VCx6cp0J6j6dgiRLeke8BoRWK1S2I=
+Date:   Wed, 3 Feb 2021 20:39:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 09/11] x86/fault: Rename no_context() to
+ kernelmode_fixup_or_oops()
+Message-ID: <20210203193949.GI13819@zn.tnic>
+References: <cover.1612113550.git.luto@kernel.org>
+ <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 3 Feb 2021 09:51:19 -0500:
+On Sun, Jan 31, 2021 at 09:24:40AM -0800, Andy Lutomirski wrote:
+> The name no_context() has never been very clear.  It's only called for
+> faults from kernel mode, so rename it and change the no-longer-useful
+> user_mode(regs) check to a WARN_ON_ONCE.
+> 
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> ---
+>  arch/x86/mm/fault.c | 28 ++++++++++------------------
+>  1 file changed, 10 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 177b612c7f33..04cc98ec2423 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -693,17 +693,10 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
+>  }
+>  
+>  static noinline void
+> -no_context(struct pt_regs *regs, unsigned long error_code,
+> -	   unsigned long address, int signal, int si_code)
+> +kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+> +			 unsigned long address, int signal, int si_code)
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc5
+Ew, I don't like functions with "or" in the name - they're probably not
+doing one thing only as they should.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dbc15d24f9fa6f25723ef750b65b98bfcd3d3910
+Why not simply "handle_kernel_fault" ?
 
-Thank you!
+Also, all the callsites now do:
+
+	if (!user_mode(regs)) {
+		kernelmode_fixup_or_oops
+		...
+
+I guess you can push the "user_mode" check inside that function for less
+hairy code at the callsites.
+
+>  {
+> -	if (user_mode(regs)) {
+> -		/*
+> -		 * This is an implicit supervisor-mode access from user
+> -		 * mode.  Bypass all the kernel-mode recovery code and just
+> -		 * OOPS.
+> -		 */
+> -		goto oops;
+> -	}
+> +	WARN_ON_ONCE(user_mode(regs));
+
+I guess...
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
