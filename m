@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C5130E26E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5D730E272
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhBCSX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S229631AbhBCSY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhBCSXv (ORCPT
+        with ESMTP id S229979AbhBCSYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:23:51 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008B1C061573;
-        Wed,  3 Feb 2021 10:23:10 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id m12so165678pjs.4;
-        Wed, 03 Feb 2021 10:23:10 -0800 (PST)
+        Wed, 3 Feb 2021 13:24:19 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86E5C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:23:39 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id d2so177351pjs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:23:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yCdeRlqf1Ez5EWdgyadi9rsJ0++scf5qFxbzWDIFxEQ=;
-        b=TPA6w9fp8xhZu5B1ZWQZg7KeOq2w/a+zpOtjxCCpSUKjY0oHscjXdfBi4Org6eRAxg
-         T+PXJPyyD3AjEKVIfSHPwDwNoTPXRlqYBu8jUkCWRpAA+8Fxy3vvO3ZAofd951yU2si2
-         cWbyv0Mm4aVhwNA7pW7OWYAX+zVydbcw0U/zqvLEJju34jyAGcjwxMIyiFKMjBADRu4V
-         34EOLK9Wg1JA2wXAPNZA70VuIh4uQot9dvHFJ1y+HLjMX0gIiADrvcBIzD/7GAg8l1Cz
-         +/pORIcejJxt7D1ilVr8VKd3CC1SH+h0wYmxVUEJm4zWFxTyG6QzZvfYr2tZq5eU94CP
-         9DbA==
+        bh=jbQ7Q82HlpY9iN8qdNAjJM7FwIIzD5nqUMekI2m1dlk=;
+        b=Jc2F1xJ+Ffe4gvWhIzUz9oIqoBn0wonA2FpEdmwcEjTcDjfEZWIQ63HnADnmeK4YJZ
+         9ZpCBZCAfX9xf46enL8gvlPhN6DCUulFGzsPkj2JTtQbS6G8QO/9NRsjsxdumVX73Its
+         T6537lo5+btDjE234+begfGIJuvV7+Kaa+4jqB3TxMnZQHEQ/u796swQVQPBUiKysUXZ
+         DTvZAG/ysyoTRgAoq4tfak7EByGtJOL/N/QJxV8mTnURJVFtTCfc/PsmnF5nWNJgjn/K
+         //Dr7/e5z+T3RAhI3ATY6rrPcCWYptNxxy7zfP36chof5qbL8ykVQa4zjq/3dpYaU4o7
+         FXzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yCdeRlqf1Ez5EWdgyadi9rsJ0++scf5qFxbzWDIFxEQ=;
-        b=I07mdC2f5KfAWBzwwBKChdrdhsr7nETMIQoB/Jj0K5ZQ7wRtg5mF0toduUbKCQzhzM
-         YIny7cgbhjRDVgVaapwksooA3qdlNfkLGgs+3KVbOa2hE7t3oTXWrLdunvLHDbsTef0P
-         jkmkdhwLEwiZDETE4dLGuOOYZ1JtT6MUiye2z41fKW3d5vftQSBJGC5AINCHXEgbkkZb
-         vQiv0Bw2hmVGZ2AqusFxY98X4UnDu3lVICJIG8rtBAyDxVgXjRhiCUmOh7/mkCwwdQ5q
-         ZpwhV6dYUGVAWbab+7rcxKqdA15b6SJ5FVRBU5vo59RNqn0CmEZLrFE+u/zFNdH/H6iL
-         NHMg==
-X-Gm-Message-State: AOAM530D1E2LmAyT+cQE8I0+dJR65kp/JGd0vDUJd8A27SAKD3NdlMTh
-        NuXNWt8ZPX4Qju1ZDyewpo4=
-X-Google-Smtp-Source: ABdhPJy3qm82BJojc5RJI3EB86KaOPfjxImGciD4QhikErRNih/b7hbgmPO2GrUkqP99aSIp1GWg+g==
-X-Received: by 2002:a17:90b:19cb:: with SMTP id nm11mr4198702pjb.168.1612376590515;
-        Wed, 03 Feb 2021 10:23:10 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jbQ7Q82HlpY9iN8qdNAjJM7FwIIzD5nqUMekI2m1dlk=;
+        b=fZOhLX0tX0JxbmnucouZOay0ggA6NMO/2IMoGP4UmntaftpGJd27W6HQNtO81C3C3w
+         uBuK0Sh1lr/dsk7bwIJAoJY9EtyROFUxQcUNDonR+ZDWeBWfVgbVEIjMaX49Gr9rffXZ
+         xN67jMIOeawmuhwb5YB2B4QGWBY9lAhOhAVfPrt+cpUX4OZXXki6GJN+qAEkvPs2LMDf
+         KFuSBz6Hbd9ip8Az4W8nbwYA29Eyl8kjq2QF2h6s05iYbY9mr8PLET9QZRTcSZcXtwy7
+         Nt75o73RvON8LhwgFol1klX362DcNV7r4ZUKbhAULkd7qzlKNS2JLt8pbxthJ5eapbxi
+         /f0A==
+X-Gm-Message-State: AOAM5310xfLxdDYK0AlT0i+/PZPwxZ3pQRbJBv5Gss95EkKomgOQN1ld
+        qJ29jG5pexa7ElWdhXLYe+g=
+X-Google-Smtp-Source: ABdhPJxcog47jO197y5AyxP0V1WxYqbS91o8OMJzCp7sufCXh6l5l/N3QKHGENPIlnZtDPEhNrsDMw==
+X-Received: by 2002:a17:90a:de8c:: with SMTP id n12mr4123081pjv.131.1612376619250;
+        Wed, 03 Feb 2021 10:23:39 -0800 (PST)
 Received: from [10.67.49.228] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l3sm3660181pgn.8.2021.02.03.10.23.09
+        by smtp.googlemail.com with ESMTPSA id 67sm2777517pfy.154.2021.02.03.10.23.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 10:23:09 -0800 (PST)
-Subject: Re: [PATCH] MIPS: of: Introduce helper function to get DTB
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-References: <20210127132431.143374-1-tsbogend@alpha.franken.de>
+        Wed, 03 Feb 2021 10:23:38 -0800 (PST)
+Subject: Re: [PATCH v7 0/2] ARM: Implement MODULE_PLT support in FTRACE
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -110,12 +113,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <7c092a6d-30f5-df2e-fa38-4b5196ce2c2f@gmail.com>
-Date:   Wed, 3 Feb 2021 10:23:08 -0800
+Message-ID: <a5c1e655-cdbc-18d5-55fd-c1690c31acbe@gmail.com>
+Date:   Wed, 3 Feb 2021 10:23:36 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210127132431.143374-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -123,18 +126,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 5:24 AM, Thomas Bogendoerfer wrote:
-> Selection of the DTB to be used was burried in more or less readable
-> code in head.S. Move this code into a inline helper function and
-> use it.
+On 1/27/21 3:09 AM, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
+> FTRACE's function tracer currently doesn't always work on ARM with
+> MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
+> code modifier cannot cope with introduced veneers and turns the
+> function tracer off globally.
+> 
+> ARM64 already has a solution for the problem, refer to the following
+> patches:
+> 
+> arm64: ftrace: emit ftrace-mod.o contents through code
+> arm64: module-plts: factor out PLT generation code for ftrace
+> arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
+> arm64: ftrace: fix building without CONFIG_MODULES
+> arm64: ftrace: add support for far branches to dynamic ftrace
+> arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
+> 
+> But the presented ARM variant has just a half of the footprint in terms of
+> the changed LoCs. It also retains the code validation-before-modification
+> instead of switching it off.
 
->  arch/mips/bmips/setup.c               |  7 +++---
-
-^--
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Ard, Russell should this be sent to the patch tracker?
 -- 
 Florian
