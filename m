@@ -2,119 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA0030D50D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA5430D515
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhBCIUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbhBCIUL (ORCPT
+        id S232728AbhBCIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:22:24 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57999 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232493AbhBCIWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:20:11 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064FBC061573;
-        Wed,  3 Feb 2021 00:19:31 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id s24so12752039iob.6;
-        Wed, 03 Feb 2021 00:19:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Nwlpcct/F9cJQ/7dbMVRZOZAh6ZmCNE68LBrwiCRQ3w=;
-        b=iTmKXcVRGgIbvupY209fVzFzdBNIkqDBHPReGxt+iAePvJ6QsdneBuZ3oFJOe2hpGO
-         LeMhmrA0eso6K57FHHZHKaC0k51zcrCIuAFLtlPylxmK6i2Cmh2yBMVbXybpUGU7XOQ/
-         8yE2hszs5Z+Vpx1OsxdpL9q7mLKFA/sNCpWGoz2VdGvDRy6PrqbV3TgBm3Zx7nReOtVg
-         XpCk9zqbFa+lYOrHU52RtknjkCT2HFcPUjedBSqdFs2Y7Bo0yt0PE0dXfygs6kVytzk9
-         I1xMp36y2EW/i8i6Jt/oNChnOxGIwgp4QHNvUIVFy0IePhoFQ/U/Hdhrs+iRMoZD/adR
-         vaCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Nwlpcct/F9cJQ/7dbMVRZOZAh6ZmCNE68LBrwiCRQ3w=;
-        b=OdTlXg9ZI0RwiZUyRcjeibjHUbZLCgjLH/x6vz/3RhqqHJFlh0R+2lksYGqrEFKjSm
-         bX4YOlpA0SvgaypU3b5+747AqDXFWQDEvklUjyKHxWDhKwf0N6+ncA8DfMGxiqUr1xrs
-         f6X30UIZWSds+y74yW9gdTJKTlVxwddrnxkANEygBH4qSqX79EGP36Tp+l5HuTjiFaNo
-         v9syOnUDPickfmH7d/99Ydn3OaqbSR6YcsWpeOZ4bP4/LD2CtcmAFVc+mdNjVWS6CQb6
-         EWrDkjWmbnJs5+D52yVePyAcFl5j07flQQEQgP8s84sCsTYpmMi7EJFL2Mslx1kZHIto
-         4+BA==
-X-Gm-Message-State: AOAM530hfMcl24WeS5YmYlFusOg6NfWE2yWVyG4jroxmmXRgrr1L8HNm
-        1wkfpBNgxoNgIVCoL6l2kOJVrBhkK2nKQ22wsfvTiejmm1E=
-X-Google-Smtp-Source: ABdhPJxD8V87tad7EkvPiaD2wrK0mSumpXh6jv1ydp2zHS2djx4W+Ya82t7uqoxxwmSeQcAunngr8X5Z4IdJs8jdPm4=
-X-Received: by 2002:a05:6602:2b01:: with SMTP id p1mr1566109iov.156.1612340370361;
- Wed, 03 Feb 2021 00:19:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20210203075239.5505-1-masahiroy@kernel.org>
-In-Reply-To: <20210203075239.5505-1-masahiroy@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 3 Feb 2021 09:19:19 +0100
-Message-ID: <CA+icZUWpXQZqF+sz9bTv8ZUw2xYKUiCChyu92Zma1y-EtruRLA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>,
-        Mark Wielaard <mark@klomp.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Feb 2021 03:22:22 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNkcr5h_1612340378;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNkcr5h_1612340378)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Feb 2021 16:19:43 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     sathya.prakash@broadcom.com
+Cc:     sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: mpt3sas: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Wed,  3 Feb 2021 16:19:36 +0800
+Message-Id: <1612340376-1549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 8:53 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Sedat Dilek noticed duplicated debug flags passed when building C
-> files with CONFIG_DEBUG_INFO.
->
-> I do not know much about his build environment, but yes, Kbuild
-> recurses to the top Makefile with some build targets. For example,
-> 'make CC=clang bindeb-pkg' reproduces the issue.
->
-> With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
-> for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
-> CONFIG_CC_IS_GCC=y.
->
-> Fix it to reset DEBUG_CFLAGS also when using Clang.
->
+Fix the following coccicheck warning:
 
-Great, Masahiro!
+./drivers/scsi/ufs/ufshcd.c: WARNING: use scnprintf or sprintf.
 
-I wanted to request an "undrunken" switch for GNU/make :-).
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c | 71 ++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 38 deletions(-)
 
-- Sedat -
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+index c8a0ce1..1371831 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+@@ -2746,11 +2746,11 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d.%02d.%02d.%02d\n",
+-	    (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
+-	    (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
+-	    (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
+-	    ioc->facts.FWVersion.Word & 0x000000FF);
++	return sysfs_emit(buf, "%02d.%02d.%02d.%02d\n",
++			  (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
++			  (ioc->facts.FWVersion.Word & 0x00FF0000) >> 16,
++			  (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
++			  ioc->facts.FWVersion.Word & 0x000000FF);
+ }
+ static DEVICE_ATTR_RO(version_fw);
+ 
+@@ -2771,11 +2771,11 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 
+ 	u32 version = le32_to_cpu(ioc->bios_pg3.BiosVersion);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d.%02d.%02d.%02d\n",
+-	    (version & 0xFF000000) >> 24,
+-	    (version & 0x00FF0000) >> 16,
+-	    (version & 0x0000FF00) >> 8,
+-	    version & 0x000000FF);
++	return sysfs_emit(buf, "%02d.%02d.%02d.%02d\n",
++			  (version & 0xFF000000) >> 24,
++			  (version & 0x00FF0000) >> 16,
++			  (version & 0x0000FF00) >> 8,
++			   version & 0x000000FF);
+ }
+ static DEVICE_ATTR_RO(version_bios);
+ 
+@@ -2794,8 +2794,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%03x.%02x\n",
+-	    ioc->facts.MsgVersion, ioc->facts.HeaderVersion >> 8);
++	return sysfs_emit(buf, "%03x.%02x\n", ioc->facts.MsgVersion, ioc->facts.HeaderVersion >> 8);
+ }
+ static DEVICE_ATTR_RO(version_mpi);
+ 
+@@ -2833,8 +2832,8 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%08xh\n",
+-	    le32_to_cpu(ioc->iounit_pg0.NvdataVersionPersistent.Word));
++	return sysfs_emit(buf, "%08xh\n",
++			  le32_to_cpu(ioc->iounit_pg0.NvdataVersionPersistent.Word));
+ }
+ static DEVICE_ATTR_RO(version_nvdata_persistent);
+ 
+@@ -2853,8 +2852,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%08xh\n",
+-	    le32_to_cpu(ioc->iounit_pg0.NvdataVersionDefault.Word));
++	return sysfs_emit(buf, "%08xh\n", le32_to_cpu(ioc->iounit_pg0.NvdataVersionDefault.Word));
+ }
+ static DEVICE_ATTR_RO(version_nvdata_default);
+ 
+@@ -2933,7 +2931,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->io_missing_delay);
++	return sysfs_emit(buf, "%02d\n", ioc->io_missing_delay);
+ }
+ static DEVICE_ATTR_RO(io_delay);
+ 
+@@ -2955,7 +2953,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->device_missing_delay);
++	return sysfs_emit(buf, "%02d\n", ioc->device_missing_delay);
+ }
+ static DEVICE_ATTR_RO(device_delay);
+ 
+@@ -2976,7 +2974,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02d\n", ioc->facts.RequestCredit);
++	return sysfs_emit(buf, "%02d\n", ioc->facts.RequestCredit);
+ }
+ static DEVICE_ATTR_RO(fw_queue_depth);
+ 
+@@ -2998,8 +2996,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%016llx\n",
+-	    (unsigned long long)ioc->sas_hba.sas_address);
++	return sysfs_emit(buf, "0x%016llx\n", (unsigned long long)ioc->sas_hba.sas_address);
+ }
+ static DEVICE_ATTR_RO(host_sas_address);
+ 
+@@ -3018,7 +3015,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%08xh\n", ioc->logging_level);
++	return sysfs_emit(buf, "%08xh\n", ioc->logging_level);
+ }
+ static ssize_t
+ logging_level_store(struct device *cdev, struct device_attribute *attr,
+@@ -3054,7 +3051,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->fwfault_debug);
++	return sysfs_emit(buf, "%d\n", ioc->fwfault_debug);
+ }
+ static ssize_t
+ fwfault_debug_store(struct device *cdev, struct device_attribute *attr,
+@@ -3091,7 +3088,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->ioc_reset_count);
++	return sysfs_emit(buf, "%d\n", ioc->ioc_reset_count);
+ }
+ static DEVICE_ATTR_RO(ioc_reset_count);
+ 
+@@ -3119,7 +3116,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 	else
+ 		reply_queue_count = 1;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", reply_queue_count);
++	return sysfs_emit(buf, "%d\n", reply_queue_count);
+ }
+ static DEVICE_ATTR_RO(reply_queue_count);
+ 
+@@ -3191,7 +3188,7 @@ void mpt3sas_ctl_reset_done_handler(struct MPT3SAS_ADAPTER *ioc)
+ 
+ 	/* BRM status is in bit zero of GPIOVal[24] */
+ 	backup_rail_monitor_status = le16_to_cpu(io_unit_pg3->GPIOVal[24]);
+-	rc = snprintf(buf, PAGE_SIZE, "%d\n", (backup_rail_monitor_status & 1));
++	rc = sysfs_emit(buf, "%d\n", (backup_rail_monitor_status & 1));
+ 
+  out:
+ 	kfree(io_unit_pg3);
+@@ -3249,7 +3246,7 @@ struct DIAG_BUFFER_START {
+ 		size = le32_to_cpu(request_data->Size);
+ 
+ 	ioc->ring_buffer_sz = size;
+-	return snprintf(buf, PAGE_SIZE, "%d\n", size);
++	return sysfs_emit(buf, "%d\n", size);
+ }
+ static DEVICE_ATTR_RO(host_trace_buffer_size);
+ 
+@@ -3336,12 +3333,12 @@ struct DIAG_BUFFER_START {
+ 	if ((!ioc->diag_buffer[MPI2_DIAG_BUF_TYPE_TRACE]) ||
+ 	   ((ioc->diag_buffer_status[MPI2_DIAG_BUF_TYPE_TRACE] &
+ 	    MPT3_DIAG_BUFFER_IS_REGISTERED) == 0))
+-		return snprintf(buf, PAGE_SIZE, "off\n");
++		return sysfs_emit(buf, "off\n");
+ 	else if ((ioc->diag_buffer_status[MPI2_DIAG_BUF_TYPE_TRACE] &
+ 	    MPT3_DIAG_BUFFER_IS_RELEASED))
+-		return snprintf(buf, PAGE_SIZE, "release\n");
++		return sysfs_emit(buf, "release\n");
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "post\n");
++		return sysfs_emit(buf, "post\n");
+ }
+ 
+ static ssize_t
+@@ -3677,7 +3674,7 @@ struct DIAG_BUFFER_START {
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%08x\n", ioc->drv_support_bitmap);
++	return sysfs_emit(buf, "0x%08x\n", ioc->drv_support_bitmap);
+ }
+ static DEVICE_ATTR_RO(drv_support_bitmap);
+ 
+@@ -3697,7 +3694,7 @@ struct DIAG_BUFFER_START {
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", ioc->enable_sdev_max_qd);
++	return sysfs_emit(buf, "%d\n", ioc->enable_sdev_max_qd);
+ }
+ 
+ /**
+@@ -3835,8 +3832,8 @@ struct device_attribute *mpt3sas_host_attrs[] = {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%016llx\n",
+-	    (unsigned long long)sas_device_priv_data->sas_target->sas_address);
++	return sysfs_emit(buf, "0x%016llx\n",
++			  (unsigned long long)sas_device_priv_data->sas_target->sas_address);
+ }
+ static DEVICE_ATTR_RO(sas_address);
+ 
+@@ -3857,8 +3854,7 @@ struct device_attribute *mpt3sas_host_attrs[] = {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%04x\n",
+-	    sas_device_priv_data->sas_target->handle);
++	return sysfs_emit(buf, "0x%04x\n", sas_device_priv_data->sas_target->handle);
+ }
+ static DEVICE_ATTR_RO(sas_device_handle);
+ 
+@@ -3877,8 +3873,7 @@ struct device_attribute *mpt3sas_host_attrs[] = {
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 	struct MPT3SAS_DEVICE *sas_device_priv_data = sdev->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n",
+-			sas_device_priv_data->ncq_prio_enable);
++	return sysfs_emit(buf, "%d\n", sas_device_priv_data->ncq_prio_enable);
+ }
+ 
+ static ssize_t
+-- 
+1.8.3.1
 
-> Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 3d3f67b98ca2..769a38ee81b9 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -811,10 +811,12 @@ KBUILD_CFLAGS     += -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
->
-> +DEBUG_CFLAGS   :=
-> +
->  # Workaround for GCC versions < 5.0
->  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
->  ifdef CONFIG_CC_IS_GCC
-> -DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
-> +DEBUG_CFLAGS   += $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
->  endif
->
->  ifdef CONFIG_DEBUG_INFO
-> --
-> 2.27.0
->
