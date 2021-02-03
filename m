@@ -2,172 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6130D33D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2B530D344
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhBCF5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 00:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhBCF5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 00:57:07 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C774C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 21:56:27 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id t25so12204469otc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 21:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=JK+v/H9Y5ZpRZhdXAC5BUOgw8LiPelyQG0wSqPcrtWI=;
-        b=fR9fmJIUrOuAx4WrH055RjPXJ7h71Ne+Me1+7Vja0BEHf3Jb9pGFvE4EIUK8lfLyoC
-         PyfACCCxnCjU7DOX4XiAULuPtRAjdAulHDKHQXXFO9wekCHP5rWUmmagMBPUKlf6RIU2
-         slND/I0sFpiR/zmnZnRwdsFOOU8BYsbJStTSuwEecddQmBEIkzulKqdKxHUgZS/vGzeZ
-         ei+tG04r4OkQKHDMDOcK/fDVaf9t5WJ7TnFC1QIxGkEKGNNiKiqetxt2bjOLQm/D11tb
-         J5D4jz3b1r4mkm1Lk2mC6zc0a5BVVjPccq8PZ3v7BDWaXpvtA7c1UrwS/txd45nyoL+m
-         IjtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=JK+v/H9Y5ZpRZhdXAC5BUOgw8LiPelyQG0wSqPcrtWI=;
-        b=hZ6lKicd4o23HRLXvHyVFXl+seGSsQFjlu/w8f4VzH5ZqxmD6mYSnaa7MbBr6t9lcM
-         6UV6D6Yp+mNFctRfdGNWpY4l6fIqaI6dK2lX6/pK6qe+w9VLs7WWOVV7yWqF0ORUui8J
-         hxm1BQ7gKkCp7DafbGILF08yRIM3wvpcPj664PEiuwnKthhCGmoBl3ORKEuXVstzBmE0
-         0lvZDl8+PhTWO+gOmsMmMJ14Xv+Xj+rMdzeWkzes318Tfyn0wqZVSV4aRW+S4WFReE+6
-         NyeLXNn9qqAmDczFQrnkhduouVklo3BRcPzJBfj15UgmXKXNvbWW8LWHBs4CZdlrpTLp
-         lorg==
-X-Gm-Message-State: AOAM5305DcIDYDi0dcwbv6I+PG0aomfR4Q2bRI9+ha4cB8YKCt+e8vOJ
-        PseJDi8/bVmPWx4pvfd+oxkTMtVfs3gT4tOZo5zjLQ==
-X-Google-Smtp-Source: ABdhPJy2RJSM/IQLXgr2vBtIZODFBoIES8ezKQ2K+tCeiev7PYCR07s4A6wgMtyVX7p7mQXjnJqS3/so5tjVOUB5lPE=
-X-Received: by 2002:a9d:2c2:: with SMTP id 60mr975041otl.70.1612331786600;
- Tue, 02 Feb 2021 21:56:26 -0800 (PST)
+        id S231564AbhBCGAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:00:37 -0500
+Received: from mga06.intel.com ([134.134.136.31]:37606 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231499AbhBCGAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:00:36 -0500
+IronPort-SDR: xCo5T8TTNHpHXS/IjxhN3GT3gemKd1mp8S9GWVT1gLV3cv5lm1SnO5f/plAsaq43zFhd8jtsdg
+ rMRdnRxEYeQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="242502634"
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="242502634"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 21:59:53 -0800
+IronPort-SDR: sKfQt+Ag06GkERtt8ufGNq5azSinF9eFugaRuLoFPcSPx1Q9ewk01qZZLFShRDjMc3Lnji+cLR
+ 9T11v23SRf0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="359321539"
+Received: from lkp-server02.sh.intel.com (HELO 8b832f01bb9c) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 02 Feb 2021 21:59:52 -0800
+Received: from kbuild by 8b832f01bb9c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l7BCi-000043-3h; Wed, 03 Feb 2021 05:59:52 +0000
+Date:   Wed, 03 Feb 2021 13:59:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/seves] BUILD SUCCESS
+ 62a08a7193dc9107904aaa51a04ba3ba2959f745
+Message-ID: <601a3bac.ZN1B7JdEz8Sg3I/v%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20201217230612.32397-1-john.stultz@linaro.org>
- <20201217230612.32397-2-john.stultz@linaro.org> <X9y+YZujWBTHMuH3@phenom.ffwll.local>
- <CALAqxLVtYVGSSYtFmMK6oM9JSEmY4RAXra89sECL2Z4YGPic0Q@mail.gmail.com>
- <X+Ec+xVhyIUa7IsJ@phenom.ffwll.local> <CALAqxLWdq9pKpFLzXmV60LQHpu8BgckDuX1HX5hY4jspHvLK5Q@mail.gmail.com>
- <YBlb1V62cFP9Fz1/@phenom.ffwll.local>
-In-Reply-To: <YBlb1V62cFP9Fz1/@phenom.ffwll.local>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 2 Feb 2021 21:56:14 -0800
-Message-ID: <CALAqxLVNBGLeCnZ1SMj+bPWTTOMADUw7ioz7zaGRZPC79PpBqg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 2/3] dma-buf: system_heap: Add pagepool support to
- system heap
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sandeep Patil <sspatil@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Daniel Mentz <danielmentz@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 6:04 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Jan 22, 2021 at 05:28:32PM -0800, John Stultz wrote:
-> > On Mon, Dec 21, 2020 at 2:09 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Fri, Dec 18, 2020 at 05:16:56PM -0800, John Stultz wrote:
-> > > > On Fri, Dec 18, 2020 at 6:36 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > On Thu, Dec 17, 2020 at 11:06:11PM +0000, John Stultz wrote:
-> > > > > > Reuse/abuse the pagepool code from the network code to speed
-> > > > > > up allocation performance.
-> > > > > >
-> > > > > > This is similar to the ION pagepool usage, but tries to
-> > > > > > utilize generic code instead of a custom implementation.
-> > > > >
-> > > > > We also have one of these in ttm. I think we should have at most one of
-> > > > > these for the gpu ecosystem overall, maybe as a helper that can be plugged
-> > > > > into all the places.
-> > > > >
-> > > > > Or I'm kinda missing something, which could be since I only glanced at
-> > > > > yours for a bit. But it's also called page pool for buffer allocations,
-> > > > > and I don't think there's that many ways to implement that really :-)
-> > > >
-> > > > Yea, when I was looking around the ttm one didn't seem quite as
-> > > > generic as the networking one, which more easily fit in here.
-> > >
-> > > Oops, I didn't look that closely and didn't realize you're reusing the one
-> > > from net/core/.
-> > >
-> > > > The main benefit for the system heap is not so much the pool itself
-> > > > (the normal page allocator is pretty good), as it being able to defer
-> > > > the free and zero the pages in a background thread, so the pool is
-> > > > effectively filled with pre-zeroed pages.
-> > > >
-> > > > But I'll take another look at the ttm implementation and see if it can
-> > > > be re-used or the shared code refactored and pulled out somehow.
-> > >
-> > > I think moving the page_pool from net into lib and using it in ttm might
-> > > also be an option. Lack of shrinker in the networking one might be a bit a
-> > > problem.
-> >
-> > Yea. I've been looking at this, to see how to abstract out a generic
-> > pool implementation, but each pool implementation has been tweaked for
-> > the specific use cases, so a general abstraction is a bit tough right
-> > off.
-> >
-> > For example the ttm pool's handling allocations both from alloc_pages
-> > and dma_alloc in a pool, where the net page pool only uses alloc_pages
-> > (but can pre map via dma_map_attr).
-> >
-> > And as you mentioned, the networking page pool is statically sized
-> > where the ttm pool is dynamic and shrinker controlled.
-> >
-> > Further, as the ttm pool is utilized for keeping pools of pages set
-> > for specific cache types, it makes it difficult to abstract that out
-> > as we have to be able to reset the caching (set_pages_wb()) when
-> > shrinking, so that would also have to be pushed down into the pool
-> > attributes as well.
-> >
-> > So far, in my attempts to share an abstraction for both the net
-> > page_pool and the ttm page pool, it seems to make the code complexity
-> > worse on both sides -  so while I'm interested in continuing to try to
-> > find a way to share code here, I'm not sure it makes sense to hold up
-> > this series (which is already re-using an existing implementation and
-> > provide a performance bump in microbenchmarks) for the
-> > grand-unified-page-pool. Efforts to refactor the ttm pool and net page
-> > pool can continue on indepently, and I'd be happy to move the system
-> > heap to whatever that ends up being.
->
-> The thing is, I'm not sure sharing code with net/core is a really good
-> idea, at least it seems like we have some impendence mismatch with the ttm
-> pool. And going forward I expect sooner or later we need alignment between
-> the pools/caches under drm with dma-buf heap pools a lot more than between
-> dma-buf and net/core.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/seves
+branch HEAD: 62a08a7193dc9107904aaa51a04ba3ba2959f745  x86/sev-es: Do not unroll string I/O for SEV-ES guests
 
-I mean...  I don't think you're wrong here, but it was your suggestion.
+elapsed time: 723m
 
-> So this feels like a bit code sharing for code sharing's sake and not
-> where it makes sense. Expecting net/core and gpu stacks to have the exact
-> same needs for a page pool allocator has good chances to bite us in the
-> long run.
+configs tested: 137
+configs skipped: 77
 
-Again, I agree with you at the high level here (dmabuf system heap and
-ttm page pooling are conceptually more likely to align, and
-duplication of buffer pools is non-optimal), but there's still the
-practical aspect of the ttm pool being pretty tied to the ttm code
-(utilizing ttm contexts, fixed MAX_ORDER*TTM_NUM_CACHING_TYPES
-subpools per pool + 4 global sub-pools for only x86).
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-So... I guess I'll go for another pass at trying to pull something
-generic out of the ttm_pool, but the cynic in me suspects folks will
-just object to any inefficiencies added in order to do so (the
-code-sharing for its own sake argument above) and I'll be back to
-where I am now. But we'll see.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+h8300                     edosk2674_defconfig
+arm                          ep93xx_defconfig
+h8300                               defconfig
+arm                           viper_defconfig
+c6x                        evmc6457_defconfig
+powerpc                      mgcoge_defconfig
+mips                        qi_lb60_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                     kilauea_defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+powerpc                    klondike_defconfig
+powerpc                     ep8248e_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     mpc5200_defconfig
+arm                             pxa_defconfig
+powerpc                      acadia_defconfig
+m68k                        m5272c3_defconfig
+arm                        neponset_defconfig
+mips                malta_kvm_guest_defconfig
+arm                          moxart_defconfig
+sh                         apsh4a3a_defconfig
+sh                            titan_defconfig
+mips                            gpr_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                        mvme16x_defconfig
+arm                          collie_defconfig
+sh                          landisk_defconfig
+m68k                            q40_defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                           tb10x_defconfig
+c6x                        evmc6474_defconfig
+m68k                       m5208evb_defconfig
+powerpc                        warp_defconfig
+xtensa                  audio_kc705_defconfig
+sh                     magicpanelr2_defconfig
+sh                         ap325rxa_defconfig
+arc                         haps_hs_defconfig
+powerpc                      katmai_defconfig
+arm                           h5000_defconfig
+powerpc                     tqm8560_defconfig
+arm                        multi_v7_defconfig
+nios2                         3c120_defconfig
+arm                            pleb_defconfig
+sh                           se7343_defconfig
+arm                          badge4_defconfig
+m68k                          hp300_defconfig
+powerpc                      pasemi_defconfig
+m68k                          amiga_defconfig
+arm                          pcm027_defconfig
+sh                   secureedge5410_defconfig
+um                             i386_defconfig
+powerpc                  storcenter_defconfig
+mips                    maltaup_xpa_defconfig
+mips                       lemote2f_defconfig
+mips                      bmips_stb_defconfig
+powerpc                      cm5200_defconfig
+powerpc                     skiroot_defconfig
+microblaze                          defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+i386                 randconfig-a001-20210202
+i386                 randconfig-a005-20210202
+i386                 randconfig-a003-20210202
+i386                 randconfig-a006-20210202
+i386                 randconfig-a002-20210202
+i386                 randconfig-a004-20210202
+x86_64               randconfig-a013-20210202
+x86_64               randconfig-a014-20210202
+x86_64               randconfig-a015-20210202
+x86_64               randconfig-a016-20210202
+x86_64               randconfig-a011-20210202
+x86_64               randconfig-a012-20210202
+i386                 randconfig-a013-20210202
+i386                 randconfig-a016-20210202
+i386                 randconfig-a014-20210202
+i386                 randconfig-a012-20210202
+i386                 randconfig-a015-20210202
+i386                 randconfig-a011-20210202
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-thanks
--john
+clang tested configs:
+x86_64               randconfig-a006-20210202
+x86_64               randconfig-a001-20210202
+x86_64               randconfig-a005-20210202
+x86_64               randconfig-a002-20210202
+x86_64               randconfig-a004-20210202
+x86_64               randconfig-a003-20210202
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
