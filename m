@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E35F30D4A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE0330D4A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbhBCIGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:06:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232474AbhBCIGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:06:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612339482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+oG1iepI5e+YoRSW15dR/Lg6jPhIDaE96zUxkSlCngY=;
-        b=OcYuoymMmPzvZXB9CsrD2Dtumsbz6uzxWN+NAMZ0pSwW6spKmv1snEhYwEIkKUJPyDl4xB
-        S11xf7nYA8sQVXLDVLDsq3UVw2uLJqSt5L+euPu8iq240kHsEYeOnfcu2skQcuSf6wiB1u
-        OLjXgJ9LwRWwMBefsAG0sR6qbe1eWSM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-ySLSXRxYMRqi7iuqwo9-oQ-1; Wed, 03 Feb 2021 03:04:40 -0500
-X-MC-Unique: ySLSXRxYMRqi7iuqwo9-oQ-1
-Received: by mail-ej1-f71.google.com with SMTP id eb5so1835352ejc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 00:04:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+oG1iepI5e+YoRSW15dR/Lg6jPhIDaE96zUxkSlCngY=;
-        b=Epd+6M5+RLhAv5N8JyaCeBJHodpGlEL6eFSajOeXrhbtRTR8fHLjKuMRoTFLsah9b+
-         FtS8f6u8uMfaEPcKO/bNkUcfHuns0UAKioSlVqNjLsqt4r2+SiwQh30o85+Kl5EsiJZT
-         +g/fH9r6D43aZwQKvFJHZxvlb96eb5b/7Mpr+WSByYvYMlsxOVUPIJ/NGfCiE45Lh2Wq
-         qSXtU0jOrSvzUEjblye2O8ZcP/w4tli0EcXVgwBoR0WVbe4jhTUGBJJFlRybpYaRK/d3
-         pSznmDDtJ7cL7MSoXaE/bFjCJr6pFs7OJBgwNwmX0xEfvUFX7vty5HXtdlpLms8L+JuB
-         6VMA==
-X-Gm-Message-State: AOAM531PRdFTzUYjCNtl5zkpfzilt5Zjz0+0H3hQAiwC1JFgjl8Bm/g1
-        BzuvguyQUzmEc1Q8b80hQp5W3pju94v9xqbrSvqMa/CA4KKQnwJuhE2XfGDDvHLwBK5t1kvo7sL
-        iWkjBo87liL0165AGD6SIipBt
-X-Received: by 2002:a17:906:9249:: with SMTP id c9mr2055019ejx.416.1612339479659;
-        Wed, 03 Feb 2021 00:04:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy9ieYS7R8bKJ//fPnjyvJXLt8OWDR0VRxfS3newcnOgK3FN3F9pIY3diGwH0IR9kZERgI0pA==
-X-Received: by 2002:a17:906:9249:: with SMTP id c9mr2054998ejx.416.1612339479416;
-        Wed, 03 Feb 2021 00:04:39 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o11sm483181eds.19.2021.02.03.00.04.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 00:04:38 -0800 (PST)
-Subject: Re: [PATCH v4 1/3] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Sean Christopherson <seanjc@google.com>,
-        Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20210202190126.2185715-1-michael.roth@amd.com>
- <20210202190126.2185715-2-michael.roth@amd.com> <YBnwaiy8L/O0PCrR@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <509b0e43-7f15-53bc-ab08-e27edbb855f8@redhat.com>
-Date:   Wed, 3 Feb 2021 09:04:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232598AbhBCIG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:06:57 -0500
+Received: from mga07.intel.com ([134.134.136.100]:50097 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232433AbhBCIGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 03:06:54 -0500
+IronPort-SDR: 0SMHToqfLyMlkAwjsM10JRHnfkp64H1i+wb3j6oofTcwGfxOS+dBc2iU8fpMKNSkcSZeSijVhD
+ HqtV5zRmyzqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245079974"
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="245079974"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 00:05:25 -0800
+IronPort-SDR: 9A720OnrUfEV+anxHhtqm10DSp8wmVjx7uYFX9jMxPNWfTI8taECRSPJnuBCUhu2UZ2daKhvUN
+ YD8IaYrM64sg==
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="356645477"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 00:05:21 -0800
+Received: by lahna (sSMTP sendmail emulation); Wed, 03 Feb 2021 10:05:18 +0200
+Date:   Wed, 3 Feb 2021 10:05:18 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
+        lambert.wang@mediatek.com, kerun.zhu@mediatek.com,
+        alex.williamson@redhat.com, rjw@rjwysocki.net,
+        utkarsh.h.patel@intel.com
+Subject: Re: [v3] PCI: Avoid unsync of LTR mechanism configuration
+Message-ID: <20210203080518.GP2542@lahna.fi.intel.com>
+References: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
+ <20210201113217.GL2542@lahna.fi.intel.com>
+ <1612318441.5980.142.camel@mcddlt001>
 MIME-Version: 1.0
-In-Reply-To: <YBnwaiy8L/O0PCrR@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612318441.5980.142.camel@mcddlt001>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 01:38, Sean Christopherson wrote:
->>   
->> +static inline void vmload(hpa_t pa)
-> This needs to be 'unsigned long', using 'hpa_t' in vmsave() is wrong as the
-> instructions consume rAX based on effective address.  I wrote the function
-> comment for the vmsave() fix so that it applies to both VMSAVE and VMLOAD,
-> so this can be a simple fixup on application (assuming v5 isn't needed for
-> other reasons).
+On Wed, Feb 03, 2021 at 10:14:01AM +0800, Mingchuang Qiao wrote:
+> Hi,
 > 
-> https://lkml.kernel.org/r/20210202223416.2702336-1-seanjc@google.com
+> On Mon, 2021-02-01 at 13:32 +0200, Mika Westerberg wrote:
+> > Hi,
+> > 
+> > On Fri, Jan 29, 2021 at 03:11:37PM +0800, mingchuang.qiao@mediatek.com wrote:
+> > > From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> > > 
+> > > In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2 register is
+> > > configured in pci_configure_ltr(). If device and bridge both support LTR
+> > > mechanism, the "LTR Mechanism Enable" bit of device and bridge will be
+> > > enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as 1.
+> > > 
+> > > If PCIe link goes down when device resets, the "LTR Mechanism Enable" bit
+> > > of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16. However,
+> > > the pci_dev->ltr_path value of bridge is still 1.
+> > > 
+> > > For following conditions, check and re-configure "LTR Mechanism Enable" bit
+> > > of bridge to make "LTR Mechanism Enable" bit mtach ltr_path value.
+> > 
+> > Typo mtach -> match.
+> > 
+> > >    -before configuring device's LTR for hot-remove/hot-add
+> > >    -before restoring device's DEVCTL2 register when restore device state
+> > > 
+> > > Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> > > ---
+> > > changes of v2
+> > >  -modify patch description
+> > >  -reconfigure bridge's LTR before restoring device DEVCTL2 register
+> > > changes of v3
+> > >  -call pci_reconfigure_bridge_ltr() in probe.c
+> > 
+> > Hmm, which part of this patch takes care of the reset path? It is not
+> > entirely clear to me at least.
+> > 
 > 
+> When device resets and link goes down, there seems to have two methods
+> to recover for software. 
+>    -One is that trigger device removal and rescan.
+>    -The other is that restore device with pci_restore_state() after link
+> comes back up.
+> For above both scenarios, we need check and reconfigure "LTR Mechanism
+> Enable" bit of bridge. It's also this patch intends to do.
+>    -For the rescan scenario, it's done in pci_configure_ltr().
+>    -For the restore scenario, it's done in pci_restore_pcie_state().
 
-Yup, fixed.
-
-Paolo
-
+Okay, thanks for the clarification!
