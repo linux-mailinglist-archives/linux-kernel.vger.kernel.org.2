@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F38F30D342
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E86C30D35B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhBCGAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:00:00 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56799 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhBCF76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 00:59:58 -0500
-Received: by mail-io1-f70.google.com with SMTP id m2so20845031iow.23
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 21:59:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GJ/TBvcrz0gRxndvI+wg7NtGKj1+puWSs8F15LZl46U=;
-        b=VVCuw9YESyU1uh+FwpxkJ0BK2wI0H4BYDkveXWm4tOXWkUJ+r1gtjO/sBPpmy0ADPm
-         ZUx1s2TWc3THBBPB9LSxLK3T1NajJFLtBJ5rQPk9x9HMBCIdUjtI3G+cktyc1FLEaXqZ
-         AeosSEftQw8OJ7F6IYufuxjiOoSzMeeiMlW+Hf4dO3wv87xc8kyNiGVqucBm96+BkW0U
-         rRz8atVjTsfdOG2zZ1k9/AFC1916hiiTTUli8qqzS2XD1TLpufdeedUOBh/mLrA0h64v
-         OE+y0HSOnZmGS1QJGFARAsXsFRq4hdCmoVdZULqO0WJjfYG/TnsDpbb2dpGjGdCIIR7Y
-         0dAA==
-X-Gm-Message-State: AOAM530nYQBZnk7HRq9Mt0nt0pjBsldS/4XIvtYY5oEejY/yRzDlHbDt
-        NkGmC4bVgyQvomReBsF1S3zxS/ukCVJuW8Ev3sIk6TRpDus2
-X-Google-Smtp-Source: ABdhPJxaUdC+nGpiCRbkZxim1ZR61kTpD+WH8WNtEd5gGBmrnQCM/aWCBMtMpHiU9uRTLWr0C68F4Wq4cswrWQGJaRKEGj4nQ5uH
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1928:: with SMTP id p40mr1582615jal.71.1612331957886;
- Tue, 02 Feb 2021 21:59:17 -0800 (PST)
-Date:   Tue, 02 Feb 2021 21:59:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009c21de05ba6849e7@google.com>
-Subject: kernel BUG in memory_bm_free
-From:   syzbot <syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com>
-To:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz, rjw@rjwysocki.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231497AbhBCGVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:21:30 -0500
+Received: from m12-12.163.com ([220.181.12.12]:57036 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229605AbhBCGV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:21:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=3HDPhqmHgPvzBuo5bl
+        I2uMvrIMia8BZyw9nwfQ+vqKI=; b=AZfLJBqPzBheUnjDXrxqNM4FE+WXMURkdC
+        f/L4DL1PMLW+qgWyb8VaoeQFb3lgTHK8NGcgr6DlfZVuqdFCxnSqAK8y6EtGh9Ez
+        d6/888OzeuviJzYk+evUpMgpT4AwSM8tvizV39Ma/pjmNzvv3yblYsiHWnFx2mUT
+        Ru53embXs=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.230])
+        by smtp8 (Coremail) with SMTP id DMCowAA3Z8+RPBpgAtH1Ow--.718S2;
+        Wed, 03 Feb 2021 14:02:58 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] wl1251: cmd: remove redundant assignment
+Date:   Wed,  3 Feb 2021 14:03:06 +0800
+Message-Id: <20210203060306.2832-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DMCowAA3Z8+RPBpgAtH1Ow--.718S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJF45uw15ArW5AFW8tF1DKFg_yoW5Jw13pF
+        93u347tr98tr1UXrWrZw4kZa9ag3W8JrW7GrWDu34qqF1ayr4FkrZ0gFy09F98ua9YyrW3
+        tFZ0gF4rWF1DCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNUUUUUUUU=
+X-Originating-IP: [119.137.55.230]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiERIusV7+2suhNQAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-syzbot found the following issue on:
+-ENOMEM has been used as a return value,it is not necessary to
+assign it, and if kzalloc fail,not need free it,so just return
+-ENOMEM when kzalloc fail.
 
-HEAD commit:    3aaf0a27 Merge tag 'clang-format-for-linux-v5.11-rc7' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ef6108d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=10152c2ea16351e7
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ecbe63baca437585bd4
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ecbe63baca437585bd4@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at kernel/power/snapshot.c:257!
-Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 2394 Comm: syz-executor.0 Not tainted 5.11.0-rc6-syzkaller-00055-g3aaf0a27ffc2 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 20400009 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-pc : free_image_page kernel/power/snapshot.c:257 [inline]
-pc : free_image_page kernel/power/snapshot.c:253 [inline]
-pc : free_list_of_pages kernel/power/snapshot.c:274 [inline]
-pc : memory_bm_free+0x260/0x320 kernel/power/snapshot.c:726
-lr : free_basic_memory_bitmaps+0x3c/0x90 kernel/power/snapshot.c:1173
-sp : ffff8000163dbc50
-x29: ffff8000163dbc50 x28: f4ff000025204070 
-x27: ffff800012d4c000 x26: f4ff000025204008 
-x25: f5ff00002827c700 x24: ffff800012d4c000 
-x23: 00007fffffffffff x22: f4ff000025204018 
-x21: 0000000000000001 x20: ffff800013b576d0 
-x19: f5ff00002827c700 x18: 0000000000000000 
-x17: 0000000000000000 x16: 0000000000000000 
-x15: 0000000000000000 x14: 0000000000000000 
-x13: 0000000000000000 x12: 0000000000000000 
-x11: 0000000000000000 x10: 0000000000000000 
-x9 : fcff000025205400 x8 : 0000000000000002 
-x7 : f6ff000025205000 x6 : 00000000000001ff 
-x5 : 0000000000000000 x4 : 0000000000000000 
-x3 : ffff800013b576d0 x2 : f4ff00002517e000 
-x1 : 0000000000000001 x0 : 0b0000002517e000 
-Call trace:
- free_image_page kernel/power/snapshot.c:257 [inline]
- free_list_of_pages kernel/power/snapshot.c:274 [inline]
- memory_bm_free+0x260/0x320 kernel/power/snapshot.c:726
- free_basic_memory_bitmaps+0x3c/0x90 kernel/power/snapshot.c:1173
- snapshot_release+0x74/0x90 kernel/power/user.c:120
- __fput+0x78/0x230 fs/file_table.c:280
- ____fput+0x10/0x20 fs/file_table.c:313
- task_work_run+0x80/0x160 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- do_notify_resume+0x20c/0x13e0 arch/arm64/kernel/signal.c:939
- work_pending+0xc/0x3d4
-Code: cb000260 d34cfc00 97fcf6fe 35fffc20 (d4210000) 
----[ end trace 174c294156b0dfb3 ]---
-
-
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/wireless/ti/wl1251/cmd.c | 36 ++++++++++++------------------------
+ 1 file changed, 12 insertions(+), 24 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index e1095b8..498c8db 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -175,10 +175,8 @@ int wl1251_cmd_vbm(struct wl1251 *wl, u8 identity,
+ 	wl1251_debug(DEBUG_CMD, "cmd vbm");
+ 
+ 	vbm = kzalloc(sizeof(*vbm), GFP_KERNEL);
+-	if (!vbm) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!vbm)
++		return -ENOMEM;
+ 
+ 	/* Count and period will be filled by the target */
+ 	vbm->tim.bitmap_ctrl = bitmap_control;
+@@ -213,10 +211,8 @@ int wl1251_cmd_data_path_rx(struct wl1251 *wl, u8 channel, bool enable)
+ 	wl1251_debug(DEBUG_CMD, "cmd data path");
+ 
+ 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
+ 
+ 	cmd->channel = channel;
+ 
+@@ -279,10 +275,8 @@ int wl1251_cmd_join(struct wl1251 *wl, u8 bss_type, u8 channel,
+ 	u8 *bssid;
+ 
+ 	join = kzalloc(sizeof(*join), GFP_KERNEL);
+-	if (!join) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!join)
++		return -ENOMEM;
+ 
+ 	wl1251_debug(DEBUG_CMD, "cmd join%s ch %d %d/%d",
+ 		     bss_type == BSS_TYPE_IBSS ? " ibss" : "",
+@@ -324,10 +318,8 @@ int wl1251_cmd_ps_mode(struct wl1251 *wl, u8 ps_mode)
+ 	wl1251_debug(DEBUG_CMD, "cmd set ps mode");
+ 
+ 	ps_params = kzalloc(sizeof(*ps_params), GFP_KERNEL);
+-	if (!ps_params) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!ps_params)
++		return -ENOMEM;
+ 
+ 	ps_params->ps_mode = ps_mode;
+ 	ps_params->send_null_data = 1;
+@@ -356,10 +348,8 @@ int wl1251_cmd_read_memory(struct wl1251 *wl, u32 addr, void *answer,
+ 	wl1251_debug(DEBUG_CMD, "cmd read memory");
+ 
+ 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
+ 
+ 	WARN_ON(len > MAX_READ_SIZE);
+ 	len = min_t(size_t, len, MAX_READ_SIZE);
+@@ -401,10 +391,8 @@ int wl1251_cmd_template_set(struct wl1251 *wl, u16 cmd_id,
+ 	cmd_len = ALIGN(sizeof(*cmd) + buf_len, 4);
+ 
+ 	cmd = kzalloc(cmd_len, GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
+ 
+ 	cmd->size = cpu_to_le16(buf_len);
+ 
+-- 
+1.9.1
+
+
