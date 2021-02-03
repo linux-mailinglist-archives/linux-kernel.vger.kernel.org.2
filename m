@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE4130E68D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE8930E6EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhBCXCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233408AbhBCW7Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:59:16 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D4CC061786
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 14:58:36 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id a16so681861plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 14:58:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VI8+mzDznZXreI3+hxAHs7jNdKbUG8fpqNw3FQx4Z28=;
-        b=UVoUQSB0BgEs5PAHR/kMD4pwba+L48QIxB2rizTswy/5XS+jhWrgdCb4UeKh+zlcsz
-         OO2hpOlqyiHdkiky9nIqrTT7+roUHaqCpK2yZgiqEL+0pSRIohqnS0pqNASRy8yiRljK
-         T18i5UJJ2R1Qx/UrpgflkjEaSA81xQ2L6aXYFwaI8xeuBr/Ssl+sMoP3B4MJT/l9FGu7
-         Qy2f3fo1wgPzh8+F/c+oqKZb/pYBIWaoNAktj4X2f84TWOq0G6Q+TouvQvrNIIOU/tX8
-         FiK2jm+uQW6XMOUAm7qJIA/lqCT2GTRogVgF9SpSKqMxTnIZm69FineNnIlnnn5kDi1S
-         v9nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VI8+mzDznZXreI3+hxAHs7jNdKbUG8fpqNw3FQx4Z28=;
-        b=ugn1gg7wWS6tAVXyXBekY1S5+BB6rOxwLnkAHEzMrQ8A+pSETkw4ZaKXXX9AMTEZbj
-         YwC9jNIqhkKtIY4HogHcy3UxE31VZkkPmJp3f3csNCFlvx6zfAfM+GDzs7e/X8NcrbG3
-         +lvpDCJxeuH086VPkqI5LvVcVpBKOxxv61qBWeF7ZoFN24ei/L/Wh/hEK6thpJKbrJFW
-         oLdwFwyyp+yL16hs5mUGunv18Oyq91y8WM7hbglGo21GmUnj1OPTAw4TD993AEPjP02g
-         GEVCfpjPX6o7PeULP1vhK9bb7C6lpJhIk7NJ64dDcoi9wonIeXLpdc8RPRqPDOIBCKM9
-         Xe3A==
-X-Gm-Message-State: AOAM532BHl4O83N+ylgas8ir+7R6eOFzoNbaxQxoofrKpKEtWzbN/ZuQ
-        WKR3+3t6vPJDFfFVvLHalFAHng==
-X-Google-Smtp-Source: ABdhPJyop9GAWs+kkwennI5HB0WYgw78vTEm4XM9Qe8GmO4mKRhSXGccKwJBdxJGlb0a31OASOG+9g==
-X-Received: by 2002:a17:90a:7ace:: with SMTP id b14mr5383372pjl.208.1612393115474;
-        Wed, 03 Feb 2021 14:58:35 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id z15sm102697pjz.41.2021.02.03.14.58.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 14:58:34 -0800 (PST)
-Subject: Re: [PATCH 5.4 103/142] Revert "block: end bio with BLK_STS_AGAIN in
- case of non-mq devs and REQ_NOWAIT"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andres Freund <andres@anarazel.de>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <20200601174037.904070960@linuxfoundation.org>
- <20200601174048.647302799@linuxfoundation.org>
- <20210203123729.3pfsakawrkoh6qpu@alap3.anarazel.de>
- <YBqfDdVaPurYzZM2@kroah.com>
- <20210203212826.6esa5orgnworwel6@alap3.anarazel.de>
- <YBsedX0/kLwMsgTy@kroah.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <14351e91-5a5f-d742-b087-dc9ec733bbfd@kernel.dk>
-Date:   Wed, 3 Feb 2021 15:58:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233859AbhBCXNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:13:02 -0500
+Received: from mga06.intel.com ([134.134.136.31]:30220 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232705AbhBCXAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:00:54 -0500
+IronPort-SDR: hThtpYpuSJz8slIfCtY7DvNr95B3LLRc/zWc9fNDtsMmwBDqmZosz/MDFi/pc+57jqxf45i52V
+ 9B/+cDyB1csw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242642702"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="242642702"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:59:38 -0800
+IronPort-SDR: hx/sv+fJRtZ5QlGY5kFKvcySAuSP0UPNqq299J1O2GMWLXV4+0uJYBmOB0IMZRgYsvkenge9h+
+ djOrG2bUyhVQ==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="392697926"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:59:37 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v19 0/7] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Wed,  3 Feb 2021 14:58:55 -0800
+Message-Id: <20210203225902.479-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <YBsedX0/kLwMsgTy@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 3:06 PM, Greg Kroah-Hartman wrote:
-> On Wed, Feb 03, 2021 at 01:28:26PM -0800, Andres Freund wrote:
->> Hi,
->>
->> On 2021-02-03 14:03:09 +0100, Greg Kroah-Hartman wrote:
->>>> On v5.4.43-101-gbba91cdba612 this fails with
->>>> fio: io_u error on file /mnt/t2/test.0.0: Input/output error: write offset=0, buflen=4096
->>>> fio: pid=734, err=5/file:io_u.c:1834, func=io_u error, error=Input/output error
->>>>
->>>> whereas previously it worked. libaio still works...
->>>>
->>>> I haven't checked which major kernel version fixed this again, but I did
->>>> verify that it's still broken in 5.4.94 and that 5.10.9 works.
->>>>
->>>> I would suspect it's
->>>>
->>>> commit 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048
->>>> Author: Jens Axboe <axboe@kernel.dk>
->>>> Date:   2020-06-01 10:00:27 -0600
->>>>
->>>>     io_uring: catch -EIO from buffered issue request failure
->>>>
->>>>     -EIO bubbles up like -EAGAIN if we fail to allocate a request at the
->>>>     lower level. Play it safe and treat it like -EAGAIN in terms of sync
->>>>     retry, to avoid passing back an errant -EIO.
->>>>
->>>>     Catch some of these early for block based file, as non-mq devices
->>>>     generally do not support NOWAIT. That saves us some overhead by
->>>>     not first trying, then retrying from async context. We can go straight
->>>>     to async punt instead.
->>>>
->>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>>
->>>>
->>>> which isn't in stable/linux-5.4.y
->>>
->>> Can you test that if the above commit is added, all works well again?
->>
->> It doesn't apply cleanly, I'll try to resolve the conflict. However, I
->> assume that the revert was for a concrete reason - but I can't quite
->> figure out what b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e was concretely
->> solving, and whether reverting the revert in 5.4 would re-introduce a
->> different problem.
->>
->> commit b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e (tag: block-5.7-2020-05-29, linux-block/block-5.7)
->> Author: Jens Axboe <axboe@kernel.dk>
->> Date:   2020-05-28 13:19:29 -0600
->>
->>     Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT"
->>
->>     This reverts commit c58c1f83436b501d45d4050fd1296d71a9760bcb.
->>
->>     io_uring does do the right thing for this case, and we're still returning
->>     -EAGAIN to userspace for the cases we don't support. Revert this change
->>     to avoid doing endless spins of resubmits.
->>
->>     Cc: stable@vger.kernel.org # v5.6
->>     Reported-by: Bijan Mottahedeh <bijan.mottahedeh@oracle.com>
->>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>
->> I suspect it just wasn't aimed at 5.4, and that's that, but I'm not
->> sure. In which case presumably reverting
->> bba91cdba612fbce4f8575c5d94d2b146fb83ea3 would be the right fix, not
->> backporting 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048 et al.
-> 
-> Ok, can you send a revert patch for this?
-> 
-> But it would be good to get Jens to weigh in on this...
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-I'll take a look at this.
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
+
+This version has no changes from v18.  It is being re-sent as v19 to
+synchronize with the shadow stack series v19.
+
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
+
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
+
+[2] Indirect Branch Tracking patches v18:
+
+    https://lkml.kernel.org/r/20210127213028.11362-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso/32: Add ENDBR32 to __kernel_vsyscall entry point
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+
+Yu-cheng Yu (4):
+  x86/cet/ibt: Update Kconfig for user-mode Indirect Branch Tracking
+  x86/cet/ibt: User-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+
+ arch/x86/Kconfig                         |  1 +
+ arch/x86/entry/vdso/Makefile             |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S |  3 ++
+ arch/x86/include/asm/cet.h               |  3 ++
+ arch/x86/kernel/cet.c                    | 60 +++++++++++++++++++++++-
+ arch/x86/kernel/cet_prctl.c              |  5 ++
+ arch/x86/kernel/fpu/signal.c             |  8 ++--
+ arch/x86/kernel/process_64.c             |  8 ++++
+ 8 files changed, 87 insertions(+), 5 deletions(-)
 
 -- 
-Jens Axboe
+2.21.0
 
