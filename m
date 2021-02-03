@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A201030E4D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE1B30E4D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhBCVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:16:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
+        id S232693AbhBCVSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:18:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230220AbhBCVQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:16:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C3764F5F;
-        Wed,  3 Feb 2021 21:16:13 +0000 (UTC)
+        id S231134AbhBCVR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:17:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE7564F5F;
+        Wed,  3 Feb 2021 21:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612386973;
-        bh=qyGKk/hQEG6cbek94cgXEKTdL+C7jug+hSr3zZqKl14=;
+        s=k20201202; t=1612387038;
+        bh=Fnofn/VQSR+gZaBuO49KNNHYjAjducLJujSaPb2u89Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YmSrbTvINCRC/Al+nZkEFLFAo9RhnkBU2TV5gyXLAZTa0DyAZk3nHZn9xlxF5a24a
-         UiFSzcQ1zYhMhQLl935YFFFyeo4RcjjbqIRAmUNSD2QrD2XfQ892f7vlMNtCLocU+k
-         YjM1re+JwC2ALEvo6qq6OtNjJAOxClIWMghmyJ3gazHcq1xEIXOjRA8B4sg9dqdIjB
-         T+D7H06Ks89mpPjpr4clSionOrzZnstYqr/INawYGYd+LK/BuJoUNY3RHUwOwS3I+O
-         bXRMhdpg8FEWiA/+vTtJXHPutZlAwjAbHMvDS+GzycHMvDXg9gwllhK9FH0QNdDChx
-         bc3/6xh8asNKg==
+        b=XgTZDscXMDOz41v4tb4JslICYc5KGi66zkzsh21bpCyfuwa5EpjeQpcw3PrCoYDAQ
+         qOLIT1JupYPqG7lUy75zLYm8MYwB4UOOZiLvLtoUNL3PpNxYOE7y7kwy2EDOexPcHb
+         vn6fQCdLHVm7Aq2O1MCL/1Nulw25Y6QZ3gNC5ABUzbWGWfCxxRSg+lufRVrPTLXp4Z
+         2Azl2H4FaHZR8rKcuv76P224FzRZfkuzLZJxiPUIiPSw49wtq5jgT5EOGiU8oUucBH
+         HkozZmIplF36TZkkPzbPeDDOGHakpjB6xXJg2vvT8oSQ2i6sLfbMURYq0tJQYICd6J
+         +WnPaNSetKX+A==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7FDE940513; Wed,  3 Feb 2021 18:16:11 -0300 (-03)
-Date:   Wed, 3 Feb 2021 18:16:11 -0300
+        id 08E1740513; Wed,  3 Feb 2021 18:17:15 -0300 (-03)
+Date:   Wed, 3 Feb 2021 18:17:15 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -38,143 +38,253 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 08/24] perf daemon: Add background support
-Message-ID: <20210203211611.GU854763@kernel.org>
+Subject: Re: [PATCH 18/24] perf daemon: Add man page for perf-daemon
+Message-ID: <20210203211715.GV854763@kernel.org>
 References: <20210129134855.195810-1-jolsa@redhat.com>
  <20210130234856.271282-1-jolsa@kernel.org>
- <20210130234856.271282-9-jolsa@kernel.org>
+ <20210130234856.271282-19-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130234856.271282-9-jolsa@kernel.org>
+In-Reply-To: <20210130234856.271282-19-jolsa@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jan 31, 2021 at 12:48:40AM +0100, Jiri Olsa escreveu:
-> Adding support to put daemon process in the background.
-> 
-> It's now enabled by default and -f option is added to
-> keep daemon process on the console for debugging.
-> 
+Em Sun, Jan 31, 2021 at 12:48:50AM +0100, Jiri Olsa escreveu:
+> Adding man page for perf-daemon usage.
+
+I see you decided to add it at the end, but for consistency, please
+consider adding the bare minimum when adding
+tools/perf/builtin-daemon.c, then go on adding the options and examples
+as the features are being added.
+
+- Arnaldo
+ 
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/perf/builtin-daemon.c | 66 +++++++++++++++++++++++++++++++++++--
->  1 file changed, 63 insertions(+), 3 deletions(-)
+>  tools/perf/Documentation/perf-config.txt |  14 ++
+>  tools/perf/Documentation/perf-daemon.txt | 187 +++++++++++++++++++++++
+>  2 files changed, 201 insertions(+)
 > 
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index d0a0a998e073..324666058842 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -488,6 +488,13 @@ static void daemon__kill(struct daemon *daemon)
->  	daemon__signal(daemon, SIGTERM);
->  }
+> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+> index c3ce48f1b379..153bde14bbe0 100644
+> --- a/tools/perf/Documentation/perf-config.txt
+> +++ b/tools/perf/Documentation/perf-config.txt
+> @@ -703,6 +703,20 @@ auxtrace.*::
+>  		If the directory does not exist or has the wrong file type,
+>  		the current directory is used.
 >  
-> +static void __daemon__free(struct daemon *daemon)
-> +{
-> +	free(daemon->config_real);
-> +	free(daemon->config_base);
-> +	free(daemon->base);
-> +}
-
-Please use zfree(), and also please rename it to __daemon__delete(), in
-other cases this pattern would be daemon__exit(), as the daemon
-structure itself is not being freed, just its members, ditto for
-foo__new() calling foo__init().
-
+> +daemon.*::
 > +
->  static void daemon__free(struct daemon *daemon)
->  {
->  	struct session *session, *h;
-> @@ -495,9 +502,7 @@ static void daemon__free(struct daemon *daemon)
->  	list_for_each_entry_safe(session, h, &daemon->sessions, list)
->  		session__remove(session);
->  
-> -	free(daemon->config_real);
-> -	free(daemon->config_base);
-> -	free(daemon->base);
-> +	__daemon__free(daemon);
->  }
->  
->  static void daemon__exit(struct daemon *daemon)
-> @@ -643,10 +648,54 @@ static int setup_config(struct daemon *daemon)
->  	return daemon->config_real ? 0 : -1;
->  }
->  
-> +static int go_background(struct daemon *daemon)
-> +{
-> +	int pid, fd;
+> +	daemon.base::
+> +		Base path for daemon data. All sessions data are stored under
+> +		this path.
 > +
-> +	pid = fork();
-> +	if (pid < 0)
-> +		return -1;
+> +session-<NAME>.*::
 > +
-> +	if (pid > 0)
-> +		return 1;
+> +	session-<NAME>.run::
 > +
-> +	if (setsid() < 0)
-> +		return -1;
+> +		Defines new record session for daemon. The value is record's
+> +		command line without the 'record' keyword.
 > +
-> +	umask(0);
 > +
-> +	if (chdir(daemon->base)) {
-> +		perror("failed: chdir");
-> +		return -1;
-> +	}
+>  SEE ALSO
+>  --------
+>  linkperf:perf[1]
+> diff --git a/tools/perf/Documentation/perf-daemon.txt b/tools/perf/Documentation/perf-daemon.txt
+> index e69de29bb2d1..b0e1015476c2 100644
+> --- a/tools/perf/Documentation/perf-daemon.txt
+> +++ b/tools/perf/Documentation/perf-daemon.txt
+> @@ -0,0 +1,187 @@
+> +perf-daemon(1)
+> +==============
 > +
-> +	fd = open("output", O_RDWR|O_CREAT|O_TRUNC, 0644);
-> +	if (fd < 0) {
-> +		perror("failed: open");
-> +		return -1;
-> +	}
+> +NAME
+> +----
+> +perf-daemon - Run record sessions on background
 > +
-> +	fcntl(fd, F_SETFD, FD_CLOEXEC);
+> +SYNOPSIS
+> +--------
+> +[verse]
+> +'perf daemon'
+> +'perf daemon' [<options>]
+> +'perf daemon start'  [<options>]
+> +'perf daemon stop'   [<options>]
+> +'perf daemon signal' [<options>]
+> +'perf daemon ping'   [<options>]
 > +
-> +	close(0);
-> +	dup2(fd, 1);
-> +	dup2(fd, 2);
-> +	close(fd);
 > +
-> +	daemon->out = fdopen(1, "w");
-> +	if (!daemon->out)
-> +		return -1;
+> +DESCRIPTION
+> +-----------
+> +This command allows to run simple daemon process that starts and
+> +monitors configured record sessions.
 > +
-> +	setbuf(daemon->out, NULL);
-> +	return 0;
-> +}
+> +Each session represents one perf record process started with
+> +control setup (with perf record --control.. options).
 > +
->  static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  		       int argc, const char **argv)
->  {
-> +	bool foreground = false;
->  	struct option start_options[] = {
-> +		OPT_BOOLEAN('f', "foreground", &foreground, "stay on console"),
-
-
-You forgot to add the entry to the man page
-
->  		OPT_PARENT(parent_options),
->  		OPT_END()
->  	};
-> @@ -667,6 +716,17 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  	if (setup_server_config(daemon))
->  		return -1;
->  
-> +	if (!foreground) {
-> +		err = go_background(daemon);
-> +		if (err) {
-> +			/* original process, exit normally */
-> +			if (err == 1)
-> +				err = 0;
-> +			__daemon__free(daemon);
-> +			return err;
-> +		}
-> +	}
+> +These sessions are configured through config file, see CONFIG FILE
+> +section with EXAMPLES.
 > +
->  	debug_set_file(daemon->out);
->  	debug_set_display_time(true);
->  
+> +
+> +OPTIONS
+> +-------
+> +--config=<PATH>::
+> +	Config file path, if not perf will check system and default
+> +	locations (/etc/perfconfig, $HOME/.perfconfig).
+> +
+> +-v::
+> +--verbose::
+> +	Be more verbose.
+> +
+> +
+> +All generic options are available also under commands.
+> +
+> +
+> +START COMMAND
+> +-------------
+> +The start command creates the daemon process.
+> +
+> +-f::
+> +--foreground::
+> +	Do not put the process in background.
+> +
+> +
+> +STOP COMMAND
+> +------------
+> +The stop command stops all the session and the daemon process.
+> +
+> +
+> +SIGNAL COMMAND
+> +--------------
+> +The signal command sends signal to configured sessions.
+> +
+> +--session::
+> +	Send signal to specific session.
+> +
+> +
+> +PING COMMAND
+> +------------
+> +The ping command sends control ping to configured sessions.
+> +
+> +--session::
+> +	Send ping to specific session.
+> +
+> +
+> +CONFIG FILE
+> +-----------
+> +The daemon is configured within standard perf config file by
+> +following new variables:
+> +
+> +daemon.base:
+> +	Base path for daemon data. All sessions data are
+> +	stored under this path.
+> +
+> +session-<NAME>.run:
+> +	Defines new record session. The value is record's command
+> +	line without the 'record' keyword.
+> +
+> +Each perf record session is run in daemon.base/<NAME> directory.
+> +
+> +
+> +EXAMPLES
+> +--------
+> +Example with 2 record sessions:
+> +
+> +  # cat ~/.perfconfig
+> +  [daemon]
+> +  base=/opt/perfdata
+> +
+> +  [session-cycles]
+> +  run = -m 10M -e cycles --overwrite --switch-output -a
+> +
+> +  [session-sched]
+> +  run = -m 20M -e sched:* --overwrite --switch-output -a
+> +
+> +
+> +Starting the daemon:
+> +
+> +  # perf daemon start
+> +
+> +
+> +Check sessions:
+> +
+> +  # perf daemon
+> +  [603349:daemon] base: /opt/perfdata
+> +  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+> +  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+> +
+> +First line is daemon process info with configured daemon base.
+> +
+> +
+> +Check sessions with more info:
+> +
+> +  # perf daemon -v
+> +  [603349:daemon] base: /opt/perfdata
+> +    output:  /opt/perfdata/output
+> +    lock:    /opt/perfdata/lock
+> +    up:      1 minutes
+> +  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+> +    base:    /opt/perfdata/session-cycles
+> +    output:  /opt/perfdata/session-cycles/output
+> +    control: /opt/perfdata/session-cycles/control
+> +    ack:     /opt/perfdata/session-cycles/ack
+> +    up:      1 minutes
+> +  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+> +    base:    /opt/perfdata/session-sched
+> +    output:  /opt/perfdata/session-sched/output
+> +    control: /opt/perfdata/session-sched/control
+> +    ack:     /opt/perfdata/session-sched/ack
+> +    up:      1 minutes
+> +
+> +The 'base' path is daemon/session base.
+> +The 'lock' file is daemon's lock file guarding that no other
+> +daemon is running on top of the base.
+> +The 'output' file is perf record output for specific session.
+> +The 'control' and 'ack' files are perf control files.
+> +The 'up' number shows minutes daemon/session is running.
+> +
+> +
+> +Make sure control session is online:
+> +
+> +  # perf daemon ping
+> +  OK   cycles
+> +  OK   sched
+> +
+> +
+> +Send USR2 signal to session 'cycles' to generate perf.data file:
+> +
+> +  # perf daemon signal --session cycles
+> +  signal 12 sent to session 'cycles [603452]'
+> +
+> +  # tail -2  /opt/perfdata/session-cycles/output
+> +  [ perf record: dump data: Woken up 1 times ]
+> +  [ perf record: Dump perf.data.2020123017013149 ]
+> +
+> +
+> +Send USR2 signal to all sessions:
+> +
+> +  # perf daemon signal
+> +  signal 12 sent to session 'cycles [603452]'
+> +  signal 12 sent to session 'sched [603453]'
+> +
+> +  # tail -2  /opt/perfdata/session-cycles/output
+> +  [ perf record: dump data: Woken up 1 times ]
+> +  [ perf record: Dump perf.data.2020123017024689 ]
+> +  # tail -2  /opt/perfdata/session-sched/output
+> +  [ perf record: dump data: Woken up 1 times ]
+> +  [ perf record: Dump perf.data.2020123017024713 ]
+> +
+> +
+> +Stop daemon:
+> +
+> +  # perf daemon stop
+> +
+> +
+> +SEE ALSO
+> +--------
+> +linkperf:perf-record[1], linkperf:perf-config[1]
 > -- 
 > 2.29.2
 > 
