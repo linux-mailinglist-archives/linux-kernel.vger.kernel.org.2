@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561CF30DD62
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E4B30DD61
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhBCO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:58:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:41578 "EHLO foss.arm.com"
+        id S233386AbhBCO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:58:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233234AbhBCO57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:57:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 815B111FB;
-        Wed,  3 Feb 2021 06:57:13 -0800 (PST)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.220])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BEB293F73B;
-        Wed,  3 Feb 2021 06:57:09 -0800 (PST)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, mhiramat@kernel.org,
-        srikar@linux.vnet.ibm.com, adrian.hunter@intel.com
-Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf probe: Added protection to avoid endless loop
-Date:   Wed,  3 Feb 2021 22:57:02 +0800
-Message-Id: <20210203145702.1219509-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S232890AbhBCO54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:57:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0544D64F50;
+        Wed,  3 Feb 2021 14:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612364236;
+        bh=jRL9Mf2hD+5x5L/yI8T8FfZ/g47XDS0hehgtFMqg8UE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WQq5eq37k/xS2PaA1AFC/a8JKEJRPTW6ANS22Ln6mFTxjjShvwSUCXfexPYwklQSE
+         Pk2FvJNr/bc38rUjXfk7SGURdxQt0CBs4DnKcnLAZ2LBSJTUWZtOYua/tvmoUCUeu5
+         +EdIODnKd6ZzZeX37XnxUuZZb48U8titzf7H0G/4=
+Date:   Wed, 3 Feb 2021 15:57:13 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     zhenwei pi <pizhenwei@bytedance.com>
+Cc:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] [PATCH] misc: pvpanic: sysfs_emit uses should have a
+ newline
+Message-ID: <YBq5yVokKwOxmcS8@kroah.com>
+References: <13b1c892d52c27d4caeccc89506aadda74f61365.camel@perches.com>
+ <3369537d-27a9-2a48-9a46-f241a5077dc2@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3369537d-27a9-2a48-9a46-f241a5077dc2@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if dwarf_offdie() return NULL, the continue statement forces the next
-iteration of the loop without update variable off. It will cause an
-endless loop in the process of traversing the compilation unit.
-So added exception protection for loop CUs.
+On Mon, Feb 01, 2021 at 09:56:57AM +0800, zhenwei pi wrote:
+> On 1/30/21 3:08 AM, Joe Perches wrote:
+> > Add newline terminations to the sysfs_emit uses added by -next
+> > commit 8d6da6575ffe ("misc: pvpanic: introduce events device attribue")
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> >   drivers/misc/pvpanic.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
+> > index b1e4922a7fda..9f350e05ef68 100644
+> > --- a/drivers/misc/pvpanic.c
+> > +++ b/drivers/misc/pvpanic.c
+> > @@ -25,13 +25,13 @@ static unsigned int events;
+> >   static ssize_t capability_show(struct device *dev,
+> >   			       struct device_attribute *attr, char *buf)
+> >   {
+> > -	return sysfs_emit(buf, "%x", capability);
+> > +	return sysfs_emit(buf, "%x\n", capability);
+> >   }
+> >   static DEVICE_ATTR_RO(capability);
+> >   static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
+> >   {
+> > -	return sysfs_emit(buf, "%x", events);
+> > +	return sysfs_emit(buf, "%x\n", events);
+> >   }
+> >   static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
+> > 
+> > 
+> 
+> Hi, Greg is the maintainer of this driver.
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
-v2: removed the statement that updates variable in the function argument.
----
- tools/perf/util/probe-finder.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+No I am not:
+$ ./scripts/get_maintainer.pl drivers/misc/pvpanic.c
+Arnd Bergmann <arnd@arndb.de> (supporter:CHAR and MISC DRIVERS)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:CHAR and MISC DRIVERS)
+linux-kernel@vger.kernel.org (open list)
 
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 76dd349aa48d..1b118c9c86a6 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -1187,8 +1187,10 @@ static int debuginfo__find_probe_location(struct debuginfo *dbg,
- 	while (!dwarf_nextcu(dbg->dbg, off, &noff, &cuhl, NULL, NULL, NULL)) {
- 		/* Get the DIE(Debugging Information Entry) of this CU */
- 		diep = dwarf_offdie(dbg->dbg, off + cuhl, &pf->cu_die);
--		if (!diep)
-+		if (!diep) {
-+			off = noff;
- 			continue;
-+		}
- 
- 		/* Check if target file is included. */
- 		if (pp->file)
-@@ -1949,8 +1951,10 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
- 
- 		/* Get the DIE(Debugging Information Entry) of this CU */
- 		diep = dwarf_offdie(dbg->dbg, off + cuhl, &lf.cu_die);
--		if (!diep)
-+		if (!diep) {
-+			off = noff;
- 			continue;
-+		}
- 
- 		/* Check if target file is included. */
- 		if (lr->file)
--- 
-2.25.1
+As the developer of this driver, it would be great if you
+could review the change and provide a "Signed-off-by" line that I can
+use to accept this patch.
 
+thanks,
+
+greg k-h
