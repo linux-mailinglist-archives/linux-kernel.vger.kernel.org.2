@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDE430DD2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B6F30DD2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhBCOsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhBCOsR (ORCPT
+        id S232970AbhBCOs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:48:28 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:13543 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232630AbhBCOs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:48:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D5FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 06:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yXNf+0RKaDSH+SxTfPcL4g60l+zjyKbIEJCEGw1b2J0=; b=e0+hXuKbfnWnpF2sMvSccsm0GW
-        ijMnHKlMmEIdbJsKo+zmUANm5qU8tf54Zb+prlE7EE0r/3jn7JmYiEIeAycNPiESx5LYxGC709GdK
-        kuaUXLUlc0Wl364pNmD+grrR8LYT4NZgaEhBIt9Qoit4sgGY7OFG2CccBK49OVRy1CeZvtTPmrYYi
-        ayd1Lg0o3+Canhv524V9bmVDBLTF2peMXaFpRwx+2bLTW8e3huBHB0au/1QMBztF4CP+5q4aTwLoz
-        rCMCW/vFjAkK6NJJJB0Sf0kaZfNOVHZapPOjQvVMOtPVVPkGLm+8iTU+uenjlHyyHf6fTH1+5b137
-        dWr6wifg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7JR7-00H2lZ-6W; Wed, 03 Feb 2021 14:47:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4ADFC30066E;
-        Wed,  3 Feb 2021 15:47:14 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1521120C633CB; Wed,  3 Feb 2021 15:47:14 +0100 (CET)
-Date:   Wed, 3 Feb 2021 15:47:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Zhang, Rui" <rui.zhang@intel.com>
-Cc:     "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>
-Subject: Re: [PATCH 3/3] perf/x86/rapl: Fix psys-energy event on Intel SPR
- platform
-Message-ID: <YBq3csfKeH7PaK39@hirez.programming.kicks-ass.net>
-References: <20210115092208.20866-1-rui.zhang@intel.com>
- <20210115092208.20866-3-rui.zhang@intel.com>
- <YALhAmTgMHxEgeG4@hirez.programming.kicks-ass.net>
- <70b71922e7f84234be70c7104969331f@intel.com>
- <03e5815f89d749a18b47bdf986181f1f@intel.com>
+        Wed, 3 Feb 2021 09:48:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1612363705; x=1643899705;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Svcsvzf3Ng+V+7E2OJ6vov2g0Z2eg1nQgvarWUEuu8Q=;
+  b=t+7DlkEvYP6ZDoMzReHtNlWTAES6Pu9OZBIJfgPU3XJnoofCnBkWnntT
+   RV+UR8EqDcD1nU6nDHq7ZcS2i9cPk5HohgzZ5Iudp4W/eAxdOjQhQXKVJ
+   XTGFqJkP/rimKztoxuasezoM3eVfbnVbb1KL4yiSkAcvGXQ2p/0wf0h1d
+   U=;
+X-IronPort-AV: E=Sophos;i="5.79,398,1602547200"; 
+   d="scan'208";a="79457428"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 03 Feb 2021 14:47:37 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id BFE1F240BE6;
+        Wed,  3 Feb 2021 14:47:32 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.244) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Feb 2021 14:47:24 +0000
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <aarcange@redhat.com>, <akpm@linux-foundation.org>,
+        <gokhale2@llnl.gov>, <hch@lst.de>, <jack@suse.cz>,
+        <jannh@google.com>, <jhubbard@nvidia.com>, <kirill@shutemov.name>,
+        <ktkhai@virtuozzo.com>, <leonro@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <mcfadden8@llnl.gov>, <oleg@redhat.com>, <peterx@redhat.com>,
+        <torvalds@linux-foundation.org>, <wzam@amazon.com>,
+        <yang.shi@linux.alibaba.com>
+References: <20210202171327.GN4718@ziepe.ca>
+ <20210203124358.59017-1-galpress@amazon.com> <20210203140015.GP4718@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <e2f897f8-b6af-0d4a-6a69-b47da5564165@amazon.com>
+Date:   Wed, 3 Feb 2021 16:47:20 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03e5815f89d749a18b47bdf986181f1f@intel.com>
+In-Reply-To: <20210203140015.GP4718@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.244]
+X-ClientProxiedBy: EX13D27UWB001.ant.amazon.com (10.43.161.169) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/02/2021 16:00, Jason Gunthorpe wrote:
+> On Wed, Feb 03, 2021 at 02:43:58PM +0200, Gal Pressman wrote:
+>>> On Tue, Feb 02, 2021 at 12:05:36PM -0500, Peter Xu wrote:
+>>>
+>>>>> Gal, you could also MADV_DONTFORK this range if you are explicitly
+>>>>> allocating them via special mmap.
+>>>>
+>>>> Yeah I wanted to mention this one too but I just forgot when reply: the issue
+>>>> thread previously pasted smells like some people would like to drop
+>>>> MADV_DONTFORK, but if it's able to still be applied I don't know why
+>>>> not..
+>>>
+>>> I want to drop the MADV_DONTFORK for dynamic data memory allocated by
+>>> the application layers (eg with malloc) without knowledge of how they
+>>> will be used.
+>>>
+>>> This case is a buffer internal to the communication system that we
+>>> know at allocation time how it will be used; so an explicit,
+>>> deliberate, MADV_DONTFORK is fine
+>>
+>> We are referring to libfabric's bounce buffers, correct?
+>> Libfabric could be considered as the "app" here, it's not clear why these
+>> buffers should be DONTFORK'd before ibv_reg_mr() but others don't.
+> 
+> I assumed they were internal to the EFA code itself.
 
-FWIW, your email is malformed, please wrap at 78 chars.
+The hugepages allocation is part of libfabric generic bufpool implementation:
+https://github.com/ofiwg/libfabric/blob/cde8665ca5ec2fb957260490d0c8700d8ac69863/include/linux/osd.h#L64
 
-On Mon, Jan 25, 2021 at 06:11:14AM +0000, Zhang, Rui wrote:
-> In short, the current code does not allow RAPL energy counter to
-> return 0. And all the work I do is to allow Psys energy counter to
-> return 0.
+I guess we could madvise them at the libfabric provider's layer.
 
-Ok.
+>> Anyway, it should be simple enough to madvise them after allocation, although I
+>> think it's part of libfabric's generic code (which isn't necessarily used on
+>> top of rdma-core).
+> 
+> Ah, so that is a reasonable justification for wanting to fix this in
+> the kernel..
+> 
+> Lets give Peter some time first.
+> 
+> The other direction to validate this approach is to remove the
+> MAP_HUGETLB flags and rely on THP instead, and/or mark them as
+> MAP_SHARED.
+> 
+> I'm not sure generic code should be use using MAP_HUGETLB..
 
-> In this way, the Psys event is "valid" on all CPUs, so we don't need
-> to handle the master thing.
+It's using MAP_HUGETLB but has a fallback in case it fails:
 
-So RAPL is mapped to DIEs, and IIRC we can have multiple DIEs per
-Package. But the master thing is a Package.
+		ret = ofi_alloc_hugepage_buf((void **) &buf_region->alloc_region,
+					     pool->alloc_size);
+		/* If we can't allocate huge pages, fall back to normal
+		 * allocations for all future attempts.
+		 */
+		if (ret) {
+			pool->attr.flags &= ~OFI_BUFPOOL_HUGEPAGES;
+			goto retry;
+		}
+		buf_region->flags = OFI_BUFPOOL_HUGEPAGES;
 
-Is this all moot because SPR has one DIE per Package? Because if it
-would have more, there's be more interesting problems I suppose.
+
+> This would be enough to confirm that everything else is working as
+> expected
+Agree.
