@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A8830D0F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7307030D0F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhBCBpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:45:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhBCBpL (ORCPT
+        id S231341AbhBCBpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:45:40 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12070 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhBCBpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:45:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612316625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=11xjxPEHKvfx8iE79y189ZKTRIQekUJs8xI62FTi8WA=;
-        b=hycFVo6scLlZujcUXKCqRKHOhqGi767NPknJTpZte0Y7KZx5kckXVExaT9PKl3GcN8reC2
-        CAV9SCTgIdUvzskhDYkmesOHXGYCSmz57lnvXy0+4UTXTz4zBlwGoKXVPkM/mpoppRDkc7
-        yLaBbJF+qaw06k1ZgRjqgxpTIvjWijo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-vcd3ov6kP5asN4yu6jKW9g-1; Tue, 02 Feb 2021 20:43:41 -0500
-X-MC-Unique: vcd3ov6kP5asN4yu6jKW9g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75502DF8AA;
-        Wed,  3 Feb 2021 01:43:39 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-8-24.pek2.redhat.com [10.72.8.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EE0C6EF53;
-        Wed,  3 Feb 2021 01:43:34 +0000 (UTC)
-Subject: Re: PROBLEM: Recent raid10 block discard patchset causes filesystem
- corruption on fstrim
-To:     Matthew Ruffell <matthew.ruffell@canonical.com>,
-        Song Liu <songliubraving@fb.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        Song Liu <song@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, Coly Li <colyli@suse.de>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        "khalid.elmously@canonical.com" <khalid.elmously@canonical.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
- <EA47EF7A-06D8-4B37-BED7-F04753D70DF5@fb.com>
- <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
- <71b9c9df-93a8-165a-d254-746a874f2238@canonical.com>
-From:   Xiao Ni <xni@redhat.com>
-Message-ID: <7fb182e0-a03f-4125-e3db-e9f819e099e4@redhat.com>
-Date:   Wed, 3 Feb 2021 09:43:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Tue, 2 Feb 2021 20:45:31 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVkw61qYpzMTjG;
+        Wed,  3 Feb 2021 09:43:02 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Feb 2021 09:44:38 +0800
+Subject: Re: [PATCH v2 2/5] ACPI: battery: Clean up printing messages
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Joe Perches" <joe@perches.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <3131826.iYOCbf7Byd@kreacher>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <48dbbf06-a897-5c1e-c42a-f6d9b4df16b1@huawei.com>
+Date:   Wed, 3 Feb 2021 09:44:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <71b9c9df-93a8-165a-d254-746a874f2238@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <3131826.iYOCbf7Byd@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/2/3 2:15, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
+> in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
+> respectively, which among other things causes the excessive log
+> level of the messages previously printed via ACPI_EXCEPTION() to
+> be more adequate.
+> 
+> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+> used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
+> definition from the headers and update the documentation accordingly.
+> 
+> While at it, update the pr_fmt() definition and drop the unneeded
+> PREFIX sybmbol definition from battery.c.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v1 -> v2: Changelog update
+> 
+> ---
+>   Documentation/firmware-guide/acpi/debug.rst |    1
+>   drivers/acpi/battery.c                      |   29 ++++++++++++++--------------
+>   drivers/acpi/sysfs.c                        |    1
+>   include/acpi/acpi_drivers.h                 |    1
+>   4 files changed, 15 insertions(+), 17 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/battery.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/battery.c
+> +++ linux-pm/drivers/acpi/battery.c
+> @@ -8,7 +8,7 @@
+>    *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
+>    */
+>   
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +#define pr_fmt(fmt) "ACPI: battery: " fmt
+>   
+[...]
+>   
+> -	pr_info(PREFIX "%s Slot [%s] (battery %s)\n",
+> +	pr_info("%s Slot [%s] (battery %s)\n",
+>   		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
+>   		device->status.battery_present ? "present" : "absent");
 
+Will print:
+ACPI: battery: Battery Slot ...
 
-On 02/02/2021 11:42 AM, Matthew Ruffell wrote:
-> Hi Xiao,
->
-> On 24/12/20 11:18 pm, Xiao Ni wrote:> The root cause is found. Now we use a similar way with raid0 to handle discard request
->> for raid10. Because the discard region is very big, we can calculate the start/end address
->> for each disk. Then we can submit the discard request to each disk. But for raid10, it has
->> copies. For near layout, if the discard request doesn't align with chunk size, we calculate
->> a start_disk_offset. Now we only use start_disk_offset for the first disk, but it should be
->> used for the near copies disks too.
-> Thanks for finding the root cause and making a patch that corrects the offset
-> addresses for multiple disks!
->
->> [  789.709501] discard bio start : 70968, size : 191176
->> [  789.709507] first stripe index 69, start disk index 0, start disk offset 70968
->> [  789.709509] last stripe index 256, end disk index 0, end disk offset 262144
->> [  789.709511] disk 0, dev start : 70968, dev end : 262144
->> [  789.709515] disk 1, dev start : 70656, dev end : 262144
->>
->> For example, in this test case, it has 2 near copies. The start_disk_offset for the first disk is 70968.
->> It should use the same offset address for second disk. But it uses the start address of this chunk.
->> It discard more region. The patch in the attachment can fix this problem. It split the region that
->> doesn't align with chunk size.
-> Just wondering, what is the current status of the patchset? Is there anything
-> that I can do to help?
->
->> There is another problem. The stripe size should be calculated differently for near layout and far layout.
->>
-> I can help review the patch and help test the patches anytime. Do you need help
-> with making a patch to calculate the stripe size for near and far layouts?
->
-> Let me know how you are going with this patchset, and if there is anything I
-> can do for you.
->
-> Thanks,
-> Matthew
->
-Hi Matthew
+How about:
+ACPI: battery: Slot ...
 
-I'm doing the test for the new patch set. I'll send the patch soon 
-again. Thanks for the help.
+>   
+> @@ -1282,7 +1283,7 @@ static void __init acpi_battery_init_asy
+>   	if (battery_check_pmic) {
+>   		for (i = 0; i < ARRAY_SIZE(acpi_battery_blacklist); i++)
+>   			if (acpi_dev_present(acpi_battery_blacklist[i], "1", -1)) {
+> -				pr_info(PREFIX ACPI_BATTERY_DEVICE_NAME
+> +				pr_info(ACPI_BATTERY_DEVICE_NAME
+>   					": found native %s PMIC, not loading\n",
+>   					acpi_battery_blacklist[i]);
 
-Regards
-Xiao
+Will print:
+ACPI: battery: Battery: found native...
 
+will be better for
+ACPI: battery: found native
+
+So I think we can remove ACPI_BATTERY_DEVICE_NAME in pr_info()
+
+Thanks
+Hanjun
