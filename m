@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C76730DB76
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927DD30DB75
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhBCNjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhBCNh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:37:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E43FC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r0k7fkjKZZ1/Vt6lQr+Rtmn6WL7bhCFvwGKVqtcNWZ0=; b=JD4ERjBlcjJ0TYq7tXpsomdani
-        m3trTAmxAW1JhLlxvNlVazdX9jfnK7BFy/BrxHFqppV4znvS5JKIil7IvkhEcVoDJd1kulkjMafSi
-        idCh//S4tVV/8De/4BJ0TPVs2QHp3zD80eKg2OklccCJoUdeRjWO2QhIarz+I8QEKOn/nmlA+/WVk
-        Tt0AuEgWfI5/L6nhS65dgYioST8kCM5wJ7JCpwYd1MPTHdETPTnIz2dooFElJew0Ty+S7KTZt7RF3
-        bxXi+/Cikx7vaOOLDaZHMjQ6VWLtZbgvv/NYMgzyz5HTIRWbl21Pdxhcs/4MgR6IOH4oJs123I52S
-        oiUdUc/A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7ILF-0005GU-9t; Wed, 03 Feb 2021 13:37:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6034C301A66;
-        Wed,  3 Feb 2021 14:37:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 49125284AA052; Wed,  3 Feb 2021 14:37:05 +0100 (CET)
-Date:   Wed, 3 Feb 2021 14:37:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Subject: Re: Process-wide watchpoints
-Message-ID: <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net>
-References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
- <20201112103125.GV2628@hirez.programming.kicks-ass.net>
- <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
- <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
- <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
- <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
- <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net>
- <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+        id S229979AbhBCNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:38:30 -0500
+Received: from verein.lst.de ([213.95.11.211]:51287 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231567AbhBCNh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:37:59 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6150367357; Wed,  3 Feb 2021 14:37:12 +0100 (CET)
+Date:   Wed, 3 Feb 2021 14:37:12 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jianxiong Gao <jxgao@google.com>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Marc Orr <marcorr@google.com>, Christoph Hellwig <hch@lst.de>,
+        m.szyprowski@samsung.com, Robin Murphy <robin.murphy@arm.com>,
+        gregkh@linuxfoundation.org, Saravana Kannan <saravanak@google.com>,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        jroedel@suse.de, iommu@lists.linux-foundation.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] Adding
+ device_dma_parameters->offset_preserve_mask to NVMe driver.
+Message-ID: <20210203133712.GA24674@lst.de>
+References: <20210201183017.3339130-1-jxgao@google.com> <20210201183017.3339130-4-jxgao@google.com> <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com> <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com> <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+In-Reply-To: <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:49:56PM +0100, Dmitry Vyukov wrote:
-> On Wed, Feb 3, 2021 at 1:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Feb 01, 2021 at 09:50:20AM +0100, Dmitry Vyukov wrote:
-> > > Or, alternatively would it be reasonable for perf to generate SIGTRAP
-> > > directly on watchpoint hit (like ptrace does)? That's what I am
-> > > ultimately trying to do by attaching a bpf program.
-> >
-> > Perf should be able to generate signals, The perf_event_open manpage
-> > lists two ways of trigering signals. The second way doesn't work for
-> > you, due to it not working on inherited counters, but would the first
-> > work?
-> >
-> > That is, set attr::wakeup_events and fcntl(F_SETSIG).
-> 
-> The problem is that this sends a signal to the fd owner rather than
-> the thread that hit the breakpoint. At least that's what happened in
-> our tests. We would like to send a signal to the thread that hit the
-> breakpoint.
+Please try with this extra patch:
 
-Ah indeed.. all of this was aimed at self-monitoring.
+---
+From 212764c3c15ce859e6f55d2146f450ea4ca6fdb9 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 3 Feb 2021 14:27:13 +0100
+Subject: nvme-pci: fix 2nd PRP setup in nvme_setup_prp_simple
 
-Letting perf send a signal to the monitored task is intrusive.. let me
-think on that.
+Use the dma address instead of the bio_vec offset for the arithmetics
+to find the address for the 2nd PRP.
+
+Fixes: dff824b2aadb ("nvme-pci: optimize mapping of small single segment requests")
+Reported-by: Jianxiong Gao <jxgao@google.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/nvme/host/pci.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 30e45f7e0f750c..4ae51735d72f4a 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -808,8 +808,7 @@ static blk_status_t nvme_setup_prp_simple(struct nvme_dev *dev,
+ 		struct bio_vec *bv)
+ {
+ 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+-	unsigned int offset = bv->bv_offset & (NVME_CTRL_PAGE_SIZE - 1);
+-	unsigned int first_prp_len = NVME_CTRL_PAGE_SIZE - offset;
++	dma_addr_t next_prp;
+ 
+ 	iod->first_dma = dma_map_bvec(dev->dev, bv, rq_dma_dir(req), 0);
+ 	if (dma_mapping_error(dev->dev, iod->first_dma))
+@@ -817,8 +816,9 @@ static blk_status_t nvme_setup_prp_simple(struct nvme_dev *dev,
+ 	iod->dma_len = bv->bv_len;
+ 
+ 	cmnd->dptr.prp1 = cpu_to_le64(iod->first_dma);
+-	if (bv->bv_len > first_prp_len)
+-		cmnd->dptr.prp2 = cpu_to_le64(iod->first_dma + first_prp_len);
++	next_prp = round_down(iod->first_dma + bv->bv_len, NVME_CTRL_PAGE_SIZE);
++	if (next_prp > iod->first_dma)
++		cmnd->dptr.prp2 = cpu_to_le64(next_prp);
+ 	return BLK_STS_OK;
+ }
+ 
+-- 
+2.29.2
+
