@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFC530DEF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3270B30DEFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234675AbhBCP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:58:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33704 "EHLO mail.kernel.org"
+        id S234750AbhBCQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:00:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49982 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234699AbhBCP5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:57:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2ABE64D90;
-        Wed,  3 Feb 2021 15:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612367782;
-        bh=iqZEmEMfQVbGhNOvrmiywegPN/XO5IkB/s/O37rDgDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oQETclcCklKxjatzOTdvcf3oRfofVwOL5h4ZheCcP+bELF9XrnlVJ++fAqoPOVEuO
-         +2xhvJca3GOKM6xsNhgd02eWrhOP1Aj22g0QNFMEk1mzzWzvZd40THn9me/dnvivr+
-         pe+pbO3dEst/Tt/twV4HR0NjE19LX4WwCiPPcXaU/3Gclz7KC0YFeZuOG656WzWIpF
-         LG40diET7n3y1TnWXqOzdvTQWP83x92ZqKnaFDw66H9wBvNYQO8zYAmQgoiQ7aFzv+
-         ILP/1EpGhRi+9HbsHGEv49NjTalEofGHLoO2Q2zd25qlnekUPxoLOOkb8CHKMsjzS+
-         2LCb84mj9D8fg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l7KWB-000363-CJ; Wed, 03 Feb 2021 16:56:36 +0100
-Date:   Wed, 3 Feb 2021 16:56:35 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/apic/of: Fix CPU devicetree-node lookups
-Message-ID: <YBrHs7UJNkkLpagx@hovoldconsulting.com>
-References: <20201210133910.4229-1-johan@kernel.org>
+        id S234717AbhBCP7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:59:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31385AC55;
+        Wed,  3 Feb 2021 15:58:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 90BD0DA6FC; Wed,  3 Feb 2021 16:56:48 +0100 (CET)
+Date:   Wed, 3 Feb 2021 16:56:48 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        Miao Xie <miaox@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Fix raid6 qstripe kmap'ing
+Message-ID: <20210203155648.GE1993@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com,
+        Miao Xie <miaox@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210128061503.1496847-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210133910.4229-1-johan@kernel.org>
+In-Reply-To: <20210128061503.1496847-1-ira.weiny@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 02:39:10PM +0100, Johan Hovold wrote:
-> Architectures that describe the CPU topology in devicetree and that do
-> not have an identity mapping between physical and logical CPU ids need
-> to override the default implementation of arch_match_cpu_phys_id().
+On Wed, Jan 27, 2021 at 10:15:03PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Failing to do so breaks CPU devicetree-node lookups using
-> of_get_cpu_node() and of_cpu_device_node_get() which several drivers
-> rely on. It also causes the CPU struct devices exported through sysfs to
-> point to the wrong devicetree nodes.
+> When a qstripe is required an extra page is allocated and mapped.  There
+> were 3 problems.
 > 
-> On x86, CPUs are described in devicetree using their APIC ids and those
-> do not generally coincide with the logical ids, even if CPU0 typically
-> uses APIC id 0. Add the missing implementation of
-> arch_match_cpu_phys_id() so that CPU-node lookups work also with SMP.
+> 1) There is no reason to map the qstripe page more than 1 time if the
+>    number of bits set in rbio->dbitmap is greater than one.
+> 2) There is no reason to map the parity page and unmap it each time
+>    through the loop.
+> 3) There is no corresponding call of kunmap() for the qstripe page.
 > 
-> Apart from fixing the broken sysfs devicetree-node links this likely do
-> not affect users of mainline kernels as the above mentioned drivers are
-> currently not used on x86 as far as I know.
+> The page memory can continue to be reused with a single mapping on each
+> iteration by raid6_call.gen_syndrome() without remapping.  So map the
+> page for the duration of the loop.
 > 
-> Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
-> Cc: stable <stable@vger.kernel.org>     # 4.17
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+> Similarly, improve the algorithm by mapping the parity page just 1 time.
+> 
+> Fixes: 5a6ac9eacb49 ("Btrfs, raid56: support parity scrub on raid56")
+> To: Chris Mason <clm@fb.com>
+> To: Josef Bacik <josef@toxicpanda.com>
+> To: David Sterba <dsterba@suse.com>
+> Cc: Miao Xie <miaox@cn.fujitsu.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
 > ---
+> This was found while replacing kmap() with kmap_local_page().  After
+> this patch unwinding all the mappings becomes pretty straight forward.
 > 
-> Thomas,
-> 
-> Hope this looks better to you.
-> 
-> My use case for this is still out-of-tree, but since CPU-node lookup is
-> generic functionality and with observable impact also for mainline users
-> (sysfs) I added a stable tag.
+> I'm not exactly sure I've worded this commit message intelligently.
+> Please forgive me if there is a better way to word it.
 
-Did you have a chance to look at this one yet?
-
-Johan
-
-> Changes in v2
->  - rewrite commit message
->  - add Fixes tag
->  - add stable tag for the benefit of out-of-tree users
-> 
-> 
->  arch/x86/kernel/apic/apic.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-> index b3eef1d5c903..19c0119892dd 100644
-> --- a/arch/x86/kernel/apic/apic.c
-> +++ b/arch/x86/kernel/apic/apic.c
-> @@ -2311,6 +2311,11 @@ static int cpuid_to_apicid[] = {
->  	[0 ... NR_CPUS - 1] = -1,
->  };
->  
-> +bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-> +{
-> +	return phys_id == cpuid_to_apicid[cpu];
-> +}
-> +
->  #ifdef CONFIG_SMP
->  /**
->   * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
+Changelog is good, thanks. I've added stable tags as the missing unmap
+is a potential problem.
