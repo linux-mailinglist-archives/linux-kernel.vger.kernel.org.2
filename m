@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB37130D50F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710D530D51C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhBCIVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:21:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35566 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231929AbhBCIVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:21:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5AEB8AC3A;
-        Wed,  3 Feb 2021 08:20:22 +0000 (UTC)
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_drm/nouveau=3a_remove_set_but_not_used_?=
- =?UTF-8?Q?variable_=e2=80=98pdev=e2=80=99_in_nouveau=5fbios=5finit?=
-To:     Ye Bin <yebin10@huawei.com>, bskeggs@redhat.com, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Hulk Robot <hulkci@huawei.com>
-References: <20210123013014.3815870-1-yebin10@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <aa1dc788-bc47-ac8e-73a9-067be8b6ba7a@suse.de>
-Date:   Wed, 3 Feb 2021 09:20:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232763AbhBCIXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:23:09 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34787 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232445AbhBCIW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 03:22:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C68A05801C8;
+        Wed,  3 Feb 2021 03:22:08 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 03 Feb 2021 03:22:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=fqkHRYodlshvhyIA+UJ4UfsOf/l
+        tAp7H6MffX1tyNxE=; b=slcOTGvTpKA4WljhiJv7+iCUZH8gSK7HINfjxfcyHYS
+        oVWP3iCVbGh8iebkQ64Otesly/pgB6Ojkd/8+NHHcXREflHQrwFbmKhQW9Pt1mpo
+        0jGaiibdct3rA5gtLBBJD+WqevLjejqfXmO25CUl/H7wZ16tsr7G4Bi7EM++QQiP
+        uGt1hmCkYEs9fT3Ccb33TsiX1rUASf/lWhTrjChfxbVhV/ThkAddln2eUhyy5d1W
+        AruG4cHgZ5LbUzJLSv2lNTCZRTV4iYx6F8KiPqcNKqHbAiNmegBw9hqzuZ3RcezD
+        TAjxwAkZUcA0rRhpbZgJpZ2cTP+j4TNMlDxTLMpoQbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fqkHRY
+        odlshvhyIA+UJ4UfsOf/ltAp7H6MffX1tyNxE=; b=u81W7hCHQNnX8ioS0QjzTI
+        dXYEXN8u7Zv12w/JGQY9cb+EXhyFPhGHybUSyy58L5BYFAsTB8TIvPcJMO1yIzR2
+        wXB4Q63BEG+dRtnsn+ScSOdchORgRtuhUciKHps0h8VG/5wFo00V85MKJi+839q/
+        HyrbXvamWMkX0+lH9Umbi7gcrOfD+UXSmY6lb64xzZO5TS7nuWW9Swbxnz0U7WsV
+        QTSrEj6zktT37l7KKq0Zzl1v/vpW/Gvjx9A5aaByY3qvZ8RNRbvfHoZELkHYwIbK
+        gNATlaHd7ZYOa1pqxowGPfDGKqx62lN3MwsHhZkmGfe63hzwVwjtB3Uy80MSe28w
+        ==
+X-ME-Sender: <xms:LV0aYHdnCSxFxDCLC5CXYrWHBt_VwtPnVzVDdh1oD7oRXvVdQXmklg>
+    <xme:LV0aYNMToA5In7Ytxt8daA1e-8wVQnQ6K7h_43MrxcNeQajOhD4r3bA09TSyCLrWb
+    i6sO3Rh85G3zl0eh-I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgedugdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:LV0aYAhb3EPSlG7qHPT7wzMboPymJneBnX7mcDOV8ZX_7-2InDhEaQ>
+    <xmx:LV0aYI9e3_6x364E7PvAgYd1Z-BjvqNvpdA2yELBilajlOhDzNbDug>
+    <xmx:LV0aYDuBJ57wK1dK4YgxXtVXo_Mm4TBHG6QekGn_AcEfBHtQ_3jAZw>
+    <xmx:MF0aYC9hdUdELtEoyj7de93BQEQX4jOyhX4iH0KZUvHvXhdclUakXQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8D50D1080063;
+        Wed,  3 Feb 2021 03:22:05 -0500 (EST)
+Date:   Wed, 3 Feb 2021 09:22:03 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: Fix undocumented compatible strings in
+ examples
+Message-ID: <20210203082203.pq2xxyrjkzhbwfks@gilmour>
+References: <20210202205544.24812-1-robh@kernel.org>
+ <161231243653.76967.3231080427102153199@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210123013014.3815870-1-yebin10@huawei.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6"
+        protocol="application/pgp-signature"; boundary="4gldcp53h554eeqa"
+Content-Disposition: inline
+In-Reply-To: <161231243653.76967.3231080427102153199@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6
-Content-Type: multipart/mixed; boundary="1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Ye Bin <yebin10@huawei.com>, bskeggs@redhat.com, airlied@linux.ie,
- daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: Hulk Robot <hulkci@huawei.com>
-Message-ID: <aa1dc788-bc47-ac8e-73a9-067be8b6ba7a@suse.de>
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_drm/nouveau=3a_remove_set_but_not_used_?=
- =?UTF-8?Q?variable_=e2=80=98pdev=e2=80=99_in_nouveau=5fbios=5finit?=
-References: <20210123013014.3815870-1-yebin10@huawei.com>
-In-Reply-To: <20210123013014.3815870-1-yebin10@huawei.com>
 
---1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+--4gldcp53h554eeqa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Applied to drm-misc-next. Thanks for the patch!
-
-Am 23.01.21 um 02:30 schrieb Ye Bin:
-> Fix follow warning:
-> drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable =E2=80=
-=98pdev=E2=80=99 set but not used [-Wunused-but-set-variable]
->    struct pci_dev *pdev;
->                    ^~~~
+On Tue, Feb 02, 2021 at 04:33:56PM -0800, Stephen Boyd wrote:
+> Quoting Rob Herring (2021-02-02 12:55:42)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/clock/allwinner,sun9i-a8=
+0-usb-clocks.yaml b/Documentation/devicetree/bindings/clock/allwinner,sun9i=
+-a80-usb-clocks.yaml
+> > index fa0ee03a527f..53cc6df0df96 100644
+> > --- a/Documentation/devicetree/bindings/clock/allwinner,sun9i-a80-usb-c=
+locks.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/allwinner,sun9i-a80-usb-c=
+locks.yaml
+> > @@ -18,7 +18,7 @@ properties:
+> >      const: 1
+> > =20
+> >    compatible:
+> > -    const: allwinner,sun9i-a80-usb-clocks
+> > +    const: allwinner,sun9i-a80-usb-clks
 >=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->   drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
->   1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/n=
-ouveau/nouveau_bios.c
-> index 7cc683b8dc7a..e8c445eb1100 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bios.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
-> @@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
->   {
->   	struct nouveau_drm *drm =3D nouveau_drm(dev);
->   	struct nvbios *bios =3D &drm->vbios;
-> -	struct pci_dev *pdev;
->   	int ret;
->  =20
->   	/* only relevant for PCI devices */
->   	if (!dev_is_pci(dev->dev))
->   		return 0;
-> -	pdev =3D to_pci_dev(dev->dev);
->  =20
->   	if (!NVInitVBIOS(dev))
->   		return -ENODEV;
->=20
+> Should the file name change too?
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Ideally yes, and with that change
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
+Maxime
 
---1CsaXThNQWcfbJMGuWTfOXIh1DkO7eibk--
-
---rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+--4gldcp53h554eeqa
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAaXMUFAwAAAAAACgkQlh/E3EQov+D7
-ZxAAxLjMylCx6YFYx6DLkHXiemXHddeNdKImp91LogDAOIXpRgBwOi20RoRKzEHF3wuRHBr3mQbn
-FbLzxYBdu4Hc+CMSuZwLdg5GaICjhuvB6KXsZwEfpDOCpaPsduT6FKWMYCqscDY36Vb6e11mGgUd
-ua/tgcPTxJML1pV/GKYTch8rS+OJ2fUxXqRuNQTmipjaIaM8F6s4n1255kwVQCYa6aKjy0aFHm5f
-qf5Uk8XiWhSbmw5lO31+6oynLJHA4Q2BpBtPmAr4Abw9cR+UIn7MbywA+JFiYT6TV2bcWXb2uK+8
-3dRWW8SizsqQtElS7vN9PBiPcDW9YMX6fcHj8PO2Xtqw6kYlgejS0jPuPOkTtECeuKbBlGtut7r0
-7LL8uHs4fsvTGB+RmTKdEn/hI5ubHbE8R2x+EXWpNA+3ItzOlV6a75S/ShNcAVXZc3hB2KsNEnje
-GwpP+NmlJUC7BXlbuPSRlC7AZjSzxV0Ukffk7vVqzF0cVyHPwJJNzSwRU4Ct20+5d7J9+pcXrk4x
-7iACRs4e/5qkPdQYtdE0O4iwUeq9XdxDEuXWFS9e6t1SHP3hXndRfoMFNaqKNtDWGCK+hN7bhKfS
-2Bq9356np4qmoyTm9M1MS1+SsH1AB6azfqboJ7QV9KYRDYXQmBvDMeJcV2qaAxtwwWfQcp7pKNd3
-new=
-=Nb9N
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBpdKwAKCRDj7w1vZxhR
+xfXZAP4mNYff3e9rGt7MOkYTYcw0pPEWCEpYYXYTI2ssF+qYBwD9FyVvxvbomZwA
+YVE/qhtvuINsw89s7u6/KsQoWh85RwA=
+=Nhso
 -----END PGP SIGNATURE-----
 
---rm5LD8VZtyhsfXogm2MgzIbGwK4MBB9k6--
+--4gldcp53h554eeqa--
