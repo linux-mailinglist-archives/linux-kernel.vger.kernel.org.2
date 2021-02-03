@@ -2,144 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE30230E022
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56A330E02B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhBCQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S231422AbhBCQxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhBCQxB (ORCPT
+        with ESMTP id S230517AbhBCQxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:53:01 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90361C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LRuQQ/TiLUC5JMAELdQabsqA6mbE/jmkJNaJ/Pha76M=; b=1xIHBqiQDaxysRCpMbX7WOMuVm
-        OnJDi9V/wvFQrkhskS91PLYPDeO6S4h4jnJasd7F7kEt/9nBqEqnxZ0fdYK2Hy7ks1lFS/O3DaVSn
-        YDmdvvvmqnotiUzU6G0KoVWxZGP5iJ1rOED6tNQGG1tRRtLLVbhVnzqXQw2VvXaPamaKGn9ivFcXr
-        /wHiQkn4vQuo7YvLlwgoWV+9mS9pbBb6SwVDNIApdoNcsKUbDV1MkC1EO51+lnyVq/hKspBN86PZR
-        UtVleQB0kMySe1pReRs88IPrXNTwoR7Q6BWo0Iq6C1fI0GGZxk5vK91kbJqwDEDZc9V4bXH2gQhho
-        e8poS0uQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7LN9-0003cz-Oh; Wed, 03 Feb 2021 16:51:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4FF930066E;
-        Wed,  3 Feb 2021 17:51:15 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BEA682C18B5C7; Wed,  3 Feb 2021 17:51:15 +0100 (CET)
-Date:   Wed, 3 Feb 2021 17:51:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YBrUgxLfjcpjwgo6@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
+        Wed, 3 Feb 2021 11:53:23 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FDEC0613ED;
+        Wed,  3 Feb 2021 08:52:43 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id s3so376619edi.7;
+        Wed, 03 Feb 2021 08:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=YTHvbCjsK4omUl0IWdkmKq6VQg+YpFZVHA+6d5ZU9mk=;
+        b=dLlP1Rw8f9InY/ONO5KbGh4Qrp4V9j1Sl6zGeIjzqXvRtN1eIbpWEg6xEXNPo9PXW7
+         eCzVSU9dF+vMckZbQiOV3/HO/jmk2H13S8JkLOFr5iI7E53VDBLKZMzbWBMegh50QdrE
+         +Z5ExbqDh9Wxj+IEi5TOPRlCksfOfI6oS6ysd/T0zK/nkIH6ii1NlGyl2d4nHgFIJ8Wu
+         f9d6CVjAMiPIygI2ZEeZhSuVu0bgT/Tlshb213briU8cnFbdWFagFtL/FpuFfNfxzPmh
+         5OKcsh6MY3m573z+7HMUYv0vgo5P62FkNEg1C2E06tPSme1DqmiQ2YQJSyx7MIgKZtUB
+         e0HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YTHvbCjsK4omUl0IWdkmKq6VQg+YpFZVHA+6d5ZU9mk=;
+        b=SpKYk0euM6BdMySMbCwFvTS8ib1IxyY2WnvsvZF+DGPzjpEOEp/vkavw8yY8XQ3EOq
+         8kg8jMrO6+c8ZcQOxR/6i87+5oBbysLFs6/QZHLfpiK+OSkAVdWI0YVcjZ9acS1uiIRX
+         hgDo+4N+G6jyj6BDMuNQOMKmdN8rabqfZWhVyUTgHujC02BdwBOK7CaV8HLf8u7FRgLH
+         pnMc8AFrX1sYqhL/SBpxG2Stbrkp2B3ajpGP2eYOaed5iOxh+GlP2Cj/KO/UYRsOBoo+
+         Skk+R2KXJPJLmaTg0ZbjkldrfeBd+Erqzf2+FeNYgqm/u/HKC37uMYS6J0j5jdd9ZZWl
+         m8Kg==
+X-Gm-Message-State: AOAM532Bb1E3LHZbit2Rtmt7DshN7U6ZSQzaUamxgnjdCpob3SBKu2sP
+        1WyAri1U0lJIPnAm8MyyZnuR5NxR7do=
+X-Google-Smtp-Source: ABdhPJy20Qd5tp6E67FLuATwBrfP19QrqbJ+90f7gWEVIWsDr5KHgPyNFDX/HfHywdP7MaLXxgJIdw==
+X-Received: by 2002:a05:6402:3510:: with SMTP id b16mr3858988edd.242.1612371162281;
+        Wed, 03 Feb 2021 08:52:42 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a25sm1135471eds.48.2021.02.03.08.52.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Feb 2021 08:52:41 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/7] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
+Date:   Wed,  3 Feb 2021 17:52:27 +0100
+Message-Id: <20210203165233.22177-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the past Rockchip dwc3 usb nodes were manually checked.
+With the conversion of snps,dwc3.yaml as common document
+we now can convert rockchip,dwc3.txt to yaml as well.
+Remove node wrapper.
 
-I'm slowly starting to go through this...
+Added properties for rk3399 are:
+  power-domains
+  resets
+  reset-names
 
-On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> +static bool sched_core_empty(struct rq *rq)
-> +{
-> +	return RB_EMPTY_ROOT(&rq->core_tree);
-> +}
-> +
-> +static struct task_struct *sched_core_first(struct rq *rq)
-> +{
-> +	struct task_struct *task;
-> +
-> +	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
-> +	return task;
-> +}
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
+ .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 103 +++++++++++++++++++++
+ 2 files changed, 103 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
 
-AFAICT you can do with:
-
-static struct task_struct *sched_core_any(struct rq *rq)
-{
-	return rb_entry(rq->core_tree.rb_node, struct task_struct, code_node);
-}
-
-> +static void sched_core_flush(int cpu)
-> +{
-> +	struct rq *rq = cpu_rq(cpu);
-> +	struct task_struct *task;
-> +
-> +	while (!sched_core_empty(rq)) {
-> +		task = sched_core_first(rq);
-> +		rb_erase(&task->core_node, &rq->core_tree);
-> +		RB_CLEAR_NODE(&task->core_node);
-> +	}
-> +	rq->core->core_task_seq++;
-> +}
-
-However,
-
-> +	for_each_possible_cpu(cpu) {
-> +		struct rq *rq = cpu_rq(cpu);
-> +
-> +		WARN_ON_ONCE(enabled == rq->core_enabled);
-> +
-> +		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
-> +			/*
-> +			 * All active and migrating tasks will have already
-> +			 * been removed from core queue when we clear the
-> +			 * cgroup tags. However, dying tasks could still be
-> +			 * left in core queue. Flush them here.
-> +			 */
-> +			if (!enabled)
-> +				sched_core_flush(cpu);
-> +
-> +			rq->core_enabled = enabled;
-> +		}
-> +	}
-
-I'm not sure I understand. Is the problem that we're still schedulable
-during do_exit() after cgroup_exit() ? It could be argued that when we
-leave the cgroup there, we should definitely leave the tag group too.
-
-
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+deleted file mode 100644
+index 945204932..000000000
+--- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-Rockchip SuperSpeed DWC3 USB SoC controller
+-
+-Required properties:
+-- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
+-- clocks:	A list of phandle + clock-specifier pairs for the
+-		clocks listed in clock-names
+-- clock-names:	Should contain the following:
+-  "ref_clk"	Controller reference clk, have to be 24 MHz
+-  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
+-  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
+-		operation and >= 30MHz for HS operation
+-  "grf_clk"	Controller grf clk
+-
+-Required child node:
+-A child node must exist to represent the core DWC3 IP block. The name of
+-the node is not important. The content of the node is defined in dwc3.txt.
+-
+-Phy documentation is provided in the following places:
+-Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
+-Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
+-
+-Example device nodes:
+-
+-	usbdrd3_0: usb@fe800000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
+-			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_0: dwc3@fe800000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe800000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+-
+-	usbdrd3_1: usb@fe900000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
+-			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_1: dwc3@fe900000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe900000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+new file mode 100644
+index 000000000..fdf9497bc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+@@ -0,0 +1,103 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SuperSpeed DWC3 USB SoC controller
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++description:
++      The common content of the node is defined in snps,dwc3.yaml.
++
++      Phy documentation is provided in the following places.
++
++      USB2.0 PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
++
++      Type-C PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
++
++allOf:
++  - $ref: snps,dwc3.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - rockchip,rk3399-dwc3
++      - const: snps,dwc3
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description:
++          Controller reference clock, must to be 24 MHz
++      - description:
++          Controller suspend clock, must to be 24 MHz or 32 KHz
++      - description:
++          Master/Core clock, must to be >= 62.5 MHz for SS
++          operation and >= 30MHz for HS operation
++      - description:
++          Controller aclk_usb3_rksoc_axi_perf clock
++      - description:
++          Controller aclk_usb3 clock
++      - description:
++          Controller grf clock
++
++  clock-names:
++    items:
++      - const: ref_clk
++      - const: suspend_clk
++      - const: bus_clk
++      - const: aclk_usb3_rksoc_axi_perf
++      - const: aclk_usb3
++      - const: grf_clk
++
++  power-domains:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: usb3-otg
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3399-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    bus {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      usbdrd3_0: usb@fe800000 {
++        compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
++        reg = <0x0 0xfe800000 0x0 0x100000>;
++        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
++                 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
++                 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
++        clock-names = "ref_clk", "suspend_clk",
++                      "bus_clk", "aclk_usb3_rksoc_axi_perf",
++                      "aclk_usb3", "grf_clk";
++        dr_mode = "otg";
++      };
++    };
+-- 
+2.11.0
 
