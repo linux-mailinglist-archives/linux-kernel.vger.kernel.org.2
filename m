@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F8F30D68A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDFD30D68C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhBCJpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:45:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233206AbhBCJow (ORCPT
+        id S233502AbhBCJp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:45:27 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:44370 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233385AbhBCJoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:44:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612345406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8JlE3EMtIPG4yCYd+JdmIn+AhVOjwW2E0U1D9Qnw6LQ=;
-        b=fi8SRjoTf88esqi5Iog2hXOBp8sF8wzuibrvOntX1BhugDiliFGlcA5RMwqYyPdsMZ/LN1
-        OonDCQpBmfP0QifWlzbxWU0ScW3g4o6HI19DxzCUwYPEIY3IK5qcZmlbGHgOw04LVamIGg
-        oVEixwP6pbbkC93/Iyu3pJwUQZMbBMk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-6AKbNT1oNl6F8s0749jYxw-1; Wed, 03 Feb 2021 04:43:22 -0500
-X-MC-Unique: 6AKbNT1oNl6F8s0749jYxw-1
-Received: by mail-ed1-f70.google.com with SMTP id ay16so2238187edb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:43:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8JlE3EMtIPG4yCYd+JdmIn+AhVOjwW2E0U1D9Qnw6LQ=;
-        b=Tb9wBY8dISupfIH/Bx3QEVCIGTLYu6cuhmA+DY3x7EGkYUCqewzVpBJyXu0bv4/Pqz
-         tv99P0m6bzH5QdiA7lPWldH4OS1FU1dFWoSPBQZUgTNjHI/p8WT2+3/SNEuCNwWiBPWc
-         PKw3NEt0cfWtbcb+XWG/2qqF1R2tHh8HM7ur1NwumWdh6znQ370PIXmC1hPkr6Bazdoo
-         gboL0mOo6NQpWZM13a54Ip7i1HsLKXEyaE7Vht48lg2r1FFwSESDMlQUm2pRDXJPfHYH
-         sTy99KaLl2PWikYjPPYo40wiuUdrJEb2r8q9rBpERR37JE70V72HJZfKbwsLVK7F9pyV
-         drJA==
-X-Gm-Message-State: AOAM530KTcFedC9MZyd3C7lmmq6A7ibbP1JWyb++16ykz/2+5BQ7K22W
-        1z/qN125TEftobq1Yw5/qAvFj7Pe3YqXNOJUKnnzPhuRw4xUr51eoO5ixfoCdcPPjPuTNspX3Zy
-        0r5TGhvSq9/mHJMcVPtG/zSIc
-X-Received: by 2002:a17:907:f81:: with SMTP id kb1mr2297887ejc.466.1612345401122;
-        Wed, 03 Feb 2021 01:43:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyE4w0SXKWGuwkGTges5EuIVt6D0Y/P3+luaD05sg14cWZ/nhDE7xP9Qy9/NVNV/hAIky3YOg==
-X-Received: by 2002:a17:907:f81:: with SMTP id kb1mr2297878ejc.466.1612345400921;
-        Wed, 03 Feb 2021 01:43:20 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j23sm599190edv.45.2021.02.03.01.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 01:43:20 -0800 (PST)
-Subject: Re: [PATCH v2 10/28] KVM: x86/mmu: Fix TDP MMU zap collapsible SPTEs
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-11-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <dbb72860-3f3a-e1e7-361f-2961a5a526c1@redhat.com>
-Date:   Wed, 3 Feb 2021 10:43:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 3 Feb 2021 04:44:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1612345494; x=1643881494;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=qzmORu6TPDMtpaBxAL0UiJI+S5JTnIvY28f0uCb5OQA=;
+  b=rpgBl3YM73uqjBQV/PLJyAC9ow+QS9xVxY0mHlRPyYOPzpTZ1VfF2kzm
+   xmh0FBgveR26PJPrGSGh+e0WuDBt77+7J7XK1iTsZSkdJB8uFZNJpbSjS
+   TcKrb2WbJutTunS+hJm8AuQXAAEubO/IEgXy5z9ADGCSGttwKpNbCkLEl
+   k=;
+X-IronPort-AV: E=Sophos;i="5.79,398,1602547200"; 
+   d="scan'208";a="79372647"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 03 Feb 2021 09:44:05 +0000
+Received: from EX13D02EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 25F95A185A;
+        Wed,  3 Feb 2021 09:44:04 +0000 (UTC)
+Received: from u2196cf9297dc59.ant.amazon.com (10.43.160.66) by
+ EX13D02EUC001.ant.amazon.com (10.43.164.92) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Feb 2021 09:43:59 +0000
+From:   Filippo Sironi <sironi@amazon.de>
+To:     <serebrin@amazon.com>, <dwmw@amazon.co.uk>, <kbusch@kernel.org>,
+        <axboe@fb.com>, <hch@lst.de>, <sagi@grimberg.me>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Filippo Sironi <sironi@amazon.de>
+Subject: [PATCH] nvme: Add 48-bit DMA address quirk
+Date:   Wed, 3 Feb 2021 10:43:38 +0100
+Message-ID: <20210203094338.19473-1-sironi@amazon.de>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210202185734.1680553-11-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.66]
+X-ClientProxiedBy: EX13D04UWA001.ant.amazon.com (10.43.160.47) To
+ EX13D02EUC001.ant.amazon.com (10.43.164.92)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 19:57, Ben Gardon wrote:
-> There is a bug in the TDP MMU function to zap SPTEs which could be
-> replaced with a larger mapping which prevents the function from doing
-> anything. Fix this by correctly zapping the last level SPTEs.
-> 
-> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   arch/x86/kvm/mmu/tdp_mmu.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index c3075fb568eb..e3066d08c1dc 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1098,8 +1098,8 @@ bool kvm_tdp_mmu_slot_set_dirty(struct kvm *kvm, struct kvm_memory_slot *slot)
->   }
->   
->   /*
-> - * Clear non-leaf entries (and free associated page tables) which could
-> - * be replaced by large mappings, for GFNs within the slot.
-> + * Clear leaf entries which could be replaced by large mappings, for
-> + * GFNs within the slot.
->    */
->   static void zap_collapsible_spte_range(struct kvm *kvm,
->   				       struct kvm_mmu_page *root,
-> @@ -1111,7 +1111,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
->   
->   	tdp_root_for_each_pte(iter, root, start, end) {
->   		if (!is_shadow_present_pte(iter.old_spte) ||
-> -		    is_last_spte(iter.old_spte, iter.level))
-> +		    !is_last_spte(iter.old_spte, iter.level))
->   			continue;
->   
->   		pfn = spte_to_pfn(iter.old_spte);
-> 
+Certain NVMe controllers don't support 64-bit DMA addresses.  Instead,
+they are limited to 48-bit DMA addresses.  Let's add a quirk to use them
+properly.
 
-Queued for 5.11-rc, thanks.
+Signed-off-by: Filippo Sironi <sironi@amazon.de>
+---
+ drivers/nvme/host/nvme.h |  5 +++++
+ drivers/nvme/host/pci.c  | 12 +++++++++++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-Paolo
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 88a6b97247f5..dae747b4ac35 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -144,6 +144,11 @@ enum nvme_quirks {
+ 	 * NVMe 1.3 compliance.
+ 	 */
+ 	NVME_QUIRK_NO_NS_DESC_LIST		= (1 << 15),
++
++	/*
++	 * The controller supports up to 48-bit DMA address.
++	 */
++	NVME_QUIRK_DMA_ADDRESS_BITS_48		= (1 << 16),
+ };
+ 
+ /*
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 81e6389b2042..5716ae16c7a7 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2362,13 +2362,16 @@ static int nvme_pci_enable(struct nvme_dev *dev)
+ {
+ 	int result = -ENOMEM;
+ 	struct pci_dev *pdev = to_pci_dev(dev->dev);
++	int dma_address_bits = 64;
+ 
+ 	if (pci_enable_device_mem(pdev))
+ 		return result;
+ 
+ 	pci_set_master(pdev);
+ 
+-	if (dma_set_mask_and_coherent(dev->dev, DMA_BIT_MASK(64)))
++	if (dev->ctrl.quirks & NVME_QUIRK_DMA_ADDRESS_BITS_48)
++		dma_address_bits = 48;
++	if (dma_set_mask_and_coherent(dev->dev, DMA_BIT_MASK(dma_address_bits)))
+ 		goto disable;
+ 
+ 	if (readl(dev->bar + NVME_REG_CSTS) == -1) {
+@@ -3259,6 +3262,13 @@ static const struct pci_device_id nvme_id_table[] = {
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x1d97, 0x2263),   /* SPCC */
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
++	{ .vendor = PCI_VENDOR_ID_AMAZON,
++	  .device = PCI_ANY_ID,
++	  .subvendor = PCI_ANY_ID,
++	  .subdevice = PCI_ANY_ID,
++	  .class = PCI_CLASS_STORAGE_EXPRESS,
++	  .class_mask = 0xffffff,
++	  .driver_data = NVME_QUIRK_DMA_ADDRESS_BITS_48 },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
+ 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
+-- 
+2.17.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
