@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD3730DF2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5B530DEFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhBCQGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:06:16 -0500
-Received: from mx2.veeam.com ([64.129.123.6]:40650 "EHLO mx2.veeam.com"
+        id S234741AbhBCQAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:00:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46410 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234720AbhBCQFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:05:22 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id 3009441585;
-        Wed,  3 Feb 2021 10:54:53 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1612367693; bh=iOyxKFHPVnSJiNEqoIQLb5N7mlhEeMv/ecD8/bTsSt0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=Cu+rQypwSrNR/OGjg5GfLNWUQxA3We0G2OVdCd5KnehT/KVVe/iAsaSCXZaZWlJDY
-         Ao/VQEAVEVBRBDGOohsmH9IZAENV1Bg/+OyxZooN0W7OF7zPCVhYm9G/E/YuJnqi5c
-         2hxC7FAnYrQ6lUC4JS29BTXdkwzuB8z0BrVPoJXI=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Wed, 3 Feb 2021 16:54:28 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     <Damien.LeMoal@wdc.com>, <snitzer@redhat.com>, <hare@suse.de>,
-        <ming.lei@redhat.com>, <agk@redhat.com>, <corbet@lwn.net>,
-        <axboe@kernel.dk>, <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
-        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
-        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavgel.tide@veeam.com>
-Subject: [PATCH v4 6/6] docs: device-mapper: 'noexcl' option for dm-linear
-Date:   Wed, 3 Feb 2021 18:53:58 +0300
-Message-ID: <1612367638-3794-7-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+        id S233434AbhBCPys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:54:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82534ADE5;
+        Wed,  3 Feb 2021 15:54:06 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 16:54:08 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        luto@kernel.org, mingo@kernel.org, tglx@linutronix.de,
+        len.brown@intel.com, ravi.v.shankar@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/fpu: Use consistent test for X86_FEATURE_XSAVES
+Message-ID: <20210203155408.GC11823@zn.tnic>
+References: <20210203024052.15789-1-chang.seok.bae@intel.com>
+ <20210203112340.GA11823@zn.tnic>
+ <87e436d0-d2ca-8c28-442b-1b45111b6081@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D265667062
-X-Veeam-MMEX: True
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87e436d0-d2ca-8c28-442b-1b45111b6081@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New 'noexcl' option allow to open underlying block-device
-without FMODE_EXCL flag.
+On Wed, Feb 03, 2021 at 07:40:07AM -0800, Dave Hansen wrote:
+> On 2/3/21 3:23 AM, Borislav Petkov wrote:
+> >> -/*
+> >> - * 'XSAVES' implies two different things:
+> >> - * 1. saving of supervisor/system state
+> >> - * 2. using the compacted format
+> >> - *
+> >> - * Use this function when dealing with the compacted format so
+> >> - * that it is obvious which aspect of 'XSAVES' is being handled
+> >> - * by the calling code.
+> > @dhansen, are you still hung up on that "obvious aspect" or can we kill
+> > this?
+> 
+> I still want the compacted-format handling code to be marked.  You can
+> do that with new comments:
+> 
+> 	/* Note: XSAVES always uses compacted format: */
+> 	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+> 
+> or, leave it as-is:
+> 
+> 	if (using_compacted_format()) {
+> 	...
+> 
+> Otherwise, we assume that every human being that looks at this code
+> *KNOWS* that XSAVES==compacted.  That's not a great assumption.
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- .../admin-guide/device-mapper/linear.rst      | 26 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+Well, the reason why I reacted to this is because I was looking at
+using_compacted_format() - aha this, checks X86_FEATURE_XSAVES - but
+then other code paths in fpu/ check X86_FEATURE_XSAVES directly. And
+this is confusing, making me wonder why is that special oneliner there.
+Sure, the comment above it says why...
 
-diff --git a/Documentation/admin-guide/device-mapper/linear.rst b/Documentation/admin-guide/device-mapper/linear.rst
-index 9d17fc6e64a9..f035cd7ad78c 100644
---- a/Documentation/admin-guide/device-mapper/linear.rst
-+++ b/Documentation/admin-guide/device-mapper/linear.rst
-@@ -6,12 +6,22 @@ Device-Mapper's "linear" target maps a linear range of the Device-Mapper
- device onto a linear range of another device.  This is the basic building
- block of logical volume managers.
- 
--Parameters: <dev path> <offset>
-+Parameters: <dev path> <offset> [<options>]
-     <dev path>:
--	Full pathname to the underlying block-device, or a
-+        Full pathname to the underlying block-device, or a
-         "major:minor" device-number.
-     <offset>:
--	Starting sector within the device.
-+        Starting sector within the device.
-+    <options>:
-+        Options allow to set the exclusivity mode. The exclusivity mode
-+        can be 'excl' and 'noexcl'. By default, then options is not set,
-+        the 'excl' mode is used. 'noexcl' mode allow to open device
-+        without FMODE_EXCL flag. This allow to create liner device with
-+        underlying block-device that are already used by the system. For
-+        example, the file system on this device is already mounted.
-+        The 'noexcl' option should be used when creating dm devices that
-+        will be used as acceptor when connecting the device mapper to an
-+        existing block device with the 'dmsetup remap' command.
- 
- 
- Example scripts
-@@ -61,3 +71,13 @@ Example scripts
-   }
- 
-   `echo \"$table\" | dmsetup create $name`;
-+
-+::
-+
-+  #!/bin/sh
-+  # Create linear device and remap all requests from the original device
-+  # to new linear.
-+  DEV=$1
-+
-+  echo "0 `blockdev --getsz $DEV` linear $DEV 0 noexcl" | dmsetup create dm-noexcl
-+  dmsetup remap start dm-noexcl $DEV
+I guess if you wanna keep it, then we need another oneliner for 1. or
+really do comments at each call site.
+
+Hmm.
+
 -- 
-2.20.1
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
