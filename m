@@ -2,218 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E330B30DC5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8303530DC65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhBCOM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:12:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55312 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232805AbhBCOMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:12:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 737A8ACBA;
-        Wed,  3 Feb 2021 14:12:02 +0000 (UTC)
-Subject: Re: [PATCH v5 5/6] drm/qxl: properly free qxl releases
-To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210203131615.1714021-1-kraxel@redhat.com>
- <20210203131615.1714021-6-kraxel@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <cbcd0aff-0794-69d8-f51a-bb85e3346400@suse.de>
-Date:   Wed, 3 Feb 2021 15:12:01 +0100
+        id S232565AbhBCONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:13:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34568 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231936AbhBCONp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:13:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612361539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B4H8QwsmVhRse/MHW6XyL15Amm7fwPxllon0PusjMy0=;
+        b=TerdKgvvZQ/dFepReMZedcC3AYNJk8RLZT2Dhuu2+pDLzJF0K32Hvr+/qgYQSru0f8CvF7
+        wVXv7XVZrcKZFbYgKmHo2SKH1LezUVi8P8tHn1qzqEAGYPbChsftflWDbwxwAWvOKzGZG7
+        QvMMzMOGdElGaiPK4lQmECGpHaDUNG4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-fB7sa8X1OhGlTzBcYzEIGg-1; Wed, 03 Feb 2021 09:12:12 -0500
+X-MC-Unique: fB7sa8X1OhGlTzBcYzEIGg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F04B100C660;
+        Wed,  3 Feb 2021 14:12:09 +0000 (UTC)
+Received: from [10.36.112.222] (ovpn-112-222.ams2.redhat.com [10.36.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C887760C71;
+        Wed,  3 Feb 2021 14:12:06 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] x86/vmemmap: Drop handling of 1GB vmemmap ranges
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210203104750.23405-1-osalvador@suse.de>
+ <20210203104750.23405-3-osalvador@suse.de>
+ <ec2f6a46-b2a8-8131-a2ac-48a02a1ea201@redhat.com>
+ <20210203141038.GA26693@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a503f51d-42fe-3cd1-aa7c-66af33f1b3f8@redhat.com>
+Date:   Wed, 3 Feb 2021 15:12:05 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210203131615.1714021-6-kraxel@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S"
+In-Reply-To: <20210203141038.GA26693@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S
-Content-Type: multipart/mixed; boundary="cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <cbcd0aff-0794-69d8-f51a-bb85e3346400@suse.de>
-Subject: Re: [PATCH v5 5/6] drm/qxl: properly free qxl releases
-References: <20210203131615.1714021-1-kraxel@redhat.com>
- <20210203131615.1714021-6-kraxel@redhat.com>
-In-Reply-To: <20210203131615.1714021-6-kraxel@redhat.com>
+On 03.02.21 15:10, Oscar Salvador wrote:
+> On Wed, Feb 03, 2021 at 02:33:56PM +0100, David Hildenbrand wrote:
+>> One problem I see with existing code / this change making more obvious is
+>> that when trying to remove in other granularity than we added (e.g., unplug
+>> a 128MB DIMM avaialble during boot), we remove the direct map of unrelated
+>> DIMMs.
+> 
+> So, let me see if I understand your concern.
+> 
+> We have a range that was mapped with 1GB page, and we try to remove
+> a 128MB chunk from it.
+> Yes, in that case we would clear the pud, and that is bad, so we should
+> keep the PAGE_ALIGNED checks.
+> 
+> Now, let us assume that scenario.
+> If you have a 1GB mapped range and you remove it in smaller chunks bit by bit
+> (e.g: 128M), the direct mapping of that range will never be cleared unless
 
---cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+No, that's exactly what's happening. Good thing is that it barely ever 
+happens, so I assume leaving behind some direct mapping / page tables is 
+not that bad.
 
+-- 
+Thanks,
 
+David / dhildenb
 
-Am 03.02.21 um 14:16 schrieb Gerd Hoffmann:
-> Reorganize qxl_device_fini() a bit.
-> Add missing unpin() calls.
->=20
-> Count releases.  Add wait queue for releases.  That way
-> qxl_device_fini() can easily wait until everything is
-> ready for proper shutdown.
->=20
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->   drivers/gpu/drm/qxl/qxl_drv.h     |  2 ++
->   drivers/gpu/drm/qxl/qxl_cmd.c     |  1 +
->   drivers/gpu/drm/qxl/qxl_irq.c     |  1 +
->   drivers/gpu/drm/qxl/qxl_kms.c     | 22 ++++++++++++++++++++--
->   drivers/gpu/drm/qxl/qxl_release.c |  2 ++
->   5 files changed, 26 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/qxl/qxl_drv.h b/drivers/gpu/drm/qxl/qxl_dr=
-v.h
-> index 01354b43c413..6dd57cfb2e7c 100644
-> --- a/drivers/gpu/drm/qxl/qxl_drv.h
-> +++ b/drivers/gpu/drm/qxl/qxl_drv.h
-> @@ -214,6 +214,8 @@ struct qxl_device {
->   	spinlock_t	release_lock;
->   	struct idr	release_idr;
->   	uint32_t	release_seqno;
-> +	atomic_t	release_count;
-> +	wait_queue_head_t release_event;
->   	spinlock_t release_idr_lock;
->   	struct mutex	async_io_mutex;
->   	unsigned int last_sent_io_cmd;
-> diff --git a/drivers/gpu/drm/qxl/qxl_cmd.c b/drivers/gpu/drm/qxl/qxl_cm=
-d.c
-> index 54e3c3a97440..7e22a81bfb36 100644
-> --- a/drivers/gpu/drm/qxl/qxl_cmd.c
-> +++ b/drivers/gpu/drm/qxl/qxl_cmd.c
-> @@ -254,6 +254,7 @@ int qxl_garbage_collect(struct qxl_device *qdev)
->   		}
->   	}
->  =20
-> +	wake_up_all(&qdev->release_event);
->   	DRM_DEBUG_DRIVER("%d\n", i);
->  =20
->   	return i;
-> diff --git a/drivers/gpu/drm/qxl/qxl_irq.c b/drivers/gpu/drm/qxl/qxl_ir=
-q.c
-> index ddf6588a2a38..d312322cacd1 100644
-> --- a/drivers/gpu/drm/qxl/qxl_irq.c
-> +++ b/drivers/gpu/drm/qxl/qxl_irq.c
-> @@ -87,6 +87,7 @@ int qxl_irq_init(struct qxl_device *qdev)
->   	init_waitqueue_head(&qdev->display_event);
->   	init_waitqueue_head(&qdev->cursor_event);
->   	init_waitqueue_head(&qdev->io_cmd_event);
-> +	init_waitqueue_head(&qdev->release_event);
->   	INIT_WORK(&qdev->client_monitors_config_work,
->   		  qxl_client_monitors_config_work_func);
->   	atomic_set(&qdev->irq_received, 0);
-> diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_km=
-s.c
-> index 4a60a52ab62e..616aea948863 100644
-> --- a/drivers/gpu/drm/qxl/qxl_kms.c
-> +++ b/drivers/gpu/drm/qxl/qxl_kms.c
-> @@ -286,8 +286,26 @@ int qxl_device_init(struct qxl_device *qdev,
->  =20
->   void qxl_device_fini(struct qxl_device *qdev)
->   {
-> -	qxl_bo_unref(&qdev->current_release_bo[0]);
-> -	qxl_bo_unref(&qdev->current_release_bo[1]);
-> +	int cur_idx;
-> +
-> +	for (cur_idx =3D 0; cur_idx < 3; cur_idx++) {
-> +		if (!qdev->current_release_bo[cur_idx])
-> +			continue;
-> +		qxl_bo_unpin(qdev->current_release_bo[cur_idx]);
-> +		qxl_bo_unref(&qdev->current_release_bo[cur_idx]);
-> +		qdev->current_release_bo_offset[cur_idx] =3D 0;
-> +		qdev->current_release_bo[cur_idx] =3D NULL;
-> +	}
-> +
-> +	/*
-> +	 * Ask host to release resources (+fill release ring),
-> +	 * then wait for the release actually happening.
-> +	 */
-> +	qxl_io_notify_oom(qdev);
-> +	wait_event_timeout(qdev->release_event,
-> +			   atomic_read(&qdev->release_count) =3D=3D 0,
-> +			   HZ);
-> +
->   	qxl_gem_fini(qdev);
->   	qxl_bo_fini(qdev);
->   	flush_work(&qdev->gc_work);
-> diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qx=
-l_release.c
-> index 28013fd1f8ea..43a5436853b7 100644
-> --- a/drivers/gpu/drm/qxl/qxl_release.c
-> +++ b/drivers/gpu/drm/qxl/qxl_release.c
-> @@ -196,6 +196,7 @@ qxl_release_free(struct qxl_device *qdev,
->   		qxl_release_free_list(release);
->   		kfree(release);
->   	}
-> +	atomic_dec(&qdev->release_count);
->   }
->  =20
->   static int qxl_release_bo_alloc(struct qxl_device *qdev,
-> @@ -344,6 +345,7 @@ int qxl_alloc_release_reserved(struct qxl_device *q=
-dev, unsigned long size,
->   			*rbo =3D NULL;
->   		return idr_ret;
->   	}
-> +	atomic_inc(&qdev->release_count);
->  =20
->   	mutex_lock(&qdev->release_mutex);
->   	if (qdev->current_release_bo_offset[cur_idx] + 1 >=3D releases_per_b=
-o[cur_idx]) {
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---cVIa0Dj3W935BV3F1gR9wv6Y5HbbiySzJ--
-
---P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAarzEFAwAAAAAACgkQlh/E3EQov+Ca
-8A/+Kt/gdssrZcE0FhwfqHXDkIHMDFZwgofwKLvcfXuuddrlNc/iu3wm5FOXv+fEkf1JlhxUYA8s
-7jUHy8Nx8f8+IauLGfE7kv84pMvNNdTSL66c/JxHQVTj6QQl1mJi3S5jtCB3hGNAQo3YcpFGvJ8b
-+3WmUSaQDc+hfpBf1pkhnCRJyFGe7H7OR1TEYExMckE7Ex38RMzKdvFPXIalowFnd21DVe3jPb2x
-Sb5OBsfZNgOEb4XSzttgA7paS9YXfaKYhkaba/Y6GpPfi6dDlaB7vTsGZSFtdXqpW4ohk6huU9AK
-XJb5VI3MSRWY3ek85Wna0R+Kwet31Gzb0YDfnPmzbrIdj6gLc3jeHW03In1k2WHmLmR/u7RlYz2R
-f6ux8oLbZDV+SrechzMp2qD531uIhvRUGbnrp2nX7qjQld1Z0isKjSJJ8q0wIQF3JdMf/lBKQQHA
-gX/9SqXnWPm8dO8d1ko5IVqeum59phpUVzq8NuZKVcFMyDcq2I0dINtfB1c+lSLI0TElygUE0yMY
-wqwOYDB3N16/ZUCrkbjqYXzZ2N88jQ+qUus5Gie1LVub7XnUo+ITfjnWTBuxQ4w6lwzcP7W86kRB
-/LB0AiyxscdMTQcX79N2OGp1Mscg9exXSrYVJLJIc0lVtdcqY2R1qj6lpsCuMjeXXmY+Xr1e68sZ
-oFo=
-=4dIi
------END PGP SIGNATURE-----
-
---P1ROlwt3XnL7xKCOS5cdaNUu1OyHVTH4S--
