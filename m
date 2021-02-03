@@ -2,302 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753C230E417
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F14930E41C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhBCUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:32:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232145AbhBCUbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:31:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B905164F6C;
-        Wed,  3 Feb 2021 20:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612384268;
-        bh=rJa3nJViSBYTyEesjvzYnArCfLS5tvzCz+uPq6mHBQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CnODdZlz/V2GuuoGoU6DDhZrCz7s4ypBqh8lXUwseSjYSNNJ/cBPkx+7kHpqrpHAs
-         VTKhI900QNL05cOscNIlh/WivDyPq3bjIHkA6J0UcvimPW1OFM0Jote67Lh6B79pqn
-         aJ5VToGbjymK2AhfKKNzg5I/vT9m4YjDG+iK1Jgf+NqYIVoMaFSRdyrx8egdqv5mgv
-         x6G+3feJ0DC0/wZCutGDlU/+K588pDPdS55pXy+VQcdiGaG2/TVAr42Hceu/RuDmpH
-         8FTrfBz6zcrzbrOK0nVWad4TLfw5nKG02gwOiuZ5XG439bXuHOMyOTcOBaP9ZOc18A
-         IvFzB8WMerz4Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3879840513; Wed,  3 Feb 2021 17:31:05 -0300 (-03)
-Date:   Wed, 3 Feb 2021 17:31:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, eranian@google.com, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        maddy@linux.vnet.ibm.com
-Subject: Re: [PATCH 5/9] perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT
-Message-ID: <20210203203105.GJ854763@kernel.org>
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
- <1612296553-21962-6-git-send-email-kan.liang@linux.intel.com>
+        id S232194AbhBCUeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhBCUeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:34:21 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E5FC0613D6;
+        Wed,  3 Feb 2021 12:33:40 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id f16so1015286wmq.5;
+        Wed, 03 Feb 2021 12:33:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rvq4Dfhyh4fJ1W4POXfEh5I1ofblW0n5lluj9P5Qnpg=;
+        b=Qm1a8vVLrO82aGS+yaiU1uw7P6h6BFsfSKT2A/1aw69fzNzo0tbdaj4ZCf88s100K/
+         MiOHFeRIeNCh0T8obUKlb1dLyKUy38dAHhP4glrM8LKOdkYBpfTLRsLx6ZeBmMhVncEW
+         eB7fCmFnYTh+he6Z4i/vREHEH0ZXpyHttFE5Zq9oFfYJesiPYbT93sYp7+MAyrkyiBF9
+         U/rMpkDoAcVvYum4fOGwoWT2ciQAxJnwjdaa8Q+7RnEgBOKZ7h8sEstyWlWQeCEnW4n5
+         mTgxwY/oiaMmjzzwewPCH9E1tGIQjB/hkgAaw5ptsmX1m3A1P+UCXd24DL87KcxXYbxn
+         iRog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rvq4Dfhyh4fJ1W4POXfEh5I1ofblW0n5lluj9P5Qnpg=;
+        b=KzU9s4mKB3+w9uYYOQg/wpfEOzf86hta8gFZUa2fWo5gS0cgf7U+XUiSg+OqPcucuw
+         D8QNLD2e1xYTmYpvkU7nGmG3sXtAmRJNfF/INj/eC51EYrpKwaOYCBT1mHTLyEwsvzqa
+         327PUKopmQ3MIV0wnxiYHoPwmb+NoS653C1evJ/60KXBej9qZoYeLBwv/xDF9TkoheK4
+         GZ8hAq6szW7Pah/VrAjPi9BwBKUi2P3ecm40YkSkwQv1Vk0wlb/1sWAxICqOktzXwVry
+         qOR65D6ujI286/N2snD4H9tva0bG1Urrr0Ni2mIEEmOaut0t+GhYeHdt2b1FuUwTlUP3
+         LC7A==
+X-Gm-Message-State: AOAM530bhAxEP+s+xPlvXEq2rLyIGWv5+9zoF021JuFQk8ZG57D9Mie4
+        TBcBC+ezHci1Fh3Z/X7dm4at4FKXu/D51FMqkCE=
+X-Google-Smtp-Source: ABdhPJzvnzLNoMuGQazQHTjr5w3Z3Xm/BTCzCJ2nKSclRo2HNLzgS4VzauF7TmpVIdxvZ/sA19S1pBE9Az/PL944Eew=
+X-Received: by 2002:a05:600c:354c:: with SMTP id i12mr4455953wmq.51.1612384419667;
+ Wed, 03 Feb 2021 12:33:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612296553-21962-6-git-send-email-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210202142901.7131-1-elic@nvidia.com> <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
+ <20210203064812.GA33072@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <20210203064812.GA33072@mtl-vdi-166.wap.labs.mlnx>
+From:   Si-Wei Liu <siwliu.kernel@gmail.com>
+Date:   Wed, 3 Feb 2021 12:33:26 -0800
+Message-ID: <CAPWQSg0OptdAstG10e+zMvD2ZHbHdS+o2ppUxZyM0kJsd34FdA@mail.gmail.com>
+Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change map
+To:     Eli Cohen <elic@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lulu@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Feb 02, 2021 at 12:09:09PM -0800, kan.liang@linux.intel.com escreveu:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> The new sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
-> PERF_SAMPLE_WEIGHT sample type. Users can apply either the
-> PERF_SAMPLE_WEIGHT sample type or the PERF_SAMPLE_WEIGHT_STRUCT sample
-> type to retrieve the sample weight, but they cannot apply both sample
-> types simultaneously. The new sample type shares the same space as the
-> PERF_SAMPLE_WEIGHT sample type. The lower 32 bits are exactly the same
-> for both sample type. The higher 32 bits may be different for different
-> architecture.
-> 
-> Add arch specific arch_evsel__set_sample_weight() to set the new sample
-> type for X86. Only store the lower 32 bits for the sample->weight if the
-> new sample type is applied. In practice, no memory access could last
-> than 4G cycles. No data will be lost.
-> 
-> If the kernel doesn't support the new sample type. Fall back to the
-> PERF_SAMPLE_WEIGHT sample type.
-> 
-> There is no impact for other architectures.
-> 
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
->  tools/perf/arch/x86/util/Build            |  1 +
->  tools/perf/arch/x86/util/evsel.c          |  8 ++++++++
->  tools/perf/util/evsel.c                   | 28 ++++++++++++++++++++++++----
->  tools/perf/util/evsel.h                   |  3 +++
->  tools/perf/util/intel-pt.c                | 22 +++++++++++++++++++---
->  tools/perf/util/perf_event_attr_fprintf.c |  2 +-
->  tools/perf/util/session.c                 |  2 +-
->  tools/perf/util/synthetic-events.c        |  6 ++++--
->  8 files changed, 61 insertions(+), 11 deletions(-)
->  create mode 100644 tools/perf/arch/x86/util/evsel.c
-> 
-> diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
-> index d73f548..18848b3 100644
-> --- a/tools/perf/arch/x86/util/Build
-> +++ b/tools/perf/arch/x86/util/Build
-> @@ -7,6 +7,7 @@ perf-y += topdown.o
->  perf-y += machine.o
->  perf-y += event.o
->  perf-y += mem-events.o
-> +perf-y += evsel.o
->  
->  perf-$(CONFIG_DWARF) += dwarf-regs.o
->  perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
-> diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
-> new file mode 100644
-> index 0000000..2f733cd
-> --- /dev/null
-> +++ b/tools/perf/arch/x86/util/evsel.c
-> @@ -0,0 +1,8 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include "util/evsel.h"
-> +
-> +void arch_evsel__set_sample_weight(struct evsel *evsel)
-> +{
-> +	evsel__set_sample_bit(evsel, WEIGHT_STRUCT);
-> +}
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index c48f6de..0a2a307 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1012,6 +1012,11 @@ struct evsel_config_term *__evsel__get_config_term(struct evsel *evsel, enum evs
->  	return found_term;
->  }
->  
-> +void __weak arch_evsel__set_sample_weight(struct evsel *evsel)
-> +{
-> +	evsel__set_sample_bit(evsel, WEIGHT);
-> +}
-> +
->  /*
->   * The enable_on_exec/disabled value strategy:
->   *
-> @@ -1166,7 +1171,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	}
->  
->  	if (opts->sample_weight)
-> -		evsel__set_sample_bit(evsel, WEIGHT);
-> +		arch_evsel__set_sample_weight(evsel);
->  
->  	attr->task  = track;
->  	attr->mmap  = track;
-> @@ -1735,6 +1740,10 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	}
->  
->  fallback_missing_features:
-> +	if (perf_missing_features.weight_struct) {
-> +		evsel__set_sample_bit(evsel, WEIGHT);
-> +		evsel__reset_sample_bit(evsel, WEIGHT_STRUCT);
-> +	}
->  	if (perf_missing_features.clockid_wrong)
->  		evsel->core.attr.clockid = CLOCK_MONOTONIC; /* should always work */
->  	if (perf_missing_features.clockid) {
-> @@ -1873,7 +1882,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	 * Must probe features in the order they were added to the
->  	 * perf_event_attr interface.
->  	 */
-> -        if (!perf_missing_features.data_page_size &&
-> +	if (!perf_missing_features.weight_struct &&
-> +	    (evsel->core.attr.sample_type & PERF_SAMPLE_WEIGHT_STRUCT)) {
-> +		perf_missing_features.weight_struct = true;
-> +		pr_debug2("switching off weight struct support\n");
-> +		goto fallback_missing_features;
-> +	} else if (!perf_missing_features.data_page_size &&
->  	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
->  		perf_missing_features.data_page_size = true;
->  		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
-> @@ -2316,9 +2330,15 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  		}
->  	}
->  
-> -	if (type & PERF_SAMPLE_WEIGHT) {
-> +	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
-> +		union perf_sample_weight weight;
-> +
->  		OVERFLOW_CHECK_u64(array);
-> -		data->weight = *array;
-> +		weight.full = *array;
-> +		if (type & PERF_SAMPLE_WEIGHT)
-> +			data->weight = weight.full;
-> +		else
-> +			data->weight = weight.var1_dw;
->  		array++;
->  	}
->  
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index cd1d8dd..5c161a2 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -145,6 +145,7 @@ struct perf_missing_features {
->  	bool branch_hw_idx;
->  	bool cgroup;
->  	bool data_page_size;
-> +	bool weight_struct;
->  };
->  
->  extern struct perf_missing_features perf_missing_features;
-> @@ -239,6 +240,8 @@ void __evsel__reset_sample_bit(struct evsel *evsel, enum perf_event_sample_forma
->  
->  void evsel__set_sample_id(struct evsel *evsel, bool use_sample_identifier);
->  
-> +void arch_evsel__set_sample_weight(struct evsel *evsel);
-> +
->  int evsel__set_filter(struct evsel *evsel, const char *filter);
->  int evsel__append_tp_filter(struct evsel *evsel, const char *filter);
->  int evsel__append_addr_filter(struct evsel *evsel, const char *filter);
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index 60214de..a929f6d 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -1853,13 +1853,29 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->  	if (sample_type & PERF_SAMPLE_ADDR && items->has_mem_access_address)
->  		sample.addr = items->mem_access_address;
->  
-> -	if (sample_type & PERF_SAMPLE_WEIGHT) {
-> +	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
->  		/*
->  		 * Refer kernel's setup_pebs_adaptive_sample_data() and
->  		 * intel_hsw_weight().
->  		 */
-> -		if (items->has_mem_access_latency)
-> -			sample.weight = items->mem_access_latency;
-> +		if (items->has_mem_access_latency) {
-> +			u64 weight = items->mem_access_latency >> 32;
-> +
-> +			/*
-> +			 * Starts from SPR, the mem access latency field
-> +			 * contains both cache latency [47:32] and instruction
-> +			 * latency [15:0]. The cache latency is the same as the
-> +			 * mem access latency on previous platforms.
-> +			 *
-> +			 * In practice, no memory access could last than 4G
-> +			 * cycles. Use latency >> 32 to distinguish the
-> +			 * different format of the mem access latency field.
-> +			 */
-> +			if (weight > 0)
-> +				sample.weight = weight & 0xffff;
-> +			else
-> +				sample.weight = items->mem_access_latency;
-> +		}
->  		if (!sample.weight && items->has_tsx_aux_info) {
->  			/* Cycles last block */
->  			sample.weight = (u32)items->tsx_aux_info;
-> diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-> index fb0bb66..e972e63 100644
-> --- a/tools/perf/util/perf_event_attr_fprintf.c
-> +++ b/tools/perf/util/perf_event_attr_fprintf.c
-> @@ -35,7 +35,7 @@ static void __p_sample_type(char *buf, size_t size, u64 value)
->  		bit_name(BRANCH_STACK), bit_name(REGS_USER), bit_name(STACK_USER),
->  		bit_name(IDENTIFIER), bit_name(REGS_INTR), bit_name(DATA_SRC),
->  		bit_name(WEIGHT), bit_name(PHYS_ADDR), bit_name(AUX),
-> -		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE),
-> +		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE), bit_name(WEIGHT_STRUCT),
+On Tue, Feb 2, 2021 at 10:48 PM Eli Cohen <elic@nvidia.com> wrote:
+>
+> On Tue, Feb 02, 2021 at 09:14:02AM -0800, Si-Wei Liu wrote:
+> > On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
+> > >
+> > > When a change of memory map occurs, the hardware resources are destroyed
+> > > and then re-created again with the new memory map. In such case, we need
+> > > to restore the hardware available and used indices. The driver failed to
+> > > restore the used index which is added here.
+> > >
+> > > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > ---
+> > > This patch is being sent again a single patch the fixes hot memory
+> > > addtion to a qemy process.
+> > >
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > index 88dde3455bfd..839f57c64a6f 100644
+> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+> > >         u64 device_addr;
+> > >         u64 driver_addr;
+> > >         u16 avail_index;
+> > > +       u16 used_index;
+> > >         bool ready;
+> > >         struct vdpa_callback cb;
+> > >         bool restore;
+> > > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+> > >         u32 virtq_id;
+> > >         struct mlx5_vdpa_net *ndev;
+> > >         u16 avail_idx;
+> > > +       u16 used_idx;
+> > >         int fw_state;
+> > >
+> > >         /* keep last in the struct */
+> > > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+> > >
+> > >         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+> > >         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+> > > +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+> >
+> > The saved indexes will apply to the new virtqueue object whenever it
+> > is created. In virtio spec, these indexes will reset back to zero when
+> > the virtio device is reset. But I don't see how it's done today. IOW,
+> > I don't see where avail_idx and used_idx get cleared from the mvq for
+> > device reset via set_status().
+> >
+>
+> Right, but this is not strictly related to this patch. I will post
+> another patch to fix this.
 
-I have CODE_PAGE_SIZE in my perf/core branch, was this somehow removed?
+Better to post these two patches in a series.Or else it may cause VM
+reboot problem as that is where the device gets reset. The avail_index
+did not as the correct value will be written to by driver right after,
+but used_idx introduced by this patch is supplied by device hence this
+patch alone would introduce regression.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf/core&id=c1de7f3d84ca324c7cda85c3ce27b11741af2124
+>
+> BTW, can you describe a secnario that would cause a reset (through
+> calling set_status()) that happens after the VQ has been used?
 
-I see, you did this patchkit on top of upstream, that has just
-DATA_PAGE_SIZE, while my perf/core branch has CODE_PAGE_SIZE. I'm
-adjusting it, please next time do tooling development on acme/perf/core.
+You can try reboot the guest, that'll be the easy way to test.
 
-- Arnaldo
+-Siwei
 
->  		{ .name = NULL, }
->  	};
->  #undef bit_name
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 25adbcc..a35d8c2 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1297,7 +1297,7 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
->  	if (sample_type & PERF_SAMPLE_STACK_USER)
->  		stack_user__printf(&sample->user_stack);
->  
-> -	if (sample_type & PERF_SAMPLE_WEIGHT)
-> +	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE)
->  		printf("... weight: %" PRIu64 "\n", sample->weight);
->  
->  	if (sample_type & PERF_SAMPLE_DATA_SRC)
-> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> index 2947e3f..bc16268 100644
-> --- a/tools/perf/util/synthetic-events.c
-> +++ b/tools/perf/util/synthetic-events.c
-> @@ -1384,7 +1384,7 @@ size_t perf_event__sample_event_size(const struct perf_sample *sample, u64 type,
->  		}
->  	}
->  
-> -	if (type & PERF_SAMPLE_WEIGHT)
-> +	if (type & PERF_SAMPLE_WEIGHT_TYPE)
->  		result += sizeof(u64);
->  
->  	if (type & PERF_SAMPLE_DATA_SRC)
-> @@ -1555,8 +1555,10 @@ int perf_event__synthesize_sample(union perf_event *event, u64 type, u64 read_fo
->  		}
->  	}
->  
-> -	if (type & PERF_SAMPLE_WEIGHT) {
-> +	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
->  		*array = sample->weight;
-> +		if (type & PERF_SAMPLE_WEIGHT_STRUCT)
-> +			*array &= 0xffffffff;
->  		array++;
->  	}
->  
-> -- 
-> 2.7.4
-> 
-
--- 
-
-- Arnaldo
+>
+> > -Siwei
+> >
+> >
+> > >         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+> > >                  get_features_12_3(ndev->mvdev.actual_features));
+> > >         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+> > > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+> > >  struct mlx5_virtq_attr {
+> > >         u8 state;
+> > >         u16 available_index;
+> > > +       u16 used_index;
+> > >  };
+> > >
+> > >  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+> > > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+> > >         memset(attr, 0, sizeof(*attr));
+> > >         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+> > >         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+> > > +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+> > >         kfree(out);
+> > >         return 0;
+> > >
+> > > @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+> > >                 return err;
+> > >
+> > >         ri->avail_index = attr.available_index;
+> > > +       ri->used_index = attr.used_index;
+> > >         ri->ready = mvq->ready;
+> > >         ri->num_ent = mvq->num_ent;
+> > >         ri->desc_addr = mvq->desc_addr;
+> > > @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+> > >                         continue;
+> > >
+> > >                 mvq->avail_idx = ri->avail_index;
+> > > +               mvq->used_idx = ri->used_index;
+> > >                 mvq->ready = ri->ready;
+> > >                 mvq->num_ent = ri->num_ent;
+> > >                 mvq->desc_addr = ri->desc_addr;
+> > > --
+> > > 2.29.2
+> > >
