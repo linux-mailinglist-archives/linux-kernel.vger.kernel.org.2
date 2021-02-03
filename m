@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A4C30E0E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F81730E101
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhBCRYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:24:08 -0500
-Received: from mail.nic.cz ([217.31.204.67]:43150 "EHLO mail.nic.cz"
+        id S232364AbhBCR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:28:10 -0500
+Received: from mga06.intel.com ([134.134.136.31]:4056 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhBCRWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:22:21 -0500
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id C0EA01420D5;
-        Wed,  3 Feb 2021 18:21:37 +0100 (CET)
-Date:   Wed, 3 Feb 2021 18:21:37 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from
- DT
-Message-ID: <20210203182137.339f8470@nic.cz>
-In-Reply-To: <20210203163555.GA23019@duo.ucw.cz>
-References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
-        <20210203142940.GB12369@duo.ucw.cz>
-        <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
-        <20210203163555.GA23019@duo.ucw.cz>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+        id S231458AbhBCR2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:28:02 -0500
+IronPort-SDR: Wqj/6Lb6Bw8ddYYlNE0gGDbE7U7TzjhqD66GXa/y8gPBW8i14GAk8/KFoBzqEMHSP+L/ZPrEPI
+ +4pjHgn2nSAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242592372"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="242592372"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 09:27:20 -0800
+IronPort-SDR: oA3PaKU9GGXLkN4skpI8G0zZ4UhSSLoR9DRe6hQucbEG5o+5YjsqiWfNaxB3rPrX2+LHoGRZ/K
+ mexo0SkdBtGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="406723651"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Feb 2021 09:27:19 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
+        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: [PATCH v5 0/5] x86: Improve Minimum Alternate Stack Size
+Date:   Wed,  3 Feb 2021 09:22:37 -0800
+Message-Id: <20210203172242.29644-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 17:35:55 +0100
-Pavel Machek <pavel@ucw.cz> wrote:
+During signal entry, the kernel pushes data onto the normal userspace
+stack. On x86, the data pushed onto the user stack includes XSAVE state,
+which has grown over time as new features and larger registers have been
+added to the architecture.
 
-> On Wed 2021-02-03 15:39:59, Sven Schuchmann wrote:
-> > Hello Pavel,
-> >   
-> > > > In order to use a multicolor-led together with a trigger
-> > > > from DT the led needs to have an intensity set to see something.
-> > > > The trigger changes the brightness of the led but if there
-> > > > is no intensity we actually see nothing.
-> > > >
-> > > > This patch adds the ability to set the default intensity
-> > > > of each led so that it is turned on from DT.  
-> > > 
-> > > Do we need this to be configurable from device tree? Can we just set
-> > > it to max or something?
-> > > 
-> > > Aha, this basically sets the initial color for LEDs the monochromatic
-> > > triggers, right?  
-> > 
-> > Let me try to explain in other words: I have one RGB-LED
-> > which consists of 3 Colors. Each of the three colors (Red, Green, Blue) you have
-> > to define in the DT. For example this is my setup for one RGB-LED which I wanted
-> > to show the heartbeat in Red (half intensity):
-> > 
-> >                                 multi-led@3 {
-> >                                         #address-cells = <1>;
-> >                                         #size-cells = <0>;
-> >                                         reg = <0x3>;
-> >                                         color = <LED_COLOR_ID_RGB>;
-> > 
-> >                                         linux,default-trigger = "heartbeat";
-> >                                         function = LED_FUNCTION_HEARTBEAT;
-> > 
-> >                                         led-9 {
-> >                                                 color = <LED_COLOR_ID_RED>;
-> >                                                 default-intensity = <100>;
-> >                                         };
-> > 
-> >                                         led-10 {
-> >                                                 color = <LED_COLOR_ID_GREEN>;
-> >                                         };
-> > 
-> >                                         led-11 {
-> >                                                 color = <LED_COLOR_ID_BLUE>;
-> >                                         };
-> >                                 };
-> > 
-> > If I would not have the default-intensity I would actually see nothing,
-> > since the intensity (which goes from 0-255) of each led is initialized with 0.
-> > 
-> > I hope I could clarify this a little more?  
-> 
-> Yes, sounds reasonable. Could we get default intensity of 100% on all
-> channels if nothing else is specified?
-> 
-> Or maybe simply "if intensity is not specified, start with 100%, and
-> use explicit =0 if other color is expected".
-> 
-> Best regards,
-> 								Pavel
+MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+constant indicates to userspace how much data the kernel expects to push on
+the user stack, [2][3].
 
-Is the property default-intensity documented in DT bindings?
+However, this constant is much too small and does not reflect recent
+additions to the architecture. For instance, when AVX-512 states are in
+use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
 
-Wouldn't it be better if the property was used in the multi-led node
-instead of the channel node? I.e.
-  multi-led@3 {
-    color = <LED_COLOR_ID_RGB>;
-    default-intensity = <100 0 0>;
-  };
+The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+cause user stack overflow when delivering a signal.
+
+In this series, we suggest a couple of things:
+1. Provide a variable minimum stack size to userspace, as a similar
+   approach to [5]
+2. Avoid using a too-small alternate stack
+
+Changes from v4 [9]:
+* Moved the aux vector define to the generic header (Carlos O'Donell)
+
+Changes from v3 [8]:
+* Updated the changelog (Borislav Petkov)
+* Revised the test messages again (Borislav Petkov)
+
+Changes from v2 [7]:
+* Simplified the sigaltstack overflow prevention (Jann Horn)
+* Renamed fpstate size helper with cleanup (Borislav Petkov)
+* Cleaned up the signframe struct size defines (Borislav Petkov)
+* Revised the selftest messages (Borislav Petkov)
+* Revised a changelog (Borislav Petkov)
+
+Changes from v1 [6]:
+* Took stack alignment into account for sigframe size (Dave Martin)
+
+[1]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/sigstack.h;h=b9dca794da09
+3dc4d41d39db9851d444e1b54d9b;hb=HEAD
+[2]: https://www.gnu.org/software/libc/manual/html_node/Signal-Stack.html
+[3]: https://man7.org/linux/man-pages/man2/sigaltstack.2.html
+[4]: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+[5]: https://blog.linuxplumbersconf.org/2017/ocw/system/presentations/4671/original/plumbers-dm-2017.pdf
+[6]: https://lore.kernel.org/lkml/20200929205746.6763-1-chang.seok.bae@intel.com/
+[7]: https://lore.kernel.org/lkml/20201119190237.626-1-chang.seok.bae@intel.com/
+[8]: https://lore.kernel.org/lkml/20201223015312.4882-1-chang.seok.bae@intel.com/
+[9]: https://lore.kernel.org/lkml/20210115211038.2072-1-chang.seok.bae@intel.com/
+
+Chang S. Bae (5):
+  uapi: Move the aux vector AT_MINSIGSTKSZ define to uapi
+  x86/signal: Introduce helpers to get the maximum signal frame size
+  x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+  x86/signal: Detect and prevent an alternate signal stack overflow
+  selftest/x86/signal: Include test cases for validating sigaltstack
+
+ arch/arm64/include/uapi/asm/auxvec.h      |   1 -
+ arch/x86/include/asm/elf.h                |   4 +
+ arch/x86/include/asm/fpu/signal.h         |   2 +
+ arch/x86/include/asm/sigframe.h           |   2 +
+ arch/x86/include/uapi/asm/auxvec.h        |   4 +-
+ arch/x86/kernel/cpu/common.c              |   3 +
+ arch/x86/kernel/fpu/signal.c              |  19 ++++
+ arch/x86/kernel/signal.c                  |  69 +++++++++++-
+ include/uapi/linux/auxvec.h               |   1 +
+ tools/testing/selftests/x86/Makefile      |   2 +-
+ tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
+ 11 files changed, 227 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+
+-- 
+2.17.1
+
