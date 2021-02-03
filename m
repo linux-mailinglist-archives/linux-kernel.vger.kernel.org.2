@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5168D30E00B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD1C30E001
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBCQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:50:34 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:33876 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhBCQuY (ORCPT
+        id S229979AbhBCQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229683AbhBCQsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:50:24 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113Gcwgs157095;
-        Wed, 3 Feb 2021 16:48:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=7PpAYVzyIqIJ+B85/c1uwsNEo+c61KKpGfHeJdunKKY=;
- b=ayVRKQaMadiGFbxDog4vECX5QTZSO8bYUT/djkAaoJhoSsyiGnz9ZR7oaWd3bCCSjxcJ
- s7is/Z/gPjcGm82/sdCMlMdrnUZu7SH5RfI+DKZVwRsSrbNEvrjjCoG8wrjXmc/T6VO5
- jwAaaCss/qDAdIfjpwVjs7N4rJSBIBxFNxwQwCUofBJwG+rI+YKLC2vmcanmolPprp6G
- hesG19ptDvetV4+wlW4ngXUQuxfB7m1HtDWsmWAQ534gOyhC3uXFDcnJHAa63Q0xp3I1
- q+VQvtN+QW9AW1xW2oSYNaWcf23t7JNGwC77GWb6OSQlB0pJHHTjXxEd6QnmdInqGQMO xQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 36cydm11y5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 16:48:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113Gf4BX168170;
-        Wed, 3 Feb 2021 16:46:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 36dhc1chvx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 16:46:51 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 113GkeAR006957;
-        Wed, 3 Feb 2021 16:46:41 GMT
-Received: from [10.175.189.55] (/10.175.189.55)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Feb 2021 08:46:40 -0800
-Subject: Re: [PATCH v8 02/14] mm/gup: check every subpage of a compound page
- during isolation
-From:   Joao Martins <joao.m.martins@oracle.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
+        Wed, 3 Feb 2021 11:48:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF7C061573;
+        Wed,  3 Feb 2021 08:47:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FXQrxdNgWCg9t/vLa4D9ZuZRDMCP+8XGxw4US1HhTog=; b=c/OoSJg12hg6TA08ZMmxC5U9K6
+        OCpV83Oj8NGNClORnhfhbI+dp8Rp3puLSaw1gWZH10ZU8jjt1xRn2fku8g6kCldtIewKCeiEzQpHa
+        FIkmhWmSoPI9iLIVqaoiCBF07qtkda4NJTYCHHF+NHpyMELJEKAw+NmkVRr26TUDkT/M+kbutGnkg
+        sDM2tIeXHKQfOib1zfHstjrnNZ0GKFSLvvOTiCu6Z73ngCe1kPW+PXeFusDNYZ/3DMbOoNhuUbgtB
+        ohbMnefixVQ7LgJJcSpYv4iVSBo2H/YpoFMC9iA8Yx35EoZdMvHxrj1aORXdUHBNR3TWKvrlHqQk4
+        D8XtPzYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7LIa-00HCKb-H6; Wed, 03 Feb 2021 16:46:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8E0F301A66;
+        Wed,  3 Feb 2021 17:46:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 97C5520B4DFEB; Wed,  3 Feb 2021 17:46:33 +0100 (CET)
+Date:   Wed, 3 Feb 2021 17:46:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org, James Morris <jmorris@namei.org>
-References: <20210125194751.1275316-1-pasha.tatashin@soleen.com>
- <20210125194751.1275316-3-pasha.tatashin@soleen.com>
- <05a66361-214c-2afe-22e4-12862ea1e4e2@oracle.com>
- <CA+CK2bBSJ7T=jsukntQGqO0DoWE_MnhDwtHv-6rfXAPvznKh0Q@mail.gmail.com>
- <ce96a71d-845b-b8d2-92d3-fc7336a765c5@oracle.com>
-Message-ID: <9f021b82-8618-3cd4-28df-1d6a9bd749cf@oracle.com>
-Date:   Wed, 3 Feb 2021 16:46:32 +0000
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ce96a71d-845b-b8d2-92d3-fc7336a765c5@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102030100
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 3:32 PM, Joao Martins wrote:
-> On 2/3/21 2:51 PM, Pavel Tatashin wrote:
->> On Wed, Feb 3, 2021 at 8:23 AM Joao Martins <joao.m.martins@oracle.com> wrote:
->>> On 1/25/21 7:47 PM, Pavel Tatashin wrote:
->>> for compound pages but when !is_transparent_hugepage(head) or just PageHuge(head) like:
->>>
->>> +               if (!is_transparent_hugepage(head) && PageCompound(page))
->>> +                       i += (compound_nr(head) - (pages[i] - head));
->>>
->>> Or making specific to hugetlbfs:
->>>
->>> +               if (PageHuge(head))
->>> +                       i += (compound_nr(head) - (pages[i] - head));
->>
->> Yes, this is reasonable optimization. I will submit a follow up patch
->> against linux-next.
+On Tue, Feb 02, 2021 at 07:09:44PM -0800, Ivan Babrou wrote:
+> On Thu, Jan 28, 2021 at 7:35 PM Ivan Babrou <ivan@cloudflare.com> wrote:
 
-Realized it late, but the previous step was already broken. And I inherited its brokeness,
-when copy-pasting the deleted chunk:
+> > ==================================================================
+> > [  128.368523][    C0] BUG: KASAN: stack-out-of-bounds in
+> > unwind_next_frame (arch/x86/kernel/unwind_orc.c:371
+> > arch/x86/kernel/unwind_orc.c:544)
+> > [  128.369744][    C0] Read of size 8 at addr ffff88802fceede0 by task
+> > kworker/u2:2/591
 
-The @step should be capped at the remaining pages to iterate:
+Can you pretty please not line-wrap console output? It's unreadable.
 
-	i += min(nr_pages - i, compound_nr(head) - (pages[i] - head));
+> edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
 
-  Joao
+Not sure what tree you're on, but that's not the upstream commit.
+
+> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Date:   Tue Aug 18 15:57:52 2020 +0200
+> 
+>     tracepoint: Optimize using static_call()
+> 
+
+There's a known issue with that patch, can you try:
+
+  http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
