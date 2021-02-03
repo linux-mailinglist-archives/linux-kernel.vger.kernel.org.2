@@ -2,52 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B81330D22D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDA630D230
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhBCDcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        id S232487AbhBCDdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhBCDbC (ORCPT
+        with ESMTP id S231262AbhBCDd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:31:02 -0500
+        Tue, 2 Feb 2021 22:33:29 -0500
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D751AC0617AA
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:30:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4A0C061573;
+        Tue,  2 Feb 2021 19:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=qwvCwcChuxtahpY7NTqPCpmTFzPp7YMpsonMHOpWMJs=; b=v0LWgPEVfKiboGCZFhUvlemZX2
-        3SKMqGZFjp378WH+F8vozQGEWbrjScFkTP1F1N1iCOHknl28nj3/VeyIRwNJ8OEwdJ6KbhLNJqE5h
-        +uCFW+BdTB5gL5SIhY8Zg2X0KYN3hdDxJ85Dk57Jbin7KaJaTw/V3pCFXRGoaWhrJPS2PqJislbYa
-        10SuJFausicUvheoY/yH/LVHKopcTtbpC7X+WXfw9uUb2FDP+JR1g/wGGNxMONnudIl/GCWMx+i9d
-        u5iaj8XcMRNq+AjPx2+JJBNqrSKGMqy47M8kb6KhZKtm2nmD7/1TPPgMC0AieE85XCoMjnf7sEBzh
-        nnXKieWQ==;
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=i036O3N23XFL3NA6kuzu8UTdLLHCPWiMJL4KTHjaD7w=; b=PBNtr26C/AimXkELPhFK5K6zPK
+        4J/v6tmFl/9MWJOZGcl7UeNHbKGJSXe1EC8RghCzOVPJgboyv9bgChsHGQkVt5CpZruRRNga2qXwg
+        WtQoYwGkdPGO8HyX9StPElrNsEf8oIoHjqGUSMoCBJAQ0jWGtQIGzJ+4NnpbmJvELV6ZQKHxlhTmp
+        PBQ9NVPmK4M9b9Ii9uQa1nzxogdeSRoUs3CVYoHt4c0shwoGTcoZyBElgEFbJX9tHYA4IH8ZKlY73
+        pFO+i0/MukUtFfI40wb+4yAO+l5hzyom+ZLzSr9s0ZTUI0rV072Fjlx907FvCjm1M3etxQ+HhAEJq
+        pinhxPsw==;
 Received: from [2601:1c0:6280:3f0::2a53]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l78s9-0001XB-I1; Wed, 03 Feb 2021 03:30:29 +0000
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Timur Tabi <timur@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        keescook@chromium.org, john.ogness@linutronix.de,
-        akinobu.mita@gmail.com
-References: <20210202213633.755469-1-timur@kernel.org>
- <YBoXUxGBcG97BvML@jagdpanzerIV.localdomain>
+        id 1l78uM-0001bZ-QY; Wed, 03 Feb 2021 03:32:47 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <702f6f68-7455-337b-e0f3-6947a51c142e@infradead.org>
-Date:   Tue, 2 Feb 2021 19:30:23 -0800
+Subject: [PATCH] Documentation: /proc/loadavg: add 3 more field descriptions
+Message-ID: <fe55b139-bd03-4762-199b-83be873cf7dd@infradead.org>
+Date:   Tue, 2 Feb 2021 19:32:43 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <YBoXUxGBcG97BvML@jagdpanzerIV.localdomain>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,26 +45,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 7:24 PM, Sergey Senozhatsky wrote:
-> On (21/02/02 15:36), Timur Tabi wrote:
->> If the make-printk-non-secret command-line parameter is set, then
->> printk("%p") will print addresses as unhashed.  This is useful for
->> debugging purposes.
->>
->> A large warning message is displayed if this option is enabled,
->> because unhashed addresses, while useful for debugging, exposes
->> kernel addresses which can be a security risk.
->>
->> Signed-off-by: Timur Tabi <timur@kernel.org>
-> 
-> Looks good to me.
-> 
-> Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> 
-> 	-ss
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Update contents of /proc/loadavg: add 3 more fields.
 
-thanks.
--- 
-~Randy
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-doc@vger.kernel.org
+---
+ Documentation/filesystems/proc.rst |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- linux-next-20210202.orig/Documentation/filesystems/proc.rst
++++ linux-next-20210202/Documentation/filesystems/proc.rst
+@@ -687,7 +687,10 @@ files are there, and which are missing.
+  kcore        Kernel core image (can be ELF or A.OUT(deprecated in 2.4))
+  kmsg         Kernel messages
+  ksyms        Kernel symbol table
+- loadavg      Load average of last 1, 5 & 15 minutes
++ loadavg      Load average of last 1, 5 & 15 minutes;
++                number of processes currently runnable (running or on ready queue);
++                total number of processes in system;
++                last pid created.
+  locks        Kernel locks
+  meminfo      Memory info
+  misc         Miscellaneous
+
