@@ -2,150 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A9830E636
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AD930E64F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhBCWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:44:11 -0500
-Received: from mga02.intel.com ([134.134.136.20]:23638 "EHLO mga02.intel.com"
+        id S233134AbhBCW5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:57:10 -0500
+Received: from mga06.intel.com ([134.134.136.31]:30210 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232102AbhBCWoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:44:05 -0500
-IronPort-SDR: 0PiRG2fXlXiS4ZKs9tNDzCp4V3hcGhd52hwU70WRWyxKw2f0gOLKHYGkjXRvVr5HTbA5yDNAJW
- lFNgSDH7NftA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168240570"
+        id S231908AbhBCW5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:57:05 -0500
+IronPort-SDR: NgEbTjUbUVoqPQis9pTHHec8vOhEMCnWYRLW5ip4UHGl6/f2CoM+JsV4O6m4SJhm+tIxZRHusF
+ Z2mczaOql8sA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242642342"
 X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="168240570"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:43:22 -0800
-IronPort-SDR: sFoMAdrNkxTVXmy/YRxe75/aIh5a4ygS21WDWlN7PWYgLnzaGHo4OFTpw74NH6aCUuMp5uVl3i
- k0XagAOd1PbQ==
+   d="scan'208";a="242642342"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:56:20 -0800
+IronPort-SDR: kI4NAah8tTLUaitc1y53FWAuO/9w2KZ+zEOuXfWO2vGJF80RNo3ypHxid1LAhUB7YIbLGWPlYp
+ H+jKx1FkLlIA==
 X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="396839883"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.212.187.111])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:43:21 -0800
-Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
-To:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-References: <20200917183219.3603-1-russell.h.weight@intel.com>
- <DM6PR11MB38194BD85854B598F1CD97C5853F0@DM6PR11MB3819.namprd11.prod.outlook.com>
- <8ab0e288-97f0-d167-50f0-624e05d77944@intel.com>
- <DM6PR11MB3819BC4BFE16A9CBE185EB1185B49@DM6PR11MB3819.namprd11.prod.outlook.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <25ada056-e591-4a6d-2e0e-704b099d00bf@intel.com>
-Date:   Wed, 3 Feb 2021 14:43:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="507921045"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:56:19 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v19 00/25] Control-flow Enforcement: Shadow Stack
+Date:   Wed,  3 Feb 2021 14:55:22 -0800
+Message-Id: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB3819BC4BFE16A9CBE185EB1185B49@DM6PR11MB3819.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
+CET can protect applications and the kernel.  This series enables only
+application-level protection, and has three parts:
 
-On 2/3/21 1:28 AM, Wu, Hao wrote:
->> Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
->>
->> Sorry for the delay on this patch. It seemed like a lower priority patch than
->> others, since we haven't seen any issues with current products. Please my
->> responses inline.
->>
->> On 9/17/20 7:08 PM, Wu, Hao wrote:
->>>> -----Original Message-----
->>>> From: Russ Weight <russell.h.weight@intel.com>
->>>> Sent: Friday, September 18, 2020 2:32 AM
->>>> To: mdf@kernel.org; linux-fpga@vger.kernel.org; linux-
->>>> kernel@vger.kernel.org
->>>> Cc: trix@redhat.com; lgoncalv@redhat.com; Xu, Yilun <yilun.xu@intel.com>;
->>>> Wu, Hao <hao.wu@intel.com>; Gerlach, Matthew
->>>> <matthew.gerlach@intel.com>; Weight, Russell H
->>>> <russell.h.weight@intel.com>
->>>> Subject: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
->>>>
->>>> Port enable is not complete until ACK = 0. Change
->>>> __afu_port_enable() to guarantee that the enable process
->>>> is complete by polling for ACK == 0.
->>> The description of this port reset ack bit is
->>>
->>> " After initiating a Port soft reset, SW should monitor this bit. HW
->>> will set this bit when all outstanding requests initiated by this port
->>> have been drained, and the minimum soft reset pulse width has
->>> elapsed. "
->>>
->>> But no description about what to do when clearing a Port soft reset
->>> to enable the port.
->>>
->>> So we need to understand clearly on why we need this change
->>> (e.g. what may happen without this change), and will it apply for all
->>> existing DFL devices and future ones, or just for one specific card.
->>> Could you please help? : )
->> I touched bases with the hardware engineers. The recommendation to wait
->> for ACK to be cleared is new with OFS and is documented in the latest
->> OFS specification as follows (see step #4):
->>
->>> 3.7.1 AFU Soft Resets
->>> Software may cause a soft reset to be issued to the AFU as follows:
->>> 1. Assert the PortSoftReset field of the PORT_CONTROL register
->>> 2. Wait for the Port to acknowledge the soft reset by monitoring the
->>> PortSoftResetAck field of the PORT_CONTROL register, i.e.
->> PortSoftResetAck=1
->>> 3. Deasserting the PortSoftReset field
->>> 4. Wait for the Port to acknowledge the soft reset de-assertion by monitoring
->> the
->>> PortSoftResetAck field of the PORT_CONTROL register, i.e.
->> PortSoftResetAck=0
->>> This sequence ensures that outstanding transactions are suitably flushed and
->>> that the FIM minimum reset pulse width is respected. Failing to follow this
->>> sequence leaves the AFU in an undefined state.
->> The OFS specification has not been posted publicly, yet.
->>
->> Also, this is how it was explained to me:
->>
->>> In most scenario, port will be able to get out of reset soon enough
->>> when SW releases the port reset, especially on all the PAC products
->>> which have been verified before release.
->>>
->>> Polling for HW to clear the ACK is meant to handle the following scenarios:
->>>
->>>   * Different platform can take variable period of time to get out of reset
->>>   * Bug in the HW that hold the port in reset
->> So this change is not required for the currently released PAC cards,
->> but it is needed for OFS based products. I don't think there is any reason
->> to hold off on the patch, as it is still valid for current products.
-> As you know, this driver is used for different cards, and we need to make
-> sure new changes introduced in new version spec, don't break old products
-> as we are sharing the same driver. and we are not sure if in the future some
-> new products but still uses old specs, and then things may be broken if the
-> driver which always perform new flow. Another method is that introduce 1
-> bit in hardware register to tell the driver to perform the additional steps,
-> then it can avoid impacts to the old products. If this can't be done, then
-> we at least need to verify this change on all existing hardware and suggest
-> users to follow new spec only.
+  - Shadow stack [2],
+  - Indirect branch tracking [3], and
+  - Selftests [4].
 
-According to the HW engineers, the RTL implementation has not changed; it is
-the same as the RTL in the current PAC products. Polling for HW to clear the
-ACK is something we could have (should have?) been doing all along. The timing
-hasn't been an issue for the current PAC products, as proven by our testing.
-However, with OFS we cannot anticipate what the timing will be for customer
-designed products, so the specification is calling out this requirement as a
-precaution.
+I have run tests on these patches for quite some time, and they have been
+very stable.  Linux distributions with CET are available now, and Intel
+processors with CET are already on the market.  It would be nice if CET
+support can be accepted into the kernel.  I will be working to address any
+issues should they come up.
 
-I am using a development machine that has the older PAC devices installed. I
-cleared port errors on these cards as a quick check, and the reset completes
-without hanging - which indicates that the ACK bit is in fact getting cleared.
-So there is not need for any device-specific conditional statements here.
+Changes in v19:
+- Patch #2: update Kconfig text, remove CPU_SUP_INTEL dependency.
+- Patch #5: update commit log, add information for XSAVES supervisor states.
+- Patch #21: update commit log, add information for shadow stack restore
+  token and signal context extension.
+- Patch #24: change IS_ENABLED() to cpu_feature_enabled(), EOPNOTSUPP to
+  ENOTSUPP, copy_status_to_user() to cet_copy_status_to_user(), remove
+  unnecessary type casts.
+- Rebase to Linus tree v5.11-rc6.
 
-- Russ
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
->
-> Hao
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
+
+[2] CET Shadow Stack patches v18:
+
+    https://lkml.kernel.org/r/20210127212524.10188-1-yu-cheng.yu@intel.com/
+
+[3] Indirect Branch Tracking patches v18.
+
+    https://lkml.kernel.org/r/20210127213028.11362-1-yu-cheng.yu@intel.com/
+
+[4] I am holding off the selftests changes and working to get Reviewed-by's.
+    The earlier version of the selftests patches:
+
+    https://lkml.kernel.org/r/20200521211720.20236-1-yu-cheng.yu@intel.com/
+
+[5] The kernel ptrace patch is tested with an Intel-internal updated GDB.
+    I am holding off the kernel ptrace patch to re-test it with my earlier
+    patch for fixing regset holes.
+
+Yu-cheng Yu (25):
+  Documentation/x86: Add CET description
+  x86/cet/shstk: Add Kconfig option for user-mode control-flow
+    protection
+  x86/cpufeatures: Add CET CPU feature flags for Control-flow
+    Enforcement Technology (CET)
+  x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
+  x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+  x86/cet: Add control-protection fault handler
+  x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+  x86/mm: Introduce _PAGE_COW
+  drm/i915/gvt: Change _PAGE_DIRTY to _PAGE_DIRTY_BITS
+  x86/mm: Update pte_modify for _PAGE_COW
+  x86/mm: Update ptep_set_wrprotect() and pmdp_set_wrprotect() for
+    transition from _PAGE_DIRTY to _PAGE_COW
+  mm: Introduce VM_SHSTK for shadow stack memory
+  x86/mm: Shadow Stack page fault error checking
+  x86/mm: Update maybe_mkwrite() for shadow stack
+  mm: Fixup places that call pte_mkwrite() directly
+  mm: Add guard pages around a shadow stack.
+  mm/mmap: Add shadow stack pages to memory accounting
+  mm: Update can_follow_write_pte() for shadow stack
+  mm: Re-introduce vm_flags to do_mmap()
+  x86/cet/shstk: User-mode shadow stack support
+  x86/cet/shstk: Handle signals for shadow stack
+  ELF: Introduce arch_setup_elf_property()
+  x86/cet/shstk: Handle thread shadow stack
+  x86/cet/shstk: Add arch_prctl functions for shadow stack
+  mm: Introduce PROT_SHSTK for shadow stack
+
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ Documentation/x86/index.rst                   |   1 +
+ Documentation/x86/intel_cet.rst               | 136 +++++++
+ arch/arm64/include/asm/elf.h                  |   5 +
+ arch/x86/Kconfig                              |  28 ++
+ arch/x86/Kconfig.assembler                    |   5 +
+ arch/x86/ia32/ia32_signal.c                   |  17 +
+ arch/x86/include/asm/cet.h                    |  42 +++
+ arch/x86/include/asm/cpufeatures.h            |   4 +-
+ arch/x86/include/asm/disabled-features.h      |  17 +-
+ arch/x86/include/asm/elf.h                    |  13 +
+ arch/x86/include/asm/fpu/internal.h           |  10 +
+ arch/x86/include/asm/fpu/types.h              |  23 +-
+ arch/x86/include/asm/fpu/xstate.h             |   6 +-
+ arch/x86/include/asm/idtentry.h               |   4 +
+ arch/x86/include/asm/mman.h                   |  85 +++++
+ arch/x86/include/asm/mmu_context.h            |   3 +
+ arch/x86/include/asm/msr-index.h              |  19 +
+ arch/x86/include/asm/page_64_types.h          |  10 +
+ arch/x86/include/asm/pgtable.h                | 194 +++++++++-
+ arch/x86/include/asm/pgtable_types.h          |  48 ++-
+ arch/x86/include/asm/processor.h              |   5 +
+ arch/x86/include/asm/special_insns.h          |  32 ++
+ arch/x86/include/asm/trap_pf.h                |   2 +
+ arch/x86/include/uapi/asm/mman.h              |  28 +-
+ arch/x86/include/uapi/asm/prctl.h             |   4 +
+ arch/x86/include/uapi/asm/processor-flags.h   |   2 +
+ arch/x86/include/uapi/asm/sigcontext.h        |   9 +
+ arch/x86/kernel/Makefile                      |   2 +
+ arch/x86/kernel/cet.c                         | 343 ++++++++++++++++++
+ arch/x86/kernel/cet_prctl.c                   |  60 +++
+ arch/x86/kernel/cpu/common.c                  |  16 +
+ arch/x86/kernel/cpu/cpuid-deps.c              |   2 +
+ arch/x86/kernel/cpu/intel.c                   |   3 +
+ arch/x86/kernel/fpu/signal.c                  | 100 +++++
+ arch/x86/kernel/fpu/xstate.c                  |  10 +-
+ arch/x86/kernel/idt.c                         |   4 +
+ arch/x86/kernel/process.c                     |  14 +-
+ arch/x86/kernel/process_64.c                  |  32 ++
+ arch/x86/kernel/signal.c                      |  10 +
+ arch/x86/kernel/signal_compat.c               |   2 +-
+ arch/x86/kernel/traps.c                       |  60 +++
+ arch/x86/mm/fault.c                           |  19 +
+ arch/x86/mm/mmap.c                            |   2 +
+ arch/x86/mm/pat/set_memory.c                  |   2 +-
+ arch/x86/mm/pgtable.c                         |  25 ++
+ drivers/gpu/drm/i915/gvt/gtt.c                |   2 +-
+ fs/aio.c                                      |   2 +-
+ fs/binfmt_elf.c                               |   4 +
+ fs/proc/task_mmu.c                            |   3 +
+ include/linux/elf.h                           |   6 +
+ include/linux/mm.h                            |  38 +-
+ include/linux/pgtable.h                       |  35 ++
+ include/uapi/asm-generic/siginfo.h            |   3 +-
+ include/uapi/linux/elf.h                      |   9 +
+ ipc/shm.c                                     |   2 +-
+ mm/gup.c                                      |   8 +-
+ mm/huge_memory.c                              |  10 +-
+ mm/memory.c                                   |   5 +-
+ mm/migrate.c                                  |   3 +-
+ mm/mmap.c                                     |  23 +-
+ mm/mprotect.c                                 |   2 +-
+ mm/nommu.c                                    |   4 +-
+ mm/util.c                                     |   2 +-
+ 64 files changed, 1541 insertions(+), 84 deletions(-)
+ create mode 100644 Documentation/x86/intel_cet.rst
+ create mode 100644 arch/x86/include/asm/cet.h
+ create mode 100644 arch/x86/include/asm/mman.h
+ create mode 100644 arch/x86/kernel/cet.c
+ create mode 100644 arch/x86/kernel/cet_prctl.c
+
+-- 
+2.21.0
 
