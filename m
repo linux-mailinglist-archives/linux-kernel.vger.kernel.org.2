@@ -2,131 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C1A30D5C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB5030D5CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhBCJEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:04:38 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40898 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbhBCJDk (ORCPT
+        id S233158AbhBCJFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:05:22 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:47541 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233131AbhBCJE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:03:40 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B241B1C0B79; Wed,  3 Feb 2021 10:02:50 +0100 (CET)
-Date:   Wed, 3 Feb 2021 10:02:50 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] leds: lp50xx: remove unused regulator
-Message-ID: <20210203090249.GA14154@amd>
-References: <20210203083408.2534-1-schuchmann@schleissheimer.de>
+        Wed, 3 Feb 2021 04:04:28 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 067791C0002;
+        Wed,  3 Feb 2021 09:03:20 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 10:03:20 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
+Cc:     Vladimir Zapolskiy <vz@mleia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH RESEND v2] ARM: dts: lpc32xx: Revert set default clock rate
+ of HCLK PLL
+Message-ID: <20210203090320.GA3760268@piout.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203083408.2534-1-schuchmann@schleissheimer.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This reverts commit c17e9377aa81664d94b4f2102559fcf2a01ec8e7.
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The lpc32xx clock driver is not able to actually change the PLL rate as
+this would require reparenting ARM_CLK, DDRAM_CLK, PERIPH_CLK to SYSCLK,
+then stop the PLL, update the register, restart the PLL and wait for the
+PLL to lock and finally reparent ARM_CLK, DDRAM_CLK, PERIPH_CLK to HCLK
+PLL.
 
-On Wed 2021-02-03 08:34:08, Sven Schuchmann wrote:
-> The regulator for vled-supply is unused in the driver.
-> It is just assigned from DT and disabled in lp50xx_remove.
-> So the code can be removed from the driver.
+Currently, the HCLK driver simply updates the registers but this has no
+real effect and all the clock rate calculation end up being wrong. This is
+especially annoying for the peripheral (e.g. UARTs, I2C, SPI).
 
-Dan, what is going on here? Do we need to also enable the regulator,
-or is the removal correct thing to do?
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+Arnd,
 
-Best regards,
-							Pavel
+This is a very important fix that was sent back in may and october 2019 without
+any reply from the maintainers, please consider applying it so it can be
+backported on v5.10.
 
+ arch/arm/boot/dts/lpc32xx.dtsi | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> Part 1 updates the documentation
-> Part 2 removes the code
->=20
-> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
->=20
-> ---
->  drivers/leds/leds-lp50xx.c | 14 --------------
->  1 file changed, 14 deletions(-)
->=20
-> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-> index f13117eed976..b0871495bae3 100644
-> --- a/drivers/leds/leds-lp50xx.c
-> +++ b/drivers/leds/leds-lp50xx.c
-> @@ -11,7 +11,6 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/regmap.h>
-> -#include <linux/regulator/consumer.h>
->  #include <linux/slab.h>
->  #include <uapi/linux/uleds.h>
-> =20
-> @@ -275,7 +274,6 @@ struct lp50xx_led {
->  /**
->   * struct lp50xx -
->   * @enable_gpio: hardware enable gpio
-> - * @regulator: LED supply regulator pointer
->   * @client: pointer to the I2C client
->   * @regmap: device register map
->   * @dev: pointer to the devices device struct
-> @@ -286,7 +284,6 @@ struct lp50xx_led {
->   */
->  struct lp50xx {
->  	struct gpio_desc *enable_gpio;
-> -	struct regulator *regulator;
->  	struct i2c_client *client;
->  	struct regmap *regmap;
->  	struct device *dev;
-> @@ -462,10 +459,6 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
->  		return ret;
->  	}
-> =20
-> -	priv->regulator =3D devm_regulator_get(priv->dev, "vled");
-> -	if (IS_ERR(priv->regulator))
-> -		priv->regulator =3D NULL;
-> -
->  	device_for_each_child_node(priv->dev, child) {
->  		led =3D &priv->leds[i];
->  		ret =3D fwnode_property_count_u32(child, "reg");
-> @@ -583,13 +576,6 @@ static int lp50xx_remove(struct i2c_client *client)
->  		return ret;
->  	}
-> =20
-> -	if (led->regulator) {
-> -		ret =3D regulator_disable(led->regulator);
-> -		if (ret)
-> -			dev_err(&led->client->dev,
-> -				"Failed to disable regulator\n");
-> -	}
-> -
->  	mutex_destroy(&led->lock);
-> =20
->  	return 0;
+diff --git a/arch/arm/boot/dts/lpc32xx.dtsi b/arch/arm/boot/dts/lpc32xx.dtsi
+index 3a5cfb0ddb20..c87066d6c995 100644
+--- a/arch/arm/boot/dts/lpc32xx.dtsi
++++ b/arch/arm/boot/dts/lpc32xx.dtsi
+@@ -326,9 +326,6 @@ clk: clock-controller@0 {
+ 
+ 					clocks = <&xtal_32k>, <&xtal>;
+ 					clock-names = "xtal_32k", "xtal";
+-
+-					assigned-clocks = <&clk LPC32XX_CLK_HCLK_PLL>;
+-					assigned-clock-rates = <208000000>;
+ 				};
+ 			};
+ 
+-- 
+2.29.2
 
---=20
-http://www.livejournal.com/~pavelmachek
-
---yrj/dFKFPuw6o+aM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAaZrkACgkQMOfwapXb+vJVAACePCdJ0/J96bFqKYIylfKvj3YI
-aVQAn3Or6tou+NWIQCpTFM7mtRe3R7XT
-=O55N
------END PGP SIGNATURE-----
-
---yrj/dFKFPuw6o+aM--
