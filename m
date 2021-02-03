@@ -2,154 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDCA30E438
+	by mail.lfdr.de (Postfix) with ESMTP id 7D18B30E437
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhBCUtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:49:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbhBCUqR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232430AbhBCUtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:49:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232329AbhBCUqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Feb 2021 15:46:17 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB89C061573;
-        Wed,  3 Feb 2021 12:44:07 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id d3so208518ool.7;
-        Wed, 03 Feb 2021 12:44:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F00Pr4eI96W+kjuNb1lq/HlQiDzd19IAAA28dQujcBw=;
-        b=d2JTLTHYNtnhKARJzADsZERVVmS05IW84ZJFeuRlIEvRV+KVVXcN4I/kEBK+O5agX0
-         2mqQFqPsKkKJ2q+GG4lHcoes76PYK0kcE87uhB9G7SI4z7ddOahNFJ/W3qiPHhRBif4f
-         v9SPeF5bw3ow17Fc/t38OKhHKc2VaaYV5UyyDOGxqmSPqrcjt2ltsACMXLsGIIZ7RELD
-         xUrZVCnUq70AF2HhLHW0AnYWFBO79/ei5+t4jHgCv0SMmtJYZzAfIg9VJmfsRJybPdly
-         j3an8MgU7JJtnZ4sd+Yq1Vt7mBlT0bfCNBcdP0b7XUWfbCs2JxLoi6gTUwk6oFIUOHa1
-         IADA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F00Pr4eI96W+kjuNb1lq/HlQiDzd19IAAA28dQujcBw=;
-        b=bWgUfYTxVXYFMdyHnpnhpb3Hzwt/5fvutZm31axKxTC+Sp+uX0jZyzj1Jp6Tdz2s3a
-         +FxYj1GcsTU9mfxzDV7YUjdPvzE8PivM2mVndgF43efefNVPHyh1OmuQqqKlJ0C/mzjX
-         Umhgca7dmoPyJXn6S7zKb7NaVajYYH7mzk7k6NcrKRHxvr2TBIICgyYe+qJJAimXaiXg
-         HWVmkBo5/TT+BgC+br/hx3Vyoq8tAnX9tRXYzCh+8e3lQhGNqYJ6WzjzE9KCBqZMTzev
-         I1Jjo9Ios99yQ94q6K8tsAprkpfRPUeiLMJealvmOXHrZ68ncZQ+u+NKYusAV1IeWCkD
-         5j4w==
-X-Gm-Message-State: AOAM531NLiIMtTNUcKTvuqIX5JdT5d56fhJtoNBeHHkjJxC5fQpn+Imb
-        czhvTlC362dwdPMsAtoQh+HBCwToDkQ=
-X-Google-Smtp-Source: ABdhPJykcpC8jNC5GAbu1nFy8AX4LJFCsBY/um+VwD7tZPewed3y6748/CmrGwmaiiz7fXkJ2jcxSg==
-X-Received: by 2002:a4a:e6d2:: with SMTP id v18mr3299928oot.40.1612385047146;
-        Wed, 03 Feb 2021 12:44:07 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n27sm699690oij.36.2021.02.03.12.44.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Feb 2021 12:44:06 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 3 Feb 2021 12:44:05 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (pmbus) convert sysfs sprintf/snprintf family
- to sysfs_emit
-Message-ID: <20210203204405.GG106766@roeck-us.net>
-References: <1612255743-52579-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4721964F58;
+        Wed,  3 Feb 2021 20:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612385090;
+        bh=HU3lcXYzW0AmAK9z/JWzWJGpYf2uoz2DW9TuQFbx2AM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kq5SGPY4K5B9MnDQKUqGKb12hcVSSAQ2y4UF3pKGqwZQ0qMGxaCOuKuBx4+ux9qip
+         71mAWgo3qy34mfJO04OfTz/LxObItureo5a9+EJefG+Ti3yoigeTvKB3SW29MNkdAu
+         a1Px/9ezX4rJklKoVE63/TZdlDAsuiAwuMqp8VYtRelcjfRZIpKb+z9AxeqRfxqzgZ
+         dy79ZjVoQhiSlGNljIyP7thcWDAZ89mWGGUMCFX/7m6aP5A2F/soVm3LOuEZi0rC+Q
+         kO77uLR02x+C3GF2SLWLnQeCgYOHe7RitcV6hMn0bIgdG/WXOxaaWS59eW0QrOT5bM
+         OqzfZN+k+PKqw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4511A40513; Wed,  3 Feb 2021 17:44:48 -0300 (-03)
+Date:   Wed, 3 Feb 2021 17:44:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, eranian@google.com, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        maddy@linux.vnet.ibm.com
+Subject: Re: [PATCH 7/9] perf test: Support PERF_SAMPLE_WEIGHT_STRUCT
+Message-ID: <20210203204448.GL854763@kernel.org>
+References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
+ <1612296553-21962-8-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612255743-52579-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1612296553-21962-8-git-send-email-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 04:49:03PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
+Em Tue, Feb 02, 2021 at 12:09:11PM -0800, kan.liang@linux.intel.com escreveu:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> ./drivers/hwmon/pmbus/inspur-ipsps.c:73:8-16: WARNING: use scnprintf or
-> sprintf.
-> 
-> ./drivers/hwmon/pmbus/inspur-ipsps.c:114:9-17: WARNING: use scnprintf or
-> sprintf.
-> 
-> ./drivers/hwmon/pmbus/inspur-ipsps.c:94:8-16: WARNING: use scnprintf or
-> sprintf.
-> 
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Support the new sample type for sample-parsing test case.
 
-Please refrain from such changes. I'll accept them only if other changes
-are made to the driver at the same time.
-
-Guenter
-
+ditto wrt code page size
+ 
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 > ---
-> Changes in v2:
->   -Modified code space.
+>  tools/perf/tests/sample-parsing.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 > 
->  drivers/hwmon/pmbus/inspur-ipsps.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/inspur-ipsps.c b/drivers/hwmon/pmbus/inspur-ipsps.c
-> index 88c5865..bf593fd 100644
-> --- a/drivers/hwmon/pmbus/inspur-ipsps.c
-> +++ b/drivers/hwmon/pmbus/inspur-ipsps.c
-> @@ -70,7 +70,7 @@ static ssize_t ipsps_string_show(struct device *dev,
->  	p = memscan(data, '#', rc);
->  	*p = '\0';
+> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+> index 2393916..c5739cc 100644
+> --- a/tools/perf/tests/sample-parsing.c
+> +++ b/tools/perf/tests/sample-parsing.c
+> @@ -129,6 +129,9 @@ static bool samples_same(const struct perf_sample *s1,
+>  	if (type & PERF_SAMPLE_WEIGHT)
+>  		COMP(weight);
 >  
-> -	return snprintf(buf, PAGE_SIZE, "%s\n", data);
-> +	return sysfs_emit(buf, "%s\n", data);
->  }
+> +	if (type & PERF_SAMPLE_WEIGHT_STRUCT)
+> +		COMP(ins_lat);
+> +
+>  	if (type & PERF_SAMPLE_DATA_SRC)
+>  		COMP(data_src);
 >  
->  static ssize_t ipsps_fw_version_show(struct device *dev,
-> @@ -91,9 +91,9 @@ static ssize_t ipsps_fw_version_show(struct device *dev,
->  	if (rc != 6)
->  		return -EPROTO;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%u.%02u%u-%u.%02u\n",
-> -			data[1], data[2]/* < 100 */, data[3]/*< 10*/,
-> -			data[4], data[5]/* < 100 */);
-> +	return sysfs_emit(buf, "%u.%02u%u-%u.%02u\n",
-> +			  data[1], data[2]/* < 100 */, data[3]/*< 10*/,
-> +			  data[4], data[5]/* < 100 */);
->  }
->  
->  static ssize_t ipsps_mode_show(struct device *dev,
-> @@ -111,19 +111,19 @@ static ssize_t ipsps_mode_show(struct device *dev,
->  
->  	switch (rc) {
->  	case MODE_ACTIVE:
-> -		return snprintf(buf, PAGE_SIZE, "[%s] %s %s\n",
-> -				MODE_ACTIVE_STRING,
-> -				MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
-> +		return sysfs_emit(buf, "[%s] %s %s\n",
-> +				  MODE_ACTIVE_STRING,
-> +				  MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
->  	case MODE_STANDBY:
-> -		return snprintf(buf, PAGE_SIZE, "%s [%s] %s\n",
-> -				MODE_ACTIVE_STRING,
-> -				MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
-> +		return sysfs_emit(buf, "%s [%s] %s\n",
-> +				  MODE_ACTIVE_STRING,
-> +				  MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
->  	case MODE_REDUNDANCY:
-> -		return snprintf(buf, PAGE_SIZE, "%s %s [%s]\n",
-> -				MODE_ACTIVE_STRING,
-> -				MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
-> +		return sysfs_emit(buf, "%s %s [%s]\n",
-> +				  MODE_ACTIVE_STRING,
-> +				  MODE_STANDBY_STRING, MODE_REDUNDANCY_STRING);
->  	default:
-> -		return snprintf(buf, PAGE_SIZE, "unspecified\n");
-> +		return sysfs_emit(buf, "unspecified\n");
+> @@ -238,6 +241,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
+>  		.phys_addr	= 113,
+>  		.cgroup		= 114,
+>  		.data_page_size = 115,
+> +		.ins_lat	= 116,
+>  		.aux_sample	= {
+>  			.size	= sizeof(aux_data),
+>  			.data	= (void *)aux_data,
+> @@ -344,7 +348,7 @@ int test__sample_parsing(struct test *test __maybe_unused, int subtest __maybe_u
+>  	 * were added.  Please actually update the test rather than just change
+>  	 * the condition below.
+>  	 */
+> -	if (PERF_SAMPLE_MAX > PERF_SAMPLE_CODE_PAGE_SIZE << 1) {
+> +	if (PERF_SAMPLE_MAX > PERF_SAMPLE_WEIGHT_STRUCT << 1) {
+>  		pr_debug("sample format has changed, some new PERF_SAMPLE_ bit was introduced - test needs updating\n");
+>  		return -1;
 >  	}
->  }
+> @@ -374,8 +378,12 @@ int test__sample_parsing(struct test *test __maybe_unused, int subtest __maybe_u
+>  			return err;
+>  	}
 >  
+> -	/* Test all sample format bits together */
+> -	sample_type = PERF_SAMPLE_MAX - 1;
+> +	/*
+> +	 * Test all sample format bits together
+> +	 * Note: PERF_SAMPLE_WEIGHT and PERF_SAMPLE_WEIGHT_STRUCT cannot
+> +	 *       be set simultaneously.
+> +	 */
+> +	sample_type = (PERF_SAMPLE_MAX - 1) & ~PERF_SAMPLE_WEIGHT;
+>  	sample_regs = 0x3fff; /* shared yb intr and user regs */
+>  	for (i = 0; i < ARRAY_SIZE(rf); i++) {
+>  		err = do_test(sample_type, sample_regs, rf[i]);
 > -- 
-> 1.8.3.1
+> 2.7.4
 > 
+
+-- 
+
+- Arnaldo
