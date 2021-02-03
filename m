@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6C530DB6E
+	by mail.lfdr.de (Postfix) with ESMTP id C028630DB6F
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhBCNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:37:05 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:47055 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbhBCNeb (ORCPT
+        id S232167AbhBCNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:37:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232065AbhBCNfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:34:31 -0500
-Received: from marcel-macbook.holtmann.net (p4fefcdd8.dip0.t-ipconnect.de [79.239.205.216])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 5C58FCECFC;
-        Wed,  3 Feb 2021 14:41:00 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH v1] Bluetooth: Fix crash in
- mgmt_add_adv_patterns_monitor_complete
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
-Date:   Wed, 3 Feb 2021 14:33:32 +0100
-Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+        Wed, 3 Feb 2021 08:35:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612359245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FwewrJ1tvyEUzunf+cDTiQWAfhlcXzGjEESHCGxVAZ4=;
+        b=f7DIdVpPP6wmvWnNrnP+g6yF6GTu/Hjc3yb68F8ois3loOiI6RZltneSdw6dUn3bXqfzmS
+        ypT2MONPRZT6iloOEPdAxJTabJ4KygvyKzVqHnsjVYHHWGj02yXmXZn5qbLPbcWruPi0f3
+        m3RVti57XrwRCb4tI8gPwhh8f+0HG8E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-kNYjUF_qOZ2pJlnjhZEqAg-1; Wed, 03 Feb 2021 08:34:02 -0500
+X-MC-Unique: kNYjUF_qOZ2pJlnjhZEqAg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 149BA100C660;
+        Wed,  3 Feb 2021 13:34:00 +0000 (UTC)
+Received: from [10.36.112.222] (ovpn-112-222.ams2.redhat.com [10.36.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 88E2277BE3;
+        Wed,  3 Feb 2021 13:33:57 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] x86/vmemmap: Drop handling of 1GB vmemmap ranges
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210203104750.23405-1-osalvador@suse.de>
+ <20210203104750.23405-3-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <ec2f6a46-b2a8-8131-a2ac-48a02a1ea201@redhat.com>
+Date:   Wed, 3 Feb 2021 14:33:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210203104750.23405-3-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <FF91258F-2875-4569-9195-6321409DFEA6@holtmann.org>
-References: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
-To:     Howard Chung <howardchung@google.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
-
-> If hci_add_adv_monitor is a pending command(e.g. forward to
-> msft_add_monitor_pattern), it is possible that
-> mgmt_add_adv_patterns_monitor_complete gets called before
-> cmd->user_data gets set, which will cause a crash when we
-> try to get the moniter handle through cmd->user_data in
-> mgmt_add_adv_patterns_monitor_complete.
+On 03.02.21 11:47, Oscar Salvador wrote:
+> We never get to allocate 1GB pages when mapping the vmemmap range.
+> Drop the dead code both for the aligned and unaligned cases and leave
+> only the direct map handling.
 > 
-> This moves the cmd->user_data assignment earlier than
-> hci_add_adv_monitor.
-> 
-> RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
-> Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
-> e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
-> 7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
-> c8
-> RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
-> RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
-> RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
-> RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
-> R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
-> R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000018 CR3: 0000000133612002 CR4:
-> 00000000003606e0
-> Call Trace:
-> ? msft_le_monitor_advertisement_cb+0x111/0x141
-> [bluetooth]
-> hci_event_packet+0x425e/0x631c [bluetooth]
-> ? printk+0x59/0x73
-> ? __switch_to_asm+0x41/0x70
-> ?
-> msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
-> ? bt_dbg+0xb4/0xbb [bluetooth]
-> ? __switch_to_asm+0x41/0x70
-> hci_rx_work+0x101/0x319 [bluetooth]
-> process_one_work+0x257/0x506
-> worker_thread+0x10d/0x284
-> kthread+0x14c/0x154
-> ? process_one_work+0x506/0x506
-> ? kthread_blkcg+0x2c/0x2c
-> ret_from_fork+0x1f/0x40
-> 
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-> Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-> Signed-off-by: Howard Chung <howardchung@google.com>
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Suggested-by: David Hildenbrand <david@redhat.com>
 > ---
+>   arch/x86/mm/init_64.c | 31 ++++---------------------------
+>   1 file changed, 4 insertions(+), 27 deletions(-)
 > 
-> net/bluetooth/mgmt.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index b0e1d215c83e..28729c6b9775 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1062,7 +1062,6 @@ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+>   	unsigned long next, pages = 0;
+>   	pmd_t *pmd_base;
+>   	pud_t *pud;
+> -	void *page_addr;
+>   
+>   	pud = pud_start + pud_index(addr);
+>   	for (; addr < end; addr = next, pud++) {
+> @@ -1072,32 +1071,10 @@ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+>   			continue;
+>   
+>   		if (pud_large(*pud)) {
+> -			if (IS_ALIGNED(addr, PUD_SIZE) &&
+> -			    IS_ALIGNED(next, PUD_SIZE)) {
+> -				if (!direct)
+> -					free_pagetable(pud_page(*pud),
+> -						       get_order(PUD_SIZE));
+> -
+> -				spin_lock(&init_mm.page_table_lock);
+> -				pud_clear(pud);
+> -				spin_unlock(&init_mm.page_table_lock);
+> -				pages++;
+> -			} else {
+> -				/* If here, we are freeing vmemmap pages. */
+> -				memset((void *)addr, PAGE_INUSE, next - addr);
+> -
+> -				page_addr = page_address(pud_page(*pud));
+> -				if (!memchr_inv(page_addr, PAGE_INUSE,
+> -						PUD_SIZE)) {
+> -					free_pagetable(pud_page(*pud),
+> -						       get_order(PUD_SIZE));
+> -
+> -					spin_lock(&init_mm.page_table_lock);
+> -					pud_clear(pud);
+> -					spin_unlock(&init_mm.page_table_lock);
+> -				}
+> -			}
+> -
+> +			spin_lock(&init_mm.page_table_lock);
+> +			pud_clear(pud);
+> +			spin_unlock(&init_mm.page_table_lock);
+> +			pages++;
+>   			continue;
+>   		}
 
-patch has been applied to bluetooth-next tree.
+One problem I see with existing code / this change making more obvious 
+is that when trying to remove in other granularity than we added (e.g., 
+unplug a 128MB DIMM avaialble during boot), we remove the direct map of 
+unrelated DIMMs.
 
-Regards
+I think we should keep the
 
-Marcel
+if (IS_ALIGNED(addr, PUD_SIZE) &&
+     IS_ALIGNED(next, PUD_SIZE)) {
+...
+}
+
+bits. Thoguhts?
+
+Apart from that looks good.
+
+-- 
+Thanks,
+
+David / dhildenb
 
