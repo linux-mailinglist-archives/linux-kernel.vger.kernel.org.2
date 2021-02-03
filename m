@@ -2,106 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AED730E25E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDE130E264
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhBCSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:19:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhBCSTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:19:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C86FD60295
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612376313;
-        bh=zdQgjgjUk3KJOQ14/l2VAanex15NlCvPFgpWCWqM3u0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OfzxJJ+e2xedb2QhiyU0mb8Y1mjh6MNeSY57sFyd3QSHm0P++USv7ly9zcIfyWTRy
-         nFbS3ZY876I20trgwrIGUDdQxoc0priWUCasdcyR0wPMgEYXMYnn0I+fcc/FRlDAok
-         9J+v7GUt4PKLFs3f+s3Ubj75Zi53eExcrdT7za5+5Z7zI8yCvwrQfT8RWJ4EFipU95
-         o4ok9melo2WJqnBfL4+JTCZFw0QBZxR7fnNN80xDGNV/WlAzre5apmYjfc65CszWr8
-         GW+6dzgF1xHq2rBjuk2Zs6ERB3mysDuQkOPn4hHCzsexlVo8i3nTCVOzASFww0kx1b
-         ldDckC5zekrjA==
-Received: by mail-ed1-f54.google.com with SMTP id df22so803678edb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:18:32 -0800 (PST)
-X-Gm-Message-State: AOAM532Bc9hoZlZf0RiJ/octgCZc0AmwZ3tdjA1IY42iv4b4FcyQmPLP
-        S9I8vZO1Jg5Xjnq1j7ecDN9mwuwyBELvn2bpN3U/Cg==
-X-Google-Smtp-Source: ABdhPJwbVTP8/QZorEVxpVsXXUKSLb56Ak86qM7XNfxRnGd9DFtlwoEjEuXACyGNpz+UHa/SJQtea7lcAbejhmVNY8w=
-X-Received: by 2002:aa7:d4d2:: with SMTP id t18mr4504548edr.238.1612376311167;
- Wed, 03 Feb 2021 10:18:31 -0800 (PST)
+        id S232107AbhBCSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhBCSVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:21:38 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C79C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:20:58 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id a16so143547ilq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t15/2iQDwVaTBOunEsPSucc/nRrzJFxeeAfzfc0DJNE=;
+        b=wOW8ILuVngAUBSdPy/ecmjBNJOfiMVtVA9nyDK8/THmrxZvlGUv/rVjlZsCQpAin3H
+         +28x+whbEIs/N5KX70/rzYdBxSHXSgc7EECh63rgsTZZaT/2P89+yBaEGZEqhWUeNCdE
+         rEuYf8O+4OksgXgQjVngIY7ZvfK3bo7M8VP5hcEuEhfKfnaZdLJNCmPBkv4MRvE08aTX
+         9MAftkVyMN+16pvN8SUua7qKGEwKZkmQHOX3H6aGTVqxTu4jnOk/g6I6jNOcHkrq5VEa
+         a0q1sUmYU+v/8wywE82tZx9VBkVGaJC3KUN4NLRUb2v1ER98XP/oFSveycRGmbQnchEi
+         GPng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t15/2iQDwVaTBOunEsPSucc/nRrzJFxeeAfzfc0DJNE=;
+        b=eayA30Ezrdu9tCY681LWtjiRRq4XFrZwNWMoTJ8Y10OMVUC7HZ9Wvun6vjL7zxlJhV
+         svdqeQJise/i+HetsglM6VFR7jV4JFbJXTyusloh89srIaF/r2aK0en72bfgVAdPajwA
+         J3mLvrvu98mW2pbiGbcQa+z06zhx450zfEIlgnC5GpZplcqG3+9P8PPrP3bkj7dui+7C
+         XztxO1zOPKmrXQLvmJSo+bGLRcX3/PR16Iv2wYhYHL3IXf/D+SwHQt+pKoQOrDde9prV
+         HmbxXJL+SRZk6xO0MufIycFOvEdg9orcLsjMeZ483fZwEtwsQcZ2H/4tyGC3EEwYphl2
+         /6WA==
+X-Gm-Message-State: AOAM531bJ3ug/lblZGwpjaTOVK/AnZo2dyWDQj9xSJBdNI4QOk8tumdl
+        LP8qoEx3FtXrPB3oYLF7nMHkcL7AlWiqLEAKHyHomg==
+X-Google-Smtp-Source: ABdhPJwlFItdhRlFkSlxPRvvmGgnRhMv5qySj2o0FluBkMhPuLOsQ5+2Asugr+9haQYOMzj1LN0n2dIbGV9moq6orGc=
+X-Received: by 2002:a05:6e02:1c8d:: with SMTP id w13mr3621359ill.301.1612376458087;
+ Wed, 03 Feb 2021 10:20:58 -0800 (PST)
 MIME-Version: 1.0
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
- <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
- <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
- <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
- <CAHk-=wgOp10DO9jtMC=B=RoTLWe7MFTS5pH4JeZ78-tbqTY1vw@mail.gmail.com>
- <87h7mtc9pr.fsf_-_@collabora.com> <CAHk-=wjFV8j03vyvuY4qhKnJ6Vy2DLfjzgTJ1n+LO9EsVsJmDg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjFV8j03vyvuY4qhKnJ6Vy2DLfjzgTJ1n+LO9EsVsJmDg@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 3 Feb 2021 10:18:11 -0800
-X-Gmail-Original-Message-ID: <CALCETrWpouBd+DqVu594B-94MQH_D0D7sECXZHEoAa+=X-_0=A@mail.gmail.com>
-Message-ID: <CALCETrWpouBd+DqVu594B-94MQH_D0D7sECXZHEoAa+=X-_0=A@mail.gmail.com>
-Subject: Re: [PATCH] entry: Fix missed trap after single-step on system call return
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kyle Huey <me@kylehuey.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
+References: <20210128224819.2651899-1-axelrasmussen@google.com>
+ <20210128224819.2651899-6-axelrasmussen@google.com> <20210201183159.GF260413@xz-x1>
+ <20210202171515.GF6468@xz-x1>
+In-Reply-To: <20210202171515.GF6468@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 3 Feb 2021 10:20:21 -0800
+Message-ID: <CAJHvVciLfEkeYDNcbAnjnyKGMVuHBHSgxUEFuQpnAhTAy0yTug@mail.gmail.com>
+Subject: Re: [PATCH v3 5/9] userfaultfd: add minor fault registration mode
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 10:10 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Tue, Feb 2, 2021 at 9:15 AM Peter Xu <peterx@redhat.com> wrote:
 >
-> On Wed, Feb 3, 2021 at 10:00 AM Gabriel Krisman Bertazi
-> <krisman@collabora.com> wrote:
+> On Mon, Feb 01, 2021 at 01:31:59PM -0500, Peter Xu wrote:
+> > On Thu, Jan 28, 2021 at 02:48:15PM -0800, Axel Rasmussen wrote:
+> > > This feature allows userspace to intercept "minor" faults. By "minor"
+> > > faults, I mean the following situation:
+> > >
+> > > Let there exist two mappings (i.e., VMAs) to the same page(s) (shared
+> > > memory). One of the mappings is registered with userfaultfd (in minor
+> > > mode), and the other is not. Via the non-UFFD mapping, the underlying
+> > > pages have already been allocated & filled with some contents. The UFFD
+> > > mapping has not yet been faulted in; when it is touched for the first
+> > > time, this results in what I'm calling a "minor" fault. As a concrete
+> > > example, when working with hugetlbfs, we have huge_pte_none(), but
+> > > find_lock_page() finds an existing page.
+> > >
+> > > This commit adds the new registration mode, and sets the relevant flag
+> > > on the VMAs being registered. In the hugetlb fault path, if we find
+> > > that we have huge_pte_none(), but find_lock_page() does indeed find an
+> > > existing page, then we have a "minor" fault, and if the VMA has the
+> > > userfaultfd registration flag, we call into userfaultfd to handle it.
 > >
-> > Does the patch below follows your suggestion?  I'm setting the
-> > SYSCALL_WORK shadowing TIF_SINGLESTEP every time, instead of only when
-> > the child is inside a system call.  Is this acceptable?
+> > When re-read, now I'm thinking whether we should restrict the minor fault
+> > scenario with shared mappings always, assuming there's one mapping with uffd
+> > and the other one without, while the non-uffd can modify the data before an
+> > UFFDIO_CONTINUE kicking the uffd process.
+> >
+> > To me, it's really more about page cache and that's all..
+> >
+> > So I'm wondering whether below would be simpler and actually clearer on
+> > defining minor faults, comparing to the above whole two paragraphs.  For
+> > example, the scemantics do not actually need two mappings:
+> >
+> >     For shared memory, userfaultfd missing fault used to only report the event
+> >     if the page cache does not exist for the current fault process.  Here we
+> >     define userfaultfd minor fault as the case where the missing page fault
+> >     does have a backing page cache (so only the pgtable entry is missing).
+> >
+> > It should not affect most of your code, but only one below [1].
 >
-> Looks sane to me.
+> OK it could be slightly more than that...
 >
-> My main worry would be about "what about the next system call"? It's
-> not what Kyle's case cares about, but let me just give an example:
+> E.g. we'd need to make UFFDIO_COPY to not install the write bit if it's
+> UFFDIO_CONTINUE and if it's private mappings. In hugetlb_mcopy_atomic_pte() now
+> we apply the write bit unconditionally:
 >
->  - task A traces task B, and starts single-stepping. Task B was *not*
-> in a system call at this point.
+>         _dst_pte = make_huge_pte(dst_vma, page, dst_vma->vm_flags & VM_WRITE);
 >
->  - task B happily executes one instruction at a time, takes a TF
-> fault, everything is good
+> That'll need a touch-up otherwise.
 >
->  - task B now does a system call. That will disable single-stepping
-> while in the kernel
+> It's just the change seems still very small so I'd slightly prefer to support
+> it all.  However I don't want to make your series complicated and blocking it,
+> so please feel free to still make it shared memory if that's your preference.
+> The worst case is if someone would like to enable this (if with a valid user
+> scenario) we'd export a new uffd feature flag.
 >
->  - task B returns from the system call. TF will be set in eflags, but
-> the first instruction *after* the system call will execute unless we
-> go through the system call exit path
->
-> So I think the tracer basically misses one instruction when single-stepping.
+> >
+> > [...]
+> >
+> > > @@ -1302,9 +1301,26 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
+> > >                                  unsigned long vm_flags)
+> > >  {
+> > >     /* FIXME: add WP support to hugetlbfs and shmem */
+> > > -   return vma_is_anonymous(vma) ||
+> > > -           ((is_vm_hugetlb_page(vma) || vma_is_shmem(vma)) &&
+> > > -            !(vm_flags & VM_UFFD_WP));
+> > > +   if (vm_flags & VM_UFFD_WP) {
+> > > +           if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
+> > > +                   return false;
+> > > +   }
+> > > +
+> > > +   if (vm_flags & VM_UFFD_MINOR) {
+> > > +           /*
+> > > +            * The use case for minor registration (intercepting minor
+> > > +            * faults) is to handle the case where a page is present, but
+> > > +            * needs to be modified before it can be used. This requires
+> > > +            * two mappings: one with UFFD registration, and one without.
+> > > +            * So, it only makes sense to do this with shared memory.
+> > > +            */
+> > > +           /* FIXME: Add minor fault interception for shmem. */
+> > > +           if (!(is_vm_hugetlb_page(vma) && (vma->vm_flags & VM_SHARED)))
+> > > +                   return false;
+> >
+> > [1]
+> >
+> > So here we also restrict the mapping be shared.  My above comment on the commit
+> > message is also another way to ask whether we could also allow it to happen
+> > with non-shared mappings as long as there's a page cache.  If so, we could drop
+> > the VM_SHARED check here.  It won't affect your existing use case for sure, it
+> > just gives more possibility that maybe it could also be used on non-shared
+> > mappings due to some reason in the future.
+> >
+> > What do you think?
 
-I was hoping you wouldn't ask this :)
+Agreed, I don't see any reason why it can't work. The only requirement
+for it to be useful is, the UFFD-registered area needs to be able to
+"see" writes from the non-UFFD-registered area. Whether or not the
+UFFD-registered half is shared or not doesn't affect this.
 
-The x86 architecture is fundamentally a bit busted here.  If we return
-from a system call with SYSRET and TF is set in R11, then SYSRET
-traps, which means that #DB is delivered before executing a user
-instruction.  I have been asking Intel for quite a while to document
-this, and they said they did, but I still can't find it.  IRET is the
-opposite: if we return from a system call with IRET and TF is set on
-the stack, we execute one user instruction and then trap.
+I'll include this change (and the VM_WRITE touchup described above) in a v4.
 
-So if we want to reliably single-step a system call and trap after the
-system call, we just need to synthesize a trap on the way out.  Doing
-this and getting all the nasty corners (e.g. sigreturn setting TF,
-sigreturn *clearing* TF, signal delivery as part of the syscall,
-ptrace mucking with TF) etc right might be nontrivial.
-
-I suspect the behavior back in the bad old asm-entry-path days was at
-best inconsistent.
-
---Andy
+> >
+> > The rest looks good to me.
+> >
+> > Thanks,
+> >
+> > --
+> > Peter Xu
+>
+> --
+> Peter Xu
+>
