@@ -2,92 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B3B30DDFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7541030DE09
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhBCPV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:21:27 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:33981 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbhBCPSp (ORCPT
+        id S234156AbhBCPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:24:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26244 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234169AbhBCPXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:18:45 -0500
-Received: by mail-wr1-f53.google.com with SMTP id g10so24793802wrx.1;
-        Wed, 03 Feb 2021 07:18:29 -0800 (PST)
+        Wed, 3 Feb 2021 10:23:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612365726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X+Sb5ZF8RHOsf9TT9bAcHXxUsxEE/AuGBDj+pmLSBng=;
+        b=M/SJkUIBTps/oD3qK3oCZPgQFvm3s5vQ5WJ8hNFR/2lsCUg6nadJJq/bMj2uqaQqRvmOFC
+        6icRts1z3Gr5ANeQhk9PMyY+20Ojgmr8zGXJN6gKnCxr3OARLyobJ+Gs+cW6U3ibicYjwT
+        zgk1CJwhuVFjnfWVqt5p8uyk5wh/aaA=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-601-cYJQZvCHOjKKS3UsaEpo-Q-1; Wed, 03 Feb 2021 10:22:03 -0500
+X-MC-Unique: cYJQZvCHOjKKS3UsaEpo-Q-1
+Received: by mail-qt1-f197.google.com with SMTP id f5so123386qtf.15
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:22:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l8cy511fPN0zMtLnY1N3mRqUzrgghWD2gteAENtqOr4=;
-        b=ddm/WiyFEVCmAw/Tyo/um9mEUCsRL7EaLP3Y38MMf38ykoez1Hco1tTzz0DaGjNtEf
-         1U9RQVKNrwpuiunfnY5hn0JHMh2q6hfwT3Ig8BJbhAPV+Z86YT9UsF+67bf8xKAwYTzA
-         /kALgCb2wG7G5KuNt60BHyXfghOB6b05ATg7ukPGxZsik0wj0eH2sEQ5+dllLhXTMOXm
-         3yN/CMzkIgKKVATG23MpaXxe4LJ5TjBZj38FvSCyjTYGdpsRfoX3QIKFdVB6I0Eb4Vv8
-         r0r8V6hTGO+/OuRgxFVQymwSCQBOUmFInWqYHHiayFEpT3iY2bRn4aQDrHscWRwwYm1v
-         pNQw==
-X-Gm-Message-State: AOAM531apDiVr4M8rbkTn6/ahw7F9aczEPpypU4CSZ0C9RT/+oirs9yI
-        ir82I0lgL9d99NdpdD9KXno=
-X-Google-Smtp-Source: ABdhPJxHYufoQCzPYGt5wA9ljcUG0KO5NravuBCruERtSdbtgmaOFdPvrIVqBsYfFNUMoI+Pb198iw==
-X-Received: by 2002:adf:fb0c:: with SMTP id c12mr4151714wrr.6.1612365483472;
-        Wed, 03 Feb 2021 07:18:03 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id p18sm3042799wmc.31.2021.02.03.07.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 07:18:02 -0800 (PST)
-Date:   Wed, 3 Feb 2021 16:18:01 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 09/11] PCI: dwc: pcie-kirin: allow using multiple
- reset GPIOs
-Message-ID: <YBq+qaOwJdNOllQ/@rocinante>
-References: <cover.1612335031.git.mchehab+huawei@kernel.org>
- <4fb97b1fc3fe6df9a2fea8f96bdef433e75463a6.1612335031.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X+Sb5ZF8RHOsf9TT9bAcHXxUsxEE/AuGBDj+pmLSBng=;
+        b=VM31OEya2ty/GR0kwAH3DBAFpTrdcJNNxc3SsYQQFmrPKoGQCO5wRT/yh2FECk/spV
+         tDnJbS/OFI1hj+y53/DaUNdxXYN3zaCSCj65JFejkNUAbeQhqu+Tu3b6voMJwmDjwrVp
+         dxljNCpW6q/rlfDeQu4yiFdR6zIGMlG1DWy+JSgEH7aanqCdNMELKW7RvhbqY6keKRxm
+         JIjhrp1p/yZydwCLyUp3FuessQ+teFjKBVmnEQhz4YpRsPQFBeQjMw0oqjyRcCaCe5Xu
+         V1Dp0Uq0GbNPDy/sB3PKcZfydWrpwEa7XitYML849IsOU1ftXz/lwouvrQMZ5+lpVSh1
+         ZaHQ==
+X-Gm-Message-State: AOAM531vHY4LS30SCwGUF5QlFeI4fz4RzSbOPZRsfoaIJYs+iQhjbyKB
+        HbOTDklLQn1q5LBbJOsatKD/vYObwYQFe2/H0tTzM/ksemlw+s3yE/QdQlWZx0wy90rawLoB+4g
+        9egG4E3OdMvLoXaR2YqxgGpyD+pj0ejdV9RQBGvOj
+X-Received: by 2002:ad4:5887:: with SMTP id dz7mr3293659qvb.44.1612365723126;
+        Wed, 03 Feb 2021 07:22:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyiPL/iCRPNnBTcQC2ruX9Zv5S0UWusaG1Tag8/YzDoHNsGisQQbATPZWoV6vO7w1JXdG8bWhk+VjP1Zc1jGyM=
+X-Received: by 2002:ad4:5887:: with SMTP id dz7mr3293631qvb.44.1612365722811;
+ Wed, 03 Feb 2021 07:22:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4fb97b1fc3fe6df9a2fea8f96bdef433e75463a6.1612335031.git.mchehab+huawei@kernel.org>
+References: <20210203124112.1182614-1-mszeredi@redhat.com> <20210203124112.1182614-2-mszeredi@redhat.com>
+ <20210203150448.GD7094@quack2.suse.cz>
+In-Reply-To: <20210203150448.GD7094@quack2.suse.cz>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Wed, 3 Feb 2021 16:21:51 +0100
+Message-ID: <CAOssrKesMbzG9bX5HiDvCJTpdrCkvP7cg5nsZHCy4_QkJNEVZg@mail.gmail.com>
+Subject: Re: [PATCH 01/18] vfs: add miscattr ops
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Matthew Garrett <matthew.garrett@nebula.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Mauro,
-
-Thank you for working on this!
-
-> @@ -151,8 +152,10 @@ struct kirin_pcie {
->       struct clk      *phy_ref_clk;
->       struct clk      *pcie_aclk;
->       struct clk      *pcie_aux_clk;
-> -     int             gpio_id_reset[4];
-> +     int             n_gpio_resets;
->       int             gpio_id_clkreq[3];
-> +     int             gpio_id_reset[MAX_GPIO_RESETS];
-> +     const char      *reset_names[MAX_GPIO_RESETS];
->       u32             eye_param[5];
->  };
-[...]
-
-A small nit, so feel free to ignore, of course.
-
-The "n_gpio_resets" variable might be better as "gpio_resets_num" or
-"gpio_resets_count" - both are popular name suffixes for that type of
-variables.  To add, other variables also start with "gpio_", thus it
-would also follow the naming pattern.
+On Wed, Feb 3, 2021 at 4:05 PM Jan Kara <jack@suse.cz> wrote:
 
 [...]
-> +     kirin_pcie->n_gpio_resets = of_gpio_named_count(np, "reset-gpios");
+> > +/**
+> > + * miscattr_fill_xflags - initialize miscattr with xflags
+> > + * @ma:              miscattr pointer
+> > + * @xflags:  FS_XFLAG_* flags
+> > + *
+> > + * Set ->fsx_xflags, ->xattr_valid and ->flags (translated xflags).  All
+> > + * other fields are zeroed.
+> > + */
+> > +void miscattr_fill_xflags(struct miscattr *ma, u32 xflags)
+>
+> Maybe call this miscattr_fill_from_xflags() and the next function
+> miscattr_fill_from_flags()? At least to me it would be clearer when I want
+> to use which function just by looking at the name...
+
+Yes, more clarity for the cost of a longer name.  I'm not sure...
+
 [...]
+> > +/**
+> > + * vfs_miscattr_get - retrieve miscellaneous inode attributes
+> > + * @dentry:  the object to retrieve from
+> > + * @ma:              miscattr pointer
+> > + *
+> > + * Call i_op->miscattr_get() callback, if exists.
+> > + *
+> > + * Returns 0 on success, or a negative error on failure.
+> > + */
+> > +int vfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+> > +{
+> > +     struct inode *inode = d_inode(dentry);
+> > +
+> > +     if (d_is_special(dentry))
+> > +             return -ENOTTY;
+> > +
+> > +     if (!inode->i_op->miscattr_get)
+> > +             return -ENOIOCTLCMD;
+> > +
+> > +     memset(ma, 0, sizeof(*ma));
+>
+> So here we clear whole 'ma' but callers already set e.g. xattr_valid field
+> and cleared the 'ma' as well which just looks silly...
 
-This would then become (for example):
+Well spotted.   Fixed.
 
-  kirin_pcie->gpio_resets_count = of_gpio_named_count(np, "reset-gpios");
+[...]
+> > +/**
+> > + * vfs_miscattr_set - change miscellaneous inode attributes
+> > + * @dentry:  the object to change
+> > + * @ma:              miscattr pointer
+> > + *
+> > + * After verifying permissions, call i_op->miscattr_set() callback, if
+> > + * exists.
+> > + *
+> > + * Verifying attributes involves retrieving current attributes with
+> > + * i_op->miscattr_get(), this also allows initilaizing attributes that have
+> > + * not been set by the caller to current values.  Inode lock is held
+> > + * thoughout to prevent racing with another instance.
+> > + *
+> > + * Returns 0 on success, or a negative error on failure.
+> > + */
+> > +int vfs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
+> > +{
+> > +     struct inode *inode = d_inode(dentry);
+> > +     struct miscattr old_ma = {};
+> > +     int err;
+> > +
+> > +     if (d_is_special(dentry))
+> > +             return -ENOTTY;
+> > +
+> > +     if (!inode->i_op->miscattr_set)
+> > +             return -ENOIOCTLCMD;
+> > +
+> > +     if (!inode_owner_or_capable(inode))
+> > +             return -EPERM;
+> > +
+> > +     inode_lock(inode);
+> > +     err = vfs_miscattr_get(dentry, &old_ma);
+> > +     if (!err) {
+> > +             /* initialize missing bits from old_ma */
+> > +             if (ma->flags_valid) {
+> > +                     ma->fsx_xflags |= old_ma.fsx_xflags & ~FS_XFLAG_COMMON;
+> > +                     ma->fsx_extsize = old_ma.fsx_extsize;
+> > +                     ma->fsx_nextents = old_ma.fsx_nextents;
+> > +                     ma->fsx_projid = old_ma.fsx_projid;
+> > +                     ma->fsx_cowextsize = old_ma.fsx_cowextsize;
+> > +             } else {
+> > +                     ma->flags |= old_ma.flags & ~FS_COMMON_FL;
+> > +             }
+> > +             err = miscattr_set_prepare(inode, &old_ma, ma);
+> > +             if (!err)
+> > +                     err = inode->i_op->miscattr_set(dentry, ma);
+>
+> So I somewhat wonder here - not all filesystems support all the xflags or
+> other extended attributes. Currently these would be just silently ignored
+> AFAICT. Which seems a bit dangerous to me - most notably because it makes
+> future extensions of these filesystems difficult. So how are we going to go
+> about this? Is every filesystem supposed to check what it supports and
+> refuse other stuff (but currently e.g. your ext2 conversion patch doesn't do
+> that AFAICT)? Shouldn't we make things easier for filesystems to provide a
+> bitmask of changing fields (instead of flags / xflags bools) so that they
+> can refuse unsupported stuff with a single mask check?
 
-Krzysztof
+Ah, ext2 one is missing miscattr_has_xattr() check and doesn't use the
+miscattr_fill_flags() helper.  It was one of the earlier fs I
+converted, and the API wasn't so refined then.  Fixed.
+
+Will review all conversions too for this type of omission.
+
+Creating a  mask instead of bool makes sense, I'll look into this.
+
+> To make things more complex, ext2/4 has traditionally silently cleared
+> unknown flags for setflags but not for setxflags. Unlike e.g. XFS which
+> refuses unknown flags.
+
+Right. Not sure if this can be fixed.  Documenting rules and
+exceptions should be a first step.
+
+Thanks,
+Miklos
+
