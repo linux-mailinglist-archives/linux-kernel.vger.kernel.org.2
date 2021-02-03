@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EE930E0F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D3430E0FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhBCR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:26:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhBCRZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:25:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B16764F68;
-        Wed,  3 Feb 2021 17:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612373104;
-        bh=/yhI2spPcVGMBVmOZvUkwECDxBhVNdZcA9Cpql60alQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5Psc9RErW69hu2Tr1n6s+KkTUj4xSf0zHcNvDJdxOyrw2F+Ipb905Dw68xwg+Dgc
-         MEV6TVp32DMji47F1WpFteX8ZGBp1IGmR618GmlHPSrzDCYEkiftCGGJrSv0G27gN7
-         A9QHaPGatDcFj+TvMcu19I/IEb+Ir6zRkuXUSgJScgaIbS7pKL2C4Er1G4c8vTrC9n
-         C676XaaTFguU4XtUWtn1fWuiVSmw7RVsZLByOKsuwhkjiMv6hUC9GE1BC/lZv6ao8y
-         ZhTt2fUOJ/l3dIieaH9J1oc9yMqPzu1Y5ctN9/LaFRZw+387zMPWzuow+pTOPdr8EX
-         tehoZ7/GrxRSg==
-Date:   Wed, 3 Feb 2021 17:24:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sharadg@nvidia.com
-Subject: Re: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
-Message-ID: <20210203172415.GH4880@sirena.org.uk>
-References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
- <1612368575-25991-2-git-send-email-spujar@nvidia.com>
- <20210203161951.GG4880@sirena.org.uk>
- <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
+        id S232116AbhBCR06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:26:58 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56682 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232415AbhBCR0F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:26:05 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7D6E11C0B9C; Wed,  3 Feb 2021 18:25:08 +0100 (CET)
+Date:   Wed, 3 Feb 2021 18:25:08 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from DT
+Message-ID: <20210203172508.GC23019@duo.ucw.cz>
+References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
+ <20210203142940.GB12369@duo.ucw.cz>
+ <DB8P190MB06348FC85033135BFC3EF5C4D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210203163555.GA23019@duo.ucw.cz>
+ <DB8P190MB0634880713B530F51F95CEE0D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZYOWEO2dMm2Af3e3"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="nmemrqcdn5VTmUEE"
 Content-Disposition: inline
-In-Reply-To: <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
-X-Cookie: Who was that masked man?
+In-Reply-To: <DB8P190MB0634880713B530F51F95CEE0D9B49@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ZYOWEO2dMm2Af3e3
+--nmemrqcdn5VTmUEE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 03, 2021 at 10:09:01PM +0530, Sameer Pujar wrote:
-> On 2/3/2021 9:49 PM, Mark Brown wrote:
-> > On Wed, Feb 03, 2021 at 09:39:34PM +0530, Sameer Pujar wrote:
+Hi!
 
-> > > +int graph_remove(struct platform_device *pdev);
+> > Yes, sounds reasonable. Could we get default intensity of 100% on all
+> > channels if nothing else is specified?
+> >=20
+> > Or maybe simply "if intensity is not specified, start with 100%, and
+> > use explicit =3D0 if other color is expected".
+> >=20
+> Mh, if someone is already using the led driver and updates to a newer ker=
+nel=20
+> we would then turn on all leds per default to the maximum intensity durin=
+g boot=20
+> until they are set the way they should be from userspace. I don't know if=
+ this
+> is what we want? If yes, sure, we could set them to maximum per
+> default.
 
-> > I think this needs better namespacing if it's going to be exported.
+Not really. If they don't have trigger configured, nothing will happen.
 
-> audio_graph_remove() can be a better choice?
+> Also if we want to use Percentage Values (%) for setting the intensity
+> I think this should also be done for the userspace interfaces and
+> not only from DT.
 
-Yeah, that looks reasonable.
+We don't want to use percentages in the API (but let me still use
+percentages in discussion).
 
---ZYOWEO2dMm2Af3e3
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--nmemrqcdn5VTmUEE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAa3D8ACgkQJNaLcl1U
-h9DgsQf9GzN3MtpiKxC9z9VC6D/VDCcjNVKfBH4n8AsORm22h3JUl7Y5j1VQE1aO
-feY09SDZ/Xyfu868hB3PC2NhljwRUkkA0s8gnCTMvgprT08OjHZDqzi0nQd2Z0BH
-2V5vO7RgGB0jFXEWwIvFM0AqtcufWjUUDKnlbVGSi/rbOrQCiT6zoUC3BJmGmQLP
-DVPeklIGLqLzbwu+OkWzp0ZImxtonyE07PDnuek2MaH/41HoBRbPRrzfgREgzTt3
-+QSL8GQecG+2Ia0+4LnCy7g528weLNEFB7HDBtqx4SGMct1lD7xhWTPM89sxNq65
-fIRzGZOE8p1RYsstGe04kKxpHBxB4g==
-=qMSx
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBrcdAAKCRAw5/Bqldv6
+8jkUAJwNJ0tMFMEhlguq/D6XwEq0NqqDEgCgv9kRAIWGuBErh1lbV1J4F3uWhqI=
+=3Fgp
 -----END PGP SIGNATURE-----
 
---ZYOWEO2dMm2Af3e3--
+--nmemrqcdn5VTmUEE--
