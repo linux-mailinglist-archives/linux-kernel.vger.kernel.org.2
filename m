@@ -2,163 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BD230DF8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FA630DF96
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhBCQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:20:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23374 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233185AbhBCQUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:20:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612369127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M/MGhUnU/5e7dA2ClMOCmGk1NNyNlDc/BZFcD6gBEds=;
-        b=QjVr3OD+gEHXfZfzjREoDV/SVsEe52ydt3X5zru4BednPQfUl66eZdrzrTz4tHrnmziOXe
-        nTkiawkKx98ceLHByu65h8LOvQM/nuFgP+5TEt9HPBC7XARqwyeV5KSW80JV3OkNZREngI
-        IdhPUUf7QRBSJh6upXHLqNZzd6OBeP4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-D2m6RiGDN0arEoEDfvYHLg-1; Wed, 03 Feb 2021 11:18:45 -0500
-X-MC-Unique: D2m6RiGDN0arEoEDfvYHLg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EA36801960;
-        Wed,  3 Feb 2021 16:18:43 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 02FAC1971C;
-        Wed,  3 Feb 2021 16:18:36 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 11:18:36 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Damien.LeMoal@wdc.com, hare@suse.de, ming.lei@redhat.com,
-        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
-        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
-        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pavgel.tide@veeam.com
-Subject: Re: [PATCH v4 2/6] block: add blk_interposer
-Message-ID: <20210203161836.GB21359@redhat.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
- <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
+        id S232224AbhBCQVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:21:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231673AbhBCQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:21:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F05CB64F7C;
+        Wed,  3 Feb 2021 16:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612369240;
+        bh=1yMtRmiXEbjhnyEHQCW06t598A7qF+k9oLej17rISL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SV94P1m4W/3UrOwSqq2xe2/ru3TeU0LEFT1oUMFGtlOPfRMe+Ch19HqGo4N7HrzuB
+         YYBEvBx4J8JZ3LglWnvl9anEgayHsiOMEGOmsBbRHyQ72btUyCvqVJ3GGa+CsRqrW7
+         wDAjaXMYWznXl/fTOlLNAskkIfmkjxduGvHV0dmJ5SodW7uExRYDFV+tKO1ICdM39v
+         /btzFvd7/68r51dv8IhroL4Wsui1MgcIkcrBLLUMEV7J9ATr02MSSF7KMRAKOkNjFm
+         4qVjLYezSu7pKBFB6dMacDzYg04yogihkw/4Jxh3O9+oyBlc/46Ina5P29GxJdeZ0t
+         IhIRHm4zQWWDw==
+Date:   Wed, 3 Feb 2021 16:19:51 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sharadg@nvidia.com
+Subject: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
+Message-ID: <20210203161951.GG4880@sirena.org.uk>
+References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
+ <1612368575-25991-2-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3607uds81ZQvwCD0"
 Content-Disposition: inline
-In-Reply-To: <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <1612368575-25991-2-git-send-email-spujar@nvidia.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03 2021 at 10:53am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-> blk_interposer allows to intercept bio requests, remap bio to another devices or add new bios.
-> 
-> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> ---
->  block/bio.c               |  2 +
->  block/blk-core.c          | 33 ++++++++++++++++
->  block/genhd.c             | 82 +++++++++++++++++++++++++++++++++++++++
->  include/linux/blk_types.h |  6 ++-
->  include/linux/genhd.h     | 18 +++++++++
->  5 files changed, 139 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 1f2cc1fbe283..f6f135eb84b5 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -684,6 +684,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
->  	bio_set_flag(bio, BIO_CLONED);
->  	if (bio_flagged(bio_src, BIO_THROTTLED))
->  		bio_set_flag(bio, BIO_THROTTLED);
-> +	if (bio_flagged(bio_src, BIO_INTERPOSED))
-> +		bio_set_flag(bio, BIO_INTERPOSED);
->  	bio->bi_opf = bio_src->bi_opf;
->  	bio->bi_ioprio = bio_src->bi_ioprio;
->  	bio->bi_write_hint = bio_src->bi_write_hint;
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 7663a9b94b80..c84bc42ba88b 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -1032,6 +1032,32 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
->  	return ret;
->  }
->  
-> +static blk_qc_t __submit_bio_interposed(struct bio *bio)
-> +{
-> +	struct bio_list bio_list[2] = { };
-> +	blk_qc_t ret = BLK_QC_T_NONE;
-> +
-> +	current->bio_list = bio_list;
-> +	if (likely(bio_queue_enter(bio) == 0)) {
-> +		struct gendisk *disk = bio->bi_disk;
-> +
-> +		if (likely(blk_has_interposer(disk))) {
-> +			bio_set_flag(bio, BIO_INTERPOSED);
-> +			disk->interposer->ip_submit_bio(bio);
-> +		} else /* interposer was removed */
-> +			bio_list_add(&current->bio_list[0], bio);
+--3607uds81ZQvwCD0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-style nit:
+On Wed, Feb 03, 2021 at 09:39:34PM +0530, Sameer Pujar wrote:
 
-} else {
-	/* interposer was removed */
-	bio_list_add(&current->bio_list[0], bio);
-}
+> +int graph_remove(struct platform_device *pdev);
 
-> +
-> +		blk_queue_exit(disk->queue);
-> +	}
-> +	current->bio_list = NULL;
-> +
-> +	/* Resubmit remaining bios */
-> +	while ((bio = bio_list_pop(&bio_list[0])))
-> +		ret = submit_bio_noacct(bio);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
->   * @bio:  The bio describing the location in memory and on the device.
-> @@ -1057,6 +1083,13 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
->  		return BLK_QC_T_NONE;
->  	}
->  
-> +	/*
-> +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> +	 * created by the blk_interposer do not get to it for processing.
-> +	 */
-> +	if (blk_has_interposer(bio->bi_disk) &&
-> +	    !bio_flagged(bio, BIO_INTERPOSED))
-> +		return __submit_bio_interposed(bio);
->  	if (!bio->bi_disk->fops->submit_bio)
->  		return __submit_bio_noacct_mq(bio);
->  	return __submit_bio_noacct(bio);
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 419548e92d82..39785a3ef703 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -30,6 +30,7 @@
->  static struct kobject *block_depr;
->  
->  DECLARE_RWSEM(bdev_lookup_sem);
-> +DEFINE_MUTEX(bdev_interposer_mutex);
+I think this needs better namespacing if it's going to be exported.
 
-Seems you're using this mutex to protect access to disk->interposer in
-attach/detach.  This is to prevent attach/detach races to same device?
+--3607uds81ZQvwCD0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thankfully attach/detach isn't in the bio submission fast path but it'd
-be helpful to document what this mutex is protecting).
+-----BEGIN PGP SIGNATURE-----
 
-A storm of attach or detach will all hit this global mutex though...
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAazScACgkQJNaLcl1U
+h9AwjAf/XixFJdwXumZh6e4G4JogNNq4rLyk1Po+DOZ3Dmp5LtzCNj1hwALHxlvm
+gDH7sKvnVZ3+Ve9dSq0W3qi4SWSuvwTE/pMCxggeMawZvhYvFjzs43j0y4CwPAWZ
+8A8l6dBgWZNLwK89wvUEvampht9g7dVya2Lu4+Y1UhCr+KrzJTtNTFmCfTsjnSHD
+J2s/mfxZGuVewx9x5LeDeI3Oq1NlPJ1tGhXZKTsJlle8PBmULi2V4b3cFS4Al8W5
+OOKCXsA9y5RmPHKYiTF4Zwae+u9d8RfmWuYGsGRxM1UarrDmUahphJQQ7Z0mqWc9
+OKbLHvjn5eNiEr2NUJbHS1Rvjy1/dw==
+=Z2ls
+-----END PGP SIGNATURE-----
 
-Mike
-
+--3607uds81ZQvwCD0--
