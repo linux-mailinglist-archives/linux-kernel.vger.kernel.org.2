@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E3C30D1C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AC430D1C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhBCCp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:45:27 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51325 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230215AbhBCCpY (ORCPT
+        id S232290AbhBCCrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:47:32 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39639 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232242AbhBCCr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:45:24 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNjXz5s_1612320271;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNjXz5s_1612320271)
+        Tue, 2 Feb 2021 21:47:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNjXzVX_1612320403;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNjXzVX_1612320403)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Feb 2021 10:44:38 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     steffen.klassert@secunet.com
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] esp: Simplify the calculation of variables
-Date:   Wed,  3 Feb 2021 10:44:30 +0800
-Message-Id: <1612320270-873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+          Wed, 03 Feb 2021 10:46:44 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] remoteproc: qcom_wcnss: remove unneeded semicolon
+Date:   Wed,  3 Feb 2021 10:46:42 +0800
+Message-Id: <1612320402-3313-1-git-send-email-yang.lee@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
-
-./net/ipv6/esp6.c:791:16-18: WARNING !A || A && B is equivalent
-to !A || B.
+Eliminate the following coccicheck warning:
+./drivers/remoteproc/qcom_wcnss.c:573:2-3: Unneeded semicolon
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- net/ipv6/esp6.c | 2 +-
+ drivers/remoteproc/qcom_wcnss.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 2b804fc..153ad10 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -788,7 +788,7 @@ int esp6_input_done2(struct sk_buff *skb, int err)
- 	int hlen = sizeof(struct ip_esp_hdr) + crypto_aead_ivsize(aead);
- 	int hdr_len = skb_network_header_len(skb);
+diff --git a/drivers/remoteproc/qcom_wcnss.c b/drivers/remoteproc/qcom_wcnss.c
+index f958542..2a6a23c 100644
+--- a/drivers/remoteproc/qcom_wcnss.c
++++ b/drivers/remoteproc/qcom_wcnss.c
+@@ -570,7 +570,7 @@ static int wcnss_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mmio)) {
+ 		ret = PTR_ERR(mmio);
+ 		goto free_rproc;
+-	};
++	}
  
--	if (!xo || (xo && !(xo->flags & CRYPTO_DONE)))
-+	if (!xo || !(xo->flags & CRYPTO_DONE))
- 		kfree(ESP_SKB_CB(skb)->tmp);
- 
- 	if (unlikely(err))
+ 	ret = wcnss_alloc_memory_region(wcnss);
+ 	if (ret)
 -- 
 1.8.3.1
 
