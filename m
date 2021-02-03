@@ -2,107 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D87D30E5C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED6E30E5D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhBCWKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbhBCWJR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:09:17 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20A4C061573;
-        Wed,  3 Feb 2021 14:08:36 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id u14so1115516wri.3;
-        Wed, 03 Feb 2021 14:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZJlDPDMrWIWcvU77LN9zrfIUHEDl26zI6D0g0M5VBNs=;
-        b=KKOWlEja+/AN4ZDOQfMlGTaDqB/3f4EgGuQYgDHFonB391/crY8+r3unb4wW/tD3TT
-         oHEnUmRHPmgfjU3GCIo7iH9fF/EGfw9ZHRGdTKmMsm8eFDvI5ynmtSVUs+mXqfW+EjRb
-         AOzJC43ibtL00Gu7F1cyuRuUkh/tH/SNRjql146pFtizqpeIv5nPTa4PPj1SjaOZibyu
-         t7VFDmkMEJ2GUOxm2PcgsHnlWCPHMjLxuhb3C28/VYbWXMOz8NTeRGILcfO6yc1oUOSC
-         wv3pgZ+AXppO+vtMEztRDR2ZUdTSFtwujf2krr6GjgnflNR5jTE82rsMmBAXWJD0umND
-         qZIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZJlDPDMrWIWcvU77LN9zrfIUHEDl26zI6D0g0M5VBNs=;
-        b=tPnwrCgBEE8G8EMLvy6ipmZdC9tdGIUI3/Gprx+l/KLYMBtwJ5q7DA7N7+EguXApj6
-         7kUp/PBxa5rCisD2I6w/UWDP38wZX/zUm8UzeyxDRup5XZWPleC+BfPLsUqExFvegWYu
-         wRnPhis9NJL1vE5Z4Lpis7EUvSFbOoiGDmAGG0uZB9M6CONpBqz3iYUdZ+etghGKbh7b
-         eEgNI0cOlovvbSY01c8DqHBMlWWftGhRQjJSck3GmeaVLhjw9Q+LSNV5jyWAj0yzhBP3
-         wx2QEU7ys7y/mevsWdcji1SJIIMzZ0MmzoYVuD0pgQCknF8g1INgoSO9a4tsTV2hWZap
-         sdwQ==
-X-Gm-Message-State: AOAM531AfwqBCVuOok/SwFkF1ZmzP6ECDfDOL/In/7UxeSa53qS09fCS
-        IF1AsBDy0Ifc46TOQ46kUCftRKzrVAwWzZByT24s6uktILiFCg==
-X-Google-Smtp-Source: ABdhPJzPuTDC2UxOsfIOLS/x+mXyaWz64C5FDMl4EEVGmPuEJH3/QBYrpUjTZy1XmvRfFdOQ3sgCQ9/RIPzy4POu7w0=
-X-Received: by 2002:adf:f8c8:: with SMTP id f8mr5884454wrq.132.1612390115324;
- Wed, 03 Feb 2021 14:08:35 -0800 (PST)
+        id S232880AbhBCWM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:12:27 -0500
+Received: from mga18.intel.com ([134.134.136.126]:43713 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229897AbhBCWMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:12:25 -0500
+IronPort-SDR: 3Jxh20Ni4AS4mzSQkx+2a2thV4UpogBhcR/VaKlt7oRPBByU9g1UJg9QTripnhbZswfv0XK85P
+ yzaFcJvXLlmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168809436"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="168809436"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:11:43 -0800
+IronPort-SDR: /DfOZl3pETvKRh9vvn6xX5DrYJvJOcvjAP+J+zt7A2N4TcnTIe8l/SzNPRKikOKd78mKL4utjA
+ IUNGHvMMN5bQ==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="356170915"
+Received: from pmehra-mobl.amr.corp.intel.com (HELO [10.255.230.38]) ([10.255.230.38])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 14:11:41 -0800
+Subject: Re: [PATCH v18 24/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+ <20210127212524.10188-25-yu-cheng.yu@intel.com>
+ <ba39586d-25b6-6ea5-19c3-adf17b59f910@intel.com>
+ <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
+ <6720b1a9-f785-dbbd-1f0e-8c9090be2069@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a7ef2df2-815f-9994-11b7-026afe45094f@intel.com>
+Date:   Wed, 3 Feb 2021 14:11:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210125234901.2730699-1-swboyd@chromium.org> <YBlz8Go2DseRWuOa@phenom.ffwll.local>
- <CAF6AEGuWhGuzxsBquj-WLSwa83r+zO7jAQ9ten2m+2KtoGpYSw@mail.gmail.com>
- <YBp2h2cVXrF6lBno@phenom.ffwll.local> <CAF6AEGvTrfYYTfReGbAm9zcBNhjZvX0tko4kZUeQcyNZv4cM6w@mail.gmail.com>
- <161238950899.76967.16385691346035591773@swboyd.mtv.corp.google.com>
-In-Reply-To: <161238950899.76967.16385691346035591773@swboyd.mtv.corp.google.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 3 Feb 2021 14:11:09 -0800
-Message-ID: <CAF6AEGtFpjpYoY_iu8F2z-RMJ=0+tBYo-akKJ1JbgKagBuQWtA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6720b1a9-f785-dbbd-1f0e-8c9090be2069@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 1:58 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Rob Clark (2021-02-03 09:29:09)
-> > On Wed, Feb 3, 2021 at 2:10 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Tue, Feb 02, 2021 at 08:51:25AM -0800, Rob Clark wrote:
-> > > > On Tue, Feb 2, 2021 at 7:46 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > >
-> > > > > On Mon, Jan 25, 2021 at 03:49:01PM -0800, Stephen Boyd wrote:
-> > > > > > This is because lockdep thinks all the locks taken in lock_crtcs() are
-> > > > > > the same lock, when they actually aren't. That's because we call
-> > > > > > mutex_init() in msm_kms_init() and that assigns on static key for every
-> > > > > > lock initialized in this loop. Let's allocate a dynamic number of
-> > > > > > lock_class_keys and assign them to each lock so that lockdep can figure
-> > > > > > out an AA deadlock isn't possible here.
-> > > > > >
-> > > > > > Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
-> > > > > > Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-> > > > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > > >
-> > > > > This smells like throwing more bad after initial bad code ...
-> > > > >
-> > > > > First a rant: https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
-> > >
-> > > Some technical on the patch itself: I think you want
-> > > mutex_lock_nested(crtc->lock, drm_crtc_index(crtc)), not your own locking
-> > > classes hand-rolled. It's defacto the same, but much more obviously
-> > > correct since self-documenting.
-> >
-> > hmm, yeah, that is a bit cleaner.. but this patch is already on
-> > msm-next, maybe I'll add a patch on top to change it
->
-> How many CRTCs are there? The subclass number tops out at 8, per
-> MAX_LOCKDEP_SUBCLASSES so if we have more than that many bits possible
-> then it will fail.
+On 2/3/21 1:54 PM, Yu, Yu-cheng wrote:
+> On 1/29/2021 10:56 AM, Yu, Yu-cheng wrote:
+>> On 1/29/2021 9:07 AM, Dave Hansen wrote:
+>>> On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
+>>>> +    if (!IS_ENABLED(CONFIG_X86_CET))
+>>>> +        return -EOPNOTSUPP;
+>>>
+>>> Let's ignore glibc for a moment.  What error code *should* the kernel be
+>>> returning here?  errno(3) says:
+>>>
+>>>         EOPNOTSUPP      Operation not supported on socket (POSIX.1)
+>>> ...
+>>>         ENOTSUP         Operation not supported (POSIX.1)
+>>>
+>>
+>> Yeah, other places in kernel use ENOTSUPP.  This seems to be out of
+>> line.  And since the issue is long-existing, applications already know
+>> how to deal with it.  I should have made that argument.  Change it to
+>> ENOTSUPP.
+> 
+> When I make the change, checkpatch says...
+> 
+> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+> #128: FILE: arch/x86/kernel/cet_prctl.c:33:
+> +        return -ENOTSUPP;
+> 
+> Do we want to reconsider?
 
-conveniently MAX_CRTCS is 8.. realistically I don't *think* you'd ever
-see more than 2 or 3
+I'm not sure I trust checkpatch over manpages.  I had to google "SUSV4".
+ I'm not sure it matters at *all* for a 100% Linux-specific interface.
 
-BR,
--R
+ENOTSUPP does seem less popular lately:
+
+> $ git diff v5.0.. kernel/ arch/ drivers/ | grep ^+.*return.*E.*NO.*SUP.*\; | grep -o -- -E.*\; | sort | uniq -c | sort -n
+> ... noise
+>      61 -EOPNOTSUPP);
+>     260 -ENOTSUPP;
+>    1577 -EOPNOTSUPP;
+
+but far from unused.  That might be due to checkpatch spew more than
+anything.
