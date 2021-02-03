@@ -2,196 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE2530DB8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8479330DB8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhBCNmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:42:06 -0500
-Received: from mail-oo1-f45.google.com ([209.85.161.45]:32872 "EHLO
-        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhBCNkz (ORCPT
+        id S229986AbhBCNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:43:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231428AbhBCNmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:40:55 -0500
-Received: by mail-oo1-f45.google.com with SMTP id u7so6020490ooq.0;
-        Wed, 03 Feb 2021 05:40:39 -0800 (PST)
+        Wed, 3 Feb 2021 08:42:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612359668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=msAcTyPpH0uhCVhlJSk7w3lzIdisxEsipIij/eqjQsw=;
+        b=D7bAo1A1hs91LgcWk8eA014fS2TyxkAr3qXK+Kt9tfL0PtSe5pj2Y08/ISXBW+jA6yipOO
+        V64lBcdO5HGWttOyv8B68Ff/7HG/SDclSJbXsjnOQ+8HZPbHvb2P67nEbMvi7o9s7g6xV9
+        kf9YlmEK/E3YU+TOr16ANRI05MysO4Y=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-6Hd3moCyOo2MZ7cJvBzo7g-1; Wed, 03 Feb 2021 08:41:06 -0500
+X-MC-Unique: 6Hd3moCyOo2MZ7cJvBzo7g-1
+Received: by mail-ed1-f71.google.com with SMTP id g6so3738033edy.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:41:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zAG2ORrJOSGIc7ykt4Jaj4cXkoSE9ZmRI1sEKOlUH8E=;
-        b=PhpseIQ7HbXBQPVzhJGTrmZsOPUGXkFxLjtqmdsonvWN1W4F0ODYkz2MrJ1fU4fpKL
-         lvuyw6BVuvxSE493fTLJD8QUKdHrS5FG1tmlycFNMDzAd5/z03/iHRETertE7lpivV1H
-         C7mahhx7N2iJ8KKFxE/+EHaZRLuzMHuMijgxpaX3Yj9FVx0a0tU28/NUqlGw7i6/zACM
-         Mb+qFJAWn+WMam2YuFR4lJ6aN8oqIlbnAkd9WV6GpnSBshbILoa5h7dHjRRFNGLhE5tI
-         KfpBoK4dqd5SKEGozATzV+7gHZllgouN0OYT6eTZmaZBd1dVBmejQxf7uEjt1tJKNldl
-         rJsw==
-X-Gm-Message-State: AOAM532zfnnsP7CuFqvESHDNnBe7Vfvx9WIIAssoYXD+cHWPCTOcn9ux
-        C0npWapnTiha6pct+bo155+jnqhJL3+bHfRHEK0=
-X-Google-Smtp-Source: ABdhPJznq67sM7X2NqxYyznZ/cNjiEpWbWJjVSPRblRmQj7rDdHbTumwwKR+SgAw1TSA8/C7nESxIFPERtQAnrzcSTw=
-X-Received: by 2002:a4a:9873:: with SMTP id z48mr2107388ooi.44.1612359614153;
- Wed, 03 Feb 2021 05:40:14 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=msAcTyPpH0uhCVhlJSk7w3lzIdisxEsipIij/eqjQsw=;
+        b=joJKceJ+dHmVRziCog6tsDnUt3MoykNa3DA9R9PyIGyiDP/31+i/NsyMMbSCZU3QqL
+         3j8z54u5WT4lGorUNFm0G/W0sJrKNBZdnoo81talyjBQUgf3VbwU1yvAhOebwHD9qtoO
+         zm4/nLo2NUrn8SbKsMSjCyeGUpU7nfXYUOhmPDATeqZ9GhtDnGNqSXdS8e5Pe9qE37V8
+         CMVpY1S/nMkozsQ/Gi74G8vyEuADbQBCq9a9AXjfzdn13xOzWjfbsT1jCzf46e61uCur
+         bJChbG71MI236mA98+83MIWe7eT5oQqZR6Bk8VT7zvtcKrCOAgXUVlq6YEdoM8+H55i9
+         nSyA==
+X-Gm-Message-State: AOAM533sYpY9TsJwGSoAz+g6t/9Sc76jlsdZCOSvA56CMmmPQbCqn8dg
+        2NtPt7e7L/KoEhsPnKR1j6/bmBR7KzRTsLNVM6BfzsAM8D9ufngkFhQyiLK4lbJoNlJhs9fwA1w
+        npFTZrLqiA2NV0gkaTiIySBJ9KjInl6I9V62JYtmVqVUG8Ya0Dsywe8DemdM5tC3Zj5jGlVyIXu
+        dZ
+X-Received: by 2002:aa7:dbd4:: with SMTP id v20mr3099898edt.330.1612359664852;
+        Wed, 03 Feb 2021 05:41:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5RqYAPRRgfzLBlQj3QtEFUTTMAWVBk2kNfGn0CfoyXUMV2LaPkgLSfawvzDEpBA6U8agzMA==
+X-Received: by 2002:aa7:dbd4:: with SMTP id v20mr3099857edt.330.1612359664645;
+        Wed, 03 Feb 2021 05:41:04 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s15sm1010923ejy.68.2021.02.03.05.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 05:41:03 -0800 (PST)
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
+ <YBisBkSYPoaOM42F@google.com>
+ <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
+Message-ID: <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
+Date:   Wed, 3 Feb 2021 14:41:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210122204038.3238-1-ggherdovich@suse.cz> <20210122204038.3238-2-ggherdovich@suse.cz>
- <CAJZ5v0hQ_r3th5upo-X5fNBG0tUNbLbhQN-cqmDd1FGwhGx4dg@mail.gmail.com>
- <CAJZ5v0jsF-_8GzQgqZH10bf0oUTmALiT1kVcjDqYgGPqx9iKZg@mail.gmail.com> <1612341564.3640.14.camel@suse.cz>
-In-Reply-To: <1612341564.3640.14.camel@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 3 Feb 2021 14:40:01 +0100
-Message-ID: <CAJZ5v0jdcxFBxqYjvTfO64v3Vij1ATp4_GMJKdQCvAysM4gbjw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
- schedutil invariant formula
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Larabel <Michael@phoronix.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 9:39 AM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
->
-> Hello,
->
-> both Rafael and Viresh make a similar remark: why adding a new "max_boost"
-> variable, since "max_freq" is already available and could be used instead.
->
-> Replying here to both.
->
-> On Tue, 2021-02-02 at 20:26 +0100, Rafael J. Wysocki wrote:
-> > On Tue, Feb 2, 2021 at 7:59 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 22, 2021 at 9:47 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
-> > >
-> > > [cut]
-> > > > @@ -779,15 +829,25 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> > > >                     freq_table[valid_states-1].frequency / 1000)
-> > > >                         continue;
-> > > >
-> > > > +               freq = perf->states[i].core_frequency * 1000;
-> > > >                 freq_table[valid_states].driver_data = i;
-> > > > -               freq_table[valid_states].frequency =
-> > > > -                   perf->states[i].core_frequency * 1000;
-> > > > +               freq_table[valid_states].frequency = freq;
-> > > > +
-> > > > +               if (freq > max_freq)
-> > > > +                       max_freq = freq;
-> > > > +
-> > > >                 valid_states++;
-> > > >         }
-> > > >         freq_table[valid_states].frequency = CPUFREQ_TABLE_END;
-> > > >         policy->freq_table = freq_table;
-> > > >         perf->state = 0;
-> > > >
-> > > > +       if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
-> > > > +           amd_max_boost(max_freq, &max_boost)) {
-> > > > +               policy->cpuinfo.max_boost = max_boost;
-> > >
-> > > Why not to set max_freq to max_boost instead?
-> >
-> > I mean, would setting the frequency in the last table entry to max_boost work?
-> >
-> > Alternatively, one more (artificial) entry with the frequency equal to
-> > max_boost could be added.
->
-> On Wed, 2021-02-03 at 11:34 +0530, Viresh Kumar wrote:
-> > [cut]
-> >
-> > On 22-01-21, 21:40, Giovanni Gherdovich wrote:
-> > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > index 6931f0cdeb80..541f3db3f576 100644
-> > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > @@ -159,8 +159,12 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> > >                               unsigned long util, unsigned long max)
-> > >  {
-> > >     struct cpufreq_policy *policy = sg_policy->policy;
-> > > -   unsigned int freq = arch_scale_freq_invariant() ?
-> > > -                           policy->cpuinfo.max_freq : policy->cur;
-> > > +   unsigned int freq, max_freq;
-> > > +
-> > > +   max_freq = cpufreq_driver_has_max_boost() ?
-> > > +                   policy->cpuinfo.max_boost : policy->cpuinfo.max_freq;
-> >
-> > Also, can't we update max_freq itself from the cpufreq driver? What
-> > troubles will it cost ?
->
-> I could add the max boost frequency to the frequency table (and
-> policy->cpuinfo.max_freq would follow), yes, but that would trigger the
-> following warning from acpi-cpufreq.c:
->
-> static void acpi_cpufreq_cpu_ready(struct cpufreq_policy *policy)
-> {
->         struct acpi_processor_performance *perf = per_cpu_ptr(acpi_perf_data,
->                                                               policy->cpu);
->
->         if (perf->states[0].core_frequency * 1000 != policy->cpuinfo.max_freq)
->                 pr_warn(FW_WARN "P-state 0 is not max freq\n");
-> }
+On 02/02/21 23:42, Maciej S. Szmigiero wrote:
+>> I'm not opposed to using more sophisticated storage for the gfn 
+>> lookups, but only if there's a good reason for doing so.  IMO, the
+>> rbtree isn't simpler, just different.
 
-This check can be changed, though.
+And it also has worse cache utilization than an array, due to memory 
+footprint (as you point out below) but also pointer chasing.
 
-> so I thought that to stay out of troubles I'd supply a different variable,
-> max_boost, to be used only in the schedutil formula.
+>> Memslot modifications are
+>> unlikely to be a hot path (and if it is, x86's "zap everything"
+>> implementation is a far bigger problem), and it's hard to beat the
+>> memory footprint of a raw array.  That doesn't leave much 
+>> motivation for such a big change to some of KVM's scariest (for me)
+>> code.
+>> 
+> 
+> Improvements can be done step-by-step, 
+> kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in
+> the future, if necessary. After all, complains are that this change
+> alone is too big.
+> 
+> I think that if you look not at the patch itself but at the
+> resulting code the new implementation looks rather straightforward,
+> there are comments at every step in kvm_set_memslot() to explain
+> exactly what is being done. Not only it already scales well, but it
+> is also flexible to accommodate further improvements or even new
+> operations.
+> 
+> The new implementation also uses standard kernel {rb,interval}-tree
+> and hash table implementation as its basic data structures, so it 
+> automatically benefits from any generic improvements to these.
+> 
+> All for the low price of just 174 net lines of code added.
 
-Which is not necessary and the extra static branch is not necessary.
+I think the best thing to do here is to provide a patch series that 
+splits the individual changes so that they can be reviewed and their 
+separate merits evaluated.
 
-Moreover, there is no reason whatsoever to believe that EPYC is the
-only affected processor model.  If I'm not mistaken, the regression
-will be visible on every CPU where the scale invariance algorithm uses
-the max frequency greater than the max frequency used acpi_cpufreq.
+Another thing that I dislike about KVM_SET_USER_MEMORY_REGION is that 
+IMO userspace should provide all memslots at once, for an atomic switch 
+of the whole memory array.  (Or at least I would like to see the code; 
+it might be a bit tricky because you'll need code to compute the 
+difference between the old and new arrays and invoke 
+kvm_arch_prepare/commit_memory_region).  I'm not sure how that would 
+interact with the active/inactive pair that you introduce here.
 
-Also, AFAICS, it should be sufficient to modify acpi_cpufreq to remedy
-this for all of the affected CPUs, not just EPYC.
+Paolo
 
-> After schedutil figures out a desired next_freq then the usual comparison with the
-> firmware-supplied frequency table could take place.
->
-> Altering the frequency table seemed more invasive because once a freq value is
-> in there, it's going to be actually requested by the driver to the platform.
-
-This need not be the case if the control structure for the new entry
-is copied from an existing one.
-
-> I only want my max_boost to stretch the range of schedutil's next_freq.
-
-Right, but that can be done in a different way which would be cleaner too IMO.
-
-I'm going to send an alternative patch to fix this problem.
-
-> On Tue, 2021-02-02 at 19:59 +0100, Rafael J. Wysocki wrote:
-> >
-> > [cut]
-> > Also notice that the static branch is global and the max_boost value
-> > for different CPUs may be different, at least in theory.
->
-> In theory yes, but I'm guarding the code with two conditions:
->
-> * vendor is X86_VENDOR_AMD
-> * cppc_get_perf_caps() returns success
->
-> this identifies AMD EPYC cpus with model 7xx2 and later, where max_boost is
-> the same on all cores. I may have added synchronization so that only one cpu
-> sets the value, but I didn't in the interest of simplicity for an -rc patch
-> (I'd have to consider hotplug, the maxcpus= command line param, ecc).
-
-And what about the other potentially affected processors?
-
-I wouldn't worry about the -rc time frame too much.  If we can do a
-better fix now, let's do it.
