@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F3D30D908
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773E530D90A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhBCLn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:43:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:38462 "EHLO foss.arm.com"
+        id S234482AbhBCLnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:43:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:38472 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234461AbhBCLmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:42:50 -0500
+        id S234467AbhBCLnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:43:10 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23E9ED6E;
-        Wed,  3 Feb 2021 03:42:04 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.11.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C57863F719;
-        Wed,  3 Feb 2021 03:42:01 -0800 (PST)
-Date:   Wed, 3 Feb 2021 11:41:58 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        jeyu@kernel.org, keescook@chromium.org, vincenzo.frascino@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64/kernel: improve the coding style
-Message-ID: <20210203114158.GD55896@C02TD0UTHF1T.local>
-References: <1612331299-21127-1-git-send-email-daizhiyuan@phytium.com.cn>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A8E613D5;
+        Wed,  3 Feb 2021 03:42:24 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AC203F719;
+        Wed,  3 Feb 2021 03:42:21 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
+        "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman\@suse.de" <mgorman@suse.de>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "linuxarm\@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei \(O\)" <xuwei5@huawei.com>,
+        "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
+        "tiantao \(H\)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu\@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
+In-Reply-To: <64209fc8849447e6bcd2d36e74a48fc3@hisilicon.com>
+References: <20210201033830.15040-1-song.bao.hua@hisilicon.com> <jhj4kiu4hz8.mognet@arm.com> <64209fc8849447e6bcd2d36e74a48fc3@hisilicon.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Wed, 03 Feb 2021 11:42:15 +0000
+Message-ID: <jhjy2g52x9k.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612331299-21127-1-git-send-email-daizhiyuan@phytium.com.cn>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:48:19PM +0800, Zhiyuan Dai wrote:
-> Just improve the coding style.
-> 
-> Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+On 03/02/21 10:23, Song Bao Hua (Barry Song) wrote:
+>> -----Original Message-----
+>> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+>> Thoughts?
+>
+> I guess the original purpose of overlapping groups is creating as few groups
+> as possible. If we totally remove overlapping groups, it seems we will create
+> much more groups?
+> For example, while node0 begins to build sched_domain for distance 20, it will
+> add node2, since the distance between node2 and node3 is 15, so while node2 is
+> added, node3 is also added as node2's lower domain has covered node3. So we need
+> two groups only for node0's sched_domain of distance level 20.
+> +-------+                  +--------+
+>  |       |      15          |        |
+>  |  node0+----------------+ | node1  |
+>  |       |                  |        |
+>  +----+--+                XXX--------+
+>       |                 XXX
+>       |                XX
+> 20    |         15   XX
+>       |            XXX
+>       |       X XXX
+>  +----+----XXX               +-------+
+>  |         |     15          |  node3|
+>  | node2   +-----------------+       |
+>  |         |                 +-------+
+>  +---------+
+>
+> If we remove overlapping group, we will add a group for node2, another
+> group for node3. Then we get three groups.
+>
+> I am not sure if it is always positive for performance.
+>
 
-This is terse and doesn't tell the reader what to expect. It would be
-better to say something more specific, e.g.
+Neither am I! At the same time our strategy for generating groups is pretty
+much flawed for anything with distance > 2, so I'd like to have a saner
+setup that doesn't involve fixing groups "after the fact".
 
-| arm64: improve whitespace
-|
-| In a few places we don't have whitespace between macro parameters,
-| which makes them hard to read. This patch adds whitespace to clearly
-| separate the parameters.
-|
-| In a few places we have unnecessary whitespace around unary operators,
-| which is confusing, This patch removes the unnecessary whitespace.
-
-... which more clearly justifies the change.
-
-The patch itself looks sane to me (and the unary operator cleanup is
-certianly nice), so with that wording:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
-
-> ---
->  arch/arm64/kernel/alternative.c | 2 +-
->  arch/arm64/kernel/module-plts.c | 2 +-
->  arch/arm64/kernel/perf_event.c  | 2 +-
->  arch/arm64/kernel/process.c     | 4 ++--
->  4 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-> index a57cffb..1184c44 100644
-> --- a/arch/arm64/kernel/alternative.c
-> +++ b/arch/arm64/kernel/alternative.c
-> @@ -17,7 +17,7 @@
->  #include <asm/sections.h>
->  #include <linux/stop_machine.h>
->  
-> -#define __ALT_PTR(a,f)		((void *)&(a)->f + (a)->f)
-> +#define __ALT_PTR(a, f)		((void *)&(a)->f + (a)->f)
->  #define ALT_ORIG_PTR(a)		__ALT_PTR(a, orig_offset)
->  #define ALT_REPL_PTR(a)		__ALT_PTR(a, alt_offset)
->  
-> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> index 2e22443..e53493d 100644
-> --- a/arch/arm64/kernel/module-plts.c
-> +++ b/arch/arm64/kernel/module-plts.c
-> @@ -131,7 +131,7 @@ u64 module_emit_veneer_for_adrp(struct module *mod, Elf64_Shdr *sechdrs,
->  }
->  #endif
->  
-> -#define cmp_3way(a,b)	((a) < (b) ? -1 : (a) > (b))
-> +#define cmp_3way(a, b)	((a) < (b) ? -1 : (a) > (b))
->  
->  static int cmp_rela(const void *a, const void *b)
->  {
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index 3605f77a..d1fec4a 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -810,7 +810,7 @@ static int armv8pmu_get_single_idx(struct pmu_hw_events *cpuc,
->  {
->  	int idx;
->  
-> -	for (idx = ARMV8_IDX_COUNTER0; idx < cpu_pmu->num_events; idx ++) {
-> +	for (idx = ARMV8_IDX_COUNTER0; idx < cpu_pmu->num_events; idx++) {
->  		if (!test_and_set_bit(idx, cpuc->used_mask))
->  			return idx;
->  	}
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 6616486..4cc1ccc 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -304,7 +304,7 @@ void __show_regs(struct pt_regs *regs)
->  	}
->  }
->  
-> -void show_regs(struct pt_regs * regs)
-> +void show_regs(struct pt_regs *regs)
->  {
->  	__show_regs(regs);
->  	dump_backtrace(regs, NULL, KERN_DEFAULT);
-> @@ -587,7 +587,7 @@ unsigned long get_wchan(struct task_struct *p)
->  			ret = frame.pc;
->  			goto out;
->  		}
-> -	} while (count ++ < 16);
-> +	} while (count++ < 16);
->  
->  out:
->  	put_task_stack(p);
-> -- 
-> 1.8.3.1
-> 
+I have a sort-of-working hack, I'll make this into a patch and toss it out
+for discussion.
