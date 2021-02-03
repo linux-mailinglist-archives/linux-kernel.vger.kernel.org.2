@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7937E30E518
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6F630E51E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhBCVo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:44:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
+        id S231550AbhBCVrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:47:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231868AbhBCVoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:44:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B760B64DFD;
-        Wed,  3 Feb 2021 21:43:43 +0000 (UTC)
+        id S229897AbhBCVq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:46:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFFBE64DA3;
+        Wed,  3 Feb 2021 21:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612388624;
-        bh=xUU5Ge7K+jvMBkWDfVVhdnYBNkY1CmMdddep6ioLAOg=;
+        s=k20201202; t=1612388778;
+        bh=t9q36+UozJsJ0NMC2j5rVcV+pwE4hj88IGjV6WTPNUo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CChekWKdep596mhefX937YeQwUYhcg1XzLT3KGDin2V1EQCOxpmAy7OxEb2NIGjAs
-         my0ASI+SrtmuOMFxt+kKQjWU/7BFYYgGvmGkz8Fl2UlX6KcTTyAsvLJxx0qeUuPp/x
-         BIrGsfkgv9P8o+XMxr5SXd68zdkwiv/HZNh4cNzMSmoWh+Is7wokDkhlIzdnTRNkZt
-         EmQVIWD8JwyWoaZe7zn+J1y863YpHjBt21BtitJjWNOtyYKvqk0HJcAugPTQPMYdAb
-         JCtprLN1FrDnb4nK5w4LWj1NanSY096z+rtH6lVKILbTqpmQMVPKZa9PXLSeSIybc6
-         gcrk6hlXke0Mw==
-Date:   Wed, 3 Feb 2021 23:43:36 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH v2 1/3] tpm: fix reference counting for struct tpm_chip
-Message-ID: <YBsZCP29W2Lb9gw1@kernel.org>
-References: <1612303743-29017-1-git-send-email-LinoSanfilippo@gmx.de>
- <1612303743-29017-2-git-send-email-LinoSanfilippo@gmx.de>
- <YBn3rdErdKNAUdgZ@kernel.org>
- <01cb09f4-2ed7-2101-24c2-17390b0d3b39@kunbus.com>
+        b=uVRuQ5P0IfFTsuCtMSN892U6rEqrIfX9TVmgXodJDinRCg5OkM9Co88RgxyBq3rmJ
+         O1HkbK7cKkulp25CDBWLst0L8JbCrIbj9RZ2I3zHtl7ISsV3+3Xpwe2YdEHmqESL8B
+         n3KtHxLGn0iPYvsF4A4J7y0VYF7TycoLYNNOgb0y03Lc9skcbp8DdrHCOt1R8K6jqG
+         5OJdLRid3AWksbYRNL/FyX/t09EMZzgUtuvsXVH/eAZDPQHXygnGPxNCy+yzvqANxP
+         XgiZ6rgkWPPgE8bta9cwEBqe6erV6gX23odAuK6lYsgo/L1wSwUDQXgSdhT7ENA+kK
+         RNVV1TErPzzyQ==
+Date:   Wed, 3 Feb 2021 21:46:12 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
+ flag
+Message-ID: <20210203214612.GB19847@willie-the-truck>
+References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210129090516.GB3998@willie-the-truck>
+ <5d23fce629323bcda71594010824aad0@codeaurora.org>
+ <20210201111556.GA7172@willie-the-truck>
+ <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
+ <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+ <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01cb09f4-2ed7-2101-24c2-17390b0d3b39@kunbus.com>
+In-Reply-To: <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:06:30PM +0100, Lino Sanfilippo wrote:
-> Hi,
-> 
-> 
-> On 03.02.21 02:09, Jarkko Sakkinen wrote:
-> > On Tue, Feb 02, 2021 at 11:09:01PM +0100, Lino Sanfilippo wrote:
-> >> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> >>
-> >> The following sequence of operations
-> >>
-> >> 1. open device /dev/tpmrm
-> >> 2. remove the registered tpm chip driver
+On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
+> On 2021-02-01 23:50, Jordan Crouse wrote:
+> > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
+> > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+> > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
+> > > > > On 2021-01-29 14:35, Will Deacon wrote:
+> > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
+> > > > > > > +#define IOMMU_LLC        (1 << 6)
+> > > > > >
+> > > > > > On reflection, I'm a bit worried about exposing this because I think it
+> > > > > > will
+> > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
+> > > > > > MAIR
+> > > > > > set up for this memory type). Now, we also have that issue for the PTW,
+> > > > > > but
+> > > > > > since we always use cache maintenance (i.e. the streaming API) for
+> > > > > > publishing the page-tables to a non-coheren walker, it works out.
+> > > > > > However,
+> > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
+> > > > > > allocation, then they're potentially in for a nasty surprise due to the
+> > > > > > mismatched outer-cacheability attributes.
+> > > > > >
+> > > > >
+> > > > > Can't we add the syscached memory type similar to what is done on android?
+> > > >
+> > > > Maybe. How does the GPU driver map these things on the CPU side?
+> > > 
+> > > Currently we use writecombine mappings for everything, although there
+> > > are some cases that we'd like to use cached (but have not merged
+> > > patches that would give userspace a way to flush/invalidate)
+> > > 
 > > 
-> > What is "tpm chip driver"? Please just refer to the exact thing
-> > (e.g. tpm_tis_spi is the one you should refer to in your case).
+> > LLC/system cache doesn't have a relationship with the CPU cache.  Its
+> > just a
+> > little accelerator that sits on the connection from the GPU to DDR and
+> > caches
+> > accesses. The hint that Sai is suggesting is used to mark the buffers as
+> > 'no-write-allocate' to prevent GPU write operations from being cached in
+> > the LLC
+> > which a) isn't interesting and b) takes up cache space for read
+> > operations.
 > > 
-> 
-> I did not explicitly refer to tpm_tis_spi because the refcount issue is in the TPM
-> chip driver core code and thus any TPM chip driver that creates the tpmrm device is
-> concerned. 
-> 
-> But if it helps to make the problem clearer I will only mention the tpm_tis_spi 
-> case in the next patch version.
-
-If you encounter a bug, you should generally just refer the exact thing
-where you encounter it. This will help a lot, e.g. to reproduce it.
-
-> >> ------------[ cut here ]------------
-> >> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
-> >> refcount_t: addition on 0; use-after-free.
-> >> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
-> >> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
-> >> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
-> >> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
-> >> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
-> >> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
-> >> Hardware name: BCM2711
-> >> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
-> >> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
-> >> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
-> >> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
-> >> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
-> >> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
-> >> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
-> >> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
-> >> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
-> >> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
-> >> Exception stack(0xc226bfa8 to 0xc226bff0)
-> >> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
-> >> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
-> >> bfe0: 0000006c beafe648 0001056c b6eb6944
-> >> ---[ end trace d4b8409def9b8b1f ]---
+> > Its easiest to think of the LLC as a bonus accelerator that has no cost
+> > for
+> > us to use outside of the unfortunate per buffer hint.
 > > 
-> > I guess this is happening with tpm_tis_spi. Unfortunately I don't have
-> > anything available that would use it.
-> > 
-> > I did testing with tpm_tis but so far no success reproducing.
-> 
-> With tpm_tis_spi this can be reproduced constantly. I haven't tried it with tpm_tis but 
-> I would expect it here to happen, too. However to trigger this bug you need something 
-> (in my case its an iotedge daemon) that opens /dev/tpmrm and keeps it open and writes 
-> occasionally commands to the TPM device even after you have unloaded the tpm_tis_spi module.
-> 
-> In your case you could try:
-> 
-> 1. open /dev/tpmrm with a small test program and sleep for a few seconds
-> 2. do 'rmmod tpm_tis' from another console while the test program sleeps
-> 3. write to the opened /dev/tpmrm in your test program after the sleep. 
-> The data to write should be chosen in a way that it passes the sanity checks in 
-> tpm_common_write (alternatively just comment these checks out and write 
-> some random data). As soon as tpm_try_get_ops() in tpm_common_write() is called
-> the bug should trigger.
-
-Right, I used tools/testing/selftests/tpm2/test_space.sh.
-
-I think I agree you with the regression.
-
-> > Hope this feedback helps to improve. You really need to rewrite the whole
-> > commit message. I wonder who could try to reproduce this. With a quick
-> > skim I get the issue.
-> 
-> Thanks for the thorough review. I will try to address all of the points you
-> mentioned in the next patch version. 
-
-Thank you for your effort. It's of course highly appreciated!
-
-> > Also you don't have James Bottomley in the CC list of the patch who is
-> > the author of the original commit. Please sort that out too...
-> 
-> Ok, will do so.
-> 
-> > /Jarkko
+> > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
+> > different hint) and in that case we have all of concerns that Will
+> > identified.
 > > 
 > 
-> Regards,
-> Lino
+> For mismatched outer cacheability attributes which Will mentioned, I was
+> referring to [1] in android kernel.
 
-/Jarkko
-> 
+I've lost track of the conversation here :/
+
+When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also mapped
+into the CPU and with what attributes? Rob said "writecombine for
+everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
+
+Finally, we need to be careful when we use the word "hint" as "allocation
+hint" has a specific meaning in the architecture, and if we only mismatch on
+those then we're actually ok. But I think IOMMU_LLC is more than just a
+hint, since it actually drives eviction policy (i.e. it enables writeback).
+
+Sorry for the pedantry, but I just want to make sure we're all talking
+about the same things!
+
+Cheers,
+
+Will
