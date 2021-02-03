@@ -2,159 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B29830DEB1
+	by mail.lfdr.de (Postfix) with ESMTP id E256030DEB2
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhBCPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:51:17 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:54956 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234581AbhBCPuH (ORCPT
+        id S234603AbhBCPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234589AbhBCPu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:50:07 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 113FOm6m003208;
-        Wed, 3 Feb 2021 07:49:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0220;
- bh=KxdUxsWfCaVr23Z9nZcLfst7Ey4QFjLnwho37Esird4=;
- b=U1turQ0/Us4PSzhz2levz0TwNszCUscCp1bkuG1AChK6SmSmgWkka1x52trJsSZv3aUp
- xdbZjFv8uWEtsenNXIiZBwgITydQmykeBvBbCUD6NIaDOfXga5ji6XzyMingQPaMWQt9
- am0nhuc6Ea6oHmZ4DDgEkIfWlSR3qa8onyFcNz0q6rCjZh4KJtPdx3IsXqNfc8CNvJ7B
- sNcrznilTwweLJIEhDs/eVMFP1c4t+OoXIi2Mz3GkgDzfFQkTfTSidFuR0ssAsEaGc01
- eG3jbzCJPurmKLAu5I+I9SjwlectxBZfTz9qgjfChbR1rEXtk1HaRQEfkUmajiC5lYSl 6w== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36d5pt3r1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 03 Feb 2021 07:49:10 -0800
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Feb
- 2021 07:49:08 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Feb
- 2021 07:49:08 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 3 Feb 2021 07:49:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MNNEi6OmSNr9fr5Dp6ca28JkDr33XXDBsRFAFGr79jUvmlbb/qZqrDhZYld7D4wHbMBkD6sURcJ90QbSCACG8r66KyfKX/+cA2Jebdu/z8+Lt+23NXHB42JogrIuS/wdvdOR0DpkvxWeyN+xYdUj+pNSASRhnyYFzFDzB5DQt+zQdTCOHhebhUyfmVguRx3L+eeKKDDuJLBWtp5Xwzdzl0NjhhKP2fpoGEWIdl73SPkKv74xRexEy499XXFu0CeEF+MIXFgclnJJUBhqTskxg4CoifiqhLKrbE7+AhAwMIJ/Zz+Z6n0rt5wn1PC2hmk/WID6xXYq1aRY6K9MXfcGYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KxdUxsWfCaVr23Z9nZcLfst7Ey4QFjLnwho37Esird4=;
- b=CBO6axT7DURWSRM9tWQd17v3wf3A7ZPwA/VFL4SGQgKMITvtllmqWaL3qNJWYdFLMwgXUsvXR6OkxPGDYLVOofLU7DewiEYjZohQSG0ubvA55f09vaWumlPYHu0M/pICM/0iLn8sfVpKehdPjjZSGags2gY5fOhaJvSIMFpyP4T8pzINH/rJbl36dkJnY5qvQWLUj1Hn1Y5uEQUW+eAYpZshGYLkHXf9BAh0C0p4khrKKlMrl/MNgVRhr0G51hcP6gxiNrEGIJLPQoGsYFaXAePNuGnc9pmPVNcaIHDR4RchOjRVKDtkxvflIcZXfAnZ9qaFay/kxM9J6tblHDth0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Wed, 3 Feb 2021 10:50:57 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129DDC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:50:17 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d13so107194plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:50:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KxdUxsWfCaVr23Z9nZcLfst7Ey4QFjLnwho37Esird4=;
- b=cn6nz6UC+BnZA+htnETQqw3Ary4TXqAK+tBHZrkDYw9iZsO4IpuBmaWYz7m68R9597Ty4NgNgGLxcLOZwgSZjTS2fKLOxI9s9OnvzjNuLChR+dgmd+1ORanrmnWY/XDecydr1mK/eLNUcEdRpXFS7n9yKBgWWqB1kJhybspmI30=
-Received: from DM5PR18MB1452.namprd18.prod.outlook.com (2603:10b6:3:be::12) by
- DM5PR18MB1196.namprd18.prod.outlook.com (2603:10b6:3:b9::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.17; Wed, 3 Feb 2021 15:49:06 +0000
-Received: from DM5PR18MB1452.namprd18.prod.outlook.com
- ([fe80::e8a9:1188:a4f8:8a57]) by DM5PR18MB1452.namprd18.prod.outlook.com
- ([fe80::e8a9:1188:a4f8:8a57%4]) with mapi id 15.20.3805.027; Wed, 3 Feb 2021
- 15:49:06 +0000
-From:   Kostya Porotchkin <kostap@marvell.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Ben Peled <bpeled@marvell.com>
-Subject: RE: [EXT] Re: [PATCH 03/11] dts: mvebu: Add pin control definitions
- for SDIO interafce
-Thread-Topic: [EXT] Re: [PATCH 03/11] dts: mvebu: Add pin control definitions
- for SDIO interafce
-Thread-Index: AQHW+jEKQCswtMtvs0m9H80l6I30SKpGfTAAgAADanCAABD4gIAAAg9w
-Date:   Wed, 3 Feb 2021 15:49:05 +0000
-Message-ID: <DM5PR18MB1452C48E962EFF6D3A47978ECAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
-References: <20210203133138.10754-1-kostap@marvell.com>
- <20210203133138.10754-4-kostap@marvell.com>
- <20210203142806.GQ1463@shell.armlinux.org.uk>
- <DM5PR18MB145298C7C6CB673A6B4B5038CAB49@DM5PR18MB1452.namprd18.prod.outlook.com>
- <YBrED9hix11heWv0@lunn.ch>
-In-Reply-To: <YBrED9hix11heWv0@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [77.137.153.29]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 078a55cb-9198-4fb8-b502-08d8c85b3cec
-x-ms-traffictypediagnostic: DM5PR18MB1196:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR18MB119608148F1E27516DBC1975CAB49@DM5PR18MB1196.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zmO9AEFF+HYpbJyDlLZqBbV4B6ysnhy5JBv/j6g3+ZngLtsnagDxnf42iBIPl6LZg2mKlkgYeJZo1H2Ogj1vBP0hzDDpcjdOhkWrBgw04iIWjHPhviSo0b4O+ZbB5COoSSLNmDbSVFotbL8U1GOGmPMOZYIxvvhYJ0ilKcLOWyxRsf2w/kNcLbLRfSYZ+KQ9mSLC0ev1f8zuecmAGtoDA4NqsBizs22quC8nG4Sl9qG3p/BdKT2a32XSUmkCIOb21f7Mo0G6pMWaEtBUoDODPHhiCL3UMh278J/6Fs5CQxnTqHqQIoCato1etEwxPDgutJzNi+gWTwwLbvbQjYdnlpjTjfzXqUvpV3I2m4shGJtzCl3QuklBkeHZ5gaJSNir9BDpKe+8nacgX736v23LA7xZUj7QvLXSRChzpgc83m1fkQqvYMWpKWAKDGMh9Y57j2TDnqYFR+x//swUv9+Pm+SCM1qy//AQeY461/tCjqWrcuJbYAAfhFXT+obakpLdkmN2bR0u4sFQMoo2HKBEWA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR18MB1452.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(376002)(366004)(86362001)(66946007)(71200400001)(4326008)(8676002)(186003)(558084003)(7416002)(76116006)(64756008)(66476007)(55016002)(5660300002)(26005)(6916009)(316002)(6506007)(9686003)(478600001)(8936002)(66446008)(33656002)(54906003)(107886003)(66556008)(52536014)(7696005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+OkQfXE4W7u+ylKjYVKP/x9Qt2EPWjc30Ey1v/APo+84Yfhvyji8zIHpuAlG?=
- =?us-ascii?Q?C4+0d+jSsmmOimtKEDZyjx05TAPwHOgDmdLqU9zMrwu1StPMzM89t6LDF1As?=
- =?us-ascii?Q?blAh7TFZST6h0jMomdmGGWWfN4rv2VN+PoqKlZ7vXfjJvfeS69tfz+NeZgoQ?=
- =?us-ascii?Q?vr4hUxcSBeGfYrEKxWPIDaHsidJ/sXyTCUhDQXEW1Uz5Pfao0j2okOYuJbNa?=
- =?us-ascii?Q?M0R5u8zSRoPYAq+AMSdFp4ohVoBJhaSkkIl+4wajqsGdOnnfnlyZUYE2FZ62?=
- =?us-ascii?Q?o8dryyQ6sLEJmol4fgBrey39nidLKvbOPw1iCoar5uswaAvcfWSguRoPouqU?=
- =?us-ascii?Q?5S0wKtdbHpELe9VgBM9sMn/peBr93bdbUnxuW1cPh1P9V8/g4/H9YYBZAGny?=
- =?us-ascii?Q?5sU6jMtghfFMpKKedYRmdcbXQSN2Z2PvvS9ttf3WaHqI6cdLJTX7f3QOcZN+?=
- =?us-ascii?Q?WlZxO431fiTOciup4tVyjib1rtMoQE/6Bi/2Y2jNh5kZWYAMGg6irhVJBaF5?=
- =?us-ascii?Q?7jlBXGkHojb1ipl9QkzXu8lsOiJUQ5JxkLUGG8OYf80oakgyw2W+O29Q7Rro?=
- =?us-ascii?Q?4mop+KJ2/iZBGLrwzYt4D5Z2rFqvOZCTpqLekAGOnPk57NPqaBbQm3bWc+UO?=
- =?us-ascii?Q?1aYL4ZJ5xD/BJa9rJ5gUiL3NLeLjPYw57wpzpWsgjmLWBlhfhAuWqR7P4QQi?=
- =?us-ascii?Q?3T6ZwV7+41G63TuI+TlK8abiTKUGt95KnC2ZrDE+VRVDbjNbJynzKowfQEuh?=
- =?us-ascii?Q?fPSw94zLKyA55IgZhN5DRFno/wxltgresaefkSHzJ3VH4JYufN4QUgSEsTrT?=
- =?us-ascii?Q?YqQWlUwhxqefOzGifRuUf7N8xWWl5viXwp5fDZ0J/PsYl7B2AWUDFo/eh0im?=
- =?us-ascii?Q?s/96MggYp+IGXXKTOIkNk3OvHKb06K669ZmwnE1A1fefXfplrjV7e66IzeJ5?=
- =?us-ascii?Q?+JuTJjjYOoJ2F1v7YOJBTwcVrdOYFAcvdboNz6oV3PAo2Jc5SFQzDt6aGnzG?=
- =?us-ascii?Q?kL6DPgoB96NHRaDL0bbSFRgiPXM+yps93b7Mmh4xiX7Ya8m3AH5RAF72+/mH?=
- =?us-ascii?Q?P4tbhDti?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AA4WsNr/vJqoJohizHJT6F56GEXlyS334FyQjy/hD88=;
+        b=Mqjr4f7KulOkUcN0mhsoUSU9j0ls2dF6E4U6BeKR2Lxo6riSwlMf4dllZing9COCLE
+         Pkt0994cCGh16YNggJHcnHWSCNhbPX14MIWdMA8Mw1WNFKsN8EH5zIobo3wGKL7wC0Zf
+         DIry+wzeAq57KdtEiVn7QCl9Sfc49gLcg6PRR0bvKSoTSfcO7OnC5gmi5KtoSd68/8LO
+         pxRPASy70e9M+aEL+c+OY6IakGw/+Ojpo/dqH4QW5FG8Sw2vNeH7ljZp742jsfK0SPY4
+         Erx+tfeXQyz2iiAV1yAKsN0/XMXpa1gjOP2J2W1hcDcQAoegGFah/zXcZpoDgeMlbk/z
+         in9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=AA4WsNr/vJqoJohizHJT6F56GEXlyS334FyQjy/hD88=;
+        b=Muy8DnCIHKVkCbOatwFtjCCw1assSp+HzzNDbBmqEkO02bVnEmAlNk4x8uN9FSlwZr
+         nApqK0tNU9RhS5BxxTjoiDYtNSg0DkuVwaY7+WQn63oFS8ETvWPmHq31alsMqNhQkmzG
+         OoctXl/s5RVdydTO2zaq6/yb98YiGlDRkAurR8O+2XsIdtE+05s5yakaS3VYHVtrEV3l
+         qscFIBRdVYcQhq7Ka6+bAQ2/Mc27gWk9yB/w6hizD28hl6Y5Jg77kvTMzZISCQRRVbxE
+         Y0NMNZ+H1KQsIlemd9wTLKkln/mXt13h4ilGiKU87ENpinxnfS59yjo+xQf28nsz7Tcw
+         rjYA==
+X-Gm-Message-State: AOAM530ABc+C5B1H5ULu6iDqZxPvy1TPn587+DwPk/kuC7Ulva2hxGJY
+        xR2nUFjqE0QdZUld8l8+YC4=
+X-Google-Smtp-Source: ABdhPJwexbewZbtkXxsN4WEBKBfvrXrJa7iwpz+pVovrXRBBGtMXCuRHNRh4afokzD8YM6pvN8jDIA==
+X-Received: by 2002:a17:90a:65c4:: with SMTP id i4mr3627921pjs.132.1612367416495;
+        Wed, 03 Feb 2021 07:50:16 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:1502:84f8:ffc3:45b])
+        by smtp.gmail.com with ESMTPSA id p7sm2692227pfn.52.2021.02.03.07.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 07:50:15 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Minchan Kim <minchan@kernel.org>
+Subject: [PATCH] mm: cma: support sysfs
+Date:   Wed,  3 Feb 2021 07:50:01 -0800
+Message-Id: <20210203155001.4121868-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR18MB1452.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 078a55cb-9198-4fb8-b502-08d8c85b3cec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 15:49:05.4943
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7hAR0ZVtCkvnGpO++nYmZc9enAmnTxNuYJmXPrEzxKK7Da62i9DDHAx3rQOVVvUjsSoQiqHQh+86m/L6z6n9+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR18MB1196
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-03_06:2021-02-03,2021-02-03 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since CMA is getting used more widely, it's more important to
+keep monitoring CMA statistics for system health since it's
+directly related to user experience.
 
+This patch introduces sysfs for the CMA and exposes stats below
+to keep monitor for telemetric in the system.
 
-> > > > +		sdhci_pins: sdhi-pins {
-> > >
-> > > sdhi-pins ?
-> > >
-> > [KP] You mean to replace the underline with dash?
->=20
-> I think he would like a c added in the correct place.
->=20
-[KP] Ahh, now I see it. Thank you, Andrew!
-Kosta
+ * the number of CMA allocation attempts
+ * the number of CMA allocation failures
+ * the number of CMA page allocation attempts
+ * the number of CMA page allocation failures
 
->   Andrew
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ Documentation/ABI/testing/sysfs-kernel-mm-cma |  39 +++++
+ include/linux/cma.h                           |   1 +
+ mm/Makefile                                   |   1 +
+ mm/cma.c                                      |   6 +-
+ mm/cma.h                                      |  20 +++
+ mm/cma_sysfs.c                                | 143 ++++++++++++++++++
+ 6 files changed, 209 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+ create mode 100644 mm/cma_sysfs.c
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+new file mode 100644
+index 000000000000..2a43c0aacc39
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+@@ -0,0 +1,39 @@
++What:		/sys/kernel/mm/cma/
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		/sys/kernel/mm/cma/ contains a number of subdirectories by
++		cma-heap name. The subdirectory contains a number of files
++		to represent cma allocation statistics.
++
++		There are number of files under
++				/sys/kernel/mm/cma/<cma-heap-name> directory
++
++			- cma_alloc_attempt
++			- cma_alloc_fail
++			- alloc_pages_attempt
++			- alloc_pages_fail
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_attempt
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of cma_alloc API attempted
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_fail
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of CMA_alloc API failed
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_attempt
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API tried to allocate
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API failed to allocate
+diff --git a/include/linux/cma.h b/include/linux/cma.h
+index 217999c8a762..71a28a5bb54e 100644
+--- a/include/linux/cma.h
++++ b/include/linux/cma.h
+@@ -49,4 +49,5 @@ extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
+ 
+ extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
++
+ #endif
+diff --git a/mm/Makefile b/mm/Makefile
+index b2a564eec27f..9c2c81ce3894 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -106,6 +106,7 @@ obj-$(CONFIG_ZSMALLOC)	+= zsmalloc.o
+ obj-$(CONFIG_Z3FOLD)	+= z3fold.o
+ obj-$(CONFIG_GENERIC_EARLY_IOREMAP) += early_ioremap.o
+ obj-$(CONFIG_CMA)	+= cma.o
++obj-$(CONFIG_SYSFS)     += cma_sysfs.o
+ obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+ obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+ obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
+diff --git a/mm/cma.c b/mm/cma.c
+index 0ba69cd16aeb..a25068b9d012 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -448,9 +448,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 	offset = cma_bitmap_aligned_offset(cma, align);
+ 	bitmap_maxno = cma_bitmap_maxno(cma);
+ 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
++	cma_sysfs_alloc_count(cma, count);
+ 
+ 	if (bitmap_count > bitmap_maxno)
+-		return NULL;
++		goto out;
+ 
+ 	for (;;) {
+ 		mutex_lock(&cma->lock);
+@@ -505,6 +506,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 			__func__, count, ret);
+ 		cma_debug_show_areas(cma);
+ 	}
++out:
++	if (!page)
++		cma_sysfs_fail(cma, count);
+ 
+ 	pr_debug("%s(): returned %p\n", __func__, page);
+ 	return page;
+diff --git a/mm/cma.h b/mm/cma.h
+index 42ae082cb067..e7e31012b44e 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -3,6 +3,16 @@
+ #define __MM_CMA_H__
+ 
+ #include <linux/debugfs.h>
++#include <linux/kobject.h>
++
++struct cma_stat {
++	spinlock_t lock;
++	unsigned long alloc_attempt;	/* the number of CMA allocation attempts */
++	unsigned long alloc_fail;	/* the number of CMA allocation failures */
++	unsigned long pages_attempt;	/* the number of CMA page allocation attempts */
++	unsigned long pages_fail;	/* the number of CMA page allocation failures */
++	struct kobject kobj;
++};
+ 
+ struct cma {
+ 	unsigned long   base_pfn;
+@@ -16,6 +26,9 @@ struct cma {
+ 	struct debugfs_u32_array dfs_bitmap;
+ #endif
+ 	char name[CMA_MAX_NAME];
++#ifdef CONFIG_SYSFS
++	struct cma_stat	*stat;
++#endif
+ };
+ 
+ extern struct cma cma_areas[MAX_CMA_AREAS];
+@@ -26,4 +39,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+ 	return cma->count >> cma->order_per_bit;
+ }
+ 
++#ifdef CONFIG_SYSFS
++void cma_sysfs_alloc_count(struct cma *cma, size_t count);
++void cma_sysfs_fail(struct cma *cma, size_t count);
++#else
++static void cma_sysfs_alloc_count(struct cma *cma, size_t count) {};
++static void cma_sysfs_fail(struct cma *cma, size_t count) {};
++#endif
+ #endif
+diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+new file mode 100644
+index 000000000000..66df292cd6ca
+--- /dev/null
++++ b/mm/cma_sysfs.c
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * CMA SysFS Interface
++ *
++ * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
++ */
++
++#include <linux/cma.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++
++#include "cma.h"
++
++void cma_sysfs_alloc_count(struct cma *cma, size_t count)
++{
++	spin_lock(&cma->stat->lock);
++	cma->stat->alloc_attempt++;
++	cma->stat->pages_attempt += count;
++	spin_unlock(&cma->stat->lock);
++}
++
++void cma_sysfs_fail(struct cma *cma, size_t count)
++{
++	spin_lock(&cma->stat->lock);
++	cma->stat->alloc_fail++;
++	cma->stat->pages_fail += count;
++	spin_unlock(&cma->stat->lock);
++}
++
++#define CMA_ATTR_RO(_name) \
++	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
++
++static struct kobject *cma_kobj;
++
++static ssize_t cma_alloc_attempt_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	unsigned long val;
++	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
++
++	val = stat->alloc_attempt;
++
++	return sysfs_emit(buf, "%lu\n", val);
++}
++CMA_ATTR_RO(cma_alloc_attempt);
++
++static ssize_t cma_alloc_fail_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	unsigned long val;
++	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
++
++	val = stat->alloc_fail;
++
++	return sysfs_emit(buf, "%lu\n", val);
++}
++CMA_ATTR_RO(cma_alloc_fail);
++
++static ssize_t alloc_pages_attempt_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	unsigned long val;
++	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
++
++	val = stat->pages_attempt;
++
++	return sysfs_emit(buf, "%lu\n", val);
++}
++CMA_ATTR_RO(alloc_pages_attempt);
++
++static ssize_t alloc_pages_fail_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	unsigned long val;
++	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
++
++	val = stat->pages_fail;
++
++	return sysfs_emit(buf, "%lu\n", val);
++}
++CMA_ATTR_RO(alloc_pages_fail);
++
++static void cma_kobj_release(struct kobject *kobj)
++{
++	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
++
++	kfree(stat);
++}
++
++static struct attribute *cma_attrs[] = {
++	&cma_alloc_attempt_attr.attr,
++	&cma_alloc_fail_attr.attr,
++	&alloc_pages_attempt_attr.attr,
++	&alloc_pages_fail_attr.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(cma);
++
++static struct kobj_type cma_ktype = {
++	.release = cma_kobj_release,
++	.sysfs_ops = &kobj_sysfs_ops,
++	.default_groups = cma_groups
++};
++
++static int __init cma_sysfs_init(void)
++{
++	int i;
++	struct cma *cma;
++	struct cma_stat *stat;
++
++	cma_kobj = kobject_create_and_add("cma", mm_kobj);
++	if (!cma_kobj) {
++		pr_err("failed to create cma kobject\n");
++		return -ENOMEM;
++	}
++
++	for (i = 0; i < cma_area_count; i++) {
++		cma = &cma_areas[i];
++		stat = kzalloc(sizeof(*stat), GFP_KERNEL);
++		if (!stat)
++			goto out;
++
++		cma->stat = stat;
++		spin_lock_init(&stat->lock);
++		if (kobject_init_and_add(&stat->kobj, &cma_ktype,
++					cma_kobj, "%s", cma->name)) {
++			kobject_put(&stat->kobj);
++			goto out;
++		}
++	}
++
++	return 0;
++out:
++	while (--i >= 0) {
++		cma = &cma_areas[i];
++		kobject_put(&cma->stat->kobj);
++	}
++
++	kobject_put(cma_kobj);
++
++	return -ENOMEM;
++}
++subsys_initcall(cma_sysfs_init);
+-- 
+2.30.0.365.g02bc693789-goog
+
