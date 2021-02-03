@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE30A30D471
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC9130D478
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbhBCHzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:55:54 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:45654 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhBCHzv (ORCPT
+        id S232307AbhBCH6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:58:05 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:42800 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbhBCH6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:55:51 -0500
-Received: by mail-ot1-f41.google.com with SMTP id o12so871931ote.12;
-        Tue, 02 Feb 2021 23:55:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CiVkUnX1rF7MfRbPuBk59y3JgbJm++nqR8KpbyKln9E=;
-        b=Jaja+bThwGxU7TwK8cfXJYhoYqmi/Z17M7s/FoD9Z51y4qxqEPmSlUyUkP3XdsBsga
-         CG85REYrCghUAJv21AGGsoRZ5bu3/k7GBrXf1OyQcrmtNNSPDtiytlNFdOYJvmPc1snx
-         Y1mB9air9vLTeD61tEXLCcLBnDPQz6S6oYIH9IfaBYVH8BsWv26Cw5cHUXsOhBQiRaYZ
-         CaEvBNR9xoBnr7/v9UnUMaiBCgBYqX6LXmb08n1vI9qKze0TjJUhY/bjiVvDV+gWWmU6
-         hbzj2hnoaXLSo6FIEcZeV1GXZ05R6iyU8Wm1HhCG12x1Ni7yLRxo8yhSHChzDRLrNSh/
-         NIWA==
-X-Gm-Message-State: AOAM531AIwMHXHbHOA4asId5JgZwHg1dNruIKn5xJJW0umerubraL6Vt
-        egNrLx5J3ZBEKno4VP2CMrPR/danqD22sigS7Rw=
-X-Google-Smtp-Source: ABdhPJxc3BQwrIRlIATWeCLFrLCFZibhWXfsRO1E9PPrbBHdptbcNVEi+ZoVF3PUaTBfdWY3rke88vmuJdbnB7koodw=
-X-Received: by 2002:a05:6830:1489:: with SMTP id s9mr1207916otq.250.1612338910673;
- Tue, 02 Feb 2021 23:55:10 -0800 (PST)
+        Wed, 3 Feb 2021 02:58:03 -0500
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 1137upih029648;
+        Wed, 3 Feb 2021 16:56:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1137upih029648
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612339012;
+        bh=N/D47fbOBRad6M/ZDk/32EhFpPJEKVijkKmIa+v6ag4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ym+O+5PBZd3TiH1J/boWvO7Ah+7Zw1dd+m1WCL2PLHVOaxj/kaJk3luE8wzSc0v/N
+         +XxXE+Gh0CJEVQJRH6Qvsk1KW8y2eh7/eDdidHLTzWfpwJlRsBfQjrrMY3rbCKE9Zd
+         IRPd3yBPcTztb7e9utJY55XNhkr7amSnGFGhyYEr0/LLpC4O3h4gWnBTihyISJgned
+         AWiRpyPzcrPBdwyKOQQQz6B0TQMJpA+KcjyJ/IKjHKQHqL7dyYDiA2ysOSOXQFuh8s
+         0d4smHg9jSwOG5iaccwYqCC4Rzx7nCy3qNkOZaEgjaCQdrQGBdAT/KORwm/fYBChgm
+         4I4j4UzVqhoVw==
+X-Nifty-SrcIP: [209.85.210.177]
+Received: by mail-pf1-f177.google.com with SMTP id y205so16126796pfc.5;
+        Tue, 02 Feb 2021 23:56:51 -0800 (PST)
+X-Gm-Message-State: AOAM530Z2BKO8ZRYlvEeNCG7eEePvh7wA50jiFjx8Rln4zi9VMjhEaWY
+        ayv63Ah1TkKSpv5ccRyARU/kV8ripkAwVd+DyGc=
+X-Google-Smtp-Source: ABdhPJwocduLKpxLPGkPF7gvS0SZMMyZYVYiwpkUTAOZSWGMy/U578SIQChgZdM6kmhVK8/Dc+NmFTmNbOS5nDC1rGc=
+X-Received: by 2002:a63:ff09:: with SMTP id k9mr2382791pgi.175.1612339010996;
+ Tue, 02 Feb 2021 23:56:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com>
- <20210202212231.g5tj3f7tv74gagm6@viti.kaiser.cx> <CAGETcx_cS_Y-1Bw3tNhZRckEQO=yB8UDzNRr+Khs_X2ym7tnwA@mail.gmail.com>
-In-Reply-To: <CAGETcx_cS_Y-1Bw3tNhZRckEQO=yB8UDzNRr+Khs_X2ym7tnwA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Feb 2021 08:54:59 +0100
-Message-ID: <CAMuHMdWN4JA4w+6MUAc-ogRAE602G8KSgy+71dtx7QQ60t1XZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
+ <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
+ <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
+ <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
+ <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
+ <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
+ <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com>
+ <CA+icZUX576Rt7HJ4hvrwRTCC2pTmoH-Yu-haU+MDb8B6yADAYA@mail.gmail.com>
+ <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com> <CA+icZUXMxM4CuNa0P+JFJO7LSj6QvJneArYXpqLRJrzqJMYj6g@mail.gmail.com>
+In-Reply-To: <CA+icZUXMxM4CuNa0P+JFJO7LSj6QvJneArYXpqLRJrzqJMYj6g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 3 Feb 2021 16:56:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR0jHV9gdCT7-e0njtEjxpuADkAttYAxOT6N-sNUiuV+w@mail.gmail.com>
+Message-ID: <CAK7LNAR0jHV9gdCT7-e0njtEjxpuADkAttYAxOT6N-sNUiuV+w@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 11:44 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Feb 2, 2021 at 1:22 PM Martin Kaiser <martin@kaiser.cx> wrote:
-> > Thus wrote Saravana Kannan (saravanak@google.com):
-> > All of those drivers have a gpio in
-> > their device-tree node, such as
-> >
-> > my_driver {
-> >    gpio_test1 = <&gpio1 0 0>;
-> >    ...
-> > };
-> >
-> > with gpio1 from arch/arm/boot/dts/imx25.dtsi.
-> >
-> > The probe function calls
-> >
-> > of_get_named_gpio(np, "gpio_test1", 0);
-> >
-> > to get the gpio. This fails with -EINVAL.
+On Sat, Jan 30, 2021 at 7:42 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> And you didn't see this issue with the fsl,avic patch?
+> On Fri, Jan 29, 2021 at 11:31 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 2:23 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 11:21 PM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
+> > > > > <ndesaulniers@google.com> wrote:
+> > > > > >
+> > > > > > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
+> > > > > > > > <ndesaulniers@google.com> wrote:
+> > > > > > > > >
+> > > > > > > > > Can you tell me please what is the precise command line invocation of
+> > > > > > > > > make and which source file you observed this on so that I can
+> > > > > > > > > reproduce?
+> > > > > >
+> > > > > > If you don't send me your invocation of `make`, I cannot help you.
+> > > > > >
+> > > > >
+> > > > > /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+> > > > > PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
+> > > > > -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+> > > > > KBUILD_BUILD_USER=sedat.dilek@gmail.com
+> > > > > KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
+> > > > > KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
+> > > >
+> > > > $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
+> > > > $ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
+> > > > <enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
+> > > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
+> > > > $ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
+> > > > 0
+> > > > $ grep '\-g -gdwarf-5' log.txt | wc -l
+> > > > 2517
+> > > >
+> > > > Do have the patch applied twice, perhaps?
+> > > >
+> > >
+> > > Switched to my v6 local Git branch and invoked above make line I gave you.
+> > > I still see that double.
+> > > Looks like I need some "undrunken" switch.
+> >
+> > Can you follow my steps precisely to see whether it's your .config?
+> > Perhaps there is a config that duplicates DEBUG_CFLAGS that is not set
+> > in the defconfig?  If so, it's still harmless to specify the same
+> > commands twice, and likely isn't introduced by this patch set if so;
+> > so I'm not sure how much more effort is worth pursuing.
+> >
 >
-> The property you are using is not a standard GPIO binding (-gpios,
-> gpio, gpios) and I'm not surprised it's not working. The gpio1 is
-> probably getting probe deferred and ends up running after "my_driver".
+> If I follow your steps of make I do not see it "double" (in my local
+> v6 Git branch).
+>
+> Looks like this is coming from my build-script.
+>
+> I checked if I have some double dwarf(-5) patches double - Nope.
 
-So my_driver doesn't support deferred probe, as of_get_named_gpio()
-returns -EINVAL instead of -EPROBE_DEFER?
-Converting my_driver from of_get_named_gpio() to the gpiod_*() API
-should at least make the driver support probe deferral, after which I
-expect it to start working again on reprobe?
 
-Gr{oetje,eeting}s,
+Sorry for the late reply.
 
-                        Geert
+I do not know which command you input,
+but this happens for deb-pkg builds for example.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Please try this patch:
+https://lore.kernel.org/patchwork/patch/1374926/
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
