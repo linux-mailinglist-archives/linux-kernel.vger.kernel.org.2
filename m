@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED6030D6B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8698330D6BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbhBCJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S233526AbhBCJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbhBCJvn (ORCPT
+        with ESMTP id S233344AbhBCJwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:51:43 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0068EC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:51:02 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d13so14142346plg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:51:02 -0800 (PST)
+        Wed, 3 Feb 2021 04:52:21 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666BC061788;
+        Wed,  3 Feb 2021 01:51:38 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id 7so23437359wrz.0;
+        Wed, 03 Feb 2021 01:51:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DdtDx/f+DZWL8oxrtotv8ex8GlKmCh3tmTdne4YAUKA=;
-        b=lVYaPiCq2tH1w2MA4OxQ8ttgEHtYm/7WsfxAgztam5y/PbgntGY8Y1bjApyIakzBbn
-         G2VWloZL5p7wmv9eKjdUUUEYpwjBifyocJd72Xm1AIylwDYl8VRlqNoHL6QregDJ1ush
-         C4EcDDT8V1meyn52pI0FtERzOp7v5cnXiBF0Lue4j/eBCoQ4xIYI2ew+UpyHoOgKe5Xq
-         e16okhLVD7kKBM21O4O49dEuXpImS0VU8lwLpMIIA9jx9GE9TEGG51WU+PvbLG7EoDFj
-         LrlfeeOf/hy+R02WxJcI18jRVRCTP1ewf7aTbRJS40PxTXpjYC6kXqLtGOx+jIIti1Ln
-         hslQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CWjEkbuWLlblTtjuIWif0x7AzX7GeK00PJG/7+QyP+g=;
+        b=AidCjKbLKSnA/0Mc3oxvE3ZZOkhleknUJCYl2tYBiAxKjpE8JD7Bh8g2fwAlDJvvtn
+         E03CpGOgrAKtEoCuUXqwP+PRLLLNWTbLWKDPuRENY3xxOAq8rvK55a1XyLr429KhU+c7
+         6kFQ7Q2xVTeE5H45M/41V+nDs7jvJHsxwWd0P2xO6KDtyyiGqqN2w368HHbqPh+f9Z4x
+         uRC/S+M9J5tMJfsw2KsPV8w6b9p2xOeC8rdHZXZliD8gyLA+3WTu2YTa2I1e/1tpWcg+
+         MQAZHlA59gZuJt5jN1RjoBC3UML7Qqy8NpWOapU3XjmjsklqHoYHCM+bRp88shomHCEB
+         gbUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DdtDx/f+DZWL8oxrtotv8ex8GlKmCh3tmTdne4YAUKA=;
-        b=Vomgzeje23PfsdNwMGt2XPwRTsoAiHnCgv5wSOeGIyqOZL5fbIIBO3P+0ydztr6HHZ
-         tuF+KnTs5uHwTajj6877zCTUtaBMWg68L5ImrQL5b0G4qPvNtQrHa3W94L17+KAK/4rW
-         U+dQSYE1GVhJjIfRmcLysXpO9Je6CkdgiFX5WTSGrrEI9EEU+DiGSoODOjNh8XHx7D7A
-         id6EfVo7APcq7UurENQfxhy4zqnnkoQpvRSkva1j3W6iGYI2Sh5KQp1Pk4g8lOIz6maE
-         b5FrAGcy+6bnvtSQm6qJyd5plyCn8/9Z9eA6JsY+fvXAJnt3PdLyDrPjGU7Ym3aMzLYW
-         SsbA==
-X-Gm-Message-State: AOAM5303cbnbagYcGh/eqj0pdTR63Dlcsi5T0De62YaxQDGa0SJPJ4ML
-        Qk7WBNUxux9MUSGvmPX+NNw=
-X-Google-Smtp-Source: ABdhPJyr4iv3Z6rAfaB/HHTQiNnB4ZWutx1OSOiqRUQKY0cCRFEWnvHPdSjUQuirhNBZrsbxpC64NA==
-X-Received: by 2002:a17:902:d506:b029:e1:17f4:37c0 with SMTP id b6-20020a170902d506b02900e117f437c0mr2437634plg.24.1612345862547;
-        Wed, 03 Feb 2021 01:51:02 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id v19sm1473124pjh.37.2021.02.03.01.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 01:51:01 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] sched: Use SCHED_WARN_ON() instead of WARN_ON_ONCE() with CONFIG_SCHED_DEBUG
-Date:   Wed,  3 Feb 2021 17:50:12 +0800
-Message-Id: <20210203095012.627-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CWjEkbuWLlblTtjuIWif0x7AzX7GeK00PJG/7+QyP+g=;
+        b=ByFUxk1eJX3psdoplVU31rY4PT8unNm4rzVP7O2bBswvx7jU4Yxu4aqh64tZOBSP+S
+         +S8QmgCZAuYW7J2gs2VJeoUqqoIfBWFvChkWR/xxYp9Phgr00iLRCSi+51x1kx/eKE3l
+         i/xnXAarsGrEA9YLUwVKm6M5jMEPINMUIgd8qDSA+IZ8qHgGyKIZElD/p4nC2Jz/R1LL
+         uIF18irfbnSZCUtmq8xXGogZaP/h829Jwn5KHBFAfaPM9dZEpYAQ9uHQeiPPM92yX2UW
+         /rCrUz6tgOrGaswHTsU406MVuBKTc4GJUppR2yYrWmgUvD62yvxp8UheHPZjV3mkxdkN
+         2eEQ==
+X-Gm-Message-State: AOAM533HqqbAPCPy092zER+AD5HeVnlvOk0eotisO61xLWbYxZxMA3Y3
+        DSDbJ9ATI26CuUT4ZZSMrQnRvrEaZTWhI8yy9wE=
+X-Google-Smtp-Source: ABdhPJyMqE6Wc+e5vmqeI4Xt0k2hIzTgXucEC4AiLGmtIm/SKbqM7oMhZuoRipbkFcpW4wF+H6JpCaKJbsigqfaOwwk=
+X-Received: by 2002:a05:6000:188b:: with SMTP id a11mr2459195wri.151.1612345897392;
+ Wed, 03 Feb 2021 01:51:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210202080508.GA3550351@infradead.org> <20210202162837.129631-1-viniciustinti@gmail.com>
+ <YBo29/SdgCkZZinT@mit.edu>
+In-Reply-To: <YBo29/SdgCkZZinT@mit.edu>
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+Date:   Wed, 3 Feb 2021 06:51:26 -0300
+Message-ID: <CALD9WKz-Jgmz7inOghv37ZwzD_8sVPT_-YZUX5FpQE5aKrDJJg@mail.gmail.com>
+Subject: Re: [PATCH v3] ext4: Enable code path when DX_DEBUG is set
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Wed, Feb 3, 2021 at 2:39 AM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Feb 02, 2021 at 04:28:37PM +0000, Vinicius Tinti wrote:
+> > Clang with -Wunreachable-code-aggressive is being used to try to find
+> > unreachable code that could cause potential bugs. There is no plan to
+> > enable it by default.
+> >
+> > The following code was detected as unreachable:
+> >
+> > fs/ext4/namei.c:831:17: warning: code will never be executed
+> > [-Wunreachable-code]
+> >                         unsigned n = count - 1;
+> >                                      ^~~~~
+> > fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
+> > explicitly dead
+> >                 if (0) { // linear search cross check
+> >                     ^
+> >                     /* DISABLES CODE */ ( )
+> >
+> > This has been present since commit ac27a0ec112a ("[PATCH] ext4: initial
+> > copy of files from ext3") and fs/ext3 had it present at the beginning of
+> > git history. It has not been changed since.
+> >
+> > This patch moves the code to a new function `htree_rep_invariant_check`
+> > which only performs the check when DX_DEBUG is set. This allows the
+> > function to be used in other parts of the code.
+> >
+> > Suggestions from: Andreas, Christoph, Nathan, Nick and Ted.
+> >
+> > Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
+>
+> Thanks, applied, although I rewrote the commit description:
+>
+>     ext4: factor out htree rep invariant check
+>
+>     This patch moves some debugging code which is used to validate the
+>     hash tree node when doing a binary search of an htree node into a
+>     separate function, which is disabled by default (since it is only used
+>     by developers when they are modifying the htree code paths).
+>
+>     In addition to cleaning up the code to make it more maintainable, it
+>     silences a Clang compiler warning when -Wunreachable-code-aggressive
+>     is enabled.  (There is no plan to enable this warning by default, since
+>     there it has far too many false positives; nevertheless, this commit
+>     reduces one of the many false positives by one.)
+>
+> The original description buried the lede, in terms of the primary
+> reason why I think the change was worthwhile (although I know you have
+> different priorities than mine :-).
+>
+> Thanks for working to find a way to improve the code in a way that
+> makes both of us happy!
 
-Since SCHED_WARN_ON() is provided as a wrapper for WARN_ON_ONCE().
+Thanks for the feedback.
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- kernel/sched/core.c | 2 +-
- kernel/sched/rt.c   | 4 +---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+And thanks for all the ones who reviewed.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8c54810..8f1f345 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5347,7 +5347,7 @@ asmlinkage __visible void __sched preempt_schedule_irq(void)
- int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
- 			  void *key)
- {
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_SCHED_DEBUG) && wake_flags & ~WF_SYNC);
-+	SCHED_WARN_ON(wake_flags & ~WF_SYNC);
- 	return try_to_wake_up(curr->private, mode, wake_flags);
- }
- EXPORT_SYMBOL(default_wake_function);
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8f720b7..a90eab3 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -114,9 +114,7 @@ static void destroy_rt_bandwidth(struct rt_bandwidth *rt_b)
- 
- static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
- {
--#ifdef CONFIG_SCHED_DEBUG
--	WARN_ON_ONCE(!rt_entity_is_task(rt_se));
--#endif
-+	SCHED_WARN_ON(!rt_entity_is_task(rt_se));
- 	return container_of(rt_se, struct task_struct, rt);
- }
- 
--- 
-1.9.1
-
+>                                         - Ted
