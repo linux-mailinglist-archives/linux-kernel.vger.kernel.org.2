@@ -2,224 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EC430E4A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ADD30E4A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhBCVGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232131AbhBCVGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:06:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3E664F5F;
-        Wed,  3 Feb 2021 21:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612386350;
-        bh=WB1uvXt/6zuuVUeEimfwRlopvPq2o4ZunEp87CGiu8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WiQmL/tJxN0s090I/sDgXKTMApJH891OUdUuMkQKnsQX5yanRv/vlUPKWmkTDc9+A
-         AxcCjOH2jz++0mv/9bQrobQEh3++f6+ZiuUaCG43zMQvGwy2qNwr/4q+UY9kA+KNrP
-         uasN4nlGVGqr7VzAOBnjIEWEkfE7oddRPh8I7TBDbKnvurTJcvEkyYh3W2N5hFww+/
-         pDfhf1FyeLUpEWIcSe0ciQPoFrpWjNWIM9PBJvH6hRIxXyY8ZGNL16/QIMpxpclo8O
-         SBBLhmyKph1LajUQMTRMVU/PR0JBo+S89grop5FBzfU7em4dVUMyPquS0TLnZgrT84
-         OY2cScwLDOoMA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5E19B40513; Wed,  3 Feb 2021 18:05:47 -0300 (-03)
-Date:   Wed, 3 Feb 2021 18:05:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 05/24] perf daemon: Add client socket support
-Message-ID: <20210203210547.GR854763@kernel.org>
-References: <20210129134855.195810-1-jolsa@redhat.com>
- <20210130234856.271282-1-jolsa@kernel.org>
- <20210130234856.271282-6-jolsa@kernel.org>
+        id S232745AbhBCVGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231350AbhBCVGt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:06:49 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D26C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 13:06:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=oZBuJOenngoomghCK7kOaxz4eUOh9dK/zu7ReamXwRw=; b=WqTbYln7KEBuj5REqZLx/+qn5d
+        EYp78dgxS8hJpncZvcCNQTtQdv02rKO9IBx+9gRZYRhtT+bYvKOTs6cpoaCedKZx/iSLPMzB+2O23
+        4UY+J5SOwCzRQI2dXS5H6uZL2Om85x4T9ZgWmS0Coz4UV99NMucKEulkug+oTUafI8TTc8RxDh5mc
+        HQpYu/MxNl2VpX03uS1OCZRVBb1PAX+mXYmqdpjfOcSiRL4Ln73mKJwpgSgRcMD1k3LpcA+jmzyiw
+        naDL2kmKVUvOYTSx1vz0ReG/nOlpwiTDbe49f+5gX4FuKjMemY5tpGHeKQoIZ8VIEke+vJ+QScyp7
+        fI+bclfw==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7PLd-00070g-Ac; Wed, 03 Feb 2021 21:06:01 +0000
+Subject: Re: Linux 5.11-rc6 compile error
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        xen-devel@lists.xenproject.org
+References: <8a358ee4-56bc-8e64-3176-88fd0d66176f@linuxfoundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <cbaa9611-ad63-94c3-5205-c8e28a3211d5@infradead.org>
+Date:   Wed, 3 Feb 2021 13:05:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130234856.271282-6-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <8a358ee4-56bc-8e64-3176-88fd0d66176f@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jan 31, 2021 at 12:48:37AM +0100, Jiri Olsa escreveu:
-> Adding support for client socket side that will be used
-> to send commands to daemon server socket.
+On 2/3/21 11:58 AM, Shuah Khan wrote:
+> I am seeing the following compile error on Linux 5.11-rc6.
+> No issues on 5.11.0-rc5 with the same config.
 > 
-> This patch adds only the core support, all commands using
-> this functionality are coming in following patches.
+> ld: arch/x86/built-in.a: member arch/x86/kernel/pci-swiotlb.o in archive is not an object
+> make: *** [Makefile:1170: vmlinux] Error 1
 > 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-daemon.c | 105 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 105 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index 756d60616d7d..eada3ceb9b0c 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -11,6 +11,7 @@
->  #include <sys/types.h>
->  #include <sys/socket.h>
->  #include <sys/un.h>
-> +#include <sys/stat.h>
->  #include <poll.h>
->  #include "builtin.h"
->  #include "perf.h"
-> @@ -42,6 +43,50 @@ static void sig_handler(int sig __maybe_unused)
->  	done = true;
->  }
->  
-> +static int client_config(const char *var, const char *value, void *cb)
-> +{
-> +	struct daemon *daemon = cb;
-> +
-> +	if (!strcmp(var, "daemon.base") && !daemon->base_user) {
-> +		daemon->base = strdup(value);
-> +		if (!daemon->base)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int check_base(struct daemon *daemon)
-> +{
-> +	struct stat st;
-> +
-> +	if (!daemon->base) {
-> +		pr_err("failed: base not defined\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (stat(daemon->base, &st)) {
-> +		pr_err("failed: base '%s' does not exists\n", daemon->base);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int setup_client_config(struct daemon *daemon)
-> +{
-> +	struct perf_config_set *set;
-> +	int err = -ENOMEM;
-> +
-> +	set = perf_config_set__load_file(daemon->config_real);
+> CONFIG_SWIOTLB_XEN=y
+> CONFIG_SWIOTLB=y
 
-	struct perf_config_set *set = perf_config_set__load_file(daemon->config_real);
+Those config settings in allmodconfig builds for me.
 
-> +	if (set) {
-> +		err = perf_config_set(set, client_config, daemon);
-> +		perf_config_set__delete(set);
-> +	}
-> +
-> +	return err ?: check_base(daemon);
-> +}
-> +
->  static int setup_server_socket(struct daemon *daemon)
->  {
->  	struct sockaddr_un addr;
-> @@ -114,6 +159,32 @@ static int handle_server_socket(struct daemon *daemon __maybe_unused, int sock_f
->  	return ret;
->  }
->  
-> +static int setup_client_socket(struct daemon *daemon)
-> +{
-> +	struct sockaddr_un addr;
-> +	char path[100];
-> +	int fd;
-> +
-> +	fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
-Ditto
+> I can debug further later on today. Checking to see if there are any
+> known problems.
 
-> +	if (fd == -1) {
-> +		perror("failed: socket");
-> +		return -1;
-> +	}
-> +
-> +	scnprintf(path, PATH_MAX, "%s/control", daemon->base);
-> +
-> +	memset(&addr, 0, sizeof(addr));
-> +	addr.sun_family = AF_UNIX;
-> +	strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
-> +
-> +	if (connect(fd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
-> +		perror("failed: connect");
-
-close fd
-
-> +		return -1;
-> +	}
-> +
-> +	return fd;
-> +}
-> +
->  static void daemon__free(struct daemon *daemon)
->  {
->  	free(daemon->config_real);
-> @@ -211,6 +282,40 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  	return err;
->  }
->  
-> +__maybe_unused
-> +static int send_cmd(struct daemon *daemon, union cmd *cmd)
-> +{
-> +	char *line = NULL;
-> +	size_t len = 0;
-> +	ssize_t nread;
-> +	FILE *in;
-> +	int fd;
-> +
-> +	if (setup_client_config(daemon))
-> +		return -1;
-> +
-> +	fd = setup_client_socket(daemon);
-> +	if (fd < 0)
-> +		return -1;
-> +
-> +	if (sizeof(*cmd) != write(fd, cmd, sizeof(*cmd)))
-
-close fd
-
-> +		return -1;
-> +
-> +	in = fdopen(fd, "r");
-> +	if (!in) {
-> +		perror("failed: fdopen");
-
-close fd
-
-> +		return -1;
-> +	}
-> +
-> +	while ((nread = getline(&line, &len, in)) != -1) {
-> +		fwrite(line, nread, 1, stdout);
-> +		fflush(stdout);
-> +	}
-> +
-> +	fclose(in);
-> +	return 0;
-> +}
-> +
->  int cmd_daemon(int argc, const char **argv)
->  {
->  	struct option daemon_options[] = {
-> -- 
-> 2.29.2
-> 
 
 -- 
+~Randy
 
-- Arnaldo
