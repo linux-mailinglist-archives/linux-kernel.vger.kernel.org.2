@@ -2,129 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924B030D082
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4102630D08B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhBCAv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 19:51:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60902 "EHLO mail.kernel.org"
+        id S231402AbhBCAz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 19:55:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:24811 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232464AbhBCAvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:51:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2296B64F6C;
-        Wed,  3 Feb 2021 00:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612313421;
-        bh=2oAL83AQgZdUauXSnwoYlspPoPdvBJyWIbDVFHX5qsU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=A0tIeYeRMoA140byXMHql45K5kNvUvn0icP2FobnhEP2chqdBo66zwhY3b22cyVpc
-         Zfv2ABXjVzpsfw+hmTkcqB/izAEdeATxFNT/thJ4jdNki2NESgUTBfmRdzuOyPQOeO
-         zDH2jlzpblgIhUShb7F74bh9bD3wICImio8OUdKiwSMVyuT7qkZLqhqVo6PqRi3TaJ
-         EmHUbhRlLVhKRzn8WZq6jBOYVXRHK0N9ibsnmfZ/vcY+N8WEyuUpln2ljTzyn32wJp
-         bXnW3ltnLkkGjVCUELNOGkUGCNjHqs4wTY+LdnSfvClLGEvXu1iQVXwCmhR7/OSSRa
-         reMnngmVtsi4A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D5D6C3522865; Tue,  2 Feb 2021 16:50:20 -0800 (PST)
-Date:   Tue, 2 Feb 2021 16:50:20 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
-        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
-        ak@linux.intel.com, clm@fb.com
-Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
- to fuzz per-CPU clock checking
-Message-ID: <20210203005020.GI2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
- <20210202170635.24839-4-paulmck@kernel.org>
- <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
+        id S230437AbhBCAz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 19:55:26 -0500
+IronPort-SDR: EljF6gcuh9T3Q2QeC+Xn9GnuCXdj9R41xBh8Tl+uWJDAz0niRmjL7P+EtwQXQQ/vbbukfIWuas
+ U1DNyz5jjp6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="168639743"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="168639743"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:54:44 -0800
+IronPort-SDR: T/OKYfRyJECY92tbmhe95trHnlElgkP/dg1d1yQ7hUQWoAcmWXv06c4utLZaKcN9E5eW0I+84+
+ WVBgh83fvJ6A==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="371036464"
+Received: from rebbutt-mobl3.amr.corp.intel.com (HELO intel.com) ([10.252.133.20])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:54:43 -0800
+Date:   Tue, 2 Feb 2021 16:54:40 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     David Rientjes <rientjes@google.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 04/14] cxl/mem: Implement polled mode mailbox
+Message-ID: <20210203005440.yyyphe4yigf3fvkc@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-5-ben.widawsky@intel.com>
+ <5986abe5-1248-30b2-5f53-fa7013baafad@google.com>
+ <CAPcyv4g_yUpwoBJsLeVwCZAkZGGrfSgrCk2+GXVXBcouktZNSQ@mail.gmail.com>
+ <20210202225733.miq5sl3mqit2zuhg@intel.com>
+ <CAPcyv4gPbN74wOzPH5-qC6a1V5ZwXUVedtr0ZJmfP8DA13YWnA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAPcyv4gPbN74wOzPH5-qC6a1V5ZwXUVedtr0ZJmfP8DA13YWnA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 11:51:02AM -0800, Randy Dunlap wrote:
-> On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > Code that checks for clock desynchronization must itself be tested, so
-> > this commit creates a new clocksource.inject_delay_shift_percpu= kernel
-> > boot parameter that adds or subtracts a large value from the check read,
-> > using the specified bit of the CPU ID to determine whether to add or
-> > to subtract.
-> > 
-> > Cc: John Stultz <john.stultz@linaro.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: Mark Rutland <Mark.Rutland@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Reported-by: Chris Mason <clm@fb.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
-> >  kernel/time/clocksource.c                       | 10 +++++++++-
-> >  2 files changed, 18 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 9965266..f561e94 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -593,6 +593,15 @@
-> >  			times the value specified for inject_delay_freq
-> >  			of consecutive non-delays.
-> >  
-> > +	clocksource.inject_delay_shift_percpu= [KNL]
-> > +			Shift count to obtain bit from CPU number to
-> > +			determine whether to shift the time of the per-CPU
-> > +			clock under test ahead or behind.  For example,
+On 21-02-02 15:54:03, Dan Williams wrote:
+> On Tue, Feb 2, 2021 at 2:57 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > On 21-02-01 12:00:18, Dan Williams wrote:
+> > > On Sat, Jan 30, 2021 at 3:52 PM David Rientjes <rientjes@google.com> wrote:
+> > > >
+> > > > On Fri, 29 Jan 2021, Ben Widawsky wrote:
+> > > >
+> > > > > Provide enough functionality to utilize the mailbox of a memory device.
+> > > > > The mailbox is used to interact with the firmware running on the memory
+> > > > > device.
+> > > > >
+> > > > > The CXL specification defines separate capabilities for the mailbox and
+> > > > > the memory device. The mailbox interface has a doorbell to indicate
+> > > > > ready to accept commands and the memory device has a capability register
+> > > > > that indicates the mailbox interface is ready. The expectation is that
+> > > > > the doorbell-ready is always later than the memory-device-indication
+> > > > > that the mailbox is ready.
+> > > > >
+> > > > > Create a function to handle sending a command, optionally with a
+> > > > > payload, to the memory device, polling on a result, and then optionally
+> > > > > copying out the payload. The algorithm for doing this comes straight out
+> > > > > of the CXL 2.0 specification.
+> > > > >
+> > > > > Primary mailboxes are capable of generating an interrupt when submitting
+> > > > > a command in the background. That implementation is saved for a later
+> > > > > time.
+> > > > >
+> > > > > Secondary mailboxes aren't implemented at this time.
+> > > > >
+> > > > > The flow is proven with one implemented command, "identify". Because the
+> > > > > class code has already told the driver this is a memory device and the
+> > > > > identify command is mandatory.
+> > > > >
+> > > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > > ---
+> > > > >  drivers/cxl/Kconfig |  14 ++
+> > > > >  drivers/cxl/cxl.h   |  39 +++++
+> > > > >  drivers/cxl/mem.c   | 342 +++++++++++++++++++++++++++++++++++++++++++-
+> > > > >  3 files changed, 394 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > > > > index 3b66b46af8a0..fe591f74af96 100644
+> > > > > --- a/drivers/cxl/Kconfig
+> > > > > +++ b/drivers/cxl/Kconfig
+> > > > > @@ -32,4 +32,18 @@ config CXL_MEM
+> > > > >         Chapter 2.3 Type 3 CXL Device in the CXL 2.0 specification.
+> > > > >
+> > > > >         If unsure say 'm'.
+> > > > > +
+> > > > > +config CXL_MEM_INSECURE_DEBUG
+> > > > > +     bool "CXL.mem debugging"
+> > > > > +     depends on CXL_MEM
+> > > > > +     help
+> > > > > +       Enable debug of all CXL command payloads.
+> > > > > +
+> > > > > +       Some CXL devices and controllers support encryption and other
+> > > > > +       security features. The payloads for the commands that enable
+> > > > > +       those features may contain sensitive clear-text security
+> > > > > +       material. Disable debug of those command payloads by default.
+> > > > > +       If you are a kernel developer actively working on CXL
+> > > > > +       security enabling say Y, otherwise say N.
+> > > >
+> > > > Not specific to this patch, but the reference to encryption made me
+> > > > curious about integrity: are all CXL.mem devices compatible with DIMP?
+> > > > Some?  None?
+> > >
+> > > The encryption here is "device passphrase" similar to the NVDIMM
+> > > Security Management described here:
+> > >
+> > > https://pmem.io/documents/IntelOptanePMem_DSM_Interface-V2.0.pdf
+> > >
+> > > The LIBNVDIMM enabling wrapped this support with the Linux keys
+> > > interface which among other things enforces wrapping the clear text
+> > > passphrase with a Linux "trusted/encrypted" key.
+> > >
+> > > Additionally, the CXL.io interface optionally supports PCI IDE:
+> > >
+> > > https://www.intel.com/content/dam/www/public/us/en/documents/reference-guides/pcie-device-security-enhancements.pdf
+> > >
+> > > I'm otherwise not familiar with the DIMP acronym?
+> > >
+> > > > > +
+> > > > >  endif
+> > > > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > > > > index a3da7f8050c4..df3d97154b63 100644
+> > > > > --- a/drivers/cxl/cxl.h
+> > > > > +++ b/drivers/cxl/cxl.h
+> > > > > @@ -31,9 +31,36 @@
+> > > > >  #define CXLDEV_MB_CAPS_OFFSET 0x00
+> > > > >  #define   CXLDEV_MB_CAP_PAYLOAD_SIZE_MASK GENMASK(4, 0)
+> > > > >  #define CXLDEV_MB_CTRL_OFFSET 0x04
+> > > > > +#define   CXLDEV_MB_CTRL_DOORBELL BIT(0)
+> > > > >  #define CXLDEV_MB_CMD_OFFSET 0x08
+> > > > > +#define   CXLDEV_MB_CMD_COMMAND_OPCODE_MASK GENMASK(15, 0)
+> > > > > +#define   CXLDEV_MB_CMD_PAYLOAD_LENGTH_MASK GENMASK(36, 16)
+> > > > >  #define CXLDEV_MB_STATUS_OFFSET 0x10
+> > > > > +#define   CXLDEV_MB_STATUS_RET_CODE_MASK GENMASK(47, 32)
+> > > > >  #define CXLDEV_MB_BG_CMD_STATUS_OFFSET 0x18
+> > > > > +#define CXLDEV_MB_PAYLOAD_OFFSET 0x20
+> > > > > +
+> > > > > +/* Memory Device (CXL 2.0 - 8.2.8.5.1.1) */
+> > > > > +#define CXLMDEV_STATUS_OFFSET 0x0
+> > > > > +#define   CXLMDEV_DEV_FATAL BIT(0)
+> > > > > +#define   CXLMDEV_FW_HALT BIT(1)
+> > > > > +#define   CXLMDEV_STATUS_MEDIA_STATUS_MASK GENMASK(3, 2)
+> > > > > +#define     CXLMDEV_MS_NOT_READY 0
+> > > > > +#define     CXLMDEV_MS_READY 1
+> > > > > +#define     CXLMDEV_MS_ERROR 2
+> > > > > +#define     CXLMDEV_MS_DISABLED 3
+> > > > > +#define   CXLMDEV_READY(status) \
+> > > > > +             (CXL_GET_FIELD(status, CXLMDEV_STATUS_MEDIA_STATUS) == CXLMDEV_MS_READY)
+> > > > > +#define   CXLMDEV_MBOX_IF_READY BIT(4)
+> > > > > +#define   CXLMDEV_RESET_NEEDED_SHIFT 5
+> > > > > +#define   CXLMDEV_RESET_NEEDED_MASK GENMASK(7, 5)
+> > > > > +#define     CXLMDEV_RESET_NEEDED_NOT 0
+> > > > > +#define     CXLMDEV_RESET_NEEDED_COLD 1
+> > > > > +#define     CXLMDEV_RESET_NEEDED_WARM 2
+> > > > > +#define     CXLMDEV_RESET_NEEDED_HOT 3
+> > > > > +#define     CXLMDEV_RESET_NEEDED_CXL 4
+> > > > > +#define   CXLMDEV_RESET_NEEDED(status) \
+> > > > > +             (CXL_GET_FIELD(status, CXLMDEV_RESET_NEEDED) != CXLMDEV_RESET_NEEDED_NOT)
+> > > > >
+> > > > >  /**
+> > > > >   * struct cxl_mem - A CXL memory device
+> > > > > @@ -44,6 +71,16 @@ struct cxl_mem {
+> > > > >       struct pci_dev *pdev;
+> > > > >       void __iomem *regs;
+> > > > >
+> > > > > +     struct {
+> > > > > +             struct range range;
+> > > > > +     } pmem;
+> > > > > +
+> > > > > +     struct {
+> > > > > +             struct range range;
+> > > > > +     } ram;
+> > > > > +
+> > > > > +     char firmware_version[0x10];
+> > > > > +
+> > > > >       /* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
+> > > > >       struct {
+> > > > >               void __iomem *regs;
+> > > > > @@ -51,6 +88,7 @@ struct cxl_mem {
+> > > > >
+> > > > >       /* Cap 0002h - CXL_CAP_CAP_ID_PRIMARY_MAILBOX */
+> > > > >       struct {
+> > > > > +             struct mutex mutex; /* Protects device mailbox and firmware */
+> > > > >               void __iomem *regs;
+> > > > >               size_t payload_size;
+> > > > >       } mbox;
+> > > > > @@ -89,5 +127,6 @@ struct cxl_mem {
+> > > > >
+> > > > >  cxl_reg(status);
+> > > > >  cxl_reg(mbox);
+> > > > > +cxl_reg(mem);
+> > > > >
+> > > > >  #endif /* __CXL_H__ */
+> > > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > > > index fa14d51243ee..69ed15bfa5d4 100644
+> > > > > --- a/drivers/cxl/mem.c
+> > > > > +++ b/drivers/cxl/mem.c
+> > > > > @@ -6,6 +6,270 @@
+> > > > >  #include "pci.h"
+> > > > >  #include "cxl.h"
+> > > > >
+> > > > > +#define cxl_doorbell_busy(cxlm)                                                \
+> > > > > +     (cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET) &                    \
+> > > > > +      CXLDEV_MB_CTRL_DOORBELL)
+> > > > > +
+> > > > > +#define CXL_MAILBOX_TIMEOUT_US 2000
+> > > >
+> > > > This should be _MS?
+> > > >
+> > > > > +
+> > > > > +enum opcode {
+> > > > > +     CXL_MBOX_OP_IDENTIFY            = 0x4000,
+> > > > > +     CXL_MBOX_OP_MAX                 = 0x10000
+> > > > > +};
+> > > > > +
+> > > > > +/**
+> > > > > + * struct mbox_cmd - A command to be submitted to hardware.
+> > > > > + * @opcode: (input) The command set and command submitted to hardware.
+> > > > > + * @payload_in: (input) Pointer to the input payload.
+> > > > > + * @payload_out: (output) Pointer to the output payload. Must be allocated by
+> > > > > + *            the caller.
+> > > > > + * @size_in: (input) Number of bytes to load from @payload.
+> > > > > + * @size_out: (output) Number of bytes loaded into @payload.
+> > > > > + * @return_code: (output) Error code returned from hardware.
+> > > > > + *
+> > > > > + * This is the primary mechanism used to send commands to the hardware.
+> > > > > + * All the fields except @payload_* correspond exactly to the fields described in
+> > > > > + * Command Register section of the CXL 2.0 spec (8.2.8.4.5). @payload_in and
+> > > > > + * @payload_out are written to, and read from the Command Payload Registers
+> > > > > + * defined in (8.2.8.4.8).
+> > > > > + */
+> > > > > +struct mbox_cmd {
+> > > > > +     u16 opcode;
+> > > > > +     void *payload_in;
+> > > > > +     void *payload_out;
+> > > > > +     size_t size_in;
+> > > > > +     size_t size_out;
+> > > > > +     u16 return_code;
+> > > > > +#define CXL_MBOX_SUCCESS 0
+> > > > > +};
+> > > > > +
+> > > > > +static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> > > > > +{
+> > > > > +     const int timeout = msecs_to_jiffies(CXL_MAILBOX_TIMEOUT_US);
+> > > > > +     const unsigned long start = jiffies;
+> > > > > +     unsigned long end = start;
+> > > > > +
+> > > > > +     while (cxl_doorbell_busy(cxlm)) {
+> > > > > +             end = jiffies;
+> > > > > +
+> > > > > +             if (time_after(end, start + timeout)) {
+> > > > > +                     /* Check again in case preempted before timeout test */
+> > > > > +                     if (!cxl_doorbell_busy(cxlm))
+> > > > > +                             break;
+> > > > > +                     return -ETIMEDOUT;
+> > > > > +             }
+> > > > > +             cpu_relax();
+> > > > > +     }
+> > > > > +
+> > > > > +     dev_dbg(&cxlm->pdev->dev, "Doorbell wait took %dms",
+> > > > > +             jiffies_to_msecs(end) - jiffies_to_msecs(start));
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > > > > +                              struct mbox_cmd *mbox_cmd)
+> > > > > +{
+> > > > > +     dev_warn(&cxlm->pdev->dev, "Mailbox command timed out\n");
+> > > > > +     dev_info(&cxlm->pdev->dev,
+> > > > > +              "\topcode: 0x%04x\n"
+> > > > > +              "\tpayload size: %zub\n",
+> > > > > +              mbox_cmd->opcode, mbox_cmd->size_in);
+> > > > > +
+> > > > > +     if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> > > > > +             print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
+> > > > > +                                  mbox_cmd->payload_in, mbox_cmd->size_in,
+> > > > > +                                  true);
+> > > > > +     }
+> > > > > +
+> > > > > +     /* Here's a good place to figure out if a device reset is needed */
+> > > >
+> > > > What are the implications if we don't do a reset, as this implementation
+> > > > does not?  IOW, does a timeout require a device to be recovered through a
+> > > > reset before it can receive additional commands, or is it safe to simply
+> > > > drop the command that timed out on the floor and proceed?
+> > >
+> > > Not a satisfying answer, but "it depends". It's also complicated by
+> > > the fact that a reset may need to be coordinated with other devices in
+> > > the interleave-set as the HDM decoders may bounce.
+> > >
+> > > For comparison, to date there have been no problems with the "drop on
+> > > the floor" policy of LIBNVDIMM command timeouts. At the same time
+> > > there simply was not a software visible reset mechanism for those
+> > > devices so this problem never came out. This mailbox isn't a fast
+> > > path, so the device is likely completely dead if this timeout is ever
+> > > violated, and the firmware reporting a timeout might as well assume
+> > > that the OS gives up on the device.
+> > >
+> > > I'll let Ben chime in on the rest...
+> >
+> > Reset handling is next on the TODO list for the driver. I had two main reasons
+> > for not even taking a stab at it.
+> > 1. I have no good way to test it. We are working on adding some test conditions
+> >    to QEMU for it.
+> > 2. The main difficulty in my mind with reset is you can't pull the memory out
+> >    from under the OS here. While the driver doesn't yet handle persistent memory
+> >    capacities, it may have volatile capacity configured by the BIOS. So the goal
+> >    was, get the bits of the driver in that would at least allow developers,
+> >    hardware vendors, and folks contributing to the spec a way to have basic
+> >    interaction with a CXL type 3 device.
 > 
-> It's a good think that you give an example -- it helps a little bit.
-> That sentence above needs to be rewritten...
+> Honestly I think in most cases if the firmware decides to return a
+> "reset required" status the Linux response will be "lol, no" because
+> the firmware has no concept of the violence that would impose on the
+> rest of the system.
 
-That is a bit obscure, now that you mention it.
+How about UAPI to initiate a reset? I think a sysfs bool would do the trick.
+Maybe sysfs file to display current error status, and one to reset?
 
-> > +			setting this to the value four will result in
-> > +			alternating groups of 16 CPUs shifting ahead and
-> > +			the rest of the CPUs shifting behind.  The default
-> > +			value of -1 disable this type of error injection.
-> 
-> 			            disables
-
-Good eyes!
-
-So how about like this?
-
-	clocksource.inject_delay_shift_percpu= [KNL]
-			Clocksource delay injection partitions the CPUs
-			into two sets, one whose clocks are moved ahead
-			and the other whose clocks are moved behind.
-			This kernel parameter selects the CPU-number
-			bit that determines which of these two sets the
-			corresponding CPU is placed into.  For example,
-			setting this parameter to the value four will
-			result in the first set containing alternating
-			groups of 16 CPUs whose clocks are moved ahead,
-			while the second set will contain the rest of
-			the CPUs, whose clocks are moved behind.
-
-			The default value of -1 disables this type of
-			error injection.
-
-							Thanx, Paul
-
-> > +
-> >  	clocksource.max_read_retries= [KNL]
-> >  			Number of clocksource_watchdog() retries due to
-> >  			external delays before the clock will be marked
-> 
-> 
-> -- 
-> ~Randy
-> 
