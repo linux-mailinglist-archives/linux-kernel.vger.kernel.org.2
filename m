@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD88830DD5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561CF30DD62
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhBCO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbhBCO5G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:57:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFACC061573;
-        Wed,  3 Feb 2021 06:56:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jHqPAIZKxcFxf2pPTznII237kT1yeHQ+2XeU1SzqGnM=; b=ciOSmF9ZZGGhdHmfMPhVKouve8
-        lzqP+86x3R6u/INbMdIRkDp2xg1YTnJGUoVefwmZSY4qc4ri6fxz2QvNBNfSzrrRPAuSIJ/k+sXvE
-        WxkwDJ+kaKMslgS3Xq08s0i6t6nR59ZG/8EQRMNWHkJkStlWQmPCP+tZH/9dAvFI5hMKnh6Yp2TRI
-        A8fhym3ddh5QDu75cC4GvPuvccm2Bpt455YOo+v6N2Qf19VA3YAjEsvWccrklOLT5HsoSDG/NBjYy
-        /j57yT6qAH7FiAa4HMBMjN6UmKnzVsgjD70hp+9dLVLnrndyOD4+NMHuf6Yx4wllfXRlGqvs+c1Bw
-        5HmJQR1g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7JZs-00H3eo-Bf; Wed, 03 Feb 2021 14:56:21 +0000
-Date:   Wed, 3 Feb 2021 14:56:20 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
-        Joel Becker <jlbec@evilplan.org>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Richard Weinberger <richard@nod.at>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
-Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
-Message-ID: <20210203145620.GB308988@casper.infradead.org>
-References: <20210203124112.1182614-1-mszeredi@redhat.com>
- <20210203130501.GY308988@casper.infradead.org>
- <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
- <20210203135827.GZ308988@casper.infradead.org>
- <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
- <20210203142802.GA308988@casper.infradead.org>
- <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
+        id S233463AbhBCO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:58:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:41578 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233234AbhBCO57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:57:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 815B111FB;
+        Wed,  3 Feb 2021 06:57:13 -0800 (PST)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.220])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BEB293F73B;
+        Wed,  3 Feb 2021 06:57:09 -0800 (PST)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, mhiramat@kernel.org,
+        srikar@linux.vnet.ibm.com, adrian.hunter@intel.com
+Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf probe: Added protection to avoid endless loop
+Date:   Wed,  3 Feb 2021 22:57:02 +0800
+Message-Id: <20210203145702.1219509-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:38:54PM +0100, Miklos Szeredi wrote:
-> On Wed, Feb 3, 2021 at 3:28 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Feb 03, 2021 at 03:13:29PM +0100, Miklos Szeredi wrote:
-> > > On Wed, Feb 3, 2021 at 2:58 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > > Network filesystems frequently need to use the credentials attached to
-> > > > a struct file in order to communicate with the server.  There's no point
-> > > > fighting this reality.
-> > >
-> > > IDGI.  Credentials can be taken from the file and from the task.  In
-> > > this case every filesystem except cifs looks at task creds. Why are
-> > > network filesystem special in this respect?
-> >
-> > I don't necessarily mean 'struct cred'.  I mean "the authentication
-> > that the client has performed to the server".  Which is not a per-task
-> > thing, it's stored in the struct file, which is why we have things like
-> >
-> >         int (*write_begin)(struct file *, struct address_space *mapping,
-> >                                 loff_t pos, unsigned len, unsigned flags,
-> >                                 struct page **pagep, void **fsdata);
-> >
-> > disk filesystems ignore the struct file argument, but network filesystems
-> > very much use it.
-> 
-> Fine for file I/O.  That's authorized at open time for all
-> filesystems, not just network ones.
-> 
-> Not fine for metadata operations (IMO).   I.e. ->[gs]etattr() don't
-> take a file argument either, even though on the uAPI there are plenty
-> of open file based variants.
+if dwarf_offdie() return NULL, the continue statement forces the next
+iteration of the loop without update variable off. It will cause an
+endless loop in the process of traversing the compilation unit.
+So added exception protection for loop CUs.
 
-That's a fine statement of principle, but if the filesystem needs to
-contact the server, then your principle must accede to reality.
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+---
+v2: removed the statement that updates variable in the function argument.
+---
+ tools/perf/util/probe-finder.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-But let's talk specifics.  What does CIFS need to contact the server for?
-Could it be cached earlier?
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index 76dd349aa48d..1b118c9c86a6 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -1187,8 +1187,10 @@ static int debuginfo__find_probe_location(struct debuginfo *dbg,
+ 	while (!dwarf_nextcu(dbg->dbg, off, &noff, &cuhl, NULL, NULL, NULL)) {
+ 		/* Get the DIE(Debugging Information Entry) of this CU */
+ 		diep = dwarf_offdie(dbg->dbg, off + cuhl, &pf->cu_die);
+-		if (!diep)
++		if (!diep) {
++			off = noff;
+ 			continue;
++		}
+ 
+ 		/* Check if target file is included. */
+ 		if (pp->file)
+@@ -1949,8 +1951,10 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
+ 
+ 		/* Get the DIE(Debugging Information Entry) of this CU */
+ 		diep = dwarf_offdie(dbg->dbg, off + cuhl, &lf.cu_die);
+-		if (!diep)
++		if (!diep) {
++			off = noff;
+ 			continue;
++		}
+ 
+ 		/* Check if target file is included. */
+ 		if (lr->file)
+-- 
+2.25.1
+
