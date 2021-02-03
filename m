@@ -2,85 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B090230D568
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E58E30D57A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbhBCIjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbhBCIis (ORCPT
+        id S232445AbhBCIlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:41:53 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:27799 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhBCIk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:38:48 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1212C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 00:38:07 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id c4so20458937wru.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 00:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LRckNdFHMV8l5xE64bdXq2kwS/6XUZKnyLTXd9Rl/Xo=;
-        b=LPrQGCD0n0sax7uqe9xZC1s1sdADE1M0XgmKQavcyhVkQ1mJDPa/qbDQfTGSEtnvNu
-         p/jvRFR31hesPRm/VY2A2yYS5j7O6FB15k6Vc9QZrG6f++zQRRrONDyRveUhof2tJdW0
-         1rNBY0PuCUjp/A5Pva4cYFhQ/Px9to0xMhnTexWuaGmECNE9DkJwg+xN0zdYMcIUKdEt
-         /2l2jj+6DvEJB8gV6cLdlVLRIo0Pykug4g58uiNHvOHHzhj8u/qJOqueQTBYLM3emEuF
-         z51slvXY6hsJb1XfDLm3BiBeXIXvoLwRM8i/tFqtIDyhEnjPHm0dvSi0pFz/fm0Vbp84
-         sFHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LRckNdFHMV8l5xE64bdXq2kwS/6XUZKnyLTXd9Rl/Xo=;
-        b=r5Qe1jaIc4x7yvU0imbTHRddyuCUCu14bpqwP/McjD9Z4Txc00NHpyHsROmMQqf4w6
-         rhkijIhKZY1A3kXaNaINIG/XShvaBdZCvlsKhp+z5rWCM01utvPGeiO2ZvG+SCm4gMbu
-         pU10gFzWX7yScYs9fCXFuWO34BWqhURCZYDVNrv+Zv3BfMopMwJ1Wk/N8mPfKAU2jcWk
-         XFYZwwtZc9BZUf07Sn5nq7zsyBIWqFhLpflk792J5E4L+0seY3RAjDL0XvR0F23QR/ht
-         ToIRvEP2+oJYrs4gIFcGSyXiDLxk8W/84rrnAL+G32DSv+tfRFm4FLc9Odve0x/7LLp2
-         li6g==
-X-Gm-Message-State: AOAM533Wwj9M9iAeHvXSY2z7ONDbkVcJLYwfK5I41hDvaoFjLodhELvY
-        oUFRbrBhSpjWkEWsnLhHJ0EDkJTJF1KUBg==
-X-Google-Smtp-Source: ABdhPJw5sLxtpjQCCI4xyGPFSRylLvS0bwIjPcbZQIl6wHfE2JhoJYHeS390IwSi8pfmT/L4T3WxLg==
-X-Received: by 2002:a5d:52c5:: with SMTP id r5mr2150710wrv.208.1612341486654;
-        Wed, 03 Feb 2021 00:38:06 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b982:c986:40fa:94a3? ([2a01:e34:ed2f:f020:b982:c986:40fa:94a3])
-        by smtp.googlemail.com with ESMTPSA id p18sm1706891wmc.31.2021.02.03.00.38.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 00:38:06 -0800 (PST)
-Subject: Re: [RESEND PATCH] clocksource/drivers/timer-microchip-pit64b: add
- clocksource suspend/resume
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org
-References: <1611061165-30180-1-git-send-email-claudiu.beznea@microchip.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <4dec6c7e-15d7-bd49-83ea-818fc90d9b8f@linaro.org>
-Date:   Wed, 3 Feb 2021 09:38:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Feb 2021 03:40:56 -0500
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 1138dQiu015637;
+        Wed, 3 Feb 2021 17:39:26 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 1138dQiu015637
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612341566;
+        bh=YRwehqSfi0jhVS4bwjVtB0egmrWeZIpOGjgdJ1KIwoc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XNpkib/morgOFfuffj1v+nXP2yTuwlM229z+2Ohp7wPKjrAuiItMWLGUKBwTAmrrl
+         SBejziHWOR0b2Hsa3xL7BHuTT3FAhN2oaqPtKtRvv24KTBdNqvy80KTf36dfSV9mId
+         I7hSSgxZ0MY51btbYDQaSt/xawGGCZeWJKjttNJHmlA8QPUOyQJW0OAsynV7er8g9q
+         gio/B3ju+JyZnGcdKurctYrhacuy2ff1t/l+bfmG+KQ+4US+X6iYtxtZUOVt9HsXog
+         7lBo2c30RJisNUij/WimITgBzvs0oRUOZHY4VYDrodgC+qNiRsH4cDO9DD4zZcI4lS
+         QfR2eIhF0vwwQ==
+X-Nifty-SrcIP: [209.85.214.180]
+Received: by mail-pl1-f180.google.com with SMTP id d13so14051417plg.0;
+        Wed, 03 Feb 2021 00:39:26 -0800 (PST)
+X-Gm-Message-State: AOAM530uvFUnOan/LX/BnNQnybCUmZZnWRpsYB6ZM5wTn4TgPUX1e2CW
+        ei5oHSAbb85PG5KQ+y/9rARcQCRzFRmIR/T6xEU=
+X-Google-Smtp-Source: ABdhPJysZhCYG7dqZ4FJNV06fOHSwoXD+kWgTT0OAkQuOmvJ0DjMPbm8HZWTJ7AzDqXkgkUz6ObDFrLo/id3mIu7vYA=
+X-Received: by 2002:a17:90a:184:: with SMTP id 4mr2174355pjc.87.1612341565525;
+ Wed, 03 Feb 2021 00:39:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1611061165-30180-1-git-send-email-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210203075239.5505-1-masahiroy@kernel.org> <CA+icZUW-uObu=7xpqUqKTASmBfEgLKMrKgmR_uhmHBN-EwpBVA@mail.gmail.com>
+In-Reply-To: <CA+icZUW-uObu=7xpqUqKTASmBfEgLKMrKgmR_uhmHBN-EwpBVA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 3 Feb 2021 17:38:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ_x+JWkUwBrJs2LD3rqabqP+tWewrfnMX6F_MdH9L2ZQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ_x+JWkUwBrJs2LD3rqabqP+tWewrfnMX6F_MdH9L2ZQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>,
+        Mark Wielaard <mark@klomp.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/01/2021 13:59, Claudiu Beznea wrote:
-> Add suspend/resume support for clocksource timer.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+On Wed, Feb 3, 2021 at 5:32 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Wed, Feb 3, 2021 at 8:53 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Sedat Dilek noticed duplicated debug flags passed when building C
+> > files with CONFIG_DEBUG_INFO.
+> >
+> > I do not know much about his build environment, but yes, Kbuild
+> > recurses to the top Makefile with some build targets. For example,
+> > 'make CC=clang bindeb-pkg' reproduces the issue.
+> >
+> > With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
+> > for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
+> > CONFIG_CC_IS_GCC=y.
+> >
+> > Fix it to reset DEBUG_CFLAGS also when using Clang.
+> >
+> > Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
+> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> That fixes the issue for me:
+>
+> Without patch:
+>
+> ... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -g -gdwarf-5
+> -gz=zlib -pg -mfentry ...
+>
+> With this patch:
+> ... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -pg -mfentry ...
+>
+> The relevant Kconfigs:
+>
+> $ grep DEBUG_INFO .config | grep ^CONFIG
+> CONFIG_DEBUG_INFO=y
+> CONFIG_DEBUG_INFO_COMPRESSED=y
+> CONFIG_DEBUG_INFO_DWARF5=y
+>
+> Latest make-line:
+>
+> $ /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-4-amd64-clang12-
+> cfi-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+> KBUILD_BUILD_USER=sedat.dilek@gmail.com
+> KBUILD_BUILD_TIMESTAMP=2021-02-03 bindeb-pkg
 
-Applied, thanks
 
+Ah, OK.
+You use bindeb-pkg for building the kernel.
+
+That's why this happens only for you,
+but Nick did not observe this issue.
+
+
+
+
+
+
+> KDEB_PKGVERSION=5.11.0~rc6-4~bull
+> seye+dileks1
+>
+> Feel free to add my...
+>
+>    Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+>
+> Thanks again Masahiro.
+>
+> - Sedat -
+>
+> > ---
+> >
+> >  Makefile | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 3d3f67b98ca2..769a38ee81b9 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -811,10 +811,12 @@ KBUILD_CFLAGS     += -ftrivial-auto-var-init=zero
+> >  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+> >  endif
+> >
+> > +DEBUG_CFLAGS   :=
+> > +
+> >  # Workaround for GCC versions < 5.0
+> >  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
+> >  ifdef CONFIG_CC_IS_GCC
+> > -DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+> > +DEBUG_CFLAGS   += $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+> >  endif
+> >
+> >  ifdef CONFIG_DEBUG_INFO
+> > --
+> > 2.27.0
+> >
 
 
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Best Regards
+Masahiro Yamada
