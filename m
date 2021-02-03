@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0696230D20D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0449930D20B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhBCDSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232754AbhBCDN4 (ORCPT
+        id S232211AbhBCDRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:17:30 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:58889 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232813AbhBCDOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:13:56 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D94CC06178B;
-        Tue,  2 Feb 2021 19:13:59 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id p15so20433105ilq.8;
-        Tue, 02 Feb 2021 19:13:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=XnToDhqvOGorj7hvZSnusu9WNXJGjBnLUH5yiwRdgu8=;
-        b=TjH+OsffVeBJvXrguAJHZxd2D0liB08aV+e7ykeL8ClVhFBAv1JCgzd/B2kAKySntx
-         fS4eDW4bZY5f076oA1jEQewiXvSiL2Upr88GMMRjmH1o6gypfRNOnp7dTVeCOaWX0c+w
-         4CorVVS4tc8d53eFaDNnlG2jmXSri03MyGoTEnIvaf0FCQhtbXajQ0Yw0QWoW9h/rbxO
-         dppNP010cYvlUaTDTb+VRrAwl0No54tnwBY5nkVL2+lXL5GX6HJRDSXp/AQ8LSEf81em
-         Mnye9Rw6BMA4EaYL9HdkQs4F7aDWKtjTWkYsn+Dozp+ouZ+EqEQsDHXc5lXuUWInoKav
-         DAGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XnToDhqvOGorj7hvZSnusu9WNXJGjBnLUH5yiwRdgu8=;
-        b=KfrwKlgVz9yV2I9OVy9zT/E59FKyGbdc8+NXyW/1kRlS6Q1UVsKVKMEQyIVswB3FhJ
-         Z/jPubbMAg0bhgV5rJ7bbXC/20nWPZfX7AwfYWbqFJduu4ggIyD07oGxJ506/CcfgJCY
-         ySc/eTQ1q5mEMhYEKirTGcQJPomhugvGTABq3p6rS51FpiSOdumtkxpbVHMD4GCpiBkP
-         gSuUJ3pV/Z4/YMB2XvPhSk6kn7fOUzHIr8jMx2FkIE14js9GjVnPJXhyAh822rr+p/IO
-         L7apd+wr9xMNaFIrBhNDf+3CtaXonSohPgxv5nwhwhg+1l3cxDVVoAFW3088R31douhK
-         T+eg==
-X-Gm-Message-State: AOAM5332yEe5/pY85lDx7iFuZY9Y/qLkdGWPSnjn6bHtr/vqA0256jiM
-        UdUCzwcLNpAsY2TjJLKXTFX/MNJF3lEiXlNz
-X-Google-Smtp-Source: ABdhPJyMr7+tYlDvAU+h2vOwodlBsOLXTHP5PJ4wHA4CqIXDTByfa9t74X0a2Ui/32O7DxV7Em22IQ==
-X-Received: by 2002:a05:6e02:b2c:: with SMTP id e12mr1023773ilu.143.1612322038719;
-        Tue, 02 Feb 2021 19:13:58 -0800 (PST)
-Received: from spring-Precision-5820-Tower.cs.umn.edu ([2607:ea00:101:3c74:297f:a8c4:e9e5:62a4])
-        by smtp.gmail.com with ESMTPSA id w9sm453709ioj.0.2021.02.02.19.13.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Feb 2021 19:13:58 -0800 (PST)
-From:   Wenjia Zhao <driverfuzzing@gmail.com>
-Cc:     driverfuzzing@gmail.com, Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] net: hns3: double free 'skb'
-Date:   Tue,  2 Feb 2021 21:13:43 -0600
-Message-Id: <1612322024-93322-1-git-send-email-driverfuzzing@gmail.com>
-X-Mailer: git-send-email 2.7.4
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 2 Feb 2021 22:14:21 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1133DwdeE032343, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 1133DwdeE032343
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 3 Feb 2021 11:13:58 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 3 Feb 2021 11:13:58 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 3 Feb 2021 11:13:58 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee]) by
+ RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee%5]) with mapi id
+ 15.01.2106.006; Wed, 3 Feb 2021 11:13:58 +0800
+From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] misc: rtsx: modify rts522a init flow
+Thread-Topic: [PATCH] misc: rtsx: modify rts522a init flow
+Thread-Index: AQHW+VIadKdnxD2IaEOFj+RBUcrF36pERNUAgAF0JHA=
+Date:   Wed, 3 Feb 2021 03:13:58 +0000
+Message-ID: <c836b619b5da47c69165a738d7200014@realtek.com>
+References: <20210202105641.29330-1-ricky_wu@realtek.com>
+ <20210202122738.GA87016@bjorn-Precision-5520>
+In-Reply-To: <20210202122738.GA87016@bjorn-Precision-5520>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-net: hns3: double free 'skb'
-
-The false branch of (tx_ret == NETDEV_TX_OK) free the skb. However, the
-kfree_skb(skb) in the out label will be execute when exits the function.
-So the skb has a double-free bugs.
-
-Remove the kfree_skb(skb) at line 269
-
-Signed-off-by: Wenjia Zhao <driverfuzzing@gmail.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 2622e04..1b926ff 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -266,7 +266,6 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
- 		if (tx_ret == NETDEV_TX_OK) {
- 			good_cnt++;
- 		} else {
--			kfree_skb(skb);
- 			netdev_err(ndev, "hns3_lb_run_test xmit failed: %d\n",
- 				   tx_ret);
- 		}
--- 
-2.7.4
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQmpvcm4gSGVsZ2FhcyA8
+aGVsZ2Fhc0BrZXJuZWwub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSAyLCAyMDIxIDg6
+MjggUE0NCj4gVG86IKdkqf684SBSaWNreSA8cmlja3lfd3VAcmVhbHRlay5jb20+DQo+IENjOiBh
+cm5kQGFybmRiLmRlOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgeXVlaGFpYmluZ0BodWF3
+ZWkuY29tOw0KPiB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyBiaGVsZ2Fhc0Bnb29nbGUuY29tOyBs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIG1pc2M6IHJ0c3g6IG1vZGlmeSBydHM1MjJhIGluaXQgZmxv
+dw0KPiANCj4gVGhlIHN1YmplY3QgbGluZSBjb3VsZCBiZSBtb3JlIGRlc2NyaXB0aXZlLiAgQWxs
+IHBhdGNoZXMgbW9kaWZ5IHNvbWV0aGluZywgc28NCj4gdGhlIG9ubHkgcmVhbCBpbmZvcm1hdGlv
+biBpdCBjb250YWlucyBpcyAicnRzNTIyYSIgYW5kICJpbml0Ii4gIE1heWJlIGl0IGNvdWxkDQo+
+IHNheSBzb21ldGhpbmcgYWJvdXQgcG93ZXJpbmcgb2ZmIE9DUCAod2hhdGV2ZXIgdGhhdCBpcykg
+d2hlbiBubyBtZW1vcnkNCj4gY2FyZCBpcyBwcmVzZW50Lg0KPiANCg0KT2ssIEkgd2lsbCB1cGRh
+dGUgdGhlIHN1YmplY3QgbGluZSBhdCBWMiANCiJtaXNjOiBydHN4OiBpbml0IG9mIHJ0czUyMmEg
+YWRkIHBvd2VyIG9mZiBPQ1Agd2hlbiBubyBjYXJkIGlzIHByZXNlbnQiDQoNCj4gT24gVHVlLCBG
+ZWIgMDIsIDIwMjEgYXQgMDY6NTY6NDFQTSArMDgwMCwgcmlja3lfd3VAcmVhbHRlay5jb20gd3Jv
+dGU6DQo+ID4gRnJvbTogUmlja3kgV3UgPHJpY2t5X3d1QHJlYWx0ZWsuY29tPg0KPiA+DQo+ID4g
+UG93ZXIgZG93biBPQ1AgZm9yIHBvd2VyIGNvbnN1bXB0aW9uDQo+ID4gd2hlbiBjYXJkIGlzIG5v
+dCBleGlzdCBhdCBpbml0X2h3KCkNCj4gDQo+IEkgYXNzdW1lICJjYXJkIGlzIG5vdCBleGlzdCIg
+bWVhbnMgIm5vIFNEL01NQyBjYXJkIGlzIHByZXNlbnQiLg0KPiANCg0KUmlnaHQsIGl0J3MgdGhh
+dCBtZWFucywgSSB3aWxsIG1vZGlmeSB0aGlzIGRlc2NyaXB0aW9uIGF0IFYyDQoNCj4gV2h5IGRv
+IHlvdSBvbmx5IGRvIHRoaXMgZm9yIDUyMjc/ICAiY2FyZF9leGlzdCIgc2VlbXMgdG8gYmUgYSBn
+ZW5lcmljDQo+IGNvbmNlcHQgKGl0J3MgaW4gc3RydWN0IHJ0c3hfcGNyIGFuZCBzZXQgYnkgdGhl
+IGdlbmVyaWMgcnRzeF9wY2lfaW5pdF9odygpKS4NCj4gQ291bGQvc2hvdWxkIHRoaXMgYmUgZG9u
+ZSBmb3Igb3RoZXIgY2FyZCByZWFkZXJzIGFzIHdlbGw/DQo+IA0KDQpPbmx5IHJ0czUyMmEgbmVl
+ZCB0byBkbyB0aGlzLCBvdGhlciBjYXJkIHJlYWRlcnMgY2FuIGRvIEhXIGF1dG8gcG93ZXIgZG93
+bg0KDQo+ID4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gDQo+IFBlciBodHRwczovL3d3
+dy5rZXJuZWwub3JnL2RvYy9odG1sL3Y1LjEwL3Byb2Nlc3Mvc3RhYmxlLWtlcm5lbC1ydWxlcy5o
+dG1sDQo+IChvcHRpb24gMSkgdGhpcyBpcyBzdWZmaWNpZW50LiAgWW91IHNob3VsZCBub3QgaW5j
+bHVkZSBzdGFibGVAa2VybmVsLm9yZyBpbiB0aGUNCj4gY2M6IGxpc3QgYWJvdmUuDQo+IA0KDQpJ
+IGFtIG5vdCB2ZXJ5IGNsZWFyLCBJIHdhbnQgdGhpcyBwYXRjaCB0byBTdGFibGUgdHJlZSwgc28g
+SSBhZGRlZCB0aGlzIFRhZyhDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZykNCklmIEkgcmVtb3Zl
+IHRoaXMgVGFnLCBpdCBtZWFucyB0aGlzIHBhdGNoIG5vdCBnbyB0byBTdGFibGUgVHJlZT8NCg0K
+Umlja3kNCg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxyaWNreV93dUByZWFsdGVrLmNv
+bT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jIHwgNSAr
+KysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTIyNy5jDQo+ID4gYi9kcml2ZXJz
+L21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4gPiBpbmRleCA4ODU5MDExNjcyY2IuLjgyMDBh
+ZjIyYjUyOSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3
+LmMNCj4gPiArKysgYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4gPiBAQCAt
+Mzk4LDYgKzM5OCwxMSBAQCBzdGF0aWMgaW50IHJ0czUyMmFfZXh0cmFfaW5pdF9odyhzdHJ1Y3Qg
+cnRzeF9wY3INCj4gPiAqcGNyKSAgew0KPiA+ICAJcnRzNTIyN19leHRyYV9pbml0X2h3KHBjcik7
+DQo+ID4NCj4gPiArCS8qIFBvd2VyIGRvd24gT0NQIGZvciBwb3dlciBjb25zdW1wdGlvbiAqLw0K
+PiA+ICsJaWYgKCFwY3ItPmNhcmRfZXhpc3QpDQo+ID4gKwkJcnRzeF9wY2lfd3JpdGVfcmVnaXN0
+ZXIocGNyLCBGUERDVEwsIE9DX1BPV0VSX0RPV04sDQo+ID4gKwkJCQlPQ19QT1dFUl9ET1dOKTsN
+Cj4gPiArDQo+ID4gIAlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEZVTkNfRk9SQ0VfQ1RM
+LA0KPiBGVU5DX0ZPUkNFX1VQTUVfWE1UX0RCRywNCj4gPiAgCQlGVU5DX0ZPUkNFX1VQTUVfWE1U
+X0RCRyk7DQo+ID4gIAlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIFBDTEtfQ1RMLCAweDA0
+LCAweDA0KTsNCj4gPiAtLQ0KPiA+IDIuMTcuMQ0KPiA+DQo+IA0KPiAtLS0tLS1QbGVhc2UgY29u
+c2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
