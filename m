@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BCE30D245
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE4230D24C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 05:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhBCD7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:59:07 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:51165 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbhBCD7E (ORCPT
+        id S231656AbhBCEDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 23:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhBCEDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:59:04 -0500
-Received: by mail-il1-f200.google.com with SMTP id x11so23244785ill.17
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:58:48 -0800 (PST)
+        Tue, 2 Feb 2021 23:03:51 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83607C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 20:03:09 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id g5so7871183uak.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 20:03:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rRmcBS+D8ie4DR9UuABqvgaIR3BnrLM49K5MwM/jb2k=;
+        b=Cnkmlci4Z9x+W9PJgvly/S+T/Xk7q2JAM0NOGhqlpC7cCWxjELth6QexjoNksXnl6A
+         8s+rwaY5mTIEe4ADvKzRHYkx7aSYUlCpD4R4kj0eZ4g0FW05K0f+7JiWwws/L8HU0LbI
+         nMCwrt8I+1VHLGlwxeOCno6OZ/UhCde+lxvCI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wXlcTMxuXTA9JnopaVEiXLjgbf8SiWAZS7qkL4vEMcM=;
-        b=h6n6Ul/ZTWE9TCSLbuU4KohkEUuvFQAfrQQIj4Y2yoUba97zG+MIh6OaNKLRE4Y8uz
-         0+OnLjXAHuHMZIJASqnWEcbk2F6+xdS8unb5wpjdPq99BxkADfw7zxEJr5ufBzh2J2rf
-         xbDAnRFbf05GitleUkL2uaQVfeUoyYDMhn4AyjXieSKbuLANe44SnbZQK4h5R/SAxcTo
-         J3caICZreMsqj3YRBDcJKf7ZA5Xy7lecRLCSN3a9SbbdEEsGqtQb9vn+QqfDxSEweml7
-         6iTm0oOLvJuIVdLkKRYMhE7xiwI7H9neUxN+39PU6nzacvKRVZa0SGRuDbi2s3AEDWlA
-         EQKg==
-X-Gm-Message-State: AOAM533k/B5S1YyEEl58oXo8Igo8HFFzZGh5i6KnwNSSU98Hh5NWS4PC
-        vymgD+iA6LcTQ31gBHYr2NDy8WScORph4pNs3Cz2Ia+NYInL
-X-Google-Smtp-Source: ABdhPJyotqswEP2/6Ey2ejcag/c/3KutI/stJYeOOKtD16yPleM3f0WixEdK7LIQjSXpFFiYxYJ3svYd4/P5EjuRVH4SkEk+bnVy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rRmcBS+D8ie4DR9UuABqvgaIR3BnrLM49K5MwM/jb2k=;
+        b=SzNrBISFXcbBix/aAEr+Ygz6wl7aMPYZ176wTwbzVAmOaIQ9HhasmFcSBlCTeRTcWf
+         vrszbs4818uAthGaQu9JXQMMJVbviCySrIGUoySyyJy06jeimpi99YeuSmzuHUxCwSbs
+         2dLqa1jRSvIXgIvQwMs0QLLcfcZDxCgY6FtBCKaj5kks8K4Uxqx8UW27loc8nc2yE60G
+         bySS+sL0dAHYrXnq7fodLmCrziXsKJtC8qBCX/y1FKNZ1nzV/NgtQWFdZVf8dbaqGYgE
+         GSCLSQdHI3iHnIogMUszQJhtu+cjN3FNVtKg1pyK+ygthVMcej5QRtECcLDsrhtagF20
+         N8yA==
+X-Gm-Message-State: AOAM530L/Hy1Ww7rCy5zovoTaJ31GJxLRHlCRh2DBnXCVSSzRd7F6hqS
+        stxKe7lMIWJi+RIlzLLaxe6jGKjfIANmFstYwPDllA==
+X-Google-Smtp-Source: ABdhPJzKgdO699d7NEidKkYUFGCitxzY1h0GLirMYgqHTXBy0DPlWTL+v/D9UP+CXksw/KwcJdfdGHR++aPPOFRquR8=
+X-Received: by 2002:ab0:3043:: with SMTP id x3mr748227ual.88.1612324988471;
+ Tue, 02 Feb 2021 20:03:08 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:1e12:: with SMTP id e18mr1154706ile.270.1612324703619;
- Tue, 02 Feb 2021 19:58:23 -0800 (PST)
-Date:   Tue, 02 Feb 2021 19:58:23 -0800
-In-Reply-To: <000000000000fef5a905aa76dbf9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038d23a05ba66999d@google.com>
-Subject: Re: memory leak in create_pipe_files
-From:   syzbot <syzbot+6a137efd811917e8b53c@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
+References: <20210201034755.15793-1-jitao.shi@mediatek.com>
+In-Reply-To: <20210201034755.15793-1-jitao.shi@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 3 Feb 2021 12:02:57 +0800
+Message-ID: <CANMq1KA4nXBuy50pANw1MKbOm0DKNBgBTcHTmMoPFEq-GskKxQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: fine tune the data lane trail by project dts
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        cawa cheng <cawa.cheng@mediatek.com>, shuijing.li@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Feb 1, 2021 at 11:48 AM Jitao Shi <jitao.shi@mediatek.com> wrote:
+>
+> Some panels or bridges require customized hs_da_trail time.
+> So add a property in devicetree for this panels and bridges.
 
-HEAD commit:    3aaf0a27 Merge tag 'clang-format-for-linux-v5.11-rc7' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d87364d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b7edd79f26f7c0c3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6a137efd811917e8b53c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10df828cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c4f2f8d00000
+Since this changes the device tree, you also need to upload a binding
+document change.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6a137efd811917e8b53c@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.10.43' (ECDSA) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff888110f47600 (size 232):
-  comm "kworker/u4:1", pid 8442, jiffies 4294942490 (age 13.540s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    60 2a 04 01 81 88 ff ff 80 2d 37 0f 81 88 ff ff  `*.......-7.....
-  backtrace:
-    [<000000007ea4ba2d>] kmem_cache_zalloc include/linux/slab.h:672 [inline]
-    [<000000007ea4ba2d>] __alloc_file+0x1f/0xf0 fs/file_table.c:101
-    [<00000000cdcab42a>] alloc_empty_file+0x69/0x120 fs/file_table.c:150
-    [<00000000ca09bf0f>] alloc_file+0x33/0x1b0 fs/file_table.c:192
-    [<00000000c44b2f75>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:232
-    [<00000000a7d8ad8d>] create_pipe_files+0x138/0x2e0 fs/pipe.c:911
-    [<000000007cde2906>] umd_setup+0x33/0x220 kernel/usermode_driver.c:104
-    [<00000000566c5ffa>] call_usermodehelper_exec_async+0xb4/0x1b0 kernel/umh.c:101
-    [<00000000f26cfa20>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-BUG: memory leak
-unreferenced object 0xffff888113186300 (size 232):
-  comm "kworker/u4:1", pid 8442, jiffies 4294942490 (age 13.540s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    60 2a 04 01 81 88 ff ff 00 d6 13 0f 81 88 ff ff  `*..............
-  backtrace:
-    [<000000007ea4ba2d>] kmem_cache_zalloc include/linux/slab.h:672 [inline]
-    [<000000007ea4ba2d>] __alloc_file+0x1f/0xf0 fs/file_table.c:101
-    [<00000000cdcab42a>] alloc_empty_file+0x69/0x120 fs/file_table.c:150
-    [<00000000ca09bf0f>] alloc_file+0x33/0x1b0 fs/file_table.c:192
-    [<0000000053d2fba9>] alloc_file_clone+0x22/0x70 fs/file_table.c:244
-    [<000000002475fc17>] create_pipe_files+0x182/0x2e0 fs/pipe.c:922
-    [<00000000bcdcee57>] umd_setup+0xad/0x220 kernel/usermode_driver.c:115
-    [<00000000566c5ffa>] call_usermodehelper_exec_async+0xb4/0x1b0 kernel/umh.c:101
-    [<00000000f26cfa20>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> index 8c70ec39bfe1..6e7092fa2fee 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -194,6 +194,7 @@ struct mtk_dsi {
+>         struct clk *hs_clk;
+>
+>         u32 data_rate;
+> +       u32 da_trail_delta;
+>
+>         unsigned long mode_flags;
+>         enum mipi_dsi_pixel_format format;
+> @@ -234,7 +235,7 @@ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
+>         timing->da_hs_prepare = (80 * data_rate_mhz + 4 * 1000) / 8000;
+>         timing->da_hs_zero = (170 * data_rate_mhz + 10 * 1000) / 8000 + 1 -
+>                              timing->da_hs_prepare;
+> -       timing->da_hs_trail = timing->da_hs_prepare + 1;
+> +       timing->da_hs_trail = timing->da_hs_prepare + 1 + dsi->da_trail_delta;
+>
+>         timing->ta_go = 4 * timing->lpx - 2;
+>         timing->ta_sure = timing->lpx + 2;
+> @@ -1094,6 +1095,13 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+>                 goto err_unregister_host;
+>         }
+>
+> +       ret = of_property_read_u32_index(dev->of_node, "da_trail_delta", 0,
+> +                                        &dsi->da_trail_delta);
+> +       if (ret) {
+> +               dev_info(dev, "Can't get da_trail_delta, keep it as 0: %d\n", ret);
+> +               dsi->da_trail_delta = 0;
+> +       }
+> +
+>         comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DSI);
+>         if (comp_id < 0) {
+>                 dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
+> --
+> 2.12.5
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
