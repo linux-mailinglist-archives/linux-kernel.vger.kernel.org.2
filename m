@@ -2,212 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8E930D77E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A7730D783
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhBCK2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:28:12 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:54928 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233773AbhBCK1h (ORCPT
+        id S233872AbhBCK2l convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Feb 2021 05:28:41 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2822 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233922AbhBCK2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:27:37 -0500
-X-UUID: 95a42418049a4c368d6b7d0d801cb796-20210203
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=P6HkMNngDEu0ovs7YYGRzlSjmF2Z+miarHYHEVeGcuA=;
-        b=ErSpRwkk+90JI1AWve2UDGzcNiTEgSoRy2Y/nXKWSZOXx8qVBTdkqivOAAAOdTptYj1zqUQc6x7bEVHUdwIq7kMYB/Doqcuh1MBKFP/a0N7mmCZ+OGRGAL7ogkcCrSH/SDjcVTZ5HI6FDnW8s5VjsvmyLuD46Qb2lUikXu8zIlQ=;
-X-UUID: 95a42418049a4c368d6b7d0d801cb796-20210203
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1134430158; Wed, 03 Feb 2021 18:26:51 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 3 Feb 2021 18:26:47 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Feb 2021 18:26:47 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [RFC PATCH v2 3/3] arm64: dts: mt8195: add USB related nodes
-Date:   Wed, 3 Feb 2021 18:26:42 +0800
-Message-ID: <20210203102642.7353-3-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
-References: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
+        Wed, 3 Feb 2021 05:28:24 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DVyW13F6zz13pt8;
+        Wed,  3 Feb 2021 18:25:33 +0800 (CST)
+Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 3 Feb 2021 18:27:40 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 3 Feb 2021 18:27:40 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Wed, 3 Feb 2021 18:27:40 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [PATCH] sched/topology: fix the issue groups don't span
+ domain->span for NUMA diameter > 2
+Thread-Topic: [PATCH] sched/topology: fix the issue groups don't span
+ domain->span for NUMA diameter > 2
+Thread-Index: AQHW+EyH3+RsPKpAu0uyCnuQYKixoapEdkSAgAG/1ZCAAAXIsA==
+Date:   Wed, 3 Feb 2021 10:27:40 +0000
+Message-ID: <8b46e28d26d84b6da69354bf906ce6aa@hisilicon.com>
+References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+ <jhj4kiu4hz8.mognet@arm.com> 
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.254]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 4801882163939865DB0AE9CB9384AE084FE94C5432E8984B4432855FD9A416BB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIFVTQiBub2RlcywgUEhZIG5vZGVzIGFuZCBzb21lIGZpeGVkIHJlZ3VsYXRvciBub2Rlcy4N
-CldlIHByZWZlciB0byB1c2UgbXQ4MTkyJ3MgY29tcGF0aWJsZSBmb3IgdGhlIGZpcnN0IFVTQiBj
-b250cm9sbGVyDQoocG9ydDApLCB0aGVyZSBpcyBubyB3cm9uZyB3aXRoIHRoZSBTT0YvSVRQIGlu
-dGVydmFsOyBidXQgZm9yIG90aGVyDQpjb250cm9sbGVycyAocG9ydDF+cG9ydDMpIHNob3VsZCB1
-c2UgbXQ4MTk1J3Mgb25lIGR1ZSB0byB0aGUgd3JvbmcNCmRlZmF1bHQgc2V0dGluZyBvZiBTT0Yv
-SVRQIGludGVydmFsIHdoaWNoIHNob3VsZCBiZSBjYWxjdWxhdGVkIGZyb20NCjQ4TSwgYnV0IG5v
-dCAyNE0gYnkgZGVmYXVsdC4NCg0KU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVu
-Zy55dW5AbWVkaWF0ZWsuY29tPg0KLS0tDQp2Mjogbm8gY2hhbmdlcw0KLS0tDQogYXJjaC9hcm02
-NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTUtZXZiLmR0cyB8ICA3MCArKysrKysrKysNCiBhcmNo
-L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5NS5kdHNpICAgIHwgMTYzICsrKysrKysrKysr
-KysrKysrKysrDQogMiBmaWxlcyBjaGFuZ2VkLCAyMzMgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0t
-Z2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTUtZXZiLmR0cyBiL2FyY2gv
-YXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTk1LWV2Yi5kdHMNCmluZGV4IDcyNjQyMzJiYjdl
-OS4uYTYwNjgyNzUyZTE5IDEwMDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
-ay9tdDgxOTUtZXZiLmR0cw0KKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgx
-OTUtZXZiLmR0cw0KQEAgLTYsNiArNiw3IEBADQogL2R0cy12MS87DQogI2luY2x1ZGUgIm10ODE5
-NS5kdHNpIg0KICNpbmNsdWRlICJtdDYzNTkuZHRzaSINCisjaW5jbHVkZSA8ZHQtYmluZGluZ3Mv
-Z3Bpby9ncGlvLmg+DQogDQogLyB7DQogCW1vZGVsID0gIk1lZGlhVGVrIE1UODE5NSBldmFsdWF0
-aW9uIGJvYXJkIjsNCkBAIC00OSw2ICs1MCwzNiBAQA0KIAkgICAgICAgIGVuYWJsZS1hY3RpdmUt
-aGlnaDsNCiAJICAgICAgICByZWd1bGF0b3ItYWx3YXlzLW9uOw0KIAl9Ow0KKw0KKwl1c2JfcDBf
-dmJ1czogcmVndWxhdG9yQDIgew0KKwkJY29tcGF0aWJsZSA9ICJyZWd1bGF0b3ItZml4ZWQiOw0K
-KwkJZ3BpbyA9IDwmcGlvIDEyOSBHUElPX0FDVElWRV9ISUdIPjsNCisJCXJlZ3VsYXRvci1uYW1l
-ID0gInZidXMwIjsNCisJCXJlZ3VsYXRvci1taW4tbWljcm92b2x0ID0gPDUwMDAwMDA+Ow0KKwkJ
-cmVndWxhdG9yLW1heC1taWNyb3ZvbHQgPSA8NTAwMDAwMD47DQorCQllbmFibGUtYWN0aXZlLWhp
-Z2g7DQorCQlyZWd1bGF0b3ItYWx3YXlzLW9uOw0KKwl9Ow0KKw0KKwl1c2JfcDJfdmJ1czogcmVn
-dWxhdG9yQDMgew0KKwkJY29tcGF0aWJsZSA9ICJyZWd1bGF0b3ItZml4ZWQiOw0KKwkJZ3BpbyA9
-IDwmcGlvIDEzMSBHUElPX0FDVElWRV9ISUdIPjsNCisJCXJlZ3VsYXRvci1uYW1lID0gInZidXMy
-IjsNCisJCXJlZ3VsYXRvci1taW4tbWljcm92b2x0ID0gPDUwMDAwMDA+Ow0KKwkJcmVndWxhdG9y
-LW1heC1taWNyb3ZvbHQgPSA8NTAwMDAwMD47DQorCQllbmFibGUtYWN0aXZlLWhpZ2g7DQorCQly
-ZWd1bGF0b3ItYWx3YXlzLW9uOw0KKwl9Ow0KKw0KKwl1c2JfcDNfdmJ1czogcmVndWxhdG9yQDQg
-ew0KKwkJY29tcGF0aWJsZSA9ICJyZWd1bGF0b3ItZml4ZWQiOw0KKwkJZ3BpbyA9IDwmcGlvIDUg
-R1BJT19BQ1RJVkVfSElHSD47DQorCQlyZWd1bGF0b3ItbmFtZSA9ICJ2YnVzMyI7DQorCQlyZWd1
-bGF0b3ItbWluLW1pY3Jvdm9sdCA9IDw1MDAwMDAwPjsNCisJCXJlZ3VsYXRvci1tYXgtbWljcm92
-b2x0ID0gPDUwMDAwMDA+Ow0KKwkJZW5hYmxlLWFjdGl2ZS1oaWdoOw0KKwkJcmVndWxhdG9yLWFs
-d2F5cy1vbjsNCisJfTsNCiB9Ow0KIA0KICZwbWljIHsNCkBAIC0xNTYsNiArMTg3LDIyIEBADQog
-CXN0YXR1cyA9ICJva2F5IjsNCiB9Ow0KIA0KKyZ1M3BoeTAgew0KKwlzdGF0dXM9Im9rYXkiOw0K
-K307DQorDQorJnUzcGh5MSB7DQorCXN0YXR1cyA9ICJva2F5IjsNCit9Ow0KKw0KKyZ1M3BoeTIg
-ew0KKwlzdGF0dXM9Im9rYXkiOw0KK307DQorDQorJnUzcGh5MyB7DQorCXN0YXR1cz0ib2theSI7
-DQorfTsNCisNCiAmcGlvIHsNCiAJbm9yX3BpbnNfZGVmYXVsdDogbm9yZGVmYXVsdCB7DQogCQlw
-aW5zMCB7DQpAQCAtMzExLDMgKzM1OCwyNiBAQA0KIAl9Ow0KIH07DQogDQorDQorJnhoY2kwIHsN
-CisJdnVzYjMzLXN1cHBseSA9IDwmbXQ2MzU5X3Z1c2JfbGRvX3JlZz47DQorCXZidXMtc3VwcGx5
-ID0gPCZ1c2JfcDBfdmJ1cz47DQorCXN0YXR1cyA9ICJva2F5IjsNCit9Ow0KKw0KKyZ4aGNpMSB7
-DQorCXZ1c2IzMy1zdXBwbHkgPSA8Jm10NjM1OV92dXNiX2xkb19yZWc+Ow0KKwlzdGF0dXMgPSAi
-b2theSI7DQorfTsNCisNCismeGhjaTIgew0KKwl2dXNiMzMtc3VwcGx5ID0gPCZtdDYzNTlfdnVz
-Yl9sZG9fcmVnPjsNCisJdmJ1cy1zdXBwbHkgPSA8JnVzYl9wMl92YnVzPjsNCisJc3RhdHVzID0g
-Im9rYXkiOw0KK307DQorDQorJnhoY2kzIHsNCisJdnVzYjMzLXN1cHBseSA9IDwmbXQ2MzU5X3Z1
-c2JfbGRvX3JlZz47DQorCXZidXMtc3VwcGx5ID0gPCZ1c2JfcDNfdmJ1cz47DQorCXN0YXR1cyA9
-ICJva2F5IjsNCit9Ow0KZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsv
-bXQ4MTk1LmR0c2kgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5NS5kdHNpDQpp
-bmRleCBjY2I5ZDI0YjFjMWUuLjYwYzc1YjIzY2YwMyAxMDA2NDQNCi0tLSBhL2FyY2gvYXJtNjQv
-Ym9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTk1LmR0c2kNCisrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMv
-bWVkaWF0ZWsvbXQ4MTk1LmR0c2kNCkBAIC05LDYgKzksNyBAQA0KICNpbmNsdWRlIDxkdC1iaW5k
-aW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+DQogI2luY2x1ZGUgPGR0LWJpbmRp
-bmdzL2ludGVycnVwdC1jb250cm9sbGVyL2lycS5oPg0KICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9t
-ZW1vcnkvbXQ4MTk1LW1lbW9yeS1wb3J0Lmg+DQorI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3BoeS9w
-aHkuaD4NCiAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcGluY3RybC9tdDgxOTUtcGluZnVuYy5oPg0K
-ICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9wb3dlci9tdDgxOTUtcG93ZXIuaD4NCiAjaW5jbHVkZSA8
-ZHQtYmluZGluZ3MvcmVzZXQvdGktc3lzY29uLmg+DQpAQCAtOTE0LDYgKzkxNSw4MyBAQA0KIAkJ
-CXN0YXR1cyA9ICJkaXNhYmxlZCI7DQogCQl9Ow0KIA0KKwkJeGhjaTA6IHVzYkAxMTIwMDAwMCB7
-DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTIteGhjaSIsDQorCQkJCSAgICAgIm1l
-ZGlhdGVrLG10ay14aGNpIjsNCisJCQlyZWcgPSA8MCAweDExMjAwMDAwIDAgMHgxMDAwPiwNCisJ
-CQkgICAgICA8MCAweDExMjAzZTAwIDAgMHgwMTAwPjsNCisJCQlyZWctbmFtZXMgPSAibWFjIiwg
-ImlwcGMiOw0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxMjkgSVJRX1RZUEVfTEVWRUxfSElH
-SCAwPjsNCisJCQlwaHlzID0gPCZ1MnBvcnQwIFBIWV9UWVBFX1VTQjI+LA0KKwkJCSAgICAgICA8
-JnUzcG9ydDAgUEhZX1RZUEVfVVNCMz47DQorCQkJYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bja2dl
-biBDTEtfVE9QX1VTQl9TRUw+LA0KKwkJCQkJICA8JnRvcGNrZ2VuIENMS19UT1BfU1NVU0JfWEhD
-SV9TRUw+Ow0KKwkJCWFzc2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
-VU5JVlBMTF9ENV9END4sDQorCQkJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMX0Q1X0Q0
-PjsNCisJCQljbG9ja3MgPSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9BT19TU1VTQj4sDQorCQkJ
-CSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9BT19TU1VTQl9YSENJPiwNCisJCQkJIDwmdG9wY2tn
-ZW4gQ0xLX1RPUF9TU1VTQl9SRUY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInN5c19jayIsICJ4aGNp
-X2NrIiwgInJlZl9jayI7DQorCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCisJCX07DQorDQorCQl4
-aGNpMTogdXNiQDExMjkwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS14
-aGNpIiwNCisJCQkJICAgICAibWVkaWF0ZWssbXRrLXhoY2kiOw0KKwkJCXJlZyA9IDwwIDB4MTEy
-OTAwMDAgMCAweDEwMDA+LA0KKwkJCSAgICAgIDwwIDB4MTEyOTNlMDAgMCAweDAxMDA+Ow0KKwkJ
-CXJlZy1uYW1lcyA9ICJtYWMiLCAiaXBwYyI7DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDUz
-MCBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCXBoeXMgPSA8JnUycG9ydDEgUEhZX1RZUEVf
-VVNCMj47DQorCQkJYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1VTQl8xUF9T
-RUw+LA0KKwkJCQkJICA8JnRvcGNrZ2VuIENMS19UT1BfU1NVU0JfWEhDSV8xUF9TRUw+Ow0KKwkJ
-CWFzc2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1BfVU5JVlBMTF9ENV9E
-ND4sDQorCQkJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMX0Q1X0Q0PjsNCisJCQljbG9j
-a3MgPSA8JnBlcmljZmdfYW8gQ0xLX1BFUklfQU9fU1NVU0JfMVBfQlVTPiwNCisJCQkJIDwmcGVy
-aWNmZ19hbyBDTEtfUEVSSV9BT19TU1VTQl8xUF9YSENJPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xL
-X1RPUF9TU1VTQl9QMV9SRUY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInN5c19jayIsICJ4aGNpX2Nr
-IiwgInJlZl9jayI7DQorCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCisJCX07DQorDQorCQl4aGNp
-MjogdXNiQDExMmEwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS14aGNp
-IiwNCisJCQkJICAgICAibWVkaWF0ZWssbXRrLXhoY2kiOw0KKwkJCXJlZyA9IDwwIDB4MTEyYTAw
-MDAgMCAweDEwMDA+LA0KKwkJCSAgICAgIDwwIDB4MTEyYTNlMDAgMCAweDAxMDA+Ow0KKwkJCXJl
-Zy1uYW1lcyA9ICJtYWMiLCAiaXBwYyI7DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDUzMyBJ
-UlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCXBoeXMgPSA8JnUycG9ydDIgUEhZX1RZUEVfVVNC
-Mj47DQorCQkJYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1VTQl8yUF9TRUw+
-LA0KKwkJCQkJICA8JnRvcGNrZ2VuIENMS19UT1BfU1NVU0JfWEhDSV8yUF9TRUw+Ow0KKwkJCWFz
-c2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1BfVU5JVlBMTF9ENV9END4s
-DQorCQkJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMX0Q1X0Q0PjsNCisJCQljbG9ja3Mg
-PSA8JnBlcmljZmdfYW8gQ0xLX1BFUklfQU9fU1NVU0JfMlBfQlVTPiwNCisJCQkJIDwmcGVyaWNm
-Z19hbyBDTEtfUEVSSV9BT19TU1VTQl8yUF9YSENJPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RP
-UF9TU1VTQl9QMl9SRUY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInN5c19jayIsICJ4aGNpX2NrIiwg
-InJlZl9jayI7DQorCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCisJCX07DQorDQorCQl4aGNpMzog
-dXNiQDExMmIwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS14aGNpIiwN
-CisJCQkJICAgICAibWVkaWF0ZWssbXRrLXhoY2kiOw0KKwkJCXJlZyA9IDwwIDB4MTEyYjAwMDAg
-MCAweDEwMDA+LA0KKwkJCSAgICAgIDwwIDB4MTEyYjNlMDAgMCAweDAxMDA+Ow0KKwkJCXJlZy1u
-YW1lcyA9ICJtYWMiLCAiaXBwYyI7DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDUzNiBJUlFf
-VFlQRV9MRVZFTF9ISUdIIDA+Ow0KKwkJCXBoeXMgPSA8JnUycG9ydDMgUEhZX1RZUEVfVVNCMj47
-DQorCQkJYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1VTQl8zUF9TRUw+LA0K
-KwkJCQkJICA8JnRvcGNrZ2VuIENMS19UT1BfU1NVU0JfWEhDSV8zUF9TRUw+Ow0KKwkJCWFzc2ln
-bmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1BfVU5JVlBMTF9ENV9END4sDQor
-CQkJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMX0Q1X0Q0PjsNCisJCQljbG9ja3MgPSA8
-JnBlcmljZmdfYW8gQ0xLX1BFUklfQU9fU1NVU0JfM1BfQlVTPiwNCisJCQkJIDwmcGVyaWNmZ19h
-byBDTEtfUEVSSV9BT19TU1VTQl8zUF9YSENJPiwNCisJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9T
-U1VTQl9QM19SRUY+Ow0KKwkJCWNsb2NrLW5hbWVzID0gInN5c19jayIsICJ4aGNpX2NrIiwgInJl
-Zl9jayI7DQorCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCisJCX07DQorDQogCQlwY2llMDogcGNp
-ZUAxMTJmMDAwMCB7DQogCQkJZGV2aWNlX3R5cGUgPSAicGNpIjsNCiAJCQljb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10ODE5NS1wY2llIjsNCkBAIC05OTgsNiArMTA3Niw0MCBAQA0KIAkJCXN0YXR1
-cyA9ICJkaXNhYmxlZCI7DQogCQl9Ow0KIA0KKwkJdTNwaHkyOiB1c2ItcGh5MkAxMWM0MDAwMCB7
-DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtdHBoeSIsDQorCQkJCSAgICAgIm1l
-ZGlhdGVrLGdlbmVyaWMtdHBoeS12MiI7DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJ
-I3NpemUtY2VsbHMgPSA8MT47DQorCQkJcmFuZ2VzID0gPDAgMCAweDExYzQwMDAwIDB4NzAwPjsN
-CisJCQlzdGF0dXMgPSAiZGlzYWJsZWQiOw0KKw0KKwkJCXUycG9ydDI6IHVzYjItcGh5MkAwIHsN
-CisJCQkJcmVnID0gPDAgMHg3MDA+Ow0KKwkJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1Bf
-U1NVU0JfUEhZX1AyX1JFRj47DQorCQkJCWNsb2NrLW5hbWVzID0gInJlZiI7DQorCQkJCSNwaHkt
-Y2VsbHMgPSA8MT47DQorCQkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQorCQkJfTsNCisJCX07DQor
-DQorCQl1M3BoeTM6IHVzYi1waHkzQDExYzUwMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10ODE5NS10cGh5IiwNCisJCQkJICAgICAibWVkaWF0ZWssZ2VuZXJpYy10cGh5LXYyIjsN
-CisJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkjc2l6ZS1jZWxscyA9IDwxPjsNCisJCQly
-YW5nZXMgPSA8MCAwIDB4MTFjNTAwMDAgMHg3MDA+Ow0KKwkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7
-DQorDQorCQkJdTJwb3J0MzogdXNiMi1waHkzQDAgew0KKwkJCQlyZWcgPSA8MCAweDcwMD47DQor
-CQkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9TU1VTQl9QSFlfUDNfUkVGPjsNCisJCQkJ
-Y2xvY2stbmFtZXMgPSAicmVmIjsNCisJCQkJI3BoeS1jZWxscyA9IDwxPjsNCisJCQkJc3RhdHVz
-ID0gIm9rYXkiOw0KKwkJCX07DQorCQl9Ow0KKw0KIAkJaTJjNTogaTJjNUAxMWQwMDAwMCB7DQog
-CQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtaTJjIiwNCiAJCQkJIm1lZGlhdGVrLG10
-ODE5Mi1pMmMiOw0KQEAgLTExMzgsNiArMTI1MCw1NyBAQA0KIAkJCSNjbG9jay1jZWxscyA9IDwx
-PjsNCiAJCX07DQogDQorCQl1M3BoeTE6IHVzYi1waHkxQDExZTMwMDAwIHsNCisJCQljb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10ODE5NS10cGh5IiwNCisJCQkJICAgICAibWVkaWF0ZWssZ2VuZXJp
-Yy10cGh5LXYyIjsNCisJCQlwb3dlci1kb21haW5zID0gPCZzcG0gTVQ4MTk1X1BPV0VSX0RPTUFJ
-Tl9TU1VTQl9QQ0lFX1BIWT47DQorCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJI3NpemUt
-Y2VsbHMgPSA8MT47DQorCQkJcmFuZ2VzID0gPDAgMCAweDExZTMwMDAwIDB4MTAwMD47DQorCQkJ
-c3RhdHVzID0gImRpc2FibGVkIjsNCisNCisJCQl1MnBvcnQxOiB1c2IyLXBoeTFAMCB7DQorCQkJ
-CXJlZyA9IDwwIDB4NzAwPjsNCisJCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1NTVVNC
-X1BIWV9QMV9SRUY+Ow0KKwkJCQljbG9jay1uYW1lcyA9ICJyZWYiOw0KKwkJCQkjcGh5LWNlbGxz
-ID0gPDE+Ow0KKwkJCQlzdGF0dXMgPSAib2theSI7DQorCQkJfTsNCisNCisJCQl1M3BvcnQxOiB1
-c2IzLXBoeTFANzAwIHsNCisJCQkJcmVnID0gPDB4NzAwIDB4OTAwPjsNCisJCQkJY2xvY2tzID0g
-PCZhcG1peGVkc3lzIENMS19BUE1JWEVEX1BMTF9TU1VTQjI2TT47DQorCQkJCWNsb2NrLW5hbWVz
-ID0gInJlZiI7DQorCQkJCSNwaHktY2VsbHMgPSA8MT47DQorCQkJCXN0YXR1cyA9ICJva2F5IjsN
-CisJCQl9Ow0KKwkJfTsNCisNCisJCXUzcGh5MDogdXNiLXBoeTBAMTFlNDAwMDAgew0KKwkJCWNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTk1LXRwaHkiLA0KKwkJCQkgICAgICJtZWRpYXRlayxn
-ZW5lcmljLXRwaHktdjIiOw0KKwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCSNzaXplLWNl
-bGxzID0gPDE+Ow0KKwkJCXJhbmdlcyA9IDwwIDAgMHgxMWU0MDAwMCAweDEwMDA+Ow0KKwkJCXN0
-YXR1cyA9ICJkaXNhYmxlZCI7DQorDQorCQkJdTJwb3J0MDogdXNiMi1waHkwQDAgew0KKwkJCQly
-ZWcgPSA8MHgwIDB4NzAwPjsNCisJCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1NTVVNC
-X1BIWV9SRUY+Ow0KKwkJCQljbG9jay1uYW1lcyA9ICJyZWYiOw0KKwkJCQkjcGh5LWNlbGxzID0g
-PDE+Ow0KKwkJCQlzdGF0dXMgPSAib2theSI7DQorCQkJfTsNCisNCisJCQl1M3BvcnQwOiB1c2Iz
-LXBoeTBANzAwIHsNCisJCQkJcmVnID0gPDB4NzAwIDAgMHg5MDA+Ow0KKwkJCQljbG9ja3MgPSA8
-JmFwbWl4ZWRzeXMgQ0xLX0FQTUlYRURfUExMX1NTVVNCMjZNPjsNCisJCQkJY2xvY2stbmFtZXMg
-PSAicmVmIjsNCisJCQkJI3BoeS1jZWxscyA9IDwxPjsNCisJCQkJc3RhdHVzID0gIm9rYXkiOw0K
-KwkJCX07DQorCQl9Ow0KKw0KIAkJcGNpZXBoeTogcGh5QDExZTgwMDAwIHsNCiAJCQljb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10ODE5NS1wY2llLXBoeSI7DQogCQkJI2FkZHJlc3MtY2VsbHMgPSA8
-Mj47DQotLSANCjIuMTguMA0K
 
+
+> -----Original Message-----
+> From: Song Bao Hua (Barry Song)
+> Sent: Wednesday, February 3, 2021 11:18 PM
+> To: 'Valentin Schneider' <valentin.schneider@arm.com>;
+> vincent.guittot@linaro.org; mgorman@suse.de; mingo@kernel.org;
+> peterz@infradead.org; dietmar.eggemann@arm.com; morten.rasmussen@arm.com;
+> linux-kernel@vger.kernel.org
+> Cc: linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>; wanghuiqiang
+> <wanghuiqiang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; Jonathan
+> Cameron <jonathan.cameron@huawei.com>; guodong.xu@linaro.org; Meelis Roos
+> <mroos@linux.ee>
+> Subject: RE: [PATCH] sched/topology: fix the issue groups don't span
+> domain->span for NUMA diameter > 2
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+> > Sent: Wednesday, February 3, 2021 4:17 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> > vincent.guittot@linaro.org; mgorman@suse.de; mingo@kernel.org;
+> > peterz@infradead.org; dietmar.eggemann@arm.com; morten.rasmussen@arm.com;
+> > linux-kernel@vger.kernel.org
+> > Cc: linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Liguozhu
+> (Kenneth)
+> > <liguozhu@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>;
+> wanghuiqiang
+> > <wanghuiqiang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; Jonathan
+> > Cameron <jonathan.cameron@huawei.com>; guodong.xu@linaro.org; Song Bao Hua
+> > (Barry Song) <song.bao.hua@hisilicon.com>; Meelis Roos <mroos@linux.ee>
+> > Subject: Re: [PATCH] sched/topology: fix the issue groups don't span
+> > domain->span for NUMA diameter > 2
+> >
+> > On 01/02/21 16:38, Barry Song wrote:
+> > > @@ -964,6 +941,12 @@ static void init_overlap_sched_group(struct
+> sched_domain
+> > *sd,
+> > >
+> > >       build_balance_mask(sd, sg, mask);
+> > >       cpu = cpumask_first_and(sched_group_span(sg), mask);
+> > > +	/*
+> > > +	 * for the group generated by grandchild, use the sgc of 2nd cpu
+> > > +	 * because the 1st cpu might be used by another sched_group
+> > > +	 */
+> > > +	if (from_grandchild && cpumask_weight(mask) > 1)
+> > > +		cpu = cpumask_next_and(cpu, sched_group_span(sg), mask);
+> > >
+> > >       sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+> >
+> > So you are getting a (hopefully) unique ID for this group span at this
+> > given topology level (i.e. sd->private) but as I had stated in that list of
+> > issues, this creates an sgc that isn't attached to the local group of any
+> > sched_domain, and thus won't get its capacity values updated.
+> >
+> > This can actually be seen via the capacity values you're getting at build
+> > time:
+> >
+> > > [    0.868907] CPU0 attaching sched-domain(s):
+> > ...
+> > > [    0.869542]    domain-2: span=0-5 level=NUMA
+> > > [    0.869559]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
+> >                                                           ^^^^^^^^^^^^^^^^
+> > > [    0.871177] CPU4 attaching sched-domain(s):
+> > ...
+> > > [    0.871200]   groups: 4:{ span=4 cap=977 }, 5:{ span=5 cap=1001 }
+> > > [    0.871243]   domain-1: span=4-7 level=NUMA
+> > > [    0.871257]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
+> >                                 ^^^^^^^^^^^^^^^^
+> >
+> 
+> Yes. I could see this issue.  We could hack update_group_capacity to let
+> it scan both local_group  and sched_group generated by grandchild, but it
+> seems your edit is much better.
+> 
+> > IMO what we want to do here is to hook this CPU0-domain-2-group5 to the sgc
+> > of CPU4-domain1-group4. I've done that in the below diff - this gives us
+> > groups with sgc's owned at lower topology levels, but this will only ever
+> > be true for non-local groups. This has the added benefit of working with
+> > single-CPU nodes. Briefly tested on your topology and the sunfire's (via
+> > QEMU), and I didn't get screamed at.
+> >
+> > Before the fun police comes and impounds my keyboard, I'd like to point out
+> > that we could leverage this cross-level sgc referencing hack to further
+> > change the NUMA domains and pretty much get rid of overlapping groups
+> > (that's what I was fumbling with in [1]).
+> >
+> > [1]: http://lore.kernel.org/r/jhjwnw11ak2.mognet@arm.com
+> >
+> > That is, rather than building overlapping groups and fixing them whenever
+> > that breaks (distance > 2), we could have:
+> > - the local group being the child domain's span (as always)
+> > - all non-local NUMA groups spanning a single node each, with the right sgc
+> >   cross-referencing.
+> >
+> > Thoughts?
+> 
+> I guess the original purpose of overlapping groups is creating as few groups
+> as possible. If we totally remove overlapping groups, it seems we will create
+> much more groups?
+> For example, while node0 begins to build sched_domain for distance 20, it will
+> add node2, since the distance between node2 and node3 is 15, so while node2
+> is
+> added, node3 is also added as node2's lower domain has covered node3. So we
+> need
+> two groups only for node0's sched_domain of distance level 20.
+> +-------+                  +--------+
+>  |       |      15          |        |
+>  |  node0+----------------+ | node1  |
+>  |       |                  |        |
+>  +----+--+                XXX--------+
+>       |                 XXX
+>       |                XX
+> 20    |         15   XX
+>       |            XXX
+>       |       X XXX
+>  +----+----XXX               +-------+
+>  |         |     15          |  node3|
+>  | node2   +-----------------+       |
+>  |         |                 +-------+
+>  +---------+
+> 
+
+Sorry for missing a line:
+
+node0-node3: 20
+
+                             20
+                 X XX X  X X  X  X  X
+             XXXX                       X   X  X XX
+           XX                                     XXX
+         XX                                          X
+       XX                                              XX
+ +-----X-+                  +--------+                  XX
+ |       |      15          |        |                   X
+ |  node0+----------------+ | node1  |                   X
+ |       |                  |        |                   X
+ +----+--+                XXX--------+                   X
+      |                 XXX                             XX
+      |                XX                              XX
+20    |         15   XX                             XXXX
+      |            XXX                         XXXX
+      |       X XXX                        XXXX
+ +----+----XXX               +-------+ XXXX
+ |         |     15          |  node3|XX
+ | node2   +-----------------+       |
+ |         |                 +-------+
+ +---------+
+
+> If we remove overlapping group, we will add a group for node2, another
+> group for node3. Then we get three groups.
+> 
+> I am not sure if it is always positive for performance.
+> 
+> >
+> > --->8---
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index b748999c9e11..ef43abb6b1fb 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -932,21 +932,15 @@ build_group_from_child_sched_domain(struct
+> sched_domain
+> > *sd, int cpu)
+> >
+> >  static void init_overlap_sched_group(struct sched_domain *sd,
+> >  				     struct sched_group *sg,
+> > -				     int from_grandchild)
+> > +				     struct sched_domain *grandchild)
+> >  {
+> >  	struct cpumask *mask = sched_domains_tmpmask2;
+> > -	struct sd_data *sdd = sd->private;
+> > +	struct sd_data *sdd = grandchild ? grandchild->private : sd->private;
+> >  	struct cpumask *sg_span;
+> >  	int cpu;
+> >
+> >  	build_balance_mask(sd, sg, mask);
+> >  	cpu = cpumask_first_and(sched_group_span(sg), mask);
+> > -	/*
+> > -	 * for the group generated by grandchild, use the sgc of 2nd cpu
+> > -	 * because the 1st cpu might be used by another sched_group
+> > -	 */
+> > -	if (from_grandchild && cpumask_weight(mask) > 1)
+> > -		cpu = cpumask_next_and(cpu, sched_group_span(sg), mask);
+> >
+> >  	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+> >  	if (atomic_inc_return(&sg->sgc->ref) == 1)
+> > @@ -979,7 +973,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int
+> > cpu)
+> >
+> >  	for_each_cpu_wrap(i, span, cpu) {
+> >  		struct cpumask *sg_span;
+> > -		int from_grandchild = 0;
+> > +		bool from_grandchild = false;
+> >
+> >  		if (cpumask_test_cpu(i, covered))
+> >  			continue;
+> > @@ -1033,7 +1027,7 @@ build_overlap_sched_groups(struct sched_domain *sd,
+> int
+> > cpu)
+> >  		       !cpumask_subset(sched_domain_span(sibling->child),
+> >  				       span)) {
+> >  			sibling = sibling->child;
+> > -			from_grandchild = 1;
+> > +			from_grandchild = true;
+> >  		}
+> >
+> >  		sg = build_group_from_child_sched_domain(sibling, cpu);
+> > @@ -1043,7 +1037,7 @@ build_overlap_sched_groups(struct sched_domain *sd,
+> int
+> > cpu)
+> >  		sg_span = sched_group_span(sg);
+> >  		cpumask_or(covered, covered, sg_span);
+> >
+> > -		init_overlap_sched_group(sd, sg, from_grandchild);
+> > +		init_overlap_sched_group(sd, sg, from_grandchild ? sibling : NULL);
+> >
+> Nice edit!
+> Will merge your edit into v1 and send v2.
+> 
+> >  		if (!first)
+> >  			first = sg;
+> 
+Thanks
+Barry
