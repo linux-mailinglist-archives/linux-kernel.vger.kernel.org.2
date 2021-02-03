@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F135C30DA43
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBE930DA76
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhBCMyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:54:00 -0500
-Received: from mga09.intel.com ([134.134.136.24]:33631 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229962AbhBCMu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:50:26 -0500
-IronPort-SDR: jgdJPqAAGT7tTGD4zNujWLHgLxcMQePUoqscyz13Zt/BSL0N3LRPM/9SemA6EoT0MLkf601u9E
- PDzEuZLg2TBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="181178569"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="181178569"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 04:47:43 -0800
-IronPort-SDR: YYjB9/fWl1Spvw0vurNKuTxblIOskCClI/mVkhs+e0697wKwLmDdCBq6GZNIe16MnyziV1CUvy
- 5Zy7YuwGA8Dw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="371436354"
-Received: from unknown (HELO localhost) ([10.239.159.166])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Feb 2021 04:47:41 -0800
-Date:   Wed, 3 Feb 2021 20:59:57 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v15 14/14] KVM: x86: Save/Restore GUEST_SSP to/from SMRAM
-Message-ID: <20210203125957.GB6080@local-michael-cet-test>
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-15-weijiang.yang@intel.com>
- <55e43685-f4a7-b068-8d4c-931b8789f031@redhat.com>
+        id S231430AbhBCNBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhBCNBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:01:02 -0500
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F1EC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:00:15 -0800 (PST)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DW1xT4G5VzMqKBM;
+        Wed,  3 Feb 2021 14:00:13 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DW1xS1HTmzlpq04;
+        Wed,  3 Feb 2021 14:00:12 +0100 (CET)
+Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Serge Belyshev <belyshev@depni.sinp.msu.ru>
+Cc:     Dirk Gouders <dirk@gouders.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220541.594826678@linutronix.de>
+ <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
+ <871re7hlsg.fsf@nanos.tec.linutronix.de>
+ <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
+ <87y2gfg18p.fsf@nanos.tec.linutronix.de>
+ <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net>
+ <877dnrc2sv.fsf@depni.sinp.msu.ru> <8735yfd2q4.fsf@nanos.tec.linutronix.de>
+ <87zh0nbnha.fsf@nanos.tec.linutronix.de>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <2b5d8143-f49d-409b-49f1-556366b9d70c@digikod.net>
+Date:   Wed, 3 Feb 2021 14:00:13 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55e43685-f4a7-b068-8d4c-931b8789f031@redhat.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:07:53PM +0100, Paolo Bonzini wrote:
-> On 03/02/21 12:34, Yang Weijiang wrote:
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 22eb6b8626a8..f63b713cd71f 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -8592,6 +8592,16 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu, char *buf)
-> >   	for (i = 0; i < 6; i++)
-> >   		enter_smm_save_seg_64(vcpu, buf, i);
-> > +
-> > +	if (kvm_cet_supported()) {
-> > +		struct msr_data msr;
-> > +
-> > +		msr.index = MSR_KVM_GUEST_SSP;
-> > +		msr.host_initiated = true;
-> > +		/* GUEST_SSP is stored in VMCS at vm-exit. */
-> > +		kvm_x86_ops.get_msr(vcpu, &msr);
-> > +		put_smstate(u64, buf, 0x7ec8, msr.data);
-> > +	}
-> >   }
-> >   #endif
-> > 
+FWIW, it's still OK for me.
+
+Tested-by: Mickaël Salaün <mic@linux.microsoft.com>
+
+On 01/02/2021 20:24, Thomas Gleixner wrote:
+> The recent change to validate the RTC turned out to be overly tight.
 > 
-> 0x7ec8 is used for I/O instruction restart and auto-halt restart. 0x7f08 is
-> a free spot.  We should really document the KVM state save area format.
-Thanks for catching the documentation error! 
+> While it cures the problem on the reporters machine it breaks machines
+> with Intel chipsets which use bit 0-5 of the D register. So check only
+> for bit 6 being 0 which is the case on these Intel machines as well.
 > 
-> Paolo
+> Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
+> Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+> Reported-by: Dirk Gouders <dirk@gouders.net>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: Provide the actual delta patch. Should have stayed away from
+>     computers today....
+> ---
+>  drivers/rtc/rtc-cmos.c         |    4 ++--
+>  drivers/rtc/rtc-mc146818-lib.c |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> --- a/drivers/rtc/rtc-cmos.c
+> +++ b/drivers/rtc/rtc-cmos.c
+> @@ -805,8 +805,8 @@ cmos_do_probe(struct device *dev, struct
+>  
+>  	spin_lock_irq(&rtc_lock);
+>  
+> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> -	if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
+> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
+> +	if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
+>  		spin_unlock_irq(&rtc_lock);
+>  		dev_warn(dev, "not accessible\n");
+>  		retval = -ENXIO;
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -21,8 +21,8 @@ unsigned int mc146818_get_time(struct rt
+>  
+>  again:
+>  	spin_lock_irqsave(&rtc_lock, flags);
+> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> -	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
+> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
+> +	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
+>  		spin_unlock_irqrestore(&rtc_lock, flags);
+>  		memset(time, 0xff, sizeof(*time));
+>  		return 0;
+> 
