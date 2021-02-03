@@ -2,215 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C402B30E4A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EC430E4A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbhBCVFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:05:49 -0500
-Received: from saphodev.broadcom.com ([192.19.232.172]:42830 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232287AbhBCVFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:05:45 -0500
-Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id E948480F7;
-        Wed,  3 Feb 2021 13:04:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com E948480F7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1612386293;
-        bh=j+UnZiSgRmIkC0CmeKeuMSRROPMc4x/P5c/DCXXDDqU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iB365Z3YGnl4VSugP6Za5LyWfWLRw0yq/eiXasCTtDylqdm3Vo/qCnXhAP3vPFhVA
-         XzdxCp99xAKo2+pqiMO7dMis3PyyqE1fDFsBJ8IJaWiWWJv+CVKiT7wuzrkNcPNx/1
-         CFLgoyXGShTYjZ08ZkFYVZSR48UpB67/HO0dKZwc=
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>
-Subject: [PATCH] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
-Date:   Wed,  3 Feb 2021 13:04:51 -0800
-Message-Id: <20210203210451.9002-1-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        id S232693AbhBCVGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:06:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232131AbhBCVGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:06:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3E664F5F;
+        Wed,  3 Feb 2021 21:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612386350;
+        bh=WB1uvXt/6zuuVUeEimfwRlopvPq2o4ZunEp87CGiu8s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WiQmL/tJxN0s090I/sDgXKTMApJH891OUdUuMkQKnsQX5yanRv/vlUPKWmkTDc9+A
+         AxcCjOH2jz++0mv/9bQrobQEh3++f6+ZiuUaCG43zMQvGwy2qNwr/4q+UY9kA+KNrP
+         uasN4nlGVGqr7VzAOBnjIEWEkfE7oddRPh8I7TBDbKnvurTJcvEkyYh3W2N5hFww+/
+         pDfhf1FyeLUpEWIcSe0ciQPoFrpWjNWIM9PBJvH6hRIxXyY8ZGNL16/QIMpxpclo8O
+         SBBLhmyKph1LajUQMTRMVU/PR0JBo+S89grop5FBzfU7em4dVUMyPquS0TLnZgrT84
+         OY2cScwLDOoMA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5E19B40513; Wed,  3 Feb 2021 18:05:47 -0300 (-03)
+Date:   Wed, 3 Feb 2021 18:05:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 05/24] perf daemon: Add client socket support
+Message-ID: <20210203210547.GR854763@kernel.org>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-6-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130234856.271282-6-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct compile issue if CONFIG_TTY is not set by
-only adding ttyVK devices if CONFIG_BCM_VK_TTY is set.
+Em Sun, Jan 31, 2021 at 12:48:37AM +0100, Jiri Olsa escreveu:
+> Adding support for client socket side that will be used
+> to send commands to daemon server socket.
+> 
+> This patch adds only the core support, all commands using
+> this functionality are coming in following patches.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-daemon.c | 105 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 756d60616d7d..eada3ceb9b0c 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -11,6 +11,7 @@
+>  #include <sys/types.h>
+>  #include <sys/socket.h>
+>  #include <sys/un.h>
+> +#include <sys/stat.h>
+>  #include <poll.h>
+>  #include "builtin.h"
+>  #include "perf.h"
+> @@ -42,6 +43,50 @@ static void sig_handler(int sig __maybe_unused)
+>  	done = true;
+>  }
+>  
+> +static int client_config(const char *var, const char *value, void *cb)
+> +{
+> +	struct daemon *daemon = cb;
+> +
+> +	if (!strcmp(var, "daemon.base") && !daemon->base_user) {
+> +		daemon->base = strdup(value);
+> +		if (!daemon->base)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int check_base(struct daemon *daemon)
+> +{
+> +	struct stat st;
+> +
+> +	if (!daemon->base) {
+> +		pr_err("failed: base not defined\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (stat(daemon->base, &st)) {
+> +		pr_err("failed: base '%s' does not exists\n", daemon->base);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int setup_client_config(struct daemon *daemon)
+> +{
+> +	struct perf_config_set *set;
+> +	int err = -ENOMEM;
+> +
+> +	set = perf_config_set__load_file(daemon->config_real);
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+	struct perf_config_set *set = perf_config_set__load_file(daemon->config_real);
 
----
-Changes since v3:
-- Kconfig cleanups below as per Greg's comments
-- changed if BCM_VK to depends on BCM_VK
-- removed default y in CONFIG_BCM_VK_TTY
-- expanded decription of CONFIG_BCM_VK_TTY
-Changes since v2:
-- add CONFIG_BCM_VK_TTY
-- add function and stub for bcm_vk_tty_set_irq_enabled
-Changes since v1:
-- add function stubs rather than compiling out code
----
- drivers/misc/bcm-vk/Kconfig      | 12 +++++++++
- drivers/misc/bcm-vk/Makefile     |  4 +--
- drivers/misc/bcm-vk/bcm_vk.h     | 42 +++++++++++++++++++++++++++++---
- drivers/misc/bcm-vk/bcm_vk_dev.c |  5 ++--
- drivers/misc/bcm-vk/bcm_vk_tty.c |  6 +++++
- 5 files changed, 61 insertions(+), 8 deletions(-)
+> +	if (set) {
+> +		err = perf_config_set(set, client_config, daemon);
+> +		perf_config_set__delete(set);
+> +	}
+> +
+> +	return err ?: check_base(daemon);
+> +}
+> +
+>  static int setup_server_socket(struct daemon *daemon)
+>  {
+>  	struct sockaddr_un addr;
+> @@ -114,6 +159,32 @@ static int handle_server_socket(struct daemon *daemon __maybe_unused, int sock_f
+>  	return ret;
+>  }
+>  
+> +static int setup_client_socket(struct daemon *daemon)
+> +{
+> +	struct sockaddr_un addr;
+> +	char path[100];
+> +	int fd;
+> +
+> +	fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
-diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
-index 052f6f28b540..68a972772b99 100644
---- a/drivers/misc/bcm-vk/Kconfig
-+++ b/drivers/misc/bcm-vk/Kconfig
-@@ -15,3 +15,15 @@ config BCM_VK
- 	  accelerators via /dev/bcm-vk.N devices.
- 
- 	  If unsure, say N.
-+
-+config BCM_VK_TTY
-+	bool "Enable tty ports on a Broadcom VK Accelerator device"
-+	depends on TTY
-+	depends on BCM_VK
-+	help
-+	  Select this option to enable tty support to allow console
-+	  access to Broadcom VK Accelerator cards from host.
-+
-+	  Device node will in the form /dev/bcm-vk.x_ttyVKy where:
-+	  x is the instance of the VK card
-+	  y is the tty device number on the VK card.
-diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-index e4a1486f7209..1df2ebe851ca 100644
---- a/drivers/misc/bcm-vk/Makefile
-+++ b/drivers/misc/bcm-vk/Makefile
-@@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
- bcm_vk-objs := \
- 	bcm_vk_dev.o \
- 	bcm_vk_msg.o \
--	bcm_vk_sg.o \
--	bcm_vk_tty.o
-+	bcm_vk_sg.o
- 
-+bcm_vk-$(CONFIG_BCM_VK_TTY) += bcm_vk_tty.o
-diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index 3f37c640a814..a1338f375589 100644
---- a/drivers/misc/bcm-vk/bcm_vk.h
-+++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -258,7 +258,11 @@ enum pci_barno {
- 	BAR_2
- };
- 
-+#ifdef CONFIG_BCM_VK_TTY
- #define BCM_VK_NUM_TTY 2
-+#else
-+#define BCM_VK_NUM_TTY 0
-+#endif
- 
- struct bcm_vk_tty {
- 	struct tty_port port;
-@@ -366,11 +370,13 @@ struct bcm_vk {
- 	struct miscdevice miscdev;
- 	int devid; /* dev id allocated */
- 
-+#ifdef CONFIG_BCM_VK_TTY
- 	struct tty_driver *tty_drv;
- 	struct timer_list serial_timer;
- 	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
- 	struct workqueue_struct *tty_wq_thread;
- 	struct work_struct tty_wq_work;
-+#endif
- 
- 	/* Reference-counting to handle file operations */
- 	struct kref kref;
-@@ -501,13 +507,43 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
- 			     const pid_t pid, const u32 q_num);
- void bcm_to_v_q_doorbell(struct bcm_vk *vk, u32 q_num, u32 db_val);
- int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
--int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
--void bcm_vk_tty_exit(struct bcm_vk *vk);
--void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
- void bcm_vk_hb_init(struct bcm_vk *vk);
- void bcm_vk_hb_deinit(struct bcm_vk *vk);
- void bcm_vk_handle_notf(struct bcm_vk *vk);
- bool bcm_vk_drv_access_ok(struct bcm_vk *vk);
- void bcm_vk_set_host_alert(struct bcm_vk *vk, u32 bit_mask);
- 
-+#ifdef CONFIG_BCM_VK_TTY
-+int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
-+void bcm_vk_tty_exit(struct bcm_vk *vk);
-+void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
-+void bcm_vk_tty_wq_exit(struct bcm_vk *vk);
-+
-+static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
-+{
-+	vk->tty[index].irq_enabled = true;
-+}
-+#else
-+static inline int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
-+{
-+	return 0;
-+}
-+
-+static inline void bcm_vk_tty_exit(struct bcm_vk *vk)
-+{
-+}
-+
-+static inline void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
-+{
-+}
-+
-+static inline void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
-+{
-+}
-+
-+static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
-+{
-+}
-+#endif /* CONFIG_BCM_VK_TTY */
-+
- #endif
-diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index c3d2bba68ef1..59b4859d68d2 100644
---- a/drivers/misc/bcm-vk/bcm_vk_dev.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -1396,7 +1396,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
- 			goto err_irq;
- 		}
--		vk->tty[i].irq_enabled = true;
-+		bcm_vk_tty_set_irq_enabled(vk, i);
- 	}
- 
- 	id = ida_simple_get(&bcm_vk_ida, 0, 0, GFP_KERNEL);
-@@ -1580,8 +1580,7 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 
- 	cancel_work_sync(&vk->wq_work);
- 	destroy_workqueue(vk->wq_thread);
--	cancel_work_sync(&vk->tty_wq_work);
--	destroy_workqueue(vk->tty_wq_thread);
-+	bcm_vk_tty_wq_exit(vk);
- 
- 	for (i = 0; i < MAX_BAR; i++) {
- 		if (vk->bar[i])
-diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
-index be3964949b63..4d02692ecfc7 100644
---- a/drivers/misc/bcm-vk/bcm_vk_tty.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
-@@ -331,3 +331,9 @@ void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
- 			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
- 	}
- }
-+
-+void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
-+{
-+	cancel_work_sync(&vk->tty_wq_work);
-+	destroy_workqueue(vk->tty_wq_thread);
-+}
+Ditto
+
+> +	if (fd == -1) {
+> +		perror("failed: socket");
+> +		return -1;
+> +	}
+> +
+> +	scnprintf(path, PATH_MAX, "%s/control", daemon->base);
+> +
+> +	memset(&addr, 0, sizeof(addr));
+> +	addr.sun_family = AF_UNIX;
+> +	strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
+> +
+> +	if (connect(fd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+> +		perror("failed: connect");
+
+close fd
+
+> +		return -1;
+> +	}
+> +
+> +	return fd;
+> +}
+> +
+>  static void daemon__free(struct daemon *daemon)
+>  {
+>  	free(daemon->config_real);
+> @@ -211,6 +282,40 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+>  	return err;
+>  }
+>  
+> +__maybe_unused
+> +static int send_cmd(struct daemon *daemon, union cmd *cmd)
+> +{
+> +	char *line = NULL;
+> +	size_t len = 0;
+> +	ssize_t nread;
+> +	FILE *in;
+> +	int fd;
+> +
+> +	if (setup_client_config(daemon))
+> +		return -1;
+> +
+> +	fd = setup_client_socket(daemon);
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	if (sizeof(*cmd) != write(fd, cmd, sizeof(*cmd)))
+
+close fd
+
+> +		return -1;
+> +
+> +	in = fdopen(fd, "r");
+> +	if (!in) {
+> +		perror("failed: fdopen");
+
+close fd
+
+> +		return -1;
+> +	}
+> +
+> +	while ((nread = getline(&line, &len, in)) != -1) {
+> +		fwrite(line, nread, 1, stdout);
+> +		fflush(stdout);
+> +	}
+> +
+> +	fclose(in);
+> +	return 0;
+> +}
+> +
+>  int cmd_daemon(int argc, const char **argv)
+>  {
+>  	struct option daemon_options[] = {
+> -- 
+> 2.29.2
+> 
+
 -- 
-2.17.1
 
+- Arnaldo
