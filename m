@@ -2,199 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E36930E210
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F99730E21A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 19:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhBCSKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 13:10:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230257AbhBCSKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 13:10:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD9364F92;
-        Wed,  3 Feb 2021 18:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612375803;
-        bh=ezVrT4aCog+5w29W1RlxMcLllX7Aun8R1GSYs29xX6A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NjNGDhYkDkgvpOw1aNa/fT8DIxScOgSOZdKfqmFaCECkawKh8cTMNjmpcJf/4GBmN
-         HResyY53+wuRQLc338UijyiEkODJmXsyq+kJQRCrz+3Is4yayKuminMFQUvloGSGrY
-         mivAPFF1jgMsnLAIssbmS/LV7oVr6z96n30oFUyRbtYG92Fs+2YqJJYVbF/uGriZ9T
-         cFVypYLp/2ORwlhOSr6QEkPJX0CTUfHxoUheMSHpzynjrk5vpPhleouIGdBGXnS/PL
-         j30OHze0bHZWj2gLTYVG53WsUJr1DxW8SVT4NybyptEFohsOUfcXSF6WXFQ4obM90R
-         zWR3jGhovpVkQ==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2] x86/ptrace: Clean up PTRACE_GETREGS/PTRACE_PUTREGS regset selection
-Date:   Wed,  3 Feb 2021 10:09:58 -0800
-Message-Id: <9daa791d0c7eaebd59c5bc2b2af1b0e7bebe707d.1612375698.git.luto@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232163AbhBCSLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 13:11:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhBCSLg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 13:11:36 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAECC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 10:10:55 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id b2so561547lfq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BFXCAVCvdE4leeiqwZ8GWgSDSdNV/A3WBUdTkZX4UbY=;
+        b=OrBhEbnyo/XZUMBBvytRNE26lRBineus1YdnTJHiM+Y67CNInq2iAOHp71uC9JNWSr
+         g+mSObkseSofSfARkErTuSJENECRsrcfsJiaitkgVgJWMlVsUoi/DI07rzVk3KGXuQ18
+         Ww+tukeCLDnTK8i61qN955q2PduKmHgCKvPQU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BFXCAVCvdE4leeiqwZ8GWgSDSdNV/A3WBUdTkZX4UbY=;
+        b=suTum+EdUnbX5XRwD0ALH1QJRGt3/BLtcTRTfYyP8LhHmK7NYGT0BWxuHR67PGh1ME
+         QEtowNWa09UrB1FcWUhpIl9ZTOiJoyqrefgr6e0yh0SC5GshrSw2/mJcW5QigEtrLBHJ
+         vkNusnnrlrV06Hpx2ZdGmokTYnnuaY+z6jxD8luN4XGUzxDMrSYyQsiYw3nw94XaKocC
+         SO6nGppZ4/eun0t6dchS23JEt4hBq3hb3ZqJqXiwczxfMlMAUtsza9e4Y6pUyaN25Meg
+         zZ7Svkm/iqPi30zNIqKZRi3kyg3qW3rzD+wA5ML3F2Bt3aO5unu+6dHlRfrYtfXcN/kh
+         zyBA==
+X-Gm-Message-State: AOAM5334F3JlEa+VoZW5ef+JFJkRUNn+zbK7z4yoXXtJSfLjP1FG6m1V
+        Djn1iTTVuqnCvsuDt13RabAQoNO//p5tjQ==
+X-Google-Smtp-Source: ABdhPJwRjuoWExRyROw+Y8b1GK7MWBUZQxI/zuDO8F1n2zIKQs/N5M3kUcp6FacNl24F1sHO3tmp/A==
+X-Received: by 2002:a19:5509:: with SMTP id n9mr2468732lfe.111.1612375853276;
+        Wed, 03 Feb 2021 10:10:53 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id m16sm315643lfu.220.2021.02.03.10.10.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 10:10:52 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id f2so100788ljp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 10:10:52 -0800 (PST)
+X-Received: by 2002:a2e:860f:: with SMTP id a15mr2399715lji.411.1612375851966;
+ Wed, 03 Feb 2021 10:10:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
+ <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
+ <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
+ <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
+ <CAHk-=wgOp10DO9jtMC=B=RoTLWe7MFTS5pH4JeZ78-tbqTY1vw@mail.gmail.com> <87h7mtc9pr.fsf_-_@collabora.com>
+In-Reply-To: <87h7mtc9pr.fsf_-_@collabora.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Feb 2021 10:10:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjFV8j03vyvuY4qhKnJ6Vy2DLfjzgTJ1n+LO9EsVsJmDg@mail.gmail.com>
+Message-ID: <CAHk-=wjFV8j03vyvuY4qhKnJ6Vy2DLfjzgTJ1n+LO9EsVsJmDg@mail.gmail.com>
+Subject: Re: [PATCH] entry: Fix missed trap after single-step on system call return
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Kyle Huey <me@kylehuey.com>, Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-task_user_regset_view() has nonsensical semantics, but those semantics
-appear to be relied on by existing users of PTRACE_GETREGSET and
-PTRACE_SETREGSET.  (See added comments in this patch for details.)
+On Wed, Feb 3, 2021 at 10:00 AM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+> Does the patch below follows your suggestion?  I'm setting the
+> SYSCALL_WORK shadowing TIF_SINGLESTEP every time, instead of only when
+> the child is inside a system call.  Is this acceptable?
 
-It shouldn't be used for PTRACE_GETREGS or PTRACE_SETREGS, though.  A
-native 64-bit ptrace() call and an x32 ptrace() call using GETREGS or
-SETREGS wants the 64-bit regset views, and a 32-bit ptrace() call
-(native or compat) should use the 32-bit regset.
-task_user_regset_view() almost does this except that it will
-malfunction if a ptracer is itself ptraced and the outer ptracer
-modifies CS on entry to a ptrace() syscall.  Hopefully that has never
-happened.  (The compat ptrace() code already hardcoded the 32-bit
-regset, so this patch has no effect on that path.)
+Looks sane to me.
 
-Improve the situation and deobfuscate the code by hardcoding the
-64-bit view in the x32 ptrace() and selecting the view based on the
-kernel config in the native ptrace().
+My main worry would be about "what about the next system call"? It's
+not what Kyle's case cares about, but let me just give an example:
 
-I tried to figure out the history behind this API.  I naïvely assumed
-that PTRAGE_GETREGSET and PTRACE_SETREGSET were ancient APIs that
-predated compat, but no.  They were introduced by commit 2225a122ae26
-("ptrace: Add support for generic PTRACE_GETREGSET/PTRACE_SETREGSET")
-in 2010, and they are simply a poor design.  ELF core dumps have the
-ELF e_machine field and a bunch of register sets in ELF notes, and the
-pair (e_machine, NT_XXX) indicates the format of the regset blob.  But
-the new PTRACE_GET/SETREGSET API coopted the NT_XXX numbering without
-any way to specify which e_machine was in effect.  This is especially
-bad on x86, where a process can freely switch between 32-bit and
-64-bit mode, and, in fact, the PTRAGE_SETREGSET call itself can cause
-this switch to happen.  Oops.
+ - task A traces task B, and starts single-stepping. Task B was *not*
+in a system call at this point.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/kernel/ptrace.c | 46 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 8 deletions(-)
+ - task B happily executes one instruction at a time, takes a TF
+fault, everything is good
 
-diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
-index bedca011459c..87a4143aa7d7 100644
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -704,6 +704,9 @@ void ptrace_disable(struct task_struct *child)
- #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
- static const struct user_regset_view user_x86_32_view; /* Initialized below. */
- #endif
-+#ifdef CONFIG_X86_64
-+static const struct user_regset_view user_x86_64_view; /* Initialized below. */
-+#endif
- 
- long arch_ptrace(struct task_struct *child, long request,
- 		 unsigned long addr, unsigned long data)
-@@ -711,6 +714,14 @@ long arch_ptrace(struct task_struct *child, long request,
- 	int ret;
- 	unsigned long __user *datap = (unsigned long __user *)data;
- 
-+#ifdef CONFIG_X86_64
-+	/* This is native 64-bit ptrace() */
-+	const struct user_regset_view *regset_view = &user_x86_64_view;
-+#else
-+	/* This is native 32-bit ptrace() */
-+	const struct user_regset_view *regset_view = &user_x86_32_view;
-+#endif
-+
- 	switch (request) {
- 	/* read the word at location addr in the USER area. */
- 	case PTRACE_PEEKUSR: {
-@@ -749,28 +760,28 @@ long arch_ptrace(struct task_struct *child, long request,
- 
- 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   regset_view,
- 					   REGSET_GENERAL,
- 					   0, sizeof(struct user_regs_struct),
- 					   datap);
- 
- 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     regset_view,
- 					     REGSET_GENERAL,
- 					     0, sizeof(struct user_regs_struct),
- 					     datap);
- 
- 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   regset_view,
- 					   REGSET_FP,
- 					   0, sizeof(struct user_i387_struct),
- 					   datap);
- 
- 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     regset_view,
- 					     REGSET_FP,
- 					     0, sizeof(struct user_i387_struct),
- 					     datap);
-@@ -1152,28 +1163,28 @@ static long x32_arch_ptrace(struct task_struct *child,
- 
- 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   &user_x86_64_view,
- 					   REGSET_GENERAL,
- 					   0, sizeof(struct user_regs_struct),
- 					   datap);
- 
- 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     &user_x86_64_view,
- 					     REGSET_GENERAL,
- 					     0, sizeof(struct user_regs_struct),
- 					     datap);
- 
- 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   &user_x86_64_view,
- 					   REGSET_FP,
- 					   0, sizeof(struct user_i387_struct),
- 					   datap);
- 
- 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     &user_x86_64_view,
- 					     REGSET_FP,
- 					     0, sizeof(struct user_i387_struct),
- 					     datap);
-@@ -1309,6 +1320,25 @@ void __init update_regset_xstate_info(unsigned int size, u64 xstate_mask)
- 	xstate_fx_sw_bytes[USER_XSTATE_XCR0_WORD] = xstate_mask;
- }
- 
-+/*
-+ * This is used by the core dump code to decide which regset to dump.  The
-+ * core dump code writes out the resulting .e_machine and the corresponding
-+ * regsets.  This is suboptimal if the task is messing around with its CS.L
-+ * field, but at worst the core dump will end up missing some information.
-+ *
-+ * Unfortunately, it is also used by the broken PTRACE_GETREGSET and
-+ * PTRACE_SETREGSET APIs.  These APIs look at the .regsets field but have
-+ * no way to make sure that the e_machine they use matches the caller's
-+ * expectations.  The result is that the data format returned by
-+ * PTRACE_GETREGSET depends on the returned CS field (and even the offset
-+ * of the returned CS field depends on its value!) and the data format
-+ * accepted by PTRACE_SETREGSET is determined by the old CS value.  The
-+ * upshot is that it is basically impossible to use these APIs correctly.
-+ *
-+ * The best way to fix it in the long run would probably be to add new
-+ * improved ptrace() APIs to read and write registers reliably, possibly by
-+ * allowing userspace to select the ELF e_machine variant that they expect.
-+ */
- const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- {
- #ifdef CONFIG_IA32_EMULATION
--- 
-2.29.2
+ - task B now does a system call. That will disable single-stepping
+while in the kernel
 
+ - task B returns from the system call. TF will be set in eflags, but
+the first instruction *after* the system call will execute unless we
+go through the system call exit path
+
+So I think the tracer basically misses one instruction when single-stepping.
+
+I think your patch works for this case (because the SYSCALL_EXIT_TRAP
+flag stays set until single-stepping is done), so I think it's all
+good. But can you verify, just to allay my worry?
+
+         Linus
