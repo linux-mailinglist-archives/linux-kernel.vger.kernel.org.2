@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE0830E510
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEB830E515
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhBCVma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S231755AbhBCVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbhBCVmU (ORCPT
+        with ESMTP id S231421AbhBCVnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:42:20 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D631AC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 13:41:39 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id d16so953133wro.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 13:41:39 -0800 (PST)
+        Wed, 3 Feb 2021 16:43:08 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9D3C061573;
+        Wed,  3 Feb 2021 13:42:28 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id y14so829345ljn.8;
+        Wed, 03 Feb 2021 13:42:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g4TI1e7gQdTzltegKMdoZTR4RsT2JvIHbsFUh2uPQzU=;
-        b=BWgJOLtrDCoblhxCADfA5HwY5ztg05LdbfMnsPIz4WfJRARQx4tJEbHG07ut8uNwei
-         YA8MgKi2Q3kg6ukx8y/T5zKTLrme2FDvRWV4SpjbJ1svYtEfU1tgUfoCVpOxPNgvrbr0
-         ZJ6ZZv4OE/mOI6mXWfMv1lvM6ZhISk0nY5h2+xAtEKX9GRBrS/mSI3zLDtkiMNssM4DP
-         jgU4l2Jkw/Ii4akKrmYPSBRKA180uhZIXBol+q2DRMOiLT2zKDa6LA+YU2hgnMbnM46M
-         bWbbWwIxkNiKgVrZXqn6nyNIXV7AWnBr/oe7ru+KUiRnyqjv8fZryF8bNUL9e788QxWP
-         YDLg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kGfWwvJGFe5MnbxnWxw8m85yVGSi7i3eo7HdmO414+I=;
+        b=Jt3eshR6Cb65RBKKS7bJSkJwBKNbwaWYZF1yG6Unr1PpsgtzzIDhAOryZkRSpwlIas
+         N46UmYuQOQmqKeoPISXsdrMfTPyEWVkG+J1BPCIN98mg8dy688bOCCzoJoysTzCizx78
+         /O6GW5L5LNbCviwy3iJNCfMijC1iN58ouqMnlFtdK2IKBFk3QY6oOPvl+ZokSCoDu0Ta
+         fY3QWrAwtTMdI/UzjgoLKQKhvpSSo5v9oPjILTGTshJMcWauQ01ivqgSLyIfqo+tkq8Y
+         HFH4SxhaUjKINuYKX7MuSloUQxUB8uTUkelfNKFSNMbdn+ClxpW3Tz2eqiSsK0CrmIZO
+         uOGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g4TI1e7gQdTzltegKMdoZTR4RsT2JvIHbsFUh2uPQzU=;
-        b=H8qCDXwkgcrJTkOpQR5OSm3JWboA/XRMmv550oVHRNCBo7J/XkcPPUE0RRf4sdIal4
-         e2kXj39M5ASg5mQTfjL7oouvw+oXu9kgf/qPvwbnfzx1kZViAGAM/Lp4RRe96p6A/EBX
-         VCPCk7KXlRTthevrrnfO7mud15hsJFTjBujLfPaO/sIhCjg/cDJSk0gXYEoPTTgLPrlH
-         FoCeSsNgP9tX73glWB8TrZhYblnALyPhY1wl75ga4eQw2x+4heEsMpOEvrNGCyJ+jfPo
-         sh3BMEBhnNGPPqS/pWjoLugbdX8JX03S1C24DUODomPtvX49AjFdR9TBmSBDitOnba+a
-         2HvQ==
-X-Gm-Message-State: AOAM532nhjzqFIWCngE91VKE0I+E3gTnjAYAG3UyacGKkauD0Pndw6mM
-        SQcG+N8qpOlsZyQ2+EdwkeClP6XzVC+14kDWGJ65Tw==
-X-Google-Smtp-Source: ABdhPJzzh/22FCOvdxdEB1nz5RwcUyDObG7CumW8G2BNoPbJyps54cEi6LEoHpcOS3UqBhEPnFBnf/YNKMZ2wK03ovA=
-X-Received: by 2002:a5d:453b:: with SMTP id j27mr5802147wra.92.1612388498425;
- Wed, 03 Feb 2021 13:41:38 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kGfWwvJGFe5MnbxnWxw8m85yVGSi7i3eo7HdmO414+I=;
+        b=FBAEGJfc8k7WyZQk2i88jS84YletZDG0yyd/+zaK/bHJ481ATQprQE30HnHmnXWc06
+         0VzRePcSPwEtazVACCm4EiLp2KlfqPhoqqIyFHV7aWGNycc4gKSJgB27IhhUIkB5JYhg
+         S7oGe3LIT5hYD2wff2pOvvlXXvIrKCqIZtoKKw6E7Y15gAtoiRsfmmyIFnNsCX2qnZrx
+         JQqhsV4HM5xtp/+Zgi9EMt9WCQdiW05UeNcVfAINfEw/StTvprwiuD0tLkxEod2Fp7Kg
+         QIDFey8gXoxnZIr1aYEhz1Alp/xNrsvhzkMu2trAkANPMSg4wErZnrEWpFRG9LIfv8ay
+         zYBg==
+X-Gm-Message-State: AOAM533eqeOJnKcis9Tnj8dona8leMQQ4DVwWoFL28oGX9xY+V3k4DfV
+        Ua7Yi8ldHC1yiOiIw2mNo7UTDSZulls=
+X-Google-Smtp-Source: ABdhPJwM9zMCbOUxbaZ2qjIu4vzLHjQlv3PhkGbm1yCJZzlYIfR2HUYhnjIfNGnWeZEdg8F7YgY8Iw==
+X-Received: by 2002:a2e:b17c:: with SMTP id a28mr2794523ljm.189.1612388546509;
+        Wed, 03 Feb 2021 13:42:26 -0800 (PST)
+Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id a16sm382539lji.52.2021.02.03.13.42.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 13:42:25 -0800 (PST)
+Subject: Re: [PATCH v1 0/2] ASoC: tegra: Add RT5631 machine driver
+To:     Jon Hunter <jonathanh@nvidia.com>, Ion Agorria <AG0RRIA@yahoo.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Stephen Warren <swarren@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ion Agorria <ion@agorria.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210131184101.651486-1-AG0RRIA.ref@yahoo.com>
+ <20210131184101.651486-1-AG0RRIA@yahoo.com>
+ <82a3375e-6105-875c-3332-33fcf2c0f785@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a9874e27-8d5c-c784-ee16-5e7b2607b058@gmail.com>
+Date:   Thu, 4 Feb 2021 00:42:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20210203003134.2422308-1-surenb@google.com> <20210203015553.GX308988@casper.infradead.org>
- <CAKMK7uHnNdjOYX5Rhj=uGMz7hSz12JhgkZJCfiqgkpjXnMfL4A@mail.gmail.com>
- <CAJuCfpG4GkVbeW=bB+Qrm5GPrZAwg0_rmyG05iwQmL7GrWAYHw@mail.gmail.com>
- <CAKMK7uHi+mG0z0HUmNt13QCCvutuRVjpcR0NjRL12k-WbWzkRg@mail.gmail.com> <CAKMK7uETu_m+=MHyPmqBbEP__qjMF_wmr4c2BiVTPcwE8c+5Mg@mail.gmail.com>
-In-Reply-To: <CAKMK7uETu_m+=MHyPmqBbEP__qjMF_wmr4c2BiVTPcwE8c+5Mg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 3 Feb 2021 13:41:26 -0800
-Message-ID: <CAJuCfpHC6P5cJh-1hv=vjGHCCkM6mA_p19H6tCZmCDxhTuASkQ@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] mm: replace BUG_ON in vm_insert_page
- with a return of an error
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        James Jones <jajones@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        John Stultz <john.stultz@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <82a3375e-6105-875c-3332-33fcf2c0f785@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 1:25 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Wed, Feb 3, 2021 at 9:29 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> >
-> > On Wed, Feb 3, 2021 at 9:20 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > On Wed, Feb 3, 2021 at 12:52 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > > >
-> > > > On Wed, Feb 3, 2021 at 2:57 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > >
-> > > > > On Tue, Feb 02, 2021 at 04:31:33PM -0800, Suren Baghdasaryan wrote:
-> > > > > > Replace BUG_ON(vma->vm_flags & VM_PFNMAP) in vm_insert_page with
-> > > > > > WARN_ON_ONCE and returning an error. This is to ensure users of the
-> > > > > > vm_insert_page that set VM_PFNMAP are notified of the wrong flag usage
-> > > > > > and get an indication of an error without panicing the kernel.
-> > > > > > This will help identifying drivers that need to clear VM_PFNMAP before
-> > > > > > using dmabuf system heap which is moving to use vm_insert_page.
-> > > > >
-> > > > > NACK.
-> > > > >
-> > > > > The system may not _panic_, but it is clearly now _broken_.  The device
-> > > > > doesn't work, and so the system is useless.  You haven't really improved
-> > > > > anything here.  Just bloated the kernel with yet another _ONCE variable
-> > > > > that in a normal system will never ever ever be triggered.
-> > > >
-> > > > Also, what the heck are you doing with your drivers? dma-buf mmap must
-> > > > call dma_buf_mmap(), even for forwarded/redirected mmaps from driver
-> > > > char nodes. If that doesn't work we have some issues with the calling
-> > > > contract for that function, not in vm_insert_page.
-> > >
-> > > The particular issue I observed (details were posted in
-> > > https://lore.kernel.org/patchwork/patch/1372409) is that DRM drivers
-> > > set VM_PFNMAP flag (via a call to drm_gem_mmap_obj) before calling
-> > > dma_buf_mmap. Some drivers clear that flag but some don't. I could not
-> > > find the answer to why VM_PFNMAP is required for dmabuf mappings and
-> > > maybe someone can explain that here?
-> > > If there is a reason to set this flag other than historical use of
-> > > carveout memory then we wanted to catch such cases and fix the drivers
-> > > that moved to using dmabuf heaps. However maybe there are other
-> > > reasons and if so I would be very grateful if someone could explain
-> > > them. That would help me to come up with a better solution.
-> > >
-> > > > Finally why exactly do we need to make this switch for system heap?
-> > > > I've recently looked at gup usage by random drivers, and found a lot
-> > > > of worrying things there. gup on dma-buf is really bad idea in
-> > > > general.
-> > >
-> > > The reason for the switch is to be able to account dmabufs allocated
-> > > using dmabuf heaps to the processes that map them. The next patch in
-> > > this series https://lore.kernel.org/patchwork/patch/1374851
-> > > implementing the switch contains more details and there is an active
-> > > discussion there. Would you mind joining that discussion to keep it in
-> > > one place?
-> >
-> > How many semi-unrelated buffer accounting schemes does google come up with?
-> >
-> > We're at three with this one.
-> >
-> > And also we _cannot_ required that all dma-bufs are backed by struct
-> > page, so requiring struct page to make this work is a no-go.
-> >
-> > Second, we do not want to all get_user_pages and friends to work on
-> > dma-buf, it causes all kinds of pain. Yes on SoC where dma-buf are
-> > exclusively in system memory you can maybe get away with this, but
-> > dma-buf is supposed to work in more places than just Android SoCs.
->
-> I just realized that vm_inser_page doesn't even work for CMA, it would
-> upset get_user_pages pretty badly - you're trying to pin a page in
-> ZONE_MOVEABLE but you can't move it because it's rather special.
-> VM_SPECIAL is exactly meant to catch this stuff.
+02.02.2021 16:23, Jon Hunter пишет:
+> 
+> On 31/01/2021 18:40, Ion Agorria wrote:
+>> From: Ion Agorria <ion@agorria.com>
+>>
+>> Adds support for Tegra SoC devices with RT5631 sound codec.
+>> Playback to speakers, headphones and internal mic recording works.
+>>
+>> This driver is used for ASUS Transformer TF201, TF700T and others
+>> Tegra based devices containing RT5631.
+>>
+>> Svyatoslav Ryhel (2):
+>>   ASoC: dt-bindings: tegra: Add binding for RT5631
+>>   ASoC: tegra: Add RT5631 machine driver
+>>
+>>  .../sound/nvidia,tegra-audio-rt5631.yaml      | 134 +++++++++
+>>  sound/soc/tegra/Kconfig                       |   8 +
+>>  sound/soc/tegra/Makefile                      |   2 +
+>>  sound/soc/tegra/tegra_rt5631.c                | 261 ++++++++++++++++++
+>>  4 files changed, 405 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
+>>  create mode 100644 sound/soc/tegra/tegra_rt5631.c
+> 
+> 
+> I don't see any user of this driver included. Any reason why?
 
-Thanks for the input, Daniel! Let me think about the cases you pointed out.
+They should come a bit later. The TF201/300T device-trees should be in a
+good state already, we just need to finalize them for upstream and send out.
 
-IMHO, the issue with PSS is the difficulty of calculating this metric
-without struct page usage. I don't think that problem becomes easier
-if we use cgroups or any other API. I wanted to enable existing PSS
-calculation mechanisms for the dmabufs known to be backed by struct
-pages (since we know how the heap allocated that memory), but sounds
-like this would lead to problems that I did not consider.
-Thanks,
-Suren.
-
-> -Daniel
->
-> > If you want to account dma-bufs, and gpu memory in general, I'd say
-> > the solid solution is cgroups. There's patches floating around. And
-> > given that Google Android can't even agree internally on what exactly
-> > you want I'd say we just need to cut over to that and make it happen.
-> >
-> > Cheers, Daniel
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+IIUC, the audio codec and dock station drivers are the most noticeable
+missing parts in upsteam kernel. Ion and Svyatoslav should be able to
+clarify the state of the devices in a more details.
