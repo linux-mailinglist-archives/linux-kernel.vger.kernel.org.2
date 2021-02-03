@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8479330DB8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2E830DB92
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhBCNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:43:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231428AbhBCNmj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:42:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612359668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=msAcTyPpH0uhCVhlJSk7w3lzIdisxEsipIij/eqjQsw=;
-        b=D7bAo1A1hs91LgcWk8eA014fS2TyxkAr3qXK+Kt9tfL0PtSe5pj2Y08/ISXBW+jA6yipOO
-        V64lBcdO5HGWttOyv8B68Ff/7HG/SDclSJbXsjnOQ+8HZPbHvb2P67nEbMvi7o9s7g6xV9
-        kf9YlmEK/E3YU+TOr16ANRI05MysO4Y=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-6Hd3moCyOo2MZ7cJvBzo7g-1; Wed, 03 Feb 2021 08:41:06 -0500
-X-MC-Unique: 6Hd3moCyOo2MZ7cJvBzo7g-1
-Received: by mail-ed1-f71.google.com with SMTP id g6so3738033edy.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:41:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=msAcTyPpH0uhCVhlJSk7w3lzIdisxEsipIij/eqjQsw=;
-        b=joJKceJ+dHmVRziCog6tsDnUt3MoykNa3DA9R9PyIGyiDP/31+i/NsyMMbSCZU3QqL
-         3j8z54u5WT4lGorUNFm0G/W0sJrKNBZdnoo81talyjBQUgf3VbwU1yvAhOebwHD9qtoO
-         zm4/nLo2NUrn8SbKsMSjCyeGUpU7nfXYUOhmPDATeqZ9GhtDnGNqSXdS8e5Pe9qE37V8
-         CMVpY1S/nMkozsQ/Gi74G8vyEuADbQBCq9a9AXjfzdn13xOzWjfbsT1jCzf46e61uCur
-         bJChbG71MI236mA98+83MIWe7eT5oQqZR6Bk8VT7zvtcKrCOAgXUVlq6YEdoM8+H55i9
-         nSyA==
-X-Gm-Message-State: AOAM533sYpY9TsJwGSoAz+g6t/9Sc76jlsdZCOSvA56CMmmPQbCqn8dg
-        2NtPt7e7L/KoEhsPnKR1j6/bmBR7KzRTsLNVM6BfzsAM8D9ufngkFhQyiLK4lbJoNlJhs9fwA1w
-        npFTZrLqiA2NV0gkaTiIySBJ9KjInl6I9V62JYtmVqVUG8Ya0Dsywe8DemdM5tC3Zj5jGlVyIXu
-        dZ
-X-Received: by 2002:aa7:dbd4:: with SMTP id v20mr3099898edt.330.1612359664852;
-        Wed, 03 Feb 2021 05:41:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5RqYAPRRgfzLBlQj3QtEFUTTMAWVBk2kNfGn0CfoyXUMV2LaPkgLSfawvzDEpBA6U8agzMA==
-X-Received: by 2002:aa7:dbd4:: with SMTP id v20mr3099857edt.330.1612359664645;
-        Wed, 03 Feb 2021 05:41:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s15sm1010923ejy.68.2021.02.03.05.41.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 05:41:03 -0800 (PST)
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
- <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
- <YBisBkSYPoaOM42F@google.com>
- <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
-Message-ID: <4bdcb44c-c35d-45b2-c0c1-e857e0fd383e@redhat.com>
-Date:   Wed, 3 Feb 2021 14:41:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231708AbhBCNoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:44:22 -0500
+Received: from elvis.franken.de ([193.175.24.41]:49770 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231440AbhBCNoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:44:20 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l7IQy-0007ZR-00; Wed, 03 Feb 2021 14:43:04 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 38A38C0D4B; Wed,  3 Feb 2021 14:41:49 +0100 (CET)
+Date:   Wed, 3 Feb 2021 14:41:49 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210203134149.GA10529@alpha.franken.de>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210201104338.GA6484@alpha.franken.de>
+ <7c081c6f-bf47-353d-95c0-52e8640dc938@loongson.cn>
+ <20210203104009.GE7586@alpha.franken.de>
+ <1ba8402b-77a0-a524-b9f0-55e91841cc20@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ba8402b-77a0-a524-b9f0-55e91841cc20@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 23:42, Maciej S. Szmigiero wrote:
->> I'm not opposed to using more sophisticated storage for the gfn 
->> lookups, but only if there's a good reason for doing so.  IMO, the
->> rbtree isn't simpler, just different.
-
-And it also has worse cache utilization than an array, due to memory 
-footprint (as you point out below) but also pointer chasing.
-
->> Memslot modifications are
->> unlikely to be a hot path (and if it is, x86's "zap everything"
->> implementation is a far bigger problem), and it's hard to beat the
->> memory footprint of a raw array.  That doesn't leave much 
->> motivation for such a big change to some of KVM's scariest (for me)
->> code.
->> 
+On Wed, Feb 03, 2021 at 09:12:28PM +0800, Tiezhu Yang wrote:
+> On 2/3/21 6:40 PM, Thomas Bogendoerfer wrote:
+> > On Mon, Feb 01, 2021 at 08:56:06PM +0800, Tiezhu Yang wrote:
+> > > On 02/01/2021 06:43 PM, Thomas Bogendoerfer wrote:
+> > > > On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+> > > > > +++ b/arch/mips/include/uapi/asm/perf_regs.h
+> > > > > @@ -0,0 +1,42 @@
+> > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > > > +#ifndef _ASM_MIPS_PERF_REGS_H
+> > > > > +#define _ASM_MIPS_PERF_REGS_H
+> > > > > +
+> > > > > +enum perf_event_mips_regs {
+> > > > > +	PERF_REG_MIPS_PC,
+> > > > > +	PERF_REG_MIPS_R1,
+> > > > > +	PERF_REG_MIPS_R2,
+> > > > > +	PERF_REG_MIPS_R3,
+> > > > > +	PERF_REG_MIPS_R4,
+> > > > > +	PERF_REG_MIPS_R5,
+> > > > > +	PERF_REG_MIPS_R6,
+> > > > > +	PERF_REG_MIPS_R7,
+> > > > > +	PERF_REG_MIPS_R8,
+> > > > > +	PERF_REG_MIPS_R9,
+> > > > > +	PERF_REG_MIPS_R10,
+> > > > > +	PERF_REG_MIPS_R11,
+> > > > > +	PERF_REG_MIPS_R12,
+> > > > > +	PERF_REG_MIPS_R13,
+> > > > > +	PERF_REG_MIPS_R14,
+> > > > > +	PERF_REG_MIPS_R15,
+> > > > > +	PERF_REG_MIPS_R16,
+> > > > > +	PERF_REG_MIPS_R17,
+> > > > > +	PERF_REG_MIPS_R18,
+> > > > > +	PERF_REG_MIPS_R19,
+> > > > > +	PERF_REG_MIPS_R20,
+> > > > > +	PERF_REG_MIPS_R21,
+> > > > > +	PERF_REG_MIPS_R22,
+> > > > > +	PERF_REG_MIPS_R23,
+> > > > > +	PERF_REG_MIPS_R24,
+> > > > > +	PERF_REG_MIPS_R25,
+> > > > > +	/*
+> > > > > +	 * 26 and 27 are k0 and k1, they are always clobbered thus not
+> > > > > +	 * stored.
+> > > > > +	 */
+> > > > haveing this hole here make all code more complicated. Does it hurt
+> > > > to have R26 and R27 in the list ?
+> > > I think there is no effect if have R26 and R27 in the list.
+> > > 
+> > > In the perf_reg_value(), PERF_REG_MIPS_R{26,27} are default case.
+> > why make them special ? After all they are real registers and are only
+> > defined special by current ABIs.
 > 
-> Improvements can be done step-by-step, 
-> kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in
-> the future, if necessary. After all, complains are that this change
-> alone is too big.
 > 
-> I think that if you look not at the patch itself but at the
-> resulting code the new implementation looks rather straightforward,
-> there are comments at every step in kvm_set_memslot() to explain
-> exactly what is being done. Not only it already scales well, but it
-> is also flexible to accommodate further improvements or even new
-> operations.
-> 
-> The new implementation also uses standard kernel {rb,interval}-tree
-> and hash table implementation as its basic data structures, so it 
-> automatically benefits from any generic improvements to these.
-> 
-> All for the low price of just 174 net lines of code added.
+> By convention, $26 and $27 are k registers which are reserved for use
+> by the OS kernel.
 
-I think the best thing to do here is to provide a patch series that 
-splits the individual changes so that they can be reviewed and their 
-separate merits evaluated.
+believe me, I knew that already. But from a CPU standpoint they are
+just registers.
 
-Another thing that I dislike about KVM_SET_USER_MEMORY_REGION is that 
-IMO userspace should provide all memslots at once, for an atomic switch 
-of the whole memory array.  (Or at least I would like to see the code; 
-it might be a bit tricky because you'll need code to compute the 
-difference between the old and new arrays and invoke 
-kvm_arch_prepare/commit_memory_region).  I'm not sure how that would 
-interact with the active/inactive pair that you introduce here.
+Anyway I'm fine with just adding R26 and R27 to the enum.
 
-Paolo
+Thomas.
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
