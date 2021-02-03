@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25CC30E52D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F76A30E53A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhBCVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:52:54 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:61983 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhBCVww (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:52:52 -0500
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 113LpkpU031784;
-        Thu, 4 Feb 2021 06:51:47 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 113LpkpU031784
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612389107;
-        bh=gxgjcR0VEeZAZf1rRpSkG8b/Bi8s2o6fMLa0IvUA9lw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m8YX4O0ILm07ceuK5fotq4uY3K1hAC5ptJnoW/XxUW9j/FOFfRWgmXqWK2pF4kSRY
-         4L+fB30NvHjrsFwew2rRy7cFbU3phsYIDhTUChcaf6G3eSioxTg0vL6rH4L65ZYLmT
-         lz94outN2VEfVM9wget8Gd7fyhP75NCUuuRRltnOaYTm33ePYZq6JljjVBZK6k3iZl
-         3ap3wl9kfMRsGrDugDGg9SYkc5ORYZDxbd775RD15YXafXAVy4IK760wiJDiB0jNk6
-         ehrI5u1as17AjgQbBmj8OtK9khhGP8T+iYvA42Yow+UzzxKzQu5AGheonRWWDzVWiT
-         +HiLyq5jRddPQ==
-X-Nifty-SrcIP: [209.85.210.170]
-Received: by mail-pf1-f170.google.com with SMTP id w18so696520pfu.9;
-        Wed, 03 Feb 2021 13:51:47 -0800 (PST)
-X-Gm-Message-State: AOAM530PWonDFWS5MGUKZt+KXi1VUFydsQJGCJj793D3tYC/41DzcCco
-        rTjByl+14SiV/P5wDHKHE13gf4l8p7/VEOOoiy8=
-X-Google-Smtp-Source: ABdhPJx/LaBTQoB963qFg1P+igJksCCKE8Z041HxDmq3/pC0hBJHBlx2ThcrSaLxlu5UdkfwoNWPTs8TPJ6pU3GFLI0=
-X-Received: by 2002:a63:575e:: with SMTP id h30mr5652383pgm.7.1612389106322;
- Wed, 03 Feb 2021 13:51:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20210202070218.856847-1-masahiroy@kernel.org> <87eehy27b5.fsf@jogness.linutronix.de>
- <YBq/2ojccc4ZZp9y@alley>
-In-Reply-To: <YBq/2ojccc4ZZp9y@alley>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 4 Feb 2021 06:51:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQyV-asWNY6CK6MWze9sFZS3CgXxtH2LEht5e=kjrLu7w@mail.gmail.com>
-Message-ID: <CAK7LNAQyV-asWNY6CK6MWze9sFZS3CgXxtH2LEht5e=kjrLu7w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Peter Jones <pjones@redhat.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
+        id S232138AbhBCVz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:55:29 -0500
+Received: from mga12.intel.com ([192.55.52.136]:31742 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229959AbhBCVzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:55:24 -0500
+IronPort-SDR: dki/tcFY5jf6CsHBIUnCVpY1HYgNYNp7jLC4VREjng0wiB6+y/PkPMlAN8Aoue6jLUExiL9HMm
+ Py7zDnXbcHRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160290204"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="160290204"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 13:54:43 -0800
+IronPort-SDR: cbNFcluLVt0agMFYdYPy9R/OKBGP7PxtHIJxAE2sR0GRhutjiRbmm0lsH8LRWO3x3Iolq9fwYN
+ AW0O5oc+YcIA==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="433627376"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.43.162]) ([10.212.43.162])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 13:54:41 -0800
+Subject: Re: [PATCH v18 24/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+ <20210127212524.10188-25-yu-cheng.yu@intel.com>
+ <ba39586d-25b6-6ea5-19c3-adf17b59f910@intel.com>
+ <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
+Message-ID: <6720b1a9-f785-dbbd-1f0e-8c9090be2069@intel.com>
+Date:   Wed, 3 Feb 2021 13:54:40 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 12:23 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Tue 2021-02-02 09:44:22, John Ogness wrote:
-> > On 2021-02-02, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
-> > > CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
-> > >
-> > > When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
-> > > all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
-> > > used in <linux/printk.h>, which is included from most of source files.
-> > >
-> > > In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
-> > >
-> > >   arch/x86/platform/uv/uv_nmi.c
-> > >   drivers/firmware/efi/libstub/efi-stub-helper.c
-> > >   drivers/tty/sysrq.c
-> > >   kernel/printk/printk.c
-> > >
-> > > So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
-> > > kernel, it is enough to recompile those 4 files.
-> > >
-> > > Remove the CONSOLE_LOGLEVEL_DEFAULT definition from <linux/printk.h>,
-> > > and use CONFIG_CONSOLE_LOGLEVEL_DEFAULT directly.
-> >
-> > With commit a8fe19ebfbfd ("kernel/printk: use symbolic defines for
-> > console loglevels") it can be seen that various drivers used to
-> > hard-code their own values. The introduction of the macros in an
-> > intuitive location (include/linux/printk.h) made it easier for authors
-> > to find/use the various available printk settings and thresholds.
-> >
-> > Technically there is no problem using Kconfig macros directly. But will
-> > authors bother to hunt down available Kconfig settings? Or will they
-> > only look in printk.h to see what is available?
-> >
-> > IMHO if code wants to use settings from a foreign subsystem, it should
-> > be taking those from headers of that subsystem, rather than using some
-> > Kconfig settings from that subsystem. Headers exist to make information
-> > available to external code. Kconfig (particularly for a subsystem) exist
-> > to configure that subsystem.
->
-> I agree with this this view.
+On 1/29/2021 10:56 AM, Yu, Yu-cheng wrote:
+> On 1/29/2021 9:07 AM, Dave Hansen wrote:
+>> On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
+>>> arch_prctl(ARCH_X86_CET_STATUS, u64 *args)
+>>>      Get CET feature status.
+>>>
+>>>      The parameter 'args' is a pointer to a user buffer.  The kernel 
+>>> returns
+>>>      the following information:
+>>>
+>>>      *args = shadow stack/IBT status
+>>>      *(args + 1) = shadow stack base address
+>>>      *(args + 2) = shadow stack size
 
+[...]
 
-I have never seen a policy to restrict
-the use of CONFIG options in relevant
-subsystem headers.
+>>> +int prctl_cet(int option, u64 arg2)
+>>> +{
+>>> +    struct cet_status *cet;
+>>> +    unsigned int features;
+>>> +
+>>> +    /*
+>>> +     * GLIBC's ENOTSUPP == EOPNOTSUPP == 95, and it does not recognize
+>>> +     * the kernel's ENOTSUPP (524).  So return EOPNOTSUPP here.
+>>> +     */
+>>> +    if (!IS_ENABLED(CONFIG_X86_CET))
+>>> +        return -EOPNOTSUPP;
+>>
+>> Let's ignore glibc for a moment.  What error code *should* the kernel be
+>> returning here?  errno(3) says:
+>>
+>>         EOPNOTSUPP      Operation not supported on socket (POSIX.1)
+>> ...
+>>         ENOTSUP         Operation not supported (POSIX.1)
+>>
+> 
+> Yeah, other places in kernel use ENOTSUPP.  This seems to be out of 
+> line.  And since the issue is long-existing, applications already know 
+> how to deal with it.  I should have made that argument.  Change it to 
+> ENOTSUPP.
 
+When I make the change, checkpatch says...
 
+WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+#128: FILE: arch/x86/kernel/cet_prctl.c:33:
++		return -ENOTSUPP;
 
-> What about using default_console_loglevel() in the external code?
-> It reads the value from an array. This value is initialized to
-> CONSOLE_LOGLEVEL_DEFAULT and never modified later.
+Do we want to reconsider?
 
-I do not think default_console_loglevel()
-is a perfect constant
-because it can be modified via
-/proc/sys/kernel/printk
-
-
-I am not sure if it works either.
-
-Some code may not be linked to vmlinux.
-drivers/firmware/efi/libstub/efi-stub-helper.c
-
-
-
-
-> Best Regards,
-> Petr
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+[...]
