@@ -2,182 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6327230E18C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E691830E18B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhBCRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:55:54 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:12424 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232035AbhBCRzl (ORCPT
+        id S232163AbhBCRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhBCRzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:55:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612374915; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=skd9G4BcflC/QWV4zSXi1f5Z3sAt9lA/5vhec0dO9FM=; b=JJuaRFopnXMFVMFvE/b9OMiN2fWFM2mtsw3EPcPv/dPC2g4BvtIefkaQA3R+LU2VwPDNrzQy
- dHVcLmRremqbXWxSklxEzktJrAymLrLLW2qu64JVTnFdRipz3vzo1j94Gkh0o13zqU9s6kKg
- U4VXoNIn37zQsn7ji2gfWfZIJhE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 601ae35c84d0ac8967a1fbde (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Feb 2021 17:54:36
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 72E16C43462; Wed,  3 Feb 2021 17:54:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.210.176.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D02EC433ED;
-        Wed,  3 Feb 2021 17:54:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D02EC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v4 2/2] arm: dts: sc7180: Add support for gpu fuse
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        dri-devel@freedesktop.org, freedreno@lists.freedesktop.org
-References: <1610129731-4875-1-git-send-email-akhilpo@codeaurora.org>
- <1610129731-4875-2-git-send-email-akhilpo@codeaurora.org>
- <YBnXshYzJmNpmuEW@builder.lan>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <af88628d-08ca-a2f3-c8f3-91732366760f@codeaurora.org>
-Date:   Wed, 3 Feb 2021 23:24:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 3 Feb 2021 12:55:36 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA46FC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 09:54:55 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id e12so290931pls.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 09:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WLPpmuoMnntjkG/fIUbWX3oVqD2wo7PLGg0ygE+p8qQ=;
+        b=wMWCpb1OCsMUwMThFJU2HENyKWAnxoazDitFa1VcrahK/ipAxejl9JMO3av09MtLzP
+         Du6gF7odkfIozdqXvE4KO6hon5kV5AT4a+rmwNjt32+PBs0wr35wu9gmteRBpECTdl1g
+         EpmYVzpQyaoANoSPiKlbgC1AT9Ykhk2vB1YolUExrStWrZDQ9sAICBqkIGzRD313AXk9
+         Vk/QyZT8YTazoTns28KhCYs3xbtmTcEo48Zb5ZIO5uqkP5dXaHl25McfJn4iRUbfpYnO
+         zmq4yUW39LSxrZMh97pnIsgiLt2u13zSEEld3U8kjswdDqdL6FJlv8l1BIPV60ty9POO
+         0zTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WLPpmuoMnntjkG/fIUbWX3oVqD2wo7PLGg0ygE+p8qQ=;
+        b=WUGwEpCTPqdlIzchU201SvGDSBKlxXZxAtLIRAp5AbOEflTwvYoXYk0bnTFsmE+DWX
+         7TPWsBzRGhJgpRGtq07KIhJSyBBQsSkQF2qmGcAYQcNll0c0CC4+UEDzAGTRU/nhqus6
+         g/z0OMS1zT7EylwJXyKwHGxGremMqKiEvxfyjp+u/hye3yzl+euosN5+l9QY8CQx9JiV
+         bRGewBtgrlFqTzDTRpyMkiYFXAw9gdaoJz7LRZIZmzLZHuesEbZB678ueKZOtpFNDSaZ
+         XO8gQhjSxTm6oXYexLAlXJ9CnrxPYwYWmXBKgPhRImeFFGoIilxoBi5ExY/2/IGGqYQY
+         CrBg==
+X-Gm-Message-State: AOAM531OxPchrLQbeK7wecEt7fvnfb7+trXpxOjy9Dx8RDq5v3/BwYCt
+        4MdlMaTMpTfbUhj6SZELXPZ7mQ==
+X-Google-Smtp-Source: ABdhPJzuao3RhAbtQt222HYu0p+Q/piZgOBtiyBCfae1XCn2dcKGdo6Go7mDGWqi/WrR4GK2+OpEtA==
+X-Received: by 2002:a17:902:a581:b029:e1:8d90:2810 with SMTP id az1-20020a170902a581b02900e18d902810mr4063101plb.85.1612374894962;
+        Wed, 03 Feb 2021 09:54:54 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:a9a0:e924:d161:b6cb])
+        by smtp.gmail.com with ESMTPSA id l1sm3237279pgt.26.2021.02.03.09.54.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 09:54:54 -0800 (PST)
+Date:   Wed, 3 Feb 2021 09:54:47 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 00/28] Allow parallel MMU operations with TDP MMU
+Message-ID: <YBrjZ775SImFPGWV@google.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <298548e9-ead2-5770-7ae8-e501c9c17263@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YBnXshYzJmNpmuEW@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <298548e9-ead2-5770-7ae8-e501c9c17263@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/2021 4:22 AM, Bjorn Andersson wrote:
-> On Fri 08 Jan 12:15 CST 2021, Akhil P Oommen wrote:
-> 
-> Please align the $subject prefix with other changes in the same file.
-> I fixed it up while picking up the patch this time.
-> 
-Will take of this in future. Thanks, Bjorn.
+On Wed, Feb 03, 2021, Paolo Bonzini wrote:
+> Looks good!  I'll wait for a few days of reviews,
 
--Akhil.
+I guess I know what I'm doing this afternoon :-)
 
-> Regards,
-> Bjorn
-> 
->> Add support for gpu fuse to help identify the supported opps.
->>
->> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
->>   1 file changed, 22 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index 6678f1e..8cae3eb 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> @@ -675,6 +675,11 @@
->>   				reg = <0x25b 0x1>;
->>   				bits = <1 3>;
->>   			};
->> +
->> +			gpu_speed_bin: gpu_speed_bin@1d2 {
->> +				reg = <0x1d2 0x2>;
->> +				bits = <5 8>;
->> +			};
->>   		};
->>   
->>   		sdhc_1: sdhci@7c4000 {
->> @@ -1907,52 +1912,69 @@
->>   			operating-points-v2 = <&gpu_opp_table>;
->>   			qcom,gmu = <&gmu>;
->>   
->> +			nvmem-cells = <&gpu_speed_bin>;
->> +			nvmem-cell-names = "speed_bin";
->> +
->>   			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
->>   			interconnect-names = "gfx-mem";
->>   
->>   			gpu_opp_table: opp-table {
->>   				compatible = "operating-points-v2";
->>   
->> +				opp-825000000 {
->> +					opp-hz = /bits/ 64 <825000000>;
->> +					opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
->> +					opp-peak-kBps = <8532000>;
->> +					opp-supported-hw = <0x04>;
->> +				};
->> +
->>   				opp-800000000 {
->>   					opp-hz = /bits/ 64 <800000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
->>   					opp-peak-kBps = <8532000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-650000000 {
->>   					opp-hz = /bits/ 64 <650000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
->>   					opp-peak-kBps = <7216000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-565000000 {
->>   					opp-hz = /bits/ 64 <565000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
->>   					opp-peak-kBps = <5412000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-430000000 {
->>   					opp-hz = /bits/ 64 <430000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
->>   					opp-peak-kBps = <5412000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-355000000 {
->>   					opp-hz = /bits/ 64 <355000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
->>   					opp-peak-kBps = <3072000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-267000000 {
->>   					opp-hz = /bits/ 64 <267000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->>   					opp-peak-kBps = <3072000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   
->>   				opp-180000000 {
->>   					opp-hz = /bits/ 64 <180000000>;
->>   					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
->>   					opp-peak-kBps = <1804000>;
->> +					opp-supported-hw = <0x07>;
->>   				};
->>   			};
->>   		};
->> -- 
->> 2.7.4
->>
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
+> but I'd like to queue this for 5.12 and I plan to make it the default in 5.13
+> or 5.12-rc (depending on when I can ask Red Hat QE to give it a shake).
 
+Hmm, given that kvm/queue doesn't seem to get widespread testing, I think it
+should be enabled by default in rc1 for whatever kernel it targets.
+
+Would it be too heinous to enable it by default in 5.12-rc1, knowing full well
+that there's a good possibility it would get reverted?
