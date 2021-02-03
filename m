@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E6030DED9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25F630DF2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbhBCP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:56:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32902 "EHLO mail.kernel.org"
+        id S234821AbhBCQGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:06:45 -0500
+Received: from mx2.veeam.com ([64.129.123.6]:40648 "EHLO mx2.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234048AbhBCPym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:54:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71DCF64F55;
-        Wed,  3 Feb 2021 15:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612367641;
-        bh=LboLHM+6kIOh+gRaFnxe+9BKVjr4IMqy2/wdrtr8YPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dIc9iPjjDgDhe3A+EVOFewT1KzjihGTkkVlbtTGWiLbdsiMbRFH0KhRIz9uZyia+f
-         z93MgcrhCcxUQW725BBor3g+fQMct+Ns9J1l1dOY9ipYK+E8rvrYvuhuS4lbKQEKXz
-         WEizc349XENeMZw90ZJej3JfWzD40pwKEhEIxmqrWpnvxCJYqeAVs4TCp3+k5ogpIy
-         skemPMst7d2Z+O6clupBCwPXsNNZQcPWpVXw1b05kHptOzLsL+sX8ygfoWZupSUnWB
-         HzwOwX9AGaub0Ao697Dy1MzA7k1CBwREMIdS5S0wFhurodwQNLbhTBjQvZ1yuNqGFr
-         ufDHaSbamHi0w==
-Date:   Wed, 3 Feb 2021 15:53:54 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 21/26] KVM: arm64: Refactor kvm_arm_setup_stage2()
-Message-ID: <20210203155354.GE18974@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-22-qperret@google.com>
+        id S234760AbhBCQFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:05:14 -0500
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx2.veeam.com (Postfix) with ESMTPS id 2FC34415CB;
+        Wed,  3 Feb 2021 10:54:40 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
+        t=1612367680; bh=CYaL9LusoGHbduz1D+Gy81Me9TskPJ/xQvBoJAZkwvQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=N5lVzPiBU8lR6Si4NeJimXlSeKUQbGknX5AobzObI2P/Pg6yBMCICUnscT/NdGlz4
+         GMJD89KAjd5+IQ8MpZ12ClglZGNkZs10EBk2z75pu4gBF/Jv6rKogaCjQua/bNN51u
+         MCuwRjMqdJIeSfg2eE6/Px0XyZMYAE/aj1QEgXuQ=
+Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
+ prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Wed, 3 Feb 2021 16:54:22 +0100
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     <Damien.LeMoal@wdc.com>, <snitzer@redhat.com>, <hare@suse.de>,
+        <ming.lei@redhat.com>, <agk@redhat.com>, <corbet@lwn.net>,
+        <axboe@kernel.dk>, <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
+        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
+        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sergei.shtepa@veeam.com>, <pavgel.tide@veeam.com>
+Subject: [PATCH v4 3/6] block: add blk_mq_is_queue_frozen()
+Date:   Wed, 3 Feb 2021 18:53:55 +0300
+Message-ID: <1612367638-3794-4-git-send-email-sergei.shtepa@veeam.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-22-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D265667062
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:19PM +0000, Quentin Perret wrote:
-> In order to re-use some of the stage 2 setup at EL2, factor parts of
-> kvm_arm_setup_stage2() out into static inline functions.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_mmu.h | 48 ++++++++++++++++++++++++++++++++
->  arch/arm64/kvm/reset.c           | 42 +++-------------------------
->  2 files changed, 52 insertions(+), 38 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-> index 662f0415344e..83b4c5cf4768 100644
-> --- a/arch/arm64/include/asm/kvm_mmu.h
-> +++ b/arch/arm64/include/asm/kvm_mmu.h
-> @@ -280,6 +280,54 @@ static inline int kvm_write_guest_lock(struct kvm *kvm, gpa_t gpa,
->  	return ret;
->  }
->  
-> +static inline u64 kvm_get_parange(u64 mmfr0)
-> +{
-> +	u64 parange = cpuid_feature_extract_unsigned_field(mmfr0,
-> +				ID_AA64MMFR0_PARANGE_SHIFT);
-> +	if (parange > ID_AA64MMFR0_PARANGE_MAX)
-> +		parange = ID_AA64MMFR0_PARANGE_MAX;
-> +
-> +	return parange;
-> +}
-> +
-> +/*
-> + * The VTCR value is common across all the physical CPUs on the system.
-> + * We use system wide sanitised values to fill in different fields,
-> + * except for Hardware Management of Access Flags. HA Flag is set
-> + * unconditionally on all CPUs, as it is safe to run with or without
-> + * the feature and the bit is RES0 on CPUs that don't support it.
-> + */
-> +static inline u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
-> +{
-> +	u64 vtcr = VTCR_EL2_FLAGS;
-> +	u8 lvls;
-> +
-> +	vtcr |= kvm_get_parange(mmfr0) << VTCR_EL2_PS_SHIFT;
-> +	vtcr |= VTCR_EL2_T0SZ(phys_shift);
-> +	/*
-> +	 * Use a minimum 2 level page table to prevent splitting
-> +	 * host PMD huge pages at stage2.
-> +	 */
-> +	lvls = stage2_pgtable_levels(phys_shift);
-> +	if (lvls < 2)
-> +		lvls = 2;
-> +	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
-> +
-> +	/*
-> +	 * Enable the Hardware Access Flag management, unconditionally
-> +	 * on all CPUs. The features is RES0 on CPUs without the support
-> +	 * and must be ignored by the CPUs.
-> +	 */
-> +	vtcr |= VTCR_EL2_HA;
-> +
-> +	/* Set the vmid bits */
-> +	vtcr |= (get_vmid_bits(mmfr1) == 16) ?
-> +		VTCR_EL2_VS_16BIT :
-> +		VTCR_EL2_VS_8BIT;
-> +
-> +	return vtcr;
-> +}
+blk_mq_is_queue_frozen() allow to assert that the queue is frozen.
 
-Although I think this is functionally fine, I think it's unusual to see
-large "static inline" functions like this in shared header files. One
-alternative approach would be to follow the example of
-kernel/locking/qspinlock_paravirt.h, where the header is guarded in such a
-way that is only ever included by kernel/locking/qspinlock.c and therefore
-doesn't need the "inline" at all. That separation really helps, I think.
+Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+---
+ block/blk-mq.c         | 13 +++++++++++++
+ include/linux/blk-mq.h |  1 +
+ 2 files changed, 14 insertions(+)
 
-Will
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index f285a9123a8b..924ec26fae5f 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -161,6 +161,19 @@ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+ }
+ EXPORT_SYMBOL_GPL(blk_mq_freeze_queue_wait_timeout);
+ 
++
++bool blk_mq_is_queue_frozen(struct request_queue *q)
++{
++	bool ret;
++
++	mutex_lock(&q->mq_freeze_lock);
++	ret = percpu_ref_is_dying(&q->q_usage_counter) && percpu_ref_is_zero(&q->q_usage_counter);
++	mutex_unlock(&q->mq_freeze_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(blk_mq_is_queue_frozen);
++
+ /*
+  * Guarantee no request is in use, so we can change any data structure of
+  * the queue afterward.
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index d705b174d346..9d1e8c4e922e 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -525,6 +525,7 @@ void blk_freeze_queue_start(struct request_queue *q);
+ void blk_mq_freeze_queue_wait(struct request_queue *q);
+ int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
+ 				     unsigned long timeout);
++bool blk_mq_is_queue_frozen(struct request_queue *q);
+ 
+ int blk_mq_map_queues(struct blk_mq_queue_map *qmap);
+ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
+-- 
+2.20.1
+
