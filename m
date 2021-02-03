@@ -2,87 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9176430DFBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D0D30DFC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhBCQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:28:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38125 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233962AbhBCQ2X (ORCPT
+        id S234277AbhBCQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:32:29 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48832 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231571AbhBCQcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:28:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612369616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TJ27nuib/BMh125sOPWVUK4Tvaq9/Z2cw9xS+xjyBBk=;
-        b=RDBqrl4579tHIunJ+HG8n4hxiPJhu5twceVxIk175nNDYnTqZnIu8TBPk5xCymlVnlOmCD
-        990Q18OBYdk7tkzuRUEe9Q0mNuvh8VWGfeR1XwS+IE/63REhbj/J04b/+WylDrjeA83kvM
-        fg+/+8AiO6lKb6IvA4Fuq9220NgnXEg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-YscSzPlHPqmodnkxCaSjFQ-1; Wed, 03 Feb 2021 11:26:53 -0500
-X-MC-Unique: YscSzPlHPqmodnkxCaSjFQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B0AA100C61B;
-        Wed,  3 Feb 2021 16:26:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A3875B4A1;
-        Wed,  3 Feb 2021 16:26:41 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210122181054.32635-1-eric.snowberg@oracle.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, jarkko@kernel.org,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, zohar@linux.ibm.com, lszubowi@redhat.com,
-        javierm@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Conflict with =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn's?= blacklist
- patches [was [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for dbx/mokx
- entries]
+        Wed, 3 Feb 2021 11:32:24 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 113GVSIH004657
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 3 Feb 2021 11:31:29 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 76B1C15C39E2; Wed,  3 Feb 2021 11:31:28 -0500 (EST)
+Date:   Wed, 3 Feb 2021 11:31:28 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
+Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
+Message-ID: <YBrP4NXAsvveIpwA@mit.edu>
+References: <20210203090745.4103054-2-drosen@google.com>
+ <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 03 Feb 2021 16:26:40 +0000
-Message-ID: <1103491.1612369600@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 03, 2021 at 03:55:06AM -0700, Andreas Dilger wrote:
+> 
+> It looks like this change will break the dirdata feature, which is similarly
+> storing a data field beyond the end of the dirent. However, that feature also
+> provides for flags stored in the high bits of the type field to indicate
+> which of the fields are in use there.
+> The first byte of each field stores
+> the length, so it can be skipped even if the content is not understood.
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+Daniel, for context, the dirdata field is an out-of-tree feature which
+is used by Lustre, and so has fairly large deployed base.  So if there
+is a way that we can accomodate not breaking dirdata, that would be
+good.
 
-> This is the fifth patch series for adding support for=20
-> EFI_CERT_X509_GUID entries [1].  It has been expanded to not only include
-> dbx entries but also entries in the mokx.  Additionally my series to
-> preload these certificate [2] has also been included.
-
-Okay, I've tentatively applied this to my keys-next branch.  However, it
-conflicts minorly with Micka=C3=ABl Sala=C3=BCn's patches that I've previou=
-sly merged on
-the same branch.  Can you have a look at the merge commit
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/comm=
-it/?h=3Dkeys-next&id=3Dfdbbe7ceeb95090d09c33ce0497e0394c82aa33d
-
-	(the top patch of my keys-next branch)
-
-to see if that is okay by both of you?  If so, can you give it a whirl?
+Did the ext4 casefold+encryption implementation escape out to any
+Android handsets?
 
 Thanks,
-David
 
+					- Ted
