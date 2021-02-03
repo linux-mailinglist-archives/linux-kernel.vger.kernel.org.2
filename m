@@ -2,300 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F4730DF28
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E6030DED9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233789AbhBCQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:06:02 -0500
-Received: from mx2.veeam.com ([64.129.123.6]:39124 "EHLO mx2.veeam.com"
+        id S234660AbhBCP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:56:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234780AbhBCQE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:04:28 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id C5B05415BA;
-        Wed,  3 Feb 2021 10:54:35 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1612367676; bh=KRRIE1mjAT5i1J0tuyS17RP7x4cjxFiHD1kWlqdATWo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=N3j45aCkbC/Xd8JVHlYASGskT7MQWVIcATGx3ptYWDtvbT2NrHrxaF7ghP4/fFCTw
-         bCz6ayPTzRn7vmcoTZQJmeNZcrtjtf4FuScyNOi2dnZoG4ogjdFNx6jyZfDa5dWkBP
-         y9UXPrUccmqM72f9koaqgsyhb7sVrE6xwpdiNlQs=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Wed, 3 Feb 2021 16:54:21 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     <Damien.LeMoal@wdc.com>, <snitzer@redhat.com>, <hare@suse.de>,
-        <ming.lei@redhat.com>, <agk@redhat.com>, <corbet@lwn.net>,
-        <axboe@kernel.dk>, <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
-        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
-        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavgel.tide@veeam.com>
-Subject: [PATCH v4 2/6] block: add blk_interposer
-Date:   Wed, 3 Feb 2021 18:53:54 +0300
-Message-ID: <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+        id S234048AbhBCPym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:54:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71DCF64F55;
+        Wed,  3 Feb 2021 15:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612367641;
+        bh=LboLHM+6kIOh+gRaFnxe+9BKVjr4IMqy2/wdrtr8YPM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dIc9iPjjDgDhe3A+EVOFewT1KzjihGTkkVlbtTGWiLbdsiMbRFH0KhRIz9uZyia+f
+         z93MgcrhCcxUQW725BBor3g+fQMct+Ns9J1l1dOY9ipYK+E8rvrYvuhuS4lbKQEKXz
+         WEizc349XENeMZw90ZJej3JfWzD40pwKEhEIxmqrWpnvxCJYqeAVs4TCp3+k5ogpIy
+         skemPMst7d2Z+O6clupBCwPXsNNZQcPWpVXw1b05kHptOzLsL+sX8ygfoWZupSUnWB
+         HzwOwX9AGaub0Ao697Dy1MzA7k1CBwREMIdS5S0wFhurodwQNLbhTBjQvZ1yuNqGFr
+         ufDHaSbamHi0w==
+Date:   Wed, 3 Feb 2021 15:53:54 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 21/26] KVM: arm64: Refactor kvm_arm_setup_stage2()
+Message-ID: <20210203155354.GE18974@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-22-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D265667062
-X-Veeam-MMEX: True
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108121524.656872-22-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_interposer allows to intercept bio requests, remap bio to another devices or add new bios.
+On Fri, Jan 08, 2021 at 12:15:19PM +0000, Quentin Perret wrote:
+> In order to re-use some of the stage 2 setup at EL2, factor parts of
+> kvm_arm_setup_stage2() out into static inline functions.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_mmu.h | 48 ++++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/reset.c           | 42 +++-------------------------
+>  2 files changed, 52 insertions(+), 38 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> index 662f0415344e..83b4c5cf4768 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -280,6 +280,54 @@ static inline int kvm_write_guest_lock(struct kvm *kvm, gpa_t gpa,
+>  	return ret;
+>  }
+>  
+> +static inline u64 kvm_get_parange(u64 mmfr0)
+> +{
+> +	u64 parange = cpuid_feature_extract_unsigned_field(mmfr0,
+> +				ID_AA64MMFR0_PARANGE_SHIFT);
+> +	if (parange > ID_AA64MMFR0_PARANGE_MAX)
+> +		parange = ID_AA64MMFR0_PARANGE_MAX;
+> +
+> +	return parange;
+> +}
+> +
+> +/*
+> + * The VTCR value is common across all the physical CPUs on the system.
+> + * We use system wide sanitised values to fill in different fields,
+> + * except for Hardware Management of Access Flags. HA Flag is set
+> + * unconditionally on all CPUs, as it is safe to run with or without
+> + * the feature and the bit is RES0 on CPUs that don't support it.
+> + */
+> +static inline u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
+> +{
+> +	u64 vtcr = VTCR_EL2_FLAGS;
+> +	u8 lvls;
+> +
+> +	vtcr |= kvm_get_parange(mmfr0) << VTCR_EL2_PS_SHIFT;
+> +	vtcr |= VTCR_EL2_T0SZ(phys_shift);
+> +	/*
+> +	 * Use a minimum 2 level page table to prevent splitting
+> +	 * host PMD huge pages at stage2.
+> +	 */
+> +	lvls = stage2_pgtable_levels(phys_shift);
+> +	if (lvls < 2)
+> +		lvls = 2;
+> +	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
+> +
+> +	/*
+> +	 * Enable the Hardware Access Flag management, unconditionally
+> +	 * on all CPUs. The features is RES0 on CPUs without the support
+> +	 * and must be ignored by the CPUs.
+> +	 */
+> +	vtcr |= VTCR_EL2_HA;
+> +
+> +	/* Set the vmid bits */
+> +	vtcr |= (get_vmid_bits(mmfr1) == 16) ?
+> +		VTCR_EL2_VS_16BIT :
+> +		VTCR_EL2_VS_8BIT;
+> +
+> +	return vtcr;
+> +}
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- block/bio.c               |  2 +
- block/blk-core.c          | 33 ++++++++++++++++
- block/genhd.c             | 82 +++++++++++++++++++++++++++++++++++++++
- include/linux/blk_types.h |  6 ++-
- include/linux/genhd.h     | 18 +++++++++
- 5 files changed, 139 insertions(+), 2 deletions(-)
+Although I think this is functionally fine, I think it's unusual to see
+large "static inline" functions like this in shared header files. One
+alternative approach would be to follow the example of
+kernel/locking/qspinlock_paravirt.h, where the header is guarded in such a
+way that is only ever included by kernel/locking/qspinlock.c and therefore
+doesn't need the "inline" at all. That separation really helps, I think.
 
-diff --git a/block/bio.c b/block/bio.c
-index 1f2cc1fbe283..f6f135eb84b5 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -684,6 +684,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
- 	bio_set_flag(bio, BIO_CLONED);
- 	if (bio_flagged(bio_src, BIO_THROTTLED))
- 		bio_set_flag(bio, BIO_THROTTLED);
-+	if (bio_flagged(bio_src, BIO_INTERPOSED))
-+		bio_set_flag(bio, BIO_INTERPOSED);
- 	bio->bi_opf = bio_src->bi_opf;
- 	bio->bi_ioprio = bio_src->bi_ioprio;
- 	bio->bi_write_hint = bio_src->bi_write_hint;
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 7663a9b94b80..c84bc42ba88b 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1032,6 +1032,32 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
- 	return ret;
- }
- 
-+static blk_qc_t __submit_bio_interposed(struct bio *bio)
-+{
-+	struct bio_list bio_list[2] = { };
-+	blk_qc_t ret = BLK_QC_T_NONE;
-+
-+	current->bio_list = bio_list;
-+	if (likely(bio_queue_enter(bio) == 0)) {
-+		struct gendisk *disk = bio->bi_disk;
-+
-+		if (likely(blk_has_interposer(disk))) {
-+			bio_set_flag(bio, BIO_INTERPOSED);
-+			disk->interposer->ip_submit_bio(bio);
-+		} else /* interposer was removed */
-+			bio_list_add(&current->bio_list[0], bio);
-+
-+		blk_queue_exit(disk->queue);
-+	}
-+	current->bio_list = NULL;
-+
-+	/* Resubmit remaining bios */
-+	while ((bio = bio_list_pop(&bio_list[0])))
-+		ret = submit_bio_noacct(bio);
-+
-+	return ret;
-+}
-+
- /**
-  * submit_bio_noacct - re-submit a bio to the block device layer for I/O
-  * @bio:  The bio describing the location in memory and on the device.
-@@ -1057,6 +1083,13 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
- 		return BLK_QC_T_NONE;
- 	}
- 
-+	/*
-+	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-+	 * created by the blk_interposer do not get to it for processing.
-+	 */
-+	if (blk_has_interposer(bio->bi_disk) &&
-+	    !bio_flagged(bio, BIO_INTERPOSED))
-+		return __submit_bio_interposed(bio);
- 	if (!bio->bi_disk->fops->submit_bio)
- 		return __submit_bio_noacct_mq(bio);
- 	return __submit_bio_noacct(bio);
-diff --git a/block/genhd.c b/block/genhd.c
-index 419548e92d82..39785a3ef703 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -30,6 +30,7 @@
- static struct kobject *block_depr;
- 
- DECLARE_RWSEM(bdev_lookup_sem);
-+DEFINE_MUTEX(bdev_interposer_mutex);
- 
- /* for extended dynamic devt allocation, currently only one major is used */
- #define NR_EXT_DEVT		(1 << MINORBITS)
-@@ -2148,3 +2149,84 @@ static void disk_release_events(struct gendisk *disk)
- 	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
- 	kfree(disk->ev);
- }
-+
-+/**
-+ * blk_interposer_attach - Attach interposer to disk
-+ * @disk: target disk
-+ * @interposer: block device interposer
-+ * @ip_submit_bio: hook for submit_bio()
-+ *
-+ * Returns:
-+ *     -EINVAL if @interposer is NULL.
-+ *     -EPERM if queue is not frozen.
-+ *     -EBUSY if the block device already has @interposer.
-+ *     -EALREADY if the block device already has @interposer with same callback.
-+ *
-+ * Disk must be frozen by blk_mq_freeze_queue().
-+ */
-+int blk_interposer_attach(struct gendisk *disk, struct blk_interposer *interposer,
-+			  const ip_submit_bio_t ip_submit_bio)
-+{
-+	int ret = 0;
-+
-+	if (WARN_ON(!interposer))
-+		return -EINVAL;
-+
-+	if (!blk_mq_is_queue_frozen(disk->queue))
-+		return -EPERM;
-+
-+	mutex_lock(&bdev_interposer_mutex);
-+	if (blk_has_interposer(disk)) {
-+		if (disk->interposer->ip_submit_bio == ip_submit_bio)
-+			ret = -EALREADY;
-+		else
-+			ret = -EBUSY;
-+		goto out;
-+	}
-+
-+	interposer->ip_submit_bio = ip_submit_bio;
-+	interposer->disk = disk;
-+
-+	disk->interposer = interposer;
-+out:
-+	mutex_unlock(&bdev_interposer_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(blk_interposer_attach);
-+
-+/**
-+ * blk_interposer_detach - Detach interposer from disk
-+ * @interposer: block device interposer
-+ * @ip_submit_bio: hook for submit_bio()
-+ *
-+ * Disk must be frozen by blk_mq_freeze_queue().
-+ */
-+void blk_interposer_detach(struct blk_interposer *interposer,
-+			  const ip_submit_bio_t ip_submit_bio)
-+{
-+	struct gendisk *disk;
-+
-+	if (WARN_ON(!interposer))
-+		return;
-+
-+	mutex_lock(&bdev_interposer_mutex);
-+
-+	/* Check if the interposer is still active. */
-+	disk = interposer->disk;
-+	if (WARN_ON(!disk))
-+		goto out;
-+
-+	if (WARN_ON(!blk_mq_is_queue_frozen(disk->queue)))
-+		goto out;
-+
-+	/* Check if it is really our interposer. */
-+	if (WARN_ON(disk->interposer->ip_submit_bio != ip_submit_bio))
-+		goto out;
-+
-+	disk->interposer = NULL;
-+	interposer->disk = NULL;
-+out:
-+	mutex_unlock(&bdev_interposer_mutex);
-+}
-+EXPORT_SYMBOL_GPL(blk_interposer_detach);
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 866f74261b3b..6c1351d7b73f 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -227,7 +227,7 @@ struct bio {
- 						 * top bits REQ_OP. Use
- 						 * accessors.
- 						 */
--	unsigned short		bi_flags;	/* status, etc and bvec pool number */
-+	unsigned int		bi_flags;	/* status, etc and bvec pool number */
- 	unsigned short		bi_ioprio;
- 	unsigned short		bi_write_hint;
- 	blk_status_t		bi_status;
-@@ -304,6 +304,8 @@ enum {
- 				 * of this bio. */
- 	BIO_CGROUP_ACCT,	/* has been accounted to a cgroup */
- 	BIO_TRACKED,		/* set if bio goes through the rq_qos path */
-+	BIO_INTERPOSED,		/* bio has been interposed and can be moved to
-+				 * a different disk */
- 	BIO_FLAG_LAST
- };
- 
-@@ -322,7 +324,7 @@ enum {
-  * freed.
-  */
- #define BVEC_POOL_BITS		(3)
--#define BVEC_POOL_OFFSET	(16 - BVEC_POOL_BITS)
-+#define BVEC_POOL_OFFSET	(32 - BVEC_POOL_BITS)
- #define BVEC_POOL_IDX(bio)	((bio)->bi_flags >> BVEC_POOL_OFFSET)
- #if (1<< BVEC_POOL_BITS) < (BVEC_POOL_NR+1)
- # error "BVEC_POOL_BITS is too small"
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 809aaa32d53c..f68c8e83b4f1 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -134,6 +134,13 @@ struct blk_integrity {
- 	unsigned char				tag_size;
- };
- 
-+typedef void (*ip_submit_bio_t) (struct bio *bio);
-+
-+struct blk_interposer {
-+	ip_submit_bio_t ip_submit_bio;
-+	struct gendisk *disk;
-+};
-+
- struct gendisk {
- 	/* major, first_minor and minors are input parameters only,
- 	 * don't use directly.  Use disk_devt() and disk_max_parts().
-@@ -158,6 +165,7 @@ struct gendisk {
- 
- 	const struct block_device_operations *fops;
- 	struct request_queue *queue;
-+	struct blk_interposer *interposer;
- 	void *private_data;
- 
- 	int flags;
-@@ -346,4 +354,14 @@ static inline void printk_all_partitions(void)
- }
- #endif /* CONFIG_BLOCK */
- 
-+/*
-+ * block layer interposer
-+ */
-+#define blk_has_interposer(d) ((d)->interposer != NULL)
-+
-+int blk_interposer_attach(struct gendisk *disk, struct blk_interposer *interposer,
-+			  const ip_submit_bio_t ip_submit_bio);
-+void blk_interposer_detach(struct blk_interposer *interposer,
-+			   const ip_submit_bio_t ip_submit_bio);
-+
- #endif /* _LINUX_GENHD_H */
--- 
-2.20.1
-
+Will
