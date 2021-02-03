@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A9330D3E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CB030D3EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhBCHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
+        id S232101AbhBCHLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:11:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhBCHKS (ORCPT
+        with ESMTP id S231837AbhBCHLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:10:18 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E453DC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 23:09:37 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id c13so26402179ybg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 23:09:37 -0800 (PST)
+        Wed, 3 Feb 2021 02:11:21 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8D3C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 23:10:41 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id h12so31793212lfp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 23:10:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
-        b=ORpIZ9KqvA5JySv1a+xUn5mihk221WQUpgWJVo0oGIZRv5FvZ6QiHJy/rWa+IdEYjI
-         /8JHAUH81DnuGXTBISe7MuVXH1UcJOWYwxV1PZGf3qGUR5pivDIDyLTY1K5RB3RfjS8C
-         qdmy0O+f1yM9NW7yygT+6B3madCzZB+CdnwsAuZo5aU39rSboYuAaW580muhTehu4V3E
-         cigMubeYmMeWUvEC+mhwwHzpJVVgmmeuKNL4xxK0En3ZLAIZpDJxe/TO420R8rs1oIma
-         kUzrgy9y8ml3LVwxWfHb01cEiFrYwFZ5EH0TevmKlL2AdtqBUN0UMrChtJytP1Vhzq2q
-         7K6g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jhX/iP2BIje25rSEtkXl+gf7vWLktseUoLjC5655Ogc=;
+        b=WoCYlofriopgTQlhztwNhls5M+Vuxb2QUkzBx7g+2dT/cJEafXtg+Ol3RDmknsYh3R
+         5K1JqUIPCKdlOXe3GV5O5La9AMWyUKNYN6ie2q/uytlDWAI3YLvMc9xHSM9k1GbWpt+r
+         AmQsK1DdzO3A8z2CCmGjSGQMUXH6vSkYRFhw+i/pR5pBUsSwuTKR69pRkf2zEP34RL/P
+         Mfsb6i6fcX26C3mAa2hkPAQQd0bnkZtPIhQVgd3yIYqdF3nr/cxq80xSvQlnHSSlbhlq
+         AfmIHJSUL/ZB7LkrMXQCkPKSzO6DVoKFDxWBAU8bvBMdYksLZocQlIS+CtL7QN2x1+GA
+         //TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
-        b=Knr8vSBNLuBK/jtM39S9pAtzCW2Zgjhg233uPiR1GPofFkmiq4IM0zPZ5GuP2DrUoZ
-         VDkwNiLPHMG97d1yCK8CRhYog/EJUkZPhwhIekz9luRSNc6V4mFtpuOaf0kcmGR3nVDK
-         6A7lwyDMxrDtcbR/nSl/P3TrKQLUN5Z/kMg7jzSXmczR+XJe9vqJ92U8j0f/BBbvLxpf
-         jtUuSGhTsBm72CL7k4DINAEhT9X89R8B2+j7tYNnznuXapkygbsGD52MqkxzhaPZQF3e
-         xuzXrSK8u2BWGNuzzjY/PgfNPwwxsB0oSHmTqALOp1eJ8j0hgRMcV9dz7zyWVG0LRBcb
-         nbZw==
-X-Gm-Message-State: AOAM533hhUNgWl+U9X+orCOmhka5G3/KpUpYePVSsS+7FviFt/Q8E47X
-        Kj3Tjv67ex5lu+sBkZcE1VXL/5RssayC80k4nw==
-X-Google-Smtp-Source: ABdhPJypZNI/m4g+qfZiw1c1Kl/BP/d7kUrd1HrLK8IrMqiQE82/eoWXzK8jRUdUY1sUw071wrH5VFpy2dvkgYlXwA==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:c8ff:4e4a:dbd4:e8a6])
- (user=howardchung job=sendgmr) by 2002:a25:5cd7:: with SMTP id
- q206mr2627199ybb.150.1612336177210; Tue, 02 Feb 2021 23:09:37 -0800 (PST)
-Date:   Wed,  3 Feb 2021 15:09:29 +0800
-Message-Id: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v1] Bluetooth: Fix crash in mgmt_add_adv_patterns_monitor_complete
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
-Cc:     Howard Chung <howardchung@google.com>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jhX/iP2BIje25rSEtkXl+gf7vWLktseUoLjC5655Ogc=;
+        b=hlfSvtl6FqM+A8ufnf3FeB4PxlAIVAkSWNUofFWH2OUA59O2Oxvl0ulJ4XFRVedwV2
+         JK9yznPLnclCwjNPE3F6c6Ap1Lk4w2WnqHHKxL/cSZYnlqYeEQWB1fQX9DxFl57OD7tJ
+         fMI1ivK/OyqyviUhZbiM5gU9ePuJbvhefH3TTMgEE+reBGmcdjWF7yRNjcW/FSY29De/
+         YufGItbBiP5dPQQde8ZvDPfSPVUhnbSxn4+CC05lf02hsjIWtrYDcQk2QmGzuXOtYaDW
+         KuboZ/+6BdPpctwcvyqc6SPGM54IgQtLgDNi3OzdUmZhHPkepdgPWYtzYiYEalKJ1b15
+         kNEA==
+X-Gm-Message-State: AOAM531eo3eEwzChoWkJbKWX2PLq9pvWoepc1o8lL9j0EUYpd8/7tBG2
+        vH4MAklLocsbH/mD5iFnnL4OMQ==
+X-Google-Smtp-Source: ABdhPJx7qRdRSv4bF3X0su5sZ00X7oTRtyMjIcGa7Kvu0mxshlpY1UPGWVtYJur2tvzTP/WHDszOEg==
+X-Received: by 2002:a05:6512:1310:: with SMTP id x16mr959000lfu.19.1612336239572;
+        Tue, 02 Feb 2021 23:10:39 -0800 (PST)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id c16sm148416lfb.36.2021.02.02.23.10.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 23:10:38 -0800 (PST)
+Date:   Wed, 3 Feb 2021 08:10:36 +0100
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tee: optee: remove need_resched() before cond_resched()
+Message-ID: <20210203071036.GA3603358@jade>
+References: <20210125095445.1524477-1-jens.wiklander@linaro.org>
+ <0100017738faac80-87e5cf40-6a5a-4727-9c36-382fb909c8ff-000000@email.amazonses.com>
+ <CAHUa44GsbxO=wJ_o-AZsxNvKOhn=y=dexkrN17zCy=7+0=1ZQg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHUa44GsbxO=wJ_o-AZsxNvKOhn=y=dexkrN17zCy=7+0=1ZQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If hci_add_adv_monitor is a pending command(e.g. forward to
-msft_add_monitor_pattern), it is possible that
-mgmt_add_adv_patterns_monitor_complete gets called before
-cmd->user_data gets set, which will cause a crash when we
-try to get the moniter handle through cmd->user_data in
-mgmt_add_adv_patterns_monitor_complete.
+On Fri, Jan 29, 2021 at 02:29:33PM +0100, Jens Wiklander wrote:
+> Hi Rouven and Sumit,
+> 
+> On Mon, Jan 25, 2021 at 10:58 AM Jens Wiklander via OP-TEE
+> <op-tee@lists.trustedfirmware.org> wrote:
+> >
+> > Hi Rouven and Sumit,
+> >
+> > On Mon, Jan 25, 2021 at 10:55 AM Jens Wiklander
+> > <jens.wiklander@linaro.org> wrote:
+> > >
+> > > Testing need_resched() before cond_resched() is not needed as an
+> > > equivalent test is done internally in cond_resched(). So drop the
+> > > need_resched() test.
+> > >
+> > > Fixes: dcb3b06d9c34 ("tee: optee: replace might_sleep with cond_resched")
+> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > ---
+> > >  drivers/tee/optee/call.c | 3 +--
+> > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > Can you please test to see that this works in your setups too?
+> 
+> Does this work for you? I'd like to get this patch ready for v5.12.
 
-This moves the cmd->user_data assignment earlier than
-hci_add_adv_monitor.
+Thanks for the help with this patch. I'll submit this up for v5.12.
 
-RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
-Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
-e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
-7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
-c8
-RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
-RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
-RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
-RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
-R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
-R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000018 CR3: 0000000133612002 CR4:
-00000000003606e0
-Call Trace:
- ? msft_le_monitor_advertisement_cb+0x111/0x141
-[bluetooth]
- hci_event_packet+0x425e/0x631c [bluetooth]
- ? printk+0x59/0x73
- ? __switch_to_asm+0x41/0x70
- ?
-msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
- ? bt_dbg+0xb4/0xbb [bluetooth]
- ? __switch_to_asm+0x41/0x70
- hci_rx_work+0x101/0x319 [bluetooth]
- process_one_work+0x257/0x506
- worker_thread+0x10d/0x284
- kthread+0x14c/0x154
- ? process_one_work+0x506/0x506
- ? kthread_blkcg+0x2c/0x2c
- ret_from_fork+0x1f/0x40
-
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Signed-off-by: Howard Chung <howardchung@google.com>
----
-
- net/bluetooth/mgmt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 8ff9c4bb43d11..74971b4bd4570 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -4303,6 +4303,7 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
- 		goto unlock;
- 	}
- 
-+	cmd->user_data = m;
- 	pending = hci_add_adv_monitor(hdev, m, &err);
- 	if (err) {
- 		if (err == -ENOSPC || err == -ENOMEM)
-@@ -4330,7 +4331,6 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
- 
- 	hci_dev_unlock(hdev);
- 
--	cmd->user_data = m;
- 	return 0;
- 
- unlock:
--- 
-2.30.0.365.g02bc693789-goog
-
+Cheers,
+Jens
