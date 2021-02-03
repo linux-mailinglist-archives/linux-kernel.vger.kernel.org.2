@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D435630D14A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF2830D14D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhBCCOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:14:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhBCCOT (ORCPT
+        id S231858AbhBCCO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:14:59 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:53922 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231765AbhBCCO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:14:19 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23E7C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:13:38 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d16so22416618wro.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:13:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+vYDps8/+IhHaSDG5kMjkWUxFJUq2DFUOYgi2VmWXtI=;
-        b=QT34eaYNV8fBLXWs/JBogWNBxvdF8ywloFrclidxZLbMY42rIDA48Y8pWRzaRg5kyn
-         cJA/Pz4LjH28NykDdh27Y+YDF2VA1ob27B9AmZ+b+y8eFiRD3fKog+kSs9ztUIQwluk5
-         G5LsE1Hmui8HoXHVY8szdjd48rhhZA4JUPeSSoXEZMxzn3bocg+h4SnDsxruSuxRv9QT
-         bTpIhgtjAyR+m3tKilxDCcEYtYANNdJ3CrpkPwfxvl9JzsXtY4jEpaPrHe4emg1kiNRY
-         Tub23wpwxyjLb6730Xg39sU0NDx1RWY4HzKlBzNT+btC4Ta9Vj6gI7TYaH3+g8P5rtUU
-         HPRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+vYDps8/+IhHaSDG5kMjkWUxFJUq2DFUOYgi2VmWXtI=;
-        b=PCKujtzXexMWrbmNvIbNpBLI6xz89Zx93GU2CpMSjZHPIPn3MsDuVLU2RadpWy0PvW
-         seF4Jk4r1GOJy0Pz7zTLgTb+/Rv/RZvTzNIIrlTBYDCe1rmNo3zBT/uDGUTJ0oxqvDxH
-         fHiIO/7GVM2uG9Hgna7XmOHs11Xjir94VzfHt7cIha0RSi/SC2A5NfvVMSCrvcAH090p
-         1MtegE6rSLbb5W+S5Scm9q4WYtQeuRL1bw7/4qYudbdJTzj3E8ITbBM6mogixOn606eY
-         mFQ5Nh0JUh1WBJHweqyN+C2nEqI+vmQ/rbdZBabRZ3TstmI7p1AppfcNXiqItg52DJrv
-         VcyA==
-X-Gm-Message-State: AOAM533BGfSEt3ydPbrHBPOtqt9vEDdydSfr4Ew7hOMVahouTQLWl7Kv
-        TfCcNxhvbrIac0PC6MkavnHCcv4VbearUkMfng4BWA==
-X-Google-Smtp-Source: ABdhPJzwvb53VryiSIObA9yOm78VKVx2cE/HoZ+IGvTixGvWum4punD5XJ9toA2haG1k35oBs/GNn0NjBEvmjKg7phM=
-X-Received: by 2002:a5d:453b:: with SMTP id j27mr895948wra.92.1612318417595;
- Tue, 02 Feb 2021 18:13:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20210203003134.2422308-1-surenb@google.com> <20210203003134.2422308-2-surenb@google.com>
- <CALAqxLWJNDDx_MFvYHszFXy=aV9bZGi50L3zDtuGaiYUbHKHSA@mail.gmail.com>
-In-Reply-To: <CALAqxLWJNDDx_MFvYHszFXy=aV9bZGi50L3zDtuGaiYUbHKHSA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 2 Feb 2021 18:13:26 -0800
-Message-ID: <CAJuCfpGJn9WLjs5N6m2WZ4CxgkZeHgGinoS_v2XhiqbOB90rfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dma-buf: heaps: Map system heap pages as managed
- by linux vm
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+        Tue, 2 Feb 2021 21:14:57 -0500
+X-UUID: f3d41b23589f42f285ca3c49be481669-20210203
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qcupwzAFEh+APVu6uj0OTOjq7j3sY9giePPVcQ3oRe4=;
+        b=cQ13ghAEPhEiHasWmWZ6HqVLbj4P8N8nqaqkv8iU6unUsiE/CA3ECGJywvaivMQl4KhOJxZIEXINx7T7Be1IAJk5g+tPvUfyP2q9LglPIEMIiQ15XD6mfLOAlIPQ1YbIxKTU+2PMq1gvMuasXcpjM0od17Y0S531SZafgxxLhVE=;
+X-UUID: f3d41b23589f42f285ca3c49be481669-20210203
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1863199234; Wed, 03 Feb 2021 10:14:04 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Feb
+ 2021 10:14:02 +0800
+Received: from [10.19.240.15] (10.19.240.15) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Feb 2021 10:14:01 +0800
+Message-ID: <1612318441.5980.142.camel@mcddlt001>
+Subject: Re: [v3] PCI: Avoid unsync of LTR mechanism configuration
+From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+CC:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <haijun.liu@mediatek.com>,
+        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
+        <alex.williamson@redhat.com>, <rjw@rjwysocki.net>,
+        <utkarsh.h.patel@intel.com>
+Date:   Wed, 3 Feb 2021 10:14:01 +0800
+In-Reply-To: <20210201113217.GL2542@lahna.fi.intel.com>
+References: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
+         <20210201113217.GL2542@lahna.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: BD886473CF1087390027C2AE76042FAC1D87D9F19E38A3BC9E3AFD7AA807C52E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 6:07 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Tue, Feb 2, 2021 at 4:31 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > Currently system heap maps its buffers with VM_PFNMAP flag using
-> > remap_pfn_range. This results in such buffers not being accounted
-> > for in PSS calculations because vm treats this memory as having no
-> > page structs. Without page structs there are no counters representing
-> > how many processes are mapping a page and therefore PSS calculation
-> > is impossible.
-> > Historically, ION driver used to map its buffers as VM_PFNMAP areas
-> > due to memory carveouts that did not have page structs [1]. That
-> > is not the case anymore and it seems there was desire to move away
-> > from remap_pfn_range [2].
-> > Dmabuf system heap design inherits this ION behavior and maps its
-> > pages using remap_pfn_range even though allocated pages are backed
-> > by page structs.
-> > Replace remap_pfn_range with vm_insert_page, following Laura's suggestion
-> > in [1]. This would allow correct PSS calculation for dmabufs.
-> >
-> > [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-> > [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-> > (sorry, could not find lore links for these discussions)
-> >
-> > Suggested-by: Laura Abbott <labbott@kernel.org>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> For consistency, do we need something similar for the cma heap as well?
+SGksDQoNCk9uIE1vbiwgMjAyMS0wMi0wMSBhdCAxMzozMiArMDIwMCwgTWlrYSBXZXN0ZXJiZXJn
+IHdyb3RlOg0KPiBIaSwNCj4gDQo+IE9uIEZyaSwgSmFuIDI5LCAyMDIxIGF0IDAzOjExOjM3UE0g
+KzA4MDAsIG1pbmdjaHVhbmcucWlhb0BtZWRpYXRlay5jb20gd3JvdGU6DQo+ID4gRnJvbTogTWlu
+Z2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IElu
+IGJ1cyBzY2FuIGZsb3csIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBERVZDVEwy
+IHJlZ2lzdGVyIGlzDQo+ID4gY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBk
+ZXZpY2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQo+ID4gbWVjaGFuaXNtLCB0aGUgIkxU
+UiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgZGV2aWNlIGFuZCBicmlkZ2Ugd2lsbCBiZQ0KPiA+
+IGVuYWJsZWQgaW4gREVWQ1RMMiByZWdpc3Rlci4gQW5kIHBjaV9kZXYtPmx0cl9wYXRoIHdpbGwg
+YmUgc2V0IGFzIDEuDQo+ID4gDQo+ID4gSWYgUENJZSBsaW5rIGdvZXMgZG93biB3aGVuIGRldmlj
+ZSByZXNldHMsIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0KPiA+IG9mIGJyaWRnZSB3
+aWxsIGNoYW5nZSB0byAwIGFjY29yZGluZyB0byBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4gSG93
+ZXZlciwNCj4gPiB0aGUgcGNpX2Rldi0+bHRyX3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxs
+IDEuDQo+ID4gDQo+ID4gRm9yIGZvbGxvd2luZyBjb25kaXRpb25zLCBjaGVjayBhbmQgcmUtY29u
+ZmlndXJlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0DQo+ID4gb2YgYnJpZGdlIHRvIG1ha2Ug
+IkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbXRhY2ggbHRyX3BhdGggdmFsdWUuDQo+IA0KPiBU
+eXBvIG10YWNoIC0+IG1hdGNoLg0KPiANCj4gPiAgICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmlj
+ZSdzIExUUiBmb3IgaG90LXJlbW92ZS9ob3QtYWRkDQo+ID4gICAgLWJlZm9yZSByZXN0b3Jpbmcg
+ZGV2aWNlJ3MgREVWQ1RMMiByZWdpc3RlciB3aGVuIHJlc3RvcmUgZGV2aWNlIHN0YXRlDQo+ID4g
+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVk
+aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IGNoYW5nZXMgb2YgdjINCj4gPiAgLW1vZGlmeSBwYXRj
+aCBkZXNjcmlwdGlvbg0KPiA+ICAtcmVjb25maWd1cmUgYnJpZGdlJ3MgTFRSIGJlZm9yZSByZXN0
+b3JpbmcgZGV2aWNlIERFVkNUTDIgcmVnaXN0ZXINCj4gPiBjaGFuZ2VzIG9mIHYzDQo+ID4gIC1j
+YWxsIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKCkgaW4gcHJvYmUuYw0KPiANCj4gSG1tLCB3
+aGljaCBwYXJ0IG9mIHRoaXMgcGF0Y2ggdGFrZXMgY2FyZSBvZiB0aGUgcmVzZXQgcGF0aD8gSXQg
+aXMgbm90DQo+IGVudGlyZWx5IGNsZWFyIHRvIG1lIGF0IGxlYXN0Lg0KPiANCg0KV2hlbiBkZXZp
+Y2UgcmVzZXRzIGFuZCBsaW5rIGdvZXMgZG93biwgdGhlcmUgc2VlbXMgdG8gaGF2ZSB0d28gbWV0
+aG9kcw0KdG8gcmVjb3ZlciBmb3Igc29mdHdhcmUuIA0KICAgLU9uZSBpcyB0aGF0IHRyaWdnZXIg
+ZGV2aWNlIHJlbW92YWwgYW5kIHJlc2Nhbi4NCiAgIC1UaGUgb3RoZXIgaXMgdGhhdCByZXN0b3Jl
+IGRldmljZSB3aXRoIHBjaV9yZXN0b3JlX3N0YXRlKCkgYWZ0ZXIgbGluaw0KY29tZXMgYmFjayB1
+cC4NCkZvciBhYm92ZSBib3RoIHNjZW5hcmlvcywgd2UgbmVlZCBjaGVjayBhbmQgcmVjb25maWd1
+cmUgIkxUUiBNZWNoYW5pc20NCkVuYWJsZSIgYml0IG9mIGJyaWRnZS4gSXQncyBhbHNvIHRoaXMg
+cGF0Y2ggaW50ZW5kcyB0byBkby4NCiAgIC1Gb3IgdGhlIHJlc2NhbiBzY2VuYXJpbywgaXQncyBk
+b25lIGluIHBjaV9jb25maWd1cmVfbHRyKCkuDQogICAtRm9yIHRoZSByZXN0b3JlIHNjZW5hcmlv
+LCBpdCdzIGRvbmUgaW4gcGNpX3Jlc3RvcmVfcGNpZV9zdGF0ZSgpLg0KDQo+ID4gLS0tDQo+ID4g
+IGRyaXZlcnMvcGNpL3BjaS5jICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4g
+IGRyaXZlcnMvcGNpL3BjaS5oICAgfCAgMSArDQo+ID4gIGRyaXZlcnMvcGNpL3Byb2JlLmMgfCAx
+MyArKysrKysrKysrLS0tDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwg
+MyBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLmMg
+Yi9kcml2ZXJzL3BjaS9wY2kuYw0KPiA+IGluZGV4IGI5ZmVjYzI1ZDIxMy4uMTJiNTU3YzhmMDYy
+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcGNpL3BjaS5jDQo+ID4gKysrIGIvZHJpdmVycy9w
+Y2kvcGNpLmMNCj4gPiBAQCAtMTQzNyw2ICsxNDM3LDI0IEBAIHN0YXRpYyBpbnQgcGNpX3NhdmVf
+cGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0N
+Cj4gPiAgDQo+ID4gK3ZvaWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9k
+ZXYgKmRldikNCj4gPiArew0KPiA+ICsjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQo+ID4gKwlzdHJ1
+Y3QgcGNpX2RldiAqYnJpZGdlOw0KPiA+ICsJdTMyIGN0bDsNCj4gPiArDQo+ID4gKwlicmlkZ2Ug
+PSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+
+bHRyX3BhdGgpIHsNCj4gPiArCQlwY2llX2NhcGFiaWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBD
+SV9FWFBfREVWQ1RMMiwgJmN0bCk7DQo+ID4gKwkJaWYgKCEoY3RsICYgUENJX0VYUF9ERVZDVEwy
+X0xUUl9FTikpIHsNCj4gPiArCQkJcGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIp
+Ow0KPiA+ICsJCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNU
+TDIsDQo+ID4gKwkJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiArCQl9DQo+ID4g
+Kwl9DQo+ID4gKyNlbmRpZg0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgdm9pZCBwY2lfcmVz
+dG9yZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQo+ID4gIHsNCj4gPiAgCWludCBp
+ID0gMDsNCj4gPiBAQCAtMTQ0Nyw2ICsxNDY1LDEzIEBAIHN0YXRpYyB2b2lkIHBjaV9yZXN0b3Jl
+X3BjaWVfc3RhdGUoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgCWlmICghc2F2ZV9zdGF0ZSkN
+Cj4gPiAgCQlyZXR1cm47DQo+ID4gIA0KPiA+ICsJLyoNCj4gPiArCSAqIERvd25zdHJlYW0gcG9y
+dHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gbGluayBnb2VzIGRvd24uDQo+ID4gKwkg
+KiBDaGVjayBhbmQgcmUtY29uZmlndXJlIHRoZSBiaXQgaGVyZSBiZWZvcmUgcmVzdG9yaW5nIGRl
+dmljZS4NCj4gPiArCSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2Lg0KPiA+ICsJICovDQo+ID4g
+KwlwY2lfcmVjb25maWd1cmVfYnJpZGdlX2x0cihkZXYpOw0KPiA+ICsNCj4gPiAgCWNhcCA9ICh1
+MTYgKikmc2F2ZV9zdGF0ZS0+Y2FwLmRhdGFbMF07DQo+ID4gIAlwY2llX2NhcGFiaWxpdHlfd3Jp
+dGVfd29yZChkZXYsIFBDSV9FWFBfREVWQ1RMLCBjYXBbaSsrXSk7DQo+ID4gIAlwY2llX2NhcGFi
+aWxpdHlfd3JpdGVfd29yZChkZXYsIFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQo+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5oIGIvZHJpdmVycy9wY2kvcGNpLmgNCj4gPiBpbmRl
+eCA1YzU5MzY1MDkyZmEuLmE2NjBhMDEzNThjNSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Bj
+aS9wY2kuaA0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL3BjaS5oDQo+ID4gQEAgLTExMSw2ICsxMTEs
+NyBAQCB2b2lkIHBjaV9mcmVlX2NhcF9zYXZlX2J1ZmZlcnMoc3RydWN0IHBjaV9kZXYgKmRldik7
+DQo+ID4gIGJvb2wgcGNpX2JyaWRnZV9kM19wb3NzaWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsN
+Cj4gPiAgdm9pZCBwY2lfYnJpZGdlX2QzX3VwZGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCj4g
+PiAgdm9pZCBwY2lfYnJpZGdlX3dhaXRfZm9yX3NlY29uZGFyeV9idXMoc3RydWN0IHBjaV9kZXYg
+KmRldik7DQo+ID4gK3ZvaWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9k
+ZXYgKmRldik7DQo+IA0KPiBOaXQ6IGNhbGxpbmcgaXQgcGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9s
+dHIoKSB3b3VsZCBtYXRjaCBiZXR0ZXIgd2l0aCB0aGUNCj4gb3RoZXIgZnVuY3Rpb24gbmFtZXMu
+DQo+IA0KDQpUaGFua3MgZm9yIHRoZSBzdWdnZXN0aW9uLiBJIHdpbGwgdXBkYXRlIHRoZSBuYW1l
+IGluIG5leHQgcGF0Y2ggOikNCg0KPiA+ICANCj4gPiAgc3RhdGljIGlubGluZSB2b2lkIHBjaV93
+YWtldXBfZXZlbnQoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAgew0KPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL3BjaS9wcm9iZS5jIGIvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+IGluZGV4IDk1
+M2YxNWFiYzg1MC4uZmE2MDc1MDkzZjNiIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcGNpL3By
+b2JlLmMNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gQEAgLTIxMzIsOSArMjEz
+MiwxNiBAQCBzdGF0aWMgdm9pZCBwY2lfY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2
+KQ0KPiA+ICAJICogQ29tcGxleCBhbmQgYWxsIGludGVybWVkaWF0ZSBTd2l0Y2hlcyBpbmRpY2F0
+ZSBzdXBwb3J0IGZvciBMVFIuDQo+ID4gIAkgKiBQQ0llIHI0LjAsIHNlYyA2LjE4Lg0KPiA+ICAJ
+ICovDQo+ID4gLQlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BP
+UlQgfHwNCj4gPiAtCSAgICAoKGJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KSkgJiYN
+Cj4gPiAtCSAgICAgIGJyaWRnZS0+bHRyX3BhdGgpKSB7DQo+ID4gKwlpZiAocGNpX3BjaWVfdHlw
+ZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQpIHsNCj4gPiArCQlwY2llX2NhcGFiaWxp
+dHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gKwkJCQkJIFBDSV9FWFBfREVW
+Q1RMMl9MVFJfRU4pOw0KPiA+ICsJCWRldi0+bHRyX3BhdGggPSAxOw0KPiA+ICsJCXJldHVybjsN
+Cj4gPiArCX0NCj4gPiArDQo+ID4gKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7
+DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCj4gPiArCQlwY2lfcmVj
+b25maWd1cmVfYnJpZGdlX2x0cihkZXYpOw0KPiA+ICAJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29y
+ZChkZXYsIFBDSV9FWFBfREVWQ1RMMiwNCj4gPiAgCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9F
+Tik7DQo+ID4gIAkJZGV2LT5sdHJfcGF0aCA9IDE7DQo+ID4gLS0gDQo+ID4gMi4xOC4wDQoNCg==
 
-Good question. Let me look closer into it.
-
->
-> thanks
-> -john
