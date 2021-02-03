@@ -2,168 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9963A30D6EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B7C30D6F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhBCKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:00:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S233698AbhBCKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhBCKAG (ORCPT
+        with ESMTP id S233671AbhBCKBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:00:06 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16024C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:59:23 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id s23so15706533pgh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:59:23 -0800 (PST)
+        Wed, 3 Feb 2021 05:01:03 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F1CC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 02:00:20 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id d2so26097919edz.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 02:00:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=b/R050Y1V5Ge6RgQndzOtSwrUqfobK01w5MWFMoCoZ8=;
-        b=LKVycDXu0rsyOBfww/WsyR7fnRDdngTyJ0nhdbiq7M5uOFBrBJ9KNZqfmMbVDQL9Sr
-         866hPIsso4aRMM+hkbxVJZ8o/4Pm/6Cti1gadMSOAGnnk6Sfsa463M6nR4eHS178Glbk
-         +35ZJ6gMP9bSlDGW7UVIPsEVWaTPtIlbZjjOxQYwUmy9moXwqZ6NCrqtiLl8g+q2uJ5h
-         /lsPqhs6EaVup+ACAU0KGc0FSwl8Cy5AfzBWiT6z828uJGegzpNX+iVieSc3/HSCEnMA
-         OBfXswsLbTp15zuTgO2pSQtwOgYHSjP/rNR+2SMDFpVHhv2/NGy2yLKK/H+PhpYoIe2I
-         uiHA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RxywI8qyE9NRJiLP1zJVKvl6KkJlN6Ih8IJ9Z/1y9NA=;
+        b=Kcvh0yrBX/CuIyzYVT3MLjiyIgQTnYoXTirWe3ya6IvWMt2AkrIjsC1W+Vlf0mMsSy
+         sawtmLDQIDf/nBzSfeW1SZyPCd5hsjRr8vUZP9r8du0iGWO0J924ZKkdd6fMnGIENsI+
+         YxgmKZ4rTFmoy5NyCAcJqFUA9hVw6FFIbLpIrhQQgLe66VH9CosIX8Vpcz6g+21+ZbLr
+         3bY41z1Rfll+dA2ykUr6tqZWMVVU9Tv5ZEiDDOKmmTtYfmrM057yMRcussXS8WNimICP
+         cpVc3uDFN1u56v5mU0l4SQcYWLFF9GNGiWClSLmHjfhrulAY6bh/afTfvlEVx8S0zA7a
+         tqVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=b/R050Y1V5Ge6RgQndzOtSwrUqfobK01w5MWFMoCoZ8=;
-        b=e2qXf14ZLYeCr7goS5Km3fZvml0L4dVrlssnByzUi1F3x8Wfkyhvd06jdjruhmFCzO
-         crZXy1vo4WXnV39E2KyslDtdGTAnxery+Lc+FrhrP5+LTKbXIz6m6JmcT4DqXMnMWeyr
-         XAkcw5WAXudCeUIZfZ9hYfw4p4thgs5ogE1SeFJxwX6JrGF82OxH07pl9HYV+R9NC+4D
-         bw+9ilPBToZJmZ5OPm9ari2Ddvb6KexmhsCXSc0wCIpgg4/MR8x4RxeQJmqcqGeTCbn9
-         uE2JJuvkO267rxAWr6b1FpNwrzcOIr1Zl7+P3n8QwREK+esJcc6XwS9pn+A8w55lNjNd
-         lHLg==
-X-Gm-Message-State: AOAM531fKTXs74rC4BuVVV6ZQUHu4HWJtotZJjQMC6CoiCGkKyG4Wcwg
-        //3JGfe1id94J/gWO6ikn13sVUY7kuDR+wUs
-X-Google-Smtp-Source: ABdhPJzt+iVFoaJcjuLKZlhysrfskisg5TT52CJKFKEDsjf4a4huk6neQOw5FYOuABb5d83ch1bfsA==
-X-Received: by 2002:a63:db03:: with SMTP id e3mr2733397pgg.225.1612346362659;
-        Wed, 03 Feb 2021 01:59:22 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:6803:610b:1c6f:cebf:a887:dd42])
-        by smtp.gmail.com with ESMTPSA id p16sm1757182pfq.28.2021.02.03.01.59.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 01:59:22 -0800 (PST)
-From:   Amit Pundir <amit.pundir@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and panel bits
-Date:   Wed,  3 Feb 2021 15:29:16 +0530
-Message-Id: <1612346356-26445-1-git-send-email-amit.pundir@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RxywI8qyE9NRJiLP1zJVKvl6KkJlN6Ih8IJ9Z/1y9NA=;
+        b=dXbOReDvYYt4lfrCBXZ3gdqXV61L9DcunMWwThe8z7rDnog2vY/URqyBtb/dX4nhSG
+         MDQxLaoCG3uFMuKNdMEc6ckTCKQBzyhMqY+UyPPc4t3kN3ppZNvPsCLtXPxBRKP2hLfG
+         eJllxlg8yhlcSn7yJ1/9v200Uw1rXz2ZqjS8GXa/Hxf/Gi6HatN9g6Uv2LO7xO5vkbq/
+         dZ91WEbiqlLLWrNnHpDZ+0k/4roaHzU84basi4VWmlu2e/4Qg3gHuq5dhC365A+niKu1
+         6Wp3ub+dRL4KsPIf3TnRaNCrkA15WShrAjnd+pwMbs2VBdUbsQHYNqSopkc8e0AkvZTd
+         uyig==
+X-Gm-Message-State: AOAM531CsIVSv0l2l1nWwe4RgJLEYQG9OZz5EU2B2nrvYvZFXCP6AFvx
+        BfGbteX33XlPCUCt3QbUPS8N2FPLhqsZWzSgvJWrew==
+X-Google-Smtp-Source: ABdhPJy8BvzGcmpU9rXO9afyH47rNiZRxEf5GJJVB0Q9pvRhj5hvLEpeWGWyIPQIBmkScZYdqNqZlqFnR8nyPqe+KYQ=
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr2183505edx.78.1612346419297;
+ Wed, 03 Feb 2021 02:00:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202132941.180062901@linuxfoundation.org>
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Feb 2021 15:30:07 +0530
+Message-ID: <CA+G9fYv_t9ScQB=HMz8LqGYMNw12+WzbxdoHwoXqauBDt+gBiQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/28] 4.4.255-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Semwal <sumit.semwal@linaro.org>
+On Tue, 2 Feb 2021 at 19:20, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.255 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.255-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Enabling the Display panel for beryllium phone (Xiaomi
-Pocophone F1) requires DSI labibb regulators and panel
-dts nodes to be added. It is also required to keep some
-of the regulators as always-on.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
----
- .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts      | 55 ++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-index cd15ae0347e8..e09effa555f1 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-@@ -160,6 +160,14 @@
- 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
- 		};
- 
-+		vreg_l14a_1p88: ldo14 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-boot-on;
-+			regulator-always-on;
-+		};
-+
- 		vreg_l17a_1p3: ldo17 {
- 			regulator-min-microvolt = <1304000>;
- 			regulator-max-microvolt = <1304000>;
-@@ -194,6 +202,7 @@
- 			regulator-min-microvolt = <1200000>;
- 			regulator-max-microvolt = <1200000>;
- 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-boot-on;
- 		};
- 	};
- };
-@@ -207,6 +216,44 @@
- 	firmware-name = "qcom/sdm845/cdsp.mdt";
- };
- 
-+&dsi0 {
-+	status = "okay";
-+	vdda-supply = <&vreg_l26a_1p2>;
-+
-+	ports {
-+		port@1 {
-+			endpoint {
-+				remote-endpoint = <&tianma_nt36672a_in_0>;
-+				data-lanes = <0 1 2 3>;
-+			};
-+		};
-+	};
-+
-+	panel@0 {
-+		compatible = "tianma,fhd-video";
-+		reg = <0>;
-+		vddi0-supply = <&vreg_l14a_1p88>;
-+		vddpos-supply = <&lab>;
-+		vddneg-supply = <&ibb>;
-+
-+		reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port {
-+			tianma_nt36672a_in_0: endpoint {
-+				remote-endpoint = <&dsi0_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&dsi0_phy {
-+	status = "okay";
-+	vdds-supply = <&vreg_l1a_0p875>;
-+};
-+
- &gcc {
- 	protected-clocks = <GCC_QSPI_CORE_CLK>,
- 			   <GCC_QSPI_CORE_CLK_SRC>,
-@@ -274,6 +321,14 @@
- 
- };
- 
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_mdp {
-+	status = "okay";
-+};
-+
- &mss_pil {
- 	status = "okay";
- 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mdt";
--- 
-2.7.4
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.4.255-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 9c98a187325d9be55b09023d4a08cf0e8790065c
+git describe: v4.4.254-29-g9c98a187325d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.254-29-g9c98a187325d
+
+No regressions (compared to build v4.4.254)
+
+No fixes (compared to build v4.4.254)
+
+Ran 21248 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* kselftest-bpf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-open-posix-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-kvm
+* kselftest-vm
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.254-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.254-rc1-hikey-20210129-909
+git commit: 1ed9a45adbcf3362d6299d7d9eb26d2fecc1f76f
+git describe: 4.4.254-rc1-hikey-20210129-909
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.254-rc1-hikey-20210129-909
+
+No regressions (compared to build 4.4.254-rc1-hikey-20210125-907)
+
+No fixes (compared to build 4.4.254-rc1-hikey-20210125-907)
+
+Ran 1710 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
