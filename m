@@ -2,107 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D630D0ED
+	by mail.lfdr.de (Postfix) with ESMTP id D83DB30D0EE
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBCBkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhBCBkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:40:06 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D1AC061573;
-        Tue,  2 Feb 2021 17:39:25 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id d2so3592394pjs.4;
-        Tue, 02 Feb 2021 17:39:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XIYaotR9cVz0dZkIxPzlPF8z5N/cDZctzyKFUN0dyY0=;
-        b=cXvYlwrI6hfAyLYI+VmHQVQQhLu2PXgyoCiLpjHxw4UxkHfexWxOgUdgUW1MnTD2H/
-         ntSjl0I5N9XmHiEfPfzHzGi+CTkSytba/uqkzTrUbc7UMxjn3pAvr+yrGkXTI44sUI0X
-         9JzN8XpI1Gy5EamBEPB7N2MCyMl2yR+5l0IENR5kl8l4FoUnOFNf1k2RnDJvm7irT+QB
-         dSKydTAjlcwL3ukWk/UgaC/dOmNnxuyXkbnEfwnV1bTNzh3BMI73eO3ipiQr23jBYCzC
-         2vK1mxCvX2O77vR3QD9SE4/tDIbWSSBVcUbUiK6NHAMJn/2hjlQlID/4oN9t7PbsKSe6
-         EwVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XIYaotR9cVz0dZkIxPzlPF8z5N/cDZctzyKFUN0dyY0=;
-        b=VMwsLdtuNr6/9T2K/2bnNUNyFTvt8lGXOGueQIXT4rZ7KQ78QLRHrgNk55GFBoRP6u
-         J39GYd/0Mdxv1RszgvtbFjNIfDafjXbN2NJ/9eqmmCXZXFsAAwztJ+QdFMBuJFiIxFoX
-         9o8qs4yvu2xN2bfH9lMdsvjZGXwas4CYozEFRSmPqxd9VENNa7yq7nLdpf7vV09LaR4q
-         zRtyr/Ap75gbvwal8hniJxMxOdHYKCaFydswiLzbo/JfAH9g2A5awWble9eXKsTMn2a1
-         uoHT/TVRnMQvuuzGT+3t0QJlto/XMx0G4zSu4obZFd9MbuRkwcLnYY3wKADUjmIYcr79
-         HHOA==
-X-Gm-Message-State: AOAM532NLuVw4NuQnUz+wcVaxT3X8lB9mLcTYBFwVDtDKPli1R733k7C
-        oN52FcR6NQjLdl+dq8gFJoQ=
-X-Google-Smtp-Source: ABdhPJw4+TJeBM73IhpaxHBiQrVir31ns6RnIpgpHmpCk5j9tXDdCMTWEfxafjtp+R5KhfwTy9JIuQ==
-X-Received: by 2002:a17:90a:8906:: with SMTP id u6mr664117pjn.223.1612316365454;
-        Tue, 02 Feb 2021 17:39:25 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:1502:84f8:ffc3:45b])
-        by smtp.gmail.com with ESMTPSA id m10sm217140pjs.25.2021.02.02.17.39.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 17:39:24 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 2 Feb 2021 17:39:21 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     sumit.semwal@linaro.org, akpm@linux-foundation.org,
-        hch@infradead.org, lmark@codeaurora.org, labbott@redhat.com,
-        Brian.Starkey@arm.com, john.stultz@linaro.org,
-        christian.koenig@amd.com, cgoldswo@codeaurora.org,
-        orjan.eide@arm.com, robin.murphy@arm.com, jajones@nvidia.com,
-        hridya@google.com, sspatil@google.com, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 2/2] dma-buf: heaps: Map system heap pages as managed
- by linux vm
-Message-ID: <YBn+yWIE9eXbgQ2K@google.com>
-References: <20210203003134.2422308-1-surenb@google.com>
- <20210203003134.2422308-2-surenb@google.com>
+        id S231138AbhBCBlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:41:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhBCBlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 20:41:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02BE164F67;
+        Wed,  3 Feb 2021 01:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612316441;
+        bh=cF1nSFMZ2Ahm9ekU3rWQ9EaZesNqYo23zQObZu0QJWE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GSC5chb9K/PDanYlE4EYEEgChrFoGewv3BiZ0okTaTpXesEW5cEeEy7FdOP2ju67t
+         s9tUc0S/Dx8uHQANzqw8uAMhrjvopuibgqAcUF7zwrdqoHqO8+jPfLjdoBzZ5iYNTp
+         ZppfrA5X4lZ20jWegWfZ9uk0MVVJM8uRIhjgvEoHsOuIFU/edHYzdlGBqPQRkPpgec
+         8SanajP84B7CfEl37KpmPHW40+wYV/qnKp/jgz3HybCOiJ9h78kftHQKP/kzdDeNe9
+         idsTGf9iQrJEyZhEX9bT14iRNKvIaF1tFujYQymJNWA2rOC+osIRwKtLVwJxm+a0X3
+         Whf7bZM6hYkKQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B1C6C3522865; Tue,  2 Feb 2021 17:40:40 -0800 (PST)
+Date:   Tue, 2 Feb 2021 17:40:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        ak@linux.intel.com, clm@fb.com
+Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
+ to fuzz per-CPU clock checking
+Message-ID: <20210203014040.GJ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
+ <20210202170635.24839-4-paulmck@kernel.org>
+ <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
+ <20210203005020.GI2743@paulmck-ThinkPad-P72>
+ <b878262a-4c98-91bd-eb88-456a869dc9e1@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203003134.2422308-2-surenb@google.com>
+In-Reply-To: <b878262a-4c98-91bd-eb88-456a869dc9e1@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 04:31:34PM -0800, Suren Baghdasaryan wrote:
-> Currently system heap maps its buffers with VM_PFNMAP flag using
-> remap_pfn_range. This results in such buffers not being accounted
-> for in PSS calculations because vm treats this memory as having no
-> page structs. Without page structs there are no counters representing
-> how many processes are mapping a page and therefore PSS calculation
-> is impossible.
-> Historically, ION driver used to map its buffers as VM_PFNMAP areas
-> due to memory carveouts that did not have page structs [1]. That
-> is not the case anymore and it seems there was desire to move away
-> from remap_pfn_range [2].
-> Dmabuf system heap design inherits this ION behavior and maps its
-> pages using remap_pfn_range even though allocated pages are backed
-> by page structs.
-> Replace remap_pfn_range with vm_insert_page, following Laura's suggestion
-> in [1]. This would allow correct PSS calculation for dmabufs.
+On Tue, Feb 02, 2021 at 05:31:55PM -0800, Randy Dunlap wrote:
+> On 2/2/21 4:50 PM, Paul E. McKenney wrote:
+> > On Tue, Feb 02, 2021 at 11:51:02AM -0800, Randy Dunlap wrote:
+> >> On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
+> >>> From: "Paul E. McKenney" <paulmck@kernel.org>
+> >>>
+> >>> Code that checks for clock desynchronization must itself be tested, so
+> >>> this commit creates a new clocksource.inject_delay_shift_percpu= kernel
+> >>> boot parameter that adds or subtracts a large value from the check read,
+> >>> using the specified bit of the CPU ID to determine whether to add or
+> >>> to subtract.
+> >>>
+> >>> Cc: John Stultz <john.stultz@linaro.org>
+> >>> Cc: Thomas Gleixner <tglx@linutronix.de>
+> >>> Cc: Stephen Boyd <sboyd@kernel.org>
+> >>> Cc: Jonathan Corbet <corbet@lwn.net>
+> >>> Cc: Mark Rutland <Mark.Rutland@arm.com>
+> >>> Cc: Marc Zyngier <maz@kernel.org>
+> >>> Cc: Andi Kleen <ak@linux.intel.com>
+> >>> Reported-by: Chris Mason <clm@fb.com>
+> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >>> ---
+> >>>  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+> >>>  kernel/time/clocksource.c                       | 10 +++++++++-
+> >>>  2 files changed, 18 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> >>> index 9965266..f561e94 100644
+> >>> --- a/Documentation/admin-guide/kernel-parameters.txt
+> >>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> >>> @@ -593,6 +593,15 @@
+> >>>  			times the value specified for inject_delay_freq
+> >>>  			of consecutive non-delays.
+> >>>  
+> >>> +	clocksource.inject_delay_shift_percpu= [KNL]
+> >>> +			Shift count to obtain bit from CPU number to
+> >>> +			determine whether to shift the time of the per-CPU
+> >>> +			clock under test ahead or behind.  For example,
+> >>
+> >> It's a good think that you give an example -- it helps a little bit.
+> >> That sentence above needs to be rewritten...
+> > 
+> > That is a bit obscure, now that you mention it.
+> > 
+> >>> +			setting this to the value four will result in
+> >>> +			alternating groups of 16 CPUs shifting ahead and
+> >>> +			the rest of the CPUs shifting behind.  The default
+> >>> +			value of -1 disable this type of error injection.
+> >>
+> >> 			            disables
+> > 
+> > Good eyes!
+> > 
+> > So how about like this?
 > 
-> [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-> [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-> (sorry, could not find lore links for these discussions)
+> Much better, thanks.
 > 
-> Suggested-by: Laura Abbott <labbott@kernel.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Minchan Kim <minchan@kernel.org>
+> > 	clocksource.inject_delay_shift_percpu= [KNL]
+> > 			Clocksource delay injection partitions the CPUs
+> > 			into two sets, one whose clocks are moved ahead
+> > 			and the other whose clocks are moved behind.
+> > 			This kernel parameter selects the CPU-number
+> > 			bit that determines which of these two sets the
+> > 			corresponding CPU is placed into.  For example,
+> > 			setting this parameter to the value four will
+> 
+> I know that in "writing," "four" should be written out as you have it,
+> but IMO using "4" here would be much better.  FWIW.
 
-A note: This patch makes dmabuf system heap accounted as PSS so
-if someone has relies on the size, they will see the bloat.
-IIRC, there was some debate whether PSS accounting for their
-buffer is correct or not. If it'd be a problem, we need to
-discuss how to solve it(maybe, vma->vm_flags and reintroduce
-remap_pfn_range for them to be respected).
+As long as it is "four" and not "fore"!  Updated as requested.  ;-)
 
+						Thanx, Paul
+
+> > 			result in the first set containing alternating
+> > 			groups of 16 CPUs whose clocks are moved ahead,
+> > 			while the second set will contain the rest of
+> > 			the CPUs, whose clocks are moved behind.
+> > 
+> > 			The default value of -1 disables this type of
+> > 			error injection.
+> > 
+> > 							Thanx, Paul
+> > 
+> >>> +
+> >>>  	clocksource.max_read_retries= [KNL]
+> >>>  			Number of clocksource_watchdog() retries due to
+> >>>  			external delays before the clock will be marked
+> 
+> 
+> thanks!
+> -- 
+> ~Randy
+> 
