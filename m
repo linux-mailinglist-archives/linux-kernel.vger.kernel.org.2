@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9993F30E73E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0792330E741
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhBCXYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:24:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49728 "EHLO mail.kernel.org"
+        id S233428AbhBCXZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:25:13 -0500
+Received: from mga01.intel.com ([192.55.52.88]:23948 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232745AbhBCXYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:24:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E3464F67;
-        Wed,  3 Feb 2021 23:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612394651;
-        bh=1oyq9S0UA3DqFgitDJS5vC9pCBjSVxdBdG5M+j+s4ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u6RbGKN2PpPnH/77HetyS4XjwNlHht+7hgk7IoPPjnhBQqrRuzXzzTFTobzzKa9Op
-         SC4+/mBq+7EjjC/gHRbPR/wU+lgwqQFEtsN/RroL9GrFaSkLE7oMLN9SNmAYlp0UsU
-         UiejZ9UzxrkKIH6eW67eHq8tezEK6PPKj+tVBrgxffPEGrp4j4IlY3oUkEUe2w7mYv
-         yQg/iz3kIbdV3xJQ0By61BpalzYMIYDfYHtL7VYssD3dOgs3Cw1O6qMC3ht+AyBsgV
-         J0fcp1m42uArAE2IHmZwH8oMjMprmSZLYbEhXFtQEBwmGHBjjzasAlfOqQstR1AM+W
-         FlHNyRJwT4zkw==
-Date:   Thu, 4 Feb 2021 01:24:04 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Dirk Gouders <dirk@gouders.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Tj <ml.linux@elloe.vision>, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: Re: [PATCH v3] tpm_tis: Add missing tpm_request/relinquish_locality
- calls
-Message-ID: <YBswlPuVINENIoUC@kernel.org>
-References: <20210128130753.1283534-1-lma@semihalf.com>
- <20210202155139.521421-1-lma@semihalf.com>
- <ghh7mu1f3p.fsf@gouders.net>
- <gh5z39ml0u.fsf@gouders.net>
- <CAFJ_xbpv3O5f4MPUhZExA3g-4NjPN_vvv7q6Srh1ddqCH4ie9w@mail.gmail.com>
+        id S233210AbhBCXZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:25:08 -0500
+IronPort-SDR: QQfWHrn9tOb6PtI0MiDD360CKTb3aPNhg0a52EuPBG50OlTCfD98MAhJsmOQbxkD20s5zK6xht
+ 8R8iEFwmvRDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="200106321"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="200106321"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:24:26 -0800
+IronPort-SDR: NBZiFBwwcwVd4Wgjr7dWsVE5+3zJXN7/osWGPQALR1Fe+Q837XBS7c3eFFrbQMFxXqdaUSU87n
+ sd/zCEwwW4Zw==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="356185467"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.23.15])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:24:25 -0800
+Date:   Wed, 3 Feb 2021 15:24:25 -0800
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "Guangbin Huang" <huangguangbin2@huawei.com>,
+        <netdev@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] net: hns3: remove redundant null check of an
+ array
+Message-ID: <20210203152425.00007a51@intel.com>
+In-Reply-To: <20210203131040.21656-1-colin.king@canonical.com>
+References: <20210203131040.21656-1-colin.king@canonical.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFJ_xbpv3O5f4MPUhZExA3g-4NjPN_vvv7q6Srh1ddqCH4ie9w@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:43:44PM +0100, Lukasz Majczak wrote:
-> Hi Jarkko, Dirk,
-> 
-> Jarkko,
-> Thank you for your points - I will try to fix all you have mentioned.
-> I think it would be good to clarify a few things, before going with
-> the next version. Regarding use tpm_chip_start/stop() around
-> tpm2_probe() call - I have followed the similar way it is done in the
-> probe_itpm() function, where is also a call to tpm_tis_send_data()
-> guarded by request/release_locality(). I have tested it on the Samsung
-> Chromebook Pro (which reports TPM 1.2 / Cr50) and it was sufficient
-> (e.g. I didn't have to enable the clock) to get rid of a trace
-> mentioned in the commit message....but now writing these words I'm
-> starting to think that using tpm_chip_start/stop() could be safer from
-> a point of view of other TPMs... so if you suggest using
-> tpm_chip_start/stop() shall I also add it to the probe_itpm() (instead
-> of  request/release_locality()) ?
-> 
-> Dirk,
-> Thanks for the clarification. Regarding the issue you observe - I
-> wanted to address at first the one that is generating the trace
-> (please check the commit message) because it was leading to returning
-> an error in the tpm_tis_status() function causing TPM module not
-> initialized at all in the end - requesting locality before the call to
-> the tpm_tis_send_data() has helped in my case (my test environment). I
-> am aware of the second issue - "TPM interrupt not working, polling
-> instead", but as it is not as critical as the first one, I decided to
-> work on it later.
-> 
-> Thank you once again for all your input and sorry for a confusion with
-> sending patches.
+Colin King wrote:
 
-NP, thanks for doing this. Just take your time and polish the cosmetic
-things. Especially for bug fixes a clean changelog is essential.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The null check of filp->f_path.dentry->d_iname is redundant because
+> it is an array of DNAME_INLINE_LEN chars and cannot be a null. Fix
+> this by removing the null check.
+> 
+> Addresses-Coverity: ("Array compared against 0")
+> Fixes: 04987ca1b9b6 ("net: hns3: add debugfs support for tm nodes, priority and qset info")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> Best regards,
-> Lukasz
-
-/Jarkko
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
