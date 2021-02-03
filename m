@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAD130D23D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1313530D240
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhBCDvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:51:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:33708 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230388AbhBCDvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:51:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88E77ED1;
-        Tue,  2 Feb 2021 19:50:14 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFE703F694;
-        Tue,  2 Feb 2021 19:50:10 -0800 (PST)
-Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
-To:     David Hildenbrand <david@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
- <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
- <20210202123215.GA16868@willie-the-truck>
- <20210202123524.GB16868@willie-the-truck>
- <f32e7caa-3414-9dd7-eb8c-220da1d925a1@redhat.com>
- <20210202125152.GC16868@willie-the-truck>
- <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
-Date:   Wed, 3 Feb 2021 09:20:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231908AbhBCDwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:52:06 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12384 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231732AbhBCDwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 22:52:02 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DVnkf0f9wz7fxZ;
+        Wed,  3 Feb 2021 11:50:02 +0800 (CST)
+Received: from [127.0.0.1] (10.69.30.204) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Wed, 3 Feb 2021
+ 11:51:10 +0800
+Subject: Re: [PATCH 4/4] net: hns3: double free 'skb'
+To:     Wenjia Zhao <driverfuzzing@gmail.com>
+CC:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1612322024-93322-1-git-send-email-driverfuzzing@gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <5fe6da23-6358-3a94-0023-e0e634f77430@huawei.com>
+Date:   Wed, 3 Feb 2021 11:51:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1612322024-93322-1-git-send-email-driverfuzzing@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/2/21 6:26 PM, David Hildenbrand wrote:
-> On 02.02.21 13:51, Will Deacon wrote:
->> On Tue, Feb 02, 2021 at 01:39:29PM +0100, David Hildenbrand wrote:
->>> On 02.02.21 13:35, Will Deacon wrote:
->>>> On Tue, Feb 02, 2021 at 12:32:15PM +0000, Will Deacon wrote:
->>>>> On Tue, Feb 02, 2021 at 09:41:53AM +0530, Anshuman Khandual wrote:
->>>>>> pfn_valid() validates a pfn but basically it checks for a valid struct page
->>>>>> backing for that pfn. It should always return positive for memory ranges
->>>>>> backed with struct page mapping. But currently pfn_valid() fails for all
->>>>>> ZONE_DEVICE based memory types even though they have struct page mapping.
->>>>>>
->>>>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
->>>>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->>>>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
->>>>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->>>>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->>>>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->>>>>> into the system via memremap_pages() called from a driver, their respective
->>>>>> memory sections will not have SECTION_IS_EARLY set.
->>>>>>
->>>>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->>>>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->>>>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
->>>>>> skipped as its always going to be positive and that will be an optimization
->>>>>> for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
->>>>>> hotplugged memory too will not have SECTION_IS_EARLY set for their sections
->>>>>>
->>>>>> Skipping memblock_is_map_memory() for all non early memory sections would
->>>>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->>>>>> performance for normal hotplug memory as well.
->>>>>
->>>>> Hmm. Although I follow your logic, this does seem to rely on an awful lot of
->>>>> assumptions to continue to hold true as the kernel evolves. In particular,
->>>>> how do we ensure that early sections are always fully backed with
->>>>
->>>> Sorry, typo here:       ^^^ should be *non-early* sections.
->>>
->>> It might be a good idea to have a look at generic
->>> include/linux/mmzone.h:pfn_valid()
->>
->> The generic implementation already makes assumptions that aren't true on
->> arm64, so that's why we've ended up with our own implementation. But the
->> patches here put us in a position where I worry that pfn_valid() may return
->> 'true' in future for cases where the underlying struct page is either
->> non-existent or bogus, and debugging those failures really sucks. We had a
->> raft of those back when NOMAP was introduced and I don't want to re-live
->> that experience.
+On 2021/2/3 11:13, Wenjia Zhao wrote:
+> net: hns3: double free 'skb'
 > 
-> Yeah, and I agree when it comes to boot mem. However, the way generic memory hotplug/memremap infrastructure (->!early sections) works does not allow for such special cases you mention and would break quite some other code if messed up. So I wouldn't worry about that part too much for now.
+> The false branch of (tx_ret == NETDEV_TX_OK) free the skb. However, the
+> kfree_skb(skb) in the out label will be execute when exits the function.
+> So the skb has a double-free bugs.
+> 
+> Remove the kfree_skb(skb) at line 269
 
-Agreed.
+The freeing is added by the below patch:
+
+commit: 8f9eed1a8791("net: hns3: fix for skb leak when doing selftest")
+
+which is to fix a skb leak problem.
+
+kfree_skb(skb) in the out label corresponds to alloc_skb(),
+and kfree_skb(skb) removed in this patch corresponds to
+skb_get(skb) before calling hns3_nic_net_xmit() when
+hns3_nic_net_xmit() non-NETDEV_TX_OK.
+
+So I do not think there is double free 'skb' here, unless
+I miss something here?
 
 > 
->>
->>> As I expressed already, long term we should really get rid of the arm64
->>> variant and rather special-case the generic one. Then we won't go out of
->>> sync - just as it happened with ZONE_DEVICE handling here.
->>
->> Why does this have to be long term? This ZONE_DEVICE stuff could be the
->> carrot on the stick :)
+> Signed-off-by: Wenjia Zhao <driverfuzzing@gmail.com>
+> ---
+>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Yes, I suggested to do it now, but Anshuman convinced me that doing a simple fix upfront might be cleaner --- for example when it comes to backporting :)
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+> index 2622e04..1b926ff 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+> @@ -266,7 +266,6 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
+>  		if (tx_ret == NETDEV_TX_OK) {
+>  			good_cnt++;
+>  		} else {
+> -			kfree_skb(skb);
+>  			netdev_err(ndev, "hns3_lb_run_test xmit failed: %d\n",
+>  				   tx_ret);
+>  		}
+> 
 
-Right. The current pfn_valid() breaks for ZONE_DEVICE memory and this fixes
-the problem in the present context which can be easily backported if required.
-
-Changing or rather overhauling the generic code with new configs as proposed
-earlier (which I am planning to work on subsequently) would definitely be an
-improvement for the current pfn_valid() situation in terms of maintainability
-but then it should not stop us from fixing the problem now.
