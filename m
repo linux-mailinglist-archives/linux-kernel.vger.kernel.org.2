@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C4130D141
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12CB30D143
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhBCCIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhBCCIb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:08:31 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395B2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 18:07:51 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id a12so31104277lfb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 18:07:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ayzfcSfxCvzlRbstGP9hGkgIcQ5hx1YuU1pxX+bWuHs=;
-        b=eGlil+w2DCwQD8KK1xRdq7AIVCuqHRf5q1ar8b/Fy9tkCbGJE8I1o9Qh9anhQO2hK9
-         xZmfjyfzF11eyHCvfh+oppTiW9/Xd1whsALSsj6vTiIjxqVyHaq3TV6bPu9hHW0k9y4E
-         Cr2aFpB7ctiPfw+uWvahloZr+9eLF1MS6oRzP9XcHmFnx5EJc5khMz4vtafLlo2Rttda
-         mQsJCiB4acmtmbiR7l0NS4lcvNKZK7ks3LGsQhkW0ctj4/iD3jp2/yPnn21S2B/fvdvm
-         k/9L97xrZ36XRy3b1hTg6XmL3zJNXAiUgdCzJG/Aw1DV2xr1LsWaEybvLB6qFi3fliAC
-         PFXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ayzfcSfxCvzlRbstGP9hGkgIcQ5hx1YuU1pxX+bWuHs=;
-        b=aAqBttwjdfPkN2bg1RWUNKcEnYkPyVPAGyHJO5RYD/MKP+2QA+/c1wIX6gMflX159F
-         sge23q5Y1WmivjkO1QSkEBBIU2nGLwG82NtoAbRIJdxbLpnTH349h+7wt7KjXl/KopkZ
-         gIPJ7hpv9fLizPi4EP54NCwHek3vxXKg6Ol7/6RrpGvWKzqmOntMHZHSYOhQEiWZ8+4P
-         Oo479OGO+iAUKs3COYagTsdTvMARhS3PZnQYOw2w9ID/WgiUk5T6unzjefxh6mfFdLQ+
-         Ly5oNiFyYUwLSjTwPIyBePp4qaVL7DLt0ceq8LKKGykKrYgJchTJlXvy3Ulp4e8t1aGb
-         HQXQ==
-X-Gm-Message-State: AOAM530jNJy0OmhTAJtCN+e3kkfZ/+p0x/0+/q4zLqYp7AGENpofBQya
-        b+JUpswwJe1CMWPNz3yPMGu1fyktqKKQM+yDL9xrYA==
-X-Google-Smtp-Source: ABdhPJz/zm1PeC2ZluNB85wRkNtw1G6dZzG/v+ZbpRoZh6RdqPs9LSsJ6rK/g2cd13qi3PrT9YkluWDRlb8ciDHM4uI=
-X-Received: by 2002:ac2:5590:: with SMTP id v16mr454568lfg.626.1612318069555;
- Tue, 02 Feb 2021 18:07:49 -0800 (PST)
+        id S231132AbhBCCKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229624AbhBCCKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 21:10:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5934F64F77;
+        Wed,  3 Feb 2021 02:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612318207;
+        bh=CGHQh/TE03WOGsqglRMUZdNF8m7rCsMbZpSXzcg5jTk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=s+i/UhJPBD1Y/PoZ9/bjlMem95YavYa9Bx7QrOmCOFwkzJWTd1MYsukKDzMhSoxw9
+         oMmDyXWooVgJzcnvH1nr3KrUQR5wDVg4QgbMjUbjnm55JBVh2rtYIZZf4Kp5UN/KHH
+         ZMKyt0jz8fY0fWw+OJrGPenFhWkGlYArIRh/g5AXHDcSKaqpGeuNGgWLlVH4QUaX8f
+         66bKFqDR9ZRsni0E/ZRQt1VKSfNDXqgA6uIoXbAXkXd8XmvWw5Yayxd6ImBpQmepq6
+         WKMno6cgST8CEk8LEmX2+nIywuAM1auQ8XM6PHOwLqohnodWxc/GCfM9YEauRAmepX
+         wa7NWjnnJ2Eig==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 49C85609E1;
+        Wed,  3 Feb 2021 02:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210203003134.2422308-1-surenb@google.com> <20210203003134.2422308-2-surenb@google.com>
-In-Reply-To: <20210203003134.2422308-2-surenb@google.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 2 Feb 2021 18:07:38 -0800
-Message-ID: <CALAqxLWJNDDx_MFvYHszFXy=aV9bZGi50L3zDtuGaiYUbHKHSA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dma-buf: heaps: Map system heap pages as managed
- by linux vm
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] r8169: Add support for another RTL8168FP
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161231820729.7086.8696746160919313169.git-patchwork-notify@kernel.org>
+Date:   Wed, 03 Feb 2021 02:10:07 +0000
+References: <20210202044813.1304266-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210202044813.1304266-1-kai.heng.feng@canonical.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     hkallweit1@gmail.com, nic_swsd@realtek.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 4:31 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> Currently system heap maps its buffers with VM_PFNMAP flag using
-> remap_pfn_range. This results in such buffers not being accounted
-> for in PSS calculations because vm treats this memory as having no
-> page structs. Without page structs there are no counters representing
-> how many processes are mapping a page and therefore PSS calculation
-> is impossible.
-> Historically, ION driver used to map its buffers as VM_PFNMAP areas
-> due to memory carveouts that did not have page structs [1]. That
-> is not the case anymore and it seems there was desire to move away
-> from remap_pfn_range [2].
-> Dmabuf system heap design inherits this ION behavior and maps its
-> pages using remap_pfn_range even though allocated pages are backed
-> by page structs.
-> Replace remap_pfn_range with vm_insert_page, following Laura's suggestion
-> in [1]. This would allow correct PSS calculation for dmabufs.
->
-> [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-> [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-> (sorry, could not find lore links for these discussions)
->
-> Suggested-by: Laura Abbott <labbott@kernel.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Hello:
 
-For consistency, do we need something similar for the cma heap as well?
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-thanks
--john
+On Tue,  2 Feb 2021 12:48:12 +0800 you wrote:
+> According to the vendor driver, the new chip with XID 0x54b is
+> essentially the same as the one with XID 0x54a, but it doesn't need the
+> firmware.
+> 
+> So add support accordingly.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] r8169: Add support for another RTL8168FP
+    https://git.kernel.org/netdev/net-next/c/e6d6ca6e1204
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
