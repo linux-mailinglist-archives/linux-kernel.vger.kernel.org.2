@@ -2,138 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58D130D210
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2291330D211
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbhBCDTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:19:54 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:30968 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhBCDRI (ORCPT
+        id S232810AbhBCDUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232478AbhBCDRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:17:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612322270; x=1643858270;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=n9623xAWJpXus3YoVx7z4Bi6pCRGmCzu4gUeN0GwOvQ=;
-  b=bTBzYbx1yK/Nf26xlrHsw+XzG5aFOLXUBAbgAbaUmBZPUOlm5qRDJ13L
-   R1v+M3tb7bWodhM6xe8IS5O6pWXfpXG7ZxoUcMIjoHtsguPZKH0ggNVVR
-   FtiEkHZ1hW3zoYbSRc3iN7NG9dsEffHstbKXxdx7kL+MSvTjO7rJsCo2f
-   kDx8RerR2uzwJjlwGiO1mPaKIcKmq461eXYepDpCCDYphXE5GFssraqtj
-   0RZsLtUdjtyl51Vg0dfuCOqXmUu8CZU+3aMung0glRvDpIMMQq8Vj7eSx
-   pwg/8cpqHxCs4WQ8kJe0DhpbAnN3mW0kJr5Kp/KOz8imqY6+zM754xKKm
-   Q==;
-IronPort-SDR: NlujDF7d6rR15xLCtRnhT3wCBef9mot0p48A2m49ndwsIvvohqcN2QhEBRAumACD5mjqlo2PWe
- H6FWZN7KSa6iltBZOA2xcnRJF2vMsmwTHHI9riLAJtakej9RZxAnVh5nlh664pYqKDj4g2vCII
- wIWvDY5inEVwc+/ZudEH0A9kgQ3y+o0eWRfQ4Sz0O1RK4QH8v8Dcsa38GHT+qmtsyUoLlIyE1M
- CBVSIsMqtd3u8OM7Tq/F7597HAGWBlxgMEXTssz+aGXJZ7zt/GtNLfklqM6BqK5CF5bPDUZkHt
- wJ8=
-X-IronPort-AV: E=Sophos;i="5.79,397,1602518400"; 
-   d="scan'208";a="160166524"
-Received: from mail-bl2nam02lp2053.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.53])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Feb 2021 11:15:59 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D5fhHE8oH5TpiczcszARxJYI709I8lL0LqwDMMHFfx3IC1qebigNM5UgNejzCvDFWvrh9Jx3/Uh+l0bj1sjk9lC1VFdjJDHINvj9agZJvgZoyNsf0uyBlvCzWfHWKYm1cUDMOECAfypWTX7eqSKAHDqE7cKIbM/Na/oQ5nQt5cfuFuNwwDyqqzYCH97ndDMAfkV6uHdStbmMg2FdGt4e1+GHnS/SLjHRoQNuzKawOrmyOCKobZjNC+Z9gA8BcbUfjDGCXjQWgpm/3n3twylZD5F4gvXpMBlHsTnjqgHg6NoWA7k/Ud1oiQu5U3QJsdatBDuU10EAwAirfZ+z+3V07Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7KtOMVr2LN/7/gKYYzE7i4ok99HdyocQLSSpoPRAiZY=;
- b=f+VcI6DKY0st68YC4TyXG0LeQHsNLd66cxWzb2wbmBgxCctziFgd2sRQVNTVs8Ugx1yF3+P41a6/yVS2Nfz7/L5KZb+zHnLsn+2ZEF9rtGanJGTCHsM99RdObbb577Befqbmy4C+/WUedCXvaiaclV7d+YZpac1g61QU9j4dN1NSTMSLDfhi7UzsaMxDfu9jsTyUat6i7gIbhWRGUsudb04ZERXZrqXQ/yhi6X1lhjR+jnoo/jLvL3R/Rrctp6HDsNMbIvH02xMVa4FJ7cG6E4+DIcQAi6yV5Y0DGoThbs0FLeEpK8KnyK5SE05qewU1Uol2Jpv6VlCrbxWqrsMGfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 2 Feb 2021 22:17:07 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C502C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:16:26 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id t5so4169694eds.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:16:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7KtOMVr2LN/7/gKYYzE7i4ok99HdyocQLSSpoPRAiZY=;
- b=A4cVo3Hfz8exo21i46mEAhQvu2XS4cEvrL+qhLDnspeY8wWcblCikZtAjO4KwuiFGXZuw/CCjBxkOBuhWwFuOX97oLBZJv2jdAxo4QoVnUclGKO4t/DncNHqBIzW+JwfdO9nw8O3M6uagq3+YqTBYH/AzPpxnlZpEmZnbfvjYS8=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB4325.namprd04.prod.outlook.com (2603:10b6:a02:fe::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Wed, 3 Feb
- 2021 03:15:58 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c%5]) with mapi id 15.20.3805.024; Wed, 3 Feb 2021
- 03:15:58 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Ming Lei <ming.lei@redhat.com>, David Jeffery <djeffery@redhat.com>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Laurence Oberman <loberman@redhat.com>
-Subject: Re: [PATCH] block: recalculate segment count for multi-segment
- discard requests correctly
-Thread-Topic: [PATCH] block: recalculate segment count for multi-segment
- discard requests correctly
-Thread-Index: AQHW+LqCC5Q5kKmvR0+PLotT7t4iaw==
-Date:   Wed, 3 Feb 2021 03:15:57 +0000
-Message-ID: <BYAPR04MB4965222989DE60A2F198358286B49@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210201164850.391332-1-djeffery@redhat.com>
- <20210202033343.GA165584@T590> <20210202204355.GA31803@redhat>
- <20210203023517.GA948998@T590>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bfabddac-dd1e-4ac4-5349-08d8c7f206a9
-x-ms-traffictypediagnostic: BYAPR04MB4325:
-x-microsoft-antispam-prvs: <BYAPR04MB4325D08D214B689575240DC886B49@BYAPR04MB4325.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hnlTvYFPLEwsB2JQkikUOmpsgd9c3WF54Jd0hK47UwedEt4uVPsBbkFAPnCgtcWNUOhw67UCupMjJHqNliR9eJSMuJio/6rIugFnaIVDCbw4mdBO1rquzPqJRLaKyU9PxoMEySKTMacMpPzLpRWkGup+2xE8vuMt3GE9e1I4uD349eqdu4KPGrMXjJmPCLU/NgcF+xfX97liMt8rxyTe+I7c5gSFc4p5YQGKmcMdPGMxrzGMBwaEOgGLZeqv3mQDt44mo4X9BSTUfzj6iTvqd2nQXedSKSMr3XCqXFXUopmByh8wG4X4B1r52Fd0wQ1iMQb1/df/FEzuBUsrJ0oPxS2kqvigXr0Fsqpu47EbmAGDj6Tge+bZfOcxIxAOgtNOTUJFMRZFo6fY8mBC8AM8vYLRRJLi/G9WgDDmh+fZ6GH4VKIiqnzshaiBjjbVru501bg9xR6S2yzeHDFKuPrcrA0LhR0hdFoFO0I7PCPrwxoN36umkUQtPHI9WqGTXSRMTJCARA08RdOPw9gZEBxe1A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(26005)(5660300002)(8676002)(4326008)(33656002)(186003)(316002)(54906003)(110136005)(9686003)(55016002)(8936002)(71200400001)(52536014)(86362001)(53546011)(2906002)(66476007)(64756008)(66556008)(66446008)(7696005)(6506007)(76116006)(478600001)(66946007)(558084003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/bpBppqXxykkgN7QUP1FjQKEP8mdl+wSi4ZNldAuOow5ywkuG+G/9uXrzxW3?=
- =?us-ascii?Q?S0E8j2/JQggCDTb5jrNacMpcd6rG1t6fCxNiJ6I1xaZiliihzAuHYv5cdlSa?=
- =?us-ascii?Q?TqnLF2JOb8hJr/aRNWCKB3RmS1c4FIZid7KEOBwgqWy5/NihCCjo+vCGe4fj?=
- =?us-ascii?Q?I2Dtg+OVgc/T9WEZyPZULb88r+ZLX1YHD5HEviOIvoHvxAuefD15lCmiyIwA?=
- =?us-ascii?Q?0kBvAseejqFr2uqJLEfESLeTPcIa5x1V3arT7ElS5jUUui6mluk6IkfReFbd?=
- =?us-ascii?Q?Dx4AMGSmjco1wGa6FnN5/jjTUspFn+LdVpeQw34y19m/aMiiaTWNHQq+l6v2?=
- =?us-ascii?Q?u5MpVkUAq1laDwDBouhWYHxYmJ8+/JOcLqZe2W3lRag3vNG/wUj0+jc4CdGt?=
- =?us-ascii?Q?WQpw4doNR1MorRRATwUtZBVHzfKV/cu14jTCzeDSaSPjH8bCtY/obFZNsKdF?=
- =?us-ascii?Q?FT+nDyVWAadTJ60Sl0RyJBe9PGa5F5c+vQd4La5d36khjZ0UuLFBJtYVmL6G?=
- =?us-ascii?Q?jOM15cVROuBEoF0zVrkluWnQLjkRRr0uzWvhOkOSNqAsF1Y+F+nknDdhVyG4?=
- =?us-ascii?Q?ilRxPFztiihw2FY9at+Z3d5XgJUBi9aCPvryII0bU+Vsuy1qgrnhq4WCi5g8?=
- =?us-ascii?Q?klgSdoXfiQckD97NQZMpV6BnddI9gUMTnk9gxn/Mqn+ILtYGRHORyUF/apxG?=
- =?us-ascii?Q?3Pg9A4VDV8L4svJYl5d7xb40TtrbppeIUG2FPeONx4RkkxkZk5gc8Ot1uXmP?=
- =?us-ascii?Q?FBRFmZAQFrLQ5UmkhwZ6jJRl2SLNFwRWpDGCYy7sj6Rgp2HUuhmppW9fFv3J?=
- =?us-ascii?Q?hZf/nd4Ir7KI4FeKuYYTGdYgusVLC5OGgWlKqN2rAaI9HlZqd4TAORS2T4ch?=
- =?us-ascii?Q?XWHz3vxEp47d0IdlTpcgTWk/Dit8T1rX49DLfShOK7cAVHzlTrbATrkBIKoq?=
- =?us-ascii?Q?ujGesyqZGAYNX9BW9zTWAMYfvPb1n6tfbAppc9gGS8UqtxbW4EXGM9KYOhaM?=
- =?us-ascii?Q?JfLHahEMpZ0kPRwaPjiFmAPKwOjX2DeNPneiuEOKJoL63b2del26iDmT7eK4?=
- =?us-ascii?Q?wPh2neRtI3jtgKeDdtZryG4QzYtyfQ=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pg8Ks24UcMd2FwnQ3i8ehHc2CE8jbPZ+357jBLiLdiw=;
+        b=i42K+wLUFZCb3ysgketbxLcbpWHSzLQMPinLV2a5dEhtJ2pC3Y1vABkWGHoQhKwjIr
+         gBPbpHBJ2svM/fcIcqDz5OfzwgYXw6KR59v58tGbMJdS2XAmwc/Q/KOXlP794dyhSdEl
+         NSvJVhpdiwltQWJmImb1lpfSUY8M2n+MoHV2kRTZRHZqCJlejSoEMeMi1l8wpy/zK/ff
+         0BmzPQajH8tKOSpynIK07j0RbfiCAHD/Vm3PhBAMhG7fzDdWK6xo+KHozTHL/1iIaHdn
+         m4KmB3tCS992eoDOvnOWgRyoN2TB9WjYk82LmU+NApE86DM0idhhSZsIYoUqxtLyV01V
+         3iow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pg8Ks24UcMd2FwnQ3i8ehHc2CE8jbPZ+357jBLiLdiw=;
+        b=hGO8JUt1ZfEDg23Mxy0esFF27z+5jkCq/mxnAH6U2n5DqHGVvAPL+SI+M5PGHtvwrh
+         /1MebNZk8tnZXvE2Vhv/WLK0Q8+cszuhplidwLkK7jOzJCnWES/TonuGECzyKs5yzNqn
+         Di2Q9VeIC7WIVi/9NNpS7y9l8ImCKRl9op7K57UuieF34nyMdEUljuHSnm8DyX2VQZFB
+         E5hQoaO4mWMrST5Br7fUwT1d85pAzUUO/sxdKNEV92bB+vJnQUGuhUXjbN/OkBgf1jEX
+         LPbh4SNYLGl2mwtHX1lKz64oSEdjWLKjd2hZIfGbNI7B+9pve1im5Tdj7tIuUmMPRZSX
+         g05Q==
+X-Gm-Message-State: AOAM5321N2wy76os3zLfYPSh8/41W+fCwZjA/LPUNKMV0wkt/jBpPahM
+        G9X1XYbQgy3CnicQipJgN84soS21SjgtSAbnXWP+kw==
+X-Google-Smtp-Source: ABdhPJwi/pNtpt/7fxM+OvIdBW+vQg6ue7SvPXvV+DAhucvYZD02vfcYJTjiYzmAEW+uZqJbX5ABT90CiaQ/rj1lhCQ=
+X-Received: by 2002:a05:6402:60a:: with SMTP id n10mr1029603edv.230.1612322183068;
+ Tue, 02 Feb 2021 19:16:23 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfabddac-dd1e-4ac4-5349-08d8c7f206a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 03:15:58.0138
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BZOf85fN0oKfbIcQhQL47bhzVv8tYOUIjoRKd0d4cwfmbjcTDnMrZBRWMMRVWNxTrkxyBP0WdfFBpyv+R3HhIEN/uJ8bm7C269/L+dr/cSg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4325
+References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Feb 2021 08:46:11 +0530
+Message-ID: <CA+G9fYtnx1wsVET6qjtO4PRW42XqgFV_-52vj-ZNyhXggA4u_g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/61] 5.4.95-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 18:39, Ming Lei wrote:=0A=
-> +		/* fall through */=0A=
->  	case REQ_OP_WRITE_ZEROES:=0A=
-> -		return 0;=0A=
-I don't think returning 1 for write-zeroes is right,=0A=
-did you test this patch with write-zeores enabled controller with=0A=
-the right fs that triggers this behavior ?=0A=
+On Tue, 2 Feb 2021 at 19:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.95 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.95-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.95-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 339dd34feba591544379ca9623fc350452e01be3
+git describe: v5.4.94-62-g339dd34feba5
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.94-62-g339dd34feba5
+
+No regressions (compared to build v5.4.94)
+
+No fixes (compared to build v5.4.94)
+
+
+Ran 53636 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* ltp-commands-tests
+* ltp-hugetlb-tests
+* ltp-math-tests
+* ltp-mm-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* libhugetlbfs
+* ltp-open-posix-tests
+* rcutorture
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
