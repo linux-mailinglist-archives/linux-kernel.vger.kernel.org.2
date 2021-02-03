@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943AD30D055
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E966630D067
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 01:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhBCAeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 19:34:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhBCAeI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:34:08 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA833C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 16:33:26 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id b9so13275241ejy.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 16:33:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z+13UOGCC7I+iljuuHXBZA6fphrD3cnMtJ966bWAe3g=;
-        b=L87PxLNy3JVeC8VgaY4K6vYiAWo1G859Ngjl11rO1vgIE+Q927EVX8nWD8PXvIDmTw
-         KF+qo3Jske7uyXdDaq4Qv86iy+TpPjMFNeadxFHvS1sEH3a/jnqxxNWNdBJ0SKiKk7tV
-         mdBYoKgGq1kd0Gywr5xWzHYJzD9u7HD2X1aOUwHQ1YKap1gSKY3xhbSicU9UVOPCdJaX
-         +TnjoNq9b+OZTMvFvLQiWk3yF3P809NQnmwDTIqU26DIJYSS66eHIJc8OGnQW6Gyc1EU
-         rX3hTwxdg3gdnoNg50ntpFVKeYLhk9I7ca0e8RJA+d48yaS1cT/nvfPFclyWm7SHb0TF
-         9pJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z+13UOGCC7I+iljuuHXBZA6fphrD3cnMtJ966bWAe3g=;
-        b=hkApq3lcFh56KU1zw6Ml4Qahr0a4Koq9If+oiA441U/T/IlFPxB87i+3l+oKWUiTxE
-         3nY69F09QaAKxXLDIeroajb5IBJL+WaDDjqZkVk8OSb9DkxW9ovhVNJlefY9YQta2c4K
-         Bxw4GFGnkPfwAVLUwSbRCoO8ycpYzIR8BPDIPLtzNggM3H86dVIyrnAYp1d0/68bRfDe
-         4wnVjg1WwhxBIXhbrRSxXTYOGoJX6dbmfYpAJk+4Cg0k03B7CkjVo0XFUvWGDXVKlQ2Z
-         9smmMaUP7YTIQWWOLAYH+9Zvn7mRfSt0EsOqcftmApFrVKA0YAG0hM6C4gKBR01+38t7
-         9sQg==
-X-Gm-Message-State: AOAM530PHBV1t8AS8PBEK00JqSpyIT8VTC4O5wY0U2Sg+N3OhjJ2wQCY
-        KX9POIEc6amhBbs/6tVhhoD4ZarctyxpM01xJJY=
-X-Google-Smtp-Source: ABdhPJzbDVdYiWc6xmBFTMIEEpr2atHpxPzwcj5CyseOV1v3Bm60OiC0TKbqos0bNluJExG0dUR+CAKHxhTcJEdwLWY=
-X-Received: by 2002:a17:906:3ad0:: with SMTP id z16mr587105ejd.72.1612312405694;
- Tue, 02 Feb 2021 16:33:25 -0800 (PST)
+        id S233167AbhBCAoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 19:44:21 -0500
+Received: from mga07.intel.com ([134.134.136.100]:57323 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233127AbhBCAoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 19:44:19 -0500
+IronPort-SDR: A3b2UJzlBC79VhudCtAeNq/wXYCx7+qBTZjbftKv98QWbYr/ZVTe1yJ1jRwsE5GtOWLIxBhrt0
+ Qf9tYs7vBM1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245036883"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="245036883"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 16:42:23 -0800
+IronPort-SDR: MMKNBch+1mmOdmWJTo+x57VCujaG3b48l/M96+PWoodyq4a31cr3LEkCDmFuMiT5MNDd7vIzh7
+ hekzoLknfkfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="406362278"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Feb 2021 16:42:22 -0800
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        Yian Chen <yian.chen@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] iommu/vt-d: Apply SATC policy
+To:     Joerg Roedel <joro@8bytes.org>
+References: <20210202044057.615277-1-baolu.lu@linux.intel.com>
+ <20210202044057.615277-4-baolu.lu@linux.intel.com>
+ <20210202135501.GX32671@8bytes.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <698a0a53-d0f4-cee2-03d7-4e914276737e@linux.intel.com>
+Date:   Wed, 3 Feb 2021 08:33:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210122084321.24012-1-a.fatoum@pengutronix.de>
-In-Reply-To: <20210122084321.24012-1-a.fatoum@pengutronix.de>
-From:   Dmitry Baryshkov <dbaryshkov@gmail.com>
-Date:   Wed, 3 Feb 2021 03:33:14 +0300
-Message-ID: <CALT56yMudd0jKx8TiWvSrsE-Y3efhnFwNYcgkDiExcZONNBt3A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dm crypt: replaced #if defined with IS_ENABLED
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        kernel@pengutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210202135501.GX32671@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=D0=BF=D1=82, 22 =D1=8F=D0=BD=D0=B2. 2021 =D0=B3. =D0=B2 11:43, Ahmad Fatou=
-m <a.fatoum@pengutronix.de>:
->
-> IS_ENABLED(CONFIG_ENCRYPTED_KEYS) is true whether the option is built-in
-> or a module, so use it instead of #if defined checking for each
-> separately.
->
-> The other #if was to avoid a static function defined, but unused
-> warning. As we now always build the callsite when the function
-> is defined, we can remove that first #if guard.
->
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+On 2/2/21 9:55 PM, Joerg Roedel wrote:
+> On Tue, Feb 02, 2021 at 12:40:57PM +0800, Lu Baolu wrote:
+>> +	list_for_each_entry_rcu(satcu, &dmar_satc_units, list) {
+>> +		satc = container_of(satcu->hdr, struct acpi_dmar_satc, header);
+>> +		if (satc->segment == pci_domain_nr(dev->bus) && satcu->atc_required) {
+> 
+> You can safe a level of indentation and make this look nicer if you do:
+> 
+> 		if (satc->segment != pci_domain_nr(dev->bus) || !satcu->atc_required)
+> 			continue;
+> 
+> 
 
-Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Yes. Thanks!
 
+Best regards,
+baolu
 
---=20
-With best wishes
-Dmitry
+>> +			for_each_dev_scope(satcu->devices, satcu->devices_cnt, i, tmp)
+>> +				if (to_pci_dev(tmp) == dev)
+>> +					goto out;
+>> +		}
+>> +	}
+>> +	ret = 0;
+>> +out:
+>> +	rcu_read_unlock();
+>> +	return ret;
+>> +}
