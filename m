@@ -2,83 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CB330D0C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2DC30D0CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhBCB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:27:54 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12069 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhBCB1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:27:53 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVkWv5tQ5zMTrn;
-        Wed,  3 Feb 2021 09:25:31 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 3 Feb 2021 09:27:05 +0800
-Subject: Re: [PATCH 1/2] mm: replace BUG_ON in vm_insert_page with a return of
- an error
-To:     Suren Baghdasaryan <surenb@google.com>, <sumit.semwal@linaro.org>
-CC:     <akpm@linux-foundation.org>, <hch@infradead.org>,
-        <lmark@codeaurora.org>, <labbott@redhat.com>,
-        <Brian.Starkey@arm.com>, <john.stultz@linaro.org>,
-        <christian.koenig@amd.com>, <cgoldswo@codeaurora.org>,
-        <orjan.eide@arm.com>, <robin.murphy@arm.com>, <jajones@nvidia.com>,
-        <minchan@kernel.org>, <hridya@google.com>, <sspatil@google.com>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@android.com>
-References: <20210203003134.2422308-1-surenb@google.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <a2376ae0-c6a2-12e4-d4ad-04696eb51535@huawei.com>
-Date:   Wed, 3 Feb 2021 09:27:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230386AbhBCB3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:29:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229778AbhBCB3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 20:29:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04ABF64F4C;
+        Wed,  3 Feb 2021 01:28:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612315730;
+        bh=n/k8xGF6YjG7foOcHD5rJG7qc0kZXb2dYJ70lCaKG50=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bCZXegLWZazwiuvYKZatUZAWLDIdj5t/yc4Q/d9YvkaqcMxRwYHTnqa5upRZyqOkI
+         sjTdv4A2KkcaqalmJjLyGj0UNuhCeQ+Mk3lvAsotakn6KKIVfJgVcIe7DVDza1O4gI
+         T4HOSPH7PCJVK1yPTrdHhfz+cageosJDRNtDCCNJ4M8T/QNfnYKt5slYy9xtqTVljf
+         cW11JOBisZFlMT/xehM7Ps+sGN2hnTXkMlr4xyhBsK9VvL5BS/trYSDsyNk+XyTxxV
+         qXXIlWk5YBAZ8R79W+4LbRfnyOs+1dJbyc8+WZ+4ID1tVpD6DD+Lkqg2qRVliLKVUw
+         PME072/99vKGw==
+Date:   Wed, 3 Feb 2021 03:28:43 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Subject: Re: [PATCH v2 2/3] tpm: Provide a function tpm_chip_free() to free
+ tpm chips
+Message-ID: <YBn8S8rY2wvv9A8A@kernel.org>
+References: <1612303743-29017-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612303743-29017-3-git-send-email-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <20210203003134.2422308-1-surenb@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612303743-29017-3-git-send-email-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/3 8:31, Suren Baghdasaryan wrote:
-> Replace BUG_ON(vma->vm_flags & VM_PFNMAP) in vm_insert_page with
-> WARN_ON_ONCE and returning an error. This is to ensure users of the
-> vm_insert_page that set VM_PFNMAP are notified of the wrong flag usage
-> and get an indication of an error without panicing the kernel.
-> This will help identifying drivers that need to clear VM_PFNMAP before
-> using dmabuf system heap which is moving to use vm_insert_page.
+On Tue, Feb 02, 2021 at 11:09:02PM +0100, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 > 
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Provide a function tpm_chip_free() as a counterpart to tpm_chip_alloc().
+> The function hides the internals of freeing a struct tpm_chip instance
+> by putting the device references which are part of this structure.
+> 
+> Use the new function at the appropriate places.
+> 
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 
-Looks reasonable. Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+I prefer open coding here.
+
+/Jarkko
 
 > ---
->  mm/memory.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/char/tpm/tpm-chip.c       | 16 ++++++++++++++++
+>  drivers/char/tpm/tpm.h            |  1 +
+>  drivers/char/tpm/tpm_ftpm_tee.c   |  6 ++----
+>  drivers/char/tpm/tpm_vtpm_proxy.c |  3 +--
+>  4 files changed, 20 insertions(+), 6 deletions(-)
 > 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index feff48e1465a..e503c9801cd9 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1827,7 +1827,8 @@ int vm_insert_page(struct vm_area_struct *vma, unsigned long addr,
->  		return -EINVAL;
->  	if (!(vma->vm_flags & VM_MIXEDMAP)) {
->  		BUG_ON(mmap_read_trylock(vma->vm_mm));
-> -		BUG_ON(vma->vm_flags & VM_PFNMAP);
-> +		if (WARN_ON_ONCE(vma->vm_flags & VM_PFNMAP))
-> +			return -EINVAL;
->  		vma->vm_flags |= VM_MIXEDMAP;
->  	}
->  	return insert_page(vma, addr, page, vma->vm_page_prot);
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 3ace199..777baae 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -402,6 +402,22 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  EXPORT_SYMBOL_GPL(tpm_chip_alloc);
+>  
+>  /**
+> + * tpm_chip_free() - free an instance of struct tpm_chip that has been
+> + * allocated with tpm_chip_alloc() before.
+> + * @chip: chip to free
+> + *
+> + * Frees an instance of struct tpm_chip by releasing internal device references.
+> + * This function is used to hide the internals needed to free a struct tpm_chip
+> + * instance thas has been allocated with tpm_chip_alloc() before.
+> + */
+> +void tpm_chip_free(struct tpm_chip *chip)
+> +{
+> +	put_device(&chip->devs);
+> +	put_device(&chip->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_chip_free);
+> +
+> +/**
+>   * tpmm_chip_alloc() - allocate a new struct tpm_chip instance
+>   * @pdev: parent device to which the chip is associated
+>   * @ops: struct tpm_class_ops instance
+> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+> index 947d1db..e6bb6ae 100644
+> --- a/drivers/char/tpm/tpm.h
+> +++ b/drivers/char/tpm/tpm.h
+> @@ -199,6 +199,7 @@ void tpm_put_ops(struct tpm_chip *chip);
+>  
+>  struct tpm_chip *tpm_chip_alloc(struct device *dev,
+>  				const struct tpm_class_ops *ops);
+> +void tpm_chip_free(struct tpm_chip *chip);
+>  struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
+>  				 const struct tpm_class_ops *ops);
+>  int tpm_chip_register(struct tpm_chip *chip);
+> diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
+> index 82858c2..47ffaae 100644
+> --- a/drivers/char/tpm/tpm_ftpm_tee.c
+> +++ b/drivers/char/tpm/tpm_ftpm_tee.c
+> @@ -285,8 +285,7 @@ static int ftpm_tee_probe(struct device *dev)
+>  	return 0;
+>  
+>  out_chip:
+> -	put_device(&pvt_data->chip->dev);
+> -	put_device(&pvt_data->chip->devs);
+> +	tpm_chip_free(chip);
+>  out_chip_alloc:
+>  	tee_shm_free(pvt_data->shm);
+>  out_shm_alloc:
+> @@ -319,8 +318,7 @@ static int ftpm_tee_remove(struct device *dev)
+>  	tpm_chip_unregister(pvt_data->chip);
+>  
+>  	/* frees chip */
+> -	put_device(&pvt_data->chip->devs);
+> -	put_device(&pvt_data->chip->dev);
+> +	tpm_chip_free(pvt_data->chip);
+>  
+>  	/* Free the shared memory pool */
+>  	tee_shm_free(pvt_data->shm);
+> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+> index 97b60f8..f887bb3 100644
+> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
+> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+> @@ -520,8 +520,7 @@ static struct proxy_dev *vtpm_proxy_create_proxy_dev(void)
+>   */
+>  static inline void vtpm_proxy_delete_proxy_dev(struct proxy_dev *proxy_dev)
+>  {
+> -	put_device(&proxy_dev->chip->devs);
+> -	put_device(&proxy_dev->chip->dev); /* frees chip */
+> +	tpm_chip_free(proxy_dev->chip);
+>  	kfree(proxy_dev);
+>  }
+>  
+> -- 
+> 2.7.4
 > 
-
