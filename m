@@ -2,137 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B65D30D645
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5770330D649
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 10:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbhBCJ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 04:27:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233152AbhBCJZg (ORCPT
+        id S233332AbhBCJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 04:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhBCJ0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 04:25:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612344249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AJOvNcVAHjnbmTLHPbHCklE5DkACQ51lJEvjK17KnY=;
-        b=cGcOvv4eR20wmF0PR3E/9TH+zneGfa4bIH0WNtkAHLrUHJ8pPju3FMuYeuSPLE0rbGQMIz
-        iXcUIhgzgUV9mg5oAP/bQZ2QnaH3Ib5XLjC/Xv92qNRrheFvoPw5ygjuRsoJQgeWnnG1QO
-        QQrNJ1dJltu3YY7SXThiKj6jfvI4eUs=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-IiCTgk6XP9e0NDRF0eZWTQ-1; Wed, 03 Feb 2021 04:24:04 -0500
-X-MC-Unique: IiCTgk6XP9e0NDRF0eZWTQ-1
-Received: by mail-ed1-f71.google.com with SMTP id ay16so2218391edb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:24:04 -0800 (PST)
+        Wed, 3 Feb 2021 04:26:05 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55073C06178A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 01:24:13 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id z21so16917428pgj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 01:24:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/YBwKXZIAHM5O75qgqkZJUqkDsfjvCGWB4Ihiew6J+E=;
+        b=ETNwtu1ZmDOZdrKuPYq2aSu+6XDPB8j3IGJZEojQZ9QEyMLBFOvJ8LchGtb3G/14/o
+         KsdqcZ49CAKSR1t1HG6/OwyMHbIPHjIKzm/yyu/kDrjqkLNz1gxVZ7T9wpPJxkc07gGN
+         34tftBwM35J4Y7cZQvDXNbqgSWAqPDcElU5JQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1AJOvNcVAHjnbmTLHPbHCklE5DkACQ51lJEvjK17KnY=;
-        b=tYmitgoJpHPXQUekEiloXjhPUkseJrS5jrbXxFoa9gP+HBrTEzcL+uR9rvm22F+Xd3
-         c/GjYAXh+t8jg1MnBRsL/ujREmnHv9okVmw9YcdVoVaVmbbEyeSdu+pm/nIghxsQE4Zp
-         Pha3NUYheR4yVT+3my6vjNqHcTMoUDMQud1XZW8TkQD8s4VrDRDMJd//fYj1EuZqfPh0
-         78tsxXc7J5V1Pf3BWNXRYE7LhQx+1QxfkS2Qc9oUnvu0ez7UrJRJERydoPu4q+ip5jpD
-         J/5s8V11zna31ksktgvcHGb+CR0NB1oGa8KMYw6ju25uZAsjy6XuGZHleulbrUzY/tSi
-         pPgA==
-X-Gm-Message-State: AOAM530vEMuX/igZfwoeJibVyeOEbhEuTMv/QbokiyPmcO7b8QJpbLnU
-        Kg5a0qIxDjadbBejUS64hptcZ6JjpGb4dTwXKpp45b2y1a4hMCRxBlMuvZSvn35Mo5gjgOEbq2i
-        fo3i1xNBaRBZ8D4Fm+oI8QG/w
-X-Received: by 2002:a05:6402:1bc7:: with SMTP id ch7mr2091777edb.124.1612344242740;
-        Wed, 03 Feb 2021 01:24:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxaAh0RhIxuArmFdv/po32/tcmIaKCC+5BlRfjZI28Vt6YtI4dzn5QmkclPNHfxI6/by0mCBg==
-X-Received: by 2002:a05:6402:1bc7:: with SMTP id ch7mr2091763edb.124.1612344242397;
-        Wed, 03 Feb 2021 01:24:02 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x42sm576330ede.64.2021.02.03.01.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 01:24:01 -0800 (PST)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210202165141.88275-1-pbonzini@redhat.com>
- <20210202165141.88275-4-pbonzini@redhat.com> <YBmXLJPPTS7yzClF@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/3] KVM: x86: move kvm_inject_gp up from kvm_set_dr to
- callers
-Message-ID: <63f19b57-7189-4b36-5159-a42df15336a5@redhat.com>
-Date:   Wed, 3 Feb 2021 10:24:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/YBwKXZIAHM5O75qgqkZJUqkDsfjvCGWB4Ihiew6J+E=;
+        b=mKrJjeUhwkmyEb9+bDcWk6/JUrRsrc9OD5+X1S4s2vOnv49pdQoSR668RenXypP8vh
+         yrGI0cHcSYhKBdSfauBI2z16LHBJhlNq83e5BAHR6DQrkLZzQPxFQ2mr3WJqBha5VUk9
+         zMhPv2XcFMt+e20U2qIhF88KhEgSmuf2wHgEuYAc/QwjyexJDSry/lWUEZpBojAaGwAU
+         7RMDW9KATRPAmIpR15RgfxflWO+LTUdgwGbNNUbMwPSf3hvmUbInRM7eyIxltzFTp2Le
+         i3BpG0jCF3TPGl6S3ZXIkvycr6Z0ISYv6hzvwPeOo86/mhF3ZAwWAm7FKfvSaAhF/+Lu
+         jdeA==
+X-Gm-Message-State: AOAM533rRGfmLTfSr9g4OK4UE+WdlpoaWEKi4iLSAWtQnhToej8Pru1u
+        mv7phx6eUgEuV01GDEBATqKPpg==
+X-Google-Smtp-Source: ABdhPJzn9NcUV4ulcmPDo2XoIO/8wiG2wV/vpqORSuLF06mHkmkpUrnO2XbJdABrNL4qEc8b2Hhvlg==
+X-Received: by 2002:a63:43c6:: with SMTP id q189mr2641475pga.245.1612344252875;
+        Wed, 03 Feb 2021 01:24:12 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:743e:7944:50c8:ff72])
+        by smtp.gmail.com with ESMTPSA id u20sm932294pjy.36.2021.02.03.01.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 01:24:12 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        "MyungJoo Ham )" <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH v5 3/3] PM / devfreq: Add required OPPs support to passive governor
+Date:   Wed,  3 Feb 2021 17:24:00 +0800
+Message-Id: <20210203092400.1791884-4-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+In-Reply-To: <20210203092400.1791884-1-hsinyi@chromium.org>
+References: <20210203092400.1791884-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YBmXLJPPTS7yzClF@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 19:17, Sean Christopherson wrote:
->> @@ -2617,19 +2618,18 @@ static int dr_interception(struct vcpu_svm *svm)
->>   	reg = svm->vmcb->control.exit_info_1 & SVM_EXITINFO_REG_MASK;
->>   	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
->>   
->> +	if (!kvm_require_dr(&svm->vcpu, dr & 15))
-> 
-> Purely because I suck at reading base-10 bitwise operations, can we do "dr & 0xf"?
+From: Saravana Kannan <saravanak@google.com>
 
-I would have never said that having this => 
-https://www.youtube.com/watch?v=nfUY3_XVKHI as a kid would give me a 
-competitive advantage as KVM maintainer. :)
+Look at the required OPPs of the "parent" device to determine the OPP that
+is required from the slave device managed by the passive governor. This
+allows having mappings between a parent device and a slave device even when
+they don't have the same number of OPPs.
 
-(Aside: that game was incredibly popular in the 80s in Italy and as you 
-can see from the advertisement at 
-https://www.youtube.com/watch?v=o6L9cegnCrw it even had "the binary 
-teacher" in it, yes in English despite no one spoke English fluently at 
-the time.  The guy who invented it was an absolute genius.  Also, the 
-name means "branches").
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ drivers/devfreq/governor_passive.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-But seriously: I think the usage of "-" was intentional because the AMD 
-exit codes have READ first and WRITE second---but it's (almost) a 
-coincidence that CR/DR intercepts are naturally aligned and bit 4 means 
-read vs. write.
-
-So v2 will remove the kvm_require_dr (I tested your hypothesis with 
-debug.flat and KVM_DEBUGREG_WONT_EXIT disabled, and you're right) and have:
-
-         dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
-         if (dr >= 16) { /* Move to dr.  */
-                 dr -= 16;
-                 val = kvm_register_read(&svm->vcpu, reg);
-                 err = kvm_set_dr(&svm->vcpu, dr, val);
-         } else {
-                 kvm_get_dr(&svm->vcpu, dr, &val);
-                 kvm_register_write(&svm->vcpu, reg, val);
-         }
-
-Paolo
-
-> Technically, 'err' needs to be checked, else 'reg' will theoretically be
-> clobbered with garbage.  I say "theoretically", because kvm_get_dr() always
-> returns '0'; the CR4.DE=1 behavior is handled by kvm_require_dr(), presumably
-> due to it being a #UD instead of #GP.  AFAICT, you can simply add a prep patch
-> to change the return type to void.
-> 
-> Side topic, is the kvm_require_dr() check needed on SVM interception?  The APM
-> states:
-> 
->    All normal exception checks take precedence over the by implicit DR6/DR7 writes.)
-> 
-> I can't find anything that would suggest the CR4.DE=1 #UD isn't a "normal"
-> exception.
-> 
->>   		kvm_register_write(&svm->vcpu, reg, val);
->>   	}
->>   
->> -	return kvm_skip_emulated_instruction(&svm->vcpu);
->> +	return kvm_complete_insn_gp(&svm->vcpu, err);
->>   }
->>   
->>   static int cr8_write_interception(struct vcpu_svm *svm)
-> 
+diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
+index 63332e4a65ae8..8d92b1964f9c3 100644
+--- a/drivers/devfreq/governor_passive.c
++++ b/drivers/devfreq/governor_passive.c
+@@ -19,7 +19,7 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+ 			= (struct devfreq_passive_data *)devfreq->data;
+ 	struct devfreq *parent_devfreq = (struct devfreq *)p_data->parent;
+ 	unsigned long child_freq = ULONG_MAX;
+-	struct dev_pm_opp *opp;
++	struct dev_pm_opp *opp = NULL, *p_opp = NULL;
+ 	int i, count, ret = 0;
+ 
+ 	/*
+@@ -56,13 +56,20 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+ 	 * list of parent device. Because in this case, *freq is temporary
+ 	 * value which is decided by ondemand governor.
+ 	 */
+-	opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
+-	if (IS_ERR(opp)) {
+-		ret = PTR_ERR(opp);
++	p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
++	if (IS_ERR(p_opp)) {
++		ret = PTR_ERR(p_opp);
+ 		goto out;
+ 	}
+ 
+-	dev_pm_opp_put(opp);
++	if (devfreq->opp_table && parent_devfreq->opp_table)
++		opp = dev_pm_opp_xlate_required_opp(parent_devfreq->opp_table,
++						    devfreq->opp_table, p_opp);
++	if (opp) {
++		*freq = dev_pm_opp_get_freq(opp);
++		dev_pm_opp_put(opp);
++		goto out;
++	}
+ 
+ 	/*
+ 	 * Get the OPP table's index of decided freqeuncy by governor
+@@ -89,6 +96,9 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+ 	*freq = child_freq;
+ 
+ out:
++	if (!IS_ERR_OR_NULL(opp))
++		dev_pm_opp_put(p_opp);
++
+ 	return ret;
+ }
+ 
+-- 
+2.30.0.365.g02bc693789-goog
 
