@@ -2,191 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5503B30D35F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5690330D365
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhBCG2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhBCG2P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:28:15 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFCBC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 22:27:34 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id e1so21430521ilu.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 22:27:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X5H7u6zfULjhTslVinp72inAV8tftlmzyLj44kPZOIo=;
-        b=ATr9kJuhoM7hsEPMLnjZO+qm6UV1LVj8rzqxjUU8jx4jPJAuLYrR7/ZJvq/6fqdSZQ
-         YKZmkGo8OmonC93l2P0UjhAlLyQpvI2y4QXQZzaehVss6Kyw5UiKDYw4hb2oGnyYq+ja
-         E5b+ocFQF8WGclyVsu0U5ahnR/jWsjkBBHlbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X5H7u6zfULjhTslVinp72inAV8tftlmzyLj44kPZOIo=;
-        b=RPVCbshhj8oqVwVXvCbmrlo8sHN607d3vRo6V1fxTHzGMvM4nuz6jY0lLquaPuUIhF
-         OXdkE/WgrGc0ZjFabLd2UybptuhlAa14mbs3hhSFRKRYLu1F1IQg7iMv0r2e7v2k9upy
-         3qM/f7oOxLIPenOf5NrIIbMIlwFyqf2V1wxYuibvkgrjAcrQ9xVDykRREGzcQG5Wr4eC
-         LlSTd/a3Bkw1wBsLV7opZr2jPDUvvJn4jeAe7fhj7Yef12slvvpHDppx8r6GhzS6Q9Hy
-         RZWAE6gi2OvwCogSCpYT+Ew16NcvraYLib35mcBFBEpZP/hsOBvIKPXjr2iNiwo3liEV
-         VI+g==
-X-Gm-Message-State: AOAM5306sglee3rUs0SSzRsZGnAptA6PuEOpoKD1j1gaHCrsaXaQDMyz
-        3x1xtCpKAy45mqCpOjmT62plCD8zgYaEw53sj4ZcBg==
-X-Google-Smtp-Source: ABdhPJxejwYn2puVey+RwiCn1hqYG5601tBESzbm/PelZLqN5flyaRACJ3sbmOAAzVTl66bgVRKcsUxC399ATAVUfXY=
-X-Received: by 2002:a92:cc4d:: with SMTP id t13mr370408ilq.150.1612333654249;
- Tue, 02 Feb 2021 22:27:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129101012.25180-1-michael.kao@mediatek.com> <20210129101012.25180-2-michael.kao@mediatek.com>
-In-Reply-To: <20210129101012.25180-2-michael.kao@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Wed, 3 Feb 2021 14:27:08 +0800
-Message-ID: <CAJMQK-iYYGQ3N08PnkDzwSOc22ydEeekp_e1bXrm9Eas9xJQrA@mail.gmail.com>
-Subject: Re: [v6,1/3] arm64: dts: mt8183: add thermal zone node
-To:     Michael Kao <michael.kao@mediatek.com>
-Cc:     fan.chen@mediatek.com, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        srv_heupstream@mediatek.com,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231499AbhBCG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:29:06 -0500
+Received: from m12-14.163.com ([220.181.12.14]:58960 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231186AbhBCG2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:28:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=3PjaSyTPIF/0eA0o6d
+        2SeGzWaUYGs51QsvtN6khf1pE=; b=TWPFLVzzzFAqhbfZT/mDeERBmfj4sxWmdC
+        bVYHMwQnbl53pB2vFtnMwoQJN3AZvSEFl/6kzlIa06ys8Nn4YV1r0yvscJO05Iwv
+        UIamMfyXSx2tsWbHcfReVDxxeifdU/vohWwdomjt/UhE1HGHuYF1o7W7B6AJ9ZxP
+        bWfbnvCkI=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.230])
+        by smtp10 (Coremail) with SMTP id DsCowADH3ko6QhpgbEunjA--.285S2;
+        Wed, 03 Feb 2021 14:27:07 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     amitkarwar@gmail.com, siva8118@gmail.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] rsi: remove redundant assignment
+Date:   Wed,  3 Feb 2021 14:27:17 +0800
+Message-Id: <20210203062717.1228-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DsCowADH3ko6QhpgbEunjA--.285S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxWF1kZw1xWw1fKF4UJwb_yoW3Krb_ur
+        10qF4fWrWkG3W8Kryj9FW3Zr9Iya4UW3WrGw4qq3yfGryUtrZxAw15Crn3J3yDG34jvr9x
+        Gws7uryIva43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe-yCJUUUUU==
+X-Originating-IP: [119.137.55.230]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRRsusVl91EvVBwAAso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:10 PM Michael Kao <michael.kao@mediatek.com> wrote:
->
-> From: "michael.kao" <michael.kao@mediatek.com>
->
-> Add thermal zone node to Mediatek MT8183 dts file.
->
-> Evaluate the thermal zone every 500ms while not cooling
-> and every 100ms when passive cooling is performed.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 84 ++++++++++++++++++++++++
->  1 file changed, 84 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 5b782a4769e7..0aa31d338fb0 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -657,6 +657,87 @@
->                         status = "disabled";
->                 };
->
-> +               thermal: thermal@1100b000 {
-> +                       #thermal-sensor-cells = <1>;
-> +                       compatible = "mediatek,mt8183-thermal";
-> +                       reg = <0 0x1100b000 0 0x1000>;
-> +                       clocks = <&infracfg CLK_INFRA_THERM>,
-> +                                <&infracfg CLK_INFRA_AUXADC>;
-> +                       clock-names = "therm", "auxadc";
-> +                       resets = <&infracfg  MT8183_INFRACFG_AO_THERM_SW_RST>;
-> +                       interrupts = <0 76 IRQ_TYPE_LEVEL_LOW>;
-> +                       mediatek,auxadc = <&auxadc>;
-> +                       mediatek,apmixedsys = <&apmixedsys>;
-> +                       nvmem-cells = <&thermal_calibration>;
-> +                       nvmem-cell-names = "calibration-data";
-> +               };
-> +
-> +               thermal-zones {
-> +                       cpu_thermal: cpu_thermal {
-> +                               polling-delay-passive = <100>;
-> +                               polling-delay = <500>;
-> +                               thermal-sensors = <&thermal 0>;
-> +                               sustainable-power = <5000>;
-> +                       };
-> +
-> +                       /* The tzts1 ~ tzts6 don't need to polling */
-> +                       /* The tzts1 ~ tzts6 don't need to thermal throttle */
-> +
-> +                       tzts1: tzts1 {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 1>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +
-> +                       tzts2: tzts2 {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 2>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +
-> +                       tzts3: tzts3 {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 3>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +
-> +                       tzts4: tzts4 {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 4>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +
-> +                       tzts5: tzts5 {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 5>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +
-> +                       tztsABB: tztsABB {
-> +                               polling-delay-passive = <0>;
-> +                               polling-delay = <0>;
-> +                               thermal-sensors = <&thermal 6>;
-> +                               sustainable-power = <5000>;
-> +                               trips {};
-> +                               cooling-maps {};
-> +                       };
-> +               };
-> +
->                 pwm0: pwm@1100e000 {
->                         compatible = "mediatek,mt8183-disp-pwm";
->                         reg = <0 0x1100e000 0 0x1000>;
-> @@ -926,6 +1007,9 @@
->                         reg = <0 0x11f10000 0 0x1000>;
->                         #address-cells = <1>;
->                         #size-cells = <1>;
-> +                       thermal_calibration: calib@180 {
-> +                               reg = <0x180 0xc>;
-> +
-missing };
+From: wengjianfeng <wengjianfeng@yulong.com>
 
->                         mipi_tx_calibration: calib@190 {
->                                 reg = <0x190 0xc>;
->                         };
-> --
-> 2.18.0
->
+INVALID_QUEUE has been used as a return value,it is not necessary to
+assign it to q_num,so just return INVALID_QUEUE.
+
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/net/wireless/rsi/rsi_91x_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/rsi/rsi_91x_core.c b/drivers/net/wireless/rsi/rsi_91x_core.c
+index 2d49c5b..a48e616 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_core.c
++++ b/drivers/net/wireless/rsi/rsi_91x_core.c
+@@ -193,8 +193,7 @@ static u8 rsi_core_determine_hal_queue(struct rsi_common *common)
+ 		if (recontend_queue)
+ 			goto get_queue_num;
+ 
+-		q_num = INVALID_QUEUE;
+-		return q_num;
++		return INVALID_QUEUE;
+ 	}
+ 
+ 	common->selected_qnum = q_num;
+-- 
+1.9.1
+
+
