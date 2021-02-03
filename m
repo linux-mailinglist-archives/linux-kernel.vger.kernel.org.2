@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CBC30E401
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB2830E404
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhBCUZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:25:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231215AbhBCUZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:25:57 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F5BA64F6C;
-        Wed,  3 Feb 2021 20:25:15 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 15:25:13 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        john.ogness@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        akinobu.mita@gmail.com
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks
- all addresses as unhashed
-Message-ID: <20210203152513.34492916@gandalf.local.home>
-In-Reply-To: <202102031201.FFED9547D@keescook>
-References: <20210202213633.755469-1-timur@kernel.org>
-        <YBpyzxBYIYapHaDT@alley>
-        <YBqlooegQgEfPG4T@alley>
-        <19c1c17e-d0b3-326e-97ec-a4ec1ebee749@kernel.org>
-        <202102031201.FFED9547D@keescook>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232069AbhBCU0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:26:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231886AbhBCU02 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:26:28 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33C0C0613D6;
+        Wed,  3 Feb 2021 12:25:47 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id a1so762823wrq.6;
+        Wed, 03 Feb 2021 12:25:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OszwGHR9YVgXRKyj0WuKAiIm2cG9poLYxkLgCKY3pEM=;
+        b=kLBxvfyz0v2PJIZ8rLM27NBrwa9tG4W1oOupWKMrQmp6XdMfUJiNEibNDSxGc6zyPC
+         hfYO9HLptqURk6WdK+ir+I9ctl+++NzVi0OwzXJCUERyjOARNRFUxVnKKikuPbBOV74z
+         W/i/Y1U981504tgrlFHHKFLMKjWG7ttZK3vslXWTPHqLMZFO2EWtpXN5Ch2QV3HAXmAL
+         lan9I+DB6ttR0INgbKc4BtY967KxmpEm8aEG3iy6BLiFuE2ZH0eEOcHerUPii80DSQ3A
+         voWadZvu2kiD2kS3JQam05dvDnfHCWS0yLFvZKwb+gk2UILAQTdtk54lap6pZbwCpm2u
+         8k+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OszwGHR9YVgXRKyj0WuKAiIm2cG9poLYxkLgCKY3pEM=;
+        b=NaARkkk0Wml7q0FjGBVlu4fdhH04AOowyWcH5gXzmc8EBrJ+AoBVkGhUMxHlnVrPig
+         TQKQtOyitqdYBnWf/HjpXJudHT16mw1kQiaZPm2bEH1DTmVtqHsfyAnMfANDq3B7V4nx
+         /vObBWS/9YTCDXgnkrC3tKmala8PcBX4HK83U8FBzKmJp9tR4gS4HbagdptmTCBjDyuh
+         Py9Xn71QvwxEXB/Hh2u9CRB37kXlhGvZWtTVe81l+1irbUiyQ1E7gfX3XXJd0xibnxcL
+         Rm7+fO7fOyH9XoR1ZAROE/qOder41ytYgIbrK5UhkOtEBWQW+Qytiuc+Y0/dmO72VHun
+         On1g==
+X-Gm-Message-State: AOAM5319x/+Q69wbgEJj5p3jrWh5F/RLBry3ZT2fhPrr5YhIoF4y0UfE
+        oSoQGZV6inJWc4WdwX/G40S1QMjHr4Iy5WxQ+yQ=
+X-Google-Smtp-Source: ABdhPJz7POjJ+PDdHRJoYSvhJrK11e1GZqiLEiwa5yb/WNAKHQdGS0Qq7ot6z2jrA4LUaP375ZXgjNNU9v0l7TIe0YA=
+X-Received: by 2002:a5d:65ca:: with SMTP id e10mr5617915wrw.166.1612383946414;
+ Wed, 03 Feb 2021 12:25:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
+ <MN2PR11MB3662C081B6CDB8BC1143380FFAB79@MN2PR11MB3662.namprd11.prod.outlook.com>
+ <CAGngYiVvuNYC4WPCRfPOfjr98S_BGBNGjPze11AiHY9Pq1eJsA@mail.gmail.com>
+ <MN2PR11MB3662E5A8E190F8F43F348E72FAB69@MN2PR11MB3662.namprd11.prod.outlook.com>
+ <CAGngYiVK5=vggym5LiqvjiRVTSWscc=CgX6UPOBkZpknuLC62Q@mail.gmail.com> <MN2PR11MB366281CC0DE98F16FE1F1D62FAB49@MN2PR11MB3662.namprd11.prod.outlook.com>
+In-Reply-To: <MN2PR11MB366281CC0DE98F16FE1F1D62FAB49@MN2PR11MB3662.namprd11.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 3 Feb 2021 15:25:35 -0500
+Message-ID: <CAGngYiX1+hkygO3+Z9gsbzVY5b1ahFTG3QH7C1YNEjy6rgox-w@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
+To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 12:02:05 -0800
-Kees Cook <keescook@chromium.org> wrote:
+On Wed, Feb 3, 2021 at 3:14 PM <Bryan.Whitehead@microchip.com> wrote:
+>
+> We can test on x86 PC. We will just need about a week after you release your next version.
+>
 
-> On Wed, Feb 03, 2021 at 12:58:41PM -0600, Timur Tabi wrote:
-> > On 2/3/21 7:31 AM, Petr Mladek wrote:  
-> > > Also please make sure that lib/test_printf.c will work with
-> > > the new option.  
-> > 
-> > As you suspected, it doesn't work:
-> > 
-> > [  206.966478] test_printf: loaded.
-> > [  206.966528] test_printf: plain 'p' does not appear to be hashed
-> > [  206.966740] test_printf: failed 1 out of 388 tests
-> > 
-> > What should I do about this?
-> > 
-> > On one hand, it is working as expected: %p is not hashed, and that should be
-> > a warning.
-> > 
-> > On the other hand, maybe test_printf should be aware of the command line
-> > parameter and test to make sure that %p is NOT hashed?  
-> 
-> It seems like it'd be best for the test to fail, yes? It _is_ a problem
-> that %p is unhashed; it's just that the failure was intended.
-> 
-
-I disagree.
-
-With a big notice that all pointers of unhashed, I don't think we need to
-print it failed when we expect it to fail.
-
-If anything, skip the test and state:
-
-  test_printf: hash test skipped because "make-printk-non-secret" is on the
-  command line.
-
--- Steve
+That's great. If you have any suggestions on how I can improve testing
+on my end, feel free to reach out.
