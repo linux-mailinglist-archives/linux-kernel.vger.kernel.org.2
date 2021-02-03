@@ -2,144 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83DB30D0EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D1630D0F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhBCBlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:41:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229621AbhBCBlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:41:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02BE164F67;
-        Wed,  3 Feb 2021 01:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612316441;
-        bh=cF1nSFMZ2Ahm9ekU3rWQ9EaZesNqYo23zQObZu0QJWE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GSC5chb9K/PDanYlE4EYEEgChrFoGewv3BiZ0okTaTpXesEW5cEeEy7FdOP2ju67t
-         s9tUc0S/Dx8uHQANzqw8uAMhrjvopuibgqAcUF7zwrdqoHqO8+jPfLjdoBzZ5iYNTp
-         ZppfrA5X4lZ20jWegWfZ9uk0MVVJM8uRIhjgvEoHsOuIFU/edHYzdlGBqPQRkPpgec
-         8SanajP84B7CfEl37KpmPHW40+wYV/qnKp/jgz3HybCOiJ9h78kftHQKP/kzdDeNe9
-         idsTGf9iQrJEyZhEX9bT14iRNKvIaF1tFujYQymJNWA2rOC+osIRwKtLVwJxm+a0X3
-         Whf7bZM6hYkKQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B1C6C3522865; Tue,  2 Feb 2021 17:40:40 -0800 (PST)
-Date:   Tue, 2 Feb 2021 17:40:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
-        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
-        ak@linux.intel.com, clm@fb.com
-Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
- to fuzz per-CPU clock checking
-Message-ID: <20210203014040.GJ2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
- <20210202170635.24839-4-paulmck@kernel.org>
- <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
- <20210203005020.GI2743@paulmck-ThinkPad-P72>
- <b878262a-4c98-91bd-eb88-456a869dc9e1@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b878262a-4c98-91bd-eb88-456a869dc9e1@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S231293AbhBCBnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:43:37 -0500
+Received: from pv50p00im-tydg10011801.me.com ([17.58.6.52]:48132 "EHLO
+        pv50p00im-tydg10011801.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229630AbhBCBnf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 20:43:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1612316554;
+        bh=6t1RFU17SOePPL6+ZA76bZtVpmVDB9u2nd5fGo71KuE=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=ry7pyJsU1trJcwpLP98ZhCHb6nDA/p+5VfUqj1qxa908XEqGkrH4XQmgYf6vA6RjS
+         qB6Alak7z9ag2TLIeGJBGdsHFgeGQDkcp0bQvcHFzwevd8aurzFvCzsKz9Se3Fwa9h
+         XiCWor8/oS130ZKwvuwDyPthdXzn3aUVGceEoj/BKU3KPuPaPVmcPttq1LuJrlcCdp
+         f9oslEQUizRxXY8CzmU9CW5DWh/SyZuNmSC/zxIeY8IAFRoQZahw9acNESEvb9iKBy
+         flMqG0tGR2CyyPcy+WmqkKQMRS3dknathaazDdWDY5C1DubHr66BgeqDjxXaOqyej6
+         TSzncdlSnC7Sg==
+Received: from [11.240.15.70] (unknown [119.3.119.19])
+        by pv50p00im-tydg10011801.me.com (Postfix) with ESMTPSA id D77EE66053D;
+        Wed,  3 Feb 2021 01:42:31 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] mm/slub: embed __slab_alloc to its caller
+From:   Abel Wu <abel.w@icloud.com>
+In-Reply-To: <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
+Date:   Wed, 3 Feb 2021 09:41:58 +0800
+Cc:     Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, hewenliang4@huawei.com,
+        wuyun.wu@huawei.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <9A811B32-6E3D-4FE1-98A5-A7922C32CDB4@icloud.com>
+References: <20210202080515.2689-1-abel.w@icloud.com>
+ <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
+To:     Christoph Lameter <cl@linux.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-02_13:2021-02-02,2021-02-02 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=633 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102030005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 05:31:55PM -0800, Randy Dunlap wrote:
-> On 2/2/21 4:50 PM, Paul E. McKenney wrote:
-> > On Tue, Feb 02, 2021 at 11:51:02AM -0800, Randy Dunlap wrote:
-> >> On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
-> >>> From: "Paul E. McKenney" <paulmck@kernel.org>
-> >>>
-> >>> Code that checks for clock desynchronization must itself be tested, so
-> >>> this commit creates a new clocksource.inject_delay_shift_percpu= kernel
-> >>> boot parameter that adds or subtracts a large value from the check read,
-> >>> using the specified bit of the CPU ID to determine whether to add or
-> >>> to subtract.
-> >>>
-> >>> Cc: John Stultz <john.stultz@linaro.org>
-> >>> Cc: Thomas Gleixner <tglx@linutronix.de>
-> >>> Cc: Stephen Boyd <sboyd@kernel.org>
-> >>> Cc: Jonathan Corbet <corbet@lwn.net>
-> >>> Cc: Mark Rutland <Mark.Rutland@arm.com>
-> >>> Cc: Marc Zyngier <maz@kernel.org>
-> >>> Cc: Andi Kleen <ak@linux.intel.com>
-> >>> Reported-by: Chris Mason <clm@fb.com>
-> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >>> ---
-> >>>  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
-> >>>  kernel/time/clocksource.c                       | 10 +++++++++-
-> >>>  2 files changed, 18 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> >>> index 9965266..f561e94 100644
-> >>> --- a/Documentation/admin-guide/kernel-parameters.txt
-> >>> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> >>> @@ -593,6 +593,15 @@
-> >>>  			times the value specified for inject_delay_freq
-> >>>  			of consecutive non-delays.
-> >>>  
-> >>> +	clocksource.inject_delay_shift_percpu= [KNL]
-> >>> +			Shift count to obtain bit from CPU number to
-> >>> +			determine whether to shift the time of the per-CPU
-> >>> +			clock under test ahead or behind.  For example,
-> >>
-> >> It's a good think that you give an example -- it helps a little bit.
-> >> That sentence above needs to be rewritten...
-> > 
-> > That is a bit obscure, now that you mention it.
-> > 
-> >>> +			setting this to the value four will result in
-> >>> +			alternating groups of 16 CPUs shifting ahead and
-> >>> +			the rest of the CPUs shifting behind.  The default
-> >>> +			value of -1 disable this type of error injection.
-> >>
-> >> 			            disables
-> > 
-> > Good eyes!
-> > 
-> > So how about like this?
+> On Feb 2, 2021, at 6:11 PM, Christoph Lameter <cl@linux.com> wrote:
 > 
-> Much better, thanks.
+> On Tue, 2 Feb 2021, Abel Wu wrote:
 > 
-> > 	clocksource.inject_delay_shift_percpu= [KNL]
-> > 			Clocksource delay injection partitions the CPUs
-> > 			into two sets, one whose clocks are moved ahead
-> > 			and the other whose clocks are moved behind.
-> > 			This kernel parameter selects the CPU-number
-> > 			bit that determines which of these two sets the
-> > 			corresponding CPU is placed into.  For example,
-> > 			setting this parameter to the value four will
+>> Since slab_alloc_node() is the only caller of __slab_alloc(), embed
+>> __slab_alloc() to its caller to save function call overhead. This
+>> will also expand the caller's code block size a bit, but hackbench
+>> tests on both host and guest didn't show a difference w/ or w/o
+>> this patch.
 > 
-> I know that in "writing," "four" should be written out as you have it,
-> but IMO using "4" here would be much better.  FWIW.
+> slab_alloc_node is an always_inline function. It is intentional that only
+> the fast path was inlined and not the slow path.
 
-As long as it is "four" and not "fore"!  Updated as requested.  ;-)
+Oh I got it. Thanks for your excellent explanation.
 
-						Thanx, Paul
-
-> > 			result in the first set containing alternating
-> > 			groups of 16 CPUs whose clocks are moved ahead,
-> > 			while the second set will contain the rest of
-> > 			the CPUs, whose clocks are moved behind.
-> > 
-> > 			The default value of -1 disables this type of
-> > 			error injection.
-> > 
-> > 							Thanx, Paul
-> > 
-> >>> +
-> >>>  	clocksource.max_read_retries= [KNL]
-> >>>  			Number of clocksource_watchdog() retries due to
-> >>>  			external delays before the clock will be marked
-> 
-> 
-> thanks!
-> -- 
-> ~Randy
-> 
+Best Regards,
+	Abel
