@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FAC30D3FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8769530D401
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhBCHVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhBCHVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:21:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5340364F61;
-        Wed,  3 Feb 2021 07:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612336858;
-        bh=TpgXwgnQr+jX+xbM5MDKMswVgu0xwvcRdjla+jPf3N0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ijUJ/rAWbhlk+n8TQoUnPF1kznhHe2vwchiCjXGo/ROV2o87f5ZOb+jDGfyn+XzmB
-         1zwl5GI2yz5X7ux1q20U0T2tRMwdT8XAQWwzZU0TR6/0/dnBAEyn+KIF48srnOuHFq
-         pOYQzCVoNou+Ucu5cdtzKV+Y9j12XOO4QegD5hHg=
-Date:   Wed, 3 Feb 2021 08:20:54 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Quentin Perret <qperret@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 5.10 066/142] KVM: Documentation: Fix spec for
- KVM_CAP_ENABLE_CAP_VM
-Message-ID: <YBpO1vKngzl+8WNy@kroah.com>
-References: <20210202132957.692094111@linuxfoundation.org>
- <20210202133000.449940320@linuxfoundation.org>
- <20210203010506.GU4035784@sasha-vm>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203010506.GU4035784@sasha-vm>
+        id S232087AbhBCHXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:23:53 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:34219 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231465AbhBCHXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 02:23:51 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UNkEs0-_1612336976;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNkEs0-_1612336976)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Feb 2021 15:23:04 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu:  convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Wed,  3 Feb 2021 15:22:53 +0800
+Message-Id: <1612336973-70151-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:05:06PM -0500, Sasha Levin wrote:
-> On Tue, Feb 02, 2021 at 02:37:09PM +0100, Greg Kroah-Hartman wrote:
-> > From: Quentin Perret <qperret@google.com>
-> > 
-> > commit a10f373ad3c760dd40b41e2f69a800ee7b8da15e upstream.
-> > 
-> > The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
-> > as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
-> > ioctl.
-> > 
-> > Fixes: e5d83c74a580 ("kvm: make KVM_CAP_ENABLE_CAP_VM architecture agnostic")
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > Message-Id: <20210108165349.747359-1-qperret@google.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > 
-> > ---
-> > Documentation/virt/kvm/api.rst |    2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- a/Documentation/virt/kvm/api.rst
-> > +++ b/Documentation/virt/kvm/api.rst
-> > @@ -1319,7 +1319,7 @@ documentation when it pops into existenc
-> > 
-> > :Capability: KVM_CAP_ENABLE_CAP_VM
-> > :Architectures: all
-> > -:Type: vcpu ioctl
-> > +:Type: vm ioctl
-> > :Parameters: struct kvm_enable_cap (in)
-> > :Returns: 0 on success; -1 on error
-> 
-> Um, how did this patch made it in?
+Fix the following coccicheck warning:
 
-It came from my scripts, keeping documentation correct seems to be
-something it wanted to do :)
+./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:207:8-16: WARNING: use
+scnprintf or sprintf.
 
-thanks,
+ ./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:185:8-16: WARNING: use
+scnprintf or sprintf.
 
-greg k-h
+./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:163:8-16: WARNING: use
+scnprintf or sprintf.
+
+./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:139:8-16: WARNING: use
+scnprintf or sprintf.
+
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index cab1eba..89b5e7c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -136,7 +136,7 @@ static ssize_t amdgpu_device_get_pcie_replay_count(struct device *dev,
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 	uint64_t cnt = amdgpu_asic_get_pcie_replay_count(adev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%llu\n", cnt);
++	return sysfs_emit(buf, "%llu\n", cnt);
+ }
+ 
+ static DEVICE_ATTR(pcie_replay_count, S_IRUGO,
+@@ -160,7 +160,7 @@ static ssize_t amdgpu_device_get_product_name(struct device *dev,
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", adev->product_name);
++	return sysfs_emit(buf, "%s\n", adev->product_name);
+ }
+ 
+ static DEVICE_ATTR(product_name, S_IRUGO,
+@@ -182,7 +182,7 @@ static ssize_t amdgpu_device_get_product_number(struct device *dev,
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", adev->product_number);
++	return sysfs_emit(buf, "%s\n", adev->product_number);
+ }
+ 
+ static DEVICE_ATTR(product_number, S_IRUGO,
+@@ -204,7 +204,7 @@ static ssize_t amdgpu_device_get_serial_number(struct device *dev,
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", adev->serial);
++	return sysfs_emit(buf, "%s\n", adev->serial);
+ }
+ 
+ static DEVICE_ATTR(serial_number, S_IRUGO,
+-- 
+1.8.3.1
+
