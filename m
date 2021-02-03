@@ -2,178 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A111430E7D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A62730E7E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhBCXvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:51:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233258AbhBCXvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:51:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 256AC64F53;
-        Wed,  3 Feb 2021 23:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612396252;
-        bh=zFHFv+P1s0q4JfWyuoNofhrFvUPvSPhG+YxTpGNRHrs=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=UQcJ1lnzBu7sB9H8DQ50AMNJpESAW45D8xNSxow5XzBqw/i/XFXXUcd7EE69TrEY0
-         U+PkbidENcDikZdN56h4F7k2FGbS+q0PLk1Rh5IErcmu9jgBDWD+S1QzNoAy2xESPt
-         dm0YTizO1jeL/eIHOMuj3/bEmQMsoGU/9Jk8drBc8AT4LMOgPsDe4nEYkmXe4Uizw+
-         APSDZ9rV7N5nAnY6Dve1ncEMq67H9xNZh/8pozQ4fTHflFqJnq1APvWbeY6t0i4Uqz
-         6895W5A/gDTCLrLW4C/7E5e7rxuso5uTUr8/BqNBTFt5ZgXqt80AfKQyN1a8nkGNQT
-         rUTt8HxdhyXpQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BF43335226F1; Wed,  3 Feb 2021 15:50:51 -0800 (PST)
-Date:   Wed, 3 Feb 2021 15:50:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     frederic@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Bare-metal rcutorture testing
-Message-ID: <20210203235051.GA7481@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S233645AbhBCXww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhBCXwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:52:46 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E55C061573;
+        Wed,  3 Feb 2021 15:52:06 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id c1so1184924qtc.1;
+        Wed, 03 Feb 2021 15:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LWDBz11RsEKuXQrdXFjH1+vI1NJWjWDUc79Y8gU0Dzs=;
+        b=kHHIcea+bU3FPDTBvBjb7OFVs326OtyWwtSHA8j+Eu4SrBIECbq9n9BIcan8vJJiiy
+         +A1dnpEAD8DwhSUtQnO//Vcp8elafTtdoQpS2Eq6eOQCE9i3MHDSGphLoQ9lBt+UM/Xs
+         J7xKrf/7zeadMMutgrYPyKlMBILqm3bMsMtgegRXXsCmEaxyVf/H/nNIzGDaQcXEtgwj
+         Ze7BpX+QH6Bov6ewYL7hAM3oMt42O8rkuDR1yifF8drKC/r/RgTh6dCM5upBqeNd5BS+
+         Bp42pgPuTdWPxTS4ZLnEGfFcaIf/C4AU8tNciDOTsct95eSzCMNMHfgV87mO2Lt4QigS
+         BUow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=LWDBz11RsEKuXQrdXFjH1+vI1NJWjWDUc79Y8gU0Dzs=;
+        b=Q4YmD7RCMVGbfpuyOYzoucAk60zdTMQvCN9hz/MXGz9v/9tSjau6vFX+XqUKOzzele
+         JMpZXH/4C8YK+ZmVurb8jc+RGu/GH8W6ajV8YDX9rr1Qmd48/+23p5YaxaejkKMjwUq3
+         6zBnwf8cJdLzYvGiklMTOwGsgSbwHiL3Zt+AQLi7EQpjsHXH3p7cqs0sZXnxRoWr2bxv
+         S33U7Nsk1+usr06qCFa4OyWfo9gdPo+vmOiOrT0e5IKvA92/PK3PyeFupv+VyckBsXrV
+         ulO2CtycENf9t10RyAXPIoR/dodBXlZjuD80oN0o035T+V2vSbstz53xvUWibQNYZqNw
+         l0Ug==
+X-Gm-Message-State: AOAM5306XD+JxO5aVdez1aIrm+KR4s/EsBYC965cNgWo+OgdgrlrwsSt
+        Uel/83c/qhOOnVIBmR3SbpAN0dWZKq+4J5Ch
+X-Google-Smtp-Source: ABdhPJz83XPsMoY6aRs2ze9gwQKINWz+j1LYlx9iJP8K3cN/DCePE+bN1MkIuBb3QVRs9iWRhM8Pzw==
+X-Received: by 2002:a05:622a:8a:: with SMTP id o10mr4931100qtw.9.1612396325963;
+        Wed, 03 Feb 2021 15:52:05 -0800 (PST)
+Received: from Gentoo ([138.199.13.179])
+        by smtp.gmail.com with ESMTPSA id 202sm3384810qkj.92.2021.02.03.15.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 15:52:05 -0800 (PST)
+Date:   Thu, 4 Feb 2021 05:21:54 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux@armlinux.org.uk,
+        davem@davemloft.net, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: net: ehternet: i825xx: Fix couple of spellings
+ in the file ether1.c
+Message-ID: <YBs3GqKQqLkN0fOt@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>, linux@armlinux.org.uk,
+        davem@davemloft.net, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210203151547.13273-1-unixbhaskar@gmail.com>
+ <fb09ac34-12a9-f7df-131e-a98497f49d1b@infradead.org>
+ <20210203121352.41b4733d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="G9hZZrgodwUjX8Ad"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210203121352.41b4733d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Frederic,
 
-Based on our offlist discussion a few hours ago.  Thoughts?
+--G9hZZrgodwUjX8Ad
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-						Thanx, Paul
+On 12:13 Wed 03 Feb 2021, Jakub Kicinski wrote:
+>On Wed, 3 Feb 2021 09:54:22 -0800 Randy Dunlap wrote:
+>> On 2/3/21 7:15 AM, Bhaskar Chowdhury wrote:
+>> >
+>> > s/initialsation/initialisation/
+>> > s/specifiing/specifying/
+>> >
+>> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>
+>> Hi,
+>>
+>> $Subject has a typo/spello.
+>
+>This happens more than you'd think with spell fixies. Always makes me
+>chuckle. FWIW "net: i825xx:" is enough of a prefix, no need to
+>transcribe the entire directory path.
+>
+>> The 2 fixes below look good (as explained in the patch description),
+>> but:
+>> can you explain the 3 changes below that AFAICT do nothing?
+>
 
-------------------------------------------------------------------------
+I am so sorry that error like this lean in . I will fix that Randy..thank
+you...
+>I think we can jump to the conclusion that Bhaskar's editor cleanup up
+>trailing white space.
+>
+>Bhaskar please make sure that the patch does not make unrelated white
+>space changes.
+>
+>> >  drivers/net/ethernet/i825xx/ether1.c | 10 +++++-----
+>> >  1 file changed, 5 insertions(+), 5 deletions(-)
+>> >
+>> > diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
+>> > index a0bfb509e002..0233fb6e222d 100644
+>> > --- a/drivers/net/ethernet/i825xx/ether1.c
+>> > +++ b/drivers/net/ethernet/i825xx/ether1.c
+>> > @@ -885,7 +885,7 @@ ether1_recv_done (struct net_device *dev)
+>> >  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_command, NORMALIRQS);
+>> >  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_status, NORMALIRQS);
+>> >  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_rbdoffset, NORMALIRQS);
+>> > -
+>> > +
+>> >  		priv(dev)->rx_tail = nexttail;
+>> >  		priv(dev)->rx_head = ether1_readw(dev, priv(dev)->rx_head, rfd_t, rfd_link, NORMALIRQS);
+>> >  	} while (1);
+>> > @@ -1031,7 +1031,7 @@ ether1_probe(struct expansion_card *ec, const struct ecard_id *id)
+>> >
+>> >  	printk(KERN_INFO "%s: ether1 in slot %d, %pM\n",
+>> >  		dev->name, ec->slot_no, dev->dev_addr);
+>> > -
+>> > +
+>> >  	ecard_set_drvdata(ec, dev);
+>> >  	return 0;
+>> >
+>> > @@ -1047,7 +1047,7 @@ static void ether1_remove(struct expansion_card *ec)
+>> >  {
+>> >  	struct net_device *dev = ecard_get_drvdata(ec);
+>> >
+>> > -	ecard_set_drvdata(ec, NULL);
+>> > +	ecard_set_drvdata(ec, NULL);
+>> >
+>> >  	unregister_netdev(dev);
+>> >  	free_netdev(dev);
+>> > --
+>> > 2.26.2
+>> >
+>>
+>>
+>
 
-commit 0b76565136d4313218cdbdb20bb344e64348fc79
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Feb 3 15:44:29 2021 -0800
+--G9hZZrgodwUjX8Ad
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    torture: Provide bare-metal modprobe-based advice
-    
-    In some environments, the torture-testing use of virtualization is
-    inconvenient.  In such cases, the modprobe and rmmod commands may be
-    used to do torture testing, but significant setup is required to build,
-    boot, and modprobe a kernel so as to match a given torture-test scenario.
-    This commit therefore creates a "modprobe" file in each results directory
-    containing steps to run the corresponding scenario using the modprobe
-    command on bare metal.  For example, the contents of this file after
-    using kvm.sh to build an rcutorture TREE01 kernel, perhaps with the
-    --buildonly argument,  is as follows:
-    
-    To run this scenario on bare metal:
-    1. Update your .config based on /home/git/linux-rcu/tools/testing/selftests/rcutorture/res/2021.02.03-15.10.09/TREE01/ConfigFragment.
-    2. yes "" | make oldconfig
-    3. Build your kernel.
-    4. Boot with kernel parameters: maxcpus=8 nr_cpus=43 rcutree.gp_preinit_delay=3 rcutree.gp_init_delay=3 rcutree.gp_cleanup_delay=3 rcu_nocbs=0-1,3-7
-    5. modprobe rcutorture nocbs_nthreads=8 nocbs_toggle=1000 fwd_progress=0 onoff_interval=1000 onoff_holdoff=30 n_barrier_cbs=4 stat_interval=15 shutdown_secs=120 test_no_idle_hz=1 verbose=1
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 9d8a82c..08bcf66 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -7,15 +7,15 @@
- # Execute this in the source tree.  Do not run it as a background task
- # because qemu does not seem to like that much.
- #
--# Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args
-+# Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args_in
- #
- # qemu-args defaults to "-enable-kvm -nographic", along with arguments
- #			specifying the number of CPUs and other options
- #			generated from the underlying CPU architecture.
--# boot_args defaults to value returned by the per_version_boot_params
-+# boot_args_in defaults to value returned by the per_version_boot_params
- #			shell function.
- #
--# Anything you specify for either qemu-args or boot_args is appended to
-+# Anything you specify for either qemu-args or boot_args_in is appended to
- # the default values.  The "-smp" value is deduced from the contents of
- # the config fragment.
- #
-@@ -134,7 +134,7 @@ do
- done
- seconds=$4
- qemu_args=$5
--boot_args=$6
-+boot_args_in=$6
- 
- if test -z "$TORTURE_BUILDONLY"
- then
-@@ -144,7 +144,7 @@ fi
- # Generate -smp qemu argument.
- qemu_args="-enable-kvm -nographic $qemu_args"
- cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
--cpu_count=`configfrag_boot_cpus "$boot_args" "$config_template" "$cpu_count"`
-+cpu_count=`configfrag_boot_cpus "$boot_args_in" "$config_template" "$cpu_count"`
- if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
- then
- 	echo CPU count limited from $cpu_count to $TORTURE_ALLOTED_CPUS | tee -a $resdir/Warnings
-@@ -160,13 +160,25 @@ qemu_args="$qemu_args `identify_qemu_args "$QEMU" "$resdir/console.log"`"
- qemu_append="`identify_qemu_append "$QEMU"`"
- 
- # Pull in Kconfig-fragment boot parameters
--boot_args="`configfrag_boot_params "$boot_args" "$config_template"`"
-+boot_args="`configfrag_boot_params "$boot_args_in" "$config_template"`"
- # Generate kernel-version-specific boot parameters
- boot_args="`per_version_boot_params "$boot_args" $resdir/.config $seconds`"
- if test -n "$TORTURE_BOOT_GDB_ARG"
- then
- 	boot_args="$boot_args $TORTURE_BOOT_GDB_ARG"
- fi
-+
-+# Give bare-metal advice
-+modprobe_args="`echo $boot_args | tr -s ' ' '\012' | grep "^$TORTURE_MOD\." | sed -e "s/$TORTURE_MOD\.//g"`"
-+kboot_args="`echo $boot_args | tr -s ' ' '\012' | grep -v "^$TORTURE_MOD\."`"
-+touch $resdir/modprobe
-+echo To run this scenario on bare metal: >> $resdir/modprobe
-+echo "1." Update your .config based on $resdir/ConfigFragment. >> $resdir/modprobe
-+echo "2." 'yes "" | make oldconfig' >> $resdir/modprobe
-+echo "3." Build your kernel. >> $resdir/modprobe
-+echo "4." Boot with kernel parameters: $kboot_args >> $resdir/modprobe
-+echo "5." modprobe $TORTURE_MOD $modprobe_args >> $resdir/modprobe
-+
- echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
- echo "# seconds=$seconds" >> $resdir/qemu-cmd
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 8d3c99b..35a2132 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -29,6 +29,7 @@ PATH=${KVM}/bin:$PATH; export PATH
- TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
- TORTURE_DEFCONFIG=defconfig
- TORTURE_BOOT_IMAGE=""
-+TORTURE_BUILDONLY=
- TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG=""
- TORTURE_KCONFIG_GDB_ARG=""
-@@ -40,6 +41,7 @@ TORTURE_KMAKE_ARG=""
- TORTURE_QEMU_MEM=512
- TORTURE_SHUTDOWN_GRACE=180
- TORTURE_SUITE=rcu
-+TORTURE_MOD=rcutorture
- TORTURE_TRUST_MAKE=""
- resdir=""
- configs=""
-@@ -215,6 +217,7 @@ do
- 	--torture)
- 		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuscale\|refscale\|scf\)$' '^--'
- 		TORTURE_SUITE=$2
-+		TORTURE_MOD="`echo $TORTURE_SUITE | sed -e 's/^\(lock\|rcu\|scf\)$/\1torture/'`"
- 		shift
- 		if test "$TORTURE_SUITE" = rcuscale || test "$TORTURE_SUITE" = refscale
- 		then
-@@ -381,6 +384,7 @@ TORTURE_QEMU_GDB_ARG="$TORTURE_QEMU_GDB_ARG"; export TORTURE_QEMU_GDB_ARG
- TORTURE_KCONFIG_KASAN_ARG="$TORTURE_KCONFIG_KASAN_ARG"; export TORTURE_KCONFIG_KASAN_ARG
- TORTURE_KCONFIG_KCSAN_ARG="$TORTURE_KCONFIG_KCSAN_ARG"; export TORTURE_KCONFIG_KCSAN_ARG
- TORTURE_KMAKE_ARG="$TORTURE_KMAKE_ARG"; export TORTURE_KMAKE_ARG
-+TORTURE_MOD="$TORTURE_MOD"; export TORTURE_MOD
- TORTURE_QEMU_CMD="$TORTURE_QEMU_CMD"; export TORTURE_QEMU_CMD
- TORTURE_QEMU_INTERACTIVE="$TORTURE_QEMU_INTERACTIVE"; export TORTURE_QEMU_INTERACTIVE
- TORTURE_QEMU_MAC="$TORTURE_QEMU_MAC"; export TORTURE_QEMU_MAC
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAbNxcACgkQsjqdtxFL
+KRVHwAf+Ln8hvEa+7y8Zo2IjmVGI+vDnyXaapcZTCwHTeqY5N/pWs5O80JqZMfqT
+EaHX8H2rXtICBFKIpW2V4gn1o8xDPYj76e9pQGSW1klMn/N3+zBcNaC7tLsdctai
+skyC0k+KPACWXHjQmLiS7KmXr5szYzgMhdmRQjpzBPmu1HzjcVE2mSuSVxHG977w
+JPZKO+eti+2BpYTHkJpZ48iy+VWB0leaszytLoJdvmpnfvt698jrG+3IpZJwtkTy
+rzpRg7R9Zg7EyhcT9pIImtBNH+WWW5l16E1qVrdBSRVAc94zkbi9d3dlVhQlO77G
+yfn/AUxdwIatcJ8BG4n8lCA4Z7dqBg==
+=y56c
+-----END PGP SIGNATURE-----
+
+--G9hZZrgodwUjX8Ad--
