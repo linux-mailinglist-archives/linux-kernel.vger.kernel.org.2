@@ -2,130 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B0030DEC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031AC30DED4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234606AbhBCPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:54:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbhBCPw2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:52:28 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A080AC06178B
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 07:51:30 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id i8so20090979ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 07:51:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=8ZiZgrXUKTPqtav3uMw7TC7Q+Aei5KWAfNt52U+dlDQ=;
-        b=rH0DqReYRnjwzpX31BARiullKEije5kg479qo/hGnERWhpgzpT4X1769vLah48SIwg
-         v+RJT5IyfS6o/zlQKNZCKMovJUucHYl2vvVPHFmEM6RJtNQeyp604riUlPBTsVpDW373
-         wo6gr7iWes5a1p9YYKBqNkERLiuQa+aqmylO8FIz7HD7P1E4gYQGlAco5XquUZvZim6b
-         25bJTvBTgrihKk16rJPk3ZK6Q5Hpvm9ehj9Qkj2TgX7rYqHsAofeovyxj3iO85X6TK3i
-         WqoqVY6lPLaJxyt3zE3Pq5HvpMDWIDK9VhhRy1IYd38sM452Mq7O4TGohXZartCXVE46
-         Gf5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=8ZiZgrXUKTPqtav3uMw7TC7Q+Aei5KWAfNt52U+dlDQ=;
-        b=iQzZ9VkPCVHa6lAQ33FHn0AC0K4eE2ERYqWmKsWm5aWrubxl4U1EnGGC7MaRUfhJxX
-         5W/olBab9whRmdrB9y6TVSlpBdXS8A3cfwAdQh+8y5AC3CIlKpHoRxYezmDEgqy6Ex/a
-         GA3E68ys1qUC22kBA7tPgIsIICyg4f5P2Dv9+TVGc2PS8EHt9CfOtgANjs74RNA3C3KG
-         CQdJ386ReGK7QtqpWc9dIaihUih6/xKYv4S2JrjBaFdcJuBj8AAA1FrLanK3Vg1Ir8SA
-         kHwYP0VKYEQXAX0CEP1sRA+iw2uEvSnr8GZETZCbnomYhQI4ZAcHL1ig1etDfRpaRhDD
-         xzhQ==
-X-Gm-Message-State: AOAM531GmspI9So4FWZbFsUH3Dz7MHyLpRJE6LasCwFHQVg1A9TEzjIb
-        ZS5M29r2sd4AK8OwCp9suYtjqOD7NKZwa62Z1rBtJ8N27ye7XlUe
-X-Google-Smtp-Source: ABdhPJw325Fj8DcUghMscoJ2RIXBEp961uIMC8z8Cv3Nbs+QLRe4xLzgr/K6gPQUWefmsx1FIqrtaU0BHyw9vjMq0Pc=
-X-Received: by 2002:a17:906:ca0d:: with SMTP id jt13mr3721106ejb.170.1612367488351;
- Wed, 03 Feb 2021 07:51:28 -0800 (PST)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Feb 2021 21:21:16 +0530
-Message-ID: <CA+G9fYv-=GdpLK3-6M9P4J1N-4ypS=GO8T2N15JFWXSmsG1adQ@mail.gmail.com>
-Subject: memory_model.h:64:14: error: implicit declaration of function 'page_to_section'
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-mips@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pavel Tatashin <pasha.tatashin@oracle.com>
+        id S234670AbhBCPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:55:55 -0500
+Received: from mga02.intel.com ([134.134.136.20]:53044 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234575AbhBCPyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:54:24 -0500
+IronPort-SDR: BcO5KtNdIbQe5D+Ku95ldqJKw43IMIsB0/HWBuXi+mmxOIs3RCcJg2g7cRFWMKIWphqNoeP+6H
+ /Bk/3cRl3T+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168170037"
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="168170037"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:52:31 -0800
+IronPort-SDR: a6h1h6X5m2mN8ZUFzd41FQWCTPnkWDehuhD83kz4sJXUicJA1jRUK+pTuvYwq2xCVbIQoo4x7N
+ g46SpazgSH6g==
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="359482643"
+Received: from jianhu-mobl1.amr.corp.intel.com ([10.209.102.21])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:52:31 -0800
+Message-ID: <09687ef7f4cc072946486742555acc74938f1129.camel@linux.intel.com>
+Subject: Re: [PATCH] platform/x86/intel-uncore-freq: Add Sapphire Rapids
+ server support
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Artem Bityutskiy <dedekind1@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 03 Feb 2021 07:52:30 -0800
+In-Reply-To: <20210203114320.1398801-1-dedekind1@gmail.com>
+References: <20210203114320.1398801-1-dedekind1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next tag 20210203 the mips and sh builds failed due to below errors.
-Following builds failed with gcc-8, gcc-9 and gcc-10,
-  - mips (cavium_octeon_defconfig)
-  - sh (defconfig)
-  - sh (shx3_defconfig)
+On Wed, 2021-02-03 at 13:43 +0200, Artem Bityutskiy wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> 
+> Sapphire Rapids uncore frequency control is the same as Skylake and
+> Ice Lake.
+> Add the Sapphire Rapids CPU model number to the match array.
+> 
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
-CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
-'HOSTCC=sccache gcc' uImage.gz
-In file included from arch/mips/include/asm/page.h:258,
-                 from arch/mips/include/asm/io.h:29,
-                 from include/linux/io.h:13,
-                 from arch/mips/include/asm/mips-cps.h:10,
-                 from arch/mips/include/asm/smp-ops.h:16,
-                 from arch/mips/include/asm/smp.h:21,
-                 from include/linux/smp.h:84,
-                 from arch/mips/include/asm/cpu-type.h:12,
-                 from arch/mips/include/asm/timex.h:19,
-                 from include/linux/timex.h:65,
-                 from include/linux/time32.h:13,
-                 from include/linux/time.h:60,
-                 from include/linux/compat.h:10,
-                 from arch/mips/kernel/asm-offsets.c:12:
-include/linux/mm.h: In function 'is_pinnable_page':
-include/asm-generic/memory_model.h:64:14: error: implicit declaration
-of function 'page_to_section'; did you mean 'present_section'?
-[-Werror=implicit-function-declaration]
-  int __sec = page_to_section(__pg);   \
-              ^~~~~~~~~~~~~~~
-include/asm-generic/memory_model.h:81:21: note: in expansion of macro
-'__page_to_pfn'
- #define page_to_pfn __page_to_pfn
-                     ^~~~~~~~~~~~~
-include/linux/mm.h:1135:15: note: in expansion of macro 'page_to_pfn'
-   is_zero_pfn(page_to_pfn(page));
-               ^~~~~~~~~~~
-In file included from arch/mips/kernel/asm-offsets.c:15:
-include/linux/mm.h: At top level:
-include/linux/mm.h:1512:29: error: conflicting types for 'page_to_section'
- static inline unsigned long page_to_section(const struct page *page)
-                             ^~~~~~~~~~~~~~~
-Steps to reproduce:
---------------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
+> ---
+>  drivers/platform/x86/intel-uncore-frequency.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/platform/x86/intel-uncore-frequency.c
+> b/drivers/platform/x86/intel-uncore-frequency.c
+> index 12d5ab7e1f5d..3ee4c5c8a64f 100644
+> --- a/drivers/platform/x86/intel-uncore-frequency.c
+> +++ b/drivers/platform/x86/intel-uncore-frequency.c
+> @@ -377,6 +377,7 @@ static const struct x86_cpu_id
+> intel_uncore_cpu_ids[] = {
+>  	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,	NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,	NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,	NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, NULL),
+>  	{}
+>  };
+>  
 
-
-tuxmake --runtime podman --target-arch mips --toolchain gcc-10
---kconfig cavium_octeon_defconfig
-
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
