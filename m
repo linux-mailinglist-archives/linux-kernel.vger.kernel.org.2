@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC4630E364
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A830E366
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhBCTjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:39:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43692 "EHLO mail.kernel.org"
+        id S231365AbhBCTj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:39:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhBCTjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:39:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 82B4564DF0;
-        Wed,  3 Feb 2021 19:38:39 +0000 (UTC)
+        id S231213AbhBCTjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:39:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3863F64F87;
+        Wed,  3 Feb 2021 19:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612381119;
-        bh=iZWmYN1xevWShUBktxjFQZ2BFASAFqpoThV8zMcmH6w=;
+        s=k20201202; t=1612381122;
+        bh=oNlGnzBIazpZ0i7Wj3lHbpSnHgGT/HiV0QvY8Au/TZo=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HYJqYUi1UpiYFnBOZIKoaNMPMOlGQM64CRua3dYn/nilskyuyuHFPiqsFPMyKnb41
-         b9HUjztF/sFylAXrVTsosf0jwcBLaL+ua0zGaPs7U1zhL7PTdtyHx4f5Fl+PiANTVw
-         f6Djm98INx8qZoBjSstl+UIKr+Fa5FBuPtGJ7OHqJBUr6GqRiQEp3BLDsv7cWD5cz4
-         fArn/0CWNEkYggIXSs7fiv+TF/f22Ni/rFvvGLup76aMciJozamJq6sPVAMUJkowuH
-         R6dRFfFZpcvaLX5zOCnYy3e0B55oha/dZhEvsN4wmCZ7i4y+0CI73Ist0+WM04iCuz
-         xac47wc3kKy+A==
+        b=KYeAYYuc7W2E3AUR2w1EVQRZ/iApzTP9G8JSMJTTP39KH4BJ7YjqcC8nS8FUiMaJZ
+         LfQRW8Uu6k/6JyKdIZ1GvoUHYblancBF0QRAP/wr7Xf5OwiJZaVOdHHnQExiZrwG+t
+         /AYAxbZrut2GojSsAiQKUBj5Q73tKdKG+ov2gSnOk8ibdv/98MZMpRx8Qh2K+5o8OJ
+         X1dAHsuHHpgG29qcamAByw5xV73M2kE/Xaty1XcVB3suCw4JUIoXJARHu2Wt9Vbd4w
+         wN5yIqxN0xpk6NYt64b8H4fTukUZgKuNuEHCpvi2rGLUsDbWH6YpnEsAu5JepkKAPX
+         J2C1zt/a4B3sg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 707AA609CE;
-        Wed,  3 Feb 2021 19:38:37 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v5.11-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 33551609E3;
+        Wed,  3 Feb 2021 19:38:42 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fixes for 5.11-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210203130857.17648-1-brgl@bgdev.pl>
-References: <20210203130857.17648-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210203130857.17648-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11-rc7
-X-PR-Tracked-Commit-Id: c07ea8d0b170c0cf6592a53981841c7973e142ea
+In-Reply-To: <20210203184408.GA5226@gaia>
+References: <20210203184408.GA5226@gaia>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20210203184408.GA5226@gaia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 22cd5edb2d9c6d68b6ac0fc9584104d88710fa57
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 40615974f88a918d01606ba27d75de2ff50b8d4e
-Message-Id: <161238111739.20071.9186222587200219577.pr-tracker-bot@kernel.org>
-Date:   Wed, 03 Feb 2021 19:38:37 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
+X-PR-Merge-Commit-Id: 3afe9076a7c19140b789d144d0ba1e9be2db4265
+Message-Id: <161238112220.20071.16365451471144489588.pr-tracker-bot@kernel.org>
+Date:   Wed, 03 Feb 2021 19:38:42 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  3 Feb 2021 14:08:57 +0100:
+The pull request you sent on Wed, 3 Feb 2021 18:44:11 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11-rc7
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/40615974f88a918d01606ba27d75de2ff50b8d4e
+https://git.kernel.org/torvalds/c/3afe9076a7c19140b789d144d0ba1e9be2db4265
 
 Thank you!
 
