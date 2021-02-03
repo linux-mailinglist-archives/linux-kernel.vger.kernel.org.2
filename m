@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FDF30D393
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7531530D398
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhBCG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhBCG5v (ORCPT
+        id S231592AbhBCG6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:58:33 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52377 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230193AbhBCG6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:57:51 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2064C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 22:57:10 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id x4so4331755ybj.22
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 22:57:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
-        b=tfjQFmZuBFZHJuQTjSVhg3ixz+DnPLN/S9VEIvqbIxFzeoWNgV77XNtiyL9ixPO4Tb
-         dz0un2MfXWvAwVLGdjRh/++XmGFZd948pQuQFXv6vBXBjSlmZWraR0aKplDotFXISRP3
-         PeaaH93UfYOEVLcTJI3ORIUPgyXvtocYdiJV0Rzzn/CVwSvbupy+oy554e7WbzRO8+sk
-         mBMRaneAEtmswh0W3dKwol0esz25Gaupy0pjB6oF9Z2y+Gx8h+HzW/iChV83VZoVLDMJ
-         ehusselEhRZwCjTxFbKkR7wDR4RiJEaZHPGDsLcrWuNkLWdNWH0IIC74zkgZdeTrh0BK
-         sZ5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/wnbMtD0oy336W9EDCGq60PMZiiWzWFv7G6400JHFhs=;
-        b=jZsfqLQNlPutgA/7UrCJ9jZa34T47iiAsCCqmUOA0DAP5FflGXTMQ22zr/1OwY71vK
-         O5L2ZcZKHxUGVzFtDZRfuZsecgAXNPsiLJeBH6OKvUWUircjW0wTwk3+OkV4ML1YfVGY
-         JmM0xU9w9nFykBlwCcjzRlVn9DjB0FOo2JwJCA0d5PlXDPrFQH9goU6L6AcwEnHa0Ng2
-         wT9BlwMwG7T66F5uFd26bd+vpA2O8PzTvJv+BEBOvoySfe6YEX3mufq/L8c/BUS4biml
-         r4mD25SrEt/yiFqXKNnMiAM2sCOyr8A6aoj0DiPegEVmgovQWuJXBLQYCTndqQU5j+rM
-         Qa+A==
-X-Gm-Message-State: AOAM531vUi4H6H0eT0ID8JPlpknvJGIVhZfRz5yrKl0Rj3ZT3gDN/oov
-        JqoFDhKeBkL5PURxxBq/fe10jEZRjOIwHUlsow==
-X-Google-Smtp-Source: ABdhPJxSiqk8gZYYdNVJFLC3BUkDqUVnJelM3j+yz+P8URDuHFvJS7qJyIaFDqLtAWy+TUl7m+Am741X6VRHRXrL9A==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:c8ff:4e4a:dbd4:e8a6])
- (user=howardchung job=sendgmr) by 2002:a25:ca8c:: with SMTP id
- a134mr2589170ybg.106.1612335430056; Tue, 02 Feb 2021 22:57:10 -0800 (PST)
-Date:   Wed,  3 Feb 2021 14:56:44 +0800
-Message-Id: <20210203145558.Bluez.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [Bluez PATCH v1] Bluetooth: Fix crash in mgmt_add_adv_patterns_monitor_complete
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
-Cc:     Howard Chung <howardchung@google.com>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        Wed, 3 Feb 2021 01:58:30 -0500
+X-UUID: b25f4208624141f387ec8ef77e08ea68-20210203
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xRMlI2EADtM4gae429sxpvqn+NvYbc5cVgo4D59hErQ=;
+        b=BT4M3PrsQ5TGCxdMvQMoEw82htr4KY49+wSBhScM0I4Mgp6CZPdigPsdoyqjhkLNFyJ1gW7bGmptO7phCBeRKL+llB2dnBgiG/D6RtueM043GNLl0kVDgngD1wmuYcqBJy6hERGLiMJOhqFfXzBZ7atfJkElpdDyBrmhzZrbRDU=;
+X-UUID: b25f4208624141f387ec8ef77e08ea68-20210203
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <argus.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 815628569; Wed, 03 Feb 2021 14:57:44 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Feb 2021 14:57:43 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Feb 2021 14:57:43 +0800
+Message-ID: <1612335462.9202.1.camel@mtkswgap22>
+Subject: Re: [PATCH 0/2] Add mediatek MT6359 accdet driver
+From:   Argus Lin <argus.lin@mediatek.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jack Yu <jack.yu@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiaxin Yu =?UTF-8?Q?=28=E4=BF=9E=E5=AE=B6=E9=91=AB=29?= 
+        <Jiaxin.Yu@mediatek.com>, Tzung-Bi Shih <tzungbi@google.com>,
+        Shane Chien =?UTF-8?Q?=28=E7=B0=A1=E4=BD=91=E8=BB=92=29?= 
+        <Shane.Chien@mediatek.com>,
+        ChiPeng Chang =?UTF-8?Q?=28=E5=BC=B5=E7=90=A6=E6=9C=8B=29?= 
+        <chipeng.chang@mediatek.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Wed, 3 Feb 2021 14:57:42 +0800
+In-Reply-To: <1609935546-11722-1-git-send-email-argus.lin@mediatek.com>
+References: <1609935546-11722-1-git-send-email-argus.lin@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If hci_add_adv_monitor is a pending command(e.g. forward to
-msft_add_monitor_pattern), it is possible that
-mgmt_add_adv_patterns_monitor_complete gets called before
-cmd->user_data gets set, which will cause a crash when we
-try to get the moniter handle through cmd->user_data in
-mgmt_add_adv_patterns_monitor_complete.
-
-This moves the cmd->user_data assignment earlier than
-hci_add_adv_monitor.
-
-RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
-Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
-e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
-7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
-c8
-RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
-RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
-RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
-RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
-R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
-R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000018 CR3: 0000000133612002 CR4:
-00000000003606e0
-Call Trace:
- ? msft_le_monitor_advertisement_cb+0x111/0x141
-[bluetooth]
- hci_event_packet+0x425e/0x631c [bluetooth]
- ? printk+0x59/0x73
- ? __switch_to_asm+0x41/0x70
- ?
-msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
- ? bt_dbg+0xb4/0xbb [bluetooth]
- ? __switch_to_asm+0x41/0x70
- hci_rx_work+0x101/0x319 [bluetooth]
- process_one_work+0x257/0x506
- worker_thread+0x10d/0x284
- kthread+0x14c/0x154
- ? process_one_work+0x506/0x506
- ? kthread_blkcg+0x2c/0x2c
- ret_from_fork+0x1f/0x40
-
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Signed-off-by: Howard Chung <howardchung@google.com>
----
-
- net/bluetooth/mgmt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 8ff9c4bb43d11..74971b4bd4570 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -4303,6 +4303,7 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
- 		goto unlock;
- 	}
- 
-+	cmd->user_data = m;
- 	pending = hci_add_adv_monitor(hdev, m, &err);
- 	if (err) {
- 		if (err == -ENOSPC || err == -ENOMEM)
-@@ -4330,7 +4331,6 @@ static int __add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
- 
- 	hci_dev_unlock(hdev);
- 
--	cmd->user_data = m;
- 	return 0;
- 
- unlock:
--- 
-2.30.0.365.g02bc693789-goog
+RGVhciBtYWludGFpbmVyczoNCkNhbiB5b3UgcmVwbHkgdG8gbWUgaWYgYW55IG9waW5pb24/DQp0
+aGFua3MNCg0KQi5SLg0KQXJndXMNCg0KT24gV2VkLCAyMDIxLTAxLTA2IGF0IDIwOjE5ICswODAw
+LCBBcmd1cyBMaW4gd3JvdGU6DQo+IE1UNjM1OSBhdWRpbyBjb2RlYyBzdXBwb3J0IGFjY2Vzc29y
+eSBkZXRlY3QgZmVhdHVyZXMsIHRoZSBnZW5lcmFsIGZlYXR1cmVzDQo+IGFyZSBqYWNrIHBsdWcg
+ZGV0ZWN0aW9uIGFuZCBrZXkgZGV0ZWN0aW9uLg0KPiANCj4gQWxsIG9mIDMtcG9sZSBhbmQgNC1w
+b2xlIGphY2sgYXJlIHN1cHBvcnRlZC4NCj4gDQo+IGNoYW5nZSBzaW5jZSB2MToNCj4gICAtIGFk
+ZHMgbXQ2MzU5IGFjY2RldCBiaW5kaW5nIGRvY3VtZW50DQo+ICAgLSBhZGRzIG10NjM1OSBhY2Nk
+ZXQgZHJpdmVyDQo+IA0KPiANCj4gQXJndXMgTGluICgyKToNCj4gICBkdC1iaW5kaW5nczogbWVk
+aWF0ZWs6IG10NjM1OTogYWRkIEFTb0MgbXQ2MzU5IGFjY2RldCBkb2N1bWVudA0KPiAgIEFTb0M6
+IG1lZGlhdGVrOiBtdDYzNTk6IGFkZCBNVDYzNTkgYWNjZGV0IGRyaXZlcg0KPiANCj4gIC4uLi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OS1hY2NkZXQueWFtbCAgIHwgIDE0MiArKw0K
+PiAgc291bmQvc29jL2NvZGVjcy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+ICA3ICsNCj4gIHNvdW5kL3NvYy9jb2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgMiArDQo+ICBzb3VuZC9zb2MvY29kZWNzL210NjM1OS1hY2NkZXQuYyAgICAgICAg
+ICAgICAgICAgICB8IDE5NTEgKysrKysrKysrKysrKysrKysrKysNCj4gIHNvdW5kL3NvYy9jb2Rl
+Y3MvbXQ2MzU5LWFjY2RldC5oICAgICAgICAgICAgICAgICAgIHwgIDEzNiArKw0KPiAgc291bmQv
+c29jL2NvZGVjcy9tdDYzNTkuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxODYzICsrKysr
+KysrKysrKysrKysrLS0NCj4gIDYgZmlsZXMgY2hhbmdlZCwgMzk5NSBpbnNlcnRpb25zKCspLCAx
+MDYgZGVsZXRpb25zKC0pDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL210NjM1OS1hY2NkZXQueWFtbA0KPiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvbXQ2MzU5LWFjY2RldC5jDQo+ICBjcmVhdGUgbW9kZSAx
+MDA2NDQgc291bmQvc29jL2NvZGVjcy9tdDYzNTktYWNjZGV0LmgNCj4gDQo+IC0tDQo+IDEuOC4x
+LjEuZGlydHkNCj4gDQoNCg==
 
