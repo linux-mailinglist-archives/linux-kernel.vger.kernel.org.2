@@ -2,322 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03C430D115
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF2130D11C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhBCBwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:52:14 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:41807 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231547AbhBCBwC (ORCPT
+        id S231194AbhBCBz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:55:59 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:44636 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229696AbhBCBz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:52:02 -0500
-X-IronPort-AV: E=Sophos;i="5.79,396,1602518400"; 
-   d="scan'208";a="104124130"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 03 Feb 2021 09:51:42 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id C1F3D4CE6D74;
-        Wed,  3 Feb 2021 09:51:38 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Feb
- 2021 09:51:39 +0800
-Subject: Re: [PATCH RESEND v2 08/10] md: Implement ->corrupted_range()
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
-        <snitzer@redhat.com>, <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>,
-        <y-goto@fujitsu.com>
-References: <20210129062757.1594130-1-ruansy.fnst@cn.fujitsu.com>
- <20210129062757.1594130-9-ruansy.fnst@cn.fujitsu.com>
- <20210202031711.GJ7193@magnolia>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <8742625e-8ae7-47a8-fd62-18c201c45a33@cn.fujitsu.com>
-Date:   Wed, 3 Feb 2021 09:51:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210202031711.GJ7193@magnolia>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Tue, 2 Feb 2021 20:55:56 -0500
+Received: from mailhost.synopsys.com (badc-mailhost4.synopsys.com [10.192.0.82])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C3FC6400E6;
+        Wed,  3 Feb 2021 01:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1612317295; bh=tIS4xwqj2Ua+iS73M+HCWfU6zZlhKz7aA0KcQ66Ip6E=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=iI+hBgV9fC7yBlmhNTEOhF4mxbLs9l/Qr9xhm6tBEV5IUImggYyNYCZX7dGlMrAYs
+         9W688y+3SBbAgV5BaeFzarB8l37aP0rKC4/MJ21jBhPl7PEV4FnNVTjnlHYA2uxcqs
+         plY7CFi8sasB+8ffxDqriTrpElKLdevhRjpzLC9xheaPUEAiTWm1CEL5Rrxq9eoKsF
+         x0WqD82gtWMa9tvn99AfhtBM5TzhEMK3pyI/ZUL0gt7gmPuiVQjiI3fkiqe+yHaQV/
+         WInjDbeX2AP8JoT10KKhhePQH6omLLcW0KSvpz7GTZCCTFu7qRpdVGXoplQ48jSAnZ
+         b4JMJTyu3CEVg==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id AD751A005E;
+        Wed,  3 Feb 2021 01:54:53 +0000 (UTC)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 1A578400E7;
+        Wed,  3 Feb 2021 01:54:52 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="dC7vxXyI";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BaSdKF1JCJEUxUy+WF6oON+KYNi6U81sg9PIYIGBvch6VQUx2PVv/GZw34PuYLQw5uSZlwHciI5dAWf3QTSS3AiTF/RJqH+7zvz8hGU5B2y3NYhhtO7pdndq9V9BxXx9oXenQcI4RoL5yssvm+dUexkVSNjOG68kQYeNT64dtbZSfTw9YD00gYXWUmfvHLglSZsl7EHKrjw4pnaCQZvDLcWfQ4+v0zxvnMcN4+ybalgpspo2egOIkvDt7FHLz+HptZl17Ot3Ec9seDi9VEYJMPWhyeiwfg7Mowwkw64RfzZ1fNCy1UbJO++e2XNOQR6cRncTMZLnQM10wbJqJPgAMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U0lWd9ozdJuPnR0iysZaXTi+x5wfPm7sESs1IcwfT4Y=;
+ b=Mq13fawROoz01N6gpXtJ6GWz2fpBDj0BXB69ANWx7MdW5AlqqMf6In+1laPj350yEINfYT/QWeBNjCRYYXOeDDemi+M6MrTXvpbXcE1KqyY/L2P2Ehf7D/WAG4m0xP8fVx7Ax5RWE6lFiJeyCkWg46ztmzFE0rj5tMJhMwOlmwYj1hHB8tr1JHu6fdQAxnioemd5bTJxG/xUm7Y+OU5m7glh+5xu4i+rqBVlvdEb/woS2yhvQtbcCKS7tCOWm3GUXymOUIoNHFLL3LIyjGA8v1AL5qNbZnCGFBysEQKfisFJQe9ZHl64B+lJyaKqb1MxCcO6y6Nvd53ZV1L1G5uQ2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U0lWd9ozdJuPnR0iysZaXTi+x5wfPm7sESs1IcwfT4Y=;
+ b=dC7vxXyIuJmoxPzByNsARYJYRpl7Cccma2azpRQbqS8W/sZYZHYSXJDl2MQlUkHv83OoJ5WENIKUuO4VeL9/thbKbQCWgpFlCrQyhAoowLkWk8SE67cLwh3BVSRve6kI6oiZGWJRx89OWzX+d7+TEmX8jsNMLbdhS161PGQlVVU=
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
+ DM6PR12MB4958.namprd12.prod.outlook.com (2603:10b6:5:20a::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.12; Wed, 3 Feb 2021 01:54:49 +0000
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3805.028; Wed, 3 Feb 2021
+ 01:54:49 +0000
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Lukas Wunner <lukas@wunner.de>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: RE: [PATCH v2 04/15] PCI: Add pci_find_vsec_capability() to find a
+ specific VSEC
+Thread-Topic: [PATCH v2 04/15] PCI: Add pci_find_vsec_capability() to find a
+ specific VSEC
+Thread-Index: AQHW+WCk8KFoXO5U70eM77z8tv2kyapFKi6AgAB9hHA=
+Date:   Wed, 3 Feb 2021 01:54:49 +0000
+Message-ID: <DM5PR12MB18351689BA7312BF9DFDD6FEDAB49@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <cover.1612269536.git.gustavo.pimentel@synopsys.com>
+ <2ecb33dfee5dc05efc05de0731b0cb77bc246f54.1612269537.git.gustavo.pimentel@synopsys.com>
+ <20210202180855.GA3571@wunner.de>
+In-Reply-To: <20210202180855.GA3571@wunner.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: C1F3D4CE6D74.A03BC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ3VzdGF2b1xh?=
+ =?us-ascii?Q?cHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJh?=
+ =?us-ascii?Q?MjllMzViXG1zZ3NcbXNnLWNhMDRhZTUwLTY1YzItMTFlYi05OGU2LWY4OTRj?=
+ =?us-ascii?Q?MjczODA0MlxhbWUtdGVzdFxjYTA0YWU1MS02NWMyLTExZWItOThlNi1mODk0?=
+ =?us-ascii?Q?YzI3MzgwNDJib2R5LnR4dCIgc3o9IjIxNzUiIHQ9IjEzMjU2NzkwODg2NTY3?=
+ =?us-ascii?Q?MzUxNyIgaD0iUElUS1dxMXRmWDVQd0RaS1RpTnZzMGJDUktVPSIgaWQ9IiIg?=
+ =?us-ascii?Q?Ymw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBQlFKQUFB?=
+ =?us-ascii?Q?dENZNk16L25XQWF5RHFNSVhsS01vcklPb3doZVVveWdPQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUhBQUFBQ2tDQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQVFBQkFBQUFOclNWM2dBQUFBQUFBQUFBQUFBQUFKNEFBQUJtQUdrQWJn?=
+ =?us-ascii?Q?QmhBRzRBWXdCbEFGOEFjQUJzQUdFQWJnQnVBR2tBYmdCbkFGOEFkd0JoQUhR?=
+ =?us-ascii?Q?QVpRQnlBRzBBWVFCeUFHc0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtBWHdC?=
+ =?us-ascii?Q?d0FHRUFjZ0IwQUc0QVpRQnlBSE1BWHdCbkFHWUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
+ =?us-ascii?Q?QUFBQ2VBQUFBWmdCdkFIVUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFiZ0Js?=
+ =?us-ascii?Q?QUhJQWN3QmZBSE1BWVFCdEFITUFkUUJ1QUdjQVh3QmpBRzhBYmdCbUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1BRzhB?=
+ =?us-ascii?Q?ZFFCdUFHUUFjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWN3QmhB?=
+ =?us-ascii?Q?RzBBY3dCMUFHNEFad0JmQUhJQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FY?=
+ =?us-ascii?Q?d0J3QUdFQWNnQjBBRzRBWlFCeUFITUFYd0J6QUcwQWFRQmpBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
+ =?us-ascii?Q?QUFBQUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUUJ5QUhRQWJn?=
+ =?us-ascii?Q?QmxBSElBY3dCZkFITUFkQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCbUFH?=
+ =?us-ascii?Q?OEFkUUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1QUdVQWNnQnpBRjhBZEFC?=
+ =?us-ascii?Q?ekFHMEFZd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1lBYndCMUFHNEFaQUJ5QUhr?=
+ =?us-ascii?Q?QVh3QndBR0VBY2dCMEFHNEFaUUJ5QUhNQVh3QjFBRzBBWXdBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFB?=
+ =?us-ascii?Q?Q0FBQUFBQUNlQUFBQVp3QjBBSE1BWHdCd0FISUFid0JrQUhVQVl3QjBBRjhB?=
+ =?us-ascii?Q?ZEFCeUFHRUFhUUJ1QUdrQWJnQm5BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ6?=
+ =?us-ascii?Q?QUdFQWJBQmxBSE1BWHdCaEFHTUFZd0J2QUhVQWJnQjBBRjhBY0FCc0FHRUFi?=
+ =?us-ascii?Q?Z0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFITUFZUUJzQUdVQWN3QmZB?=
+ =?us-ascii?Q?SEVBZFFCdkFIUUFaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFB?=
+ =?us-ascii?Q?QUFDQUFBQUFBQ2VBQUFBY3dCdUFIQUFjd0JmQUd3QWFRQmpBR1VBYmdCekFH?=
+ =?us-ascii?Q?VUFYd0IwQUdVQWNnQnRBRjhBTVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFB?=
+ =?us-ascii?Q?QnpBRzRBY0FCekFGOEFiQUJwQUdNQVpRQnVBSE1BWlFCZkFIUUFaUUJ5QUcw?=
+ =?us-ascii?Q?QVh3QnpBSFFBZFFCa0FHVUFiZ0IwQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUhZQVp3QmZBR3NBWlFC?=
+ =?us-ascii?Q?NUFIY0Fid0J5QUdRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
+ =?us-ascii?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
+authentication-results: wunner.de; dkim=none (message not signed)
+ header.d=none;wunner.de; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [198.182.37.200]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: be918cc4-0f41-44e9-ae27-08d8c7e6b0b3
+x-ms-traffictypediagnostic: DM6PR12MB4958:
+x-microsoft-antispam-prvs: <DM6PR12MB495881D77F9A4B2E6BD2F044DAB49@DM6PR12MB4958.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1elaiNJZtjSpcAb4s+Qc49dAHeDdp5iBDUyw0hminuBWgdRWvomg/W9vqgmMxIInQV67P26pY/T0DRAape+jHkN0M5vNAMmy8j6xqFmZveA2KDoRO17Sx731BKLW+sTyWF/G9jdD84xwGTgx6SoIIZJ28SaZEp3iqgLDNBAvcUx55q3rv48a5LOi3Mj4lJORa8euP/zu9IMo8cbtGgpSfzHJdeuvgW3ATg+fk/ABTb+LGfHb++OfCrHOcmLtNfIzDD5LHbBlDaxgTQALqMq/Eab5Ka5kooKpdVq3t4tv/xGKwCJEIKO29Yi6HnYIcRe3LdtTahMkWqWy1rAEyRJjAEe/1WgZz5Cl5hqf+1oeqhNM+9qK5wB2aLnS+Gg02cygU+dR+zdnpRYtnbMyJ8vaHUoPh4LJgZpx85upwl5FqXVpRcRxIbky9DrRehcTFPZ9/R/+S4gGnLyQg3i4TEjfy481L5+gfzoa6Z7Iz2gNu520ELhOZ1MqqPzq9xrUatiWP2X2oIB6GCJ1iDUKNWJHrflG5zFpSMXYrdLiaAEu8ngvrcZnxskU1ukZaEkxzXv3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(376002)(346002)(366004)(55016002)(6916009)(7696005)(9686003)(71200400001)(86362001)(186003)(8936002)(76116006)(54906003)(316002)(33656002)(66476007)(8676002)(83380400001)(6506007)(66446008)(64756008)(66946007)(66556008)(4326008)(5660300002)(53546011)(26005)(52536014)(478600001)(2906002)(37363001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?fek66dbql69clGOoZ2Z1FWqBIH+998Qvch+JCZgLI+qgY+e+pz8YsIaaBqWy?=
+ =?us-ascii?Q?IBIKIG3uZLnG0QUu/X2e0bjZ5yUbEOhmRjPtYqehX5B6dHsx8P+Wb63UfXT5?=
+ =?us-ascii?Q?nDz9Asxck1m+pBMdVkLCywbYepJ64jdulUgqrGkFk3fwe+0FoHh4gL4GOujg?=
+ =?us-ascii?Q?O9mWOEaJpsfosldH1iQsjV0lAPvv8/Fx5fjQVV9vUnA4CoDFrs/CNG4Hwe+p?=
+ =?us-ascii?Q?TNSWfV45WGowv2h1HoWFw71pVzTSqK6SDG3sLL1StyFZvaqhUd4KWhuR1VSo?=
+ =?us-ascii?Q?1Shv+xZjNr61dIgNkM9vayIMMMmB4NZWfxhBajv20mDacpXfLYl3dsFqjs3X?=
+ =?us-ascii?Q?VfCZwonaA0XzOqIzFkhqSQTIT6CFblUgAX0nKW9RMp/D7UIKrualVtFkPjQD?=
+ =?us-ascii?Q?V3xGy4MdZnVfrHxDuIzRO+c4cc9YtPESWQe9LDYqOoOIVAbK4JJDYjCv6Xb7?=
+ =?us-ascii?Q?nT1LT8LcNU1P4QUob5rpJnhmRzCGifGXWLtCdFu5ZC6xWSUDKjJuh4VwMidZ?=
+ =?us-ascii?Q?Fzala6PhBFLDTVfJhwijqjY1QoAZe1/UAuYqDzhJGkGC12I3P26KWG4eCDib?=
+ =?us-ascii?Q?i45cUcaiLCQqEeLIOsuTu9w7q9rnHrSe5kF7m54JmmtPYXGzpaKLTGrZP9Vm?=
+ =?us-ascii?Q?jKPwBAxTYC30pCTGNSD8jWBe0lmCvySZf2Z3OjoEOmPZP6Bq5AePDILSNFMB?=
+ =?us-ascii?Q?1LSb1r7jmnsOrQyNh3HDLZ+XaoIA9ZMYPpIwUtO0HARTredPPd02MWEg+q/O?=
+ =?us-ascii?Q?KOpty4z8qLp5DYZPJ2GENlIEpPgvZwMjdsdZKT9JpqlTZYh2flzxgsD+ZrGI?=
+ =?us-ascii?Q?y/Xc4uqr8UpnOMbRLJS/ToGlGnnLCytF4kmWwZDHq4+bmK5IQtiDOIkTw7Q4?=
+ =?us-ascii?Q?4f2PJ/xkokalPVETqgQShPs2mdOc01Gh2dhmsc5qJPPglziMkYQjb0to9+ks?=
+ =?us-ascii?Q?QL/KfKvjwLJJyd2xI/MQ98Az5knzkKj6xBFyuzWHybaJwp/YmasKAEG7L+gD?=
+ =?us-ascii?Q?9VNLOTzro9cULL5GKgWkQX1hXwE1Itzq8qSUgMA4zuQb58LBcHEH297EBIuh?=
+ =?us-ascii?Q?ZRnj/uRu?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be918cc4-0f41-44e9-ae27-08d8c7e6b0b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 01:54:49.2976
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m23ntKw5siVxsDRdlK2DI8uzmQ/lIBImMmSHJl0rI7yGNBqZx8tYF1knU8b3eYShVWzNdoxvaBEjcjikFYc09A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4958
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Lukas,
 
+On Tue, Feb 2, 2021 at 18:8:55, Lukas Wunner <lukas@wunner.de> wrote:
 
-On 2021/2/2 上午11:17, Darrick J. Wong wrote:
-> On Fri, Jan 29, 2021 at 02:27:55PM +0800, Shiyang Ruan wrote:
->> With the support of ->rmap(), it is possible to obtain the superblock on
->> a mapped device.
->>
->> If a pmem device is used as one target of mapped device, we cannot
->> obtain its superblock directly.  With the help of SYSFS, the mapped
->> device can be found on the target devices.  So, we iterate the
->> bdev->bd_holder_disks to obtain its mapped device.
->>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
->> ---
->>   drivers/md/dm.c       | 61 +++++++++++++++++++++++++++++++++++++++++++
->>   drivers/nvdimm/pmem.c | 11 +++-----
->>   fs/block_dev.c        | 42 ++++++++++++++++++++++++++++-
-> 
-> I feel like this ^^^ part that implements the generic ability for a block
-> device with a bad sector to notify whatever's holding onto it (fs, other
-> block device) should be in patch 2.  That's generic block layer code,
-> and it's hard to tell (when you're looking at patch 2) what the bare
-> function declaration in it is really supposed to do.
-> 
-> Also, this patch is still difficult to review because it mixes device
-> mapper, nvdimm, and block layer changes!
+> On Tue, Feb 02, 2021 at 01:40:18PM +0100, Gustavo Pimentel wrote:
+> >  /**
+> > + * pci_find_vsec_capability - Find a vendor-specific extended capabili=
+ty
+> > + * @dev: PCI device to query
+> > + * @cap: vendor-specific capability ID code
+> > + *
+> > + * Returns the address of the vendor-specific structure that matches t=
+he
+> > + * requested capability ID code within the device's PCI configuration =
+space
+> > + * or 0 if it does not find a match.
+> > + */
+> > +u16 pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id)
+> > +{
+>=20
+> As the name implies, the capability is "vendor-specific", so it is perfec=
+tly
+> possible that two vendors use the same VSEC ID for different things.
+>=20
+> To make sure you're looking for the right capability, you need to pass
+> a u16 vendor into this function and bail out if dev->vendor is different.
 
-OK.  I'll split this to make it looks simple.
+This function will be called by the driver that will pass the correct=20
+device which will be already pointing to the config space associated with=20
+the endpoint for instance. Because the driver is already attached to the=20
+endpoint through the vendor ID and device ID specified, there is no need=20
+to do that validation, it will be redundant.
 
-> 
->>   include/linux/genhd.h |  2 ++
->>   4 files changed, 107 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
->> index 7bac564f3faa..31b0c340b695 100644
->> --- a/drivers/md/dm.c
->> +++ b/drivers/md/dm.c
->> @@ -507,6 +507,66 @@ static int dm_blk_report_zones(struct gendisk *disk, sector_t sector,
->>   #define dm_blk_report_zones		NULL
->>   #endif /* CONFIG_BLK_DEV_ZONED */
->>   
->> +struct corrupted_hit_info {
->> +	struct block_device *bdev;
->> +	sector_t offset;
->> +};
->> +
->> +static int dm_blk_corrupted_hit(struct dm_target *ti, struct dm_dev *dev,
->> +				sector_t start, sector_t count, void *data)
->> +{
->> +	struct corrupted_hit_info *bc = data;
->> +
->> +	return bc->bdev == (void *)dev->bdev &&
->> +			(start <= bc->offset && bc->offset < start + count);
->> +
->> +}
->> +
->> +struct corrupted_do_info {
->> +	size_t length;
->> +	void *data;
->> +};
->> +
->> +static int dm_blk_corrupted_do(struct dm_target *ti, struct block_device *bdev,
->> +			       sector_t disk_sect, void *data)
->> +{
->> +	struct corrupted_do_info *bc = data;
->> +	loff_t disk_off = to_bytes(disk_sect);
->> +	loff_t bdev_off = to_bytes(disk_sect - get_start_sect(bdev));
->> +
->> +	return bd_corrupted_range(bdev, disk_off, bdev_off, bc->length, bc->data);
->> +}
->> +
->> +static int dm_blk_corrupted_range(struct gendisk *disk,
->> +				  struct block_device *target_bdev,
->> +				  loff_t target_offset, size_t len, void *data)
->> +{
->> +	struct mapped_device *md = disk->private_data;
->> +	struct dm_table *map;
->> +	struct dm_target *ti;
->> +	sector_t target_sect = to_sector(target_offset);
->> +	struct corrupted_hit_info hi = {target_bdev, target_sect};
->> +	struct corrupted_do_info di = {len, data};
->> +	int srcu_idx, i, rc = -ENODEV;
->> +
->> +	map = dm_get_live_table(md, &srcu_idx);
->> +	if (!map)
->> +		return rc;
->> +
->> +	for (i = 0; i < dm_table_get_num_targets(map); i++) {
->> +		ti = dm_table_get_target(map, i);
->> +		if (!(ti->type->iterate_devices && ti->type->rmap))
->> +			continue;
->> +		if (!ti->type->iterate_devices(ti, dm_blk_corrupted_hit, &hi))
->> +			continue;
->> +
->> +		rc = ti->type->rmap(ti, target_sect, dm_blk_corrupted_do, &di);
-> 
-> Why is it necessary to call ->iterate_devices here?
+>=20
+>=20
+> > +	u16 vsec;
+> > +	u32 header;
+> > +
+> > +	vsec =3D pci_find_ext_capability(dev, PCI_EXT_CAP_ID_VNDR);
+> > +	while (vsec) {
+> > +		if (pci_read_config_dword(dev, vsec + PCI_VSEC_HDR,
+> > +					  &header) =3D=3D PCIBIOS_SUCCESSFUL &&
+> > +		    PCI_VSEC_CAP_ID(header) =3D=3D vsec_cap_id)
+> > +			return vsec;
+> > +
+> > +		vsec =3D pci_find_next_ext_capability(dev, vsec,
+> > +						    PCI_EXT_CAP_ID_VNDR);
+> > +	}
+>=20
+> FWIW, a more succinct implementation would be:
+>=20
+> 	while ((vsec =3D pci_find_next_ext_capability(...))) { ... }
+>=20
+> See set_pcie_thunderbolt() in drivers/pci/probe.c for an example.
+> Please consider refactoring that function to use your new helper.
 
-->iterate_devices() here is to find out which target is the pmem device 
-which is corrupted now.  Then call ->rmap() on this target.  Other 
-targets will be ignored.
+That looks more clean. I will do it. Thanks!
 
-> 
-> If you pass the target_bdev, offset, and length to the dm-target's
-> ->rmap function, it should be able to work backwards through its mapping
-> logic to come up with all the LBA ranges of the mapped_device that
-> are affected, and then it can call bd_corrupted_range on each of those
-> reverse mappings.
-> 
-> It would be helpful to have the changes to dm-linear.c in this patch
-> too, since that's the only real implementation at this point.
-> 
->> +		break;
->> +	}
->> +
->> +	dm_put_live_table(md, srcu_idx);
->> +	return rc;
->> +}
->> +
->>   static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
->>   			    struct block_device **bdev)
->>   {
->> @@ -3062,6 +3122,7 @@ static const struct block_device_operations dm_blk_dops = {
->>   	.getgeo = dm_blk_getgeo,
->>   	.report_zones = dm_blk_report_zones,
->>   	.pr_ops = &dm_pr_ops,
->> +	.corrupted_range = dm_blk_corrupted_range,
->>   	.owner = THIS_MODULE
->>   };
->>   
->> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
->> index 501959947d48..3d9f4ccbbd9e 100644
->> --- a/drivers/nvdimm/pmem.c
->> +++ b/drivers/nvdimm/pmem.c
->> @@ -256,21 +256,16 @@ static int pmem_rw_page(struct block_device *bdev, sector_t sector,
->>   static int pmem_corrupted_range(struct gendisk *disk, struct block_device *bdev,
->>   				loff_t disk_offset, size_t len, void *data)
->>   {
->> -	struct super_block *sb;
->>   	loff_t bdev_offset;
->>   	sector_t disk_sector = disk_offset >> SECTOR_SHIFT;
->> -	int rc = 0;
->> +	int rc = -ENODEV;
->>   
->>   	bdev = bdget_disk_sector(disk, disk_sector);
->>   	if (!bdev)
->> -		return -ENODEV;
->> +		return rc;
->>   
->>   	bdev_offset = (disk_sector - get_start_sect(bdev)) << SECTOR_SHIFT;
->> -	sb = get_super(bdev);
->> -	if (sb && sb->s_op->corrupted_range) {
->> -		rc = sb->s_op->corrupted_range(sb, bdev, bdev_offset, len, data);
->> -		drop_super(sb);
->> -	}
->> +	rc = bd_corrupted_range(bdev, bdev_offset, bdev_offset, len, data);
->>   
->>   	bdput(bdev);
->>   	return rc;
->> diff --git a/fs/block_dev.c b/fs/block_dev.c
->> index 3b8963e228a1..3cc2b2911e3a 100644
->> --- a/fs/block_dev.c
->> +++ b/fs/block_dev.c
->> @@ -1079,6 +1079,27 @@ struct bd_holder_disk {
->>   	int			refcnt;
->>   };
->>   
->> +static int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
->> +					  size_t len, void *data)
->> +{
->> +	struct bd_holder_disk *holder;
->> +	struct gendisk *disk;
->> +	int rc = 0;
->> +
->> +	if (list_empty(&(bdev->bd_holder_disks)))
->> +		return -ENODEV;
->> +
->> +	list_for_each_entry(holder, &bdev->bd_holder_disks, list) {
->> +		disk = holder->disk;
->> +		if (disk->fops->corrupted_range) {
->> +			rc = disk->fops->corrupted_range(disk, bdev, off, len, data);
->> +			if (rc != -ENODEV)
->> +				break;
->> +		}
->> +	}
->> +	return rc;
->> +}
->> +
->>   static struct bd_holder_disk *bd_find_holder_disk(struct block_device *bdev,
->>   						  struct gendisk *disk)
->>   {
->> @@ -1212,7 +1233,26 @@ void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk)
->>   	mutex_unlock(&bdev->bd_mutex);
->>   }
->>   EXPORT_SYMBOL_GPL(bd_unlink_disk_holder);
->> -#endif
->> +#endif /* CONFIG_SYSFS */
->> +
->> +int bd_corrupted_range(struct block_device *bdev, loff_t disk_off,
->> +		       loff_t bdev_off, size_t len, void *data)
->> +{
->> +	struct super_block *sb = get_super(bdev);
->> +	int rc = -EOPNOTSUPP;
->> +
->> +	if (!sb) {
->> +#ifdef CONFIG_SYSFS
->> +		rc = bd_disk_holder_corrupted_range(bdev, disk_off, len, data);
->> +#endif /* CONFIG_SYSFS */
-> 
-> Normal kernel convention is that you'd provide a empty shell for the
-> CONFIG_SYSFS=n case, e.g.
-> 
-> #ifdef CONFIG_SYSFS
-> int bd_corrupted_range(...) {
-> 	/* real code */
-> }
-> #else
-> static inline bd_corrupted_range(...) { return -EOPNOTSUPP; }
-> #endif
-> 
-> so that you don't have preprocessor directives making this function
-> choppy.
-
-I'll fix it.
-
-
---
-Thanks,
-Ruan Shiyang.
-
-> 
-> --D
-> 
->> +		return rc;
->> +	} else if (sb->s_op->corrupted_range)
->> +		rc = sb->s_op->corrupted_range(sb, bdev, bdev_off, len, data);
->> +	drop_super(sb);
->> +
->> +	return rc;
->> +}
->> +EXPORT_SYMBOL(bd_corrupted_range);
->>   
->>   static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part);
->>   
->> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
->> index 4da480798955..996f91b08d48 100644
->> --- a/include/linux/genhd.h
->> +++ b/include/linux/genhd.h
->> @@ -315,6 +315,8 @@ void unregister_blkdev(unsigned int major, const char *name);
->>   bool bdev_check_media_change(struct block_device *bdev);
->>   int __invalidate_device(struct block_device *bdev, bool kill_dirty);
->>   void set_capacity(struct gendisk *disk, sector_t size);
->> +int bd_corrupted_range(struct block_device *bdev, loff_t disk_off,
->> +		       loff_t bdev_off, size_t len, void *data);
->>   
->>   /* for drivers/char/raw.c: */
->>   int blkdev_ioctl(struct block_device *, fmode_t, unsigned, unsigned long);
->> -- 
->> 2.30.0
->>
->>
->>
-> 
-> 
+>=20
+> Thanks,
+>=20
+> Lukas
 
 
