@@ -2,152 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AE930D37E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C4130D385
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhBCGtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:49:01 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7289 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhBCGs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:48:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601a47330002>; Tue, 02 Feb 2021 22:48:19 -0800
-Received: from DRHQMAIL105.nvidia.com (10.27.9.14) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
- 2021 06:48:19 +0000
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- DRHQMAIL105.nvidia.com (10.27.9.14) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Wed, 3 Feb 2021 06:48:16 +0000
-Date:   Wed, 3 Feb 2021 08:48:12 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <siwliu.kernel@gmail.com>
-CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change
- map
-Message-ID: <20210203064812.GA33072@mtl-vdi-166.wap.labs.mlnx>
-References: <20210202142901.7131-1-elic@nvidia.com>
- <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
+        id S231675AbhBCGtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:49:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231186AbhBCGty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:49:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9CFC64F5D;
+        Wed,  3 Feb 2021 06:49:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612334952;
+        bh=TbVrfhRWcP0NLWkcKrc9dypvQJV2iCyeSCaii6eG9Ro=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k4bNSi5Yrb/h0nIFSc5i07chfgyRveavNrYx6tXmNY4YUVo71kjXoj58WpoS26hCk
+         uCrxhKvd/JINpBt6xI4aRXzjzz0q2z0b4Jpzn88TxH1VbIs3gYWdkh1niFtlVTB1kX
+         1CopGTwzJ5CvVY/GK5gLvjC7egUIna+Cj+SOrhEItOX6sdcbHz1w+Nh+oBPKLN80iR
+         MAuh85U3/Rg8T1TN+INLzWRfCb3TxylBCkTR64tAC9G6v3tO+CoRnnf+ZhwJu7Jcg/
+         G4h6hht8I6O6OBd5bMopuYFgBepcOY61dAfTEygpm5fHjmekUW6Se249HLVv84fyTP
+         /oH1Bp1Y1nkKg==
+Date:   Wed, 3 Feb 2021 07:49:00 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Andy Gross <agross@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-samsung-soc@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-kernel@axis.com, Richard Zhu <hongxing.zhu@nxp.com>,
+        linux-arm-msm@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pci@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        linux-tegra@vger.kernel.org, Jonathan Chocron <jonnyc@amazon.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 01/13] doc: bindings: pci: designware-pcie.txt: convert
+ it to yaml
+Message-ID: <20210203074900.6d581153@coco.lan>
+In-Reply-To: <1612287895.001149.3887347.nullmailer@robh.at.kernel.org>
+References: <cover.1612271903.git.mchehab+huawei@kernel.org>
+        <706e684f571e142362d7be74eb1dcee2c8558052.1612271903.git.mchehab+huawei@kernel.org>
+        <1612287895.001149.3887347.nullmailer@robh.at.kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL105.nvidia.com (10.27.9.14)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612334899; bh=bdWJXd3YSJWxG7Da0O4JneyR2Xqw2RHQwLqQqrk8WPY=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=pKhCUP08z1d/GjfKEtGyTR4xrOOO4sSqOTNQfZp+EK7WeZo1b5aGced6rYv43uMRH
-         6yapjy0thTQ6oAjcgkMqpprndUmZEvkRa5cGOfczGq5+L5o3/LY+JxmCvNi6Ogu5cQ
-         1Cicgn92mv2w/6DA/tA4Rq+7jp7GAplPSOovgAV27qLR5PJZ+yu/BfjlkhlkMlH1Dm
-         GJyNyp14Fq3eF6Zb80ClE9/W3e/K0ncYJ7sZY3iyZdZYJx/errBCQXGg64EHGvHehE
-         kaw0LlqTipeaZsWZQdo1ESYzb6sO9rGjmf4v5dys4HSuUA60QxJC0hy4hqkQwqb8fd
-         U91fUnfEWiQWQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:14:02AM -0800, Si-Wei Liu wrote:
-> On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
-> >
-> > When a change of memory map occurs, the hardware resources are destroyed
-> > and then re-created again with the new memory map. In such case, we need
-> > to restore the hardware available and used indices. The driver failed to
-> > restore the used index which is added here.
-> >
-> > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > ---
-> > This patch is being sent again a single patch the fixes hot memory
-> > addtion to a qemy process.
-> >
-> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > index 88dde3455bfd..839f57c64a6f 100644
-> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
-> >         u64 device_addr;
-> >         u64 driver_addr;
-> >         u16 avail_index;
-> > +       u16 used_index;
-> >         bool ready;
-> >         struct vdpa_callback cb;
-> >         bool restore;
-> > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
-> >         u32 virtq_id;
-> >         struct mlx5_vdpa_net *ndev;
-> >         u16 avail_idx;
-> > +       u16 used_idx;
-> >         int fw_state;
-> >
-> >         /* keep last in the struct */
-> > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
-> >
-> >         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
-> >         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
-> > +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
-> 
-> The saved indexes will apply to the new virtqueue object whenever it
-> is created. In virtio spec, these indexes will reset back to zero when
-> the virtio device is reset. But I don't see how it's done today. IOW,
-> I don't see where avail_idx and used_idx get cleared from the mvq for
-> device reset via set_status().
-> 
+Hi Rob,
 
-Right, but this is not strictly related to this patch. I will post
-another patch to fix this.
+Em Tue, 02 Feb 2021 11:44:54 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-BTW, can you describe a secnario that would cause a reset (through
-calling set_status()) that happens after the VQ has been used?
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
+> 	'type' is a required property
+> 	Additional properties are not allowed ('$ref' was unexpected)
+> 	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
+> 		'enum' is a required property
+> 		'const' is a required property
+> 	'/schemas/types.yaml#definitions/flag' does not match 'types.yaml#/definitions/'
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: ignoring, error in schema: properties: snps,enable-cdm-check
+> warning: no schema found in file: ./Documentation/devicetree/bindings/pci/snps,pcie.yaml
+> 
+> See https://patchwork.ozlabs.org/patch/1434686
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
 
-> -Siwei
-> 
-> 
-> >         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
-> >                  get_features_12_3(ndev->mvdev.actual_features));
-> >         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
-> > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
-> >  struct mlx5_virtq_attr {
-> >         u8 state;
-> >         u16 available_index;
-> > +       u16 used_index;
-> >  };
-> >
-> >  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
-> > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
-> >         memset(attr, 0, sizeof(*attr));
-> >         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
-> >         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
-> > +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
-> >         kfree(out);
-> >         return 0;
-> >
-> > @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
-> >                 return err;
-> >
-> >         ri->avail_index = attr.available_index;
-> > +       ri->used_index = attr.used_index;
-> >         ri->ready = mvq->ready;
-> >         ri->num_ent = mvq->num_ent;
-> >         ri->desc_addr = mvq->desc_addr;
-> > @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
-> >                         continue;
-> >
-> >                 mvq->avail_idx = ri->avail_index;
-> > +               mvq->used_idx = ri->used_index;
-> >                 mvq->ready = ri->ready;
-> >                 mvq->num_ent = ri->num_ent;
-> >                 mvq->desc_addr = ri->desc_addr;
-> > --
-> > 2.29.2
-> >
+I've no idea why the bot is hitting those. My tree is based on
+staging-testing[1], as I need the regulator patches merged there.
+Such tree is based on v5.11-rc5.
+
+There, dt_binding_check doesn't get any warnings on this schema:
+
+$ pip3 install dtschema --upgrade --user
+Requirement already up-to-date: dtschema in /home/mchehab/.local/lib/python3.9/site-packages (2020.12)
+Requirement already satisfied, skipping upgrade: ruamel.yaml>0.15.69 in /usr/lib/python3.9/site-packages (from dtschema) (0.16.6)
+Requirement already satisfied, skipping upgrade: jsonschema>=3.0.1 in /usr/lib/python3.9/site-packages (from dtschema) (3.2.0)
+Requirement already satisfied, skipping upgrade: rfc3987 in /home/mchehab/.local/lib/python3.9/site-packages (from dtschema) (1.3.8)
+Requirement already satisfied, skipping upgrade: attrs>=17.4.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0.1->dtschema) (19.3.0)
+Requirement already satisfied, skipping upgrade: pyrsistent>=0.14.0 in /usr/lib64/python3.9/site-packages (from jsonschema>=3.0.1->dtschema) (0.16.0)
+Requirement already satisfied, skipping upgrade: setuptools in /usr/lib/python3.9/site-packages (from jsonschema>=3.0.1->dtschema) (49.1.3)
+Requirement already satisfied, skipping upgrade: six>=1.11.0 in /usr/lib/python3.9/site-packages (from jsonschema>=3.0.1->dtschema) (1.15.0)
+
+$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/snps,pcie.yaml dt_binding_check
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/pci/snps,pcie.example.dts
+./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+./Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml:102:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+  DTC     Documentation/devicetree/bindings/pci/snps,pcie.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/pci/snps,pcie.example.dt.yaml
+
+$ git merge v5.11-rc6
+Merge made by the 'recursive' strategy.
+...
+$ make CROSS_COMPILE=aarch64-linux-gnu- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/snps,pcie.yaml 
+  LINT    Documentation/devicetree/bindings
+./Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml:102:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+  DTC     Documentation/devicetree/bindings/pci/snps,pcie.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/pci/snps,pcie.example.dt.yaml
+
+Thanks,
+Mauro
