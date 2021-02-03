@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5074430D0E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676D630D0ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 02:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhBCBiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 20:38:18 -0500
-Received: from m12-16.163.com ([220.181.12.16]:51542 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhBCBiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 20:38:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8Msi8
-        Mfq+aHnr/S6jW5dXRcexeYW6cPEy+8OpTlWRlw=; b=GFUuyzKypjHIVttXuP9SI
-        KvedZwovwBmhhlga6Nws3lowHFwWh2HuKqTVbU4mXOYYBUNEVRztV+HNYhHz/Tei
-        4htwAHq62Y4dbE6q0cq0ZXv98g9oW9LejFp/iaUVKxR0sbGgHCQXGwoFBGsB0E6z
-        ATDcEUI1+m/D+Evagcwa2c=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowAB3O2kJ_hlg+v3gaA--.4629S2;
-        Wed, 03 Feb 2021 09:36:13 +0800 (CST)
-From:   dingsenjie@163.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] drivers/scsi: convert to use module_platform_driver in sgiwd93.c
-Date:   Wed,  3 Feb 2021 09:35:43 +0800
-Message-Id: <20210203013543.34316-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S230063AbhBCBkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 20:40:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhBCBkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 20:40:06 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D1AC061573;
+        Tue,  2 Feb 2021 17:39:25 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id d2so3592394pjs.4;
+        Tue, 02 Feb 2021 17:39:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XIYaotR9cVz0dZkIxPzlPF8z5N/cDZctzyKFUN0dyY0=;
+        b=cXvYlwrI6hfAyLYI+VmHQVQQhLu2PXgyoCiLpjHxw4UxkHfexWxOgUdgUW1MnTD2H/
+         ntSjl0I5N9XmHiEfPfzHzGi+CTkSytba/uqkzTrUbc7UMxjn3pAvr+yrGkXTI44sUI0X
+         9JzN8XpI1Gy5EamBEPB7N2MCyMl2yR+5l0IENR5kl8l4FoUnOFNf1k2RnDJvm7irT+QB
+         dSKydTAjlcwL3ukWk/UgaC/dOmNnxuyXkbnEfwnV1bTNzh3BMI73eO3ipiQr23jBYCzC
+         2vK1mxCvX2O77vR3QD9SE4/tDIbWSSBVcUbUiK6NHAMJn/2hjlQlID/4oN9t7PbsKSe6
+         EwVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XIYaotR9cVz0dZkIxPzlPF8z5N/cDZctzyKFUN0dyY0=;
+        b=VMwsLdtuNr6/9T2K/2bnNUNyFTvt8lGXOGueQIXT4rZ7KQ78QLRHrgNk55GFBoRP6u
+         J39GYd/0Mdxv1RszgvtbFjNIfDafjXbN2NJ/9eqmmCXZXFsAAwztJ+QdFMBuJFiIxFoX
+         9o8qs4yvu2xN2bfH9lMdsvjZGXwas4CYozEFRSmPqxd9VENNa7yq7nLdpf7vV09LaR4q
+         zRtyr/Ap75gbvwal8hniJxMxOdHYKCaFydswiLzbo/JfAH9g2A5awWble9eXKsTMn2a1
+         uoHT/TVRnMQvuuzGT+3t0QJlto/XMx0G4zSu4obZFd9MbuRkwcLnYY3wKADUjmIYcr79
+         HHOA==
+X-Gm-Message-State: AOAM532NLuVw4NuQnUz+wcVaxT3X8lB9mLcTYBFwVDtDKPli1R733k7C
+        oN52FcR6NQjLdl+dq8gFJoQ=
+X-Google-Smtp-Source: ABdhPJw4+TJeBM73IhpaxHBiQrVir31ns6RnIpgpHmpCk5j9tXDdCMTWEfxafjtp+R5KhfwTy9JIuQ==
+X-Received: by 2002:a17:90a:8906:: with SMTP id u6mr664117pjn.223.1612316365454;
+        Tue, 02 Feb 2021 17:39:25 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:1502:84f8:ffc3:45b])
+        by smtp.gmail.com with ESMTPSA id m10sm217140pjs.25.2021.02.02.17.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 17:39:24 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 2 Feb 2021 17:39:21 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     sumit.semwal@linaro.org, akpm@linux-foundation.org,
+        hch@infradead.org, lmark@codeaurora.org, labbott@redhat.com,
+        Brian.Starkey@arm.com, john.stultz@linaro.org,
+        christian.koenig@amd.com, cgoldswo@codeaurora.org,
+        orjan.eide@arm.com, robin.murphy@arm.com, jajones@nvidia.com,
+        hridya@google.com, sspatil@google.com, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 2/2] dma-buf: heaps: Map system heap pages as managed
+ by linux vm
+Message-ID: <YBn+yWIE9eXbgQ2K@google.com>
+References: <20210203003134.2422308-1-surenb@google.com>
+ <20210203003134.2422308-2-surenb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAB3O2kJ_hlg+v3gaA--.4629S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw47KFW3KF47uw47CrW8tFb_yoWDWrXEkr
-        W0q3Z7Wr1qga9Fkan8Ja13Z34IvFW09rnYk3W0qFZ09wnxXw4rAw1UZrW7XayUXF4FyFyq
-        yrZrGr1Syr13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeN4S7UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiTgAtyFUDHlmcVwABsw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203003134.2422308-2-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+On Tue, Feb 02, 2021 at 04:31:34PM -0800, Suren Baghdasaryan wrote:
+> Currently system heap maps its buffers with VM_PFNMAP flag using
+> remap_pfn_range. This results in such buffers not being accounted
+> for in PSS calculations because vm treats this memory as having no
+> page structs. Without page structs there are no counters representing
+> how many processes are mapping a page and therefore PSS calculation
+> is impossible.
+> Historically, ION driver used to map its buffers as VM_PFNMAP areas
+> due to memory carveouts that did not have page structs [1]. That
+> is not the case anymore and it seems there was desire to move away
+> from remap_pfn_range [2].
+> Dmabuf system heap design inherits this ION behavior and maps its
+> pages using remap_pfn_range even though allocated pages are backed
+> by page structs.
+> Replace remap_pfn_range with vm_insert_page, following Laura's suggestion
+> in [1]. This would allow correct PSS calculation for dmabufs.
+> 
+> [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
+> [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
+> (sorry, could not find lore links for these discussions)
+> 
+> Suggested-by: Laura Abbott <labbott@kernel.org>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Reviewed-by: Minchan Kim <minchan@kernel.org>
 
-Simplify the code by using module_platform_driver macro for sgiwd93.
-
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/scsi/sgiwd93.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/drivers/scsi/sgiwd93.c b/drivers/scsi/sgiwd93.c
-index cf1030c..7e99a53 100644
---- a/drivers/scsi/sgiwd93.c
-+++ b/drivers/scsi/sgiwd93.c
-@@ -305,18 +305,7 @@ static int sgiwd93_remove(struct platform_device *pdev)
- 	}
- };
- 
--static int __init sgiwd93_module_init(void)
--{
--	return platform_driver_register(&sgiwd93_driver);
--}
--
--static void __exit sgiwd93_module_exit(void)
--{
--	return platform_driver_unregister(&sgiwd93_driver);
--}
--
--module_init(sgiwd93_module_init);
--module_exit(sgiwd93_module_exit);
-+module_platform_driver(sgiwd93_driver);
- 
- MODULE_DESCRIPTION("SGI WD33C93 driver");
- MODULE_AUTHOR("Ralf Baechle <ralf@linux-mips.org>");
--- 
-1.9.1
-
+A note: This patch makes dmabuf system heap accounted as PSS so
+if someone has relies on the size, they will see the bloat.
+IIRC, there was some debate whether PSS accounting for their
+buffer is correct or not. If it'd be a problem, we need to
+discuss how to solve it(maybe, vma->vm_flags and reintroduce
+remap_pfn_range for them to be respected).
 
