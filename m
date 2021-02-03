@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBAB30D9A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D8330D9AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhBCMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:16:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43316 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234322AbhBCMQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:16:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612354564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S234375AbhBCMUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232525AbhBCMUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:20:19 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FE9C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:19:38 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c84005017455b058bf408.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:5017:455b:58b:f408])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 35AC91EC047F;
+        Wed,  3 Feb 2021 13:19:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612354777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CWryIVYU+uhWQij5Zedr+mthwADlpM4pzIqLbc2PJTE=;
-        b=ZO1FDrig5tnUD0sD709rRk12j9b+f6/535vnUH3W+CDbRbO/2c6Kc8pifEUT1BMziNVfXa
-        CPTfjc6g/FfslyAYggad3k3ARdbimmNlG06TOX0F6IyHHo/BNMtx/NehxH/OCa8d7HxX5C
-        VpPnKpOaRmZ4e14jLHdyuC1KXNF7S80=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E0430B17A;
-        Wed,  3 Feb 2021 12:16:03 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 13:15:58 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        bh=Nj2ilHOLZKWctzV9AdEGYD+lgbpOZAlL7qxf96POKHE=;
+        b=Hnv7ulWZLBwNx1QGEuQob+JDDNev4A5bkqRQKtXOYq+sXalhniywh/YQdkj8x1KFaFpc7K
+        +h7I18QVnXdFFeDlDpEau431GbsmCkfVdqspNWZDWOgPCSxhSr9EgjJf40uRUNmJnC+XTu
+        e+aacKqKwDtnhweC0AHbqKf4I9d23Yk=
+Date:   Wed, 3 Feb 2021 13:19:34 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     John Millikin <jmillikin@gmail.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>, hpa@zytor.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org>
+        Ingo Molnar <mingo@redhat.com>,
+        John Millikin <john@john-millikin.com>
+Subject: Re: [PATCH v2] arch/x86: Propagate $(CLANG_FLAGS) to
+ $(REALMODE_FLAGS)
+Message-ID: <20210203121934.GC13819@zn.tnic>
+References: <cceb074c-861c-d716-5e19-834a8492f245@gmail.com>
+ <37DE7046-5096-4C0C-A96D-FD168A849DFD@zytor.com>
+ <20201226075347.GA1977841@ubuntu-m3-large-x86>
+ <3b793c42-8983-4502-1f9e-729cc0ebec47@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210121122723.3446-7-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3b793c42-8983-4502-1f9e-729cc0ebec47@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
-> +static struct file *secretmem_file_create(unsigned long flags)
-> +{
-> +	struct file *file = ERR_PTR(-ENOMEM);
-> +	struct secretmem_ctx *ctx;
-> +	struct inode *inode;
-> +
-> +	inode = alloc_anon_inode(secretmem_mnt->mnt_sb);
-> +	if (IS_ERR(inode))
-> +		return ERR_CAST(inode);
-> +
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		goto err_free_inode;
-> +
-> +	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
-> +				 O_RDWR, &secretmem_fops);
-> +	if (IS_ERR(file))
-> +		goto err_free_ctx;
-> +
-> +	mapping_set_unevictable(inode->i_mapping);
+On Sat, Dec 26, 2020 at 05:41:25PM +0900, John Millikin wrote:
+> When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
+> contains additional flags needed to build C and assembly sources
+> for the target platform. Normally this variable is automatically
+> included in `$(KBUILD_CFLAGS)' by via the top-level Makefile.
+> 
+> The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
+> plain assignment and therefore drops the Clang flags. This causes
+> Clang to not recognize x86-specific assembler directives:
+> 
+>   arch/x86/realmode/rm/header.S:36:1: error: unknown directive
+>   .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
+>   ^
+> 
+> Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
+> which is inherited by real-mode make rules, fixes cross-compilation
+> with Clang for x86 targets.
+> 
+> Relevant flags:
+> 
+> * `--target' sets the target architecture when cross-compiling. This
+>   flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
+>   to support architecture-specific assembler directives.
+> 
+> * `-no-integrated-as' tells clang to assemble with GNU Assembler
+>   instead of its built-in LLVM assembler. This flag is set by default
+>   unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
+>   parse certain GNU extensions.
+> 
+> Signed-off-by: John Millikin <john@john-millikin.com>
+> ---
+> Changes in v2:
+>   - Reworded the commit message to highlight that this is for
+>     cross-compilation.
+>   - Removed the `ifdef CONFIG_CC_IS_CLANG' guard.
+> 
+>  arch/x86/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 7116da3980be..412b849063ec 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -33,6 +33,7 @@ REALMODE_CFLAGS += -ffreestanding
+>  REALMODE_CFLAGS += -fno-stack-protector
 
-Btw. you need also mapping_set_gfp_mask(mapping, GFP_HIGHUSER) because
-the default is GFP_HIGHUSER_MOVABLE and you do not support migration so
-no pages from movable zones should be allowed.
+This one too:
+
+checking file arch/x86/Makefile
+patch: **** malformed patch at line 62:  REALMODE_CFLAGS += -fno-stack-protector
 
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
