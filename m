@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89C730E5A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A7B30E59D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 23:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhBCWGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 17:06:52 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:52552 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233015AbhBCWEp (ORCPT
+        id S233030AbhBCWG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 17:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233041AbhBCWE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:04:45 -0500
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 2EDBCC0115;
-        Wed,  3 Feb 2021 22:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1612389824; bh=im9YPeIOIOX6v4VKPr6LIGB+a/nLiNTjVu6zUPMNTcw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=Hedfy4pgRdNXMH2l3sfmFdQH+ESMrAXn1eMy0A1r6AuyAwjiIKQSwhBjS2r6GaM52
-         frpfVYCEXXxcaTUBwFJaAHJREVo3kiWErSGQfvx5IwhAqyJ8S/bd5tGX8r7GSIh9Q/
-         csBLoB6gBVEqxB8jx1X4r+2fnkyhheJ42lHQlMFBptW7ggWY3NoizmNwjBdjno9L2p
-         I1u6YwxtKEvAScmspXkuxoMP/ZWEZNsgGbYYj/FWRDO3JQHOD7zKXorVM2YctQ1Ok5
-         Q+1MWqHTeNo+/ekMDe4fWZTviNdKHCEsn7PGy3RiFzZWjI5DwJiPED9+EFzBhHzdZh
-         wLIoTjLTB96Fg==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 00546A024C;
-        Wed,  3 Feb 2021 22:03:43 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Subject: [PATCH v4 6/6] docs: ABI: Add sysfs documentation interface of dw-xdata-pcie driver
-Date:   Wed,  3 Feb 2021 23:03:30 +0100
-Message-Id: <45f0701b523cda52b4b7f42351b63d5a0b6040b6.1612389746.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1612389746.git.gustavo.pimentel@synopsys.com>
-References: <cover.1612389746.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1612389746.git.gustavo.pimentel@synopsys.com>
-References: <cover.1612389746.git.gustavo.pimentel@synopsys.com>
+        Wed, 3 Feb 2021 17:04:59 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2C9C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 14:04:19 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id m76so1165988ybf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 14:04:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v7K3rW8zvq+XYmMSjDf3MSB+TOa5aFl39/Zfs0xNs5U=;
+        b=Es7NUx4/adad+Te1etGM6bwLwJ+xNQFACicd47TDJTcUwCw0zDHsw6oP16iLf4nz+L
+         N+wFktl7eNs+K6vmdsykdjHt8yoZvbxmBwggr9UzdN9c3gIufH8PRHP5Wv05cQO1Z94b
+         HyLFKzyhmFf+L2qBsOqWGIPywS+sRgdJ/sNLy8AvmenYWwnQ3NWAidiIQ2la0tzOBvi9
+         ie3kHKTLajBVzmdG8geg+EKsREOeeCydyP1b7Ro4OgWtnIxEy1i5FpGGc8onMeorgTB3
+         sxtBJhh2dTbqeczjqzkOWomUGBXOYoIPLQ29kctTWYynhR9l0HJ6unt5UDKykjcysHoi
+         6BuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v7K3rW8zvq+XYmMSjDf3MSB+TOa5aFl39/Zfs0xNs5U=;
+        b=df13GrTtKwRox9vReIrJMEXAycZLnq7PkMQqzI4fgBJpro4M/ha1p+IlhbQZP5Ky0W
+         uqJu/jw3ViboZcRd+k/cVSe27VTGHeViLJV2jhJDUTKbwE6uKQrNk/igKKWI33E62AEE
+         LJ1woczQc4EjsYDbVhJrl02wKT5G91YDYByNrIahmE4wp+O3guYyeu1EMjcYaVp7HaIG
+         qx8RJqyJSspUGPaMOLuHQGjVJw0TZ4IVzGMnXo4Q8ZKpQRzOM5pBL26fvZIqEax3QJ8h
+         iFpi993Zc6zkAiWuI3QD/0tF/XIMjmhdfB5Vc4LXadYxuEbB5810NaSCKxzP4vbK9QT7
+         jocw==
+X-Gm-Message-State: AOAM532gkUPxlkTGabocEyMDNMtqHW9Y+qY8zdoL/i+BScFt/blNAaZb
+        O4YSLE8gp1WwmsV88rxWLDT89C8R7TImf94uZ3nEDQ==
+X-Google-Smtp-Source: ABdhPJyx22+rwKcjQf1sOF4vT0S+2zuBCVq2Amx9fXv363dMobm/ynDLr7OM46rqz11e1gNt/PhUW8JMNl8MCP4C42o=
+X-Received: by 2002:a25:c683:: with SMTP id k125mr8298996ybf.32.1612389858339;
+ Wed, 03 Feb 2021 14:04:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202043345.3778765-1-saravanak@google.com>
+ <20210202212231.g5tj3f7tv74gagm6@viti.kaiser.cx> <CAGETcx_cS_Y-1Bw3tNhZRckEQO=yB8UDzNRr+Khs_X2ym7tnwA@mail.gmail.com>
+ <20210203215757.pnfvfny2x67phyd7@viti.kaiser.cx>
+In-Reply-To: <20210203215757.pnfvfny2x67phyd7@viti.kaiser.cx>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 3 Feb 2021 14:03:42 -0800
+Message-ID: <CAGETcx9YGkqOj7e5xeXdE-icog9-v+SsTpW35-n1KeCf6JvpbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch describes the sysfs interface implemented on the dw-xdata-pcie
-driver.
+On Wed, Feb 3, 2021 at 1:58 PM Martin Kaiser <martin@kaiser.cx> wrote:
+>
+> Thus wrote Saravana Kannan (saravanak@google.com):
+>
+> > > With modules disabled, the kernel boots but probe fails for some
+> > > (non-mainline) drivers in my tree.
+>
+> > Thanks Martin!
+>
+> > > All of those drivers have a gpio in
+> > > their device-tree node, such as
+>
+> > > my_driver {
+> > >    gpio_test1 = <&gpio1 0 0>;
+> > >    ...
+> > > };
+>
+> > > with gpio1 from arch/arm/boot/dts/imx25.dtsi.
+>
+> > > The probe function calls
+>
+> > > of_get_named_gpio(np, "gpio_test1", 0);
+>
+> > > to get the gpio. This fails with -EINVAL.
+>
+> > And you didn't see this issue with the fsl,avic patch?
+>
+> No. With the fsl,avic patch in place, all drivers are probed correctly.
+>
+> > The property you are using is not a standard GPIO binding (-gpios,
+> > gpio, gpios) and I'm not surprised it's not working.
+>
+> I know that I should be using the gpiod API as suggested by Geert.
+>
+> BTW is this definition ok? Could its driver be converted to using the
+> gpiod api?
+>
+> rtc: rtc {
+>    compatible = "moxa,moxart-rtc";
+>    gpio-rtc-sclk = <&gpio 5 0>;
+> ...
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- Documentation/ABI/testing/sysfs-driver-xdata | 46 ++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+The correct non-deprecated binding AFAIK is something-gpios. Not
+gpio-something. And then you can use different APIs to get the GPIO (I
+forget what it's called).
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-xdata b/Documentation/ABI/testing/sysfs-driver-xdata
-new file mode 100644
-index 00000000..a7bb44b
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-xdata
-@@ -0,0 +1,46 @@
-+What:		/sys/kernel/dw-xdata-pcie/write
-+Date:		February 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create write TLPs frames - from the Root Complex to the
-+		Endpoint direction.
-+		Usage e.g.
-+		 echo 1 > /sys/kernel/dw-xdata-pcie/write
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator.
-+		Usage e.g.
-+		 cat /sys/kernel/dw-xdata-pcie/write
-+		 204 MB/s
-+
-+		The file is read and write.
-+
-+What:		/sys/kernel/dw-xdata-pcie/read
-+Date:		February 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create read TLPs frames - from the Endpoint to the Root
-+		Complex direction.
-+		Usage e.g.
-+		 echo 1 > /sys/kernel/dw-xdata-pcie/read
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator.
-+		Usage e.g.
-+		 cat /sys/kernel/dw-xdata-pcie/read
-+		 199 MB/s
-+
-+		The file is read and write.
-+
-+What:		/sys/kernel/dw-xdata-pcie/stop
-+Date:		February 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to disable the PCIe traffic generator in all
-+		directions.
-+		Usage e.g.
-+		 echo 1 > /sys/kernel/dw-xdata-pcie/stop
-+
-+		The file is write only.
--- 
-2.7.4
+-Saravana
 
+>
+>
+> > The gpio1 is probably getting probe deferred and ends up running after
+> > "my_driver".
+>
+> I added a debug print in the probe function. It turned out that the
+> driver for gpio1 is probed for the first time after my_driver.
+>
+> I removed the interrupt-controller property for gpio2 for testing. gpio2
+> was then probed much earlier.
