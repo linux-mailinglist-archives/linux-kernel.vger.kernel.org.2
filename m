@@ -2,109 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032F830E187
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6327230E18C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 18:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhBCRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 12:55:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhBCRzK (ORCPT
+        id S232198AbhBCRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 12:55:54 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12424 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232035AbhBCRzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:55:10 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625DFC061573;
-        Wed,  3 Feb 2021 09:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=YkBJ95tIOheMu1qT8WUd4dMwBVvw2q3v5lgMfHoq7kk=; b=NoLr8WrKRkeWsZEmixlM19kKb8
-        ylLZ3Q4fyuek/8iEEdACx+Bs+ZmUQ1yFrBwv+LzVNy6N315lVq+ieAykNyvh3X35zyHAuTOZhz9Zm
-        nQhQKJRJxZlUaZcw4zyQbdb3qDLBKymBp6eo5lJGGsk4yvw6i3s5TPHRYd5ey+DdEHbTKLNQfK+nw
-        z+pg3Zk+F8HmVtAhFtD9Ww+BvDFzkD6XBl9vOfOo98j1xQvyYogudj9lVY65HL/1nTjI9M0btzklp
-        +cd6omQVMX2J4fXQo9q6tHwK9iBDBsaB8gNf6T4akDkf/sfY4DpRhmjb0bZwPulswriCgeJ+fbgG4
-        +r1XvbUg==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7MME-0002YH-NI; Wed, 03 Feb 2021 17:54:27 +0000
-Subject: Re: [PATCH] drivers: net: ehternet: i825xx: Fix couple of spellings
- in the file ether1.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203151547.13273-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fb09ac34-12a9-f7df-131e-a98497f49d1b@infradead.org>
-Date:   Wed, 3 Feb 2021 09:54:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 3 Feb 2021 12:55:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612374915; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=skd9G4BcflC/QWV4zSXi1f5Z3sAt9lA/5vhec0dO9FM=; b=JJuaRFopnXMFVMFvE/b9OMiN2fWFM2mtsw3EPcPv/dPC2g4BvtIefkaQA3R+LU2VwPDNrzQy
+ dHVcLmRremqbXWxSklxEzktJrAymLrLLW2qu64JVTnFdRipz3vzo1j94Gkh0o13zqU9s6kKg
+ U4VXoNIn37zQsn7ji2gfWfZIJhE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 601ae35c84d0ac8967a1fbde (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Feb 2021 17:54:36
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72E16C43462; Wed,  3 Feb 2021 17:54:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.210.176.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D02EC433ED;
+        Wed,  3 Feb 2021 17:54:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D02EC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v4 2/2] arm: dts: sc7180: Add support for gpu fuse
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        dri-devel@freedesktop.org, freedreno@lists.freedesktop.org
+References: <1610129731-4875-1-git-send-email-akhilpo@codeaurora.org>
+ <1610129731-4875-2-git-send-email-akhilpo@codeaurora.org>
+ <YBnXshYzJmNpmuEW@builder.lan>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <af88628d-08ca-a2f3-c8f3-91732366760f@codeaurora.org>
+Date:   Wed, 3 Feb 2021 23:24:27 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210203151547.13273-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YBnXshYzJmNpmuEW@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:15 AM, Bhaskar Chowdhury wrote:
+On 2/3/2021 4:22 AM, Bjorn Andersson wrote:
+> On Fri 08 Jan 12:15 CST 2021, Akhil P Oommen wrote:
 > 
-> s/initialsation/initialisation/
-> s/specifiing/specifying/
+> Please align the $subject prefix with other changes in the same file.
+> I fixed it up while picking up the patch this time.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Will take of this in future. Thanks, Bjorn.
 
-Hi,
+-Akhil.
 
-$Subject has a typo/spello.
-
-The 2 fixes below look good (as explained in the patch description),
-but:
-can you explain the 3 changes below that AFAICT do nothing?
-
-
-> ---
->  drivers/net/ethernet/i825xx/ether1.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> Regards,
+> Bjorn
 > 
-> diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
-> index a0bfb509e002..0233fb6e222d 100644
-> --- a/drivers/net/ethernet/i825xx/ether1.c
-> +++ b/drivers/net/ethernet/i825xx/ether1.c
-> @@ -885,7 +885,7 @@ ether1_recv_done (struct net_device *dev)
->  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_command, NORMALIRQS);
->  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_status, NORMALIRQS);
->  		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_rbdoffset, NORMALIRQS);
-> -
-> +
->  		priv(dev)->rx_tail = nexttail;
->  		priv(dev)->rx_head = ether1_readw(dev, priv(dev)->rx_head, rfd_t, rfd_link, NORMALIRQS);
->  	} while (1);
-> @@ -1031,7 +1031,7 @@ ether1_probe(struct expansion_card *ec, const struct ecard_id *id)
+>> Add support for gpu fuse to help identify the supported opps.
+>>
+>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
+>>   1 file changed, 22 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> index 6678f1e..8cae3eb 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> @@ -675,6 +675,11 @@
+>>   				reg = <0x25b 0x1>;
+>>   				bits = <1 3>;
+>>   			};
+>> +
+>> +			gpu_speed_bin: gpu_speed_bin@1d2 {
+>> +				reg = <0x1d2 0x2>;
+>> +				bits = <5 8>;
+>> +			};
+>>   		};
+>>   
+>>   		sdhc_1: sdhci@7c4000 {
+>> @@ -1907,52 +1912,69 @@
+>>   			operating-points-v2 = <&gpu_opp_table>;
+>>   			qcom,gmu = <&gmu>;
+>>   
+>> +			nvmem-cells = <&gpu_speed_bin>;
+>> +			nvmem-cell-names = "speed_bin";
+>> +
+>>   			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
+>>   			interconnect-names = "gfx-mem";
+>>   
+>>   			gpu_opp_table: opp-table {
+>>   				compatible = "operating-points-v2";
+>>   
+>> +				opp-825000000 {
+>> +					opp-hz = /bits/ 64 <825000000>;
+>> +					opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
+>> +					opp-peak-kBps = <8532000>;
+>> +					opp-supported-hw = <0x04>;
+>> +				};
+>> +
+>>   				opp-800000000 {
+>>   					opp-hz = /bits/ 64 <800000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
+>>   					opp-peak-kBps = <8532000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-650000000 {
+>>   					opp-hz = /bits/ 64 <650000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
+>>   					opp-peak-kBps = <7216000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-565000000 {
+>>   					opp-hz = /bits/ 64 <565000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
+>>   					opp-peak-kBps = <5412000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-430000000 {
+>>   					opp-hz = /bits/ 64 <430000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+>>   					opp-peak-kBps = <5412000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-355000000 {
+>>   					opp-hz = /bits/ 64 <355000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+>>   					opp-peak-kBps = <3072000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-267000000 {
+>>   					opp-hz = /bits/ 64 <267000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>>   					opp-peak-kBps = <3072000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   
+>>   				opp-180000000 {
+>>   					opp-hz = /bits/ 64 <180000000>;
+>>   					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
+>>   					opp-peak-kBps = <1804000>;
+>> +					opp-supported-hw = <0x07>;
+>>   				};
+>>   			};
+>>   		};
+>> -- 
+>> 2.7.4
+>>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 > 
->  	printk(KERN_INFO "%s: ether1 in slot %d, %pM\n",
->  		dev->name, ec->slot_no, dev->dev_addr);
-> -
-> +
->  	ecard_set_drvdata(ec, dev);
->  	return 0;
-> 
-> @@ -1047,7 +1047,7 @@ static void ether1_remove(struct expansion_card *ec)
->  {
->  	struct net_device *dev = ecard_get_drvdata(ec);
-> 
-> -	ecard_set_drvdata(ec, NULL);
-> +	ecard_set_drvdata(ec, NULL);
-> 
->  	unregister_netdev(dev);
->  	free_netdev(dev);
-> --
-> 2.26.2
-> 
-
-
--- 
-~Randy
 
