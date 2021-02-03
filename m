@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C8230DCC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA4530DCC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 15:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhBCOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 09:30:08 -0500
-Received: from m12-16.163.com ([220.181.12.16]:58431 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232317AbhBCOaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 09:30:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=V2te+EMxY7SONrR5Cm
-        p3/3SCPAP5Bua2LJ16//K4GV8=; b=cVEYkNvyA6O0UChdPKdL7nyoF5Vpy3iRVr
-        V9Yo9nrR/vWXEFDsuqzB+z5Y7Lq7TVkjS4U2LVuCz8FTn0Xa85i+8KnDCzd3680v
-        VOYIGMlnzlhj+tcqbSKvPPxQKzgJWUKzOHkA8YR6wkYTYx2EB6XG0h6ASvEX2MeC
-        n4lwRj2ws=
-Received: from zhongjupeng.ccdomain.com (unknown [119.137.55.230])
-        by smtp12 (Coremail) with SMTP id EMCowADHzlIUsxpgZuhTaQ--.13240S2;
-        Wed, 03 Feb 2021 22:28:37 +0800 (CST)
-From:   zjp734690220@163.com
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jupeng Zhong <zhongjupeng@yulong.com>
-Subject: [PATCH v4] Bluetooth: btusb: Fix typo and correct the log print
-Date:   Wed,  3 Feb 2021 22:28:46 +0800
-Message-Id: <20210203142846.39648-1-zjp734690220@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EMCowADHzlIUsxpgZuhTaQ--.13240S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KryDWw48Cw47Gw15tF1UWrg_yoW8JFWfpF
-        ZxGFy5AryfGr47KF47A3yvy3y5Xa1qga42kFWUA3s8ZFW5t3y8CF4rJF98W34I9FZxWaya
-        ka1DXrW0ga1kGF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jTlk3UUUUU=
-X-Originating-IP: [119.137.55.230]
-X-CM-SenderInfo: 52msljauwzijisq6il2tof0z/xtbCCw0uFF3LfC4GhAAAs6
+        id S232918AbhBCOa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 09:30:28 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47012 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232661AbhBCOaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 09:30:25 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E48181C0B9C; Wed,  3 Feb 2021 15:29:40 +0100 (CET)
+Date:   Wed, 3 Feb 2021 15:29:40 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from DT
+Message-ID: <20210203142940.GB12369@duo.ucw.cz>
+References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
+Content-Disposition: inline
+In-Reply-To: <20210119105312.2636-1-schuchmann@schleissheimer.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jupeng Zhong <zhongjupeng@yulong.com>
 
-Change "deivice" to "device"
+--JYK4vJDZwFMowpUq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Correct "Unsupported support hardware variant (%08x)" to
-"Unsupported hardware variant (%08x)"
+Hi!
 
-Signed-off-by: Jupeng Zhong <zhongjupeng@yulong.com>
----
-v4: update bluetooth-next tree and regenerate the patch again
-v3: update bluetooth-next tree and regenerate the patch
-v2: correct the log print and update the patch From: and Signed-off-by:
----
- drivers/bluetooth/btusb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> In order to use a multicolor-led together with a trigger
+> from DT the led needs to have an intensity set to see something.
+> The trigger changes the brightness of the led but if there
+> is no intensity we actually see nothing.
+>=20
+> This patch adds the ability to set the default intensity
+> of each led so that it is turned on from DT.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index eeafb8432c0f..154e1e76c317 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3631,7 +3631,7 @@ static int btusb_mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
- 	while (fw_size > 0) {
- 		dlen = min_t(int, 250, fw_size);
- 
--		/* Tell deivice the position in sequence */
-+		/* Tell device the position in sequence */
- 		if (fw_size - dlen <= 0)
- 			flag = 3;
- 		else if (fw_size < fw->size - 30)
-@@ -3790,7 +3790,7 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 		}
- 		goto done;
- 	default:
--		bt_dev_err(hdev, "Unsupported support hardware variant (%08x)",
-+		bt_dev_err(hdev, "Unsupported hardware variant (%08x)",
- 			   dev_id);
- 		return -ENODEV;
- 	}
--- 
-1.9.1
+Do we need this to be configurable from device tree? Can we just set
+it to max or something?
 
+Aha, this basically sets the initial color for LEDs the monochromatic
+triggers, right?
 
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--JYK4vJDZwFMowpUq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBqzVAAKCRAw5/Bqldv6
+8jU+AKDBCWCPYM4oWufL16cUxx/EhAeG3wCdEe7WKm1eaSwXiWafu9dKcu0LneA=
+=RLnx
+-----END PGP SIGNATURE-----
+
+--JYK4vJDZwFMowpUq--
