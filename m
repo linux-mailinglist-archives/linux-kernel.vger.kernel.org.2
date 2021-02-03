@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D3930DBD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE9B30DBED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhBCNvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhBCNvE (ORCPT
+        id S231740AbhBCNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:54:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232535AbhBCNwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:51:04 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B068C061573;
-        Wed,  3 Feb 2021 05:50:24 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id e9so14442557plh.3;
-        Wed, 03 Feb 2021 05:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sJZTLx+wKAWIbKuFm4LnLXwbwiJWc4BnsCezUdYc3sM=;
-        b=hWKPKYPMRwVInqHOLoFeqYKaNXcKDNSkIZeUbxx05bVkNId4uj+SWLdONYQvKciJQN
-         Y5PcMgglVFRLMPKUQOm5RCj97kVaKviYNlhDYlRiwNJbokm10Grs59j2g4HTL4p/u+aW
-         FCxEYfGr0/Jy5IhL2a1ugaM7KxeiDOTPN++2T/QxTQhVsRydS2qfzeyB9ODFi8Jssyai
-         J5BhyqnaDkRSsFrKft7F7nLdBRupgurZyHWjhQmPRd6cZ7gDdDIuMrbGm0kGruYCKHiC
-         Muh86zXtdEK1dQrUd5HUIgYMEnoNio1nBDE0HJF/M0wUEroGlE3RuHcgYgoliEhEcVsm
-         xPRA==
+        Wed, 3 Feb 2021 08:52:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612360283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6DhEofLaMJjZ1tt7Cq7N3qGi1/742c/Y3DEA1AwMW1g=;
+        b=APrikD6t86edAmILKfOvMfbU0RCW1hqkhtvbxUDLYXf/gZz49cCtnAGkQZ/G6IbTrK1yC8
+        tY5DnmaNgoUP5vkcFC2jOKfQ19Trgj2v0xU+HxM8AVsx1UL7o48YC6DfS3L6UKjTo/ZUtt
+        3JWITAG5wWJxdRFKLsNSkA8mlli+RG4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-HP9GlbT5M_6piQiyeC5QbQ-1; Wed, 03 Feb 2021 08:50:26 -0500
+X-MC-Unique: HP9GlbT5M_6piQiyeC5QbQ-1
+Received: by mail-qt1-f200.google.com with SMTP id w3so16987760qti.17
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:50:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sJZTLx+wKAWIbKuFm4LnLXwbwiJWc4BnsCezUdYc3sM=;
-        b=gBirjThpLjTF/siWOI9OyBY/GSXpQYTic0ZvrXzTQc1aI70VBvfQG0/TXiyV5e7Dcj
-         Cb4w7e6SX9T1gA6iFgNkm2skFhtP9J7wlhfoHjmbVY6h3xY3Ys6Q1ofIqZCps7YkLHXP
-         5OtSuEUASaynQI1TL5dHNdHXpcCMDAbwvBNclMHTB0zTMnjtn1TJbVhIUn5/QDmstCQf
-         A0UIuHSuY2hhHeCkyEqPnfYACptW8DcFV7VU4oYwotGF73sOWarp1+DRn0TMDxQ8h2sn
-         Qg/FU10LATDvcNh36qA2/xaL5ZwpEME5HL8kOd1ff3WpIPpqu78aUSiE3jT4/uRiiL50
-         UXTA==
-X-Gm-Message-State: AOAM532/biX26ttTjtKrybDYEr+/oY3sAAZNmoggPwxOVcFqzp7zo9mS
-        WTHgzcvbLXuXk/vrqt+0WfkccgJDAmJj7ZXn
-X-Google-Smtp-Source: ABdhPJzGPKdXUny+epDEYahw3mO/tST1Qn7idQVzLqZ/A0x72nx8O4cJCUr6bK9l36Gv79YdN1OmAQ==
-X-Received: by 2002:a17:902:6b02:b029:da:c6c0:d650 with SMTP id o2-20020a1709026b02b02900dac6c0d650mr3364377plk.74.1612360224157;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6DhEofLaMJjZ1tt7Cq7N3qGi1/742c/Y3DEA1AwMW1g=;
+        b=jB5ejpv8uR0OeFDHGJH4wibDn5eTH9A5f6SJsxpikSuwDnC7XnveMmzsNLyxPFF2LE
+         Lz/Hq1qpHtlyK7qR1c+3ZaS/4vj/QPl/EeG4uPfLAcmsoZ5VKtrEmIYkTvOLxt/oIuNk
+         jzRVA7XWsP/Uw8/zgGlVpxXs7EeV8eRk25T/HRsO6ikIYS8mOT2RHW9RcCn80yDISz7S
+         rp+hhS+dOZwYvSDafQ2TboQaq52X33OleojNhqnrpEy6OjgwvAFh00QCojivn4FZ+lAR
+         utARr/uNSTLHSfvappkuzyDsTnHmuHqx1WMdZRYk3sZpD4g382TCSlgfAzpVdqrkS89X
+         halA==
+X-Gm-Message-State: AOAM531xh1Ihu/nc03+YlXYKbF/8OWAN/PF6XeFtLe0F3hCmIyRDXi3m
+        pP3itsfx7ODfRoVTBKq71fcwsxM7RGNhcQOLTjkxRUVR1LcrD+ElQ19AQUAAAyNIqbcjfzhW6EQ
+        M/TxaS/uLN4URUwc5w+s87oO+
+X-Received: by 2002:ae9:ed04:: with SMTP id c4mr2457901qkg.289.1612360225727;
+        Wed, 03 Feb 2021 05:50:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzdpG6zb1OO0QuYugj8PvmHLYZmdPd2y0ikD+0cdb6QgqAXJKDD8pYPXUAgkWzhbsUrGx0R8A==
+X-Received: by 2002:ae9:ed04:: with SMTP id c4mr2457888qkg.289.1612360225548;
+        Wed, 03 Feb 2021 05:50:25 -0800 (PST)
+Received: from loberhel7laptop ([2600:6c64:4e7f:cee0:ccad:a4ca:9a69:d8bc])
+        by smtp.gmail.com with ESMTPSA id 75sm1349448qta.68.2021.02.03.05.50.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
         Wed, 03 Feb 2021 05:50:24 -0800 (PST)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id x63sm2532560pfc.145.2021.02.03.05.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 05:50:23 -0800 (PST)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Wed, 3 Feb 2021 21:50:09 +0800
-To:     Colin King <colin.king@canonical.com>
-Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH][next] staging: qlge: fix read of an uninitialized pointer
-Message-ID: <20210203135009.4boh3fhpaydysxej@Rk>
-References: <20210203133834.22388-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210203133834.22388-1-colin.king@canonical.com>
+Message-ID: <de50b6b8c867ec1f88df54f92134a99b086da8ac.camel@redhat.com>
+Subject: Re: [PATCH] block: recalculate segment count for multi-segment
+ discard requests correctly
+From:   Laurence Oberman <loberman@redhat.com>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        David Jeffery <djeffery@redhat.com>
+Cc:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 03 Feb 2021 08:50:22 -0500
+In-Reply-To: <BYAPR04MB4965222989DE60A2F198358286B49@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20210201164850.391332-1-djeffery@redhat.com>
+         <20210202033343.GA165584@T590> <20210202204355.GA31803@redhat>
+         <20210203023517.GA948998@T590>
+         <BYAPR04MB4965222989DE60A2F198358286B49@BYAPR04MB4965.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:38:34PM +0000, Colin King wrote:
->From: Colin Ian King <colin.king@canonical.com>
->
->Currently the pointer 'reporter' is not being initialized and is
->being read in a netdev_warn message.  The pointer is not used
->and is redundant, fix this by removing it and replacing the reference
->to it with priv->reporter instead.
->
->Addresses-Coverity: ("Uninitialized pointer read")
->Fixes: 1053c27804df ("staging: qlge: coredump via devlink health reporter")
->Signed-off-by: Colin Ian King <colin.king@canonical.com>
->---
-> drivers/staging/qlge/qlge_devlink.c | 3 +--
-> 1 file changed, 1 insertion(+), 2 deletions(-)
->
->diff --git a/drivers/staging/qlge/qlge_devlink.c b/drivers/staging/qlge/qlge_devlink.c
->index c6ef5163e241..86834d96cebf 100644
->--- a/drivers/staging/qlge/qlge_devlink.c
->+++ b/drivers/staging/qlge/qlge_devlink.c
->@@ -150,7 +150,6 @@ static const struct devlink_health_reporter_ops qlge_reporter_ops = {
->
-> void qlge_health_create_reporters(struct qlge_adapter *priv)
-> {
->-	struct devlink_health_reporter *reporter;
-> 	struct devlink *devlink;
->
-> 	devlink = priv_to_devlink(priv);
->@@ -160,5 +159,5 @@ void qlge_health_create_reporters(struct qlge_adapter *priv)
-> 	if (IS_ERR(priv->reporter))
-> 		netdev_warn(priv->ndev,
-> 			    "Failed to create reporter, err = %ld\n",
->-			    PTR_ERR(reporter));
->+			    PTR_ERR(priv->reporter));
-> }
->--
->2.29.2
->
+On Wed, 2021-02-03 at 03:15 +0000, Chaitanya Kulkarni wrote:
+> On 2/2/21 18:39, Ming Lei wrote:
+> > +		/* fall through */
+> >  	case REQ_OP_WRITE_ZEROES:
+> > -		return 0;
+> 
+> I don't think returning 1 for write-zeroes is right,
+> did you test this patch with write-zeores enabled controller with
+> the right fs that triggers this behavior ?
+> 
+> 
+I tested the first iteration of the patch fully mounting an XFS file
+system with -o discard and creating and deleting files.
+That was our specific RHEL8 failure we were handling here with David's
+first submission.
 
-Thanks for fixing this issue.
+I can test his most recent, I have not done that yet.
+Again, please follow up with exactly what you want based against
+David's patch and I can test that.
 
-Reviewed-by: Coiby Xu <coiby.xu@gmail.com>
+Regards
+Laurence 
 
---
-Best regards,
-Coiby
