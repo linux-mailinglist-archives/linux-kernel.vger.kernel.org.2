@@ -2,145 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F87D30DAC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB2430DAC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhBCNNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:13:39 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:54220 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229979AbhBCNNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:13:33 -0500
-Received: from [192.168.68.104] (unknown [111.18.92.2])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf_MzoRpglroCAA--.3368S3;
-        Wed, 03 Feb 2021 21:12:21 +0800 (CST)
-Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
- traces from user-space with perf
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        David Daney <david.daney@cavium.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Archer Yan <ayan@wavecomp.com>
-References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
- <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
- <20210201104338.GA6484@alpha.franken.de>
- <7c081c6f-bf47-353d-95c0-52e8640dc938@loongson.cn>
- <20210203104009.GE7586@alpha.franken.de>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <1ba8402b-77a0-a524-b9f0-55e91841cc20@loongson.cn>
-Date:   Wed, 3 Feb 2021 21:12:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S231346AbhBCNNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbhBCNNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:13:43 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5EFC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 05:13:03 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id f2so28190177ljp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 05:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=z+dkbl6T4z+R7b8FTGLPujhZ/RM2EN7Df6fbF55KFk8=;
+        b=sC+eYfG5dEALRACZYrgOtVwHqWYFOYPWEg2wo0vm6FKRcophbUUYQWtCaA/iPIlM8D
+         w9gKOtz/KimlRQyWQu3ii1uKK5wrERGEXLzNHANBksEiYI4VSwX4LE5kCA6ykFFUPJrA
+         ec/O14fKb4stxOXsHdN9v3VKlJ2Or3p20wr+0jwDnSbvIe+YFx62L6i26cGqoHBHW7Ry
+         6q4OrDiAqCFkguI85tB3UFwKnM5nEqm1UN5V5aR+I+X/zUeHRETja+OCMlHdqVyCwMnJ
+         c6Pz/gggj6uDkffPcg6Hsz4jaZ5CJGXALa8Hy2uIq43F3myiNrCfLD+S5P+4gH18erv1
+         euTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=z+dkbl6T4z+R7b8FTGLPujhZ/RM2EN7Df6fbF55KFk8=;
+        b=tuIwrHmpeyaplyqLZoXldhWkU706LwaEvIcCaajfDdNeQuVcDf2kl0N0cx6QKFWFvM
+         PeU+2QvKvz0bD9kdVqc+tXgNoJF5wnspClZ1h4IS1XAbmuSPTFwDoXX2RRkV/JAWq9qp
+         J2rSvi8rUDQfywzhNvj7Zibc2FT6dsDtgLqlUFhanfg6Zgn7f+CQi5yny6EFzR/nPXrt
+         z7hIz4xnLFwiz0f5Zo8cz35JLIzmQ+h7PoeFOVDDiR3ZfBn0ZlkRv1Gy0EdBfMlXIcxZ
+         oUxqF0zKhB2e0HnPmMjTei06MrI9dMkqV6Ho9u/b9a1IaRR6u5y3CNOheBIsmW8QIKOL
+         CPLg==
+X-Gm-Message-State: AOAM533ISaAoI0pXWzDpBgeATgoyHC+dODJV9V75XCVgXhgCvnifi2g0
+        sXD6Ijcs5MovhI8Fm4nbutPakWhMmtwxLlUpyJStazLvUSHSwA==
+X-Google-Smtp-Source: ABdhPJwTMppGUexiCLr9BGDewDfA32wFqd/b8sEPcgbCPfDobrASbX6U+bntb6VNgzFmt8R1rHODGYfy4AS24GadtdA=
+X-Received: by 2002:a2e:988d:: with SMTP id b13mr1671354ljj.176.1612357981438;
+ Wed, 03 Feb 2021 05:13:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210203104009.GE7586@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf9Dxf_MzoRpglroCAA--.3368S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXryDCFy5CF4UJr13Cw13twb_yoW5Gw1fpr
-        W7Kay8Jws0qay3urWY9ayUur9xtF13JFW3urWfArW7Zr4jy3Z3Xw1kKFyaqwn7Xr18Ja1U
-        urWDKFW8AF1YyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW5GwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUSJP_UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <YAsjOqmo7TEeXjoj@google.com> <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
+ <YBG0W5PFGtGRCEuB@google.com> <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
+ <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
+ <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+ <20210129172727.GA30719@vingu-book> <09367fac-5184-56d1-3c86-998b5f2af838@arm.com>
+In-Reply-To: <09367fac-5184-56d1-3c86-998b5f2af838@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 3 Feb 2021 14:12:49 +0100
+Message-ID: <CAKfTPtCg9pTU6JFpV7+skRXT7gacJzJ5eLJwnOdEFQPuf6vKOw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 6:40 PM, Thomas Bogendoerfer wrote:
-> On Mon, Feb 01, 2021 at 08:56:06PM +0800, Tiezhu Yang wrote:
->> On 02/01/2021 06:43 PM, Thomas Bogendoerfer wrote:
->>> On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
->>>> +++ b/arch/mips/include/uapi/asm/perf_regs.h
->>>> @@ -0,0 +1,42 @@
->>>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->>>> +#ifndef _ASM_MIPS_PERF_REGS_H
->>>> +#define _ASM_MIPS_PERF_REGS_H
->>>> +
->>>> +enum perf_event_mips_regs {
->>>> +	PERF_REG_MIPS_PC,
->>>> +	PERF_REG_MIPS_R1,
->>>> +	PERF_REG_MIPS_R2,
->>>> +	PERF_REG_MIPS_R3,
->>>> +	PERF_REG_MIPS_R4,
->>>> +	PERF_REG_MIPS_R5,
->>>> +	PERF_REG_MIPS_R6,
->>>> +	PERF_REG_MIPS_R7,
->>>> +	PERF_REG_MIPS_R8,
->>>> +	PERF_REG_MIPS_R9,
->>>> +	PERF_REG_MIPS_R10,
->>>> +	PERF_REG_MIPS_R11,
->>>> +	PERF_REG_MIPS_R12,
->>>> +	PERF_REG_MIPS_R13,
->>>> +	PERF_REG_MIPS_R14,
->>>> +	PERF_REG_MIPS_R15,
->>>> +	PERF_REG_MIPS_R16,
->>>> +	PERF_REG_MIPS_R17,
->>>> +	PERF_REG_MIPS_R18,
->>>> +	PERF_REG_MIPS_R19,
->>>> +	PERF_REG_MIPS_R20,
->>>> +	PERF_REG_MIPS_R21,
->>>> +	PERF_REG_MIPS_R22,
->>>> +	PERF_REG_MIPS_R23,
->>>> +	PERF_REG_MIPS_R24,
->>>> +	PERF_REG_MIPS_R25,
->>>> +	/*
->>>> +	 * 26 and 27 are k0 and k1, they are always clobbered thus not
->>>> +	 * stored.
->>>> +	 */
->>> haveing this hole here make all code more complicated. Does it hurt
->>> to have R26 and R27 in the list ?
->> I think there is no effect if have R26 and R27 in the list.
->>
->> In the perf_reg_value(), PERF_REG_MIPS_R{26,27} are default case.
-> why make them special ? After all they are real registers and are only
-> defined special by current ABIs.
+On Wed, 3 Feb 2021 at 12:54, Dietmar Eggemann <dietmar.eggemann@arm.com> wr=
+ote:
+>
+> On 29/01/2021 18:27, Vincent Guittot wrote:
+> > Le vendredi 29 janv. 2021 =C3=AF=C2=BF=C2=BD 11:33:00 (+0100), Vincent =
+Guittot a =C3=AF=C2=BF=C2=BDcrit :
+> >> On Thu, 28 Jan 2021 at 16:09, Joel Fernandes <joel@joelfernandes.org> =
+wrote:
+> >>>
+> >>> Hi Vincent,
+> >>>
+> >>> On Thu, Jan 28, 2021 at 8:57 AM Vincent Guittot
+> >>> <vincent.guittot@linaro.org> wrote:
+> >>>>> On Mon, Jan 25, 2021 at 03:42:41PM +0100, Vincent Guittot wrote:
+> >>>>>> On Fri, 22 Jan 2021 at 20:10, Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
+> >>>>>>> On Fri, Jan 22, 2021 at 05:56:22PM +0100, Vincent Guittot wrote:
+> >>>>>>>> On Fri, 22 Jan 2021 at 16:46, Joel Fernandes (Google)
+> >>>>>>>> <joel@joelfernandes.org> wrote:
+>
+> [...]
+>
+> >> The only point that I agree with, is that running
+> >> update_blocked_averages with preempt and irq off is not a good thing
+> >> because we don't manage the number of csf_rq to update and I'm going
+> >> to provide a patchset for this
+> >
+> > The patch below moves the update of the blocked load of CPUs outside ne=
+widle_balance().
+> >
+> > Instead, the update is done with the usual idle load balance update. I'=
+m working on an
+> > additonnal patch that will select this cpu that is about to become idle=
+, instead of a
+> > random idle cpu but this 1st step fixe the problem of lot of update in =
+newly idle.
+>
+> I'm trying to understand the need for this extra patch.
+>
+> The patch below moves away from doing update_blocked_averages() (1) for
+> all CPUs in sched groups of the sched domain:
+>
+> newidle_balance()->load_balance()->
+> find_busiest_group()->update_sd_lb_stats()->update_sg_lb_stats()
+>
+> to:
+>
+> calling (1) for CPUs in nohz.idle_cpus_mask in _nohz_idle_balance() via
+> update_nohz_stats() and for the ilb CPU.
+>
+> newidle_balance() calls (1) for newidle CPU already.
+>
+> What would be the benefit to choose newidle CPU as ilb CPU?
 
-
-By convention, $26 and $27 are k registers which are reserved for use
-by the OS kernel.
-
-Here is an explanation [1]:
-
-"An interrupt handler must save any general - purpose registers that
-it is going to use (to be restored at return). But to do so requires
-you to modify at least one register first (something like sw $t0, saved_t0
-expands to two machine instructions using $at).
-
-This situation is resolved by forbidding user programs from using
-two general - purpose registers, $k0 and $k1 (The k stands for kernel,
-which an exception handler is part of). The interrupt handler is allowed
-to use $k0 and $k1 without having to save or restore their values.
-This allows just enough leeway to start saving registers, as well as
-making returning from the interrupt handler possible."
-
-[1] 
-https://stackoverflow.com/questions/27922315/how-to-use-mips-k0-and-k1-registers
-
+To prevent waking up another idle cpu to run the update whereas
+newidle cpu is already woken up and about to be idle so the best
+candidate.
+All the aim of the removed code was to prevent waking up an idle cpu
+for doing something that could be done by the newidle cpu before it
+enters idle state
 
 >
->> Should I modify enum perf_event_mips_regs to add R26 and R27,
->> and then send v2?
-> yes please.
->
-> Thomas.
->
-
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/fair.c | 32 +++-----------------------------
+> >  1 file changed, 3 insertions(+), 29 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 197a51473e0c..8200b1d4df3d 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7421,8 +7421,6 @@ enum migration_type {
+> >  #define LBF_NEED_BREAK       0x02
+> >  #define LBF_DST_PINNED  0x04
+> >  #define LBF_SOME_PINNED      0x08
+> > -#define LBF_NOHZ_STATS       0x10
+> > -#define LBF_NOHZ_AGAIN       0x20
+> >
+> >  struct lb_env {
+> >       struct sched_domain     *sd;
+> > @@ -8426,9 +8424,6 @@ static inline void update_sg_lb_stats(struct lb_e=
+nv *env,
+> >       for_each_cpu_and(i, sched_group_span(group), env->cpus) {
+> >               struct rq *rq =3D cpu_rq(i);
+> >
+> > -             if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq=
+, false))
+> > -                     env->flags |=3D LBF_NOHZ_AGAIN;
+> > -
+> >               sgs->group_load +=3D cpu_load(rq);
+> >               sgs->group_util +=3D cpu_util(i);
+> >               sgs->group_runnable +=3D cpu_runnable(rq);
+> > @@ -8969,11 +8964,6 @@ static inline void update_sd_lb_stats(struct lb_=
+env *env, struct sd_lb_stats *sd
+> >       struct sg_lb_stats tmp_sgs;
+> >       int sg_status =3D 0;
+> >
+> > -#ifdef CONFIG_NO_HZ_COMMON
+> > -     if (env->idle =3D=3D CPU_NEWLY_IDLE && READ_ONCE(nohz.has_blocked=
+))
+> > -             env->flags |=3D LBF_NOHZ_STATS;
+> > -#endif
+> > -
+> >       do {
+> >               struct sg_lb_stats *sgs =3D &tmp_sgs;
+> >               int local_group;
+> > @@ -9010,15 +9000,6 @@ static inline void update_sd_lb_stats(struct lb_=
+env *env, struct sd_lb_stats *sd
+> >       /* Tag domain that child domain prefers tasks go to siblings firs=
+t */
+> >       sds->prefer_sibling =3D child && child->flags & SD_PREFER_SIBLING=
+;
+> >
+> > -#ifdef CONFIG_NO_HZ_COMMON
+> > -     if ((env->flags & LBF_NOHZ_AGAIN) &&
+> > -         cpumask_subset(nohz.idle_cpus_mask, sched_domain_span(env->sd=
+))) {
+> > -
+> > -             WRITE_ONCE(nohz.next_blocked,
+> > -                        jiffies + msecs_to_jiffies(LOAD_AVG_PERIOD));
+> > -     }
+> > -#endif
+> > -
+> >       if (env->sd->flags & SD_NUMA)
+> >               env->fbq_type =3D fbq_classify_group(&sds->busiest_stat);
+> >
+> > @@ -10547,14 +10528,7 @@ static void nohz_newidle_balance(struct rq *th=
+is_rq)
+> >               return;
+> >
+> >       raw_spin_unlock(&this_rq->lock);
+> > -     /*
+> > -      * This CPU is going to be idle and blocked load of idle CPUs
+> > -      * need to be updated. Run the ilb locally as it is a good
+> > -      * candidate for ilb instead of waking up another idle CPU.
+> > -      * Kick an normal ilb if we failed to do the update.
+> > -      */
+> > -     if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE)=
+)
+> > -             kick_ilb(NOHZ_STATS_KICK);
+> > +     kick_ilb(NOHZ_STATS_KICK);
+> >       raw_spin_lock(&this_rq->lock);
+> >  }
+> >
+> > @@ -10616,8 +10590,6 @@ static int newidle_balance(struct rq *this_rq, =
+struct rq_flags *rf)
+> >                       update_next_balance(sd, &next_balance);
+> >               rcu_read_unlock();
+> >
+> > -             nohz_newidle_balance(this_rq);
+> > -
+> >               goto out;
+> >       }
+> >
+> > @@ -10683,6 +10655,8 @@ static int newidle_balance(struct rq *this_rq, =
+struct rq_flags *rf)
+> >
+> >       if (pulled_task)
+> >               this_rq->idle_stamp =3D 0;
+> > +     else
+> > +             nohz_newidle_balance(this_rq);
+> >
+> >       rq_repin_lock(this_rq, rf);
