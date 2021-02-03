@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0115230D885
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1A030D889
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhBCLXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:23:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234198AbhBCLXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:23:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B73E164DE8;
-        Wed,  3 Feb 2021 11:22:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612351346;
-        bh=wGQw7gT3qnKCIXEO+rxqRvVbPbNtV92xRV2Pv+Ej3+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MrJAtf5mnK1C4Q4ZyKjla2kAdXf633/lnbrk7VmF4rTw8ELv9cY7AI3lYFHz5IvTs
-         gW1JO8UMu0KWxpiE11pDElcoFi2aScKR/6EtEhTveStAUFXYmhZ/2VkMZcgd1/0YfE
-         ni15CbrfkH0uB9TmCzEv5FfL+g5ymnw5CEbyZXJD4ppEFij+lOdgpYmtLPj5YnxQt2
-         S89UXBGzveoZJe7weH0eyO7487Q9x29lPyzQEfs7eq9AcnO8mCcpuFXjNyVKHYr8yx
-         p+BAk8A9gP2L8aa7Eyu5laiQUOjkYC5JRKTNmmv8FsKcsF1NgygkcixHo6F7gFSZQG
-         dH3CVM+A3lgnQ==
-Date:   Wed, 3 Feb 2021 16:52:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Vincent Cheng <vincent.cheng.xh@renesas.com>,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-watchdog@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: Fix errors in 'if' schemas
-Message-ID: <20210203112222.GO2771@vkoul-mobl>
-References: <20210202205544.24812-1-robh@kernel.org>
- <20210202205544.24812-3-robh@kernel.org>
+        id S234244AbhBCLXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:23:52 -0500
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:40712 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234218AbhBCLXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:23:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1612351404; x=1643887404;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=18cLPBSgASmoHqw1uCd93wj7L5Z/l3QTe+arYV9VCPw=;
+  b=e6IwtyXC6AI3Uy9uIlEI8VIKI9ONgk56ua/9AIXy+2RaASWimUDBXSHW
+   u44vYD6l2jjap3BXEbSG2+wdEAUN2UDfX9aYs2NuvTF0MzXMSWq3XlXEh
+   u7WEOrqwUB1Ur9MZ46gUGyVnqDLa8qxZM2AoDEDx6z0YOjT+RN5ASZRco
+   w=;
+X-IronPort-AV: E=Sophos;i="5.79,398,1602547200"; 
+   d="scan'208";a="915302612"
+Subject: Re: [PATCH] nvme: Add 48-bit DMA address quirk
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 03 Feb 2021 11:22:36 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id CDCC91AADE7;
+        Wed,  3 Feb 2021 11:22:35 +0000 (UTC)
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Feb 2021 11:22:35 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D08UEE001.ant.amazon.com (10.43.62.126) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 3 Feb 2021 11:22:35 +0000
+Received: from u2196cf9297dc59.ant.amazon.com (10.1.212.5) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 3 Feb 2021 11:22:33 +0000
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <serebrin@amazon.com>, <dwmw@amazon.co.uk>, <kbusch@kernel.org>,
+        <axboe@fb.com>, <sagi@grimberg.me>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20210203094338.19473-1-sironi@amazon.de>
+ <20210203095148.GA8897@lst.de>
+ <0c38f5eb-41ef-7934-940b-77b6e73c5239@amazon.de>
+ <20210203111548.GA11075@lst.de>
+From:   Filippo Sironi <sironi@amazon.de>
+Message-ID: <396b45d5-3dd5-8159-34c2-5668510d1d68@amazon.de>
+Date:   Wed, 3 Feb 2021 12:22:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202205544.24812-3-robh@kernel.org>
+In-Reply-To: <20210203111548.GA11075@lst.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-02-21, 14:55, Rob Herring wrote:
-> Properties in if/then schemas weren't getting checked by the meta-schemas.
-> Enabling meta-schema checks finds several errors.
-> 
-> The use of an 'items' schema (as opposed to the list form) is wrong in
-> some cases as it applies to all entries. 'contains' is the correct schema
-> to use in the case of multiple entries.
-> 
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Eric Anholt <eric@anholt.net>
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/crypto/allwinner,sun8i-ce.yaml   | 3 +--
->  .../devicetree/bindings/display/brcm,bcm2835-hvs.yaml    | 2 +-
->  Documentation/devicetree/bindings/leds/ti,tca6507.yaml   | 1 +
->  Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml  | 2 +-
->  Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml | 3 +--
->  .../devicetree/bindings/phy/renesas,usb2-phy.yaml        | 5 ++---
+Ck9uIDIvMy8yMSAxMjoxNSBQTSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gCj4gT24gV2Vk
+LCBGZWIgMDMsIDIwMjEgYXQgMTI6MTI6MzFQTSArMDEwMCwgRmlsaXBwbyBTaXJvbmkgd3JvdGU6
+Cj4+IEkgZG9uJ3QgZGlzYWdyZWUgb24gdGhlIGZpcnN0IHBhcnQgb2YgeW91ciBzZW50ZW5jZSwg
+dGhpcyBpcyBhIGJpZwo+PiBvdmVyc2lnaHQuCj4gCj4gQnV0IGl0IGlzIG5vdCB3aGF0IHlvdXIg
+Y29tbWl0IGxvZyBzdWdnZXN0cy4KCkkgY2FuIGRlZmluaXRlbHkgcmVwaHJhc2UgdGhlIGNvbW1p
+dC4KCj4+IE9uIHRoZSBvdGhlciBoYW5kLCB0aG9zZSBjb250cm9sbGVycyBhcmUgb3V0IHRoZXJl
+IGFuZCBhcmUgaW4gdXNlIGJ5IGEgbG90Cj4+IG9mIGN1c3RvbWVycy4gIFdlIGNhbiBrZWVwIHJl
+bHlpbmcgb24gbHVjaywgaG9waW5nIHRoYXQgY3VzdG9tZXJzIGRvbid0IHJ1bgo+PiBpbnRvIHRy
+b3VibGVzIG9yIHdlIGNhbiBtZXJnZSBhIGZldyBsaW5lcyBvZiBjb2RlIDopCj4gCj4gWW91ciBw
+YXRjaCBkb2VzIG5vdCBqdXN0IHF1aXJrIGEgZmV3IGNvbnRyb2xsZXJzIG91dCB0aGVyZSwgYnV0
+IGFsbAo+IGN1cnJlbnQgYW5kIGZ1dHVyZSBjb250cm9sbGVycyB3aXRoIGFuIEFtYXpvbiB2ZW5k
+b3IgSUQuICBXZSBjb3VsZAo+IHByb2JhYmx5IHRhbGsgYWJvdXQgcXVpcmtpbmcgYW4gZXhpc3Rp
+bmcgdmVuZG9yIElEIG9yIHR3byBhcyBsb25nIGFzCj4gdGhpcyBkb2Vzbid0IGhhcHBlbiBmb3Ig
+ZnV0dXJlIGhhcmR3YXJlLgoKSSBrbm93IHRoYXQgdGhlIGhhcmR3YXJlIHRlYW0gaXMgd29ya2lu
+ZyBvbiB0aGlzIGJ1dCBJIGRvbid0IGtub3cgdGhlIAp0aW1lbGluZXMgYW5kIHRoZXJlIGFyZSBh
+IGZldyB1cGNvbWluZyBjb250cm9sbGVycyAtIG9mIHdoaWNoIEkgZG9uJ3QgCmtub3cgdGhlIGRl
+dmljZSBpZHMgeWV0IC0gdGhhdCBoYXZlIHRoZSBzYW1lIGlzc3VlLgoKVG8gYXZvaWQgaXNzdWVz
+LCBpdCBpcyBlYXNpZXIgdG8gYXBwbHkgdGhlIHF1aXJrIHRvIGFsbCBBbWF6b24gTlZNZSAKY29u
+dHJvbGxlcnMgZm9yIG5vdyB0aWxsIHRoZSBuZXcgbGluZXMgb2YgY29udHJvbGxlcnMgd2l0aCB0
+aGUgZml4IGNvbWVzIApvdXQuICBBdCB0aGF0IHBvaW50LCB3ZSdsbCBiZSBhYmxlIHRvIHJlc3Ry
+aWN0IHRoZSBhcHBsaWNhdGlvbiB0byB0aGUgCmtub3duIGJhZCBjb250cm9sbGVycy4KCgoKQW1h
+em9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcg
+QmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4g
+V2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJC
+IDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
-For phy:
-
-Acked-By: Vinod Koul <vkoul@kernel.org>
-
--- 
-~Vinod
