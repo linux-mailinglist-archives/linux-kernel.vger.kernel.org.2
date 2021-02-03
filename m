@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D805C30E333
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5508C30E337
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhBCTYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:24:00 -0500
-Received: from mga11.intel.com ([192.55.52.93]:16278 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231801AbhBCTXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:23:55 -0500
-IronPort-SDR: t9DISk4ZhQwchBxTUw8hc1RQ8G3cFgLxzXVAmUPoMtvfpwCRu8IY+3WDxRoGj2Qa0I13Wd/Maq
- WzbCAqscub7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="177595332"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="177595332"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:23:05 -0800
-IronPort-SDR: PvH66FiX93h9r8ZDZFKobESepSQLYgc7x5WQNLPfBQY+jueYgPBgmh/1bI+VIlmJzSN5fGzLNf
- 4oQPsZadU+Tw==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="433580596"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.2.151]) ([10.213.2.151])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:23:03 -0800
-Subject: Re: [PATCH] Revert "dmaengine: dw: Enable runtime PM"
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     dmaengine <dmaengine@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        viresh kumar <vireshk@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-References: <20210203155100.15034-1-cezary.rojewski@intel.com>
- <CAHp75VeuL0d48JBBQrb=twQvtwh4E_oB8Aszy+GtszhNWKqAmg@mail.gmail.com>
- <CAHp75Vc-By8mNzBoMqVSNac_yjX3J_Tv24pSxAw1FEFHTAwFLA@mail.gmail.com>
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <5dd21b4c-2159-5a79-f33f-f199cf352db4@intel.com>
-Date:   Wed, 3 Feb 2021 20:23:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230432AbhBCTZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:25:52 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56938 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhBCTZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:25:52 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5205F1C0BB5; Wed,  3 Feb 2021 20:24:54 +0100 (CET)
+Date:   Wed, 3 Feb 2021 20:24:53 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     bobwxc <bobwxc@email.cn>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: syzbot reporting less duplicates
+Message-ID: <20210203192453.GA21047@amd>
+References: <CACT4Y+YytChe9Tv5etacBL4snEDu+A2fNzF4zKiKtfmH0C0roQ@mail.gmail.com>
+ <20210203160543.GA19512@duo.ucw.cz>
+ <20210203172834.GA3943@mipc>
+ <CACT4Y+bkQOAwAwEnRoZVwKM2sDpHW3bzeWdga4MhxhERvZKT+Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc-By8mNzBoMqVSNac_yjX3J_Tv24pSxAw1FEFHTAwFLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bkQOAwAwEnRoZVwKM2sDpHW3bzeWdga4MhxhERvZKT+Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-03 6:08 PM, Andy Shevchenko wrote:
-> On Wed, Feb 3, 2021 at 7:06 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->>
->> On Wed, Feb 3, 2021 at 5:53 PM Cezary Rojewski
->> <cezary.rojewski@intel.com> wrote:
->>>
->>> This reverts commit 842067940a3e3fc008a60fee388e000219b32632.
->>> For some solutions e.g. sound/soc/intel/catpt, DW DMA is part of a
->>> compound device (in that very example, domains: ADSP, SSP0, SSP1, DMA0
->>> and DMA1 are part of a single entity) rather than being a standalone
->>> one. Driver for said device may enlist DMA to transfer data during
->>> suspend or resume sequences.
->>>
->>> Manipulating RPM explicitly in dw's DMA request and release channel
->>> functions causes suspend() to also invoke resume() for the exact same
->>> device. Similar situation occurs for resume() sequence. Effectively
->>> renders device dysfunctional after first suspend() attempt. Revert the
->>> change to address the problem.
->>
->> I kinda had the mixed feelings about this, thanks for the report.
-> 
-> Side note: the better solution in general seems to have a specific
-> power domain for the ASoC multi-function devices (if ever you move to
-> use auxiliary bus, it may be done easier I think).
 
-This is an area I haven't touched yet. Will definitely check it out.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the recommendations, Andy. Much appreciated.
+Hi!
+On Wed 2021-02-03 19:22:34, Dmitry Vyukov wrote:
+> On Wed, Feb 3, 2021 at 6:39 PM bobwxc <bobwxc@email.cn> wrote:
+> >
+> > On Wed, Feb 03, 2021 at 05:05:43PM +0100, Pavel Machek wrote:
+> > > On Mon 2021-02-01 11:52:12, Dmitry Vyukov wrote:
+> > > Could we please get common prefix (like syzbot: KASAN:....) so that
+> > > the bulk of emails is easier to remove?
+> > There are several bots testing on the kernel, maybe we should give a pr=
+efix
+> > format for all bot.
+> > Also we can use mail-address to fliter email, but it's still a little
+> > inconvenient.
+>=20
+> Hi Pavel, bobwxc,
+>=20
+> Yes, I was wondering if syzbot in From/To/CC can be used for
+> filtering? I assume email clients that can filter based on subject can
+> also filter based on From/To/CC.
+> Does anybody filter syzbot emails? Maybe you can share what works
+> best?
 
-Regards,
-Czarek
+=46rom does not really work. So... syzbot reports for subsystems I don't
+maintain are uninteresting, and so is the resulting discussion.
+
+While filtering on "From:" is easy for initial report, it does not
+make it easy to remove follow up discussion.n=20
+
+> I am not sure a common prefix for all bots is useful because it
+> supports only all or nothing. There are also some bots that
+> maintainers use now that seem to be fundamental to the process, if one
+> is ignoring them, then they are effectively ignoring what the
+> maintainer is saying.
+
+I'm pretty sure common prefix for all bots is useful.
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEUEARECAAYFAmAa+IUACgkQMOfwapXb+vL1RgCeM3M9+J+1KshFJ1LPPaYY6vVI
+09sAl1FMuAxut7CxzzP2GUVj0/fSJXE=
+=9Goe
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
