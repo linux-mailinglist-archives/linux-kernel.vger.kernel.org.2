@@ -2,207 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13CE30D99E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBAB30D9A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbhBCMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234184AbhBCMOs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:14:48 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31DC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:14:07 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id c127so4970005wmf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:14:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zSxY3nTKxJ1IPmcAhiUV2gxjS9POrRlqCu2+Tg/s2dQ=;
-        b=jxovcCp23NxnX5Hp49LaYRb7dreVWiKfVkDKjHEssP9w0PKSQpvZzGDyuAe3Nv9vBl
-         n/0Gv9uKM8/arUY5onnt0c2g3+1Rk/9E3TYsErSz2wwgOTZRi9mv5Nf+5d2RrTp6Z/6u
-         DrHfChk0bxGbkDyS363tn+zSsrraNtnqAkyDNttztwQJzuGihNA52YRlvODyGcKaG4cB
-         do5sX1ZQlLvTfu5Zcfl1hdmLXSHUW8KhjoR5Ue/V62RN/x6B5VmOo5T1WWldXNl1kkNV
-         BH8ykIAcyRL/oDrmwJGOvu/7S2JA7QFHLanUYNTEv+l9wMkiW8P1csHIHjA0np34altC
-         VRQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zSxY3nTKxJ1IPmcAhiUV2gxjS9POrRlqCu2+Tg/s2dQ=;
-        b=m4ZFzR/oidKKVlTmuZ/XQvk/BeYyMCoBTFDRKYmMN1pzk/mlZUCAx79FCT69x2oJAQ
-         5WDRWtcW2CnSdbw0WsO+8ZtZYarm4ZthhkrmxnfcSgCzUAQRSJUy9PP41mao3sSmN4Qm
-         8otYyCfP7ybhpr0kJLzcjo+xte8k77SE/gQzXWhdlJXjKEpjcG/2dbTXIL7tSonZH++0
-         7epEVqD8CT2jlDBzo8DsRGPU2XRu6cBTNPsY+gOG2RbqFRsjT3sdlZNdIIUi0oAt0U7n
-         E0rTXt0eJtWGNLp/ZpkpkIWl5XwVgakqFixYlpTvBH6FjJ1p7Ste/0vs8m0ySeutpePd
-         +RuA==
-X-Gm-Message-State: AOAM531xiJXUcMOggWt7tQEaMQexjaKai1nBIZ9bXd1unDAJ1NeC3YfW
-        8BZYFP1fyGNTYLE7JUVYu7oldg==
-X-Google-Smtp-Source: ABdhPJzHUcn98nIsrejDzYN9IFJdoqS9rkwCww87febSamOfAt2gIdft3snfHT97RjWrS9lEd4rMTQ==
-X-Received: by 2002:a7b:c5d6:: with SMTP id n22mr2512430wmk.70.1612354445997;
-        Wed, 03 Feb 2021 04:14:05 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:b1de:c7d:30ce:1840])
-        by smtp.gmail.com with ESMTPSA id t17sm2566202wmi.46.2021.02.03.04.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 04:14:05 -0800 (PST)
-Date:   Wed, 3 Feb 2021 13:13:59 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/12] kasan: unify large kfree checks
-Message-ID: <YBqThxfjUL1U9FCZ@elver.google.com>
-References: <cover.1612208222.git.andreyknvl@google.com>
- <dbef8131b70766f8d798d24bb1ab9ae75dadea61.1612208222.git.andreyknvl@google.com>
+        id S234416AbhBCMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:16:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43316 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234322AbhBCMQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 07:16:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612354564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CWryIVYU+uhWQij5Zedr+mthwADlpM4pzIqLbc2PJTE=;
+        b=ZO1FDrig5tnUD0sD709rRk12j9b+f6/535vnUH3W+CDbRbO/2c6Kc8pifEUT1BMziNVfXa
+        CPTfjc6g/FfslyAYggad3k3ARdbimmNlG06TOX0F6IyHHo/BNMtx/NehxH/OCa8d7HxX5C
+        VpPnKpOaRmZ4e14jLHdyuC1KXNF7S80=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E0430B17A;
+        Wed,  3 Feb 2021 12:16:03 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 13:15:58 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-7-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dbef8131b70766f8d798d24bb1ab9ae75dadea61.1612208222.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <20210121122723.3446-7-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 08:43PM +0100, Andrey Konovalov wrote:
-> Unify checks in kasan_kfree_large() and in kasan_slab_free_mempool()
-> for large allocations as it's done for small kfree() allocations.
-> 
-> With this change, kasan_slab_free_mempool() starts checking that the
-> first byte of the memory that's being freed is accessible.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
+> +static struct file *secretmem_file_create(unsigned long flags)
+> +{
+> +	struct file *file = ERR_PTR(-ENOMEM);
+> +	struct secretmem_ctx *ctx;
+> +	struct inode *inode;
+> +
+> +	inode = alloc_anon_inode(secretmem_mnt->mnt_sb);
+> +	if (IS_ERR(inode))
+> +		return ERR_CAST(inode);
+> +
+> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		goto err_free_inode;
+> +
+> +	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
+> +				 O_RDWR, &secretmem_fops);
+> +	if (IS_ERR(file))
+> +		goto err_free_ctx;
+> +
+> +	mapping_set_unevictable(inode->i_mapping);
 
-Reviewed-by: Marco Elver <elver@google.com>
+Btw. you need also mapping_set_gfp_mask(mapping, GFP_HIGHUSER) because
+the default is GFP_HIGHUSER_MOVABLE and you do not support migration so
+no pages from movable zones should be allowed.
 
-> ---
->  include/linux/kasan.h | 16 ++++++++--------
->  mm/kasan/common.c     | 36 ++++++++++++++++++++++++++----------
->  2 files changed, 34 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 2d5de4092185..d53ea3c047bc 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -200,6 +200,13 @@ static __always_inline bool kasan_slab_free(struct kmem_cache *s, void *object)
->  	return false;
->  }
->  
-> +void __kasan_kfree_large(void *ptr, unsigned long ip);
-> +static __always_inline void kasan_kfree_large(void *ptr)
-> +{
-> +	if (kasan_enabled())
-> +		__kasan_kfree_large(ptr, _RET_IP_);
-> +}
-> +
->  void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
->  static __always_inline void kasan_slab_free_mempool(void *ptr)
->  {
-> @@ -247,13 +254,6 @@ static __always_inline void * __must_check kasan_krealloc(const void *object,
->  	return (void *)object;
->  }
->  
-> -void __kasan_kfree_large(void *ptr, unsigned long ip);
-> -static __always_inline void kasan_kfree_large(void *ptr)
-> -{
-> -	if (kasan_enabled())
-> -		__kasan_kfree_large(ptr, _RET_IP_);
-> -}
-> -
->  /*
->   * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
->   * the hardware tag-based mode that doesn't rely on compiler instrumentation.
-> @@ -302,6 +302,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object)
->  {
->  	return false;
->  }
-> +static inline void kasan_kfree_large(void *ptr) {}
->  static inline void kasan_slab_free_mempool(void *ptr) {}
->  static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
->  				   gfp_t flags)
-> @@ -322,7 +323,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
->  {
->  	return (void *)object;
->  }
-> -static inline void kasan_kfree_large(void *ptr) {}
->  static inline bool kasan_check_byte(const void *address)
->  {
->  	return true;
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 086bb77292b6..9c64a00bbf9c 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -364,6 +364,31 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
->  	return ____kasan_slab_free(cache, object, ip, true);
->  }
->  
-> +static bool ____kasan_kfree_large(void *ptr, unsigned long ip)
-> +{
-> +	if (ptr != page_address(virt_to_head_page(ptr))) {
-> +		kasan_report_invalid_free(ptr, ip);
-> +		return true;
-> +	}
-> +
-> +	if (!kasan_byte_accessible(ptr)) {
-> +		kasan_report_invalid_free(ptr, ip);
-> +		return true;
-> +	}
-> +
-> +	/*
-> +	 * The object will be poisoned by kasan_free_pages() or
-> +	 * kasan_slab_free_mempool().
-> +	 */
-> +
-> +	return false;
-> +}
-> +
-> +void __kasan_kfree_large(void *ptr, unsigned long ip)
-> +{
-> +	____kasan_kfree_large(ptr, ip);
-> +}
-> +
->  void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
->  {
->  	struct page *page;
-> @@ -377,10 +402,8 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
->  	 * KMALLOC_MAX_SIZE, and kmalloc falls back onto page_alloc.
->  	 */
->  	if (unlikely(!PageSlab(page))) {
-> -		if (ptr != page_address(page)) {
-> -			kasan_report_invalid_free(ptr, ip);
-> +		if (____kasan_kfree_large(ptr, ip))
->  			return;
-> -		}
->  		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE);
->  	} else {
->  		____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> @@ -539,13 +562,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
->  		return ____kasan_kmalloc(page->slab_cache, object, size, flags);
->  }
->  
-> -void __kasan_kfree_large(void *ptr, unsigned long ip)
-> -{
-> -	if (ptr != page_address(virt_to_head_page(ptr)))
-> -		kasan_report_invalid_free(ptr, ip);
-> -	/* The object will be poisoned by kasan_free_pages(). */
-> -}
-> -
->  bool __kasan_check_byte(const void *address, unsigned long ip)
->  {
->  	if (!kasan_byte_accessible(address)) {
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
+-- 
+Michal Hocko
+SUSE Labs
