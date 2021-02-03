@@ -2,140 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EF630D30A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8474630D30C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBCFZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 00:25:48 -0500
-Received: from mail-bn7nam10on2040.outbound.protection.outlook.com ([40.107.92.40]:1249
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229815AbhBCFZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 00:25:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BgEiTuGO8o8ZTW6QdqzEKvLnPtx7XOcJaNUWw8dT3PlsV4HTe9SaAbEvlYZyMHqkcP15/W3MX3xtlmTsS31rQ0/JPf3H2xf8j43MHoWTROH1Ha/IXHIOyJEo/H/37AyIGfXdNOEUYf/I5jIBOmMee6gahRaXLme8+VBHb8HkvfTWblBjbs9w/4NYNMzWFTPpe5faJrWZmZyWdJpeyb21O0uFqv1Lu4IWUV1Mcxyu6f41Rp/4MRJWsJxTT15ESAddrlGhiZ3nFBuuYhbvJShaEsDRzdfbsxKOG+pjO3CyFJZOHGsQLGewsDmofroUdOGojS8nAKxRmLrBV3WE9Iz26Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wTtupcJ2waTLHfwXHbp8+WDAXrG7QWyXybMPyFfWqS0=;
- b=HLojlNbviaogL1f1Rf2WGNUgSfcngTtgUI+/W3Gdm9puG4GTniEHh/2KPA65z1CBhm3TdraxCJiQxPayxbSuyP2P0PE20pupV0ku4lIt+4OQz8uwOVINUcPEIc6rYBQ/cjXJiXSRrUe2rbJPiw5hquhFM5kBiYsX8+WgUT51TwUJPXhP8i0/M0IJPjFoxH7zRlrJRXJmZdVzkTzjDR9iHPqHmIC+8J4MdLGIKnxOhidK+Y7AjSgwPrkmkTOeHoSYzePymrDVfstQYDGPXXNuQhtGZVPo0cAPx45XyQLZ8YL52MvtdzlCoAOkwgOgE+vxVR4zmTgvYTZpjNy+Qy8L5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S231220AbhBCF0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 00:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhBCF0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 00:26:35 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FE9C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 21:25:55 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id m2so4328511wmm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 21:25:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wTtupcJ2waTLHfwXHbp8+WDAXrG7QWyXybMPyFfWqS0=;
- b=VY1GZUdWIjwUVkuXX+HXbkOrqnMnEyHFqpBtS4VDxivqt9WP6P67MiuLbCFFAfLpk2tCyUzVgBjWMYTDTHx2pk/TSP6Q3oZnIoqejMntTc2gvb68/EVQ6OYQ0sGcljF3xoIZWAXOBNCKH6ax3r1xJkYFchTtlP9GBYbnJB7OO2s=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3350.namprd11.prod.outlook.com (2603:10b6:a03:1a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19; Wed, 3 Feb
- 2021 05:24:43 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::95a3:653e:2078:fb4]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::95a3:653e:2078:fb4%6]) with mapi id 15.20.3805.028; Wed, 3 Feb 2021
- 05:24:43 +0000
-Subject: Re: [PATCH] mm/hugetlb: remove duplicate codes of setting compound_nr
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210203044055.89618-1-yanfei.xu@windriver.com>
-Message-ID: <ac1da539-a7c6-610b-b1bf-c36989dd2603@windriver.com>
-Date:   Wed, 3 Feb 2021 13:24:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210203044055.89618-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::21) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0o3byxuedXvI9otyU3P5TIkZCzMJxRQjvAkVTYenW54=;
+        b=W310YMY4XVVNwPyY6gLUzKPTtYJFUNDNFhi2e4QcJ2oGeXfB97ZnALh7C25FGhoZtS
+         ZuglCRRMTCU4eDNmskbgF+bjr2PwWDm+mSpaPGcScELesI4z39PiPGGJIEBAMXWeP1od
+         AS4fvUee/HqfAu6lezUyaWYQOD5lL8TB7Yf+Bq3HSphjvgDDUOCEp/csCy9emjw6aGOA
+         UyEngygAzdRezu8PRRObyPeXou8f2eqDvegLVMjttWlvcy7+KFZh9MhkHb0xzjOVoG3f
+         qhM80iK5qwUiIGcDDMstWOBfmmvUEuXCb6i06xuIeoKm2KDILJANu0BHF4ie7DWm8lmu
+         Zmhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0o3byxuedXvI9otyU3P5TIkZCzMJxRQjvAkVTYenW54=;
+        b=AzbhKVj+ZFrsUG+0QlqpigKUUfJVc4ongDjO4536kzNQtSpY8HkAraYVqNYhO8fJPu
+         a4Xdr0R0v98Drb7NNgspZZC8GhZcLCKKNo8fp86lXx8MAI6P2DPoFjPSscD0JGuruRs6
+         3jQHVPh/a6HjlPKyiQ8ASeUl8RO+cIDpTBkl0ghhA9++2jf4cXrAPinm+DbXFT44mc+w
+         /UETJjeIk4lSFw9RIwTVV4e5AO+1Jh5+jDtBya3dDUh9rkI+CuGFCHm1sx2g9o0UPNHc
+         G8AenDONMN2jsAHsI18WQnawCPvcnyNe6KjrEz08zYAYOqPLVmKE/Mm98r2GBoe7jPky
+         oJpA==
+X-Gm-Message-State: AOAM530OzwwHXJapXIcLdZo2+yCrkDU/MlsOkZnWelvEiwkznlYEUlYJ
+        iepSwoKfXe4dwTrjeNO1eudGooDwm991jfY1r4prKA==
+X-Google-Smtp-Source: ABdhPJxgzDHUSS4ow3vHeJPDQ67R2UVmvHu7Hk1T5viuTLChUz0clj9txtpTlg7PD0HJ1xw20FnYdVsLbseXppEVIS4=
+X-Received: by 2002:a1c:9c84:: with SMTP id f126mr1155495wme.152.1612329953625;
+ Tue, 02 Feb 2021 21:25:53 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.1 via Frontend Transport; Wed, 3 Feb 2021 05:24:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 41bd2857-403a-4f81-d202-08d8c804033a
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3350:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3350DAAF8A63D65F24408FCCE4B49@BYAPR11MB3350.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:459;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cS/A+B9rHBWBs2XsO5xoTtZx8zDAD1DD8vwNCWjBso9tAZTmQPt0HRGhNVZ+WVLRwUwUGPFy/QoNiWsqwEDO9+7a1f3K1fqn96KLUhJBjyoPztoBwIfHfNOlZ6X92hyjI0AmnsprNeuiIzEhwfXDKioaoNTAGurA2v1UOS5MRPedb85n5Tv4liiqdmao/XbDpCOTm421BNH9Jgw8C3QN00hg8hzDAGhVyCOvQE/De+IKGAzdsLL269J9N/2aRTycZ8jvLGhTnd70ZtL1b7UI4YsM93qYlCMCTBMqJeAFsDFhH21NtpnuJBTw1TupZWVy9nVG6fmOZ9nAeN+5XCv6/lbZmYPvbNnM4LJ4uGsfQ1hev3rtlDZHRgcdV/Bd6SeUG7kk3PH8vgrHLjKofVS3KGATUEiTPZNLlQWJgfj6/ovt9bkPe3x3QkOKgHhYxv1e2QssDN50ScTO/KMC1KynwfyyFmKhxS8zRjW52N+1x5NJlkoCIR2vclzXc1nFLxe+Jbl7ktEdd4SBxRXhH5NaT/1v/0hvf2lAF+0F2khxqrsp2refw2AU3zqpDrCOO/EDedIlq28rz3SOvJR3fU/tx956BMEB6kQ4CPKvDjjtJiwlcPurh3ehjwRMsFf2KJ46
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(39850400004)(346002)(36756003)(66476007)(66556008)(66946007)(478600001)(16576012)(52116002)(53546011)(316002)(6666004)(26005)(16526019)(31686004)(4326008)(186003)(2906002)(8676002)(4744005)(6706004)(83380400001)(8936002)(6486002)(956004)(86362001)(31696002)(2616005)(5660300002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V25QNGxQTGY4TjBzNjg2amRrQWYreUViUFBRY3YzQjM2RnpNS1BEUUxzc2pm?=
- =?utf-8?B?Z2pPRHp1SW00SyttdUVUa0orbnlYS2NvSzZpN1VKS1l6OERDd2VFZnd6SC8y?=
- =?utf-8?B?ZTVEQzZraXhTdm9pR3loYU5qeGNWTWVmbDYxSFpiQWtXRlFPdE5rTWJ2N2li?=
- =?utf-8?B?VzdyMC96dUF3ZUNEbXhtdDk1QlNSbTF4VXNpbEdxcFpnUmFVVVdHUlRzKzBa?=
- =?utf-8?B?d0VydzEyOXJoRHYvcityeWozaEFidmtqNVZ5V1BHRGhPdVdtdTFiTnAvR3Yz?=
- =?utf-8?B?ZnUrQkNCQzRhUVVpY1cxNm5NVDVZYTk5UW1ZUXYvZEpnSU5xYlFvd3NMN3M4?=
- =?utf-8?B?UFprT2hsd0d2R0l0NndTK1R3TzlNbkxEQzdJTXc5eWpKeTNNRVBtWnFNT0NH?=
- =?utf-8?B?b2puQmEyRlg3TkswN0tYb1J1WnFyQi9ocmwyekhGemxTaG9ZVkJlL0VFdG8x?=
- =?utf-8?B?RWZDdVVrOGQyUzJ6dDFjSWNuYkVkM2RiT2xwSGxDTEM0WUxsWU10MWFHWFZG?=
- =?utf-8?B?cXZaMUhEQTFIK2hQNFI4NnRBZ2dkS2J5VmpQTTZZaHdXallRZWc4SnBmVnlB?=
- =?utf-8?B?aCtXclpsbHVTTzNEcm5HT0x3QlFVL3NZUHBOKzdjcDIwbmtJSW9Hb3QxdTRO?=
- =?utf-8?B?Mm41dm1WOHRCNDZJSXBxamQzNUwrV3o1THY3cVdOOXJLLy9MK0V5T3BYMjYr?=
- =?utf-8?B?aVZXelVqRndBOUlReHFGL0E4djZCVEVUbzVFVjhlczI1R09ManEvTFVZc09Q?=
- =?utf-8?B?c011TUc0V3djMmVZaDk5STY3WUJHS0JZTHp5bUxPZVhKQVhRclRjRm1OR1Zw?=
- =?utf-8?B?RDFMV09HWlAxSzdGdk5UWk5TOU9xNElsZ0piOHlBNW5VeEZvMGVnQTd2cjB6?=
- =?utf-8?B?dGZuNE1ENXVxWEdRSHRwckpvajFFaUFzaFVOUDhLYURLZnhqajduZzBKSWk5?=
- =?utf-8?B?MjliSmFveE9rVzNjVHY1MUdBNWRkYU1ZTkRaN0VtYmxhbkJpVmpOeENOcFFY?=
- =?utf-8?B?eGhzMUtXL2o5N0V1VEJnTVpYVStxWndKdlhrRDA3ZEo5d2NJRFQ4MlBVck1u?=
- =?utf-8?B?MW9vb0M1TzFkQ3BCZGhCKzF5TU1sT3NuM2h6MXQ4MG9DMXFXVGRNL2hXcTJz?=
- =?utf-8?B?SUxDUlY3QWM5MFJQOGYyWUEyQ2JyUEJzNzFCU3hKZkkwSUl3ZnlkK2ZjNUJm?=
- =?utf-8?B?UDRsMUJQR2VXVkY4WkxQOUpCdG5ZcDV0bXpLRlQ2NWRjQ3FKQkhwSzYzUUk0?=
- =?utf-8?B?Ky9nOERNWlQ0WlBDdnZGVEJRZzJ1Snhzc0lyOEhoS0wzeVJyVTEzMHY4c1Bj?=
- =?utf-8?B?ckhKQjRtd2RyUXoxTzdOU2pvZWhPa0pNL0k0cUJVRno2VUdsb1F0eEZYZ2dk?=
- =?utf-8?B?UzhkbGxZQTdYTXFtb0xwREFvNjZYZnROcmRNVVFreDhnSjcwYnN0RUFqNGtW?=
- =?utf-8?Q?mXp52KoP?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41bd2857-403a-4f81-d202-08d8c804033a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2021 05:24:43.6074
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yoYCagSrzUJQhgxL6+cRhlbn6few/yEiKL7BymxXyUEtBlkCGykadbfAknsLTemeu62u6v+VFRQJ8vM6R6Q/Xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3350
+References: <20210121135016.34718-1-anup.patel@wdc.com> <mhng-c559982c-2b4c-4270-8b42-5ad5fdb3d1dd@penguin>
+In-Reply-To: <mhng-c559982c-2b4c-4270-8b42-5ad5fdb3d1dd@penguin>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 3 Feb 2021 10:55:42 +0530
+Message-ID: <CAAhSdy14_WM7ejGPHVCg3Y0Us5b7jcDq4nPw_rmtfXy6ZnTjwQ@mail.gmail.com>
+Subject: Re: [PATCH v4] RISC-V: Implement ASID allocator
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry. Please ignore this patch, it's incorrect.
+On Wed, Feb 3, 2021 at 7:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Thu, 21 Jan 2021 05:50:16 PST (-0800), Anup Patel wrote:
+> > Currently, we do local TLB flush on every MM switch. This is very harsh on
+> > performance because we are forcing page table walks after every MM switch.
+> >
+> > This patch implements ASID allocator for assigning an ASID to a MM context.
+> > The number of ASIDs are limited in HW so we create a logical entity named
+> > CONTEXTID for assigning to MM context. The lower bits of CONTEXTID are ASID
+> > and upper bits are VERSION number. The number of usable ASID bits supported
+> > by HW are detected at boot-time by writing 1s to ASID bits in SATP CSR.
+> >
+> > We allocate new CONTEXTID on first MM switch for a MM context where the
+> > ASID is allocated from an ASID bitmap and VERSION is provide by an atomic
+> > counter. At time of allocating new CONTEXTID, if we run out of available
+> > ASIDs then:
+> > 1. We flush the ASID bitmap
+> > 2. Increment current VERSION atomic counter
+> > 3. Re-allocate ASID from ASID bitmap
+> > 4. Flush TLB on all CPUs
+> > 5. Try CONTEXTID re-assignment on all CPUs
+> >
+> > Please note that we don't use ASID #0 because it is used at boot-time by
+> > all CPUs for initial MM context. Also, newly created context is always
+> > assigned CONTEXTID #0 (i.e. VERSION #0 and ASID #0) which is an invalid
+> > context in our implementation.
+> >
+> > Using above approach, we have virtually infinite CONTEXTIDs on-top-of
+> > limited number of HW ASIDs. This approach is inspired from ASID allocator
+> > used for Linux ARM/ARM64 but we have adapted it for RISC-V. Overall, this
+> > ASID allocator helps us reduce rate of local TLB flushes on every CPU
+> > thereby increasing performance.
+> >
+> > This patch is tested on QEMU virt machine, Spike and SiFive Unleashed
+> > board. On QEMU virt machine, we see some (3-5% approx) performance
+> > improvement with SW emulated TLBs provided by QEMU. Unfortunately,
+> > the ASID bits of the SATP CSR are not implemented on Spike and SiFive
+> > Unleashed board so we don't see any change in performance. On real
+> > HW having all ASID bits implemented, the performance gains will be
+> > much more due improved sharing of TLB among different processes.
+> >
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > ---
+> > Changes since v3:
+> > - Rebased on Linux-5.11-rc4. The previous v3 patch (almost 2 years back)
+> >   was basd on Linux-5.1-rc2
+> > - Updated implementation to consider NoMMU kernel
+> > - Converted use_asid_allocator boolean flag into static key
+> > - Improved boot-time print in asids_init() to show number of ASID bits
+> > - Access SATP CSR by number instead of old CSR name "sptbr"
+> >
+> > Changes since v2:
+> > - Move to lazy TLB flushing because we get slow path warnings if we
+> >   use flush_tlb_all()
+> > - Don't set ASID bits to all 1s in head.s. Instead just do it on
+> >   boot CPU calling asids_init() for determining number of HW ASID bits
+> > - Make CONTEXT version comparison more readable in set_mm_asid()
+> > - Fix typo in __flush_context()
+> >
+> > Changes since v1:
+> > - We adapt good aspects from Gary Guo's ASID allocator implementation
+> >   and provide due credit to him by adding his SoB.
+> > - Track ASIDs active during context flush and mark them as reserved
+> > - Set ASID bits to all 1s to simplify number of ASID bit detection
+> > - Use atomic_long_t instead of atomic64_t for being 32bit friendly
+> > - Use unsigned long instead of u64 for being 32bit friendly
+> > - Use flush_tlb_all() instead of lazy local_tlb_flush_all() at time
+> >   of context flush
+> >
+> > This patch is based on Linux-5.11-rc4 and can be found in the
+> > riscv_asid_allocator_v4 branch of https://github.com/avpatel/linux.git
+> > ---
+> >  arch/riscv/include/asm/csr.h         |   6 +
+> >  arch/riscv/include/asm/mmu.h         |   2 +
+> >  arch/riscv/include/asm/mmu_context.h |  10 +
+> >  arch/riscv/mm/context.c              | 261 ++++++++++++++++++++++++++-
+> >  4 files changed, 275 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> > index cec462e198ce..caadfc1d7487 100644
+> > --- a/arch/riscv/include/asm/csr.h
+> > +++ b/arch/riscv/include/asm/csr.h
+> > @@ -41,10 +41,16 @@
+> >  #define SATP_PPN     _AC(0x003FFFFF, UL)
+> >  #define SATP_MODE_32 _AC(0x80000000, UL)
+> >  #define SATP_MODE    SATP_MODE_32
+> > +#define SATP_ASID_BITS       9
+> > +#define SATP_ASID_SHIFT      22
+> > +#define SATP_ASID_MASK       _AC(0x1FF, UL)
+> >  #else
+> >  #define SATP_PPN     _AC(0x00000FFFFFFFFFFF, UL)
+> >  #define SATP_MODE_39 _AC(0x8000000000000000, UL)
+> >  #define SATP_MODE    SATP_MODE_39
+> > +#define SATP_ASID_BITS       16
+> > +#define SATP_ASID_SHIFT      44
+> > +#define SATP_ASID_MASK       _AC(0xFFFF, UL)
+> >  #endif
+> >
+> >  /* Exception cause high bit - is an interrupt if set */
+> > diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
+> > index dabcf2cfb3dc..0099dc116168 100644
+> > --- a/arch/riscv/include/asm/mmu.h
+> > +++ b/arch/riscv/include/asm/mmu.h
+> > @@ -12,6 +12,8 @@
+> >  typedef struct {
+> >  #ifndef CONFIG_MMU
+> >       unsigned long   end_brk;
+> > +#else
+> > +     atomic_long_t id;
+> >  #endif
+> >       void *vdso;
+> >  #ifdef CONFIG_SMP
+> > diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
+> > index 250defa06f3a..b0659413a080 100644
+> > --- a/arch/riscv/include/asm/mmu_context.h
+> > +++ b/arch/riscv/include/asm/mmu_context.h
+> > @@ -23,6 +23,16 @@ static inline void activate_mm(struct mm_struct *prev,
+> >       switch_mm(prev, next, NULL);
+> >  }
+> >
+> > +#define init_new_context init_new_context
+> > +static inline int init_new_context(struct task_struct *tsk,
+> > +                     struct mm_struct *mm)
+> > +{
+> > +#ifdef CONFIG_MMU
+> > +     atomic_long_set(&mm->context.id, 0);
+> > +#endif
+> > +     return 0;
+> > +}
+> > +
+> >  #include <asm-generic/mmu_context.h>
+> >
+> >  #endif /* _ASM_RISCV_MMU_CONTEXT_H */
+> > diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+> > index 613ec81a8979..6216fed8f9cc 100644
+> > --- a/arch/riscv/mm/context.c
+> > +++ b/arch/riscv/mm/context.c
+> > @@ -2,13 +2,269 @@
+> >  /*
+> >   * Copyright (C) 2012 Regents of the University of California
+> >   * Copyright (C) 2017 SiFive
+> > + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> >   */
+> >
+> > +#include <linux/bitops.h>
+> > +#include <linux/cpumask.h>
+> >  #include <linux/mm.h>
+> > +#include <linux/percpu.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/spinlock.h>
+> > +#include <linux/static_key.h>
+> >  #include <asm/tlbflush.h>
+> >  #include <asm/cacheflush.h>
+> >  #include <asm/mmu_context.h>
+> >
+> > +#ifdef CONFIG_MMU
+> > +
+> > +static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
+> > +
+> > +static unsigned long asid_bits;
+> > +static unsigned long num_asids;
+> > +static unsigned long asid_mask;
+> > +
+> > +static atomic_long_t current_version;
+> > +
+> > +static DEFINE_RAW_SPINLOCK(context_lock);
+> > +static cpumask_t context_tlb_flush_pending;
+> > +static unsigned long *context_asid_map;
+> > +
+> > +static DEFINE_PER_CPU(atomic_long_t, active_context);
+> > +static DEFINE_PER_CPU(unsigned long, reserved_context);
+> > +
+> > +static bool check_update_reserved_context(unsigned long cntx,
+> > +                                       unsigned long newcntx)
+> > +{
+> > +     int cpu;
+> > +     bool hit = false;
+> > +
+> > +     /*
+> > +      * Iterate over the set of reserved CONTEXT looking for a match.
+> > +      * If we find one, then we can update our mm to use new CONTEXT
+> > +      * (i.e. the same CONTEXT in the current_version) but we can't
+> > +      * exit the loop early, since we need to ensure that all copies
+> > +      * of the old CONTEXT are updated to reflect the mm. Failure to do
+> > +      * so could result in us missing the reserved CONTEXT in a future
+> > +      * version.
+> > +      */
+> > +     for_each_possible_cpu(cpu) {
+> > +             if (per_cpu(reserved_context, cpu) == cntx) {
+> > +                     hit = true;
+> > +                     per_cpu(reserved_context, cpu) = newcntx;
+> > +             }
+> > +     }
+> > +
+> > +     return hit;
+> > +}
+> > +
+> > +/* Note: must be called with context_lock held */
+>
+> These are usually better expressed as lockdep assertions.  I don't see any
+> reason why they wouldn't work here.
 
-Thanks,
-Yanfei
+Okay, I will add a lockdep assertion here.
 
-On 2/3/21 12:40 PM, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
-> 
-> set_compound_order() set both of page's compound_order and
-> compound_nr. It's no need to assign to compound_nr again, so
-> remove it.
-> 
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->   mm/hugetlb.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index a3e4fa2c5e94..ac249b1583de 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1228,7 +1228,6 @@ static void destroy_compound_gigantic_page(struct page *page,
->   	}
->   
->   	set_compound_order(page, 0);
-> -	page[1].compound_nr = 0;
->   	__ClearPageHead(page);
->   }
->   
-> 
+>
+> > +static void __flush_context(void)
+> > +{
+> > +     int i;
+> > +     unsigned long cntx;
+> > +
+> > +     /* Update the list of reserved ASIDs and the ASID bitmap. */
+> > +     bitmap_clear(context_asid_map, 0, num_asids);
+> > +
+> > +     /* Mark already active ASIDs as used */
+> > +     for_each_possible_cpu(i) {
+> > +             cntx = atomic_long_xchg_relaxed(&per_cpu(active_context, i), 0);
+> > +             /*
+> > +              * If this CPU has already been through a rollover, but
+> > +              * hasn't run another task in the meantime, we must preserve
+> > +              * its reserved CONTEXT, as this is the only trace we have of
+> > +              * the process it is still running.
+> > +              */
+> > +             if (cntx == 0)
+> > +                     cntx = per_cpu(reserved_context, i);
+> > +
+> > +             __set_bit(cntx & asid_mask, context_asid_map);
+> > +             per_cpu(reserved_context, i) = cntx;
+> > +     }
+> > +
+> > +     /* Mark ASID #0 as used because it is used at boot-time */
+> > +     __set_bit(0, context_asid_map);
+> > +
+> > +     /* Queue a TLB invalidation for each CPU on next context-switch */
+> > +     cpumask_setall(&context_tlb_flush_pending);
+> > +}
+> > +
+> > +/* Note: must be called with context_lock held */
+> > +static unsigned long __new_context(struct mm_struct *mm)
+> > +{
+> > +     static u32 cur_idx = 1;
+> > +     unsigned long cntx = atomic_long_read(&mm->context.id);
+> > +     unsigned long asid, ver = atomic_long_read(&current_version);
+> > +
+> > +     if (cntx != 0) {
+> > +             unsigned long newcntx = ver | (cntx & asid_mask);
+> > +
+> > +             /*
+> > +              * If our current CONTEXT was active during a rollover, we
+> > +              * can continue to use it and this was just a false alarm.
+> > +              */
+> > +             if (check_update_reserved_context(cntx, newcntx))
+> > +                     return newcntx;
+> > +
+> > +             /*
+> > +              * We had a valid CONTEXT in a previous life, so try to
+> > +              * re-use it if possible.
+> > +              */
+> > +             if (!__test_and_set_bit(cntx & asid_mask, context_asid_map))
+> > +                     return newcntx;
+> > +     }
+> > +
+> > +     /*
+> > +      * Allocate a free ASID. If we can't find one then increment
+> > +      * current_version and flush all ASIDs.
+> > +      */
+> > +     asid = find_next_zero_bit(context_asid_map, num_asids, cur_idx);
+> > +     if (asid != num_asids)
+> > +             goto set_asid;
+> > +
+> > +     /* We're out of ASIDs, so increment current_version */
+> > +     ver = atomic_long_add_return_relaxed(num_asids, &current_version);
+> > +
+> > +     /* Flush everything  */
+> > +     __flush_context();
+> > +
+> > +     /* We have more ASIDs than CPUs, so this will always succeed */
+> > +     asid = find_next_zero_bit(context_asid_map, num_asids, 1);
+> > +
+> > +set_asid:
+> > +     __set_bit(asid, context_asid_map);
+> > +     cur_idx = asid;
+> > +     return asid | ver;
+> > +}
+> > +
+> > +static void set_mm_asid(struct mm_struct *mm, unsigned int cpu)
+> > +{
+> > +     unsigned long flags;
+> > +     bool need_flush_tlb = false;
+> > +     unsigned long cntx, old_active_cntx;
+> > +
+> > +     cntx = atomic_long_read(&mm->context.id);
+> > +
+> > +     /*
+> > +      * If our active_context is non-zero and the context matches the
+> > +      * current_version, then we update the active_context entry with a
+> > +      * relaxed cmpxchg.
+> > +      *
+> > +      * Following is how we handle racing with a concurrent rollover:
+> > +      *
+> > +      * - We get a zero back from the cmpxchg and end up waiting on the
+> > +      *   lock. Taking the lock synchronises with the rollover and so
+> > +      *   we are forced to see the updated verion.
+> > +      *
+> > +      * - We get a valid context back from the cmpxchg then we continue
+> > +      *   using old ASID because __flush_context() would have marked ASID
+> > +      *   of active_context as used and next context switch we will
+> > +      *   allocate new context.
+> > +      */
+> > +     old_active_cntx = atomic_long_read(&per_cpu(active_context, cpu));
+> > +     if (old_active_cntx &&
+> > +         ((cntx & ~asid_mask) == atomic_long_read(&current_version)) &&
+> > +         atomic_long_cmpxchg_relaxed(&per_cpu(active_context, cpu),
+> > +                                     old_active_cntx, cntx))
+> > +             goto switch_mm_fast;
+> > +
+> > +     raw_spin_lock_irqsave(&context_lock, flags);
+> > +
+> > +     /* Check that our ASID belongs to the current_version. */
+> > +     cntx = atomic_long_read(&mm->context.id);
+> > +     if ((cntx & ~asid_mask) != atomic_long_read(&current_version)) {
+> > +             cntx = __new_context(mm);
+> > +             atomic_long_set(&mm->context.id, cntx);
+> > +     }
+> > +
+> > +     if (cpumask_test_and_clear_cpu(cpu, &context_tlb_flush_pending))
+> > +             need_flush_tlb = true;
+> > +
+> > +     atomic_long_set(&per_cpu(active_context, cpu), cntx);
+> > +
+> > +     raw_spin_unlock_irqrestore(&context_lock, flags);
+> > +
+> > +switch_mm_fast:
+> > +     csr_write(CSR_SATP, virt_to_pfn(mm->pgd) |
+> > +               ((cntx & asid_mask) << SATP_ASID_SHIFT) |
+> > +               SATP_MODE);
+> > +
+> > +     if (need_flush_tlb)
+> > +             local_flush_tlb_all();
+> > +}
+> > +
+> > +static void set_mm_noasid(struct mm_struct *mm)
+> > +{
+> > +     /* Switch the page table and blindly nuke entire local TLB */
+> > +     csr_write(CSR_SATP, virt_to_pfn(mm->pgd) | SATP_MODE);
+> > +     local_flush_tlb_all();
+> > +}
+> > +
+> > +static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
+> > +{
+> > +     if (static_branch_unlikely(&use_asid_allocator))
+> > +             set_mm_asid(mm, cpu);
+> > +     else
+> > +             set_mm_noasid(mm);
+> > +}
+> > +
+> > +static int asids_init(void)
+> > +{
+> > +     unsigned long old;
+> > +
+> > +     /* Figure-out number of ASID bits in HW */
+> > +     old = csr_read(CSR_SATP);
+> > +     asid_bits = old | (SATP_ASID_MASK << SATP_ASID_SHIFT);
+> > +     csr_write(CSR_SATP, asid_bits);
+> > +     asid_bits = (csr_read(CSR_SATP) >> SATP_ASID_SHIFT)  & SATP_ASID_MASK;
+> > +     asid_bits = fls_long(asid_bits);
+> > +     csr_write(CSR_SATP, old);
+> > +
+> > +     /*
+> > +      * In the process of determining number of ASID bits (above)
+> > +      * we polluted the TLB of current HART so let's do TLB flushed
+> > +      * to remove unwanted TLB enteries.
+> > +      */
+> > +     local_flush_tlb_all();
+> > +
+> > +     /* Pre-compute ASID details */
+> > +     num_asids = 1 << asid_bits;
+> > +     asid_mask = num_asids - 1;
+> > +
+> > +     /*
+> > +      * Use ASID allocator only if number of HW ASIDs are
+> > +      * at-least twice more than CPUs
+> > +      */
+> > +     if (num_asids > (2 * num_possible_cpus())) {
+> > +             atomic_long_set(&current_version, num_asids);
+> > +
+> > +             context_asid_map = kcalloc(BITS_TO_LONGS(num_asids),
+> > +                                sizeof(*context_asid_map), GFP_KERNEL);
+> > +             if (!context_asid_map)
+> > +                     panic("Failed to allocate bitmap for %lu ASIDs\n",
+> > +                           num_asids);
+> > +
+> > +             __set_bit(0, context_asid_map);
+> > +
+> > +             static_branch_enable(&use_asid_allocator);
+> > +
+> > +             pr_info("ASID allocator using %lu bits (%lu entries)\n",
+> > +                     asid_bits, num_asids);
+> > +     } else {
+> > +             pr_info("ASID allocator disabled\n");
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +early_initcall(asids_init);
+> > +#else
+> > +static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
+> > +{
+> > +     /* Nothing to do here when there is no MMU */
+> > +}
+> > +#endif
+> > +
+> >  /*
+> >   * When necessary, performs a deferred icache flush for the given MM context,
+> >   * on the local CPU.  RISC-V has no direct mechanism for instruction cache
+> > @@ -58,10 +314,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+> >       cpumask_clear_cpu(cpu, mm_cpumask(prev));
+> >       cpumask_set_cpu(cpu, mm_cpumask(next));
+> >
+> > -#ifdef CONFIG_MMU
+> > -     csr_write(CSR_SATP, virt_to_pfn(next->pgd) | SATP_MODE);
+> > -     local_flush_tlb_all();
+> > -#endif
+> > +     set_mm(next, cpu);
+> >
+> >       flush_icache_deferred(next);
+> >  }
+>
+> So I know we'd said before that we weren't going to take this until there's
+> hardware, but I think the QEMU support is good enough -- I don't really care if
+> the ISA says this might change, it's been in there for long enough.
+>
+> Aside from the assertions
+>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> LMK if you're going to send a v5 or you want me to just fix it up.
+
+I will send v5 in the next few hours. Thanks for the review.
+
+Best Regards,
+Anup
