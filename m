@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9077030DF7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA8E30DF8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbhBCQQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:16:54 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43968 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235022AbhBCQQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:16:16 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 113G3kjN127279;
-        Wed, 3 Feb 2021 11:15:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=BNM9JvtW+RyxAq84lpcHao/hy2NtoqvRw3xk8Ueu+24=;
- b=eY8Hgb5gl13cofX0y8wcg/e4+t/i2UCsWat1iI2/8/QZGwwHp2XTk/0of5bx+BVgIjyc
- ofnBFhOoSid6f6dxXMAxzRv9cFQxLUVCNTyn8w7noP9vN4etFqPMWqI6RKGO1Yow0oaG
- T8R6lS+rbDVQM7gcPjrjyL7LoN74NhiRcIYNqW8GVl3WTfzVNriPMzR8QykxwFx3jELq
- b0nh62uffOcqVwWVX8uAvLqCVqCXNXk9bGorygkELS//TQDb5u9lvClS8ALJOARhmB+c
- a6hW9d5FiaugC3Ei7zo7p2dsOLnWTDh5eKtyeXUO/gfq4yzTA7a3CRcVpZA6h06KbWnn XA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36fxq4s8cr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Feb 2021 11:15:28 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 113G5YOh136314;
-        Wed, 3 Feb 2021 11:15:27 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36fxq4s8cb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Feb 2021 11:15:27 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 113FqKxH027428;
-        Wed, 3 Feb 2021 16:15:26 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 36eu8qrvyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Feb 2021 16:15:26 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 113GFPnJ22282728
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Feb 2021 16:15:25 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BA317805C;
-        Wed,  3 Feb 2021 16:15:25 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E4E278069;
-        Wed,  3 Feb 2021 16:15:23 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.153.205])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Feb 2021 16:15:23 +0000 (GMT)
-Message-ID: <a6093892d7201fb940e14a571bc853829e704d0f.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: isci: convert sysfs sprintf/snprintf family to
- sysfs_emit
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        intel-linux-scu@intel.com
-Cc:     artur.paszkiewicz@intel.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 03 Feb 2021 08:15:22 -0800
-In-Reply-To: <1612341806-30230-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1612341806-30230-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S233491AbhBCQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:19:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232630AbhBCQTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:19:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A950064F74;
+        Wed,  3 Feb 2021 16:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612369151;
+        bh=K6U4CHFRSskkHz3ojBSXooC5+ftYU+xqIVYffsb/J7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IU5XKFkj/iqkEqoTsfqYNVRfsDWZGJsNQfECfvbfUyrFmbNbEAERjV7i3iTFl83se
+         5xpPixgtzlLJoa90NZ73qeMpzoffYJCj8kBhIGqVOwNksTKg6k2ARHvejlulyi2lw3
+         qWGrNHkItntZNV88TNjLIH1BG2vL7Tr6j0GMEdgqb5N1McIUDcYfDCcGo7ImueSEO6
+         NbFRogi58P0LATTq3uJ5cvtCRWk6SREF0HJmwMeTv7vsm5kQewUwb20ydliRVcbuXR
+         Yn0cmTcdD2eSKbyQ0MPA+JAr33R8nVyjbBFfRhPIs3Co1WiB2S3Qy0jNC8WSAdZqJb
+         jjpwAO83O7YeQ==
+Date:   Wed, 3 Feb 2021 16:18:22 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v6 29/37] regulator: scmi: port driver to the new
+ scmi_voltage_proto_ops interface
+Message-ID: <20210203161822.GF4880@sirena.org.uk>
+References: <20210202221555.41167-1-cristian.marussi@arm.com>
+ <20210202221555.41167-30-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-03_06:2021-02-03,2021-02-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- mlxscore=0 clxscore=1011 bulkscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 priorityscore=1501 suspectscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030098
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XStn23h1fwudRqtG"
+Content-Disposition: inline
+In-Reply-To: <20210202221555.41167-30-cristian.marussi@arm.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-03 at 16:43 +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
->  ./drivers/scsi/isci/init.c:140:8-16: WARNING: use scnprintf or
-> sprintf.
-> 
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/scsi/isci/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
-> index c452849..741a98e 100644
-> --- a/drivers/scsi/isci/init.c
-> +++ b/drivers/scsi/isci/init.c
-> @@ -137,7 +137,7 @@ static ssize_t isci_show_id(struct device *dev,
-> struct device_attribute *attr, c
->  	struct sas_ha_struct *sas_ha = SHOST_TO_SAS_HA(shost);
->  	struct isci_host *ihost = container_of(sas_ha, typeof(*ihost),
-> sas_ha);
->  
-> -	return snprintf(buf, PAGE_SIZE, "%d\n", ihost->id);
-> +	return sysfs_emit(buf, "%d\n", ihost->id);
 
-What's the point of doing this change?  We'd have to have 13,600 bit
-integer types before this could ever possibly overflow and the
-difference between snprintf and scnprintf actually matter from a
-practical point of view.  Perhaps the coccinelle check should be
-updated to account for these common impossible to overflow situations.
+--XStn23h1fwudRqtG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-James
+On Tue, Feb 02, 2021 at 10:15:47PM +0000, Cristian Marussi wrote:
+> Port driver to the new SCMI Voltage interface based on protocol handles
+> and common devm_get_ops().
 
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--XStn23h1fwudRqtG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAazM0ACgkQJNaLcl1U
+h9ChAwf/cxgDKr121Q/m1iRu5q9YDrCu7Jcisy3H6oadOX0rjeXSapqJpZApRFfN
+cquj6jpO6WDB3nPwlQ3Lgn43IOdYTN81/2oqUD42Y5m8PoD3ysFEwH1/oL+bdXsr
+4hFujXc3qsd5QUxt2SY1QVMyvZgXy43Yx3FVqGwn9wa8cKrhvfjwhJ2e6ROFNn6y
+E+BPhA0mpkWK9eAl2bh6qCiutJjLtYru07Ryxpc+U9jYsEdmakloIFqNnG6Wbd4L
+nTQr5ghP5oCn8kP3Hs8zz4J5mXdO5/D3bqvJ3g52qwFNEl7bHvZKK5nRecPMYE85
+FsJlgFw6zCCgZM1yVLOWuNOAiW+uig==
+=s9fz
+-----END PGP SIGNATURE-----
+
+--XStn23h1fwudRqtG--
