@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4943A30D44C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7F30D44E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhBCHuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:50:35 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:19032 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbhBCHuc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:50:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612338632; x=1643874632;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7Ac7Kgtgf3j1Kol/DbvRekXieIZ3HmqZVJQZvgMnnXA=;
-  b=QFi2JbNrsb3lIbRpMH03UQ5Ij975xu82MRkSfu5MZq2r93f36ViMQU0I
-   VUaE6n3VglN4eov+KhkwBFaxwr450w6rwLOcqN5vn4T6W7gaSMU1ctCXD
-   OJ3nNuwUE496sC+lS6bo2UchMjwgGY9A9hAy92mHuy4c+LgmMehRyb4p1
-   Cndxy4Qat7UAOAdxKBzDUTR7GwyjqcdwNv6eC0A9rz3jPd96RC1NcCeDb
-   4vyEskHmUNo793IHnBF0AZgqvU4EaY5YWanlZynVJEBN+Q0UlmVk7M40v
-   YTARplxiklkZxh6waamXwFV4wn/+hbe07xdvr2GQBjMx6yh4hlu2bD3v1
-   w==;
-IronPort-SDR: ADqnf4BUx0q0hD2Cjy5+rYeZrE8/0P78SK81tgSdEYhL5nI+U0Mx8rCHPsikbXb86xX9NYm2cc
- w9s6PYiab97edixR5PJigs/dgGM+YKk/0aegDd9oPyxuptw64KVuFoNX7Dp1gUDooH0no6dRmI
- 1Zj1kmK7SUSxHpWMkR5EfRCBNB1/GQI2eFS0rkkTBN21+iyRzVrSbPojjqOP1WlqCcFfoBCzck
- krFajQSX1WD1XOL1NtWrwtE6t15AsBE/niC+pTxEESdW8M9Zhs5u8pt5iKLEfJUIBaNSU2U/df
- NaU=
-X-IronPort-AV: E=Sophos;i="5.79,397,1602518400"; 
-   d="scan'208";a="163448895"
-Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Feb 2021 15:49:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=INGhMXuNX3I0LS6tdsllQWwiPdavk+SRVdB/L6AOyarnVZiXzDDqo/ZJKTD6qj6fgjvavX9vkPJbZQ6nlWt6/hLu9gFxDSbldHS5pDfoap84bYU4rgCtDy1BnNpB/hSWKhUkKwxH/NeOIX7X00Nw1PusOpGvFW9QQ9GwT2/ROARaUm7KwZ+cOY3piRZSLjsby5BitGUAshIb3KsRLNE7Nu0f1BYk6rCBYX+Tf3d+QeKTspllR5g6/SifnyncsBDIiphkF0Uf89buddPL7isASEF2JosqMOLowoGPL2D8Gc+E9Z5bnmDt8pk90xbxo7z8pC1lLO+7G9SNQuxL0H7LVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Ac7Kgtgf3j1Kol/DbvRekXieIZ3HmqZVJQZvgMnnXA=;
- b=NYWxYETXrgfzV8Xk2ikMvYGmSNL1gKSumaAEkoJTDsEOTOJHaq32iCmPoS/nSnhtIUJMV1ayhGoBmxC0oc0yCgs2GeNh3e+ZmrQFDYRVcrl9INZgP5/PDzGulkCeqfXuPGHcd88sCsZA3T37pdg8ugB1iMD28A+1X2QJZo4eEvoAczSS9/Fuws3yEba8W15RY5f+/v/WB6Ay5Bozwdy2skwdLIkYT+dO8+nM0nIh2BdWGASjI9N82ksAeaiLMsdTU5gEZXcLno2HF8EC1x/0e1BsvJBAjUdAgPl1uXgZ04PEld2+oZV6VXA3pZwWPCwvu9/iF6B09HEjx9hGwq3fJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Ac7Kgtgf3j1Kol/DbvRekXieIZ3HmqZVJQZvgMnnXA=;
- b=F7cF0ZfJpfsE6CjxAhckBWSyZlzWOGwBG0K0oDbijLGysErL/hE6LC6Ta5O7m0CaNajaje1oL7VBkPcL2o9oj8TEaO1gGNPrWnwkx1FgfM/CWRqZ+7LzEZRXCAC2dh2EMvx9vtGQs3wS7OxO8wZNIt2/mZFqdLStDo52VgF7arM=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM5PR04MB1098.namprd04.prod.outlook.com (2603:10b6:4:45::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.23; Wed, 3 Feb 2021 07:49:24 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3805.027; Wed, 3 Feb 2021
- 07:49:24 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>
-CC:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] scsi: ufs: convert sysfs sprintf/snprintf family to
- sysfs_emit
-Thread-Topic: [PATCH] scsi: ufs: convert sysfs sprintf/snprintf family to
- sysfs_emit
-Thread-Index: AQHW+f/MnrKgDFQezEakeXLwPvovxapGDgRw
-Date:   Wed, 3 Feb 2021 07:49:24 +0000
-Message-ID: <DM6PR04MB65754456DA1AFE3422BF19ECFCB49@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <1612337990-88873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612337990-88873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5c66c382-1df3-4617-3276-08d8c81839bf
-x-ms-traffictypediagnostic: DM5PR04MB1098:
-x-microsoft-antispam-prvs: <DM5PR04MB10981CADD33E980F95B6E7FBFCB49@DM5PR04MB1098.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:747;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1BP9d9BzYTDnbhuFQ11Z+LVrSzdZ2WUcsFDecBNpWv35vVbhPh25MgZ7AmaBKLpMLJFHPm+GT+xYETsEH7+PUCHr+z13amJVtRIGoGc+DlDV2Vk7qIiesyeOeHOiMRRRNRdlMPePhaxW9Wq7Dr/gS97oTNAu4miXQ93kTNNgd1mzukYji67E3Ei/Mmz24AcVpJEtNTPOWPcP1+9Fnz9j4ovkpZHcT7QYNJWWegROzCRD7nEl2xQ3iR9SNMh3ZG6WO+19oFDKZ7uKA/HFN/kDQOz6fI0JD2hmF6v+aIm6ExP/Nqx8QYfhLQd8Bcwv7EnK28dLxGmsRxToF+q3VW9i6rZMA2ZL7+slhrXvUqq1rMXEK1CDxiXteIBei15dmGPypiY5aSZFDNHbApnRUqO7z3uweKJdGd+kClCCvzykittNJ5OvigeTK+Fe9HX4LB4bK8z4nwXr/KMvvWuYI5rl1AoKZmhxnOxZ7mOkydyK/w7xijdILVRq9W6+xCzMib335O6TsU8FP2DoHtsfM+O2tw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(4326008)(316002)(64756008)(66446008)(66556008)(66946007)(66476007)(52536014)(110136005)(5660300002)(478600001)(6506007)(26005)(54906003)(9686003)(86362001)(33656002)(4744005)(2906002)(83380400001)(8676002)(71200400001)(7696005)(186003)(8936002)(76116006)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3PDOM+hc1EHccScA1nQAhurCKztHxDo2Y+t/QzNbMq7XN4a+wPseLmPTHC6n?=
- =?us-ascii?Q?5Xj/ELZiTXtXTMDLRQrLiw4FbiTe6HdciTqCw869i+QQuqXEyiuO2QhCIoGS?=
- =?us-ascii?Q?+jadqAmbziHZQ3lEq7Mr1dN0Kkrq4sYhMrv9DAjr9oSQilmexeA5eivIg/vx?=
- =?us-ascii?Q?UL2MGaqJzbvTYuA6GiSeI9uxmh76kPd2bCgACTIHWYR0hXFsGMQOHoTAoVut?=
- =?us-ascii?Q?gk3XfCEBJHG58CzMqUnCr1ko4dqJtVWWcBccc7Oetoqzhz34leKR75ODFdCA?=
- =?us-ascii?Q?3ZRMqqnzkEZsOYC282INuVu8NcT0c9kLrZWTsra/eRCOtU1dKq9F4HGJfswA?=
- =?us-ascii?Q?nYf0OPiCuSLo1104QaHarg/gkYhYQt1O+vV8J+VAWqVZNHFxf4nyiyu/ifE5?=
- =?us-ascii?Q?Q4RzXA7tRJrYMbmf0UW+Z93bN/0eEKJi4bP0dWt7/ORU4RzP8MSv+odywG+e?=
- =?us-ascii?Q?397qsqor+XgX5l0bADxo3gix4VyDM5CCMhOkfbcoIjXpw9sU13z9b5cqofBG?=
- =?us-ascii?Q?/SLkpXpi57Q9vRe4T3b+tSqEwY0h6hQU1a4RfvZR7tDYCG/6gok+xQe/hZ/i?=
- =?us-ascii?Q?ZUyvE/h8u9aOpQpCaUAYfHCXymfGSvma93Iymma4hJU9aq1/7/cmLPNe0L4v?=
- =?us-ascii?Q?haw3Y+KQrMTvJ1w02NIACn64LwprsNV2EtI8qD67hwrJnMlUEe/ISn5v7I+1?=
- =?us-ascii?Q?LVct24Mx0ZGnHeDb/orNkPld2DAIZPwAm/ML4OABfWhXD2Cl6FQlc0zZETrf?=
- =?us-ascii?Q?+Pan/9vY88RerIHx5kx8qM3R8UmuVH1btymIOZV5lF1ZDqhlfw0JYqfxe3pL?=
- =?us-ascii?Q?LRBSaJXCeGEQck4uPF0lCqB/aMslUhDcsP2mNJMWQ/oSPtQ1OzcBq++3D0RY?=
- =?us-ascii?Q?e2Z1gOgYuEOiFMrsJnFakKEW9EmkLP0+5GyYMd0aioYfhzjNfWQnZ9qUIMPr?=
- =?us-ascii?Q?XNIRmaow001u6a0+Z5f7E4k+04pB4qXZozNGHjepxOdd43IjH9Z6/kbmPLI+?=
- =?us-ascii?Q?UxPC5nPSK7O+RMLm1UWtelyiG+1w2MIOEFzKujs8uQ3EwsvLB9CwFDgsmyKI?=
- =?us-ascii?Q?shLa37MQ?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232220AbhBCHvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:51:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231654AbhBCHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 02:51:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF4CC64F5C;
+        Wed,  3 Feb 2021 07:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612338619;
+        bh=9ZnPLFWxyuVetTdyZ2rsor+35zbCTQFmm3ShxD+mVqY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gk5Bf9vdAcFYZzrPCyBBs5JrE83AKH5RSA9ClK3d+bPSj2wT+GMLKpmU35yKDEGzF
+         RqLH6eYza5hwa9/ZpkTBpaoAStu1czKkIsQmshE9agjqnQppsagQziPWaQT6zHsB9d
+         fNbel7y62aBzWivivTNxebUiHYluvB7u5hfaayoIQc5gD8NmyFzYmMPZSye+5hk6dh
+         xerO5y8MVAf+ta7wU9PtjmKby6wKSSeMw2GFFsDLTiNNimo4nJLUUymRZG++1wm6OM
+         Vif/QsyHtskqdhjysIml3SY3SNDnmUfc3EeD19oSEZOQmBIFuu+vYvfs0okleOtKyH
+         52zvt+EF7Eakw==
+Received: by mail-ot1-f48.google.com with SMTP id 36so22506269otp.2;
+        Tue, 02 Feb 2021 23:50:19 -0800 (PST)
+X-Gm-Message-State: AOAM5321eBWz14p0TYq0hy+PAEwNAA8kx2IlPkH9PDw2rP4BeWAwyNEV
+        dgCQZT0byRQ3qYmwxK0FpPzEGGv5TtnlJp6b3O8=
+X-Google-Smtp-Source: ABdhPJx2IAIFAijainQxsZvUjR94cQY1A0IfXD4DaJu5Y/wvAhddYXhrBd+YScXteK8LRmPUQLLJcnZSKhSCQmfhgtI=
+X-Received: by 2002:a05:6830:1256:: with SMTP id s22mr1221124otp.251.1612338618909;
+ Tue, 02 Feb 2021 23:50:18 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c66c382-1df3-4617-3276-08d8c81839bf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 07:49:24.5511
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tHVVPT9jhokcl2Z9IsitThIL7h1G4LmrMXSA4UiqZ9FI4Sd+ta4BdBpnnGNmJO2ZOYH/2E91HynvURGzDtky/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1098
+References: <20210117180301.1956-1-alistair@alistair23.me> <20210117180301.1956-3-alistair@alistair23.me>
+ <20210129071341.GH4356@dragon> <CAKmqyKOoTG+BGhRFtppQxnaV61GFxXXhmZJcxqGQVbnuV1PfqA@mail.gmail.com>
+In-Reply-To: <CAKmqyKOoTG+BGhRFtppQxnaV61GFxXXhmZJcxqGQVbnuV1PfqA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 3 Feb 2021 08:50:02 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1ZLuDTKY6YbPrcM338K4vmAgESeBiNwWN7VaWj2PtKFg@mail.gmail.com>
+Message-ID: <CAK8P3a1ZLuDTKY6YbPrcM338K4vmAgESeBiNwWN7VaWj2PtKFg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arch/arm/configs: Enable VMSPLIT_2G in imx_v6_v7_defconfig
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Alistair Francis <alistair@alistair23.me>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Fix the following coccicheck warning:
->=20
-> ./drivers/scsi/ufs/ufshcd.c:1838:8-16: WARNING: use scnprintf or
-> sprintf.
->=20
-> ./drivers/scsi/ufs/ufshcd.c:1815:8-16: WARNING: use scnprintf or
-> sprintf.
->=20
-> ./drivers/scsi/ufs/ufshcd.c:1525:8-16: WARNING: use scnprintf or
-> sprintf.
->=20
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+On Wed, Feb 3, 2021 at 3:37 AM Alistair Francis <alistair23@gmail.com> wrote:
+>
+> On Thu, Jan 28, 2021 at 11:13 PM Shawn Guo <shawnguo@kernel.org> wrote:
+> >
+> > On Sun, Jan 17, 2021 at 10:03:01AM -0800, Alistair Francis wrote:
+> > > The reMarkable2 requires VMSPLIT_2G, so lets set this in the
+> > > imx_v6_v7_defconfig.
+> >
+> > Hmm, why is VMSPLIT_2G required by reMarkable2?
+>
+> I'm not too sure. It's difficult to debug problems as I only have a
+> UART but without this I don't see any kernel prints so it seems like
+> the kernel doesn't get very far. I haven't had any luck with earlycon
+> on the device so I don't know how I can get more information.
+
+In the dts file, I can see that the machine has 1GB of RAM at
+contiguous addresses. My first guess would be a problem with
+highmem, as this configuration means that with VMSPLIT_3G
+there are 768MB of lowmem and 256MB of highmem.
+
+Can you try these two things to narrow the problem down
+further?
+
+a) disable CONFIG_HIGHMEM when using VMSPLIT_3G
+b) use VMSPLIT_3G_OPT
+
+If both of them solve the problem, then highmem is likely
+the root cause. One possible issue might be that the boot
+loader loads the initramfs or the dtb into a location outside
+of the first 768 MB of lowmem where it is unreachable
+in the VMSPLIT_3G configuration.
+
+        Arnd
