@@ -2,160 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A3230E75F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D05330E759
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhBCX3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:29:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232880AbhBCX3b (ORCPT
+        id S233362AbhBCX3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:29:01 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12995 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232733AbhBCX27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:29:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612394884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qk0MRndwsudTUKG83wO3htOmgtnK5DShnl+yULNhutc=;
-        b=Eazmsv3WGJRWmge5fhdyuOhFf9l/nWodnrm3fBI0ai9xKJli0aJVzLjou3ymW0UShMKBZO
-        h/hI6/Yi7s05wJL3BCua7Ta0QbP/V2jodCxLBS3nUXk2PliZgE/qI7koQUwkmmCOVGu9Re
-        /0SYmPvTQQcATmuWRqlSDVzAzsodLAw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-sP3f55tYM9yrX1Mu_6I9qQ-1; Wed, 03 Feb 2021 18:28:00 -0500
-X-MC-Unique: sP3f55tYM9yrX1Mu_6I9qQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA5B41083E9D;
-        Wed,  3 Feb 2021 23:27:55 +0000 (UTC)
-Received: from treble (ovpn-113-81.rdu2.redhat.com [10.10.113.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 27B245C1B4;
-        Wed,  3 Feb 2021 23:27:44 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 17:27:35 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
+        Wed, 3 Feb 2021 18:28:59 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601b31930000>; Wed, 03 Feb 2021 15:28:19 -0800
+Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
+ 2021 23:28:18 +0000
+Subject: Re: [PATCH 2/4] mm/gup: decrement head page once for group of
+ subpages
+To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in
- unwind_next_frame+0x1df5/0x2650
-Message-ID: <20210203232735.nw73kugja56jp4ls@treble>
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
- <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
- <20210203190518.nlwghesq75enas6n@treble>
- <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210203220025.8568-1-joao.m.martins@oracle.com>
+ <20210203220025.8568-3-joao.m.martins@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <a1f9ba72-67c3-7307-89e6-d995ab782b42@nvidia.com>
+Date:   Wed, 3 Feb 2021 15:28:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210203220025.8568-3-joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612394899; bh=NpVFPNmAXUPcZtYNGV8eUTmbWgT9gI9vypgKnogWp0U=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Fr8Gh2SOSsDHAOUG3QOjsZh42pkAchXWWpbVa8eaP0c5V9yXGmZGGtNKCnFOplHNR
+         GmPAzEQ9Fov/WoEFOfzN2UXmcD3oUJDc9AbC9mEqvHqv8IKQxdZL/+fbqogJeKkUP3
+         A1nMVtFtSIX6xQ30oI6Hzj4TUHYirpJOGWDCDhVqp4+qDnImNO9wnr171twtHIHoWC
+         +SxKP63n/AjPTeMbrI9NoHwVA5UQsMRSr8yztUi1SEecSJIpq2GWoDUC8g0xYSc01w
+         fpgl9R24FFgxLEcVXHMcvsfLcx7JWfQCpyvVXpg5BW845KSS3lbc3NIrg7hgvhzorF
+         st1RJOvbucgFw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:41:53PM -0800, Ivan Babrou wrote:
-> On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
-> > > > Can you pretty please not line-wrap console output? It's unreadable.
-> > >
-> > > GMail doesn't make it easy, I'll send a link to a pastebin next time.
-> > > Let me know if you'd like me to regenerate the decoded stack.
-> > >
-> > > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
-> > > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
-> > > >
-> > > > Not sure what tree you're on, but that's not the upstream commit.
-> > >
-> > > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
-> > > added a link to the upstream hash right below.
-> > >
-> > > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > > > Date:   Tue Aug 18 15:57:52 2020 +0200
-> > > > >
-> > > > >     tracepoint: Optimize using static_call()
-> > > > >
-> > > >
-> > > > There's a known issue with that patch, can you try:
-> > > >
-> > > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
-> > >
-> > > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
-> > > of v5.9 (to make it reproducible), and the patch did not help. Do I
-> > > need to apply the whole series or something else?
-> >
-> > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
-> > It will spit out a bunch of stack data.
+On 2/3/21 2:00 PM, Joao Martins wrote:
+> Rather than decrementing the head page refcount one by one, we
+> walk the page array and checking which belong to the same
+> compound_head. Later on we decrement the calculated amount
+> of references in a single write to the head page. To that
+> end switch to for_each_compound_head() does most of the work.
 > 
-> Here's the three I'm building:
+> set_page_dirty() needs no adjustment as it's a nop for
+> non-dirty head pages and it doesn't operate on tail pages.
 > 
-> * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> This considerably improves unpinning of pages with THP and
+> hugetlbfs:
 > 
-> It contains:
+> - THP
+> gup_test -t -m 16384 -r 10 [-L|-a] -S -n 512 -w
+> PIN_LONGTERM_BENCHMARK (put values): ~87.6k us -> ~23.2k us
 > 
-> * v5.9 tag as the base
-> * static_call-2020-10-12 tag
-> * dm-crypt patches to reproduce the issue with KASAN
-> * x86/unwind: Add 'unwind_debug' cmdline option
-> * tracepoint: Fix race between tracing and removing tracepoint
+> - 16G with 1G huge page size
+> gup_test -f /mnt/huge/file -m 16384 -r 10 [-L|-a] -S -n 512 -w
+> PIN_LONGTERM_BENCHMARK: (put values): ~87.6k us -> ~27.5k us
 > 
-> The very same issue can be reproduced on 5.10.11 with no patches,
-> but I'm going with 5.9, since it boils down to static call changes.
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> ---
+>   mm/gup.c | 29 +++++++++++------------------
+>   1 file changed, 11 insertions(+), 18 deletions(-)
 > 
-> Here's the decoded stack from the kernel with unwind debug enabled:
-> 
-> * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
-> 
-> See my first email for the exact commands that trigger this.
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 4f88dcef39f2..971a24b4b73f 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -270,20 +270,15 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   				 bool make_dirty)
+>   {
+>   	unsigned long index;
+> -
+> -	/*
+> -	 * TODO: this can be optimized for huge pages: if a series of pages is
+> -	 * physically contiguous and part of the same compound page, then a
+> -	 * single operation to the head page should suffice.
+> -	 */
 
-Thanks.  Do you happen to have the original dmesg, before running it
-through the post-processing script?
+Great to see this TODO (and the related one below) finally done!
+
+Everything looks correct here.
+
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
 
-I assume you're using decode_stacktrace.sh?  It could use some
-improvement, it's stripping the function offset.
-
-Also spaces are getting inserted in odd places, messing the alignment.
-
-[  137.291837][    C0] ffff88809c409858: d7c4f3ce817a1700 (0xd7c4f3ce817a1700)
-[  137.291837][    C0] ffff88809c409860: 0000000000000000 (0x0)
-[  137.291839][    C0] ffff88809c409868: 00000000ffffffff (0xffffffff)
-[ 137.291841][ C0] ffff88809c409870: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
-[ 137.291843][ C0] ffff88809c409878: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
-[  137.291844][    C0] ffff88809c409880: ffff88809c409ac8 (0xffff88809c409ac8)
-[  137.291845][    C0] ffff88809c409888: 0000000000000086 (0x86)
-
+thanks,
 -- 
-Josh
+John Hubbard
+NVIDIA
+
+> +	struct page *head;
+> +	unsigned int ntails;
+>   
+>   	if (!make_dirty) {
+>   		unpin_user_pages(pages, npages);
+>   		return;
+>   	}
+>   
+> -	for (index = 0; index < npages; index++) {
+> -		struct page *page = compound_head(pages[index]);
+> +	for_each_compound_head(index, pages, npages, head, ntails) {
+>   		/*
+>   		 * Checking PageDirty at this point may race with
+>   		 * clear_page_dirty_for_io(), but that's OK. Two key
+> @@ -304,9 +299,9 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   		 * written back, so it gets written back again in the
+>   		 * next writeback cycle. This is harmless.
+>   		 */
+> -		if (!PageDirty(page))
+> -			set_page_dirty_lock(page);
+> -		unpin_user_page(page);
+> +		if (!PageDirty(head))
+> +			set_page_dirty_lock(head);
+> +		put_compound_head(head, ntails, FOLL_PIN);
+>   	}
+>   }
+>   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
+> @@ -323,6 +318,8 @@ EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
+>   void unpin_user_pages(struct page **pages, unsigned long npages)
+>   {
+>   	unsigned long index;
+> +	struct page *head;
+> +	unsigned int ntails;
+>   
+>   	/*
+>   	 * If this WARN_ON() fires, then the system *might* be leaking pages (by
+> @@ -331,13 +328,9 @@ void unpin_user_pages(struct page **pages, unsigned long npages)
+>   	 */
+>   	if (WARN_ON(IS_ERR_VALUE(npages)))
+>   		return;
+> -	/*
+> -	 * TODO: this can be optimized for huge pages: if a series of pages is
+> -	 * physically contiguous and part of the same compound page, then a
+> -	 * single operation to the head page should suffice.
+> -	 */
+> -	for (index = 0; index < npages; index++)
+> -		unpin_user_page(pages[index]);
+> +
+> +	for_each_compound_head(index, pages, npages, head, ntails)
+> +		put_compound_head(head, ntails, FOLL_PIN);
+>   }
+>   EXPORT_SYMBOL(unpin_user_pages);
+>   
+> 
 
