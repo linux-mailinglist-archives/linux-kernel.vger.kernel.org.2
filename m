@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D930D41B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770DA30D421
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhBCHey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 02:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhBCHeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 02:34:44 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250A2C06174A;
-        Tue,  2 Feb 2021 23:33:49 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1l7CfJ-00FKfW-BY; Wed, 03 Feb 2021 08:33:29 +0100
-Message-ID: <9200710b2d9dafea4bfae4bb449a55fb44245d04.camel@sipsolutions.net>
-Subject: Re: [PATCH] wireless: fix typo issue
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     samirweng1979 <samirweng1979@163.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Date:   Wed, 03 Feb 2021 08:33:23 +0100
-In-Reply-To: <20210203070025.17628-1-samirweng1979@163.com>
-References: <20210203070025.17628-1-samirweng1979@163.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S232133AbhBCHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 02:37:25 -0500
+Received: from mga17.intel.com ([192.55.52.151]:51600 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231834AbhBCHhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 02:37:22 -0500
+IronPort-SDR: kDUqwn7elpv/X0bw4HIH+mskKF/d7c4jxWViRD8fThOpJSaS+rg6VVJkNYnl2BTtnjHmjcEIhV
+ XWnBiCqrXPkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160760880"
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="160760880"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 23:36:37 -0800
+IronPort-SDR: peD/CeSohs1xq+wtPJu0LOIU0QocDFx1r3nTgnm4Rhg86dkhLSi9EbjKWQyTaW5Kjw87BP5BJr
+ FVgvYz64HJKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="372282320"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by orsmga002.jf.intel.com with ESMTP; 02 Feb 2021 23:36:31 -0800
+Subject: Re: [PATCH] mmc: queue: Remove unused define
+To:     Chanwoo Lee <cw9316.lee@samsung.com>, ulf.hansson@linaro.org,
+        baolin.wang@linaro.org, arnd@arndb.de, colyli@suse.de,
+        lee.jones@linaro.org, sartgarg@codeaurora.org, pcc@google.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com
+References: <CGME20210203072341epcas1p186cca2cf8177a31d04f1ede4bb5f1ec7@epcas1p1.samsung.com>
+ <20210203072014.30272-1-cw9316.lee@samsung.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f7984520-8239-24ae-0142-811f4c6d9d9f@intel.com>
+Date:   Wed, 3 Feb 2021 09:36:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210203072014.30272-1-cw9316.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-03 at 15:00 +0800, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
+On 3/02/21 9:20 am, Chanwoo Lee wrote:
+> From: ChanWoo Lee <cw9316.lee@samsung.com>
 > 
-> change 'iff' to 'if'.
+> MMC_CQE_QUEUE_FULL is not set and is only cleared.
+> Therefore, define is unnecessary.
 > 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+
+Looks like a pre blk-mq remanent.
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
 > ---
->  net/wireless/chan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/core/queue.c | 2 --
+>  drivers/mmc/core/queue.h | 1 -
+>  2 files changed, 3 deletions(-)
 > 
-> diff --git a/net/wireless/chan.c b/net/wireless/chan.c
-> index 285b807..2f17edf 100644
-> --- a/net/wireless/chan.c
-> +++ b/net/wireless/chan.c
-> @@ -1084,7 +1084,7 @@ bool cfg80211_chandef_usable(struct wiphy *wiphy,
->   * associated to an AP on the same channel or on the same UNII band
->   * (assuming that the AP is an authorized master).
->   * In addition allow operation on a channel on which indoor operation is
-> - * allowed, iff we are currently operating in an indoor environment.
-> + * allowed, if we are currently operating in an indoor environment.
->   */
-
-I suspect that was intentional, as a common abbreviation for "if and
-only if".
-
-johannes
+> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> index 002426e3cf76..9f37a8b909e8 100644
+> --- a/drivers/mmc/core/queue.c
+> +++ b/drivers/mmc/core/queue.c
+> @@ -33,8 +33,6 @@ void mmc_cqe_check_busy(struct mmc_queue *mq)
+>  {
+>  	if ((mq->cqe_busy & MMC_CQE_DCMD_BUSY) && !mmc_cqe_dcmd_busy(mq))
+>  		mq->cqe_busy &= ~MMC_CQE_DCMD_BUSY;
+> -
+> -	mq->cqe_busy &= ~MMC_CQE_QUEUE_FULL;
+>  }
+>  
+>  static inline bool mmc_cqe_can_dcmd(struct mmc_host *host)
+> diff --git a/drivers/mmc/core/queue.h b/drivers/mmc/core/queue.h
+> index fd11491ced9f..57c59b6cb1b9 100644
+> --- a/drivers/mmc/core/queue.h
+> +++ b/drivers/mmc/core/queue.h
+> @@ -81,7 +81,6 @@ struct mmc_queue {
+>  	int			in_flight[MMC_ISSUE_MAX];
+>  	unsigned int		cqe_busy;
+>  #define MMC_CQE_DCMD_BUSY	BIT(0)
+> -#define MMC_CQE_QUEUE_FULL	BIT(1)
+>  	bool			busy;
+>  	bool			use_cqe;
+>  	bool			recovery_needed;
+> 
 
