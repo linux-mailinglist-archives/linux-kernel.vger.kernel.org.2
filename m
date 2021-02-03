@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684FE30DEDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597DD30DEE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234634AbhBCP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:56:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:42594 "EHLO foss.arm.com"
+        id S234734AbhBCP52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:57:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhBCP4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:56:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E733143B;
-        Wed,  3 Feb 2021 07:55:09 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6DDA53F719;
-        Wed,  3 Feb 2021 07:55:07 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     vincent.guittot@linaro.org, mgorman@suse.de, mingo@kernel.org,
-        peterz@infradead.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, linuxarm@openeuler.org,
-        xuwei5@huawei.com, liguozhu@hisilicon.com, tiantao6@hisilicon.com,
-        wanghuiqiang@huawei.com, prime.zeng@hisilicon.com,
-        jonathan.cameron@huawei.com, guodong.xu@linaro.org,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Meelis Roos <mroos@linux.ee>
-Subject: [RFC PATCH 3/2] sched/topology: Alternative diameter >= 2 fixup
-Date:   Wed,  3 Feb 2021 15:54:32 +0000
-Message-Id: <20210203155432.10293-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210203155432.10293-1-valentin.schneider@arm.com>
-References: <20210203155432.10293-1-valentin.schneider@arm.com>
+        id S234668AbhBCPzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:55:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B71AA64E3D;
+        Wed,  3 Feb 2021 15:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612367681;
+        bh=6klP67F/eJlyfcD5sePw8yJKwGPDEhrxwWlDTcc1Z80=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=w2sF7j3dmDgddukSnhCXQQ1UlATkp2X+YrR5kJ6m86eC6Mzl4ybjK6B7tJzqwEl7o
+         c/WwMbQyUqo7xIkcPDy5GnH3BcXBGuvn3Dp7HLVe9+crZMvMzr30/LTzaauXja2/rm
+         vsJK0Voe/naMBeP58LHZwFutjZHV8XbcfVd6xbbw=
+Date:   Wed, 3 Feb 2021 16:54:38 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v6] modules: introduce the MODULE_SCMVERSION config
+Message-ID: <YBrHPqlQHppzBPpn@kroah.com>
+References: <20210121213641.3477522-1-willmcvicker@google.com>
+ <YBrFSLASG5yiqtZT@gunter>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBrFSLASG5yiqtZT@gunter>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This follows Barry's approach, which yields fewer groups in the higher domains.
+On Wed, Feb 03, 2021 at 04:46:16PM +0100, Jessica Yu wrote:
+> +++ Will McVicker [21/01/21 21:36 +0000]:
+> > Config MODULE_SCMVERSION introduces a new module attribute --
+> > `scmversion` -- which can be used to identify a given module's SCM
+> > version.  This is very useful for developers that update their kernel
+> > independently from their kernel modules or vice-versa since the SCM
+> > version provided by UTS_RELEASE (`uname -r`) will now differ from the
+> > module's vermagic attribute.
+> > 
+> > For example, we have a CI setup that tests new kernel changes on the
+> > hikey960 and db845c devices without updating their kernel modules. When
+> > these tests fail, we need to be able to identify the exact device
+> > configuration the test was using. By including MODULE_SCMVERSION, we can
+> > identify the exact kernel and modules' SCM versions for debugging the
+> > failures.
+> > 
+> > Additionally, by exposing the SCM version via the sysfs node
+> > /sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+> > of the modules loaded from the initramfs. Currently, modinfo can only
+> > retrieve module attributes from the module's ko on disk and not from the
+> > actual module that is loaded in RAM.
+> > 
+> > You can retrieve the SCM version in two ways,
+> > 
+> > 1) By using modinfo:
+> >    > modinfo -F scmversion MODULENAME
+> > 2) By module sysfs node:
+> >    > cat /sys/module/MODULENAME/scmversion
+> 
+> Hi Will,
+> 
+> First off, thanks for being patient and being responsive throughout the patch
+> review process.
+> 
+> Personally, I am rather neutral towards this feature. We already provide
+> CONFIG_MODULE_SRCVERSION to provide a checksum of a module's source files and I
+> think the SCMVERSION is a nicer alternative. I can see how an optional
+> scmversion field might be helpful information for distro developers in testing
+> environments and in situations where it is possible for the kernel and modules
+> to be updated/packaged separately (for instance, the kernel selftest modules
+> under lib/ are in-tree modules that are provided as a separate kernel module
+> package in SLE).
+> 
+> Generally, out of principle, I do not want to merge a patch that's been NAK'd
+> repeatedly; even if I take the patch it'd likely be contested all the way up to
+> the merge window. So this boils down to whether Christoph (and maybe Greg) are
+> fine with this being a debug option that's not enabled by default.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/topology.c | 42 +++++++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+I am neutral on this, I don't care one way or the other.
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 0fa41aab74e0..e1bb97c06f53 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -949,20 +949,21 @@ static void init_overlap_sched_group(struct sched_domain *sd,
- 	sg->sgc->max_capacity = SCHED_CAPACITY_SCALE;
- }
- 
--static struct sched_domain *find_node_domain(struct sched_domain *sd)
-+static struct sched_domain *
-+find_sibling_domain(struct sched_domain *sd, struct sched_domain *sibling)
- {
--	struct sched_domain *parent;
--
- 	BUG_ON(!(sd->flags & SD_NUMA));
- 
--	/* Get to the level above NODE */
--	while (sd && sd->child) {
--		parent = sd;
--		sd = sd->child;
-+	/* Find a subset sibling */
-+	while (sibling->child &&
-+	       !cpumask_subset(sched_domain_span(sibling->child),
-+			       sched_domain_span(sd)))
-+		sibling = sibling->child;
-+
-+	/* If the above loop was a no-op, we're done */
-+	if (sd->private == sibling->private)
-+		return sibling;
- 
--		if (!(sd->flags & SD_NUMA))
--			break;
--	}
- 	/*
- 	 * We're going to create cross topology level sched_group_capacity
- 	 * references. This can only work if the domains resulting from said
-@@ -972,16 +973,14 @@ static struct sched_domain *find_node_domain(struct sched_domain *sd)
- 	 *
- 	 * Of course, groups aren't available yet, so we can't call the usual
- 	 * sd_degenerate(). Checking domain spans is the closest we get.
--	 * Start from NODE's parent, and keep going up until we get a domain
--	 * we're sure won't be degenerated.
-+	 * We can't go up as per the above subset check, so keep going down
-+	 * until we get a domain we're sure won't be degenerated.
- 	 */
--	while (sd->parent &&
--	       cpumask_equal(sched_domain_span(sd), sched_domain_span(parent))) {
--		sd = parent;
--		parent = sd->parent;
--	}
-+	while (sibling->child &&
-+	       cpumask_equal(sched_domain_span(sibling->child), sched_domain_span(sibling)))
-+		sibling = sibling->child;
- 
--	return parent;
-+	return sibling;
- }
- 
- static int
-@@ -1017,12 +1016,9 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		if (!cpumask_test_cpu(i, sched_domain_span(sibling)))
- 			continue;
- 
--		/*
--		 * Local group is child domain's span, as is tradition.
--		 * Non-local groups will only span remote nodes.
--		 */
-+		/* Ensure sibling domain's span is a subset of this domain */
- 		if (first)
--			sibling = find_node_domain(sibling);
-+			sibling = find_sibling_domain(sd, sibling);
- 
- 		sg = build_group_from_child_sched_domain(sibling, cpu);
- 		if (!sg)
--- 
-2.27.0
+thanks,
 
+greg k-h
