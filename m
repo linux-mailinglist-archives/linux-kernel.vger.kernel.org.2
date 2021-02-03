@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7471C30D97D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0BF30D975
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 13:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhBCMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 07:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        id S234310AbhBCMDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 07:03:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbhBCMGJ (ORCPT
+        with ESMTP id S234205AbhBCMDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 07:06:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A015EC06178A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:04:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=YS795qkO0nXSd/7ytG8vCGCdMgGXy3vgfITieZEiAoY=; b=nz5fNqNrO4bSqrUFkCZ2g8ddXp
-        o8WDh4n69OX3/xaQehgSq4KOcbdpZporK/GU8nmcw+MBIGAoFXpJH5gpJYHAtBahJzT1ivYdC+jRw
-        8HANidDZxOszVVAFhxBRtfqd63r9F4hIIC7tx75hxEei72Yxu+rf5HkFxUQwtQ2GUTgQGxtwWJGZP
-        l+pU/hOHE110/PI5Ye4KRNc0vjoQUtUHk4pXA9GvKo4KW16T6N40Z2Y6ypi8msu4jhO9XouqhLIGB
-        9gfsRbOTLzl39XReU7kHAbxsz2JWdls0wiKrCBbLeWnNmVQcS99TI2zbYzyL2784TQ0dNyp6FNniB
-        6+z+pgTA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7Gtm-00GnWo-5x; Wed, 03 Feb 2021 12:04:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72722306FFE;
-        Wed,  3 Feb 2021 13:04:40 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 63B062BD45B68; Wed,  3 Feb 2021 13:04:40 +0100 (CET)
-Message-ID: <20210203120401.321109449@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 03 Feb 2021 13:02:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH 5/5] objtool: Support stack-swizzle
-References: <20210203120222.451068583@infradead.org>
+        Wed, 3 Feb 2021 07:03:45 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F7AC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 04:03:04 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id u7so5956443ooq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 04:03:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PpuuaPv5gdizlBOIcM7Ll6Dy1C/RKJcW8ZaghmsSW4Q=;
+        b=meCmVhvMvyxBD5V4309Wee3sDXR/lM4n0u29I2Jgssuj24I3hefJtyUpDZVk//C/5v
+         b2gd7Z0o1mQiFFgmjfM0d/WgGqTRhpoYP1OXR0aX1k7tXfS/Zzg1WpYpmOa46XPYve36
+         7jw9YnhqTTvMguIeqcTE4ssdAbA8st7of129rDJkM4Gwf3cQavpaFCXjZZl3ZEeuUwfb
+         oNLobNluk+yxXQQ5hj7fvzo5G7xpD4aW1lB1B7fJyaVeiOQG/CYsRmagUz/FyC2QHnrD
+         cQxrgKHZEQxVJ7q2L1inECTynX/WRC3PJxNLOJ/UiiTZ37pXKsmW7VuauTKd1XiEMBXn
+         SF1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PpuuaPv5gdizlBOIcM7Ll6Dy1C/RKJcW8ZaghmsSW4Q=;
+        b=MaWwXxl5cuz9CtsXJrYGA+oMdV081nbTKwl9m3DPgpmXuFOh/noMeIdlAPQ3GctCzA
+         RmDOm1mkuk27UEwqBg6TlHWAW0DkqCSaiWuHjltmff332VKRnmflw44G+oS/uO2zBoyT
+         uDCLHbW4ruM+XM/V6Dn4eomrQCJbOaVLcKQPVgpUbv5p8Evg8F3Wb9p7COrxX019wuhA
+         ZSZDuvNO/6Nt8JvNSmycl3S0ZbQa9sbRN4lywiOga74TPlP08kKenczyYQzOimRNe9HI
+         t1ZVgvWtkSBqSVGkYnWcK98sfnmjV4k56qW2wAYJsNz6sZaTpAtpA+r35B0nzjPsO3Uh
+         gRCg==
+X-Gm-Message-State: AOAM530RL9BTr9xs6cTQRybI+ABN2StR+1X2bWu+SFUib/WN7yqzLlA+
+        i1nTUdk1jvswWponkrOLLH0daceJNx40rzJs5DcJvrYVxr0=
+X-Google-Smtp-Source: ABdhPJzIYHFZ9H1Jsl8WZIs2/e9WE1GtAz1YqB3t409ckdMVt2EgmS+X1OHhUst+RQ91sFRn0c2VSoYYF1D+3AnJcqY=
+X-Received: by 2002:a4a:a8cd:: with SMTP id r13mr1843041oom.6.1612353784358;
+ Wed, 03 Feb 2021 04:03:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20200920045857.34b612bf@akathisia>
+In-Reply-To: <20200920045857.34b612bf@akathisia>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 3 Feb 2021 13:02:53 +0100
+Message-ID: <CAHUa44FOvPMWUNE+D4tbfNLxijhQYpkcit0LEyC=LNqZm+uU-Q@mail.gmail.com>
+Subject: Re: [PATCH] tee: fix some comment typos in header files
+To:     Elvira Khabirova <e.khabirova@omprussia.ru>
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Natively support the stack swizzle pattern:
+On Sun, Sep 20, 2020 at 3:58 AM Elvira Khabirova
+<e.khabirova@omprussia.ru> wrote:
+>
+> struct tee_param: revc -> recv.
+> TEE_IOC_SUPPL_SEND: typo introduced by copy-pasting, replace invalid
+> description with description from the according argument struct.
+>
+> Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
+> ---
+>  include/linux/tee_drv.h  | 2 +-
+>  include/uapi/linux/tee.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-	mov %rsp, (%[tos])
-	mov %[tos], %rsp
-	...
-	pop %rsp
+I'll pick this up.
 
-with the constraint that %[tos] must be !arch_callee_saved_reg().
+Thanks,
+Jens
 
-It uses the (newly minted) scratch regs to link the first two
-stack-ops, and detect the SP to SP_INDIRECT swizzle.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/objtool/check.c |   43 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
-
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1937,6 +1937,34 @@ static int update_cfi_state(struct instr
- 					cfa->offset = -cfi->vals[op->src.reg].offset;
- 					cfi->stack_size = cfa->offset;
- 
-+				} else if (cfa->base == CFI_SP &&
-+					   cfi->regs[op->src.reg].base == CFI_SP_INDIRECT &&
-+					   cfi->regs[op->src.reg].offset == cfa->offset) {
-+
-+					/*
-+					 * Stack swizzle:
-+					 *
-+					 * 1: mov %rsp, (%[tos])
-+					 * 2: mov %[tos], %rsp
-+					 *    ...
-+					 * 3: pop %rsp
-+					 *
-+					 * Where:
-+					 *
-+					 * 1 - places a pointer to the previous
-+					 *     stack at the Top-of-Stack of the
-+					 *     new stack.
-+					 *
-+					 * 2 - switches to the new stack.
-+					 *
-+					 * 3 - pops the Top-of-Stack to restore
-+					 *     the original stack.
-+					 *
-+					 * Note:
-+					 * %[tos] must not be a callee saved reg
-+					 */
-+					cfa->base = CFI_SP_INDIRECT;
-+
- 				} else {
- 					cfa->base = CFI_UNDEFINED;
- 					cfa->offset = 0;
-@@ -2028,6 +2056,13 @@ static int update_cfi_state(struct instr
- 
- 		case OP_SRC_POP:
- 		case OP_SRC_POPF:
-+			if (op->dest.reg == CFI_SP && cfa->base == CFI_SP_INDIRECT) {
-+
-+				/* pop %rsp; # restore from a stack swizzle */
-+				cfa->base = CFI_SP;
-+				break;
-+			}
-+
- 			if (!cfi->drap && op->dest.reg == cfa->base) {
- 
- 				/* pop %rbp */
-@@ -2154,6 +2189,14 @@ static int update_cfi_state(struct instr
- 			/* mov reg, disp(%rsp) */
- 			save_reg(cfi, op->src.reg, CFI_CFA,
- 				 op->dest.offset - cfi->cfa.offset);
-+
-+		} else if (op->src.reg == CFI_SP && op->dest.offset == 0) {
-+
-+			/* mov %rsp, (%reg); # setup a stack swizzle. */
-+			if (!arch_callee_saved_reg(op->dest.reg)) {
-+				__save_reg(cfi, op->dest.reg, CFI_SP_INDIRECT, cfi->cfa.offset);
-+				skip_wipe = true;
-+			}
- 		}
- 
- 		break;
-
-
+>
+> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> index d074302989dd..61557bc0e29f 100644
+> --- a/include/linux/tee_drv.h
+> +++ b/include/linux/tee_drv.h
+> @@ -85,7 +85,7 @@ struct tee_param {
+>   * @close_session:     close a session
+>   * @invoke_func:       invoke a trusted function
+>   * @cancel_req:                request cancel of an ongoing invoke or open
+> - * @supp_revc:         called for supplicant to get a command
+> + * @supp_recv:         called for supplicant to get a command
+>   * @supp_send:         called for supplicant to send a response
+>   * @shm_register:      register shared memory buffer in TEE
+>   * @shm_unregister:    unregister shared memory buffer in TEE
+> diff --git a/include/uapi/linux/tee.h b/include/uapi/linux/tee.h
+> index b619f37ee03e..7546be5ed4f8 100644
+> --- a/include/uapi/linux/tee.h
+> +++ b/include/uapi/linux/tee.h
+> @@ -342,7 +342,7 @@ struct tee_iocl_supp_send_arg {
+>  };
+>
+>  /**
+> - * TEE_IOC_SUPPL_SEND - Receive a request for a supplicant function
+> + * TEE_IOC_SUPPL_SEND - Send a response to a received request
+>   *
+>   * Takes a struct tee_ioctl_buf_data which contains a struct
+>   * tee_iocl_supp_send_arg followed by any array of struct tee_param
+> --
+> 2.28.0
+>
