@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94D230D8C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C92330D8C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhBCLf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:35:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234054AbhBCLf4 (ORCPT
+        id S234092AbhBCLgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234054AbhBCLgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:35:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612352070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aY4FCj6onHXTRBtwauq1YVo+dERgy4rWSjPCHajVOR0=;
-        b=L7wIxNdA5wgElqA2TWdABWP7YSEiNbe+gFnNq5MPv9noATCBBDyF+xU2wIJMKQb4M8ODNB
-        hiE+gpv6Vz1cObykK6Yymei1OKadx0gDfWlhGmwH+1PVqYJdrykcoY65u+Lktn+kChzo48
-        n9b0XM85raDGbLWrTXjMMzvjig0iwPo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-cYxXqDIvMaG4Yun2G42lcw-1; Wed, 03 Feb 2021 06:34:28 -0500
-X-MC-Unique: cYxXqDIvMaG4Yun2G42lcw-1
-Received: by mail-ed1-f69.google.com with SMTP id u19so11281305edr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 03:34:28 -0800 (PST)
+        Wed, 3 Feb 2021 06:36:15 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F3C061573;
+        Wed,  3 Feb 2021 03:35:34 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id y187so4868023wmd.3;
+        Wed, 03 Feb 2021 03:35:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YaVlQ35WAgybEPmbAlTIUfx4arMZ+F8KRTsa3f1igzU=;
+        b=upJrN7YFovrxu3liXSBoVUEGk1nrL7a+DVGqKL9T+H53jYBwvepcctt6sLTufgv36B
+         JaIIo3tqLEmpcYoWAEVjMg6EmeTSjM4SwfX2aQrujQ/JYVtknmoM8wG9nZs0yoXSHtMb
+         cPbp87bCukLSKJp/L8mWy+2g9VmShnvinUFe7giIJE5P4rnDpiOwfuNzqpHRCv7a7jqu
+         yLbSD7srDIeuG94pmfmbFbMHrp0+VfLb52uCAYGMwy0HOZsMBg+QtKBXTrKnvMxmOsaB
+         YJqExyGbPt+/Xog9pU6PWyZSL6NAwFS8TH744P7YKe9OPh7RQk2a5+/UNrMhv22pR8dy
+         XyYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aY4FCj6onHXTRBtwauq1YVo+dERgy4rWSjPCHajVOR0=;
-        b=aDu0l6FaAa5QxMreD2LYGht8YsfjTGFUSuGFAyIw4/WcH9VcpBaRMMVrraeQwsPIH3
-         5o5QviCnFt3b63gVHUG0jWVa5HzGwjSXWHEu4xiEwyN9EopgVc7364hEFVu4/EpMx/Ei
-         tlNZNXqIns3Bwv4CG+LgYZnR9Bas4qQ/rYHV0SWFw9WooZVOz/NZ4VtlP2cJIsSlc0GV
-         gw9KGjMozUKmNqe0Amcj0VVTxOjmnX7r7WLTNSZBI/+RDI28E8FxlzFXoRousGOSuu4A
-         9o3wz/vBewGucE1cysXVhZTIx1z0qfM2ZRJEbyrwHSuWD5CyYhTvfEIbGqOqBhfuL+W4
-         25sA==
-X-Gm-Message-State: AOAM532Uyns1XrZ/k6Lwsv/SYMS88Wyxa9lBfoGBNlb0DBtfdINtnOfR
-        GfceX+mOeRo1xrmY8tnW6j/Q+KFsn9hIbnjnkIN1rfEhBcpTXXH319CFPcn1WPb3Fk/B+/jH28o
-        VRvd2guHtPLkyJ3RadvI5XYL2
-X-Received: by 2002:a17:907:961b:: with SMTP id gb27mr2875830ejc.413.1612352067590;
-        Wed, 03 Feb 2021 03:34:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtuk33qXDYxD7m71ADWiWOjO6K8o5f5Mx1g0CwH8J7J7G4ioocLfFKINUGzJdyNGpQtfeZug==
-X-Received: by 2002:a17:907:961b:: with SMTP id gb27mr2875801ejc.413.1612352067330;
-        Wed, 03 Feb 2021 03:34:27 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f6sm741435edk.13.2021.02.03.03.34.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 03:34:26 -0800 (PST)
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-26-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 25/28] KVM: x86/mmu: Allow zapping collapsible SPTEs to
- use MMU read lock
-Message-ID: <e87d4a5d-f6ac-677a-87aa-0c30977c92f1@redhat.com>
-Date:   Wed, 3 Feb 2021 12:34:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=YaVlQ35WAgybEPmbAlTIUfx4arMZ+F8KRTsa3f1igzU=;
+        b=YZ9a4Z6TS9KCBHfX7TrVpIhPdXFT4oOHL4Utgqgm2hQrCf/yBpREd/djGMf+ziCMb4
+         1uDx5cdRbrQm3ON7swt4mB1izfollUthbg7aK/vMzHRJLS9QsDT7IsCRMsBVmJy0NsXB
+         jptjJnoOGN0LVUeFj6WhIKUVTISmmdDT1BFXSMuN51ESxKeorASEpUi2ab2ZZfmQEefh
+         iPMNbgv0m+R2w+gOWdbuqEq8DcsweytNSvYgdGaRmuoy/u7VXCnpt+fGEmG4V8tc1eKL
+         VSknS0D6c6eO8u36VRavTfw14zYIpxdk/0ntk9hD9M34QcPrx8w8Pqvp+zemxbgWs5Kg
+         xamw==
+X-Gm-Message-State: AOAM5334xAwUPpiL6uatbU7JlEWRkf6drz//PhWLA5Azkn/V9CGF599N
+        aQBPtT+sz04s8sii8e8fZe6IkuqAylmCxd3v
+X-Google-Smtp-Source: ABdhPJywxMKo8VB4wbNSeSVds0UKXGX5ehLV2hcGKIuAr6gze4gceTvmoJE+j13PlgpL5yacGMVhnw==
+X-Received: by 2002:a7b:c4c1:: with SMTP id g1mr2348153wmk.145.1612352132934;
+        Wed, 03 Feb 2021 03:35:32 -0800 (PST)
+Received: from anparri.mshome.net (host-95-238-70-33.retail.telecomitalia.it. [95.238.70.33])
+        by smtp.gmail.com with ESMTPSA id t18sm3295088wrr.56.2021.02.03.03.35.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 03:35:32 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH net-next 0/2] Amend "hv_netvsc: Copy packets sent by Hyper-V out of the receive buffer"
+Date:   Wed,  3 Feb 2021 12:35:11 +0100
+Message-Id: <20210203113513.558864-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210202185734.1680553-26-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 19:57, Ben Gardon wrote:
-> @@ -1485,7 +1489,9 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
->  	struct kvm_mmu_page *root;
->  	int root_as_id;
->  
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, false) {
-> +	read_lock(&kvm->mmu_lock);
-> +
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root, true) {
->  		root_as_id = kvm_mmu_page_as_id(root);
->  		if (root_as_id != slot->as_id)
->  			continue;
-> @@ -1493,6 +1499,8 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
->  		zap_collapsible_spte_range(kvm, root, slot->base_gfn,
->  					   slot->base_gfn + slot->npages);
->  	}
-> +
-> +	read_unlock(&kvm->mmu_lock);
->  }
+Patch #2 also addresses the Smatch complaint reported here:
 
+   https://lkml.kernel.org/r/YBp2oVIdMe+G%2FliJ@mwanda/
 
-I'd prefer the functions to be consistent about who takes the lock, 
-either mmu.c or tdp_mmu.c.  Since everywhere else you're doing it in 
-mmu.c, that would be:
+Thanks,
+  Andrea
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0554d9c5c5d4..386ee4b703d9 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5567,10 +5567,13 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
-  	write_lock(&kvm->mmu_lock);
-  	slot_handle_leaf(kvm, (struct kvm_memory_slot *)memslot,
-  			 kvm_mmu_zap_collapsible_spte, true);
-+	write_unlock(&kvm->mmu_lock);
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
 
--	if (kvm->arch.tdp_mmu_enabled)
-+	if (kvm->arch.tdp_mmu_enabled) {
-+		read_lock(&kvm->mmu_lock);
-  		kvm_tdp_mmu_zap_collapsible_sptes(kvm, memslot);
--	write_unlock(&kvm->mmu_lock);
-+		read_unlock(&kvm->mmu_lock);
-+	}
-  }
+Andrea Parri (Microsoft) (2):
+  hv_netvsc: Allocate the recv_buf buffers after
+    NVSP_MSG1_TYPE_SEND_RECV_BUF
+  hv_netvsc: Load and store the proper (NBL_HASH_INFO) per-packet info
 
-  void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+ drivers/net/hyperv/netvsc.c       | 18 +++++++++++-------
+ drivers/net/hyperv/rndis_filter.c |  2 +-
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-and just lockdep_assert_held_read here.
-
-> -		tdp_mmu_set_spte(kvm, &iter, 0);
-> -
-> -		spte_set = true;
-
-Is it correct to remove this assignment?
-
-Paolo
+-- 
+2.25.1
 
