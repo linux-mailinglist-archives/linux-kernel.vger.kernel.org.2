@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B84530E3C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DD330E3DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhBCUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhBCUDu (ORCPT
+        id S231873AbhBCUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:08:44 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:36166 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhBCUIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:03:50 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E329C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:03:10 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id 8so451927plc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:03:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SnxhWz1pN2kdt7xfbO4NRF8c0j2EbnQ4AfDU/TQ6pI0=;
-        b=IJAT+V9jEKmD3/hz9sZZbR6exYwBw75s6HVYvCREJIM03/RdTo3G6cQ+RvQ1orR5p4
-         kc4JqKf6397I8VNQmJrFTNP3jO5nFJYrxviBV4RM+nLn3gvWw/OrxTG+KoJqZXYv1Kde
-         VgySvk7uRqNgqNfTqopEuJXxjPPuaz/g8DVTE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SnxhWz1pN2kdt7xfbO4NRF8c0j2EbnQ4AfDU/TQ6pI0=;
-        b=bGT+O6a4f8Yc8j8U0j6cTi3gAR44ygPpf0Tkqk1jstRqpTQXOlRjjDqt+grEC+6gv8
-         4r+kEtn20OcbDi+Lz5QvCAP0qNYSLeSR1TSOBCf65uCpHXDxLWFjfoEZ71YpfSCJMRdX
-         UPYUIBSvqNZkUZCmiXcO0+i3SVbyH8lQro5kBO0Uv7dSYNA7Bk0fGcM0itZW40yMcvyU
-         AAXxEzetqdcigiwIPQIsm5hdJ+hWHmsyk2oKy7ZHJeF0udgViq2dloDViJgz47ZHKWja
-         SfWjun3ahauCma9cmW5a/SFBctXqQAY0Q7kg6WX7uXsrCsfUhzf/6l5r2LHkVIbiGLbc
-         Pi5Q==
-X-Gm-Message-State: AOAM530q2mqE52P4IODj/C87Kh/+sAqybcytJC7slExygWXGO4pwlngq
-        cLzm/44HX2nzoitXpIBirey9VA==
-X-Google-Smtp-Source: ABdhPJzy/ot00jPf50W+6aRzRBLtT42uZYU3mpc8lCUNPUApoInnp5OnjQ9oTpnPaiDbD6WpZSh0qA==
-X-Received: by 2002:a17:90b:3886:: with SMTP id mu6mr4570866pjb.153.1612382590066;
-        Wed, 03 Feb 2021 12:03:10 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j9sm3682830pgb.47.2021.02.03.12.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 12:03:08 -0800 (PST)
-Date:   Wed, 3 Feb 2021 12:03:07 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Brian Geffon <bgeffon@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
-Message-ID: <202102031202.F0AEC4A7@keescook>
-References: <20201230154104.522605-1-arnd@kernel.org>
- <20210112191634.GA1587546@ubuntu-m3-large-x86>
- <20210203184840.GA1711681@localhost>
+        Wed, 3 Feb 2021 15:08:34 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113K4EEq064527;
+        Wed, 3 Feb 2021 20:07:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=vZEiDU8hQT1UhocoLYdWh7SyEagKbQkYSVRWu2mgg74=;
+ b=H7jrVtQ4rlAoqdfgK2tbVUqouj8mPov9s4UpOnZn1tUG6Ve4R7S57r6fp0FGSY17hX4W
+ 1AgHjIMp2maWZXS7RSNxzGVv2iokb8NRx6XpU80GX7kIkyJTdsJjEYjDFwV35gdKycC5
+ TLq335ZPD9zx+8k7L1vMgObSpyRJHEXrcvZGBrVnYTT9f2TLVKeryl8lhCeCFFk7cB6v
+ RWPceW+x5yodpsaXo3yWhYu733hpbJdQlivA83EFK41rR62cLxs0DPLcYVuSonJXqTwD
+ PJElzy78ZsYcDm4k4ZqHRqfJPoTvK1+fAAulGyRmVeLX3UzmYt24IixC7vvEDrug/zlz HA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 36cxvr4qa3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Feb 2021 20:07:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113JuHNM179710;
+        Wed, 3 Feb 2021 20:05:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 36dh7u2rwt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Feb 2021 20:05:42 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 113K5c8j029149;
+        Wed, 3 Feb 2021 20:05:39 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Feb 2021 12:05:37 -0800
+Date:   Wed, 3 Feb 2021 23:05:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Desmond Yan <desmond.yan@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        James Hu <james.hu@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] misc: bcm-vk: Fix a couple error codes in probe()
+Message-ID: <20210203200529.GH20820@kadam>
+References: <YBpyEbmz00rjvT9S@mwanda>
+ <55880105-a097-0268-de54-478d7dbae084@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203184840.GA1711681@localhost>
+In-Reply-To: <55880105-a097-0268-de54-478d7dbae084@broadcom.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102030117
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102030118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:48:40AM -0700, Nathan Chancellor wrote:
-> On Tue, Jan 12, 2021 at 12:16:34PM -0700, Nathan Chancellor wrote:
-> > On Wed, Dec 30, 2020 at 04:40:40PM +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > clang cannt evaluate this function argument at compile time
-> > > when the function is not inlined, which leads to a link
-> > > time failure:
-> > > 
-> > > ld.lld: error: undefined symbol: __compiletime_assert_414
-> > > >>> referenced by mremap.c
-> > > >>>               mremap.o:(get_extent) in archive mm/built-in.a
-> > > 
-> > > Mark the function as __always_inline to avoid it.
-> > > 
-> > > Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > I would like to see some movement on getting this fixed in 5.11. As it
-> > stands, this is one of three __compiletime_assert references with
-> > CONFIG_UBSAN_UNSIGNED_OVERFLOW. If we want to keep the BUILD_BUG()
-> > around, I think this is fine. Alternatively, turning it into a runtime
-> > check would be fine too.
-> > 
-> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+On Wed, Feb 03, 2021 at 11:15:35AM -0800, Scott Branden wrote:
+> Thanks Dan,
 > 
-> Ping? It is pretty late into the 5.11 cycle and this is still broken.
+> On 2021-02-03 6:42 a.m., Dan Carpenter wrote:
+> > These errors should return negative error codes instead of returning
+> > success.
+> Do you have a script running to report such issues or just manually reviewing
+> to find such paths?
 
-I think we should just do the __always_inline. Who can take this?
+Yeah.  This is a new Smatch check.  The heuristic is this:
 
--Kees
+	<-- ret is not set within 3 lines of the goto
+	goto label;  <-- we hit a goto
 
-> 
-> Cheers,
-> Nathan
-> 
-> > > ---
-> > >  mm/mremap.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/mm/mremap.c b/mm/mremap.c
-> > > index c5590afe7165..1cb464a07184 100644
-> > > --- a/mm/mremap.c
-> > > +++ b/mm/mremap.c
-> > > @@ -336,8 +336,9 @@ enum pgt_entry {
-> > >   * valid. Else returns a smaller extent bounded by the end of the source and
-> > >   * destination pgt_entry.
-> > >   */
-> > > -static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
-> > > -			unsigned long old_end, unsigned long new_addr)
-> > > +static __always_inline unsigned long get_extent(enum pgt_entry entry,
-> > > +			unsigned long old_addr, unsigned long old_end,
-> > > +			unsigned long new_addr)
-> > >  {
-> > >  	unsigned long next, extent, mask, size;
-> > >  
-> > > -- 
-> > > 2.29.2
-> >  
 
--- 
-Kees Cook
+	return 0;  <-- success path right before the cleanup block
+
+label:	<-- labels
+	return ret;  <-- This return has to sometimes returns negatives
+
+regards,
+dan carpenter
+
