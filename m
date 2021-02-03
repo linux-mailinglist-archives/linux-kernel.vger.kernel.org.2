@@ -2,255 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9184C30D2D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CA230D2D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 06:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhBCFRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 00:17:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28799 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229727AbhBCFRw (ORCPT
+        id S229902AbhBCFVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 00:21:32 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:39559
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229735AbhBCFVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 00:17:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612329384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RIuXnL+Hg9KeDbYH0PNTbg1/8jFx78+qdyuMnTHT5HY=;
-        b=f0KZ7zlm/L87EotrTKbOvRm3xzc+GfwRCDim/rPGxVwIxdpoY6p4Bi2Pb1gc6oaU59+zBY
-        xQJq4j7bH3LNEqmyWAQx9qmhMJ2Yn4t1Yt3r94c2MD3Ayxm3AI1AsGVl6SoV+r/AlR9b7A
-        YCP8yV9EwPgh7P2r0AE7kKCRa6xpl9o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-Y8GF8fAEOJOwDKjLcUuz0Q-1; Wed, 03 Feb 2021 00:16:22 -0500
-X-MC-Unique: Y8GF8fAEOJOwDKjLcUuz0Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AF4D107ACE3;
-        Wed,  3 Feb 2021 05:16:21 +0000 (UTC)
-Received: from [10.72.13.97] (ovpn-13-97.pek2.redhat.com [10.72.13.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 803D472167;
-        Wed,  3 Feb 2021 05:16:15 +0000 (UTC)
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
-To:     Si-Wei Liu <siwliu.kernel@gmail.com>, Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lulu@redhat.com, Si-Wei Liu <si-wei.liu@oracle.com>
-References: <20210128134130.3051-1-elic@nvidia.com>
- <20210128134130.3051-2-elic@nvidia.com>
- <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
- <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
- <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
- <CAPWQSg3KOAypcrs9krW8cGE7EDLTehCUCYFZMUYYNaYPH1oBZQ@mail.gmail.com>
- <c65808bf-b336-8718-f7ea-b39fcc658dfb@redhat.com>
- <20210202070631.GA233234@mtl-vdi-166.wap.labs.mlnx>
- <CAPWQSg058RGaxSS7s5s=kpxdGryiy2padRFztUZtXN+ttiDd1A@mail.gmail.com>
- <20210202092253.GA236663@mtl-vdi-166.wap.labs.mlnx>
- <CAPWQSg0tRXoGF88LQSLzUg88ZEi8p+M=R6Qd445iABShfn-o4g@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <eed86e79-4fd9-dfcf-da17-288a3fc597e3@redhat.com>
-Date:   Wed, 3 Feb 2021 13:16:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAPWQSg0tRXoGF88LQSLzUg88ZEi8p+M=R6Qd445iABShfn-o4g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Wed, 3 Feb 2021 00:21:19 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgA3PLh8Mhpg7ACuAQ--.55402S3;
+        Wed, 03 Feb 2021 13:19:57 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     Dave.Martin@arm.com, broonie@kernel.org, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] arm64/kernel: minor coding style tweaks
+Date:   Wed,  3 Feb 2021 13:19:12 +0800
+Message-Id: <1612329552-17977-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgA3PLh8Mhpg7ACuAQ--.55402S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW8Kw43CF4rur48uryUKFg_yoWkWFb_C3
+        WSvF4xCryFyrnIvr18Gan3A3WS93yUJFy8Cws7tFWqyayqq345Cw45JFn2kw1UWw18Kw4f
+        Xr9rJF98CF17GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4r
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUeNVyDUUUU
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixed two coding style issues in kernel/trap.c
+1. spaces required around that '='
+2. Missing a blank line after declarations
 
-On 2021/2/3 上午1:54, Si-Wei Liu wrote:
-> On Tue, Feb 2, 2021 at 1:23 AM Eli Cohen <elic@nvidia.com> wrote:
->> On Tue, Feb 02, 2021 at 12:38:51AM -0800, Si-Wei Liu wrote:
->>> Thanks Eli and Jason for clarifications. See inline.
->>>
->>> On Mon, Feb 1, 2021 at 11:06 PM Eli Cohen <elic@nvidia.com> wrote:
->>>> On Tue, Feb 02, 2021 at 02:02:25PM +0800, Jason Wang wrote:
->>>>> On 2021/2/2 下午12:15, Si-Wei Liu wrote:
->>>>>> On Mon, Feb 1, 2021 at 7:13 PM Jason Wang <jasowang@redhat.com> wrote:
->>>>>>> On 2021/2/2 上午3:17, Si-Wei Liu wrote:
->>>>>>>> On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gmail.com> wrote:
->>>>>>>>> On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> wrote:
->>>>>>>>>> suspend_vq should only suspend the VQ on not save the current available
->>>>>>>>>> index. This is done when a change of map occurs when the driver calls
->>>>>>>>>> save_channel_info().
->>>>>>>>> Hmmm, suspend_vq() is also called by teardown_vq(), the latter of
->>>>>>>>> which doesn't save the available index as save_channel_info() doesn't
->>>>>>>>> get called in that path at all. How does it handle the case that
->>>>>>>>> aget_vq_state() is called from userspace (e.g. QEMU) while the
->>>>>>>>> hardware VQ object was torn down, but userspace still wants to access
->>>>>>>>> the queue index?
->>>>>>>>>
->>>>>>>>> Refer to https://lore.kernel.org/netdev/1601583511-15138-1-git-send-email-si-wei.liu@oracle.com/
->>>>>>>>>
->>>>>>>>> vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
->>>>>>>>> vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
->>>>>>>>>
->>>>>>>>> QEMU will complain with the above warning while VM is being rebooted
->>>>>>>>> or shut down.
->>>>>>>>>
->>>>>>>>> Looks to me either the kernel driver should cover this requirement, or
->>>>>>>>> the userspace has to bear the burden in saving the index and not call
->>>>>>>>> into kernel if VQ is destroyed.
->>>>>>>> Actually, the userspace doesn't have the insights whether virt queue
->>>>>>>> will be destroyed if just changing the device status via set_status().
->>>>>>>> Looking at other vdpa driver in tree i.e. ifcvf it doesn't behave like
->>>>>>>> so. Hence this still looks to me to be Mellanox specifics and
->>>>>>>> mlx5_vdpa implementation detail that shouldn't expose to userspace.
->>>>>>> So I think we can simply drop this patch?
->>>>>> Yep, I think so. To be honest I don't know why it has anything to do
->>>>>> with the memory hotplug issue.
->>>>>
->>>>> Eli may know more, my understanding is that, during memory hotplut, qemu
->>>>> need to propagate new memory mappings via set_map(). For mellanox, it means
->>>>> it needs to rebuild memory keys, so the virtqueue needs to be suspended.
->>>>>
->>>> I think Siwei was asking why the first patch was related to the hotplug
->>>> issue.
->>> I was thinking how consistency is assured when saving/restoring this
->>> h/w avail_index against the one in the virtq memory, particularly in
->>> the region_add/.region_del() context (e.g. the hotplug case). Problem
->>> is I don't see explicit memory barrier when guest thread updates the
->>> avail_index, how does the device make sure the h/w avail_index is
->>> uptodate while guest may race with updating the virtq's avail_index in
->>> the mean while? Maybe I completely miss something obvious?
->> DKIM-Signature: v1; arsa-sha256; crelaxed/relaxed; dnvidia.com; sn1;
->>          t 12257780; bhHnB0z4VEKwRS3WGY8d836MJgxu5Eln/jbFZlNXVxc08;
->>          hX-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
->>           MIME-Version:Content-Type:Content-Disposition:
->>           Content-Transfer-Encoding:In-Reply-To:User-Agent:X-Originating-IP:
->>           X-ClientProxiedBy;
->>          bgGmb8+rcn3/rKzKQ/7QzSnghWzZ+FAU0XntsRZYGQ66sFvT7zsYPHogG3LIWNY77t
->>           wNHPw7GCJrNaH3nEXPbOp0FMOZw4Kv4W7UPuYPobbLeTkvuPAidjB8dM42vz+1X61t
->>           9IVQT9X4hnAxRjI5CqZOo41GS4Tl1X+ykGoA+VE80BR/R/+nQ3tXDVULfppzeB+vu3
->>           TWnnpaZ2GyoNyPlMiyVRkHdXzDVgA4uQHxwHn7otGK5J4lzyu8KrFyQtiP+f6hfu5v
->>           crJkYS8e9A+rfzUmKWuyHcKcmhPhAVJ4XdpzZcDXXlMHVxG7nR1o88xttC6D1+oNIP
->>           9xHI3DkNBpEuA
->> If you're asking about syncronization upon hot plug of memory, the
->> hardware always goes to read the available index from memory when a new
->> hardware object is associted with a virtqueue. You can argue then that
->> you don't need to restore the available index and you may be right but
->> this is the currect inteface to the firmware.
->>
->>
->> If you're asking on generally how sync is assured when the guest updates
->> the available index, can you please send a pointer to the code where you
->> see the update without a memory barrier?
-> This is a snippet of virtqueue_add_split() where avail_index gets
-> updated by guest:
->
->          /* Put entry in available array (but don't update avail->idx until they
->           * do sync). */
->          avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
->          vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
->
->          /* Descriptors and available array need to be set before we expose the
->           * new available array entries. */
->          virtio_wmb(vq->weak_barriers);
->          vq->split.avail_idx_shadow++;
->          vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
->                                                  vq->split.avail_idx_shadow);
->          vq->num_added++;
->
-> There's memory barrier to make sure the update to descriptor and
-> available ring is seen before writing to the avail->idx, but there
-> seems no gurantee that this update would flush to the memory
-> immmedately either before or after the mlx5-vdpa is suspened and gets
-> the old avail_index value stashed somewhere. In this case, how does
-> the hardware ensure the consistency between the guest virtio and host
-> mlx5-vdpa? Or, it completly relies on guest to update the avail_index
-> once the next buffer is available, so that the index will be in sync
-> again?
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ arch/arm64/kernel/traps.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
-I'm not sure I get the question but notice that the driver should check 
-and notify virtqueue when device want a notification. So there's a 
-virtio_wmb() e.g in:
-
-static bool virtqueue_kick_prepare_split(struct virtqueue *_vq)
-{
-     struct vring_virtqueue *vq = to_vvq(_vq);
-     u16 new, old;
-     bool needs_kick;
-
-     START_USE(vq);
-     /* We need to expose available array entries before checking avail
-      * event. */
-     virtio_mb(vq->weak_barries);
-
-     old = vq->split.avail_idx_shadow - vq->num_added;
-     new = vq->split.avail_idx_shadow;
-     vq->num_added = 0;
-
-(See the comment above virtio_mb()). So the avail idx is guaranteed to 
-be committed to memroy(cache hierarchy) before the check of 
-notification. I think we sync through this.
-
-Thanks
-
-
->
-> Thanks,
-> -Siwei
->
->>> Thanks,
->>> -Siwei
->>>
->>>> But you're correct. When memory is added, I get a new memory map. This
->>>> requires me to build a new memory key object which covers the new memory
->>>> map. Since the virtqueue objects are referencing this memory key, I need
->>>> to destroy them and build new ones referncing the new memory key.
->>>>
->>>>> Thanks
->>>>>
->>>>>
->>>>>> -Siwei
->>>>>>
->>>>>>> Thanks
->>>>>>>
->>>>>>>
->>>>>>>>> -Siwei
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>>>>>>>>> ---
->>>>>>>>>>     drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
->>>>>>>>>>     1 file changed, 8 deletions(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> index 88dde3455bfd..549ded074ff3 100644
->>>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->>>>>>>>>>
->>>>>>>>>>     static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->>>>>>>>>>     {
->>>>>>>>>> -       struct mlx5_virtq_attr attr;
->>>>>>>>>> -
->>>>>>>>>>            if (!mvq->initialized)
->>>>>>>>>>                    return;
->>>>>>>>>>
->>>>>>>>>> @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
->>>>>>>>>>
->>>>>>>>>>            if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
->>>>>>>>>>                    mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
->>>>>>>>>> -
->>>>>>>>>> -       if (query_virtqueue(ndev, mvq, &attr)) {
->>>>>>>>>> -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
->>>>>>>>>> -               return;
->>>>>>>>>> -       }
->>>>>>>>>> -       mvq->avail_idx = attr.available_index;
->>>>>>>>>>     }
->>>>>>>>>>
->>>>>>>>>>     static void suspend_vqs(struct mlx5_vdpa_net *ndev)
->>>>>>>>>> --
->>>>>>>>>> 2.29.2
->>>>>>>>>>
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 6895ce7..4001a39 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -45,7 +45,7 @@
+ #include <asm/system_misc.h>
+ #include <asm/sysreg.h>
+ 
+-static const char *handler[]= {
++static const char *handler[] = {
+ 	"Synchronous Abort",
+ 	"IRQ",
+ 	"FIQ",
+@@ -318,6 +318,7 @@ static int call_undef_hook(struct pt_regs *regs)
+ 	} else if (compat_thumb_mode(regs)) {
+ 		/* 16-bit Thumb instruction */
+ 		__le16 instr_le;
++
+ 		if (get_user(instr_le, (__le16 __user *)pc))
+ 			goto exit;
+ 		instr = le16_to_cpu(instr_le);
+@@ -332,6 +333,7 @@ static int call_undef_hook(struct pt_regs *regs)
+ 	} else {
+ 		/* 32-bit ARM instruction */
+ 		__le32 instr_le;
++
+ 		if (get_user(instr_le, (__le32 __user *)pc))
+ 			goto exit;
+ 		instr = le32_to_cpu(instr_le);
+-- 
+1.8.3.1
 
