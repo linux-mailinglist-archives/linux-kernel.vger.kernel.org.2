@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718A430D388
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 07:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AD830D39A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 08:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhBCGuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 01:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhBCGuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:50:23 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32137C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 22:49:43 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id 7so22916259wrz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 22:49:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Llt9wZ/++YWpNuv24fYJyAK2KaKZ50JAQBYyHHTRHl0=;
-        b=eMd6ybxnZ1GMNU8CePXnXb1pTr6Ufz1IDd0Ctp4ZlKMVoPoNxn0ozbVA2qeUr1CqPN
-         Go0jM+q9METdwsc19UY3lhxyBGBqmQem9uQv3feFzfiYu4Xm4gubwTEDWsqd6ndAz/R5
-         zZaaTNnjrM7HXSPRIzwwnd+ICKb9BAO+0Q0r9CbY+tLvoNv5Wmq3vEwWU3qWhB6v6x0s
-         p15tmaQ+8Rx7FSXc4FF1/shXUABaAcZhXzjWQvk+prBEyBK8nxwoDu2/H9wPkCsqj7wv
-         jXQo5x/fNSBx3ThDZnAN6BUFvMO4tD6gcg8vofcRDo3n2hTDGX67QtWQV5CHc9lU+dg9
-         aiAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Llt9wZ/++YWpNuv24fYJyAK2KaKZ50JAQBYyHHTRHl0=;
-        b=oa+OrIqqIY5mwZ/SGxkrOVMEqLCGin88lo8YlsJ7wlE+XEE98NYqz9xE2wYIavH4de
-         PI8gLsX43reGjYWyN7tXQy/rJcngBdmYW8xjS12nB7XF34hQR9iU3O9Euc66CMOAt8rV
-         nvH63CXHdwriuAwvnSUv2X6N1AafkOICJpyYpUXvAhObIJY0QrCKgMI9f5UMfqpL55Az
-         WSbK4Tuxw8493zKACut6rCRK2GR9Y57h2X+ASy1U1J/kFNx3HbPh4Hc93hviklsgUdDq
-         HQGzPU+NwE9Ts4gKaAvUj53BZNiCmwLO1INRt6+dt6V7S5aFRegcwbEjcnOyBDfU/Pg4
-         GAXQ==
-X-Gm-Message-State: AOAM531vwdm1c21/A5DZEO1dc/rFbAcTuK9TAfxfh9YLI9wdbkakHNVV
-        MIQX4eHFUzkk1fbfW09PktrLng==
-X-Google-Smtp-Source: ABdhPJxQrjhEspsMyRywC+CZuV6pLjH2d0gs0SU2q/MWY/IqDeweyxSs/Z4+de3Z6tAprGygraB2Qw==
-X-Received: by 2002:adf:fc86:: with SMTP id g6mr1721941wrr.20.1612334981687;
-        Tue, 02 Feb 2021 22:49:41 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id l5sm1883815wrv.44.2021.02.02.22.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 22:49:41 -0800 (PST)
-Subject: Re: [PATCH v2 5/5] interconnect: qcom: Add MSM8939 interconnect
- provider driver
-To:     Benjamin Li <benl@squareup.com>,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Jun Nie <jun.nie@linaro.org>, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh@kernel.org
-Cc:     shawn.guo@linaro.org
-References: <20201204075345.5161-1-jun.nie@linaro.org>
- <20201204075345.5161-6-jun.nie@linaro.org>
- <d869ea94b3b1c73800a5c3b855cb6f280be6c185.camel@mailoo.org>
- <a88b39dd-1c50-8aff-f85e-27086db9b040@linaro.org>
- <7630c4aa-b023-55a6-e2aa-37a7538c6b45@squareup.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <8aa03f6d-dcf5-73b3-41f8-0d872d9f4f86@linaro.org>
-Date:   Wed, 3 Feb 2021 08:49:40 +0200
+        id S231812AbhBCG6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 01:58:52 -0500
+Received: from mga09.intel.com ([134.134.136.24]:46077 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230193AbhBCG6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:58:49 -0500
+IronPort-SDR: LKHcjCk+MCJOvNtZ5Ana8J3Ine1IkrgSWZnOOmdLa9Wo5Q6rIkeBZ2wQcSdP4s+6LswureBZWf
+ Pm2Ed3Gwj8LA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="181141693"
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="181141693"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 22:57:02 -0800
+IronPort-SDR: yOYFXDoNims9sTqJO4yYV6ttQ36oBupccKAADmqXcJlbXrJY+OxBeeDTAfwotfwrqyU/ADOYoQ
+ iCMOiQxyy+8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
+   d="scan'208";a="433239012"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by orsmga001.jf.intel.com with ESMTP; 02 Feb 2021 22:56:59 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: vmx/pmu: Add VMCS fields check before exposing LBR_FMT
+Date:   Wed,  3 Feb 2021 14:50:27 +0800
+Message-Id: <20210203065027.314622-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <7630c4aa-b023-55a6-e2aa-37a7538c6b45@squareup.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
+Before KVM exposes guest LBR_FMT perf capabilities, it needs to check
+whether VMCS has GUEST_IA32_DEBUGCTL guest status field and vmx switch
+support on IA32_DEBUGCTL MSR (including VM_EXIT_SAVE_DEBUG_CONTROLS
+and VM_ENTRY_LOAD_DEBUG_CONTROLS). It helps nested LBR enablement.
 
-On 2/3/21 02:50, Benjamin Li wrote:
-> On 1/5/21 5:54 AM, Georgi Djakov wrote:
->> On 1/2/21 13:08, Vincent Knecht wrote:
->>> Le vendredi 04 décembre 2020 à 15:53 +0800, Jun Nie a écrit :
->>>> Add driver for the Qualcomm interconnect buses found in MSM8939 based
->>>> platforms. The topology consists of four NoCs that are controlled by
->>>> a remote processor that collects the aggregated bandwidth for each
->>>> master-slave pairs.
->>>>
->>>> Signed-off-by: Jun Nie <jun.nie@linaro.org>
->>>
->>> Shouldn't some rpm ids be changed like they were for msm8916 in the following patch ?
->>> c497f9322af9 ("interconnect: qcom: msm8916: Remove rpm-ids from non-RPM nodes")
->>> https://patchwork.kernel.org/project/linux-arm-msm/patch/20201112105140.10092-1-georgi.djakov@linaro.org/
->>
->> Maybe they should. I don't have the hardware to try it, but the test will be
->> to just add the NoC DT nodes, enable the driver and inspect the boot log for
->> messages like:
->> [    2.926647] qcom_icc_rpm_smd_send mas X error -6
->>
->> Thanks,
->> Georgi
-> 
-> Hi Vincent & Georgi,
-> 
-> Thanks, I ran your suggestion on an MSM8939 board (with an additional
-> change to print slave IDs as well). Results:
-> 
-> [    1.901376] qcom_icc_rpm_smd_send slv 24 error -6
-> [    2.005977] qcom_icc_rpm_smd_send mas 20 error -6
-> [    2.010250] qcom_icc_rpm_smd_send slv 20 error -6
-> [    2.014684] qcom_icc_rpm_smd_send slv 106 error -6
-> [    2.019338] qcom_icc_rpm_smd_send slv 107 error -6
-> [    2.024615] qcom_icc_rpm_smd_send slv 29 error -6
-> [    2.028782] qcom_icc_rpm_smd_send mas 3 error -6
-> [    2.034657] qcom_icc_rpm_smd_send mas 100 error -6
-> (and there's another slv 131 that's hidden by the mas 100 failure)
-> 
-> Jun, I'll send you the patch I tested with to silence all these errors,
-> if you want to just squash that into the next version of your patchset.
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+---
+ arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Thank you for doing this! Please send a follow-up patch as i already
-queued Jun's patches.
+diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+index d1d77985e889..ac3af06953a8 100644
+--- a/arch/x86/kvm/vmx/capabilities.h
++++ b/arch/x86/kvm/vmx/capabilities.h
+@@ -378,6 +378,12 @@ static inline bool vmx_pt_mode_is_host_guest(void)
+ 	return pt_mode == PT_MODE_HOST_GUEST;
+ }
+ 
++static inline bool cpu_has_vmx_lbr(void)
++{
++	return (vmcs_config.vmexit_ctrl & VM_EXIT_SAVE_DEBUG_CONTROLS) &&
++		(vmcs_config.vmentry_ctrl & VM_ENTRY_LOAD_DEBUG_CONTROLS);
++}
++
+ static inline u64 vmx_get_perf_capabilities(void)
+ {
+ 	u64 perf_cap = 0;
+@@ -385,7 +391,8 @@ static inline u64 vmx_get_perf_capabilities(void)
+ 	if (boot_cpu_has(X86_FEATURE_PDCM))
+ 		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+ 
+-	perf_cap &= PMU_CAP_LBR_FMT;
++	if (cpu_has_vmx_lbr())
++		perf_cap &= PMU_CAP_LBR_FMT;
+ 
+ 	/*
+ 	 * Since counters are virtualized, KVM would support full
+-- 
+2.29.2
 
-Thanks,
-Georgi
