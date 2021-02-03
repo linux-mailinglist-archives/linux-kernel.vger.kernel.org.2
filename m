@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CFE30DB6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C530DB6E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 14:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhBCNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 08:36:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232018AbhBCNeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:34:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C832C64F60;
-        Wed,  3 Feb 2021 13:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612359214;
-        bh=XZj7mDrQP+rPOgqmalaKB74DR65xAbL5fJISLaH4o24=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mJgTVWTunjnJgy+7Ky8HStxLhhswQvHy44xnsh5Yw+atc02TtfFiAI/DrIkuc5wxm
-         eJyNVt78nw0c5vKatUuMI8jY4mICCh/nHmqtOpcs3sxQ5ROThw93R4rLseoVcW+dF9
-         at5Shobxoa2hqeSiPYLt/nN8I7P4mLbu4OkhLfYwmJxCgtB4u7QNaEemuXIMAaqMri
-         WV5yf+ViAvpnNRdTqnvhy1ByP+LjZKt2XShnoG7d8Y5uH4tcMCt+SFMD/UDkczWP02
-         /bQoqEXFcoxi0kOsZBD84rUS41OAZuitbAVh0T7Ez8dpdb5HLqjirP2H2eIYOi/3e4
-         Zkf6q7/hHUOFg==
-Date:   Wed, 3 Feb 2021 22:33:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28
- ("x86: Replace ist_enter() with nmi_enter()")
-Message-Id: <20210203223328.9e99548d19d482ac2e2cda81@kernel.org>
-In-Reply-To: <20210202160513.38ada3a7@gandalf.local.home>
-References: <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210129140103.3ce971b7@gandalf.local.home>
-        <20210129162454.293523c6@gandalf.local.home>
-        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-        <20210130074410.6384c2e2@oasis.local.home>
-        <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
-        <20210202095249.5abd6780@gandalf.local.home>
-        <YBmBu0c24RjNYFet@hirez.programming.kicks-ass.net>
-        <20210202115623.08e8164d@gandalf.local.home>
-        <YBmaStZn9XEU0QE+@hirez.programming.kicks-ass.net>
-        <20210202160513.38ada3a7@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232116AbhBCNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 08:37:05 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:47055 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhBCNeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:34:31 -0500
+Received: from marcel-macbook.holtmann.net (p4fefcdd8.dip0.t-ipconnect.de [79.239.205.216])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 5C58FCECFC;
+        Wed,  3 Feb 2021 14:41:00 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH v1] Bluetooth: Fix crash in
+ mgmt_add_adv_patterns_monitor_complete
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
+Date:   Wed, 3 Feb 2021 14:33:32 +0100
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
 Content-Transfer-Encoding: 7bit
+Message-Id: <FF91258F-2875-4569-9195-6321409DFEA6@holtmann.org>
+References: <20210203150907.v1.1.I23ab3f91f23508bf84908e62d470bfab1d844f63@changeid>
+To:     Howard Chung <howardchung@google.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 16:05:13 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Howard,
 
-> On Tue, 2 Feb 2021 19:30:34 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
+> If hci_add_adv_monitor is a pending command(e.g. forward to
+> msft_add_monitor_pattern), it is possible that
+> mgmt_add_adv_patterns_monitor_complete gets called before
+> cmd->user_data gets set, which will cause a crash when we
+> try to get the moniter handle through cmd->user_data in
+> mgmt_add_adv_patterns_monitor_complete.
 > 
-> > That does mean that kprobes are then fundamentally running from
-> > in_nmi(), which is what started all this.
+> This moves the cmd->user_data assignment earlier than
+> hci_add_adv_monitor.
 > 
-> I just thought about the fact that tracing records the context of the
-> function it is called in. If you set "in_nmi()" for all ftrace handlers,
-> then all functions will look like they are in an NMI context during tracing.
+> RIP: 0010:mgmt_add_adv_patterns_monitor_complete+0x82/0x187 [bluetooth]
+> Code: 1e bf 03 00 00 00 be 52 00 00 00 4c 89 ea e8 9e
+> e4 02 00 49 89 c6 48 85 c0 0f 84 06 01 00 00 48 89 5d b8 4c 89 fb 4d 8b
+> 7e 30 <41> 0f b7 47 18 66 89 45 c0 45 84 e4 75 5a 4d 8b 56 28 48 8d 4d
+> c8
+> RSP: 0018:ffffae81807dbcb8 EFLAGS: 00010286
+> RAX: ffff91c4bdf723c0 RBX: 0000000000000000 RCX: ffff91c4e5da5b80
+> RDX: ffff91c405680000 RSI: 0000000000000052 RDI: ffff91c49d654c00
+> RBP: ffffae81807dbd00 R08: ffff91c49fb157e0 R09: ffff91c49fb157e0
+> R10: 000000000002a4f0 R11: ffffffffc0819cfd R12: 0000000000000000
+> R13: ffff91c405680000 R14: ffff91c4bdf723c0 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff91c4ea300000(0000)
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000018 CR3: 0000000133612002 CR4:
+> 00000000003606e0
+> Call Trace:
+> ? msft_le_monitor_advertisement_cb+0x111/0x141
+> [bluetooth]
+> hci_event_packet+0x425e/0x631c [bluetooth]
+> ? printk+0x59/0x73
+> ? __switch_to_asm+0x41/0x70
+> ?
+> msft_le_set_advertisement_filter_enable_cb+0xa6/0xa6 [bluetooth]
+> ? bt_dbg+0xb4/0xbb [bluetooth]
+> ? __switch_to_asm+0x41/0x70
+> hci_rx_work+0x101/0x319 [bluetooth]
+> process_one_work+0x257/0x506
+> worker_thread+0x10d/0x284
+> kthread+0x14c/0x154
+> ? process_one_work+0x506/0x506
+> ? kthread_blkcg+0x2c/0x2c
+> ret_from_fork+0x1f/0x40
 > 
-> That is, the preempt count is checked to fill in the flags in the ring
-> buffer that denotes what context the event (in this case the function) was
-> called in.
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+> Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+> Signed-off-by: Howard Chung <howardchung@google.com>
+> ---
+> 
+> net/bluetooth/mgmt.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah, that is what I worried about. ftrace and kprobes handler usually want to
-know "what is the actual status of the system where the probe hits".
+patch has been applied to bluetooth-next tree.
 
-If the new kernel_exception_enter() for ftrace/kprobes or any other kernel
-instrumention does
+Regards
 
-  __preempt_count_add(KEX_OFFSET + NMI_OFFSET + HARDIRQ_OFFSET);
+Marcel
 
-And we can distinguish the KEX from NMI, and get the original status of the context.
-What would you think about?
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
