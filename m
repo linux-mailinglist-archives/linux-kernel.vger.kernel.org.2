@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5564130E3EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF9D30E3FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 21:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhBCUPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 15:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
+        id S231891AbhBCUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 15:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhBCUPR (ORCPT
+        with ESMTP id S231194AbhBCUUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:15:17 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD0AC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:14:36 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id q2so1212828edi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:14:36 -0800 (PST)
+        Wed, 3 Feb 2021 15:20:54 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5F6C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 12:20:14 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 190so1017971wmz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 12:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2hDbD4PDQVFgTXBhK6cZuq3KTChV4iUeX+GCdlkcsVo=;
-        b=XyAHweTp37C+EKfCxzZquJAoX/8UODLSgZQsKWoS8cxMrw6vkdSfj6gz8LGEircV3M
-         wsRjuBx3Fx1GwDXXvEF/jiWkGv+Kf8tFwkxQzKCHbFve67beVy0rp6cSd4EW+nOHDYhu
-         gPQ/4+33Z9CFWCHHrzWorqjvdkQxk5bfe/+EnsbH0GziORj00vgJQ/kkhk3XqlcN60gy
-         n2FS/SjfZTF40tJm+gPaMWTL0UxFsjCWh2w8fqtZEVo7asmCN63QeX8tR34nM8ORSrIy
-         swtWQJpn+tHpvsLl2JXKnY6Uw4Fj9ZpK4wfqKoP/FsoldYvdAopI6iwVnkhY+EXR1oiQ
-         PTxw==
+         :cc;
+        bh=rQ5+s8Uk/H2oUlPmQuXd+AT/EsL+cy8XeHexkKTVc0E=;
+        b=wF/rgZvrmNhkDzljRbPYVIrL/H2wS+pSUpCdb7G7+Fj6i5vSdKQnM37ReU+MD+ArRd
+         2ghIxhZVuC+i53i9hTJ8wEVOvIr8QzDabNFResmUnO4dR538GmS7MxCX/njpfqRjiyAn
+         aPHUyjusLDv3xbmqBaem/cNiuxjgZBbLr2dk5+fo4uFT3eJnYs1kHI3zxP+u7/URDkuS
+         wosL4PpFkWfj1gWV9QDIoC/0llJ9BBwhR7ZF7y7xRkl3JqtAr55SRhXoWoMqpfYYpFZw
+         OXRadXgMpftHwXMfkhrdj7EdYEV8078wDokZSAlMUQHMljaLnBxMAVzhvS/k2FB+eKEv
+         g85Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2hDbD4PDQVFgTXBhK6cZuq3KTChV4iUeX+GCdlkcsVo=;
-        b=OqyAlcmT+VQS2MHpZUSDXR7cJbeF4wB3NS1Eh6iJRxxZKZzvUk+3/cpW7n4uEhb8R8
-         EokDGHdqwDz/YVk8m9ZHcL79iwyEzaScdjTho0d3trZK7Aart+ksz7Dx8WTUNd8QUIJo
-         yXpdZ9mAElha3280DOrUAXgGACC8xV6Y4L0hxx6u4uyBc8rvEGY+orSyXIS4pdV5Fm0e
-         Sluwp+3fMsI2AJgOO6REGousQ8fx9C/ievVkp9ZsvBbvaZudZ35YqvDypfMkjD0rFCUU
-         dXJ3HS0C/tQ9OtILtrJyNvyhAMoohhl8oYpvqk30Haw7b0Demrx78jJjLyDn+V28mcrC
-         ng3w==
-X-Gm-Message-State: AOAM532HIV8z07a9c/g1oCjiDdhfYvECBXM3tVQpFfc0g06uCbp6R9b7
-        ji1OMwS2ITs4VOvlPvo7E/af9/j5dVDPta3Vqf3KUg==
-X-Google-Smtp-Source: ABdhPJzHKNnpuH6SH78OJ5c/I+5+dMOTfxA08qqDrkDJdGxsYCX2K2HmAKR+6KuQylNP68O+z51XJdgMgtiA0ebQHGU=
-X-Received: by 2002:aa7:d4d2:: with SMTP id t18mr5021635edr.238.1612383275531;
- Wed, 03 Feb 2021 12:14:35 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=rQ5+s8Uk/H2oUlPmQuXd+AT/EsL+cy8XeHexkKTVc0E=;
+        b=SxMy2B2SnoyDJHIoSJZ52CM897CouTgett77t9YoQ4pgeBHFx0Bw6mSr2Txf+skryP
+         9BCmEkkqO7UzSWHDZ9mRQKO3577iBkdsiKSUK5YsqQEnhzobASm+ujSzmtELTW/F3rh+
+         PdX7y5RUlVE88ZV8m0837kQQzm/IVzVoWCyifqp6tt/8jFXvLC8k2WjDROXsvCF1Z43I
+         u2fRpxmVImsEED4E5T6W/t2yZpg8yLU2AbN6yRvvNDKJCzsAAU9T2PdZp9ZNy5+h7GID
+         GMUSogknWFFAAxRERbbMPwjUFZC8A8ujuWdHMx/js0qrZdz86ssvKhY+1Fn52JoqE7vW
+         5kJQ==
+X-Gm-Message-State: AOAM533QpBWD3d19ef16ApdlKPqmxH1yS4V29xOnlG/mq25zcp/NU92p
+        rl1BzyFUdJO4Y+jY0P+bImSb2ZOMEeMumBcR5zvnZg==
+X-Google-Smtp-Source: ABdhPJzotWwFJQ5FuudypJrg8p0gib5+AD54pH90o3lu7MbwZq0qzxIhjvQznVGTMfdsS9bLXHdCY/6M0s0OBT9Olnc=
+X-Received: by 2002:a1c:4b05:: with SMTP id y5mr4326474wma.37.1612383612621;
+ Wed, 03 Feb 2021 12:20:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210203193949.GI13819@zn.tnic> <88AA1DD6-615B-4049-B335-F2F40F85EF08@amacapital.net>
- <20210203200729.GL13819@zn.tnic>
-In-Reply-To: <20210203200729.GL13819@zn.tnic>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Wed, 3 Feb 2021 12:14:24 -0800
-Message-ID: <CALCETrU_LTyc5oKPtO2pkKjRdPV4Pdzw4_TmcuyVUfTGfkB6jA@mail.gmail.com>
-Subject: Re: [PATCH 09/11] x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+References: <20210203003134.2422308-1-surenb@google.com> <20210203015553.GX308988@casper.infradead.org>
+ <CAKMK7uHnNdjOYX5Rhj=uGMz7hSz12JhgkZJCfiqgkpjXnMfL4A@mail.gmail.com>
+In-Reply-To: <CAKMK7uHnNdjOYX5Rhj=uGMz7hSz12JhgkZJCfiqgkpjXnMfL4A@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 3 Feb 2021 12:20:01 -0800
+Message-ID: <CAJuCfpG4GkVbeW=bB+Qrm5GPrZAwg0_rmyG05iwQmL7GrWAYHw@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 1/2] mm: replace BUG_ON in vm_insert_page
+ with a return of an error
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Sandeep Patil <sspatil@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        James Jones <jajones@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        John Stultz <john.stultz@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 12:07 PM Borislav Petkov <bp@alien8.de> wrote:
+On Wed, Feb 3, 2021 at 12:52 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
 >
-> On Wed, Feb 03, 2021 at 11:53:03AM -0800, Andy Lutomirski wrote:
-> > I feel like that would be more obfuscated =E2=80=94 then the function w=
-ould
-> > return without fixing anything for usermode faults, return after
-> > fixing it for kernel mode faults, or oops.
+> On Wed, Feb 3, 2021 at 2:57 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Tue, Feb 02, 2021 at 04:31:33PM -0800, Suren Baghdasaryan wrote:
+> > > Replace BUG_ON(vma->vm_flags & VM_PFNMAP) in vm_insert_page with
+> > > WARN_ON_ONCE and returning an error. This is to ensure users of the
+> > > vm_insert_page that set VM_PFNMAP are notified of the wrong flag usage
+> > > and get an indication of an error without panicing the kernel.
+> > > This will help identifying drivers that need to clear VM_PFNMAP before
+> > > using dmabuf system heap which is moving to use vm_insert_page.
+> >
+> > NACK.
+> >
+> > The system may not _panic_, but it is clearly now _broken_.  The device
+> > doesn't work, and so the system is useless.  You haven't really improved
+> > anything here.  Just bloated the kernel with yet another _ONCE variable
+> > that in a normal system will never ever ever be triggered.
 >
-> You practically pretty much have it already with the WARN_ON_ONCE. And
-> you can make the thing return 1 to denote it was in user_mode() and 0
-> otherwise. IINMSO, something like this:
+> Also, what the heck are you doing with your drivers? dma-buf mmap must
+> call dma_buf_mmap(), even for forwarded/redirected mmaps from driver
+> char nodes. If that doesn't work we have some issues with the calling
+> contract for that function, not in vm_insert_page.
 
-Hmm.  I'm not convinced this is really much better.  Maybe it is.  Let
-me think about it.  I feel like it's somehow too close to the previous
-tangle where too many functions did too many different things.
+The particular issue I observed (details were posted in
+https://lore.kernel.org/patchwork/patch/1372409) is that DRM drivers
+set VM_PFNMAP flag (via a call to drm_gem_mmap_obj) before calling
+dma_buf_mmap. Some drivers clear that flag but some don't. I could not
+find the answer to why VM_PFNMAP is required for dmabuf mappings and
+maybe someone can explain that here?
+If there is a reason to set this flag other than historical use of
+carveout memory then we wanted to catch such cases and fix the drivers
+that moved to using dmabuf heaps. However maybe there are other
+reasons and if so I would be very grateful if someone could explain
+them. That would help me to come up with a better solution.
+
+> Finally why exactly do we need to make this switch for system heap?
+> I've recently looked at gup usage by random drivers, and found a lot
+> of worrying things there. gup on dma-buf is really bad idea in
+> general.
+
+The reason for the switch is to be able to account dmabufs allocated
+using dmabuf heaps to the processes that map them. The next patch in
+this series https://lore.kernel.org/patchwork/patch/1374851
+implementing the switch contains more details and there is an active
+discussion there. Would you mind joining that discussion to keep it in
+one place?
+Thanks!
+
+> -Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
