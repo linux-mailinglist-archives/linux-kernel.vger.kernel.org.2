@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EE630DFD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E250030DFD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 17:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbhBCQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 11:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        id S234396AbhBCQf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 11:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234257AbhBCQfV (ORCPT
+        with ESMTP id S230315AbhBCQfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:35:21 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27D1C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:34:40 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id v19so51668pgj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 08:34:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jB5LniiJVJBhga+KqtjyHJhSLFg6O06N5hOGcOS8Mo0=;
-        b=IhCfDX9FMqbywbKhoTeq5CpvYQa1Psp9hJuE1uJrOqwkKrhrrvWmMoe8m6iol0kbps
-         HxbaRc17fVXZpZyPm77VCnP4cOecqSZ9x4wyiFpM6WHPC344z/eB/OYcCILta/N1CMor
-         Siz04H8TaB1YW00cQ/gGUN7LfU1PPhOMAtZw0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=jB5LniiJVJBhga+KqtjyHJhSLFg6O06N5hOGcOS8Mo0=;
-        b=IzQ0jXdQeIM5p/e7e4h1qAqMWlhHyFbObyoHhxOQ3iKCDiZq2YE5EbiOkwmBm7+0cq
-         fWF6lPmlqWwvceNwx8CDKpOtE9boWWjQoYJEApUO5s2S4hNRsWKHnusGtnO/QRIld6sj
-         JMXAwhS22AS1ytj37lhB4+koLesC32eh+aXvfs+njhzzFoXpyFToDtz4ZWky7WYJJ5G4
-         Ogney0hfuixISPzu3RvkOVKCrovNQs74jvAOA9QCM49UoWGM1LnrwbuIYl4zW4ha+yoN
-         xWvUaJZatzSTsf74XvQlLsoUxvwfaNBUHjE10fbFMiglQUfkpS6rZr38F94fFjHV+CxA
-         6DQg==
-X-Gm-Message-State: AOAM533C4NlexZBTP7yHrcfcj30noDAgBnmchLl2jOEkO1gp1hJqQ9qb
-        lAjtuBSltS3NGS0q5gFTVlyopg==
-X-Google-Smtp-Source: ABdhPJx7Zq3RnTesy0436dDHJJQa7PqeTbE+LE0OfBYli2Lu0V/+suOkUkkgdXNm1RDt++BQwlY6ug==
-X-Received: by 2002:a63:fe05:: with SMTP id p5mr4446854pgh.161.1612370080390;
-        Wed, 03 Feb 2021 08:34:40 -0800 (PST)
-Received: from localhost (162-207-206-139.lightspeed.sntcca.sbcglobal.net. [162.207.206.139])
-        by smtp.gmail.com with ESMTPSA id p2sm2620288pjj.0.2021.02.03.08.34.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 08:34:39 -0800 (PST)
-From:   Benjamin Li <benl@squareup.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     square@linaro.org, kernel@squareup.com,
-        Benjamin Li <benl@squareup.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] interconnect: qcom: msm8939: remove rpm-ids from non-RPM nodes
-Date:   Wed,  3 Feb 2021 08:34:07 -0800
-Message-Id: <20210203163407.9222-3-benl@squareup.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210203163407.9222-1-benl@squareup.com>
-References: <20210203163407.9222-1-benl@squareup.com>
+        Wed, 3 Feb 2021 11:35:11 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80AFC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 08:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=GmYMNHTsJklH1Fxq78vOuT9014qZSaw9UoGazr/WP5Y=; b=0BU5fJYLPGQOuGhl97HJuDHwaY
+        uvyhzetaHTNTn/HkffpTnslMIk1ZfxWWwR5veIvvXJ0a2g40S/j5gGww6cLB8Em1/bGAf82jIDXL6
+        iq87+x6WHCm9R5b6SDD3d4er3wsjwZdBxadYTF5h2t6xqkX177i9wLpylvGKVu+MhbL3RIuox96yW
+        PMDDdG3ulRNySvuY4shB4GTMFUa4evIUlmu/6l2feRFcYCCsVPmtjVFUgue6peRVucBCtWnDN1FFf
+        WS8MYeIVJxxTufRF8bhk8NWM8wcQxYeFl9Tek9oEv0mjBoTVuIAL9iyuMUk9E2xLxEqRm+EulSgB9
+        1nBi1nhg==;
+Received: from [2601:1c0:6280:3f0::2a53]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7L6q-0002E0-MU; Wed, 03 Feb 2021 16:34:29 +0000
+Subject: Re: [PATCH] nvmem: Kconfig: Correct typo in NVMEM_RMEM
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210203102932.7277-1-nsaenzjulienne@suse.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <79c10761-5383-0c9c-0181-ab37d93b2f79@infradead.org>
+Date:   Wed, 3 Feb 2021 08:34:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20210203102932.7277-1-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes corresponding to commit c497f9322af9 ("interconnect: qcom: msm8916:
-Remove rpm-ids from non-RPM nodes") to remove this log spam on 8939:
+On 2/3/21 2:29 AM, Nicolas Saenz Julienne wrote:
+> s/drivers/driver/ as the configuration selects a single driver.
+> 
+> Fixes: 2bf4fd065384 ("nvmem: Add driver to expose reserved memory as nvmem")
+> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-[    1.901376] qcom_icc_rpm_smd_send slv 24 error -6
-[    2.005977] qcom_icc_rpm_smd_send mas 20 error -6
-[    2.010250] qcom_icc_rpm_smd_send slv 20 error -6
-[    2.014684] qcom_icc_rpm_smd_send slv 106 error -6
-[    2.019338] qcom_icc_rpm_smd_send slv 107 error -6
-[    2.024615] qcom_icc_rpm_smd_send slv 29 error -6
-[    2.028782] qcom_icc_rpm_smd_send mas 3 error -6
-[    2.034657] qcom_icc_rpm_smd_send mas 100 error -6
-(plus another slv 131 that's hidden by the mas 100 failure)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Signed-off-by: Benjamin Li <benl@squareup.com>
----
- drivers/interconnect/qcom/msm8939.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Thanks.
 
-diff --git a/drivers/interconnect/qcom/msm8939.c b/drivers/interconnect/qcom/msm8939.c
-index dfbec30ed149..20f31a1b4192 100644
---- a/drivers/interconnect/qcom/msm8939.c
-+++ b/drivers/interconnect/qcom/msm8939.c
-@@ -131,7 +131,7 @@ DEFINE_QNODE(mas_pcnoc_sdcc_1, MSM8939_MASTER_SDCC_1, 8, -1, -1, MSM8939_PNOC_IN
- DEFINE_QNODE(mas_pcnoc_sdcc_2, MSM8939_MASTER_SDCC_2, 8, -1, -1, MSM8939_PNOC_INT_1);
- DEFINE_QNODE(mas_qdss_bam, MSM8939_MASTER_QDSS_BAM, 8, -1, -1, MSM8939_SNOC_QDSS_INT);
- DEFINE_QNODE(mas_qdss_etr, MSM8939_MASTER_QDSS_ETR, 8, -1, -1, MSM8939_SNOC_QDSS_INT);
--DEFINE_QNODE(mas_snoc_cfg, MSM8939_MASTER_SNOC_CFG, 4, 20, -1, MSM8939_SLAVE_SRVC_SNOC);
-+DEFINE_QNODE(mas_snoc_cfg, MSM8939_MASTER_SNOC_CFG, 4, -1, -1, MSM8939_SLAVE_SRVC_SNOC);
- DEFINE_QNODE(mas_spdm, MSM8939_MASTER_SPDM, 4, -1, -1, MSM8939_PNOC_MAS_0);
- DEFINE_QNODE(mas_tcu0, MSM8939_MASTER_TCU0, 16, -1, -1, MSM8939_SLAVE_EBI_CH0, MSM8939_BIMC_SNOC_MAS, MSM8939_SLAVE_AMPSS_L2);
- DEFINE_QNODE(mas_usb_hs1, MSM8939_MASTER_USB_HS1, 4, -1, -1, MSM8939_PNOC_MAS_1);
-@@ -156,14 +156,14 @@ DEFINE_QNODE(pcnoc_snoc_mas, MSM8939_PNOC_SNOC_MAS, 8, 29, -1, MSM8939_PNOC_SNOC
- DEFINE_QNODE(pcnoc_snoc_slv, MSM8939_PNOC_SNOC_SLV, 8, -1, 45, MSM8939_SNOC_INT_0, MSM8939_SNOC_INT_BIMC, MSM8939_SNOC_INT_1);
- DEFINE_QNODE(qdss_int, MSM8939_SNOC_QDSS_INT, 8, -1, -1, MSM8939_SNOC_INT_0, MSM8939_SNOC_INT_BIMC);
- DEFINE_QNODE(slv_apps_l2, MSM8939_SLAVE_AMPSS_L2, 16, -1, -1, 0);
--DEFINE_QNODE(slv_apss, MSM8939_SLAVE_APSS, 4, -1, 20, 0);
-+DEFINE_QNODE(slv_apss, MSM8939_SLAVE_APSS, 4, -1, -1, 0);
- DEFINE_QNODE(slv_audio, MSM8939_SLAVE_LPASS, 4, -1, -1, 0);
- DEFINE_QNODE(slv_bimc_cfg, MSM8939_SLAVE_BIMC_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_blsp_1, MSM8939_SLAVE_BLSP_1, 4, -1, -1, 0);
- DEFINE_QNODE(slv_boot_rom, MSM8939_SLAVE_BOOT_ROM, 4, -1, -1, 0);
- DEFINE_QNODE(slv_camera_cfg, MSM8939_SLAVE_CAMERA_CFG, 4, -1, -1, 0);
--DEFINE_QNODE(slv_cats_0, MSM8939_SLAVE_CATS_128, 16, -1, 106, 0);
--DEFINE_QNODE(slv_cats_1, MSM8939_SLAVE_OCMEM_64, 8, -1, 107, 0);
-+DEFINE_QNODE(slv_cats_0, MSM8939_SLAVE_CATS_128, 16, -1, -1, 0);
-+DEFINE_QNODE(slv_cats_1, MSM8939_SLAVE_OCMEM_64, 8, -1, -1, 0);
- DEFINE_QNODE(slv_clk_ctl, MSM8939_SLAVE_CLK_CTL, 4, -1, -1, 0);
- DEFINE_QNODE(slv_crypto_0_cfg, MSM8939_SLAVE_CRYPTO_0_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_dehr_cfg, MSM8939_SLAVE_DEHR_CFG, 4, -1, -1, 0);
-@@ -187,20 +187,20 @@ DEFINE_QNODE(slv_sdcc_2, MSM8939_SLAVE_SDCC_2, 4, -1, -1, 0);
- DEFINE_QNODE(slv_security, MSM8939_SLAVE_SECURITY, 4, -1, -1, 0);
- DEFINE_QNODE(slv_snoc_cfg, MSM8939_SLAVE_SNOC_CFG, 4, -1, -1, 0);
- DEFINE_QNODE(slv_spdm, MSM8939_SLAVE_SPDM, 4, -1, -1, 0);
--DEFINE_QNODE(slv_srvc_snoc, MSM8939_SLAVE_SRVC_SNOC, 8, -1, 29, 0);
-+DEFINE_QNODE(slv_srvc_snoc, MSM8939_SLAVE_SRVC_SNOC, 8, -1, -1, 0);
- DEFINE_QNODE(slv_tcsr, MSM8939_SLAVE_TCSR, 4, -1, -1, 0);
- DEFINE_QNODE(slv_tlmm, MSM8939_SLAVE_TLMM, 4, -1, -1, 0);
- DEFINE_QNODE(slv_usb_hs1, MSM8939_SLAVE_USB_HS1, 4, -1, -1, 0);
- DEFINE_QNODE(slv_usb_hs2, MSM8939_SLAVE_USB_HS2, 4, -1, -1, 0);
- DEFINE_QNODE(slv_venus_cfg, MSM8939_SLAVE_VENUS_CFG, 4, -1, -1, 0);
--DEFINE_QNODE(snoc_bimc_0_mas, MSM8939_SNOC_BIMC_0_MAS, 16, 3, -1, MSM8939_SNOC_BIMC_0_SLV);
--DEFINE_QNODE(snoc_bimc_0_slv, MSM8939_SNOC_BIMC_0_SLV, 16, -1, 24, MSM8939_SLAVE_EBI_CH0);
-+DEFINE_QNODE(snoc_bimc_0_mas, MSM8939_SNOC_BIMC_0_MAS, 16, -1, -1, MSM8939_SNOC_BIMC_0_SLV);
-+DEFINE_QNODE(snoc_bimc_0_slv, MSM8939_SNOC_BIMC_0_SLV, 16, -1, -1, MSM8939_SLAVE_EBI_CH0);
- DEFINE_QNODE(snoc_bimc_1_mas, MSM8939_SNOC_BIMC_1_MAS, 16, 76, -1, MSM8939_SNOC_BIMC_1_SLV);
- DEFINE_QNODE(snoc_bimc_1_slv, MSM8939_SNOC_BIMC_1_SLV, 16, -1, 104, MSM8939_SLAVE_EBI_CH0);
- DEFINE_QNODE(snoc_bimc_2_mas, MSM8939_SNOC_BIMC_2_MAS, 16, -1, -1, MSM8939_SNOC_BIMC_2_SLV);
- DEFINE_QNODE(snoc_bimc_2_slv, MSM8939_SNOC_BIMC_2_SLV, 16, -1, -1, MSM8939_SLAVE_EBI_CH0);
- DEFINE_QNODE(snoc_int_0, MSM8939_SNOC_INT_0, 8, 99, 130, MSM8939_SLAVE_QDSS_STM, MSM8939_SLAVE_IMEM, MSM8939_SNOC_PNOC_MAS);
--DEFINE_QNODE(snoc_int_1, MSM8939_SNOC_INT_1, 8, 100, 131, MSM8939_SLAVE_APSS, MSM8939_SLAVE_CATS_128, MSM8939_SLAVE_OCMEM_64);
-+DEFINE_QNODE(snoc_int_1, MSM8939_SNOC_INT_1, 8, -1, -1, MSM8939_SLAVE_APSS, MSM8939_SLAVE_CATS_128, MSM8939_SLAVE_OCMEM_64);
- DEFINE_QNODE(snoc_int_bimc, MSM8939_SNOC_INT_BIMC, 8, 101, 132, MSM8939_SNOC_BIMC_1_MAS);
- DEFINE_QNODE(snoc_pcnoc_mas, MSM8939_SNOC_PNOC_MAS, 8, -1, -1, MSM8939_SNOC_PNOC_SLV);
- DEFINE_QNODE(snoc_pcnoc_slv, MSM8939_SNOC_PNOC_SLV, 8, -1, -1, MSM8939_PNOC_INT_0);
+> ---
+>  drivers/nvmem/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+> index fecc19b884bf..75d2594c16e1 100644
+> --- a/drivers/nvmem/Kconfig
+> +++ b/drivers/nvmem/Kconfig
+> @@ -273,7 +273,7 @@ config SPRD_EFUSE
+>  config NVMEM_RMEM
+>  	tristate "Reserved Memory Based Driver Support"
+>  	help
+> -	  This drivers maps reserved memory into an nvmem device. It might be
+> +	  This driver maps reserved memory into an nvmem device. It might be
+>  	  useful to expose information left by firmware in memory.
+>  
+>  	  This driver can also be built as a module. If so, the module
+> 
+
+
 -- 
-2.17.1
-
+~Randy
