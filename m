@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B13230D757
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1B330D75F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 11:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhBCKUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 05:20:43 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:21334 "EHLO pegase1.c-s.fr"
+        id S233812AbhBCKWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 05:22:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:37324 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233488AbhBCKUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:20:33 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DVyNH4JzGz9tyRt;
-        Wed,  3 Feb 2021 11:19:43 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id y1ydXniTuRI4; Wed,  3 Feb 2021 11:19:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DVyNH3029z9v0hX;
-        Wed,  3 Feb 2021 11:19:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DED48B7DC;
-        Wed,  3 Feb 2021 11:19:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9Hi595iGz4sc; Wed,  3 Feb 2021 11:19:44 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6ABFD8B7D3;
-        Wed,  3 Feb 2021 11:19:44 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4390367252; Wed,  3 Feb 2021 10:19:44 +0000 (UTC)
-Message-Id: <f302ef92c48d1f08a0459aaee1c568ca11213814.1612345700.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] mm/memory.c: Remove pte_sw_mkyoung()
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bibo Mao <maobibo@loongson.cn>, Jia He <justin.he@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org, linux-mips@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Date:   Wed,  3 Feb 2021 10:19:44 +0000 (UTC)
+        id S233405AbhBCKWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:22:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EEE7BD6E;
+        Wed,  3 Feb 2021 02:21:49 -0800 (PST)
+Received: from [10.57.13.36] (unknown [10.57.13.36])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A47C3F719;
+        Wed,  3 Feb 2021 02:21:47 -0800 (PST)
+Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
+ devfreq struct
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
+ <20210126104001.20361-2-lukasz.luba@arm.com>
+ <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
+Date:   Wed, 3 Feb 2021 10:21:45 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 83d116c53058 ("mm: fix double page fault on arm64 if PTE_AF
-is cleared") introduced arch_faults_on_old_pte() helper to identify
-platforms that don't set page access bit in HW and require a page
-fault to set it.
+Hi Chanwoo,
 
-Commit 44bf431b47b4 ("mm/memory.c: Add memory read privilege on page
-fault handling") added pte_sw_mkyoung() which is yet another way to
-manage platforms that don't set page access bit in HW and require a
-page fault to set it.
+Thank you for looking at this.
 
-Remove that pte_sw_mkyoung() helper and use the already existing
-arch_faults_on_old_pte() helper together with pte_mkyoung() instead.
+On 2/3/21 10:11 AM, Chanwoo Choi wrote:
+> Hi Lukasz,
+> 
+> When accessing the max_freq and min_freq at devfreq-cooling.c,
+> even if can access 'user_max_freq' and 'lock' by using the 'devfreq' instance,
+> I think that the direct access of variables (lock/user_max_freq/user_min_freq)
+> of struct devfreq are not good.
+> 
+> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
+> notification with following changes of 'struct devfreq_freq'?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/mips/include/asm/pgtable.h |  2 --
- include/linux/pgtable.h         | 16 ----------------
- mm/memory.c                     |  9 ++++++---
- 3 files changed, 6 insertions(+), 21 deletions(-)
+I like the idea with devfreq notification. I will have to go through the
+code to check that possibility.
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 4f9c37616d42..3275495adccb 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -406,8 +406,6 @@ static inline pte_t pte_mkyoung(pte_t pte)
- 	return pte;
- }
- 
--#define pte_sw_mkyoung	pte_mkyoung
--
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
- static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE; }
- 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 8fcdfa52eb4b..70d04931dff4 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -424,22 +424,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
- }
- #endif
- 
--/*
-- * On some architectures hardware does not set page access bit when accessing
-- * memory page, it is responsibilty of software setting this bit. It brings
-- * out extra page fault penalty to track page access bit. For optimization page
-- * access bit can be set during all page fault flow on these arches.
-- * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-- * where software maintains page access bit.
-- */
--#ifndef pte_sw_mkyoung
--static inline pte_t pte_sw_mkyoung(pte_t pte)
--{
--	return pte;
--}
--#define pte_sw_mkyoung	pte_sw_mkyoung
--#endif
--
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
- #endif
-diff --git a/mm/memory.c b/mm/memory.c
-index feff48e1465a..46fab785f7b3 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2890,7 +2890,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
--		entry = pte_sw_mkyoung(entry);
-+		if (arch_faults_on_old_pte())
-+			entry = pte_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 
- 		/*
-@@ -3548,7 +3549,8 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
- 
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
-+	if (arch_faults_on_old_pte())
-+		entry = pte_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3824,7 +3826,8 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
- 
- 	flush_icache_page(vma, page);
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
-+	if (arch_faults_on_old_pte())
-+		entry = pte_mkyoung(entry);
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	/* copy-on-write page */
--- 
-2.25.0
+> Also, need to add codes into devfreq_set_target() for initializing
+> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
+> notification.
+> 
+> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+> index 147a229056d2..d5726592d362 100644
+> --- a/include/linux/devfreq.h
+> +++ b/include/linux/devfreq.h
+> @@ -207,6 +207,8 @@ struct devfreq {
+>   struct devfreq_freqs {
+>          unsigned long old;
+>          unsigned long new;
+> +       unsigned long new_max_freq;
+> +       unsigned long new_min_freq;
+>   };
+> 
+> 
+> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
+> You can get the current max_freq/min_freq by using the following steps:
+> 
+> 	get_freq_range(devfreq, &min_freq, &max_freq);
+> 	dev_pm_opp_find_freq_floor(pdev, &min_freq);
+> 	dev_pm_opp_find_freq_floor(pdev, &max_freq);
+> 
+> So that you can get the 'max_freq/min_freq' and then
+> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
+> with them as following:
+> 
+> in devfreq_set_target()
+> 	get_freq_range(devfreq, &min_freq, &max_freq);
+> 	dev_pm_opp_find_freq_floor(pdev, &min_freq);
+> 	dev_pm_opp_find_freq_floor(pdev, &max_freq);
+> 	freqs.new_max_freq = min_freq;
+> 	freqs.new_max_freq = max_freq;
+> 	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
 
+I will plumb it in and check that option. My concern is that function
+get_freq_range() would give me the max_freq value from PM QoS, which
+might be my thermal limit - lower that user_max_freq. Then I still
+need
+
+I've been playing with PM QoS notifications because I thought it would
+be possible to be notified in thermal for all new set values - even from
+devfreq sysfs user max_freq write, which has value higher that the
+current limit set by thermal governor. Unfortunately PM QoS doesn't
+send that information by design. PM QoS also by desing won't allow
+me to check first two limits in the plist - which would be thermal
+and user sysfs max_freq.
+
+I will experiment with this notifications and share the results.
+That you for your comments.
+
+Regards,
+Lukasz
