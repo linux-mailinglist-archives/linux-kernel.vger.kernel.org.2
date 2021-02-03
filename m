@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654CA30D157
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1217F30D15C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 03:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhBCCRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 21:17:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhBCCQ7 (ORCPT
+        id S232084AbhBCCSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 21:18:06 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:60509 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230087AbhBCCSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 21:16:59 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVlcy6tvKzjJ8L;
-        Wed,  3 Feb 2021 10:14:58 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 3 Feb 2021 10:16:16 +0800
-Subject: Re: [PATCH v2 4/5] ACPI: video: Clean up printing messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-CC:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Joe Perches" <joe@perches.com>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
- <14420740.AtFQDP28HA@kreacher>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <9fe936a0-0293-74af-2168-5530f7732d07@huawei.com>
-Date:   Wed, 3 Feb 2021 10:16:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <14420740.AtFQDP28HA@kreacher>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
-X-CFilter-Loop: Reflected
+        Tue, 2 Feb 2021 21:18:00 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNj9FBx_1612318632;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNj9FBx_1612318632)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Feb 2021 10:17:12 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, sgoutham@marvell.com, lcherian@marvell.com,
+        gakula@marvell.com, jerinj@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] octeontx2-af: remove unneeded semicolon
+Date:   Wed,  3 Feb 2021 10:17:11 +0800
+Message-Id: <1612318631-101349-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/3 2:18, Rafael J. Wysocki wrote:
-[...]
-> Also make one unrelated janitorial change to fix up white space and
-> use ACPI_FAILURE() instead of negating ACPI_SUCCESS().
+Eliminate the following coccicheck warning:
+./drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c:272:2-3:
+Unneeded semicolon
+./drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c:1809:3-4:
+Unneeded semicolon
+./drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c:1788:3-4:
+Unneeded semicolon
+./drivers/net/ethernet/marvell/octeontx2/af/rvu.c:1326:2-3: Unneeded
+semicolon
 
-[...]
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c         | 2 +-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 4 ++--
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c  | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
->   	status = acpi_evaluate_object(video->device->handle, "_DOD", NULL, &buffer);
->   	if (!ACPI_SUCCESS(status)) {
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index e8fd712..0b6bf9f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -1323,7 +1323,7 @@ static int rvu_get_attach_blkaddr(struct rvu *rvu, int blktype,
+ 		break;
+ 	default:
+ 		return rvu_get_blkaddr(rvu, blktype, 0);
+-	};
++	}
+ 
+ 	if (is_block_implemented(rvu->hw, blkaddr))
+ 		return blkaddr;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index d27543c..b5b5032 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -1785,7 +1785,7 @@ static void rvu_dbg_npc_mcam_show_action(struct seq_file *s,
+ 			break;
+ 		default:
+ 			break;
+-		};
++		}
+ 	} else {
+ 		switch (rule->rx_action.op) {
+ 		case NIX_RX_ACTIONOP_DROP:
+@@ -1806,7 +1806,7 @@ static void rvu_dbg_npc_mcam_show_action(struct seq_file *s,
+ 			break;
+ 		default:
+ 			break;
+-		};
++		}
+ 	}
+ }
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 14832b6..f72c795 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -269,7 +269,7 @@ static void npc_scan_parse_result(struct npc_mcam *mcam, u8 bit_number,
+ 		break;
+ 	default:
+ 		return;
+-	};
++	}
+ 	npc_set_kw_masks(mcam, type, nr_bits, kwi, offset, intf);
+ }
+ 
+-- 
+1.8.3.1
 
-if (ACPI_FAILURE(status))
-
-> -		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _DOD"));
-> +		acpi_handle_info(video->device->handle,
-> +				 "_DOD evaluation failed: %s\n",
-> +				 acpi_format_exception(status));
-
-
-Thanks
-Hanjun
