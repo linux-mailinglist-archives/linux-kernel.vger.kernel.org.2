@@ -2,94 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7110D30D225
+	by mail.lfdr.de (Postfix) with ESMTP id EC1A130D226
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 04:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhBCDXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 22:23:21 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:39741 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232897AbhBCDWQ (ORCPT
+        id S232973AbhBCDXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 22:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232719AbhBCDWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 22:22:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UNj9Q.4_1612322530;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNj9Q.4_1612322530)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Feb 2021 11:22:15 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     bernie@plugable.com
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] video: udlfb: convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Wed,  3 Feb 2021 11:22:09 +0800
-Message-Id: <1612322529-40629-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 2 Feb 2021 22:22:21 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314F3C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 19:22:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s5so12377216edw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 19:22:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dGGHehLtQGHqVsPXvFWYMLyI6hzOn4IRNyPittgEkcg=;
+        b=Oz/bo2Xtmace/8RdWyG8lFC6Z6dbBWhyP5Yv3EYkts8uin9AL/HV2yj7KJx8JSkcuU
+         xj1A4XXLc/NLgzQuKjNIl/hqzq6iXROFXnlFu6qrxWmG4u6m5xfa84ROiDIgyvUqpsQ0
+         ooNSPdsUMH4hbUJ+9oPIYqGKQw54BYjputoqkzF0DLOJhwgNOqUC0rJSoz8OAFSz9a6X
+         4pByEA8LyRI8UNOiozk0E5bTSMeHewBHMq+bh7R+rbshA6LVfj8EsksJwEp+l31wzi1M
+         kF2vHfmWXmTQBxuli4FgJieaYTi2DknG4imq4rDVNpUoWRBYMa7si6SQeHfROVJJULtB
+         Bf1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dGGHehLtQGHqVsPXvFWYMLyI6hzOn4IRNyPittgEkcg=;
+        b=CAOewUdx5d1i3unXXItItKxxD7v29gm1GDfOV6Ywn2kMWojOZ7mo+gtQRdgtolB2gW
+         miwgpEL/ntinpgYQgkU67Kzb9U5Lu56I1WwQwECA6TC48AnPhky8qICOrBBf702RSysf
+         nAzgEXXyswmLHUcEfqOwau/PwqgF9qKkPNPeGKGa+No4flHShPLUiCScVm8t4ERixpr0
+         vo0yvd95LaUJEwcbk2eEyIuOPskn0H1g9n7FShnD4LcZW2jqwsSImKLxse41xZuYd3AO
+         YwPcn4/Az1pK2/B475BBpI4H9iDlDvadOgy7y7GU1MU56wd2ZoY/42hdiwxBs77TjwSb
+         xktw==
+X-Gm-Message-State: AOAM533iEAe4pTPweuerILjvqAdCqlKZMyBiwDEn5IAgVWTBfJPPfQBc
+        8h4VM4RP8M0IjBlVOjZk9wP+V+ooRZEMkoIe53iaeg==
+X-Google-Smtp-Source: ABdhPJwd3XcMOmp+GxgVhXKlOnN9PiLk2g7/Kp9JYnnsmUbZKXbnTIYa6xt42yVEoZS/WtBXkqMU/pwtXhzXNo4bz4k=
+X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr1077026edd.52.1612322542781;
+ Tue, 02 Feb 2021 19:22:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Feb 2021 08:52:11 +0530
+Message-ID: <CA+G9fYv=3eNxNZCiphE=CYd=THHUUa9AV+ohnbRP-2e92kFJhw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/37] 4.19.173-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Tue, 2 Feb 2021 at 19:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.173 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Feb 2021 13:29:33 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.173-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-./drivers/video/fbdev/udlfb.c:1452:8-16: WARNING: use scnprintf or
-sprintf.
 
-./drivers/video/fbdev/udlfb.c:1444:8-16: WARNING: use scnprintf or
-sprintf.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-./drivers/video/fbdev/udlfb.c:1436:8-16: WARNING: use scnprintf or
-sprintf.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-./drivers/video/fbdev/udlfb.c:1428:8-16: WARNING: use scnprintf or
-sprintf.
+Summary
+------------------------------------------------------------------------
 
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/video/fbdev/udlfb.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+kernel: 4.19.173-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 5230df3466ef513b7813df2e707dc5d4cf7602cc
+git describe: v4.19.172-38-g5230df3466ef
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.172-38-g5230df3466ef
 
-diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
-index f9b3c1c..d8c086d 100644
---- a/drivers/video/fbdev/udlfb.c
-+++ b/drivers/video/fbdev/udlfb.c
-@@ -1425,32 +1425,28 @@ static ssize_t metrics_bytes_rendered_show(struct device *fbdev,
- 				   struct device_attribute *a, char *buf) {
- 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
- 	struct dlfb_data *dlfb = fb_info->par;
--	return snprintf(buf, PAGE_SIZE, "%u\n",
--			atomic_read(&dlfb->bytes_rendered));
-+	return sysfs_emit(buf, "%u\n", atomic_read(&dlfb->bytes_rendered));
- }
- 
- static ssize_t metrics_bytes_identical_show(struct device *fbdev,
- 				   struct device_attribute *a, char *buf) {
- 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
- 	struct dlfb_data *dlfb = fb_info->par;
--	return snprintf(buf, PAGE_SIZE, "%u\n",
--			atomic_read(&dlfb->bytes_identical));
-+	return sysfs_emit(buf, "%u\n", atomic_read(&dlfb->bytes_identical));
- }
- 
- static ssize_t metrics_bytes_sent_show(struct device *fbdev,
- 				   struct device_attribute *a, char *buf) {
- 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
- 	struct dlfb_data *dlfb = fb_info->par;
--	return snprintf(buf, PAGE_SIZE, "%u\n",
--			atomic_read(&dlfb->bytes_sent));
-+	return sysfs_emit(buf, "%u\n", atomic_read(&dlfb->bytes_sent));
- }
- 
- static ssize_t metrics_cpu_kcycles_used_show(struct device *fbdev,
- 				   struct device_attribute *a, char *buf) {
- 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
- 	struct dlfb_data *dlfb = fb_info->par;
--	return snprintf(buf, PAGE_SIZE, "%u\n",
--			atomic_read(&dlfb->cpu_kcycles_used));
-+	return sysfs_emit(buf, "%u\n", atomic_read(&dlfb->cpu_kcycles_used));
- }
- 
- static ssize_t edid_show(
--- 
-1.8.3.1
+No regressions (compared to build v4.19.172)
 
+No fixes (compared to build v4.19.172)
+
+Ran 48365 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* perf
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* kvm-unit-tests
+* rcutorture
+* prep-tmp-disk
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
