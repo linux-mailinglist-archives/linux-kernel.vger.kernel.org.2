@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EE930DE80
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F4230DE86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 16:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233996AbhBCPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 10:43:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58564 "EHLO mail.kernel.org"
+        id S234604AbhBCPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 10:44:57 -0500
+Received: from mga18.intel.com ([134.134.136.126]:10892 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234606AbhBCPmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 10:42:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 729A864E41;
-        Wed,  3 Feb 2021 15:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612366882;
-        bh=pdKIqf8nvxkcgr1K6PBj4wBjfRw0jyR1RW3Hp9JQVhc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RNETbrN8uiUEsHEydik8tTIPDv5AUm9RBqNWecuKaglNRTGq8QDZZEgi+GuOawcju
-         x+chWH11H7l2NZmLn5WNPB6W6al28vbj7dtMOi2HoWajl1oTBRyFaHYtS1ducge7dr
-         knyn+hg+qjzbLvueGisQFnmNBnPkJ+6M9sFZA8sA=
-Date:   Wed, 3 Feb 2021 16:41:19 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        andriy.shevchenko@linux.intel.com, bobo.shaobowang@huawei.com
-Subject: Re: [PATCH 2/2] misc/pvpanic: add pci driver
-Message-ID: <YBrEHyvGFAezcH7S@kroah.com>
-References: <1612363439-26656-1-git-send-email-mihai.carabas@oracle.com>
- <1612363439-26656-3-git-send-email-mihai.carabas@oracle.com>
+        id S233470AbhBCPoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:44:23 -0500
+IronPort-SDR: 3mM32C2KvDdW05iB1Fh2sO8NragHbtU7FxrRgvu27NBJc5ZK7mr0o39GpVFLVr25y6O5IjtP04
+ vGQStiT9RzMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168741004"
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="168741004"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:42:35 -0800
+IronPort-SDR: sF3dU3rJebhEpzkshKFrt1KKvEpsLpzf2jP6SWHyMH/vALA+vcXYHiALWQP6//W5usuxE9LO5r
+ 9YiXJamDxwRg==
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="433468509"
+Received: from dmarkey-mobl1.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.21.31])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 07:42:27 -0800
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     daniele.alessandrelli@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: keembay-ocs-aes - Fix 'q' assignment during CCM B0 generation
+Date:   Wed,  3 Feb 2021 15:42:10 +0000
+Message-Id: <20210203154210.246667-1-daniele.alessandrelli@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612363439-26656-3-git-send-email-mihai.carabas@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:43:59PM +0200, Mihai Carabas wrote:
-> Add pvpanic pci device driver support.
+From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-What does that mean?  Please provide more changelog text here.
+In ocs_aes_ccm_write_b0(), 'q' (the octet length of the binary
+representation of the octet length of the payload) is set to 'iv[0]',
+while it should be set to 'iv[0] & 0x7' (i.e., only the last 3
+bits of iv[0] should be used), as documented in NIST Special Publication
+800-38C:
+https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38c.pdf
 
-> 
-> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
-> ---
->  drivers/misc/pvpanic/Kconfig       | 16 ++++++++++-
->  drivers/misc/pvpanic/Makefile      |  7 +++++
->  drivers/misc/pvpanic/pvpanic-pci.c | 54 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 76 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/misc/pvpanic/pvpanic-pci.c
-> 
-> diff --git a/drivers/misc/pvpanic/Kconfig b/drivers/misc/pvpanic/Kconfig
-> index 12bb017..4a96e8d 100644
-> --- a/drivers/misc/pvpanic/Kconfig
-> +++ b/drivers/misc/pvpanic/Kconfig
-> @@ -1,6 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# pvpanic device
-> +#
+In practice, this is not an issue, since 'iv[0]' is checked to be in the
+range [1-7] by ocs_aes_validate_inputs(), but let's fix the assignment
+anyway, in order to make the code more robust.
 
-While nice, why add this now?
+Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+---
+ drivers/crypto/keembay/ocs-aes.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> +
->  config PVPANIC
->  	bool "pvpanic device support"
-> -	depends on PVPANIC_MMIO
-> +	depends on (PVPANIC_MMIO || PVPANIC_PCI)
->  	help
->  	  This option enable generic code for pvpanic device driver logic.
->  
-> @@ -12,3 +17,12 @@ config PVPANIC_MMIO
->  	  This driver provides support for the pvpanic device.  pvpanic is
->  	  a paravirtualized device provided by QEMU; it lets a virtual machine
->  	  (guest) communicate panic events to the host.
-> +
-> +config PVPANIC_PCI
-> +	tristate "pvpanic pci device support"
-> +	depends on PCI
-> +	select PVPANIC
-> +	help
-> +	  This driver provides support for the pvpanic device.  pvpanic is
-> +	  a paravirtualized device provided by QEMU; it lets a virtual machine
-> +	  (guest) communicate panic events to the host.
-> diff --git a/drivers/misc/pvpanic/Makefile b/drivers/misc/pvpanic/Makefile
-> index d08379b..fe57d1f 100644
-> --- a/drivers/misc/pvpanic/Makefile
-> +++ b/drivers/misc/pvpanic/Makefile
-> @@ -1,2 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for pvpanic device.
-> +#
+diff --git a/drivers/crypto/keembay/ocs-aes.c b/drivers/crypto/keembay/ocs-aes.c
+index b85c89477afa..be9f32fc8f42 100644
+--- a/drivers/crypto/keembay/ocs-aes.c
++++ b/drivers/crypto/keembay/ocs-aes.c
+@@ -1080,15 +1080,15 @@ static int ocs_aes_ccm_write_b0(const struct ocs_aes_dev *aes_dev,
+ 	/*
+ 	 * q is the octet length of Q.
+ 	 * q can only be an element of {2, 3, 4, 5, 6, 7, 8} and is encoded as
+-	 * q - 1 == iv[0]
++	 * q - 1 == iv[0] & 0x7;
+ 	 */
+ 	b0[0] |= iv[0] & 0x7;
+ 	/*
+ 	 * Copy the Nonce N from IV to B0; N is located in iv[1]..iv[15 - q]
+ 	 * and must be copied to b0[1]..b0[15-q].
+-	 * q == iv[0] + 1
++	 * q == (iv[0] & 0x7) + 1
+ 	 */
+-	q = iv[0] + 1;
++	q = (iv[0] & 0x7) + 1;
+ 	for (i = 1; i <= 15 - q; i++)
+ 		b0[i] = iv[i];
+ 	/*
+-- 
+2.26.2
 
-Again, nice, but nothing to do with this change.  Please only do "one
-thing" per patch.
-
-thanks,
-
-greg k-h
