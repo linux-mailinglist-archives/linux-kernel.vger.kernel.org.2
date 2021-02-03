@@ -2,110 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6F030E36E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0066130E370
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 20:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhBCTl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 14:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhBCTkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 14:40:46 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01206C06178A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 11:39:55 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c84001e2b7e52dd5f0f2b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:1e2b:7e52:dd5f:f2b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 88B1A1EC0258;
-        Wed,  3 Feb 2021 20:39:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612381193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Qv5Dh7DuwVDnvyl4tcF6oCRho3YBLCJ94rnb64aZIHA=;
-        b=OriZ6AgK1L7KbbFlaUxioWxqJNO7TTETXQ8GxUwRWHvLOQviyWBb+pTNkAVoJ3CODOKFdU
-        co+Qg7q9q4wRKPMb+sNGsv7cu0fLQTIDD91CmXFp+xNHaoFNKdLTUFMSCeFZq/7tM884Ac
-        M5VCx6cp0J6j6dgiRLeke8BoRWK1S2I=
-Date:   Wed, 3 Feb 2021 20:39:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 09/11] x86/fault: Rename no_context() to
- kernelmode_fixup_or_oops()
-Message-ID: <20210203193949.GI13819@zn.tnic>
-References: <cover.1612113550.git.luto@kernel.org>
- <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
+        id S230197AbhBCTmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 14:42:38 -0500
+Received: from mga18.intel.com ([134.134.136.126]:31775 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhBCTmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 14:42:32 -0500
+IronPort-SDR: MF7m5DVHJ9MqvZJjqp1rOvQ1Y9goDrDYOivSPOWi/UOmQv+uAa0cvb3+jdf+XRJ2dHwsvCiaSi
+ jjxJREMdDDxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168786540"
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="168786540"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:42:12 -0800
+IronPort-SDR: 5PXk2IM/lL7HaK0MhY3Qyh8dIXUEIa71n2wUZ67klgH2pq/sIM5IXz8kGgGiG5t6xtWepomcl/
+ GbHMGxsFrRYg==
+X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
+   d="scan'208";a="576012095"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 11:42:12 -0800
+Date:   Wed, 3 Feb 2021 11:42:11 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Prathu Baronia <prathubaronia2011@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
+        Prathu Baronia <prathu.baronia@oneplus.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: [PATCH v2 1/1] mm: Optimizing hugepage zeroing in arm64
+Message-ID: <20210203194211.GE3200985@iweiny-DESK2.sc.intel.com>
+References: <20210202074225.7244-1-prathu.baronia@oneplus.com>
+ <20210202074225.7244-2-prathu.baronia@oneplus.com>
+ <20210202200354.GB3200985@iweiny-DESK2.sc.intel.com>
+ <CAJp9fscSi1yqcZagc7HzKV1h99X0wP6FWuQx8OpnqwgSp8yA5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJp9fscSi1yqcZagc7HzKV1h99X0wP6FWuQx8OpnqwgSp8yA5A@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 09:24:40AM -0800, Andy Lutomirski wrote:
-> The name no_context() has never been very clear.  It's only called for
-> faults from kernel mode, so rename it and change the no-longer-useful
-> user_mode(regs) check to a WARN_ON_ONCE.
+On Wed, Feb 03, 2021 at 04:08:08PM +0530, Prathu Baronia wrote:
+>    Hey Ira,
+>    I looked at your below-mentioned patch and I agree that the
+>    above-mentioned functions also need modification similar to
+>    clear_user_highpage().
+>    Would it be okay with you if I send your patch again with a modified
+>    commit message by adding my data and maintaining your authorship?
+>    [1]https://lore.kernel.org/lkml/20201210171834.2472353-2-ira.weiny@intel.com/
+
+Sure.  I have not changed the patch at all from that version.
+
+Andrew, will this be going through your tree?  If not who?
+
+If you take the above patch I can drop it from the series I'm about to submit
+to convert btrfs kmaps.
+
+Ira
+
+>    Regards,
+>    Prathu Baronia
 > 
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/mm/fault.c | 28 ++++++++++------------------
->  1 file changed, 10 insertions(+), 18 deletions(-)
+>    On Wed, Feb 3, 2021 at 1:33 AM Ira Weiny <[2]ira.weiny@intel.com> wrote:
 > 
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 177b612c7f33..04cc98ec2423 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -693,17 +693,10 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
->  }
->  
->  static noinline void
-> -no_context(struct pt_regs *regs, unsigned long error_code,
-> -	   unsigned long address, int signal, int si_code)
-> +kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
-> +			 unsigned long address, int signal, int si_code)
-
-Ew, I don't like functions with "or" in the name - they're probably not
-doing one thing only as they should.
-
-Why not simply "handle_kernel_fault" ?
-
-Also, all the callsites now do:
-
-	if (!user_mode(regs)) {
-		kernelmode_fixup_or_oops
-		...
-
-I guess you can push the "user_mode" check inside that function for less
-hairy code at the callsites.
-
->  {
-> -	if (user_mode(regs)) {
-> -		/*
-> -		 * This is an implicit supervisor-mode access from user
-> -		 * mode.  Bypass all the kernel-mode recovery code and just
-> -		 * OOPS.
-> -		 */
-> -		goto oops;
-> -	}
-> +	WARN_ON_ONCE(user_mode(regs));
-
-I guess...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>      On Tue, Feb 02, 2021 at 01:12:24PM +0530, Prathu Baronia wrote:
+>      > In !HIGHMEM cases, specially in 64-bit architectures, we don't need
+>      temp
+>      > mapping of pages. Hence, k(map|unmap)_atomic() acts as nothing more
+>      than
+>      > multiple barrier() calls, for example for a 2MB hugepage in
+>      > clear_huge_page() these are called 512 times i.e. to map and unmap
+>      each
+>      > subpage that means in total 2048 barrier calls. This called for
+>      > optimization. Simply getting VADDR from page in the form of
+>      kmap_local_*
+>      > APIs does the job for us.  We profiled clear_huge_page() using ftrace
+>      > and observed an improvement of 62%.
+> 
+>      Nice!
+> 
+>      >
+>      > Setup:-
+>      > Below data has been collected on Qualcomm's SM7250 SoC THP enabled
+>      > (kernel
+>      > v4.19.113) with only CPU-0(Cortex-A55) and CPU-7(Cortex-A76) switched
+>      on
+>      > and set to max frequency, also DDR set to perf governor.
+>      >
+>      > FTRACE Data:-
+>      >
+>      > Base data:-
+>      > Number of iterations: 48
+>      > Mean of allocation time: 349.5 us
+>      > std deviation: 74.5 us
+>      >
+>      > v1 data:-
+>      > Number of iterations: 48
+>      > Mean of allocation time: 131 us
+>      > std deviation: 32.7 us
+>      >
+>      > The following simple userspace experiment to allocate
+>      > 100MB(BUF_SZ) of pages and writing to it gave us a good insight,
+>      > we observed an improvement of 42% in allocation and writing timings.
+>      > -------------------------------------------------------------
+>      > Test code snippet
+>      > -------------------------------------------------------------
+>      >       clock_start();
+>      >       buf = malloc(BUF_SZ); /* Allocate 100 MB of memory */
+>      >
+>      >         for(i=0; i < BUF_SZ_PAGES; i++)
+>      >         {
+>      >                 *((int *)(buf + (i*PAGE_SIZE))) = 1;
+>      >         }
+>      >       clock_end();
+>      > -------------------------------------------------------------
+>      >
+>      > Malloc test timings for 100MB anon allocation:-
+>      >
+>      > Base data:-
+>      > Number of iterations: 100
+>      > Mean of allocation time: 31831 us
+>      > std deviation: 4286 us
+>      >
+>      > v1 data:-
+>      > Number of iterations: 100
+>      > Mean of allocation time: 18193 us
+>      > std deviation: 4915 us
+>      >
+>      > Reported-by: Chintan Pandya <[3]chintan.pandya@oneplus.com>
+>      > Signed-off-by: Prathu Baronia <[4]prathu.baronia@oneplus.com>
+> 
+>      Reviewed-by: Ira Weiny <[5]ira.weiny@intel.com>
+> 
+>      FWIW, I have the same change in a patch in my kmap() changes branch. 
+>      However,
+>      my patch also changes clear_highpage(), zero_user_segments(),
+>      copy_user_highpage(), and copy_highpage().
+> 
+>      Would changing those help you as well?
+> 
+>      Ira
+> 
+>      > ---
+>      >  include/linux/highmem.h | 4 ++--
+>      >  1 file changed, 2 insertions(+), 2 deletions(-)
+>      >
+>      > diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+>      > index d2c70d3772a3..444df139b489 100644
+>      > --- a/include/linux/highmem.h
+>      > +++ b/include/linux/highmem.h
+>      > @@ -146,9 +146,9 @@ static inline void
+>      invalidate_kernel_vmap_range(void *vaddr, int size)
+>      >  #ifndef clear_user_highpage
+>      >  static inline void clear_user_highpage(struct page *page, unsigned
+>      long vaddr)
+>      >  {
+>      > -     void *addr = kmap_atomic(page);
+>      > +     void *addr = kmap_local_page(page);
+>      >       clear_user_page(addr, vaddr, page);
+>      > -     kunmap_atomic(addr);
+>      > +     kunmap_local(addr);
+>      >  }
+>      >  #endif
+>      > 
+>      > --
+>      > 2.17.1
+>      >
+> 
+> References
+> 
+>    Visible links
+>    1. https://lore.kernel.org/lkml/20201210171834.2472353-2-ira.weiny@intel.com/
+>    2. mailto:ira.weiny@intel.com
+>    3. mailto:chintan.pandya@oneplus.com
+>    4. mailto:prathu.baronia@oneplus.com
+>    5. mailto:ira.weiny@intel.com
