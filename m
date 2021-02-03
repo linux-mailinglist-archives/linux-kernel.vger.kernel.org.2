@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540FB30D8CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A0F30D936
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhBCLhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:37:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbhBCLhJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:37:09 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17D6C061786;
-        Wed,  3 Feb 2021 03:36:28 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id l12so23839304wry.2;
-        Wed, 03 Feb 2021 03:36:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=piicmRCuLZbTBJlar9FXYLLsqVbbP0x2N6R3KyFMnss=;
-        b=AFIeOrcprV4b2fseY/Ehcn6HXdg5fNHAE5F1dXVBj0mrPYZuTS3wu2HFtQadCpAIEk
-         3zUk9L6uAztUgPb6sVY/AOJG/2Y1FAqwHzlHPzHsZ3rOnXOFfJM/Dx1ULbPKjfFXaSyz
-         OStvspiiiNeyLRMHeDm+bLPHcpZmiqDnHArhEDDzgAoL0IGM270hifvaO/fTQqo2oz/x
-         AaHTwzHUO7zgRZRArg5y/WD3yz4rJZveUf/q61Lhqt5EhCu+LxwoStABhFc7xBDrlOiT
-         FE2iJolIqd3xWV49mJZOWfv9oQmtgMOIEJFV8FJUola8lDdXlB2tB2GZoWZAQ3+UlmhF
-         0wBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=piicmRCuLZbTBJlar9FXYLLsqVbbP0x2N6R3KyFMnss=;
-        b=UhTPVwcE5qUd3WXv5b9c55zAbZcpPUz1+2ri5iIf0bZON+7PYYNMCLeAZMlSw4V/t1
-         PPmrF2rFvVWziIzN0FulmGUNDwoWDScq+nyAeFYfVxSn2DlMEkU8xzalGI2zrX8eE4vd
-         /9UnYkCfli0bY1pg+DIN8pe7le9WnmwWU9l+KZviNPSKmHNvnryfnpBMKTnbbpblq4fv
-         1dZEKVE5u6kk5jeJulY0A39wN+ciyTUCujZgqikPgmwcokuV+5d7kGipOMdsSgqUgtHM
-         Do2ewIUuuhMHjWajmkD5uyrvx6lX8KLrw2hHb/RI2BK3giM+GlyFtniK8k+nmfg8AoT6
-         E4vQ==
-X-Gm-Message-State: AOAM531XboZizz6iT9r8g59eSBDHei379o3TQ8aFfr9MugX0cWqPD1cj
-        sy0Oa0vAxz/MYk5wPNO9f+GhU8bDn2Ko+icC
-X-Google-Smtp-Source: ABdhPJz4Ml0T/POwNiVR6M1731jHxpXg8XUbjoRPaUUpU3OSBj5hsY75ssXcEcoIeL9xaWPDD90sjw==
-X-Received: by 2002:a5d:6b89:: with SMTP id n9mr2959659wrx.323.1612352187106;
-        Wed, 03 Feb 2021 03:36:27 -0800 (PST)
-Received: from anparri.mshome.net (host-95-238-70-33.retail.telecomitalia.it. [95.238.70.33])
-        by smtp.gmail.com with ESMTPSA id z1sm3183707wrp.62.2021.02.03.03.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 03:36:26 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in netvsc_receive()
-Date:   Wed,  3 Feb 2021 12:36:02 +0100
-Message-Id: <20210203113602.558916-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234231AbhBCLyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:54:18 -0500
+Received: from m12-14.163.com ([220.181.12.14]:57387 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234057AbhBCLyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:54:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=Ql/Fl
+        kYe33gSyZXRWYjYiF8nirZv149/fAHCmTdjR2M=; b=guzMY7/izVvYzxRuxydsr
+        bW3hVGzfG/qrwupLHudrhLvB2wwBcNxaQ/B+MGHxWlE0qjZyGTOEmP5TQX6nRkaN
+        eMBXTToNaZn9VfCLAV5Lx0Fdvsn60AmgWUVZJOrEX61kpT19Fq6FLln5O1hgeDXD
+        7ZppFuvOL8zv+XohostxiQ=
+Received: from localhost (unknown [119.137.55.230])
+        by smtp10 (Coremail) with SMTP id DsCowAAnh3+eihpgeNTRjA--.924S2;
+        Wed, 03 Feb 2021 19:35:59 +0800 (CST)
+Date:   Wed, 3 Feb 2021 19:36:09 +0800
+From:   wengjianfeng <samirweng1979@163.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     jason.wessel@windriver.com, dianders@chromium.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: Re: [PATCH] kernel: debug: fix typo issue
+Message-ID: <20210203193609.00007678@163.com>
+In-Reply-To: <20210203112359.cdy73gw4wip5cnyn@maple.lan>
+References: <20210203081034.9004-1-samirweng1979@163.com>
+        <20210203112359.cdy73gw4wip5cnyn@maple.lan>
+Organization: yulong
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: DsCowAAnh3+eihpgeNTRjA--.924S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Jr43AFWrKFyDKry8Zrb_yoW8Wr4UpF
+        WxKa4rKF4xJry0ga1SyanIqFyjg34rtw4v9rZ0yas5CF15ZF97XF4kWay5ur4DZrWkWry5
+        tr4qga48ZwnrXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j79N3UUUUU=
+X-Originating-IP: [119.137.55.230]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiER8usV7+2s8ymgAAsM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V
-values") added validation to rndis_filter_receive_data() (and
-rndis_filter_receive()) which introduced NVSP_STAT_FAIL-scenarios where
-the count is not updated/reset.  Fix this omission, and prevent similar
-scenarios from occurring in the future.
+On Wed, 3 Feb 2021 11:23:59 +0000
+Daniel Thompson <daniel.thompson@linaro.org> wrote:
 
-Reported-by: Juan Vazquez <juvazq@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Fixes: 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V values")
----
- drivers/net/hyperv/netvsc.c       | 5 ++++-
- drivers/net/hyperv/rndis_filter.c | 2 --
- 2 files changed, 4 insertions(+), 3 deletions(-)
+> On Wed, Feb 03, 2021 at 04:10:34PM +0800, samirweng1979 wrote:
+> > From: wengjianfeng <wengjianfeng@yulong.com>
+> > 
+> > change 'regster' to 'register'.
+> > 
+> > Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> It looks like the Subject line might not be correct for this patch?
+> 
+> Is it really the first time this patch has been circulated or should
+> it have been tagged RESEND or v2?
+> 
+> 
+> Daniel.
+> 
+> 
+> > ---
+> >  kernel/debug/gdbstub.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+> > index a77df59..e149a0a 100644
+> > --- a/kernel/debug/gdbstub.c
+> > +++ b/kernel/debug/gdbstub.c
+> > @@ -595,7 +595,7 @@ static char *gdb_hex_reg_helper(int regnum,
+> > char *out) dbg_reg_def[i].size);
+> >  }
+> >  
+> > -/* Handle the 'p' individual regster get */
+> > +/* Handle the 'p' individual register get */
+> >  static void gdb_cmd_reg_get(struct kgdb_state *ks)
+> >  {
+> >  	unsigned long regnum;
+> > @@ -610,7 +610,7 @@ static void gdb_cmd_reg_get(struct kgdb_state
+> > *ks) gdb_hex_reg_helper(regnum, remcom_out_buffer);
+> >  }
+> >  
+> > -/* Handle the 'P' individual regster set */
+> > +/* Handle the 'P' individual register set */
+> >  static void gdb_cmd_reg_set(struct kgdb_state *ks)
+> >  {
+> >  	unsigned long regnum;
+> > -- 
+> > 1.9.1
+> > 
+> > 
 
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 2350342b961ff..13bd48a75db76 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -1262,8 +1262,11 @@ static int netvsc_receive(struct net_device *ndev,
- 		ret = rndis_filter_receive(ndev, net_device,
- 					   nvchan, data, buflen);
- 
--		if (unlikely(ret != NVSP_STAT_SUCCESS))
-+		if (unlikely(ret != NVSP_STAT_SUCCESS)) {
-+			/* Drop incomplete packet */
-+			nvchan->rsc.cnt = 0;
- 			status = NVSP_STAT_FAIL;
-+		}
- 	}
- 
- 	enq_receive_complete(ndev, net_device, q_idx,
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index 598713c0d5a87..3aab2b867fc0d 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -509,8 +509,6 @@ static int rndis_filter_receive_data(struct net_device *ndev,
- 	return ret;
- 
- drop:
--	/* Drop incomplete packet */
--	nvchan->rsc.cnt = 0;
- 	return NVSP_STAT_FAIL;
- }
- 
--- 
-2.25.1
+
+Hi Daniel,
+   The patch was first sent on January 25, but nobody relply me, so I
+   just resend the patch, and the patch is the same as last time,does I
+   need add RESEND tag? thanks.
 
