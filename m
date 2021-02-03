@@ -2,148 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0F730D546
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B45230D547
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 09:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbhBCId0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 03:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S232760AbhBCId2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 03:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhBCIdY (ORCPT
+        with ESMTP id S232531AbhBCIdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:33:24 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7771DC06178A;
-        Wed,  3 Feb 2021 00:32:06 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id e133so13497798iof.8;
-        Wed, 03 Feb 2021 00:32:06 -0800 (PST)
+        Wed, 3 Feb 2021 03:33:25 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37CFC061788
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 00:32:00 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id z6so23095894wrq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 00:32:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Xl7tdjaRBbAIoUBy33ehOqMQfuVpZM9WRqZuHrL1130=;
-        b=fYoUbYVIdYbqHfNuDnfDDMFYNor2qE7r+CeHDRbhfVBaBRU67SSeWYYE0pX2fxdPsc
-         JmWaxyGV5SSKbQVIxvSbzT3ldFD9dkbQZn+6g20yyeLBzqnnVJzbp2kqa2dtS9bgaDy4
-         y+DAKdr+RPyF0bNFoM6msrAtiHnCZFI6qDqEw9SibYcZq6nCodcUNaCMiyoEj4NM4uNR
-         Yg10R66P7G7an9K6YXDb34GqMo5GgOq24MzI6Eb+WT64cps46RPi8uEYXfIjb2pIyrNV
-         u905PesB+FQARfyDAKoXwXwflCZ1GvjZQKcw6BqLmA51G5bZt1656R2XvuPUxBZwFG85
-         rBKA==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=apdTNF0/dDjo33JlirY30dcPy0Mdluii8JVXQCZ3crc=;
+        b=syr1cgUVeq439dK2HvZMZmbfC0UuGaMMCA60P47g+FK8dOmODlRmxxVaAUDY8MYNpr
+         oDyV97fWiHkRG9DoaUDEiS2vjDh/KEvDgjdfqv/UQvT/PQwBXmMM9bQ9TIemNZtPxwpw
+         ie2B+QeaibDHT0kHWFx4wGlZJtlMIgMt9V8XFesnpXrp0pCktbzGUCzB0Nq3iVZL8Mwn
+         7VsbFHLub8C16FyatrIkBGNTGkmQybZphlYdJRvQ80x1eA8vfyW2xELf3aIc6AW1MCpw
+         cCgk0ZcwNzyvBKV3S3FdZbrmWMrI9KftrGniHiIQ1/9OoeZE4DimhVc3mF3m8YYgoiZ8
+         1bNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Xl7tdjaRBbAIoUBy33ehOqMQfuVpZM9WRqZuHrL1130=;
-        b=rDbUXAwf0uQro/8EvMjtxDa7KS0FONzLiMzCZijyxAEt1dnN3upXGJkgkE7fUQ/Okl
-         VLGn8T1wrCf12wfeHJ07xa3PtYXXhJH7pxbftrrzenoxKOjRVkTSh2lDMuM0lJabni/F
-         c31PD2OlDuvGLU1NS2lFXrNx5zT7G79aezrl/Jmt66T7xcWvNsvksYwOrScJP9K6+sR+
-         maIPEcEuRPkAldH3KyzlXDAxrMVaK2uou12GDi8UFWAnSE8w/0Fo+whOfVmGZG5FNBpB
-         O+nETMm1gRWmlacSFBTLmuKLpjY3sy9+T2An6pBTjt2HutbtUQ1Xwm37uSugAykNrwiN
-         +HZQ==
-X-Gm-Message-State: AOAM533EVBoWvD6BI7+tafBDWLc2Ybr/49km9SKd7lmsBoj6J2DCqEM3
-        yYNQ2f0TN2+tb/ihO3lNR/W+GxS56Z0tn8mVRWY=
-X-Google-Smtp-Source: ABdhPJzsAZtBBc6tOJ4anuAwy4HVDfqaUisO41SoAoId9HJNCXVjyHV7EcXFyMEUcgnvPUlR6r7pSzF3rOoBj18AUJ4=
-X-Received: by 2002:a6b:f112:: with SMTP id e18mr1565166iog.57.1612341125809;
- Wed, 03 Feb 2021 00:32:05 -0800 (PST)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=apdTNF0/dDjo33JlirY30dcPy0Mdluii8JVXQCZ3crc=;
+        b=Gzco+RwvJyHN99LjJLD/lr6jBNCPtcRC3QwDvoaBR0GDWH8W9EnMS0uqpKHjrt0eJ8
+         jIwywHbMRlqcLjEdqv5VYF3oavUEG5BUNAu6aM1IaYfJ5Bb6gaTrTXifJozxOh/JF3QT
+         +/3atv6qKE1ZBDgNBB+bzGOl8MFUWedm8D6LXw2hQW/NbbPLWFu4gMU6UhmlqOlKznCl
+         oEJUD7gKDSUDayU1Rlw34NyOp1waU7Zd45K9RBFh2g6fRwgGh+iaeQA+b5jdjyC6qt55
+         gVKhYxuZP8GjnRUXnHPxnphyTjEgVvJCx6RIRL85OG8j9tROGXL8wxGdxehdb/bERqlX
+         ZxbQ==
+X-Gm-Message-State: AOAM530mHQlbeoKJa8cuP2rOZR+vh4FsJqG0/1oIRZ32UlXjI0mICvY5
+        eb6CNKpAL+eSgQgZdMluLI2gfOcQZBg+V03S
+X-Google-Smtp-Source: ABdhPJzYVcDMbwFXa6BCs9Ojta/M4taYxxIoBb83B8dxZ0oM1QClmWS0uM8CMmL56lRXDZcoUBVp9A==
+X-Received: by 2002:a5d:4528:: with SMTP id j8mr2190089wra.352.1612341118982;
+        Wed, 03 Feb 2021 00:31:58 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id s23sm1646538wmc.35.2021.02.03.00.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 00:31:58 -0800 (PST)
+Date:   Wed, 3 Feb 2021 08:31:55 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jan Kotas <jank@cadence.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        =?iso-8859-1?Q?S=F6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+Message-ID: <20210203083155.GA2329016@dell>
+References: <20210126124540.3320214-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20210203075239.5505-1-masahiroy@kernel.org>
-In-Reply-To: <20210203075239.5505-1-masahiroy@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 3 Feb 2021 09:31:54 +0100
-Message-ID: <CA+icZUW-uObu=7xpqUqKTASmBfEgLKMrKgmR_uhmHBN-EwpBVA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: fix duplicated flags in DEBUG_CFLAGS
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>,
-        Mark Wielaard <mark@klomp.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 8:53 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Sedat Dilek noticed duplicated debug flags passed when building C
-> files with CONFIG_DEBUG_INFO.
->
-> I do not know much about his build environment, but yes, Kbuild
-> recurses to the top Makefile with some build targets. For example,
-> 'make CC=clang bindeb-pkg' reproduces the issue.
->
-> With commit 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments
-> for old GCC versions") applied, DEBUG_CFLAGS is now reset only when
-> CONFIG_CC_IS_GCC=y.
->
-> Fix it to reset DEBUG_CFLAGS also when using Clang.
->
-> Fixes: 121c5d08d53c ("kbuild: Only add -fno-var-tracking-assignments for old GCC versions")
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Tue, 26 Jan 2021, Lee Jones wrote:
 
-That fixes the issue for me:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> This is the last set.  Clock is clean after this.
 
-Without patch:
+Out of interest, what normally happens to the patches which aren't
+picked up by individual driver Maintainers?
 
-... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -g -gdwarf-5
--gz=zlib -pg -mfentry ...
-
-With this patch:
-... -Wno-unused-const-variable -g -gdwarf-5 -gz=zlib -pg -mfentry ...
-
-The relevant Kconfigs:
-
-$ grep DEBUG_INFO .config | grep ^CONFIG
-CONFIG_DEBUG_INFO=y
-CONFIG_DEBUG_INFO_COMPRESSED=y
-CONFIG_DEBUG_INFO_DWARF5=y
-
-Latest make-line:
-
-$ /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
-PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-4-amd64-clang12-
-cfi-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-02-03 bindeb-pkg
-KDEB_PKGVERSION=5.11.0~rc6-4~bull
-seye+dileks1
-
-Feel free to add my...
-
-   Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-
-Thanks again Masahiro.
-
-- Sedat -
-
-> ---
->
->  Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 3d3f67b98ca2..769a38ee81b9 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -811,10 +811,12 @@ KBUILD_CFLAGS     += -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
->
-> +DEBUG_CFLAGS   :=
-> +
->  # Workaround for GCC versions < 5.0
->  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
->  ifdef CONFIG_CC_IS_GCC
-> -DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
-> +DEBUG_CFLAGS   += $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
->  endif
->
->  ifdef CONFIG_DEBUG_INFO
-> --
-> 2.27.0
->
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
