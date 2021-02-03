@@ -2,69 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B96930E74F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A7730E757
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 00:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhBCX0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 18:26:37 -0500
-Received: from mga06.intel.com ([134.134.136.31]:32276 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233089AbhBCX0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:26:33 -0500
-IronPort-SDR: txRAmVsnowjXhLgU8qwO7RBoEXxrh8ceeQ+TAvA9E5vb+BECWkzk4imf5jfSTtMClA4asI/fit
- 0MNkeVsGwXlA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242645457"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="242645457"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:25:41 -0800
-IronPort-SDR: fW7mgwdfpsdFzDrqk5qrVmoOWeS/KcOuXz00CTZ1ABq3ZKKAW2TAg0BuHC5AXrTRwJQEolUKwU
- +K/djcrZvXiQ==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="356185661"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.23.15])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 15:25:40 -0800
-Date:   Wed, 3 Feb 2021 15:25:40 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in
- netvsc_receive()
-Message-ID: <20210203152540.00006fe8@intel.com>
-In-Reply-To: <20210203113602.558916-1-parri.andrea@gmail.com>
-References: <20210203113602.558916-1-parri.andrea@gmail.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S233475AbhBCX2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 18:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233362AbhBCX22 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:28:28 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745A2C061788
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 15:27:48 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id e9so730902plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 15:27:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+eX+hFOL+CzxhxR9XSBHmfjn0y1EEXuMNIwlju1/yaQ=;
+        b=GCIJY1mPpwom81hK+0og/pl+ty+bruNLoSFs6eBbr/UK3w1EV+KchotabN4dUoX5JV
+         nqRtBEHnCYnWmTl5C4dLUFJOU+8RWIk1Enm5mSbSkKkKikUOc+ZSeaGMtY6DUjz5CvMM
+         Jzk864oLOyfKp6vxnCQelH7zCrng3H0uf1S1JvGcXHo41Lfc/Pqv86EqXL54RSBXORyQ
+         LZYoNQvPYaPN0WPstjOsfbUM3ONnBPr9cNWDDzHjl5ugnWPu+OCumNNfW0ZeOsJKmu2m
+         o3JTzR75HY1DZWWcTSfByb5JfxcdwhkOdQZhPjfEH63BOdHWvg2/ExuSMjSJLozXfTUY
+         lagw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+eX+hFOL+CzxhxR9XSBHmfjn0y1EEXuMNIwlju1/yaQ=;
+        b=IPLs/ZVGP2lwJJDEzG4D/S/OXeO+OCmLCjQS3MwCwuCtwBlDP1s6OfEYHhTg1000Yh
+         IDj996gEJzZ5lCYkM28KDmotF5nMTRCQO5eViDSR7hlhM15FKQ3cWAMGGmlkduF2GcX9
+         3p5daG6rZEF7Wys1zqnKKZKExCbNQ+K0LX7XcPotaiEJW4g/Ep7rEgp5/OkeIc50kaN7
+         RRquBYqp8WCT6nzvWxXBBRN7pzM/LI49rZHfnkEVVySUTe9VSSO6IHL5agFW+F/W6/ZA
+         jr3EDjfrIyPXeTJk075KjhauAH84hdiS/GoFihjoyWCasQgtD5iXq3gkmO6sDMNWBzu1
+         mdhw==
+X-Gm-Message-State: AOAM533uHCimLEPkzrhqdalRkoh4WpgoJSHJjepqSHZt3HFxlPIRF+kP
+        4eF3/CnUwNFDT84N1qo+nsjbzYCKm+AYoABe7v0oUw==
+X-Google-Smtp-Source: ABdhPJwOowM66m5rTohXOgCIMzAFO+95LzXmMwz6a7J1M5NbrhheXFjbFn2owXNZjmbpvejVR+BC/bm9wzJF0FGlwUo=
+X-Received: by 2002:a17:90a:db05:: with SMTP id g5mr5573673pjv.32.1612394867235;
+ Wed, 03 Feb 2021 15:27:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-3-ndesaulniers@google.com> <CAK7LNAQW3XtBGAg6u+86wGc0tizDyezZ_f61JjkT15QH5BtGjA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQW3XtBGAg6u+86wGc0tizDyezZ_f61JjkT15QH5BtGjA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 3 Feb 2021 15:27:34 -0800
+Message-ID: <CAKwvOdnFQ+Y+QzHLVs-XNFtbNL8s236x6zS3QAkQ-unPvhbfEA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Clifton <nickc@redhat.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrea Parri (Microsoft) wrote:
+On Wed, Feb 3, 2021 at 3:07 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Nick, the patch set is getting simpler and simpler,
+> and almost good enough to be merged.
 
-> Commit 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V
-> values") added validation to rndis_filter_receive_data() (and
-> rndis_filter_receive()) which introduced NVSP_STAT_FAIL-scenarios where
-> the count is not updated/reset.  Fix this omission, and prevent similar
-> scenarios from occurring in the future.
-> 
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Fixes: 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V values")
+I agree.  I think Sedat pointed out a binutils 2.35.2 release; thanks
+to Nick Clifton for that.
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+>
+>
+> Please let me ask two questions below.
+>
+> There has been a lot of discussion, and
+> I might have missed the context.
+>
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
+> >           It makes the debug information larger, but it significantly
+> >           improves the success of resolving variables in gdb on optimized code.
+> >
+> > +config DEBUG_INFO_DWARF5
+> > +       bool "Generate DWARF Version 5 debuginfo"
+> > +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+> > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+>
+> Q1.
+>
+> This  "CC_IS_GCC ||" was introduced by v4.
+>
+> GCC never outputs '.file 0', which is why
+> this test is only needed for Clang, correct?
 
+This test script is only needed when compiling with clang but without
+its integrated assembler.  It checks that when clang is used as the
+driver, but GAS is used as the assembler, that GAS will be able to
+decode the DWARF v5 assembler additions Clang will produce without
+needing an explicit -Wa,-gdwarf-5 flag passed.
+
+Technically, it is unnecessary for `LLVM=1 LLVM_IAS=1` or `CC=clang
+LLVM_IAS=1` (ie. clang+clang's integrated assembler).  But there is no
+way to express AS_IS_IAS today in KConfig (similar to
+CC_IS_{GCC|CLANG} or LD_IS_LLD).  I don't think that's necessary;
+whether or not clang's integrated assembler is used, when using clang,
+run the simple check.
+
+> > --- /dev/null
+> > +++ b/scripts/test_dwarf5_support.sh
+> > @@ -0,0 +1,8 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
+> > +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
+> > +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
+>
+>
+> I saw the following links in v6.
+>
+> https://sourceware.org/bugzilla/show_bug.cgi?id=25612
+> https://sourceware.org/bugzilla/show_bug.cgi?id=25614
+>
+> They were dropped in v7. Why?
+>
+> I just thought they were good to know...
+
+While having fixes for those bugs is required, technically
+https://sourceware.org/bugzilla/show_bug.cgi?id=25611 is the latest
+bug which was fixed.  Testing for a fix of
+https://sourceware.org/bugzilla/show_bug.cgi?id=25611 implies that
+fixes for 25612 and 25614 exist due to the order they were fixed in
+GAS.  Technically, you could argue that this script is quite GAS
+centric; given an arbitrary "assembler" the test should check a few
+things.  Realistically, I think that's overkill based on what
+assemblers are in use today; we can always grow the script should we
+identify other tests additional assemblers may need to pass, but until
+then, I suspect YAGNI.  Maybe there's a more precise name for the
+script to reflect that, but that gets close to "what color shall we
+paint the bikeshed?"  Given the number of folks on the thread, plz no.
+-- 
+Thanks,
+~Nick Desaulniers
