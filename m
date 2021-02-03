@@ -2,70 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099D130D8B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC7930D8B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 12:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhBCLcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 06:32:15 -0500
-Received: from mga05.intel.com ([192.55.52.43]:12058 "EHLO mga05.intel.com"
+        id S234160AbhBCLbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 06:31:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234120AbhBCLb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:31:57 -0500
-IronPort-SDR: C4FTAmDKvOX3EIUiVCucro9Qx+Z9O4ZD4H/ue48SgypCL92ZwdtkJmpp4uOflcUHjZ8eqguYkn
- mIqhnI+3ONQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="265858360"
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="265858360"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 03:28:54 -0800
-IronPort-SDR: x/1kVMMYJ/8NzLI3z6smp8outjpzQzfJ0+r1BucZkfqpTZYDQrTfVrdGb4ywWH5j5V7URucPt3
- RHJaErMOR1Bg==
-X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
-   d="scan'208";a="371404556"
-Received: from dmarkey-mobl1.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.21.31])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 03:28:53 -0800
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     daniele.alessandrelli@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: ecdh_helper - Ensure 'len >= secret.len' in decode_key()
-Date:   Wed,  3 Feb 2021 11:28:37 +0000
-Message-Id: <20210203112837.203732-1-daniele.alessandrelli@linux.intel.com>
-X-Mailer: git-send-email 2.26.2
+        id S233972AbhBCLbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:31:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3BBB64F6C;
+        Wed,  3 Feb 2021 11:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612351863;
+        bh=J/T7Mn6eIJxHgm9/Hb5uRwEETuWSWuHtJJ/xi1JQ7ys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h5sf5BG0KGmNKntzb2sH1mel+WnthuHUsqws5xkuHgo7KaBE4TEVNQxwQ2xPiJknF
+         YRUkm4hmTvAlr2GXiLiOF84a/rYBS5ho4og6L9qTHjg4UdoiGvq4q8gBJsa0qSkLpA
+         AvtUS1RUwsw9yczxC+7GjhFWKqkusuyl6mDZGpBLdSaCH4X0ca+hykhmLv173jNBvl
+         EANS+jDUKBo6hZn5m8Q7ujyMbmr1PVOYHgZVYObTGiHU0ZFddsBeCwSuM4nuIHXuZV
+         buUH9PAyFz4zOB9/CVvZMrHTY/QMt7WzSunGqpZBlTYOoP5nAfpown43cSZ46Jx1MV
+         jBdtR7npIt5FA==
+Date:   Wed, 3 Feb 2021 17:00:59 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: qcom: remove unneeded semicolon
+Message-ID: <20210203113059.GQ2771@vkoul-mobl>
+References: <1612248373-43529-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612248373-43529-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+On 02-02-21, 14:46, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./drivers/dma/qcom/gpi.c:1703:2-3: Unneeded semicolon
 
-The length ('len' parameter) passed to crypto_ecdh_decode_key() is never
-checked against the length encoded in the passed buffer ('buf'
-parameter). This could lead to an out-of-bounds access when the passed
-length is less than the encoded length.
+This was already fixed with commit 9ee8f3d968ae3dd838c379da7c9bfd335dbdcd95
 
-Add a check to prevent that.
-
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
----
- crypto/ecdh_helper.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/crypto/ecdh_helper.c b/crypto/ecdh_helper.c
-index 66fcb2ea8154..fca63b559f65 100644
---- a/crypto/ecdh_helper.c
-+++ b/crypto/ecdh_helper.c
-@@ -67,6 +67,9 @@ int crypto_ecdh_decode_key(const char *buf, unsigned int len,
- 	if (secret.type != CRYPTO_KPP_SECRET_TYPE_ECDH)
- 		return -EINVAL;
- 
-+	if (unlikely(len < secret.len))
-+		return -EINVAL;
-+
- 	ptr = ecdh_unpack_data(&params->curve_id, ptr, sizeof(params->curve_id));
- 	ptr = ecdh_unpack_data(&params->key_size, ptr, sizeof(params->key_size));
- 	if (secret.len != crypto_ecdh_key_len(params))
 -- 
-2.26.2
-
+~Vinod
