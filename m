@@ -2,122 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F76A30E53A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C0530E53D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 22:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhBCVz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 16:55:29 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31742 "EHLO mga12.intel.com"
+        id S232220AbhBCVzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 16:55:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhBCVzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:55:24 -0500
-IronPort-SDR: dki/tcFY5jf6CsHBIUnCVpY1HYgNYNp7jLC4VREjng0wiB6+y/PkPMlAN8Aoue6jLUExiL9HMm
- Py7zDnXbcHRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160290204"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="160290204"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 13:54:43 -0800
-IronPort-SDR: cbNFcluLVt0agMFYdYPy9R/OKBGP7PxtHIJxAE2sR0GRhutjiRbmm0lsH8LRWO3x3Iolq9fwYN
- AW0O5oc+YcIA==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="433627376"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.43.162]) ([10.212.43.162])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 13:54:41 -0800
-Subject: Re: [PATCH v18 24/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        id S229897AbhBCVz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:55:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A29A664F6C;
+        Wed,  3 Feb 2021 21:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612389289;
+        bh=Qiz8MokgGBvGwkrU9ihniujcsOk/Nkcte47kBrXcYkI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B+WwauRu+ZWiuFTJALuFrywN0e9jHN59j51oBYr/Vmcf8Jibicp09+UjpgHkpLAf2
+         bBh7dN/pixZMx3Fn5PeNVvn4phhOc5jnIC5Saav6I8qPfEAF2GYVoP557i+jtnnK9X
+         QWiQ6zXquX8PGxbfOT/OVtZAUNURamgC0QSNrtS236dekOPZtlrpWwI0c7LI7Ztqjb
+         5oqMYfrtnGgcFu8zRsDp59pNKkNKZx4mB/4GYbtTMRS2MhjMw1cZpcVjcDYeAnAjFs
+         WmfA47qr2hMbyIodJI/8I4nBhorsekjO0qibvaUKpDqcRI61jSJfobbHSdAf8dyKs8
+         d80ZhK1pL2Q6g==
+Date:   Wed, 3 Feb 2021 23:54:42 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, stable@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
- <20210127212524.10188-25-yu-cheng.yu@intel.com>
- <ba39586d-25b6-6ea5-19c3-adf17b59f910@intel.com>
- <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
-Message-ID: <6720b1a9-f785-dbbd-1f0e-8c9090be2069@intel.com>
-Date:   Wed, 3 Feb 2021 13:54:40 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] x86/sgx: Fix use-after-free in
+ sgx_mmu_notifier_release()
+Message-ID: <YBsbojMEeq3pCNhy@kernel.org>
+References: <20210128125823.18660-1-jarkko@kernel.org>
+ <9dd2a962-2328-8784-9aed-b913502e1102@intel.com>
+ <fa43948ba860d6ac99adabad3d8b6ff11f5d2239.camel@kernel.org>
+ <8df884af-825e-bae0-f0c3-c3e97f48d138@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8df884af-825e-bae0-f0c3-c3e97f48d138@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/2021 10:56 AM, Yu, Yu-cheng wrote:
-> On 1/29/2021 9:07 AM, Dave Hansen wrote:
->> On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
->>> arch_prctl(ARCH_X86_CET_STATUS, u64 *args)
->>>      Get CET feature status.
->>>
->>>      The parameter 'args' is a pointer to a user buffer.  The kernel 
->>> returns
->>>      the following information:
->>>
->>>      *args = shadow stack/IBT status
->>>      *(args + 1) = shadow stack base address
->>>      *(args + 2) = shadow stack size
-
-[...]
-
->>> +int prctl_cet(int option, u64 arg2)
->>> +{
->>> +    struct cet_status *cet;
->>> +    unsigned int features;
->>> +
->>> +    /*
->>> +     * GLIBC's ENOTSUPP == EOPNOTSUPP == 95, and it does not recognize
->>> +     * the kernel's ENOTSUPP (524).  So return EOPNOTSUPP here.
->>> +     */
->>> +    if (!IS_ENABLED(CONFIG_X86_CET))
->>> +        return -EOPNOTSUPP;
->>
->> Let's ignore glibc for a moment.  What error code *should* the kernel be
->> returning here?  errno(3) says:
->>
->>         EOPNOTSUPP      Operation not supported on socket (POSIX.1)
->> ...
->>         ENOTSUP         Operation not supported (POSIX.1)
->>
+On Wed, Feb 03, 2021 at 07:46:48AM -0800, Dave Hansen wrote:
+> On 1/30/21 11:20 AM, Jarkko Sakkinen wrote:
+> ...
+> > Example scenario would such that all removals "side-channel" through
+> > the notifier callback. Then mmu_notifier_unregister() gets called
+> > exactly zero times. No MMU notifier srcu sync would be then happening.
+> > 
+> > NOTE: There's bunch of other examples, I'm just giving one.
 > 
-> Yeah, other places in kernel use ENOTSUPP.  This seems to be out of 
-> line.  And since the issue is long-existing, applications already know 
-> how to deal with it.  I should have made that argument.  Change it to 
-> ENOTSUPP.
+> Could you flesh this out a bit?  I don't quite understand the scenario
+> from what you describe above.
+> 
+> In any case, I'm open to other implementations that fix the race we know
+> about.  If you think you have a better fix, I'm happy to review it and
+> make sure it closes the other race.
 
-When I make the change, checkpatch says...
+I'll bake up a new patch. Generally speaking, I think why this has been so
+difficult, is because of a chicken-egg-problem. The whole issue should be
+sorted when a new entry is first added to the mm_list, i.e. increase the
+refcount for each added entry.
 
-WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-#128: FILE: arch/x86/kernel/cet_prctl.c:33:
-+		return -ENOTSUPP;
-
-Do we want to reconsider?
-
-[...]
+/Jarkko
