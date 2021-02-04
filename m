@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7094231005B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C612E31005E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhBDWxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:53:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54793 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229554AbhBDWxP (ORCPT
+        id S229975AbhBDWzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhBDWzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:53:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612479109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lq9nuNPtZLBS+cbRJ5imk1NIAv935j3u3Kxk6L5bw/E=;
-        b=RGjAC+B0RfN2TFKWpj3xqMWXvOdTFTHQGydUuRuyb95T3X6cTax3WB1xst8kELpB69/cdD
-        4GKRZyCmv74rRTPwzh/vUrRcsPK8YjGsdT1X7VYFylz5iRmfJnvoSQP4akETkvDxglnAho
-        wzMXbjQHE2Daux8OzpG9aOm1eqBkFLc=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-IPLjzWaTPZCoqVxozNoySA-1; Thu, 04 Feb 2021 17:51:47 -0500
-X-MC-Unique: IPLjzWaTPZCoqVxozNoySA-1
-Received: by mail-qv1-f69.google.com with SMTP id dh16so3450169qvb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:51:47 -0800 (PST)
+        Thu, 4 Feb 2021 17:55:35 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73937C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:54:55 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id u66so4058424qkd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=B1fuVHR3Zm74HBXCgPjs+FlgnRSSGT3DuI6nT8/jWe8=;
+        b=cWIIGDYLfadnus6i1GGkf2KwFh4vu9RRcUrcxoHW005TGNfOF05BYSyVWTpAI1taZ/
+         IBKfitdlWe4XrhwQ1OkhPLhEtbaF6EzuaIdmHeAC6h2I4110mkFQsDBoitEjFDm58gnj
+         LURCQmMJIG4QG+9PGufR3KBqqi7xsAsoEpJ5FDK/4WW8Cw3ztqH0jon4YmULEo153Ms7
+         C74+0hTFegbWCIbYLQNjcT8zbiAm1AYlVor0423Y85088NY8uMLjSxJTjQU9nI8np95a
+         R7iMgjMJv4j4Zk2yJf1pxkVuOYGay9Q3kIVO96FAsQBbXQ9W2pbmsSMPLW70MPtRbdpM
+         /MKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lq9nuNPtZLBS+cbRJ5imk1NIAv935j3u3Kxk6L5bw/E=;
-        b=MDAfQGMffjuydBcRL/M2X37ToAQqAn10KoKRnd79h+2I6XH/3P3bmv5rad+MJDaKe6
-         Vg7luj+LMy0ahYn+Y+Vb8Xgskix0kZsi2N1vQAG2ukMy5e12BRBO6QXt+BuQNfTzB8G1
-         lWwms8Af8EktebE3RxwMr4se0HvxWmFC37NakJ4JzsILo1K2+hf0TIyLC4EmIRPUWGk9
-         tSQMAW59HxbAHchlhLdx/Q7zF9X5fKfFP8wjM8e4hl5oiSkR1msUH59knms2QgUbUbR5
-         v7OV9oJ2H6GMEx23sWfZDfS6I0Uzly0+ORXqHPEdIOg0kHVgWdKnD+dvN8cMoogU+x+D
-         9dFQ==
-X-Gm-Message-State: AOAM533LnxcjGo5VefOAojtCNg3ZVhs25o/S6q+MWf8x8SdYVsNMnOE0
-        RqzrnbWU5EIz9yuy9bxc7IxUANfvjGBRAxJY3DWOVqwb2MjbQ2+xKU9mBzFtdvae2WK97wNnl+E
-        6uGnT9km+0/rW1vp1Qj/Cb20U
-X-Received: by 2002:a05:6214:9d3:: with SMTP id dp19mr1610770qvb.40.1612479107471;
-        Thu, 04 Feb 2021 14:51:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwxV17SHLrE+uX2s2MUEyXHm7kffYBSerSRCUe9yZR1kBi+IVmixUgCm6vr7S1S8Sgvus5iIw==
-X-Received: by 2002:a05:6214:9d3:: with SMTP id dp19mr1610750qvb.40.1612479107239;
-        Thu, 04 Feb 2021 14:51:47 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id u7sm5407925qta.75.2021.02.04.14.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 14:51:46 -0800 (PST)
-Date:   Thu, 4 Feb 2021 17:51:44 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH] KVM: VMX: Optimize flushing the PML buffer
-Message-ID: <20210204225144.GU6468@xz-x1>
-References: <20210204221959.232582-1-bgardon@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210204221959.232582-1-bgardon@google.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=B1fuVHR3Zm74HBXCgPjs+FlgnRSSGT3DuI6nT8/jWe8=;
+        b=tWA12wuxwvKfV4Gh+cZJx7tJUtmqCpMcP2GU/JUORkedXRRAAoeKXyfBDFXCt92xhM
+         +N9VTk31vLrTdBSWbyk4WR3RQgGV+PkuuRoXpZy1JzW4o/QfwsFK0e5fJVnWjUD2/ZX8
+         kwibcDUl+jYvDL4ePOJfHucGB5XT2J5UJAz5F91WOq+WCH/ictSN7z4te3hvCmv7xCUB
+         biRqQRQ5MxHH8DFoEkEQoxKhpw9ZnjXoyzb3mvTESCwSKakZiDcze6sKZYsbmnaSS6u7
+         9542yR8NLOXOxHdfefPHcORopIlvJhL+8lSXHRQCuIgTXmqiPN7vG5NoVUcebm5C9gpI
+         fK+Q==
+X-Gm-Message-State: AOAM530qR8qOjtbkqVT+GeLUdmiWEtlLLaq5QzA/qCWG1v+FdPnjk8Rs
+        ziSZL7nqDPhgu5KdJ2yYXUCd2PDmO38yYg==
+X-Google-Smtp-Source: ABdhPJyj4dZTivbA2mv/icChL04lGA9XqXu69pF0p4QFdHKEl7Hqm3M3X2AnOPO2rHfTU9njuG7WL58Ph1Ci4g==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:bd7a:7717:5b5b:de27])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:192d:: with SMTP id
+ es13mr1841289qvb.9.1612479294611; Thu, 04 Feb 2021 14:54:54 -0800 (PST)
+Date:   Thu,  4 Feb 2021 14:54:45 -0800
+Message-Id: <20210204225448.1393741-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v3 0/3] kunit: support running subsets of test suites from kunit.py
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ben,
+When using `kunit.py run` to run tests, users must populate a
+`kunitconfig` file to select the options the tests are hidden behind and
+all their dependencies.
 
-On Thu, Feb 04, 2021 at 02:19:59PM -0800, Ben Gardon wrote:
-> The average time for each run demonstrated a strange bimodal distribution,
-> with clusters around 2 seconds and 2.5 seconds. This may have been a
-> result of vCPU migration between NUMA nodes.
+The patch [1] to allow specifying a path to kunitconfig promises to make
+this nicer as we can have checked in files corresponding to different
+sets of tests.
 
-Have you thought about using numactl or similar technique to verify your idea
-(force both vcpu threads binding, and memory allocations)?
+But it's still annoying 
+1) when trying to run a subet of tests
+2) when you want to run tests that don't have such a pre-existing
+kunitconfig and selecting all the necessary options is tricky.
 
-From the numbers it already shows improvements indeed, but just curious since
-you raised this up. :)
+This patch series aims to alleviate both:
+1) `kunit.py run 'my-suite-*'`
+I.e. use my current kunitconfig, but just run suites that match this glob
+2) `kunit.py run --alltests 'my-suite-*'`
+I.e. use allyesconfig so I don't have to worry about writing a
+kunitconfig at all.
 
-> @@ -5707,13 +5708,18 @@ static void vmx_flush_pml_buffer(struct kvm_vcpu *vcpu)
->  	else
->  		pml_idx++;
->  
-> +	memslots = kvm_vcpu_memslots(vcpu);
-> +
->  	pml_buf = page_address(vmx->pml_pg);
->  	for (; pml_idx < PML_ENTITY_NUM; pml_idx++) {
-> +		struct kvm_memory_slot *memslot;
->  		u64 gpa;
->  
->  		gpa = pml_buf[pml_idx];
->  		WARN_ON(gpa & (PAGE_SIZE - 1));
-> -		kvm_vcpu_mark_page_dirty(vcpu, gpa >> PAGE_SHIFT);
-> +
-> +		memslot = __gfn_to_memslot(memslots, gpa >> PAGE_SHIFT);
-> +		mark_page_dirty_in_slot(vcpu->kvm, memslot, gpa >> PAGE_SHIFT);
+See the first commit message for more details and discussion about
+future work.
 
-Since at it: make "gpa >> PAGE_SHIFT" a temp var too?
+This patch series also includes a bugfix for a latent bug that can't be
+triggered right now but has worse consequences as a result of the
+changes needed to plumb in this suite name glob.
 
-Thanks,
+[1] https://lore.kernel.org/linux-kselftest/20210201205514.3943096-1-dlatypov@google.com/
 
+---
+v1 -> v2:
+  Fix free of `suites` subarray in suite_set.
+  Found by Dan Carpenter and kernel test robot.
+v2 -> v3:
+  Add MODULE_PARM_DESC() for kunit.filter_glob.
+
+Daniel Latypov (3):
+  kunit: add kunit.filter_glob cmdline option to filter suites
+  kunit: tool: add support for filtering suites by glob
+  kunit: tool: fix unintentional statefulness in run_kernel()
+
+ lib/kunit/Kconfig                   |  1 +
+ lib/kunit/executor.c                | 93 ++++++++++++++++++++++++++---
+ tools/testing/kunit/kunit.py        | 21 +++++--
+ tools/testing/kunit/kunit_kernel.py |  6 +-
+ 4 files changed, 106 insertions(+), 15 deletions(-)
+
+
+base-commit: 88bb507a74ea7d75fa49edd421eaa710a7d80598
 -- 
-Peter Xu
+2.30.0.478.g8a0d178c01-goog
 
