@@ -2,230 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0E30FB2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B045030FB2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238896AbhBDSTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:19:14 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20660 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238197AbhBDRKu (ORCPT
+        id S238924AbhBDSS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238389AbhBDRU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:10:50 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114H4m5l131531;
-        Thu, 4 Feb 2021 12:10:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
- from : subject : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=A0AOv2ksEzzrI7TSnWxIE4cIeqSbOgMsBaQGBlzBN5I=;
- b=R9xyUdoTN+laeMG9HK9FHxBsIfgCM7FH5ZJre2kLFWNNeTZIjb1MhKsbwwWhwT2SNMyr
- D74xH6YXE8hxj9nsMsE/eikL+r3EM4HmBcPvLmEryNLFheV+SOEsKd4/1ukfI3LAGUlr
- hjwXGhsOonkrZCTTZHmM9rwnO7a6EfwHceo9+Dm8VJoAp4MG41B5NRGYZD9zKnHw2yOI
- EuJHl6Bk6yUkqP/0MQR+J+mWabHjS5EaL6T/bVPF/lblsLaFrn/f8O6s0S2GnlLVlQy8
- 3QHeelmeRjKruI7yjUD4HAxqdvtHpuxHu0fqttzbSFxRuyrsN3PcS5j0pLplLmsdPHUm pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36gm2cjhkx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 12:10:09 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114H5u7R138152;
-        Thu, 4 Feb 2021 12:10:08 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36gm2cjhje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 12:10:08 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114H8Ras019661;
-        Thu, 4 Feb 2021 17:10:06 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 36fwcw160p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 17:10:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114HA22c37290310
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Feb 2021 17:10:02 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75A2BAE05A;
-        Thu,  4 Feb 2021 17:10:02 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0ED7EAE057;
-        Thu,  4 Feb 2021 17:10:02 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.164.237])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Feb 2021 17:10:01 +0000 (GMT)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, david@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-References: <20210202180028.876888-1-imbrenda@linux.ibm.com>
- <20210202180028.876888-3-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH v2 2/2] s390/kvm: VSIE: correctly handle MVPG when in VSIE
-Message-ID: <2e409ab1-1865-d59a-dc89-2d30f2657a38@linux.ibm.com>
-Date:   Thu, 4 Feb 2021 18:10:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210202180028.876888-3-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_09:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040104
+        Thu, 4 Feb 2021 12:20:28 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CA0C06178B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:19:47 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id t13so2603537plg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:19:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
+        b=cO/etlrrEAzH/g1dbDSHauc4EzO7fZ2R+6UmMcdpjUQej4vTfKrqsHKiRkmb4iK3ZW
+         GtQk37rbrYe46Cdbulsuekq+yF2V0ZCBgqq+USJ4prDmtt2w5mJqItMEst8FW+U6cJom
+         NBgsvmwUFUntRGhS+4iNmG6cgHvxhb43Ic6+jOr2AqQFfNriCikLrwXnFdrQmyYA2Rao
+         Cl/BcoImBY71li6bW5mqQcY9CNEIOxbGPl1yqTXYsL0NmARWtAohBoiQ7MNSMMeaqxvR
+         h09dSOPBRJ0LArGSc/u3oD59FIhQ07ZkmYvYqWajGzfICETSyVEMFxFoCL//DxvONIfJ
+         Q0Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
+        b=ag2+Hiez616v4gU6PKA7PVidvfd9RyEJsIK1qLNApSOXSs4Wsakw8i0O4rRxopJUhr
+         UtOCHJsqWP2tMNntREQgdjL+b9N0jFeUqZpn5TrAvPcwUmI3INFbv3obQv3N/vkQDh3l
+         0zOBr05wZ5W6CnZJhdw4RfEC7cpm1p871z5BClC3cQ+2h4sWnXNGmzowYkiOd4GV1AZO
+         IxXW84yWLAoRyOxDx6DQ7zMoEpmdN6rtEzsabAoYmTSgij5/QP41TOKHQ8DqmERIrEcr
+         KIp30NxpCNc083Jn3894ZrKMohM+mv9kZB23HUe7+NR4iSwnFI+ih1Adyo6Bf5X6usa/
+         R3mA==
+X-Gm-Message-State: AOAM531qumtaG8RQldAdkzwUSmn9LmdT9Z09h28b/yWDHDQd0nrJBFGb
+        kZnOysoMSb2+LZKjqZObgNBS4v4hBUlv
+X-Google-Smtp-Source: ABdhPJwZaUPMg1NyBgDgtgmMlUvddCN80MhfXCBqI3DFZkywijVbuzNalDMOpxzEr6D7+EXxD41EvAbqHBiR
+Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
+X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
+ (user=brianvv job=sendgmr) by 2002:a17:90a:6288:: with SMTP id
+ d8mr494508pjj.49.1612459186925; Thu, 04 Feb 2021 09:19:46 -0800 (PST)
+Date:   Thu,  4 Feb 2021 17:19:42 +0000
+In-Reply-To: <20210204171942.469883-1-brianvv@google.com>
+Message-Id: <20210204171942.469883-2-brianvv@google.com>
+Mime-Version: 1.0
+References: <20210204171942.469883-1-brianvv@google.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH net-next 2/2] net: fix building errors on powerpc when
+ CONFIG_RETPOLINE is not set
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 7:00 PM, Claudio Imbrenda wrote:
-> Correctly handle the MVPG instruction when issued by a VSIE guest.
-> 
-> Fixes: a3508fbe9dc6d ("KVM: s390: vsie: initial support for nested virtualization")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+This commit fixes the errores reported when building for powerpc:
 
-So far the patch looks ok to me and way better to understand than v1,
-good job
+ ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
 
-> ---
->  arch/s390/kvm/vsie.c | 94 +++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 89 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-> index 7db022141db3..2db49749e27b 100644
-> --- a/arch/s390/kvm/vsie.c
-> +++ b/arch/s390/kvm/vsie.c
-> @@ -416,11 +416,6 @@ static void unshadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->  		memcpy((void *)((u64)scb_o + 0xc0),
->  		       (void *)((u64)scb_s + 0xc0), 0xf0 - 0xc0);
+Fixes: f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
+Fixes: bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functions")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+ net/ipv4/route.c | 4 ++--
+ net/ipv6/route.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Magic offsets being magic
-Another item for my todo list.
-
->  		break;
-> -	case ICPT_PARTEXEC:
-> -		/* MVPG only */
-> -		memcpy((void *)((u64)scb_o + 0xc0),
-> -		       (void *)((u64)scb_s + 0xc0), 0xd0 - 0xc0);
-> -		break;
->  	}
->  
->  	if (scb_s->ihcpu != 0xffffU)
-> @@ -982,6 +977,91 @@ static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->  	return 0;
->  }
->  
-> +static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page, u8 reg)
-> +{
-> +	reg &= 0xf;
-> +	switch (reg) {
-> +	case 15:
-> +		return vsie_page->scb_s.gg15;
-> +	case 14:
-> +		return vsie_page->scb_s.gg14;
-> +	default:
-> +		return vcpu->run->s.regs.gprs[reg];
-> +	}
-> +}
-> +
-> +static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
-> +{
-> +	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
-> +	unsigned long pei1, pei2, src, dest, mask = PAGE_MASK;
-> +	u64 *pei_block = &vsie_page->scb_o->mcic;
-> +	int edat, rc1, rc2;
-
-Can use a src/dst prefix or suffix please?
-1/2 is confusing.
-
-> +	union ctlreg0 cr0;
-> +
-> +	cr0.val = vcpu->arch.sie_block->gcr[0];
-> +	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
-> +	if (psw_bits(scb_s->gpsw).eaba == PSW_BITS_AMODE_24BIT)
-> +		mask = 0xfff000;
-> +	else if (psw_bits(scb_s->gpsw).eaba == PSW_BITS_AMODE_31BIT)
-> +		mask = 0x7ffff000;
-> +
-> +	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
-> +	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
-> +
-> +	rc1 = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei1);
-> +	rc2 = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei2);
-> +	/*
-> +	 * Either everything went well, or something non-critical went wrong
-> +	 * e.g. beause of a race. In either case, simply retry.
-> +	 */
-> +	if (rc1 == -EAGAIN || rc2 == -EAGAIN || (!rc1 && !rc2)) {
-> +		retry_vsie_icpt(vsie_page);
-> +		return -EAGAIN;
-> +	}
-> +	/* Something more serious went wrong, propagate the error */
-> +	if (rc1 < 0)
-> +		return rc1;
-> +	if (rc2 < 0)
-> +		return rc2;
-> +
-> +	/* The only possible suppressing exception: just deliver it */
-> +	if (rc1 == PGM_TRANSLATION_SPEC || rc2 == PGM_TRANSLATION_SPEC) {
-> +		clear_vsie_icpt(vsie_page);
-> +		rc1 = kvm_s390_inject_program_int(vcpu, PGM_TRANSLATION_SPEC);
-> +		WARN_ON_ONCE(rc1);
-> +		return 1;
-> +	}
-> +
-> +	/*
-> +	 * Forward the PEI intercept to the guest if it was a page fault, or
-> +	 * also for segment and region table faults if EDAT applies.
-> +	 */
-> +	if (edat) {
-> +		rc1 = rc1 == PGM_ASCE_TYPE ? rc1 : 0;
-> +		rc2 = rc2 == PGM_ASCE_TYPE ? rc2 : 0;
-> +	}
-> +	if ((!rc1 || rc1 == PGM_PAGE_TRANSLATION) && (!rc2 || rc2 == PGM_PAGE_TRANSLATION)) {
-> +		pei_block[0] = pei1;
-> +		pei_block[1] = pei2;
-> +		return 1;
-> +	}
-> +
-> +	retry_vsie_icpt(vsie_page);
-> +
-> +	/*
-> +	 * The host has edat, and the guest does not, or it was an ASCE type
-> +	 * exception. The host needs to inject the appropriate DAT interrupts
-> +	 * into the guest.
-> +	 */
-> +	if (rc1)
-> +		return inject_fault(vcpu, rc1, dest, 1);
-> +	if (rc2)> +		return inject_fault(vcpu, rc2, src, 0);
-> +
-> +	/* This should never be reached */
-
-BUG()?
-
-> +	return 0;
-> +}
-> +
->  /*
->   * Run the vsie on a shadow scb and a shadow gmap, without any further
->   * sanity checks, handling SIE faults.
-> @@ -1068,6 +1148,10 @@ static int do_vsie_run(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->  		if ((scb_s->ipa & 0xf000) != 0xf000)
->  			scb_s->ipa += 0x1000;
->  		break;
-> +	case ICPT_PARTEXEC:
-> +		if (scb_s->ipa == 0xb254)
-> +			rc = vsie_handle_mvpg(vcpu, vsie_page);
-> +		break;
->  	}
->  	return rc;
->  }
-> 
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 9e6537709794..be31e2446470 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -1206,7 +1206,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
+ 		return NULL;
+ 	return dst;
+ }
+-EXPORT_SYMBOL(ipv4_dst_check);
++EXPORT_INDIRECT_CALLABLE(ipv4_dst_check);
+ 
+ static void ipv4_send_dest_unreach(struct sk_buff *skb)
+ {
+@@ -1337,7 +1337,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ipv4_mtu(const struct dst_entry *dst)
+ 
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ipv4_mtu);
++EXPORT_INDIRECT_CALLABLE(ipv4_mtu);
+ 
+ static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
+ {
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 8d9e053dc071..0d1784b0d65d 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2644,7 +2644,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
+ 
+ 	return dst_ret;
+ }
+-EXPORT_SYMBOL(ip6_dst_check);
++EXPORT_INDIRECT_CALLABLE(ip6_dst_check);
+ 
+ static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
+ {
+@@ -3115,7 +3115,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ip6_mtu(const struct dst_entry *dst)
+ 
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ip6_mtu);
++EXPORT_INDIRECT_CALLABLE(ip6_mtu);
+ 
+ /* MTU selection:
+  * 1. mtu on route is locked - use it
+-- 
+2.30.0.365.g02bc693789-goog
 
