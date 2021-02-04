@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9586930FD34
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B13030FD37
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238449AbhBDTr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239142AbhBDTry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:47:54 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5BBC061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:47:14 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id b145so2773628pfb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M71/0+4/VPdITa6DX0e4x8GpxsKtJ+qFh8ESOZeP7Dc=;
-        b=jthU5IMT8bGmrxmtDYWqfxQLlMrYewykUAS8xgvJTl5tztr5hJLifwL5fcoFOcmEFA
-         +la2ZcSyETWeMwUOEVSVOgmaCP3WWsjYYu/aFWKhAxeBGJQ+JAsluk3kIG+FyT56tCBa
-         51C62Z1yof1LhPxJP6BsbfOtqxMhfXOwgmJdsl/cKFS3dJNpFqH5hUicpsELkhRXIV1O
-         dqLG2PCUz+6NBt8NM+D2wbNjcKZicBZfhOgq+s2ARZyjmETtm6aMHy0UIiDw+D3mVUyn
-         xSvmkh/tXqHT88epfAg6velP2Yx5JFHCLRey1zNkNrts4Ox3nTgrqkPx/cKTQ/sowMKM
-         9Vmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M71/0+4/VPdITa6DX0e4x8GpxsKtJ+qFh8ESOZeP7Dc=;
-        b=CzYAQQclQB9+Pqz2XLx9bGL0VFKkxNB5TeBRwPgvj6qtlMJr0Lby7L9QTvjxzXCZNq
-         9m6OkvfNM4qpMurcivVhmsdrdcNLt7GIgU4Alt2asch5erOWRF5l/xsFrX1TNd5xVLBq
-         w7XYIYuOElwC0tuNXGJ5R6xYb3qpghPsRZllwlCAv1bwhZXSoVWizwgMYlTc2wNGoI8x
-         n26y2JdPmFl5ad1xG6HW2QHixF0X96OEBVLze/CZ2LbiWkcT9sXik6vhrLF8meuZmeTL
-         ta0XE/hLFv3koBHflJ31gld8ba8cEFacyny4VI4Uj/ezj+7qjJGmO6DJVnsfdJoiKRe4
-         2+xQ==
-X-Gm-Message-State: AOAM531ll3JMh9PPDqz7OzbRcgLciAAfum0v98S2NDNq27EpTEqiVgW3
-        oHva32rzi+DfeMNDT8VdyXZsy2e60H9+I3nBr8zlBQxb+NQy+A==
-X-Google-Smtp-Source: ABdhPJzVtYp2aDG4dPbYfDQH+IIb9J7pzYykY8WzxVxFBR2E4sZ627eieZqffbjTwHwQjMCu8dwASM4FIc20VRqrMgI=
-X-Received: by 2002:a62:fc84:0:b029:1ba:9b85:2e92 with SMTP id
- e126-20020a62fc840000b02901ba9b852e92mr871767pfh.38.1612468033581; Thu, 04
- Feb 2021 11:47:13 -0800 (PST)
+        id S238795AbhBDTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:48:51 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:52792 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237778AbhBDTsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:48:45 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l7kbT-0002p1-LE; Fri, 05 Feb 2021 06:47:48 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Feb 2021 06:47:47 +1100
+Date:   Fri, 5 Feb 2021 06:47:47 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Lukasz Bartosik <lbartosik@marvell.com>,
+        Suheil Chandran <schandran@marvell.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] crypto: marvell - fix ethernet driver dependency
+Message-ID: <20210204194747.GA10054@gondor.apana.org.au>
+References: <20210204154230.1702563-1-arnd@kernel.org>
+ <20210204154230.1702563-2-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210204173045.1138504-1-dlatypov@google.com> <20210204173045.1138504-3-dlatypov@google.com>
-In-Reply-To: <20210204173045.1138504-3-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 4 Feb 2021 11:47:02 -0800
-Message-ID: <CAFd5g45_j-uw0tLVv_i6yHXOE46RKpJ7HoXJyfDBGk8=2jxdcA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] kunit: tool: add support for filtering suites by glob
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204154230.1702563-2-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 9:31 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> This allows running different subsets of tests, e.g.
->
-> $ ./tools/testing/kunit/kunit.py build
-> $ ./tools/testing/kunit/kunit.py exec 'list*'
-> $ ./tools/testing/kunit/kunit.py exec 'kunit*'
->
-> This passes the "kunit_filter.glob" commandline option to the UML
-> kernel, which currently only supports filtering by suite name.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+On Thu, Feb 04, 2021 at 04:42:16PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The OcteonTX2 CPT driver force-enables the OCTEONTX2_MBOX symbol,
+> which fails when network drivers are disabled globally
+> 
+> WARNING: unmet direct dependencies detected for OCTEONTX2_MBOX
+>   Depends on [n]: NETDEVICES [=n] && ETHERNET [=n] && NET_VENDOR_MARVELL [=n]
+>   Selected by [y]:
+>   - CRYPTO_DEV_OCTEONTX2_CPT [=y] && CRYPTO [=y] && CRYPTO_HW [=y] && (ARM64 [=y] || COMPILE_TEST [=y]) && PCI_MSI [=y] && 64BIT [=y] && CRYPTO_LIB_AES [=y]
+> 
+> The crypto driver actually fails to link without the ethernet side,
+> so this is a hard dependency. Change the 'select' into 'depends on'
+> to make it build reliably without warnings.
+> 
+> Fixes: 5e8ce8334734 ("crypto: marvell - add Marvell OcteonTX2 CPT PF driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/crypto/marvell/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+There is already a patch for this:
+
+https://patchwork.kernel.org/project/linux-crypto/patch/20210129054856.GA20020@gondor.apana.org.au/
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
