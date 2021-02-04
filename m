@@ -2,83 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B3130F6B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B15E30F6C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237513AbhBDPqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:46:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34012 "EHLO mail.kernel.org"
+        id S237576AbhBDPtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:49:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237446AbhBDPqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:46:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B5864F4A;
-        Thu,  4 Feb 2021 15:45:26 +0000 (UTC)
+        id S237516AbhBDPsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:48:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ABC464F45;
+        Thu,  4 Feb 2021 15:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612453527;
-        bh=lI0HC3GQbRFgXxSEIB/73Da0jQE/c8jAVtTEPB7vO28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hw7jGjaOFkLAvQ61LL+VxqPi61iCFS1TZYi2B+cwgM1q3w4+wR4x7emm3TtBViZSm
-         2GrhUdgflJlyA+3u1JkgT7g8skKX5b+ttzIYkKYfQUS0BUV02aYO6Vu9aMuWtT+a/J
-         HYXBSDBHv3esRV8xFzPZ0ZZsEwLG6E7+g0tJKRYthwIUBadcNIZ4Nl+Fc5PzKNxBkS
-         P4ep96lwNbV642I7ry+o7/5eT0bzGj2Is8PseM6TWB5lR91u2uVlVK+KG6Guhsy/Mx
-         FHr2kz+NeXH4zrLOD04Eq42qyz8QOF9S1LNXYEOhfHwN0aDczIa6cgbUbFdj5jW86r
-         Sgee71aeHeEGQ==
-Date:   Thu, 4 Feb 2021 15:45:23 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next][V2] iommu/mediatek: Fix unsigned domid comparison
- with less than zero
-Message-ID: <20210204154522.GD21058@willie-the-truck>
-References: <20210204150001.102672-1-colin.king@canonical.com>
+        s=k20201202; t=1612453642;
+        bh=bNTrM8aWtufVI7iPcQTsXQghRKvyHRISmKItSiQtqR4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tdipZSETEVhKcd4sLIG9VlK9G/cahXZ/CPQZdx9ldR/1hPRp5B/XihZonqakev8zn
+         MllWQsvppx/2dhisCT3w13qVx68QyU+1Q5iLAIGaOWzR8HG79QNzJJmnwlfOaYxId3
+         n4MC4lnygGIA8+32taJQQOpNx6DPYdsNFmP4mzneFXqV+N4bieJ7YgqBBhfCYjUScR
+         E18w+T79v/vLEg9dRhJFtBU/rgQCk1ofl4Dpj7L4iIbZYkLkj1iNCrrlxReFISFkpd
+         nHXTdp3SEf/NkLMJf3KZlENm/v/WYPK0UHl9AuOV7T4YIDxXM7prw3CKy1JZiDPqbN
+         Q5YOrgXrpcnYg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Chen <Mark-YW.Chen@mediatek.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kiran K <kiran.k@intel.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Sathish Narasimman <nsathish41@gmail.com>,
+        Rocky Liao <rjliao@codeaurora.org>,
+        Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
+        Hilda Wu <hildawu@realtek.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: btusb: fix excessive stack usage
+Date:   Thu,  4 Feb 2021 16:47:07 +0100
+Message-Id: <20210204154716.1823454-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204150001.102672-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:00:01PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the check for domid < 0 is always false because domid
-> is unsigned. Fix this by casting domid to an int before making
-> the comparison.
-> 
-> Addresses-Coverity: ("Unsigned comparison against 0")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> 
-> V2: cast domid rather than making it an int. Replace L with : in
->     the commit message.
-> 
-> ---
->  drivers/iommu/mtk_iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 0ad14a7604b1..1f262621ef19 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -645,7 +645,7 @@ static void mtk_iommu_get_resv_regions(struct device *dev,
->  	struct iommu_resv_region *region;
->  	int prot = IOMMU_WRITE | IOMMU_READ;
->  
-> -	if (domid < 0)
-> +	if ((int)domid < 0)
->  		return;
->  	curdom = data->plat_data->iova_region + domid;
->  	for (i = 0; i < data->plat_data->iova_region_nr; i++) {
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks, Colin.
+Enlarging the size of 'struct btmtk_hci_wmt_cmd' makes it no longer
+fit on the kernel stack, as seen from this compiler warning:
 
-Acked-by: Will Deacon <will@kernel.org>
+drivers/bluetooth/btusb.c:3365:12: error: stack frame size of 1036 bytes in function 'btusb_mtk_hci_wmt_sync' [-Werror,-Wframe-larger-than=]
 
-Will
+Change the function to dynamically allocate the buffer instead.
+As there are other sleeping functions called from the same location,
+using GFP_KERNEL should be fine here, and the runtime overhead should
+not matter as this is rarely called.
+
+Unfortunately, I could not figure out why the message size is
+increased in the previous patch. Using dynamic allocation means
+any size is possible now, but there is still a range check that
+limits the total size (including the five-byte header) to 255
+bytes, so whatever was intended there is now undone.
+
+Fixes: 48c13301e6ba ("Bluetooth: btusb: Fine-tune mt7663 mechanism.")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/bluetooth/btusb.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index eeafb8432c0f..838e6682301e 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3161,7 +3161,7 @@ struct btmtk_wmt_hdr {
+ 
+ struct btmtk_hci_wmt_cmd {
+ 	struct btmtk_wmt_hdr hdr;
+-	u8 data[1000];
++	u8 data[];
+ } __packed;
+ 
+ struct btmtk_hci_wmt_evt {
+@@ -3369,7 +3369,7 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	struct btmtk_hci_wmt_evt_funcc *wmt_evt_funcc;
+ 	u32 hlen, status = BTMTK_WMT_INVALID;
+ 	struct btmtk_hci_wmt_evt *wmt_evt;
+-	struct btmtk_hci_wmt_cmd wc;
++	struct btmtk_hci_wmt_cmd *wc;
+ 	struct btmtk_wmt_hdr *hdr;
+ 	int err;
+ 
+@@ -3383,20 +3383,24 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	if (hlen > 255)
+ 		return -EINVAL;
+ 
+-	hdr = (struct btmtk_wmt_hdr *)&wc;
++	wc = kzalloc(hlen, GFP_KERNEL);
++	if (!wc)
++		return -ENOMEM;
++
++	hdr = &wc->hdr;
+ 	hdr->dir = 1;
+ 	hdr->op = wmt_params->op;
+ 	hdr->dlen = cpu_to_le16(wmt_params->dlen + 1);
+ 	hdr->flag = wmt_params->flag;
+-	memcpy(wc.data, wmt_params->data, wmt_params->dlen);
++	memcpy(wc->data, wmt_params->data, wmt_params->dlen);
+ 
+ 	set_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags);
+ 
+-	err = __hci_cmd_send(hdev, 0xfc6f, hlen, &wc);
++	err = __hci_cmd_send(hdev, 0xfc6f, hlen, wc);
+ 
+ 	if (err < 0) {
+ 		clear_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags);
+-		return err;
++		goto err_free_wc;
+ 	}
+ 
+ 	/* The vendor specific WMT commands are all answered by a vendor
+@@ -3413,13 +3417,14 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	if (err == -EINTR) {
+ 		bt_dev_err(hdev, "Execution of wmt command interrupted");
+ 		clear_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags);
+-		return err;
++		goto err_free_wc;
+ 	}
+ 
+ 	if (err) {
+ 		bt_dev_err(hdev, "Execution of wmt command timed out");
+ 		clear_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags);
+-		return -ETIMEDOUT;
++		err = -ETIMEDOUT;
++		goto err_free_wc;
+ 	}
+ 
+ 	/* Parse and handle the return WMT event */
+@@ -3463,7 +3468,8 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ err_free_skb:
+ 	kfree_skb(data->evt_skb);
+ 	data->evt_skb = NULL;
+-
++err_free_wc:
++	kfree(wc);
+ 	return err;
+ }
+ 
+-- 
+2.29.2
+
