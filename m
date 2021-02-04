@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D0330FA45
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3326230FA49
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238773AbhBDRv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:51:58 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33222 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238651AbhBDRuh (ORCPT
+        id S238403AbhBDRxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238602AbhBDRuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:50:37 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 88A88202029C;
-        Thu,  4 Feb 2021 09:49:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 88A88202029C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612460996;
-        bh=MWnuUzUB2546OxJT28g10L67ifCeNWzaEF9eQBT9L1M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBBsyO6TTs1VsyPnYx3t8XDYQfLdvF5P0ppIrM7pV5dTNlA9IpJQrKUWd9lwrZ2eN
-         41o0W6kCoRlDN2PdH2JXnJB6sH5xF/iqpqCobcBUGTPVPDmZR1fGXYA5QAODK1Neor
-         KZjc8LQsuwfJg+bLvUnjQAO7IlTTW+UxXaarzchM=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, ebiederm@xmission.com,
-        gregkh@linuxfoundation.org, sashal@kernel.org,
-        tyhicks@linux.microsoft.com
-Cc:     linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ima: Free IMA measurement buffer after kexec syscall
-Date:   Thu,  4 Feb 2021 09:49:51 -0800
-Message-Id: <20210204174951.25771-2-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204174951.25771-1-nramas@linux.microsoft.com>
-References: <20210204174951.25771-1-nramas@linux.microsoft.com>
+        Thu, 4 Feb 2021 12:50:46 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97085C0613D6;
+        Thu,  4 Feb 2021 09:50:06 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id k25so4538006oik.13;
+        Thu, 04 Feb 2021 09:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Var8WHICuKwrMmPlWUsvpEAeSED3aCJArZ1/+YoG3X0=;
+        b=Nh0oRKRR7Enme9e5B4FB9VI7nGxkEavMoxXr+rJKKhkqrfTxzukhkG/YWJ3aGKmvaS
+         4YMrTKCyv1d3KC/d1dQjo0EKSh6jUZ8qolhJ5b8scuL46qG8PP2CdSwdecnlx6czn6HM
+         M4ZvD/AZ56esViQVcQwrxH+YCdZKeLoMmxR9FsbjdrxGHir2jnYfDxwwVFjo6lmXR9gQ
+         djcwtLc81H6CpI2UuY9H69VTMhh0d0RU9t/DNeKpyIsdSWy0af/XpkawQPqZAei2LZxU
+         PZTgG9KsRUqby9il9OR/tRHiQzusIACYL0iw/4kSkOaaIVKv3ZN7Vcf0XNxIwdTkorf5
+         RBaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Var8WHICuKwrMmPlWUsvpEAeSED3aCJArZ1/+YoG3X0=;
+        b=US4dt377I/UaLbSe4keC60RwyPue9JnQHwnTLFqFzhqrAxWE9VsFU1JFJI2aXI414z
+         IfVO5emNf1H85YQrHyazsHJlQN1wxlcNznwI19hfUmTRgP/x7fQFPpNIhe+5KvsNzRrE
+         T9w/6b9YCuwBbVoPs+DEQICrxaTDI/KTXFM3vRV3aURBltY1NmM0UUluczCnEJfvOQBI
+         PqRuTPQoOnzBCc4Og2XM+nPFzIqsIUzO05wZp/Ph3/nr1wmNoXJYQumyh902f18YlcUS
+         XUloMLMTgQzQywKia/rYhULFBuy92Ydmrymt0t4OEolO7xKO47zguNQTYiHei9Vku7d1
+         fHFQ==
+X-Gm-Message-State: AOAM530qQh5K2JHRAkJeE7nGUH5Kw7ttUg6V9/J9Yr2t4drRfw6aT92x
+        67+zEKjVA26CG/gLhQPgJli5C6qjSZ+HevVOGg==
+X-Google-Smtp-Source: ABdhPJwt6p7MRn488JbydwljimYx34MQQI8pFoYxFRyeKsyjrwiZSxhqPqizhzHHbdnM3BLAnXk7xY7/2U5rIvBuDuk=
+X-Received: by 2002:a05:6808:f09:: with SMTP id m9mr450484oiw.92.1612461006039;
+ Thu, 04 Feb 2021 09:50:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210204171942.469883-1-brianvv@google.com>
+In-Reply-To: <20210204171942.469883-1-brianvv@google.com>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Thu, 4 Feb 2021 11:49:54 -0600
+Message-ID: <CAFSKS=P2d-szPdjukc_3HGBXKYv4k-fwh=OWBdHy2knqr-4-Hg@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA allocates kernel virtual memory to carry forward the measurement
-list, from the current kernel to the next kernel on kexec system call,
-in ima_add_kexec_buffer() function.  This buffer is not freed before
-completing the kexec system call resulting in memory leak.
+I don't see the second patch.
 
-Add ima_buffer field in "struct kimage" to store the virtual address
-of the buffer allocated for the IMA measurement list.
-Free the memory allocated for the IMA measurement list in
-kimage_file_post_load_cleanup() function.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
----
- include/linux/kexec.h              | 5 +++++
- kernel/kexec_file.c                | 5 +++++
- security/integrity/ima/ima_kexec.c | 2 ++
- 3 files changed, 12 insertions(+)
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 9e93bef52968..5f61389f5f36 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -300,6 +300,11 @@ struct kimage {
- 	/* Information for loading purgatory */
- 	struct purgatory_info purgatory_info;
- #endif
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	/* Virtual address of IMA measurement buffer for kexec syscall */
-+	void *ima_buffer;
-+#endif
- };
- 
- /* kexec interface functions */
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index b02086d70492..5c3447cf7ad5 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -166,6 +166,11 @@ void kimage_file_post_load_cleanup(struct kimage *image)
- 	vfree(pi->sechdrs);
- 	pi->sechdrs = NULL;
- 
-+#ifdef CONFIG_IMA_KEXEC
-+	vfree(image->ima_buffer);
-+	image->ima_buffer = NULL;
-+#endif /* CONFIG_IMA_KEXEC */
-+
- 	/* See if architecture has anything to cleanup post load */
- 	arch_kimage_file_post_load_cleanup(image);
- 
-diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-index 206ddcaa5c67..e29bea3dd4cc 100644
---- a/security/integrity/ima/ima_kexec.c
-+++ b/security/integrity/ima/ima_kexec.c
-@@ -129,6 +129,8 @@ void ima_add_kexec_buffer(struct kimage *image)
- 		return;
- 	}
- 
-+	image->ima_buffer = kexec_buffer;
-+
- 	pr_debug("kexec measurement buffer for the loaded kernel at 0x%lx.\n",
- 		 kbuf.mem);
- }
--- 
-2.30.0
-
+Regards,
+George McCollister
