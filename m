@@ -2,191 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F92230FCCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22B330FCD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239824AbhBDT3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:29:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236970AbhBDT2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:28:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7BB164F6A;
-        Thu,  4 Feb 2021 19:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612466872;
-        bh=tY8/mb/pgUOhz3q9X5oeyZT0tvaW36b3usnwkCEu92s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bPLjIKqGxAKXMyWTsBKeGBdc6OlclmNa7r941BCX01ySnup5px82ttanAhDiQnILp
-         MKOcrIfxIKC2genhoHsZKnNkCJvB8bJ1smWKtNDFm8C1Nmp1AtnW6hT8sFbZRycQcH
-         JBOYVvONk3kxWBrV48VwrwxUalzm/czpMSju10OwcpohII+JQYtZu0i0BQwt3gIRpM
-         6JjFEUfX1D8TlnrfbdHxdI5P4tSraPcIMFbdhr/91/+j/ugoOuOqTFO3+NrR2l0B2f
-         e0ruNco1vWD/RgOTKw8gYCxcnebXtX+SCFkak/dWD61h43If5yWyJ+Kk6Kd8vX3que
-         MDTDA3gyfhXvw==
-Received: by mail-lj1-f179.google.com with SMTP id r23so2923452ljh.1;
-        Thu, 04 Feb 2021 11:27:51 -0800 (PST)
-X-Gm-Message-State: AOAM532dHEx+tjI/Zz6glcEvl+utqdRkmJ4nwdlCUOH7QlX5ynyYtGzT
-        g6lQgnIPvdh2/4PjsLNaPRSs4va/LhrOdvK4B2w=
-X-Google-Smtp-Source: ABdhPJzCWNJ+b/m3ICuZlRpYMKj/y45anJ9mwZbXKDLUWU10Oj3GQspTNxR8wD7qjvdbaziJcDkWUrdtOCWcSVF1o+o=
-X-Received: by 2002:a2e:8e91:: with SMTP id z17mr516165ljk.506.1612466870187;
- Thu, 04 Feb 2021 11:27:50 -0800 (PST)
+        id S239774AbhBDTbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:31:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239822AbhBDTak (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:30:40 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25B6C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:29:59 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id h16so3243909qth.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:29:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pxEH3lPVvNUUdUP05ZPOl2OQ8LUijQb0MCrSWBXGG1I=;
+        b=avFnTqyzD1lpktS9bgh7ccT5o3JRmPhvL3P/+Rzvtn4OvxFpTV7zxaoJO0kCJ4iVHb
+         xUqJgv/Re97obtqWTQQsdPQ//rV2bSEcTqkAbkpGABW2h2z02WGuBRIRJ8nfipeBbK6L
+         hRybH6mwFcUaSkUpiAu4YDDK/fmqYz2oVMwmXgwexb0x6+YoIf/h5gabNV3X50431Md8
+         QGBrSXWq/n3Xz8F5Q+XF+Sg32MgsX3EXrGPMUX6RUOv/t9InDPlr/qvtfobNspqKEDqj
+         hPf4NcugQRHsrEnIQXjVacillW1TmexsR9w1vUrPbVszAlHh+1zvegmvVQuGMVrJeOX9
+         gxJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pxEH3lPVvNUUdUP05ZPOl2OQ8LUijQb0MCrSWBXGG1I=;
+        b=tXVbKsQ0brqMLmani3ccoz0CfFda1hrr7CKzGX0VE6soxCxOL5ORzZ/d9hRBB8pcse
+         9FW3/Ebe/uN/T/k+or7TznvGLmHw3S8+C+0U0zZvXH43exXJC8aOyTc+OifXkmNuXrjb
+         VgVm8GWhk67IrucThLkrkOQyq7MB4TUa7Yar5WKxvF5NvbDhbTIm2NmQTM6gSv0IGpME
+         RrVBfcEi5si+vacuhR4kiuIRcZQ6gutMyns82165NOwAo4pJRmecxP0Y1MCOYU4qUTut
+         xrbokgbRMCWY8ON7Or7HQf4mcvTshWD8IQNxuY6WmYm1+1CLSEQ5IwGM7jjkLt0S59tq
+         34Sw==
+X-Gm-Message-State: AOAM531UAY+9OQIcY5Az10NfzAhiZOYicoLwM7rJWWDI1gvspUw6KlpQ
+        FCx09CDTXEn6JWhBb0Cto27HSw==
+X-Google-Smtp-Source: ABdhPJz2RQx7/sc+iaLvhakoRLJxsdTzKIgiu31ziLgJIIup/Jpig7TrILtyJyDRlpAa5rzhhSwQ8w==
+X-Received: by 2002:ac8:5a01:: with SMTP id n1mr1094177qta.107.1612466999188;
+        Thu, 04 Feb 2021 11:29:59 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id z23sm2040630qkb.13.2021.02.04.11.29.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 11:29:58 -0800 (PST)
+Date:   Thu, 4 Feb 2021 14:29:57 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+Message-ID: <YBxLNZJ/83P7H8+H@cmpxchg.org>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-2-hannes@cmpxchg.org>
+ <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
+ <20210203022853.GG1812008@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <1612438753-30133-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1612438753-30133-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 4 Feb 2021 11:27:38 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5M-zkFMo=qpQ1_aQe3cfCQHbdyHGxvcsqGPO-5x5q=3w@mail.gmail.com>
-Message-ID: <CAPhsuW5M-zkFMo=qpQ1_aQe3cfCQHbdyHGxvcsqGPO-5x5q=3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] samples/bpf: Add hello world sample for newbies
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203022853.GG1812008@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 3:42 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> The program is made in a way that everytime an execve syscall
-> is executed it prints Hello, BPF World!
->
-> This is inspired and based on the code example for the book
-> Linux Observability with BPF [1], load_bpf_file() has been
-> removed after commit ceb5dea56543 ("samples: bpf: Remove
-> bpf_load loader completely"), so the old version can not
-> work in the latest mainline kernel.
->
-> Since it is very simple and useful for newbies, I think it is
-> necessary to be upstreamed.
+On Tue, Feb 02, 2021 at 06:28:53PM -0800, Roman Gushchin wrote:
+> On Tue, Feb 02, 2021 at 03:07:47PM -0800, Roman Gushchin wrote:
+> > On Tue, Feb 02, 2021 at 01:47:40PM -0500, Johannes Weiner wrote:
+> > > The memcg hotunplug callback erroneously flushes counts on the local
+> > > CPU, not the counts of the CPU going away; those counts will be lost.
+> > > 
+> > > Flush the CPU that is actually going away.
+> > > 
+> > > Also simplify the code a bit by using mod_memcg_state() and
+> > > count_memcg_events() instead of open-coding the upward flush - this is
+> > > comparable to how vmstat.c handles hotunplug flushing.
+> > 
+> > To the whole series: it's really nice to have an accurate stats at
+> > non-leaf levels. Just as an illustration: if there are 32 CPUs and
+> > 1000 sub-cgroups (which is an absolutely realistic number, because
+> > often there are many dying generations of each cgroup), the error
+> > margin is 3.9GB. It makes all numbers pretty much random and all
+> > possible tests extremely flaky.
+> 
+> Btw, I was just looking into kmem kselftests failures/flakiness,
+> which is caused by exactly this problem: without waiting for the
+> finish of dying cgroups reclaim, we can't make any reliable assumptions
+> about what to expect from memcg stats.
 
-I wonder how much value we will get from this sample. If the user is
-able to compile and try the hello world, they are sure able to compile
-other code in samples/bpf. Also, this code doesn't use BPF skeleton,
-which is the recommended way to write BPF programs. Maybe an
-minimal example with BPF skeleton will add more value here?
+Good point about the selftests. I gave them a shot, and indeed this
+series makes test_kmem work again:
 
-Thanks,
-Song
+vanilla:
+ok 1 test_kmem_basic
+memory.current = 8810496
+slab + anon + file + kernel_stack = 17074568
+slab = 6101384
+anon = 946176
+file = 0
+kernel_stack = 10027008
+not ok 2 test_kmem_memcg_deletion
+ok 3 test_kmem_proc_kpagecgroup
+ok 4 test_kmem_kernel_stacks
+ok 5 test_kmem_dead_cgroups
+ok 6 test_percpu_basic
 
+patched:
+ok 1 test_kmem_basic
+ok 2 test_kmem_memcg_deletion
+ok 3 test_kmem_proc_kpagecgroup
+ok 4 test_kmem_kernel_stacks
+ok 5 test_kmem_dead_cgroups
+ok 6 test_percpu_basic
 
+It even passes with a reduced margin in the patched kernel, since the
+percpu drift - which this test already tried to account for - is now
+only on the page_counter side (whereas memory.stat is always precise).
 
->
-> [1] https://github.com/bpftools/linux-observability-with-bpf/tree/master/code/chapter-2/hello_world
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  samples/bpf/Makefile     |  3 +++
->  samples/bpf/hello_kern.c | 14 ++++++++++++++
->  samples/bpf/hello_user.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 59 insertions(+)
->  create mode 100644 samples/bpf/hello_kern.c
->  create mode 100644 samples/bpf/hello_user.c
->
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index 45ceca4..fd17cbd 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -55,6 +55,7 @@ tprogs-y += task_fd_query
->  tprogs-y += xdp_sample_pkts
->  tprogs-y += ibumad
->  tprogs-y += hbm
-> +tprogs-y += hello
->
->  # Libbpf dependencies
->  LIBBPF = $(TOOLS_PATH)/lib/bpf/libbpf.a
-> @@ -113,6 +114,7 @@ task_fd_query-objs := task_fd_query_user.o $(TRACE_HELPERS)
->  xdp_sample_pkts-objs := xdp_sample_pkts_user.o
->  ibumad-objs := ibumad_user.o
->  hbm-objs := hbm.o $(CGROUP_HELPERS)
-> +hello-objs := hello_user.o $(TRACE_HELPERS)
->
->  # Tell kbuild to always build the programs
->  always-y := $(tprogs-y)
-> @@ -174,6 +176,7 @@ always-y += ibumad_kern.o
->  always-y += hbm_out_kern.o
->  always-y += hbm_edt_kern.o
->  always-y += xdpsock_kern.o
-> +always-y += hello_kern.o
->
->  ifeq ($(ARCH), arm)
->  # Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
-> diff --git a/samples/bpf/hello_kern.c b/samples/bpf/hello_kern.c
-> new file mode 100644
-> index 0000000..b841029
-> --- /dev/null
-> +++ b/samples/bpf/hello_kern.c
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +SEC("tracepoint/syscalls/sys_enter_execve")
-> +int trace_enter_execve(void *ctx)
-> +{
-> +       static const char msg[] = "Hello, BPF World!\n";
-> +
-> +       bpf_trace_printk(msg, sizeof(msg));
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/samples/bpf/hello_user.c b/samples/bpf/hello_user.c
-> new file mode 100644
-> index 0000000..9423bbb
-> --- /dev/null
-> +++ b/samples/bpf/hello_user.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include <bpf/libbpf.h>
-> +#include "trace_helpers.h"
-> +
-> +int main(int argc, char **argv)
-> +{
-> +       struct bpf_link *link = NULL;
-> +       struct bpf_program *prog;
-> +       struct bpf_object *obj;
-> +
-> +       obj = bpf_object__open_file("hello_kern.o", NULL);
-> +       if (libbpf_get_error(obj)) {
-> +               fprintf(stderr, "ERROR: opening BPF object file failed\n");
-> +               return 0;
-> +       }
-> +
-> +       if (bpf_object__load(obj)) {
-> +               fprintf(stderr, "ERROR: loading BPF object file failed\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       prog = bpf_object__find_program_by_name(obj, "trace_enter_execve");
-> +       if (!prog) {
-> +               fprintf(stderr, "ERROR: finding a prog in obj file failed\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       link = bpf_program__attach(prog);
-> +       if (libbpf_get_error(link)) {
-> +               fprintf(stderr, "ERROR: bpf_program__attach failed\n");
-> +               link = NULL;
-> +               goto cleanup;
-> +       }
-> +
-> +       read_trace_pipe();
-> +
-> +cleanup:
-> +       bpf_link__destroy(link);
-> +       bpf_object__close(obj);
-> +       return 0;
-> +}
-> --
-> 2.1.0
->
+I'm going to include that data in the v2 changelog, as well as a patch
+to update test_kmem.c to the more stringent error tolerances.
+
+> So looking forward to have this patchset merged!
+
+Thanks
