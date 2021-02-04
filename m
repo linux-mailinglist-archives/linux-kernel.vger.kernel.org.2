@@ -2,132 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C120A30F796
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3294430F797
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237425AbhBDQVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:21:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237756AbhBDQU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:20:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52306ABD5;
-        Thu,  4 Feb 2021 16:20:14 +0000 (UTC)
-Message-ID: <a7951d7f651681fcfd45cea4f8b173c23cc34aa0.camel@suse.de>
-Subject: Re: [PATCH v14 07/11] arm64: kdump: introduce some macroes for
- crash kernel reservation
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Chen Zhou <chenzhou10@huawei.com>, mingo@redhat.com,
-        tglx@linutronix.de, rppt@kernel.org, dyoung@redhat.com,
-        bhe@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        corbet@lwn.net, John.P.donnelly@oracle.com, bhsharma@redhat.com,
-        prabhakar.pkin@gmail.com
-Cc:     horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
-        james.morse@arm.com, xiexiuqi@huawei.com, guohanjun@huawei.com,
-        huawei.libin@huawei.com, wangkefeng.wang@huawei.com,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
-Date:   Thu, 04 Feb 2021 17:20:11 +0100
-In-Reply-To: <20210130071025.65258-8-chenzhou10@huawei.com>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
-         <20210130071025.65258-8-chenzhou10@huawei.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-LxuFd/trEQUkJJT19YKS"
-User-Agent: Evolution 3.38.3 
+        id S237913AbhBDQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:21:22 -0500
+Received: from de-out1.bosch-org.com ([139.15.230.186]:35858 "EHLO
+        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237096AbhBDQVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:21:08 -0500
+Received: from si0vm1947.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
+        by si0vms0216.rbdmz01.com (Postfix) with ESMTPS id 4DWkKt6W7jz1XLGSq;
+        Thu,  4 Feb 2021 17:20:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
+        s=key3-intmail; t=1612455618;
+        bh=MReZAxd0EH5Y3aZiWiz9G5/9hRs7nvCb0wAkvoZVmxo=; l=10;
+        h=From:Subject:From:Reply-To:Sender;
+        b=AcFwKYrC/VxGeuBQyR/kNR7OKpG9UPEaUFL34tl1Qvcz8xM0LUXcVZJOStz2DUqQ5
+         cpTl+dslcNZdXBQs1SCq6CK+A2VBdFVWcTyDEba9x3qmV2aqjD4QRr3YDu3iSR70sa
+         Ic9TS5pJx6vnLtPtaapRt1mtXOklACQ+ackNkSYA=
+Received: from si0vm4642.rbesz01.com (unknown [10.58.172.176])
+        by si0vm1947.rbesz01.com (Postfix) with ESMTPS id 4DWkKt6CLkz6CjR41;
+        Thu,  4 Feb 2021 17:20:18 +0100 (CET)
+X-AuditID: 0a3aad12-f07ff700000020f1-71-601c1ec268a0
+Received: from fe0vm1651.rbesz01.com ( [10.58.173.29])
+        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by si0vm4642.rbesz01.com (SMG Outbound) with SMTP id C9.BE.08433.2CE1C106; Thu,  4 Feb 2021 17:20:18 +0100 (CET)
+Received: from FE-MBX2042.de.bosch.com (fe-mbx2042.de.bosch.com [10.3.231.52])
+        by fe0vm1651.rbesz01.com (Postfix) with ESMTPS id 4DWkKt5LQvz11ZQ;
+        Thu,  4 Feb 2021 17:20:18 +0100 (CET)
+Received: from FE-MBX2051.de.bosch.com (10.3.231.61) by
+ FE-MBX2042.de.bosch.com (10.3.231.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Thu, 4 Feb 2021 17:20:18 +0100
+Received: from FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f]) by
+ FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f%6]) with mapi id
+ 15.01.2106.006; Thu, 4 Feb 2021 17:20:18 +0100
+From:   "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Steve Twiss <stwiss.opensource@diasemi.com>,
+        "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
+        "Streidl Hubert (BT-FIR/ENG1-Grb)" <Hubert.Streidl@de.bosch.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: AW: [PATCH v2] mfd: da9063: Support SMBus and I2C mode
+Thread-Topic: [PATCH v2] mfd: da9063: Support SMBus and I2C mode
+Thread-Index: AQHW+w22q4v1gg8dsUO4hgmyCKHsCKpIGVsAgAATqNA=
+Date:   Thu, 4 Feb 2021 16:20:18 +0000
+Message-ID: <75c383e09ba74ca2af98d01b9470f53d@de.bosch.com>
+References: <20210204155201.120524-1-mark.jonas@de.bosch.com>
+ <PR3PR10MB41426B0114614DED4C2687F880B39@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <PR3PR10MB41426B0114614DED4C2687F880B39@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.141.237.215]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsXCZbVWVveQnEyCwZUWI4ul75cyW9z/epTR
+        4vKuOWwWR/fcY7a4+ns9i8Xe1ovMFnf3z2V0YPdY8UnfY+esu+wem1Z1snncubaHzePzJrkA
+        1igum5TUnMyy1CJ9uwSujOlLprAXvOWq+P9vAVsD4zmOLkZODgkBE4kb/z6yg9hCAtOZJJq/
+        iHcxcgHZuxklLnUuZYdw3jBK7Jv8ghGiaj+jxOwnrCA2m4CdxP7Xb5hAbBGBfkaJCeeCQRqY
+        BU4wSdxbfJgFJCEsYC9xv+M8WxcjB1CRg8T+/YEQ9VYSv2+uYAaxWQRUJOa/2wM2h1fAWuLj
+        /qssEIsnMEo0/3oCNodTIFZiy4LTYEWMArISGzacB2tmFhCX2PTsOyvEOwISS/ZAxCUERCVe
+        Pv4HFVeS+Dl9JSNEvY7Egt2f2CBsbYllC18zQywWlDg58wnLBEbxWUjGzkLSMgtJyywkLQsY
+        WVYxihZnGpTlmpiZGOkVJaUWVxkY6iXn525ihMSp0A7GXx0f9A4xMnEwHmKU4GBWEuFNbJNK
+        EOJNSaysSi3Kjy8qzUktPsQozcGiJM6rwrMxTkggPbEkNTs1tSC1CCbLxMEp1cCk6nRP5azY
+        v/Ip9yYzZC24yBx5q3bGheBHJ/iPOhhyfBBfdY99sWvwiahlYi+qfPpszcKXcur+7zpraFgk
+        Jrzs3d9znC4JKYxm9YpOs4L1+HmVI6frP1I7+uzGqlM1QTLTd0wRLJ509kdB4IGiL+d8zU+c
+        Npl8/ofSWfdr6ee3Zt38dLrxY9+xzzJ267bz/Dp3Yv7jl4ui9aWLJBLqDs+PZPITnabAcmj9
+        mRl5L48luv2VPPm1+2zEY5Ntx7KeV7dszeC3SYj6kyef8s07lfejtJDX7KsSnGW771z1cDSd
+        krO+XfET41SVMyvPxgtcv7xg98bTs/5MWbqEZ2tYyx/v5MehIoX71qQFp7N2MGsUKbEUZyQa
+        ajEXFScCAK/9QRRCAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adam,
 
---=-LxuFd/trEQUkJJT19YKS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Chen,
-
-On Sat, 2021-01-30 at 15:10 +0800, Chen Zhou wrote:
-> Introduce macro CRASH_ALIGN for alignment, macro CRASH_ADDR_LOW_MAX
-> for upper bound of low crash memory, macro CRASH_ADDR_HIGH_MAX for
-> upper bound of high crash memory, use macroes instead.
+> > +	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
+> > +		dev_info(da9063->dev, "I2C mode");
+> > +		busmode =3D 0;
+> > +	} else {
+> > +		dev_info(da9063->dev, "SMBus mode");
+> > +		busmode =3D 1;
 >=20
-> Besides, keep consistent with x86, use CRASH_ALIGN as the lower bound
-> of crash kernel reservation.
->=20
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
-> =C2=A0arch/arm64/include/asm/kexec.h | 6 ++++++
-> =C2=A0arch/arm64/mm/init.c           | 6 +++---
-> =C2=A02 files changed, 9 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexe=
-c.h
-> index d24b527e8c00..3f6ecae0bc68 100644
-> --- a/arch/arm64/include/asm/kexec.h
-> +++ b/arch/arm64/include/asm/kexec.h
-> @@ -25,6 +25,12 @@
-> =C2=A0
->=20
-> =C2=A0#define KEXEC_ARCH KEXEC_ARCH_AARCH64
-> =C2=A0
->=20
-> +/* 2M alignment for crash kernel regions */
-> +#define CRASH_ALIGN	SZ_2M
-> +
-> +#define CRASH_ADDR_LOW_MAX	arm64_dma_phys_limit
+> I think this should be 'DA9063_TWOWIRE_TO' rather than '1' otherwise I th=
+ink
+> you'll be setting 0 still here as it doesn't match up with the mask.
 
-I wonder if you could use 'ARCH_LOW_ADDRESS_LIMIT', instead of creating a n=
-ew
-define.
+You are right. We need to fix this and send a new patch.
 
-> +#define CRASH_ADDR_HIGH_MAX	MEMBLOCK_ALLOC_ACCESSIBLE
-> +
-> =C2=A0#ifndef __ASSEMBLY__
-> =C2=A0
->=20
-> =C2=A0/**
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 709d98fea90c..912f64f505f7 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -84,8 +84,8 @@ static void __init reserve_crashkernel(void)
-> =C2=A0
->=20
-> =C2=A0	if (crash_base =3D=3D 0) {
-> =C2=A0		/* Current arm64 boot protocol requires 2MB alignment */
-> -		crash_base =3D memblock_find_in_range(0, arm64_dma_phys_limit,
-> -				crash_size, SZ_2M);
-> +		crash_base =3D memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MAX,
-> +				crash_size, CRASH_ALIGN);
+> > +	}
+> > +	ret =3D regmap_update_bits(da9063->regmap,
+> DA9063_REG_CONFIG_J,
+> > +		DA9063_TWOWIRE_TO, busmode);
+> > +	if (ret < 0) {
+> > +		dev_err(da9063->dev, "Failed to set 2-wire bus mode.\n");
+> > +		return -EIO;
+> > +	}
+> > +
+> >  	return da9063_device_init(da9063, i2c->irq);  }
+> >
+> > diff --git a/include/linux/mfd/da9063/registers.h
+> > b/include/linux/mfd/da9063/registers.h
+> > index 1dbabf1b3cb8..6e0f66a2e727 100644
+> > --- a/include/linux/mfd/da9063/registers.h
+> > +++ b/include/linux/mfd/da9063/registers.h
+> > @@ -1037,6 +1037,9 @@
+> >  #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
+> >  #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
+> >
+> > +/* DA9063_REG_CONFIG_J (addr=3D0x10F) */
+> > +#define DA9063_TWOWIRE_TO			0x40
+> > +
+> >  /* DA9063_REG_MON_REG_5 (addr=3D0x116) */
+> >  #define DA9063_MON_A8_IDX_MASK			0x07
+> >  #define		DA9063_MON_A8_IDX_NONE		0x00
+> > --
+> > 2.25.1
 
-Actually we could get rid of CRASH_ADDR_LOW_MAX altogether if we used
-memblock_alloc_low() here (modulo the slight refactoring needed to accommod=
-ate
-it).
-
-Regards,
-Nicolas
-
-
---=-LxuFd/trEQUkJJT19YKS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAcHrsACgkQlfZmHno8
-x/4VFQf/Za2F0DPLs/4XStKKvgiOXxh7Z9VuNZK+TFpC0un67QwVwZs12jI0F4Bs
-Jdh8uz9B956OAwGio8TCE/HQs00jz7y68lfAAkDbLBLEA3BWqb6yrPOwmKa1pLy6
-bn8xcIZX5m3gLj6AwEKQe1LKYaZrUV1PsW/rxDIH/ky7po51hf5f/q/72PnRVtkd
-9jq9LYIfaCE+OvY6zxaxI7YrwjkXTMzMcliRmpO2PWZcWsW8DzsYJeqjOafs1+39
-/UIjey5IdcNvrVQv373Ep2wVRIl7NMgPC6wc/2JiJ1MFedxStWZuj6tDizpy5y5Z
-sT7HzaCsxzMdMrmDwqzGELGWOpI0AQ==
-=ZCRh
------END PGP SIGNATURE-----
-
---=-LxuFd/trEQUkJJT19YKS--
-
+Cheers,
+Mark
