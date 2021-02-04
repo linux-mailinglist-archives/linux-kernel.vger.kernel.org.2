@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A58930FE32
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16A130FE2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238716AbhBDUZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:25:24 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:15089 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240097AbhBDUY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:24:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612470271; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=dkEyhqBrfEPv8uIIrUZLW7vzLutXTgK2aJSRf24Jy1Q=;
- b=kCJp4cNg9sGPiAXcpvsk32TRN4mm6hSlfJ/ijFaL9ND/K8GFI8dicAk326DLeoKtwTmqskE8
- 4wHdrgJYqaGSNtHZOixCKuu/AqyQvzhAW/HdMmcgxsZ8S4jv6x7R/z9vI5EOCo5HumFDL2m/
- JzQ6Pv93jJLGjXq+qzjMa918Raw=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 601c57df5d0f38478782fa1a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 20:23:59
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BA15BC43464; Thu,  4 Feb 2021 20:23:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF1EEC43462;
-        Thu,  4 Feb 2021 20:23:57 +0000 (UTC)
+        id S240115AbhBDUY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240102AbhBDUY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:24:26 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD04C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:24:11 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id cl8so2362721pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YiBh8kjoQsH+w1ie1OfB7U+mi5FxxL8KWnwrDiJ80SQ=;
+        b=PPt+H4wqt1A6KWRSkPhPkxwMn/vw3TKT91vvsKmHebL+0nltYCjD9IrFeHTRAjQymj
+         BUG3q3cW2DBZiH22qiC37rSeMW4mlApOQfqnOR82W1zU+j/au6dXILhqYy9A8+6Iv8qY
+         bcd9AfXep4kZgB1Vmchd6yJteQKwVnKD37aR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YiBh8kjoQsH+w1ie1OfB7U+mi5FxxL8KWnwrDiJ80SQ=;
+        b=jrHVQDOOKxO8QdSsMRkhMcHvt9genUvKhukVFcqCBTFyIj2v6Cn960LigdAFLdeHpf
+         apV2MlKD2or0GLw/cuX/y85ZUYlw0hOypYc6XpD4BlUkAV6kEkW09uiTLdwj/oxcrmo/
+         17QAmP4K73pKECrkuRk3rM2u1yM05RyFSfY2o8pfs3pyI/EduNNOfcOZZvAThrWENMG1
+         p50940QyqXcoehVG+ozRisqk+6GQrfP4MYvqRVb4gLqX8sgAYb3qOpiz83WOrTUnU4mr
+         R1WCJKU3VgVULwpW5Ikd0R9uyEaar9zPMkXPemm9B4hK2hNTsGGTKOybQ5EwxcTd3oTK
+         JHtg==
+X-Gm-Message-State: AOAM533Ov7kvNYCTFef27jewc8eGRUsercWZPBu3qhUGWpBTs8QjJsJp
+        qp0l267jCjqgWpFtvTKs5IpRlA==
+X-Google-Smtp-Source: ABdhPJw0Vm+wT2LUNwph4uBXmL08ISQPaD4Ai/QvO5oPqXHsNDkCcUZJ728ruOrlMF1dvvaBvhbAXQ==
+X-Received: by 2002:a17:902:59dc:b029:e2:9e80:1537 with SMTP id d28-20020a17090259dcb02900e29e801537mr954553plj.66.1612470251540;
+        Thu, 04 Feb 2021 12:24:11 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k11sm6241168pfc.22.2021.02.04.12.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 12:24:10 -0800 (PST)
+Date:   Thu, 4 Feb 2021 12:24:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v19 16/25] mm: Add guard pages around a shadow stack.
+Message-ID: <202102041224.5D300A122B@keescook>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-17-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Feb 2021 12:23:57 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v5 6/9] bus: mhi: core: Check channel execution
- environment before issuing reset
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210121151226.GD5473@work>
-References: <1610139297-36435-1-git-send-email-bbhatt@codeaurora.org>
- <1610139297-36435-7-git-send-email-bbhatt@codeaurora.org>
- <20210121151226.GD5473@work>
-Message-ID: <44821b345e5c46c1532511c1d1a66fe4@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203225547.32221-17-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-
-On 2021-01-21 07:12 AM, Manivannan Sadhasivam wrote:
-> On Fri, Jan 08, 2021 at 12:54:54PM -0800, Bhaumik Bhatt wrote:
->> A client can attempt to unprepare certain channels for transfer even
->> after the execution environment they are supposed to run in has 
->> changed.
+On Wed, Feb 03, 2021 at 02:55:38PM -0800, Yu-cheng Yu wrote:
+> INCSSP(Q/D) increments shadow stack pointer and 'pops and discards' the
+> first and the last elements in the range, effectively touches those memory
+> areas.
 > 
-> Just out of curiosity, under what circumstances it can happen? We don't
-> have any in kernel user for the mhi_unprepare_from_transfer() API :/
+> The maximum moving distance by INCSSPQ is 255 * 8 = 2040 bytes and
+> 255 * 4 = 1020 bytes by INCSSPD.  Both ranges are far from PAGE_SIZE.
+> Thus, putting a gap page on both ends of a shadow stack prevents INCSSP,
+> CALL, and RET from going beyond.
 > 
-We do and it's the qrtr-mhi driver where we can potentially see this 
-happen.
-Mainly, since they want to undo whatever they have done in probe(), this 
-can
-come from the remove() after MHI power down is initiated.
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
-I have updated this patch in upcoming v6 series with a debug message as 
-we only
-want to proceed with clean-up directly.
+Yay guard pages! :)
 
->> In the event that happens, the device need not be notified of the 
->> reset
->> and the host can proceed with clean up for the channel context and
->> memory allocated for it on the host as the device will no longer be 
->> able
->> to respond to such a request.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/main.c | 13 +++++++++++++
->>  1 file changed, 13 insertions(+)
->> 
->> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> index a84e6aa..ec720fe 100644
->> --- a/drivers/bus/mhi/core/main.c
->> +++ b/drivers/bus/mhi/core/main.c
->> @@ -1351,11 +1351,24 @@ static void __mhi_unprepare_channel(struct 
->> mhi_controller *mhi_cntrl,
->>  	/* no more processing events for this channel */
->>  	mutex_lock(&mhi_chan->mutex);
->> 
->> +	if (!(BIT(mhi_cntrl->ee) & mhi_chan->ee_mask)) {
->> +		dev_err(dev,
->> +			"Current EE: %s Required EE Mask: 0x%x for chan: %s\n",
->> +			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask,
->> +			mhi_chan->name);
-> 
-> Again, use channel's struct dev here.
-> 
-Done.
-> Thanks,
-> Mani
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+-- 
+Kees Cook
