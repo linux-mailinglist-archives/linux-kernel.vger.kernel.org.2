@@ -2,153 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136D530ECFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38BD30ED01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhBDHIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhBDHI2 (ORCPT
+        id S234150AbhBDHI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:08:58 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12020 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234099AbhBDHIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:08:28 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335F0C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:07:48 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id f67so350294ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gwShMW7VakppNtamo5qslqRnez5wOdtbVlLT+hSRpfg=;
-        b=S9ub4QTW0HD0Cdk+VbWFIuLHzN8ySxxEzYql7gewsK1tSSIfZdRkSkghx9nojf63Uv
-         10boAezBQxLoLEt3Ui4ja2OJD+4t/2ixQgnn6Mdzp70ODxILjpcISAdpllmdQb1ZaIiX
-         mcu39on4BQlCGCS6G+41hJBq0Rqm4NQezEEr8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gwShMW7VakppNtamo5qslqRnez5wOdtbVlLT+hSRpfg=;
-        b=GsaZOcgInXVKu4goszQAbOT16WOuEoWBfmPSXwxgmUu4XuiQRfK70zOsvtwP9bM5YW
-         B7r6+BOja6TEfkJoXYms/tPC3FVsyydT5xWlgtcW32CyWjHOM1vo5xzhSH5KvzcM3cLG
-         PXQHKKKPF5GHYkzrDRvliYx0xRletMzgq7Lyneo26fIOX/BpEc89pK6G7ZdfDxNavIl7
-         DYJOBDiT4LxlydUIL53msi65c7KGvtapeM/ftMsOdvjbR+KSugI8AtSk35Dmt/x1iETj
-         i9ZM7t3txpEV8BfVG9Qcf39HrYizH+2+o89qzeViKa+1x6O/s8McNl2NtFxK1Nh4iy0+
-         amIA==
-X-Gm-Message-State: AOAM532PJ7C+zVRnYUfXe+Itnx+SIyA92Wf2EJJCA5pP/w+kiklYQ9ys
-        1IVdLw0fwAy51RfBedNaqe7UIqzlTszknpDmoYKteQ==
-X-Google-Smtp-Source: ABdhPJyaBwO5cx5qL0Jinl0WSZXLwj+DqPa0HN0Zc+exdYGqMx/QERfvdvzqT0+dx7TSBowbGvlKTX7vAoUudFMpCgc=
-X-Received: by 2002:a5e:a911:: with SMTP id c17mr5247460iod.20.1612422467611;
- Wed, 03 Feb 2021 23:07:47 -0800 (PST)
+        Thu, 4 Feb 2021 02:08:34 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWV2t4N1QzjJqw;
+        Thu,  4 Feb 2021 15:06:30 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 4 Feb 2021
+ 15:07:41 +0800
+From:   Sun Ke <sunke32@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <Markus.Elfring@web.de>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <sunke32@huawei.com>
+Subject: [PATCH v4 0/2] fix a NULL pointer bug and simplify the code
+Date:   Thu, 4 Feb 2021 02:09:08 -0500
+Message-ID: <20210204070910.1401239-1-sunke32@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20210203092400.1791884-1-hsinyi@chromium.org> <20210203092400.1791884-4-hsinyi@chromium.org>
- <20210204024925.teamzh3d6aq6qfln@vireshk-i7>
-In-Reply-To: <20210204024925.teamzh3d6aq6qfln@vireshk-i7>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 4 Feb 2021 15:07:21 +0800
-Message-ID: <CAJMQK-hc76N5tbS6Gy2Po0j-2vY4t=D0S52LL5v_AitvaJOOrw@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] PM / devfreq: Add required OPPs support to passive governor
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "MyungJoo Ham )" <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Saravana Kannan <saravanak@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 10:49 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 03-02-21, 17:24, Hsin-Yi Wang wrote:
-> > From: Saravana Kannan <saravanak@google.com>
-> >
-> > Look at the required OPPs of the "parent" device to determine the OPP that
-> > is required from the slave device managed by the passive governor. This
-> > allows having mappings between a parent device and a slave device even when
-> > they don't have the same number of OPPs.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
-> > Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  drivers/devfreq/governor_passive.c | 20 +++++++++++++++-----
-> >  1 file changed, 15 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
-> > index 63332e4a65ae8..8d92b1964f9c3 100644
-> > --- a/drivers/devfreq/governor_passive.c
-> > +++ b/drivers/devfreq/governor_passive.c
-> > @@ -19,7 +19,7 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
-> >                       = (struct devfreq_passive_data *)devfreq->data;
-> >       struct devfreq *parent_devfreq = (struct devfreq *)p_data->parent;
-> >       unsigned long child_freq = ULONG_MAX;
-> > -     struct dev_pm_opp *opp;
-> > +     struct dev_pm_opp *opp = NULL, *p_opp = NULL;
->
-> I would initialize p_opp to ERR_PTR(-ENODEV) to avoid using
-> IS_ERR_OR_NULL. There is no need to initialize opp as well.
->
-> >       int i, count, ret = 0;
-> >
-> >       /*
-> > @@ -56,13 +56,20 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
-> >        * list of parent device. Because in this case, *freq is temporary
-> >        * value which is decided by ondemand governor.
-> >        */
-> > -     opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
-> > -     if (IS_ERR(opp)) {
-> > -             ret = PTR_ERR(opp);
-> > +     p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
-> > +     if (IS_ERR(p_opp)) {
-> > +             ret = PTR_ERR(p_opp);
-> >               goto out;
->
-> Perhaps just return from here, the goto is useless here.
->
-> >       }
-> >
-> > -     dev_pm_opp_put(opp);
-> > +     if (devfreq->opp_table && parent_devfreq->opp_table)
-> > +             opp = dev_pm_opp_xlate_required_opp(parent_devfreq->opp_table,
-> > +                                                 devfreq->opp_table, p_opp);
-> > +     if (opp) {
->
-> This needs to be part of the above if block itself, else the opp will
-> always be NULL, isn't it ?
->
-> > +             *freq = dev_pm_opp_get_freq(opp);
-> > +             dev_pm_opp_put(opp);
-> > +             goto out;
-> > +     }
-> >
-> >       /*
-> >        * Get the OPP table's index of decided freqeuncy by governor
-> > @@ -89,6 +96,9 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
-> >       *freq = child_freq;
-> >
-> >  out:
-> > +     if (!IS_ERR_OR_NULL(opp))
->
-> you should be checking for p_opp here, isn't it ? And perhaps we don't
-> need this check as well as p_opp can't be invalid here.
->
-> > +             dev_pm_opp_put(p_opp);
-> > +
-> >       return ret;
-> >  }
-> >
-> > --
-> > 2.30.0.365.g02bc693789-goog
->
-Thanks for the review. I'll fix them and send next version
+v4: Share exception handling code for if branches and 
+	move put_nbd adjustment to a separate patch.
+v3: Do not use unlock and add put_nbd.
+v2: Use jump target unlock.
 
-> --
-> viresh
+Sun Ke (2):
+  nbd: Fix NULL pointer in flush_workqueue
+  nbd: share exception handling code by goto put_nbd
+
+ drivers/block/nbd.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+-- 
+2.25.4
+
