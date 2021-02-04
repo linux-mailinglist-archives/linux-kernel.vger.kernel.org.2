@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B0530F11B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 227D930F11E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhBDKpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:45:22 -0500
-Received: from mga06.intel.com ([134.134.136.31]:52906 "EHLO mga06.intel.com"
+        id S235447AbhBDKpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:45:42 -0500
+Received: from ozlabs.org ([203.11.71.1]:48873 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235037AbhBDKpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:45:19 -0500
-IronPort-SDR: j/GbsNOoNowtUHBalcuGDyhLqBxrJINjf7Ou5qit2/qzgnfPPzf8q/j1L1snEqjxbx8VbBmlvQ
- m7DkVzm/icrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242723583"
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="242723583"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:44:37 -0800
-IronPort-SDR: PVOI/G2+/ZiQWeX5LUb4HtD1Ld7CVXQhvQyVaAW11Nq0aIYkKueAedfuUUi80zuDxgX09iFQS8
- IN+encK524Uw==
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="393103840"
-Received: from dbmayer-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:44:34 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Colin King <colin.king@canonical.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        id S231387AbhBDKpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:45:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWZtr4RvTz9sXV;
+        Thu,  4 Feb 2021 21:44:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1612435496;
+        bh=7gUDiKUJsUlnyL1hzNVaMIZFOrtzUH+RnQewMgPBJXA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aeithg5XbYtGR3+3M0J2fWWh+BH4YzO0m/tpovXY4JTNI34gGy0ZFPKzi6lAxzbdt
+         p4lAuxnwJYSnrDXZnLVdsh8F0iA2jhQ4lDRw7p1Ocl/U6Q0wMnDs23z3/QrU4Q+lno
+         vB6Wm/ETnQGaQPRkmOAk+Cg4eN2q25qRCTLtm9IPEiw22Jg7kttOdCnyq2xIB3d3Mu
+         W6uJuZIKbssUj6v53+5imSR9JR3l28/X1jC6TANDAQeGIAHjg+1q4qg9hrQPw8eQ5U
+         eF+le40oSyflT3D2CclEO5XCqDqyoXIurBtwcjRAc2Wf+Tc0nSes3mnm+UAEcPnkf7
+         5fFb3xrUGnKIQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christoph Hellwig <hch@lst.de>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drm/i915/display: fix spelling mistake "Couldnt" -> "Couldn't"
-In-Reply-To: <20210203110803.17894-1-colin.king@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210203110803.17894-1-colin.king@canonical.com>
-Date:   Thu, 04 Feb 2021 12:44:31 +0200
-Message-ID: <87eehwf6y8.fsf@intel.com>
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 01/13] powerpc/powernv: remove get_cxl_module
+In-Reply-To: <20210202121334.1361503-2-hch@lst.de>
+References: <20210202121334.1361503-1-hch@lst.de>
+ <20210202121334.1361503-2-hch@lst.de>
+Date:   Thu, 04 Feb 2021 21:44:51 +1100
+Message-ID: <87h7msp0ws.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Feb 2021, Colin King <colin.king@canonical.com> wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+Christoph Hellwig <hch@lst.de> writes:
+> The static inline get_cxl_module function is entirely unused since commit
+> 8bf6b91a5125a ("Revert "powerpc/powernv: Add support for the cxl kernel
+> api on the real phb"), so remove it.
 >
-> There is a spelling mistake in a drm_dbg message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Thanks, pushed to drm-intel-next.
-
-BR,
-Jani.
-
-
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
 > ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 8c12d5375607..a338720cee2e 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -2650,7 +2650,7 @@ void intel_dp_check_frl_training(struct intel_dp *intel_dp)
->  	if (intel_dp_pcon_start_frl_training(intel_dp) < 0) {
->  		int ret, mode;
->  
-> -		drm_dbg(&dev_priv->drm, "Couldnt set FRL mode, continuing with TMDS mode\n");
-> +		drm_dbg(&dev_priv->drm, "Couldn't set FRL mode, continuing with TMDS mode\n");
->  		ret = drm_dp_pcon_reset_frl_config(&intel_dp->aux);
->  		mode = drm_dp_pcon_hdmi_link_mode(&intel_dp->aux, NULL);
+>  arch/powerpc/platforms/powernv/pci-cxl.c | 22 ----------------------
+>  1 file changed, 22 deletions(-)
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+
+cheers
