@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA91E30FB16
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6123E30FB39
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238656AbhBDSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238156AbhBDSQi (ORCPT
+        id S239021AbhBDSVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:21:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238971AbhBDSUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:16:38 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFBCC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:15:56 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id w1so6966388ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:15:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sHPNpNqRTc3lgTTnJatrn/4jH2bI7C52VyBZqixyw2g=;
-        b=gaN16r/UUj+zzbzPB11XW7ssMApTMkYDt3TmgYzvAeTZiRDxNHC0Oja+qS2df1AKKN
-         Q690eEXFKXP3i3xfnkfddvO0fP7a0GlHaHfe0ulN9NPhKyc66AJ2/YrpGoo2SDnjaZZ8
-         ew2VrJO7jdThs9mHsz16Ps4nmQRXhkyhIOts4rXol1CLRHITrd6SwbodDY9fOu8Qsr9O
-         GYQk3KRh12tzFvwr1s3CPIH/TRTyLR96aG6Dw5Y9Ob4orjSSLEgQVP5yhW6Zktouw8PN
-         34jMMF8VwCPzMye13PCbMbDL/0j3pbKW9rYJdVu2nEfRkDJ/L+nLuURXbAzNFk/oHTfW
-         b7vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sHPNpNqRTc3lgTTnJatrn/4jH2bI7C52VyBZqixyw2g=;
-        b=qanCiFOMR5eODmubrMJ4Sk6tHxxfL/YuOrf6h2N312L4rDhL3Xksf5MYDUW8KxCvqO
-         KReJlJWIWxuKKiN8EPN2cC3IDYLfPt2mG1rMuh++aHncTH4/N184eT++rQxFZtvvelJ5
-         qfzItFXLqhHzuClmnEGn4562NT6LvdKC7S33pxywzJjG7jxNvCvOR+nedtZnA5SfFZL3
-         nTTr+jko1+JL0k9u15qZaEngSg0M+8ddIAySCMnka9gvi7bzzEvTzkPTeRmp1f6nWmRl
-         7j8uZFcbNx5htNg7HkGYW3DKTsYDKNamLuL8Gh/gWY4Ww6I6JEPutL1hvBtQl7eJw3Hb
-         dXYA==
-X-Gm-Message-State: AOAM5325nowOCLNwT5NHOhc/o1OItoehkC4+8CQVpDdT3ZSrdXDoAALI
-        dLd4b2WE6ePVq1zW3yWRMDcHok/ZPuE=
-X-Google-Smtp-Source: ABdhPJzt+oRbAoMs96bM72e8WIvvfb7+n4R3t18vC8R15kZ6WcsGDXWfZjToNyYr4maLekp/7eY1Qw==
-X-Received: by 2002:a17:906:e15:: with SMTP id l21mr366735eji.376.1612462554565;
-        Thu, 04 Feb 2021 10:15:54 -0800 (PST)
-Received: from localhost (ipv6-163808adb974b8b7.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:1638:8ad:b974:b8b7])
-        by smtp.gmail.com with ESMTPSA id f6sm2881926edk.13.2021.02.04.10.15.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 10:15:53 -0800 (PST)
-Date:   Thu, 4 Feb 2021 19:15:41 +0100
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     thierry.reding@gmail.com, Fabio Estevam <festevam@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/panel: simple: add SGD GKTW70SDAD1SD
-Message-ID: <20210204181541.GA13054@portage>
-References: <1612287314-5384-1-git-send-email-oliver.graute@gmail.com>
- <20210202175910.ycnf7ehk2i4u3f5o@pengutronix.de>
+        Thu, 4 Feb 2021 13:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612462717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=85mWqPkwgft3QumNJIv0lzUNsiwA9K0lxEl6eklMhqo=;
+        b=TgaVa54lRxDKaLVTAjR9dUeqfZSC4Zpg8ljRdP0E7HZptnyDMWypdvfnWd1YVVpES4SAKN
+        v3W7LTa3WPBN1sn6vZZnaAWH5KSXfu8RVkNX8XIHACL9xyEjFTBMgxVYko9xTX+vASSxwR
+        uDD9FXx/roJmVNOckbKkLRAmqiDzcNM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-9cQB1pZEPteiZ6b-1P1WOw-1; Thu, 04 Feb 2021 13:18:35 -0500
+X-MC-Unique: 9cQB1pZEPteiZ6b-1P1WOw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E564F80196E;
+        Thu,  4 Feb 2021 18:18:32 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46B4460C05;
+        Thu,  4 Feb 2021 18:18:20 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 20E9D4178901; Thu,  4 Feb 2021 15:15:46 -0300 (-03)
+Date:   Thu, 4 Feb 2021 15:15:46 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
+        zhangshaokun@hisilicon.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
+ CPUs
+Message-ID: <20210204181546.GA30113@fuller.cnet>
+References: <20200625223443.2684-1-nitesh@redhat.com>
+ <20200625223443.2684-2-nitesh@redhat.com>
+ <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet>
+ <87r1m5can2.fsf@nanos.tec.linutronix.de>
+ <20210128165903.GB38339@fuller.cnet>
+ <87h7n0de5a.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202175910.ycnf7ehk2i4u3f5o@pengutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21, Marco Felsch wrote:
-> Hi Oliver,
+On Thu, Jan 28, 2021 at 09:01:37PM +0100, Thomas Gleixner wrote:
+> On Thu, Jan 28 2021 at 13:59, Marcelo Tosatti wrote:
+> >> The whole pile wants to be reverted. It's simply broken in several ways.
+> >
+> > I was asking for your comments on interaction with CPU hotplug :-)
 > 
-> On 21-02-02 18:35, Oliver Graute wrote:
-> > Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
-> > to panel-simple.
-> > 
-> > The panel spec from Variscite can be found at:
-> > https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
-> > 
-> > Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
-> > Cc: Marco Felsch <m.felsch@pengutronix.de>
-> > Cc: Fabio Estevam <festevam@gmail.com>
-> > ---
-> > 
-> > v3:
-> > 
-> > - added flags
-> > - added delay
+> Which I answered in an seperate mail :)
 > 
-> Thanks, did you test the changes?
-> I just picked it from the datasheet.
+> > So housekeeping_cpumask has multiple meanings. In this case:
+> 
+> ...
+> 
+> > So as long as the meaning of the flags are respected, seems
+> > alright.
+> 
+> Yes. Stuff like the managed interrupts preference for housekeeping CPUs
+> when a affinity mask spawns housekeeping and isolated is perfectly
+> fine. It's well thought out and has no limitations.
+> 
+> > Nitesh, is there anything preventing this from being fixed
+> > in userspace ? (as Thomas suggested previously).
+> 
+> Everything with is not managed can be steered by user space.
 
-yes, it didn't break anything. 
+Yes, but it seems to be racy (that is, there is a window where the 
+interrupt can be delivered to an isolated CPU).
 
-Best regards,
+ethtool ->
+xgbe_set_channels ->
+xgbe_full_restart_dev ->
+xgbe_alloc_memory ->
+xgbe_alloc_channels ->
+cpumask_local_spread
 
-Oliver
+Also ifconfig eth0 down / ifconfig eth0 up leads
+to cpumask_spread_local.
+
+How about adding a new flag for isolcpus instead?
+
