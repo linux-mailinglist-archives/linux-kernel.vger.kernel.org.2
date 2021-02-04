@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6123E30FB39
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D603C30FB67
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhBDSVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:21:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57591 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238971AbhBDSUD (ORCPT
+        id S238918AbhBDS0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239069AbhBDSZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:20:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612462717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=85mWqPkwgft3QumNJIv0lzUNsiwA9K0lxEl6eklMhqo=;
-        b=TgaVa54lRxDKaLVTAjR9dUeqfZSC4Zpg8ljRdP0E7HZptnyDMWypdvfnWd1YVVpES4SAKN
-        v3W7LTa3WPBN1sn6vZZnaAWH5KSXfu8RVkNX8XIHACL9xyEjFTBMgxVYko9xTX+vASSxwR
-        uDD9FXx/roJmVNOckbKkLRAmqiDzcNM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-9cQB1pZEPteiZ6b-1P1WOw-1; Thu, 04 Feb 2021 13:18:35 -0500
-X-MC-Unique: 9cQB1pZEPteiZ6b-1P1WOw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E564F80196E;
-        Thu,  4 Feb 2021 18:18:32 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46B4460C05;
-        Thu,  4 Feb 2021 18:18:20 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 20E9D4178901; Thu,  4 Feb 2021 15:15:46 -0300 (-03)
-Date:   Thu, 4 Feb 2021 15:15:46 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, akpm@linux-foundation.org,
-        sfr@canb.auug.org.au, stephen@networkplumber.org,
-        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
-        zhangshaokun@hisilicon.com
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
- CPUs
-Message-ID: <20210204181546.GA30113@fuller.cnet>
-References: <20200625223443.2684-1-nitesh@redhat.com>
- <20200625223443.2684-2-nitesh@redhat.com>
- <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
- <20210127121939.GA54725@fuller.cnet>
- <87r1m5can2.fsf@nanos.tec.linutronix.de>
- <20210128165903.GB38339@fuller.cnet>
- <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+        Thu, 4 Feb 2021 13:25:29 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB78C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:24:48 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7jAm-0002WQ-TD; Thu, 04 Feb 2021 19:16:08 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7jAV-0005Pi-Pr; Thu, 04 Feb 2021 19:15:51 +0100
+Date:   Thu, 4 Feb 2021 19:15:51 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>, kvm@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Eric Anholt <eric@anholt.net>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-rtc@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Takashi Iwai <tiwai@suse.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <20210204181551.ethtuzm65flujmwe@pengutronix.de>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+ <YBlcTXlxemmC2lgr@kroah.com>
+ <20210204165224.GA1463@shell.armlinux.org.uk>
+ <YBwnUrQqlAz2LDPI@kroah.com>
+ <20210204165951.GB1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mw66hszyvu2hxhxe"
 Content-Disposition: inline
-In-Reply-To: <87h7n0de5a.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210204165951.GB1463@shell.armlinux.org.uk>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 09:01:37PM +0100, Thomas Gleixner wrote:
-> On Thu, Jan 28 2021 at 13:59, Marcelo Tosatti wrote:
-> >> The whole pile wants to be reverted. It's simply broken in several ways.
-> >
-> > I was asking for your comments on interaction with CPU hotplug :-)
-> 
-> Which I answered in an seperate mail :)
-> 
-> > So housekeeping_cpumask has multiple meanings. In this case:
-> 
-> ...
-> 
-> > So as long as the meaning of the flags are respected, seems
-> > alright.
-> 
-> Yes. Stuff like the managed interrupts preference for housekeeping CPUs
-> when a affinity mask spawns housekeeping and isolated is perfectly
-> fine. It's well thought out and has no limitations.
-> 
-> > Nitesh, is there anything preventing this from being fixed
-> > in userspace ? (as Thomas suggested previously).
-> 
-> Everything with is not managed can be steered by user space.
 
-Yes, but it seems to be racy (that is, there is a window where the 
-interrupt can be delivered to an isolated CPU).
+--mw66hszyvu2hxhxe
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-ethtool ->
-xgbe_set_channels ->
-xgbe_full_restart_dev ->
-xgbe_alloc_memory ->
-xgbe_alloc_channels ->
-cpumask_local_spread
+On Thu, Feb 04, 2021 at 04:59:51PM +0000, Russell King - ARM Linux admin wr=
+ote:
+> On Thu, Feb 04, 2021 at 05:56:50PM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Feb 04, 2021 at 04:52:24PM +0000, Russell King - ARM Linux admi=
+n wrote:
+> > > On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
+> > > > I'm glad to take this through my char/misc tree, as that's where the
+> > > > other coresight changes flow through.  So if no one else objects, I=
+ will
+> > > > do so...
+> > >=20
+> > > Greg, did you end up pulling this after all? If not, Uwe produced a v=
+2.
+> > > I haven't merged v2 yet as I don't know what you've done.
+> >=20
+> > I thought you merged this?
+>=20
+> I took v1, and put it in a branch I've promised in the past not to
+> rebase/rewind. Uwe is now asking for me to take a v2 or apply a patch
+> on top.
+>=20
+> The only reason to produce an "immutable" branch is if it's the basis
+> for some dependent work and you need that branch merged into other
+> people's trees... so the whole "lets produce a v2" is really odd
+> workflow... I'm confused about what I should do, and who has to be
+> informed which option I take.
+>=20
+> I'm rather lost here too.
 
-Also ifconfig eth0 down / ifconfig eth0 up leads
-to cpumask_spread_local.
+Sorry to have cause this confusion. After I saw that my initial tag
+missed to adapt a driver I wanted to make it easy for you to fix the
+situation.
+So I created a patch to fix it and created a second tag with the patch
+squashed in. Obviously only one of them have to be picked and I hoped
+you (=3D Russell + Greg) would agree which option to pick.
 
-How about adding a new flag for isolcpus instead?
+My preference would be if you both pick up v2 of the tag to yield a
+history that is bisectable without build problems, but if Russell (who
+already picked up the broken tag) considers his tree immutable and so
+isn't willing to rebase, then picking up the patch is the way to go.
 
+I suggest that Russell descides which option he wants to pick and tells
+Greg to do the same!?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--mw66hszyvu2hxhxe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAcOdQACgkQwfwUeK3K
+7AlatwgAoTySm2q5g+gxl/CCA9C6tYko2Pu8wLkL3YfNBIgf05iOJ9G8Miwhd95G
+eDv5Ue6LEvHVOMZHbbZMliKzacCtSGzzhTpNpIcL7SZH/Vu0nyB8qGbN+PAm+rsX
+K54DEaOvyPIcDUkuXgUGC2e0nXjg7499oDQs/rajEADbs8ECpDvKCTRYczmQ6E8v
+VS9a/GOt/WDa0dqOdAt6OfxirahLKjPQC1/FS1kcREk1QBYbH6TqM/t8b4t0ED9p
+A5RYkSHAXArD/ifkinbRDUIhLY7XzhBYGEiiNgwCCtsbHE06GP/BNPlXMj6+fLAY
+g/wGBoyP1j9OrCrpGDnsy/oyv64XRg==
+=Rv8c
+-----END PGP SIGNATURE-----
+
+--mw66hszyvu2hxhxe--
