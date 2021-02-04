@@ -2,62 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9236730EDFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7FB30EE05
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhBDIFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:05:40 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12419 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbhBDIFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:05:16 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DWWJc1DFVzjGlq;
-        Thu,  4 Feb 2021 16:03:28 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 16:04:24 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <borntraeger@de.ibm.com>, <frankja@linux.ibm.com>,
-        <david@redhat.com>, <cohuck@redhat.com>, <imbrenda@linux.ibm.com>,
-        <hca@linux.ibm.com>, <gor@linux.ibm.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] KVM: s390: Return the correct errno code
-Date:   Thu, 4 Feb 2021 16:05:23 +0800
-Message-ID: <20210204080523.18943-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S234861AbhBDIGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:06:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233387AbhBDIGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:06:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5146B64F4E;
+        Thu,  4 Feb 2021 08:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612425951;
+        bh=yeAE6tgm+U3ro6wyIgj9w7latW5kqYL9eDTxAwNkZLQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LXfJo5XfoeIgxIFCS3Ecgvz9cyM1fV1OL4BU4+/TfwQlnQ+54Df2cFSqRbqHaLiLZ
+         kGLUnPJlNLhjRfxhbPeAse8e8wok4hKSalYV7Bv/Y63Whn0qoSXg1iq3chxd3ScZSw
+         XrGf52XWaEwebup4v92aGZ7YXpyeI38Xs5ioVWRqtyGscmj0QWGfEgiElHIw44kHea
+         I9UBMxSQ4xDuUqRhnaeKANWXVmqorApFhqhvi+wbOL2AMU5wmJ6/W74jVb7qNxRrA/
+         mJeVpmmPZFAmnigM7kt6Q5aaBrugcsPQuL5jTozdrXMgbisY7HZFJJpDWL6Ar7gICh
+         P3gJu9lGtoe3Q==
+Date:   Thu, 4 Feb 2021 13:35:47 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] phy: qualcomm: usb28nm: Add MDM9607 init sequence
+Message-ID: <20210204080547.GM3079@vkoul-mobl.Dlink>
+References: <20210131013124.54484-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210131013124.54484-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When valloc failed, should return ENOMEM rather than ENOBUF.
+On 31-01-21, 02:31, Konrad Dybcio wrote:
+> This is required to bring up the PHY on MDM9607-based boards.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- arch/s390/kvm/interrupt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied, thanks
 
-diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-index 2f177298c663..6b7acc27cfa2 100644
---- a/arch/s390/kvm/interrupt.c
-+++ b/arch/s390/kvm/interrupt.c
-@@ -2252,7 +2252,7 @@ static int get_all_floating_irqs(struct kvm *kvm, u8 __user *usrbuf, u64 len)
- 	 */
- 	buf = vzalloc(len);
- 	if (!buf)
--		return -ENOBUFS;
-+		return -ENOMEM;
- 
- 	max_irqs = len / sizeof(struct kvm_s390_irq);
- 
 -- 
-2.22.0
-
+~Vinod
