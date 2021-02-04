@@ -2,102 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8B230FACF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1C530FB0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238703AbhBDSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:10:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48767 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238741AbhBDSJP (ORCPT
+        id S238928AbhBDSMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:12:35 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2501 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238861AbhBDSKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:09:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612462069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2uqBOHayoK9VQ4lj587O369rpP5nIS/wiQsdo323rcY=;
-        b=dGW0YRNsIkH+PnIJlBQfpq85jRjdsR+ZRrdi234dSe3w8zjBXgtmL9gt9C+2O57HxnVdnR
-        JgloQAFVozuNmkrWe/oJc6259jdGKh7S1oMUlmm3+Q3I2rCaUuXMfal5D4DFez7l9wtwPU
-        Bp85CI5kBYP/HHpn3LACXT0F2hfIHBA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-J5Es6aY6Pd6KUIxbGUP8_w-1; Thu, 04 Feb 2021 13:07:47 -0500
-X-MC-Unique: J5Es6aY6Pd6KUIxbGUP8_w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1AE7801960;
-        Thu,  4 Feb 2021 18:07:45 +0000 (UTC)
-Received: from bfoster (ovpn-114-23.rdu2.redhat.com [10.10.114.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3394760C05;
-        Thu,  4 Feb 2021 18:07:42 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 13:07:39 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dave Chinner <dchinner@redhat.com>,
-        Gao Xiang <hsiangkao@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xfs: fix unused variable warning
-Message-ID: <20210204180739.GD3721376@bfoster>
-References: <20210204160427.2303504-1-arnd@kernel.org>
+        Thu, 4 Feb 2021 13:10:55 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DWmdR52nBz67ktp;
+        Fri,  5 Feb 2021 02:03:55 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 4 Feb 2021 19:10:13 +0100
+Received: from localhost (10.47.65.115) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 4 Feb 2021
+ 18:10:12 +0000
+Date:   Thu, 4 Feb 2021 18:09:26 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
+        <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 07/11] iio: add reference to iio buffer on
+ iio_dev_attr
+Message-ID: <20210204180926.00005e4c@Huawei.com>
+In-Reply-To: <20210201145105.20459-8-alexandru.ardelean@analog.com>
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+        <20210201145105.20459-8-alexandru.ardelean@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204160427.2303504-1-arnd@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.65.115]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 05:03:44PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 1 Feb 2021 16:51:01 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+
+> This change adds a reference to a 'struct iio_buffer' object on the
+> iio_dev_attr object. This way, we can use the created iio_dev_attr objects
+> on per-buffer basis (since they're allocated anyway).
 > 
-> When debugging is disabled, the ASSERT() is left out and
-> the 'log' variable becomes unused:
+> A minor downside of this change is that the number of parameters on
+> __iio_add_chan_devattr() grows by 1. This looks like it could do with a bit
+> of a re-think.
+
+Could use a bit of macro magic or static inline to keep the old
+version set of parameter and have __iio_add_chan_devattr_with_buf 
+or similar.  I'm not sure I'd bother given we don't have that many callers.
+
 > 
-> fs/xfs/xfs_log.c:1111:16: error: unused variable 'log' [-Werror,-Wunused-variable]
-> 
-> Remove the variable declaration and open-code it inside
-> of the assertion.
-> 
-> Fixes: 303591a0a947 ("xfs: cover the log during log quiesce")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 > ---
-
-I sent basically the same patch[1] about a week ago, but either one is
-fine with me:
-
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-
-[1] https://lore.kernel.org/linux-xfs/20210125132616.GB2047559@bfoster/
-
->  fs/xfs/xfs_log.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/iio/iio_core.h            | 2 ++
+>  drivers/iio/industrialio-buffer.c | 4 ++++
+>  drivers/iio/industrialio-core.c   | 6 ++++++
+>  drivers/iio/industrialio-event.c  | 1 +
+>  include/linux/iio/sysfs.h         | 3 +++
+>  5 files changed, 16 insertions(+)
 > 
-> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-> index 58699881c100..d8b814227734 100644
-> --- a/fs/xfs/xfs_log.c
-> +++ b/fs/xfs/xfs_log.c
-> @@ -1108,12 +1108,11 @@ static int
->  xfs_log_cover(
->  	struct xfs_mount	*mp)
+> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> index 7d5b179c1fe7..731f5170d5b9 100644
+> --- a/drivers/iio/iio_core.h
+> +++ b/drivers/iio/iio_core.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/device.h>
+>  
+> +struct iio_buffer;
+>  struct iio_chan_spec;
+>  struct iio_dev;
+>  
+> @@ -43,6 +44,7 @@ int __iio_add_chan_devattr(const char *postfix,
+>  			   u64 mask,
+>  			   enum iio_shared_by shared_by,
+>  			   struct device *dev,
+> +			   struct iio_buffer *buffer,
+>  			   struct list_head *attr_list);
+>  void iio_free_chan_devattr_list(struct list_head *attr_list);
+>  
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index f82decf92b7c..a525e88b302f 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+
+> @@ -447,6 +447,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  				     0,
+>  				     IIO_SEPARATE,
+>  				     &indio_dev->dev,
+> +				     buffer,
+>  				     &buffer->scan_el_dev_attr_list);
+>  	if (ret)
+>  		return ret;
+> @@ -458,6 +459,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  				     0,
+>  				     0,
+>  				     &indio_dev->dev,
+> +				     buffer,
+>  				     &buffer->scan_el_dev_attr_list);
+>  	if (ret)
+>  		return ret;
+> @@ -470,6 +472,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  					     chan->scan_index,
+>  					     0,
+>  					     &indio_dev->dev,
+> +					     buffer,
+>  					     &buffer->scan_el_dev_attr_list);
+>  	else
+>  		ret = __iio_add_chan_devattr("en",
+> @@ -479,6 +482,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+>  					     chan->scan_index,
+>  					     0,
+>  					     &indio_dev->dev,
+> +					     buffer,
+>  					     &buffer->scan_el_dev_attr_list);
+>  	if (ret)
+>  		return ret;
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index ccd7aaff6d13..c68130885d83 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1114,6 +1114,7 @@ int __iio_add_chan_devattr(const char *postfix,
+>  			   u64 mask,
+>  			   enum iio_shared_by shared_by,
+>  			   struct device *dev,
+> +			   struct iio_buffer *buffer,
+>  			   struct list_head *attr_list)
 >  {
-> -	struct xlog		*log = mp->m_log;
->  	int			error = 0;
->  	bool			need_covered;
+>  	int ret;
+> @@ -1129,6 +1130,7 @@ int __iio_add_chan_devattr(const char *postfix,
+>  		goto error_iio_dev_attr_free;
+>  	iio_attr->c = chan;
+>  	iio_attr->address = mask;
+> +	iio_attr->buffer = buffer;
+>  	list_for_each_entry(t, attr_list, l)
+>  		if (strcmp(t->dev_attr.attr.name,
+>  			   iio_attr->dev_attr.attr.name) == 0) {
+> @@ -1165,6 +1167,7 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+>  				     0,
+>  				     IIO_SEPARATE,
+>  				     &indio_dev->dev,
+> +				     NULL,
+>  				     &iio_dev_opaque->channel_attr_list);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -1190,6 +1193,7 @@ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+>  					     i,
+>  					     shared_by,
+>  					     &indio_dev->dev,
+> +					     NULL,
+>  					     &iio_dev_opaque->channel_attr_list);
+>  		if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
+>  			continue;
+> @@ -1226,6 +1230,7 @@ static int iio_device_add_info_mask_type_avail(struct iio_dev *indio_dev,
+>  					     i,
+>  					     shared_by,
+>  					     &indio_dev->dev,
+> +					     NULL,
+>  					     &iio_dev_opaque->channel_attr_list);
+>  		kfree(avail_postfix);
+>  		if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
+> @@ -1322,6 +1327,7 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+>  					i,
+>  					ext_info->shared,
+>  					&indio_dev->dev,
+> +					NULL,
+>  					&iio_dev_opaque->channel_attr_list);
+>  			i++;
+>  			if (ret == -EBUSY && ext_info->shared)
+> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> index ea8947cc21e4..a30e289fc362 100644
+> --- a/drivers/iio/industrialio-event.c
+> +++ b/drivers/iio/industrialio-event.c
+> @@ -385,6 +385,7 @@ static int iio_device_add_event(struct iio_dev *indio_dev,
 >  
-> -	ASSERT((xlog_cil_empty(log) && xlog_iclogs_empty(log) &&
-> -	        !xfs_ail_min_lsn(log->l_ailp)) ||
-> +	ASSERT((xlog_cil_empty(mp->m_log) && xlog_iclogs_empty(mp->m_log) &&
-> +	        !xfs_ail_min_lsn(mp->m_log->l_ailp)) ||
->  	       XFS_FORCED_SHUTDOWN(mp));
+>  		ret = __iio_add_chan_devattr(postfix, chan, show, store,
+>  			 (i << 16) | spec_index, shared_by, &indio_dev->dev,
+> +			 NULL,
+>  			&iio_dev_opaque->event_interface->dev_attr_list);
+>  		kfree(postfix);
 >  
->  	if (!xfs_log_writable(mp))
-> -- 
-> 2.29.2
-> 
+> diff --git a/include/linux/iio/sysfs.h b/include/linux/iio/sysfs.h
+> index b532c875bc24..e51fba66de4b 100644
+> --- a/include/linux/iio/sysfs.h
+> +++ b/include/linux/iio/sysfs.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _INDUSTRIAL_IO_SYSFS_H_
+>  #define _INDUSTRIAL_IO_SYSFS_H_
+>  
+> +struct iio_buffer;
+>  struct iio_chan_spec;
+>  
+>  /**
+> @@ -17,12 +18,14 @@ struct iio_chan_spec;
+>   * @address:	associated register address
+>   * @l:		list head for maintaining list of dynamically created attrs
+>   * @c:		specification for the underlying channel
+> + * @buffer:	the IIO buffer to which this attribute belongs to (if any)
+>   */
+>  struct iio_dev_attr {
+>  	struct device_attribute dev_attr;
+>  	u64 address;
+>  	struct list_head l;
+>  	struct iio_chan_spec const *c;
+> +	struct iio_buffer *buffer;
+>  };
+>  
+>  #define to_iio_dev_attr(_dev_attr)				\
 
