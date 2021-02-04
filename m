@@ -2,84 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FF930F3AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE2130F3B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhBDNIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236258AbhBDNII (ORCPT
+        id S236258AbhBDNKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:10:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23680 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236223AbhBDNKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:08:08 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E215C0613D6;
-        Thu,  4 Feb 2021 05:07:28 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DWf3J5MzLz1s46W;
-        Thu,  4 Feb 2021 14:07:22 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DWf3G5DpDz1t6pd;
-        Thu,  4 Feb 2021 14:07:22 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id rMuKl75E9QlS; Thu,  4 Feb 2021 14:07:20 +0100 (CET)
-X-Auth-Info: D0bG0TMQNvtHsjyTpMg0Mv2GMX5Ec5sREluid0wh+VU=
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu,  4 Feb 2021 14:07:20 +0100 (CET)
-Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
-To:     Yann GAUTIER <yann.gautier@foss.st.com>, ulf.hansson@linaro.org
-Cc:     linux@armlinux.org.uk, linus.walleij@linaro.org,
-        ludovic.barre@foss.st.com, per.forlin@linaro.org,
-        huyue2@yulong.com, wsa+renesas@sang-engineering.com,
-        vbadigan@codeaurora.org, adrian.hunter@intel.com,
-        p.zabel@pengutronix.de, swboyd@chromium.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-2-yann.gautier@foss.st.com>
- <0ac77e8d-9400-abc8-f963-943e9cba94db@denx.de>
- <9fbd2fca-e4f5-d28f-74de-d9906cc232bf@foss.st.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <50d92d9a-b42e-b313-a0c7-ff0848a3c673@denx.de>
-Date:   Thu, 4 Feb 2021 14:07:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 4 Feb 2021 08:10:44 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114D6EN7038000;
+        Thu, 4 Feb 2021 08:09:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=xHL5MsYIA95TYhvam5Ov540T7hOtZ7hiehAHeBhwbCc=;
+ b=o1ZNpzh59mTcXK1VXt74wl89/RK/4satCtj7bSY6pI1udQmPwrhP1mT7KwF/XNapt8cI
+ /zBZtXRCKvm3wn+rgQLS9T8XefQnwWchy69UFcCYbq5BskxXMBQ78mpc4/31etErQgMO
+ Dh40OG+GCiTpjOsNH51AuPQNXemKQdAxq+KEKm1nfqeILm44Ty1cVaObhvZICOcNA/a0
+ 54rsD70bDB4sDvL0XUXrnIY3WPSza6VFARm/xvr4sLcTmP7z96gGDhEOkiy9jzNmwuQI
+ Qs6CsPX15G6MFsh8oDbEn5sTwzqqIXMq4tTeh8MkfIfsq8azWLODRmQbbw73ZRkawKMV ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36ggc5207w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 08:09:11 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114D6SEC039368;
+        Thu, 4 Feb 2021 08:08:45 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36ggc51ypp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 08:08:44 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114D6hbc017368;
+        Thu, 4 Feb 2021 13:08:25 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 36evvf2jbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 13:08:25 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114D8Mb242795336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 13:08:22 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4E37252050;
+        Thu,  4 Feb 2021 13:08:22 +0000 (GMT)
+Received: from localhost (unknown [9.85.87.37])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D608C52051;
+        Thu,  4 Feb 2021 13:08:21 +0000 (GMT)
+Date:   Thu, 4 Feb 2021 18:38:21 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, oleg@redhat.com, rostedt@goodmis.org,
+        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
+Message-ID: <20210204130821.GK210@DESKTOP-TDPLP67.localdomain>
+References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <9fbd2fca-e4f5-d28f-74de-d9906cc232bf@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_07:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 1:54 PM, Yann GAUTIER wrote:
-> On 2/4/21 1:26 PM, Marek Vasut wrote:
->> On 2/4/21 1:05 PM, yann.gautier@foss.st.com wrote:
->>> From: Yann Gautier <yann.gautier@foss.st.com>
->>>
->>> To properly manage commands awaiting R1B responses, the capability
->>> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
->>> manage busy detection.
->>> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
->>> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
->>>
->> Shouldn't this have Fixes: tag ?
+On 2021/02/04 04:17PM, Ravi Bangoria wrote:
+> Don't allow Uprobe on 2nd word of a prefixed instruction. As per
+> ISA 3.1, prefixed instruction should not cross 64-byte boundary.
+> So don't allow Uprobe on such prefixed instruction as well.
 > 
-> Hi Marek,
+> There are two ways probed instruction is changed in mapped pages.
+> First, when Uprobe is activated, it searches for all the relevant
+> pages and replace instruction in them. In this case, if we notice
+> that probe is on the 2nd word of prefixed instruction, error out
+> directly. Second, when Uprobe is already active and user maps a
+> relevant page via mmap(), instruction is replaced via mmap() code
+> path. But because Uprobe is invalid, entire mmap() operation can
+> not be stopped. In this case just print an error and continue.
 > 
-> There is no unique patch that brought the issue, but a combination of 
-> several things:
-> - The series that brought the MMC_CAP_NEED_RSP_BUSY flag [1]
-> - The series that enabled MMC_ERASE for all hosts [2] (removal of 
-> MMC_CAP_ERASE)
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+> v1: http://lore.kernel.org/r/20210119091234.76317-1-ravi.bangoria@linux.ibm.com
+> v1->v2:
+>   - Instead of introducing new arch hook from verify_opcode(), use
+>     existing hook arch_uprobe_analyze_insn().
+>   - Add explicit check for prefixed instruction crossing 64-byte
+>     boundary. If probe is on such instruction, throw an error.
 > 
-> But you're right, this patch may go on v5.8.x kernel and newer versions.
+>  arch/powerpc/kernel/uprobes.c | 66 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 65 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+> index e8a63713e655..485d19a2a31f 100644
+> --- a/arch/powerpc/kernel/uprobes.c
+> +++ b/arch/powerpc/kernel/uprobes.c
+> @@ -7,6 +7,7 @@
+>   * Adapted from the x86 port by Ananth N Mavinakayanahalli <ananth@in.ibm.com>
+>   */
+>  #include <linux/kernel.h>
+> +#include <linux/highmem.h>
+>  #include <linux/sched.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/uprobes.h>
+> @@ -28,6 +29,69 @@ bool is_trap_insn(uprobe_opcode_t *insn)
+>  	return (is_trap(*insn));
+>  }
+>  
+> +#ifdef CONFIG_PPC64
+> +static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
+> +{
+> +	struct page *page;
+> +	struct vm_area_struct *vma;
+> +	void *kaddr;
+> +	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
+> +
+> +	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
+> +		return -EINVAL;
+> +
+> +	kaddr = kmap_atomic(page);
+> +	*instr = *((u32 *)(kaddr + (addr & ~PAGE_MASK)));
+> +	kunmap_atomic(kaddr);
+> +	put_page(page);
+> +	return 0;
+> +}
+> +
+> +static int validate_prefixed_instr(struct mm_struct *mm, unsigned long addr)
+> +{
+> +	struct ppc_inst inst;
+> +	u32 prefix, suffix;
+> +
+> +	/*
+> +	 * No need to check if addr is pointing to beginning of the
+> +	 * page. Even if probe is on a suffix of page-unaligned
+> +	 * prefixed instruction, hw will raise exception and kernel
+> +	 * will send SIGBUS.
+> +	 */
+> +	if (!(addr & ~PAGE_MASK))
+> +		return 0;
+> +
+> +	if (get_instr(mm, addr, &prefix) < 0)
+> +		return -EINVAL;
+> +	if (get_instr(mm, addr + 4, &suffix) < 0)
+> +		return -EINVAL;
+> +
+> +	inst = ppc_inst_prefix(prefix, suffix);
+> +	if (ppc_inst_prefixed(inst) && (addr & 0x3F) == 0x3C) {
+> +		printk_ratelimited("Cannot register a uprobe on 64 byte "
+		^^^^^^^^^^^^^^^^^^ pr_info_ratelimited()
 
-I think there will be quite some interest in 5.10.y LTS on the MP1 from 
-the various industrial/embedded users, so it would be nice to have that 
-5.10.y well maintained with necessary backports / fixes :)
+It should be sufficient to check the primary opcode to determine if it 
+is a prefixed instruction. You don't have to read the suffix. I see that 
+we don't have a helper to do this currently, so you could do:
+
+	if (ppc_inst_primary_opcode(ppc_inst(prefix)) == 1)
+
+In the future, it might be worthwhile to add IS_PREFIX() as a macro 
+similar to IS_MTMSRD() if there are more such uses.
+
+Along with this, if you also add the below to the start of this 
+function, you can get rid of the #ifdef:
+
+	if (!IS_ENABLED(CONFIG_PPC64))
+		return 0;
+
+
+- Naveen
+
