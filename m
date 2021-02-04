@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF3C30E921
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DFD30E927
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbhBDBHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbhBDBHk (ORCPT
+        id S233917AbhBDBMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:12:05 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:34579 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232184AbhBDBMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:07:40 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D95FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 17:07:00 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id n201so1426685iod.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 17:07:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CgG8Hwt3SxrrGY2glvsXSBuEtqHY0gWizrBC8qUvw4s=;
-        b=D1pTorP4NprD0zWgkamOJfsGSCSkxnvm31BrzhpMlqbViV+4DDU9FL8W9UQt3bdOR7
-         KiQvr+MFwzkcYS9kqf9RoB8QlEHq6PdgxYv7r+HYot9Tz2LWutxOO6ub4pIE9pWitBg9
-         sVp8QqKP+4QKs0RuVoNGtkZVwai+UQu7UW55YdNtwxupxRYTgAzLZJsKcCsVq4QhPTYR
-         yRXgE1xutsru6N2nUJxUy3T1l7YiP/rXjUNsRxYlib8Tvy/S52qm/KGzacllErHf+4zt
-         TEdzSTn0f6cRKEHEmEztcLnpy6vPHrr8EeXrAx176Y0pd/A1tiokhPgXv87Zya1l+/ha
-         hdgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CgG8Hwt3SxrrGY2glvsXSBuEtqHY0gWizrBC8qUvw4s=;
-        b=YQnz827jyv7als/50vBxsyb24s7z5gnO1lRmVCuJ7MN0mOw0jvmrWBIuYrPA1b0r/m
-         kKgYer8HZqhgzWLqKxQtHvJuoVzpH2J+oyl1ikCggYsMZThkZonJWRN3kzVo1H8kTkhR
-         dDQ1l6pMb1TyK3t9rVYytEX8ggCvHKjijPMZe3NbQ7zwaezfCXlV8DKEyw4zYiAK7ShL
-         VNGZPBOK0mYcHAIE+23SgFiRHuxEHhdXyW4POkfNuiVPYaUvfs//jVakuSO0aL0GmZjS
-         25kvizODOvjf2MPVJGlgiEOPhIK5G5zqxgTt+HDBjIopeLftOUffaLU/48R+aE6W2Bmb
-         M4og==
-X-Gm-Message-State: AOAM530lyGrsGpaU/e40wuqyqK3/aVFYGFc4eEQZni4Ye/7CLJzLIldh
-        8ln34ita2VvETck2mXAdt1E1RwSw8/Gq7Q==
-X-Google-Smtp-Source: ABdhPJxKmk71GPIYpaPKqRrvRpuGe1xO+J77RRLMh3ShL3srd/V74hqtyMo4vsgjpA7QsMaB7qke6w==
-X-Received: by 2002:a05:6602:1223:: with SMTP id z3mr4786869iot.130.1612400820029;
-        Wed, 03 Feb 2021 17:07:00 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id y16sm1813495ilm.7.2021.02.03.17.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 17:06:59 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     dan.carpenter@oracle.com, elder@kernel.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] net: ipa: set error code in gsi_channel_setup()
-Date:   Wed,  3 Feb 2021 19:06:55 -0600
-Message-Id: <20210204010655.15619-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        Wed, 3 Feb 2021 20:12:03 -0500
+X-UUID: 5d784d263b7043e084225b404753ac45-20210204
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Mn/ebbC9LsmEJbQuuUcinkZOL/S9ftYROo8U9Oj+0Po=;
+        b=tHb7ekMh+g+dP+Jk60pyz+yKaHk3fCc56qBeBQK9Da1JyPSbOzrjhqg3Ti7O/7tSdxnOEMgN5T1p6/JKGJikRsLYaEEc/Zw010MdHidryOcfdXdyroDscCemy3gPxzd0MKx2wrFinRxCtvbW1ZY8LNagR46skC519oC4OS2keUw=;
+X-UUID: 5d784d263b7043e084225b404753ac45-20210204
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1030138190; Thu, 04 Feb 2021 09:11:20 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Feb
+ 2021 09:11:10 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Feb 2021 09:11:09 +0800
+Message-ID: <1612401069.2524.14.camel@mhfsdcap03>
+Subject: Re: [PATCH][next] iommu/mediatek: Fix unsigned domid comparison
+ with less than zero
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Colin King <colin.king@canonical.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Anan sun <anan.sun@mediatek.com>,
+        "Chao Hao" <chao.hao@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Thu, 4 Feb 2021 09:11:09 +0800
+In-Reply-To: <20210203135936.23016-1-colin.king@canonical.com>
+References: <20210203135936.23016-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 9BDBFE8346E958A37D1A2EE99CA3980372E31BF52999FC51717954E6E3C6FFB92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In gsi_channel_setup(), we check to see if the configuration data
-contains any information about channels that are not supported by
-the hardware.  If one is found, we abort the setup process, but
-the error code (ret) is not set in this case.  Fix this bug.
-
-Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2: Added "Fixes" tag.
-
- drivers/net/ipa/gsi.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 34e5f2155d620..b77f5fef7aeca 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1710,6 +1710,7 @@ static int gsi_channel_setup(struct gsi *gsi)
- 		if (!channel->gsi)
- 			continue;	/* Ignore uninitialized channels */
- 
-+		ret = -EINVAL;
- 		dev_err(gsi->dev, "channel %u not supported by hardware\n",
- 			channel_id - 1);
- 		channel_id = gsi->channel_count;
--- 
-2.20.1
+T24gV2VkLCAyMDIxLTAyLTAzIGF0IDEzOjU5ICswMDAwLCBDb2xpbiBLaW5nIHdyb3RlOg0KPiBG
+cm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gQ3Vy
+cmVudGx5IHRoZSBjaGVjayBmb3IgZG9taWQgPCAwIGlzIGFsd2F5cyBmYWxzZSBiZWNhdXNlIGRv
+bWlkDQo+IGlzIHVuc2lnbmVkLiAgRml4IHRoaXMgYnkgbWFraW5nIGl0IHNpZ25lZC4NCj4gDQo+
+IEFkZHJlc3Nlcy1Db3Zlcml0eUwgKCJVbnNpZ25lZCBjb21wYXJpc29uIGFnYWluc3QgMCIpDQo+
+IEZpeGVzOiBhYjFkNTI4MWE2MmIgKCJpb21tdS9tZWRpYXRlazogQWRkIGlvdmEgcmVzZXJ2ZWQg
+ZnVuY3Rpb24iKQ0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0Bj
+YW5vbmljYWwuY29tPg0KDQpUaGFua3MgZm9yIHRoZSBmaXguDQoNClJldmlld2VkLWJ5OiBZb25n
+IFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvaW9tbXUvbXRr
+X2lvbW11LmMgfCAyICstDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVs
+ZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jIGIv
+ZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiBpbmRleCAwYWQxNGE3NjA0YjEuLjgyM2Q3MTk5
+NDViMiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiArKysgYi9k
+cml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+IEBAIC02NDAsNyArNjQwLDcgQEAgc3RhdGljIHZv
+aWQgbXRrX2lvbW11X2dldF9yZXN2X3JlZ2lvbnMoc3RydWN0IGRldmljZSAqZGV2LA0KPiAgCQkJ
+CSAgICAgICBzdHJ1Y3QgbGlzdF9oZWFkICpoZWFkKQ0KPiAgew0KPiAgCXN0cnVjdCBtdGtfaW9t
+bXVfZGF0YSAqZGF0YSA9IGRldl9pb21tdV9wcml2X2dldChkZXYpOw0KPiAtCXVuc2lnbmVkIGlu
+dCBkb21pZCA9IG10a19pb21tdV9nZXRfZG9tYWluX2lkKGRldiwgZGF0YS0+cGxhdF9kYXRhKSwg
+aTsNCj4gKwlpbnQgZG9taWQgPSBtdGtfaW9tbXVfZ2V0X2RvbWFpbl9pZChkZXYsIGRhdGEtPnBs
+YXRfZGF0YSksIGk7DQo+ICAJY29uc3Qgc3RydWN0IG10a19pb21tdV9pb3ZhX3JlZ2lvbiAqcmVz
+diwgKmN1cmRvbTsNCj4gIAlzdHJ1Y3QgaW9tbXVfcmVzdl9yZWdpb24gKnJlZ2lvbjsNCj4gIAlp
+bnQgcHJvdCA9IElPTU1VX1dSSVRFIHwgSU9NTVVfUkVBRDsNCg0K
 
