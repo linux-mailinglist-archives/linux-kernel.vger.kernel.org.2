@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23D830E8F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D223730E8F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhBDAw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbhBDAvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:51:54 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932C3C0613ED;
-        Wed,  3 Feb 2021 16:51:14 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id n15so1786268qkh.8;
-        Wed, 03 Feb 2021 16:51:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kiJxUQ1LfmJpMH3ArGz1asuR6L/tew69OdmGsRfnmUQ=;
-        b=cls3mXtIZJp+eeXVS7csbRR3IYArotJ3rlJaGxYTcMHf4jJ5yGrmx/U+iP4+0LMsHt
-         gwOMvAGIJLh5e9Y1TIpgqG6WK03QhGYImq0nTDQc87UaaSx2wanfBQQw7LWJWM6akw7S
-         wMhagk+7CAOIb6lbPRw7eJnBnhzvHG20JHsITVmV7BLrcwNN6scWWUePWrUJnzR4uvx6
-         3FaqZ8BnkM6qlXIrw694deK5qJJPMnxYi1u7BpetAHkLQy1aGYeIRmioxfkmX5UaOz0S
-         yI9Iw7fMRX2tJveH/jEtcK1O+j8VIrl8H8CG46lBI0J5PF/LbvvcTYSgvn6a7azw7raS
-         gedA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kiJxUQ1LfmJpMH3ArGz1asuR6L/tew69OdmGsRfnmUQ=;
-        b=bkhDChHtH0z/ikSKFuawGaOQpAQ9Kj6ZL72i2QHUSaJPOVKbK3LDkwpe/BRvGp+WjF
-         hvuFVBzdDMnAXbVEC6rbrTP6CSq/5aQqiP2+tDE96YGwSskKO6gv4ZkIk+4JubkWrGb2
-         2H/0nL1BIhIqoy0WtjTY3/MlmaE/mQsx7c7ZjodhfFUICxxT+qwHi4i82Qz923emtdJU
-         QZVm83adeTxgxPIXKDPhbDK69Cb5wfzLFyDmjdho1wz1JZgZf66ECq9kMNVZcOjtNZTd
-         trFtiQwiaR0+/B9naWY4pEoEenUmrsQYfLJTr28Vw+WnZxHwuzifxf3q+jB0L6Teqyyj
-         fS1Q==
-X-Gm-Message-State: AOAM533HWekDmeLKI2YeJLIotQih9yj8SrGIea/uzJnwzxq05xWfcZIx
-        3nITeEJb1aAnyYKNXbsKWLeNli4QYsJQ6uHk
-X-Google-Smtp-Source: ABdhPJzOQc4dr5HRI+lZ399XNF2V60k2Q3rgxe2JsLxCt2U+efyhUjEDQoIkjP+A78aLwk143SiM5w==
-X-Received: by 2002:a05:620a:41:: with SMTP id t1mr5453748qkt.322.1612399873839;
-        Wed, 03 Feb 2021 16:51:13 -0800 (PST)
-Received: from localhost.localdomain ([138.199.13.179])
-        by smtp.gmail.com with ESMTPSA id m10sm3042668qtp.72.2021.02.03.16.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 16:51:13 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     ysato@users.sourceforge.jp, dalias@libc.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] arch: sh: kernel:  Fix a spelling archtecture to architecture in the file relocate_kernel.S
-Date:   Thu,  4 Feb 2021 06:20:46 +0530
-Message-Id: <20210204005046.21462-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234493AbhBDAxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:53:22 -0500
+Received: from m12-16.163.com ([220.181.12.16]:36768 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234266AbhBDAxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:53:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=hMNO2n8NEeG+F1B2PO
+        O/M8BjP3yqWv44VFvbWtGSjq4=; b=l75cnHo0BJ0WkcXu9BsVHmM5uKXLS7cD/C
+        OiEVuTCObm/AvtlWzyxV5/lmYoLJgs37PsmhbzTG/UadiJY6FfZ2mxevVInirv8F
+        /zFcAvq604EKZtgZjh8ghZRxKUZ8T0xquzDa9ZrxAFY+PbiqBf4fFymCsF+OBzdN
+        tMADId97s=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowAAHDFD8RBtg9T6UaQ--.22444S2;
+        Thu, 04 Feb 2021 08:51:09 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     stf_xl@wp.pl, rdunlap@infradead.org, helmut.schaa@googlemail.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH v2] rt2x00: remove duplicate word and fix typo in comment
+Date:   Thu,  4 Feb 2021 08:51:19 +0800
+Message-Id: <20210204005119.18060-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EMCowAAHDFD8RBtg9T6UaQ--.22444S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW3Gr48ZF1xCw1rZr4DCFg_yoWDZFg_ur
+        y8urs7Z348Ja4YvF4jvFW7Zrya9r93Zr1kGwnIg39xWryYvrWkWan3AF4Sqw1jkr4jvrnx
+        GF4DJF9Yv3yjqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYpnQUUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiLx0vsVUMXD4-kQAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-s/archtecture/architecture/
+remove duplicate word 'we' in comment
+change 'then' to 'than' in comment
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 ---
- Changes from V1 :
-  Missed the changelog text,now included
-
- arch/sh/kernel/relocate_kernel.S | 2 +-
+ drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/sh/kernel/relocate_kernel.S b/arch/sh/kernel/relocate_kernel.S
-index d9bf2b727b42..deda2f60a8f2 100644
---- a/arch/sh/kernel/relocate_kernel.S
-+++ b/arch/sh/kernel/relocate_kernel.S
-@@ -3,7 +3,7 @@
-  * relocate_kernel.S - put the kernel image in place to boot
-  * 2005.9.17 kogiidena@eggplant.ddo.jp
-  *
-- * LANDISK/sh4 is supported. Maybe, SH archtecture works well.
-+ * LANDISK/sh4 is supported. Maybe, SH architecture works well.
-  *
-  * 2009-03-18 Magnus Damm - Added Kexec Jump support
-  */
---
-2.26.2
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
+index c861811..ad95f9e 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
+@@ -179,7 +179,7 @@ void rt2x00crypto_rx_insert_iv(struct sk_buff *skb,
+ 	 * Make room for new data. There are 2 possibilities
+ 	 * either the alignment is already present between
+ 	 * the 802.11 header and payload. In that case we
+-	 * we have to move the header less then the iv_len
++	 * have to move the header less than the iv_len
+ 	 * since we can use the already available l2pad bytes
+ 	 * for the iv data.
+ 	 * When the alignment must be added manually we must
+-- 
+1.9.1
+
 
