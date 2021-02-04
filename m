@@ -2,282 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0ED30F4A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE55130F4C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbhBDOMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236557AbhBDOKl (ORCPT
+        id S236683AbhBDOSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:18:01 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47280 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236673AbhBDONW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:10:41 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B5C0613D6;
-        Thu,  4 Feb 2021 06:10:00 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id h7so4710422lfc.6;
-        Thu, 04 Feb 2021 06:10:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ROsNBFOVgXpvoSLbKZaV0d4yUjvdIm2b4y/a7AC2dcs=;
-        b=FdaocmDOvg2yZ/gNysSosoZ/g7rTBsHP7lG44qUxOVaBcjU/c/3zvwYMfaMf32iFYK
-         PPJcqoKCpBzuKctqG3a398gC6Ddo5rgyxyOf/LS5kAW6eHz26Afj7Ke4YiWq70RosAbw
-         mKStmfolf+81PFFAewyX0Cy557byUklhKmUZANGGBKL3+Iv0lHRLMiCFO8rJQv93qj83
-         kGVENFI+YRyfhkiMM3eygrBPaWDiD+VefIVZTzYVC+jefI990vfoTt3KXb+HAsbhN/TY
-         SrSBrXoqqdKg1Az8LlIPke3Vj1CB6HpAdFYspTDlF1z4Jqha6z9eZfswyacMFwha0oKA
-         EOkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ROsNBFOVgXpvoSLbKZaV0d4yUjvdIm2b4y/a7AC2dcs=;
-        b=iiQu+zl2TAYNnhWpn0HUBc3ob4iDChxwF48yJ27GgGKCwYH3QvNFIM68a1ZkDQg/8t
-         bS60dzg/r4ahyzm5PTApC7faN/IdnktGbw84qlqZxydWoBKZsaiMUMXt/53esvxKq5gw
-         hYKRHkJq9CY95otYUFFKFD+4V7+6W0c1Y5aa8rLbHcKFYdcm31oCX7RLkDkiEmww5ywb
-         No3ECdPJpx7YuiGR4yi8vzv95L4Yz3Slvwr/RoHbnODnUS4T6wKdgOU9y89/vNmbQzt7
-         PYWgNlGnRy50GJVN5Gq6EQMXTAwk5eiN/t2QvL+DmGic6Vox1j0F9qZ3e7x6dOznHCjj
-         jPeg==
-X-Gm-Message-State: AOAM533ir/NCdIs+W4t3IjIvciouiLMR0jmR98ECD1ArcBRIP8QWUqud
-        LJG3vPUwAUa3WJTOkHxBb0M=
-X-Google-Smtp-Source: ABdhPJwSfcPJb73ZMM4cJklCmbm3gRHEwGOseYeWXFT0p3j20WtHXZxlKjMlrnZ4sEZFJINF2wyU3Q==
-X-Received: by 2002:a19:3fcc:: with SMTP id m195mr4685315lfa.459.1612447799268;
-        Thu, 04 Feb 2021 06:09:59 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u4sm670966ljl.40.2021.02.04.06.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 06:09:58 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 4 Feb 2021 15:09:56 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v3] kvfree_rcu:
- Release page cache under memory pressure
-Message-ID: <20210204140956.GA1904@pc638.lan>
-References: <20210130131851.23285-1-qiang.zhang@windriver.com>
- <20210201195753.GA2026@pc638.lan>
- <BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
- <BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
- <BYAPR11MB2632ECCBD7196CF92C5FA49BFFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
+        Thu, 4 Feb 2021 09:13:22 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 114ECM6Y098588;
+        Thu, 4 Feb 2021 08:12:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612447942;
+        bh=vSix/bWL9afVl8T+g4konnqAhGR2zbbqyEmN8MzpnlA=;
+        h=From:To:CC:Subject:Date;
+        b=qUXtEhkGs2mIduc2HQILwwkG9NT4af3s7swC7DGS/k3hBlCXPxC7fTV8rAoMYWeZ8
+         1J0HpHJquQXbvKO3FFEV/JnCXuv81brXkBi72Sb4njSQZcXhLsikRMzzwIjXl/qJSV
+         fVrMlClfsBtSDrxZgRHthTpAWqQrrnbpY0i3sK7k=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 114ECM3v033783
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Feb 2021 08:12:22 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Feb
+ 2021 08:12:21 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Feb 2021 08:12:21 -0600
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 114ECJIt123632;
+        Thu, 4 Feb 2021 08:12:20 -0600
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>, <zhengxunli@mxic.com.tw>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 1/2] spi: spi-mem: add spi_mem_dtr_supports_op()
+Date:   Thu, 4 Feb 2021 19:42:17 +0530
+Message-ID: <20210204141218.32229-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB2632ECCBD7196CF92C5FA49BFFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 发件人: Uladzislau Rezki <urezki@gmail.com>
-> 发送时间: 2021年2月2日 3:57
-> 收件人: Zhang, Qiang
-> 抄送: urezki@gmail.com; paulmck@kernel.org; joel@joelfernandes.org; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
-> 
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> Hello, Zqiang.
-> 
-> > From: Zqiang <qiang.zhang@windriver.com>
-> >
-> > Add free per-cpu existing krcp's page cache operation, when
-> > the system is under memory pressure.
-> >
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > ---
-> >  kernel/rcu/tree.c | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index c1ae1e52f638..644b0f3c7b9f 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3571,17 +3571,41 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-> >
-> > +static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
-> > +{
-> > +     unsigned long flags;
-> > +     struct llist_node *page_list, *pos, *n;
-> > +     int freed = 0;
-> > +
-> > +     raw_spin_lock_irqsave(&krcp->lock, flags);
-> > +     page_list = llist_del_all(&krcp->bkvcache);
-> > +     krcp->nr_bkv_objs = 0;
-> > +     raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > +
-> > +     llist_for_each_safe(pos, n, page_list) {
-> > +             free_page((unsigned long)pos);
-> > +             freed++;
-> > +     }
-> > +
-> > +     return freed;
-> > +}
-> > +
-> >  static unsigned long
-> >  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> >  {
-> >       int cpu;
-> >       unsigned long count = 0;
-> > +     unsigned long flags;
-> >
-> >       /* Snapshot count of all CPUs */
-> >       for_each_possible_cpu(cpu) {
-> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >
-> >               count += READ_ONCE(krcp->count);
-> > +
-> > +             raw_spin_lock_irqsave(&krcp->lock, flags);
-> > +             count += krcp->nr_bkv_objs;
-> > +             raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> >       }
-> >
-> >       return count;
-> > @@ -3598,6 +3622,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >
-> >               count = krcp->count;
-> > +             count += free_krc_page_cache(krcp);
-> > +
-> >               raw_spin_lock_irqsave(&krcp->lock, flags);
-> >               if (krcp->monitor_todo)
-> >                       kfree_rcu_drain_unlock(krcp, flags);
-> > --
-> > 2.17.1
-> >>
-> >Thank you for your patch!
-> >
-> >I spent some time to see how the patch behaves under low memory condition.
-> >To simulate it, i used "rcuscale" tool with below parameters:
-> >
-> >../rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig >CONFIG_NR_CPUS=64 \
-> >--bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 >rcuscale.holdoff=20 rcuscale.kfree_loops=10000 \
-> >torture.disable_onoff_at_boot" --trust-make
-> >
-> >64 CPUs + 512 MB of memory. In general, my test system was running on edge
-> >hitting an out of memory sometimes, but could be considered as stable in
-> >regards to a test completion and taken time, so both were pretty solid.
-> >
-> >You can find a comparison on a plot, that can be downloaded following
-> >a link: wget >ftp://vps418301.ovh.net/incoming/release_page_cache_under_low_memory.png
-> >
-> >In short, i see that a patched version can lead to longer test completion,
-> >whereas the default variant is stable on almost all runs. After some analysis
-> >and further digging i came to conclusion that a shrinker free_krc_page_cache()
-> >concurs with run_page_cache_worker(krcp) running from kvfree_rcu() context.
-> >
-> >i.e. During the test a page shrinker is pretty active, because of low memory
-> >condition. Our callback drains it whereas kvfree_rcu() part refill it right
-> >away making kind of vicious circle.
-> >
-> >So, a run_page_cache_worker() should be backoff for some time when a system
-> >runs into a low memory condition or high pressure:
-> >
-> >diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >index 7077d73fcb53..446723b9646b 100644
-> >--- a/kernel/rcu/tree.c
-> >+++ b/kernel/rcu/tree.c
-> >@@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
-> >        bool initialized;
-> >        int count;
-> >
-> >-       struct work_struct page_cache_work;
-> >+       struct delayed_work page_cache_work;
-> >        atomic_t work_in_progress;
-> >        struct hrtimer hrtimer;
-> >
-> >@@ -3419,7 +3419,7 @@ schedule_page_work_fn(struct hrtimer *t)
-> >        struct kfree_rcu_cpu *krcp =
-> >                container_of(t, struct kfree_rcu_cpu, hrtimer);
-> >
-> >-       queue_work(system_highpri_wq, &krcp->page_cache_work);
-> >+       queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
-> >        return HRTIMER_NORESTART;
-> > }
-> >
-> >@@ -3428,7 +3428,7 @@ static void fill_page_cache_func(struct work_struct *work)
-> >        struct kvfree_rcu_bulk_data *bnode;
-> >        struct kfree_rcu_cpu *krcp =
-> >                container_of(work, struct kfree_rcu_cpu,
-> >-                       page_cache_work);
-> >+                       page_cache_work.work);
-> >        unsigned long flags;
-> >        bool pushed;
-> >        int i;
-> >@@ -3452,15 +3452,22 @@ static void fill_page_cache_func(struct work_struct >*work)
-> >        atomic_set(&krcp->work_in_progress, 0);
-> > }
-> >
-> >+static bool backoff_page_cache_fill;
-> >+
-> > static void
-> > run_page_cache_worker(struct kfree_rcu_cpu *krcp)
-> > {
-> >        if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> >                        !atomic_xchg(&krcp->work_in_progress, 1)) {
-> >-               hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
-> >-                       HRTIMER_MODE_REL);
-> >-               krcp->hrtimer.function = schedule_page_work_fn;
-> >-               hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-> >+               if (READ_ONCE(backoff_page_cache_fill)) {
-> >+                       queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, >HZ);
-> >+                       WRITE_ONCE(backoff_page_cache_fill, false);
-> >+               } else {
-> >+                       hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
-> >+                               HRTIMER_MODE_REL);
-> >+                       krcp->hrtimer.function = schedule_page_work_fn;
-> >+                       hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-> >+               }
-> >        }
-> > }
-> >
-> >@@ -3644,6 +3651,8 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct >shrink_control *sc)
-> >                raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> >        }
-> >
-> >+       // Low memory condition, limit a page cache worker activity.
-> >+       WRITE_ONCE(backoff_page_cache_fill, true);
-> >        return count;
-> > }
-> 
-> >@@ -4634,7 +4643,7 @@ static void __init kfree_rcu_batch_init(void)
-> >                }
-> >
-> >                INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> >-               INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> >+               INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> >                krcp->initialized = true;
-> >        }
-> >        if (register_shrinker(&kfree_rcu_shrinker))
-> >
-> >below patch fixes it. We should backoff the page fill worker keeping it empty
-> >until the situation with memory consumption is normalized.
-> 
->   Maybe can cancel the timer and cancel work in the rcu_shrink_count function, after
->   the rcu_shrink_scan function is executed and recover timer.
->   what do you think?
-I think it is just easier to schedule a periodic delayed work with HZ
-interval. If a system is in a tight memory situation, that periodic
-work will not be harmful from CPU cycles point of view. Once it is
-settled, the hrtimer takes over to speedup the process of cache filling.
+spi_mem_default_supports_op() rejects DTR ops by default to ensure that
+the controller drivers that haven't been updated with DTR support
+continue to reject them. It also makes sure that controllers that don't
+support DTR mode at all (which is most of them at the moment) also
+reject them.
 
->    
->    The other question is, why not call queue_work function directly to fill page cache, 
->    but through a hrtimer, what is the purpose of this design?
-> 
-It is done that way because the kvfree_rcu() is supposed that it could
-be invoked from the scheduler part. It means that if a CPU holds rq->lock 
-queuing the work or placing it into rq will lead to deadlock.
+This means that controller drivers that want to support DTR mode can't
+use spi_mem_default_supports_op(). Driver authors have to roll their own
+supports_op() function and mimic the buswidth checks. See
+spi-cadence-quadspi.c for example. Or even worse, driver authors might
+skip it completely or get it wrong.
 
---
-Vlad Rezki
+Add spi_mem_dtr_supports_op(). It provides a basic sanity check for DTR
+ops and performs the buswidth requirement check. Move the logic for
+checking buswidth in spi_mem_default_supports_op() to a separate
+function so the logic is not repeated twice.
+
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/spi/spi-mem.c       | 22 +++++++++++++++++++---
+ include/linux/spi/spi-mem.h |  9 +++++++++
+ 2 files changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index c64371ce6c38..dc713b0c3c4d 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -137,8 +137,8 @@ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
+ 	return -ENOTSUPP;
+ }
+ 
+-bool spi_mem_default_supports_op(struct spi_mem *mem,
+-				 const struct spi_mem_op *op)
++static bool spi_mem_check_buswidth(struct spi_mem *mem,
++				   const struct spi_mem_op *op)
+ {
+ 	if (spi_check_buswidth_req(mem, op->cmd.buswidth, true))
+ 		return false;
+@@ -156,13 +156,29 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+ 
++	return true;
++}
++
++bool spi_mem_dtr_supports_op(struct spi_mem *mem,
++			     const struct spi_mem_op *op)
++{
++	if (op->cmd.nbytes != 2)
++		return false;
++
++	return spi_mem_check_buswidth(mem, op);
++}
++EXPORT_SYMBOL_GPL(spi_mem_dtr_supports_op);
++
++bool spi_mem_default_supports_op(struct spi_mem *mem,
++				 const struct spi_mem_op *op)
++{
+ 	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
+ 		return false;
+ 
+ 	if (op->cmd.nbytes != 1)
+ 		return false;
+ 
+-	return true;
++	return spi_mem_check_buswidth(mem, op);
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+ 
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 159463cc659c..2b65c9edc34e 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -311,6 +311,9 @@ void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				 const struct spi_mem_op *op);
+ 
++bool spi_mem_dtr_supports_op(struct spi_mem *mem,
++			     const struct spi_mem_op *op);
++
+ #else
+ static inline int
+ spi_controller_dma_map_mem_op_data(struct spi_controller *ctlr,
+@@ -334,6 +337,12 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 	return false;
+ }
+ 
++static inline
++bool spi_mem_dtr_supports_op(struct spi_mem *mem,
++			     const struct spi_mem_op *op)
++{
++	return false;
++}
+ #endif /* CONFIG_SPI_MEM */
+ 
+ int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+-- 
+2.30.0
+
