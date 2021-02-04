@@ -2,152 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C7D30F15E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BEB30F15F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235499AbhBDK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:58:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:55976 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235346AbhBDK6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:58:09 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB101D6E;
-        Thu,  4 Feb 2021 02:57:23 -0800 (PST)
-Received: from [10.57.60.124] (unknown [10.57.60.124])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF72B3F73B;
-        Thu,  4 Feb 2021 02:57:19 -0800 (PST)
-Subject: Re: [PATCH v2 6/7] perf cs-etm: Detect pid in VMID for kernel running
- at EL2
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Al Grant <al.grant@arm.com>
-References: <20210202163842.134734-1-leo.yan@linaro.org>
- <20210202163842.134734-7-leo.yan@linaro.org>
- <f5158216-c3d1-10bb-02eb-00ff9a78f617@arm.com>
- <20210204040021.GF11059@leoy-ThinkPad-X240s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <a8116024-76df-4c42-15ef-de3f02436b8c@arm.com>
-Date:   Thu, 4 Feb 2021 10:57:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S235509AbhBDK6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235346AbhBDK6c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:58:32 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71DEC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:57:51 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u14so2985818wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:57:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nocxNX1m/RmA6R84CLxOUSJCE+/r8BYx+U1OCnvydU0=;
+        b=Gnt4JV0GxJ1vbcUCH/UT+8kOIyaCBPKS4C1FCFPOEho7+3g889pjnLpaXAgHiy9TKs
+         SjeWaUtBp7FTtLzUg47knpAZhhUvOgy3hNUPHNqCG1DZYlAWvJYet/QouFveffmpVuMU
+         vLUlidxRLXrUO0Wnbixs+T+zr2cj4YXcI4dp5112q3jny/dF/iWvCKvj6Fd2THnVW13n
+         UcEuTgyniZ1LoniSe9hCyMYz+ANb6z4q5YZolF1bsWdu6DN5OeFH++5EylcYULDOsyDd
+         ISwqvcJy4DElz339yuKbPNVNy74adJQ0gnyLT5pJhNxqBnJZXN6pQH82p/TKhc4GNKhF
+         djDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nocxNX1m/RmA6R84CLxOUSJCE+/r8BYx+U1OCnvydU0=;
+        b=lJjpFY19Wt43b29AqYfdrUVn9eJfhmotcXIgocLT3bNzA6Dy9RqKpoG+AFNq2LkLjh
+         hMSvR85S7j/p+ASAw0vuBL1Z4rlCNFOU86Xp5x8d4SPijwLgl4wTbzuJg8LODr3dVrWW
+         3bz6wqs61sMqSdo2mftxaqck+wHFEpw52fPEauCwebdVOyBF0BtO1BdzbUHFK3P2zkgS
+         6zTfQ/4EpNV0jaIlvve3eIcIggcq2lSODIq9+vTAylO9VURerIFQ0LDjQ54alrV2MY45
+         5lQzRqnLlm8CT+0Zcx65S5h1LdYTitFj1fQikSgZiZVdGGty9iFAq+J75KiVzDMGY+2J
+         GmRg==
+X-Gm-Message-State: AOAM531NGYzbBKB+3lo7RHfT+/O4ZCTX+1JKvSkEX9cdrj+kjTr7OU7v
+        20N/N5ks+ylAV/aEx/5kHy4mMg==
+X-Google-Smtp-Source: ABdhPJyPrp1TNZvAIM6xnfQzKB+NJLudNAYIGYbk6dBD3LYfnADWLY2wVrqxESzEld1Mkr2tXBePWg==
+X-Received: by 2002:a5d:6510:: with SMTP id x16mr8388898wru.175.1612436270633;
+        Thu, 04 Feb 2021 02:57:50 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id k15sm5688943wmj.6.2021.02.04.02.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 02:57:50 -0800 (PST)
+Date:   Thu, 4 Feb 2021 10:57:48 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+Message-ID: <20210204105748.GD2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204040021.GF11059@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 4:00 AM, Leo Yan wrote:
-> On Tue, Feb 02, 2021 at 11:29:47PM +0000, Suzuki Kuruppassery Poulose wrote:
->> On 2/2/21 4:38 PM, Leo Yan wrote:
->>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>
->>> The PID of the task could be traced as VMID when the kernel is running
->>> at EL2.  Teach the decoder to look for VMID when the CONTEXTIDR (Arm32)
->>> or CONTEXTIDR_EL1 (Arm64) is invalid but we have a valid VMID.
->>>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Cc: Al Grant <al.grant@arm.com>
->>> Co-developed-by: Leo Yan <leo.yan@linaro.org>
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->>> ---
->>>    .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 32 ++++++++++++++++---
->>>    1 file changed, 28 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> index 3f4bc4050477..fb2a163ff74e 100644
->>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> @@ -6,6 +6,7 @@
->>>     * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>     */
->>> +#include <linux/coresight-pmu.h>
->>>    #include <linux/err.h>
->>>    #include <linux/list.h>
->>>    #include <linux/zalloc.h>
->>> @@ -491,13 +492,36 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
->>>    			const ocsd_generic_trace_elem *elem,
->>>    			const uint8_t trace_chan_id)
->>>    {
->>> -	pid_t tid;
->>> +	pid_t tid = -1;
->>> +	u64 pid_fmt;
->>> +	int ret;
->>> -	/* Ignore PE_CONTEXT packets that don't have a valid contextID */
->>> -	if (!elem->context.ctxt_id_valid)
->>> +	ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
->>> +	if (ret)
->>
->> Is this something we can cache in this function ? e.g,
->> 	static u64 pid_fmt;
->>
->> 	if (!pid_pfmt)
->> 		ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
->>
->> As all the ETMs will be running at the same exception level.
-> 
-> Sorry that I let you repeated your comments again.
-> 
-> To be honest, I considered this after read your comment in the previous
-> series, but I thought it's possible that multiple CPUs have different
-> PID format, especially for big.LITTLE arch.  After read your suggestion
-> again, I think my concern is not valid, even for big.LITTLE, all CPUs
-> should run on the same kernel exception level.
-> 
-> So will follow up your suggestion to cache "pid_fmt".
+On Thu, 04 Feb 2021, Hans de Goede wrote:
 
-No problem.
-
+> Hi all,
 > 
->>
->>> +		return OCSD_RESP_FATAL_SYS_ERR;
->>> +
->>> +	/*
->>> +	 * Process the PE_CONTEXT packets if we have a valid contextID or VMID.
->>> +	 * If the kernel is running at EL2, the PID is traced in CONTEXTIDR_EL2
->>> +	 * as VMID, Bit ETM_OPT_CTXTID2 is set in this case.
->>> +	 */
->>> +	switch (pid_fmt) {
->>> +	case BIT(ETM_OPT_CTXTID):
->>> +		if (elem->context.ctxt_id_valid)
->>> +			tid = elem->context.context_id;
->>> +		break;
->>> +	case BIT(ETM_OPT_CTXTID2) | BIT(ETM_OPT_CTXTID):
->>
->> I would rather fix the cs_etm__get_pid_fmt() to return either of these
->> as commented. i.e, ETM_OPT_CTXTID or ETM_OPT_CTXTID2. Thus we don't
->> need the this case.
+> On 1/20/21 10:49 PM, Hans de Goede wrote:
+> > Hi All,
+> > 
+> > Here is v4 of my series to add support for Intel Bay Trail based devices
+> > which use a WM5102 codec for audio output/input.
+> > 
+> > This was developed and tested on a Lenovo Yoga Tablet 1051L.
+> > 
+> > The MFD and ASoC parts do not have any build-time dependencies
+> > on each other. But the follow-up jack-detect series does have
+> > patches depending on each-other and on this series. So IMHO it
+> > would be best if this entire series would be merged through the
+> > MFD tree to make merging the follow-up series easier.
+> > 
+> > Mark, if that is ok with you (and you are happy with the ASoC
+> > changes) can you please Ack this ?
 > 
-> I explained why I set both bits for ETM_OPT_CTXTID and ETM_OPT_CTXTID2
-> in the patch 05/07.  Could you take a look for it?
-
-I have responded to the comment in the patch.
-
+> I believe that this series and the follow-up:
 > 
->> With the above two addressed:
->>
->> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> "[PATCH v4 00/13] MFD/extcon/ASoC: Rework arizona codec jack-detect support"
 > 
+> series are both ready for merging. All patches have Reviewed-by and/or
+> Acked-by tags now.
 
+I don't think they do.  You're missing ASoC and Extcon Acks.
 
-Thanks
-Suzuki
+Not sure why *this* set fell through the cracks though.  However, it's
+now on my to-review list.
+
+If I can work fast enough, maybe this series can get into 5.12, but
+the follow-up still needs reviews.
+
+It might be best to collect the *-bys you do have and [RESEND].
+
+> I guess it is too late for 5.12, but it would be nice to at least formulate
+> a plan for getting this merged after 5.12-rc1 is out. Given the
+> interdependencies I still believe that it is best to merge all the patches
+> through the mfd tree and then have Lee provide an immutable branch for the
+> other subsystems to merge.
+
+Yes, that's fine.
+
+> Mark and extcon-maintainers (for the follow-up series) may we have your ack
+> for merging these through the MFD tree ?
+
+Ah, you noticed that too!
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
