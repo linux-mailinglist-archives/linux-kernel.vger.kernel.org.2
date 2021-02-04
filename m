@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7E030ECE1
+	by mail.lfdr.de (Postfix) with ESMTP id B03F830ECE2
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhBDHB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:01:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:52822 "EHLO foss.arm.com"
+        id S233305AbhBDHB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:01:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:52842 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhBDHBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:01:54 -0500
+        id S229601AbhBDHB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:01:57 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAFED11FB;
-        Wed,  3 Feb 2021 23:01:07 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 124CC12FC;
+        Wed,  3 Feb 2021 23:01:12 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.94.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 472063F694;
-        Wed,  3 Feb 2021 23:01:04 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7A96F3F694;
+        Wed,  3 Feb 2021 23:01:08 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
         catalin.marinas@arm.com, akpm@linux-foundation.org
@@ -26,19 +26,20 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Christoph Hellwig <hch@lst.de>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [RFC 0/3] mm/page_alloc: Fix pageblock_order with HUGETLB_PAGE_SIZE_VARIABLE
-Date:   Thu,  4 Feb 2021 12:31:21 +0530
-Message-Id: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC 1/3] mm/page_alloc: Fix pageblock_order when HUGETLB_PAGE_ORDER >= MAX_ORDER
+Date:   Thu,  4 Feb 2021 12:31:22 +0530
+Message-Id: <1612422084-30429-2-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
+References: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following warning gets triggered while trying to boot a 64K page size
-without THP config kernel on arm64 platform.
+With HUGETLB_PAGE_SIZE_VARIABLE enabled, pageblock_order cannot be assigned
+as HUGETLB_PAGE_ORDER when it is greater than or equal to MAX_ORDER during
+set_pageblock_order(). Otherwise  the following warning is triggered during
+boot as detected on an arm64 platform.
 
 WARNING: CPU: 5 PID: 124 at mm/vmstat.c:1080 __fragmentation_index+0xa4/0xc0
 Modules linked in:
@@ -74,58 +75,32 @@ Hardware name: linux,dummy-virt (DT)
 [    8.833491]  ret_from_fork+0x10/0x30
 [    8.834150] ---[ end trace 472836f79c15516b ]---
 
-This warning comes from __fragmentation_index() when the requested order
-is greater than MAX_ORDER.
+The above warning happens because pageblock_order exceeds MAX_ORDER, caused
+by large HUGETLB_PAGE_ORDER on certain platforms like arm64. Lets prevent
+the scenario by first checking HUGETLB_PAGE_ORDER against MAX_ORDER, before
+its assignment as pageblock_order.
 
-static int __fragmentation_index(unsigned int order,
-				 struct contig_page_info *info)
-{
-        unsigned long requested = 1UL << order;
-
-        if (WARN_ON_ONCE(order >= MAX_ORDER)) <===== Triggered here
-                return 0;
-
-Digging it further reveals that pageblock_order has been assigned a value
-which is greater than MAX_ORDER failing the above check. But why this
-happened ? Because HUGETLB_PAGE_ORDER for the given config on arm64 is
-greater than MAX_ORDER.
-
-The solution involves enabling HUGETLB_PAGE_SIZE_VARIABLE which would make
-pageblock_order a variable instead of constant HUGETLB_PAGE_ORDER. But that
-change alone also did not really work as pageblock_order still got assigned
-as HUGETLB_PAGE_ORDER in set_pageblock_order(). HUGETLB_PAGE_ORDER needs to
-be less than MAX_ORDER for its appropriateness as pageblock_order otherwise
-just fallback to MAX_ORDER - 1 as before. While here it also fixes a build
-problem via type casting MAX_ORDER in rmem_cma_setup().
-
-This series applies in v5.11-rc6 and has been slightly tested on arm64. But
-looking for some early feedbacks particularly with respect to concerns in
-subscribing HUGETLB_PAGE_SIZE_VARIABLE on a platform where the hugetlb page
-size is config dependent but not really a runtime variable. Even though it
-appears that HUGETLB_PAGE_SIZE_VARIABLE is used only while computing the
-pageblock_order, could there be other implications ?
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: iommu@lists.linux-foundation.org
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Anshuman Khandual (3):
-  mm/page_alloc: Fix pageblock_order when HUGETLB_PAGE_ORDER >= MAX_ORDER
-  arm64/hugetlb: Enable HUGETLB_PAGE_SIZE_VARIABLE
-  dma-contiguous: Type cast MAX_ORDER as unsigned int
-
- arch/arm64/Kconfig      | 4 ++++
- kernel/dma/contiguous.c | 2 +-
- mm/page_alloc.c         | 2 +-
- 3 files changed, 6 insertions(+), 2 deletions(-)
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 519a60d5b6f7..36473f2fa683 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6798,7 +6798,7 @@ void __init set_pageblock_order(void)
+ 	if (pageblock_order)
+ 		return;
+ 
+-	if (HPAGE_SHIFT > PAGE_SHIFT)
++	if ((HPAGE_SHIFT > PAGE_SHIFT) && (HUGETLB_PAGE_ORDER < MAX_ORDER))
+ 		order = HUGETLB_PAGE_ORDER;
+ 	else
+ 		order = MAX_ORDER - 1;
 -- 
 2.20.1
 
