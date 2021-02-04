@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F9A30F4CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B30C30F4C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbhBDOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
+        id S236482AbhBDOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236651AbhBDORZ (ORCPT
+        with ESMTP id S236632AbhBDORZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 09:17:25 -0500
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCBDC061786;
-        Thu,  4 Feb 2021 06:16:29 -0800 (PST)
-Received: from [192.168.1.101] (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id E97C71F881;
-        Thu,  4 Feb 2021 15:16:24 +0100 (CET)
-Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     Amit Pundir <amit.pundir@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
-References: <1612426177-6611-1-git-send-email-amit.pundir@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <889e6ed8-133a-9416-be3b-5b2a97ea7fbb@somainline.org>
-Date:   Thu, 4 Feb 2021 15:16:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+Received: from smtp-bc08.mail.infomaniak.ch (smtp-bc08.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc08])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0442C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:16:29 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DWgZy0krkzMq77N;
+        Thu,  4 Feb 2021 15:16:26 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DWgZx1Jz4zlh8TH;
+        Thu,  4 Feb 2021 15:16:25 +0100 (CET)
+Subject: Re: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings
+ from COND_SYSCALL()
+To:     Masahiro Yamada <masahiroy@kernel.org>, linux-arch@vger.kernel.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
+ <20210128005110.2613902-3-masahiroy@kernel.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <41f7ad59-6ee7-db95-0e56-861c61e8318f@digikod.net>
+Date:   Thu, 4 Feb 2021 15:16:29 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <1612426177-6611-1-git-send-email-amit.pundir@linaro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210128005110.2613902-3-masahiroy@kernel.org>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
 
->vreg_l14a_1p88: ldo14 {
->+			regulator-min-microvolt = <1800000>;
->+			regulator-max-microvolt = <1800000>;
+On 28/01/2021 01:50, Masahiro Yamada wrote:
+> Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
+> warnings.
+> 
+> $ make W=1 kernel/sys_ni.o
+>   [ snip ]
+>   CC      kernel/sys_ni.o
+> In file included from kernel/sys_ni.c:10:
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
+>    83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>       |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
+>   100 |  __COND_SYSCALL(x64, sys_##name)
+>       |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
+>   256 |  __X64_COND_SYSCALL(name)     \
+>       |  ^~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>    39 | COND_SYSCALL(io_setup);
+>       | ^~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
+>    83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>       |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
+>   120 |  __COND_SYSCALL(ia32, sys_##name)
+>       |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
+>   257 |  __IA32_COND_SYSCALL(name)
+>       |  ^~~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>    39 | COND_SYSCALL(io_setup);
+>       | ^~~~~~~~~~~~
+>   ...
+> 
+> __SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
+> declarations. Let's do likewise for __COND_SYSCALL() to fix the
+> warnings.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Should probably be renamed to vreg_l14a_1p8 then.
+Tested-by: Mickaël Salaün <mic@linux.microsoft.com>
+
+Thanks to this patch we avoid multiple emails from Intel's bot when
+adding new syscalls. :)
 
 
->+	ports {
->+		port@1 {
->+			endpoint {
->+				remote-endpoint = <&tianma_nt36672a_in_0>;
->+				data-lanes = <0 1 2 3>;
->+			};
->+		};
->+	};
-
-The endpoint has a label, you can simply use &dsi0_out {};.
-
->+		vddpos-supply = <&lab>;
->+		vddneg-supply = <&ibb>;
-
-With Angelo's latest series [1] merged in, I reckon you should explicitly configure lab/ibb (like in [2]),
-as wrong settings (which CAN BE SET BY THE BOOTLOADER in some instances!!) can lead to hardware damage.
-
-
-
-Konrad
-
-[1] https://lore.kernel.org/linux-arm-msm/20210119174421.226541-1-angelogioacchino.delregno@somainline.org/
-[2] https://github.com/SoMainline/linux/commit/4f4853b2e252b5f9d03e90119110aac80258fc53
+> ---
+> 
+>  arch/x86/include/asm/syscall_wrapper.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+> index a84333adeef2..80c08c7d5e72 100644
+> --- a/arch/x86/include/asm/syscall_wrapper.h
+> +++ b/arch/x86/include/asm/syscall_wrapper.h
+> @@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+>  	}
+>  
+>  #define __COND_SYSCALL(abi, name)					\
+> +	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
+>  	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+>  	{								\
+>  		return sys_ni_syscall();				\
+> 
