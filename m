@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBA830EA48
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E4E30EA4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhBDChd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:37:33 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:35282 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233517AbhBDCh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:37:28 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxadS2XRtg+ikDAA--.3874S3;
-        Thu, 04 Feb 2021 10:36:39 +0800 (CST)
-Subject: Re: [PATCH] selftests: breakpoints: Fix wrong argument of ptrace()
- when single step
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-References: <1612341547-22225-1-git-send-email-yangtiezhu@loongson.cn>
- <f91f1e69-310e-5256-de6e-9bceeaa7b205@linuxfoundation.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <d560a99f-be45-c03f-e729-56ccdbc9a131@loongson.cn>
-Date:   Thu, 4 Feb 2021 10:36:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S234647AbhBDCjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:39:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46344 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234193AbhBDCjI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:39:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612406262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qhb2kXItW2mHNSz2e91apSBwbAib3godlZyK9gF1DQM=;
+        b=JI8Q5PQF0s3p4p4iaHXV4AN87ytoqU3w8l++wR/GtbA7oIZRa//+Opicnbd21DsuRXtAMM
+        D/YbmTfKPzX6cpTpW2yJC7Lri1NGHCpSAHcsNHFYcRGV2Eu9qd4cSZP2vZYlUvz/6jBUlL
+        kHi0A9jCov+A5QTJF42YX1+h/eUZXQI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-OH7evkT8PvyBFzDkzbNQCA-1; Wed, 03 Feb 2021 21:37:40 -0500
+X-MC-Unique: OH7evkT8PvyBFzDkzbNQCA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF32D801961;
+        Thu,  4 Feb 2021 02:37:35 +0000 (UTC)
+Received: from treble (ovpn-113-81.rdu2.redhat.com [10.10.113.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 383D85B695;
+        Thu,  4 Feb 2021 02:37:21 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 20:37:19 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <20210204023719.sbwh7o7un7j2zgkd@treble>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+ <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble>
+ <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+ <20210203232735.nw73kugja56jp4ls@treble>
+ <CABWYdi1zd51Jb35taWeGC-dR9SChq-4ixvyKms3KOKgV0idfPg@mail.gmail.com>
+ <20210204001700.ry6dpqvavcswyvy7@treble>
+ <CABWYdi0p91Y+TDUu38eey-p2GtxL6f=VHicTxS629VCMmrNLpQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f91f1e69-310e-5256-de6e-9bceeaa7b205@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxadS2XRtg+ikDAA--.3874S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyfZF1kJr4kZFW7Zry7Jrb_yoW8KFWxpF
-        WfZr1ktFs3try5K3ZrX3yqvF1fGrs7ZFWxA34rJ34avr18tws3Jw1xKF4UKFy3u395X3sY
-        y3Z7GF4rua4UXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IU8mZX5UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABWYdi0p91Y+TDUu38eey-p2GtxL6f=VHicTxS629VCMmrNLpQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04/2021 02:30 AM, Shuah Khan wrote:
-> On 2/3/21 1:39 AM, Tiezhu Yang wrote:
->> According to the error message, the first argument of ptrace() should be
->> PTRACE_SINGLESTEP instead of PTRACE_CONT when ptrace single step.
->>
->> Fixes: f43365ee17f8 ("selftests: arm64: add test for 
->> unaligned/inexact watchpoint handling")
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   tools/testing/selftests/breakpoints/breakpoint_test_arm64.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git 
->> a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c 
->> b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
->> index ad41ea6..2f4d4d6 100644
->> --- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
->> +++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
->> @@ -143,7 +143,7 @@ static bool run_test(int wr_size, int wp_size, 
->> int wr, int wp)
->>       if (!set_watchpoint(pid, wp_size, wp))
->>           return false;
->>   -    if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
->> +    if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) < 0) {
->>           ksft_print_msg(
->>               "ptrace(PTRACE_SINGLESTEP) failed: %s\n",
->>               strerror(errno));
->>
->
-> Right before this it does a set_watchpoint(). PTRACE_CONT is what
-> makes sense to me. Error might be the one that is incorrect here?
+On Wed, Feb 03, 2021 at 04:52:42PM -0800, Ivan Babrou wrote:
+> We also have the following stack that doesn't touch any crypto:
+> 
+> * https://gist.github.com/bobrik/40e2559add2f0b26ae39da30dc451f1e
 
-What do you think the following change? If it is OK, I will send v2 soon.
+Can you also run this through decode_stacktrace.sh?
 
-diff --git a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c 
-b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-index ad41ea6..e704181 100644
---- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-+++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
-@@ -145,7 +145,7 @@ static bool run_test(int wr_size, int wp_size, int 
-wr, int wp)
+Both are useful (until I submit a fix for decode_stacktrace.sh).
 
-         if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
-                 ksft_print_msg(
--                       "ptrace(PTRACE_SINGLESTEP) failed: %s\n",
-+                       "ptrace(PTRACE_CONT) failed: %s\n",
-                         strerror(errno));
-                 return false;
-         }
-@@ -159,7 +159,7 @@ static bool run_test(int wr_size, int wp_size, int 
-wr, int wp)
-         }
-         alarm(0);
-         if (WIFEXITED(status)) {
--               ksft_print_msg("child did not single-step\n");
-+               ksft_print_msg("child exited prematurely\n");
-                 return false;
-         }
-         if (!WIFSTOPPED(status)) {
+> I cannot reproduce this one, and it took 2 days of uptime for it to
+> happen. Is there anything I can do to help diagnose it?
 
-Thanks,
-Tiezhu
+Can you run with the same unwind_debug patch+cmdline when you try to
+recreate this one?  In the meantime I'll look at the available data.
 
->
-> thanks,
-> -- Shuah
+-- 
+Josh
 
