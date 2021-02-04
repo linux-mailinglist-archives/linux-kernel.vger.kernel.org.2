@@ -2,144 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA3730FFEB
+	by mail.lfdr.de (Postfix) with ESMTP id DB42B30FFEC
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhBDWIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:08:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230118AbhBDWIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:08:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6CC64E4A;
-        Thu,  4 Feb 2021 22:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612476464;
-        bh=JA5i5CJqYX81a3kjCG1mjmZB3f3ENVDSQ9kAT86kifY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aPHM6K9RJwsd4Xt8K0gLDMkCF2WhWg5vRgVcnP9Plm2uEKMrW73/LK7erWyBRdS6d
-         5mo4oXt2gAI5yfA2sucrOo/MfQuM49Q+RNUNcfVlKDp6mXY7Pzt8FiDPa6HCDCcvko
-         vEN2UbhPOQO7d10R6rlla77DkRTIGFQRoWmeO+exUfqAoNIN57I34/bgNmjVgL2D6x
-         Rl/JursclME7xtm2PIL8o4cIN1ljQAB1aOjKHN5xA8UUjobeZuS87Z2ZqPo8RNLdsS
-         srRFTHbTAxd6mD/1hWbZD6rQrNzpvEjkwhPpU7JYwOa9KZ9rhOWwYv/ZJxG/PB3SH2
-         hynBsnCqAPVIg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 32AD640513; Thu,  4 Feb 2021 19:07:41 -0300 (-03)
-Date:   Thu, 4 Feb 2021 19:07:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     dwarves@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
-Subject: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-Message-ID: <20210204220741.GA920417@kernel.org>
+        id S229705AbhBDWJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:09:06 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44644 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhBDWI6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 17:08:58 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114LolO3152124;
+        Thu, 4 Feb 2021 22:07:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=aV4kH+UA7pOMvhXNXwBqgLamuIdcc58m6NFTgaf7xek=;
+ b=luq6J3pWmoYzuFkD5dSlbZvuxAwCYE3ktbKuWgcH8or1M+YG0NqHx8Yy2MOh6Z4acNda
+ SPuEW5hPNOJ1djoWe0mAh1apKELokykr560VzkL9ubL9Baoq2OrkG8P+x+UAeO5gvP7O
+ G+SCvPbcIGvSfkn6JmkKpJTRiDXlPBTM4F1Hgq+R3DiJjS+DUPuLVAZfu4/2Q7BTsjZl
+ f1JMLGX19ocSOB4Erlgr5vopvzMH10/ilaT9tfi6Nxow5AdZAtmffIbhtqz7ZvCsmASw
+ B6aS3uEGxmqKWOZa30d7oSUszcruj+ys8zsR7M6QhYzqdFwo8YJJOYqL5BFXHJQjzxld Vg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36cxvra555-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 22:07:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114Lp823050496;
+        Thu, 4 Feb 2021 22:07:48 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by aserp3020.oracle.com with ESMTP id 36dhc39e3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 22:07:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bit6vVzXUOUG5qhOKxCp6v9YAoUcLlzKL+NXqtLgdGz/siyCjbzYcDu507v0JI96JP4dXCQOAd7oS0zU5JoUCX8rBaQVNgk0gEbtYTaPKZxZol8Y0AY7UyiSHUXD2vQNaZ+pQYsShUMbpBT+VpT3vbF+Ds28ZfMePX3Iq+exVkCf0bzMNLxG7qgX1SIKd5kdXUAa0o1v2tAZ6z2gXbQ3gyaddgIQjUVCjAr5Z/d9zEJAJWHu8uTkcTWWRp1XvmlIsjF9eYtLLEnT7lx8/X4tfyXG6F8+ntEsFwQyL8HjVnBvgpMLHoDH85nIAzI+UrxxNimNMppGas9ksNJGywv64g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aV4kH+UA7pOMvhXNXwBqgLamuIdcc58m6NFTgaf7xek=;
+ b=N9DIE3K25gUBIqCEVy9+9ImuzkpbPGNflC0w6glZX7yGc0ZXT5hTXmfIW6epsFtfvuylwLDWiSQTcb9WKXInhI6d7c8b4CZtTMDOKuG3LrGndLE4FfLMvmmJjZtfoLOnOr9zf8ZvorpbAylsTCt5vf58wNDeb8qZTwZryshvPF3zsOLFGIi9+VZ5XZQ9r50q0tpXK0brUs3+y/DKdoC/INpV2QUe9owYsIzOhOrhHhQoG77SnA9V9zXS9uUKDAPXskQD0yeXfpl9GTUBeODjbufWrr7Peo9+lh/UTgc3wMYs769WiI2HlCd3+W5QRpLT/CWgFbTge4NOCQPHwcbSWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aV4kH+UA7pOMvhXNXwBqgLamuIdcc58m6NFTgaf7xek=;
+ b=O8OiEn+O4mXKRiqOYGJzwa/1JgFb1rV9tHLsaQgaqAyClMrfw2EfDucuaagzORqgAXjUGofFw18CLWVoWal3UmPuitAwO66vqYT+uy6wj7yR2kVIfISJHZWhEfrUr++7m7G67c3LQJVB32XR/90SSvG+AY6mrh4QfGwbN2KqwJI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
+ by CH0PR10MB5321.namprd10.prod.outlook.com (2603:10b6:610:c9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 4 Feb
+ 2021 22:07:47 +0000
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac]) by CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac%7]) with mapi id 15.20.3825.020; Thu, 4 Feb 2021
+ 22:07:47 +0000
+Subject: Re: [PATCH] jfs: Remove unneeded return variable
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <1612409974-63355-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+Message-ID: <2ddb278d-22c9-e1e0-9d56-d132192620c5@oracle.com>
+Date:   Thu, 4 Feb 2021 16:07:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <1612409974-63355-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [68.201.65.98]
+X-ClientProxiedBy: SN7PR04CA0053.namprd04.prod.outlook.com
+ (2603:10b6:806:120::28) To CH2PR10MB4118.namprd10.prod.outlook.com
+ (2603:10b6:610:a4::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.190] (68.201.65.98) by SN7PR04CA0053.namprd04.prod.outlook.com (2603:10b6:806:120::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Thu, 4 Feb 2021 22:07:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 86c43db9-166a-4115-871e-08d8c9594dc6
+X-MS-TrafficTypeDiagnostic: CH0PR10MB5321:
+X-Microsoft-Antispam-PRVS: <CH0PR10MB53212DD963A6C7630F3E95CB87B39@CH0PR10MB5321.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:159;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6O5urlGI5LTGjjcY/U/dZeVWG6edyCqLG6bdKPEZc2+EBBMjea/imvziTCwevR6FUvj37xzqaWk9lhi6M3vxtKpapERCVQ0HMye3p/LM1T+Aw0dXWxmL/FJr9mT8HBpN5uOZZzAow0HZMA05JVhH0pmbGj6QCSva8+zHB1CagOWjDpvaBwxzDT2TANdeqm+v1vzpMa2QEHsroKWBhJVDhSx97bA5HEhvmDKLv70YCnlFIbj2m/ZlIvRWTZau1g5ZTJuFnuCCmV5mMbH0sPriaA8UCWchALKgwLNO5Id9iFD3K4JBfAsuhJkC0gsC4b27Omeg6asIp3qet/fjwLxeIND418GStmbpQTxx4SV+DB38R+9RcEmSZhZQUibnR/ijGI9e4MAMuylbJhRVOIWtt57qMPw/V9UDcVFP/kWMjqUY6CZMd3oAmA/CSbRFthoXlSzygvYVP2QkOzcDmAEa0vfs5kM5GGIEFp6z+53oN/yo6m0fPSVF5PCe0KqrhYAiEuamaAYZjTcjfj1awzI/0oIPmmJ1SOnKBqCO7lcjhEilxj1Ysr5hKKMZfDdjD6YKAcCZZingWC+7ZNLH+lgbVcdiKqAVzz4AdFnAj6w3dQc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39860400002)(136003)(376002)(2906002)(2616005)(956004)(44832011)(8676002)(86362001)(36756003)(31696002)(6486002)(53546011)(186003)(16526019)(83380400001)(26005)(316002)(16576012)(5660300002)(478600001)(4326008)(31686004)(6916009)(8936002)(66556008)(66476007)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aFMxdmFFQnM5RkhJbys4Sy83Unp5T2FqVDBjeDJFb2ZlVmJ0U3c0bnQxc0JL?=
+ =?utf-8?B?OTVwTnBPWEFIbzhBeHBCY24rcVlGaytPdTR6MnBhbU5uU2tQSVl5VjFMKzFR?=
+ =?utf-8?B?Uk1NcjV5bklKaW9wclRuUzlpU3o4TUEzU3ZhUXRESHJ0amhWOGdTMXo1WTJF?=
+ =?utf-8?B?QmRWdGhjRTM1WGo4Ry9IVFRnZ29ISVVmMTdVbkxvWXhjTS9FVUVUeDNQQ2F0?=
+ =?utf-8?B?S25YV05EcnpwemtIa25jb0lLZmcrR28vWjFPOS9uc0RKdnVleUZ0RUVPZFM2?=
+ =?utf-8?B?NmRZNk9nS1FmT29ESGloQ1k2OG1PMFZHZ3ZpTlBMUzNZYTZWWmhLYUxjS0hq?=
+ =?utf-8?B?ZlFaOTdKeFRzVXBPaUZrNmVUSk16eGE4cUhsTllXbGhxMWtwa2tFUUw5UTJ0?=
+ =?utf-8?B?Zy9Db0dXNE56VTliL0ozRmZiSHlxRHdCNy9lcHU2MEF4bW1BdjZacnA4WFBU?=
+ =?utf-8?B?SGxEelp3cnQ3RDdCbnBKV0xvUnYwM2k5d3hhMWUyTEx4eDhpT3Jic2VXalpC?=
+ =?utf-8?B?enRuVUVlWERYWnF2cWNxNDlYbTFIY21uQUR3ajVvRW9ZK1J2RDJKVG1tcnpv?=
+ =?utf-8?B?QmNTVXdhZDZLOVZUV0lJeVNiZXhXN1ljOHlnblRBUW0xU1lVb25xaFpqYTRC?=
+ =?utf-8?B?Q2FVSzZnTEoyNEVSaEdmeVMyRkpuNmR2N2lHWkxZQWdzdFQ5NXBCWTl6eEpr?=
+ =?utf-8?B?T3dVZlJoRUhVbWtnYVFhclIxQXdnQTlDdFVFSUphdFI2MWRkVHMxU250ZGRL?=
+ =?utf-8?B?czNjNDR3YkNlVFlNSjQvVm5VMnNyVnRRQjlud212Ni9jN3NjUlUrTmw5Y0RI?=
+ =?utf-8?B?OHBrWGxTdVk1WllvbjRtTmxkY3FBTExCRzlRVjNacTExZmU5UmhnWnZZYmY0?=
+ =?utf-8?B?QmZubDRTUno0MGxIeEJpQjFtNzVRTlpTcFZEelNhbW9ESDFrZ1FFMW9BMWJ3?=
+ =?utf-8?B?OEtKd0F0L1dBVDZVNmQ3QVBLQ2dzVkt6U09lRnd2STVZRFVnV2RwQnpvblRw?=
+ =?utf-8?B?ajlSK0NlWE9ob0cvVU1xODVGY3NyM2cweW1Xd2Qzdm82b2FZcDU1dXB0ZVpZ?=
+ =?utf-8?B?UWRubEs0RGRwbGozbEJHalhUcTByempjWkxyeVB6RFNoVXNFK3hpQkdSdTZX?=
+ =?utf-8?B?Y25vaUIvSUlZRlJJR3FDd1poZEdtTURZWjBpNnRXWUJnQ2VzLzJ0K0YxRmUx?=
+ =?utf-8?B?UXBWS2FyK1Z6Vk1YTTF0bkRxeEFNaCtaemxEVUlTaXNKTjU2ck9SSkxHMElk?=
+ =?utf-8?B?N3c2czUyeFFtSlBhcXNxZGEwWG8vcDVVSGNmczJlRXgvMVdxYmVrR2ZrM0Va?=
+ =?utf-8?B?UkFQYm9hUjV3ZVIrTjRMWkhrcWR5dW9uUm1ESlllSnI2aVhnMHlsR2s2Vk5s?=
+ =?utf-8?B?TXFGQUNyQ0d6VHpFSkY0Tjg3V1pENGNEaGdxL0FRRUN4UndGZFYxQ05IQlF5?=
+ =?utf-8?Q?oZCjMbN6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86c43db9-166a-4115-871e-08d8c9594dc6
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 22:07:47.0379
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l+tjxq1XeaItF/mNFoP0aXslYHtTagWI9MSOCO/GJnKvGpMOw3CTQf84W7Qfeb/9rDUvW0RmPUdVt5ayDcIWRMvS7Hg5QdjttVz6F/086NE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5321
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040133
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
- 
-	The v1.20 release of pahole and its friends is out, mostly
-addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-available at the usual places:
+On 2/3/21 9:39 PM, Yang Li wrote:
+> This patch removes unneeded return variables, using only
+> '0' instead.
+> It fixes the following warning detected by coccinelle:
+> ./fs/jfs/jfs_txnmgr.c:1370:5-7: Unneeded variable: "rc". Return "0" on
+> line 1417
 
-Main git repo:
+Looks good. I wonder if we should take it a step further and turn 
+diLog(), dataLog() and txLog() into void functions.
 
-   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+Shaggy
 
-Mirror git repo:
-
-   https://github.com/acmel/dwarves.git
-
-tarball + gpg signature:
-
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
-
-Best Regards,
- 
- - Arnaldo
-
-v1.20:
-
-BTF encoder:
-
-  - Improve ELF error reporting using elf_errmsg(elf_errno()).
-
-  - Improve objcopy error handling.
-
-  - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
-
-  - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
-    more than 65534 sections, for instance, which happens with kernels built
-    with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
-    include when using FG-ASLR, LTO.
-
-  - Cope with functions without a name, as seen sometimes when building kernel
-    images with some versions of clang, when a SEGFAULT was taking place.
-
-  - Fix BTF variable generation for kernel modules, not skipping variables at
-    offset zero.
-
-  - Fix address size to match what is in the ELF file being processed, to fix using
-    a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
-
-  - Use kernel module ftrace addresses when finding which functions to encode,
-    which increases the number of functions encoded.
-
-libbpf:
-
-  - Allow use of packaged version, for distros wanting to dynamically link with
-    the system's libbpf package instead of using the libbpf git submodule shipped
-    in pahole's source code.
-
-DWARF loader:
-
-  - Support DW_AT_data_bit_offset
-
-    This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
-    support it in a way that makes the output be the same for both cases.
-
-      $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
-      $ pahole bf.o
-      struct pea {
-            long int                   a:1;                  /*     0: 0  8 */
-            long int                   b:1;                  /*     0: 1  8 */
-            long int                   c:1;                  /*     0: 2  8 */
-
-            /* XXX 29 bits hole, try to pack */
-            /* Bitfield combined with next fields */
-
-            int                        after_bitfield;       /*     4     4 */
-
-            /* size: 8, cachelines: 1, members: 4 */
-            /* sum members: 4 */
-            /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
-            /* last cacheline: 8 bytes */
-      };
-
-  - DW_FORM_implicit_const in attr_numeric() and attr_offset()
-
-  - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
-    DW_TAG_GNU_call_site.
-
-build:
-
-    - Fix compilation on 32-bit architectures.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   fs/jfs/jfs_txnmgr.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+> index dca8edd..87ef2a2 100644
+> --- a/fs/jfs/jfs_txnmgr.c
+> +++ b/fs/jfs/jfs_txnmgr.c
+> @@ -1367,7 +1367,6 @@ int txCommit(tid_t tid,		/* transaction identifier */
+>    */
+>   static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+>   {
+> -	int rc = 0;
+>   	struct inode *ip;
+>   	lid_t lid;
+>   	struct tlock *tlck;
+> @@ -1414,7 +1413,7 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+>   		}
+>   	}
+>   
+> -	return rc;
+> +	return 0;
+>   }
+>   
+>   /*
+> @@ -1425,7 +1424,6 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+>   static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+>   		 struct tlock * tlck, struct commit * cd)
+>   {
+> -	int rc = 0;
+>   	struct metapage *mp;
+>   	pxd_t *pxd;
+>   	struct pxd_lock *pxdlock;
+> @@ -1527,7 +1525,7 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+>   	}
+>   #endif				/* _JFS_WIP */
+>   
+> -	return rc;
+> +	return 0;
+>   }
+>   
+>   /*
+> 
