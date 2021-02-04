@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AA830F426
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE0330F42F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236434AbhBDNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:48:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236464AbhBDNqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:46:52 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EDC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:46:09 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id u14so3586712wri.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:46:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Dc2qXVoLurmP1y6qGwsvfYp52EWzBpvbfbLeLIxscWo=;
-        b=vcX10tK1JXGeAOOqnN5qkSnrM0WTN2R/PdrCmgvbefToo/2uSgDcfLT6Xd8NM/mKEl
-         xMfRDm0yVYJQX8w/QhvLlCks+9AJgUiQlDMqupirjP9dAV0pn+XAbUpv9gpNFwEGNg22
-         q7fBzmF0ensUbqLyzqCPm+6i+m+rvJlO3fHrtyCKdwTStk1H03Adc9d3bxeuqJ5zRd4L
-         3vtLRDddOqVlUf9sVnHZ9h+8USZ3ZMEykRzMLAAoi6qeQWO328wvXjZNDf+2HmShrvoP
-         hRkKEUGLbrHEPnVLdHJ+K7BUj3rgzVaPyFWh11Q0ZFB93DpTM7LsdzjIbKazFBKf0Q8A
-         9l1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Dc2qXVoLurmP1y6qGwsvfYp52EWzBpvbfbLeLIxscWo=;
-        b=DqKPEDgRVoslrC9IQWf86Q4W3/ifZg4qrciOVsowdCtTmxfp1mk+Ua5tkpvsRj19Kj
-         cSUYf6Z6Foq8USvxpWAOa9sYy9EkoXi10U2FgQI5Rj1K/NZtej976T1LBJ8gztuF9tiR
-         6lVPm2rtCL3ZETkDOy5owrZcxVM0V1yIEdT25v5WUR+L0wIOI/dJc6LoKXAdH48NJrfy
-         sgf/BhDewY4OrB5FOwr2ApXF6gK14uZy1JnqmjGb0VobnT+pZ/aU1yA2OBG14OG7TWlL
-         NUnT4WNpSYnnG63mMLIjKFvAbaURp9JV25SDV08Rghsk55eCdLtSDjUWZzxof9l8b9eo
-         FdjA==
-X-Gm-Message-State: AOAM530p+OeNmnX9B8BGImAWXYO7RxeeE2MElSNaQw5SDDig/veDjIMi
-        Th6+8BhAmlgHIifSCmUQtLyedQ==
-X-Google-Smtp-Source: ABdhPJydeDZ+8e1+KMnG8GflcBvfY2Mg3GWNDaEqkj0KlgohdEXPBXZQ8GD5ktuU19qx3aBMThKUPA==
-X-Received: by 2002:adf:81e4:: with SMTP id 91mr9635163wra.161.1612446368624;
-        Thu, 04 Feb 2021 05:46:08 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id b4sm7912769wrn.12.2021.02.04.05.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 05:46:08 -0800 (PST)
-Date:   Thu, 4 Feb 2021 13:46:06 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
- with WM5102 codec
-Message-ID: <20210204134606.GH2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
- <20210204105748.GD2789116@dell>
- <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
- <20210204124335.GA4288@sirena.org.uk>
+        id S236426AbhBDNtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:49:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236332AbhBDNrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:47:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CAD564F10;
+        Thu,  4 Feb 2021 13:47:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612446423;
+        bh=9Ehsbnk5YKiuuZlVYj2HP71i+SsiSDDQUCHfr3hsUEM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wa34LdlgUs61/nt5WPh+wuAJg36qADW0I0RSzmDhyCLssKz6AGY0avfG/+rrXPIzb
+         AQmdypt4RKTk4Cgsq615vTkCgPLeWBRZH+l3+sSTiHDgVsO6L3a3uZHbOKtCtiKFqc
+         zSW+HuZJN2HiFmPsZV+i4nPI5Y7VEs62Sa8x0Xb4=
+Date:   Thu, 4 Feb 2021 14:47:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] gpio: uapi: use the preferred SPDX license identifier
+Message-ID: <YBv61eNnVksYq9mr@kroah.com>
+References: <20210204124357.3817-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210204124335.GA4288@sirena.org.uk>
+In-Reply-To: <20210204124357.3817-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Feb 2021, Mark Brown wrote:
+On Thu, Feb 04, 2021 at 01:43:57PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> GPL-2.0 license identifier is deprecated, let's use the preferred
+> identifier: GPL-2.0-only.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+> Hi Kent, Greg,
+> 
+> I started working on making libgpiod licensing reuse-compliant and noticed
+> that the reuse-tool is telling me that the GPL-2.0 SPDX identifier in the
+> GPIO uapi header is deprecated. Since I'm required to copy the header
+> verbatim into libgpiod's repository, I think we need to fix that at source
+> first.
+> 
+>  include/uapi/linux/gpio.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
+> index e4eb0b8c5cf9..3e01ededbf36 100644
+> --- a/include/uapi/linux/gpio.h
+> +++ b/include/uapi/linux/gpio.h
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
 
-> On Thu, Feb 04, 2021 at 12:07:49PM +0100, Hans de Goede wrote:
-> > On 2/4/21 11:57 AM, Lee Jones wrote:
-> > > On Thu, 04 Feb 2021, Hans de Goede wrote:
-> 
-> > >> series are both ready for merging. All patches have Reviewed-by and/or
-> > >> Acked-by tags now.
-> 
-> > > I don't think they do.  You're missing ASoC and Extcon Acks.
-> 
-> > Right, what I meant is that the patches have been reviewed by other
-> > stake-holders, including the follow-up series being tested by the cirrus
-> > codec folks (thank you Charles).
-> 
-> > But yes the actual subsys maintainers have not acked these yet;
-> > and I'm aware that you will need those for merging this through
-> > the MFD tree.
-> 
-> The usual pattern here is that the MFD patches get merged and then I
-> pull a shared branch in for any dependencies - at this point the series
-> is now on the backlog of serieses where I'm waiting for the MFD to sort
-> itself out before I really look at it again.
+No, there is no need to convert the kernel to the "latest" spdx level,
+when we started out there was no "-only" nonsense (hint no other license
+has that crud), and "GPL-2.0" is a totally valid summary of the license.
 
-I tend to push patches awaiting Acks to the back of the queue.
+So please don't go changing it all in-kernel, that way lies madness.
+Let's finish fixing up ALL kernel files before worrying about what SPDX
+"version" we are at.
 
-Stalemate.
+thanks,
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+greg k-h
