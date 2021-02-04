@@ -2,146 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F4B30FB95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6CC30FB99
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbhBDSdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:33:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239153AbhBDSaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:30:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13D1B64E06;
-        Thu,  4 Feb 2021 18:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612463391;
-        bh=m2ULECe/5nShjpaNukVPB1Kg9k0QQfSi+2ZmqBBEpGs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O/LNBdO3xd+g9w7/5qjfXOSTtr4mSJ9IrEz1BxVvwHFiiel3fILTMyxF534RzQQ6e
-         dWNmW4YGkhvR3f0qNjS1F1cWrRBMnsLyW1vNcoqBVmXGn6etQ5nHpKlRcWNHvDfY3I
-         18fpGaTjYYafIzHvYgkqDlZdUYjXqHZqYDYrE8B3KTAurSebytxHkx/+7SfOJmKxtv
-         89V+vfbFUaYNvT3t1SVFjp//aaornWIug+AH20j3apiqMBiyXwAB76RYE8V6Ack1pN
-         4KVJeJiu3hHE7/lDBCLzXRh7+wGLvZ/Xw32uIGZaMFElJNBnci1ddtEY22poxwjSte
-         2KS29439QNy+g==
-Date:   Thu, 4 Feb 2021 19:29:39 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Andy Gross <agross@kernel.org>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lucas Stach <l.stach@pengutronix.de>,
-        linux-samsung-soc@vger.kernel.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-arm-kernel@axis.com, Richard Zhu <hongxing.zhu@nxp.com>,
-        linux-arm-msm@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pci@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
-        linux-tegra@vger.kernel.org, Jonathan Chocron <jonnyc@amazon.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH 01/13] doc: bindings: pci: designware-pcie.txt: convert
- it to yaml
-Message-ID: <20210204192939.0daaec74@coco.lan>
-In-Reply-To: <20210204172945.GA662023@robh.at.kernel.org>
-References: <cover.1612271903.git.mchehab+huawei@kernel.org>
-        <706e684f571e142362d7be74eb1dcee2c8558052.1612271903.git.mchehab+huawei@kernel.org>
-        <1612287895.001149.3887347.nullmailer@robh.at.kernel.org>
-        <20210203074900.6d581153@coco.lan>
-        <20210204172945.GA662023@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S239172AbhBDSdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:33:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239160AbhBDSdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:33:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612463506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cw6yNBHOi0gV1ybYwsZTPvMb8Nk42GJP0B50G947cPI=;
+        b=YUzTlDloBQhJV30xadbZ1APHXEVUiCnLsdna77LYddlaQDZIMicRDPxDIEgkkecRncTami
+        TDi/y2MJ6YhKZx8hEBUh6iJ5HH9OpMEcRTbaYougvHRyRipLHD8Cw9zGpEhQHfV3BWT07F
+        mLee9zhqBhBUXoyAmWST02NtpSBzgCQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-ErhZhf-NNZe7Lcg4lrXl4Q-1; Thu, 04 Feb 2021 13:31:44 -0500
+X-MC-Unique: ErhZhf-NNZe7Lcg4lrXl4Q-1
+Received: by mail-ed1-f70.google.com with SMTP id u26so3615928edv.18
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:31:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cw6yNBHOi0gV1ybYwsZTPvMb8Nk42GJP0B50G947cPI=;
+        b=cFxc9jUnYH5l8fIXAoqQYQhX7ZBBbJFkvH8eVdN66zfRZLOllU3cw2jRc856nBG2r5
+         p5LCj/1F2Jo2obfQPSAIHC4L2N+vyK1jKoprfIlJB29IEbZc38CxghrN9VtZzGJ6Lq9r
+         W8Yz5ayMC9tvlnh3KxU8LyiEosIc+WM5kK2yUL8QhuCpj6gezznhk+ufT71aOppTdA4R
+         DaA6iGrCeD0b0l0HZPDIf17+j6KDGCYAT4XVHDSgVUcOP9yN5flSAX4LnhxVsfWconyp
+         WV/zx1V30H86oNtmZWwXLNd+f7aO7J8E0BXMiKTGXMbxWWNVbXD2H6uju0QS9Z0URe9d
+         Gv+Q==
+X-Gm-Message-State: AOAM532bxTqBdMgqCsax6RuH0BoYTAtqZ3tPppSgUFwTVRULkPtEsD22
+        KId8CeoKvZNQ7PXokzQWdkjeiU0jh5PGhkfpfPHk+EPLJhXiWK5vyfquP04Cp9zn7B910bilUrg
+        HlgAVIhOviAZMvcKDTB5cjg9e
+X-Received: by 2002:aa7:c94c:: with SMTP id h12mr328562edt.40.1612463503630;
+        Thu, 04 Feb 2021 10:31:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwbYgYZaJKMYeumdOWnVdGLbGKEebTgojFuPzk62ylvgOplomfQSo9d8Ys/fCPdGVCoRwsiXw==
+X-Received: by 2002:aa7:c94c:: with SMTP id h12mr328539edt.40.1612463503417;
+        Thu, 04 Feb 2021 10:31:43 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id bo24sm2845011edb.51.2021.02.04.10.31.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 10:31:42 -0800 (PST)
+Subject: Re: [PATCH v3 2/5] ACPI: battery: Clean up printing messages
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Hanjun Guo <guohanjun@huawei.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <1961054.9MKZ8ejxOh@kreacher> <1731128.lCOlkKr4QW@kreacher>
+ <3ca5dcaa-094a-9f4f-a802-81c54a681c96@redhat.com>
+Message-ID: <16884c35-811a-b095-27f2-f43394f3efc2@redhat.com>
+Date:   Thu, 4 Feb 2021 19:31:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <3ca5dcaa-094a-9f4f-a802-81c54a681c96@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 4 Feb 2021 11:29:45 -0600
-Rob Herring <robh@kernel.org> escreveu:
+Hi,
 
-> On Wed, Feb 03, 2021 at 07:49:00AM +0100, Mauro Carvalho Chehab wrote:
-> > Hi Rob,
-> > 
-> > Em Tue, 02 Feb 2021 11:44:54 -0600
-> > Rob Herring <robh@kernel.org> escreveu:
-> >   
-> > > My bot found errors running 'make dt_binding_check' on your patch:
-> > > 
-> > > yamllint warnings/errors:
-> > > 
-> > > dtschema/dtc warnings/errors:
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
-> > > 	'type' is a required property
-> > > 	Additional properties are not allowed ('$ref' was unexpected)
-> > > 	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
-> > > 		'enum' is a required property
-> > > 		'const' is a required property
-> > > 	'/schemas/types.yaml#definitions/flag' does not match 'types.yaml#/definitions/'  
+On 2/4/21 7:27 PM, Hans de Goede wrote:
+> Hi,
 > 
-> You need a '/' between '#' and 'definitions'.
-
-ah, OK. Will add it at the next version.
- 
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: ignoring, error in schema: properties: snps,enable-cdm-check
-> > > warning: no schema found in file: ./Documentation/devicetree/bindings/pci/snps,pcie.yaml
-> > > 
-> > > See https://patchwork.ozlabs.org/patch/1434686
-> > > 
-> > > This check can fail if there are any dependencies. The base for a patch
-> > > series is generally the most recent rc1.
-> > > 
-> > > If you already ran 'make dt_binding_check' and didn't see the above
-> > > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > > date:
-> > > 
-> > > pip3 install dtschema --upgrade
-> > > 
-> > > Please check and re-submit.  
-> > 
-> > I've no idea why the bot is hitting those. My tree is based on
-> > staging-testing[1], as I need the regulator patches merged there.
-> > Such tree is based on v5.11-rc5.
-> > 
-> > There, dt_binding_check doesn't get any warnings on this schema:
-> > 
-> > $ pip3 install dtschema --upgrade --user
-> > Requirement already up-to-date: dtschema in /home/mchehab/.local/lib/python3.9/site-packages (2020.12)  
+> On 2/3/21 7:44 PM, Rafael J. Wysocki wrote:
+>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>
+>> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
+>> in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
+>> respectively, which among other things causes the excessive log
+>> level of the messages previously printed via ACPI_EXCEPTION() to
+>> be increased.
+>>
+>> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+>> used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
+>> definition from the headers and update the documentation accordingly.
+>>
+>> While at it, update the pr_fmt() definition and drop the unneeded
+>> PREFIX sybmbol definition from battery.c.  Also adapt the existing
+>> pr_info() calls to the new pr_fmt() definition.
+>>
+>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> ---
+>>
+>> v2 -> v3: Also adapt the existing pr_info() calls to the new pr_fmt()
+>>           definition.
+>>
+>> v1 -> v2: Changelog update.
+>>
+>> ---
+>>  Documentation/firmware-guide/acpi/debug.rst |    1 
+>>  drivers/acpi/battery.c                      |   33 +++++++++++++---------------
+>>  drivers/acpi/sysfs.c                        |    1 
+>>  include/acpi/acpi_drivers.h                 |    1 
+>>  4 files changed, 16 insertions(+), 20 deletions(-)
+>>
+>> Index: linux-pm/drivers/acpi/battery.c
+>> ===================================================================
+>> --- linux-pm.orig/drivers/acpi/battery.c
+>> +++ linux-pm/drivers/acpi/battery.c
+>> @@ -8,7 +8,7 @@
+>>   *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
+>>   */
+>>  
+>> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> +#define pr_fmt(fmt) "ACPI: battery: " fmt
+>>  
+>>  #include <linux/async.h>
+>>  #include <linux/delay.h>
+>> @@ -29,8 +29,6 @@
+>>  
+>>  #include <acpi/battery.h>
+>>  
+>> -#define PREFIX "ACPI: "
+>> -
+>>  #define ACPI_BATTERY_VALUE_UNKNOWN 0xFFFFFFFF
+>>  #define ACPI_BATTERY_CAPACITY_VALID(capacity) \
+>>  	((capacity) != 0 && (capacity) != ACPI_BATTERY_VALUE_UNKNOWN)
+>> @@ -44,10 +42,6 @@
+>>  #define ACPI_BATTERY_STATE_CHARGING	0x2
+>>  #define ACPI_BATTERY_STATE_CRITICAL	0x4
+>>  
+>> -#define _COMPONENT		ACPI_BATTERY_COMPONENT
+>> -
+>> -ACPI_MODULE_NAME("battery");
+>> -
+>>  MODULE_AUTHOR("Paul Diefenbaugh");
+>>  MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
+>>  MODULE_DESCRIPTION("ACPI Battery Driver");
+>> @@ -466,7 +460,8 @@ static int extract_package(struct acpi_b
+>>  static int acpi_battery_get_status(struct acpi_battery *battery)
+>>  {
+>>  	if (acpi_bus_get_status(battery->device)) {
+>> -		ACPI_EXCEPTION((AE_INFO, AE_ERROR, "Evaluating _STA"));
+>> +		acpi_handle_info(battery->device->handle,
+>> +				 "_STA evaluation failed\n");
 > 
-> This particular check is in master, but not yet a release on pypi. I'll 
-> be tagging a release soon.
-> 
-> I've got this problem that adding new meta-schema checks like this one 
-> requires fixing up all the existing in tree schemas first. So I give 
-> some amount of time before adding them to a tagged release. However, I 
-> want to start testing new schemas right away. I haven't come up with a 
-> better solution short of importing the meta-schema into the kernel tree 
-> or separately versioning them.
+> Missing ": %s", acpi_format_exception(status), or is that intentional
+> (I did not see this mentioned in the commit msg) ?
 
-IMO, having the meta-schema inside the Kernel tree would be better...
+Ah, after noticing that you did the same thing in patch 4/5 and there
+the passed in status was bogus, I now notice that the status here
+was hard-coded to AE_ERROR, so not meaningful.
 
-It took me some time to discover that some problems I had with a past
-version of this patch series were due to something outside the
-Kernel tree, at local/lib/python3.9/site-packages.
+That answers my own question, so this is:
 
-Thanks,
-Mauro
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+As is.
+
+Regards,
+
+Hans
+
+
+
+
+>>  		return -ENODEV;
+>>  	}
+>>  	return 0;
+>> @@ -535,8 +530,10 @@ static int acpi_battery_get_info(struct
+>>  		mutex_unlock(&battery->lock);
+>>  
+>>  		if (ACPI_FAILURE(status)) {
+>> -			ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s",
+>> -					use_bix ? "_BIX":"_BIF"));
+>> +			acpi_handle_info(battery->device->handle,
+>> +					 "%s evaluation failed: %s\n",
+>> +					 use_bix ?"_BIX":"_BIF",
+>> +				         acpi_format_exception(status));
+>>  		} else {
+>>  			result = extract_battery_info(use_bix,
+>>  						      battery,
+>> @@ -573,7 +570,9 @@ static int acpi_battery_get_state(struct
+>>  	mutex_unlock(&battery->lock);
+>>  
+>>  	if (ACPI_FAILURE(status)) {
+>> -		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _BST"));
+>> +		acpi_handle_info(battery->device->handle,
+>> +				 "_BST evaluation failed: %s",
+>> +				 acpi_format_exception(status));
+>>  		return -ENODEV;
+>>  	}
+>>  
+>> @@ -590,7 +589,7 @@ static int acpi_battery_get_state(struct
+>>  		battery->rate_now != ACPI_BATTERY_VALUE_UNKNOWN &&
+>>  		(s16)(battery->rate_now) < 0) {
+>>  		battery->rate_now = abs((s16)battery->rate_now);
+>> -		pr_warn_once(FW_BUG "battery: (dis)charge rate invalid.\n");
+>> +		pr_warn_once(FW_BUG "(dis)charge rate invalid.\n");
+>>  	}
+>>  
+>>  	if (test_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags)
+>> @@ -625,7 +624,9 @@ static int acpi_battery_set_alarm(struct
+>>  	if (ACPI_FAILURE(status))
+>>  		return -ENODEV;
+>>  
+>> -	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Alarm set to %d\n", battery->alarm));
+>> +	acpi_handle_debug(battery->device->handle, "Alarm set to %d\n",
+>> +			  battery->alarm);
+>> +
+>>  	return 0;
+>>  }
+>>  
+>> @@ -1201,8 +1202,7 @@ static int acpi_battery_add(struct acpi_
+>>  	if (result)
+>>  		goto fail;
+>>  
+>> -	pr_info(PREFIX "%s Slot [%s] (battery %s)\n",
+>> -		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
+>> +	pr_info("Slot [%s] (battery %s)\n", acpi_device_bid(device),
+>>  		device->status.battery_present ? "present" : "absent");
+>>  
+>>  	battery->pm_nb.notifier_call = battery_notify;
+>> @@ -1282,8 +1282,7 @@ static void __init acpi_battery_init_asy
+>>  	if (battery_check_pmic) {
+>>  		for (i = 0; i < ARRAY_SIZE(acpi_battery_blacklist); i++)
+>>  			if (acpi_dev_present(acpi_battery_blacklist[i], "1", -1)) {
+>> -				pr_info(PREFIX ACPI_BATTERY_DEVICE_NAME
+>> -					": found native %s PMIC, not loading\n",
+>> +				pr_info("found native %s PMIC, not loading\n",
+>>  					acpi_battery_blacklist[i]);
+>>  				return;
+>>  			}
+>> Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+>> ===================================================================
+>> --- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
+>> +++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+>> @@ -52,7 +52,6 @@ shows the supported mask values, current
+>>      ACPI_CA_DISASSEMBLER            0x00000800
+>>      ACPI_COMPILER                   0x00001000
+>>      ACPI_TOOLS                      0x00002000
+>> -    ACPI_BATTERY_COMPONENT          0x00040000
+>>      ACPI_BUTTON_COMPONENT           0x00080000
+>>      ACPI_SBS_COMPONENT              0x00100000
+>>      ACPI_FAN_COMPONENT              0x00200000
+>> Index: linux-pm/drivers/acpi/sysfs.c
+>> ===================================================================
+>> --- linux-pm.orig/drivers/acpi/sysfs.c
+>> +++ linux-pm/drivers/acpi/sysfs.c
+>> @@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
+>>  	ACPI_DEBUG_INIT(ACPI_COMPILER),
+>>  	ACPI_DEBUG_INIT(ACPI_TOOLS),
+>>  
+>> -	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
+>>  	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
+>>  	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+>>  	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
+>> Index: linux-pm/include/acpi/acpi_drivers.h
+>> ===================================================================
+>> --- linux-pm.orig/include/acpi/acpi_drivers.h
+>> +++ linux-pm/include/acpi/acpi_drivers.h
+>> @@ -15,7 +15,6 @@
+>>   * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
+>>   * if you add to this list.
+>>   */
+>> -#define ACPI_BATTERY_COMPONENT		0x00040000
+>>  #define ACPI_BUTTON_COMPONENT		0x00080000
+>>  #define ACPI_SBS_COMPONENT		0x00100000
+>>  #define ACPI_FAN_COMPONENT		0x00200000
+>>
+>>
+>>
+
