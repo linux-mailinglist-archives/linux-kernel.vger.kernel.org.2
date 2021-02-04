@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DE930F532
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684A830F52B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhBDOkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:40:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+        id S236857AbhBDOim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236825AbhBDOh5 (ORCPT
+        with ESMTP id S236814AbhBDOhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:37:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F178C06178B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:36:55 -0800 (PST)
+        Thu, 4 Feb 2021 09:37:08 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD7C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/GkRez+1PkbxCa9YZ0etbBj2+WDcPws6GaLqihnkBkI=; b=nxoDtgTgihpE2ub7zFWbF/sgL7
-        uNuzJjFRXFWPNTtf4HCd7PElFKrdRtu78G2+duqtZ3wYldcYQk2kI32WDZAQJmkl0ISqPW+zLGqp1
-        pGt7oZoF2sKYomC8+XjYh057ydZ7A4cB2ySoNwT/151pXOWp1dUFLH4btrh3kj6Fqwp4zEOh6Xlhh
-        ahv3CHVxizgdkHihJ6rU0437QoqchJ4s3LujF9PInQgLmN0zxQSNWmzQnQjzLSpfPvd4ItaesM5F4
-        +LZ6nh+mirSRbdpbznhKzguPo8pkDJ+6DIZ9Gpy+99nRaqPhcwS55MnjPnHyhSI7kKqpk+LBRPAk3
-        l5ki/I6Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7fjf-0003Yg-Ui; Thu, 04 Feb 2021 14:35:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11A08301CC4;
-        Thu,  4 Feb 2021 15:35:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E582A2C1C47A2; Thu,  4 Feb 2021 15:35:50 +0100 (CET)
-Date:   Thu, 4 Feb 2021 15:35:50 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YBwGRpnISmwkJ2i8@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=dIUX1UJ9YE8lpmLnWwpq590HsZ3ByZbducXK2xflJPo=; b=DFmzaMfMbNUxXMVfJoBXvnYA8
+        zx+VDWMGRqNLZ00I0o3iGn1gszJLI/MKXQcsFIuJWYwMp+UURWWjxjogzu9Xd6jswfTZiMFoYtx+x
+        HwEvrvlpk2i5N1qP7pEjK100u28wf6ILGcLd8CmsoXEMlGc+TJsPT+zs8SJ9MtkbC8TawmDOMeNHi
+        IciPNoLXDNBGlg+r90Hhjd9I6WX6zBNASV/IrWjgYNi/3Tdyf85QEnPA6v8gHDxQuNLdzEITc5ROT
+        NGN7XVyo0x6P9DsNLwBAJEk4R1xmie0cu+buRF05aPFPgU+MR5FvzLmlOof7o17lj+7b+C+ESF0p2
+        sKAvTfUrQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39118)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7fk3-0006eK-Hy; Thu, 04 Feb 2021 14:36:19 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7fk2-0005Ej-Cd; Thu, 04 Feb 2021 14:36:18 +0000
+Date:   Thu, 4 Feb 2021 14:36:18 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>, kernelci-results@groups.io
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+Message-ID: <20210204143618.GY1463@shell.armlinux.org.uk>
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
+ <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <20210204104714.GU1463@shell.armlinux.org.uk>
+ <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
+ <090003e6f825de1f8460c0e987e14577@kernel.org>
+ <20210204140911.GX1463@shell.armlinux.org.uk>
+ <CAMj1kXHf0dNvsrfct6rCxi_yHXcQCqjwJoMa_TD0Fh6xo2zeZQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
+In-Reply-To: <CAMj1kXHf0dNvsrfct6rCxi_yHXcQCqjwJoMa_TD0Fh6xo2zeZQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> +static inline void __sched_core_erase_cookie(struct sched_core_cookie *cookie)
-> +{
-> +	lockdep_assert_held(&sched_core_cookies_lock);
-> +
-> +	/* Already removed */
-> +	if (RB_EMPTY_NODE(&cookie->node))
-> +		return;
-> +
-> +	rb_erase(&cookie->node, &sched_core_cookies);
-> +	RB_CLEAR_NODE(&cookie->node);
-> +}
-> +
-> +/* Called when a task no longer points to the cookie in question */
-> +static void sched_core_put_cookie(struct sched_core_cookie *cookie)
-> +{
-> +	unsigned long flags;
-> +
-> +	if (!cookie)
-> +		return;
-> +
-> +	if (refcount_dec_and_test(&cookie->refcnt)) {
-> +		raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
-> +		__sched_core_erase_cookie(cookie);
-> +		raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
-> +		kfree(cookie);
-> +	}
-> +}
+On Thu, Feb 04, 2021 at 03:25:20PM +0100, Ard Biesheuvel wrote:
+> Pushing contents of the cache hierarchy to main memory is *not* a
+> valid use of set/way ops, and so there is no point in pretending that
+> set/way ops will produce the same results as by-VA ops. Only the by-VA
+> ops give the architectural guarantees that we rely on for correctness.
 
-> +static void __sched_core_update_cookie(struct task_struct *p)
-> +{
+... yet we /were/ doing that, and it worked fine for 13 years - from
+1st June 2007 until the by-VA merge into mainline on the 3rd April
+2020.
 
-> +	raw_spin_lock(&sched_core_cookies_lock);
+You may be right that it wasn't the most correct way, but it worked
+for those 13 years without issue, and it's only recently that it's
+become a problem, and trying to "fix" that introduced a regression,
+and fixing that regression has caused another regression... and I
+what I'm wondering is how many more regression fixing cycles it's
+going to take - how many regression fixes on top of other regression
+fixes are we going to end up seeing here.
 
-> +		/*
-> +		 * Cookie exists, increment refcnt. If refcnt is currently 0,
-> +		 * we're racing with a put() (refcnt decremented but cookie not
-> +		 * yet removed from the tree). In this case, we can simply
-> +		 * perform the removal ourselves and retry.
-> +		 * sched_core_put_cookie() will still function correctly.
-> +		 */
-> +		if (unlikely(!refcount_inc_not_zero(&match->refcnt))) {
-> +			__sched_core_erase_cookie(match);
-> +			goto retry;
-> +		}
+The fact is, we never properly understood why your patch caused the
+regression I was seeing. If we don't understand it, then we can never
+say that we've fixed the problem properly. That is highlighted by the
+fact that fixing the regression I was seeing has caused another
+regression.
 
-refcount_dec_and_lock() avoids that complication.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
