@@ -2,84 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC7430F561
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AB830F549
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhBDOub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236844AbhBDOiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:38:09 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3827CC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:37:26 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id n2so3394211iom.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:37:26 -0800 (PST)
+        id S236816AbhBDOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:42:57 -0500
+Received: from mail-eopbgr50095.outbound.protection.outlook.com ([40.107.5.95]:57223
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236856AbhBDOik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:38:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QSjgosloYwHgrsHQRoyRo7oSBKWjzF2LyJ0Fvv7TfOBJL+DSgtJHZIfL107E+bjYsDb66NVPfVKsuY5JchS6a7l/lQMCjOKWvNShtNCtmo+7VwqiraMs/FuCuifd6DirMieF36coK4TZmYGSzJcpJ8tjXJxfXThO0AQ6aXoSNvpejXi6bugKQPC0WvVw9fmHJ9g2uTtmfu6HTiTRjOKvkeSxmVq6URrkVoJFglyEeuMHJfUQ30QxSwHpvoR0jk9O7y473eFPk8GWJpSgnzGa4HPKcgIdFMAWb30BsLk0GJ0f+YzdzfsCUXUiGyFQ4dN5vqjLVNEUbGeJFFSLbGyqpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7y2dgRYVshTRN1Kzw/WSNFjbXsyrnW+GuDbIdQobtuM=;
+ b=lWkvY4CGkD2NBIhGuCF5kiugLxJUQ0zd4sZh68+NvVnlHwfVsk3csv+TmzWd8Mo2iCaLTg4LWplbpwl6GTNgy+fZk1IxdU38p20vH4rKJo/qug4ql2pTXGeQCOS1ieoqdZOFstqH4epYsAjYG/uACuoLLc194oNWutDB3mgsnYJZYc/CRW5rd7o2Tp0v5lcoYhSqza1Rw2S2auKpb/FlF6RbXG+SuTXtyDx8U3aNQxwNdJqiAQReU/Qw1W/AkgJHsX7iFabtZubDHCRrU0rUeDF+pgBWrtLbzrfuphGdNsbSGeFgT4CZFAVHtdVV/XXIRLh0Qi93IJ1FVIjOgwNNlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 62.153.209.162) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=schleissheimer.de; dmarc=none action=none
+ header.from=schleissheimer.de; dkim=fail (no key for signature)
+ header.d=schleissheimer.de; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6WKbmgf+2ZIGCm/dE9FPQFIm79eTOH6MS53KyM+dR2s=;
-        b=r4vyQkjzXvpYLOKwhE/8h97tN0TZDkJogkAAj7FoT87Id3rGALm6nbbQG6UxEbx9po
-         On5BqiliIKar0Lk04plkntapUUECmMraXLFrkk/SBzYedeZGK6H96SuNVvAndg4tKcm2
-         DxtmpbZo4WsRhMQTjtG4anXtrBnmWxG8KYXXTeidFMVbsTG8bkPLj8VmqnV3lo9rEry0
-         Swpyj4rt9XOb81L6OVqRtcVSYtYizt5NoK7JLKjgFQ5rw4E50Tj3clBWQb9xbx3Bh7eX
-         92o+zZwiDPIl9OSDbKG8BT9ER8SFtveTF/hrgGXq2eGLLNetUatOtUQ+UcuaoOUXxC9c
-         AsCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6WKbmgf+2ZIGCm/dE9FPQFIm79eTOH6MS53KyM+dR2s=;
-        b=POzGOuE0lyrdwn5cOGLlv+YSQMyDKxqv806MO1lREs/BzuK3aO4yMTiiuZKPbGJceI
-         fGu8okdp9NZn6WbCCMbWdPPBEEvcE9dQreV1VNr5b2UNIcughH+nyZ2D0OMHIZqjRcWi
-         eVRNp13hrrquo3mfInDijDRwHwyjgYd7hJ6w8yWdE2f8w3eVwQXaXdvdbLJs6iAS18o/
-         mo2MC+S7giqml0l21HvVfz9mI/gXZP6cRVpOqZ+cBk0XKYk9C02qDX+FZEqjZUcgldE+
-         CAtQtlfpMotjX5iDBqbccQnL/Nc2T1yaqQWSzTweSrX5M8pDENdzTKYVW+ngqZqqT+EU
-         bGeQ==
-X-Gm-Message-State: AOAM533l1idy5NfkdZ6n/XDxaRAEpL2tgaB6s2y515dUm6Q6/IRUQb7a
-        +idg5YJwY4ESX9YhOSHy/NlIQQ==
-X-Google-Smtp-Source: ABdhPJxKA5Vxq5X3o3KFodyPKGEYbk4IgNMPD3Tk8eHB/YEud3CDUYpQ697oyidW2sBhnc4NFrkTsQ==
-X-Received: by 2002:a05:6638:2686:: with SMTP id o6mr8310988jat.68.1612449445609;
-        Thu, 04 Feb 2021 06:37:25 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id h23sm2557045ila.15.2021.02.04.06.37.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 06:37:25 -0800 (PST)
-Subject: Re: [GIT PULL] Floppy patch for 5.12
-To:     efremov@linux.com
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>, Kurt Garloff <kurt@garloff.de>
-References: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk>
-Date:   Thu, 4 Feb 2021 07:37:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7y2dgRYVshTRN1Kzw/WSNFjbXsyrnW+GuDbIdQobtuM=;
+ b=F2M32kAkWZ+Fs27/EAyu0j+e8xVhJZYkV+ZRLW7TsBbhQatFA6frRpH0BZ8wsN0Loi9KUQEjZYoedp5hPORnE5QTUHlkoMrx1lbT56mv2p5DagX2m0fZKrNCDFmwPu1xJnFtlSJ5l+gdbqMNfbH8mcDr2KkMuc7ThOXEJjgvD6E=
+Received: from DU2PR04CA0068.eurprd04.prod.outlook.com (2603:10a6:10:232::13)
+ by HE1P190MB0378.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:60::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.17; Thu, 4 Feb 2021 14:37:33 +0000
+Received: from DB3EUR04FT052.eop-eur04.prod.protection.outlook.com
+ (2603:10a6:10:232:cafe::6f) by DU2PR04CA0068.outlook.office365.com
+ (2603:10a6:10:232::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend
+ Transport; Thu, 4 Feb 2021 14:37:33 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 62.153.209.162)
+ smtp.mailfrom=schleissheimer.de; vger.kernel.org; dkim=fail (no key for
+ signature) header.d=schleissheimer.de;vger.kernel.org; dmarc=none action=none
+ header.from=schleissheimer.de;
+Received-SPF: Fail (protection.outlook.com: domain of schleissheimer.de does
+ not designate 62.153.209.162 as permitted sender)
+ receiver=protection.outlook.com; client-ip=62.153.209.162;
+ helo=mail.schleissheimer.de;
+Received: from mail.schleissheimer.de (62.153.209.162) by
+ DB3EUR04FT052.mail.protection.outlook.com (10.152.24.131) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11 via Frontend Transport; Thu, 4 Feb 2021 14:37:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=schleissheimer.de; s=dkim1;
+        h=Message-Id:Date:Subject:Cc:To:From; bh=7y2dgRYVshTRN1Kzw/WSNFjbXsyrnW+GuDbIdQobtuM=;
+        b=NuSiNFtH97zcwyZW7lAVx4Oq4UBw/ugQQbaawLWijlvR7qoiSdM5SQn/XDy9kMgWP2vqXS8gRQDD0Xml9DJcpuqXufRkc+WGwreg/s0oyISm7YYlNsBXwimwZgkdQKsd9zX+Aib6OZ7gIb5QVYu/6YkOM5GTxvMJazSKaiQckec=;
+Received: from [192.168.10.165] (port=41970 helo=contiredmine.schleissheimer.de)
+        by mail.schleissheimer.de with esmtp (Exim 4.82_1-5b7a7c0-XX)
+        (envelope-from <schuchmann@schleissheimer.de>)
+        id 1l7fl9-0003vV-30; Thu, 04 Feb 2021 15:37:28 +0100
+X-CTCH-RefID: str=0001.0A782F24.601C06A8.0001,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+From:   Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] leds: lp50xx: add setting of default intensity from DT
+Date:   Thu,  4 Feb 2021 14:37:26 +0000
+Message-Id: <20210204143726.27977-1-schuchmann@schleissheimer.de>
+X-Mailer: git-send-email 2.17.1
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-In-Reply-To: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 2bf79a48-14f2-4713-e2df-08d8c91a6766
+X-MS-TrafficTypeDiagnostic: HE1P190MB0378:
+X-Microsoft-Antispam-PRVS: <HE1P190MB037875FB461ED93C1D2D8FCB86B39@HE1P190MB0378.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jScA7VxIF2+0OuoCFBK6Mw9aOPnTUOkH5jkDum7cbhZv2QjjAXo8fVSoK9zjZ6VNniTLe8D9NVP9/sdcbisABmCRdsOqTmPmAMgi7v+vVrLLKgmOT7wTG5kq/SxS0xwZRSNGr9kRsFvwREdFo2KPCy8ujV8nRX2rxVeA42jh52UXH2JorxCfofKlKFNo1HgQGmGHoJbalGtbJuwJkXUpKyYcwxwI5ZrY8cQjECwY7pgdEP4DlFJY/fON11CGVzPlfSJ8JGEMTxFAUvUvPRgq+jhjqBNCf/ZbEnKqZipkJGvs/yXpORC+U6F2xHUMrrjiAkh9F3r57ku46ize8Wr+aQYrHw3pLIHSAvqAt4g7HOtB5l5OQQVb1qzR0UC4e/cd2+wf5ZmtkUMqfz1Zj0+RoyilEBQkMrszITO7Vpfuvm19g9Ar+LUWsu+3ZiPJGcLDiTqknyH67zEl1wU/Uen4xTb6lMsJ7jGxFzJVpYtiuqoytSRsBX80usd+94HsBjzHRKfEStDtnqiKX2JnnFar2gywNcTzR+C7EiCOhtpGH6L+fcDrRSSPk3U0pKZrwFGrU1AY5i5x5ITHDVSv40OUrE9GKAS1f4A6xXHlI6Ib0YQKdmllUsxcyZkEvxRv/nCB4ShYlC8yQKkC6tg0yGO8KypPGRDBKxwAAwzQEjmMGxZYwlcP1oD/HB3ug5Mg1jpuQsEfPVKE87KWHGEOMLRVZg==
+X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:ErrorRetry;CAT:NONE;SFS:(376002)(396003)(39840400004)(346002)(136003)(36840700001)(46966006)(356005)(2906002)(478600001)(9786002)(54906003)(109986005)(81166007)(4326008)(26005)(186003)(70206006)(336012)(70586007)(1076003)(83380400001)(426003)(316002)(36756003)(8936002)(36860700001)(47076005)(82310400003)(7696005)(2616005)(5660300002)(8676002)(266003)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: schleissheimer.de
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 14:37:31.3164
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bf79a48-14f2-4713-e2df-08d8c91a6766
+X-MS-Exchange-CrossTenant-Id: ba05321a-a007-44df-8805-c7e62d5887b5
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ba05321a-a007-44df-8805-c7e62d5887b5;Ip=[62.153.209.162];Helo=[mail.schleissheimer.de]
+X-MS-Exchange-CrossTenant-AuthSource: DB3EUR04FT052.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0378
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 3:12 AM, Denis Efremov wrote:
-> The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
-> 
->   Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
+In order to use a multicolor-led together with a trigger
+the led needs to have an intensity set to see something.
+The trigger changes the brightness of the led but if there
+is no intensity we actually see nothing.
 
-Pulled, thanks.
+This patch adds the ability to set the default intensity
+of each multi-led node so that it is turned on from DT.
+If no intensity is given the led will be initialized
+with full intensity.
 
+Part 1 updates the documentation.
+Part 2 removes an unused variable.
+Part 3 sets the initial intensity to full.
+Part 4 reads the default intensity from DT
+
+changes in v1
+ - fix dt_binding_check errors
+
+changes in v2
+ - sets default intensity to full
+ - adds the property to the multi-led node
+
+Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
+---
+ Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+index c192b5feadc7..2bc25b2fc94d 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+@@ -65,6 +65,11 @@ patternProperties:
+           This property denotes the LED module number(s) that is used on the
+           for the child node.  The LED modules can either be used stand alone
+           or grouped into a module bank.
++      default-intensity:
++        minItems: 1
++        maxItems: 3
++        description:
++          The default intensity the multi-led gets initialised with.
+ 
+     patternProperties:
+       "(^led-[0-9a-f]$|led)":
+@@ -99,6 +104,7 @@ examples:
+                reg = <0x1>;
+                color = <LED_COLOR_ID_RGB>;
+                function = LED_FUNCTION_CHARGING;
++               default-intensity = <100 0 0>;
+ 
+                led-0 {
+                    color = <LED_COLOR_ID_RED>;
 -- 
-Jens Axboe
+2.17.1
 
