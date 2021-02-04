@@ -2,173 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785F730F725
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7051D30F737
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237745AbhBDQD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:03:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237644AbhBDQCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:02:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6259664F65
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612454523;
-        bh=r0dnY1/IlEAw6Aq17al1Q5lMtbG4W5X7rvYEXptsJTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ORS9NMx8699vtEpJ9ex8Wz8po6mSNG42pk81hiYgtTCpLF/BiJeCXEZDB/2tYsmSi
-         9dieNDtF5TDdDtH3Q3XAAw9iGZ+WN3kcrUibWc1vflx1xuDMjUrF0BYI1s/3CXqz/3
-         9UV//wfM1MQp7qHZT15tAju22Z0mQwihNgngVH2ZZNqBXGh3WatocfFOxtUMLfHqKn
-         Om9P7y1nk/uV/rz+wJjh4cw+2xVVwk2J3N1MwRvmjRsxenZj2lNvlWUil/4R6djGOX
-         qcWNrM8+h1lF8e1Yrd/FJufIsFrC2E0yEsEDF9zAbGGMeAr9+O8vDxBlB7gbjXOsPC
-         B7UoDfB51QOYQ==
-Received: by mail-oi1-f182.google.com with SMTP id m13so4174783oig.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:02:03 -0800 (PST)
-X-Gm-Message-State: AOAM530yQfnOuQ2NFblQzoZZEtaGe4IhMZvQGJcyy7h51YoSFQbuikjl
-        ghTNdv9DsE4yMfV4GgvlmlZCBzApsj2W+0LsgVM=
-X-Google-Smtp-Source: ABdhPJy2a3CVG9Yb/DS2t3GezqE7fAzkRMhcW1055huIJVpcg29LkecNNiNoJYcqScUc9hmRK2rxTS7XABG0XI0wOZY=
-X-Received: by 2002:aca:b6c1:: with SMTP id g184mr56997oif.47.1612454522711;
- Thu, 04 Feb 2021 08:02:02 -0800 (PST)
+        id S237725AbhBDQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:06:01 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41664 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237455AbhBDQDh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:03:37 -0500
+Date:   Thu, 04 Feb 2021 16:02:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612454571;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vIYEIIpEGWRqPEeDrDS+eSHQalzX3Yq2SLDQU9enGc=;
+        b=hxUZooqj1oTPtSCPOO2k35Gw0bZn1IbDt/Jh5fSsd76mqEgfeNyIcMHeDY3G+SjIIRLTjy
+        FlkaWQo1aqwkTQxYAqq9gLhV0wr9p4Z4KJ4RdSihK9zL2FjVj5Ia3y63t3g4CMuvuIogGi
+        NqsXXMrAUea1owmWxT5VbKP4fnw8pEJb6v85oUVifZYI2UTnBvW0+ybmm4U/L7Z1ZEYwwe
+        ip76pkltlyE9xWGU4FUnYAkP5prpBJAhJaUim8t6C5B/GgJ5BILQ2QsEZQLWNHKN4vn4PB
+        QRa4K5aOS6mahtizDR9JINlSsv3nUtPcEHtnAJ92H5C2K3nFXog0fA7sJKuTCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612454571;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vIYEIIpEGWRqPEeDrDS+eSHQalzX3Yq2SLDQU9enGc=;
+        b=UupMHkkw59IEtfHdoNojorbmD26aXYN11xmfTbAEpfmXqGkICk9pnKa1Il9QvM3Vy3m4DL
+        bfp5PoU6mWPQcnCg==
+From:   "irqchip-bot for Bert Vermeulen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip: Add support for Realtek
+ RTL838x/RTL839x interrupt controller
+Cc:     Bert Vermeulen <bert@biot.com>,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        John Crispin <john@phrozen.org>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <20210122204224.509124-3-bert@biot.com>
+References: <20210122204224.509124-3-bert@biot.com>
 MIME-Version: 1.0
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com> <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk> <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com> <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
- <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com> <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com>
-In-Reply-To: <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Feb 2021 17:01:51 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
-Message-ID: <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161245457098.23325.778659941105501999.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 at 16:53, Guillaume Tucker
-<guillaume.tucker@collabora.com> wrote:
->
-> On 04/02/2021 15:42, Ard Biesheuvel wrote:
-> > On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
-> > <guillaume.tucker@collabora.com> wrote:
-> >>
-> >> On 04/02/2021 10:33, Guillaume Tucker wrote:
-> >>> On 04/02/2021 10:27, Ard Biesheuvel wrote:
-> >>>> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
-> >>>> <linux@armlinux.org.uk> wrote:
-> >>>>>
-> >>>>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
-> >>>>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
-> >>>>>> <guillaume.tucker@collabora.com> wrote:
-> >>>>>>>
-> >>>>>>> Hi Ard,
-> >>>>>>>
-> >>>>>>> Please see the bisection report below about a boot failure on
-> >>>>>>> rk3288 with next-20210203.  It was also bisected on
-> >>>>>>> imx6q-var-dt6customboard with next-20210202.
-> >>>>>>>
-> >>>>>>> Reports aren't automatically sent to the public while we're
-> >>>>>>> trialing new bisection features on kernelci.org but this one
-> >>>>>>> looks valid.
-> >>>>>>>
-> >>>>>>> The kernel is most likely crashing very early on, so there's
-> >>>>>>> nothing in the logs.  Please let us know if you need some help
-> >>>>>>> with debugging or trying a fix on these platforms.
-> >>>>>>>
-> >>>>>>
-> >>>>>> Thanks for the report.
-> >>>>>
-> >>>>> Ard,
-> >>>>>
-> >>>>> I want to send my fixes branch today which includes your regression
-> >>>>> fix that caused this regression.
-> >>>>>
-> >>>>> As this is proving difficult to fix, I can only drop your fix from
-> >>>>> my fixes branch - and given that this seems to be problematical, I'm
-> >>>>> tempted to revert the original change at this point which should fix
-> >>>>> both of these regressions - and then we have another go at getting rid
-> >>>>> of the set/way instructions during the next cycle.
-> >>>>>
-> >>>>> Thoughts?
-> >>>>>
-> >>>>
-> >>>> Hi Russell,
-> >>>>
-> >>>> If Guillaume is willing to do the experiment, and it fixes the issue,
-> >>>
-> >>> Yes, I'm running some tests with that fix now and should have
-> >>> some results shortly.
-> >>
-> >> Yes it does fix the issue:
-> >>
-> >>   https://lava.collabora.co.uk/scheduler/job/3173819
-> >>
-> >> with Ard's fix applied to this test branch:
-> >>
-> >>   https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
-> >>
-> >>
-> >> +clang +Nick
-> >>
-> >> It's worth mentioning that the issue only happens with kernels
-> >> built with Clang.  As you can see there are several other arm
-> >> platforms failing with clang-11 builds but booting fine with
-> >> gcc-8:
-> >>
-> >>   https://kernelci.org/test/job/next/branch/master/kernel/next-20210203/plan/baseline/
-> >>
-> >> Here's a sample build log:
-> >>
-> >>   https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/build.log
-> >>
-> >> Essentially:
-> >>
-> >>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
-> >>
-> >> I believe it should be using the GNU assembler as LLVM_IAS=1 is
-> >> not defined, but there may be something more subtle about it.
-> >>
-> >
-> >
-> > Do you have a link for a failing zImage built from multi_v7_defconfig?
->
-> Sure, this one was built from a plain next-20210203:
->
->   http://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/zImage
->
-> You can also find the dtbs, modules and other things in that same
-> directory.
->
-> For the record, here's the test job that used it:
->
->   https://lava.collabora.co.uk/scheduler/job/3173792
->
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Thanks.
+Commit-ID:     9f3a0f34b84ad1b9a8f2bdae44b66f16685b2143
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9f3a0f34b84ad1b9a8f2bdae44b66f16685b2143
+Author:        Bert Vermeulen <bert@biot.com>
+AuthorDate:    Fri, 22 Jan 2021 21:42:24 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 04 Feb 2021 10:36:15 
 
-That zImage boots fine locally. Unfortunately, I don't have rk3288
-hardware to reproduce.
+irqchip: Add support for Realtek RTL838x/RTL839x interrupt controller
 
-Could you please point me to the list of all the other platforms that
-failed to boot this image?
+This is a standard IRQ driver with only status and mask registers.
 
-To be honest, I am slightly annoyed that a change that works fine with
-GCC but does not work with Clang version
+The mapping from SoC interrupts (18-31) to MIPS core interrupts is
+done via an interrupt-map in device tree.
 
-11.1.0-++20210130110826+3a8282376b6c-1~exp1~20210130221445.158
+Signed-off-by: Bert Vermeulen <bert@biot.com>
+Signed-off-by: Birger Koblitz <mail@birger-koblitz.de>
+Acked-by: John Crispin <john@phrozen.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210122204224.509124-3-bert@biot.com
+---
+ drivers/irqchip/Makefile          |   1 +-
+ drivers/irqchip/irq-realtek-rtl.c | 180 +++++++++++++++++++++++++++++-
+ 2 files changed, 181 insertions(+)
+ create mode 100644 drivers/irqchip/irq-realtek-rtl.c
 
-(where exp means experimental, I suppose) is the reason for this
-discussion, especially because the change is in asm code. Is it
-possible to build with Clang but use the GNU linker?
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index 2a1994d..c59b95a 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -112,3 +112,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
+ obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
+ obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
+ obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
++obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
+diff --git a/drivers/irqchip/irq-realtek-rtl.c b/drivers/irqchip/irq-realtek-rtl.c
+new file mode 100644
+index 0000000..b57c67d
+--- /dev/null
++++ b/drivers/irqchip/irq-realtek-rtl.c
+@@ -0,0 +1,180 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 Birger Koblitz <mail@birger-koblitz.de>
++ * Copyright (C) 2020 Bert Vermeulen <bert@biot.com>
++ * Copyright (C) 2020 John Crispin <john@phrozen.org>
++ */
++
++#include <linux/of_irq.h>
++#include <linux/irqchip.h>
++#include <linux/spinlock.h>
++#include <linux/of_address.h>
++#include <linux/irqchip/chained_irq.h>
++
++/* Global Interrupt Mask Register */
++#define RTL_ICTL_GIMR		0x00
++/* Global Interrupt Status Register */
++#define RTL_ICTL_GISR		0x04
++/* Interrupt Routing Registers */
++#define RTL_ICTL_IRR0		0x08
++#define RTL_ICTL_IRR1		0x0c
++#define RTL_ICTL_IRR2		0x10
++#define RTL_ICTL_IRR3		0x14
++
++#define REG(x)		(realtek_ictl_base + x)
++
++static DEFINE_RAW_SPINLOCK(irq_lock);
++static void __iomem *realtek_ictl_base;
++
++static void realtek_ictl_unmask_irq(struct irq_data *i)
++{
++	unsigned long flags;
++	u32 value;
++
++	raw_spin_lock_irqsave(&irq_lock, flags);
++
++	value = readl(REG(RTL_ICTL_GIMR));
++	value |= BIT(i->hwirq);
++	writel(value, REG(RTL_ICTL_GIMR));
++
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
++}
++
++static void realtek_ictl_mask_irq(struct irq_data *i)
++{
++	unsigned long flags;
++	u32 value;
++
++	raw_spin_lock_irqsave(&irq_lock, flags);
++
++	value = readl(REG(RTL_ICTL_GIMR));
++	value &= ~BIT(i->hwirq);
++	writel(value, REG(RTL_ICTL_GIMR));
++
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
++}
++
++static struct irq_chip realtek_ictl_irq = {
++	.name = "realtek-rtl-intc",
++	.irq_mask = realtek_ictl_mask_irq,
++	.irq_unmask = realtek_ictl_unmask_irq,
++};
++
++static int intc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
++{
++	irq_set_chip_and_handler(hw, &realtek_ictl_irq, handle_level_irq);
++
++	return 0;
++}
++
++static const struct irq_domain_ops irq_domain_ops = {
++	.map = intc_map,
++	.xlate = irq_domain_xlate_onecell,
++};
++
++static void realtek_irq_dispatch(struct irq_desc *desc)
++{
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	struct irq_domain *domain;
++	unsigned int pending;
++
++	chained_irq_enter(chip, desc);
++	pending = readl(REG(RTL_ICTL_GIMR)) & readl(REG(RTL_ICTL_GISR));
++	if (unlikely(!pending)) {
++		spurious_interrupt();
++		goto out;
++	}
++	domain = irq_desc_get_handler_data(desc);
++	generic_handle_irq(irq_find_mapping(domain, __ffs(pending)));
++
++out:
++	chained_irq_exit(chip, desc);
++}
++
++/*
++ * SoC interrupts are cascaded to MIPS CPU interrupts according to the
++ * interrupt-map in the device tree. Each SoC interrupt gets 4 bits for
++ * the CPU interrupt in an Interrupt Routing Register. Max 32 SoC interrupts
++ * thus go into 4 IRRs.
++ */
++static int __init map_interrupts(struct device_node *node, struct irq_domain *domain)
++{
++	struct device_node *cpu_ictl;
++	const __be32 *imap;
++	u32 imaplen, soc_int, cpu_int, tmp, regs[4];
++	int ret, i, irr_regs[] = {
++		RTL_ICTL_IRR3,
++		RTL_ICTL_IRR2,
++		RTL_ICTL_IRR1,
++		RTL_ICTL_IRR0,
++	};
++	u8 mips_irqs_set;
++
++	ret = of_property_read_u32(node, "#address-cells", &tmp);
++	if (ret || tmp)
++		return -EINVAL;
++
++	imap = of_get_property(node, "interrupt-map", &imaplen);
++	if (!imap || imaplen % 3)
++		return -EINVAL;
++
++	mips_irqs_set = 0;
++	memset(regs, 0, sizeof(regs));
++	for (i = 0; i < imaplen; i += 3 * sizeof(u32)) {
++		soc_int = be32_to_cpup(imap);
++		if (soc_int > 31)
++			return -EINVAL;
++
++		cpu_ictl = of_find_node_by_phandle(be32_to_cpup(imap + 1));
++		if (!cpu_ictl)
++			return -EINVAL;
++		ret = of_property_read_u32(cpu_ictl, "#interrupt-cells", &tmp);
++		if (ret || tmp != 1)
++			return -EINVAL;
++		of_node_put(cpu_ictl);
++
++		cpu_int = be32_to_cpup(imap + 2);
++		if (cpu_int > 7)
++			return -EINVAL;
++
++		if (!(mips_irqs_set & BIT(cpu_int))) {
++			irq_set_chained_handler_and_data(cpu_int, realtek_irq_dispatch,
++							 domain);
++			mips_irqs_set |= BIT(cpu_int);
++		}
++
++		regs[(soc_int * 4) / 32] |= cpu_int << (soc_int * 4) % 32;
++		imap += 3;
++	}
++
++	for (i = 0; i < 4; i++)
++		writel(regs[i], REG(irr_regs[i]));
++
++	return 0;
++}
++
++static int __init realtek_rtl_of_init(struct device_node *node, struct device_node *parent)
++{
++	struct irq_domain *domain;
++	int ret;
++
++	realtek_ictl_base = of_iomap(node, 0);
++	if (!realtek_ictl_base)
++		return -ENXIO;
++
++	/* Disable all cascaded interrupts */
++	writel(0, REG(RTL_ICTL_GIMR));
++
++	domain = irq_domain_add_simple(node, 32, 0,
++				       &irq_domain_ops, NULL);
++
++	ret = map_interrupts(node, domain);
++	if (ret) {
++		pr_err("invalid interrupt map\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++IRQCHIP_DECLARE(realtek_rtl_intc, "realtek,rtl-intc", realtek_rtl_of_init);
