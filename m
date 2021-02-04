@@ -2,154 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FCB30F755
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6AF30F758
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237867AbhBDQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:11:46 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38594 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237810AbhBDQLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:11:05 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114FTq47074760;
-        Thu, 4 Feb 2021 16:10:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=xZf+hDqYfmhTpcrvofd4NDvRcZvCYzc3fW3t/ZTJ/kQ=;
- b=B7g5g7eH/pZXhhCkqJFU3keNmkk2okupptP+DzVHjFwbQxTCpcA5Tt06Z8gmFbVFeyjp
- JjAcSfDqXY6XCb0/RVpJe7B8ACzHnzqWcdGSf1p9yCGwUpdfrY+2P0vnvkjYqLj9iMxj
- 0htApneNJ3NTbJAESxfW6uVZV7qu+kZOM0qfo/g841ISez1KUAmGd3yvlVuKkYNgv6Wr
- EFdHtFvMpUZIhGWg0a36w0CUts7MDShJy4RoA3ZTYB7qyjBWBjUAsiwTW9wwDp3i4ln6
- IEOpZy44nPt+M0OIp8AhSBKjXvck0jvF6jdQYBCadki1iiwgZbrF2ulLgPJn16tcLaUe 7g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36cvyb654d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 16:10:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114FVMLC021136;
-        Thu, 4 Feb 2021 16:10:09 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 36dhc2vdjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 16:10:09 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 114G9xD3027544;
-        Thu, 4 Feb 2021 16:10:00 GMT
-Received: from [10.175.182.162] (/10.175.182.162)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 04 Feb 2021 08:09:59 -0800
-Subject: Re: [PATCH 1/4] mm/gup: add compound page list iterator
-From:   Joao Martins <joao.m.martins@oracle.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-2-joao.m.martins@oracle.com>
- <955dbe68-7302-a8bc-f0b5-e9032d7f190e@nvidia.com>
- <fd4b981c-cf25-dc04-7f10-549ea16bf644@oracle.com>
-Message-ID: <82fe62c0-f746-cf9d-a784-6384946d94a1@oracle.com>
-Date:   Thu, 4 Feb 2021 16:09:56 +0000
+        id S237825AbhBDQMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:12:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237257AbhBDQLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:11:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 947EC64E2C;
+        Thu,  4 Feb 2021 16:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612455049;
+        bh=r6oygDdZU2GXmNaLqeahpVj6BCG8uM0b/k8n/L7Sg1o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=cFl9IIrh6K8lBgtUSI0HuY7QLEgg8v1droBcE10QXq6cnnWG6+9mGMHrb7t/01UcG
+         X1zHwTr1WafbzW/jwvx46OAXtr1+HcR2D/av+Udsl3vdbzTrsJuyiOHGL4XnhAHNah
+         AHfkW5N6AOS+JJ1v6dWTi0yzNzsqnwNqENtIDsmwQdjJZ5PGYncoJMYai3g+mL7pEc
+         YzKjH8Zxt6jy96UEI9xHDr+EeMJ29N13CFN9CohSCTIcYNHGGVgzAMYwTso2S4bjn7
+         eu1k3dRO7cTiAV8G843jmJ+QVKl6/UdAoZ1B9hmCCdCVS4EHNRJjO+sQx7xFwVxid0
+         D+j0hO8ksqXUg==
+Date:   Thu, 4 Feb 2021 10:10:48 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     linux-pci@vger.kernel.org, prime.zeng@huawei.com,
+        linuxarm@openeuler.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Use subdir-ccflags-* to inherit debug flag
+Message-ID: <20210204161048.GA68790@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <fd4b981c-cf25-dc04-7f10-549ea16bf644@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102040100
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612438215-33105-1-git-send-email-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 11:27 AM, Joao Martins wrote:
-> On 2/3/21 11:00 PM, John Hubbard wrote:
->> On 2/3/21 2:00 PM, Joao Martins wrote:
->>> Add an helper that iterates over head pages in a list of pages. It
->>> essentially counts the tails until the next page to process has a
->>> different head that the current. This is going to be used by
->>> unpin_user_pages() family of functions, to batch the head page refcount
->>> updates once for all passed consecutive tail pages.
->>>
->>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
->>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->>> ---
->>>   mm/gup.c | 29 +++++++++++++++++++++++++++++
->>>   1 file changed, 29 insertions(+)
->>>
->>> diff --git a/mm/gup.c b/mm/gup.c
->>> index d68bcb482b11..4f88dcef39f2 100644
->>> --- a/mm/gup.c
->>> +++ b/mm/gup.c
->>> @@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
->>>   }
->>>   EXPORT_SYMBOL(unpin_user_page);
->>>   
->>> +static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
->>
->> Silly naming nit: could we please name this function count_pagetails()? count_ntails
->> is a bit redundant, plus slightly less clear.
->>
-> Hmm, pagetails is also a tiny bit redundant. Perhaps count_subpages() instead?
+[+cc Masahiro, Michal, linux-kbuild, linux-kernel]
+
+On Thu, Feb 04, 2021 at 07:30:15PM +0800, Yicong Yang wrote:
+> From: Junhao He <hejunhao2@hisilicon.com>
 > 
-> count_ntails is meant to be 'count number of tails' i.e. to align terminology with head +
-> tails which was also suggested over the other series.
+> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+> settings from Kconfig when traversing subdirectories.
+
+So I guess the current behavior is:
+
+  If CONFIG_PCI_DEBUG=y, add -DDEBUG to CFLAGS in the current
+  directory, but not in any subdirectories
+
+and the behavior after this patch is:
+
+  If CONFIG_PCI_DEBUG=y, add -DDEBUG to CFLAGS in the current
+  directory and any subdirectories
+
+Is that right?  That makes sense to me.  I wonder if any other places
+have this issue?
+
+'git grep "^ccflags.*-DDEBUG"' finds a few cases where subdirectories
+use their own debug config options, e.g.,
+
+  drivers/i2c/Makefile:ccflags-$(CONFIG_I2C_DEBUG_CORE) := -DDEBUG
+  drivers/i2c/algos/Makefile:ccflags-$(CONFIG_I2C_DEBUG_ALGO) := -DDEBUG
+  drivers/i2c/busses/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+  drivers/i2c/muxes/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+
+But some have subdirectories that look like they probably should be
+included by using subdir-ccflags, e.g.,
+
+  drivers/base/Makefile:ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
+  drivers/base/power/Makefile:ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
+    # drivers/base/{firmware_loader,regmap,test}/ not included
+
+  drivers/hwmon/Makefile:ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+    # drivers/hwmon/{occ,pmbus}/ not included
+
+  drivers/pps/Makefile:ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+  drivers/pps/clients/Makefile:ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+    # drivers/pps/generators/ not included
+
+There are many more places that add -DDEBUG to ccflags-y that *don't*
+have subdirectories.
+
+I wonder the default should be that we use subdir-ccflags all the
+time, and use ccflags only when we actually want different
+CONFIG_*_DEBUG options for subdirectories.
+
+> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  drivers/pci/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-Given your comment on the third patch, I reworked a bit and got rid of the count_ntails.
-
-So it's looking like this, also the macro arguments renaming as well):
-
-diff --git a/mm/gup.c b/mm/gup.c
-index d68bcb482b11..d1549c61c2f6 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
- }
- EXPORT_SYMBOL(unpin_user_page);
-
-+static inline void compound_next(unsigned long i, unsigned long npages,
-+                                struct page **list, struct page **head,
-+                                unsigned int *ntails)
-+{
-+       struct page *page;
-+       unsigned int nr;
-+
-+       if (i >= npages)
-+               return;
-+
-+       list += i;
-+       npages -= i;
-+       page = compound_head(*list);
-+
-+       for (nr = 1; nr < npages; nr++) {
-+               if (compound_head(list[nr]) != page)
-+                       break;
-+       }
-+
-+       *head = page;
-+       *ntails = nr;
-+}
-+
-+#define for_each_compound_head(__i, __list, __npages, __head, __ntails) \
-+       for (__i = 0, \
-+            compound_next(__i, __npages, __list, &(__head), &(__ntails)); \
-+            __i < __npages; __i += __ntails, \
-+            compound_next(__i, __npages, __list, &(__head), &(__ntails)))
-+
- /**
-  * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
-  * @pages:  array of pages to be maybe marked dirty, and definitely released.
-
+> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> index 11cc794..d62c4ac 100644
+> --- a/drivers/pci/Makefile
+> +++ b/drivers/pci/Makefile
+> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+>  obj-y				+= controller/
+>  obj-y				+= switch/
+>  
+> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> -- 
+> 2.8.1
+> 
