@@ -2,54 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBBF30F348
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF5230F349
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236075AbhBDMjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:39:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S236085AbhBDMjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235605AbhBDMjB (ORCPT
+        with ESMTP id S235605AbhBDMjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:39:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6819EC061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:38:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NjY5liFAlk+AQiAuqlneZkVZMjMxiky/Okh0XWtNNUY=; b=jgQNlr2Asr/peAmVBvLbuI7Zzm
-        4YECc6L6RVdMJjBfC3gzUjus9oPzwhHkzLpTn2cA0/8Ad/zo6dZJzex3IuV8Cl4dWuuF/BfDY0esw
-        1xDtrS72MXJdeTM+5/TCW4viT0iqy3BVBff/BIkD9O9eZF0d5NBVal28pKbkrVAtutf0XcAUVsQK+
-        0PnN1rNWW4vPz3jO1799PTL3Dr2Wii5K7FLmo4FLBSlubTjAv4A81LHGS+DSLwngZoiVmMmKJ/yx6
-        b0AQarcu1Je4J48SNyDmcNBjSgWL9O8UBT1+EtDyi18yfBjVBVeC80yfmPOgjNS4wN1oIEHBhyQy5
-        ajN7Zj3A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7dtf-000rrw-Rc; Thu, 04 Feb 2021 12:38:09 +0000
-Date:   Thu, 4 Feb 2021 12:38:07 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/rmap: Correct obsolete comment of page_get_anon_vma()
-Message-ID: <20210204123807.GE308988@casper.infradead.org>
-References: <20210203093215.31990-1-linmiaohe@huawei.com>
+        Thu, 4 Feb 2021 07:39:04 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0E0C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:38:23 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id f14so5002725ejc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FKomFTi9KTzn7Zn0jL1T3pTrVBNdlY+OQxh//6pcE8s=;
+        b=M7KAxwkuxx7MdAYkSQmVYG+psy4i5sppaoZmY1uR8ER2+ptiAAHINR3gh5ZtM9u1aG
+         q+AvfRfKKQ2Or8uZHLSvPgIjf6OnTt+HDva3QMNepeBvKTwQ6KciUyvsVD5wSqYgrL20
+         DWLY4Y08qhFYG10YXe9A+s3xsHrMSraN5J+ewOHOHh52D1ivpRE/JFXPyhq3tqcBS3t7
+         L6HowwXSL46Gf2Q57VmDT31orIfXz95BaBZMjdxKYeYGUHLUj3ptl29yL4kSt16aeNbD
+         wnv/fFgGw1qCRr7CqaHdfrL3gCOs5QGECK3fBiOw8xuzLV3eEr7Bk8oksOQZKBpHr7CI
+         jp9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FKomFTi9KTzn7Zn0jL1T3pTrVBNdlY+OQxh//6pcE8s=;
+        b=n29J/uiAO5hX6xfnohaEAbVLWWoEoAwe520HQro/toK5ztQBOebtM/s8SXpqzXxG9F
+         lvP4OwOa56WUKGKKDLUjUUNWjwDq0xEfk3f6dhg37RJyokyOdIWCXK7+7o58nWLCu0mL
+         mJ81tx6ZPFURPshruLq8u1ykKsN+hj8FLF07Cp5CumjN1DEwcU681ZldIyrAPUTNI4uX
+         6NI27gB9dSm57cOpZ6bf/BN7CUwxF92Vw/FIsY5zK9gaS2cEIHR7GjX3lNxuQ/pmh9iJ
+         DHH92SMdyuAbpRtjV7qmnEB5VxXHJL4jgSvN2kd+NM5Zj72xFWcLKZvzvsi/lX/0fXyj
+         eL0w==
+X-Gm-Message-State: AOAM5319YdHWY1jR3rZ0RFdNf+R5BZyIuI6ZgsHlN5geDm2IKFnW9DoV
+        dtGGzcy04Jrmm/smWQAXRUiYS6KUVdXRLAuSrXK+Ow==
+X-Google-Smtp-Source: ABdhPJyHA+6o1yvtdQtzPO9bu+J82Yst3tsnQkB2BQj7v7PTjY7pbf3j7A5mqGWKvABHBEAFQMaKgWiv42O2Z8cEsf8=
+X-Received: by 2002:a17:906:b042:: with SMTP id bj2mr7773910ejb.261.1612442302496;
+ Thu, 04 Feb 2021 04:38:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203093215.31990-1-linmiaohe@huawei.com>
+References: <20210105135614.32104-1-brgl@bgdev.pl>
+In-Reply-To: <20210105135614.32104-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 4 Feb 2021 13:38:11 +0100
+Message-ID: <CAMRc=Mf-eqJMxTDF8RK_jMMALJJ=+kwmyy-BOof1_ou7OoDCVg@mail.gmail.com>
+Subject: Re: [PATCH] irq/irq_sim: shrink devm_irq_domain_create_sim()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:32:15AM -0500, Miaohe Lin wrote:
->   * Since there is no serialization what so ever against page_remove_rmap()
-> - * the best this function can do is return a locked anon_vma that might
-> - * have been relevant to this page.
-> + * the best this function can do is return a refcount increased anon_vma
-> + * that might have been relevant to this page.
+On Tue, Jan 5, 2021 at 2:56 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> We don't have to use a custom devres structure if all we manage is a
+> single pointer - we can use devm_add_action_or_reset() for that and
+> shrink the code a bit.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
 
-Just s/a locked/an/
-there's no need to mention again that the refcount
-is increased.
+Gentle ping.
+
+Bart
