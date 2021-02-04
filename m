@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397030F957
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9426D30F95B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238353AbhBDRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:16:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40636 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238363AbhBDRNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:13:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612458777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tRbGxBcIWlQ5ydIcOc3/iCMnGIEF7Z8ZmPfjABG4AbA=;
-        b=gI4CUFYG1Mx1jeaaXtRPYe3wMK9zHikzKOsFJ+pD3uxxfElu/0fvfkhxWhVVNFOeMJe9O4
-        D15/g4UTR15bAM+TTmf8Disvopu1dFGP/kFnuKKWsx9/LiyEVvay0X/QmuDfN5ESJeZ9+9
-        vsaXLSDArxZzJuWPfgVnKmap3cEdyw8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9EF07B18F;
-        Thu,  4 Feb 2021 17:12:57 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 18:12:56 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Possible deny of service with memfd_create()
-Message-ID: <YBwrGNS+Q4JMpuom@dhcp22.suse.cz>
-References: <e7e6231d-8cf9-80a6-7459-5fec9ee547ba@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e7e6231d-8cf9-80a6-7459-5fec9ee547ba@amd.com>
+        id S238171AbhBDRRC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 12:17:02 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:35244 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238370AbhBDROR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:14:17 -0500
+Received: from marcel-macbook.holtmann.net (p4fefcdd8.dip0.t-ipconnect.de [79.239.205.216])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 4161FCED18;
+        Thu,  4 Feb 2021 18:20:47 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] Bluetooth: btusb: fix excessive stack usage
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210204154716.1823454-1-arnd@kernel.org>
+Date:   Thu, 4 Feb 2021 18:13:19 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Chen <Mark-YW.Chen@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>, Kiran K <kiran.k@intel.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Sathish Narasimman <nsathish41@gmail.com>,
+        Rocky Liao <rjliao@codeaurora.org>,
+        Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
+        Hilda Wu <hildawu@realtek.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <24876961-6740-4C52-9F10-3E8056237DD0@holtmann.org>
+References: <20210204154716.1823454-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04-02-21 17:32:20, Christian König wrote:
-> Hi Michal,
-> 
-> as requested in the other mail thread the following sample code gets my test
-> system down within seconds.
-> 
-> The issue is that the memory allocated for the file descriptor is not
-> accounted to the process allocating it, so the OOM killer pics whatever
-> process it things is good but never my small test program.
-> 
-> Since memfd_create() doesn't need any special permission this is a rather
-> nice deny of service and as far as I can see also works with a standard
-> Ubuntu 5.4.0-65-generic kernel.
+Hi Arnd,
 
-Thanks for following up. This is really nasty but now that I am looking
-at it more closely, this is not really different from tmpfs in general.
-You are free to create files and eat the memory without being accounted
-for that memory because that is not seen as your memory from the sysstem
-POV. You would have to map that memory to be part of your rss.
+> Enlarging the size of 'struct btmtk_hci_wmt_cmd' makes it no longer
+> fit on the kernel stack, as seen from this compiler warning:
+> 
+> drivers/bluetooth/btusb.c:3365:12: error: stack frame size of 1036 bytes in function 'btusb_mtk_hci_wmt_sync' [-Werror,-Wframe-larger-than=]
+> 
+> Change the function to dynamically allocate the buffer instead.
+> As there are other sleeping functions called from the same location,
+> using GFP_KERNEL should be fine here, and the runtime overhead should
+> not matter as this is rarely called.
+> 
+> Unfortunately, I could not figure out why the message size is
+> increased in the previous patch. Using dynamic allocation means
+> any size is possible now, but there is still a range check that
+> limits the total size (including the five-byte header) to 255
+> bytes, so whatever was intended there is now undone.
+> 
+> Fixes: 48c13301e6ba ("Bluetooth: btusb: Fine-tune mt7663 mechanism.")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> drivers/bluetooth/btusb.c | 24 +++++++++++++++---------
+> 1 file changed, 15 insertions(+), 9 deletions(-)
 
-The only existing protection right now is to use memoery cgroup
-controller because the tmpfs memory is accounted to the process which
-faults the memory in (or write to the file).
+patch has been applied to bluetooth-next tree.
 
-I am not sure there is a good way to handle this in general
-unfortunatelly. Shmem is is just tricky (e.g. how to you deal with left
-overs after the fd is closed?). Maybe memfd_create can be more clever
-and account memory to all owners of the fd but even that sounds far from
-trivial from the accounting POV. It is true that tmpfs can at least
-control who can write to it which is not the case for memfd but then we
-hit the backward compatibility wall.
--- 
-Michal Hocko
-SUSE Labs
+Regards
+
+Marcel
+
