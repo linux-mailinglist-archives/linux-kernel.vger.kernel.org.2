@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2922531020F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750393101F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhBEBEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:04:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44172 "EHLO
+        id S232568AbhBEBBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:01:10 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44170 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232420AbhBEA7P (ORCPT
+        with ESMTP id S232419AbhBEA7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 19:59:15 -0500
-Message-Id: <20210204211155.214169844@linutronix.de>
+Message-Id: <20210204211155.305801067@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612486682;
+        s=2020; t=1612486683;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=SLbWzbzNq9ppfvWEP7ZcRxRy5GM85KbAuBPrLxcZJHI=;
-        b=tiwsb44OOnz+HnVJ+etefFPGA4faSXc7KfIf+P2Urtfn2dfDFWYGBEd6RTpKnPwjDFqZB3
-        TWkQJEtqll24PPvTgdYwvZKSr0B7YJtUTb4RA23xWWLET7fy0gbamd2uhJVKjt3mxustjn
-        qU9qfUzCzNzF6W3fr21XoRuhNswUpj7GiIbdBt9m9VtEKJHB0XtJM5UbamCERB7Tn14qlh
-        hJ4bZWZFE155ICzGVe1vOpMuG9s/G0X542a2jN/nWi9CsGSSSt6rcfwoog17auQwCuiSsQ
-        lt+WCB5MnK6MeTiJlHeUAKSuS5gBgcnaU5z9tib99xcWcEO/9l+Kf66whi98zw==
+        bh=0UQXwmxLr+d5nTNP01N+SrJzGc9QSdB+ADgNfdzkynA=;
+        b=i70H6BnE0nUAjhhwrCofBCtV7De6Mz90z/Th0lm75oIc4QIycikryUjAsMq4IhEORfLoce
+        ECmcvWzxClLqrx9M3S1LzO46yko/mgr/obP8dXW6iwVtrzkKqcIhjNXPJrDT6eyQs5YFR2
+        2LKF4M8maz0zlOVxfOpAwCbEm/WYwkQcysjXOxqZ1uys2n2zOO+l2AUYGTmZpYlY9DsqTW
+        1BzOevjY4CJ/ycT+y177T2HVF6Znapkw5N+z0l6/57hLFivPyrW6A0K5wDnPbNlaPnziMb
+        VNNzxCHeGAz6KVwdcwY1zqZYY12G/cNlaFhOTGG/rUebnWQwee8p2PnlSC4tDg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612486682;
+        s=2020e; t=1612486683;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=SLbWzbzNq9ppfvWEP7ZcRxRy5GM85KbAuBPrLxcZJHI=;
-        b=YDEztwzslGPRU5xVVjEbCe6AU7mnPSoj2oZR792Na26UXTHaB7HZ+PH4uSgONQduiKhjTX
-        +KxOA525WwUTzXDQ==
-Date:   Thu, 04 Feb 2021 21:49:14 +0100
+        bh=0UQXwmxLr+d5nTNP01N+SrJzGc9QSdB+ADgNfdzkynA=;
+        b=s9VbjsYCopQvMRrFMKS45rnGsYNA+Yar1VWWyJiDYlBNLuoPH+duJ18rx+BoU+ejUy9dET
+        JeW59hzYAzfR1jCg==
+Date:   Thu, 04 Feb 2021 21:49:15 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [patch 11/12] softirq: Allow inlining do_softirq_own_stack()
+Subject: [patch 12/12] x86/softirq/64: Inline do_softirq_own_stack()
 References: <20210204204903.350275743@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function to switch to the irq stack on x86 is now minimal and there is
-only a single caller. Allow the stack switch to be inlined.
+There is no reason to have this as a seperate function for a single caller.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/interrupt.h |    2 ++
- kernel/softirq.c          |    4 ++++
- 2 files changed, 6 insertions(+)
+ arch/x86/include/asm/irq.h       |    3 +++
+ arch/x86/include/asm/irq_stack.h |    3 +--
+ arch/x86/kernel/irq_64.c         |    5 -----
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -570,7 +570,9 @@ asmlinkage void do_softirq(void);
- asmlinkage void __do_softirq(void);
+--- a/arch/x86/include/asm/irq.h
++++ b/arch/x86/include/asm/irq.h
+@@ -26,6 +26,9 @@ static inline int irq_canonicalize(int i
+ extern int irq_init_percpu_irqstack(unsigned int cpu);
  
- #ifdef __ARCH_HAS_DO_SOFTIRQ
-+# ifndef __ARCH_HAS_DO_SOFTIRQ_INLINE
- void do_softirq_own_stack(void);
-+# endif
- #else
- static inline void do_softirq_own_stack(void)
- {
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -26,6 +26,10 @@
- #include <linux/tick.h>
- #include <linux/irq.h>
- 
-+#ifdef __ARCH_HAS_DO_SOFTIRQ_INLINE
-+# include <asm/irq_stack.h>
+ #define __ARCH_HAS_DO_SOFTIRQ
++#ifdef CONFIG_X86_64
++#define __ARCH_HAS_DO_SOFTIRQ_INLINE
 +#endif
-+
- #define CREATE_TRACE_POINTS
- #include <trace/events/irq.h>
  
+ struct irq_desc;
+ 
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -200,7 +200,7 @@
+  * interrupts are pending to be processed. The interrupt stack cannot be in
+  * use here.
+  */
+-#define run_softirq_on_irqstack()					\
++#define do_softirq_own_stack()						\
+ {									\
+ 	__this_cpu_write(hardirq_stack_inuse, true);			\
+ 	__call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
+@@ -208,7 +208,6 @@
+ }
+ 
+ #else /* CONFIG_X86_64 */
+-
+ /* System vector handlers always run on the stack they interrupted. */
+ #define run_sysvec_on_irqstack_cond(func, regs)				\
+ {									\
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -73,8 +73,3 @@ int irq_init_percpu_irqstack(unsigned in
+ 		return 0;
+ 	return map_irq_stack(cpu);
+ }
+-
+-void do_softirq_own_stack(void)
+-{
+-	run_softirq_on_irqstack();
+-}
 
