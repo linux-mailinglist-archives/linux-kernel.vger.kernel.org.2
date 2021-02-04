@@ -2,310 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A1C30F9DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DFD30F9F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237649AbhBDRgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:36:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2499 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238646AbhBDRdo (ORCPT
+        id S238689AbhBDRky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238593AbhBDRdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:33:44 -0500
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DWlsh2lJTz67k33;
-        Fri,  5 Feb 2021 01:29:28 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 4 Feb 2021 18:33:00 +0100
-Received: from localhost (10.47.65.115) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 4 Feb 2021
- 17:32:59 +0000
-Date:   Thu, 4 Feb 2021 17:32:14 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
-        <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 04/11] iio: core: rework iio device group creation
-Message-ID: <20210204173214.00000fb9@Huawei.com>
-In-Reply-To: <20210201145105.20459-5-alexandru.ardelean@analog.com>
-References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
-        <20210201145105.20459-5-alexandru.ardelean@analog.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 4 Feb 2021 12:33:40 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C606C06178C;
+        Thu,  4 Feb 2021 09:33:00 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id a8so5719874lfi.8;
+        Thu, 04 Feb 2021 09:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D9/da0TYqc2IuJFpJdibkLommX5XSKGKPIxcqiy6/RM=;
+        b=jxK2pLrz7T9ANF2wqKTw7AKiJ7M0bYH1vM2tXWf0st/UY2Rz50ckQfB2Y+448RVr/L
+         nME7/yCM2E7dYcUxLvVSNnM6Vjk513mgj8U70Dldayl76491r/G/A9Dh23SxOsLyXgJx
+         Guo2P4wrf/AJrs6P97SVbPy1odjB4an45VuapaMlWVyd44lkoptaeaoML48Bs0/Wu/T3
+         zQ9rVePBSS5p1+JaPwCUBaAIdWMTLKlFE371UGwkFlWyux23z1klAJAH/mbnaN6iXEIA
+         M0HdoEVCue+e0/30e+am4lqWGZweIchKO0te8189gBrR0rwe3bSP1v9SFql6qFfAdfIH
+         luxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D9/da0TYqc2IuJFpJdibkLommX5XSKGKPIxcqiy6/RM=;
+        b=Z2U/vZK6e6+BwVFg23kwObpBgewSFLgnfWQh88+GKaGths5aPdMLRBvR0Q2+DQoAp4
+         sroVErYqctAVhClo5bafYrwlRr1IqPoV43sis0KV/Y6g0uvhH2Y+UTlquCplSN+oVwfK
+         jMFBAWxNYizK2/yxTVkNBFqSR0OJ6Kx3Lkfhxo6NyTz6xI+r3OIqMS/yR+YbWIb48JFa
+         3R7PiCHpd751wXqB0HyiiHk4gFQpDOhve89AesNPE0RN1QjI4Q0M4gsYtW6EY10hW7ZV
+         nXDr/lY7+XCf9h+waOCLtBOBmCwQvbu2ISSBxKukX8YnbGBZhm45WQX1dP9ftjAE2mJA
+         pJYw==
+X-Gm-Message-State: AOAM530W+6SOGiEFjwju7jJ31vVERNMmnE96Kz9hOJnb3xKSslkjKDEx
+        cMm55Gz3eJlX94vCcFlrhz01MvlprdkoRFYyKhM=
+X-Google-Smtp-Source: ABdhPJxskkEcudNmLMXwFbaywk0AsuzD69Nc7ex/EdDYH309v5vJBCtwQYOtDY9HFfxdJeg3cOVUTdY5u+uCKQ7uncc=
+X-Received: by 2002:a05:6512:3772:: with SMTP id z18mr243698lft.620.1612459978869;
+ Thu, 04 Feb 2021 09:32:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.65.115]
-X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-10-shy828301@gmail.com>
+ <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com> <5e335e4a-1556-e694-8f0b-192d924f99e5@virtuozzo.com>
+In-Reply-To: <5e335e4a-1556-e694-8f0b-192d924f99e5@virtuozzo.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 4 Feb 2021 09:32:46 -0800
+Message-ID: <CAHbLzkpy+bg+7HMb5qG_1gocXhkuuxip0Wn9Afu3Tx6-FMoMig@mail.gmail.com>
+Subject: Re: [v6 PATCH 09/11] mm: vmscan: don't need allocate
+ shrinker->nr_deferred for memcg aware shrinkers
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 16:50:58 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+On Thu, Feb 4, 2021 at 2:14 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>
+> On 04.02.2021 12:29, Kirill Tkhai wrote:
+> > On 03.02.2021 20:20, Yang Shi wrote:
+> >> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
+> >> allocate shrinker->nr_deferred for such shrinkers anymore.
+> >>
+> >> The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
+> >> by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
+> >> This makes the implementation of this patch simpler.
+> >>
+> >> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> >> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> >> ---
+> >>  mm/vmscan.c | 31 ++++++++++++++++---------------
+> >>  1 file changed, 16 insertions(+), 15 deletions(-)
+> >>
+> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >> index 545422d2aeec..20a35d26ae12 100644
+> >> --- a/mm/vmscan.c
+> >> +++ b/mm/vmscan.c
+> >> @@ -334,6 +334,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >>  {
+> >>      int id, ret = -ENOMEM;
+> >>
+> >> +    if (mem_cgroup_disabled())
+> >> +            return -ENOSYS;
+> >> +
+> >>      down_write(&shrinker_rwsem);
+> >>      /* This may call shrinker, so it must use down_read_trylock() */
+> >>      id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
+> >> @@ -414,7 +417,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+> >>  #else
+> >>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >>  {
+> >> -    return 0;
+> >> +    return -ENOSYS;
+> >>  }
+> >>
+> >>  static void unregister_memcg_shrinker(struct shrinker *shrinker)
+> >> @@ -525,8 +528,18 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
+> >>   */
+> >>  int prealloc_shrinker(struct shrinker *shrinker)
+> >>  {
+> >> -    unsigned int size = sizeof(*shrinker->nr_deferred);
+> >> +    unsigned int size;
+> >> +    int err;
+> >> +
+> >> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+> >> +            err = prealloc_memcg_shrinker(shrinker);
+> >> +            if (err != -ENOSYS)
+> >> +                    return err;
+> >>
+> >> +            shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
+> >> +    }
+> >> +
+> >> +    size = sizeof(*shrinker->nr_deferred);
+> >>      if (shrinker->flags & SHRINKER_NUMA_AWARE)
+> >>              size *= nr_node_ids;
+> >
+> > This may sound surprisingly, but IIRC do_shrink_slab() may be called on early boot
+> > *even before* root_mem_cgroup is allocated. AFAIR, I received syzcaller crash report
+> > because of this, when I was implementing shrinker_maps.
+> >
+> > This is a reason why we don't use shrinker_maps even in case of mem cgroup is not
+> > disabled: we iterate every shrinker of shrinker_list. See check in shrink_slab():
+> >
+> >       if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+> >
+> > Possible, we should do the same for nr_deferred: 1)always allocate shrinker->nr_deferred,
+> > 2)use shrinker->nr_deferred in count_nr_deferred() and set_nr_deferred().
+>
+> I looked over my mail box, and I can't find that crash report and conditions to reproduce.
+>
+> Hm, let's remain this as is, and we rework this in case of such early shrinker call is still
+> possible, and there will be a report...
 
-> Up until now, the device groups that an IIO device had were limited to 6.
-> Two of these groups would account for buffer attributes (the buffer/ and
-> scan_elements/ directories).
-> 
-> Since we want to add multiple buffers per IIO device, this number may not
-> be enough, when adding a second buffer. So, this change reallocates the
-> groups array whenever an IIO device group is added, via a
-> iio_device_register_sysfs_group() helper.
-> 
-> This also means that the groups array should be assigned to
-> 'indio_dev.dev.groups' really late, right before {cdev_}device_add() is
-> called to do the entire setup.
-> And we also must take care to free this array when the sysfs resources are
-> being cleaned up.
-> 
-> With this change we can also move the 'groups' & 'groupcounter' fields to
-> the iio_dev_opaque object. Up until now, this didn't make a whole lot of
-> sense (especially since we weren't sure how multibuffer support would look
-> like in the end).
-> But doing it now kills one birds with one stone.
-> 
-> An alternative, would be to add a configurable Kconfig symbol
-> CONFIG_IIO_MAX_BUFFERS_PER_DEVICE (or something like that) and compute a
-> static maximum of the groups we can support per IIO device. But that would
-> probably annoy a few people since that would make the system less
-> configurable.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Nice change irrespective of the rest of the series needing it.
+Sure. But I'm wondering how that could happen. On a very small machine?
 
-Few comments below.
+>
+> Reviewed-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+>
+> With only nit:
+>
+> >>
+> >> @@ -534,26 +547,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
+> >>      if (!shrinker->nr_deferred)
+> >>              return -ENOMEM;
+> >>
+> >> -    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+> >> -            if (prealloc_memcg_shrinker(shrinker))
+> >> -                    goto free_deferred;
+> >> -    }
+> >>
+> >>      return 0;
+> >> -
+> >> -free_deferred:
+> >> -    kfree(shrinker->nr_deferred);
+> >> -    shrinker->nr_deferred = NULL;
+> >> -    return -ENOMEM;
+> >>  }
+> >>
+> >>  void free_prealloced_shrinker(struct shrinker *shrinker)
+> >>  {
+> >> -    if (!shrinker->nr_deferred)
+> >> -            return;
+> >> -
+> >>      if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> >> -            unregister_memcg_shrinker(shrinker);
+> >> +            return unregister_memcg_shrinker(shrinker);
+>
+> I've never seen return of void function in linux kernel. I'm not sure this won't confuse people.
 
-Jonathan
+Will fix in v7.
 
-> ---
->  drivers/iio/iio_core.h             |  3 +++
->  drivers/iio/industrialio-buffer.c  | 12 +++++++++--
->  drivers/iio/industrialio-core.c    | 32 +++++++++++++++++++++++++++---
->  drivers/iio/industrialio-event.c   |  5 ++++-
->  drivers/iio/industrialio-trigger.c |  6 ++----
->  include/linux/iio/iio-opaque.h     |  4 ++++
->  include/linux/iio/iio.h            |  5 -----
->  7 files changed, 52 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> index fced02cadcc3..7d5b179c1fe7 100644
-> --- a/drivers/iio/iio_core.h
-> +++ b/drivers/iio/iio_core.h
-> @@ -46,6 +46,9 @@ int __iio_add_chan_devattr(const char *postfix,
->  			   struct list_head *attr_list);
->  void iio_free_chan_devattr_list(struct list_head *attr_list);
->  
-> +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
-> +				    const struct attribute_group *group);
-> +
->  ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
->  
->  /* Event interface flags */
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 2f7426a2f47c..cc846988fdb9 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1287,7 +1287,9 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  	buffer->buffer_group.name = "buffer";
->  	buffer->buffer_group.attrs = attr;
->  
-> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->buffer_group;
-> +	ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
-> +	if (ret)
-> +		goto error_free_buffer_attrs;
->  
->  	attrcount = 0;
->  	INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
-> @@ -1330,14 +1332,20 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  
->  	list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
->  		buffer->scan_el_group.attrs[attrn++] = &p->dev_attr.attr;
-> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->scan_el_group;
-> +
-> +	ret = iio_device_register_sysfs_group(indio_dev, &buffer->scan_el_group);
-> +	if (ret)
-> +		goto error_free_scan_el_attrs;
->  
->  	return 0;
->  
-> +error_free_scan_el_attrs:
-> +	kfree(buffer->scan_el_group.attrs);
->  error_free_scan_mask:
->  	bitmap_free(buffer->scan_mask);
->  error_cleanup_dynamic:
->  	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> +error_free_buffer_attrs:
->  	kfree(buffer->buffer_group.attrs);
->  
->  	return ret;
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 0a6fd299a978..ccd7aaff6d13 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1452,6 +1452,25 @@ static ssize_t iio_store_timestamp_clock(struct device *dev,
->  	return len;
->  }
->  
-> +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
-> +				    const struct attribute_group *group)
-> +{
-> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> +	const struct attribute_group **new, **old = iio_dev_opaque->groups;
-> +	unsigned int cnt = iio_dev_opaque->groupcounter;
-> +
-> +	new = krealloc(old, sizeof(*new) * (cnt + 2), GFP_KERNEL);
-> +	if (!new)
-> +		return -ENOMEM;
-> +
-> +	new[iio_dev_opaque->groupcounter++] = group;
-> +	new[iio_dev_opaque->groupcounter] = NULL;
-> +
-> +	iio_dev_opaque->groups = new;
-> +
-> +	return 0;
-> +}
-> +
->  static DEVICE_ATTR(current_timestamp_clock, S_IRUGO | S_IWUSR,
->  		   iio_show_timestamp_clock, iio_store_timestamp_clock);
->  
-> @@ -1525,8 +1544,10 @@ static int iio_device_register_sysfs(struct iio_dev *indio_dev)
->  	if (clk)
->  		iio_dev_opaque->chan_attr_group.attrs[attrn++] = clk;
->  
-> -	indio_dev->groups[indio_dev->groupcounter++] =
-> -		&iio_dev_opaque->chan_attr_group;
-> +	ret = iio_device_register_sysfs_group(indio_dev,
-> +					      &iio_dev_opaque->chan_attr_group);
-> +	if (ret)
-> +		goto error_clear_attrs;
->  
->  	return 0;
->  
-> @@ -1543,6 +1564,9 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
->  	iio_free_chan_devattr_list(&iio_dev_opaque->channel_attr_list);
->  	kfree(iio_dev_opaque->chan_attr_group.attrs);
->  	iio_dev_opaque->chan_attr_group.attrs = NULL;
-> +	kfree(iio_dev_opaque->groups);
-> +	iio_dev_opaque->groups = NULL;
-I can see you are matching style above, but right now I can't see why
-we set chan_attr_group.attrs = NULL 
-or this new case.
-
-> +	iio_dev_opaque->groupcounter = 0;
-
-or indeed groupcounter.
-
->  }
->  
->  static void iio_dev_release(struct device *device)
-> @@ -1592,7 +1616,6 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
->  		ALIGN(sizeof(struct iio_dev_opaque), IIO_ALIGN);
->  
->  	dev->dev.parent = parent;
-> -	dev->dev.groups = dev->groups;
-
-Hohum. Nothing to do with this patch but not sure why the iio_dev is called dev here...
-I (or someone else) should fix that at somepoint after this is in place as it confused me.
-
-
->  	dev->dev.type = &iio_device_type;
->  	dev->dev.bus = &iio_bus_type;
->  	device_initialize(&dev->dev);
-> @@ -1853,6 +1876,9 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  		indio_dev->chrdev.owner = this_mod;
->  	}
->  
-> +	/* assign device groups now; they should be all registered now */
-> +	indio_dev->dev.groups = iio_dev_opaque->groups;
-> +
->  	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
->  	if (ret < 0)
->  		goto error_unreg_eventset;
-> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-> index 7e532117ac55..ea8947cc21e4 100644
-> --- a/drivers/iio/industrialio-event.c
-> +++ b/drivers/iio/industrialio-event.c
-> @@ -544,7 +544,10 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
->  	/* Add all elements from the list. */
->  	list_for_each_entry(p, &ev_int->dev_attr_list, l)
->  		ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
-> -	indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
-> +
-> +	ret = iio_device_register_sysfs_group(indio_dev, &ev_int->group);
-> +	if (ret)
-> +		goto error_free_setup_event_lines;
->  
->  	ev_int->ioctl_handler.ioctl = iio_event_ioctl;
->  	iio_device_ioctl_handler_register(&iio_dev_opaque->indio_dev,
-> diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
-> index 438d5012e8b8..a035d5c2a445 100644
-> --- a/drivers/iio/industrialio-trigger.c
-> +++ b/drivers/iio/industrialio-trigger.c
-> @@ -694,10 +694,8 @@ EXPORT_SYMBOL(iio_trigger_validate_own_device);
->  
->  int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
->  {
-> -	indio_dev->groups[indio_dev->groupcounter++] =
-> -		&iio_trigger_consumer_attr_group;
-> -
-> -	return 0;
-> +	return iio_device_register_sysfs_group(indio_dev,
-> +					       &iio_trigger_consumer_attr_group);
->  }
->  
->  void iio_device_unregister_trigger_consumer(struct iio_dev *indio_dev)
-> diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-> index 07c5a8e52ca8..8ba13a5c7af6 100644
-> --- a/include/linux/iio/iio-opaque.h
-> +++ b/include/linux/iio/iio-opaque.h
-> @@ -12,6 +12,8 @@
->   *				attributes
->   * @chan_attr_group:		group for all attrs in base directory
->   * @ioctl_handlers:		ioctl handlers registered with the core handler
-> + * @groups:			attribute groups
-> + * @groupcounter:		index of next attribute group
->   * @debugfs_dentry:		device specific debugfs dentry
->   * @cached_reg_addr:		cached register address for debugfs reads
->   * @read_buf:			read buffer to be used for the initial reg read
-> @@ -24,6 +26,8 @@ struct iio_dev_opaque {
->  	struct list_head		channel_attr_list;
->  	struct attribute_group		chan_attr_group;
->  	struct list_head		ioctl_handlers;
-> +	const struct attribute_group	**groups;
-> +	int				groupcounter;
->  #if defined(CONFIG_DEBUG_FS)
->  	struct dentry			*debugfs_dentry;
->  	unsigned			cached_reg_addr;
-> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-> index e4a9822e6495..f8585d01fc76 100644
-> --- a/include/linux/iio/iio.h
-> +++ b/include/linux/iio/iio.h
-> @@ -518,8 +518,6 @@ struct iio_buffer_setup_ops {
->   * @setup_ops:		[DRIVER] callbacks to call before and after buffer
->   *			enable/disable
->   * @chrdev:		[INTERN] associated character device
-> - * @groups:		[INTERN] attribute groups
-> - * @groupcounter:	[INTERN] index of next attribute group
->   * @flags:		[INTERN] file ops related flags including busy flag.
->   * @priv:		[DRIVER] reference to driver's private information
->   *			**MUST** be accessed **ONLY** via iio_priv() helper
-> @@ -556,9 +554,6 @@ struct iio_dev {
->  	struct mutex			info_exist_lock;
->  	const struct iio_buffer_setup_ops	*setup_ops;
->  	struct cdev			chrdev;
-> -#define IIO_MAX_GROUPS 6
-> -	const struct attribute_group	*groups[IIO_MAX_GROUPS + 1];
-> -	int				groupcounter;
->  
->  	unsigned long			flags;
->  	void				*priv;
-
+>
+> >>
+> >>      kfree(shrinker->nr_deferred);
+> >>      shrinker->nr_deferred = NULL;
+> >>
+> >
+>
+>
