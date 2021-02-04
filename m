@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2AC30EC6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6916130EC6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhBDGWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 01:22:30 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39581 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232217AbhBDGWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:22:24 -0500
-X-UUID: a5e46f1b9dd743058e3dbf72b12b937c-20210204
-X-UUID: a5e46f1b9dd743058e3dbf72b12b937c-20210204
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 661632920; Thu, 04 Feb 2021 14:21:39 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Feb 2021 14:21:38 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Feb 2021 14:21:38 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <ardb@kernel.org>
-CC:     <akpm@linux-foundation.org>, <andreyknvl@google.com>,
-        <aryabinin@virtuozzo.com>, <broonie@kernel.org>,
-        <catalin.marinas@arm.com>, <dan.j.williams@intel.com>,
-        <dvyukov@google.com>, <glider@google.com>, <gustavoars@kernel.org>,
-        <kasan-dev@googlegroups.com>, <lecopzer.chen@mediatek.com>,
-        <lecopzer@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
-        <linux@roeck-us.net>, <robin.murphy@arm.com>, <rppt@kernel.org>,
-        <tyhicks@linux.microsoft.com>, <vincenzo.frascino@arm.com>,
-        <will@kernel.org>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v2 1/4] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
-Date:   Thu, 4 Feb 2021 14:21:28 +0800
-Message-ID: <20210204062128.27692-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAMj1kXEMOeCZTvNqPPk-uL5iA7hx7SFPwkq3Oz3yYefn=tVnPQ@mail.gmail.com>
-References: <CAMj1kXEMOeCZTvNqPPk-uL5iA7hx7SFPwkq3Oz3yYefn=tVnPQ@mail.gmail.com>
+        id S232604AbhBDGXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 01:23:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232009AbhBDGXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 01:23:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D09764DE9;
+        Thu,  4 Feb 2021 06:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612419746;
+        bh=BgL/8xotpS0w+cquZ0Hj3CHCeKVielVHwolNyzu6+b0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=we+v7zZ+j3cIFphOIOIBnAYprbVW+qK29a9weJjk34K6JoKRZz8Qg6QMQVTvBaH8A
+         by272+igLF/4z9HpH8nVmsax1NnHW0Xub8XqSgiNX8qmOzY6e+95SAVZnNUAvrE/Tm
+         xgAHQrw7VWFPqWF3lMVdgyICO1Iqpw6JdZCndHzI=
+Date:   Thu, 4 Feb 2021 07:22:20 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] usb: typec: remove =?utf-8?Q?u?=
+ =?utf-8?Q?nused_variable_=E2=80=98ret?= =?utf-8?B?4oCZ?= in
+ typec_partner_set_pd_revision
+Message-ID: <YBuSnPDbrXcnBcgZ@kroah.com>
+References: <20210204012430.3686636-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204012430.3686636-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, 9 Jan 2021 at 11:33, Lecopzer Chen <lecopzer@gmail.com> wrote:
-> >
-> > Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > ("kasan: support backing vmalloc space with real shadow memory")
-> >
-> > Like how the MODULES_VADDR does now, just not to early populate
-> > the VMALLOC_START between VMALLOC_END.
-> > similarly, the kernel code mapping is now in the VMALLOC area and
-> > should keep these area populated.
-> >
-> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+On Thu, Feb 04, 2021 at 09:24:30AM +0800, Ye Bin wrote:
+> Fix follow warning:
+> drivers/usb/typec/class.c:763:6: warning: unused variable ‘ret’ [-Wunused-variable]
+>   int ret;
+>       ^~~
 > 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  drivers/usb/typec/class.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> This commit log text is a bit hard to follow. You are saying that the
-> vmalloc region is *not* backed with zero shadow or any default mapping
-> at all, right, and everything gets allocated on demand, just like is
-> the case for modules?
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index b6ceab3dc16b..1c2d50e016e2 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -760,8 +760,6 @@ EXPORT_SYMBOL_GPL(typec_partner_set_identity);
+>   */
+>  int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision)
+>  {
+> -	int ret;
+> -
+>  	if (partner->pd_revision == pd_revision)
+>  		return 0;
+>  
 
-It's much more like:
+This is already fixed in my tree, right?  What did you make this
+against?
 
-before:
+thanks,
 
-MODULE_VADDR: no mapping, no zoreo shadow at init
-VMALLOC_VADDR: backed with zero shadow at init
-
-after:
-
-MODULE_VADDR: no mapping, no zoreo shadow at init
-VMALLOC_VADDR: no mapping, no zoreo shadow at init
-
-So it should be both "not backed with zero shadow" and
-"not any mapping and everything gets allocated on demand".
-
-And the "not backed with zero shadow" is like a subset of "not any mapping ...".
-
-
-Is that being more clear if the commit revises to:
-
-----------------------
-Like how the MODULES_VADDR does now, just not to early populate
-the VMALLOC_START between VMALLOC_END.
-
-Before:
-
-MODULE_VADDR: no mapping, no zoreo shadow at init
-VMALLOC_VADDR: backed with zero shadow at init
-
-After:
-
-VMALLOC_VADDR: no mapping, no zoreo shadow at init
-
-Thus the mapping will get allocate on demand by the core function
-of KASAN vmalloc.
-
-similarly, the kernel code mapping is now in the VMALLOC area and
-should keep these area populated.
---------------------
-
-Or would you have any suggestion?
-
-
-Thanks a lot for your review!
-
-BRs,
-Lecopzer
-
+greg k-h
