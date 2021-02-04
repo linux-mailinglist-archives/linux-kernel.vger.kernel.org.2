@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B66030F946
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27AC30F94B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:15:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238008AbhBDRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:13:43 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57475 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237438AbhBDRJe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:09:34 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l7i7e-0001Xe-DE; Thu, 04 Feb 2021 17:08:50 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V2] media: platform: sti: make a const arrays static, makes object smaller
-Date:   Thu,  4 Feb 2021 17:08:50 +0000
-Message-Id: <20210204170850.106821-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S238283AbhBDRPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:15:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238342AbhBDRMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:12:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F37764F70;
+        Thu,  4 Feb 2021 17:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612458571;
+        bh=rVkFqKiMv651OhiZuuMPdxsM2ChvMEUmeWBZTKPpj9E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=omlHFt+6EED+KLr0pZ0VvVb5LnhbPQzSvA9aSqO+hDrhnA2KCIVQ1XCCdXAbwJVij
+         SZjD16oHgyMDaoq8LR33y6UAo4kiijU3pQhoYInwBw6z7SZWkVDsa20PRFU1Y7jxun
+         uIg01cRVxLv71J47FM0EGVuXV6EGCK+kUo5Z+XaXIj0G8TKhFsGbtwXn2TIDavltBa
+         3QQ3nbkSIQ8jr340wQTJiO8bN0QMBXUnNAHSUPnOSm+xiIcDf6sNgXl3elinaxI9zR
+         Mm04FOSoxThSIA1BKdUgCYnVag0nBokIYS80rdVZSirrZoU+Z/nOTfX0BtkW/U6iWH
+         VGbcIezau8RKw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 5/6] arm64: dts: qcom: sm8350-mtp: enable UFS nodes
+Date:   Thu,  4 Feb 2021 22:39:06 +0530
+Message-Id: <20210204170907.63545-6-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210204170907.63545-1-vkoul@kernel.org>
+References: <20210204170907.63545-1-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Enabled the UFS node found in SM8350-MTP platform, also add the
+regulators associated with UFS HC and UFS phy to these nodes.
 
-Don't populate the const arrays on the stack but instead it
-static. Makes the object code smaller by 8 bytes:
-
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  12504	   4568	      0	  17072	   42b0	media/platform/sti/hva/hva-h264.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-  12272	   4792	      0	  17064	   42a8	media/platform/sti/hva/hva-h264.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
+ arch/arm64/boot/dts/qcom/sm8350-mtp.dts | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-V2: fix commit message, pluralize arrays and remove array bame bws
-
----
- drivers/media/platform/sti/hva/hva-h264.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/sti/hva/hva-h264.c b/drivers/media/platform/sti/hva/hva-h264.c
-index c34f7cf5aed2..98cb00d2d868 100644
---- a/drivers/media/platform/sti/hva/hva-h264.c
-+++ b/drivers/media/platform/sti/hva/hva-h264.c
-@@ -428,8 +428,10 @@ static int hva_h264_fill_slice_header(struct hva_ctx *pctx,
- 	 */
- 	struct device *dev = ctx_to_dev(pctx);
- 	int  cabac = V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CABAC;
--	const unsigned char slice_header[] = { 0x00, 0x00, 0x00, 0x01,
--					       0x41, 0x34, 0x07, 0x00};
-+	static const unsigned char slice_header[] = {
-+		0x00, 0x00, 0x00, 0x01,
-+		0x41, 0x34, 0x07, 0x00
-+	};
- 	int idr_pic_id = frame_num % 2;
- 	enum hva_picture_coding_type type;
- 	u32 frame_order = frame_num % ctrls->gop_size;
-@@ -488,7 +490,7 @@ static int hva_h264_fill_data_nal(struct hva_ctx *pctx,
- 				  unsigned int stream_size, unsigned int *size)
- {
- 	struct device *dev = ctx_to_dev(pctx);
--	const u8 start[] = { 0x00, 0x00, 0x00, 0x01 };
-+	static const u8 start[] = { 0x00, 0x00, 0x00, 0x01 };
+diff --git a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+index a2baa1ad3752..2675afbbd75e 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+@@ -5,6 +5,7 @@
  
- 	dev_dbg(dev, "%s   %s stuffing bytes %d\n", pctx->name, __func__,
- 		stuffing_bytes);
-@@ -521,7 +523,7 @@ static int hva_h264_fill_sei_nal(struct hva_ctx *pctx,
- 				 u8 *addr, u32 *size)
- {
- 	struct device *dev = ctx_to_dev(pctx);
--	const u8 start[] = { 0x00, 0x00, 0x00, 0x01 };
-+	static const u8 start[] = { 0x00, 0x00, 0x00, 0x01 };
- 	struct hva_h264_stereo_video_sei info;
- 	u8 offset = 7;
- 	u8 msg = 0;
+ /dts-v1/;
+ 
++#include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sm8350.dtsi"
+ 
+@@ -249,6 +250,26 @@ &uart2 {
+ 	status = "okay";
+ };
+ 
++&ufs_mem_hc {
++	status = "okay";
++
++	reset-gpios = <&tlmm 203 GPIO_ACTIVE_LOW>;
++
++	vcc-supply = <&vreg_l7b_2p96>;
++	vcc-max-microamp = <800000>;
++	vccq-supply = <&vreg_l9b_1p2>;
++	vccq-max-microamp = <900000>;
++};
++
++&ufs_mem_phy {
++	status = "okay";
++
++	vdda-phy-supply = <&vreg_l5b_0p88>;
++	vdda-max-microamp = <91600>;
++	vdda-pll-supply = <&vreg_l6b_1p2>;
++	vdda-pll-max-microamp = <19000>;
++};
++
+ &usb_1 {
+ 	status = "okay";
+ };
 -- 
-2.29.2
+2.26.2
 
