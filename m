@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0409E30F113
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0007330F111
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbhBDKli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:41:38 -0500
-Received: from wildebeest.demon.nl ([212.238.236.112]:33972 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbhBDKlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:41:37 -0500
-Received: from librem (ip-213-127-54-204.ip.prioritytelecom.net [213.127.54.204])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 0B649300097B;
-        Thu,  4 Feb 2021 11:40:54 +0100 (CET)
-Received: by librem (Postfix, from userid 1000)
-        id 13BE3C14A7; Thu,  4 Feb 2021 11:39:46 +0100 (CET)
-Date:   Thu, 4 Feb 2021 11:39:46 +0100
-From:   Mark Wielaard <mark@klomp.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-Message-ID: <20210204103946.GA14802@wildebeest.org>
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-2-ndesaulniers@google.com>
+        id S235343AbhBDKkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:40:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234895AbhBDKku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:40:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F369364F4D;
+        Thu,  4 Feb 2021 10:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612435208;
+        bh=CQyj/sSo8xI867DsxS1WdYQhB65eb22naaawqQg/afc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PqGL1T1ttXRGVzH/yHU8sj3tqnaejolVmxip/w/tP51DDu+51kPsjS2hFtgXcKfvv
+         B2PllRqUiyK/DRLQrT3di2iNITlcDSmeKcE+YQgdXPjm3uJNJSVkxAenDOs2v863Vh
+         Uw9Y9XP6eQkyNxCniCf+Rp9QgRJ8UrEsTYn/6Qm8=
+Date:   Thu, 4 Feb 2021 11:40:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Subject: Re: [RFC v2 1/1] PCI: Add s390 specific UID uniqueness attribute
+Message-ID: <YBvPBD+fCtQkCFFD@kroah.com>
+References: <20210204094353.63819-1-schnelle@linux.ibm.com>
+ <20210204094353.63819-2-schnelle@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130004401.2528717-2-ndesaulniers@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+In-Reply-To: <20210204094353.63819-2-schnelle@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
-> the default. Does so in a way that's forward compatible with existing
-> configs, and makes adding future versions more straightforward.
+On Thu, Feb 04, 2021 at 10:43:53AM +0100, Niklas Schnelle wrote:
+> The global UID uniqueness attribute exposes whether the platform
+> guarantees that the user-defined per-device UID attribute values
+> (/sys/bus/pci/device/<dev>/uid) are unique and can thus be used as
+> a global identifier for the associated PCI device. With this commit
+> it is exposed at /sys/bus/pci/zpci/unique_uids
 > 
-> GCC since ~4.8 has defaulted to this DWARF version implicitly.
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci |  9 +++++++++
+>  drivers/pci/pci-sysfs.c                 | 21 +++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index 25c9c39770c6..812dd9d3f80d 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -375,3 +375,12 @@ Description:
+>  		The value comes from the PCI kernel device state and can be one
+>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>  		The file is read only.
+> +What:		/sys/bus/pci/zpci/unique_uids
 
-And since GCC 11 it defaults to DWARF version 5.
+No blank line before this new line?
 
-It would be better to set the default to the DWARF version that the
-compiler generates. So if the user doesn't select any version then it
-should default to just -g (or -gdwarf).
+And why "zpci"?
 
-Thanks,
+> +Date:		February 2021
+> +Contact:	Niklas Schnelle <schnelle@linux.ibm.com>
+> +Description:
+> +		This attribute exposes the global state of UID Uniqueness on an
+> +		s390 Linux system. If this file contains '1' the per-device UID
+> +		attribute is guaranteed to provide a unique user defined
+> +		identifier for that PCI device. If this file contains '0' UIDs
+> +		may collide and do not provide a unique identifier.
 
-Mark
+What are they "colliding" with?  And where does the UID come from, the
+device itself or somewhere else?
+
+thanks,
+
+greg k-h
