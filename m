@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E17C30EE88
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126E730EE99
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhBDIeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:34:03 -0500
-Received: from mail-pf1-f176.google.com ([209.85.210.176]:43366 "EHLO
-        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhBDId6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:33:58 -0500
-Received: by mail-pf1-f176.google.com with SMTP id q131so1650249pfq.10;
-        Thu, 04 Feb 2021 00:33:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6i67hzmhIyWLTSUgjOoxI09dTzDeKdwAjKDGK5dJYk0=;
-        b=uj9ELWyoITYJtt/+HI089jQrhZYAQYRk9JNDTAjf7pRsy4KFYSFYLTf50C2LsjSBdD
-         0/u0NWuWzO4CaNe8kutovBetTdAO71xm6pESl5MbhpLOPKVFmYc2/X1xX08DljCW2cOv
-         hRwoKwkmmhSmNWZI+izHuH4mJLwX9CkDyYQ/Bo/78DoZwUruSsCPytCs/Qr+OcJe0cn6
-         s3DY8h6Dwe8rD/uvby+nb3+x5QCbvk5hShAjpdnCVH8M9vmfCfvc1acUMLfK2qJ9CJOs
-         hLLgSxVN7/rUKa8wDerC8JXB4VW/xBvlgGZS0tdC5q0/drNR7ylEpc8O9XtzV/y9VT0u
-         rY7w==
-X-Gm-Message-State: AOAM532hzTuAy6CVBSkUAE2kYBL1YngzS7yVCcjcuVR1qMl5rJWBTxtS
-        5Lh8HBAmGnB6AfWQSIi+n8w=
-X-Google-Smtp-Source: ABdhPJzLUKlQ2HaGyCgmVdPlvVhA/Kf8+d64Cq5dnxQ8mNlKljneYGC6PHyXxSDT9tn1V8P2VypItA==
-X-Received: by 2002:aa7:9d1a:0:b029:1c8:8148:a89d with SMTP id k26-20020aa79d1a0000b02901c88148a89dmr6998297pfp.66.1612427597869;
-        Thu, 04 Feb 2021 00:33:17 -0800 (PST)
-Received: from localhost (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id x8sm4626952pjf.55.2021.02.04.00.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 00:33:16 -0800 (PST)
-From:   You-Sheng Yang <vicamo.yang@canonical.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
-Date:   Thu,  4 Feb 2021 16:33:15 +0800
-Message-Id: <20210204083315.122952-1-vicamo.yang@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S234732AbhBDIjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:39:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234513AbhBDIjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:39:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6631664F3F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:39:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612427948;
+        bh=7T4ooX3gO2ANuzbsm/7bQYteNtaVMBp7n3/bStX1vfg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kzhP/xClZYYb/hL46TTFDoatKfUtCNakI3R4UKOpYtXIcTj9840J4DpoEsBe+30Px
+         zVOqyZGWUkgdNOljGoSQIEBcC1TinR+9k0vl/wRtJXuzn8x6vAe0EwCqQmn5JdC2cv
+         1eCyyHdYPu2RtebVsyUr4jt5Qn1bysIhHjMN7q1Tcxnhd6Z5Ja1TqPg2z3+uv+vlX7
+         +eA4v8y3PFJMSituWP0V0dbW+zpyj4M4FNiS/qoj+vqa6vbOt6iq7u5rCxJIYdromj
+         iEzl50J+8MUSt1cRCoBhMXjWzF2kwZaa3Z5TI+VBy76L0AAtpkYStIcSUohnLA4u7c
+         XhryDjyGiDwkA==
+Received: by mail-oo1-f53.google.com with SMTP id 123so557639ooi.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:39:08 -0800 (PST)
+X-Gm-Message-State: AOAM531FlB0LwJIaimMU9OwT2RdC7aQWUVGC64YDRLk+OqJS/mFQ8/fP
+        y53B0V5LmFoekpT0e5JeUJywoVH5k1Cd/kqdH3E=
+X-Google-Smtp-Source: ABdhPJxIJXsIuLwOF/19Ymmyrio4uCCCufivYBJTt04GvqJtDM9bh5EnffAXCUYHqq8n7baUTvvUIpIs9xNhWlqsq0I=
+X-Received: by 2002:a4a:bb01:: with SMTP id f1mr5046623oop.66.1612427947782;
+ Thu, 04 Feb 2021 00:39:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210203223826.21674-1-scott.branden@broadcom.com> <ac337905-9bf0-32c6-f98c-5912de1d6655@infradead.org>
+In-Reply-To: <ac337905-9bf0-32c6-f98c-5912de1d6655@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 4 Feb 2021 09:38:51 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1RUBqrhVX5Fv3k41OTryJ1Z8sSD6GM5NqUEYgBy=7jLw@mail.gmail.com>
+Message-ID: <CAK8P3a1RUBqrhVX5Fv3k41OTryJ1Z8sSD6GM5NqUEYgBy=7jLw@mail.gmail.com>
+Subject: Re: [PATCH v4] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added Tiger Lake H PCI device ID to the supported device list.
+On Thu, Feb 4, 2021 at 12:18 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 2/3/21 2:38 PM, Scott Branden wrote:
+> > Correct compile issue if CONFIG_TTY is not set by
+> > only adding ttyVK devices if CONFIG_BCM_VK_TTY is set.
+> >
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
----
- drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
- drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
- 2 files changed, 2 insertions(+)
+Passes my randconfig builds as well and looks reasonable
 
-diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-index 1fb294ca463e..21b0e6123754 100644
---- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-+++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-@@ -27,6 +27,7 @@
- #define CMP_H_DEVICE_ID		0x06FC
- #define EHL_Ax_DEVICE_ID	0x4BB3
- #define TGL_LP_DEVICE_ID	0xA0FC
-+#define TGL_H_DEVICE_ID		0x43FC
- 
- #define	REVISION_ID_CHT_A0	0x6
- #define	REVISION_ID_CHT_Ax_SI	0x0
-diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-index c6d48a8648b7..6dea657b7b15 100644
---- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-+++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-@@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
-+	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
- 	{0, }
- };
- MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
--- 
-2.29.2
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
