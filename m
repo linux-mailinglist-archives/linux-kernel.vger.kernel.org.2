@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B70130F5DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D23330F5E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbhBDPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236972AbhBDPAc (ORCPT
+        id S237026AbhBDPLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:11:54 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:52999 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236984AbhBDPAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:00:32 -0500
-Received: from cc-smtpout3.netcologne.de (cc-smtpout3.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEAAC06178A;
-        Thu,  4 Feb 2021 06:59:51 -0800 (PST)
-Received: from cc-smtpin2.netcologne.de (cc-smtpin2.netcologne.de [89.1.8.202])
-        by cc-smtpout3.netcologne.de (Postfix) with ESMTP id 113E31297E;
-        Thu,  4 Feb 2021 15:59:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTP id 0C72811D8D;
-        Thu,  4 Feb 2021 15:59:49 +0100 (CET)
-Received: from [87.79.223.205] (helo=cc-smtpin2.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.19.0)
-        (envelope-from <kurt@garloff.de>)
-        id 601c0be4-0254-7f0000012729-7f0000018ffc-1
-        for <multiple-recipients>; Thu, 04 Feb 2021 15:59:48 +0100
-Received: from nas2.garloff.de (xdsl-87-79-223-205.nc.de [87.79.223.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTPSA;
-        Thu,  4 Feb 2021 15:59:44 +0100 (CET)
-Received: from [192.168.155.24] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id 81696B3B13A5;
-        Thu,  4 Feb 2021 15:59:43 +0100 (CET)
-Subject: Re: [GIT PULL] Floppy patch for 5.12
-To:     Jens Axboe <axboe@kernel.dk>, efremov@linux.com
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>
-References: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
- <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk>
-From:   Kurt Garloff <kurt@garloff.de>
-Message-ID: <925c6067-f317-70d1-231d-9d97c517212b@garloff.de>
-Date:   Thu, 4 Feb 2021 15:59:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 4 Feb 2021 10:00:50 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l7g6z-0005kW-QQ; Thu, 04 Feb 2021 15:00:01 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] iommu/mediatek: Fix unsigned domid comparison with less than zero
+Date:   Thu,  4 Feb 2021 15:00:01 +0000
+Message-Id: <20210204150001.102672-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+From: Colin Ian King <colin.king@canonical.com>
 
-Am 04.02.21 um 15:37 schrieb Jens Axboe:
-> On 2/4/21 3:12 AM, Denis Efremov wrote:
->> The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
->>
->>   Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
->>
->> are available in the Git repository at:
->>
->>   https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
-> Pulled, thanks.
+Currently the check for domid < 0 is always false because domid
+is unsigned. Fix this by casting domid to an int before making
+the comparison.
 
-Great, thanks!
+Addresses-Coverity: ("Unsigned comparison against 0")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-Next is -stable then ... so all those cloud images using floppy to inject metadata
-work again, despite current libblkid.
-(Fortunately, most use cdrom these days.)
+V2: cast domid rather than making it an int. Replace L with : in
+    the commit message.
 
-Best,
+---
+ drivers/iommu/mtk_iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 0ad14a7604b1..1f262621ef19 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -645,7 +645,7 @@ static void mtk_iommu_get_resv_regions(struct device *dev,
+ 	struct iommu_resv_region *region;
+ 	int prot = IOMMU_WRITE | IOMMU_READ;
+ 
+-	if (domid < 0)
++	if ((int)domid < 0)
+ 		return;
+ 	curdom = data->plat_data->iova_region + domid;
+ 	for (i = 0; i < data->plat_data->iova_region_nr; i++) {
 -- 
-Kurt Garloff <kurt@garloff.de>, Cologne, Germany
+2.29.2
 
