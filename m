@@ -2,135 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09A230EB4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF4130EB2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhBDD5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:57:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S231349AbhBDDxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhBDD4N (ORCPT
+        with ESMTP id S230106AbhBDDxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:56:13 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478B8C061794
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 19:55:32 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u15so1053003plf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 19:55:32 -0800 (PST)
+        Wed, 3 Feb 2021 22:53:00 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79BCC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 19:52:20 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id i71so1836391ybg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 19:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zwPSy3xaz2ygLc8F0EEvzUcUfzPRqv7+jHlrmdqCzjc=;
-        b=v5kc7WwUbJ4SxZoErP44Ut/YnimhGLmSGr8Q0pMvjK5MyOeqBjchjsm0dHwo9qTxiL
-         L6o92hOcgljhXYgPK7t24RMk26k8jSQAl6t0nHe4iuHxFQhkqed+9AGjRwOSYiBtkWta
-         lWJgGumyexzq2I5hO4O8GVm9ptnIJfHGx37Vb9jlOKvWqgy8ZUQlug/dNU2UVlfX72v8
-         iNPfFEKzU4oPA4XIv/ckuMhQVgjqgzksq5w4MhnAGMpW8l8TvHOTfSVIQIVZD2d2nAvD
-         MnL3T49dN822vH1juzrinW1+AMA0T5yeOrtJ8cjhYfM9Nwn9BDHlhwhToPundS0A0pGD
-         V5Iw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DTbQuqDgftJHyEjgUZ53qqE2GLvug2RthYORKONmJnA=;
+        b=fKFmn6G4Gfcvpduh4jqVWeOKN+SFpsRhlVPOm6PDL8uJ4neFU13Qr37PqAiAKwknxr
+         M3/axZFZaSNRvW2AoAkWw/pdu2JAEIy4U7Cxs8WuHXtv+Ket5yS9QE3QuoUUxEEIP0Mu
+         ux7PvimGsRNvNxfYt4qnv7p5IiAJ/Kd80haGbuh6BfCH5eTRhj0peYdPSoGw3+HHsot3
+         sVzeQN2gMxpwCLZo1Du+HlAQxmJjmyDkxbnJkPccM4bugHS+NKzUhYztHvBvZw4zQqFH
+         6BtW4naZohotxE+Vk8xzPj25pwFuGtN38BsgadZn4vM0Pdgu1QXFpDONGGI+Uh4RpZma
+         4bjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zwPSy3xaz2ygLc8F0EEvzUcUfzPRqv7+jHlrmdqCzjc=;
-        b=BMsNA/FTAJ+2vY9e2ib3j2Z4R9D2d7gSZ8ZTilYIpkilqUj2WR+3sa4e0MEtXKnomJ
-         c+ZdZFzmuiweK3Cu4lH534HHTBJ/BAzGr3ZtyBG/rH1gQSn99JkpOcFMZlvYdO8zyeFQ
-         /cs+EmHUxf257taECidJTpAo3I/CNJAbbQ/j6UpRsa8TZLUY4jO1HTvNkZmaQZ/Wx1wp
-         2Jnv83uoqwGrJmv22350drHaZxwkxZfxaGeQEZ5pxVBFwvpPrZiourTgwpKmPnXOxr4y
-         rm7+jzp12ajIIVvFmU6gHqhC0+ilHikynBF0Lrc/b/zT7lq9mTt9NbI/OUJFYM1OHbCC
-         5yHg==
-X-Gm-Message-State: AOAM533xo60cOBI6haejZrG5wfvd7QCR3fsgaYIgSgmheK6S5g9i7tsX
-        +BTVGCXoEXzglw8SkCjD6dgZ3A==
-X-Google-Smtp-Source: ABdhPJy4MLo6bnYUrOasPbRmFl1je+GxUk4n9GPPf9oQIxXGXHU1yRbe2z30qs735BvQJrsnJluAFQ==
-X-Received: by 2002:a17:90b:4004:: with SMTP id ie4mr6140969pjb.114.1612410931841;
-        Wed, 03 Feb 2021 19:55:31 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id 9sm3747466pfy.110.2021.02.03.19.55.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 19:55:31 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v14 8/8] mm: hugetlb: optimize the code with the help of the compiler
-Date:   Thu,  4 Feb 2021 11:50:43 +0800
-Message-Id: <20210204035043.36609-9-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210204035043.36609-1-songmuchun@bytedance.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DTbQuqDgftJHyEjgUZ53qqE2GLvug2RthYORKONmJnA=;
+        b=i6OYjOdkuwt4aXrU5ELpZcV/J5OEsVhLdgVTd/+O8g//iLgCzUJYtcFCzvK5A+jae4
+         ywQPwz98bsHbSCyNqHvnUNgl7Y4fZgpk7C0CNndhEhuqWRNsHq9CtAAGq9e8eBy19ly1
+         87t1tD/dBoou9g1onw9blsouDD2dNDXAvtwBrhEWbla6G76OZQpHhPtShTGrDfPT9QK6
+         +W05H3sVWgRkurrRJbfHhja3kljb+GTU4LXHNRj8F0Xg6j42PD6kGaNeNnwiQuYvJ61r
+         2iyHwz4+/yAyu2kNNVPfyHuuLxbK4hTaQmACRsz4KckwcB9MEOcjhGez58Apzpj0PNiV
+         x8Lg==
+X-Gm-Message-State: AOAM532W2PrEu7wmgfCoCkV6YFCQE+uJgHiZB7jwb/B8g7EZ+Yl8Xcbv
+        ioCBNT+D9fdx/clZnTyfx6yik0F5WrcvJYtrK6W1rQ==
+X-Google-Smtp-Source: ABdhPJyrNWC8Z23u1QzxD8RKdn2OmMWUinNwzXsyuQIyMMWnQAyqlUiGmylA0J6AAajpbdZqAu71xsery3qJ/sAVDA4=
+X-Received: by 2002:a25:244:: with SMTP id 65mr9660395ybc.511.1612410739666;
+ Wed, 03 Feb 2021 19:52:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210204123331.21e4598b@canb.auug.org.au>
+In-Reply-To: <20210204123331.21e4598b@canb.auug.org.au>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Wed, 3 Feb 2021 19:52:08 -0800
+Message-ID: <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot optimize if a "struct page" crosses page boundaries. If
-it is true, we can optimize the code with the help of a compiler.
-When free_vmemmap_pages_per_hpage() returns zero, most functions are
-optimized by the compiler.
+Hi Stephen, thanks for the report. I'm having trouble trying to
+compile for ppc, but I believe this should fix the problem, could you
+test this patch, please? Thanks!
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/hugetlb.h |  3 ++-
- mm/hugetlb_vmemmap.c    | 13 +++++++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+diff --git a/include/linux/indirect_call_wrapper.h
+b/include/linux/indirect_call_wrapper.h
+index 54c02c84906a..077f96be65c6 100644
+--- a/include/linux/indirect_call_wrapper.h
++++ b/include/linux/indirect_call_wrapper.h
+@@ -36,6 +36,7 @@
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 822ab2f5542a..7bfb06e16298 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -878,7 +878,8 @@ extern bool hugetlb_free_vmemmap_enabled;
- 
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
- {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
+ #define INDIRECT_CALLABLE_DECLARE(f)   f
+ #define INDIRECT_CALLABLE_SCOPE
++#define INDIRECT_CALLABLE_EXPORT(f)    EXPORT_SYMBOL(f)
+
  #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 8efad9978821..068d0e0cebc8 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -211,6 +211,12 @@ early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
-+	/*
-+	 * This check aims to let the compiler help us optimize the code as
-+	 * much as possible.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return 0;
- 	return h->nr_free_vmemmap_pages;
- }
- 
-@@ -280,6 +286,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	BUILD_BUG_ON(NR_USED_SUBPAGE >=
- 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
- 
-+	/*
-+	 * The compiler can help us to optimize this function to null
-+	 * when the size of the struct page is not power of 2.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return;
-+
- 	if (!hugetlb_free_vmemmap_enabled)
- 		return;
- 
--- 
-2.11.0
+ #define INDIRECT_CALL_1(f, f1, ...) f(__VA_ARGS__)
+@@ -44,6 +45,7 @@
+ #define INDIRECT_CALL_4(f, f4, f3, f2, f1, ...) f(__VA_ARGS__)
+ #define INDIRECT_CALLABLE_DECLARE(f)
+ #define INDIRECT_CALLABLE_SCOPE                static
++#define INDIRECT_CALLABLE_EXPORT(f)
+ #endif
 
+ /*
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 9e6537709794..9dd8ff3887b7 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -1206,7 +1206,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry
+*ipv4_dst_check(struct dst_entry *dst,
+                return NULL;
+        return dst;
+ }
+-EXPORT_SYMBOL(ipv4_dst_check);
++INDIRECT_CALLABLE_EXPORT(ipv4_dst_check);
+
+ static void ipv4_send_dest_unreach(struct sk_buff *skb)
+ {
+@@ -1337,7 +1337,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int
+ipv4_mtu(const struct dst_entry *dst)
+
+        return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ipv4_mtu);
++INDIRECT_CALLABLE_EXPORT(ipv4_mtu);
+
+ static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
+ {
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index f447f82e6819..75d6a0db1fa6 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2644,7 +2644,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry
+*ip6_dst_check(struct dst_entry *dst,
+
+        return dst_ret;
+ }
+-EXPORT_SYMBOL(ip6_dst_check);
++INDIRECT_CALLABLE_EXPORT(ip6_dst_check);
+
+ static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
+ {
+@@ -3115,7 +3115,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int
+ip6_mtu(const struct dst_entry *dst)
+
+        return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ip6_mtu);
++INDIRECT_CALLABLE_EXPORT(ip6_mtu);
+
+ /* MTU selection:
+  * 1. mtu on route is locked - use it
+
+
+On Wed, Feb 3, 2021 at 5:33 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the net-next tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>
+> ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+> ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+> ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
+> ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
+>
+> Caused by commits
+>
+>   f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
+>   bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functions")
+>
+> I have used the net-next tree from next-20210203 fot today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
