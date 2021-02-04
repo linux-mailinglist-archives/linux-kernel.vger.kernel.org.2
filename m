@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11E630F834
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DBD30F7FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbhBDQkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:40:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
+        id S238115AbhBDQbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:31:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238051AbhBDQaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:30:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE4C64F53;
-        Thu,  4 Feb 2021 16:29:28 +0000 (UTC)
+        id S238080AbhBDQal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:30:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F4D164F4E;
+        Thu,  4 Feb 2021 16:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612456170;
-        bh=nUrqQVGTdVdtTvEZW10cth7m+C3EvTsyClTjZCQlpaA=;
+        s=k20201202; t=1612456200;
+        bh=5u67ptNkdxaGAQvRlrEAa8lGm8Pk/wldZO7QHXF4NaQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=cGb0IozHEQwQpcghNonA3NiIhwU2TbMxGZkbUHMzbhF9xKoXQuDkMZ2yb0TN38pft
-         4scK04m0vuMVOqukfe3jBXNzyHHXq2OeMw+B324Q4/pSjMTTNDeGwpsyGDhkecCOz9
-         mtCzrWsRZz5RIIZuKKgRTkyzCJKwWfh858ZBJJxs0x4ZWRCVOVrYlkV844gjWL6trU
-         B6KGKQWD8aENjviCsBcVVq7Vqla9JuWwz1hLpSK9If1iUp5b5+MoWkHvuYWVlf2Lmx
-         P+LAKyEX69p2+bqHo7OSOQt3duFAYsjFxPnmDKRi0IOkiaE2S+wse0h58U95ex7lBx
-         Cnk1QgX4MFjxw==
+        b=HWQ4ciV1H8O/Sga0MqrjJLnXLv+NzHDk61tUdxG6SbWZfEpAFIJjw/A9wgroQBOsM
+         bKm4eF+jO2gfUQ30e3PQT72T/RfjnSBiKTJA3eJRRzhllbCx1oYF9bGfSohAqYPGks
+         3iqXF9RVep4SmFtrl2YS7vK5LzcNCsLBpV1ipQrVL5aJuqWFG6QggI1aqCWLR8j0K8
+         n+fIPNegvOD/QZ4ei3G/t1Hm4+Wt8bZ2VfQtMkCzb/TmcURXSyfTu2mbtoscUUSu7Q
+         KvIAd8OwChv6+LjZrdsEJ6BPSPMhJjtHfcJly8ogj4A+Y0utpx7qT5RU79w1zb1L+I
+         JPf6eKuK+HqGg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] carl9170: fix struct alignment conflict
-Date:   Thu,  4 Feb 2021 17:29:17 +0100
-Message-Id: <20210204162926.3262598-1-arnd@kernel.org>
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Lukasz Szczesny <luk@wybcz.pl>, Fox Chen <foxhlchen@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: remove unused structures
+Date:   Thu,  4 Feb 2021 17:29:48 +0100
+Message-Id: <20210204162956.3276523-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,100 +41,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Multiple structures in the carl9170 driver have alignment
-impossible alignment constraints that gcc warns about when
-building with 'make W=1':
+Building this with 'make W=1' produces a couple of warnings:
 
-drivers/net/wireless/ath/carl9170/fwcmd.h:243:2: warning: alignment 1 of 'union <anonymous>' is less than 4 [-Wpacked-not-aligned]
-drivers/net/wireless/ath/carl9170/wlan.h:373:1: warning: alignment 1 of 'struct ar9170_rx_frame_single' is less than 2 [-Wpacked-not-aligned]
+rtl8723bs/include/ieee80211.h:730:1: warning: alignment 1 of 'struct ieee80211_assoc_request_frame' is less than 2 [-Wpacked-not-aligned]
+rtl8723bs/include/ieee80211.h:737:1: warning: alignment 1 of 'struct ieee80211_assoc_response_frame' is less than 2 [-Wpacked-not-aligned]
 
-In the carl9170_cmd structure, multiple members that have an explicit
-alignment requirement of four bytes are added into a union with explicit
-byte alignment, but this in turn is part of a structure that also has
-four-byte alignment.
-
-In the wlan.h header, multiple structures contain a ieee80211_hdr member
-that is required to be two-byte aligned to avoid alignmnet faults when
-processing network headers, but all members are forced to be byte-aligned
-using the __packed tag at the end of the struct definition.
-
-In both cases, leaving out the packing does not change the internal
-layout of the structure but changes the alignment constraint of the
-structure itself.
-
-Change all affected structures to only apply packing where it does
-not violate the alignment requirement of the contained structure.
+The warnings are in dead code, so just remove the bits that
+are obviously broken like this.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/wireless/ath/carl9170/fwcmd.h |  2 +-
- drivers/net/wireless/ath/carl9170/wlan.h  | 20 ++++++++++----------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/staging/rtl8723bs/include/ieee80211.h | 79 -------------------
+ 1 file changed, 79 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/carl9170/fwcmd.h b/drivers/net/wireless/ath/carl9170/fwcmd.h
-index 56999a3b9d3b..4a500095555c 100644
---- a/drivers/net/wireless/ath/carl9170/fwcmd.h
-+++ b/drivers/net/wireless/ath/carl9170/fwcmd.h
-@@ -240,7 +240,7 @@ struct carl9170_cmd {
- 		struct carl9170_bcn_ctrl_cmd	bcn_ctrl;
- 		struct carl9170_rx_filter_cmd	rx_filter;
- 		u8 data[CARL9170_MAX_CMD_PAYLOAD_LEN];
--	} __packed;
-+	} __packed __aligned(4);
- } __packed __aligned(4);
+diff --git a/drivers/staging/rtl8723bs/include/ieee80211.h b/drivers/staging/rtl8723bs/include/ieee80211.h
+index d9ff8c8e7f36..f80db2c984a4 100644
+--- a/drivers/staging/rtl8723bs/include/ieee80211.h
++++ b/drivers/staging/rtl8723bs/include/ieee80211.h
+@@ -667,85 +667,6 @@ struct ieee80211_header_data {
+ #define MFIE_TYPE_RATES_EX   50
+ #define MFIE_TYPE_GENERIC    221
  
- #define	CARL9170_TX_STATUS_QUEUE	3
-diff --git a/drivers/net/wireless/ath/carl9170/wlan.h b/drivers/net/wireless/ath/carl9170/wlan.h
-index ea17995b32f4..bb73553fd7c2 100644
---- a/drivers/net/wireless/ath/carl9170/wlan.h
-+++ b/drivers/net/wireless/ath/carl9170/wlan.h
-@@ -367,27 +367,27 @@ struct ar9170_rx_macstatus {
- 
- struct ar9170_rx_frame_single {
- 	struct ar9170_rx_head phy_head;
--	struct ieee80211_hdr i3e;
-+	struct ieee80211_hdr i3e __packed __aligned(2);
- 	struct ar9170_rx_phystatus phy_tail;
- 	struct ar9170_rx_macstatus macstatus;
--} __packed;
-+};
- 
- struct ar9170_rx_frame_head {
- 	struct ar9170_rx_head phy_head;
--	struct ieee80211_hdr i3e;
-+	struct ieee80211_hdr i3e __packed __aligned(2);
- 	struct ar9170_rx_macstatus macstatus;
--} __packed;
-+};
- 
- struct ar9170_rx_frame_middle {
--	struct ieee80211_hdr i3e;
-+	struct ieee80211_hdr i3e __packed __aligned(2);
- 	struct ar9170_rx_macstatus macstatus;
--} __packed;
-+};
- 
- struct ar9170_rx_frame_tail {
--	struct ieee80211_hdr i3e;
-+	struct ieee80211_hdr i3e __packed __aligned(2);
- 	struct ar9170_rx_phystatus phy_tail;
- 	struct ar9170_rx_macstatus macstatus;
--} __packed;
-+};
- 
- struct ar9170_rx_frame {
- 	union {
-@@ -395,8 +395,8 @@ struct ar9170_rx_frame {
- 		struct ar9170_rx_frame_head head;
- 		struct ar9170_rx_frame_middle middle;
- 		struct ar9170_rx_frame_tail tail;
--	} __packed;
--} __packed;
-+	};
-+};
- 
- static inline u8 ar9170_get_decrypt_type(struct ar9170_rx_macstatus *t)
- {
+-struct ieee80211_info_element_hdr {
+-	u8 id;
+-	u8 len;
+-} __attribute__ ((packed));
+-
+-struct ieee80211_info_element {
+-	u8 id;
+-	u8 len;
+-	u8 data[0];
+-} __attribute__ ((packed));
+-
+-/*
+- * These are the data types that can make up management packets
+- *
+-	u16 auth_algorithm;
+-	u16 auth_sequence;
+-	u16 beacon_interval;
+-	u16 capability;
+-	u8 current_ap[ETH_ALEN];
+-	u16 listen_interval;
+-	struct {
+-		u16 association_id:14, reserved:2;
+-	} __attribute__ ((packed));
+-	u32 time_stamp[2];
+-	u16 reason;
+-	u16 status;
+-*/
+-
+-#define IEEE80211_DEFAULT_TX_ESSID "Penguin"
+-#define IEEE80211_DEFAULT_BASIC_RATE 10
+-
+-
+-struct ieee80211_authentication {
+-	struct ieee80211_header_data header;
+-	u16 algorithm;
+-	u16 transaction;
+-	u16 status;
+-	/* struct ieee80211_info_element_hdr info_element; */
+-} __attribute__ ((packed));
+-
+-
+-struct ieee80211_probe_response {
+-	struct ieee80211_header_data header;
+-	u32 time_stamp[2];
+-	u16 beacon_interval;
+-	u16 capability;
+-	struct ieee80211_info_element info_element;
+-} __attribute__ ((packed));
+-
+-struct ieee80211_probe_request {
+-	struct ieee80211_header_data header;
+-	/*struct ieee80211_info_element info_element;*/
+-} __attribute__ ((packed));
+-
+-struct ieee80211_assoc_request_frame {
+-	struct ieee80211_hdr_3addr header;
+-	u16 capability;
+-	u16 listen_interval;
+-	/* u8 current_ap[ETH_ALEN]; */
+-	struct ieee80211_info_element_hdr info_element;
+-} __attribute__ ((packed));
+-
+-struct ieee80211_assoc_response_frame {
+-	struct ieee80211_hdr_3addr header;
+-	u16 capability;
+-	u16 status;
+-	u16 aid;
+-} __attribute__ ((packed));
+-
+-struct ieee80211_txb {
+-	u8 nr_frags;
+-	u8 encrypted;
+-	u16 reserved;
+-	u16 frag_size;
+-	u16 payload_size;
+-	struct sk_buff *fragments[0];
+-};
+-
+-
+ /* SWEEP TABLE ENTRIES NUMBER*/
+ #define MAX_SWEEP_TAB_ENTRIES		  42
+ #define MAX_SWEEP_TAB_ENTRIES_PER_PACKET  7
 -- 
 2.29.2
 
