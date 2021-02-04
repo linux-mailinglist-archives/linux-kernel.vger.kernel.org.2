@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0973730F385
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB2430F38D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbhBDM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:56:01 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:44710 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236106AbhBDMz6 (ORCPT
+        id S236197AbhBDM5c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 07:57:32 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:48590 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235605AbhBDM53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:55:58 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114CrClx029752;
-        Thu, 4 Feb 2021 13:55:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=dDxbuN1M2YXULMXlXW3oAl3FlBg++dDkJnKD4C31Zkk=;
- b=byzEcUJ8cHDnwCvwdROgOgEWLDexyLMhykJ8PLOtkSd25hUH8MJpSUbFHZ7qrO6GBfcr
- sPEE3FsHcjU70c3ifedtjDkniFxMPhmeqQ5h1LYhR/CgiKe26RhnN6rkvIogSN4N/0Sn
- QqGfFK/zhUzkWTuQiNjglg2XgPSRnCZD9QvkE4vESn1YJyJKQji3ssFyStU5odcJVn+f
- JWh8Le4+JWOWcq0uGx2We60/sgdPLnjXp3wtmDRpx5CB3WAaMzB2Ww/HXSElnlQu4poH
- ijDuI08QIUSJQF3spool8wmTEOgHX+G830cxkg9UVMn+iJKFOjys/+qvl2FBpMjiDR3w Jg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36e7x17xfe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 13:55:02 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D48CE10002A;
-        Thu,  4 Feb 2021 13:54:58 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B6D3324C9AE;
-        Thu,  4 Feb 2021 13:54:58 +0100 (CET)
-Received: from lmecxl0504.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 13:54:58 +0100
-Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
-To:     Marek Vasut <marex@denx.de>, <ulf.hansson@linaro.org>
-CC:     <linux@armlinux.org.uk>, <linus.walleij@linaro.org>,
-        <ludovic.barre@foss.st.com>, <per.forlin@linaro.org>,
-        <huyue2@yulong.com>, <wsa+renesas@sang-engineering.com>,
-        <vbadigan@codeaurora.org>, <adrian.hunter@intel.com>,
-        <p.zabel@pengutronix.de>, <swboyd@chromium.org>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-2-yann.gautier@foss.st.com>
- <0ac77e8d-9400-abc8-f963-943e9cba94db@denx.de>
-From:   Yann GAUTIER <yann.gautier@foss.st.com>
-Message-ID: <9fbd2fca-e4f5-d28f-74de-d9906cc232bf@foss.st.com>
-Date:   Thu, 4 Feb 2021 13:54:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <0ac77e8d-9400-abc8-f963-943e9cba94db@denx.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_07:2021-02-04,2021-02-04 signatures=0
+        Thu, 4 Feb 2021 07:57:29 -0500
+Received: from marcel-macbook.holtmann.net (p4fefcdd8.dip0.t-ipconnect.de [79.239.205.216])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 5204ECED16;
+        Thu,  4 Feb 2021 14:04:13 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] Bluetooth: btusb: remove set but not used variable in
+ btusb_mtk_setup_firmware_79xx
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210204011856.3685334-1-yebin10@huawei.com>
+Date:   Thu, 4 Feb 2021 13:56:45 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Hulk Robot <hulkci@huawei.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <CDB7E085-EE43-4AC7-838E-DA2BA56ED70C@holtmann.org>
+References: <20210204011856.3685334-1-yebin10@huawei.com>
+To:     Ye Bin <yebin10@huawei.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 1:26 PM, Marek Vasut wrote:
-> On 2/4/21 1:05 PM, yann.gautier@foss.st.com wrote:
->> From: Yann Gautier <yann.gautier@foss.st.com>
->>
->> To properly manage commands awaiting R1B responses, the capability
->> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
->> manage busy detection.
->> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
->> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
->>
-> Shouldn't this have Fixes: tag ?
+Hi Ye,
 
-Hi Marek,
+> Fix follow warning:
+> drivers/bluetooth/btusb.c:3479:9: warning: variable ‘fw_size’ set but not used [-Wunused-but-set-variable]
+>  size_t fw_size;
+>         ^~~~~~~
+> drivers/bluetooth/btusb.c:3473:29: warning: variable ‘patchhdr’ set but not used [-Wunused-but-set-variable]
+>  struct btmtk_patch_header *patchhdr = NULL;
+>                             ^~~~~~~~
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+> drivers/bluetooth/btusb.c | 4 ----
+> 1 file changed, 4 deletions(-)
 
-There is no unique patch that brought the issue, but a combination of 
-several things:
-- The series that brought the MMC_CAP_NEED_RSP_BUSY flag [1]
-- The series that enabled MMC_ERASE for all hosts [2] (removal of 
-MMC_CAP_ERASE)
+patch has been applied to bluetooth-next tree.
 
-But you're right, this patch may go on v5.8.x kernel and newer versions.
+Regards
 
+Marcel
 
-Regards,
-Yann
-
-  [1] 
-https://patchwork.kernel.org/project/linux-mmc/cover/20200310153340.5593-1-ulf.hansson@linaro.org/
-  [2] 
-https://patchwork.kernel.org/project/linux-mmc/patch/20200508112853.23525-1-ulf.hansson@linaro.org/
