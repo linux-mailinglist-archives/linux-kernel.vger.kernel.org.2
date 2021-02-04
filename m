@@ -2,172 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4B430ED30
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BF630ED09
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhBDHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:20:20 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10198 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbhBDHUC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:20:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601b9ff90001>; Wed, 03 Feb 2021 23:19:21 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Thu, 4 Feb 2021 07:19:19 +0000
-Date:   Thu, 4 Feb 2021 09:19:15 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <siwliu.kernel@gmail.com>
-CC:     Si-Wei Liu <si-wei.liu@oracle.com>, <mst@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change
- map
-Message-ID: <20210204071915.GA84219@mtl-vdi-166.wap.labs.mlnx>
-References: <20210202142901.7131-1-elic@nvidia.com>
- <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
- <20210203064812.GA33072@mtl-vdi-166.wap.labs.mlnx>
- <CAPWQSg0OptdAstG10e+zMvD2ZHbHdS+o2ppUxZyM0kJsd34FdA@mail.gmail.com>
+        id S233765AbhBDHKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:10:49 -0500
+Received: from mga18.intel.com ([134.134.136.126]:8709 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232704AbhBDHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:10:28 -0500
+IronPort-SDR: IBf5/UlxlLauNnha7Wiq99sm4hDTG5qq5ZDJuPBTCRAMY7/IHYD/BrPsdW5DTblM1E9SdoTxYE
+ vY6SSMz+jU6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168867254"
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="168867254"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 23:09:48 -0800
+IronPort-SDR: z+bWTJLNKhrD7CmO8Jvwa8HK3C5f51kv6G7DFXH+PfWsDQ/wbbpNlYfswQX3CcKeBYvlAtbbAA
+ aEKuSx2Awi9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="414887014"
+Received: from unknown (HELO localhost) ([10.239.159.166])
+  by fmsmga002.fm.intel.com with ESMTP; 03 Feb 2021 23:09:45 -0800
+Date:   Thu, 4 Feb 2021 15:22:00 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        jmattson@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
+ dispatch
+Message-ID: <20210204072200.GA10094@local-michael-cet-test>
+References: <20210203113421.5759-1-weijiang.yang@intel.com>
+ <20210203113421.5759-5-weijiang.yang@intel.com>
+ <YBsZwvwhshw+s7yQ@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAPWQSg0OptdAstG10e+zMvD2ZHbHdS+o2ppUxZyM0kJsd34FdA@mail.gmail.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612423161; bh=qXil4DVR+JNtZdJhYnjwoBi2C3SmZ4RSHdznLAfLqAM=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=UlEQn9p9Nk1JojpSH6PXd8MKt0dOxRKYw8iMGMZBuHBwDud4T1iZ2IvxmKHCzf7CG
-         APZk7f+plmsURiPTbOGQ+fTMkfuYdLBLFczwUgncJ3ZpcXxdYaJD+rl0UClAoD0+U6
-         Ds5BfR2e0Ogf/wu9MrixpFGvRigSfH8hJ1cQAd8Y3ZVXEmtN4A9iK2YSOmzCNbYgrZ
-         6Nb7/2ndMaM26lDpPrkl5BTiHTjkcJSkq0UV+vbBPxzH3penIQ7189LFEva0PTVV1F
-         wpKaRmTuXrINw9yAs2iGhx9Ox/+R1xGltj0GoCYagCheaM7p6sCNaWuy8e2QzroAvu
-         TOKOjnSHevD8Q==
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YBsZwvwhshw+s7yQ@google.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 12:33:26PM -0800, Si-Wei Liu wrote:
-> On Tue, Feb 2, 2021 at 10:48 PM Eli Cohen <elic@nvidia.com> wrote:
-> >
-> > On Tue, Feb 02, 2021 at 09:14:02AM -0800, Si-Wei Liu wrote:
-> > > On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
-> > > >
-> > > > When a change of memory map occurs, the hardware resources are destroyed
-> > > > and then re-created again with the new memory map. In such case, we need
-> > > > to restore the hardware available and used indices. The driver failed to
-> > > > restore the used index which is added here.
-> > > >
-> > > > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > > ---
-> > > > This patch is being sent again a single patch the fixes hot memory
-> > > > addtion to a qemy process.
-> > > >
-> > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
-> > > >  1 file changed, 7 insertions(+)
-> > > >
-> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > index 88dde3455bfd..839f57c64a6f 100644
-> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
-> > > >         u64 device_addr;
-> > > >         u64 driver_addr;
-> > > >         u16 avail_index;
-> > > > +       u16 used_index;
-> > > >         bool ready;
-> > > >         struct vdpa_callback cb;
-> > > >         bool restore;
-> > > > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
-> > > >         u32 virtq_id;
-> > > >         struct mlx5_vdpa_net *ndev;
-> > > >         u16 avail_idx;
-> > > > +       u16 used_idx;
-> > > >         int fw_state;
-> > > >
-> > > >         /* keep last in the struct */
-> > > > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
-> > > >
-> > > >         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
-> > > >         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
-> > > > +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
-> > >
-> > > The saved indexes will apply to the new virtqueue object whenever it
-> > > is created. In virtio spec, these indexes will reset back to zero when
-> > > the virtio device is reset. But I don't see how it's done today. IOW,
-> > > I don't see where avail_idx and used_idx get cleared from the mvq for
-> > > device reset via set_status().
-> > >
-> >
-> > Right, but this is not strictly related to this patch. I will post
-> > another patch to fix this.
+On Wed, Feb 03, 2021 at 01:46:42PM -0800, Sean Christopherson wrote:
+> On Wed, Feb 03, 2021, Yang Weijiang wrote:
+> > Add handling for Control Protection (#CP) exceptions, vector 21, used
+> > and introduced by Intel's Control-Flow Enforcement Technology (CET).
+> > relevant CET violation case.  See Intel's SDM for details.
+> > 
+> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > ---
+> >  arch/x86/include/uapi/asm/kvm.h | 1 +
+> >  arch/x86/kvm/x86.c              | 1 +
+> >  arch/x86/kvm/x86.h              | 2 +-
+> >  3 files changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> > index 8e76d3701db3..507263d1d0b2 100644
+> > --- a/arch/x86/include/uapi/asm/kvm.h
+> > +++ b/arch/x86/include/uapi/asm/kvm.h
+> > @@ -32,6 +32,7 @@
+> >  #define MC_VECTOR 18
+> >  #define XM_VECTOR 19
+> >  #define VE_VECTOR 20
+> > +#define CP_VECTOR 21
+> >  
+> >  /* Select x86 specific features in <linux/kvm.h> */
+> >  #define __KVM_HAVE_PIT
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 99f787152d12..d9d3bae40a8c 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -436,6 +436,7 @@ static int exception_class(int vector)
+> >  	case NP_VECTOR:
+> >  	case SS_VECTOR:
+> >  	case GP_VECTOR:
+> > +	case CP_VECTOR:
+> >  		return EXCPT_CONTRIBUTORY;
+> >  	default:
+> >  		break;
+> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> > index c5ee0f5ce0f1..bdbd0b023ecc 100644
+> > --- a/arch/x86/kvm/x86.h
+> > +++ b/arch/x86/kvm/x86.h
+> > @@ -116,7 +116,7 @@ static inline bool x86_exception_has_error_code(unsigned int vector)
+> >  {
+> >  	static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
+> >  			BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
+> > -			BIT(PF_VECTOR) | BIT(AC_VECTOR);
+> > +			BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
 > 
-> Better to post these two patches in a series.Or else it may cause VM
-> reboot problem as that is where the device gets reset. The avail_index
-> did not as the correct value will be written to by driver right after,
-> but used_idx introduced by this patch is supplied by device hence this
-> patch alone would introduce regression.
+> These need to be conditional on CET being exposed to the guest.  TBD exceptions
+> are non-contributory and don't have an error code.  Found when running unit
+> tests in L1 with a kvm/queue as L1, but an older L0.  cr4_guest_rsvd_bits can be
+> used to avoid guest_cpuid_has() lookups.
 > 
+> The SDM also gets this wrong.  Section 26.2.1.3, VM-Entry Control Fields, needs
+> to be updated to add #CP to the list.
+> 
+>   — The field's deliver-error-code bit (bit 11) is 1 if each of the following
+>     holds: (1) the interruption type is hardware exception; (2) bit 0
+>     (corresponding to CR0.PE) is set in the CR0 field in the guest-state area;
+>     (3) IA32_VMX_BASIC[56] is read as 0 (see Appendix A.1); and (4) the vector
+>     indicates one of the following exceptions: #DF (vector 8), #TS (10),
+>     #NP (11), #SS (12), #GP (13), #PF (14), or #AC (17).
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index dbca1687ae8e..0b6dab6915a3 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
+>                 /* VM-entry interruption-info field: deliver error code */
+>                 should_have_error_code =
+>                         intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
+> -                       x86_exception_has_error_code(vector);
+> +                       x86_exception_has_error_code(vcpu, vector);
+>                 if (CC(has_error_code != should_have_error_code))
+>                         return -EINVAL;
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 28fea7ff7a86..0288d6a364bd 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
+>  #define EXCPT_CONTRIBUTORY     1
+>  #define EXCPT_PF               2
+> 
+> -static int exception_class(int vector)
+> +static int exception_class(struct kvm_vcpu *vcpu, int vector)
+>  {
+>         switch (vector) {
+>         case PF_VECTOR:
+>                 return EXCPT_PF;
+> +       case CP_VECTOR:
+> +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
+> +                       return EXCPT_BENIGN;
+> +               return EXCPT_CONTRIBUTORY;
+>         case DE_VECTOR:
+>         case TS_VECTOR:
+>         case NP_VECTOR:
+>         case SS_VECTOR:
+>         case GP_VECTOR:
+> -       case CP_VECTOR:
+>                 return EXCPT_CONTRIBUTORY;
+>         default:
+>                 break;
+> @@ -588,8 +591,8 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
+>                 kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
+>                 return;
+>         }
+> -       class1 = exception_class(prev_nr);
+> -       class2 = exception_class(nr);
+> +       class1 = exception_class(vcpu, prev_nr);
+> +       class2 = exception_class(vcpu, nr);
+>         if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
+>                 || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
+>                 /*
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index a14da36a30ed..dce756ffb577 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -120,12 +120,16 @@ static inline bool is_la57_mode(struct kvm_vcpu *vcpu)
+>  #endif
+>  }
+> 
+> -static inline bool x86_exception_has_error_code(unsigned int vector)
+> +static inline bool x86_exception_has_error_code(struct kvm_vcpu *vcpu,
+> +                                               unsigned int vector)
+>  {
+>         static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
+>                         BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
+>                         BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
+> 
+> +       if (vector == CP_VECTOR && (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET))
+> +               return false;
+> +
+>         return (1U << vector) & exception_has_error_code;
+>  }
+Thanks Sean for catching this!
 
-Thinking it over, I think this should be all fixed in a single patch.
-This fix alone introduces a regerssion as you pointed and there's no
-point in fixing it in another patch.
+Hi, Paolo,
+Do I need to send another version to include Sean's change?
 
-> >
-> > BTW, can you describe a secnario that would cause a reset (through
-> > calling set_status()) that happens after the VQ has been used?
 > 
-> You can try reboot the guest, that'll be the easy way to test.
 > 
-> -Siwei
 > 
-> >
-> > > -Siwei
-> > >
-> > >
-> > > >         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
-> > > >                  get_features_12_3(ndev->mvdev.actual_features));
-> > > >         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
-> > > > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
-> > > >  struct mlx5_virtq_attr {
-> > > >         u8 state;
-> > > >         u16 available_index;
-> > > > +       u16 used_index;
-> > > >  };
-> > > >
-> > > >  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
-> > > > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
-> > > >         memset(attr, 0, sizeof(*attr));
-> > > >         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
-> > > >         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
-> > > > +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
-> > > >         kfree(out);
-> > > >         return 0;
-> > > >
-> > > > @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
-> > > >                 return err;
-> > > >
-> > > >         ri->avail_index = attr.available_index;
-> > > > +       ri->used_index = attr.used_index;
-> > > >         ri->ready = mvq->ready;
-> > > >         ri->num_ent = mvq->num_ent;
-> > > >         ri->desc_addr = mvq->desc_addr;
-> > > > @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
-> > > >                         continue;
-> > > >
-> > > >                 mvq->avail_idx = ri->avail_index;
-> > > > +               mvq->used_idx = ri->used_index;
-> > > >                 mvq->ready = ri->ready;
-> > > >                 mvq->num_ent = ri->num_ent;
-> > > >                 mvq->desc_addr = ri->desc_addr;
-> > > > --
-> > > > 2.29.2
-> > > >
