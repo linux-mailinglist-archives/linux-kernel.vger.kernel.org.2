@@ -2,160 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933F930EF10
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8281330EF12
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhBDIvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:51:44 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19579 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbhBDIvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:51:41 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601bb5730000>; Thu, 04 Feb 2021 00:50:59 -0800
-Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 08:50:58 +0000
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <gregkh@linuxfoundation.org>, <surenb@google.com>,
-        <joaodias@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <20210203155001.4121868-1-minchan@kernel.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
-Date:   Thu, 4 Feb 2021 00:50:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S235134AbhBDIv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:51:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234966AbhBDIvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:51:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3424D64F4D;
+        Thu,  4 Feb 2021 08:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612428666;
+        bh=7uCkM47OIUuWPJjtJG/o3Oocyx2ATU2RpCB1ZqlaX4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0TgoXiujRPg2i+I4COX+3BRNrCQytaX536kxCwDEYwC3iA3adXL0ts9Q/dqfUfIa8
+         gECBaG9uJNwmeHGrwUCpKsk70QL1H/SXfErR8fk+V0/sZzmBJBEOIMIwFlB8CljSLK
+         0Vh5qEYiCXyhhTq9iePZp4/xrPSaGu5bbg9iwQwc=
+Date:   Thu, 4 Feb 2021 09:51:03 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        masahiroy@kernel.org
+Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
+Message-ID: <YBu1d0+nfbWGfMtj@kroah.com>
+References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
+ <YBuSJqIG+AeqDuMl@kroah.com>
+ <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210203155001.4121868-1-minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612428659; bh=Snwt9NrcbI2KHKMG8oc1z+F40/Bsst2a9cRRDYfL5lM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=cQZjXp8CboxruJI1hhMlYdyq+rfZrhisOx1M5P1pKIhSHL0tAMS+SY60Kcg5M5Q+U
-         5cBvmBhu5MogZHtOVEKk/X94s2AmRnpgxfNe2S8oitjlrktIy1In1Ye7HrOo2LFpd3
-         eK1x1NPcDaBShmABV9Pzc+gNbV8/5Te6x9YufPpOx4OgDRE8DDcCSrqvI9+bdbhkpl
-         /tRkR29n4QXoUeMyLFA5HsBRHD56tVn4ys74iRwP2MkkZgzOR8S5i3C1J/FqaS+5Fq
-         kVg7kMpVQo86kIs8FxLlrgKr9rhFTr8nNaGtFS0rHwNawaLq/bFKe/ulpTQi9HYSxR
-         epZ4XSHohq6Jw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:50 AM, Minchan Kim wrote:
-> Since CMA is getting used more widely, it's more important to
-> keep monitoring CMA statistics for system health since it's
-> directly related to user experience.
+On Thu, Feb 04, 2021 at 08:26:04AM +0100, Jiri Slaby wrote:
+> On 04. 02. 21, 7:20, Greg Kroah-Hartman wrote:
+> > On Thu, Feb 04, 2021 at 05:59:42AM +0000, Jari Ruusu wrote:
+> > > Greg,
+> > > I hope that your linux kernel release scripts are
+> > > implemented in a way that understands that PATCHLEVEL= and
+> > > SUBLEVEL= numbers in top-level linux Makefile are encoded
+> > > as 8-bit numbers for LINUX_VERSION_CODE and
+> > > KERNEL_VERSION() macros, and must stay in range 0...255.
+> > > These 8-bit limits are hardcoded in both kernel source and
+> > > userspace ABI.
+> > > 
+> > > After 4.9.255 and 4.4.255, your scripts should be
+> > > incrementing a number in EXTRAVERSION= in top-level
+> > > linux Makefile.
+> > 
+> > Should already be fixed in linux-next, right?
 > 
-> This patch introduces sysfs for the CMA and exposes stats below
-> to keep monitor for telemetric in the system.
+> I assume you mean:
+> commit 537896fabed11f8d9788886d1aacdb977213c7b3
+> Author: Sasha Levin <sashal@kernel.org>
+> Date:   Mon Jan 18 14:54:53 2021 -0500
 > 
->   * the number of CMA allocation attempts
->   * the number of CMA allocation failures
->   * the number of CMA page allocation attempts
->   * the number of CMA page allocation failures
-
-The desire to report CMA data is understandable, but there are a few
-odd things here:
-
-1) First of all, this has significant overlap with /sys/kernel/debug/cma
-items. I suspect that all of these items could instead go into
-/sys/kernel/debug/cma, right?
-
-2) The overall CMA allocation attempts/failures (first two items above) seem
-an odd pair of things to track. Maybe that is what was easy to track, but I'd
-vote for just omitting them.
+>     kbuild: give the SUBLEVEL more room in KERNEL_VERSION
 > 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->   Documentation/ABI/testing/sysfs-kernel-mm-cma |  39 +++++
->   include/linux/cma.h                           |   1 +
->   mm/Makefile                                   |   1 +
->   mm/cma.c                                      |   6 +-
->   mm/cma.h                                      |  20 +++
->   mm/cma_sysfs.c                                | 143 ++++++++++++++++++
->   6 files changed, 209 insertions(+), 1 deletion(-)
->   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
->   create mode 100644 mm/cma_sysfs.c
+> That would IMO break userspace as definition of kernel version has changed.
+> And that one is UAPI/ABI (see include/generated/uapi/linux/version.h) as
+> Jari writes. For example will glibc still work:
+> http://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/configure.ac;h=13abda0a51484c5951ffc6d718aa36b72f3a9429;hb=HEAD#l14
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> new file mode 100644
-> index 000000000000..2a43c0aacc39
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> @@ -0,0 +1,39 @@
-> +What:		/sys/kernel/mm/cma/
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		/sys/kernel/mm/cma/ contains a number of subdirectories by
-> +		cma-heap name. The subdirectory contains a number of files
-> +		to represent cma allocation statistics.
+> ? Or gcc 10 (11 will have this differently):
+> https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/bpf/bpf.c;hb=ee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l165
+> 
+> and
+> 
+> https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/bpf/bpf-helpers.h;hb=ee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l53
 
-Somewhere, maybe here, there should be a mention of the closely related
-/sys/kernel/debug/cma files.
+Ugh, I thought this was an internal representation, not an external one
+:(
 
-> +
-> +		There are number of files under
-> +				/sys/kernel/mm/cma/<cma-heap-name> directory
-> +
-> +			- cma_alloc_attempt
-> +			- cma_alloc_fail
+> It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + Z)
+> assumptions all around the world. So this doesn't look like a good idea.
 
-Are these really useful? They a summary of the alloc_pages items, really.
+Ok, so what happens if we "wrap"?  What will break with that?  At first
+glance, I can't see anything as we keep the padding the same, and our
+build scripts seem to pick the number up from the Makefile and treat it
+like a string.
 
-> +			- alloc_pages_attempt
-> +			- alloc_pages_fail
+It's only the crazy out-of-tree kernel stuff that wants to do minor
+version checks that might go boom.  And frankly, I'm not all that
+concerned if they have problems :)
 
-This should also have "cma" in the name, really: cma_alloc_pages_*.
+So, let's leave it alone and just see what happens!
 
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_attempt
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of cma_alloc API attempted
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_fail
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of CMA_alloc API failed
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_attempt
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of pages CMA API tried to allocate
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of pages CMA API failed to allocate
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 217999c8a762..71a28a5bb54e 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -49,4 +49,5 @@ extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
->   
->   extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
-> +
-
-A single additional blank line seems to be the only change to this file. :)
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+greg k-h
