@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3F130FD48
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D810C30FD53
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbhBDTuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:50:06 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:35309 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237980AbhBDTtt (ORCPT
+        id S239388AbhBDTvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:51:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239113AbhBDTul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:49:49 -0500
-Received: by mail-wr1-f51.google.com with SMTP id l12so5019367wry.2;
-        Thu, 04 Feb 2021 11:49:33 -0800 (PST)
+        Thu, 4 Feb 2021 14:50:41 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F4DC061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:50:01 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id x23so1265097pfn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YGpFXYKJAyY687eckGJmRvP0PWeimiXLgNP+xU7/nqo=;
+        b=jNNn3+1W3q2GnDkbDg5t75Hoqqb6seGdjr7W6ch2OjxIYQ+lEj9RXyDW8vL2LnL17O
+         7p4KUfwWEJhn1xLRJXFWJ4/XLv358OAS0rDOQxTuyiD+CqW3xrLuas3TWxdLSS2H7Xb5
+         ku1U3RHyZzcqD1+7uVRUTDF5v4lSLOACpHUeo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4ZhAx+cGEjNvar8Xk79AEAJF2N1oqWk4/U3btC0HHOc=;
-        b=mairimkxEjxFDsXXGaxKspwe1qSVU1BSAyPlAln5C/7nwnogD1WARvq+FRkzELoeBV
-         3Fq7786oKO27fwdqI1SfyoJmyB940XR5SXaEMmzgRaRY/leJoD+Cna42mAceV5qRhp5R
-         iLTM66wt5EdXDJiyuAb/X2gmWG2/lwQ1zyccUdxBRug7hZ1KMmRgbmg1TojUWK1MorsT
-         pp2ZA+qMVhTEZAWvYeOlU9l7X/jyx+0XkvArX7O7EvNAOYn02Sn1T03eeCEHIchdsdJE
-         h8j7drX4f+O/ZZdhXTHtf8ilp1pNI8+3QxwYH+cLlq+9MIjcLtUrIy3Qvm2WO2SJAZar
-         p3WA==
-X-Gm-Message-State: AOAM5312CjeFnpSa+AyFPcMPRwBwa3eNzU5E2Q1J29Vg07vimMAbusR5
-        Se0wXVDsWkr1wyLTN+GzlOM08x4JFKY=
-X-Google-Smtp-Source: ABdhPJyXAvIUE35zmygJw5y4IqMiGC6ixbpxZBRFuWvlGPOL9xbxanwUhIRUwlDwBz5PGspvbarn+g==
-X-Received: by 2002:adf:c109:: with SMTP id r9mr1018074wre.261.1612468147405;
-        Thu, 04 Feb 2021 11:49:07 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id q24sm6802640wmq.24.2021.02.04.11.49.06
+         :mime-version:content-disposition:in-reply-to;
+        bh=YGpFXYKJAyY687eckGJmRvP0PWeimiXLgNP+xU7/nqo=;
+        b=RbBRb/GbdY6o2WNW6ViUCfuhCNYPi4iKIbPXrobtuEHwF9lfm53t5dbDcSOckf1Ps8
+         Q0Gvv2pxQxYmAqdje31U0Y2TNFTbMH+oXp0OM2z2bIl+til8RL28QJs1AUP4wJda25TV
+         NdKKCgXL7Ix1iEK9vy6O/fvJXGLG37Aftt1l7h6VNJk2MTGtt21/89HLt0EoFRrd/L4d
+         Fr1100A0UwRvuVNOgxugOmE9hhMi3EuOHlLptfVB9ioBPLjAxrJNM4XwRSyyaen0uELl
+         aJCJbhUT4O8BQhqHJR+4U3ldiXvk1+aPgr+ZBgfubtjqn4AAKIFWRnQwa9/otvQmMcGo
+         Q/iw==
+X-Gm-Message-State: AOAM530kilrVxcVfHJJgV3Upe+Ay/rKc2zaPRwfUk9/ggSnSnJkOx+Bf
+        rOFZa5Fgt9EtfFyv9s+Zy+DmYA==
+X-Google-Smtp-Source: ABdhPJy5N6yshiiKOkoPYx0cJNX+OaE9hEUPv9SEHAC+Nz8m2HAkwuR8P/TY+xrcUega9fpe8DszDQ==
+X-Received: by 2002:a65:6886:: with SMTP id e6mr588022pgt.73.1612468201098;
+        Thu, 04 Feb 2021 11:50:01 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j5sm6035843pjf.47.2021.02.04.11.49.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 11:49:06 -0800 (PST)
-Date:   Thu, 4 Feb 2021 19:49:05 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        pasha.tatashin@soleen.com, Wei Liu <wei.liu@kernel.org>,
-        sameo@linux.intel.com, robert.bradford@intel.com,
-        sebastien.boeuf@intel.com
-Subject: Re: [PATCH v6 00/16] Introducing Linux root partition support for
- Microsoft Hypervisor
-Message-ID: <20210204194905.p3234affuzvl42o3@liuwe-devbox-debian-v2>
-References: <20210203150435.27941-1-wei.liu@kernel.org>
+        Thu, 04 Feb 2021 11:49:59 -0800 (PST)
+Date:   Thu, 4 Feb 2021 11:49:58 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v19 1/7] x86/cet/ibt: Update Kconfig for user-mode
+ Indirect Branch Tracking
+Message-ID: <202102041149.8B30B1E@keescook>
+References: <20210203225902.479-1-yu-cheng.yu@intel.com>
+ <20210203225902.479-2-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203150435.27941-1-wei.liu@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210203225902.479-2-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 03:04:19PM +0000, Wei Liu wrote:
-> Wei Liu (16):
->   asm-generic/hyperv: change HV_CPU_POWER_MANAGEMENT to
->     HV_CPU_MANAGEMENT
->   x86/hyperv: detect if Linux is the root partition
->   Drivers: hv: vmbus: skip VMBus initialization if Linux is root
->   clocksource/hyperv: use MSR-based access if running as root
->   x86/hyperv: allocate output arg pages if required
->   x86/hyperv: extract partition ID from Microsoft Hypervisor if
->     necessary
->   x86/hyperv: handling hypercall page setup for root
->   ACPI / NUMA: add a stub function for node_to_pxm()
->   x86/hyperv: provide a bunch of helper functions
->   x86/hyperv: implement and use hv_smp_prepare_cpus
->   asm-generic/hyperv: update hv_msi_entry
->   asm-generic/hyperv: update hv_interrupt_entry
->   asm-generic/hyperv: introduce hv_device_id and auxiliary structures
->   asm-generic/hyperv: import data structures for mapping device
->     interrupts
->   x86/hyperv: implement an MSI domain for root partition
->   iommu/hyperv: setup an IO-APIC IRQ remapping domain for root partition
+On Wed, Feb 03, 2021 at 02:58:56PM -0800, Yu-cheng Yu wrote:
+> Indirect branch tracking is a hardware security feature that verifies near
+> indirect call/jump instructions arrive at intended targets, which are
+> labeled by the compiler with ENDBR opcodes.  If such instructions reach
+> unlabeled locations, the processor raises control-protection faults.
+> 
+> Check the compiler is up-to-date at config time.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
-This series is now rebased and pushed to hyperv-next.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Many thanks to all the people that provided reviews and comments.
-
-Wei.
+-- 
+Kees Cook
