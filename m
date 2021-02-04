@@ -2,208 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A291930FF47
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C3630FF4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhBDV2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:28:04 -0500
-Received: from mga01.intel.com ([192.55.52.88]:57877 "EHLO mga01.intel.com"
+        id S229841AbhBDV3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:29:55 -0500
+Received: from ms.lwn.net ([45.79.88.28]:50788 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229513AbhBDV2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:28:03 -0500
-IronPort-SDR: klbbzmHJ/8ZnrIMWRIyj1Z3H0cFqtsxuILBG7UFZlKDqP12ZjyS9ypyqzU7Y3w/oO59J/R7md6
- ymjZSCOjBUUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200325995"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="200325995"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 13:27:22 -0800
-IronPort-SDR: KCbcfCsMnlaaqAjH1wFixLnEqDQ67GXnHCIqUamMop0TkX0cpx1LsI4xKJkpZBcfO2TKIAnx5e
- 9p1eSSLd8R+Q==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="373134751"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.87.127])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 13:27:22 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v4 1/1] fpga: dfl: afu: harden port enable logic
-Date:   Thu,  4 Feb 2021 13:27:13 -0800
-Message-Id: <20210204212713.256021-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229518AbhBDV3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:29:52 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 6B3401E77;
+        Thu,  4 Feb 2021 21:29:12 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6B3401E77
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1612474152; bh=GFyluLyYpm71JlUqgZ+l8ppi2lbAHdwfP7WaQL5guyk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gDrRsGEUODNmGU4l085LpPPzL1lusZn03TLZxnAQrBUOkKfTTOe6rDcKKeVCEJIWP
+         9RyHCr7HQbrAJNXnkoCXZ3GGIiyv6a6AWftYHO4vKTXd1nJ+WBuWvOPnzvihp9UhM5
+         6w7jijvrMxV0y+CkOQ6JW4851G+1V6PZ/tsL6Y+cRwcq3m9N+v598Kd2vNXpikZMLa
+         VRVJ0xQK+B9ZxPz01575yG7upQnLZY8T+4p2J6QhHtEeT8droHfauemD8n7MB5Of58
+         bmdvSiNel7r7KGcWCWh12IjafzWLsB0Z1sJWe9ngJniRR1Z4z38P+gPH1Dr0rcQEIu
+         lS0tZV45bfxiw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
+        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH v2 1/5] docs: arm: marvell: drop some dead links
+In-Reply-To: <20210203235305.506528-2-lkundrak@v3.sk>
+References: <20210203235305.506528-1-lkundrak@v3.sk>
+ <20210203235305.506528-2-lkundrak@v3.sk>
+Date:   Thu, 04 Feb 2021 14:29:11 -0700
+Message-ID: <87pn1ffro8.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port enable is not complete until ACK = 0. Change
-__afu_port_enable() to guarantee that the enable process
-is complete by polling for ACK == 0.
+Lubomir Rintel <lkundrak@v3.sk> writes:
 
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v4:
-  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
-  - Modified dev_err() message in __afu_port_disable() to say "disable"
-    instead of "reset"
-v3:
-  - afu_port_err_clear() changed to prioritize port_enable failure over
-    other a detected mismatch in port errors.
-  - reorganized code in port_reset() to be more readable.
-v2:
-  - Fixed typo in commit message
----
- drivers/fpga/dfl-afu-error.c | 10 ++++++----
- drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
- drivers/fpga/dfl-afu.h       |  2 +-
- 3 files changed, 30 insertions(+), 15 deletions(-)
+> Just remove these; there's good chance there wasn't anything useful
+> there anyway.
+>
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+>
+> ---
+> Changes since v1:
+> - Adjust for removal of "[PATCH 1/5] docs: arm: marvell: turn the automatic
+>   links into labels"
+> - Split off the hunk that fixes 38x functional spec link
+>
+>  Documentation/arm/marvel.rst | 25 -------------------------
+>  1 file changed, 25 deletions(-)
+>
+> diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
+> index 16ab2eb085b86..502a1b89a2c85 100644
+> --- a/Documentation/arm/marvel.rst
+> +++ b/Documentation/arm/marvel.rst
+> @@ -63,8 +63,6 @@ Kirkwood family
+>                  - Product Brief  : http://www.marvell.com/embedded-processors/kirkwood/assets/88F6281-004_ver1.pdf
+>                  - Hardware Spec  : http://www.marvell.com/embedded-processors/kirkwood/assets/HW_88F6281_OpenSource.pdf
+>                  - Functional Spec: http://www.marvell.com/embedded-processors/kirkwood/assets/FS_88F6180_9x_6281_OpenSource.pdf
+> -  Homepage:
+> -	http://www.marvell.com/embedded-processors/kirkwood/
+>    Core:
+>  	Feroceon 88fr131 ARMv5 compatible
+>    Linux kernel mach directory:
+> @@ -126,7 +124,6 @@ EBU Armada family
+>  	- 88F6820 Armada 385
+>  	- 88F6828 Armada 388
+>  
+> -    - Product infos:   http://www.marvell.com/embedded-processors/armada-38x/
 
-diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-index c4691187cca9..601e599fc33d 100644
---- a/drivers/fpga/dfl-afu-error.c
-+++ b/drivers/fpga/dfl-afu-error.c
-@@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
- 	struct platform_device *pdev = to_platform_device(dev);
- 	void __iomem *base_err, *base_hdr;
--	int ret = -EBUSY;
-+	int enable_ret = 0, ret = -EBUSY;
- 	u64 v;
- 
- 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
-@@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 		v = readq(base_err + PORT_FIRST_ERROR);
- 		writeq(v, base_err + PORT_FIRST_ERROR);
- 	} else {
-+		dev_warn(dev, "__func__: received 0x%llx, expected 0x%llx\n",
-+			 v, err);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Clear mask */
- 	__afu_port_err_mask(dev, false);
- 
--	/* Enable the Port by clear the reset */
--	__afu_port_enable(pdev);
-+	/* Enable the Port by clearing the reset */
-+	enable_ret = __afu_port_enable(pdev);
- 
- done:
- 	mutex_unlock(&pdata->lock);
--	return ret;
-+	return enable_ret ? enable_ret : ret;
- }
- 
- static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index 753cda4b2568..77dadaae5b8f 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -21,6 +21,9 @@
- 
- #include "dfl-afu.h"
- 
-+#define RST_POLL_INVL 10 /* us */
-+#define RST_POLL_TIMEOUT 1000 /* us */
-+
- /**
-  * __afu_port_enable - enable a port by clear reset
-  * @pdev: port platform device.
-@@ -32,7 +35,7 @@
-  *
-  * The caller needs to hold lock for protection.
-  */
--void __afu_port_enable(struct platform_device *pdev)
-+int __afu_port_enable(struct platform_device *pdev)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	void __iomem *base;
-@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
- 	WARN_ON(!pdata->disable_count);
- 
- 	if (--pdata->disable_count != 0)
--		return;
-+		return 0;
- 
- 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
- 
-@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
- 	v = readq(base + PORT_HDR_CTRL);
- 	v &= ~PORT_CTRL_SFTRST;
- 	writeq(v, base + PORT_HDR_CTRL);
--}
- 
--#define RST_POLL_INVL 10 /* us */
--#define RST_POLL_TIMEOUT 1000 /* us */
-+	/*
-+	 * HW clears the ack bit to indicate that the port is fully out
-+	 * of reset.
-+	 */
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       !(v & PORT_CTRL_SFTRST_ACK),
-+			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-+		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
- 
- /**
-  * __afu_port_disable - disable a port by hold reset
-@@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
- 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
- 			       v & PORT_CTRL_SFTRST_ACK,
- 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
--		dev_err(&pdev->dev, "timeout, fail to reset device\n");
-+		dev_err(&pdev->dev, "timeout, failure to disable device\n");
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
- 
- 	ret = __afu_port_disable(pdev);
- 	if (!ret)
--		__afu_port_enable(pdev);
-+		return ret;
- 
--	return ret;
-+	return __afu_port_enable(pdev);
- }
- 
- static int port_reset(struct platform_device *pdev)
-@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
- static int port_enable_set(struct platform_device *pdev, bool enable)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&pdata->lock);
- 	if (enable)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 	else
- 		ret = __afu_port_disable(pdev);
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-index 576e94960086..e5020e2b1f3d 100644
---- a/drivers/fpga/dfl-afu.h
-+++ b/drivers/fpga/dfl-afu.h
-@@ -80,7 +80,7 @@ struct dfl_afu {
- };
- 
- /* hold pdata->lock when call __afu_port_enable/disable */
--void __afu_port_enable(struct platform_device *pdev);
-+int __afu_port_enable(struct platform_device *pdev);
- int __afu_port_disable(struct platform_device *pdev);
- 
- void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
--- 
-2.25.1
+So these URLs do still exist in the Wayback machine; the above is
+https://web.archive.org/web/20180829171124/http://www.marvell.com/embedded-processors/armada-38x/
+for example.  If we delete the links, we make it harder for any
+interested person to ever find them.  Assuming that we want to keep
+information about these product families in the documentation at all,
+I'd think that we would want to have the online information as well.  So
+I'd replace these with wayback links, or else just leave them as they
+are so that sufficiently motivated people can look them up themselves...
 
+Make sense?
+
+Thanks,
+
+jon
