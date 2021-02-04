@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB87A30F464
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2292430F476
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbhBDN6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:58:21 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:39826 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbhBDN4O (ORCPT
+        id S236572AbhBDOBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236502AbhBDN40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:56:14 -0500
-Received: by mail-ot1-f54.google.com with SMTP id d7so1179906otq.6;
-        Thu, 04 Feb 2021 05:55:56 -0800 (PST)
+        Thu, 4 Feb 2021 08:56:26 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EEAC06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:55:28 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id y187so3061780wmd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+zWXPoMWro9z8YmAH2sD5hl0vnIUc9rVzm7BOffQpxc=;
+        b=m7Ec2oyeRYSUEI0DX38UiaNVijd0iI1QiTiChQCQm5Xvcwptz40gsINlaEFJi+0RWp
+         0Quw5xqzhOJ7ifiayJlOJWMmHIaL3Q0jwjXl/VvvCPrZeEDEObSiUgMBcQjnmVW0wWrN
+         Ub07GT5giot2k5sR9hxkYjycUjCNi0+rV4dUQm1rJJ2iVRiejiapEAPkcAnJ3S2ZFMxi
+         uLBkNbq79CWniMwmOjryIutYK79xFxIRIVwlcvUEhvGEbb35yOnFvIhhaswc4g/m7cjx
+         CLON7I3WIXU7Qy2thvi7X+mPKgkNSGAKuUYYyrNFjyKcRSFyrDOirMRi+izqaUMuPmec
+         FpPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUGFCfOln0MIB+Bx6JKAO7l6UiaLDkObbgjgMsbPunk=;
-        b=UXqk2fEQKf/Br3wMP3roNKmu687CxM5DHq9bYn39kOpvdrNJvvcNu0AzSql23ILuGb
-         LGpiFT2Ux66XgQLmPXvledEkon8h0yf9HzcZ42CDGIcM4nSkzXH5sd5YlIIbcNw28GJY
-         QFw3L1ZhAjYcHNjdt+GztoRFZaLOxlN5fk7OmBz7cnfDubTX0NrmMTSKkoGkgh+dKe/Y
-         7SGg6NkxFSsDxvPwf54X22Wc8fsqSVgzEOEE92nYx7PHr2GzcfB/rbCoPbeM7+zWOOL+
-         +N/o6VGdx47Ka8KvVX+1HzQTiHAwXcyP6PYz2+i6n7YW25hdSZvdJegJ3befxKRrqrZQ
-         sJTQ==
-X-Gm-Message-State: AOAM531Lxi1gMI53NmWExiQJDF3ucDcsEADifH5o5sYN/v/z/o96he4d
-        1FtFQEA0s2gxDilCKuBt8IcV6oIhSCVgHIm51yc=
-X-Google-Smtp-Source: ABdhPJyCkurAQgCBiBV/aGdcGBHoFp5YM7Dz9tlIeM1tQ76gC9hsoSHnJPT1f0vSXmeP+1qMxetLgpx0iRcD66akrdU=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr5934499otm.206.1612446930595;
- Thu, 04 Feb 2021 05:55:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+zWXPoMWro9z8YmAH2sD5hl0vnIUc9rVzm7BOffQpxc=;
+        b=anDmLYeLoB1Uwkihqmv430K6ClFuo8rBSmlhmHMm2qmq0OPSZIu9MsYzx8WG5GeP6e
+         mw5FlxmpFstpXdzUwz9X6E9mRoysvcnZTXIzHQm5fQU33/1CKncmKNkOvldIKXWWZEiJ
+         hobfVYP/0ojOglX3nOvc5x6CCni8ZJFceSIFn9xU5GbnVuzPByL1Yr6z0Vf+V8ZJCURD
+         7fbqVmjwn4hgqxpOZ/ttI3PYa8HWuz4ajR6d7hnpDhq+c57RrDlLX8kPxKJ2rdFMSYUx
+         vuRIyUDvuH0Kw0NYQe/IcAEMBqdOm1YzStPRwWJ37RhYq2zCL/dplbvxJSGt7QOCQ/wS
+         bRZg==
+X-Gm-Message-State: AOAM533oGOj8uzPxXTY2Fe2lYQxt3EJQLtrKMXUZPy4dIiY7L85SO22r
+        kDsjGSzuOWogW43yzwAckYqwLw==
+X-Google-Smtp-Source: ABdhPJzcQL5JyoVR8CeS1RAcBqswo1ZPxXP5b1mnWO7335qavWdyOdHHkdriZYbHAmaSLHb6abh7PA==
+X-Received: by 2002:a1c:9c01:: with SMTP id f1mr7325353wme.159.1612446927456;
+        Thu, 04 Feb 2021 05:55:27 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id 13sm5464521wmj.11.2021.02.04.05.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 05:55:26 -0800 (PST)
+Date:   Thu, 4 Feb 2021 13:55:25 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 1/5] mfd: arizona: Add MODULE_SOFTDEP("pre:
+ arizona_ldo1")
+Message-ID: <20210204135525.GJ2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <20210120214957.140232-2-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <20210203135321.12253-1-ggherdovich@suse.cz> <20210203135321.12253-2-ggherdovich@suse.cz>
- <CAJZ5v0g1SWRnV1QfZG3o+hvBg9akakhDMomGCFjwERyG2ENKww@mail.gmail.com>
- <5470319.60Xv9dOaFs@kreacher> <1612446586.7566.20.camel@suse.cz>
-In-Reply-To: <1612446586.7566.20.camel@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Feb 2021 14:55:19 +0100
-Message-ID: <CAJZ5v0iDeeeO=WeB2xRyVSyuhP7VLTaXPX6G1YN10_8Lq-bLtg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
- schedutil invariant formula
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Larabel <Michael@phoronix.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210120214957.140232-2-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:49 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
->
-> On Wed, 2021-02-03 at 19:25 +0100, Rafael J. Wysocki wrote:
-> > [cut]
-> >
-> > So below is a prototype of an alternative fix for the issue at hand.
-> >
-> > I can't really test it here, because there's no _CPC in the ACPI tables of my
-> > test machines, so testing it would be appreciated.  However, AFAICS these
-> > machines are affected by the performance issue related to the scale-invariance
-> > when they are running acpi-cpufreq, so what we are doing here is not entirely
-> > sufficient.
-> >
-> > It looks like the scale-invariance code should ask the cpufreq driver about
-> > the maximum frequency and note that cpufreq drivers may be changed on the
-> > fly.
-> >
-> > What the patch below does is to add an extra entry to the frequency table for
-> > each CPU to represent the maximum "boost" frequency, so as to cause that
-> > frequency to be used as cpuinfo.max_freq.
-> >
-> > The reason why I think it is better to extend the frequency tables instead
-> > of simply increasing the frequency for the "P0" entry is because the latter
-> > may cause "turbo" frequency to be asked for less often.
-> >
-> > ---
-> >  drivers/cpufreq/acpi-cpufreq.c |  107 ++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 95 insertions(+), 12 deletions(-)
->
-> Hello Rafael,
->
-> thanks for looking at this. Your patch is indeed cleaner than the one I proposed.
->
-> Preliminary testing is favorable; more tests are running.
->
-> Results from your patch are in the fourth column below; the performance from
-> v5.10 looks restored.
->
-> I'll follow up once the tests I queued are completed.
+On Wed, 20 Jan 2021, Hans de Goede wrote:
 
-Thank you!
+> The (shared) probing code of the arizona-i2c and arizona-spi modules
+> takes the following steps during init:
+> 
+> 1. Call mfd_add_devices() for a set of early child-devices, this
+> includes the arizona_ldo1 device which provides one of the
+> core-regulators.
+> 
+> 2. Bulk enable the core-regulators.
+> 
+> 3. Read the device id.
+> 
+> 4. Call mfd_add_devices() for the other child-devices.
+> 
+> This sequence depends on 1. leading to not only the child-device
+> being created, but also the driver for the child-device binding
+> to it and registering its regulator.
+> 
+> This requires the arizona_ldo1 driver to be loaded before the
+> shared probing code runs. Add a softdep for this to both modules to
+> ensure that this requirement is met.
+> 
+> Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
+> in the wm8994 code, which has a similar init sequence.
+> 
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/mfd/arizona-i2c.c | 1 +
+>  drivers/mfd/arizona-spi.c | 1 +
+>  2 files changed, 2 insertions(+)
 
-> TEST        : Intel Open Image Denoise, www.openimagedenoise.org
-> INVOCATION  : ./denoise -hdr memorial.pfm -out out.pfm -bench 200 -threads $NTHREADS
-> CPU         : MODEL            : 2x AMD EPYC 7742
->               FREQUENCY TABLE  : P2: 1.50 GHz
->                                  P1: 2.00 GHz
->                                  P0: 2.25 GHz
->               MAX BOOST        :     3.40 GHz
->
-> Results: threads, msecs (ratio). Lower is better.
->
->                v5.10          v5.11-rc4   v5.11-rc4-ggherdov v5.11-rc6-rafael
->     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->       1   1069.85 (1.00)   1071.84 (1.00)   1070.42 (1.00)   1069.12 (1.00)
->       2    542.24 (1.00)    544.40 (1.00)    544.48 (1.00)    540.81 (1.00)
->       4    278.00 (1.00)    278.44 (1.00)    277.72 (1.00)    277.79 (1.00)
->       8    149.81 (1.00)    149.61 (1.00)    149.87 (1.00)    149.51 (1.00)
->      16     79.01 (1.00)     79.31 (1.00)     78.94 (1.00)     79.02 (1.00)
->      24     58.01 (1.00)     58.51 (1.01)     58.15 (1.00)     57.84 (1.00)
->      32     46.58 (1.00)     48.30 (1.04)     46.66 (1.00)     46.70 (1.00)
->      48     37.29 (1.00)     51.29 (1.38)     37.27 (1.00)     38.10 (1.02)
->      64     34.01 (1.00)     49.59 (1.46)     33.71 (0.99)     34.51 (1.01)
->      80     31.09 (1.00)     44.27 (1.42)     31.33 (1.01)     31.11 (1.00)
->      96     28.56 (1.00)     40.82 (1.43)     28.47 (1.00)     28.65 (1.00)
->     112     28.09 (1.00)     40.06 (1.43)     28.63 (1.02)     28.38 (1.01)
->     120     28.73 (1.00)     39.78 (1.38)     28.14 (0.98)     28.16 (0.98)
->     128     28.93 (1.00)     39.60 (1.37)     29.38 (1.02)     28.55 (0.99)
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
