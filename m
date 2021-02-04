@@ -2,98 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B2430F02C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1553530F044
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbhBDKHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhBDKHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:07:32 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208D0C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=4fIcMp4emmQo15EJhirc3ucExtAOR+0m8XuKOdaleBA=; b=k40jkkCW2go8hCISfAUkyXuOq
-        z83WuCqPJQh9DY9s7wtxl03n3iUBllvrSrpbclX9zuAKZ4Kdwb0E8eN8fri40EYTsuokI0FcpYi/m
-        GaPscHA6u5cDqWriBThX14ONW4qAbDaYFtP0sWdQhkCV2t+sXEODXRZSz/EGwF1Na6bXWv+2QBC6F
-        G6gsqacxD9aM5zXb9shfxZMw1+Fi/xB56M7c2ktd6nmrUBLdCeUwphjw6cs0urlZF5rknxIPbSTGJ
-        ptY8+/AjtUUGUKMGWQq6WZNe7AoofToYdUrZ5KEmMhP5mi2bHfxdtwISDZo4P/LzYiMi9NPJ8U1Zb
-        lS1AhZw4A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39030)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l7bXF-0006Qo-Jt; Thu, 04 Feb 2021 10:06:49 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l7bWT-00053t-QH; Thu, 04 Feb 2021 10:06:01 +0000
-Date:   Thu, 4 Feb 2021 10:06:01 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-Message-ID: <20210204100601.GT1463@shell.armlinux.org.uk>
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
- <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+        id S235398AbhBDKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:14:11 -0500
+Received: from mx4.veeam.com ([104.41.138.86]:42518 "EHLO mx4.veeam.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235328AbhBDKOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:14:07 -0500
+X-Greylist: delayed 405 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Feb 2021 05:14:04 EST
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id EDA60874F7;
+        Thu,  4 Feb 2021 13:06:34 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1612433195; bh=9Db75ZmRMikGsOb+9U+OZ6pWHWJ+9SIXaqigvPh1SI0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=eIf5dY0lfRBubBO9VnQNP7z8iz0Yx+z2D5HAsbDslBCHXhi0iUpuzKPO7pL0AfGAW
+         kb4skIYCVq5plycqMBaJThxdvQIznk/yrh5RdfUJyNcOsT8W8pF2nGDK3RhVxMhklc
+         5Ob57DAQeYPu/qggU2pwnM3/XAQhSJyielDmR9XU=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 4 Feb 2021
+ 11:06:33 +0100
+Date:   Thu, 4 Feb 2021 13:06:31 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Mike Snitzer <snitzer@redhat.com>
+CC:     <Damien.LeMoal@wdc.com>, <hare@suse.de>, <ming.lei@redhat.com>,
+        <agk@redhat.com>, <corbet@lwn.net>, <axboe@kernel.dk>,
+        <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
+        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
+        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pavgel.tide@veeam.com>
+Subject: Re: [PATCH v4 2/6] block: add blk_interposer
+Message-ID: <20210204100631.GB4325@veeam.com>
+References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
+ <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
+ <20210203161836.GB21359@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210203161836.GB21359@redhat.com>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D265667362
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
-> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
-> <guillaume.tucker@collabora.com> wrote:
-> >
-> > Hi Ard,
-> >
-> > Please see the bisection report below about a boot failure on
-> > rk3288 with next-20210203.  It was also bisected on
-> > imx6q-var-dt6customboard with next-20210202.
-> >
-> > Reports aren't automatically sent to the public while we're
-> > trialing new bisection features on kernelci.org but this one
-> > looks valid.
-> >
-> > The kernel is most likely crashing very early on, so there's
-> > nothing in the logs.  Please let us know if you need some help
-> > with debugging or trying a fix on these platforms.
-> >
+The 02/03/2021 11:18, Mike Snitzer wrote:
+> On Wed, Feb 03 2021 at 10:53am -0500,
+> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 > 
-> Thanks for the report.
+> > blk_interposer allows to intercept bio requests, remap bio to another devices or add new bios.
+> > 
+> > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> > ---
+> >  block/bio.c               |  2 +
+> >  block/blk-core.c          | 33 ++++++++++++++++
+> >  block/genhd.c             | 82 +++++++++++++++++++++++++++++++++++++++
+> >  include/linux/blk_types.h |  6 ++-
+> >  include/linux/genhd.h     | 18 +++++++++
+> >  5 files changed, 139 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/block/bio.c b/block/bio.c
+> > index 1f2cc1fbe283..f6f135eb84b5 100644
+> > --- a/block/bio.c
+> > +++ b/block/bio.c
+> > @@ -684,6 +684,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+> >  	bio_set_flag(bio, BIO_CLONED);
+> >  	if (bio_flagged(bio_src, BIO_THROTTLED))
+> >  		bio_set_flag(bio, BIO_THROTTLED);
+> > +	if (bio_flagged(bio_src, BIO_INTERPOSED))
+> > +		bio_set_flag(bio, BIO_INTERPOSED);
+> >  	bio->bi_opf = bio_src->bi_opf;
+> >  	bio->bi_ioprio = bio_src->bi_ioprio;
+> >  	bio->bi_write_hint = bio_src->bi_write_hint;
+> > diff --git a/block/blk-core.c b/block/blk-core.c
+> > index 7663a9b94b80..c84bc42ba88b 100644
+> > --- a/block/blk-core.c
+> > +++ b/block/blk-core.c
+> > @@ -1032,6 +1032,32 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
+> >  	return ret;
+> >  }
+> >  
+> > +static blk_qc_t __submit_bio_interposed(struct bio *bio)
+> > +{
+> > +	struct bio_list bio_list[2] = { };
+> > +	blk_qc_t ret = BLK_QC_T_NONE;
+> > +
+> > +	current->bio_list = bio_list;
+> > +	if (likely(bio_queue_enter(bio) == 0)) {
+> > +		struct gendisk *disk = bio->bi_disk;
+> > +
+> > +		if (likely(blk_has_interposer(disk))) {
+> > +			bio_set_flag(bio, BIO_INTERPOSED);
+> > +			disk->interposer->ip_submit_bio(bio);
+> > +		} else /* interposer was removed */
+> > +			bio_list_add(&current->bio_list[0], bio);
+> 
+> style nit:
+> 
+> } else {
+> 	/* interposer was removed */
+> 	bio_list_add(&current->bio_list[0], bio);
+> }
+> 
+> > +
+> > +		blk_queue_exit(disk->queue);
+> > +	}
+> > +	current->bio_list = NULL;
+> > +
+> > +	/* Resubmit remaining bios */
+> > +	while ((bio = bio_list_pop(&bio_list[0])))
+> > +		ret = submit_bio_noacct(bio);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  /**
+> >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+> >   * @bio:  The bio describing the location in memory and on the device.
+> > @@ -1057,6 +1083,13 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+> >  		return BLK_QC_T_NONE;
+> >  	}
+> >  
+> > +	/*
+> > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
+> > +	 * created by the blk_interposer do not get to it for processing.
+> > +	 */
+> > +	if (blk_has_interposer(bio->bi_disk) &&
+> > +	    !bio_flagged(bio, BIO_INTERPOSED))
+> > +		return __submit_bio_interposed(bio);
+> >  	if (!bio->bi_disk->fops->submit_bio)
+> >  		return __submit_bio_noacct_mq(bio);
+> >  	return __submit_bio_noacct(bio);
+> > diff --git a/block/genhd.c b/block/genhd.c
+> > index 419548e92d82..39785a3ef703 100644
+> > --- a/block/genhd.c
+> > +++ b/block/genhd.c
+> > @@ -30,6 +30,7 @@
+> >  static struct kobject *block_depr;
+> >  
+> >  DECLARE_RWSEM(bdev_lookup_sem);
+> > +DEFINE_MUTEX(bdev_interposer_mutex);
+> 
+> Seems you're using this mutex to protect access to disk->interposer in
+> attach/detach.  This is to prevent attach/detach races to same device?
 
-Ard,
+Yes. There is a probability of 0.00...01% that two different modules will
+try to attach/detach to the same disk at the same time.
+Since the attach/detach operation is infrequent, using mutex is quite appropriate.
+> 
+> Thankfully attach/detach isn't in the bio submission fast path but it'd
+> be helpful to document what this mutex is protecting).
 
-I want to send my fixes branch today which includes your regression
-fix that caused this regression.
+I'll think about the name of this mutex and add a comment.
 
-As this is proving difficult to fix, I can only drop your fix from
-my fixes branch - and given that this seems to be problematical, I'm
-tempted to revert the original change at this point which should fix
-both of these regressions - and then we have another go at getting rid
-of the set/way instructions during the next cycle.
+> 
+> A storm of attach or detach will all hit this global mutex though...
+> 
+> Mike
+> 
 
-Thoughts?
+Thank you for the review.
+I am very interested in your opinion about [PATCH v4 4/6] and [PATCH v4 5/6].
+However, the kernel test robot has already found something there on sparc.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Sergei Shtepa
+Veeam Software developer.
