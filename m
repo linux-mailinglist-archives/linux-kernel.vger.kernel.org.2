@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28501310026
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B8531002E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhBDWiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S229879AbhBDWkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:40:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBDWiu (ORCPT
+        with ESMTP id S229753AbhBDWkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:38:50 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E429C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:38:10 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id e18so5363643lja.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:38:10 -0800 (PST)
+        Thu, 4 Feb 2021 17:40:06 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D27C061797
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:39:26 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b125so4817836ybg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:39:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nkAztRmVaPsle95l7/AFoawcR7HppSv89SvojHQudyk=;
-        b=APV/rndjEVUBlvaTfspUBHnt+2+NUsobTWX8govHTKtLq3Yoh0k63vbB5KbiRp346M
-         owCvUcGNG+xuKyfSIgvn/2MQn4e150ceN6ifmiE02UzllS3H8KZkBXe5plmiI3N5EfHo
-         Sm83QTDvkJJsvCmdfUzNE9/1BFQ3iPI+IX075kidHhKNXtI+1B76m1zPICP8nxOzFH9U
-         VESeOqjVIy0AVpeWdi/fcCmIwul7ydSQDSoOs6VBGuMOtsrB+o4qUm86RpbtvOWIZK/l
-         GCcEqOvmhzezMAA0cfgETkh/Xf9tc4WqtvOF/WO8jigk0b2+VipixuFh66JjkArfF9GV
-         fEoQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=n4xG2k8Z7Qa5I/R1daYE+Xc9OOT630XhdJjQM94uVRU=;
+        b=TW+ADkJYN6duYByYEbYDYbLh5kzQDTNFu8hGvrpk08m2vX29f2XeQqEeJ//+es/3+3
+         Ew6+AoTyTl3//bjEvEnFsJ4AjnOL11nGNiKvCetepQyNwVyUuzZI4+S4ACTEFacMgj2x
+         i1YdpqwqBbUrK50hUE4WZsjFhixsWIPIvTMbVtYV3cX8rDKOa0LLGTHOVYyPuBos8gPE
+         nV2bhcdSz+vghkrZk4ynZeIBEiRY2hvnXUGpSWX+o0Ykkmsan44SkBtD5sjQhnVSW/Nj
+         pko9wx/z3mRCMu1XPQHl2zHUuCdnw5s3hwz4H0nAyzAt0sN4gizv0N5tDylZLVguUalS
+         y4VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nkAztRmVaPsle95l7/AFoawcR7HppSv89SvojHQudyk=;
-        b=jP8MDbxelGbVDHeJrnP+W/WswVe9MurUi6jM4Oz92hQDhn672s+a33TBFbeoBlxe6V
-         HKs7vmJiSmiD0Dc51UseP9BAEUpm60i2cLyIAwRRLVlrxJomwR2I9A1/GIFg7aSkI0yX
-         JMHt4yNP9k7I93iegsZheZjrHvVR1YbCC6P4BIAqOmBbozsD0a1kwmYUeNGHmAU6rO+e
-         nd0bIFIAvTl4pmbRruIZcqCsflf5JE1B3b3xagj5lIsZOX8abuhAtxbodfgqev0MEopD
-         30qE819vkiWqh8ooY8tnXYORotchpNBkHeLJ1PULQIJJaNe+G+ZbgSgdcOgOMTcjP5OJ
-         ZcHg==
-X-Gm-Message-State: AOAM53342yFzqwnysRhACzXzfTptvMS66+lQBIRvMpAdyJgjRDto7/+D
-        K5h78UipFJi5VJJfCOZIsds=
-X-Google-Smtp-Source: ABdhPJw8gXzJd8KxGlPvtxWZV5iPRiXSAbSJNBBZp1ELWozRh7FhhI3lOOKVll1LaALLF05qio0ZOg==
-X-Received: by 2002:a05:651c:103c:: with SMTP id w28mr916094ljm.186.1612478288805;
-        Thu, 04 Feb 2021 14:38:08 -0800 (PST)
-Received: from localhost.localdomain (109-252-130-105.dynamic.spd-mgts.ru. [109.252.130.105])
-        by smtp.gmail.com with ESMTPSA id b1sm809732lji.129.2021.02.04.14.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 14:38:08 -0800 (PST)
-From:   Andrey Ryabinin <ryabinin.a.a@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Subject: [PATCH] MAINTAINERS: Update Andrey Ryabinin's email address
-Date:   Fri,  5 Feb 2021 01:39:04 +0300
-Message-Id: <20210204223904.3824-1-ryabinin.a.a@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=n4xG2k8Z7Qa5I/R1daYE+Xc9OOT630XhdJjQM94uVRU=;
+        b=d2tx6AbWwGnOjE3AemLKlNbPbYo/Yxa13a9zrduC6cAezB7typJAm5o2OHZzaO1J/k
+         L6+PV3VwoMoW0mSCnSay+R0IeebXTpnopwdkU+neRrt7KZoS2Jsik46O9VyW790IIC6r
+         mW6XQ6huiMloLuvM5RGBHL45lHpG39EEYv7sSRrJbEwJV8TII/qA8C4/iZ6LhDOl3mYQ
+         vuz5mzLIrxRkbLPzsWXUKLT0CXZ0Xf/zpGmq8+M/DuTE0QHHV3FUfuWxsx00jSAu58Vx
+         rgtU522j9hdIiKo70rrQwwGKZZGGwDrywJq3aoDRvgudYyenarQNqK6jTAVYhequQiUu
+         7m8g==
+X-Gm-Message-State: AOAM533tIowIwc3rAnif3NtMPnNe7P3y7baTgb3pxM2EpA8xhLSFxzKL
+        JEHURRUW4xIC4kV8L1Fjc7kHqmH5u23KSdI=
+X-Google-Smtp-Source: ABdhPJyBdE9X/S5xbyHVINezYUllZUk8xjMFqNx9FzN9Xtnyv+BW1j9DmtI2IkWEAVe8rsnMso2VHIZ0LzOAeHQ=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:8475:2f1d:e8b4:f65a])
+ (user=saravanak job=sendgmr) by 2002:a25:7454:: with SMTP id
+ p81mr2056574ybc.162.1612478365410; Thu, 04 Feb 2021 14:39:25 -0800 (PST)
+Date:   Thu,  4 Feb 2021 14:39:17 -0800
+Message-Id: <20210204223921.1693487-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v3 0/4] Make fw_devlink=on more forgiving
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update my email, @virtuozzo.com will stop working shortly.
+I dropped a few patches from v2 of the series that are still work in
+progress. So v3 of the series only includes definitive patches and the
+patch numbering has changed.
 
-Signed-off-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
----
- .mailmap    | 1 +
- MAINTAINERS | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Patch 1/4 and 2/4 addresses the issue of firmware nodes that look like
+they'll have struct devices created for them, but will never actually
+have struct devices added for them. For example, DT nodes with a
+compatible property that don't have devices added for them.
 
-diff --git a/.mailmap b/.mailmap
-index 632700cee55c..b325d3c79725 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -40,6 +40,7 @@ Andrew Murray <amurray@thegoodpenguin.co.uk> <amurray@embedded-bits.co.uk>
- Andrew Murray <amurray@thegoodpenguin.co.uk> <andrew.murray@arm.com>
- Andrew Vasquez <andrew.vasquez@qlogic.com>
- Andrey Ryabinin <ryabinin.a.a@gmail.com> <a.ryabinin@samsung.com>
-+Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
- Andy Adamson <andros@citi.umich.edu>
- Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
- Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 00836f6452f0..f3126e88669d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9559,7 +9559,7 @@ F:	Documentation/hwmon/k8temp.rst
- F:	drivers/hwmon/k8temp.c
- 
- KASAN
--M:	Andrey Ryabinin <aryabinin@virtuozzo.com>
-+M:	Andrey Ryabinin <ryabinin.a.a@gmail.com>
- R:	Alexander Potapenko <glider@google.com>
- R:	Dmitry Vyukov <dvyukov@google.com>
- L:	kasan-dev@googlegroups.com
+Patch 3/4 and 4/4 allow for handling optional DT bindings.
+
+v1 -> v2:
+Patch 1: Added a flag to fwnodes that aren't devices.
+Patch 3: New patch to ise the flag set in patch 1 to not create bad links.
+
+v2 -> v3:
+- Patch 1: Added Rafael's Ack
+- New patches 3 and 4
+
+Saravana Kannan (4):
+  driver core: fw_devlink: Detect supplier devices that will never be
+    added
+  of: property: Don't add links to absent suppliers
+  driver core: Add fw_devlink.strict kernel param
+  of: property: Add fw_devlink support for optional properties
+
+ .../admin-guide/kernel-parameters.txt         |  5 +++
+ drivers/base/core.c                           | 43 +++++++++++++++++--
+ drivers/of/property.c                         | 16 +++++--
+ include/linux/fwnode.h                        |  3 ++
+ 4 files changed, 60 insertions(+), 7 deletions(-)
+
 -- 
-2.26.2
+2.30.0.365.g02bc693789-goog
 
