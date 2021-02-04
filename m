@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4535730F008
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A82330F00F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhBDJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:59:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:55134 "EHLO foss.arm.com"
+        id S235298AbhBDJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:59:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232838AbhBDJ7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:59:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0044511D4;
-        Thu,  4 Feb 2021 01:58:21 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F8263F719;
-        Thu,  4 Feb 2021 01:58:20 -0800 (PST)
-Date:   Thu, 4 Feb 2021 09:58:15 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, kishon@ti.com
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH -next] PCI: endpoint: fix build error, EP NTB driver uses
- configfs
-Message-ID: <20210204095815.GA26804@e121166-lin.cambridge.arm.com>
-References: <20210202201255.26768-1-rdunlap@infradead.org>
+        id S232838AbhBDJ7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:59:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A884364F46;
+        Thu,  4 Feb 2021 09:59:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612432752;
+        bh=Zelq6D4XZGDuPo70kYTJJgaDbDwK093nuyMe02isfTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fZFn4SNNNsHZIThixqTd5WKR7HGKRGMdU+ddKY4VdNoOwSQ9sODqK3VgxpKL2A56s
+         4I3o8KBCJHtLjeKmCDkWXpGpYpGakfGQfRhSVgtlpOrfdQ5QAi0R3o4gjlXj7MIvFC
+         Ql/7xPdKgGPYgPgsAFnGZRVBP1GrMxNjIdlhLDg3vtnKQVC0uVe1NaVVXvOSxEagFl
+         5y6xdti/3JckXFJOMvgjQwfxD24nH4jVxSXiirTWWQrL2Wdx2stjQ2AChARA3yWjIv
+         HiCcrNO6+HU6R5Uv0EPl7S1u0uczvREvOdVTv98bo0LM7TPjMzx3LQFogyEOGejvpC
+         DeRySER1corJA==
+Date:   Thu, 4 Feb 2021 11:58:55 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20210204095855.GQ242749@kernel.org>
+References: <20210128092259.GB242749@kernel.org>
+ <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+ <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
+ <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
+ <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
+ <YBkcyQsky2scjEcP@dhcp22.suse.cz>
+ <20210202124857.GN242749@kernel.org>
+ <YBlTMqjB06aqyGbT@dhcp22.suse.cz>
+ <20210202191040.GP242749@kernel.org>
+ <YBpo9mC5feVQ0mpG@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202201255.26768-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YBpo9mC5feVQ0mpG@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:12:55PM -0800, Randy Dunlap wrote:
-> The pci-epf-ntb driver uses configfs APIs, so it should depend on
-> CONFIGFS_FS to prevent build errors.
+On Wed, Feb 03, 2021 at 10:12:22AM +0100, Michal Hocko wrote:
+> On Tue 02-02-21 21:10:40, Mike Rapoport wrote:
+> >   
+> > Let me reiterate to make sure I don't misread your suggestion.
+> > 
+> > If we make secretmem an opt-in feature with, e.g. kernel parameter, the
+> > pooling of large pages is unnecessary. In this case there is no limited
+> > resource we need to protect because secretmem will allocate page by page.
 > 
-> ld: drivers/pci/endpoint/functions/pci-epf-ntb.o: in function `epf_ntb_add_cfs':
-> pci-epf-ntb.c:(.text+0x1b): undefined reference to `config_group_init_type_name'
+> Yes.
 > 
-> Fixes: 7dc64244f9e9 ("PCI: endpoint: Add EP function driver to provide NTB functionality")
+> > Since there is no limited resource, we don't need special permissions
+> > to access secretmem so we can move forward with a system call that creates
+> > a mmapable file descriptor and save the hassle of a chardev.
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: linux-pci@vger.kernel.org
-> ---
-> You may switch to 'select CONFIG_FS_FS' if you feel strongly about it.
+> Yes, I assume you implicitly assume mlock rlimit here.
 
-Kishon ?
+Yes.
 
-Thanks,
-Lorenzo
+> Also memcg accounting should be in place. 
 
->  drivers/pci/endpoint/functions/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- linux-next-20210202.orig/drivers/pci/endpoint/functions/Kconfig
-> +++ linux-next-20210202/drivers/pci/endpoint/functions/Kconfig
-> @@ -16,6 +16,7 @@ config PCI_EPF_TEST
->  config PCI_EPF_NTB
->  	tristate "PCI Endpoint NTB driver"
->  	depends on PCI_ENDPOINT
-> +	depends on CONFIGFS_FS
->  	help
->  	  Select this configuration option to enable the NTB driver
->  	  for PCI Endpoint. NTB driver implements NTB controller
+Right, without pools memcg accounting is no different from other
+unevictable files.
+
+> Wrt to the specific syscall, please document why existing interfaces are
+> not a good fit as well. It would be also great to describe interaction
+> with mlock itself (I assume the two to be incompatible - mlock will fail
+> on and mlockall will ignore it).
+
+The interaction with mlock() belongs more to the man page, but I don't mind
+adding this to changelog as well.
+
+-- 
+Sincerely yours,
+Mike.
