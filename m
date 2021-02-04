@@ -2,124 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9366F30FC43
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D4930FC3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239617AbhBDTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:10:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239631AbhBDTIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:08:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612465639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0h1TRSnNoeb31j50N9xUAbiVlfi+y4PqU4sAwNXXQg=;
-        b=atKD1eBdWn76/zCgCQDXCh4lT69MwBzNHZEArCnqRr34+ND8XKuxWygtJmgqTwwwDa3kre
-        NmilfoCfu/X6wAsMLtUYKifOAaW1FBPG0Gid43cEfKJ3gRYopnnyRGR43VcHiPsu0VYxw7
-        TN9g14qgnckTFryVlc8O2pTOb/EwQdM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-MX5dYmLtO7qIUFiQcs3ULw-1; Thu, 04 Feb 2021 14:07:18 -0500
-X-MC-Unique: MX5dYmLtO7qIUFiQcs3ULw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C08CE777;
-        Thu,  4 Feb 2021 19:07:15 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B2305C257;
-        Thu,  4 Feb 2021 19:07:08 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 404CE416D87F; Thu,  4 Feb 2021 16:06:47 -0300 (-03)
-Date:   Thu, 4 Feb 2021 16:06:47 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, akpm@linux-foundation.org,
-        sfr@canb.auug.org.au, stephen@networkplumber.org,
-        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
-        zhangshaokun@hisilicon.com
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
- CPUs
-Message-ID: <20210204190647.GA32868@fuller.cnet>
-References: <20200625223443.2684-1-nitesh@redhat.com>
- <20200625223443.2684-2-nitesh@redhat.com>
- <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
- <20210127121939.GA54725@fuller.cnet>
- <87r1m5can2.fsf@nanos.tec.linutronix.de>
- <20210128165903.GB38339@fuller.cnet>
- <87h7n0de5a.fsf@nanos.tec.linutronix.de>
- <20210204181546.GA30113@fuller.cnet>
- <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
+        id S239620AbhBDTH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:07:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56412 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239623AbhBDTHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:07:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 255D8AC45;
+        Thu,  4 Feb 2021 19:06:55 +0000 (UTC)
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-3-kraxel@redhat.com>
+ <d217112e-e49d-bd1f-0c39-3eac2dd721fd@suse.de>
+ <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v6 02/10] Revert "drm/qxl: do not run release if qxl
+ failed to init"
+Message-ID: <3feaeb62-fd50-5cca-26f7-42f6167ef77a@suse.de>
+Date:   Thu, 4 Feb 2021 20:06:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="sugShVuXIKVOGqdiIRIR03GxisZfIG58Q"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 01:47:38PM -0500, Nitesh Narayan Lal wrote:
-> 
-> On 2/4/21 1:15 PM, Marcelo Tosatti wrote:
-> > On Thu, Jan 28, 2021 at 09:01:37PM +0100, Thomas Gleixner wrote:
-> >> On Thu, Jan 28 2021 at 13:59, Marcelo Tosatti wrote:
-> >>>> The whole pile wants to be reverted. It's simply broken in several ways.
-> >>> I was asking for your comments on interaction with CPU hotplug :-)
-> >> Which I answered in an seperate mail :)
-> >>
-> >>> So housekeeping_cpumask has multiple meanings. In this case:
-> >> ...
-> >>
-> >>> So as long as the meaning of the flags are respected, seems
-> >>> alright.
-> >> Yes. Stuff like the managed interrupts preference for housekeeping CPUs
-> >> when a affinity mask spawns housekeeping and isolated is perfectly
-> >> fine. It's well thought out and has no limitations.
-> >>
-> >>> Nitesh, is there anything preventing this from being fixed
-> >>> in userspace ? (as Thomas suggested previously).
-> >> Everything with is not managed can be steered by user space.
-> > Yes, but it seems to be racy (that is, there is a window where the 
-> > interrupt can be delivered to an isolated CPU).
-> >
-> > ethtool ->
-> > xgbe_set_channels ->
-> > xgbe_full_restart_dev ->
-> > xgbe_alloc_memory ->
-> > xgbe_alloc_channels ->
-> > cpumask_local_spread
-> >
-> > Also ifconfig eth0 down / ifconfig eth0 up leads
-> > to cpumask_spread_local.
-> 
-> There's always that possibility.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--sugShVuXIKVOGqdiIRIR03GxisZfIG58Q
+Content-Type: multipart/mixed; boundary="qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tong Zhang <ztong0001@gmail.com>
+Cc: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
+ David Airlie <airlied@linux.ie>, open list <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <3feaeb62-fd50-5cca-26f7-42f6167ef77a@suse.de>
+Subject: Re: [PATCH v6 02/10] Revert "drm/qxl: do not run release if qxl
+ failed to init"
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-3-kraxel@redhat.com>
+ <d217112e-e49d-bd1f-0c39-3eac2dd721fd@suse.de>
+ <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
+In-Reply-To: <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
 
-Then there is a window where isolation can be broken.
+--qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> We have to ensure that we move the IRQs by a tuned daemon or some other
-> userspace script every time there is a net-dev change (eg. device comes up,
-> creates VFs, etc).
+Hi Tong
 
-Again, race window open can result in interrupt to isolated CPU.
-
-> > How about adding a new flag for isolcpus instead?
-> >
-> 
-> Do you mean a flag based on which we can switch the affinity mask to
-> housekeeping for all the devices at the time of IRQ distribution?
-
-Yes a new flag for isolcpus. HK_FLAG_IRQ_SPREAD or some better name.
+Am 04.02.21 um 19:52 schrieb Tong Zhang:
+> Hi Thomas,
+>=20
+> The original problem was qxl_device_init() can fail,
+> when it fails there is no need to call
+> 	qxl_modeset_fini(qdev);
+> 	qxl_device_fini(qdev);
+> But those two functions are otherwise called in the qxl_drm_release() -=
 
 
+OK, makes sense. Thanks for the explanation.
+
+>=20
+> I have posted an updated patch.
+> The new patch use the following logic
+>=20
+> +	if (!qdev->ddev.mode_config.funcs)
+> +	  return;
+
+This is again just papering over the issue. Better don't call=20
+qxl_drm_release() in the error path if qxl_device_init() fails.
+
+I see two solutions: either roll-back manually, or use our new managed=20
+DRM interfaces. This is what the other drivers do.
+
+Best regards
+Thomas
+
+> 	qxl_modeset_fini(qdev);
+> 	qxl_device_fini(qdev);
+>=20
+> Thanks,
+> - Tong
+>=20
+>=20
+>> On Feb 4, 2021, at 1:34 PM, Thomas Zimmermann <tzimmermann@suse.de> wr=
+ote:
+>>
+>> Hi
+>>
+>> Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
+>>> This reverts commit b91907a6241193465ca92e357adf16822242296d.
+>>
+>> This should be in the correct format, as given by 'dim cite'.
+>>
+>> dim cite b91907a6241193465ca92e357adf16822242296d
+>> b91907a62411 ("drm/qxl: do not run release if qxl failed to init")
+>>
+>>> Patch is broken, it effectively makes qxl_drm_release() a nop
+>>> because on normal driver shutdown qxl_drm_release() is called
+>>> *after* drm_dev_unregister().
+>>> Cc: Tong Zhang <ztong0001@gmail.com>
+>>> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+>>> ---
+>>>   drivers/gpu/drm/qxl/qxl_drv.c | 2 --
+>>>   1 file changed, 2 deletions(-)
+>>> diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_=
+drv.c
+>>> index 34c8b25b5780..fb5f6a5e81d7 100644
+>>> --- a/drivers/gpu/drm/qxl/qxl_drv.c
+>>> +++ b/drivers/gpu/drm/qxl/qxl_drv.c
+>>> @@ -144,8 +144,6 @@ static void qxl_drm_release(struct drm_device *de=
+v)
+>>>   	 * reodering qxl_modeset_fini() + qxl_device_fini() calls is
+>>>   	 * non-trivial though.
+>>>   	 */
+>>> -	if (!dev->registered)
+>>> -		return;
+>>
+>> I'm not sure what the original problem was, but I'm sure that this isn=
+'t the fix for it. If there's a problem with shutdown, the operations rat=
+her have to be reordered correctly.
+>>
+>> With the citation style address:
+>>
+>> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+>>
+>>>   	qxl_modeset_fini(qdev);
+>>>   	qxl_device_fini(qdev);
+>>>   }
+>>
+>> --=20
+>> Thomas Zimmermann
+>> Graphics Driver Developer
+>> SUSE Software Solutions Germany GmbH
+>> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+>> (HRB 36809, AG N=C3=BCrnberg)
+>> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>>
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO--
+
+--sugShVuXIKVOGqdiIRIR03GxisZfIG58Q
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcRc0FAwAAAAAACgkQlh/E3EQov+Cv
+zBAAt+AajrDpzr+ENbzKQ1EFljU7ebL45uSdlooyn8Q2PenAq6PffmdqW/MdbTZ+9bUsUb33Z6xi
+tZVdCEnp41Hi9FdcIwnfM+oSck5Gi6QTJxLd7GH0rtTGXvz83xngZZzlxAVYEpstLozEDgqucuQ4
+2aLUPeZx3E/A2OSBK1gVg3Yyqm78IlNLeMzfjgodJbABBBVdND2FF7MT4fsFxfsLWi4RrdCyJ6+d
+LHXLXxnqYrjfZ2mfmmKJZUEV5AGo/nNJ0D+LIe9x1pTu37UtQpcgXUeeyECD+zrVdMjOpMfJgvS2
+G4mVNWOa3UzJAeZ4YBGK/YTpknYa8l8eGXNGdeqSt96OYTWb/XgkFfMfMJKXl9ArkpjI5D9MlvM6
+xWqZFGvaG1lExlIbCuyffjYp+sHJyRpN6jCiWdEcakrZHwoZM+gc9SIt2EeN1BTVKXkoKznoERX5
+ddxXZAKLorqs7qHE4rfJ/pEOP5SiqOcgP2bBvfQRQ9mBiIY2bVJVpQxFSgc/wE7FGNrmUIWwk+UU
+QB31SHD9BMSUbvnndgjqnoIlAKjNWpmbIf5k/d7aE43Z99EeGNlQIG2FomQLiEoMRIBTCDmuzVnX
+Epcd0EgdSwab7aLjhnzN1d8DRn7vESe/u67wBDAeqt6zEZUDp5PTjOZOA5zkEcGmDycBte6is1Y8
+G64=
+=bdv9
+-----END PGP SIGNATURE-----
+
+--sugShVuXIKVOGqdiIRIR03GxisZfIG58Q--
