@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DE030F477
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F20930F47F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbhBDODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        id S236566AbhBDODz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236557AbhBDN6H (ORCPT
+        with ESMTP id S233305AbhBDN7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:58:07 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63B9C061354
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:56:19 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id u14so3625849wri.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TnVWEPnb0tC+CtpGZvtAeAVG6+q+gfP9B49rEWDxFOc=;
-        b=Kj+oZgHxKT6VUnhZC/8QMwgtWDqE6mef8gshXFGyDiZc86ORD77MSog6/pW0o1Kiq7
-         PZUtBLL8fr1/9YO+ybmdbnIO7R0zGOD93OP/5/wTeE4s+y4fSu0x+QFXfzthojyF1Jv5
-         wj9LtWz82ML+sF3/O14E8fxjbKOEagsq/caQIBXjERXhZxIRPz5Rzrf9oQ29f+UU/SvF
-         ckNuBInpHdm0hjdJkwmMChWeGdlQPgoZ9FwgnjTQP+7PDXzm4dKTGZfHAnDpBU2XdPQS
-         Mj8s3Z28AkL2Qmkv9WlU0jbQeNSvPbZ2Vk+ubSvfU6HYJs5KIgWZS4aK0s1k8jVIbGLW
-         4ngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TnVWEPnb0tC+CtpGZvtAeAVG6+q+gfP9B49rEWDxFOc=;
-        b=h0kI/8Kerb/NfsDWws8XZRLLYMqvQ/afkquRF5UvqRz4LCFX/swuvKpMQ9uBUxhYrK
-         KOt9ZeHKyjSFtMIy9BYs+nRsgSao8+5Solu4eIPZb4CiEVBO4cxN0tk/Dv/6uK9QfF8A
-         417r9OjkG4rWq3QyUdVQT9bEBmKe5Z4meVxfc4gfBG803pH41X0cx62AFExFon5dGNOL
-         /4i6aaDqxoX9+cjs5AvgtXwUNBlQaktj97lcCqSm0R5Yz7sga6+XKpTm72Kc0XT7rN9e
-         w+lnSneCdWP18mszrzAYSit/SygTHrjq17YOOmmkBpiI8uJZYamTHW1WMF3+ohAx3lwz
-         q2kw==
-X-Gm-Message-State: AOAM5305CjLfVs4g1plIBcWCtnmhVKOAL9xnjykAzFuP/nM0mp7JYGtt
-        VLdvNiuXGR7YeWXtiEUSPFgW7Q==
-X-Google-Smtp-Source: ABdhPJyR7lU5JUv1D0hoTJ/+0NgUT+/CPRKHhUXCPjJF+cttjIovyhDVjfJQG/ZjTvGd9SKcvOyPTA==
-X-Received: by 2002:adf:83a6:: with SMTP id 35mr9420796wre.274.1612446978467;
-        Thu, 04 Feb 2021 05:56:18 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id m18sm8326823wrx.17.2021.02.04.05.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 05:56:17 -0800 (PST)
-Date:   Thu, 4 Feb 2021 13:56:16 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Message-ID: <20210204135616.GL2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-5-hdegoede@redhat.com>
+        Thu, 4 Feb 2021 08:59:24 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156D3C06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:58:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=y3YvMfYAL6UgrJ9vkGGctIPfcXYu1VvCoq1uURArgQI=; b=2LW3GcAhXz9LNG0iistWQ2pHa+
+        6632w7xkeHvCe2570eFslk8aq9C+aJ9ITc+SRW8keQfSFMN7RvQIWZJnuG97CA8H1kq19cZ3tEcE4
+        7JNSNVYXNi4YsNYaRCSfCQmm9XYtHybqVY0HHnahYwgFvC2GXyAWZEDxfWbqqHoHqxngJedGonR6r
+        aDxSsHbqAvQUu/jUistYlEeTKkcI0p37Bd9cwuf1q+ywgcvyPjbMGIIpoP3fx5q7pVE+yT0Iu+yhb
+        bT/Pf9HgNoekPnfWULFtRWXja3MzCxeVuZ6tlAkd5++7IhbFmYKWVkJykLl2OUXfzXIYopcxYv1fg
+        duhJ2Apg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7f8f-0008FV-U6; Thu, 04 Feb 2021 13:57:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 763CE3003D8;
+        Thu,  4 Feb 2021 14:57:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4902E2C12E919; Thu,  4 Feb 2021 14:57:39 +0100 (CET)
+Date:   Thu, 4 Feb 2021 14:57:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
+ scheduling
+Message-ID: <YBv9Uy1dyv8E2LAz@hirez.programming.kicks-ass.net>
+References: <20210123011704.1901835-1-joel@joelfernandes.org>
+ <20210123011704.1901835-3-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210120214957.140232-5-hdegoede@redhat.com>
+In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021, Hans de Goede wrote:
+On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
+> +/* Request the scheduler to share a core */
+> +#define PR_SCHED_CORE_SHARE		59
+> +# define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
+> +# define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
+> +# define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
 
-> Some Bay Trail systems:
-> 1. Use a non CR version of the Bay Trail SoC
-> 2. Contain at least 6 interrupt resources so that the
->    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
->    non CR systems which list their IPC IRQ at index 0 despite being
->    non CR does not work
-> 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
-> 
-> Add a DMI quirk table to check for the few known models with this issue,
-> so that the right IPC IRQ index is used on these systems.
-> 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
+Why ?
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Also, how do I set a unique cookie on myself with this interface?
