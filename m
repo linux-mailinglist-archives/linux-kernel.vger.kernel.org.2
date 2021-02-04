@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4321C30FB13
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA91E30FB16
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238274AbhBDSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:15:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239010AbhBDSOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:14:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 842EB64F44;
-        Thu,  4 Feb 2021 18:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612462404;
-        bh=zbLV6tzEcrYE6Zr1vCAoOlEuk2uUe3OTj1GoEj/vbsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rd/0Jes6vV9yhhSHANL1rZUNuB/fQhP/iQfuTS2kgxeRItC0waSOIU/ltYfOmsQM0
-         ZOh5bzruLkhY7RB7lxLFOiSL9Kjd69Q+qgJS3+fMStjqDUqEZaHW3SgnJ+U6Uxmbtf
-         JuHL4djLRKjhNdUibBNSXtkiMpM2SaAoKfcd6dJCeStsbY+3lqJfvoSwZc+0p+nhdk
-         IrxtdsVlS5TwIZIajddo+hofOfxWHdUjicQRnmuHEJYEm6P8vftmPm9YU+O9eGrpPH
-         sqZYPYp+4xXVacbgRM8c7kQu0NeNmolcwTczxstovtLGDGbp+hlTPjBeVn9wd2gz+N
-         FsPz5jPY6jH+Q==
-Date:   Thu, 4 Feb 2021 18:13:18 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
- allocator
-Message-ID: <20210204181317.GE21303@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-13-qperret@google.com>
- <20210202181307.GA17311@willie-the-truck>
- <YBrsep4xK1F4YRWb@google.com>
- <20210204143106.GA20792@willie-the-truck>
- <YBwKRM3uHDMC9S0U@google.com>
- <20210204174849.GA21303@willie-the-truck>
- <YBw2aIr/Ktx1dsOT@google.com>
+        id S238656AbhBDSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238156AbhBDSQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:16:38 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFBCC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:15:56 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id w1so6966388ejf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:15:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sHPNpNqRTc3lgTTnJatrn/4jH2bI7C52VyBZqixyw2g=;
+        b=gaN16r/UUj+zzbzPB11XW7ssMApTMkYDt3TmgYzvAeTZiRDxNHC0Oja+qS2df1AKKN
+         Q690eEXFKXP3i3xfnkfddvO0fP7a0GlHaHfe0ulN9NPhKyc66AJ2/YrpGoo2SDnjaZZ8
+         ew2VrJO7jdThs9mHsz16Ps4nmQRXhkyhIOts4rXol1CLRHITrd6SwbodDY9fOu8Qsr9O
+         GYQk3KRh12tzFvwr1s3CPIH/TRTyLR96aG6Dw5Y9Ob4orjSSLEgQVP5yhW6Zktouw8PN
+         34jMMF8VwCPzMye13PCbMbDL/0j3pbKW9rYJdVu2nEfRkDJ/L+nLuURXbAzNFk/oHTfW
+         b7vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sHPNpNqRTc3lgTTnJatrn/4jH2bI7C52VyBZqixyw2g=;
+        b=qanCiFOMR5eODmubrMJ4Sk6tHxxfL/YuOrf6h2N312L4rDhL3Xksf5MYDUW8KxCvqO
+         KReJlJWIWxuKKiN8EPN2cC3IDYLfPt2mG1rMuh++aHncTH4/N184eT++rQxFZtvvelJ5
+         qfzItFXLqhHzuClmnEGn4562NT6LvdKC7S33pxywzJjG7jxNvCvOR+nedtZnA5SfFZL3
+         nTTr+jko1+JL0k9u15qZaEngSg0M+8ddIAySCMnka9gvi7bzzEvTzkPTeRmp1f6nWmRl
+         7j8uZFcbNx5htNg7HkGYW3DKTsYDKNamLuL8Gh/gWY4Ww6I6JEPutL1hvBtQl7eJw3Hb
+         dXYA==
+X-Gm-Message-State: AOAM5325nowOCLNwT5NHOhc/o1OItoehkC4+8CQVpDdT3ZSrdXDoAALI
+        dLd4b2WE6ePVq1zW3yWRMDcHok/ZPuE=
+X-Google-Smtp-Source: ABdhPJzt+oRbAoMs96bM72e8WIvvfb7+n4R3t18vC8R15kZ6WcsGDXWfZjToNyYr4maLekp/7eY1Qw==
+X-Received: by 2002:a17:906:e15:: with SMTP id l21mr366735eji.376.1612462554565;
+        Thu, 04 Feb 2021 10:15:54 -0800 (PST)
+Received: from localhost (ipv6-163808adb974b8b7.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:1638:8ad:b974:b8b7])
+        by smtp.gmail.com with ESMTPSA id f6sm2881926edk.13.2021.02.04.10.15.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 10:15:53 -0800 (PST)
+Date:   Thu, 4 Feb 2021 19:15:41 +0100
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     thierry.reding@gmail.com, Fabio Estevam <festevam@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/panel: simple: add SGD GKTW70SDAD1SD
+Message-ID: <20210204181541.GA13054@portage>
+References: <1612287314-5384-1-git-send-email-oliver.graute@gmail.com>
+ <20210202175910.ycnf7ehk2i4u3f5o@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBw2aIr/Ktx1dsOT@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210202175910.ycnf7ehk2i4u3f5o@pengutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 06:01:12PM +0000, Quentin Perret wrote:
-> On Thursday 04 Feb 2021 at 17:48:49 (+0000), Will Deacon wrote:
-> > On Thu, Feb 04, 2021 at 02:52:52PM +0000, Quentin Perret wrote:
-> > > On Thursday 04 Feb 2021 at 14:31:08 (+0000), Will Deacon wrote:
-> > > > On Wed, Feb 03, 2021 at 06:33:30PM +0000, Quentin Perret wrote:
-> > > > > On Tuesday 02 Feb 2021 at 18:13:08 (+0000), Will Deacon wrote:
-> > > > > > On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
-> > > > > > > + *   __find_buddy(pool, page 0, order 0) => page 1
-> > > > > > > + *   __find_buddy(pool, page 0, order 1) => page 2
-> > > > > > > + *   __find_buddy(pool, page 1, order 0) => page 0
-> > > > > > > + *   __find_buddy(pool, page 2, order 0) => page 3
-> > > > > > > + */
-> > > > > > > +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
-> > > > > > > +				     unsigned int order)
-> > > > > > > +{
-> > > > > > > +	phys_addr_t addr = hyp_page_to_phys(p);
-> > > > > > > +
-> > > > > > > +	addr ^= (PAGE_SIZE << order);
-> > > > > > > +	if (addr < pool->range_start || addr >= pool->range_end)
-> > > > > > > +		return NULL;
-> > > > > > 
-> > > > > > Are these range checks only needed because the pool isn't required to be
-> > > > > > an exact power-of-2 pages in size? If so, maybe it would be more
-> > > > > > straightforward to limit the max order on a per-pool basis depending upon
-> > > > > > its size?
-> > > > > 
-> > > > > More importantly, it is because pages outside of the pool are not
-> > > > > guaranteed to be covered by the hyp_vmemmap, so I really need to make
-> > > > > sure I don't dereference them.
-> > > > 
-> > > > Wouldn't having a per-pool max order help with that?
-> > > 
-> > > The issue is, I have no alignment guarantees for the pools, so I may end
-> > > up with max_order = 0 ...
+On 02/02/21, Marco Felsch wrote:
+> Hi Oliver,
+> 
+> On 21-02-02 18:35, Oliver Graute wrote:
+> > Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
+> > to panel-simple.
 > > 
-> > Yeah, so you would still need the range tracking,
+> > The panel spec from Variscite can be found at:
+> > https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
+> > 
+> > Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
+> > Cc: Marco Felsch <m.felsch@pengutronix.de>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > ---
+> > 
+> > v3:
+> > 
+> > - added flags
+> > - added delay
 > 
-> Hmm actually I don't think I would, but that would essentially mean the
-> 'buddy' allocator is now turned into a free list of single pages
-> (because we cannot create pages of order 1).
+> Thanks, did you test the changes?
+> I just picked it from the datasheet.
 
-Right, I'm not suggesting we do that.
+yes, it didn't break anything. 
 
-> > but it would at least help
-> > to reduce HYP_MAX_ORDER failed searches each time. Still, we can always do
-> > that later.
-> 
-> Sorry but I am not following. In which case do we have HYP_MAX_ORDER
-> failed searches?
+Best regards,
 
-I was going from memory, but the loop in __hyp_alloc_pages() searches up to
-HYP_MAX_ORDER, whereas this is _never_ going to succeed beyond some per-pool
-order determined by the size of the pool. But I doubt it matters -- I
-thought we did more than just check a list.
-
-Will
+Oliver
