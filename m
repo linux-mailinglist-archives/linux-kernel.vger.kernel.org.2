@@ -2,121 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64F130EFD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B384A30EFBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235197AbhBDJhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbhBDJhg (ORCPT
+        id S235233AbhBDJcq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 04:32:46 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:43487 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233628AbhBDJcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:37:36 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB360C061573;
-        Thu,  4 Feb 2021 01:36:54 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id m13so2623167wro.12;
-        Thu, 04 Feb 2021 01:36:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Oeag4Q86b92xvRfgGJMTfVjxzKZ0rlCjKIMK5N8Lis=;
-        b=NRVv6KkKgg0JkGLw8hZUFvzgK29qku2cluPJ09C3ciq5AyJdUb1/sv7bDVwONhI+iN
-         gtoe/aVmhazwpPxjNMrvTZXd+lqgX/VFyANmybsmwokDs3LpF+HSdsSvnslFyBYNKi98
-         +LLN1M0vr6OrvvbMOYR7+6uM77AxEgkDA3OrAolSoTu91VuYu3XmzR/QU5zQfuK+yyrt
-         P6xiQdwseIO4Tyc8B3QPfvikWNUM9Fg9egR7qqlm2zldiW1oVfRsDNgo4eJes1Aoutzh
-         kSiLcWHklfN3PD2g0byW0w0jlZMW3g7v9VQbIirw0SyGcHpuuMHDq8Law/FmXgmzq9/k
-         jZrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Oeag4Q86b92xvRfgGJMTfVjxzKZ0rlCjKIMK5N8Lis=;
-        b=iPE9t7PMi+I6p4c1dm7kIJl0HGjH5LkVy4f/T+x1UY8b4LmhoK1QhL2XHFVnXLrnNX
-         UvYvesARR/+ZLdZ+Fb6Ku3fUSuF8o7HDLGE75HFhyQuE4bafceM0f3P4VBB1dUoYyMCP
-         PIl+lZdtGdvCnE8A2a0wAlJPE1xL2BHDdWCnkVI+J33IH3zcXB7DRzXibek49ovapeNb
-         Yi5tAAwiGOZB+kcKGUIex2ZqEMBqVqbSLKXGgOi6WDHXhHCdIUFVcz0nlv5BcbfSWrV/
-         uab2sI64MeMAhwp5kGYPyyLTboykBPoNcQAS9rY93Bfxz5C4kRyxWRF+pmW3i5KjBFv7
-         iXSA==
-X-Gm-Message-State: AOAM530nve5iQ0Mj5ws/TXv3QLLgD2JyBWfODmgv6F8mmoE7gxRsljj5
-        APmh7svH4uDQ7AJiD3bYCl4=
-X-Google-Smtp-Source: ABdhPJxrke1pDX5JESsPVh6sHda2lyYKhDQ32bCZyVN5cDvpPX1AftW8Rmv98EnwIElW53yuTWrqEQ==
-X-Received: by 2002:a5d:5708:: with SMTP id a8mr8177556wrv.211.1612431413492;
-        Thu, 04 Feb 2021 01:36:53 -0800 (PST)
-Received: from debian.vlc ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id 62sm5705742wmd.34.2021.02.04.01.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 01:36:53 -0800 (PST)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ipc.2: Fix prototype parameter types
-Date:   Thu,  4 Feb 2021 10:30:52 +0100
-Message-Id: <20210204093051.184049-1-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 4 Feb 2021 04:32:42 -0500
+X-Originating-IP: 86.210.203.150
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 16E051BF212;
+        Thu,  4 Feb 2021 09:31:52 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 10:31:52 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
+ unavailable
+Message-ID: <20210204103152.5d086525@xps13>
+In-Reply-To: <20210204102738.3ea8393e@collabora.com>
+References: <20210202041614.GA840@work>
+        <20210202091459.0c41a769@xps13>
+        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
+        <20210203110522.12f2b326@xps13>
+        <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+        <20210203111914.1c2f68f6@collabora.com>
+        <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
+        <20210203122422.6963b0ed@collabora.com>
+        <F55F9D7B-0542-448E-A711-D1035E467ACA@linaro.org>
+        <20210204091336.1406ca3b@xps13>
+        <20210204085221.GB8235@thinkpad>
+        <20210204095945.51ef0c33@collabora.com>
+        <20210204100408.6eb053d8@xps13>
+        <20210204102738.3ea8393e@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.../linux$ grep_syscall ipc
-ipc/syscall.c:110:
-SYSCALL_DEFINE6(ipc, unsigned int, call, int, first, unsigned long, second,
-		unsigned long, third, void __user *, ptr, long, fifth)
-ipc/syscall.c:205:
-COMPAT_SYSCALL_DEFINE6(ipc, u32, call, int, first, int, second,
-	u32, third, compat_uptr_t, ptr, u32, fifth)
-include/linux/compat.h:874:
-asmlinkage long compat_sys_ipc(u32, int, int, u32, compat_uptr_t, u32);
-include/linux/syscalls.h:1221:
-asmlinkage long sys_ipc(unsigned int call, int first, unsigned long second,
-		unsigned long third, void __user *ptr, long fifth);
-.../linux$
+Hi Boris,
 
-function grep_syscall()
-{
-	if ! [ -v 1 ]; then
-		>&2 echo "Usage: ${FUNCNAME[0]} <syscall>";
-		return ${EX_USAGE};
-	fi
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 4 Feb
+2021 10:27:38 +0100:
 
-	find * -type f \
-	|grep '\.c$' \
-	|sort -V \
-	|xargs pcregrep -Mn "(?s)^\w*SYSCALL_DEFINE.\(${1},.*?\)" \
-	|sed -E 's/^[^:]+:[0-9]+:/&\n/';
+> On Thu, 4 Feb 2021 10:04:08 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+> > Hi Boris,
+> > 
+> > Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 4 Feb
+> > 2021 09:59:45 +0100:
+> >   
+> > > On Thu, 4 Feb 2021 14:22:21 +0530
+> > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > >     
+> > > > On Thu, Feb 04, 2021 at 09:13:36AM +0100, Miquel Raynal wrote:      
+> > > > > Hi Manivannan,
+> > > > > 
+> > > > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
+> > > > > 03 Feb 2021 17:11:31 +0530:
+> > > > >         
+> > > > > > On 3 February 2021 4:54:22 PM IST, Boris Brezillon <boris.brezillon@collabora.com> wrote:        
+> > > > > > >On Wed, 03 Feb 2021 16:22:42 +0530
+> > > > > > >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > > > > > >          
+> > > > > > >> On 3 February 2021 3:49:14 PM IST, Boris Brezillon          
+> > > > > > ><boris.brezillon@collabora.com> wrote:          
+> > > > > > >> >On Wed, 03 Feb 2021 15:42:02 +0530
+> > > > > > >> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > > > > > >> >            
+> > > > > > >> >> >> 
+> > > > > > >> >> >> I got more information from the vendor, Telit. The access to          
+> > > > > > >the            
+> > > > > > >> >3rd              
+> > > > > > >> >> >partition is protected by Trustzone and any access in non          
+> > > > > > >privileged          
+> > > > > > >> >> >mode (where Linux kernel runs) causes kernel panic and the device
+> > > > > > >> >> >reboots.             
+> > > > > > >> >
+> > > > > > >> >Out of curiosity, is it a per-CS-line thing or is this section
+> > > > > > >> >protected on all CS?
+> > > > > > >> >            
+> > > > > > >> 
+> > > > > > >> Sorry, I didn't get your question.           
+> > > > > > >
+> > > > > > >The qcom controller can handle several chips, each connected through a
+> > > > > > >different CS (chip-select) line, right? I'm wondering if the firmware
+> > > > > > >running in secure mode has the ability to block access for a specific
+> > > > > > >CS line or if all CS lines have the same constraint. That will impact
+> > > > > > >the way you describe it in your DT (in one case the secure-region
+> > > > > > >property should be under the controller node, in the other case it
+> > > > > > >should be under the NAND chip node).          
+> > > > > > 
+> > > > > > Right. I believe the implementation is common to all NAND chips so the property should be in the controller node.         
+> > > > > 
+> > > > > Looks weird: do you mean that each of the chips will have a secure area?        
+> > > > 
+> > > > I way I said is, the "secure-region" property will be present in the controller
+> > > > node and not in the NAND chip node since this is not related to the device
+> > > > functionality.
+> > > > 
+> > > > But for referencing the NAND device, the property can have the phandle as below:
+> > > > 
+> > > > secure-region = <&nand0 0xffff>;      
+> > > 
+> > > My question was really what happens from a functional PoV. If you have
+> > > per-chip protection at the FW level, this property should be under the
+> > > NAND node. OTH, if the FW doesn't look at the selected chip before
+> > > blocking the access, it should be at the controller level. So, you
+> > > really have to understand what the secure FW does.    
+> > 
+> > I'm not so sure actually, that's why I like the phandle to nand0 -> in
+> > any case it's not a property of the NAND chip itself, it's kind of a
+> > host constraint, so I don't get why the property should be at the
+> > NAND node level?  
+> 
+> I would argue that we already have plenty of NAND properties that
+> encode things controlled by the host (ECC, partitions, HW randomizer,
+> boot device, and all kind of controller specific stuff) :P. Having
+> the props under the NAND node makes it clear what those things are
+> applied to, and it's also easier to parse for the driver (you already
+> have to parse each node to get the reg property anyway).
 
-	find * -type f \
-	|grep '\.[ch]$' \
-	|sort -V \
-	|xargs pcregrep -Mn "(?s)^asmlinkage\s+[\w\s]+\**sys_${1}\s*\(.*?\)" \
-	|sed -E 's/^[^:]+:[0-9]+:/&\n/';
-}
+Fair points.
 
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- man2/ipc.2 | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> > Also, we should probably support several secure regions (which could be
+> > a way to express the fact that the FW does not look at the CS)?  
+> 
+> Sure, the secure-region should probably be renamed secure-regions, even
+> if it's defined at the NAND chip level.
 
-diff --git a/man2/ipc.2 b/man2/ipc.2
-index 469185638..5cfa3df3e 100644
---- a/man2/ipc.2
-+++ b/man2/ipc.2
-@@ -27,9 +27,8 @@
- ipc \- System V IPC system calls
- .SH SYNOPSIS
- .nf
--.BI "int ipc(unsigned int " call ", int " first ", int " second \
--", int " third ,
--.BI "        void *" ptr ", long " fifth );
-+.BI "int ipc(unsigned int " call ", int " first ", unsigned long " second ,
-+.BI "        unsigned long " third ", void *" ptr ", long " fifth );
- .fi
- .SH DESCRIPTION
- .BR ipc ()
--- 
-2.30.0
+Absolutely.
 
+Thanks,
+Miquèl
