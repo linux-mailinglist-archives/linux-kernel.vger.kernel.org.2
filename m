@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4BD30FF8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2DA30FF7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBDVqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhBDVps (ORCPT
+        id S229972AbhBDVo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:44:56 -0500
+Received: from mail-qv1-f54.google.com ([209.85.219.54]:41058 "EHLO
+        mail-qv1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhBDVom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:45:48 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA536C061222
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 13:44:09 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id w11so2486888qvz.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 13:44:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H4BViZmMHUNQYYu9VpJJKST4ly897JCfdbGhTeJJKpE=;
-        b=qSmPUBrYZyY3E7e0B+TomSazy4rmNtQf+cbA4jP7UBTtDjl9PiOpNAr3+Bqq7oNlt1
-         VJVc2nQb82J0ITH+RisAG1+YoQiQxXURBSGzutmFYFfXV+ALtlvZD6sh7SsZ2kGu/P4V
-         QbfbZWGT9myU5nsQNwQSONpdrm2lqM/SgULmU/XMJ6UiPsowWnwa7WgZ3B1KnJr2AM8j
-         ddoBalsHmb1Cuxn3qx3JQ+wwscXVwBfWAIkDoYD1EtYFtMUSgNOTzYKnlSwCjE5f+ODz
-         2PeT5v0smAxAd73MhD8xWAhgHsROXc5Bn6PUNpphasf8wy1VmIRkpjOotBEP8HkcyheM
-         D7uQ==
+        Thu, 4 Feb 2021 16:44:42 -0500
+Received: by mail-qv1-f54.google.com with SMTP id h21so2497571qvb.8;
+        Thu, 04 Feb 2021 13:44:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H4BViZmMHUNQYYu9VpJJKST4ly897JCfdbGhTeJJKpE=;
-        b=FLsXl9io0DDCVd4rD8CLCwWpjBjxFoJsNIV/7OuK3/QruMtV60NrgFfFJfXyDLIwdN
-         Oe7A167NENI9aG6zHsqBlxE0g84Pa6/AM1QOCs1y2rSw15lYMqgHrbXPlNE9tZGs/QI+
-         tCLEMK1tIsRR62KvP/lTeTXfqfZ4O/y643QjkgvYOpk3D5eVo2y8k5zcc/KykDM3eGWa
-         iY2crHpd9SpNwwa6Y9kNgr6IXKUtIQlj6XqHtJoJFcnVMpscymO90xzLK3tvxJ7gmXhI
-         i+C97Q5sk6h8cgxTacZ0yKxLnpSZSzAfNNvZfzm6VFgRJJfD8RO8/kWh1mtzSFxcqoN0
-         O3TA==
-X-Gm-Message-State: AOAM530kDag6joYchICK2xOykyHiY4UfYWtgQJ+es4kTgzuFbhQwssTL
-        xzhVt+7gS1++K0aTBMAUsmSmZEEtOSQx/Q==
-X-Google-Smtp-Source: ABdhPJw7gaAXtBIKNQ9/gzv0zDWIcltELlQLThM40iQJ0Bswjyw4FanIBgMiEjXcVlfn4+s7tat9Vw==
-X-Received: by 2002:a05:6214:522:: with SMTP id x2mr1604236qvw.13.1612475048876;
-        Thu, 04 Feb 2021 13:44:08 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id h185sm6353858qkd.122.2021.02.04.13.44.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pKT1129goorIBDoVw07+oNDIAL0ruSPyAoYmTeYA4JM=;
+        b=Bn4a9GTTajo10p4tP/SXrggABMPkJiStl+9Rl154EHydZPM0sccgLHJBGlGUeXzuWR
+         n9ylZkthg6+C7NMtJrc5HylZAK3vlgmlZQMxAeyBATSzWDAGhdD3fzk7CZL8Sb7Oj8jM
+         njs8NZ2udBguOEgzT8/psSTweXcv+UbFQXmxWCK1/KP5APvKiuSt9EM0ZKIWuV59nJex
+         psAGevQyiZ1KpYlZYVOtSP4U8dW/8yU2D9ffU7GwQAWsyrfLfSfTvZCf/Ee1BB8Gqj9z
+         nfvwW7yx2SaUHds+sfC+l9+Q4dEjWvfOBTRJOLXNbzX3n4VHJiL3JuIqgOWVwBsMMK+5
+         ZjGg==
+X-Gm-Message-State: AOAM533a0v1fk95TsoUMhENJjzfLrGtuR+Jx5ur+4B/UQrOOsem+FaRk
+        2VoB0yhR2b18N0xauOHu+Kg=
+X-Google-Smtp-Source: ABdhPJz2GAyRB5K1dve72PPvUvmzJgXl6kFeOkPJ4uljCE4HZUquh+9dhzFcCpdxEuS+c3JQWtBHqg==
+X-Received: by 2002:a05:6214:a4f:: with SMTP id ee15mr1429073qvb.10.1612475041219;
+        Thu, 04 Feb 2021 13:44:01 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id p22sm6267413qkk.128.2021.02.04.13.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:44:08 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 09/11] crypto: qce: common: Set data unit size to message length for AES XTS transformation
-Date:   Thu,  4 Feb 2021 16:43:57 -0500
-Message-Id: <20210204214359.1993065-10-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210204214359.1993065-1-thara.gopinath@linaro.org>
-References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
+        Thu, 04 Feb 2021 13:44:00 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:43:58 -0500
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <YBxqnosGDroAnpio@rani.riverdale.lan>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
+ <YAH6r3lak/F2wndp@rani.riverdale.lan>
+ <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
+ <20210118202409.GG30090@zn.tnic>
+ <YAYAvBARSRSg8z8G@rani.riverdale.lan>
+ <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+ <20210203185148.GA1711888@localhost>
+ <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
+ <20210204105155.GA32255@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210204105155.GA32255@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the register REG_ENCR_XTS_DU_SIZE to cryptlen for AES XTS
-transformation. Anything else causes the engine to return back
-wrong results.
+On Thu, Feb 04, 2021 at 11:51:55AM +0100, Borislav Petkov wrote:
+> On Wed, Feb 03, 2021 at 09:29:18PM +0100, Ard Biesheuvel wrote:
+> > I think we have agreement on the approach but it is unclear who is
+> > going to write the patch.
+> 
+> How's that below?
+> 
+> And frankly, I'd even vote for removing those assertions altogether. If
+> somehow the EFI pgd lands somewhere else, the kernel will crash'n'burn
+> spectacularly and quickly so it's not like we won't catch it...
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/crypto/qce/common.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Removing altogether should be fine, but see below if we don't.
 
-diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-index a73db2a5637f..f7bc701a4aa2 100644
---- a/drivers/crypto/qce/common.c
-+++ b/drivers/crypto/qce/common.c
-@@ -295,15 +295,15 @@ static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
- {
- 	u32 xtskey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(u32)] = {0};
- 	unsigned int xtsklen = enckeylen / (2 * sizeof(u32));
--	unsigned int xtsdusize;
- 
- 	qce_cpu_to_be32p_array((__be32 *)xtskey, enckey + enckeylen / 2,
- 			       enckeylen / 2);
- 	qce_write_array(qce, REG_ENCR_XTS_KEY0, xtskey, xtsklen);
- 
--	/* xts du size 512B */
--	xtsdusize = min_t(u32, QCE_SECTOR_SIZE, cryptlen);
--	qce_write(qce, REG_ENCR_XTS_DU_SIZE, xtsdusize);
-+	/* Set data unit size to cryptlen. Anything else causes
-+	 * crypto engine to return back incorrect results.
-+	 */
-+	qce_write(qce, REG_ENCR_XTS_DU_SIZE, cryptlen);
- }
- 
- static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
--- 
-2.25.1
+> 
+> ---
+> diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
+> index 91ac10654570..b6be19c09841 100644
+> --- a/arch/x86/include/asm/pgtable_64_types.h
+> +++ b/arch/x86/include/asm/pgtable_64_types.h
+> @@ -156,8 +156,8 @@ extern unsigned int ptrs_per_p4d;
+>  #define CPU_ENTRY_AREA_PGD	_AC(-4, UL)
+>  #define CPU_ENTRY_AREA_BASE	(CPU_ENTRY_AREA_PGD << P4D_SHIFT)
+>  
+> -#define EFI_VA_START		( -4 * (_AC(1, UL) << 30))
+> -#define EFI_VA_END		(-68 * (_AC(1, UL) << 30))
+> +#define EFI_VA_START		( -4UL * (_AC(1, UL) << 30))
+> +#define EFI_VA_END		(-68UL * (_AC(1, UL) << 30))
 
+This doesn't have any effect right? And the reason for the _AC() stuff
+in there is to allow the #define to be used in assembler -- this
+particular one isn't, but it makes no sense to use the UL suffix as well
+as _AC() in the same macro.
+
+>  
+>  #define EARLY_DYNAMIC_PAGE_TABLES	64
+>  
+> diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+> index e1e8d4e3a213..56fdc0bbb554 100644
+> --- a/arch/x86/platform/efi/efi_64.c
+> +++ b/arch/x86/platform/efi/efi_64.c
+> @@ -123,9 +123,7 @@ void efi_sync_low_kernel_mappings(void)
+>  	 * only span a single PGD entry and that the entry also maps
+>  	 * other important kernel regions.
+>  	 */
+> -	MAYBE_BUILD_BUG_ON(pgd_index(EFI_VA_END) != pgd_index(MODULES_END));
+> -	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) !=
+> -			(EFI_VA_END & PGDIR_MASK));
+> +	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) != PGDIR_MASK);
+
+This check is superfluous. Just do the P4D one.
+
+>  
+>  	pgd_efi = efi_pgd + pgd_index(PAGE_OFFSET);
+>  	pgd_k = pgd_offset_k(PAGE_OFFSET);
+> @@ -137,8 +135,7 @@ void efi_sync_low_kernel_mappings(void)
+>  	 * As with PGDs, we share all P4D entries apart from the one entry
+>  	 * that covers the EFI runtime mapping space.
+>  	 */
+> -	BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> -	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> +	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != P4D_MASK);
+
+This should check EFI_VA_END instead of EFI_VA_START, and maybe throw in
+a BUG_ON if EFI_VA_END >= EFI_VA_START.
+
+>  
+>  	pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
+>  	pgd_k = pgd_offset_k(EFI_VA_END);
+> 
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
