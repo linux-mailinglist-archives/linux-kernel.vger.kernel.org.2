@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154F730FBDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5BC30FC18
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239296AbhBDSqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:46:02 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:37497 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239277AbhBDSmI (ORCPT
+        id S239465AbhBDS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239292AbhBDSmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:42:08 -0500
-Received: by mail-ot1-f51.google.com with SMTP id k25so2295696otb.4;
-        Thu, 04 Feb 2021 10:41:48 -0800 (PST)
+        Thu, 4 Feb 2021 13:42:17 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A92C06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:41:32 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id f19so4658878ljn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:41:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
+        b=wwOS3lN7TXu7QWeoGhYz2RQIaOHUMrxwlkR7ONEgKZc8tcuOjeXZTXB1WKjKgAsbTt
+         yBmSE3VnOWAKWOMUea3DJjb2qXnmzvGek24oz8Rn6MMVgsK6wQrdn+irVG6eFfiwAFAq
+         /d6esWbvjJAsIQ26Ihjbz7XJe2at9o+eKRRE8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WgEwsAIbfzk4F3LDN+BENUCsaMunUKWsUBAGbFyp4AQ=;
-        b=eFG0h+tduXnyfEqzQzdkQ16zYz1Be42Jq65tfQnVoMHYn8ztt/sFsLDwJdQ08xG3Gd
-         oewlMvWCXC7CxmKi+7Pke1R3XqELLd72lxPp6xQt8DPCwtlwBqk0e0RpQ5AL2AqqtpSf
-         EABdXnNhKHhXcgcNl02DaApyRZZt3jc9e/Oj7VOAzOdOsZtYnwqx8otUnbczqVds2+Fz
-         xDEzqjugzV3khuYKxgIY0YiSt0vyaEO/2CK+2g+jAKBQfXPZtZhuibWKa5OAb/nRqmYT
-         uO1mUDRGP4FkiWslgELdsJYcUmQzZvC0S+Ulg4EdnN9sQ4DC8mDtmcjTorq8K9Z3RWBF
-         M2gg==
-X-Gm-Message-State: AOAM530KqV+R+zgn32dgh9MvFpVL3jIB9Q8cjcpuBkJ4rZREH3/M6djP
-        zZSIdHRcbrsWHS+cA3HudZPHwJsTDK1CHF67rrotPWJFD2A=
-X-Google-Smtp-Source: ABdhPJz2z2Hqnks7YBT+qY42QfOItvN7soEw5DnHRTXG15SX/Dvqtg9DK6HpLvBH1F1zj5OFwYsdzlOitHcy+Ussrj4=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr611814otm.206.1612464083340;
- Thu, 04 Feb 2021 10:41:23 -0800 (PST)
+        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
+        b=ocyD7F4TNPKrZnvM+9K/QpTMKLCnQiPJQJcMYNQ+HR6hexerP80wxXQBUqsadbn+Id
+         4Am35Cq3uRkaokveupZ23Kq/BEn+DQnc+d5/E4k+iMV5tMeWsNZLIDNplpU/ZZqcTeJC
+         L2miLJqy8rmv5M8IMBhjx+Ye6dsz0tzCHl/lDpukiIoiiyoK93uDq2K2zf8yaX1d9XTk
+         j7AAGyVSB9IoRmp4KlKjd/dbHjjMoHq30ZSnCL0VhDmNL9K3lKfdUbd7d/Cl6Yn0ksFC
+         yb9e+uhj717WaxddP3lMZjY7sqX5Mr0QC2ZH5DQ+nDfQbcChMkYGk6ZDXlEm2HCJVuYp
+         wzlg==
+X-Gm-Message-State: AOAM532wtCh70Uezxzi6RoIKFl9L0vLLoNzOEBihj9g3O6U4+dET2++E
+        CxVY92fAN3psCI/y8Tautf8dO7tp/+TmgGetUKu5Bw==
+X-Google-Smtp-Source: ABdhPJwJtrhYEdPaQdR6fHW3cU2NP6bOoOiL2TtDHuAX1Y9bu5c2RTiAw480hYJajzznm79yfeZHPAMVBc9ok0h1jMo=
+X-Received: by 2002:a2e:9b57:: with SMTP id o23mr427754ljj.314.1612464090601;
+ Thu, 04 Feb 2021 10:41:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com>
- <20210202043345.3778765-3-saravanak@google.com> <CAJZ5v0g6t4kWaMrhj35G01_6t1rrOhOe8Vqa9bAanJDaE5+zCA@mail.gmail.com>
- <CAGETcx-nYs2Ab+sxyvT7pixWTrzLYkr3GbaRv2m16vAcpBD-DQ@mail.gmail.com>
-In-Reply-To: <CAGETcx-nYs2Ab+sxyvT7pixWTrzLYkr3GbaRv2m16vAcpBD-DQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Feb 2021 19:41:12 +0100
-Message-ID: <CAJZ5v0jeY3dFRCZr0h874q=dFQ7CvPy2XnemGQ6Zh5xB_Bu+ZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] driver core: fw_devlink: Handle missing drivers
- for optional suppliers
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <20210203214448.2703930e@oasis.local.home> <20210204030948.dmsmwyw6fu5kzgey@treble>
+In-Reply-To: <20210204030948.dmsmwyw6fu5kzgey@treble>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Thu, 4 Feb 2021 10:41:18 -0800
+Message-ID: <CABWYdi15x=-2qenWSdX_ONSha_Pz7GFJrx8axN6CJS5cWxTTSg@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 8:47 PM Saravana Kannan <saravanak@google.com> wrote:
+On Wed, Feb 3, 2021 at 7:10 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> This line gives a big clue:
 >
-> On Tue, Feb 2, 2021 at 6:34 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Tue, Feb 2, 2021 at 5:33 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-
-[cut]
-
-> >
-> > > + *
-> > > + * This function requests fw_devlink to set itself up for a deferred probe
-> > > + * retry. This allows fw_devlink to ignore device links it created to
-> > > + * suppliers that'll never probe. This is necessary in case some of the
-> > > + * suppliers are optional and their consumers can probe without them.
-> > > + *
-> > > + * Returns true if deferred probe retry is likely to make any difference.
-> > > + */
-> > > +bool fw_devlink_deferred_probe_retry(void)
-> > > +{
-> > > +       if (IS_ENABLED(CONFIG_MODULES))
-> > > +               return false;
-> >
-> > To make the above more visible, I'd fold this function into the caller.
+>   [160676.608966][    C4] RIP: 0010:0xffffffffc17d814c
 >
-> I had written it this way because I'm thinking of adding a timeout
-> heuristic for MODULES in here. I can move it to the caller if you feel
-> strongly about it.
+> That address, without a function name, most likely means that it was
+> running in some generated code (mostly likely BPF) when it got
+> interrupted.
 
-Not really strongly, but then moving it back when you need doesn't
-sound particularly troublesome to me. :-)
+We do have eBPF/XDP in our environment.
 
-> >
-> > > +
-> > > +       fw_devlink_def_probe_retry = true;
-> > > +       return fw_devlink_get_flags() && !fw_devlink_is_permissive();
-> > > +}
-> > > +
-> > >  /**
-> > >   * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
-> > >   * @con - Consumer device for the device link
-> > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > index 9179825ff646..11325df2327f 100644
-> > > --- a/drivers/base/dd.c
-> > > +++ b/drivers/base/dd.c
-> > > @@ -317,6 +317,11 @@ static int deferred_probe_initcall(void)
-> > >         driver_deferred_probe_trigger();
-> > >         /* Sort as many dependencies as possible before exiting initcalls */
-> > >         flush_work(&deferred_probe_work);
-> > > +
-> > > +       if (fw_devlink_deferred_probe_retry()) {
-> > > +               driver_deferred_probe_trigger();
-> > > +               flush_work(&deferred_probe_work);
-> > > +       }
-> > >         initcalls_done = true;
-> > >
-> > >         /*
-> > > --
-> >
-> > Overall, the "let's do nothing if modules are not enabled" approach is
-> > a bit disappointing, because what if somebody builds all of the
-> > drivers needed for boot in and enables modules anyway, for example to
-> > allow USB drivers to be probed dynamically?
+> Right now, the ORC unwinder tries to fall back to frame pointers when it
+> encounters generated code:
 >
-> Yeah, I'm disappointed too :( But I'm trying to get it to work for
-> !MODULES so that we can enable fw_devlink=on by default at least for
-> !MODULES to make sure drivers don't introduce more issues going
-> forward. And then I plan to continue working on making it work
-> correctly for MODULES case too.
+>         orc = orc_find(state->signal ? state->ip : state->ip - 1);
+>         if (!orc)
+>                 /*
+>                  * As a fallback, try to assume this code uses a frame pointer.
+>                  * This is useful for generated code, like BPF, which ORC
+>                  * doesn't know about.  This is just a guess, so the rest of
+>                  * the unwind is no longer considered reliable.
+>                  */
+>                 orc = &orc_fp_entry;
+>                 state->error = true;
+>         }
 >
-> Getting fw_devlink=on to work perfectly for MODULES and !MODULES is
-> not a problem at all. But it needs fixing a bunch of drivers (mostly
-> simple fixes like setting the right flag, handling deferred probes
-> correctly, etc), but I'm hitting a catch-22 here. I can't find the
-> drivers without setting fw_devlink=on by default. But if I did that,
-> it's going to break a bunch of boards.
+> Because the ORC unwinder is guessing from that point onward, it's
+> possible for it to read the KASAN stack redzone, if the generated code
+> hasn't set up frame pointers.  So the best fix may be for the unwinder
+> to just always bypass KASAN when reading the stack.
 >
-> What's your thought on leaving fw_devlink=on by default on 5.12 and
-> fixing drivers as issues are reported?
+> The unwinder has a mechanism for detecting and warning about
+> out-of-bounds, and KASAN is short-circuiting that.
+>
+> This should hopefully get rid of *all* the KASAN unwinder warnings, both
+> crypto and networking.
 
-If there are any issues known today that need to be addressed, I'd fix
-them first and then try to enable fw_devlink=on maybe just for
-!MODULES to start with.
+It definitely worked on my dm-crypt case, and I've tried it without
+your previous AVX related patch. I will apply it to our tree and
+deploy to the staging KASAN environment to see how it fares with
+respect to networking stacks. Feel free to ping me if I don't get back
+to you with the results on Monday.
 
-> If that's a no, do you have any other ideas on how to deal with this catch-22?
-
-Try to enable, fix issues as they show up in linux-next.  If there are
-still outstanding issues before the next release, back off and try in
-the next cycle.  Repeat.
-
-This doesn't sound particularly attractive, but I don't have any
-better idea, sorry.
+Thanks for looking into this!
