@@ -2,56 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE7930EDF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9236730EDFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhBDIFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:05:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234841AbhBDIEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:04:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F7F64E31;
-        Thu,  4 Feb 2021 08:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612425833;
-        bh=l9ZMtxaWdlJ1HbbmtjUwxdoQZJ9SJ+NLgrPaOz9k7aY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ezlazHLvCAOyaozx0y2isxj4ErAbPbIVApegzjf/SLS9X5vRKNabzavRgeLvnNWgh
-         tjH6TMNmy3m6HcvF1L+nFvh80zgOaYfyduYGxx2XtTyebBIGVFmv63oXtI2rKB7xo8
-         l7iCJUCrGj+8J7XfDsBEifXKI9/5Fvdv/+gOZIEZ1cqQaaPKff7VnmNTc0otT5Nbsr
-         wnu30TQUHoY//+wfuUNPYuKpNDadKOmHpqCw6atnNirzZxnUjmDIflN3bH2sVDaCXT
-         9dX8/4sJJ8tOd7slEAd8A6RU7p/zF5itofJ2jZ2r3C6nC+9jKkn18+87rNkVIRPJlm
-         53e423qQDwHiQ==
-Date:   Thu, 4 Feb 2021 13:33:49 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        David Gow <davidgow@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 10/14] phy: phy-hi3670-usb3: move driver from staging
- into phy
-Message-ID: <20210204080349.GL3079@vkoul-mobl.Dlink>
-References: <cover.1611932194.git.mchehab+huawei@kernel.org>
- <810f286cade454acda418b9e5f39bb3a595e871a.1611932194.git.mchehab+huawei@kernel.org>
+        id S234865AbhBDIFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:05:40 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12419 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234863AbhBDIFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:05:16 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DWWJc1DFVzjGlq;
+        Thu,  4 Feb 2021 16:03:28 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 16:04:24 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <borntraeger@de.ibm.com>, <frankja@linux.ibm.com>,
+        <david@redhat.com>, <cohuck@redhat.com>, <imbrenda@linux.ibm.com>,
+        <hca@linux.ibm.com>, <gor@linux.ibm.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] KVM: s390: Return the correct errno code
+Date:   Thu, 4 Feb 2021 16:05:23 +0800
+Message-ID: <20210204080523.18943-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <810f286cade454acda418b9e5f39bb3a595e871a.1611932194.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-01-21, 16:03, Mauro Carvalho Chehab wrote:
-> The phy USB3 driver for Hisilicon 970 (hi3670) is ready
-> for mainstream. Mode it from staging into the main driver's
-> phy/ directory.
+When valloc failed, should return ENOMEM rather than ENOBUF.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ arch/s390/kvm/interrupt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
+index 2f177298c663..6b7acc27cfa2 100644
+--- a/arch/s390/kvm/interrupt.c
++++ b/arch/s390/kvm/interrupt.c
+@@ -2252,7 +2252,7 @@ static int get_all_floating_irqs(struct kvm *kvm, u8 __user *usrbuf, u64 len)
+ 	 */
+ 	buf = vzalloc(len);
+ 	if (!buf)
+-		return -ENOBUFS;
++		return -ENOMEM;
+ 
+ 	max_irqs = len / sizeof(struct kvm_s390_irq);
+ 
 -- 
-~Vinod
+2.22.0
+
