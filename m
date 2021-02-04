@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4A330FEBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE72B30FEB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBDUpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:45:36 -0500
-Received: from marcansoft.com ([212.63.210.85]:33612 "EHLO mail.marcansoft.com"
+        id S230037AbhBDUpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:45:19 -0500
+Received: from marcansoft.com ([212.63.210.85]:33356 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhBDUmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:42:37 -0500
+        id S229690AbhBDUmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:42:09 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 8A1E742862;
-        Thu,  4 Feb 2021 20:40:55 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3A1C942864;
+        Thu,  4 Feb 2021 20:40:59 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     Hector Martin <marcan@marcan.st>, soc@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
         Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
         Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: [PATCH 15/18] irqchip/apple-aic: Add support for the Apple Interrupt Controller
-Date:   Fri,  5 Feb 2021 05:39:48 +0900
-Message-Id: <20210204203951.52105-16-marcan@marcan.st>
+Subject: [PATCH 16/18] irqchip/apple-aic: Add SMP / IPI support
+Date:   Fri,  5 Feb 2021 05:39:49 +0900
+Message-Id: <20210204203951.52105-17-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210204203951.52105-1-marcan@marcan.st>
 References: <20210204203951.52105-1-marcan@marcan.st>
@@ -36,389 +36,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the root interrupt controller used on Apple ARM SoCs such as the
-M1. This irqchip driver performs multiple functions:
-
-* Discriminates between IRQs and FIQs
-
-* Drives the AIC peripheral itself (which handles IRQs)
-
-* Dispatches FIQs to downstream hard-wired clients (currently the ARM
-  timer).
-
-This patch introduces basic UP irqchip support, without SMP/IPI support.
+Since the hardware IRQ controller only supports two IPIs per CPU and
+Linux needs more, we implement 32 virtual IPIs using software and funnel
+them through a single hardware IPI.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- MAINTAINERS                     |   1 +
- drivers/irqchip/Kconfig         |  10 +
- drivers/irqchip/Makefile        |   1 +
- drivers/irqchip/irq-apple-aic.c | 316 ++++++++++++++++++++++++++++++++
- 4 files changed, 328 insertions(+)
- create mode 100644 drivers/irqchip/irq-apple-aic.c
+ drivers/irqchip/irq-apple-aic.c | 195 +++++++++++++++++++++++++++++++-
+ 1 file changed, 190 insertions(+), 5 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f3d4661731c8..3a54ee5747d3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1635,6 +1635,7 @@ C:	irc://chat.freenode.net/asahi-dev
- T:	git https://github.com/AsahiLinux/linux.git
- F:	Documentation/devicetree/bindings/arm/AAPL.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
-+F:	drivers/irqchip/irq-apple-aic.c
- F:	include/dt-bindings/interrupt-controller/apple-aic.h
- 
- ARM/ARTPEC MACHINE SUPPORT
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index b147f22a78f4..288c01a9abd4 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -590,4 +590,14 @@ config MST_IRQ
- 	help
- 	  Support MStar Interrupt Controller.
- 
-+config APPLE_AIC
-+	bool "Apple Interrupt Controller (AIC)"
-+	depends on ARCH_APPLE || COMPILE_TEST
-+	default ARCH_APPLE
-+	select IRQ_DOMAIN
-+	select IRQ_DOMAIN_HIERARCHY
-+	help
-+	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
-+	  such as the M1.
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 0ac93bfaec61..0e2ba7c2dce7 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
-+obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
 diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-aic.c
-new file mode 100644
-index 000000000000..533e3ce9f432
---- /dev/null
+index 533e3ce9f432..daeffcca67ca 100644
+--- a/drivers/irqchip/irq-apple-aic.c
 +++ b/drivers/irqchip/irq-apple-aic.c
-@@ -0,0 +1,316 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright 2021 Hector Martin <marcan@marcan.st>
-+ *
-+ * Based on irq-lpc32xx:
-+ *   Copyright 2015-2016 Vladimir Zapolskiy <vz@mleia.com>
-+ * Based on irq-bcm2836:
-+ *   Copyright 2015 Broadcom
-+ */
+@@ -26,7 +26,9 @@
+  *
+  * Implementation notes:
+  *
+- * - This driver creates one IRQ domain for HW IRQs and the timer FIQs
++ * - This driver creates two IRQ domains, one for HW IRQs and the timer FIQs, and one for IPIs
++ * - Since Linux needs more than 2 IPIs, we implement a software IRQ controller and funnel all IPIs
++ *   into one per-CPU IPI (the second "self" IPI is unused).
+  * - FIQ hwirq numbers are assigned after true hwirqs, and are per-cpu
+  * - DT bindings use 3-cell form (like GIC):
+  *   - <0 nr flags> - hwirq #nr
+@@ -34,8 +36,8 @@
+  *     - nr=0  physical timer
+  *     - nr=1  virtual timer
+  *   - <2 nr flags> - IPI #nr
+- *     - nr=0  other IPI
+- *     - nr=1  self IPI
++ *     - nr=0  other IPI (used internally for the virtual IPIs)
++ *     - nr=1  self IPI (unused)
+  *
+  */
+ 
+@@ -91,6 +93,7 @@
+ 
+ #define AIC_NR_FIQ		2
+ #define AIC_NR_IPI		2
++#define AIC_NR_SWIPI		32
+ 
+ /*
+  * Max 31 bits in IPI SEND register (top bit is self).
+@@ -101,9 +104,14 @@
+ struct aic_irq_chip {
+ 	void __iomem *base;
+ 	struct irq_domain *hw_domain;
++	struct irq_domain *ipi_domain;
+ 	int nr_hw;
++	int ipi_hwirq;
+ };
+ 
++atomic_t aic_vipi_flag[AIC_MAX_CPUS];
++atomic_t aic_vipi_mask[AIC_MAX_CPUS];
 +
-+/*
-+ * AIC is a fairly simple interrupt controller with the following features:
-+ *
-+ * - 896 level-triggered hardware IRQs
-+ *   - Single mask bit per IRQ
-+ *   - Per-IRQ affinity setting
-+ *   - Automatic masking on event delivery (auto-ack)
-+ *   - Software triggering (ORed with hw line)
-+ * - 2 per-CPU IPIs (meant as "self" and "other", but they are interchangeable if not symmetric)
-+ * - Automatic prioritization (single event/ack register per CPU, lower IRQs = higher priority)
-+ * - Automatic masking on ack
-+ * - Default "this CPU" register view and explicit per-CPU views
-+ *
-+ * In addition, this driver also handles FIQs, as these are routed to the same IRQ vector. These
-+ * are used for Fast IPIs (TODO) and the ARMv8 timer IRQs.
-+ *
-+ * Implementation notes:
-+ *
-+ * - This driver creates one IRQ domain for HW IRQs and the timer FIQs
-+ * - FIQ hwirq numbers are assigned after true hwirqs, and are per-cpu
-+ * - DT bindings use 3-cell form (like GIC):
-+ *   - <0 nr flags> - hwirq #nr
-+ *   - <1 nr flags> - FIQ #nr
-+ *     - nr=0  physical timer
-+ *     - nr=1  virtual timer
-+ *   - <2 nr flags> - IPI #nr
-+ *     - nr=0  other IPI
-+ *     - nr=1  self IPI
-+ *
-+ */
-+
-+#define pr_fmt(fmt) "%s: " fmt, __func__
-+
-+#include <linux/io.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+#include <linux/slab.h>
-+#include <asm/exception.h>
-+
-+#include <dt-bindings/interrupt-controller/apple-aic.h>
-+
-+#define AIC_INFO		0x0004
-+#define AIC_INFO_NR_HW(i)	((i) & 0x0000ffff)
-+
-+#define AIC_CONFIG		0x0010
-+
-+#define AIC_WHOAMI		0x2000
-+#define AIC_EVENT		0x2004
-+
-+#define AIC_EVENT_TYPE_HW	1
-+#define AIC_EVENT_TYPE_IPI	4
-+#define AIC_EVENT_IPI_OTHER	1
-+#define AIC_EVENT_IPI_SELF	2
-+
-+#define AIC_IPI_SEND		0x2008
-+#define AIC_IPI_ACK		0x200c
-+#define AIC_IPI_MASK_SET	0x2024
-+#define AIC_IPI_MASK_CLR	0x2028
-+
-+#define AIC_IPI_SEND_CPU(cpu)	BIT(cpu)
-+
-+#define AIC_IPI_OTHER		BIT(0)
-+#define AIC_IPI_SELF		BIT(31)
-+
-+#define AIC_TARGET_CPU		0x3000
-+#define AIC_SW_SET		0x4000
-+#define AIC_SW_CLR		0x4080
-+#define AIC_MASK_SET		0x4100
-+#define AIC_MASK_CLR		0x4180
-+
-+#define AIC_CPU_IPI_SET(cpu)	(0x5008 + (cpu << 7))
-+#define AIC_CPU_IPI_CLR(cpu)	(0x500c + (cpu << 7))
-+#define AIC_CPU_IPI_MASK_SET(cpu) (0x5024 + (cpu << 7))
-+#define AIC_CPU_IPI_MASK_CLR(cpu) (0x5028 + (cpu << 7))
-+
-+#define MASK_REG(x)		(4 * ((x) >> 5))
-+#define MASK_BIT(x)		BIT((x) & 0x1f)
-+
-+#define AIC_NR_FIQ		2
-+#define AIC_NR_IPI		2
-+
-+/*
-+ * Max 31 bits in IPI SEND register (top bit is self).
-+ * >=32-core chips will need code changes anyway.
-+ */
-+#define AIC_MAX_CPUS 31
-+
-+struct aic_irq_chip {
-+	void __iomem *base;
-+	struct irq_domain *hw_domain;
-+	int nr_hw;
-+};
-+
-+static struct aic_irq_chip *aic_irqc;
-+
-+static inline u32 aic_ic_read(struct aic_irq_chip *ic, u32 reg)
+ static struct aic_irq_chip *aic_irqc;
+ 
+ static inline u32 aic_ic_read(struct aic_irq_chip *ic, u32 reg)
+@@ -159,6 +167,11 @@ static void aic_handle_irq(struct pt_regs *regs)
+ 		if (type == AIC_EVENT_TYPE_HW) {
+ 			handle_domain_irq(aic_irqc->hw_domain, irq, regs);
+ 		} else if (type == AIC_EVENT_TYPE_IPI) {
++			/*
++			 * Ensure loads from normal memory are ordered with respect to the wmb()
++			 * in aic_ipi_send_mask().
++			 */
++			rmb();
+ 			handle_domain_irq(aic_irqc->hw_domain,
+ 					  ic->nr_hw + AIC_NR_FIQ + irq - 1, regs);
+ 		} else {
+@@ -202,11 +215,33 @@ static void __exception_irq_entry aic_handle_irq_or_fiq(struct pt_regs *regs)
+ 		aic_handle_irq(regs);
+ }
+ 
++static int aic_irq_set_affinity(struct irq_data *d,
++				const struct cpumask *mask_val, bool force)
 +{
-+	return readl(ic->base + reg);
-+}
-+
-+static inline void aic_ic_write(struct aic_irq_chip *ic, u32 reg, u32 val)
-+{
-+	writel(val, ic->base + reg);
-+}
-+
-+/* These functions do nothing for FIQs, because they have no masks */
-+static void aic_irq_mask(struct irq_data *d)
-+{
++	irq_hw_number_t hwirq = irqd_to_hwirq(d);
 +	struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
++	int cpu;
 +
-+	if (d->hwirq < ic->nr_hw)
-+		aic_ic_write(ic, AIC_MASK_SET + MASK_REG(d->hwirq),
-+			     MASK_BIT(d->hwirq));
-+}
-+
-+static void aic_irq_unmask(struct irq_data *d)
-+{
-+	struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
-+
-+	if (d->hwirq < ic->nr_hw)
-+		aic_ic_write(ic, AIC_MASK_CLR + MASK_REG(d->hwirq),
-+			     MASK_BIT(d->hwirq));
-+}
-+
-+static void aic_irq_eoi(struct irq_data *d)
-+{
-+	/*
-+	 * Reading the interrupt reason automatically acknowledges and masks
-+	 * the IRQ, so we just unmask it here if needed.
-+	 */
-+	if (!irqd_irq_disabled(d) && !irqd_irq_masked(d))
-+		aic_irq_unmask(d);
-+}
-+
-+static void aic_handle_irq(struct pt_regs *regs)
-+{
-+	struct aic_irq_chip *ic = aic_irqc;
-+	u32 event = aic_ic_read(ic, AIC_EVENT);
-+
-+	while (event) {
-+		u32 type = event >> 16, irq = event & 0xffff;
-+
-+		/* AIC_EVENT is read-sensitive, ensure it happens before we proceed */
-+		isb();
-+
-+		if (type == AIC_EVENT_TYPE_HW) {
-+			handle_domain_irq(aic_irqc->hw_domain, irq, regs);
-+		} else if (type == AIC_EVENT_TYPE_IPI) {
-+			handle_domain_irq(aic_irqc->hw_domain,
-+					  ic->nr_hw + AIC_NR_FIQ + irq - 1, regs);
-+		} else {
-+			pr_err("spurious IRQ event %d, %d\n", type, irq);
-+		}
-+
-+		event = aic_ic_read(ic, AIC_EVENT);
-+	}
-+}
-+
-+#define TIMER_FIRING(x)                                                        \
-+	(((x) & (ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_MASK |            \
-+		 ARCH_TIMER_CTRL_IT_STAT)) ==                                  \
-+	 (ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_STAT))
-+
-+static void aic_handle_fiq(struct pt_regs *regs)
-+{
-+	/*
-+	 * It would be really nice to find a system register that lets us get the FIQ source
-+	 * state without having to peek down into clients...
-+	 */
-+	if (TIMER_FIRING(read_sysreg(cntp_ctl_el0))) {
-+		handle_domain_irq(aic_irqc->hw_domain,
-+				  aic_irqc->nr_hw + AIC_TMR_PHYS, regs);
-+	}
-+
-+	if (TIMER_FIRING(read_sysreg(cntv_ctl_el0))) {
-+		handle_domain_irq(aic_irqc->hw_domain,
-+				  aic_irqc->nr_hw + AIC_TMR_VIRT, regs);
-+	}
-+}
-+
-+static void __exception_irq_entry aic_handle_irq_or_fiq(struct pt_regs *regs)
-+{
-+	u64 isr = read_sysreg(isr_el1);
-+
-+	if (isr & PSR_F_BIT)
-+		aic_handle_fiq(regs);
-+
-+	if (isr & PSR_I_BIT)
-+		aic_handle_irq(regs);
-+}
-+
-+static struct irq_chip aic_chip = {
-+	.name = "AIC",
-+	.irq_mask = aic_irq_mask,
-+	.irq_unmask = aic_irq_unmask,
-+	.irq_eoi = aic_irq_eoi,
-+};
-+
-+static int aic_irq_domain_map(struct irq_domain *id, unsigned int irq,
-+			      irq_hw_number_t hw)
-+{
-+	struct aic_irq_chip *ic = id->host_data;
-+
-+	irq_set_chip_data(irq, ic);
-+	if (hw < ic->nr_hw) {
-+		irq_set_chip_and_handler(irq, &aic_chip, handle_fasteoi_irq);
-+	} else {
-+		irq_set_percpu_devid(irq);
-+		irq_set_chip_and_handler(irq, &aic_chip,
-+					 handle_percpu_devid_irq);
-+	}
-+	irq_set_status_flags(irq, IRQ_LEVEL);
-+	irq_set_noprobe(irq);
-+
-+	return 0;
-+}
-+
-+static void aic_irq_domain_unmap(struct irq_domain *id, unsigned int irq)
-+{
-+	irq_set_chip_and_handler(irq, NULL, NULL);
-+}
-+
-+static int aic_irq_domain_xlate(struct irq_domain *id,
-+				struct device_node *ctrlr, const u32 *intspec,
-+				unsigned int intsize,
-+				irq_hw_number_t *out_hwirq,
-+				unsigned int *out_type)
-+{
-+	struct aic_irq_chip *ic = id->host_data;
-+
-+	if (intsize != 3)
++	if (hwirq > ic->nr_hw)
 +		return -EINVAL;
 +
-+	if (intspec[0] == AIC_IRQ && intspec[1] < ic->nr_hw)
-+		*out_hwirq = intspec[1];
-+	else if (intspec[0] == AIC_FIQ && intspec[1] < AIC_NR_FIQ)
-+		*out_hwirq = ic->nr_hw + intspec[1];
-+	else if (intspec[0] == AIC_IPI && intspec[1] < AIC_NR_IPI)
-+		*out_hwirq = ic->nr_hw + AIC_NR_FIQ + intspec[1];
++	if (force)
++		cpu = cpumask_first(mask_val);
 +	else
-+		return -EINVAL;
++		cpu = cpumask_any_and(mask_val, cpu_online_mask);
 +
-+	*out_type = intspec[2] & IRQ_TYPE_SENSE_MASK;
++	aic_ic_write(ic, AIC_TARGET_CPU + hwirq * 4, BIT(cpu));
++	irq_data_update_effective_affinity(d, cpumask_of(cpu));
 +
-+	return 0;
++	return IRQ_SET_MASK_OK;
 +}
 +
-+static const struct irq_domain_ops aic_irq_domain_ops = {
-+	.map = aic_irq_domain_map,
-+	.unmap = aic_irq_domain_unmap,
-+	.xlate = aic_irq_domain_xlate,
+ static struct irq_chip aic_chip = {
+ 	.name = "AIC",
+ 	.irq_mask = aic_irq_mask,
+ 	.irq_unmask = aic_irq_unmask,
+ 	.irq_eoi = aic_irq_eoi,
++	.irq_set_affinity = aic_irq_set_affinity,
+ };
+ 
+ static int aic_irq_domain_map(struct irq_domain *id, unsigned int irq,
+@@ -264,6 +299,149 @@ static const struct irq_domain_ops aic_irq_domain_ops = {
+ 	.xlate = aic_irq_domain_xlate,
+ };
+ 
++static void aic_ipi_mask(struct irq_data *d)
++{
++	struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
++	u32 irq_bit = BIT(irqd_to_hwirq(d));
++	int this_cpu = smp_processor_id();
++
++	atomic_and(~irq_bit, &aic_vipi_mask[this_cpu]);
++
++	if (!atomic_read(&aic_vipi_mask[this_cpu]))
++		aic_ic_write(ic, AIC_IPI_MASK_SET, AIC_IPI_OTHER);
++}
++
++static void aic_ipi_unmask(struct irq_data *d)
++{
++	struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
++	u32 irq_bit = BIT(irqd_to_hwirq(d));
++	int this_cpu = smp_processor_id();
++
++	/* Make sure the kernel's idea of logical CPU order is the same as AIC's */
++	WARN_ON(aic_ic_read(ic, AIC_WHOAMI) != this_cpu);
++
++	atomic_or(irq_bit, &aic_vipi_mask[this_cpu]);
++
++	aic_ic_write(ic, AIC_IPI_MASK_CLR, AIC_IPI_OTHER);
++}
++
++static void aic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask)
++{
++	struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
++	u32 irq_bit = BIT(irqd_to_hwirq(d));
++	u32 send = 0;
++	int cpu;
++
++	for_each_cpu(cpu, mask) {
++		if (atomic_read(&aic_vipi_mask[cpu]) & irq_bit) {
++			atomic_or(irq_bit, &aic_vipi_flag[cpu]);
++			send |= AIC_IPI_SEND_CPU(cpu);
++		}
++	}
++
++	if (send) {
++		/*
++		 * Ensure that stores to Normal memory are visible to the
++		 * other CPUs before issuing the IPI.
++		 */
++		wmb();
++		aic_ic_write(ic, AIC_IPI_SEND, send);
++	}
++}
++
++static struct irq_chip ipi_chip = {
++	.name = "AIC-IPI",
++	.irq_mask = aic_ipi_mask,
++	.irq_unmask = aic_ipi_unmask,
++	.ipi_send_mask = aic_ipi_send_mask,
 +};
 +
-+static int __init aic_of_ic_init(struct device_node *node,
-+				 struct device_node *parent)
++static void aic_handle_ipi(struct irq_desc *desc)
++{
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	int this_cpu = smp_processor_id();
++	int i;
++	unsigned long firing;
++
++	chained_irq_enter(chip, desc);
++	aic_ic_write(aic_irqc, AIC_IPI_ACK, AIC_IPI_OTHER);
++
++	firing = atomic_xchg(&aic_vipi_flag[this_cpu], 0);
++
++	for_each_set_bit(i, &firing, AIC_NR_SWIPI) {
++		generic_handle_irq(irq_find_mapping(aic_irqc->ipi_domain, i));
++	}
++
++	aic_ic_write(aic_irqc, AIC_IPI_MASK_CLR, AIC_IPI_OTHER);
++	chained_irq_exit(chip, desc);
++}
++
++static int aic_ipi_alloc(struct irq_domain *d, unsigned int virq,
++			 unsigned int nr_irqs, void *args)
 +{
 +	int i;
-+	void __iomem *regs;
-+	u32 info;
-+	struct aic_irq_chip *irqc;
 +
-+	regs = of_iomap(node, 0);
-+	if (WARN_ON(!regs))
-+		return -EIO;
++	for (i = 0; i < nr_irqs; i++) {
++		irq_set_percpu_devid(virq + i);
++		irq_domain_set_info(d, virq + i, i, &ipi_chip, d->host_data,
++				    handle_percpu_devid_irq, NULL, NULL);
++	}
 +
-+	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
-+	if (!irqc)
-+		return -ENOMEM;
++	return 0;
++}
 +
-+	aic_irqc = irqc;
-+	irqc->base = regs;
++static void aic_ipi_free(struct irq_domain *d, unsigned int virq,
++			 unsigned int nr_irqs)
++{
++	/* Not freeing IPIs */
++}
 +
-+	info = aic_ic_read(irqc, AIC_INFO);
-+	irqc->nr_hw = AIC_INFO_NR_HW(info);
++static const struct irq_domain_ops aic_ipi_domain_ops = {
++	.alloc = aic_ipi_alloc,
++	.free = aic_ipi_free,
++};
 +
-+	irqc->hw_domain =
-+		irq_domain_add_linear(node,
-+				      irqc->nr_hw + AIC_NR_FIQ + AIC_NR_IPI,
-+				      &aic_irq_domain_ops, irqc);
-+	if (WARN_ON(!irqc->hw_domain)) {
++static int aic_init_smp(struct aic_irq_chip *irqc, struct device_node *node)
++{
++	struct irq_fwspec ipi_fwspec = {
++		.fwnode         = irqc->hw_domain->fwnode,
++		.param_count    = 3,
++		.param          = {
++			[0]     = AIC_IPI,
++			[1]     = 0,
++			[2]     = 0,
++		},
++	};
++	int base_ipi, mux_irq;
++
++	mux_irq = irq_create_fwspec_mapping(&ipi_fwspec);
++	if (WARN_ON(mux_irq <= 0))
++		return -ENODEV;
++
++	irqc->ipi_domain =
++		irq_domain_create_linear(irqc->hw_domain->fwnode, AIC_NR_SWIPI,
++					 &aic_ipi_domain_ops, irqc);
++	if (WARN_ON(!irqc->ipi_domain))
++		return -ENODEV;
++
++	irqc->ipi_domain->flags |= IRQ_DOMAIN_FLAG_IPI_SINGLE;
++	irq_domain_update_bus_token(irqc->ipi_domain, DOMAIN_BUS_IPI);
++
++	base_ipi = __irq_domain_alloc_irqs(irqc->ipi_domain, -1, AIC_NR_SWIPI,
++					   NUMA_NO_NODE, NULL, false, NULL);
++
++	if (WARN_ON(!base_ipi)) {
++		irq_domain_remove(irqc->ipi_domain);
++		return -ENODEV;
++	}
++
++	set_smp_ipi_range(base_ipi, AIC_NR_SWIPI);
++
++	irq_set_chained_handler_and_data(mux_irq, aic_handle_ipi, NULL);
++
++	return 0;
++}
++
+ static int __init aic_of_ic_init(struct device_node *node,
+ 				 struct device_node *parent)
+ {
+@@ -298,6 +476,13 @@ static int __init aic_of_ic_init(struct device_node *node,
+ 
+ 	irq_domain_update_bus_token(irqc->hw_domain, DOMAIN_BUS_WIRED);
+ 
++	if (aic_init_smp(irqc, node)) {
++		irq_domain_remove(irqc->hw_domain);
 +		iounmap(irqc->base);
 +		kfree(irqc);
 +		return -ENODEV;
 +	}
 +
-+	irq_domain_update_bus_token(irqc->hw_domain, DOMAIN_BUS_WIRED);
-+
-+	set_handle_irq(aic_handle_irq_or_fiq);
-+
-+	for (i = 0; i < BITS_TO_LONGS(irqc->nr_hw); i++)
-+		aic_ic_write(irqc, AIC_MASK_SET + i * 4, ~0);
-+	for (i = 0; i < BITS_TO_LONGS(irqc->nr_hw); i++)
-+		aic_ic_write(irqc, AIC_SW_CLR + i * 4, ~0);
-+	for (i = 0; i < irqc->nr_hw; i++)
-+		aic_ic_write(irqc, AIC_TARGET_CPU + i * 4, 1);
-+
-+	pr_info("AIC: initialized with %d IRQs, %d FIQs, %d IPIs\n",
-+		irqc->nr_hw, AIC_NR_FIQ, AIC_NR_IPI);
-+
-+	return 0;
-+}
-+
-+IRQCHIP_DECLARE(apple_m1_aic, "AAPL,aic", aic_of_ic_init);
+ 	set_handle_irq(aic_handle_irq_or_fiq);
+ 
+ 	for (i = 0; i < BITS_TO_LONGS(irqc->nr_hw); i++)
+@@ -307,8 +492,8 @@ static int __init aic_of_ic_init(struct device_node *node,
+ 	for (i = 0; i < irqc->nr_hw; i++)
+ 		aic_ic_write(irqc, AIC_TARGET_CPU + i * 4, 1);
+ 
+-	pr_info("AIC: initialized with %d IRQs, %d FIQs, %d IPIs\n",
+-		irqc->nr_hw, AIC_NR_FIQ, AIC_NR_IPI);
++	pr_info("AIC: initialized with %d IRQs, %d FIQs, %d IPIs, %d vIPIs\n",
++		irqc->nr_hw, AIC_NR_FIQ, AIC_NR_IPI, AIC_NR_SWIPI);
+ 
+ 	return 0;
+ }
 -- 
 2.30.0
 
