@@ -2,155 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A651C30FD86
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C50330FD8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239937AbhBDT7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:59:20 -0500
-Received: from mail.efficios.com ([167.114.26.124]:60366 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239548AbhBDTxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:53:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0358E2EDD03;
-        Thu,  4 Feb 2021 14:52:52 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 14JidllVMyop; Thu,  4 Feb 2021 14:52:51 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id ADFB32ED775;
-        Thu,  4 Feb 2021 14:52:51 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com ADFB32ED775
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1612468371;
-        bh=tm9ZclZIKau30JnEcmiab479rhRd4jrHM7N4vCj01v8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=lA1x7pruhENmh00y3HGGhf5Zv1YFzNFR2MN0SkTegCZ3+000AaDlCznWrdZIj2CEf
-         MEbG4KBmWfJzAdEGOdYzgVOuW3dW17/CYZJuXcQKEhu7zZMTJ4SpF5LEbenF817xMv
-         Aq1JxJwMS/BEgMPnSMMSTh+myebOMArdOLdxEKMKk5N0qMxDykk9Mc9AA7mok4kEML
-         OjkPRom6Be00nLYordOxCtVwX+ISvOaQG5/oZw+qeKUlVO2khnlQZdmO0FcZasGD+f
-         8j6p7mkkjYqN1aT1cGbTcqgrHNKGwZPzurM/L9nsqlOuzAU7sZ93MTVoc1ngPVKd64
-         PgMMBiHhcxTXw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KyW9av_yAjS7; Thu,  4 Feb 2021 14:52:51 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A16FA2EDB46;
-        Thu,  4 Feb 2021 14:52:51 -0500 (EST)
-Date:   Thu, 4 Feb 2021 14:52:51 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <238902062.7677.1612468371566.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210204141742.46739ed2@gandalf.local.home>
-References: <20210204141742.46739ed2@gandalf.local.home>
-Subject: Re: [PATCH] tracepoints: Do not punish non static call users
+        id S239513AbhBDUAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:00:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:36676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239609AbhBDTxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:53:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E3A8143B;
+        Thu,  4 Feb 2021 11:52:56 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BB573F73B;
+        Thu,  4 Feb 2021 11:52:53 -0800 (PST)
+Subject: Re: [RFC PATCH 06/11] iommu/arm-smmu-v3: Scan leaf TTD to sync
+ hardware dirty log
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-7-zhukeqian1@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <2a731fe7-5879-8d89-7b96-d7385117b869@arm.com>
+Date:   Thu, 4 Feb 2021 19:52:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210128151742.18840-7-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3996)
-Thread-Topic: tracepoints: Do not punish non static call users
-Thread-Index: TnT7X8zpVckFrwA4VcXZbf0c13kIRA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 4, 2021, at 2:17 PM, rostedt rostedt@goodmis.org wrote:
-
-> With static calls, a tracepoint can call the callback directly if there is
-> only one callback registered to that tracepoint. When there is more than
-> one, the static call will call the tracepoint's "iterator" function, which
-> needs to reload the tracepoint's "funcs" array again, as it could have
-> changed since the first time it was loaded.
+On 2021-01-28 15:17, Keqian Zhu wrote:
+> From: jiangkunkun <jiangkunkun@huawei.com>
 > 
-> But an arch without static calls is punished by having to load the
-> tracepoint's "funcs" array twice. Once in the DO_TRACE macro, and once
-> again in the iterator macro.
-
-In addition to loading it, it needs to test it against NULL twice.
-
+> During dirty log tracking, user will try to retrieve dirty log from
+> iommu if it supports hardware dirty log. This adds a new interface
+> named sync_dirty_log in iommu layer and arm smmuv3 implements it,
+> which scans leaf TTD and treats it's dirty if it's writable (As we
+> just enable HTTU for stage1, so check AP[2] is not set).
 > 
-> For archs without static calls, there's no reason to load the array macro
-> in the first place, since the iterator function will do it anyway.
-> 
-> Change the __DO_TRACE_CALL() macro to do the double call only for
-
-Do you mean "double call" or "double load and NULL check" ?
-
-> architectures with static calls, and just call the iterator function
-> directly for architectures without static calls.
-> 
-> [ Tested only on architectures with static calls, will test on those
->  without later ]
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
 > ---
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index dc1d4c612cc3..966bfa6a861c 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -152,9 +152,18 @@ static inline struct tracepoint
-> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> #ifdef TRACEPOINTS_ENABLED
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 27 +++++++
+>   drivers/iommu/io-pgtable-arm.c              | 90 +++++++++++++++++++++
+>   drivers/iommu/iommu.c                       | 41 ++++++++++
+>   include/linux/io-pgtable.h                  |  4 +
+>   include/linux/iommu.h                       | 17 ++++
+>   5 files changed, 179 insertions(+)
 > 
-> #ifdef CONFIG_HAVE_STATIC_CALL
-> -#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
-> +#define __DO_TRACE_CALL(name, args)					\
-> +	do {								\
-> +		struct tracepoint_func *it_func_ptr;			\
-> +		it_func_ptr =						\
-> +			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
-> +		if (it_func_ptr) {					\
-> +			__data = (it_func_ptr)->data;			\
-> +			static_call(tp_func_##name)(args);		\
-> +		}							\
-> +	} while (0)
-> #else
-> -#define __DO_TRACE_CALL(name)	__traceiter_##name
-> +#define __DO_TRACE_CALL(name, args)	__traceiter_##name(args)
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 2434519e4bb6..43d0536b429a 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -2548,6 +2548,32 @@ static size_t arm_smmu_merge_page(struct iommu_domain *domain, unsigned long iov
+>   	return ops->merge_page(ops, iova, paddr, size, prot);
+>   }
+>   
+> +static int arm_smmu_sync_dirty_log(struct iommu_domain *domain,
+> +				   unsigned long iova, size_t size,
+> +				   unsigned long *bitmap,
+> +				   unsigned long base_iova,
+> +				   unsigned long bitmap_pgshift)
+> +{
+> +	struct io_pgtable_ops *ops = to_smmu_domain(domain)->pgtbl_ops;
+> +	struct arm_smmu_device *smmu = to_smmu_domain(domain)->smmu;
+> +
+> +	if (!(smmu->features & ARM_SMMU_FEAT_HTTU_HD)) {
+> +		dev_err(smmu->dev, "don't support HTTU_HD and sync dirty log\n");
+> +		return -EPERM;
+> +	}
+> +
+> +	if (!ops || !ops->sync_dirty_log) {
+> +		pr_err("don't support sync dirty log\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* To ensure all inflight transactions are completed */
+> +	arm_smmu_flush_iotlb_all(domain);
 
-Also, we may want to comment or annotate the "void *data" argument of
-__traceiter_##_name() to state that it is unused.
+What about transactions that arrive between the point that this 
+completes, and the point - potentially much later - that we actually 
+access any given PTE during the walk? I don't see what this is supposed 
+to be synchronising against, even if it were just a CMD_SYNC (I 
+especially don't see why we'd want to knock out the TLBs).
 
-Thanks,
+> +
+> +	return ops->sync_dirty_log(ops, iova, size, bitmap,
+> +			base_iova, bitmap_pgshift);
+> +}
+> +
+>   static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>   {
+>   	return iommu_fwspec_add_ids(dev, args->args, 1);
+> @@ -2649,6 +2675,7 @@ static struct iommu_ops arm_smmu_ops = {
+>   	.domain_set_attr	= arm_smmu_domain_set_attr,
+>   	.split_block		= arm_smmu_split_block,
+>   	.merge_page		= arm_smmu_merge_page,
+> +	.sync_dirty_log		= arm_smmu_sync_dirty_log,
+>   	.of_xlate		= arm_smmu_of_xlate,
+>   	.get_resv_regions	= arm_smmu_get_resv_regions,
+>   	.put_resv_regions	= generic_iommu_put_resv_regions,
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 17390f258eb1..6cfe1ef3fedd 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -877,6 +877,95 @@ static size_t arm_lpae_merge_page(struct io_pgtable_ops *ops, unsigned long iova
+>   	return __arm_lpae_merge_page(data, iova, paddr, size, lvl, ptep, prot);
+>   }
+>   
+> +static int __arm_lpae_sync_dirty_log(struct arm_lpae_io_pgtable *data,
+> +				     unsigned long iova, size_t size,
+> +				     int lvl, arm_lpae_iopte *ptep,
+> +				     unsigned long *bitmap,
+> +				     unsigned long base_iova,
+> +				     unsigned long bitmap_pgshift)
+> +{
+> +	arm_lpae_iopte pte;
+> +	struct io_pgtable *iop = &data->iop;
+> +	size_t base, next_size;
+> +	unsigned long offset;
+> +	int nbits, ret;
+> +
+> +	if (WARN_ON(lvl == ARM_LPAE_MAX_LEVELS))
+> +		return -EINVAL;
+> +
+> +	ptep += ARM_LPAE_LVL_IDX(iova, lvl, data);
+> +	pte = READ_ONCE(*ptep);
+> +	if (WARN_ON(!pte))
+> +		return -EINVAL;
+> +
+> +	if (size == ARM_LPAE_BLOCK_SIZE(lvl, data)) {
+> +		if (iopte_leaf(pte, lvl, iop->fmt)) {
+> +			if (pte & ARM_LPAE_PTE_AP_RDONLY)
+> +				return 0;
+> +
+> +			/* It is writable, set the bitmap */
+> +			nbits = size >> bitmap_pgshift;
+> +			offset = (iova - base_iova) >> bitmap_pgshift;
+> +			bitmap_set(bitmap, offset, nbits);
+> +			return 0;
+> +		} else {
+> +			/* To traverse next level */
+> +			next_size = ARM_LPAE_BLOCK_SIZE(lvl + 1, data);
+> +			ptep = iopte_deref(pte, data);
+> +			for (base = 0; base < size; base += next_size) {
+> +				ret = __arm_lpae_sync_dirty_log(data,
+> +						iova + base, next_size, lvl + 1,
+> +						ptep, bitmap, base_iova, bitmap_pgshift);
+> +				if (ret)
+> +					return ret;
+> +			}
+> +			return 0;
+> +		}
+> +	} else if (iopte_leaf(pte, lvl, iop->fmt)) {
+> +		if (pte & ARM_LPAE_PTE_AP_RDONLY)
+> +			return 0;
+> +
+> +		/* Though the size is too small, also set bitmap */
+> +		nbits = size >> bitmap_pgshift;
+> +		offset = (iova - base_iova) >> bitmap_pgshift;
+> +		bitmap_set(bitmap, offset, nbits);
+> +		return 0;
+> +	}
+> +
+> +	/* Keep on walkin */
+> +	ptep = iopte_deref(pte, data);
+> +	return __arm_lpae_sync_dirty_log(data, iova, size, lvl + 1, ptep,
+> +			bitmap, base_iova, bitmap_pgshift);
+> +}
+> +
+> +static int arm_lpae_sync_dirty_log(struct io_pgtable_ops *ops,
+> +				   unsigned long iova, size_t size,
+> +				   unsigned long *bitmap,
+> +				   unsigned long base_iova,
+> +				   unsigned long bitmap_pgshift)
+> +{
+> +	struct arm_lpae_io_pgtable *data = io_pgtable_ops_to_data(ops);
+> +	arm_lpae_iopte *ptep = data->pgd;
+> +	int lvl = data->start_level;
+> +	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+> +	long iaext = (s64)iova >> cfg->ias;
+> +
+> +	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+> +		return -EINVAL;
+> +
+> +	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1)
+> +		iaext = ~iaext;
+> +	if (WARN_ON(iaext))
+> +		return -EINVAL;
+> +
+> +	if (data->iop.fmt != ARM_64_LPAE_S1 &&
+> +	    data->iop.fmt != ARM_32_LPAE_S1)
+> +		return -EINVAL;
+> +
+> +	return __arm_lpae_sync_dirty_log(data, iova, size, lvl, ptep,
+> +					 bitmap, base_iova, bitmap_pgshift);
+> +}
+> +
+>   static void arm_lpae_restrict_pgsizes(struct io_pgtable_cfg *cfg)
+>   {
+>   	unsigned long granule, page_sizes;
+> @@ -957,6 +1046,7 @@ arm_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg)
+>   		.iova_to_phys	= arm_lpae_iova_to_phys,
+>   		.split_block	= arm_lpae_split_block,
+>   		.merge_page	= arm_lpae_merge_page,
+> +		.sync_dirty_log	= arm_lpae_sync_dirty_log,
+>   	};
+>   
+>   	return data;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index f1261da11ea8..69f268069282 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2822,6 +2822,47 @@ size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_merge_page);
+>   
+> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +			 size_t size, unsigned long *bitmap,
+> +			 unsigned long base_iova, unsigned long bitmap_pgshift)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	unsigned int min_pagesz;
+> +	size_t pgsize;
+> +	int ret;
+> +
+> +	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
+> +
+> +	if (!IS_ALIGNED(iova | size, min_pagesz)) {
+> +		pr_err("unaligned: iova 0x%lx size 0x%zx min_pagesz 0x%x\n",
+> +		       iova, size, min_pagesz);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!ops || !ops->sync_dirty_log) {
+> +		pr_err("don't support sync dirty log\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	while (size) {
+> +		pgsize = iommu_pgsize(domain, iova, size);
+> +
+> +		ret = ops->sync_dirty_log(domain, iova, pgsize,
+> +					  bitmap, base_iova, bitmap_pgshift);
 
-Mathieu
+Once again, we have a worst-of-both-worlds iteration that doesn't make 
+much sense. iommu_pgsize() essentially tells you the best supported size 
+that an IOVA range *can* be mapped with, but we're iterating a range 
+that's already mapped, so we don't know if it's relevant, and either way 
+it may not bear any relation to the granularity of the bitmap, which is 
+presumably what actually matters.
 
-> #endif /* CONFIG_HAVE_STATIC_CALL */
+Logically, either we should iterate at the bitmap granularity here, and 
+the driver just says whether the given iova chunk contains any dirty 
+pages or not, or we just pass everything through to the driver and let 
+it do the whole job itself. Doing a little bit of both is just an 
+overcomplicated mess.
+
+I'm skimming patch #7 and pretty much the same comments apply, so I 
+can't be bothered to repeat them there...
+
+Robin.
+
+> +		if (ret)
+> +			break;
+> +
+> +		pr_debug("dirty_log_sync: iova 0x%lx pagesz 0x%zx\n", iova,
+> +			 pgsize);
+> +
+> +		iova += pgsize;
+> +		size -= pgsize;
+> +	}
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_sync_dirty_log);
+> +
+>   void iommu_get_resv_regions(struct device *dev, struct list_head *list)
+>   {
+>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index 754b62a1bbaf..f44551e4a454 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -166,6 +166,10 @@ struct io_pgtable_ops {
+>   			      size_t size);
+>   	size_t (*merge_page)(struct io_pgtable_ops *ops, unsigned long iova,
+>   			     phys_addr_t phys, size_t size, int prot);
+> +	int (*sync_dirty_log)(struct io_pgtable_ops *ops,
+> +			      unsigned long iova, size_t size,
+> +			      unsigned long *bitmap, unsigned long base_iova,
+> +			      unsigned long bitmap_pgshift);
+>   };
+>   
+>   /**
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index ac2b0b1bce0f..8069c8375e63 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -262,6 +262,10 @@ struct iommu_ops {
+>   			      size_t size);
+>   	size_t (*merge_page)(struct iommu_domain *domain, unsigned long iova,
+>   			     phys_addr_t phys, size_t size, int prot);
+> +	int (*sync_dirty_log)(struct iommu_domain *domain,
+> +			      unsigned long iova, size_t size,
+> +			      unsigned long *bitmap, unsigned long base_iova,
+> +			      unsigned long bitmap_pgshift);
+>   
+>   	/* Request/Free a list of reserved regions for a device */
+>   	void (*get_resv_regions)(struct device *dev, struct list_head *list);
+> @@ -517,6 +521,10 @@ extern size_t iommu_split_block(struct iommu_domain *domain, unsigned long iova,
+>   				size_t size);
+>   extern size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
+>   			       size_t size, int prot);
+> +extern int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +				size_t size, unsigned long *bitmap,
+> +				unsigned long base_iova,
+> +				unsigned long bitmap_pgshift);
+>   
+>   /* Window handling function prototypes */
+>   extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
+> @@ -923,6 +931,15 @@ static inline size_t iommu_merge_page(struct iommu_domain *domain,
+>   	return -EINVAL;
+>   }
+>   
+> +static inline int iommu_sync_dirty_log(struct iommu_domain *domain,
+> +				       unsigned long iova, size_t size,
+> +				       unsigned long *bitmap,
+> +				       unsigned long base_iova,
+> +				       unsigned long pgshift)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+>   static inline int  iommu_device_register(struct iommu_device *iommu)
+>   {
+>   	return -ENODEV;
 > 
-> /*
-> @@ -168,7 +177,6 @@ static inline struct tracepoint
-> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  */
-> #define __DO_TRACE(name, proto, args, cond, rcuidle)			\
-> 	do {								\
-> -		struct tracepoint_func *it_func_ptr;			\
-> 		int __maybe_unused __idx = 0;				\
-> 		void *__data;						\
-> 									\
-> @@ -190,12 +198,7 @@ static inline struct tracepoint
-> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> 			rcu_irq_enter_irqson();				\
-> 		}							\
-> 									\
-> -		it_func_ptr =						\
-> -			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
-> -		if (it_func_ptr) {					\
-> -			__data = (it_func_ptr)->data;			\
-> -			__DO_TRACE_CALL(name)(args);			\
-> -		}							\
-> +		__DO_TRACE_CALL(name, TP_ARGS(args));			\
-> 									\
-> 		if (rcuidle) {						\
->  			rcu_irq_exit_irqson();				\
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
