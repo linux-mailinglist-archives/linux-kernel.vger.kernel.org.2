@@ -2,208 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2717730EBB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBDA30EBBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhBDFCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 00:02:51 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:60677 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhBDFCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:02:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612414942; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RiWhMQeAOucPPUpz/FHQEGTSDjaoFEovqQdCTOGDWGE=;
- b=MebxX+c0a7Mm2jrWc1ZvUQwycrk5wIv6E1YMw1P458zUCwJy4GzFn+8jMOR03IqM+QB4Mml1
- XBtvVE1YWED05nCw2EdrE06iR5HsftXtSb3TGEBfC1NgqcJQAjrr+L3ylxav/S+2sJfPXyGy
- a6P+B1ML8M/o6WphpWWpbMoBC9c=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 601b7fc15a2f264828a3670e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 05:01:53
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0E3E5C433C6; Thu,  4 Feb 2021 05:01:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 078ECC433ED;
-        Thu,  4 Feb 2021 05:01:51 +0000 (UTC)
+        id S229800AbhBDFIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 00:08:09 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:56240 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229508AbhBDFIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 00:08:06 -0500
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1144qFMm018797;
+        Wed, 3 Feb 2021 21:07:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=TX1+83ph9V79ek3QMDReZhxRLaEpuGX0JinoVpihayE=;
+ b=k09nLJzDMwQCOd88BYY8J0PfXmzUEXKtAso4oq5+H36T3fggnpQOE6w522HUH2xgy4rQ
+ ro3lmFC8VhHyjxAQMk+ZHvV7gwMLdTH326ASEq5lcywn64xi7xrV6NDxLrobXFWErPXA
+ 3AlULbGTVv6xzn1a2YwbFrbWKTqPdTzH8H3pAfTnMetNbN13IcCkU/bmmg9ACFHY3pMN
+ 1DoEpeDnjuH4iWcBxbGS8bz/gaAiI67D8UXUAAe4e/KxfsDdBVb7lAooK0fjzxK4KQDo
+ 8r5lylHb2zRv17daRsMc7l6HSQHvYxibZr8sxxv8E8xAEeoyFIF2YYZsNYQysMA9oEzw aA== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 36fgekw5vn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Feb 2021 21:07:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EH4Lwt9H17NLQgqLqR/I+QWL7lVfSi8Nc+QbHCR0Hd76LkvriQh9eQ3kaZLmrloFu0EHrBn9zq0CnI3eXhvZGj7Qdt0qLyWdF8Vfc1mMvzH+BTEVflLDUJJNfzO4Tb5DghP4Ud7StF9Ey46dK5CTAfdHRpUe0BnfXnDMSXt3OxY2udR0dEc+Bi2kGoClIcASSH3lde/nlf6jDZ2OH+LcQAkQTry7ruj5zvt5E5S9pz6arZX8GKYfSmWBZppYqxQ5TNoXiEvs+OFT73txGruBY91lpOOxD+Zcja/sSRO5XX8QpaECuiQdJkpwmLkfUucwAFJDiC5n/3zlG/posZp0VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TX1+83ph9V79ek3QMDReZhxRLaEpuGX0JinoVpihayE=;
+ b=h2yqxAaeU8op8krBj4d54yvU2CB+ij3nThJgRgyOWZRT49RcZ6UaCwZfb6HQN6VU+l57Z9/eJLbAU59NTApMmSOFPhuP2TlFqzpCbL/Cs7ROhhOVh4IQox/szmuj7JwN9GlnniwmQUmkzNXlePHr3lClTHbh8sU3ZJ31MNgB4sDQFrPAICnlreJPclrKVvor2dNhD0POOoAF+ZJ6gBhHiAhx9Rh6+L0opQ0TKeGeYhZB6mgaMxhX1OY3V1IMdUraul06a2vxMZYTErS9tvz1F6U4KNBLKEGfo+9cDQZ2LlxcJCOKDi7U8HUjqZo+VcgJMX3NWq2vQpN4P9I1qCleCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TX1+83ph9V79ek3QMDReZhxRLaEpuGX0JinoVpihayE=;
+ b=1+pbi26tzd0Yb0we2E+UpdBRmIMfQrwy3pODP1HUC5YoYyHQ6sQzUsc2B4bdRKfB5Gnyw7itvNoVBgD34G/HWJSJ0cbzB8aV4N54Izl0QYaTn+wzn0dfH9s+Eb8fr8LaIJZ1v/N9UxFOO62C9Gp3Aabvwx8XdEul3qcbQGXQ03s=
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
+ by BYAPR07MB5384.namprd07.prod.outlook.com (2603:10b6:a03:6f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Thu, 4 Feb
+ 2021 05:07:16 +0000
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::34a2:314c:e80b:3be3]) by BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::34a2:314c:e80b:3be3%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
+ 05:07:16 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin King <colin.king@canonical.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] usb: cdnsp: Fix spelling mistake "delagete" ->
+ "delegate"
+Thread-Topic: [PATCH][next] usb: cdnsp: Fix spelling mistake "delagete" ->
+ "delegate"
+Thread-Index: AQHW+h1/B1gGPc5PZ0+sFJQAxZIcPqpGZqMAgAACpSA=
+Date:   Thu, 4 Feb 2021 05:07:16 +0000
+Message-ID: <BYAPR07MB5381361C15E436BE54D25C93DDB39@BYAPR07MB5381.namprd07.prod.outlook.com>
+References: <20210203111239.18313-1-colin.king@canonical.com>
+ <20210203130440.GV2696@kadam>
+In-Reply-To: <20210203130440.GV2696@kadam>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctZDYxYjBhNzItNjZhNi0xMWViLTg3N2EtMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XGQ2MWIwYTczLTY2YTYtMTFlYi04NzdhLTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iMTUzMiIgdD0iMTMyNTY4ODg4MzE4MzExNjA5IiBoPSI1VnEwR3NLMkRYNG1lbkUvQWRLWDVxb0R3YkU9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [185.217.253.59]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 90196068-65eb-4853-95ca-08d8c8cabdba
+x-ms-traffictypediagnostic: BYAPR07MB5384:
+x-microsoft-antispam-prvs: <BYAPR07MB53843B7AF338D002CC31B6FBDDB39@BYAPR07MB5384.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zkejv/aeFx8aPuUJJHcr2+yai8d219zp8g1UKqtGPzd9VnTMwOZWhGhi+zKtG28rnsGdp3zRlY+MChaSe+t1ljTGiC+XGDlpC6hobJVNxfX9TB6TZHjKf5OCPeTxRceTK3LsIF48mB1+zQeSqBpy37S+FnYdgFsiIuRERy7+5AA9VOhznEQDLhLsBtcGujYacWI/J49yLbc9eRQb4T47FQaidIvL6Uuv3wyjC5TNsgNxeoQ2z40mm/esW2sEPtJrXYNpCdJR7RIYoMtGHU3raOTkWWNV9JG3u9oLz6fmjpfK3h7hE7Ep+KzM8rk9dggGRBrvPBdM/wAhFogaxqfbdat5bIsI8oilAJo2DXtLREdpADylEsxSlHK1LT9wyisenvKwlviEG8Nw6qe6d5Vz8U5jLEcgBRzNDG1GTGd5rgfDuzOeVWymdnfQodmJdFtCsW3vml2b8lIIsuhAq9cEJZ3a/D0zu2CJYCglVeYa9zUahPDMOq5zEgp7ooK7Wt/El24pAhi69GUHuG41RNddXRkLfD/KNj5oos85rZAbqVkm8dwmgT5yAJ3a0nuBT8DwhB2zPsFdsMtBhRvzIyTRJQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(36092001)(9686003)(33656002)(54906003)(55016002)(5660300002)(7696005)(186003)(66446008)(64756008)(110136005)(2906002)(83380400001)(478600001)(8676002)(71200400001)(66556008)(52536014)(316002)(66946007)(86362001)(76116006)(6506007)(26005)(4326008)(66476007)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?H6AqLAthkYzQQcOPVqnYCpUvLL4exAuoyaU+W70XsZqw4gZaKiq6gWkgrQWE?=
+ =?us-ascii?Q?CNs9//WTgUegX6TS0otpaGhydfkazRfZw4ifwlXPJZvNNi2RIxM/m8Bb3g9d?=
+ =?us-ascii?Q?tgkhJ2Ei6bcZMYMnaGTfZIYVUhiOBV5RxZOBtZ5H7EvJMtYK6Ivb54bFJeoA?=
+ =?us-ascii?Q?V9MZgIZ4uBd6OSjTGohYgi0l8QkSVhd9JhC8bUD0hoBAueZqAxAQivcyD1ob?=
+ =?us-ascii?Q?DZLDzlc4+8gXer9dnRmMvckxqbZlTr6IkflwIIy8hNOmEoeYBQMh6iPjzpVj?=
+ =?us-ascii?Q?13DYlYia7brCmE+j8ubZd+zvyOM6stdjb1PlddT1ZJc5ysgUBUYNnuT6I0rn?=
+ =?us-ascii?Q?IgYff0dcvp/DqE8bdLZuMplvIDlSMP3laA5cx2hBgMto82ERnj8DXAjkn06W?=
+ =?us-ascii?Q?bjYDjYIcASRDiDKN6IMTGMggHaoGQNHueiTnlWMirZHUG40f5RJiHMjpFpI6?=
+ =?us-ascii?Q?1pdZWuLBGvD+3jY/AaIyG6m20Gxt3Co8t/VlElIfO7ia84LZYNPomTNcVtyH?=
+ =?us-ascii?Q?ykQ0ADgAdOt7T9Q7WKIEJuyDjlSv7uI7b3TqvhL5x+oQJVQZFRSTBdAbT4rG?=
+ =?us-ascii?Q?KzfIqO66h5gQlecYWx5YJeiX5/szdw5byx2t8Q8pGqL3UXJTNHjXQDtn1g3Q?=
+ =?us-ascii?Q?G5pu7pYEom6pCDjTPgq+LPV2xZ0iQO0TGE5UvLcHhXeuFb7UxfEu6ZYQkg0A?=
+ =?us-ascii?Q?nG4fZXDfUUs+VZxwCLEkFMgchAMMFLACbS6ASF3cqhToAr48Ig24wf64Vmns?=
+ =?us-ascii?Q?ZZt27It+f1+awfWsFaEYIXEYrOaF4/rMNpQddVHoscxUwbjmC5UY0HZAp4Mn?=
+ =?us-ascii?Q?Tn8J8mqcQPr3ZyogPzr9jCj2y4z2yZTdli4HYQ4SAyx+B98RRvKs8cWo7X5d?=
+ =?us-ascii?Q?3ua0vgjdcPCD+VpdB7K8Uwud1bWIT8ZsndB4Rg3suIpxgb+g1gvHXNHGCqri?=
+ =?us-ascii?Q?D0eIUtzN9C8gCXjepTjZVbJm/p/CFOW8e7kUHaA4OkB7LSiX++dNmh4m/wMX?=
+ =?us-ascii?Q?NLvNd96wfQe3G1+ID6+iSMIJngtKS0TmDScE7MhLF2dfvZMOKTQigZdZwcui?=
+ =?us-ascii?Q?gBkSrjIp?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Feb 2021 10:31:51 +0530
-From:   dikshita@codeaurora.org
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-Subject: Re: [PATCH v6 1/2] media: v4l2-ctrl: add controls for long term
- reference.
-In-Reply-To: <d20ba57f-54a7-5a61-a64b-2d9433b79281@xs4all.nl>
-References: <1611553919-17919-1-git-send-email-dikshita@codeaurora.org>
- <1611553919-17919-2-git-send-email-dikshita@codeaurora.org>
- <d20ba57f-54a7-5a61-a64b-2d9433b79281@xs4all.nl>
-Message-ID: <6e59d1bee1d0f1b64aab77959bb22e6e@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90196068-65eb-4853-95ca-08d8c8cabdba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 05:07:16.2607
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QoyBJ6UD7RWx3utGxk6tf5u6c5Uw7q1FXvS9wPJoYAypd96Y1ES+aD7hms3sM0DO9dcH4pj45S5t+QJ5fuANC0mkn7qbfDeqMRzF/6Cm3So=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB5384
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_02:2021-02-03,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1011 phishscore=0 adultscore=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 16:50, Hans Verkuil wrote:
-> On 25/01/2021 06:51, Dikshita Agarwal wrote:
->> Long Term Reference (LTR) frames are the frames that are encoded
->> sometime in the past and stored in the DPB buffer list to be used
->> as reference to encode future frames.
->> This change adds controls to enable this feature.
->> 
->> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
->> ---
->>  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 18 
->> ++++++++++++++++++
->>  drivers/media/v4l2-core/v4l2-ctrls.c                   | 14 
->> ++++++++++++++
->>  include/uapi/linux/v4l2-controls.h                     |  3 +++
->>  3 files changed, 35 insertions(+)
->> 
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst 
->> b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 400774c..a37d460 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -3637,3 +3637,21 @@ enum v4l2_mpeg_video_hevc_size_of_length_field 
->> -
->>        - Selecting this value specifies that HEVC slices are expected
->>          to be prefixed by Annex B start codes. According to 
->> :ref:`hevc`
->>          valid start codes can be 3-bytes 0x000001 or 4-bytes 
->> 0x00000001.
->> +
->> +``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
->> +       Specifies the number of Long Term Reference (LTR) frames 
->> encoder needs
->> +       to generate or keep. This is applicable to the H264 and HEVC 
->> encoders.
->> +
->> +``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
->> +       The current frame is marked as a Long Term Reference (LTR) 
->> frame
->> +       and given this LTR index which ranges from 0 to LTR_COUNT-1.
->> +       This is applicable to the H264 and HEVC encoders and can be 
->> applied using
->> +       Request API.
-> 
-> You mentioned in reply to my comment that the venus driver didn't 
-> support the
-> Request API that it is also possible to use it without that API.
-> 
-> But that requires more precise documentation. I assume that without the 
-> Request
-> API you would set this control, then queue the buffer containing the 
-> frame this
-> control should apply to, then wait until it is dequeued. Since that's 
-> the only
-> way you can be certain this control is applied to the correct frame.
-> 
-> Is this indeed what you do in your application?
-> 
-> Regards,
-> 
-> 	Hans
-> 
-Hi Hans,
+Hi Dan,
 
-Yes, It is possible without request API as well in a non-synchronized 
-way.
-And we don't need to wait for the frame to be dequeued.
-The driver implementation ensures that whenever the LTR control is 
-received,
-it applies to the frame received after that. Not to frame which would be 
-encoded next.
-So that it is at least synchronized between driver & encoder.
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> There is a spelling mistake in a literal string. Fix it.
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/usb/cdns3/cdnsp-ep0.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/cdns3/cdnsp-ep0.c b/drivers/usb/cdns3/cdnsp-ep0=
+.c
+>> index e2b1bcb3f80e..e30931ebc870 100644
+>> --- a/drivers/usb/cdns3/cdnsp-ep0.c
+>> +++ b/drivers/usb/cdns3/cdnsp-ep0.c
+>> @@ -45,7 +45,7 @@ static int cdnsp_ep0_delegate_req(struct cdnsp_device =
+*pdev,
+>>  {
+>>  	int ret;
+>>
+>> -	trace_cdnsp_ep0_request("delagete");
+>> +	trace_cdnsp_ep0_request("delegate");
+>>
+>
+>This printk is useless and should just be deleted.  Use ftrace instead.
+
+Maybe this printk is redundant but it's more comfortable in use.
+To debug I can simply enable cdns-dev events (echo cdnsp-dev:* > set_event)
+and I will get the full  picture of what the driver is doing.
+
+Otherwise, I must remember which function I need to add to set_ftrace_filte=
+r.
+Of course, by default I can simply add all cdnsp* functions (echo cdnsp* > =
+set_ftrace_filter) but it
+increases the trace log and makes it a little more difficult to analyze.
+
+So maybe in some cases we shouldn't complain for such printk ?
+
+It's my private opinion and not necessarily correct :)
 
 Thanks,
-Dikshita
+Pawel Laszczak
 
->> +       Source Rec. ITU-T H.264 (06/2019); Table 7.9
->> +
->> +``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES (bitmask)``
->> +       Specifies the Long Term Reference (LTR) frame(s) to be used 
->> for
->> +       encoding the current frame.
->> +       This provides a bitmask which consists of bits [0, 
->> LTR_COUNT-1].
->> +       This is applicable to the H264 and HEVC encoders and can be 
->> applied using
->> +       Request API.
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c 
->> b/drivers/media/v4l2-core/v4l2-ctrls.c
->> index 16ab54f..84c1eb8 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -950,6 +950,9 @@ const char *v4l2_ctrl_get_name(u32 id)
->>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV 
->> Search Range";
->>  	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence 
->> Header";
->>  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
->> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
->> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Frame LTR Index";
->> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
->>  	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice 
->> Parameters";
->>  	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 
->> Quantization Matrices";
->>  	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
->> @@ -1277,6 +1280,17 @@ void v4l2_ctrl_fill(u32 id, const char **name, 
->> enum v4l2_ctrl_type *type,
->>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
->>  		*type = V4L2_CTRL_TYPE_INTEGER;
->>  		break;
->> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
->> +		*type = V4L2_CTRL_TYPE_INTEGER;
->> +		break;
->> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
->> +		*type = V4L2_CTRL_TYPE_INTEGER;
->> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
->> +		break;
->> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
->> +		*type = V4L2_CTRL_TYPE_BITMASK;
->> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
->> +		break;
->>  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
->>  	case V4L2_CID_PAN_RESET:
->>  	case V4L2_CID_TILT_RESET:
->> diff --git a/include/uapi/linux/v4l2-controls.h 
->> b/include/uapi/linux/v4l2-controls.h
->> index af8dda2..c0bb87b 100644
->> --- a/include/uapi/linux/v4l2-controls.h
->> +++ b/include/uapi/linux/v4l2-controls.h
->> @@ -422,6 +422,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
->>  #define 
->> V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+227)
->>  #define 
->> V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
->>  #define 
->> V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
->> +#define V4L2_CID_MPEG_VIDEO_LTR_COUNT			(V4L2_CID_CODEC_BASE+230)
->> +#define 
->> V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX		(V4L2_CID_CODEC_BASE+231)
->> +#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES		(V4L2_CID_CODEC_BASE+232)
->> 
->>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
->> 
+>
+>regards,
+>dan carpenter
+
