@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D39430E990
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF3730E9BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhBDBph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:45:37 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:37620
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S231259AbhBDBpg (ORCPT
+        id S234145AbhBDByv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:54:51 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12414 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhBDByt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:45:36 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgCXndF0URtgxLrEAQ--.27446S3;
-        Thu, 04 Feb 2021 09:44:21 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com
-Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com,
-        namhyung@kernel.org, Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] arm64: improve whitespace
-Date:   Thu,  4 Feb 2021 09:43:49 +0800
-Message-Id: <1612403029-5011-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgCXndF0URtgxLrEAQ--.27446S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr1xKFy7WF4fGryfZF17GFg_yoW5CrWkpr
-        4Duw1ktr45K3WUCa9Fqwn3Xa45uws5XwsxGFyDJ34aqr4Yvry5XFn5Jr1a9w4Yqry5W3y0
-        9F90vr1Utay7JaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoPEfUUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Wed, 3 Feb 2021 20:54:49 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DWM5C1KzbzjH1h;
+        Thu,  4 Feb 2021 09:53:03 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 09:53:59 +0800
+Subject: Re: [PATCH v14 11/11] kdump: update Documentation about crashkernel
+To:     Randy Dunlap <rdunlap@infradead.org>, <mingo@redhat.com>,
+        <tglx@linutronix.de>, <rppt@kernel.org>, <dyoung@redhat.com>,
+        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <bhsharma@redhat.com>,
+        <prabhakar.pkin@gmail.com>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-12-chenzhou10@huawei.com>
+ <686c331c-8009-1203-e8fe-b1ae67ae9652@infradead.org>
+CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
+        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <d8c1ed02-4f9a-12cc-d6ff-762dfb80ed42@huawei.com>
+Date:   Thu, 4 Feb 2021 09:53:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <686c331c-8009-1203-e8fe-b1ae67ae9652@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a few places we don't have whitespace between macro parameters,
-which makes them hard to read. This patch adds whitespace to clearly
-separate the parameters.
+Hi Randy,
 
-In a few places we have unnecessary whitespace around unary operators,
-which is confusing, This patch removes the unnecessary whitespace.
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- arch/arm64/kernel/alternative.c | 2 +-
- arch/arm64/kernel/module-plts.c | 2 +-
- arch/arm64/kernel/perf_event.c  | 2 +-
- arch/arm64/kernel/process.c     | 4 ++--
- arch/arm64/kernel/traps.c       | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+On 2021/1/31 1:53, Randy Dunlap wrote:
+> Hi--
+>
+> On 1/29/21 11:10 PM, Chen Zhou wrote:
+>> ---
+>>  Documentation/admin-guide/kdump/kdump.rst     | 22 ++++++++++++++++---
+>>  .../admin-guide/kernel-parameters.txt         | 11 ++++++++--
+>>  2 files changed, 28 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index a10b545c2070..908e5c8b61ba 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> All of the "arm64" instances in [square brackets] should be "ARM64".
+Got it, thanks for your review.
 
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index a57cffb..1184c44 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -17,7 +17,7 @@
- #include <asm/sections.h>
- #include <linux/stop_machine.h>
- 
--#define __ALT_PTR(a,f)		((void *)&(a)->f + (a)->f)
-+#define __ALT_PTR(a, f)		((void *)&(a)->f + (a)->f)
- #define ALT_ORIG_PTR(a)		__ALT_PTR(a, orig_offset)
- #define ALT_REPL_PTR(a)		__ALT_PTR(a, alt_offset)
- 
-diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-index 2e22443..e53493d 100644
---- a/arch/arm64/kernel/module-plts.c
-+++ b/arch/arm64/kernel/module-plts.c
-@@ -131,7 +131,7 @@ u64 module_emit_veneer_for_adrp(struct module *mod, Elf64_Shdr *sechdrs,
- }
- #endif
- 
--#define cmp_3way(a,b)	((a) < (b) ? -1 : (a) > (b))
-+#define cmp_3way(a, b)	((a) < (b) ? -1 : (a) > (b))
- 
- static int cmp_rela(const void *a, const void *b)
- {
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 3605f77a..d1fec4a 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -810,7 +810,7 @@ static int armv8pmu_get_single_idx(struct pmu_hw_events *cpuc,
- {
- 	int idx;
- 
--	for (idx = ARMV8_IDX_COUNTER0; idx < cpu_pmu->num_events; idx ++) {
-+	for (idx = ARMV8_IDX_COUNTER0; idx < cpu_pmu->num_events; idx++) {
- 		if (!test_and_set_bit(idx, cpuc->used_mask))
- 			return idx;
- 	}
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 6616486..4cc1ccc 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -304,7 +304,7 @@ void __show_regs(struct pt_regs *regs)
- 	}
- }
- 
--void show_regs(struct pt_regs * regs)
-+void show_regs(struct pt_regs *regs)
- {
- 	__show_regs(regs);
- 	dump_backtrace(regs, NULL, KERN_DEFAULT);
-@@ -587,7 +587,7 @@ unsigned long get_wchan(struct task_struct *p)
- 			ret = frame.pc;
- 			goto out;
- 		}
--	} while (count ++ < 16);
-+	} while (count++ < 16);
- 
- out:
- 	put_task_stack(p);
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 6895ce7..a05d34f 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -45,7 +45,7 @@
- #include <asm/system_misc.h>
- #include <asm/sysreg.h>
- 
--static const char *handler[]= {
-+static const char *handler[] = {
- 	"Synchronous Abort",
- 	"IRQ",
- 	"FIQ",
--- 
-1.8.3.1
+Thanks,
+Chen Zhou
+>
+>> @@ -738,6 +738,9 @@
+>>  			[KNL, X86-64] Select a region under 4G first, and
+>>  			fall back to reserve region above 4G when '@offset'
+>>  			hasn't been specified.
+>> +			[KNL, arm64] Try low allocation in DMA zone and fall back
+> 			      here
+>
+>> +			to high allocation if it fails when '@offset' hasn't been
+>> +			specified.
+>>  			See Documentation/admin-guide/kdump/kdump.rst for further details.
+>>  
+>>  	crashkernel=range1:size1[,range2:size2,...][@offset]
+>> @@ -754,6 +757,8 @@
+>>  			Otherwise memory region will be allocated below 4G, if
+>>  			available.
+>>  			It will be ignored if crashkernel=X is specified.
+>> +			[KNL, arm64] range in high memory.
+> 			      here
+>
+>> +			Allow kernel to allocate physical memory region from top.
+>>  	crashkernel=size[KMG],low
+>>  			[KNL, X86-64] range under 4G. When crashkernel=X,high
+>>  			is passed, kernel could allocate physical memory region
+>> @@ -762,13 +767,15 @@
+>>  			requires at least 64M+32K low memory, also enough extra
+>>  			low memory is needed to make sure DMA buffers for 32-bit
+>>  			devices won't run out. Kernel would try to allocate at
+>> -			at least 256M below 4G automatically.
+>> +			least 256M below 4G automatically.
+>>  			This one let user to specify own low range under 4G
+>>  			for second kernel instead.
+>>  			0: to disable low allocation.
+>>  			It will be ignored when crashkernel=X,high is not used
+>>  			or memory reserved is below 4G.
+>> -
+>> +			[KNL, arm64] range in low memory.
+> 			      here
+>
+>> +			This one let user to specify a low range in DMA zone for
+>> +			crash dump kernel.
+>
+> Thanks.
+>
 
