@@ -2,50 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DF930F03A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197FA30F047
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235367AbhBDKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:13:09 -0500
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:37715 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235350AbhBDKM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:12:56 -0500
-Received: by mail-lj1-f170.google.com with SMTP id m22so2716261ljj.4;
-        Thu, 04 Feb 2021 02:12:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:to:cc:from:subject:message-id:date
-         :user-agent:mime-version:content-language:content-transfer-encoding;
-        bh=miyRJuOeBOtEV39DJpRHkSNP1r8kzb8jg7PJ/3fyMug=;
-        b=m0/AmqfsV0vE3w/bR5saGcx1LpZyCp31kc94fsPY9rYkWYU+87c/tGRYb6Kr2x6kf3
-         fxGno+XK/rURVUwAV5iyIkIUHsmHXAHkcwPxzpZr0G1wOti4bQyYvq9jk4vxJu20XNjB
-         zPSUuN000caVZvxF/JhZqxNFv4ymdprQYM+5ev66AbUyrL+nkS1ImmnvcKceCRhGNoMe
-         i3RDkHnV6YY72qhkRRgX6X5Ix+k/W4f0WiEuWpLuFAziKAcp8yO3+coasByVav7qIFvY
-         IRv9iLJz71opuPF3L7MKFwbD2OGcJu/QpzNQxkqx42DYNB1/ajlPVFs0PDnyBhSdgE+t
-         oi5g==
-X-Gm-Message-State: AOAM533bhXpSkFRn9Sm+RMqfKro75LU8qY/YVwsswsKPJmZKdb0RiOkB
-        oSzlwaGJi+ChIcWvAL6axg53Jli5Mf0=
-X-Google-Smtp-Source: ABdhPJwXmCVETvaxv5iW5esOR1QNiHMfQn3s/NKlGMoSPgONQgN65H5rjGU2EBFoGR4fIFBuUymIiw==
-X-Received: by 2002:a2e:3307:: with SMTP id d7mr4423040ljc.155.1612433533888;
-        Thu, 04 Feb 2021 02:12:13 -0800 (PST)
-Received: from [10.68.32.65] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id b24sm554880lfc.160.2021.02.04.02.12.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 02:12:13 -0800 (PST)
-Reply-To: efremov@linux.com
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>, Kurt Garloff <kurt@garloff.de>
-From:   Denis Efremov <efremov@linux.com>
-Subject: [GIT PULL] Floppy patch for 5.12
-Message-ID: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
-Date:   Thu, 4 Feb 2021 13:12:11 +0300
+        id S235418AbhBDKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:15:44 -0500
+Received: from relay.sw.ru ([185.231.240.75]:55030 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235409AbhBDKPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:15:40 -0500
+Received: from [192.168.15.247]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l7beN-001fd2-Of; Thu, 04 Feb 2021 13:14:11 +0300
+Subject: Re: [v6 PATCH 09/11] mm: vmscan: don't need allocate
+ shrinker->nr_deferred for memcg aware shrinkers
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-10-shy828301@gmail.com>
+ <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com>
+Message-ID: <5e335e4a-1556-e694-8f0b-192d924f99e5@virtuozzo.com>
+Date:   Thu, 4 Feb 2021 13:14:12 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,33 +39,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
+On 04.02.2021 12:29, Kirill Tkhai wrote:
+> On 03.02.2021 20:20, Yang Shi wrote:
+>> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
+>> allocate shrinker->nr_deferred for such shrinkers anymore.
+>>
+>> The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
+>> by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
+>> This makes the implementation of this patch simpler.
+>>
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>> ---
+>>  mm/vmscan.c | 31 ++++++++++++++++---------------
+>>  1 file changed, 16 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 545422d2aeec..20a35d26ae12 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -334,6 +334,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>>  {
+>>  	int id, ret = -ENOMEM;
+>>  
+>> +	if (mem_cgroup_disabled())
+>> +		return -ENOSYS;
+>> +
+>>  	down_write(&shrinker_rwsem);
+>>  	/* This may call shrinker, so it must use down_read_trylock() */
+>>  	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
+>> @@ -414,7 +417,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+>>  #else
+>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>>  {
+>> -	return 0;
+>> +	return -ENOSYS;
+>>  }
+>>  
+>>  static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>> @@ -525,8 +528,18 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
+>>   */
+>>  int prealloc_shrinker(struct shrinker *shrinker)
+>>  {
+>> -	unsigned int size = sizeof(*shrinker->nr_deferred);
+>> +	unsigned int size;
+>> +	int err;
+>> +
+>> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+>> +		err = prealloc_memcg_shrinker(shrinker);
+>> +		if (err != -ENOSYS)
+>> +			return err;
+>>  
+>> +		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
+>> +	}
+>> +
+>> +	size = sizeof(*shrinker->nr_deferred);
+>>  	if (shrinker->flags & SHRINKER_NUMA_AWARE)
+>>  		size *= nr_node_ids;
+> 
+> This may sound surprisingly, but IIRC do_shrink_slab() may be called on early boot
+> *even before* root_mem_cgroup is allocated. AFAIR, I received syzcaller crash report
+> because of this, when I was implementing shrinker_maps.
+> 
+> This is a reason why we don't use shrinker_maps even in case of mem cgroup is not
+> disabled: we iterate every shrinker of shrinker_list. See check in shrink_slab():
+> 
+> 	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+> 
+> Possible, we should do the same for nr_deferred: 1)always allocate shrinker->nr_deferred,
+> 2)use shrinker->nr_deferred in count_nr_deferred() and set_nr_deferred().
 
-  Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
+I looked over my mail box, and I can't find that crash report and conditions to reproduce.
 
-are available in the Git repository at:
+Hm, let's remain this as is, and we rework this in case of such early shrinker call is still
+possible, and there will be a report...
 
-  https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
+Reviewed-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-for you to fetch changes up to 8a0c014cd20516ade9654fc13b51345ec58e7be8:
+With only nit:
+ 
+>>  
+>> @@ -534,26 +547,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
+>>  	if (!shrinker->nr_deferred)
+>>  		return -ENOMEM;
+>>  
+>> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+>> -		if (prealloc_memcg_shrinker(shrinker))
+>> -			goto free_deferred;
+>> -	}
+>>  
+>>  	return 0;
+>> -
+>> -free_deferred:
+>> -	kfree(shrinker->nr_deferred);
+>> -	shrinker->nr_deferred = NULL;
+>> -	return -ENOMEM;
+>>  }
+>>  
+>>  void free_prealloced_shrinker(struct shrinker *shrinker)
+>>  {
+>> -	if (!shrinker->nr_deferred)
+>> -		return;
+>> -
+>>  	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>> -		unregister_memcg_shrinker(shrinker);
+>> +		return unregister_memcg_shrinker(shrinker);
 
-  floppy: reintroduce O_NDELAY fix (2021-02-04 13:00:24 +0300)
+I've never seen return of void function in linux kernel. I'm not sure this won't confuse people.
 
-----------------------------------------------------------------
-Floppy patch for 5.12
+>>  
+>>  	kfree(shrinker->nr_deferred);
+>>  	shrinker->nr_deferred = NULL;
+>>
+> 
 
-- O_NDELAY/O_NONBLOCK fix for floppy from Jiri Kosina.
-  libblkid is using O_NONBLOCK when probing devices.
-  This leads to pollution of kernel log with error
-  messages from floppy driver. Also the driver fails
-  a mount prior to being opened without O_NONBLOCK
-  at least once. The patch fixes the issues.
-
-Signed-off-by: Denis Efremov <efremov@linux.com>
-
-----------------------------------------------------------------
-Jiri Kosina (1):
-      floppy: reintroduce O_NDELAY fix
-
- drivers/block/floppy.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
