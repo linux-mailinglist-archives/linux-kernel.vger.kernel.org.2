@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C669730F8F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A9A30F940
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238311AbhBDRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S238347AbhBDRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238273AbhBDQ7V (ORCPT
+        with ESMTP id S238286AbhBDRAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:59:21 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176EEC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:58:40 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id 7so4421852wrz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:58:39 -0800 (PST)
+        Thu, 4 Feb 2021 12:00:12 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632D0C0617AB
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:58:43 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id w4so3744239wmi.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:58:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSXClwte+EBaSfb73OT9a258Z0fuumQByG0sZ3xvY0o=;
-        b=kF3mIgExZ6yqH4eVMQt6WD7DEfAMygEvJlEbz5Xto3mUv0YDv1L49BGJIm43dk9bU1
-         iXTPifKJP86J0pow9upJIpWRGPhVO1f2EMyxp18Untk7OSKOV1noZ4nOqj1K5+vZn89G
-         y8rpqE5p8fJ2NUkDxK1tbqWLU3qx+6Ux/u9co=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zfjsqmGSrFdwKv6gPk+ED4Gyd+jw5WiGxS5237MFi+M=;
+        b=aJ5+DhwQrPybxXlfb906b5cOoXqV3+BEzRNaODlgcUeZEihmbGyFqInXWRKhUtRcBb
+         kV1JlIXsN/H9/ywDpKO+frxErEGohc9ib+E0uHFogDM0U0dQ89h8KGu5yffJo80lIAtT
+         UAwiQzvCPO4zBLBzmVgGmSMpEEerY8KT11ZQ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSXClwte+EBaSfb73OT9a258Z0fuumQByG0sZ3xvY0o=;
-        b=oso6Da3D96dlxEaGUvfa4eMnyisTENZ32MLwhcyb4Q2Ur+deQKTFJD84M2Eqhm6Z9M
-         8kHnUWQC1YbJncW7sFJQfdQkcg17QOjZrbZe4CQrbvyy5flvgW8gCfg1yXg8o5A2OO0P
-         WZJd/zrqx8fOTZO9XGXIklhGXMx8Z44qYgUQTnLUKUsg/5oM/hSIdbdKQJL79h80GoUp
-         9WuQfquE/64Djvo0YL7DXeb/9T/oNnRjo/YTHXH0edl8iM6nbFnxfAD7PXaw94v83riS
-         /Jup4o72yJToZwV6Ej61ybG8sijOapBj5V7gvYekOyANkCVVTEyTY1Y/VtN9rpr+yfg/
-         RGkw==
-X-Gm-Message-State: AOAM533opeO9R4APHuK/RKkaysRT/+/4V/Zpa0YOW0cRNe4k2Pi5Y2TJ
-        ZFFeEhkpGYf2my5JaOjXXG1VaF/ZKtAr1Mjj
-X-Google-Smtp-Source: ABdhPJzQxOtjiSlI6HeHAkG205a5zhJRcBC5cKGPxy6h1VeNvxXZzxclR5CwPfNihVa2lXiEvFOWdA==
-X-Received: by 2002:adf:decb:: with SMTP id i11mr313945wrn.78.1612457918861;
-        Thu, 04 Feb 2021 08:58:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zfjsqmGSrFdwKv6gPk+ED4Gyd+jw5WiGxS5237MFi+M=;
+        b=f/xqFgAKy8UgQ3RPR8iM8sRoWQN5ZHKb9RX7HtpJ9RuPkDFaiU2n2RzW0YMJ/K1SMT
+         Q4rANfwh8/iGm0Ymr3syrPp2lQQ27j0FSeVGfaqhFWzclgTqnKpUUsbQgz7M5cXl7K8+
+         nBrj9IYFTysGvMGaIwtCTm8fCfl+AATVKyI4wb7RVpTNWG+9c2KQnZ5X/eUKRZfshm4X
+         pasa8YWlcC/dA6AXa6Y5Zhn9QYp/NF2g2p3FraXR9rCfT0n8jEjmkzeZJw95I7KqbzGz
+         8fGZit7GoG+ipfWt7GWQP/as+oTeZdwvkwqlWjm0ruuODvikcWiSSrhebEf9vdJO9D7C
+         +Baw==
+X-Gm-Message-State: AOAM5335or4h9v2MdCLDJx+5UmMzH5XVWuMKHkP1sCGw7SlLnDpritBu
+        n0CMaoN7Y3d5xT8fATczhcDdvgcSOHCO2b4W
+X-Google-Smtp-Source: ABdhPJxAhpv3Tii2s/pNvg41KfaTlUA/3DjBqaXWiLy9Id66LvhcG0GjOf8lXMNmb3BMhPDKwGE71w==
+X-Received: by 2002:a1c:3587:: with SMTP id c129mr117766wma.76.1612457922116;
+        Thu, 04 Feb 2021 08:58:42 -0800 (PST)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i64sm6700187wmi.19.2021.02.04.08.58.37
+        by smtp.gmail.com with ESMTPSA id i64sm6700187wmi.19.2021.02.04.08.58.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:58:38 -0800 (PST)
+        Thu, 04 Feb 2021 08:58:40 -0800 (PST)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
@@ -60,11 +62,13 @@ Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: [PATCH 0/2] pci sysfs file iomem revoke support
-Date:   Thu,  4 Feb 2021 17:58:29 +0100
-Message-Id: <20210204165831.2703772-1-daniel.vetter@ffwll.ch>
+        linux-pci@vger.kernel.org
+Subject: [PATCH 2/2] PCI: Revoke mappings like devmem
+Date:   Thu,  4 Feb 2021 17:58:31 +0100
+Message-Id: <20210204165831.2703772-3-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210204165831.2703772-1-daniel.vetter@ffwll.ch>
+References: <20210204165831.2703772-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -72,26 +76,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+the region") /dev/kmem zaps ptes when the kernel requests exclusive
+acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+the default for all driver uses.
 
-This is a revised version of patch 12 from my series to lock down some
-follow_pfn vs VM_SPECIAL races:
+Except there's two more ways to access PCI BARs: sysfs and proc mmap
+support. Let's plug that hole.
 
-https://lore.kernel.org/dri-devel/CAKwvOdnSrsnTgPEuQJyaOTSkTP2dR9208Y66HQG_h1e2LKfqtw@mail.gmail.com/
+For revoke_devmem() to work we need to link our vma into the same
+address_space, with consistent vma->vm_pgoff. ->pgoff is already
+adjusted, because that's how (io_)remap_pfn_range works, but for the
+mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
+to adjust this at at ->open time:
 
-Stephen reported an issue on HAVE_PCI_LEGACY platforms which this patch
-set tries to address. Previous patches are all still in linux-next.
+- for sysfs this is easy, now that binary attributes support this. We
+  just set bin_attr->mapping when mmap is supported
+- for procfs it's a bit more tricky, since procfs pci access has only
+  one file per device, and access to a specific resources first needs
+  to be set up with some ioctl calls. But mmap is only supported for
+  the same resources as sysfs exposes with mmap support, and otherwise
+  rejected, so we can set the mapping unconditionally at open time
+  without harm.
 
-Stephen, would be awesome if you can give this a spin.
+A special consideration is for arch_can_pci_mmap_io() - we need to
+make sure that the ->f_mapping doesn't alias between ioport and iomem
+space. There's only 2 ways in-tree to support mmap of ioports: generic
+pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
+architecture hand-rolling. Both approach support ioport mmap through a
+special pfn range and not through magic pte attributes. Aliasing is
+therefore not a problem.
 
-Björn/Greg, review on the first patch is needed, I think that's the
-cleanest approach from all the options I discussed with Greg in this
-thread:
+The only difference in access checks left is that sysfs PCI mmap does
+not check for CAP_RAWIO. I'm not really sure whether that should be
+added or not.
 
-https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com/
-
-Cheers, Daniel
-
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
 Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Kees Cook <keescook@chromium.org>
@@ -108,15 +130,52 @@ Cc: linux-samsung-soc@vger.kernel.org
 Cc: linux-media@vger.kernel.org
 Cc: Bjorn Helgaas <bhelgaas@google.com>
 Cc: linux-pci@vger.kernel.org
+---
+ drivers/pci/pci-sysfs.c | 4 ++++
+ drivers/pci/proc.c      | 1 +
+ 2 files changed, 5 insertions(+)
 
-Daniel Vetter (2):
-  PCI: also set up legacy files only after sysfs init
-  PCI: Revoke mappings like devmem
-
- drivers/pci/pci-sysfs.c | 11 +++++++++++
- drivers/pci/proc.c      |  1 +
- 2 files changed, 12 insertions(+)
-
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 0c45b4f7b214..f8afd54ca3e1 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -942,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+ 	b->legacy_io->read = pci_read_legacy_io;
+ 	b->legacy_io->write = pci_write_legacy_io;
+ 	b->legacy_io->mmap = pci_mmap_legacy_io;
++	b->legacy_io->mapping = iomem_get_mapping();
+ 	pci_adjust_legacy_attr(b, pci_mmap_io);
+ 	error = device_create_bin_file(&b->dev, b->legacy_io);
+ 	if (error)
+@@ -954,6 +955,7 @@ void pci_create_legacy_files(struct pci_bus *b)
+ 	b->legacy_mem->size = 1024*1024;
+ 	b->legacy_mem->attr.mode = 0600;
+ 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
++	b->legacy_io->mapping = iomem_get_mapping();
+ 	pci_adjust_legacy_attr(b, pci_mmap_mem);
+ 	error = device_create_bin_file(&b->dev, b->legacy_mem);
+ 	if (error)
+@@ -1169,6 +1171,8 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
+ 			res_attr->mmap = pci_mmap_resource_uc;
+ 		}
+ 	}
++	if (res_attr->mmap)
++		res_attr->mapping = iomem_get_mapping();
+ 	res_attr->attr.name = res_attr_name;
+ 	res_attr->attr.mode = 0600;
+ 	res_attr->size = pci_resource_len(pdev, num);
+diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+index 3a2f90beb4cb..9bab07302bbf 100644
+--- a/drivers/pci/proc.c
++++ b/drivers/pci/proc.c
+@@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, struct file *file)
+ 	fpriv->write_combine = 0;
+ 
+ 	file->private_data = fpriv;
++	file->f_mapping = iomem_get_mapping();
+ 
+ 	return 0;
+ }
 -- 
 2.30.0
 
