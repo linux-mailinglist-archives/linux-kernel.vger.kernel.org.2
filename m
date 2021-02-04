@@ -2,135 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CDF30FCF3
+	by mail.lfdr.de (Postfix) with ESMTP id 6292730FCF2
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239918AbhBDTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236563AbhBDN6d (ORCPT
+        id S239898AbhBDTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:33:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23354 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236783AbhBDOwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:58:33 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC16C061355
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:56:31 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id a16so6001051wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PIhCp8il47YAvxqad9wdbokygqezWUysVvDAkwwnuTQ=;
-        b=i5tL/xmNo+KoC4L+J++aT8o9sf0W4gpJ5zTnyIyHO8lfutg+zYLMGr72A2HPstt5ki
-         DvBUkuAa0qhUwXb30x6BNaI06P1ROgBYC3Xzp6ovgfbZbqKQGVQHuMz5BkDDRHR7XE/u
-         P7YFaJoeJ1OFtsLOZ8U5JgvO3zgSHfxNggH3cD7cuu2gaUBMmbQY/DXZK5x0r9cpX5Od
-         i5sFKtVA7sm+QXyr711m6l0lEt4yiaFWzArLzqx4zsy14fu/R1fjwdqQVehbMnjI/3vJ
-         RbsqDCJdDmMGGtQ+0pkPkJeL5Z9QYIwyUfzOoTiiBLrxaeeloIJ6meDfX36ZuFhzhp+/
-         L3Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PIhCp8il47YAvxqad9wdbokygqezWUysVvDAkwwnuTQ=;
-        b=kXqBj/IEXMrQPDQJSJLMKDFHsbPUN45REPY8X3NGP9IM6UbN/bpF5mFpucKytT0rzv
-         9AyvNrL7JOuIDf/6K73tZ5xnwV+l72/V4Mt/ixhaEyZA6/QUMmwbzHiVUphp3AJwqncQ
-         QWZygVMFfvJbhReWj33YRsaf3pna8UsD5+WDFCeFwtZU2SOVMWmoDpFARpfnWQMkfm3S
-         F3n7SvCAKIhju6A8/zPwxYrrBBl0yygwHsVrd1XyrCoB7NeoJI0oa+u3++sEsyI96kCM
-         8ksnx0saYI+0gfju4ccTBUWGsiFA1mgTVLpu+EXUTObUaJ5pvjDy8nzE5ih1/foIDVow
-         GA2w==
-X-Gm-Message-State: AOAM5317eRBJKH21aS9tkCPG4KpsHTZNFIukdZfmmmBNJN5EH4BnbBLw
-        lnZUY4edFvLcWzEwQ8ndFrRHbA==
-X-Google-Smtp-Source: ABdhPJzxt85Icg/KGkiKBlSAEikhPnZG1noHL4jUI+b++S85sT5D34hbYN70ykTecBBOWTCPRwpAgA==
-X-Received: by 2002:a1c:7e4e:: with SMTP id z75mr7686696wmc.168.1612446990254;
-        Thu, 04 Feb 2021 05:56:30 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id r13sm6788058wmh.9.2021.02.04.05.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 05:56:29 -0800 (PST)
-Date:   Thu, 4 Feb 2021 13:56:27 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 5/5] ASoC: Intel: bytcr_wm5102: Add machine driver for
- BYT/WM5102
-Message-ID: <20210204135627.GM2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-6-hdegoede@redhat.com>
+        Thu, 4 Feb 2021 09:52:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612450232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=61cY2haHQh/0KR2HuqkGx27VjalgwkcE6qYdpiegMPk=;
+        b=Z7OlDOgvqlOnTEnuDh1PR062T9GvOKxUKvkx/eyW72KHrk1hesWU5nPmf6Cq1vfl97oVoT
+        QKESMHCTlaT+xX/raQ37UkDz40zTkdBWewQKgrnGvZqSXRpM0zP29zYxsWmdNXE85zA/u+
+        SEVxHzX9EiwGi7KDbiUC/QEksAMAQto=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-C49vkJ2WOTaouGWEgscxKQ-1; Thu, 04 Feb 2021 09:50:28 -0500
+X-MC-Unique: C49vkJ2WOTaouGWEgscxKQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AC375B399;
+        Thu,  4 Feb 2021 14:50:26 +0000 (UTC)
+Received: from krava (unknown [10.40.194.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 910EC19708;
+        Thu,  4 Feb 2021 14:50:23 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 15:50:22 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 05/24] perf daemon: Add client socket support
+Message-ID: <YBwJriLJ2TPYBpcS@krava>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-6-jolsa@kernel.org>
+ <20210203210547.GR854763@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210120214957.140232-6-hdegoede@redhat.com>
+In-Reply-To: <20210203210547.GR854763@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021, Hans de Goede wrote:
+On Wed, Feb 03, 2021 at 06:05:47PM -0300, Arnaldo Carvalho de Melo wrote:
 
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Add a new ASoc Machine driver for Intel Baytrail platforms with a
-> Wolfson Microelectronics WM5102 codec.
-> 
-> This is based on a past contributions [1] from Paulo Sergio Travaglia
-> <pstglia@gmail.com> based on the Levono kernel [2] combined with
-> insights in things like the speaker GPIO from the android-x86 android
-> port for the Lenovo Yoga Tablet 2 1051F/L [3].
-> 
-> [1] https://patchwork.kernel.org/project/alsa-devel/patch/593313f5.3636c80a.50e05.47e9@mx.google.com/
-> [2] https://github.com/lenovo-yt2-dev/android_kernel_lenovo_baytrail/blob/cm-12.1/sound/soc/intel/board/byt_bl_wm5102.c
-> [3] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
-> 
-> The original machine driver from the Android ports was a crude modified
-> copy of bytcr_rt5640.c adjusted to work with the WM5102 codec.
-> This version has been extensively reworked to:
-> 
-> 1. Remove all rt5640 related quirk handling. to the best of my knowledge
-> this setup is only used on the Lenovo Yoga Tablet 2 series (8, 10 and 13
-> inch models) which all use the same setup. So there is no need to deal
-> with all the variations with which we need to deal on rt5640 boards.
-> 
-> 2. Rework clock handling, properly turn off the FLL and the platform-clock
-> when they are no longer necessary and don't reconfigure the FLL
-> unnecessarily when it is already running. This fixes a number of:
-> "Timed out waiting for lock" warnings being logged.
-> 
-> 3. Add the GPIO controlled Speaker-VDD regulator as a DAPM_SUPPLY
-> 
-> This only adds the machine driver and ACPI hooks, the BYT-CR detection
-> quirk which these devices need will be added in a separate patch.
-> 
-> BugLink: https://github.com/thesofproject/linux/issues/2485
-> Co-authored-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in v2:
-> - Drop unnecessary configuring of OPCLK
-> - Fix error-msg when setting the SYSCLK fails
-> ---
->  sound/soc/intel/boards/Kconfig                |  12 +
->  sound/soc/intel/boards/Makefile               |   2 +
->  sound/soc/intel/boards/bytcr_wm5102.c         | 465 ++++++++++++++++++
->  .../intel/common/soc-acpi-intel-byt-match.c   |  16 +
->  4 files changed, 495 insertions(+)
->  create mode 100644 sound/soc/intel/boards/bytcr_wm5102.c
+SNIP
 
-Applied, thanks.
+> 
+> close fd
+> 
+> > +		return -1;
+> > +	}
+> > +
+> > +	return fd;
+> > +}
+> > +
+> >  static void daemon__free(struct daemon *daemon)
+> >  {
+> >  	free(daemon->config_real);
+> > @@ -211,6 +282,40 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+> >  	return err;
+> >  }
+> >  
+> > +__maybe_unused
+> > +static int send_cmd(struct daemon *daemon, union cmd *cmd)
+> > +{
+> > +	char *line = NULL;
+> > +	size_t len = 0;
+> > +	ssize_t nread;
+> > +	FILE *in;
+> > +	int fd;
+> > +
+> > +	if (setup_client_config(daemon))
+> > +		return -1;
+> > +
+> > +	fd = setup_client_socket(daemon);
+> > +	if (fd < 0)
+> > +		return -1;
+> > +
+> > +	if (sizeof(*cmd) != write(fd, cmd, sizeof(*cmd)))
+> 
+> close fd
+> 
+> > +		return -1;
+> > +
+> > +	in = fdopen(fd, "r");
+> > +	if (!in) {
+> > +		perror("failed: fdopen");
+> 
+> close fd
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+ah right, thanks
+
+jirka
+
+> 
+> > +		return -1;
+> > +	}
+> > +
+> > +	while ((nread = getline(&line, &len, in)) != -1) {
+> > +		fwrite(line, nread, 1, stdout);
+> > +		fflush(stdout);
+> > +	}
+> > +
+> > +	fclose(in);
+> > +	return 0;
+> > +}
+> > +
+> >  int cmd_daemon(int argc, const char **argv)
+> >  {
+> >  	struct option daemon_options[] = {
+> > -- 
+> > 2.29.2
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+> 
+
