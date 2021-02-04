@@ -2,471 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543A330FBA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CABF30FBA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbhBDSfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:35:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28132 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239092AbhBDSfF (ORCPT
+        id S239233AbhBDShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239201AbhBDSf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:35:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612463615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dKrOz7FAs3tJoHyGXBNrG1BWtJMXb7u2kkdGtqwvLV8=;
-        b=gHwt0chJ6QlqM7nWZwrMwt7Wxbmkz7Gnt44L3cUUzWZYRFwmY/yji7ehcqulso1Er6lyRe
-        +pVE6/Ev/rXMj97SDFy4CjeDFEPhoIVnU0MlZAaYouB4ILql0BUGnh7UryLVPFolmRaq7e
-        rK5PW29keHNwJwM8+q2qZS+jCeeiOTc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-HeFibZSpMLewjTMixsjMSA-1; Thu, 04 Feb 2021 13:33:33 -0500
-X-MC-Unique: HeFibZSpMLewjTMixsjMSA-1
-Received: by mail-ed1-f71.google.com with SMTP id bd22so3656353edb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:33:33 -0800 (PST)
+        Thu, 4 Feb 2021 13:35:26 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7029C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:34:46 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id w22so2739001pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:34:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=5vrPV9I8JVFeLdRQprLM/i7ud6Fy/UbsW1wB6hwfbrM=;
+        b=cw6vFbn3ZtVYziWDAoBJPVdXzmHwj3gshfcBd1n8LL3h71vdCBHnUfzDNuIHurdyvJ
+         ycz20vw2diYjsV+3EW35kdzxtG/Nexr+DkhHDlEx0iMBzasYKUE7+LjJ8OHP+qpLEK9K
+         nndBClB+32wqFL5m6eITon3s6xqbowdJ2jHGrLUVQRLv2/POTtvXJ1XRsYwPIWnTFf8k
+         3TUzG+2PIZrzcFQKA/torTQG1dLeV2l8suMHlji4DQCtaZFL8bfHpKHXM8ucI4+fr+r5
+         mCiTV3/q/7WlCXl90KJS936FaVFcYxAY27DS7aobWg0MxNbhQVl0UkE4JCZ86d5ID3PF
+         gtxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dKrOz7FAs3tJoHyGXBNrG1BWtJMXb7u2kkdGtqwvLV8=;
-        b=QC2+jzHzTUCnp0yYfp0GoMSnNmtkZ9g5VFNWPYHavicibp3SoDaKHGPNwN2JFTJdpF
-         uHyYFWajnM9rxVscL7n2WMNRfMMHxYK0eSJSzRRfufa4vpMCRBPe0DPHXdBCj2OjWCcG
-         KNwQGg32/DYawMz0jic6VYqsXS1NvCoAnSbwR0G8k+k22vuBlY/SijAlquWGv7FtnnM1
-         SiMClWFeQOpqfG5zRODICtMMrfqFLv6veVE1KK2xmMNRL43BbYTjMHyePE60Q5i374Rl
-         YyNT3UeTz8K6j3d5m8FYZsDC7AUMB2+L5janyqestfwBGwTzkTjLsQYVC1vKMy1SA4u3
-         H13A==
-X-Gm-Message-State: AOAM5313VenOvrmjkAx6XzTSfLIpt5WjutPyKjVJaytnMHQhlUsF4TfI
-        wR08IGQqrFSaryDzzhOWSfzCiK9ps24xv2BjuowvgV3ywjLn1c/PAYEmtNPU6bQfvrFzskdW/Lp
-        vcBAntxjPcMXbAZ0D9DfqHC0K
-X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr389155ejs.249.1612463612099;
-        Thu, 04 Feb 2021 10:33:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwI8tZuMkp0s3kgIPgKAX8NrZicJU/N+6+o/Y4gR3AXjZ6IKYn4nargW7ZnRxYDkHzp6c90Wg==
-X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr388812ejs.249.1612463607793;
-        Thu, 04 Feb 2021 10:33:27 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id k22sm2987184edv.33.2021.02.04.10.33.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 10:33:26 -0800 (PST)
-Subject: Re: [PATCH v3 4/5] ACPI: video: Clean up printing messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
- <1961054.9MKZ8ejxOh@kreacher> <1924490.ZvBDFke9FE@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fc92bf0f-b770-a4d5-7c0f-0936a4a35a38@redhat.com>
-Date:   Thu, 4 Feb 2021 19:33:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <1924490.ZvBDFke9FE@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=5vrPV9I8JVFeLdRQprLM/i7ud6Fy/UbsW1wB6hwfbrM=;
+        b=RyJoAKCPwIjE3WInbFpAjUuhZOZopui9fpPTdrUjdQkRaHYcOPguH3SjRUuQ9CbcG2
+         41KlF3hFBzqgANzG/EndzUzKza9EANLXtELm9/Os839VVFoVClcBUYDYim1JOkJoHxoV
+         jpISLoshue9qVnpJK4UiGav+G5UYMRgzMJfyNSebWi1YRwmYUKNjFw46+1IE//kiZVAZ
+         B8ysKdQhxs50WLbjWJHtCI0fH8gXqAJUxFy6R0WMoJ9AfhZas8J0gLWbuRDqbuHiuGSh
+         /8fhy0b4V1c5YlFUYuk1oFkru0KtvQpxMDvw8qPA4mzA50beNS1Auw+dCro87rc0r/VS
+         5SQQ==
+X-Gm-Message-State: AOAM531oIpSnMBtYedsSE15PLzhNl0k74yLtL/pHd2JJZd4aeDYiYs9G
+        SBTJ1FEGwSkDkTYrxGklIJNkrJ8TvADrpA3g8AFa
+X-Google-Smtp-Source: ABdhPJxsdlvp6hPq74MOCiF+ZTBW7uOux6t8O1EJFW/gr3u7o5tudyn3A9Ll+OiQb/fSyTWQ+hrWuZgBwoF0X+ez4RY4
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:b001:12c1:dc19:2089])
+ (user=axelrasmussen job=sendgmr) by 2002:a17:902:9a49:b029:df:fab8:384 with
+ SMTP id x9-20020a1709029a49b02900dffab80384mr455786plv.37.1612463686168; Thu,
+ 04 Feb 2021 10:34:46 -0800 (PST)
+Date:   Thu,  4 Feb 2021 10:34:24 -0800
+In-Reply-To: <20210204183433.1431202-1-axelrasmussen@google.com>
+Message-Id: <20210204183433.1431202-2-axelrasmussen@google.com>
+Mime-Version: 1.0
+References: <20210204183433.1431202-1-axelrasmussen@google.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v4 01/10] hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Peter Xu <peterx@redhat.com>
 
-On 2/3/21 7:48 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Replace the ACPI_DEBUG_PRINT() instances in acpi_video.c with
-> acpi_handle_debug() calls and the ACPI_EXCEPTION()/ACPI_ERROR()/
-> ACPI_WARNING() instances in there with acpi_handle_info() calls,
-> which among other things causes the excessive log levels of those
-> messages to be increased.
-> 
-> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-> used any more from acpi_video.c, drop the no longer needed
-> ACPI_VIDEO_COMPONENT definition from the headers and update the
-> documentation accordingly.
-> 
-> While at it, add a pr_fmt() definition to acpi_video.c, replace the
-> direct printk() invocations in there with acpi_handle_info() or
-> pr_info() (and reduce the excessive log level where applicable) and
-> drop the PREFIX sybmbol definition which is not necessary any more
-> from acpi_video.c.
-> 
-> Also make unrelated janitorial changes to fix up white space and
-> use ACPI_FAILURE() instead of negating ACPI_SUCCESS().
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+It is a preparation work to be able to behave differently in the per
+architecture huge_pte_alloc() according to different VMA attributes.
 
-Thanks, patch looks good to me:
+Pass it deeper into huge_pmd_share() so that we can avoid the find_vma() call.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ arch/arm64/mm/hugetlbpage.c   |  4 ++--
+ arch/ia64/mm/hugetlbpage.c    |  3 ++-
+ arch/mips/mm/hugetlbpage.c    |  4 ++--
+ arch/parisc/mm/hugetlbpage.c  |  2 +-
+ arch/powerpc/mm/hugetlbpage.c |  3 ++-
+ arch/s390/mm/hugetlbpage.c    |  2 +-
+ arch/sh/mm/hugetlbpage.c      |  2 +-
+ arch/sparc/mm/hugetlbpage.c   |  6 +-----
+ include/linux/hugetlb.h       |  5 +++--
+ mm/hugetlb.c                  | 15 ++++++++-------
+ mm/userfaultfd.c              |  2 +-
+ 11 files changed, 24 insertions(+), 24 deletions(-)
 
-Regards,
-
-Hans
-
-
-> ---
-> 
-> v2 -> v3: Replace more !ACPI_SUCCESS() instances with ACPI_FAILURE().
-> 
-> v1 -> v2: Changelog update.
-> 
-> ---
->  Documentation/firmware-guide/acpi/debug.rst |    1 
->  drivers/acpi/acpi_video.c                   |   99 ++++++++++++++--------------
->  drivers/acpi/sysfs.c                        |    1 
->  include/acpi/acpi_drivers.h                 |    1 
->  4 files changed, 51 insertions(+), 51 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/acpi_video.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/acpi_video.c
-> +++ linux-pm/drivers/acpi/acpi_video.c
-> @@ -7,6 +7,8 @@
->   *  Copyright (C) 2006 Thomas Tuttle <linux-kernel@ttuttle.net>
->   */
->  
-> +#define pr_fmt(fmt) "ACPI: video: " fmt
-> +
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/init.h>
-> @@ -26,16 +28,11 @@
->  #include <acpi/video.h>
->  #include <linux/uaccess.h>
->  
-> -#define PREFIX "ACPI: "
-> -
->  #define ACPI_VIDEO_BUS_NAME		"Video Bus"
->  #define ACPI_VIDEO_DEVICE_NAME		"Video Device"
->  
->  #define MAX_NAME_LEN	20
->  
-> -#define _COMPONENT		ACPI_VIDEO_COMPONENT
-> -ACPI_MODULE_NAME("video");
-> -
->  MODULE_AUTHOR("Bruno Ducrot");
->  MODULE_DESCRIPTION("ACPI Video Driver");
->  MODULE_LICENSE("GPL");
-> @@ -326,11 +323,11 @@ acpi_video_device_lcd_query_levels(acpi_
->  	*levels = NULL;
->  
->  	status = acpi_evaluate_object(handle, "_BCL", NULL, &buffer);
-> -	if (!ACPI_SUCCESS(status))
-> +	if (ACPI_FAILURE(status))
->  		return status;
->  	obj = (union acpi_object *)buffer.pointer;
->  	if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
-> -		printk(KERN_ERR PREFIX "Invalid _BCL data\n");
-> +		acpi_handle_info(handle, "Invalid _BCL data\n");
->  		status = -EFAULT;
->  		goto err;
->  	}
-> @@ -354,7 +351,7 @@ acpi_video_device_lcd_set_level(struct a
->  	status = acpi_execute_simple_method(device->dev->handle,
->  					    "_BCM", level);
->  	if (ACPI_FAILURE(status)) {
-> -		ACPI_ERROR((AE_INFO, "Evaluating _BCM failed"));
-> +		acpi_handle_info(device->dev->handle, "_BCM evaluation failed\n");
->  		return -EIO;
->  	}
->  
-> @@ -368,7 +365,7 @@ acpi_video_device_lcd_set_level(struct a
->  			return 0;
->  		}
->  
-> -	ACPI_ERROR((AE_INFO, "Current brightness invalid"));
-> +	acpi_handle_info(device->dev->handle, "Current brightness invalid\n");
->  	return -EINVAL;
->  }
->  
-> @@ -622,9 +619,8 @@ acpi_video_device_lcd_get_level_current(
->  			 * BQC returned an invalid level.
->  			 * Stop using it.
->  			 */
-> -			ACPI_WARNING((AE_INFO,
-> -				      "%s returned an invalid level",
-> -				      buf));
-> +			acpi_handle_info(device->dev->handle,
-> +					 "%s returned an invalid level", buf);
->  			device->cap._BQC = device->cap._BCQ = 0;
->  		} else {
->  			/*
-> @@ -635,7 +631,8 @@ acpi_video_device_lcd_get_level_current(
->  			 * ACPI video backlight still works w/ buggy _BQC.
->  			 * http://bugzilla.kernel.org/show_bug.cgi?id=12233
->  			 */
-> -			ACPI_WARNING((AE_INFO, "Evaluating %s failed", buf));
-> +			acpi_handle_info(device->dev->handle,
-> +					 "%s evaluation failed", buf);
->  			device->cap._BQC = device->cap._BCQ = 0;
->  		}
->  	}
-> @@ -675,7 +672,7 @@ acpi_video_device_EDID(struct acpi_video
->  	if (obj && obj->type == ACPI_TYPE_BUFFER)
->  		*edid = obj;
->  	else {
-> -		printk(KERN_ERR PREFIX "Invalid _DDC data\n");
-> +		acpi_handle_info(device->dev->handle, "Invalid _DDC data\n");
->  		status = -EFAULT;
->  		kfree(obj);
->  	}
-> @@ -827,10 +824,9 @@ int acpi_video_get_levels(struct acpi_de
->  	int result = 0;
->  	u32 value;
->  
-> -	if (!ACPI_SUCCESS(acpi_video_device_lcd_query_levels(device->handle,
-> -								&obj))) {
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Could not query available "
-> -						"LCD brightness level\n"));
-> +	if (ACPI_FAILURE(acpi_video_device_lcd_query_levels(device->handle, &obj))) {
-> +		acpi_handle_debug(device->handle,
-> +				  "Could not query available LCD brightness level\n");
->  		result = -ENODEV;
->  		goto out;
->  	}
-> @@ -842,7 +838,6 @@ int acpi_video_get_levels(struct acpi_de
->  
->  	br = kzalloc(sizeof(*br), GFP_KERNEL);
->  	if (!br) {
-> -		printk(KERN_ERR "can't allocate memory\n");
->  		result = -ENOMEM;
->  		goto out;
->  	}
-> @@ -863,7 +858,7 @@ int acpi_video_get_levels(struct acpi_de
->  	for (i = 0; i < obj->package.count; i++) {
->  		o = (union acpi_object *)&obj->package.elements[i];
->  		if (o->type != ACPI_TYPE_INTEGER) {
-> -			printk(KERN_ERR PREFIX "Invalid data\n");
-> +			acpi_handle_info(device->handle, "Invalid data\n");
->  			continue;
->  		}
->  		value = (u32) o->integer.value;
-> @@ -900,7 +895,8 @@ int acpi_video_get_levels(struct acpi_de
->  			br->levels[i] = br->levels[i - level_ac_battery];
->  		count += level_ac_battery;
->  	} else if (level_ac_battery > ACPI_VIDEO_FIRST_LEVEL)
-> -		ACPI_ERROR((AE_INFO, "Too many duplicates in _BCL package"));
-> +		acpi_handle_info(device->handle,
-> +				 "Too many duplicates in _BCL package");
->  
->  	/* Check if the _BCL package is in a reversed order */
->  	if (max_level == br->levels[ACPI_VIDEO_FIRST_LEVEL]) {
-> @@ -910,8 +906,8 @@ int acpi_video_get_levels(struct acpi_de
->  		     sizeof(br->levels[ACPI_VIDEO_FIRST_LEVEL]),
->  		     acpi_video_cmp_level, NULL);
->  	} else if (max_level != br->levels[count - 1])
-> -		ACPI_ERROR((AE_INFO,
-> -			    "Found unordered _BCL package"));
-> +		acpi_handle_info(device->handle,
-> +				 "Found unordered _BCL package");
->  
->  	br->count = count;
->  	*dev_br = br;
-> @@ -989,9 +985,9 @@ set_level:
->  	if (result)
->  		goto out_free_levels;
->  
-> -	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> -			  "found %d brightness levels\n",
-> -			  br->count - ACPI_VIDEO_FIRST_LEVEL));
-> +	acpi_handle_debug(device->dev->handle, "found %d brightness levels\n",
-> +			  br->count - ACPI_VIDEO_FIRST_LEVEL);
-> +
->  	return 0;
->  
->  out_free_levels:
-> @@ -1023,7 +1019,8 @@ static void acpi_video_device_find_cap(s
->  	if (acpi_has_method(device->dev->handle, "_BQC")) {
->  		device->cap._BQC = 1;
->  	} else if (acpi_has_method(device->dev->handle, "_BCQ")) {
-> -		printk(KERN_WARNING FW_BUG "_BCQ is used instead of _BQC\n");
-> +		acpi_handle_info(device->dev->handle,
-> +				 "_BCQ is used instead of _BQC\n");
->  		device->cap._BCQ = 1;
->  	}
->  
-> @@ -1083,8 +1080,7 @@ static int acpi_video_bus_check(struct a
->  	/* Does this device support video switching? */
->  	if (video->cap._DOS || video->cap._DOD) {
->  		if (!video->cap._DOS) {
-> -			printk(KERN_WARNING FW_BUG
-> -				"ACPI(%s) defines _DOD but not _DOS\n",
-> +			pr_info(FW_BUG "ACPI(%s) defines _DOD but not _DOS\n",
->  				acpi_device_bid(video->device));
->  		}
->  		video->flags.multihead = 1;
-> @@ -1272,7 +1268,8 @@ acpi_video_device_bind(struct acpi_video
->  		ids = &video->attached_array[i];
->  		if (device->device_id == (ids->value.int_val & 0xffff)) {
->  			ids->bind_info = device;
-> -			ACPI_DEBUG_PRINT((ACPI_DB_INFO, "device_bind %d\n", i));
-> +			acpi_handle_debug(video->device->handle, "%s: %d\n",
-> +					  __func__, i);
->  		}
->  	}
->  }
-> @@ -1324,20 +1321,22 @@ static int acpi_video_device_enumerate(s
->  		return AE_NOT_EXIST;
->  
->  	status = acpi_evaluate_object(video->device->handle, "_DOD", NULL, &buffer);
-> -	if (!ACPI_SUCCESS(status)) {
-> -		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _DOD"));
-> +	if (ACPI_FAILURE(status)) {
-> +		acpi_handle_info(video->device->handle,
-> +				 "_DOD evaluation failed: %s\n",
-> +				 acpi_format_exception(status));
->  		return status;
->  	}
->  
->  	dod = buffer.pointer;
->  	if (!dod || (dod->type != ACPI_TYPE_PACKAGE)) {
-> -		ACPI_EXCEPTION((AE_INFO, status, "Invalid _DOD data"));
-> +		acpi_handle_info(video->device->handle, "Invalid _DOD data\n");
->  		status = -EFAULT;
->  		goto out;
->  	}
->  
-> -	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Found %d video heads in _DOD\n",
-> -			  dod->package.count));
-> +	acpi_handle_debug(video->device->handle, "Found %d video heads in _DOD\n",
-> +			  dod->package.count);
->  
->  	active_list = kcalloc(1 + dod->package.count,
->  			      sizeof(struct acpi_video_enumerated_device),
-> @@ -1352,15 +1351,18 @@ static int acpi_video_device_enumerate(s
->  		obj = &dod->package.elements[i];
->  
->  		if (obj->type != ACPI_TYPE_INTEGER) {
-> -			printk(KERN_ERR PREFIX
-> -				"Invalid _DOD data in element %d\n", i);
-> +			acpi_handle_info(video->device->handle,
-> +					 "Invalid _DOD data in element %d\n", i);
->  			continue;
->  		}
->  
->  		active_list[count].value.int_val = obj->integer.value;
->  		active_list[count].bind_info = NULL;
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "dod element[%d] = %d\n", i,
-> -				  (int)obj->integer.value));
-> +
-> +		acpi_handle_debug(video->device->handle,
-> +				  "_DOD element[%d] = %d\n", i,
-> +				  (int)obj->integer.value);
-> +
->  		count++;
->  	}
->  
-> @@ -1451,7 +1453,8 @@ acpi_video_switch_brightness(struct work
->  
->  out:
->  	if (result)
-> -		printk(KERN_ERR PREFIX "Failed to switch the brightness\n");
-> +		acpi_handle_info(device->dev->handle,
-> +				 "Failed to switch brightness\n");
->  }
->  
->  int acpi_video_get_edid(struct acpi_device *device, int type, int device_id,
-> @@ -1601,8 +1604,8 @@ static void acpi_video_bus_notify(struct
->  		break;
->  
->  	default:
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> -				  "Unsupported event [0x%x]\n", event));
-> +		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
-> +				  event);
->  		break;
->  	}
->  
-> @@ -1675,8 +1678,7 @@ static void acpi_video_device_notify(acp
->  		keycode = KEY_DISPLAY_OFF;
->  		break;
->  	default:
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> -				  "Unsupported event [0x%x]\n", event));
-> +		acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
->  		break;
->  	}
->  
-> @@ -1812,11 +1814,12 @@ static void acpi_video_dev_register_back
->  			&device->cooling_dev->device.kobj,
->  			"thermal_cooling");
->  	if (result)
-> -		printk(KERN_ERR PREFIX "Create sysfs link\n");
-> +		pr_info("sysfs link creation failed\n");
-> +
->  	result = sysfs_create_link(&device->cooling_dev->device.kobj,
->  			&device->dev->dev.kobj, "device");
->  	if (result)
-> -		printk(KERN_ERR PREFIX "Create sysfs link\n");
-> +		pr_info("Reverse sysfs link creation failed\n");
->  }
->  
->  static void acpi_video_run_bcl_for_osi(struct acpi_video_bus *video)
-> @@ -2030,7 +2033,7 @@ static int acpi_video_bus_add(struct acp
->  				acpi_video_bus_match, NULL,
->  				device, NULL);
->  	if (status == AE_ALREADY_EXISTS) {
-> -		printk(KERN_WARNING FW_BUG
-> +		pr_info(FW_BUG
->  			"Duplicate ACPI video bus devices for the"
->  			" same VGA controller, please try module "
->  			"parameter \"video.allow_duplicates=1\""
-> @@ -2073,7 +2076,7 @@ static int acpi_video_bus_add(struct acp
->  	if (error)
->  		goto err_put_video;
->  
-> -	printk(KERN_INFO PREFIX "%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
-> +	pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
->  	       ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
->  	       video->flags.multihead ? "yes" : "no",
->  	       video->flags.rom ? "yes" : "no",
-> Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> ===================================================================
-> --- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-> +++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> @@ -59,7 +59,6 @@ shows the supported mask values, current
->      ACPI_SYSTEM_COMPONENT           0x02000000
->      ACPI_THERMAL_COMPONENT          0x04000000
->      ACPI_MEMORY_DEVICE_COMPONENT    0x08000000
-> -    ACPI_VIDEO_COMPONENT            0x10000000
->      ACPI_PROCESSOR_COMPONENT        0x20000000
->  
->  debug_level
-> Index: linux-pm/drivers/acpi/sysfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/sysfs.c
-> +++ linux-pm/drivers/acpi/sysfs.c
-> @@ -59,7 +59,6 @@ static const struct acpi_dlayer acpi_deb
->  	ACPI_DEBUG_INIT(ACPI_SYSTEM_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_THERMAL_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_MEMORY_DEVICE_COMPONENT),
-> -	ACPI_DEBUG_INIT(ACPI_VIDEO_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_PROCESSOR_COMPONENT),
->  };
->  
-> Index: linux-pm/include/acpi/acpi_drivers.h
-> ===================================================================
-> --- linux-pm.orig/include/acpi/acpi_drivers.h
-> +++ linux-pm/include/acpi/acpi_drivers.h
-> @@ -22,7 +22,6 @@
->  #define ACPI_SYSTEM_COMPONENT		0x02000000
->  #define ACPI_THERMAL_COMPONENT		0x04000000
->  #define ACPI_MEMORY_DEVICE_COMPONENT	0x08000000
-> -#define ACPI_VIDEO_COMPONENT		0x10000000
->  #define ACPI_PROCESSOR_COMPONENT	0x20000000
->  
->  /*
-> 
-> 
-> 
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 55ecf6de9ff7..6e3bcffe2837 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -252,7 +252,7 @@ void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
+ 		set_pte(ptep, pte);
+ }
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		      unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgdp;
+@@ -286,7 +286,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm,
+ 	} else if (sz == PMD_SIZE) {
+ 		if (IS_ENABLED(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) &&
+ 		    pud_none(READ_ONCE(*pudp)))
+-			ptep = huge_pmd_share(mm, addr, pudp);
++			ptep = huge_pmd_share(mm, vma, addr, pudp);
+ 		else
+ 			ptep = (pte_t *)pmd_alloc(mm, pudp, addr);
+ 	} else if (sz == (CONT_PMD_SIZE)) {
+diff --git a/arch/ia64/mm/hugetlbpage.c b/arch/ia64/mm/hugetlbpage.c
+index b331f94d20ac..f993cb36c062 100644
+--- a/arch/ia64/mm/hugetlbpage.c
++++ b/arch/ia64/mm/hugetlbpage.c
+@@ -25,7 +25,8 @@ unsigned int hpage_shift = HPAGE_SHIFT_DEFAULT;
+ EXPORT_SYMBOL(hpage_shift);
+ 
+ pte_t *
+-huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
++huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
++	       unsigned long addr, unsigned long sz)
+ {
+ 	unsigned long taddr = htlbpage_to_page(addr);
+ 	pgd_t *pgd;
+diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
+index b9f76f433617..7eaff5b07873 100644
+--- a/arch/mips/mm/hugetlbpage.c
++++ b/arch/mips/mm/hugetlbpage.c
+@@ -21,8 +21,8 @@
+ #include <asm/tlb.h>
+ #include <asm/tlbflush.h>
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr,
+-		      unsigned long sz)
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
++		      unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgd;
+ 	p4d_t *p4d;
+diff --git a/arch/parisc/mm/hugetlbpage.c b/arch/parisc/mm/hugetlbpage.c
+index d7ba014a7fbb..e141441bfa64 100644
+--- a/arch/parisc/mm/hugetlbpage.c
++++ b/arch/parisc/mm/hugetlbpage.c
+@@ -44,7 +44,7 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+ }
+ 
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgd;
+diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
+index 8b3cc4d688e8..d57276b8791c 100644
+--- a/arch/powerpc/mm/hugetlbpage.c
++++ b/arch/powerpc/mm/hugetlbpage.c
+@@ -106,7 +106,8 @@ static int __hugepte_alloc(struct mm_struct *mm, hugepd_t *hpdp,
+  * At this point we do the placement change only for BOOK3S 64. This would
+  * possibly work on other subarchs.
+  */
+-pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
++		      unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pg;
+ 	p4d_t *p4;
+diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
+index 3b5a4d25ca9b..da36d13ffc16 100644
+--- a/arch/s390/mm/hugetlbpage.c
++++ b/arch/s390/mm/hugetlbpage.c
+@@ -189,7 +189,7 @@ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
+ 	return pte;
+ }
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgdp;
+diff --git a/arch/sh/mm/hugetlbpage.c b/arch/sh/mm/hugetlbpage.c
+index 220d7bc43d2b..999ab5916e69 100644
+--- a/arch/sh/mm/hugetlbpage.c
++++ b/arch/sh/mm/hugetlbpage.c
+@@ -21,7 +21,7 @@
+ #include <asm/tlbflush.h>
+ #include <asm/cacheflush.h>
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgd;
+diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
+index ad4b42f04988..a487ea2977a2 100644
+--- a/arch/sparc/mm/hugetlbpage.c
++++ b/arch/sparc/mm/hugetlbpage.c
+@@ -275,11 +275,7 @@ static unsigned long huge_tte_to_size(pte_t pte)
+ 	return size;
+ }
+ 
+-unsigned long pud_leaf_size(pud_t pud) { return 1UL << tte_to_shift(*(pte_t *)&pud); }
+-unsigned long pmd_leaf_size(pmd_t pmd) { return 1UL << tte_to_shift(*(pte_t *)&pmd); }
+-unsigned long pte_leaf_size(pte_t pte) { return 1UL << tte_to_shift(pte); }
+-
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgd;
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index ebca2ef02212..92e8799edffd 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -152,7 +152,8 @@ void hugetlb_fix_reserve_counts(struct inode *inode);
+ extern struct mutex *hugetlb_fault_mutex_table;
+ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
+ 
+-pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
++pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
++		      unsigned long addr, pud_t *pud);
+ 
+ struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
+ 
+@@ -161,7 +162,7 @@ extern struct list_head huge_boot_pages;
+ 
+ /* arch callbacks */
+ 
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz);
+ pte_t *huge_pte_offset(struct mm_struct *mm,
+ 		       unsigned long addr, unsigned long sz);
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 18f6ee317900..3185631f61bc 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3766,7 +3766,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 		src_pte = huge_pte_offset(src, addr, sz);
+ 		if (!src_pte)
+ 			continue;
+-		dst_pte = huge_pte_alloc(dst, addr, sz);
++		dst_pte = huge_pte_alloc(dst, vma, addr, sz);
+ 		if (!dst_pte) {
+ 			ret = -ENOMEM;
+ 			break;
+@@ -4503,7 +4503,7 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	 */
+ 	mapping = vma->vm_file->f_mapping;
+ 	i_mmap_lock_read(mapping);
+-	ptep = huge_pte_alloc(mm, haddr, huge_page_size(h));
++	ptep = huge_pte_alloc(mm, vma, haddr, huge_page_size(h));
+ 	if (!ptep) {
+ 		i_mmap_unlock_read(mapping);
+ 		return VM_FAULT_OOM;
+@@ -5293,9 +5293,9 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+  * if !vma_shareable check at the beginning of the routine. i_mmap_rwsem is
+  * only required for subsequent processing.
+  */
+-pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
++pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
++		      unsigned long addr, pud_t *pud)
+ {
+-	struct vm_area_struct *vma = find_vma(mm, addr);
+ 	struct address_space *mapping = vma->vm_file->f_mapping;
+ 	pgoff_t idx = ((addr - vma->vm_start) >> PAGE_SHIFT) +
+ 			vma->vm_pgoff;
+@@ -5373,7 +5373,8 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ }
+ #define want_pmd_share()	(1)
+ #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+-pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
++pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
++		      unsigned long addr, pud_t *pud)
+ {
+ 	return NULL;
+ }
+@@ -5392,7 +5393,7 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+ 
+ #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
+-pte_t *huge_pte_alloc(struct mm_struct *mm,
++pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz)
+ {
+ 	pgd_t *pgd;
+@@ -5411,7 +5412,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm,
+ 		} else {
+ 			BUG_ON(sz != PMD_SIZE);
+ 			if (want_pmd_share() && pud_none(*pud))
+-				pte = huge_pmd_share(mm, addr, pud);
++				pte = huge_pmd_share(mm, vma, addr, pud);
+ 			else
+ 				pte = (pte_t *)pmd_alloc(mm, pud, addr);
+ 		}
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 7423808640ef..b2ce61c1b50d 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -290,7 +290,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 		err = -ENOMEM;
+-		dst_pte = huge_pte_alloc(dst_mm, dst_addr, vma_hpagesize);
++		dst_pte = huge_pte_alloc(dst_mm, dst_vma, dst_addr, vma_hpagesize);
+ 		if (!dst_pte) {
+ 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 			i_mmap_unlock_read(mapping);
+-- 
+2.30.0.365.g02bc693789-goog
 
