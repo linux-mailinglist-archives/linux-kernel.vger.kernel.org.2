@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B598430F68D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D899230F698
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237381AbhBDPj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237406AbhBDPg4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:36:56 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC1EC061786;
-        Thu,  4 Feb 2021 07:36:15 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id df22so4711293edb.1;
-        Thu, 04 Feb 2021 07:36:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Apc5zhyVA0QX3lxOc0IBBanCOB57QvWUV3wpenXTIf0=;
-        b=u/YwAtGxyWgGHi8bvWMpuF5DXWiuqvhW52n2oj2rcvRe1I0Z9TqVZ6b7MPv8oVLDzv
-         M2DH4tR/dY62QFI9+QWnfMalsur63QLpT3XtzJh+R3vGr1SPnkv5/Q5TaqqfWyh1ajSI
-         GjsozjEJIFFpPWFUYhnByJ8EjjUfJH60l0OVwNFE50l6a3nAOqq1gthsQOCrdECX0vha
-         e7uKlli402rIEmLor6EO0AJ6zGpsizB/Xf4v9ucHKnc+yx8tFNe83apzAiS+hO7o5zBh
-         EjihL4wZH3jd5rD93WOaalMz0ZPJnlWwNQmVSTjd21Eia9HOGVMLii7yIUmKJszVV4JQ
-         ujpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Apc5zhyVA0QX3lxOc0IBBanCOB57QvWUV3wpenXTIf0=;
-        b=N7JNpV2Yi9+0fZtJ4dHbGbmhjMAJVuej+I+MIxuAJNSdUAQUdfG5REftnGmQ3l5vO2
-         SRrmjDg8Sm1mbB1QRNlPhxQo1SflRHDCM/IGPTOvdFrPg9J6ayzVOSc5tMSRoZwaAyYh
-         teJG51Gr3tesCSaS8P4SE6g7svolScPMpTCiwDVel1HoWkOwGFGWP9BWXKdBIYMGlMs1
-         mnVuAI9GHe3Xq8F7WOpUnki8YZk3wboGWnFsrTStcfsHPtjGe7dxT8JN+TyuBhfO8s/y
-         p0og0V5FLwHZoHOdSYF/Ym6cf8BhqsRvAt6V4O+pBCArPR1xmSIYhScW6XM1T1wiVlbU
-         hDrw==
-X-Gm-Message-State: AOAM531kYb9cbdh5+ocmY7764CQYf7r/fXIic3OXxb8PE5wf25PuXwaw
-        uGiKIy3C5MiF7OZt7t49T4Q=
-X-Google-Smtp-Source: ABdhPJzWlZxKNpce/klndMz2fmdu5OZ8EbNS5lQWyITfVfisl2JroTKniOW02JkR6N7nmrzgj9Bnqw==
-X-Received: by 2002:a05:6402:378:: with SMTP id s24mr8723062edw.376.1612452974040;
-        Thu, 04 Feb 2021 07:36:14 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id x21sm2591860eje.118.2021.02.04.07.36.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 07:36:13 -0800 (PST)
-Date:   Thu, 4 Feb 2021 17:36:11 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Brian Vazquez <brianvv@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210204153611.iqpok4ligorpujyo@skbuf>
-References: <20210204123331.21e4598b@canb.auug.org.au>
- <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
+        id S237497AbhBDPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:41:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237167AbhBDPhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:37:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE2064F3C;
+        Thu,  4 Feb 2021 15:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612452980;
+        bh=V2+LJ8z1KQnNgpVRjLeJbDwIcI5psNklwq0UR+e71Wo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jlhYQNe7yZFHun18Iv/OtdC4lYOA60k12RugBYQGdC4Tj78W9V84V84pyZZmTGs12
+         9ZjhJIaW4p1uqsuoNshWx4ZtTcrNi8EXT/XDAbcDXA/2yavrKD47ZSFItuKSnU+9o9
+         G1NN7Rbex/GdwzlhEXOjnUTxXtGKSXFEmd/4g/iSUbVQPfm3c+SaxlaFKfzysmFNo2
+         Of3a527jfeyY0PVkAHafTs69zccRXsa4rMaRcxnXkVLLtQkJ++yhy44bmvw8EHAG6q
+         Q0w7yrU9JyeRlids1I3QvQkUxAti3EcHLWtEtg0jZdkjZ3Fmcf6Wf2L0aeh3AW/4pl
+         JqVavM4fpD1Mw==
+Date:   Thu, 4 Feb 2021 15:36:15 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: [PATCH 2/3] arm64/ptrace: introduce PTRACE_O_ARM64_RAW_REGS
+Message-ID: <20210204153615.GB21058@willie-the-truck>
+References: <20210201194012.524831-1-avagin@gmail.com>
+ <20210201194012.524831-3-avagin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
+In-Reply-To: <20210201194012.524831-3-avagin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brian,
+On Mon, Feb 01, 2021 at 11:40:11AM -0800, Andrei Vagin wrote:
+> We have some ABI weirdness in the way that we handle syscall
+> exit stops because we indicate whether or not the stop has been
+> signalled from syscall entry or syscall exit by clobbering a general
+> purpose register (ip/r12 for AArch32, x7 for AArch64) in the tracee
+> and restoring its old value after the stop.
+> 
+> This behavior was inherited from ARM and it isn't common for other
+> architectures. Now, we have PTRACE_GET_SYSCALL_INFO that gives all
+> required information about system calls, so the hack with clobbering
+> registers isn't needed anymore.
+> 
+> This change adds the new ptrace option PTRACE_O_ARM64_RAW_REGS.  If it
+> is set, PTRACE_GETREGSET returns values of all registers without
+> clobbering r12 or x7 and PTRACE_SETREGSE sets all registers even if a
+> process has been stopped in syscall-enter or syscall-exit.
+> 
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> ---
+>  arch/arm64/include/uapi/asm/ptrace.h |  4 ++
+>  arch/arm64/kernel/ptrace.c           | 70 ++++++++++++++++------------
+>  include/linux/ptrace.h               |  1 +
+>  include/uapi/linux/ptrace.h          |  9 +++-
+>  4 files changed, 52 insertions(+), 32 deletions(-)
 
-On Wed, Feb 03, 2021 at 07:52:08PM -0800, Brian Vazquez wrote:
-> Hi Stephen, thanks for the report. I'm having trouble trying to
-> compile for ppc, but I believe this should fix the problem, could you
-> test this patch, please? Thanks!
+Please split this up so that the arm64-specific changes are separate to
+the core changes.
 
-Could you please submit the patch formally to net-next? Thanks.
+> diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
+> index 83ee45fa634b..bcc8c362ddd9 100644
+> --- a/include/uapi/linux/ptrace.h
+> +++ b/include/uapi/linux/ptrace.h
+> @@ -7,6 +7,7 @@
+>  /* has the defines to get at the registers. */
+>  
+>  #include <linux/types.h>
+> +#include <asm/ptrace.h>
+>  
+>  #define PTRACE_TRACEME		   0
+>  #define PTRACE_PEEKTEXT		   1
+> @@ -137,8 +138,14 @@ struct ptrace_syscall_info {
+>  #define PTRACE_O_EXITKILL		(1 << 20)
+>  #define PTRACE_O_SUSPEND_SECCOMP	(1 << 21)
+>  
+> +/* (1<<28) is reserved for arch specific options. */
+> +#ifndef _PTRACE_O_ARCH_OPTIONS
+> +#define _PTRACE_O_ARCH_OPTIONS 0
+> +#endif
+
+It seems a bit fragile to rely on a comment here to define the user ABI;
+why not define _PTRACE_O_ARCH_OPTIONS to the right value unconditionally?
+
+Also, it seems as though we immediately burn this bit on arm64, so if we
+ever wanted another option we'd have to come back here and allocate another
+bit. Could we do better, e.g. by calling into an arch hook
+(arch_ptrace_setoptions()) and passing the 'addr' parameter?
+
+How do other architectures manage this sort of thing? I'm wondering whether
+a separate regset containing just "real x7" and orig_x0 would be preferable
+after all...
+
+Will
