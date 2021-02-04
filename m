@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F3430EFFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD8B30EFFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhBDJuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:50:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233597AbhBDJup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:50:45 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C02664D9F;
-        Thu,  4 Feb 2021 09:50:04 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l7bGz-00Bxau-V2; Thu, 04 Feb 2021 09:50:02 +0000
+        id S235322AbhBDJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:52:28 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:51312 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235292AbhBDJwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:52:25 -0500
+X-UUID: aae8768ba5b347539e6247ef73a9929e-20210204
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yCGwEsEVjQoUIZ8It18p5vUYxvCyrioMe/9PFTM4Wv8=;
+        b=LfwqeIUU6kyKxpCCLwDesrEgvv/2Asn8gUZGGu7/gxLNhQUDM2APTpGKI0tHb3b8zWl86Sqxzzfd5B2S8Zhb6ZsABw+HqMs2WHojnQunYXmETTqgy2Lw+zvtvQhi5TyNdm0PLo+WMCjjxeJaQ2yZo0SCpbSlmbhVtOI+grAwXDU=;
+X-UUID: aae8768ba5b347539e6247ef73a9929e-20210204
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1961543882; Thu, 04 Feb 2021 17:51:37 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Feb
+ 2021 17:51:31 +0800
+Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Feb 2021 17:51:30 +0800
+From:   <mingchuang.qiao@mediatek.com>
+To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
+        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
+        <mika.westerberg@linux.intel.com>, <alex.williamson@redhat.com>,
+        <rjw@rjwysocki.net>, <utkarsh.h.patel@intel.com>
+Subject: [v4] PCI: Avoid unsync of LTR mechanism configuration
+Date:   Thu, 4 Feb 2021 17:51:25 +0800
+Message-ID: <20210204095125.9212-1-mingchuang.qiao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Feb 2021 09:50:01 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 06/21] arm64: Move VHE-specific SPE setup to
- mutate_to_vhe()
-In-Reply-To: <20210204093427.GB20244@willie-the-truck>
-References: <20210201115637.3123740-1-maz@kernel.org>
- <20210201115637.3123740-7-maz@kernel.org>
- <20210203211319.GA19694@willie-the-truck>
- <a660fd06d43451b4693fbb65f2ee1b56@kernel.org>
- <20210204093427.GB20244@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <12b87236475ec3e03d78dae620530c60@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, dbrazdil@google.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-TM-SNTS-SMTP: A2F39DD1C52C3A4A4AADE6AFD365C93497CD1F4332D5C12853C645E0F0D636AF2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-04 09:34, Will Deacon wrote:
-> On Thu, Feb 04, 2021 at 09:30:08AM +0000, Marc Zyngier wrote:
+RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
+biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
+MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
+Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
+bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
+IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
+Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0cywgdGhlICJMVFIg
+TWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2Ugd2lsbCBjaGFuZ2UgdG8gMCBhY2NvcmRp
+bmcgdG8gUENJZSByNS4wLCBzZWMgNy41LjMuMTYuIEhvd2V2ZXIsDQp0aGUgcGNpX2Rldi0+bHRy
+X3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEuDQoNCkZvciBmb2xsb3dpbmcgY29uZGl0
+aW9ucywgY2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0K
+b2YgYnJpZGdlIHRvIG1ha2UgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbWF0Y2ggbHRyX3Bh
+dGggdmFsdWUuDQogICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmljZSdzIExUUiBmb3IgaG90LXJl
+bW92ZS9ob3QtYWRkDQogICAtYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UncyBERVZDVEwyIHJlZ2lz
+dGVyIHdoZW4gcmVzdG9yZSBkZXZpY2Ugc3RhdGUNCg0KU2lnbmVkLW9mZi1ieTogTWluZ2NodWFu
+ZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KLS0tDQpjaGFuZ2VzIG9mIHY0
+DQogLWZpeCB0eXBvIG9mIGNvbW1pdCBtZXNzYWdlDQogLXJlbmFtZTogcGNpX3JlY29uZmlndXJl
+X2JyaWRnZV9sdHIoKS0+cGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoKQ0KY2hhbmdlcyBvZiB2
+Mw0KIC1jYWxsIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKCkgaW4gcHJvYmUuYw0KY2hhbmdl
+cyBvZiB2Mg0KIC1tb2RpZnkgcGF0Y2ggZGVzY3JpcHRpb24NCiAtcmVjb25maWd1cmUgYnJpZGdl
+J3MgTFRSIGJlZm9yZSByZXN0b3JpbmcgZGV2aWNlIERFVkNUTDIgcmVnaXN0ZXINCi0tLQ0KIGRy
+aXZlcnMvcGNpL3BjaS5jICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrKysrDQogZHJpdmVy
+cy9wY2kvcGNpLmggICB8ICAxICsNCiBkcml2ZXJzL3BjaS9wcm9iZS5jIHwgMTMgKysrKysrKysr
+Ky0tLQ0KIDMgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
+Cg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5jIGIvZHJpdmVycy9wY2kvcGNpLmMNCmlu
+ZGV4IGI5ZmVjYzI1ZDIxMy4uNmJmNjVkMjk1MzMxIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kv
+cGNpLmMNCisrKyBiL2RyaXZlcnMvcGNpL3BjaS5jDQpAQCAtMTQzNyw2ICsxNDM3LDI0IEBAIHN0
+YXRpYyBpbnQgcGNpX3NhdmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIAlyZXR1
+cm4gMDsNCiB9DQogDQordm9pZCBwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNp
+X2RldiAqZGV2KQ0KK3sNCisjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQorCXN0cnVjdCBwY2lfZGV2
+ICpicmlkZ2U7DQorCXUzMiBjdGw7DQorDQorCWJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2Uo
+ZGV2KTsNCisJaWYgKGJyaWRnZSAmJiBicmlkZ2UtPmx0cl9wYXRoKSB7DQorCQlwY2llX2NhcGFi
+aWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwgJmN0bCk7DQorCQlpZiAo
+IShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KKwkJCXBjaV9kYmcoYnJpZGdlLCAi
+cmUtZW5hYmxpbmcgTFRSXG4iKTsNCisJCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdl
+LCBQQ0lfRVhQX0RFVkNUTDIsDQorCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KKwkJ
+fQ0KKwl9DQorI2VuZGlmDQorfQ0KKw0KIHN0YXRpYyB2b2lkIHBjaV9yZXN0b3JlX3BjaWVfc3Rh
+dGUoc3RydWN0IHBjaV9kZXYgKmRldikNCiB7DQogCWludCBpID0gMDsNCkBAIC0xNDQ3LDYgKzE0
+NjUsMTMgQEAgc3RhdGljIHZvaWQgcGNpX3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2Rl
+diAqZGV2KQ0KIAlpZiAoIXNhdmVfc3RhdGUpDQogCQlyZXR1cm47DQogDQorCS8qDQorCSAqIERv
+d25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gbGluayBnb2VzIGRv
+d24uDQorCSAqIENoZWNrIGFuZCByZS1jb25maWd1cmUgdGhlIGJpdCBoZXJlIGJlZm9yZSByZXN0
+b3JpbmcgZGV2aWNlLg0KKwkgKiBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4NCisJICovDQorCXBj
+aV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKGRldik7DQorDQogCWNhcCA9ICh1MTYgKikmc2F2ZV9z
+dGF0ZS0+Y2FwLmRhdGFbMF07DQogCXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGRldiwgUENJ
+X0VYUF9ERVZDVEwsIGNhcFtpKytdKTsNCiAJcGNpZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2
+LCBQQ0lfRVhQX0xOS0NUTCwgY2FwW2krK10pOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Bj
+aS5oIGIvZHJpdmVycy9wY2kvcGNpLmgNCmluZGV4IDVjNTkzNjUwOTJmYS4uYjNhNWU1Mjg3Y2I3
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kvcGNpLmgNCisrKyBiL2RyaXZlcnMvcGNpL3BjaS5o
+DQpAQCAtMTExLDYgKzExMSw3IEBAIHZvaWQgcGNpX2ZyZWVfY2FwX3NhdmVfYnVmZmVycyhzdHJ1
+Y3QgcGNpX2RldiAqZGV2KTsNCiBib29sIHBjaV9icmlkZ2VfZDNfcG9zc2libGUoc3RydWN0IHBj
+aV9kZXYgKmRldik7DQogdm9pZCBwY2lfYnJpZGdlX2QzX3VwZGF0ZShzdHJ1Y3QgcGNpX2RldiAq
+ZGV2KTsNCiB2b2lkIHBjaV9icmlkZ2Vfd2FpdF9mb3Jfc2Vjb25kYXJ5X2J1cyhzdHJ1Y3QgcGNp
+X2RldiAqZGV2KTsNCit2b2lkIHBjaV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKHN0cnVjdCBwY2lf
+ZGV2ICpkZXYpOw0KIA0KIHN0YXRpYyBpbmxpbmUgdm9pZCBwY2lfd2FrZXVwX2V2ZW50KHN0cnVj
+dCBwY2lfZGV2ICpkZXYpDQogew0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Byb2JlLmMgYi9k
+cml2ZXJzL3BjaS9wcm9iZS5jDQppbmRleCA5NTNmMTVhYmM4NTAuLmFkZTA1NWU5ZmI1OCAxMDA2
+NDQNCi0tLSBhL2RyaXZlcnMvcGNpL3Byb2JlLmMNCisrKyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMN
+CkBAIC0yMTMyLDkgKzIxMzIsMTYgQEAgc3RhdGljIHZvaWQgcGNpX2NvbmZpZ3VyZV9sdHIoc3Ry
+dWN0IHBjaV9kZXYgKmRldikNCiAJICogQ29tcGxleCBhbmQgYWxsIGludGVybWVkaWF0ZSBTd2l0
+Y2hlcyBpbmRpY2F0ZSBzdXBwb3J0IGZvciBMVFIuDQogCSAqIFBDSWUgcjQuMCwgc2VjIDYuMTgu
+DQogCSAqLw0KLQlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BP
+UlQgfHwNCi0JICAgICgoYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpKSAmJg0KLQkg
+ICAgICBicmlkZ2UtPmx0cl9wYXRoKSkgew0KKwlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBD
+SV9FWFBfVFlQRV9ST09UX1BPUlQpIHsNCisJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChkZXYs
+IFBDSV9FWFBfREVWQ1RMMiwNCisJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCisJCWRl
+di0+bHRyX3BhdGggPSAxOw0KKwkJcmV0dXJuOw0KKwl9DQorDQorCWJyaWRnZSA9IHBjaV91cHN0
+cmVhbV9icmlkZ2UoZGV2KTsNCisJaWYgKGJyaWRnZSAmJiBicmlkZ2UtPmx0cl9wYXRoKSB7DQor
+CQlwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihkZXYpOw0KIAkJcGNpZV9jYXBhYmlsaXR5X3Nl
+dF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0KIAkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJf
+RU4pOw0KIAkJZGV2LT5sdHJfcGF0aCA9IDE7DQotLSANCjIuMTguMA0K
 
-[...]
-
->> I think the following patch addresses the above issue, which I'll 
->> squash
->> with the original patch. Please shout if I missed anything.
->> 
->> Thanks,
->> 
->>         M.
->> 
->> diff --git a/arch/arm64/kernel/hyp-stub.S 
->> b/arch/arm64/kernel/hyp-stub.S
->> index aa7e8d592295..3e08dcc924b5 100644
->> --- a/arch/arm64/kernel/hyp-stub.S
->> +++ b/arch/arm64/kernel/hyp-stub.S
->> @@ -115,29 +115,9 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
->>  	mrs_s	x0, SYS_VBAR_EL12
->>  	msr	vbar_el1, x0
->> 
->> -	// Fixup SPE configuration, if supported...
->> -	mrs	x1, id_aa64dfr0_el1
->> -	ubfx	x1, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
->> -	mov	x2, xzr
->> -	cbz	x1, skip_spe
->> -
->> -	// ... and not owned by EL3
->> -	mrs_s	x0, SYS_PMBIDR_EL1
->> -	and	x0, x0, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
->> -	cbnz	x0, skip_spe
->> -
->> -	// Let the SPE driver in control of the sampling
->> -	mrs_s	x0, SYS_PMSCR_EL1
->> -	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PCT_SHIFT)
->> -	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PA_SHIFT)
->> -	msr_s	SYS_PMSCR_EL1, x0
->> -	mov	x2, #MDCR_EL2_TPMS
->> -
->> -skip_spe:
->> -	// For VHE, use EL2 translation and disable access from EL1
->> +	// Use EL2 translations for SPE and disable access from EL1
->>  	mrs	x0, mdcr_el2
->>  	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
->> -	orr	x0, x0, x2
->>  	msr	mdcr_el2, x0
-> 
-> Looks a tonne better, thanks! Be nice if somebody could test it for us.
-
-SPE-equipped machines are the silicon equivalent of hen's teeth...
-
-Alex, any chance you could give this a go?
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
