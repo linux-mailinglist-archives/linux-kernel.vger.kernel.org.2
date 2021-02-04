@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E4430EB98
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8EF30EB92
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhBDEnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 23:43:25 -0500
-Received: from m12-16.163.com ([220.181.12.16]:33946 "EHLO m12-16.163.com"
+        id S231124AbhBDEd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 23:33:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhBDEnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 23:43:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=GIyNb
-        ave6wKEQYpyFc7Z4WZNIdF9Yp34fkRVzgFa2XY=; b=qBSIabZN2oEMl+HRtMALK
-        HquMTpZCl/w5Fs2TZD0ymhLp7VDr5SuY4iEV1St62CfdLUaTEqxYnAp8L5YbXksa
-        nxtZ1xNSPObZuya616V8zAD2VCI9nYtMvIVavZ4zAzZZFKruxQKufQBcZMcWvp2t
-        d31CFaDDGo8w+pyzWAnAJ0=
-Received: from localhost (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowADXykQ3QhtgZMSSaQ--.21799S2;
-        Thu, 04 Feb 2021 08:39:20 +0800 (CST)
-Date:   Thu, 4 Feb 2021 08:39:31 +0800
-From:   wengjianfeng <samirweng1979@163.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     stf_xl@wp.pl, helmut.schaa@googlemail.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: Re: [PATCH] rt2x00: remove duplicate word in comment
-Message-ID: <20210204083931.00004d11@163.com>
-In-Reply-To: <1ee1b354-0550-3fd8-f547-10827b3974ad@infradead.org>
-References: <20210203063850.15844-1-samirweng1979@163.com>
-        <6bf90f62-f14e-9c4a-748b-4923fcae9bef@infradead.org>
-        <20210204083007.000069d2@163.com>
-        <1ee1b354-0550-3fd8-f547-10827b3974ad@infradead.org>
-Organization: yulong
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S229609AbhBDEdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 23:33:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4F5064E0A;
+        Thu,  4 Feb 2021 04:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612413165;
+        bh=Ue3Xs9wUJgj8n2DPAwzxQPz9+XDAeJ1+dP20Be2cMmc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kcPYaqRHlCzbhoaLfnC7CyocyIw09KlkNAanE/fLzAfRxSR0rdNVXPpmrzhfL+HAH
+         /k+KNAQxTN4mCmAXhxX6BlRb2mn0JTPuUMlfhQW82iIDeK4HTU1EkrVSMW4qt1ONOg
+         w1sfUAYnTRgnL739k/25VCaW9hpYX/rKquYyqEopm6sPLli8t51AzdTNH9wjfaXbrY
+         efujbLozFRDsJfe13TnRxdZj4L9KKMonANdINkEq6QHBtqNyamPANdU6pAEcs1UZDJ
+         M12hYgkvbx9iUq1/FCs/ysUqKU9ABIhpQJMeS41kuVXP7YspLOqb8ljp273CkXZ8UB
+         UDoPNwM5vxiZQ==
+Received: by mail-lj1-f176.google.com with SMTP id f2so1770967ljp.11;
+        Wed, 03 Feb 2021 20:32:44 -0800 (PST)
+X-Gm-Message-State: AOAM530DatMhVw0/d+bMLYPMAwZzSJwa/97lNuL6FYsOqWYXA7RgIUtW
+        2cpJcMChOTj+DKttz08Hgb4cwn3XAS426ojhTH4=
+X-Google-Smtp-Source: ABdhPJwEAuRxQ4vVpWDAsPEZhML2MX4H3MeAubmQ6/1kmFd2jhVHIwzOpEC2bQi2+maalynHoa+xpMePe7ea04vw+gE=
+X-Received: by 2002:a2e:921a:: with SMTP id k26mr2096814ljg.238.1612413163027;
+ Wed, 03 Feb 2021 20:32:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowADXykQ3QhtgZMSSaQ--.21799S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJry5CF1DWr4rCF4rZF1rCrg_yoW8Ar13pF
-        WrGFW0kFWDGwnrWa4xtayfXryYva4rKr12qrWDW3yrZrn0vr1rJr97GF18u3WDJw48Ga4j
-        vr4xt3W3WF9xZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bFlksUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqhgvsVr7sBIkNwAAs8
+References: <20210203134834.2367593-1-guoren@kernel.org> <652791212cbf9c05a9d83b6da5a83520@kernel.org>
+In-Reply-To: <652791212cbf9c05a9d83b6da5a83520@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 4 Feb 2021 12:32:31 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTmBUjrTVmQ+CqGtYtBkLO6C5WguWsT7+rFLOp4n=9diA@mail.gmail.com>
+Message-ID: <CAJF2gTTmBUjrTVmQ+CqGtYtBkLO6C5WguWsT7+rFLOp4n=9diA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drivers/irqchip: Fixup csky,mpintc compile error with CPU_CK610
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 16:33:37 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
+Thx Marc,
 
-> On 2/3/21 4:30 PM, wengjianfeng wrote:
-> > On Wed, 3 Feb 2021 07:16:17 -0800
-> > Randy Dunlap <rdunlap@infradead.org> wrote:
-> > 
-> >> On 2/2/21 10:38 PM, samirweng1979 wrote:
-> >>> From: wengjianfeng <wengjianfeng@yulong.com>
-> >>>
-> >>> remove duplicate word 'we' in comment
-> >>>
-> >>> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
-> >>> ---
-> >>>  drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
-> >>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c index
-> >>> c861811..7158152 100644 ---
-> >>> a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c +++
-> >>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c @@ -179,7
-> >>> +179,7 @@ void rt2x00crypto_rx_insert_iv(struct sk_buff *skb,
-> >>>  	 * Make room for new data. There are 2 possibilities
-> >>>  	 * either the alignment is already present between
-> >>>  	 * the 802.11 header and payload. In that case we
-> >>> -	 * we have to move the header less then the iv_len
-> >>> +	 * have to move the header less then the iv_len
-> >>
-> >> s/then/than/
-> >>
-> >>>  	 * since we can use the already available l2pad bytes
-> >>>  	 * for the iv data.
-> >>>  	 * When the alignment must be added manually we must
-> >>>
-> >>
-> >>
-> > 
-> > Hi Randy,
-> >    So you means add it for byte alignment, right? if yes,just ignore
-> >    the patch. thanks.
-> 
-> No, I mean that there is a typo there also: "then" should be changed
-> to "than" while you are making changes.
-> 
-> thanks.
+On Wed, Feb 3, 2021 at 11:44 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2021-02-03 13:48, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The irq-csky-mpintc.c only could support CPU_CK860 and it will
+> > compile error with CPU_CK610.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/irqchip/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> > index b147f22a78f4..9be2dd5c6380 100644
+> > --- a/drivers/irqchip/Kconfig
+> > +++ b/drivers/irqchip/Kconfig
+> > @@ -433,7 +433,7 @@ config QCOM_PDC
+> >
+> >  config CSKY_MPINTC
+> >       bool "C-SKY Multi Processor Interrupt Controller"
+> > -     depends on CSKY
+> > +     depends on CSKY && CPU_CK860
+> >       help
+> >         Say yes here to enable C-SKY SMP interrupt controller driver used
+> >         for C-SKY SMP system.
+>
+> I'm not convinced this is the right fix.
+>
+> You already select CSKY_MPINTC only when CPU_CK860 is selected,
+> so preventing the user from selecting it should simply be a matter
+> of dropping the string after bool.
+Yes, you are right. I will change it into arch/csky.
 
-Hi Randy£¬
-  Ok£¬ I¡¡will update the patch£¬thanks for your reply.
 
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
