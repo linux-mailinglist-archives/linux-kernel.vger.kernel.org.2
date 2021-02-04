@@ -2,64 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A6030F3DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2761330F3E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbhBDN12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:27:28 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:41588 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236311AbhBDN1R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:27:17 -0500
-X-UUID: 1e28ea95ab33423aaa971d97ffaad201-20210204
-X-UUID: 1e28ea95ab33423aaa971d97ffaad201-20210204
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <ed.tsai@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 319922277; Thu, 04 Feb 2021 21:26:20 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Feb 2021 21:25:58 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Feb 2021 21:25:58 +0800
-From:   Ed Tsai <ed.tsai@mediatek.com>
-To:     <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ed.tsai@mediatek.com>
-Subject: [PATCH] Documentation: f2fs: fix typo s/automaic/automatic
-Date:   Thu, 4 Feb 2021 21:25:56 +0800
-Message-ID: <20210204132556.14934-1-ed.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S236308AbhBDN34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:29:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48532 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236274AbhBDN3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:29:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612445333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRSYMjQRAzEHtFevMwBdexoUuf46f9eJ8r1i3WMioDI=;
+        b=GcyhMd8vU7FiMUrjfpReK3jejf2JcNNuC/9fOqe8iI3GUHpmlS3W1NeI89vJMlKOm5Jq6S
+        fDZJH9tjinKCe3lpv0vatkQWG57RzHKmtJxoGv6c+0wPresT11A9qR5KACB3Al8NZ421tf
+        /rv2Z0u8UcaKLgD2rl/LNbc/H8TKIKE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 480C9ACB0;
+        Thu,  4 Feb 2021 13:28:53 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 14:28:52 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+Message-ID: <YBv2lAkaxcPD22dd@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-2-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 264E744759CDFE8E1FA7B7EB4E35E7CEFEA19D310B34A1FB30C8694CD75E32962000:8
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202184746.119084-2-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo in f2fs documentation.
+On Tue 02-02-21 13:47:40, Johannes Weiner wrote:
+> The memcg hotunplug callback erroneously flushes counts on the local
+> CPU, not the counts of the CPU going away; those counts will be lost.
+> 
+> Flush the CPU that is actually going away.
+> 
+> Also simplify the code a bit by using mod_memcg_state() and
+> count_memcg_events() instead of open-coding the upward flush - this is
+> comparable to how vmstat.c handles hotunplug flushing.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Signed-off-by: Ed Tsai <ed.tsai@mediatek.com>
----
- Documentation/filesystems/f2fs.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index dae15c96e659..e1cda214058e 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -831,7 +831,7 @@ This is the default option. f2fs does automatic compression in the writeback of
- compression enabled files.
- 
- 2) compress_mode=user
--This disables the automaic compression and gives the user discretion of choosing the
-+This disables the automatic compression and gives the user discretion of choosing the
- target file and the timing. The user can do manual compression/decompression on the
- compression enabled files using F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
- ioctls like the below.
+Shakeel has already pointed out Fixes.
+
+> ---
+>  mm/memcontrol.c | 35 +++++++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ed5cc78a8dbf..8120d565dd79 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2411,45 +2411,52 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	struct mem_cgroup *memcg, *mi;
+> +	struct mem_cgroup *memcg;
+>  
+>  	stock = &per_cpu(memcg_stock, cpu);
+>  	drain_stock(stock);
+>  
+>  	for_each_mem_cgroup(memcg) {
+> +		struct memcg_vmstats_percpu *statc;
+>  		int i;
+>  
+> +		statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+> +
+>  		for (i = 0; i < MEMCG_NR_STAT; i++) {
+>  			int nid;
+> -			long x;
+>  
+> -			x = this_cpu_xchg(memcg->vmstats_percpu->stat[i], 0);
+> -			if (x)
+> -				for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+> -					atomic_long_add(x, &memcg->vmstats[i]);
+> +			if (statc->stat[i]) {
+> +				mod_memcg_state(memcg, i, statc->stat[i]);
+> +				statc->stat[i] = 0;
+> +			}
+>  
+>  			if (i >= NR_VM_NODE_STAT_ITEMS)
+>  				continue;
+>  
+>  			for_each_node(nid) {
+> +				struct batched_lruvec_stat *lstatc;
+>  				struct mem_cgroup_per_node *pn;
+> +				long x;
+>  
+>  				pn = mem_cgroup_nodeinfo(memcg, nid);
+> -				x = this_cpu_xchg(pn->lruvec_stat_cpu->count[i], 0);
+> -				if (x)
+> +				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
+> +
+> +				x = lstatc->count[i];
+> +				lstatc->count[i] = 0;
+> +
+> +				if (x) {
+>  					do {
+>  						atomic_long_add(x, &pn->lruvec_stat[i]);
+>  					} while ((pn = parent_nodeinfo(pn, nid)));
+> +				}
+>  			}
+>  		}
+>  
+>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+> -			long x;
+> -
+> -			x = this_cpu_xchg(memcg->vmstats_percpu->events[i], 0);
+> -			if (x)
+> -				for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+> -					atomic_long_add(x, &memcg->vmevents[i]);
+> +			if (statc->events[i]) {
+> +				count_memcg_events(memcg, i, statc->events[i]);
+> +				statc->events[i] = 0;
+> +			}
+>  		}
+>  	}
+>  
+> -- 
+> 2.30.0
+> 
+
 -- 
-2.18.0
-
+Michal Hocko
+SUSE Labs
