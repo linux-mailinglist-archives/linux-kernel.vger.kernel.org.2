@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B903030F2D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629F030F2E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhBDMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:06:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbhBDMGI (ORCPT
+        id S235895AbhBDMJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:09:29 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26332 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235635AbhBDMJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:06:08 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65642C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:05:28 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id j11so1634814plt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:05:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3gCwnJ3I9TFynlXEE8EgeDSc39OV8tdTTKcZtSs6Ob4=;
-        b=pMVNR9XQ5X8T87rmsm48JCoslRIqG0EnlWBjAb6WHAvZOeIxyj2TRJh9wRqraexw/g
-         ziQJ35MJ8oLcyIL8gD73cX9x0S3QP3ZHCsXx1d9apIGe3IP2QhCrsODgomRmEuF/BM/s
-         TNiQTIGJWqXuqvTeF8rUedp93b/6llTNJfLExHC8WCB/2nLPdtBDEzD/KoXxLR2diMwW
-         cTtzZ8waYaNGVVS0S52ML3lY5B8vxdKUH8BHnp8l6/zclOWgJOio+28qUntlf8pp+Z+L
-         xn1NRzQ4BguP4n7giKheAxDsLeSPx5BnXRz9nbMgO81daLgjLIeuHQOF9gfltTISKdTl
-         8xxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3gCwnJ3I9TFynlXEE8EgeDSc39OV8tdTTKcZtSs6Ob4=;
-        b=rcQs9VETNSW/mo1U4zdM8BkI8i7cIC7RW+Bkm/H8FlxkGvqkyus79P6l38/uKIli6I
-         06QN4iYU0L94tFT6g9NUv+Uv4wweaB/sVk3HyyZm1GxdInWVZYl7Td6IohBI5EH/2Pm7
-         uagNhAJ3f39Oc+u4TRuDCaPj2+oU3kw/oOsV2W7Ltt0+D15Md4Lsgff+NcwP83xJ/eRz
-         /we9STFn4YjA8wpXZHoKKcRGwG5XsT6Fq2wgnAvDi4iUiu95+i1TnS46/zZ1Yyoi4r2N
-         DquDpXYvzt30x/O1nO71Hom2y7wsmAjLDOapilmZhJuk0sxnsPtWn0woqZsU2WN0tbBX
-         AvJA==
-X-Gm-Message-State: AOAM530uVfVk7FnSC2bQVl/NHmApqqxHz1bm2ndCTM6oBJ+gYwbhN23H
-        IG/vkb2pl4ZUJLTJ3Qe8GPpUBBcywiI2cavzJBtjgg==
-X-Google-Smtp-Source: ABdhPJwzDbuoQicSrDC63yyRE+e3cv4bXJqhpUMqxqgXg7BPyh+dk863cUQABNYOGRT+4bP925wm4mKt33lqmX4ll5A=
-X-Received: by 2002:a17:90a:4ecb:: with SMTP id v11mr8360759pjl.75.1612440327917;
- Thu, 04 Feb 2021 04:05:27 -0800 (PST)
+        Thu, 4 Feb 2021 07:09:22 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114C6q3W029267;
+        Thu, 4 Feb 2021 13:08:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=JVizouHpERDxnp0Pvrg/BABCeBC1rdtimLXFBGntSH4=;
+ b=cqJ2wZpqzmrm085DrfRl8YQWjnmoZNnCv66PcRMAZProUYHXKluzhIfqMtRpJ/s8Pj71
+ hkFhqEeA6gqeWYNrpBs4ycF0TVHarf244M+2NS2tE5TPBG6VVR2oN62pS+5P8DDMptNR
+ jjifSs0lyZvB5ZTWaA+oTjPH38MXixduoKD2y1YackfYjTvMaBAp+dS+xm7WopWHB/i7
+ 86VwsxfOLnw1ZkgytNWKZA35hlx7E+HbZIObUGhQBS2+x0h3YZqgzmxKvgDb7T3XNtyh
+ U10HOe2dR/MfvskSgMvVrU28R6JxFNPVR2Pq+U7xlWlxfkA+2MJaQ5KbZcSXH5nx+ElU Bw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36d0ns7x88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 13:08:21 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3AFDA10002A;
+        Thu,  4 Feb 2021 13:08:15 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 03C62244F9D;
+        Thu,  4 Feb 2021 13:08:15 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb 2021 13:08:14
+ +0100
+From:   <yann.gautier@foss.st.com>
+To:     <ulf.hansson@linaro.org>
+CC:     <linux@armlinux.org.uk>, <linus.walleij@linaro.org>,
+        <ludovic.barre@foss.st.com>, <per.forlin@linaro.org>,
+        <huyue2@yulong.com>, <wsa+renesas@sang-engineering.com>,
+        <vbadigan@codeaurora.org>, <adrian.hunter@intel.com>,
+        <p.zabel@pengutronix.de>, <marex@denx.de>, <swboyd@chromium.org>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yann.gautier@foss.st.com>
+Subject: [PATCH 0/2] mmc: mmci/mmc_test: update mmc_erase management
+Date:   Thu, 4 Feb 2021 13:05:45 +0100
+Message-ID: <20210204120547.15381-1-yann.gautier@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210128111549.GA8174@zhaomy-pc>
-In-Reply-To: <20210128111549.GA8174@zhaomy-pc>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 4 Feb 2021 13:05:16 +0100
-Message-ID: <CAG3jFysU4epjS3A85ZojrJn3TAC78O_jx5p_4SWsCdRBrQ5GXQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: anx7625: enable DSI EOTP
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_06:2021-02-04,2021-02-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xin,
+From: Yann Gautier <yann.gautier@foss.st.com>
 
-Thanks for the patch.
+We are facing issues when testing STM32MP157C-EV1 board with latest MMC
+developments.
 
-On Thu, 28 Jan 2021 at 12:17, Xin Ji <xji@analogixsemi.com> wrote:
->
-> Enable DSI EOTP feature for fixing some panel screen constance
-> shift issue.
-> Removing MIPI flag MIPI_DSI_MODE_EOT_PACKET to enable DSI EOTP.
+The commands with R1B responses weren't correctly managed, needing
+MMC_CAP_NEED_RSP_BUSY.
+The Ux500 platforms have the same busy detection feature, so this
+flag is enabled for them too. But this change has only been tested
+on STM32MP1 boards, as I don't have ux500 hardware.
 
-I don't think I quite understand how removing the
-MIPI_DSI_MODE_EOT_PACKET flag will cause DSI EOTP to be enabled. Could
-you extrapolate on this in the commit message?
+The mmc_test should rely on the erase argument set in the framework,
+when using MMC_ERASE command.
 
->
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index 65cc059..e31eeb1b 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -1334,7 +1334,6 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
->         dsi->format = MIPI_DSI_FMT_RGB888;
->         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
->                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
-> -               MIPI_DSI_MODE_EOT_PACKET        |
->                 MIPI_DSI_MODE_VIDEO_HSE;
->
->         if (mipi_dsi_attach(dsi) < 0) {
-> --
-> 2.7.4
->
+Yann Gautier (2):
+  mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
+  mmc: mmc_test: use erase_arg for mmc_erase command
+
+ drivers/mmc/core/mmc_test.c | 2 +-
+ drivers/mmc/host/mmci.c     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
