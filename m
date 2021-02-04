@@ -2,93 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285F530F550
+	by mail.lfdr.de (Postfix) with ESMTP id 98C8A30F551
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236866AbhBDOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:45:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236864AbhBDOks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:40:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F63864F42;
-        Thu,  4 Feb 2021 14:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612449607;
-        bh=kVmYv5gZTHyQL2Dwt36m5YgYZwdwCLXW0K16gp0A8dI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R0UVXkzfMSGNn8Euh4XgcA5i6TZxQnNla+PdmdIsE9MmvHDsZW2/6y35WIaSQG2KT
-         OCWRg0CH5HPLJPUSOToS2lVJasC/i0bPsSZTmFOWdVA4Wg+e51i6oKeSgwjK2qDo8M
-         Txb2YBCzlebie9R6OMIITRK1tbGQIF/UHcndqjsY=
-Date:   Thu, 4 Feb 2021 15:40:05 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Minas Harutyunyan <hminas@synopsys.com>
-Subject: Re: [PATCH v2 2/6] usb: dwc2: pci: Drop the empty quirk function
-Message-ID: <YBwHRcyjmvPhajGX@kroah.com>
-References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
- <20210204141711.53775-3-heikki.krogerus@linux.intel.com>
+        id S236830AbhBDOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:46:03 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11766 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236886AbhBDOm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:42:27 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114EZBGp024022;
+        Thu, 4 Feb 2021 09:41:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JKjQmFsAW2neqppkMppeLkt8OZRHfO/VIL0sG/T7MEc=;
+ b=hZs1eax9HxlNub5KpsftgE+JKK6k7QwL01uu77sibtAMW8DZsxUNvjFP0wy1Pbz3gS8G
+ F8NY4LQN5cHSWh8WK5ExDNlAf/tso+kbP1co/B5NbqA1UzCnZ919STgH35ou5meywJGy
+ QPZhkygxIdnO76nhNjXrxgQ6a5JwAX6+tf9oVpx0XvJV5a4bKhHEiVbV1zUbHSgPW00P
+ 4AS0Lm7PlG7h3A17Nr0Hj1Zc9SapNB5nCmgPdaB56ZcFeFOESHp7Eie8RHxq3rETlOgy
+ ABEGaRYzIy99l8gMiB7rEMNrXAtbdENW4SVe7fdzv2YFzeYEW1Dtz6u2pGEtjNYPHBaF TQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36gjfyh0fq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 09:41:35 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114EZU68025439;
+        Thu, 4 Feb 2021 09:41:35 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36gjfyh0eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 09:41:35 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114EXvao003762;
+        Thu, 4 Feb 2021 14:41:33 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 36cy38amc6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 14:41:33 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114EfU6e44892644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 14:41:30 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 623CAA4051;
+        Thu,  4 Feb 2021 14:41:30 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDBAAA4040;
+        Thu,  4 Feb 2021 14:41:29 +0000 (GMT)
+Received: from [9.145.50.6] (unknown [9.145.50.6])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Feb 2021 14:41:29 +0000 (GMT)
+Subject: Re: [RFC v2 1/1] PCI: Add s390 specific UID uniqueness attribute
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20210204094353.63819-1-schnelle@linux.ibm.com>
+ <20210204094353.63819-2-schnelle@linux.ibm.com> <YBvPBD+fCtQkCFFD@kroah.com>
+ <7b85c218-88a4-b6db-e5de-7004475564ee@linux.ibm.com>
+ <YBv45HFPe109GT9e@kroah.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <7631ff35-ef7d-dff7-2295-69f8fb96238c@linux.ibm.com>
+Date:   Thu, 4 Feb 2021 15:41:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204141711.53775-3-heikki.krogerus@linux.intel.com>
+In-Reply-To: <YBv45HFPe109GT9e@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_07:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 05:17:07PM +0300, Heikki Krogerus wrote:
-> The function dwc2_pci_quirks() does nothing. Removing.
+
+
+On 2/4/21 2:38 PM, Greg Kroah-Hartman wrote:
+> On Thu, Feb 04, 2021 at 01:02:51PM +0100, Niklas Schnelle wrote:
+>>
+>>
+>> On 2/4/21 11:40 AM, Greg Kroah-Hartman wrote:
+>>> On Thu, Feb 04, 2021 at 10:43:53AM +0100, Niklas Schnelle wrote:
+>>>> The global UID uniqueness attribute exposes whether the platform
+>>>> guarantees that the user-defined per-device UID attribute values
+>>>> (/sys/bus/pci/device/<dev>/uid) are unique and can thus be used as
+>>>> a global identifier for the associated PCI device. With this commit
+>>>> it is exposed at /sys/bus/pci/zpci/unique_uids
+>>>>
+>>>> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+>>>> ---
+>>>>  Documentation/ABI/testing/sysfs-bus-pci |  9 +++++++++
+>>>>  drivers/pci/pci-sysfs.c                 | 21 +++++++++++++++++++++
+>>>>  2 files changed, 30 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+>>>> index 25c9c39770c6..812dd9d3f80d 100644
+>>>> --- a/Documentation/ABI/testing/sysfs-bus-pci
+>>>> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+>>>> @@ -375,3 +375,12 @@ Description:
+>>>>  		The value comes from the PCI kernel device state and can be one
+>>>>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>>>>  		The file is read only.
+>>>> +What:		/sys/bus/pci/zpci/unique_uids
+>>>
+>>> No blank line before this new line?
+>>
+>> Good catch, thanks!
+>>
+>>>
+>>> And why "zpci"?
+>>
+>> There doesn't seem to be a precedent for arch specific attributes under
+>> /sys/bus/pci so I went with a separate group for the RFC.
 > 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Minas Harutyunyan <hminas@synopsys.com>
-> ---
->  drivers/usb/dwc2/pci.c | 18 ------------------
->  1 file changed, 18 deletions(-)
+> Why?  There's nothing arch-specific here, right?  Either the file is
+> present or not.
+
+Good point, will change this to /sys/bus/pci/unique_uids
+
 > 
-> diff --git a/drivers/usb/dwc2/pci.c b/drivers/usb/dwc2/pci.c
-> index 7afc10872f1f0..0000151e3ca96 100644
-> --- a/drivers/usb/dwc2/pci.c
-> +++ b/drivers/usb/dwc2/pci.c
-> @@ -63,20 +63,6 @@ struct dwc2_pci_glue {
->  	struct platform_device *phy;
->  };
->  
-> -static int dwc2_pci_quirks(struct pci_dev *pdev, struct platform_device *dwc2)
-> -{
-> -	if (pdev->vendor == PCI_VENDOR_ID_SYNOPSYS &&
-> -	    pdev->device == PCI_PRODUCT_ID_HAPS_HSOTG) {
-> -		struct property_entry properties[] = {
-> -			{ },
-> -		};
-> -
-> -		return platform_device_add_properties(dwc2, properties);
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  /**
->   * dwc2_pci_probe() - Provides the cleanup entry points for the DWC_otg PCI
->   * driver
-> @@ -143,10 +129,6 @@ static int dwc2_pci_probe(struct pci_dev *pci,
->  
->  	dwc2->dev.parent = dev;
->  
-> -	ret = dwc2_pci_quirks(pci, dwc2);
-> -	if (ret)
-> -		goto err;
-> -
->  	glue = devm_kzalloc(dev, sizeof(*glue), GFP_KERNEL);
->  	if (!glue) {
->  		ret = -ENOMEM;
+>> "zpci" since that's what we've been calling the s390 specific PCI.
+>> I'm not attached to that name or having a separate group, from
+>> my perspective /sys/bus/pci/unique_uids would actually be ideal
+>> if Bjorn is okay with that, we don't currently foresee any additional
+>> global attributes and no one else seems to have them but
+>> one never knows and a separate group would then of course,
+>> well group them.
+> 
+> Why not just a simple file, no need for arch-specific names if this
+> really can show up under other arches?
 
-This is crazy.  I'll go apply this right now :)
+I guess other arches would be free to implement the same UID concept
+as above I'm happy to change this to a simple file.
 
-thanks,
+> 
+>>>> +Date:		February 2021
+>>>> +Contact:	Niklas Schnelle <schnelle@linux.ibm.com>
+>>>> +Description:
+>>>> +		This attribute exposes the global state of UID Uniqueness on an
+>>>> +		s390 Linux system. If this file contains '1' the per-device UID
+>>>> +		attribute is guaranteed to provide a unique user defined
+>>>> +		identifier for that PCI device. If this file contains '0' UIDs
+>>>> +		may collide and do not provide a unique identifier.
+>>>
+>>> What are they "colliding" with?  And where does the UID come from, the
+>>> device itself or somewhere else?
+>>
+>> If this attribute is 0 multiple PCI devices seen by Linux may have the same UID i.e.
+>> they may collide with each other on the same Linux instance.
+> 
+> So can't userspace figure this out on its own?
 
-greg k-h
+Userspace can figure out that they do not currently collide but
+without this attribute it doesn't know that the platform also guarantees
+that no collision will be introduced by e.g. hotplug. We are however
+pushing to have this always turned on so yes over time this attribute
+will hopefully be always 1 but this will take years.
+
+> 
+>> The
+>> UIDs are exposed under /sys/bus/pci/devices/<dev>/uid. Even if the attribute is 1
+>> multiple Linux instances will often see the same UID. The main use case
+>> we currently envision is naming PCI based network interfaces "eno<UID>"
+>> which of course only works if the UIDs are unique for that Linux.
+>> On the same mainframe multiple Linux instances may then e.g. use the same
+>> UID for VFs from the same physical PCI network card or different cards
+>> but the same physical network all defined by an administrator/management
+>> system.
+>>
+>> The UIDs come from the platform/firmware/hypervisor and are provided
+>> for each device by the CLP List PCI Functions "instruction" that is used
+>> on s390x where an OS can't probe the physical PCI bus but instead
+>> that is done by firmware. On QEMU/KVM they can be set on the QEMU cli,
+>> on our machine hypervisor they are defined by the machine administrator/management
+>> software as part of the definition of VMs/Partitions on that mainframe which includes
+>> everything from the number of CPUs, memory, I/O devices etc. With the exposed UID uniqueness
+>> attribute the platform then certifies that it will ensure that a UID is set to
+>> a unique non-zero value. I can of course add more of this explanation
+>> in the documentation too.
+> 
+> Please explain it more, but why would userspace care about this?  If
+> userspace sees a UID "collision" then it just adds something else to the
+> end of the name to make it unique.
+
+The idea is that userspace can be sure that no collisions will ever
+happen. Consequently we can tell users that if they have UID uniqueness
+checking on in their partition definition and they add a PCIe NIC with UID
+X the network device will be named "enoX". This is particularly important
+since during installation users might have to specify the interface name
+as part of the installer's boot parameters _before_ Linux even boots.
+Note that in our usual environments a lot of customers do not use things
+like DHCP and might have very strict rules which interfaces will be
+used for what. Similarly this would allow users to know exact interface
+names when specifying e.g a Cloud Init configuration.
+
+> 
+> What is it supposed to do differently based on the value/presense of
+> this file?
+
+When UIDs are not guaranteed to be unique they are often unset that
+is 0 and then the most stable identifier for a PCI function that a user
+can know before even booting Linux is /sys/bus/pci/function_id.
+This Function ID (FID) is also used as the hotplug slot
+number and thus the X in "ensX.." interface names.
+Thus, this would instead be the preferred interface naming scheme that
+still allows the user to relate the interface names inside Linux
+to what they can see in their machine/hypervisor configuration.
+
+It should be noted that in our environments often the Linux admin(s)
+will be a different group with very different background then the machine/mainframe
+admin and the FID and UID are ofent the only per device information both
+sides can see to identify an interface. Currently not even
+the MAC address can be seen from the machine configuration or
+even when listing devices in the z/VM hypervisor so we really want to use
+either the FID or the UID in interface names.
+
+In the future similar considerations may apply to other PCI devices.
+
+> 
+>> Both the uniqueness guarantee (this attribute) as well as the UIDs themselves
+>> are part of the Z (s390x) architecture so fall under the mainframe typical
+>> backwards compatibility considerations.
+> 
+> So what can userspace do with this?  What tool is going to rely on this?
+
+We have a systemd/udev patch waiting on this RFC discussion
+that will use this attribute for the aforementioned decision of either
+preferring the existing "ens<hotplug_slot_numnber>…" or "eno<UID>…"
+interface names based on this value.
+
+As I mentioned in the cover letter we are also
+considering instead going for /sys/firmware/.. but as far as
+I can see that currently really needs much uglier raw kobject handling and
+would lose the direct relation to PCI and creates the question
+why PCI code puts stuff in /sys/firmware/… or alternatively which
+other code deals with a PCI specific value.
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
