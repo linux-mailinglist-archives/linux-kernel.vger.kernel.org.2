@@ -2,201 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A6B30F896
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9B830F8AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbhBDQwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:52:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhBDQvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:51:18 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC1D664F5E;
-        Thu,  4 Feb 2021 16:50:30 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 11:50:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
-Message-ID: <20210204115029.3b707236@gandalf.local.home>
-In-Reply-To: <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
-References: <20210203160517.982448432@goodmis.org>
-        <20210203160550.710877069@goodmis.org>
-        <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237175AbhBDQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhBDQxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:53:44 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD47C06178B;
+        Thu,  4 Feb 2021 08:52:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=rU7kGtAV6x4h9PYVWyoXz+PtjR1Ekd/aEUlrk7YawjA=; b=VTPukyRsHKDa6AiBC7g1A33pB
+        SwzVRoY12CgfihopuGU84sVuVRYsUfiv6b3Emwm8BDSGMl47NJ4gm0qIsiqAwyM3pSwTIf2l6vha2
+        cDzPmBjk1ljXfebW71uB6xJtMeptgxH+fOQ7FkYaFWun/B6T1rfINwGd+rlb8M/Klezy3l/ReCdrv
+        V0d4qDQKYRRMYic1iTAdlcZh5yvqjMKyuvjs8Wsy37fKFKVUMlPg8hW+P5sXiwO/tuao+vtETwe0A
+        yHWeGg7btn+Meuk+vfx/5ICUUCrM+vrThjyBDk8k7p21ma/Hklw+jYC+vHctVDNhR+i6P6uievpnI
+        PK8/XvaQg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39164)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7hrw-0006on-3V; Thu, 04 Feb 2021 16:52:36 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7hrk-0005Ka-VR; Thu, 04 Feb 2021 16:52:24 +0000
+Date:   Thu, 4 Feb 2021 16:52:24 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
+        dmaengine@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <20210204165224.GA1463@shell.armlinux.org.uk>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+ <YBlcTXlxemmC2lgr@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBlcTXlxemmC2lgr@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 12:57:24 -0500 (EST)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
+> I'm glad to take this through my char/misc tree, as that's where the
+> other coresight changes flow through.  So if no one else objects, I will
+> do so...
 
-> > @@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct
-> > tracepoint_func *tp_func,
-> > 			if (old[nr_probes].func == tp_func->func &&
-> > 			    old[nr_probes].data == tp_func->data)
-> > 				return ERR_PTR(-EEXIST);
-> > +			if (old[nr_probes].func == tp_stub_func)
-> > +				stub_funcs++;
-> > 		}
-> > 	}
-> > -	/* + 2 : one for new probe, one for NULL func */
-> > -	new = allocate_probes(nr_probes + 2);
-> > +	/* + 2 : one for new probe, one for NULL func - stub functions */
-> > +	new = allocate_probes(nr_probes + 2 - stub_funcs);
-> > 	if (new == NULL)
-> > 		return ERR_PTR(-ENOMEM);
-> > 	if (old) {
-> > -		if (pos < 0) {
-> > +		if (stub_funcs) {  
-> 
-> Considering that we end up implementing a case where we carefully copy over
-> each item, I recommend we replace the two "memcpy" branches by a single item-wise
-> implementation. It's a slow-path anyway, and reducing the overall complexity
-> is a benefit for slow paths. Fewer bugs, less code to review, and it's easier to
-> reach a decent testing state-space coverage.
+Greg, did you end up pulling this after all? If not, Uwe produced a v2.
+I haven't merged v2 yet as I don't know what you've done.
 
-Sure.
+Thanks.
 
-> 
-> > +			/* Need to copy one at a time to remove stubs */
-> > +			int probes = 0;
-> > +
-> > +			pos = -1;
-> > +			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> > +				if (old[nr_probes].func == tp_stub_func)
-> > +					continue;
-> > +				if (pos < 0 && old[nr_probes].prio < prio)
-> > +					pos = probes++;
-> > +				new[probes++] = old[nr_probes];
-> > +			}
-> > +			nr_probes = probes;  
-> 
-> Repurposing "nr_probes" from accounting for the number of items in the old
-> array to counting the number of items in the new array in the middle of the
-> function is confusing.
-> 
-> > +			if (pos < 0)
-> > +				pos = probes;
-> > +			else
-> > +				nr_probes--; /* Account for insertion */  
-> 
-> This is probably why you need to play tricks with nr_probes here.
-> 
-> > +		} else if (pos < 0) {
-> > 			pos = nr_probes;
-> > 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
-> > 		} else {
-> > @@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 	/* (N -> M), (N > 1, M >= 0) probes */
-> > 	if (tp_func->func) {
-> > 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> > -			if (old[nr_probes].func == tp_func->func &&
-> > -			     old[nr_probes].data == tp_func->data)
-> > +			if ((old[nr_probes].func == tp_func->func &&
-> > +			     old[nr_probes].data == tp_func->data) ||
-> > +			    old[nr_probes].func == tp_stub_func)
-> > 				nr_del++;
-> > 		}
-> > 	}
-> > @@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 		/* N -> M, (N > 1, M > 0) */
-> > 		/* + 1 for NULL */
-> > 		new = allocate_probes(nr_probes - nr_del + 1);
-> > -		if (new == NULL)
-> > -			return ERR_PTR(-ENOMEM);
-> > -		for (i = 0; old[i].func; i++)
-> > -			if (old[i].func != tp_func->func
-> > -					|| old[i].data != tp_func->data)
-> > -				new[j++] = old[i];
-> > -		new[nr_probes - nr_del].func = NULL;
-> > -		*funcs = new;
-> > +		if (new) {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if ((old[i].func != tp_func->func
-> > +				     || old[i].data != tp_func->data)
-> > +				    && old[i].func != tp_stub_func)
-> > +					new[j++] = old[i];
-> > +			new[nr_probes - nr_del].func = NULL;
-> > +			*funcs = new;
-> > +		} else {
-> > +			/*
-> > +			 * Failed to allocate, replace the old function
-> > +			 * with calls to tp_stub_func.
-> > +			 */
-> > +			for (i = 0; old[i].func; i++)
-> > +				if (old[i].func == tp_func->func &&
-> > +				    old[i].data == tp_func->data) {
-> > +					old[i].func = tp_stub_func;  
-> 
-> This updates "func" while readers are loading it concurrently. I would recommend
-> using WRITE_ONCE here paired with READ_ONCE within __traceiter_##_name.
-
-I'm fine with this change, but it shouldn't make a difference. As we don't
-change the data, it doesn't matter which function the compiler calls.
-Unless you are worried about the compiler tearing the read. It shouldn't,
-but I'm fine with doing things for paranoid sake (especially if it doesn't
-affect the performance).
-
-> 
-> > +					/* Set the prio to the next event. */  
-> 
-> I don't get why the priority needs to be changed here. Could it simply stay
-> at its original value ? It's already in the correct priority order anyway.
-
-I think it was left over from one of the various changes. As I went to v5,
-and then back to v3, I missed revisiting the code, as I was under the
-assumption that I had cleaned it up :-/
-
-> 
-> > +					if (old[i + 1].func)
-> > +						old[i].prio =
-> > +							old[i + 1].prio;
-> > +					else
-> > +						old[i].prio = -1;
-> > +				}
-> > +			*funcs = old;  
-> 
-> I'm not sure what setting *funcs to old achieves ? Isn't it already pointing
-> to old ?
-
-Again, I think one iteration may have changed it. And I kinda remember
-keeping it just to be consistent (*funcs gets updated in the other paths,
-and figured it was good to be "safe" and updated it again, even though the
-logic has it already set).
-
-> 
-> I'll send a patch which applies on top of yours implementing my recommendations.
-> It shrinks the code complexity nicely:
-
-Looking at it now.
-
-Thanks,
-
--- Steve
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
