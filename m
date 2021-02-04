@@ -2,242 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4052D30FEB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B4330FEC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBDUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:44:55 -0500
-Received: from marcansoft.com ([212.63.210.85]:33362 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhBDUmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:42:09 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id EBE1D4286C;
-        Thu,  4 Feb 2021 20:41:05 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     Hector Martin <marcan@marcan.st>, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1) devicetree
-Date:   Fri,  5 Feb 2021 05:39:51 +0900
-Message-Id: <20210204203951.52105-19-marcan@marcan.st>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204203951.52105-1-marcan@marcan.st>
-References: <20210204203951.52105-1-marcan@marcan.st>
+        id S230064AbhBDUra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:47:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhBDUrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:47:23 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065DFC0613D6;
+        Thu,  4 Feb 2021 12:46:41 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m22so6621840lfg.5;
+        Thu, 04 Feb 2021 12:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3fSrYxUXmlBaB+2NXWGl7tEc3+t2JcOM6NbRWxINsXA=;
+        b=E5L8mx2TZxzo7nyiCm8lezIbPoDAbvkz1PckVfaH/u1Mu+Q5TQfbEgPftlNj+Z4Z90
+         BvexiDRA75M3TXXeiUoQJxOAIDOlD5umJkLm92wGmWwAkHekez0bDy5vtSyyIy1okHm7
+         MmVy9TTvOCjUbMU/4lHlfxVHFIxC2okBF3e6xo4QozIw0Eyh4udmJudDRKHNvWRGFRRf
+         0VHGewJPxMLv0sjAfZNJ53BNSjex5br4lRaOZ+fetxtN/MImxZfO6+J4u2rV+nJ3tihx
+         Oite0B9bGX+BeiFQ9/6wpR0qnyaZ7dRZOkbC2FCk78C33GNvq8WNJuBKEUd6DqtikioA
+         aUlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3fSrYxUXmlBaB+2NXWGl7tEc3+t2JcOM6NbRWxINsXA=;
+        b=DPHN6mKcJPR6u7y/nhzynderLJuF+z0sO35vVs1HypV1+FQGfELtOtM7P/61fXPQh1
+         H3nTCwlwi4mmACgxKb2+KdtOVj6j3Atcb57xneIq/2XfQ80u13f8mnSwDwbHI6d0y/0h
+         SjxCFK2v4OC9dHO6mteQ1DV5LN9YVdC0ZLYcdZN+upxv/Nkx/x+xJyhFLKHsws+YDH1e
+         CwAaEluYp5aEKgNKiTk1GSMczO482au1VyHX8XFzTVyiuRGFzO9+abdleuhC/M0VTP2f
+         90XaZEMamlKcvf9O9K6LbsaIaHCYfoihMok3eggjCjpWTLu2hkpt1FpOvp7gDmorinlk
+         0Ezg==
+X-Gm-Message-State: AOAM532jzIKKtQDlKEUdvTD4FIMiBMKXqLggVtykgJ/n5JJlcUGBANIN
+        E0OfpCnW0wYyT3k6OfXbsxs=
+X-Google-Smtp-Source: ABdhPJxLQ8Fe8SBO4JjytedIKGgsbxx/sY199uRRk+DUm6B/HVymjVfU9EKXw5MgrZ59/eUPJ+TVWg==
+X-Received: by 2002:ac2:592b:: with SMTP id v11mr606993lfi.512.1612471598856;
+        Thu, 04 Feb 2021 12:46:38 -0800 (PST)
+Received: from grain.localdomain ([5.18.103.226])
+        by smtp.gmail.com with ESMTPSA id d23sm784872ljo.17.2021.02.04.12.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 12:46:37 -0800 (PST)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 6A112560087; Thu,  4 Feb 2021 23:46:36 +0300 (MSK)
+Date:   Thu, 4 Feb 2021 23:46:36 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v19 12/25] mm: Introduce VM_SHSTK for shadow stack memory
+Message-ID: <20210204204636.GH2172@grain>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-13-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203225547.32221-13-yu-cheng.yu@intel.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This currently supports:
+On Wed, Feb 03, 2021 at 02:55:34PM -0800, Yu-cheng Yu wrote:
+>  
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 602e3a52884d..59623dcd92bb 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -661,6 +661,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>  		[ilog2(VM_PKEY_BIT4)]	= "",
+>  #endif
+>  #endif /* CONFIG_ARCH_HAS_PKEYS */
+> +#ifdef CONFIG_X86_CET
+> +		[ilog2(VM_SHSTK)]	= "ss",
+> +#endif
+>  	};
 
-* SMP (via spin-tables)
-* AIC IRQs
-* Serial (with earlycon)
-* Framebuffer
-
-A number of properties are dynamic, and based on system firmware
-decisions that vary from version to version. These are expected
-to be filled in by the loader.
-
-Signed-off-by: Hector Martin <marcan@marcan.st>
----
- MAINTAINERS                              |   1 +
- arch/arm64/boot/dts/Makefile             |   1 +
- arch/arm64/boot/dts/apple/Makefile       |   2 +
- arch/arm64/boot/dts/apple/apple-j274.dts | 143 +++++++++++++++++++++++
- 4 files changed, 147 insertions(+)
- create mode 100644 arch/arm64/boot/dts/apple/Makefile
- create mode 100644 arch/arm64/boot/dts/apple/apple-j274.dts
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3a54ee5747d3..5481b5bc2ef7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1635,6 +1635,7 @@ C:	irc://chat.freenode.net/asahi-dev
- T:	git https://github.com/AsahiLinux/linux.git
- F:	Documentation/devicetree/bindings/arm/AAPL.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
-+F:	arch/arm64/boot/dts/AAPL/
- F:	drivers/irqchip/irq-apple-aic.c
- F:	include/dt-bindings/interrupt-controller/apple-aic.h
- 
-diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
-index 9b1170658d60..64f055d94948 100644
---- a/arch/arm64/boot/dts/Makefile
-+++ b/arch/arm64/boot/dts/Makefile
-@@ -6,6 +6,7 @@ subdir-y += amazon
- subdir-y += amd
- subdir-y += amlogic
- subdir-y += apm
-+subdir-y += apple
- subdir-y += arm
- subdir-y += bitmain
- subdir-y += broadcom
-diff --git a/arch/arm64/boot/dts/apple/Makefile b/arch/arm64/boot/dts/apple/Makefile
-new file mode 100644
-index 000000000000..ec03c474efd4
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_ARCH_APPLE) += apple-j274.dtb
-diff --git a/arch/arm64/boot/dts/apple/apple-j274.dts b/arch/arm64/boot/dts/apple/apple-j274.dts
-new file mode 100644
-index 000000000000..238a1bcee066
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/apple-j274.dts
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2021 Hector Martin <marcan@marcan.st>
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/interrupt-controller/apple-aic.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+/ {
-+	model = "Apple Mac Mini M1 2020";
-+	compatible = "AAPL,j274", "AAPL,m1", "AAPL,arm-platform";
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		bootargs = "earlycon";
-+		stdout-path = "serial0:1500000";
-+
-+		framebuffer0: framebuffer@0 {
-+			compatible = "AAPL,simple-framebuffer", "simple-framebuffer";
-+			reg = <0 0 0 0>; // To be filled by loader
-+			// Format properties will be added by loader
-+			status = "disabled";
-+		};
-+	};
-+
-+	memory@800000000 {
-+		device_type = "memory";
-+		reg = <0 0 0 0>; // To be filled by loader
-+	};
-+
-+	aliases {
-+		serial0 = &serial0;
-+	};
-+
-+	cpus {
-+		#address-cells = <2>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			compatible = "AAPL,icestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x0>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu1: cpu@1 {
-+			compatible = "AAPL,icestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x1>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu2: cpu@2 {
-+			compatible = "AAPL,icestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x2>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu3: cpu@3 {
-+			compatible = "AAPL,icestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x3>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu4: cpu@10100 {
-+			compatible = "AAPL,firestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x10100>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu5: cpu@10101 {
-+			compatible = "AAPL,firestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x10101>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu6: cpu@10102 {
-+			compatible = "AAPL,firestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x10102>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+		cpu7: cpu@10103 {
-+			compatible = "AAPL,firestorm";
-+			device_type = "cpu";
-+			reg = <0x0 0x10103>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0>; // To be filled by loader
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&aic>;
-+		interrupts = <AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
-+				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
-+				<AIC_FIQ 1 IRQ_TYPE_LEVEL_HIGH>,
-+				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>;
-+	};
-+
-+	clk24: clk24 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+		clock-output-names = "clk24";
-+	};
-+
-+	soc {
-+		compatible = "simple-bus";
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		aic: interrupt-controller@23b100000 {
-+			compatible = "AAPL,m1-aic", "AAPL,aic";
-+			#interrupt-cells = <3>;
-+			interrupt-controller;
-+			reg = <0x2 0x3b100000 0x0 0x8000>;
-+		};
-+
-+		serial0: serial@235200000 {
-+			compatible = "AAPL,s5l-uart";
-+			reg = <0x2 0x35200000 0x0 0x1000>;
-+			reg-io-width = <4>;
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 605 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clk24>, <&clk24>;
-+			clock-names = "uart", "clk_uart_baud0";
-+		};
-+
-+	};
-+};
--- 
-2.30.0
-
+IIRC we've these abbreviations explained in documentaion
+(proc.rst file). Could you please update it once time
+permit? I think it can be done on top of the series.
