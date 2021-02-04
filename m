@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC73730F50D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2123930F521
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhBDOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236658AbhBDOb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:31:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F6F564DDD;
-        Thu,  4 Feb 2021 14:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612449074;
-        bh=Q3tSj3k5RgYOiGbv7iOvJxUQ4L1+b07VOWx7Yec4fvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aDwGuOreW092lBC4s22o/u/Ou7dzP5kXPOcjuc/uEmPD0+dKb01WWUDchmpaYgf+l
-         ucvAb+KoWg19k6IB4/71zGDBzCLu065P9vDjbJiYRccdPp3C+Wb2ylir8ejqoAtU0E
-         8B29egoR1qiIUCUuJxZv/2JNmH2mnSKtF3OKV2L5AlYp1PZAiCtgFd+B6qtSAjNLQa
-         wHzG8rydoLlYFfSZ+puE/2qfx0ihpVkDYX1VbIieI7rIETSjhYZxmLIXdjqa71xIxe
-         /7ErNUVL2gN24XCOsmJUik9XTtOhKJsZ/1RylLAZPsS13KbJ4o2y1lX030Igy78GyE
-         +GxQ0S/63GbGg==
-Date:   Thu, 4 Feb 2021 14:31:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
- allocator
-Message-ID: <20210204143106.GA20792@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-13-qperret@google.com>
- <20210202181307.GA17311@willie-the-truck>
- <YBrsep4xK1F4YRWb@google.com>
+        id S236810AbhBDOhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:37:06 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:18701 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236648AbhBDOff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1612449334; x=1643985334;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=p9V03q8GnkdefDZv70lYQwNtLWDpb3uW9mg5FD1upMQ=;
+  b=NrTUm8t6LDmEC4r5fVu6uqnWIBric6BtazQA/RHQdiNIJ2S9cLZquWG8
+   fZnuVjIhwqpSM7OHKY5KrG94a0VYeCUOeAOEvBb2ILay4HChVKD7TNVTn
+   0TGgQy2wPDTsM9red2M0s7yoNBuCynwo1TlyUh45dVwNRSsRFyxqar8iL
+   c=;
+X-IronPort-AV: E=Sophos;i="5.79,401,1602547200"; 
+   d="scan'208";a="82458978"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 04 Feb 2021 14:33:00 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id C11EBA066A;
+        Thu,  4 Feb 2021 14:32:58 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.124) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 4 Feb 2021 14:32:50 +0000
+Subject: Re: [PATCH 0/4] mm/hugetlb: Early cow on fork, and a few cleanups
+To:     Peter Xu <peterx@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+CC:     Wei Zhang <wzam@amazon.com>, Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210203210832.113685-1-peterx@redhat.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <de213e3e-01c7-0fef-d5cf-6a69ec670c70@amazon.com>
+Date:   Thu, 4 Feb 2021 16:32:45 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBrsep4xK1F4YRWb@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210203210832.113685-1-peterx@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.124]
+X-ClientProxiedBy: EX13D24UWB004.ant.amazon.com (10.43.161.4) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 06:33:30PM +0000, Quentin Perret wrote:
-> On Tuesday 02 Feb 2021 at 18:13:08 (+0000), Will Deacon wrote:
-> > On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
-> > > + *   __find_buddy(pool, page 0, order 0) => page 1
-> > > + *   __find_buddy(pool, page 0, order 1) => page 2
-> > > + *   __find_buddy(pool, page 1, order 0) => page 0
-> > > + *   __find_buddy(pool, page 2, order 0) => page 3
-> > > + */
-> > > +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
-> > > +				     unsigned int order)
-> > > +{
-> > > +	phys_addr_t addr = hyp_page_to_phys(p);
-> > > +
-> > > +	addr ^= (PAGE_SIZE << order);
-> > > +	if (addr < pool->range_start || addr >= pool->range_end)
-> > > +		return NULL;
-> > 
-> > Are these range checks only needed because the pool isn't required to be
-> > an exact power-of-2 pages in size? If so, maybe it would be more
-> > straightforward to limit the max order on a per-pool basis depending upon
-> > its size?
+On 03/02/2021 23:08, Peter Xu wrote:
+> As reported by Gal [1], we still miss the code clip to handle early cow for
 > 
-> More importantly, it is because pages outside of the pool are not
-> guaranteed to be covered by the hyp_vmemmap, so I really need to make
-> sure I don't dereference them.
-
-Wouldn't having a per-pool max order help with that?
-
-> > > +	return hyp_phys_to_page(addr);
-> > > +}
-> > > +
-> > > +static void __hyp_attach_page(struct hyp_pool *pool,
-> > > +			      struct hyp_page *p)
-> > > +{
-> > > +	unsigned int order = p->order;
-> > > +	struct hyp_page *buddy;
-> > > +
-> > > +	p->order = HYP_NO_ORDER;
-> > 
-> > Why is this needed?
+> hugetlb case, which is true.  Again, it still feels odd to fork() after using a
 > 
-> If p->order is say 3, I may be able to coalesce with the buddy of order
-> 3 to form a higher order page of order 4. And that higher order page
-> will be represented by the 'first' of the two order-3 pages (let's call
-> it the head), and the other order 3 page (let's say the tail) will be
-> assigned 'HYP_NO_ORDER'.
+> few huge pages, especially if they're privately mapped to me..  However I do
 > 
-> And basically at this point I don't know if 'p' is going be the head or
-> the tail, so I set it to HYP_NO_ORDER a priori so I don't have to think
-> about this in the loop below. Is that helping?
+> agree with Gal and Jason in that we should still have that since that'll
 > 
-> I suppose this could use more comments as well ...
-
-Comments would definitely help, but perhaps even having a simple function to
-do the coalescing, which you could call from the loop body and which would
-deal with marking the tail pages as HYP_NO_ORDER?
-
-> > > +	for (; order < HYP_MAX_ORDER; order++) {
-> > > +		/* Nothing to do if the buddy isn't in a free-list */
-> > > +		buddy = __find_buddy(pool, p, order);
-> > > +		if (!buddy || list_empty(&buddy->node) || buddy->order != order)
-> > 
-> > Could we move the "buddy->order" check into __find_buddy()?
+> complete the early cow on fork effort at least, and it'll still fix issues
 > 
-> I think might break __hyp_extract_page() below. The way I think about
-> __find_buddy() is as a low level function which gives you the buddy page
-> blindly if it exists in the hyp_vmemmap, and it's up to the callers to
-> decide whether the buddy is in the right state for their use or not.
+> where buffers are not well under control and not easy to apply MADV_DONTFORK.
+> 
+> 
+> 
+> The first two patches (1-2) are some cleanups I noticed when reading into the
+> 
+> hugetlb reserve map code.  I think it's good to have but they're not necessary
+> 
+> for fixing the fork issue.
+> 
+> 
+> 
+> The last two patches (3-4) is the real fix.
+> 
+> 
+> 
+> I tested this with a fork() after some vfio-pci assignment, so I'm pretty sure
+> 
+> the page copy path could trigger well (page will be accounted right after the
+> 
+> fork()), but I didn't do data check since the card I assigned is some random
+> 
+> nic.  Gal, please feel free to try this if you have better way to verify the
+> 
+> series.
 
-Just feels a bit backwards having __find_buddy() take an order parameter,
-yet then return a page of the wrong order! __hyp_extract_page() always
-passes the p->order as the order, so I think it would be worth having a
-separate function that just takes the pool and the page for that.
-
-Will
+Thanks Peter, once v2 is submitted I'll pull the patches and we'll run the tests
+that discovered the issue to verify it works.
