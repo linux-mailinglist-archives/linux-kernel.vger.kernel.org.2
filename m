@@ -2,126 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3BC30FF3A
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB3F30FF3B
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBDVUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhBDVT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:19:56 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE283C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 13:19:14 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id e18so5138857lja.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 13:19:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Td739C3KdNkgNh83gIL2Tt3BZl1PMt2p99LplFrfohQ=;
-        b=HcKNQmZUwHdOXDwqCks22vHuCoinz+4TTmw/t8GeaesnGvmtVQLzA12dRv7MbHB/dH
-         2HTCfgefbLNU9zy2P9UqGQiQKRKdUyCyPOeXmKjzZ64MH+gzjjDzDWVPIy29YMmdhg3o
-         dAZg9G21RM2RIGB/dswI5wQjWpmunFrzS9ynuqAjPc/EIClAl5YnigXDpQuyTCqCbu6n
-         M3AITY2h7qaWAERNe+T43rxE7mxaJv0l+/sNTo4X6kdLivQDO7whsoSwFqkRy5yZ9tpT
-         zgFXmcF5QKp4EyGl0FZsHrrSTtf8xnKNQUoMDQiqw2ne4ZPMPGfQ44Yxc899Wa5JLzm9
-         N/uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Td739C3KdNkgNh83gIL2Tt3BZl1PMt2p99LplFrfohQ=;
-        b=qABA8fbbpVtH+dEbjAW1ovtc0y/uhTuvrAavR8x/bq3h+Cu6bVLY8D3zPxD91GOEDC
-         tX2C9cpGbAUBj68lFxYqP/1s6/pd90fg/xsjzhBmDdHoP1SK2wUUD2C+ewSykyHiEwQM
-         4X92cuHeyQdKURbxCyBDO8pZJEKh9P5Cf5tGsR6PyptARZpC7K/xKkiAAndAXzdSo5vc
-         9GnaEQv0lEmNo1QqDMDeJuasuxuehzQDAJ4FkVr/henhMXIiGA0RDSa3UkK/QlOD8MdN
-         NYQqVH+xdO8qxkaELQMu9NAP04ZSOFL+RHBw8Bpz8ln4M0/KDX3BP0VRhFok0jhWYQ85
-         oR4w==
-X-Gm-Message-State: AOAM5332DL3Its3hLLW1gh6sJ+0ZEyo/JSDkLsYCqmUMk0HtNxEgNGKF
-        pCfjrk3fT18jYFURtBTpk04=
-X-Google-Smtp-Source: ABdhPJy/7ETacV7VlJfo1Wu3+4YUgoSqKBcH7oTrQ9Mvk5ITtDlMogePPkXVY7Km87s8cnivthAZ7g==
-X-Received: by 2002:a2e:9789:: with SMTP id y9mr707396lji.482.1612473553279;
-        Thu, 04 Feb 2021 13:19:13 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id q1sm742570lfu.48.2021.02.04.13.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:19:12 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] intel_th: Constify attribute_group structs
-Date:   Thu,  4 Feb 2021 22:19:06 +0100
-Message-Id: <20210204211906.42889-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S230088AbhBDVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:21:09 -0500
+Received: from ms.lwn.net ([45.79.88.28]:50094 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhBDVVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:21:08 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 023FB1E77;
+        Thu,  4 Feb 2021 21:20:25 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 023FB1E77
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1612473626; bh=2OvAOj50zgqTaHGlWFPjhvRwd0m8RHr6DEjLCAMm980=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NNxME403VqDsaZ+hmKsA/fHO3aDtcuVEJ3Gq+vPB8cp3rzMub2lvgWDgIdIbwg2Lw
+         YogFyi09ssn6OWggWbesjzA/F+6ibRZmSR1nqBqwh5RMnZCWE954gXLw7vXjZXt8r7
+         G/tJzSZe8cftbeGoILL97swkNGIbj8D4+BRDCXCaE7xE9Ult++M5Szz2u/wytjQhpI
+         3uooHzHTqAfMi01zP4H28bqHGvG2UIGyGzwCnbGq+ZKPJDyf2N/L2SMkyac+k4XgIz
+         Aoitf6V37w8Eb/XRwN0tUZV6xvaGomaJFq4aEgZBCKw2ku/5tv6E8w/EzYI+WCNzGH
+         yKXaIyNAnCTeQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Documentation/submitting-patches: Add blurb about
+ backtraces in commit messages
+In-Reply-To: <20210202154339.GE18075@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic>
+ <20201221095425.6da68163@lwn.net> <20201222130555.GA13463@zn.tnic>
+ <20210104161911.38eb3e1e@lwn.net> <20210105104805.GC28649@zn.tnic>
+ <20210202154339.GE18075@zn.tnic>
+Date:   Thu, 04 Feb 2021 14:20:25 -0700
+Message-ID: <87tuqrfs2u.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of them is to pass their address to sysfs_create_group()
-and sysfs_remove_group(), both which have pointers to const
-attribute_group structs as input. Make them const to allow the compiler
-to put them in read-only memory.
+Borislav Petkov <bp@alien8.de> writes:
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/hwtracing/intel_th/intel_th.h | 2 +-
- drivers/hwtracing/intel_th/msu.c      | 2 +-
- drivers/hwtracing/intel_th/pti.c      | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+> On Tue, Jan 05, 2021 at 11:48:05AM +0100, Borislav Petkov wrote:
+> Lemme ping here quick - my TODO list still has it. :-)
 
-diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
-index 5fe694708b7a..ad9f9acd6b9c 100644
---- a/drivers/hwtracing/intel_th/intel_th.h
-+++ b/drivers/hwtracing/intel_th/intel_th.h
-@@ -178,7 +178,7 @@ struct intel_th_driver {
- 	/* file_operations for those who want a device node */
- 	const struct file_operations *fops;
- 	/* optional attributes */
--	struct attribute_group	*attr_group;
-+	const struct attribute_group *attr_group;
- 
- 	/* source ops */
- 	int			(*set_output)(struct intel_th_device *thdev,
-diff --git a/drivers/hwtracing/intel_th/msu.c b/drivers/hwtracing/intel_th/msu.c
-index 7d95242db900..2edc4666633d 100644
---- a/drivers/hwtracing/intel_th/msu.c
-+++ b/drivers/hwtracing/intel_th/msu.c
-@@ -2095,7 +2095,7 @@ static struct attribute *msc_output_attrs[] = {
- 	NULL,
- };
- 
--static struct attribute_group msc_output_group = {
-+static const struct attribute_group msc_output_group = {
- 	.attrs	= msc_output_attrs,
- };
- 
-diff --git a/drivers/hwtracing/intel_th/pti.c b/drivers/hwtracing/intel_th/pti.c
-index 0da6b787f553..09132ab8bc23 100644
---- a/drivers/hwtracing/intel_th/pti.c
-+++ b/drivers/hwtracing/intel_th/pti.c
-@@ -142,7 +142,7 @@ static struct attribute *pti_output_attrs[] = {
- 	NULL,
- };
- 
--static struct attribute_group pti_output_group = {
-+static const struct attribute_group pti_output_group = {
- 	.attrs	= pti_output_attrs,
- };
- 
-@@ -295,7 +295,7 @@ static struct attribute *lpp_output_attrs[] = {
- 	NULL,
- };
- 
--static struct attribute_group lpp_output_group = {
-+static const struct attribute_group lpp_output_group = {
- 	.attrs	= lpp_output_attrs,
- };
- 
--- 
-2.30.0
+Yeah, it's been languishing on mine as well.  Nobody seems to have any
+objections, so I applied it, sorry for sitting on it for so long.
 
+Thanks,
+
+jon
