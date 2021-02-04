@@ -2,148 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007B830FE0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C1730FE1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239866AbhBDUUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:20:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239971AbhBDUUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:20:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F6E164F6A;
-        Thu,  4 Feb 2021 20:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612469354;
-        bh=ZbLhFh9ekMPZ7GsNUm17lM69d0KfshZaVXI3G/nk2ms=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Npo7RmNAZ6aSCRqxm4nVlbaC/27YVRcbCPdd/fbIg19/B+FHezlIum4hWxlFIF7ON
-         HMOxuGrqn9JuVV79dSuBTZghrifXAnGKneLW7L/czTVKPl1MzkLQbuw3PahK1Amqy2
-         cnBZC/y1Ot1iy8ll6/IASEqB/ZdXLA7vrWkAmhvhtZHqT0hFRmnEt66ImRMlB13Icx
-         NtJeNk/LaUOIDjpJBVB9ebf1u9+lZOn+UsBT1S/liZzVG46TrZcZ4mHf1BkmjlJL5G
-         2cvkY+S7xZ8ThK83wbkfkmvi5O4WLdd7xBdUeGvpLT+Ss3FBG7ySG8TNHT77tD85JA
-         NkkFlyHwtO0Lg==
-Received: by mail-ed1-f47.google.com with SMTP id s26so46656edt.10;
-        Thu, 04 Feb 2021 12:09:14 -0800 (PST)
-X-Gm-Message-State: AOAM531K4uYq6IDJ93BAFYjox0VBQjP8N2zqqGGaHHen5cBcWwemTJcd
-        SCrjjyK05ugEGQarzr138Q9rU1Iqz4dJrQN67w==
-X-Google-Smtp-Source: ABdhPJyUV5HEhzX+4uiSU3UPrmRnNReleaqLxoxL2nV/uRrWwsFnvLuMCAGXLzBp06xeHA/+3g2JdEtwmOqvoL43N+E=
-X-Received: by 2002:aa7:c906:: with SMTP id b6mr311329edt.194.1612469352891;
- Thu, 04 Feb 2021 12:09:12 -0800 (PST)
+        id S240072AbhBDUWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240048AbhBDUWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:22:32 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DF7C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:09:11 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id nm1so2339827pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:09:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/l4RZQaOQ7d1ouPGYljMviXnbT3WGsKxbFcd6Drk0Lo=;
+        b=fGh06rg6gheCvBcGHTM1w3CvOKYBLWLRn9SsYCTlMhzkC4JaaPEVY9uKw0CvECVwVO
+         GLeSCKWBvTR1v0FQSiY/XKcTK9KT+DVTzTKdoaxaQIGfWrhvlikM3pXCSAnIygWSjYCw
+         2AQGbsH7tWwcwYgYIpccGn1vT6vFCvencsBi8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/l4RZQaOQ7d1ouPGYljMviXnbT3WGsKxbFcd6Drk0Lo=;
+        b=TD2Mr29KUNqW3NcC4bz9InrKjSiw5mbreibZwU6JR2nzUbbgmjvI1cqpsMGDu9Yp8J
+         pMXSxjjJnJjATgUt2EwP5RaKHYA4i8o2zadvSmLd7ZuI4tDP4O2aY3eKpnf1mh9lY5Jt
+         MBXcYNXTeGqfXSfnE5OO4kFdhYRUbxmK6EBDnTmmb7+nj5l/fu5TqxmEJDbdCI207til
+         /1fkjFGdsG+goe+zD000XYiBUki42e1kh/fz8XpUi4ZTVS/uwMeKP+JcyGYOkaFRscaw
+         h0ICJytaVNoIcYtWsYr/KDzG6PJb3oY3FkZgs5OwC5lC+yR0xNYEucB+rn6IaZoiQy6d
+         7YDg==
+X-Gm-Message-State: AOAM532hRybx0uWW2HP0kACGfVZrKmRTNLeujzoUeO59VbhHfc5hYcYh
+        NVJJz5c7ZtugZQOHEPhwmCnlRQ==
+X-Google-Smtp-Source: ABdhPJznzHpDv1tAkuCyPFHIVKGk/b0KKU4u5/1VBsGpliEe4MBq48F17ma54ciAn2Co22Y5ztJK+w==
+X-Received: by 2002:a17:903:1d0:b029:df:d098:f1cb with SMTP id e16-20020a17090301d0b02900dfd098f1cbmr865803plh.49.1612469350638;
+        Thu, 04 Feb 2021 12:09:10 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k15sm510608pgt.35.2021.02.04.12.09.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 12:09:09 -0800 (PST)
+Date:   Thu, 4 Feb 2021 12:09:08 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
+Message-ID: <202102041201.C2B93F8D8A@keescook>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-7-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-References: <91e3405245c89f134676449cf3822285798d2ed2.1612189652.git.michal.simek@xilinx.com>
- <CAL_JsqJnu1M6ut8g_36ve-OG22jFsySHbmVHOgtDRhc-s37rpQ@mail.gmail.com>
- <210b0e5a-767b-c285-62e2-23de19bd3cf1@xilinx.com> <CAL_Jsq+m7F+nD6VKd2L5i44hz32_-6iX3toZ0A0CBT-g7Xqu9g@mail.gmail.com>
- <a2f10400-51e5-bb76-f5c4-3b8e2fbc2793@xilinx.com> <20210203144344.4e261aea@slackpad.fritz.box>
- <CAL_JsqKfLM03of1Pzoxx=n_PaU9gnFuxt2zikGPuc1UkMK9PVQ@mail.gmail.com> <CAL_JsqJjBWpL=gpcNxQnN8Gkp+e=gxOVVmsZuaOz2+uuQ3QTOA@mail.gmail.com>
-In-Reply-To: <CAL_JsqJjBWpL=gpcNxQnN8Gkp+e=gxOVVmsZuaOz2+uuQ3QTOA@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 4 Feb 2021 14:09:01 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq++DyiKG9smQGx9FAPDJnVrezcXNb0Y5uh-5_2GBzTQpQ@mail.gmail.com>
-Message-ID: <CAL_Jsq++DyiKG9smQGx9FAPDJnVrezcXNb0Y5uh-5_2GBzTQpQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: zynq: Add address-cells property to interrupt controllers
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203225547.32221-7-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Wed, Feb 3, 2021 at 10:49 AM Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Wed, Feb 3, 2021 at 8:44 AM Andre Przywara <andre.przywara@arm.com> wrote:
-> > >
-> > > On Wed, 3 Feb 2021 15:15:19 +0100
-> > > Michal Simek <michal.simek@xilinx.com> wrote:
-> > >
-> > > > On 2/3/21 3:12 PM, Rob Herring wrote:
-> > > > > On Wed, Feb 3, 2021 at 1:01 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> > > > >>
-> > > > >>
-> > > > >>
-> > > > >> On 2/1/21 6:41 PM, Rob Herring wrote:
-> > > > >>> On Mon, Feb 1, 2021 at 8:27 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> > > > >>>>
-> > > > >>>> The commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version
-> > > > >>>> v1.6.0-11-g9d7888cbf19c") updated dtc version which also contained DTC
-> > > > >>>> commit
-> > > > >>>> "81e0919a3e21 checks: Add interrupt provider test"
-> > > > >>>> where reasons for this checking are mentioned as
-> > > > >>>> "A missing #address-cells property is less critical, but creates
-> > > > >>>> ambiguities when used in interrupt-map properties, so warn about this as
-> > > > >>>> well now."
-> > > > >>>>
-> > > > >>>> Add address-cells property to gic and gpio nodes to get rid of this warning.
-> > > > >>>> The similar change has been done for ZynqMP too.
-> > > > >>>
-> > > > >>> FYI, we're going to make this check dependent on having an
-> > > > >>> interrupt-map property. So adding these isn't necessary.
-> > > > >>
-> > > > >> Good to know. Is there going to be report if interrupt-map doesn't
-> > > > >> exist? Which can end up with reverting these changes?
-> > > > >
-> > > > > You mean a warning if '#address-cells' is present and interrupt-map is
-> > > > > not? No, that would cause lots of warnings.
-> > > >
-> > > > yep.
-> > >
-> > > Why would we do that? That sounds dangerous and would be broken if the
-> > > IRQ controller is in a generic .dtsi (as it usually is), but the
-> > > interrupt map is only in *some* of the board .dts files.
-> > >
-> > > What is the problem of just putting #address-cells = <0>; in the
-> > > IRQ controller node, after checking that there currently no interrupt
-> > > maps in use and no IRQ children? And be safe for good? That's 16 bytes
-> > > in the DTB, IIUC.
-> >
-> > Because I don't think we need a bunch of warning fix patches to add
-> > these everywhere. Also, the need for #address-cells pretty much makes
-> > no sense on any modern system. It is a relic from days when the bus
-> > (address) topology and interrupt topology were related.
-> >
-> > > Because otherwise we have that lovely ambiguity between the
-> > > implicit default #address-cells = 2; and the assumed default of 0.
-> > >
-> > > And that's why I think we also cannot *automatically* add an #ac = <0>;
-> > > property, because that would change behaviour.
-> >
-> > I'd rather try to limit where we assume the default of 2. My guess is
-> > that's only some combination of old PowerPC and/or Sparc and no FDT
-> > based DT.
->
-> Actually, after reviewing of_irq_parse_raw() again, I think you're
-> mixing the 2 different #address-cells involved. Let's review which
-> #*-cells applies to parts of interrupt-map:
->
-> interrupt-map = <[ac current node or parent] [ic current node] [parent
-> intc phandle] [ac parent intc] [ic parent intc]>;
->
-> For [ac current node or parent], we start in the 'interrupt-map' node
-> (because it's the interrupt parent). From there, we walk up the tree
-> to find #address-cells. Worst case is we find none and take the
-> default of 2. First, dtc has pretty much always made no root
-> #address-cells a warning. Second, Linux has notion of a default and
-> that varies by arch and isn't used here. Only Sparc defaults to 2 (see
-> of_private.h) which means we should never hit the default on PowerPC
-> or Arm (or anything else).
+On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
+> A control-protection fault is triggered when a control-flow transfer
+> attempt violates Shadow Stack or Indirect Branch Tracking constraints.
+> For example, the return address for a RET instruction differs from the copy
+> on the shadow stack; or an indirect JMP instruction, without the NOTRACK
+> prefix, arrives at a non-ENDBR opcode.
+> 
+> The control-protection fault handler works in a similar way as the general
+> protection fault handler.  It provides the si_code SEGV_CPERR to the signal
+> handler.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+> ---
+>  arch/x86/include/asm/idtentry.h    |  4 ++
+>  arch/x86/kernel/idt.c              |  4 ++
+>  arch/x86/kernel/signal_compat.c    |  2 +-
+>  arch/x86/kernel/traps.c            | 60 ++++++++++++++++++++++++++++++
+>  include/uapi/asm-generic/siginfo.h |  3 +-
+>  5 files changed, 71 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+> index f656aabd1545..ff4b3bf634da 100644
+> --- a/arch/x86/include/asm/idtentry.h
+> +++ b/arch/x86/include/asm/idtentry.h
+> @@ -574,6 +574,10 @@ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_SS,	exc_stack_segment);
+>  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_GP,	exc_general_protection);
+>  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_AC,	exc_alignment_check);
+>  
+> +#ifdef CONFIG_X86_CET
+> +DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_CP, exc_control_protection);
+> +#endif
+> +
+>  /* Raw exception entries which need extra work */
+>  DECLARE_IDTENTRY_RAW(X86_TRAP_UD,		exc_invalid_op);
+>  DECLARE_IDTENTRY_RAW(X86_TRAP_BP,		exc_int3);
+> diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+> index ee1a283f8e96..e8166d9bbb10 100644
+> --- a/arch/x86/kernel/idt.c
+> +++ b/arch/x86/kernel/idt.c
+> @@ -105,6 +105,10 @@ static const __initconst struct idt_data def_idts[] = {
+>  #elif defined(CONFIG_X86_32)
+>  	SYSG(IA32_SYSCALL_VECTOR,	entry_INT80_32),
+>  #endif
+> +
+> +#ifdef CONFIG_X86_CET
+> +	INTG(X86_TRAP_CP,		asm_exc_control_protection),
+> +#endif
+>  };
+>  
+>  /*
+> diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+> index a5330ff498f0..dd92490b1e7f 100644
+> --- a/arch/x86/kernel/signal_compat.c
+> +++ b/arch/x86/kernel/signal_compat.c
+> @@ -27,7 +27,7 @@ static inline void signal_compat_build_tests(void)
+>  	 */
+>  	BUILD_BUG_ON(NSIGILL  != 11);
+>  	BUILD_BUG_ON(NSIGFPE  != 15);
+> -	BUILD_BUG_ON(NSIGSEGV != 9);
+> +	BUILD_BUG_ON(NSIGSEGV != 10);
+>  	BUILD_BUG_ON(NSIGBUS  != 5);
+>  	BUILD_BUG_ON(NSIGTRAP != 5);
+>  	BUILD_BUG_ON(NSIGCHLD != 6);
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index 7f5aec758f0e..f5354c35df32 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -606,6 +606,66 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+>  	cond_local_irq_disable(regs);
+>  }
+>  
+> +#ifdef CONFIG_X86_CET
+> +static const char * const control_protection_err[] = {
+> +	"unknown",
+> +	"near-ret",
+> +	"far-ret/iret",
+> +	"endbranch",
+> +	"rstorssp",
+> +	"setssbsy",
+> +};
+> +
+> +/*
+> + * When a control protection exception occurs, send a signal to the responsible
+> + * application.  Currently, control protection is only enabled for user mode.
+> + * This exception should not come from kernel mode.
+> + */
+> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+> +{
+> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+> +				      DEFAULT_RATELIMIT_BURST);
+> +	struct task_struct *tsk;
+> +
+> +	if (!user_mode(regs)) {
+> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
+> +		die("kernel control protection fault", regs, error_code);
+> +		panic("Machine halted.");
+> +	}
+> +
+> +	cond_local_irq_enable(regs);
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_CET))
+> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
+> +
+> +	tsk = current;
+> +	tsk->thread.error_code = error_code;
+> +	tsk->thread.trap_nr = X86_TRAP_CP;
+> +
+> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+> +	    __ratelimit(&rs)) {
+> +		unsigned int max_err;
+> +		unsigned long ssp;
+> +
+> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
+> +		if (error_code < 0 || error_code > max_err)
+> +			error_code = 0;
 
-Actually, Sparc doesn't even use this code. Turns out PowerPC is a bit
-more complicated.
+Do you want to mask the error_code here before printing its value?
 
-I traced where the '2' in this code came from. PowerPC had a mixture
-of the default being 1 or 2. For the interrupt parsing code, it was 1
-(from prom_n_addr_cells()) before commit 0ebfff1491ef and 2
-(hardcoded) after it. That's not the only place that a default was
-set. The early_init_dt_scan_root() function at that time defaulted to
-2. Now it's 1 as we added per arch default defines which used the '1'
-from prom_n_addr_cells() (now of_n_addr_cells()). So in conclusion,
-PowerPC has had a mixture of defaults and no one cared since 2006 when
-it changed. I'm inclined to rip out these defaults and just fail.
+> +
+> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
+> +			 tsk->comm, task_pid_nr(tsk),
+> +			 regs->ip, regs->sp, ssp, error_code,
+> +			 control_protection_err[error_code]);
 
-Rob
+Instead, you could clamp error_code to ARRAY_SIZE(control_protection_err),
+and add another "unknown" to the end of the strings:
+
+	control_protection_err[
+		array_index_nospec(error_code,
+				   ARRAY_SIZE(control_protection_err))]
+
+Everything else looks good.
+
+> +		print_vma_addr(KERN_CONT " in ", regs->ip);
+> +		pr_cont("\n");
+> +	}
+> +
+> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
+> +			(void __user *)uprobe_get_trap_addr(regs));
+> +	cond_local_irq_disable(regs);
+> +}
+> +#endif
+> +
+>  static bool do_int3(struct pt_regs *regs)
+>  {
+>  	int res;
+> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+> index d2597000407a..1c2ea91284a0 100644
+> --- a/include/uapi/asm-generic/siginfo.h
+> +++ b/include/uapi/asm-generic/siginfo.h
+> @@ -231,7 +231,8 @@ typedef struct siginfo {
+>  #define SEGV_ADIPERR	7	/* Precise MCD exception */
+>  #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
+>  #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
+> -#define NSIGSEGV	9
+> +#define SEGV_CPERR	10	/* Control protection fault */
+> +#define NSIGSEGV	10
+>  
+>  /*
+>   * SIGBUS si_codes
+> -- 
+> 2.21.0
+> 
+
+-- 
+Kees Cook
