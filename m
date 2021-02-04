@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634C630EA05
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9051E30EA10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhBDCOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbhBDCOp (ORCPT
+        id S233520AbhBDCU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:20:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233459AbhBDCUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:14:45 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F334C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:14:05 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id nm1so808920pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mckQoiGoE74PnmANLRsJaJ/stHIJIIS3Nq4uDiC55dk=;
-        b=VpULEK+L9QfUEm1PUXo1hWoJoxZiTILtxebAy86nFTCOP6xrijMM6Eh+lx310P0rtT
-         Ypi8CWv8faqXx3l1D9+KnWLn7nnDKC/9+Fxv9LraR7YWZFBkrAzpf8uVbXR71MyKS0h7
-         qXd1uea6xUjuvn/BM5u+v2air58URZqQEGMRs7+3+AAqiaqT+6tU2+blBwZ6JAxttf8Y
-         JqvjN6M63p1ZkA/RKQYro0E0BLedYAQcxg49T/vqBXYOE3mvLf8CFuHKL+iHewgWAWWR
-         D6ceYh7Zxhkd/PLLn/xn251iKRZ+90CoE5rmKlb8tEQ1FzaOYtjGvFhn/+dBwHpGktg4
-         HISw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mckQoiGoE74PnmANLRsJaJ/stHIJIIS3Nq4uDiC55dk=;
-        b=FF0APN3RV1YnNKv05+rOo4WaeRFznFcIxGDvkaeb81bO5Q7BeV/HD5bj5qougegb4x
-         0LhQ4/e8Fyqcfte6MfXehYmnxCfcTzKFLq5aOitTp4VUopw3XEFTTWNGICGtfeGG9mvU
-         0d9XfZ3iGl3m8+YSIehxmOoTavYeYDM5N7rzAdnhnGpCQ/9CKUUDu8GmMoOG8vqIKLJn
-         bl3jgjgP6QHnzlNznuPPEuwstquR5XiCx7i3euZXuzELZxtOOi5ncwYG4HGy68d2pPFv
-         dISQiFJniwJ77WIeqSFGaGCH8lQyHoylp1UibSkArG3OsYElZdrh5V5OPnohi57YXL9G
-         Dnfw==
-X-Gm-Message-State: AOAM532i1Sj/76M3/9sWGuzxasGdDBlazONZlCrrQRHdwRuTmM/u9b1M
-        xvNUC7hTulK0Kc+8XrF1yqnLUQ==
-X-Google-Smtp-Source: ABdhPJzyzFx1igsthqZq+BEt2F9YVfuSdRdm3nMIIFHeDK5xZiynFQeSRIk6dsPzrWZPSif58dMoDw==
-X-Received: by 2002:a17:90a:de8c:: with SMTP id n12mr5745235pjv.131.1612404844575;
-        Wed, 03 Feb 2021 18:14:04 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id l14sm3320072pjq.27.2021.02.03.18.14.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 18:14:03 -0800 (PST)
-Date:   Thu, 4 Feb 2021 07:44:01 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v6 13/37] cpufreq: scmi: port driver to the new
- scmi_perf_proto_ops interface
-Message-ID: <20210204021401.ivlvi4bqwnznuhro@vireshk-i7>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
- <20210202221555.41167-14-cristian.marussi@arm.com>
+        Wed, 3 Feb 2021 21:20:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612405138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+eTSAc/Nm4e5wbJf2v1zc0y+nloPYqY5QgY8wp4fPTM=;
+        b=IXREQvpIp89SxDOONirouYItprWEIAtAPXPGnSXL8OpFX9azxm2IcwCYX0E1fW0qF2uOj8
+        xcT8PosKetDQBzhsVQ1K/pB0wJOFQvRS44I7d1VTeCFtqJJBDUTk8N3iU+dJKOoMIlsHZc
+        5e+X5xxiJ7LslbamBSNv5MdKWrtE4fE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-Gf5DzL76MIOnX2__HbSjDg-1; Wed, 03 Feb 2021 21:18:55 -0500
+X-MC-Unique: Gf5DzL76MIOnX2__HbSjDg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E335A8030B3;
+        Thu,  4 Feb 2021 02:18:53 +0000 (UTC)
+Received: from T590 (ovpn-13-173.pek2.redhat.com [10.72.13.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB7A85D762;
+        Thu,  4 Feb 2021 02:18:47 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 10:18:43 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     David Jeffery <djeffery@redhat.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org,
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH] block: recalculate segment count for multi-segment
+ discard requests correctly
+Message-ID: <20210204021843.GA1108591@T590>
+References: <20210201164850.391332-1-djeffery@redhat.com>
+ <20210202033343.GA165584@T590>
+ <20210202204355.GA31803@redhat>
+ <20210203023517.GA948998@T590>
+ <20210203162337.GA40163@redhat>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202221555.41167-14-cristian.marussi@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210203162337.GA40163@redhat>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-02-21, 22:15, Cristian Marussi wrote:
-> Port driver to the new SCMI Perf interface based on protocol handles
-> and common devm_get_ops().
+On Wed, Feb 03, 2021 at 11:23:37AM -0500, David Jeffery wrote:
+> On Wed, Feb 03, 2021 at 10:35:17AM +0800, Ming Lei wrote:
+> > 
+> > On Tue, Feb 02, 2021 at 03:43:55PM -0500, David Jeffery wrote:
+> > > The return 0 does seem to be an old relic that does not make sense anymore.
+> > > Moving REQ_OP_SECURE_ERASE to be with discard and removing the old return 0,
+> > > is this what you had in mind?
+> > > 
+> > >  
+> > > diff --git a/block/blk-merge.c b/block/blk-merge.c
+> > > index 808768f6b174..68458aa01b05 100644
+> > > --- a/block/blk-merge.c
+> > > +++ b/block/blk-merge.c
+> > > @@ -383,8 +383,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+> > >  	switch (bio_op(rq->bio)) {
+> > >  	case REQ_OP_DISCARD:
+> > >  	case REQ_OP_SECURE_ERASE:
+> > > +		if (queue_max_discard_segments(rq->q) > 1) {
+> > > +			struct bio *bio = rq->bio;
+> > > +			for_each_bio(bio)
+> > > +				nr_phys_segs++;
+> > > +			return nr_phys_segs;
+> > > +		}
+> > > +		/* fall through */
+> > >  	case REQ_OP_WRITE_ZEROES:
+> > > -		return 0;
+> > >  	case REQ_OP_WRITE_SAME:
+> > >  		return 1;
+> > 
+> > WRITE_SAME uses same buffer, so the nr_segment is still one; WRITE_ZERO
+> > doesn't need extra payload, so nr_segments is zero, see
+> > blk_bio_write_zeroes_split(), blk_bio_write_same_split, attempt_merge()
+> > and blk_rq_merge_ok().
+> > 
 > 
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> v4 --> v5
-> - using renamed devm_get/put_protocol
-> ---
->  drivers/cpufreq/scmi-cpufreq.c | 37 ++++++++++++++++++----------------
->  1 file changed, 20 insertions(+), 17 deletions(-)
+> I thought you mentioned virtio-blk because of how some drivers handle
+> zeroing and discarding similarly and wanted to align the segment count with
+> discard behavior for WRITE_ZEROES too. (Though that would also need an update
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+virtio-blk is just one example which supports both single discard range
+and multiple discard range, meantime virtblk_setup_discard_write_zeroes()
+simply maps write zero into discard directly.
 
--- 
-viresh
+Just found blk_rq_nr_discard_segments() returns >=1 segments always, so
+looks your patch is enough for avoiding the warning.
+
+> to blk_bio_write_zeroes_split as you pointed out.)  So you want me to leave
+> WRITE_ZEROES behavior alone and let blk_rq_nr_discard_segments() keep doing
+> the hiding of a 0 rq->nr_phys_segments as 1 segment in the WRITE_ZEROES treated
+> as a discard case?
+> 
+> diff --git a/block/blk-merge.c b/block/blk-merge.c
+> index 808768f6b174..756473295f19 100644
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -383,6 +383,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+>  	switch (bio_op(rq->bio)) {
+>  	case REQ_OP_DISCARD:
+>  	case REQ_OP_SECURE_ERASE:
+> +		if (queue_max_discard_segments(rq->q) > 1) {
+> +			struct bio *bio = rq->bio;
+> +
+> +			for_each_bio(bio)
+> +				nr_phys_segs++;
+> +			return nr_phys_segs;
+> +		}
+> +		return 1;
+>  	case REQ_OP_WRITE_ZEROES:
+>  		return 0;
+>  	case REQ_OP_WRITE_SAME:
+
+This patch returns 1 for single-range discard explicitly. However, it
+isn't necessary because of blk_rq_nr_discard_segments().
+
+Maybe we can align to blk_bio_discard_split() in future, but that can be
+done as cleanup.
+
+Thanks,
+Ming
+
