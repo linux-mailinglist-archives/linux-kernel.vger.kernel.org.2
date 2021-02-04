@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C55F31003B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394B3310043
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhBDWko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbhBDWkW (ORCPT
+        id S229750AbhBDWl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:41:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56945 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230104AbhBDWll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:40:22 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDFEC061223
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:39:36 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 78so1170364ybn.14
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:39:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=0dbkPCei0EVZxiD/xgF8DsX5xGgDmOcId+wNtSYzaY4=;
-        b=Fpa96Kq7NFETtqxrJ7hdmqTO6wZkjuxubgRR7/8v7tw0ssWWJXO00+GHBbsCaytH3N
-         di/IFDwL3tNHRnlG+ZRfBlrH/Flao5qRyDIv7m8Zj5pbFF7izx3uOMZh6brCNdUyxG4T
-         WnRJHR2OwpYnXpY6R/IOM+bgZ29PwcYgwfmAHxBELprTBayUssCjsKTLmN8VT2SLIND6
-         FI8XNLLkV5yv3Nq7w6ulX6KqbE0We/Mv6DXgOLku0BkZjGcpGa7tVpZaKBFLzk9NHvcT
-         KZC4xDAvCPuBWU3oQqZ9booDuDNuPpJ1SXQWP14XOjQ9f2ctM7X/tifJESiMPNuzcGWs
-         NjBg==
+        Thu, 4 Feb 2021 17:41:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612478411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GBsjjTZzpZzHtjldrpCw+SVyqxdXjpA9LJZmLvdvn/s=;
+        b=BfHBTa/+Yy44luLsd5IyqRcCqbhUSVuHNKphaYvaFhcXC4eAQljqN4vs0uZqi8g6ACdFqj
+        aSZyPpV6ASC0jO5ITDnPMy1DU0QbhdRvjgIaJjWf4KM2F03kcTZd+PMV0baMRRLByEpDwk
+        djmLRPsPgrP72S3Bd922C/r8+aDbBrM=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-kDLQjmH3OW2x2r3gx3t9Xw-1; Thu, 04 Feb 2021 17:40:01 -0500
+X-MC-Unique: kDLQjmH3OW2x2r3gx3t9Xw-1
+Received: by mail-wr1-f71.google.com with SMTP id x12so3750677wrw.21
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:40:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=0dbkPCei0EVZxiD/xgF8DsX5xGgDmOcId+wNtSYzaY4=;
-        b=eV45rWSo4syZghJwx6E/B54zA/V04lnAVPXzrM7FqNRHOoKLrrsxJLYThpvb80TZbG
-         XICRWb/3EziR61mcbQ68b9dv+mnTmlxVxHqTzxlPtzG2WoKZTRhZP8XQkR7HYSRzU/jc
-         1MyIimZVzwgtEV3EOdprnW1lD60d4Mq6awC3V7PO++ET/kBn0orIwYloorNt9JRk2oYS
-         pCBWvlUQp79wsW21NOyG5CbNw3S6oxMzmSmR1gKg4Xf1uc5nGjBwNhLQXRD0kqv5S4AE
-         NqEE487PWNIG8l04Lp+5dtgfYgfy82V4EiGU4K2L4PZGjmY6TsMmNpnTnZKyacJrDOnd
-         3tUw==
-X-Gm-Message-State: AOAM533woEI7nuEtWsV03/Xjeb8EOQI2CJh7zorjzK8Dmiaxe3vjY2c3
-        fW9JcIVnU50kGm3GkXjwbz9Hfz1Rx03aNSk=
-X-Google-Smtp-Source: ABdhPJzFSX+PON0ie+o6EiaxXNdvovbgxp9M0i+ykscDv1cefCl6vtAT+nFkuA4cAkgfz5AnpSUCldUZ6G7XQok=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:8475:2f1d:e8b4:f65a])
- (user=saravanak job=sendgmr) by 2002:a25:83d0:: with SMTP id
- v16mr2494628ybm.40.1612478375921; Thu, 04 Feb 2021 14:39:35 -0800 (PST)
-Date:   Thu,  4 Feb 2021 14:39:21 -0800
-In-Reply-To: <20210204223921.1693487-1-saravanak@google.com>
-Message-Id: <20210204223921.1693487-5-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210204223921.1693487-1-saravanak@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 4/4] of: property: Add fw_devlink support for optional properties
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Martin Kaiser <martin@kaiser.cx>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GBsjjTZzpZzHtjldrpCw+SVyqxdXjpA9LJZmLvdvn/s=;
+        b=X1ovD6pfVgyHuGstoQonaQmuL7SROuhHknzlLbgIIfYi1B2RLkqPweHwdQyJOmb6lK
+         JStNWTcatXT8cTYUiI2S2eYHiox0QAjr5tbT5X5jOxKooT0XGZdAiTiwRUI4YCDdP6UW
+         60YiCtK8x2G9c/KNYTIuZn9X9lTbG/drSNJnFzE5AXfEaTkIeaHkcGasIyykxebCKR89
+         3crsgc830SFZg/1Oa9jtLsBcgzgrPBj8OXZ+t2T3mAx0Kk59kmxf0ZB+4UQysaT4ekaV
+         acChDEc+gayGeI2VlxGb4aIQYPBx78CbGMReFrJuZgscM74Jk7PADNj5O2i03A6QMxDZ
+         J1yA==
+X-Gm-Message-State: AOAM531Rf+FqGzw6LymZjd+gGU61WsHV1w1dtVW+LN3pUGqmh9l019Kb
+        +lv78BGbnW1tWZCIiZ/zTgB9tmob3v630cO4NGqIDB/lzucJwlDO6OBgFoXFGzQCkpsNzFNkN6U
+        a6tidTk8qkYW0pkfBRjnIOwO3
+X-Received: by 2002:a05:6000:12c8:: with SMTP id l8mr1574969wrx.81.1612478399889;
+        Thu, 04 Feb 2021 14:39:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxiACX91olwg//Ry6RmfPnaxN+GPPpFshRzxO/ndAyxdguZIlrYaq6Fu7Iphb/KQ4Lb7+60iQ==
+X-Received: by 2002:a05:6000:12c8:: with SMTP id l8mr1574948wrx.81.1612478399709;
+        Thu, 04 Feb 2021 14:39:59 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id d10sm9665506wrn.88.2021.02.04.14.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 14:39:59 -0800 (PST)
+Date:   Thu, 4 Feb 2021 23:39:56 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     virtualization@lists.linux-foundation.org, kbuild-all@lists.01.org,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH v3 08/13] vdpa: add return value to get_config/set_config
+ callbacks
+Message-ID: <20210204223956.3uuo7xskjpii3fvw@steredhat>
+References: <20210204172230.85853-9-sgarzare@redhat.com>
+ <202102050632.J7DMzsOi-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <202102050632.J7DMzsOi-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all DT bindings are mandatory bindings. Add support for optional DT
-bindings and mark iommus, iommu-map, dmas as optional DT bindings.
+On Fri, Feb 05, 2021 at 06:31:20AM +0800, kernel test robot wrote:
+>Hi Stefano,
+>
+>I love your patch! Yet something to improve:
+>
+>[auto build test ERROR on vhost/linux-next]
+>[also build test ERROR on linus/master v5.11-rc6 next-20210125]
+>[If your patch is applied to the wrong git tree, kindly drop us a note.
+>And when submitting patch, we suggest to use '--base' as documented in
+>https://git-scm.com/docs/git-format-patch]
+>
+>url:    https://github.com/0day-ci/linux/commits/Stefano-Garzarella/vdpa-add-vdpa-simulator-for-block-device/20210205-020448
+>base:   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
+>config: parisc-randconfig-r005-20210204 (attached as .config)
+>compiler: hppa-linux-gcc (GCC) 9.3.0
+>reproduce (this is a W=1 build):
+>        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>        chmod +x ~/bin/make.cross
+>        # https://github.com/0day-ci/linux/commit/17cf2b1e6be083a27f43414cc0f2524cf81fff60
+>        git remote add linux-review https://github.com/0day-ci/linux
+>        git fetch --no-tags linux-review Stefano-Garzarella/vdpa-add-vdpa-simulator-for-block-device/20210205-020448
+>        git checkout 17cf2b1e6be083a27f43414cc0f2524cf81fff60
+>        # save the attached .config to linux build tree
+>        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
+>
+>If you fix the issue, kindly add following tag as appropriate
+>Reported-by: kernel test robot <lkp@intel.com>
+>
+>All errors (new ones prefixed by >>):
+>
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c: In function 'mlx5_vdpa_get_config':
+>>> drivers/vdpa/mlx5/net/mlx5_vnet.c:1810:10: error: expected ';' before '}' token
+>    1810 |  return 0
+>         |          ^
+>         |          ;
+>    1811 | }
+>         | ~
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/of/property.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 53d163c8d39b..962109082df1 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1235,6 +1235,7 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
- struct supplier_bindings {
- 	struct device_node *(*parse_prop)(struct device_node *np,
- 					  const char *prop_name, int index);
-+	bool optional;
- };
- 
- DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
-@@ -1308,12 +1309,12 @@ static struct device_node *parse_interrupts(struct device_node *np,
- static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_clocks, },
- 	{ .parse_prop = parse_interconnects, },
--	{ .parse_prop = parse_iommus, },
--	{ .parse_prop = parse_iommu_maps, },
-+	{ .parse_prop = parse_iommus, .optional = true, },
-+	{ .parse_prop = parse_iommu_maps, .optional = true, },
- 	{ .parse_prop = parse_mboxes, },
- 	{ .parse_prop = parse_io_channels, },
- 	{ .parse_prop = parse_interrupt_parent, },
--	{ .parse_prop = parse_dmas, },
-+	{ .parse_prop = parse_dmas, .optional = true, },
- 	{ .parse_prop = parse_power_domains, },
- 	{ .parse_prop = parse_hwlocks, },
- 	{ .parse_prop = parse_extcon, },
-@@ -1368,6 +1369,11 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
- 
- 	/* Do not stop at first failed link, link all available suppliers. */
- 	while (!matched && s->parse_prop) {
-+		if (s->optional && !fw_devlink_is_strict()) {
-+			s++;
-+			continue;
-+		}
-+
- 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
- 			matched = true;
- 			i++;
--- 
-2.30.0.365.g02bc693789-goog
+Ooops, I forgot to add mlx5_vnet.c on my .config.
+
+Sorry for that, I'll fix in the next release and I'll build all vDPA 
+related stuff.
+
+Stefano
 
