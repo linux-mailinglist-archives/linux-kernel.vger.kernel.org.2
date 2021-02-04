@@ -2,197 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D4930FC3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085DB30FC48
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239620AbhBDTH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:07:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56412 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239623AbhBDTHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:07:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 255D8AC45;
-        Thu,  4 Feb 2021 19:06:55 +0000 (UTC)
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210204145712.1531203-1-kraxel@redhat.com>
- <20210204145712.1531203-3-kraxel@redhat.com>
- <d217112e-e49d-bd1f-0c39-3eac2dd721fd@suse.de>
- <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v6 02/10] Revert "drm/qxl: do not run release if qxl
- failed to init"
-Message-ID: <3feaeb62-fd50-5cca-26f7-42f6167ef77a@suse.de>
-Date:   Thu, 4 Feb 2021 20:06:53 +0100
+        id S239610AbhBDTLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239629AbhBDTIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:08:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B38C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=DOcwx5wwQyJiNoBULxHCbyerHK7NZ+L3JYkpzHdZiqE=; b=afHhegBiKR1LXTDisCi/JA+ouD
+        Ib/A6wPGrG3IfQRpoUSpR9ASqLGh4yKCv5siRE1mSAbH0jpedC2S3Xx3Zj2RECUzmoftTDnPcaDAx
+        IcgXuk29qERn0TczK09nA+ZsmX/q859S6G92/NhzWrfh6FxlOgCR4G9MQJYgOva8EkL6JYtp675XG
+        t385g9sFKFhVEAUc5876ov/ufLGIL/JJBEdgqQhptwPJ6BRNquNdvvndQIbmRxT8sL4jUzvXIPTVl
+        KcO8lLPn1V5aE1Yck/vaCH2t2pSjQ7DU+YOYdALQUXCzXvuahM+R69bNcx0d6tAQCrxo/pKxQFAEe
+        DP+KrlYw==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7jyk-0006eT-QG; Thu, 04 Feb 2021 19:07:47 +0000
+Subject: Re: [PATCH] x86: Remove HPET_EMULATE_RTC depends on RTC
+To:     Anand K Mistry <amistry@google.com>, x86@kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20210204183205.1.If5c6ded53a00ecad6a02a1e974316291cc0239d1@changeid>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <aeeeeb18-6a42-8ae5-1364-a30d80e2008d@infradead.org>
+Date:   Thu, 4 Feb 2021 11:07:42 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="sugShVuXIKVOGqdiIRIR03GxisZfIG58Q"
+In-Reply-To: <20210204183205.1.If5c6ded53a00ecad6a02a1e974316291cc0239d1@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---sugShVuXIKVOGqdiIRIR03GxisZfIG58Q
-Content-Type: multipart/mixed; boundary="qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tong Zhang <ztong0001@gmail.com>
-Cc: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
- David Airlie <airlied@linux.ie>, open list <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <3feaeb62-fd50-5cca-26f7-42f6167ef77a@suse.de>
-Subject: Re: [PATCH v6 02/10] Revert "drm/qxl: do not run release if qxl
- failed to init"
-References: <20210204145712.1531203-1-kraxel@redhat.com>
- <20210204145712.1531203-3-kraxel@redhat.com>
- <d217112e-e49d-bd1f-0c39-3eac2dd721fd@suse.de>
- <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
-In-Reply-To: <60B8023C-78C9-441D-AA21-A13C4445F666@gmail.com>
+On 2/3/21 11:32 PM, Anand K Mistry wrote:
+> The RTC config option was removed in commit f52ef24be21a ("rtc/alpha:
+> remove legacy rtc driver")
+> 
+> Signed-off-by: Anand K Mistry <amistry@google.com>
+> ---
 
---qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Hi Tong
+Thanks.
 
-Am 04.02.21 um 19:52 schrieb Tong Zhang:
-> Hi Thomas,
->=20
-> The original problem was qxl_device_init() can fail,
-> when it fails there is no need to call
-> 	qxl_modeset_fini(qdev);
-> 	qxl_device_fini(qdev);
-> But those two functions are otherwise called in the qxl_drm_release() -=
+> 
+>  arch/x86/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 21f851179ff0..37775478d86f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -890,7 +890,7 @@ config HPET_TIMER
+>  
+>  config HPET_EMULATE_RTC
+>  	def_bool y
+> -	depends on HPET_TIMER && (RTC=y || RTC=m || RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
+> +	depends on HPET_TIMER && (RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
+>  
+>  config APB_TIMER
+>  	def_bool y if X86_INTEL_MID
+> 
 
 
-OK, makes sense. Thanks for the explanation.
-
->=20
-> I have posted an updated patch.
-> The new patch use the following logic
->=20
-> +	if (!qdev->ddev.mode_config.funcs)
-> +	  return;
-
-This is again just papering over the issue. Better don't call=20
-qxl_drm_release() in the error path if qxl_device_init() fails.
-
-I see two solutions: either roll-back manually, or use our new managed=20
-DRM interfaces. This is what the other drivers do.
-
-Best regards
-Thomas
-
-> 	qxl_modeset_fini(qdev);
-> 	qxl_device_fini(qdev);
->=20
-> Thanks,
-> - Tong
->=20
->=20
->> On Feb 4, 2021, at 1:34 PM, Thomas Zimmermann <tzimmermann@suse.de> wr=
-ote:
->>
->> Hi
->>
->> Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
->>> This reverts commit b91907a6241193465ca92e357adf16822242296d.
->>
->> This should be in the correct format, as given by 'dim cite'.
->>
->> dim cite b91907a6241193465ca92e357adf16822242296d
->> b91907a62411 ("drm/qxl: do not run release if qxl failed to init")
->>
->>> Patch is broken, it effectively makes qxl_drm_release() a nop
->>> because on normal driver shutdown qxl_drm_release() is called
->>> *after* drm_dev_unregister().
->>> Cc: Tong Zhang <ztong0001@gmail.com>
->>> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
->>> ---
->>>   drivers/gpu/drm/qxl/qxl_drv.c | 2 --
->>>   1 file changed, 2 deletions(-)
->>> diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_=
-drv.c
->>> index 34c8b25b5780..fb5f6a5e81d7 100644
->>> --- a/drivers/gpu/drm/qxl/qxl_drv.c
->>> +++ b/drivers/gpu/drm/qxl/qxl_drv.c
->>> @@ -144,8 +144,6 @@ static void qxl_drm_release(struct drm_device *de=
-v)
->>>   	 * reodering qxl_modeset_fini() + qxl_device_fini() calls is
->>>   	 * non-trivial though.
->>>   	 */
->>> -	if (!dev->registered)
->>> -		return;
->>
->> I'm not sure what the original problem was, but I'm sure that this isn=
-'t the fix for it. If there's a problem with shutdown, the operations rat=
-her have to be reordered correctly.
->>
->> With the citation style address:
->>
->> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->>
->>>   	qxl_modeset_fini(qdev);
->>>   	qxl_device_fini(qdev);
->>>   }
->>
->> --=20
->> Thomas Zimmermann
->> Graphics Driver Developer
->> SUSE Software Solutions Germany GmbH
->> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
->> (HRB 36809, AG N=C3=BCrnberg)
->> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
->>
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---qbjhu3JTxQsoO1DR3tZmYIYIeQBYPtQYO--
-
---sugShVuXIKVOGqdiIRIR03GxisZfIG58Q
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcRc0FAwAAAAAACgkQlh/E3EQov+Cv
-zBAAt+AajrDpzr+ENbzKQ1EFljU7ebL45uSdlooyn8Q2PenAq6PffmdqW/MdbTZ+9bUsUb33Z6xi
-tZVdCEnp41Hi9FdcIwnfM+oSck5Gi6QTJxLd7GH0rtTGXvz83xngZZzlxAVYEpstLozEDgqucuQ4
-2aLUPeZx3E/A2OSBK1gVg3Yyqm78IlNLeMzfjgodJbABBBVdND2FF7MT4fsFxfsLWi4RrdCyJ6+d
-LHXLXxnqYrjfZ2mfmmKJZUEV5AGo/nNJ0D+LIe9x1pTu37UtQpcgXUeeyECD+zrVdMjOpMfJgvS2
-G4mVNWOa3UzJAeZ4YBGK/YTpknYa8l8eGXNGdeqSt96OYTWb/XgkFfMfMJKXl9ArkpjI5D9MlvM6
-xWqZFGvaG1lExlIbCuyffjYp+sHJyRpN6jCiWdEcakrZHwoZM+gc9SIt2EeN1BTVKXkoKznoERX5
-ddxXZAKLorqs7qHE4rfJ/pEOP5SiqOcgP2bBvfQRQ9mBiIY2bVJVpQxFSgc/wE7FGNrmUIWwk+UU
-QB31SHD9BMSUbvnndgjqnoIlAKjNWpmbIf5k/d7aE43Z99EeGNlQIG2FomQLiEoMRIBTCDmuzVnX
-Epcd0EgdSwab7aLjhnzN1d8DRn7vESe/u67wBDAeqt6zEZUDp5PTjOZOA5zkEcGmDycBte6is1Y8
-G64=
-=bdv9
------END PGP SIGNATURE-----
-
---sugShVuXIKVOGqdiIRIR03GxisZfIG58Q--
+-- 
+~Randy
