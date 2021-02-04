@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906DF30FBDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1712B30FBDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239334AbhBDSqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239303AbhBDSm0 (ORCPT
+        id S239357AbhBDSq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:46:59 -0500
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:55381 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239347AbhBDSnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:42:26 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FDAC061794
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:41:46 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id e12so2236276pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:41:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xPJcixL5B72ONNeQTUrd/Ds+3cwL/OzxhJxazJOwdWU=;
-        b=hZEBnFadWKNcM22cVRU/a7ekIXxiGnvJaR2OBmXSBWA6MhsJnQ2IP0Ye4V2wat6Zrl
-         9XH7dXAdM9sS3FDL9bMNpEvQS1wZMWANxL4DrjDucQXa4SUlny92X0EuRxN1PAjCxlJC
-         m2Rdnf0rreJ+30C4IzBRjr9B+mS3tkPN+k1uZbx/dni+WSpZMxs84jLLonRWdR1XL4iv
-         Ol2ek6+pTFzt6KDgTWX+NVfz71eWtviLUCDaPXTDq6+0htUPSE9svu9bOcCSNrFn7Ufb
-         YmAsPAVPCxvO32sPjMwPhd6eq4IPf/91C/Uugg+0biZoHhKZNN6+wyPWEY1UtAdmpX65
-         uTDQ==
+        Thu, 4 Feb 2021 13:43:55 -0500
+Received: by mail-wm1-f53.google.com with SMTP id f16so4006207wmq.5;
+        Thu, 04 Feb 2021 10:43:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xPJcixL5B72ONNeQTUrd/Ds+3cwL/OzxhJxazJOwdWU=;
-        b=ot2lfdBd+yBKcJ/GUqokRFEZOkT5Ay+rzob+Wr5klZZDIew6Jm5TC1a7oYTTeuf5fC
-         Ru9qkQcv+pNq4arxE2CWnDceUqB53r9r0Qbvmb+HzcT+0wHhYGU6FKKXbLqVpctbbWuZ
-         wgL5bsaj/DJbQzvonjsvhyGLeP/4ceraKQIxvXmFaZtLiryv40rNMUS6GhF73F6zvMCi
-         bHToHbkXUelDuqJIrEVT12kHlBaKzBHCyGQlrkgUbgmLBWx9WQfQHi/nqTHMP+fwneEQ
-         +qtJggKNd4oMea+S4qxAZxV9hbiZfvAdBGd9N3QgYhFw3k+FPafijw6ZCggYfuF5nDAY
-         CAYQ==
-X-Gm-Message-State: AOAM5318wOVywXTnMOHY2tonbpGY5jlPtfC3JJm6pKc1iq93OMm0Fgkk
-        82Y58HM9thfb4kimMdPRFKm93lPDlDkH/BzWHKM=
-X-Google-Smtp-Source: ABdhPJzy/LIgldY2il/NtwAfXOaYXEinArlc3vM117wT2mWj8AdIkX1bTtfJpk8Qa6r89tNQKFjtw0VzqsMn2rxOEpY=
-X-Received: by 2002:a17:90a:7787:: with SMTP id v7mr298480pjk.81.1612464105539;
- Thu, 04 Feb 2021 10:41:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hAXu9lZgOGKgsgAF3qBaSgL6tziuKPxThr6otN2BFf0=;
+        b=fr9AK1BAlkJ7xSeutHaTMQLpCQ9bqNZTh0zPlxLTr2lmsl8Z7NC0chv4dQkDP0gQVq
+         Pu+pBOKYtDTu7HtqAJa4uYoThjYJDzglOcUYy9fOOq9aVoQHXWJLGzJ7z3pyyn5XXP6C
+         L9nzUXoSReT0LUnjn2IVmtlOw6IYLJCWRzW8+JMvz0Q9IsXVrn9KCkGZWFDH5nWR6dEw
+         hGOaau49MnGJdqQX7nTcJ2laKTH0rwwTDA1lrKDViUAXh8pFXq56MjrRRZoLkdn/zqiS
+         qVjy9aVBqoHgU3g65cfV3x6lrTNhkgl7KH+Gpxnt8rfDPL/1JTyCE/wj01JVvoSAjpSB
+         MG/g==
+X-Gm-Message-State: AOAM533yEQCahiRVxEP7qdHTOx8yEfpTYnWioM5AlpGfMu1qxK89nOgd
+        rMyySXBaB29Jrk1rZyRYAGY=
+X-Google-Smtp-Source: ABdhPJwNq5pTrvkb8cEoO5L+yzFW8L7fJZR1eb3ywR9i2LZYnIP2TJJiRqIM7Jf8Stq9KkYDhHWMCw==
+X-Received: by 2002:a1c:4106:: with SMTP id o6mr446359wma.165.1612464193112;
+        Thu, 04 Feb 2021 10:43:13 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id z4sm8993349wrw.38.2021.02.04.10.43.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 10:43:12 -0800 (PST)
+Date:   Thu, 4 Feb 2021 18:43:11 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v6 15/16] x86/hyperv: implement an MSI domain for root
+ partition
+Message-ID: <20210204184311.xuqlrenlth2vi236@liuwe-devbox-debian-v2>
+References: <20210203150435.27941-1-wei.liu@kernel.org>
+ <20210203150435.27941-16-wei.liu@kernel.org>
+ <MWHPR21MB15932010E9CF5975EBAD1EDAD7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210204175641.pzonxqrqlo7uvvze@liuwe-devbox-debian-v2>
+ <MWHPR21MB15934AD184476EF14CF4C732D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210204124914.GC20468@willie-the-truck> <20210204155346.88028-1-lecopzer@gmail.com>
- <20210204175659.GC21303@willie-the-truck>
-In-Reply-To: <20210204175659.GC21303@willie-the-truck>
-From:   Lecopzer Chen <lecopzer@gmail.com>
-Date:   Fri, 5 Feb 2021 02:41:34 +0800
-Message-ID: <CANr2M19xc+9UE3dZB5UA8HvgTGAcoSLOPAkeepExcUrKkNHt+g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, ardb@kernel.org,
-        aryabinin@virtuozzo.com, broonie@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dan.j.williams@intel.com, Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>, gustavoars@kernel.org,
-        kasan-dev@googlegroups.com,
-        Jian-Lin Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
-        linux@roeck-us.net, robin.murphy@arm.com, rppt@kernel.org,
-        tyhicks@linux.microsoft.com, vincenzo.frascino@arm.com,
-        yj.chiang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB15934AD184476EF14CF4C732D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Feb 04, 2021 at 11:53:46PM +0800, Lecopzer Chen wrote:
-> > > On Sat, Jan 09, 2021 at 06:32:48PM +0800, Lecopzer Chen wrote:
-> > > > Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > > > ("kasan: support backing vmalloc space with real shadow memory")
-> > > >
-> > > > Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-> > > > but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-> > > > by not to populate the vmalloc area except for kimg address.
-> > >
-> > > The one thing I've failed to grok from your series is how you deal with
-> > > vmalloc allocations where the shadow overlaps with the shadow which has
-> > > already been allocated for the kernel image. Please can you explain?
-> >
-> >
-> > The most key point is we don't map anything in the vmalloc shadow address.
-> > So we don't care where the kernel image locate inside vmalloc area.
-> >
-> >   kasan_map_populate(kimg_shadow_start, kimg_shadow_end,...)
-> >
-> > Kernel image was populated with real mapping in its shadow address.
-> > I `bypass' the whole shadow of vmalloc area, the only place you can find
-> > about vmalloc_shadow is
-> >       kasan_populate_early_shadow((void *)vmalloc_shadow_end,
-> >                       (void *)KASAN_SHADOW_END);
-> >
-> >       -----------  vmalloc_shadow_start
-> >  |           |
-> >  |           |
-> >  |           | <= non-mapping
-> >  |           |
-> >  |           |
-> >  |-----------|
-> >  |///////////|<- kimage shadow with page table mapping.
-> >  |-----------|
-> >  |           |
-> >  |           | <= non-mapping
-> >  |           |
-> >  ------------- vmalloc_shadow_end
-> >  |00000000000|
-> >  |00000000000| <= Zero shadow
-> >  |00000000000|
-> >  ------------- KASAN_SHADOW_END
-> >
-> > vmalloc shadow will be mapped 'ondemend', see kasan_populate_vmalloc()
-> > in mm/vmalloc.c in detail.
-> > So the shadow of vmalloc will be allocated later if anyone use its va.
->
-> Indeed, but the question I'm asking is what happens when an on-demand shadow
-> allocation from vmalloc overlaps with the shadow that we allocated early for
-> the kernel image?
->
-> Sounds like I have to go and read the code...
-oh, sorry I misunderstood your question.
+On Thu, Feb 04, 2021 at 06:40:55PM +0000, Michael Kelley wrote:
+> From: Wei Liu <wei.liu@kernel.org> Sent: Thursday, February 4, 2021 9:57 AM
+[...]
+> > I've got the following diff to fix both issues. If you're happy with the
+> > changes, can you give your Reviewed-by? That saves a round of posting.
+> > 
+> > diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
+> > index 0cabc9aece38..fa71db798465 100644
+> > --- a/arch/x86/hyperv/irqdomain.c
+> > +++ b/arch/x86/hyperv/irqdomain.c
+> > @@ -1,7 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> > 
+> >  /*
+> > - * for Linux to run as the root partition on Microsoft Hypervisor.
+> > + * Irqdomain for Linux to run as the root partition on Microsoft Hypervisor.
+> >   *
+> >   * Authors:
+> >   *  Sunil Muthuswamy <sunilmut@microsoft.com>
+> > @@ -20,7 +20,7 @@ static int hv_map_interrupt(union hv_device_id device_id, bool level,
+> >         struct hv_device_interrupt_descriptor *intr_desc;
+> >         unsigned long flags;
+> >         u64 status;
+> > -       cpumask_t mask = CPU_MASK_NONE;
+> > +       const cpumask_t *mask;
+> >         int nr_bank, var_size;
+> > 
+> >         local_irq_save(flags);
+> > @@ -41,10 +41,10 @@ static int hv_map_interrupt(union hv_device_id device_id, bool
+> > level,
+> >         else
+> >                 intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
+> > 
+> > -       cpumask_set_cpu(cpu, &mask);
+> > +       mask = cpumask_of(cpu);
+> >         intr_desc->target.vp_set.valid_bank_mask = 0;
+> >         intr_desc->target.vp_set.format = HV_GENERIC_SET_SPARSE_4K;
+> > -       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
+> > +       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), mask);
+> 
+> Can you just do the following and get rid of the 'mask' local entirely?
+> 
+> nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), cpumask_of(cpu));
 
-FWIW,
-I think this won't happend because this mean vmalloc() provides va
-which already allocated by kimg, as I know, vmalloc_init() will insert
-early allocated vma into its vmalloc rb tree
+Sure. That can be done.
 
-, and this early allocated vma will include  kernel image.
+> 
+> Either way,
+> 
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-After quick review of mm init code,
-this early allocated for vma is at map_kernel() in arch/arm64/mm/mmu.c
+Thank you.
 
-
-
-BRs
-Lecopzer
+Wei.
