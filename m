@@ -2,95 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684A830F52B
+	by mail.lfdr.de (Postfix) with ESMTP id D94E330F52C
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbhBDOim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:38:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S236812AbhBDOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236814AbhBDOhI (ORCPT
+        with ESMTP id S236804AbhBDOhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:37:08 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD7C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=dIUX1UJ9YE8lpmLnWwpq590HsZ3ByZbducXK2xflJPo=; b=DFmzaMfMbNUxXMVfJoBXvnYA8
-        zx+VDWMGRqNLZ00I0o3iGn1gszJLI/MKXQcsFIuJWYwMp+UURWWjxjogzu9Xd6jswfTZiMFoYtx+x
-        HwEvrvlpk2i5N1qP7pEjK100u28wf6ILGcLd8CmsoXEMlGc+TJsPT+zs8SJ9MtkbC8TawmDOMeNHi
-        IciPNoLXDNBGlg+r90Hhjd9I6WX6zBNASV/IrWjgYNi/3Tdyf85QEnPA6v8gHDxQuNLdzEITc5ROT
-        NGN7XVyo0x6P9DsNLwBAJEk4R1xmie0cu+buRF05aPFPgU+MR5FvzLmlOof7o17lj+7b+C+ESF0p2
-        sKAvTfUrQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39118)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l7fk3-0006eK-Hy; Thu, 04 Feb 2021 14:36:19 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l7fk2-0005Ej-Cd; Thu, 04 Feb 2021 14:36:18 +0000
-Date:   Thu, 4 Feb 2021 14:36:18 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>, kernelci-results@groups.io
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-Message-ID: <20210204143618.GY1463@shell.armlinux.org.uk>
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
- <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk>
- <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <20210204104714.GU1463@shell.armlinux.org.uk>
- <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
- <090003e6f825de1f8460c0e987e14577@kernel.org>
- <20210204140911.GX1463@shell.armlinux.org.uk>
- <CAMj1kXHf0dNvsrfct6rCxi_yHXcQCqjwJoMa_TD0Fh6xo2zeZQ@mail.gmail.com>
+        Thu, 4 Feb 2021 09:37:00 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08ACC061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:36:19 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id q7so3453720iob.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4b6g4Ixc+28bqJmLbqvgP9hQfDNHN5yB7hwfEVlSifU=;
+        b=DoDUzF1FugVu39+pUjXZWuLuaHXDph+UhmdKadXCiWqSUmC1sJhnXcmmp4Eof4jQ8P
+         n0AnSpOF/hTGapO/LwzkZHzuSCpF/dPQHD2XA4yXTwSxIuzq2JIi6Ziv9awcN6cBccih
+         5Y3JOLQ9T2pp8qhNcx+U/65i454AmopgdlxTbkPF6eVAPep/AbT/KmIu23CqU8rCrzYg
+         TLdgtYTqKwPnIozcZaDmIwaypdKVPdcGJv7tJI40nduW/Oe3pOJw/9sfbALoAdqHSfaU
+         HE3293si0bclf3cih/YEV9cowsZyuoQ7mbRCbYp6C7IYGtB/sWkp2vIf7OfqizIsY35j
+         ZjFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4b6g4Ixc+28bqJmLbqvgP9hQfDNHN5yB7hwfEVlSifU=;
+        b=JaksiHIH2bx3TmwnJW9RcQDXnxuSiW/B6ExncWlxfjgM29Ht/QJMvEL3LQ8t+SGyTZ
+         QcMc8falhzyN0KQb2cq+GZTmgClNjq0l0elEAU0XKT83KfZj4hD7vVbLqNIeOP1F0cVQ
+         g5dz9kYD5asLzaoNOYWCi8Q3um+XtyCja9Gmfem9rwIE6SClR5zMa8ItJ9+VCsUPcA32
+         oNzUZLRO8NYU48+6I3dVt9dzFkekvFZRHDP4XmSLWQpbiNpRl4r84ty+BNjKApOvfYhJ
+         ssG56S9xQbC5fotob4QnaB5InUvHYwr9/fniYebqhORn7YkNjNMgNw36V6MCQcfjdLjK
+         O7Dg==
+X-Gm-Message-State: AOAM532njQTi6MDtxXUkh1aO09W8riTxZypssx1pNh5TSRnInX+SYiji
+        wwsIoajpbn0NXaNsl3XI3kTVLw==
+X-Google-Smtp-Source: ABdhPJy348+wqNXc1ktODm1LM5/rugrEEhJsFY6OzCngNLONMVPkJQZ5wqUkewmB6iOPBWblLt6Oeg==
+X-Received: by 2002:a6b:d010:: with SMTP id x16mr7164658ioa.107.1612449378915;
+        Thu, 04 Feb 2021 06:36:18 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o8sm2594214ilu.55.2021.02.04.06.36.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 06:36:18 -0800 (PST)
+Subject: Re: [PATCH 5.4 103/142] Revert "block: end bio with BLK_STS_AGAIN in
+ case of non-mq devs and REQ_NOWAIT"
+To:     Andres Freund <andres@anarazel.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20200601174037.904070960@linuxfoundation.org>
+ <20200601174048.647302799@linuxfoundation.org>
+ <20210203123729.3pfsakawrkoh6qpu@alap3.anarazel.de>
+ <YBqfDdVaPurYzZM2@kroah.com>
+ <20210203212826.6esa5orgnworwel6@alap3.anarazel.de>
+ <YBsedX0/kLwMsgTy@kroah.com> <14351e91-5a5f-d742-b087-dc9ec733bbfd@kernel.dk>
+ <20210203235941.2ibyrc5z3desyd2q@alap3.anarazel.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <207c4fb1-a3cb-9210-e2b6-8e5490872df6@kernel.dk>
+Date:   Thu, 4 Feb 2021 07:36:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHf0dNvsrfct6rCxi_yHXcQCqjwJoMa_TD0Fh6xo2zeZQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210203235941.2ibyrc5z3desyd2q@alap3.anarazel.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:25:20PM +0100, Ard Biesheuvel wrote:
-> Pushing contents of the cache hierarchy to main memory is *not* a
-> valid use of set/way ops, and so there is no point in pretending that
-> set/way ops will produce the same results as by-VA ops. Only the by-VA
-> ops give the architectural guarantees that we rely on for correctness.
+On 2/3/21 4:59 PM, Andres Freund wrote:
+> Hi,
+> 
+> On 2021-02-03 15:58:33 -0700, Jens Axboe wrote:
+>> On 2/3/21 3:06 PM, Greg Kroah-Hartman wrote:
+>>> On Wed, Feb 03, 2021 at 01:28:26PM -0800, Andres Freund wrote:
+>>>> On 2021-02-03 14:03:09 +0100, Greg Kroah-Hartman wrote:
+>>>>>> On v5.4.43-101-gbba91cdba612 this fails with
+>>>>>> fio: io_u error on file /mnt/t2/test.0.0: Input/output error: write offset=0, buflen=4096
+>>>>>> fio: pid=734, err=5/file:io_u.c:1834, func=io_u error, error=Input/output error
+>>>>>>
+>>>>>> whereas previously it worked. libaio still works...
+>>>>>>
+>>>>>> I haven't checked which major kernel version fixed this again, but I did
+>>>>>> verify that it's still broken in 5.4.94 and that 5.10.9 works.
+>>>>>>
+>>>>>> I would suspect it's
+>>>>>>
+>>>>>> commit 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048
+>>>>>> Author: Jens Axboe <axboe@kernel.dk>
+>>>>>> Date:   2020-06-01 10:00:27 -0600
+>>>>>>
+>>>>>>     io_uring: catch -EIO from buffered issue request failure
+>>>>>>
+>>>>>>     -EIO bubbles up like -EAGAIN if we fail to allocate a request at the
+>>>>>>     lower level. Play it safe and treat it like -EAGAIN in terms of sync
+>>>>>>     retry, to avoid passing back an errant -EIO.
+>>>>>>
+>>>>>>     Catch some of these early for block based file, as non-mq devices
+>>>>>>     generally do not support NOWAIT. That saves us some overhead by
+>>>>>>     not first trying, then retrying from async context. We can go straight
+>>>>>>     to async punt instead.
+>>>>>>
+>>>>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>>>>
+>>>>>>
+>>>>>> which isn't in stable/linux-5.4.y
+>>>>>
+>>>>> Can you test that if the above commit is added, all works well again?
+>>>>
+>>>> It doesn't apply cleanly, I'll try to resolve the conflict. However, I
+>>>> assume that the revert was for a concrete reason - but I can't quite
+>>>> figure out what b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e was concretely
+>>>> solving, and whether reverting the revert in 5.4 would re-introduce a
+>>>> different problem.
+>>>>
+>>>> commit b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e (tag: block-5.7-2020-05-29, linux-block/block-5.7)
+>>>> Author: Jens Axboe <axboe@kernel.dk>
+>>>> Date:   2020-05-28 13:19:29 -0600
+>>>>
+>>>>     Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT"
+>>>>
+>>>>     This reverts commit c58c1f83436b501d45d4050fd1296d71a9760bcb.
+>>>>
+>>>>     io_uring does do the right thing for this case, and we're still returning
+>>>>     -EAGAIN to userspace for the cases we don't support. Revert this change
+>>>>     to avoid doing endless spins of resubmits.
+>>>>
+>>>>     Cc: stable@vger.kernel.org # v5.6
+>>>>     Reported-by: Bijan Mottahedeh <bijan.mottahedeh@oracle.com>
+>>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>>
+>>>> I suspect it just wasn't aimed at 5.4, and that's that, but I'm not
+>>>> sure. In which case presumably reverting
+>>>> bba91cdba612fbce4f8575c5d94d2b146fb83ea3 would be the right fix, not
+>>>> backporting 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048 et al.
+> 
+> Having looked a bit more through the history, I suspect that the reason
+> 5.6 doesn't need c58c1f83436b501d45d4050fd1296d71a9760bcb - which I have
+> confirmed - is that ext4 was converted to the iomap infrastructure in
+> 5.5, but not in 5.4.
+> 
+> I've confirmed that the repro I shared upthread triggers in
+> 378f32bab3714f04c4e0c3aee4129f6703805550^ but not in
+> 378f32bab3714f04c4e0c3aee4129f6703805550.
 
-... yet we /were/ doing that, and it worked fine for 13 years - from
-1st June 2007 until the by-VA merge into mainline on the 3rd April
-2020.
-
-You may be right that it wasn't the most correct way, but it worked
-for those 13 years without issue, and it's only recently that it's
-become a problem, and trying to "fix" that introduced a regression,
-and fixing that regression has caused another regression... and I
-what I'm wondering is how many more regression fixing cycles it's
-going to take - how many regression fixes on top of other regression
-fixes are we going to end up seeing here.
-
-The fact is, we never properly understood why your patch caused the
-regression I was seeing. If we don't understand it, then we can never
-say that we've fixed the problem properly. That is highlighted by the
-fact that fixing the regression I was seeing has caused another
-regression.
+I checked up on this, and I do see the issue as well. As far as
+io_uring is concerned, we don't need that revert in 5.4. So I think
+the right solution here would be to... revert the revert :-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Jens Axboe
+
