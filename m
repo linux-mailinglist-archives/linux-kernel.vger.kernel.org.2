@@ -2,180 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A9A30F940
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53C530F93F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238347AbhBDRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238286AbhBDRAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:00:12 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632D0C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:58:43 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id w4so3744239wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:58:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zfjsqmGSrFdwKv6gPk+ED4Gyd+jw5WiGxS5237MFi+M=;
-        b=aJ5+DhwQrPybxXlfb906b5cOoXqV3+BEzRNaODlgcUeZEihmbGyFqInXWRKhUtRcBb
-         kV1JlIXsN/H9/ywDpKO+frxErEGohc9ib+E0uHFogDM0U0dQ89h8KGu5yffJo80lIAtT
-         UAwiQzvCPO4zBLBzmVgGmSMpEEerY8KT11ZQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zfjsqmGSrFdwKv6gPk+ED4Gyd+jw5WiGxS5237MFi+M=;
-        b=f/xqFgAKy8UgQ3RPR8iM8sRoWQN5ZHKb9RX7HtpJ9RuPkDFaiU2n2RzW0YMJ/K1SMT
-         Q4rANfwh8/iGm0Ymr3syrPp2lQQ27j0FSeVGfaqhFWzclgTqnKpUUsbQgz7M5cXl7K8+
-         nBrj9IYFTysGvMGaIwtCTm8fCfl+AATVKyI4wb7RVpTNWG+9c2KQnZ5X/eUKRZfshm4X
-         pasa8YWlcC/dA6AXa6Y5Zhn9QYp/NF2g2p3FraXR9rCfT0n8jEjmkzeZJw95I7KqbzGz
-         8fGZit7GoG+ipfWt7GWQP/as+oTeZdwvkwqlWjm0ruuODvikcWiSSrhebEf9vdJO9D7C
-         +Baw==
-X-Gm-Message-State: AOAM5335or4h9v2MdCLDJx+5UmMzH5XVWuMKHkP1sCGw7SlLnDpritBu
-        n0CMaoN7Y3d5xT8fATczhcDdvgcSOHCO2b4W
-X-Google-Smtp-Source: ABdhPJxAhpv3Tii2s/pNvg41KfaTlUA/3DjBqaXWiLy9Id66LvhcG0GjOf8lXMNmb3BMhPDKwGE71w==
-X-Received: by 2002:a1c:3587:: with SMTP id c129mr117766wma.76.1612457922116;
-        Thu, 04 Feb 2021 08:58:42 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i64sm6700187wmi.19.2021.02.04.08.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:58:40 -0800 (PST)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH 2/2] PCI: Revoke mappings like devmem
-Date:   Thu,  4 Feb 2021 17:58:31 +0100
-Message-Id: <20210204165831.2703772-3-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204165831.2703772-1-daniel.vetter@ffwll.ch>
-References: <20210204165831.2703772-1-daniel.vetter@ffwll.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S237479AbhBDRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:11:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:33854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238292AbhBDRBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:01:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 125B711D4;
+        Thu,  4 Feb 2021 09:00:22 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EEC23F73B;
+        Thu,  4 Feb 2021 09:00:20 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        cristian.marussi@arm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, robh@kernel.org
+Subject: [PATCH v5 0/3] Introduce SCMI System Power Control driver
+Date:   Thu,  4 Feb 2021 16:59:10 +0000
+Message-Id: <20210204165913.42582-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-the region") /dev/kmem zaps ptes when the kernel requests exclusive
-acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-the default for all driver uses.
+Hi
 
-Except there's two more ways to access PCI BARs: sysfs and proc mmap
-support. Let's plug that hole.
+This series, building on top of the recently introduced SCMI System Power
+Protocol support, adds a new SCMI driver which, registering for SystemPower
+notifications, acts accordingly to satisfy SCMI plaform system transitions
+requests like shutdown/reboot both of graceful and forceful kind. (possibly
+involving userspace when the request is of the graceful kind)
 
-For revoke_devmem() to work we need to link our vma into the same
-address_space, with consistent vma->vm_pgoff. ->pgoff is already
-adjusted, because that's how (io_)remap_pfn_range works, but for the
-mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
-to adjust this at at ->open time:
+Interaction with userspace boils down to the same orderly_ Kernel methods
+used by ACPI to handle similar shutdown requests.
 
-- for sysfs this is easy, now that binary attributes support this. We
-  just set bin_attr->mapping when mmap is supported
-- for procfs it's a bit more tricky, since procfs pci access has only
-  one file per device, and access to a specific resources first needs
-  to be set up with some ioctl calls. But mmap is only supported for
-  the same resources as sysfs exposes with mmap support, and otherwise
-  rejected, so we can set the mapping unconditionally at open time
-  without harm.
+As a part of the series, patch 1/3 enforces, at the SCMI core level, the
+creation of one single SCMI SystemPower device, to avoid promoting the
+design of systems in which multiple SCMI platforms can advertise the
+concurrent support of SystemPower protocol: when multiple SCMI platform
+are defined, only one of them should be in charge of SystemPower comms
+with the OSPM, so only one such SystemPower device across all platforms
+is allowed to be created.
 
-A special consideration is for arch_can_pci_mmap_io() - we need to
-make sure that the ->f_mapping doesn't alias between ioport and iomem
-space. There's only 2 ways in-tree to support mmap of ioports: generic
-pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
-architecture hand-rolling. Both approach support ioport mmap through a
-special pfn range and not through magic pte attributes. Aliasing is
-therefore not a problem.
+The series has been rebased in v5 on top of:
 
-The only difference in access checks left is that sysfs PCI mmap does
-not check for CAP_RAWIO. I'm not really sure whether that should be
-added or not.
+https://lore.kernel.org/linux-arm-kernel/20210202221555.41167-1-cristian.marussi@arm.com/
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Jérôme Glisse <jglisse@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
+since this last series about SCMI modularization carries also a few changes
+in the SCMI interface exposed to drivers like this one.
+
+This whole series, rebased as above specified, can be found (with some messy
+DEBUG patches on top) at [1].
+
+Thanks
+
+Cristian
+
+[1]: https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_system_power_control_ext_V5
+
 ---
- drivers/pci/pci-sysfs.c | 4 ++++
- drivers/pci/proc.c      | 1 +
- 2 files changed, 5 insertions(+)
+v4 --> v5
+ - rebased on SCMI Modules v5 series to use new SCMI protocols interface
+ - removed signal based shutdown/reboot
+ - removed all module parameters
+ - added 60secs fixed timeout to shutdwon/reboot requests
+ - make it modularizable to cope with SCMI core modularization
+ - refactored all data config structs
+ - using dev_* instead of pr_*
+    
+v3 --> v4
+ - rebased v5.11-rc2
+ - removed unneeded ugly usage of atomics and barriers
+ - simplfied SysPower shutdown state machine
+ - split out macro definition to different patch
+    
+v2 --> v3
+ - rebased
+ - some minor cleanup in codestyle and commit message
+    
+v1 --> v2
+ - split out of SCMI System Power Protocol series now merged
 
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 0c45b4f7b214..f8afd54ca3e1 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -942,6 +942,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_io->read = pci_read_legacy_io;
- 	b->legacy_io->write = pci_write_legacy_io;
- 	b->legacy_io->mmap = pci_mmap_legacy_io;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_io);
- 	error = device_create_bin_file(&b->dev, b->legacy_io);
- 	if (error)
-@@ -954,6 +955,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_mem->size = 1024*1024;
- 	b->legacy_mem->attr.mode = 0600;
- 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_mem);
- 	error = device_create_bin_file(&b->dev, b->legacy_mem);
- 	if (error)
-@@ -1169,6 +1171,8 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
- 			res_attr->mmap = pci_mmap_resource_uc;
- 		}
- 	}
-+	if (res_attr->mmap)
-+		res_attr->mapping = iomem_get_mapping();
- 	res_attr->attr.name = res_attr_name;
- 	res_attr->attr.mode = 0600;
- 	res_attr->size = pci_resource_len(pdev, num);
-diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 3a2f90beb4cb..9bab07302bbf 100644
---- a/drivers/pci/proc.c
-+++ b/drivers/pci/proc.c
-@@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, struct file *file)
- 	fpriv->write_combine = 0;
- 
- 	file->private_data = fpriv;
-+	file->f_mapping = iomem_get_mapping();
- 
- 	return 0;
- }
+
+Cristian Marussi (3):
+  firmware: arm_scmi: support only one single SystemPower device
+  firmware: arm_scmi: add System Power utility macro
+  firmware: arm_scmi: add SCMI System Power Control driver
+
+ drivers/firmware/Kconfig                      |  12 +
+ drivers/firmware/arm_scmi/Makefile            |   1 +
+ drivers/firmware/arm_scmi/bus.c               |  25 ++
+ .../firmware/arm_scmi/scmi_power_control.c    | 347 ++++++++++++++++++
+ include/linux/scmi_protocol.h                 |   1 +
+ 5 files changed, 386 insertions(+)
+ create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
+
 -- 
-2.30.0
+2.17.1
 
