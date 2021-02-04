@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A67230F340
+	by mail.lfdr.de (Postfix) with ESMTP id 7D05C30F341
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhBDMf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235777AbhBDMf0 (ORCPT
+        id S236052AbhBDMfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:35:54 -0500
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:37005 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235986AbhBDMfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:35:26 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC0FC061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:34:45 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id n18so1626382vsa.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:34:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cJd9FKa1a551Lyef6CfNIDn2oz8BtNjwZF6tWhdERIY=;
-        b=Xzw+OgQoMx4trTdOG7xobK372anzs7OyIMUdScK7DPaq+0hgLQQ1NFI4Qx2Tuok4J6
-         hAkqvhjsZh+LCLA0a0er2430U3EVnT7T5bdWQvCtekJ53Lhoac45JBKPCr8zLXCyqnY7
-         xlXP068fErj3w2dS0S9kwb6OCNpntevlsAVnk=
+        Thu, 4 Feb 2021 07:35:53 -0500
+Received: by mail-qk1-f176.google.com with SMTP id s77so3074356qke.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:35:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cJd9FKa1a551Lyef6CfNIDn2oz8BtNjwZF6tWhdERIY=;
-        b=d6bEgBsGoJgyTocDks5sBCi8QIZaGkphtahtp3Rn5MA+r0Gzaw9yknc0GgbR7o/xgw
-         9YPq5qqQKcXHagHHuSY+URqhOa7MLREB+cs6QwYs6pYYiPGA8zzN6YCbCrmRwbCpnbXe
-         lViJ7UQV8CPceknPvtKca98OIpN24cXRfytZ7JOKJdSJ6cSyuGDdQzZG6K9fU1s4ratc
-         0naELDbGQnN9OpP+QvQIqi1jbBIRDiMCk7+xh3E53eNvRtPYYEiopkZJQ9ANgRkocOey
-         l/ej1ScICRMbBXLOFhne+kcVvbFA9tfiY6ghX8Z3feB9KGzz0agknLGY85ECcSz4sE9d
-         E48w==
-X-Gm-Message-State: AOAM531pXcjjhWIk0EvmTCcQY+lN9hnRJEg0r+EOn8v00v7Yqxf2Dchf
-        mXEDBqnzq0dM8xxPf/wlthvwwNISY8KpWdeNb4usow==
-X-Google-Smtp-Source: ABdhPJzGdlYykvQ6K2WLJtushykS2XRoEspc46YEBzHBjnOeFCMTRStUy8XPadrULy6Vqn8znu7NjaabkXzJbd3THdE=
-X-Received: by 2002:a67:8945:: with SMTP id l66mr4678569vsd.48.1612442084863;
- Thu, 04 Feb 2021 04:34:44 -0800 (PST)
+        bh=LsxIO7rN8pPMLftt4vg+scMkX8uPN+d+hAtN2umy2Fk=;
+        b=bYVmBzs8EekQiDm+izycnlPb/PuPVKbDZv5/hCwRyBZySnDutzDPg87PxB2LetEbxJ
+         WPSbTv8W9BjdNA0GvJAyJs62LyiBcgVTaGOzsooAyoJ/a4Yechr+zoWe6eDcnQatCr0c
+         uVHEGbzdwnyHaxor5WtDI8U2rC1Fp5wCIUxyYxNZ5C6QptpTh9Uu3Atfm0sTcipN/g5l
+         xVEgDTv+1UikEwW+Iv/5MefSdAvyZ8ubzEBGnnS5I65k6Hs7k7rTNDMBbui1TWeMaANW
+         bPTlgeT7hV1AezVJX5zG3GOY3MTQ5DKtVQakBBUT7prh5bQ1GspxGYFEfzwWCpVt1bkv
+         DaOw==
+X-Gm-Message-State: AOAM530/bgws3S6kwhbZ3i1lgwHTc07JrWh3TB96vsrrcxSFXbG1vs64
+        +9YoV+4ZR13BWYnwnt+UkOQXyCNcXykbueIR7Rc=
+X-Google-Smtp-Source: ABdhPJyxevox6VkVEd3RoV6dEdkEUhauF4RxUxTGpd+3BLz828q8W4boqTHVG/LZN8JyTE09FrGDUc16hJYS5F+a4DU=
+X-Received: by 2002:a37:648e:: with SMTP id y136mr7202461qkb.148.1612442112944;
+ Thu, 04 Feb 2021 04:35:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128111549.GA8174@zhaomy-pc> <CAG3jFysU4epjS3A85ZojrJn3TAC78O_jx5p_4SWsCdRBrQ5GXQ@mail.gmail.com>
-In-Reply-To: <CAG3jFysU4epjS3A85ZojrJn3TAC78O_jx5p_4SWsCdRBrQ5GXQ@mail.gmail.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 4 Feb 2021 20:34:33 +0800
-Message-ID: <CANMq1KAuUTqgM2mDR5WN6Ad+cATFXLPE+5rstyhfNE9Lc716+g@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: anx7625: enable DSI EOTP
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Xin Ji <xji@analogixsemi.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
+References: <20210203135830.38568-1-alexander.antonov@linux.intel.com> <20210203205502.GN854763@kernel.org>
+In-Reply-To: <20210203205502.GN854763@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 4 Feb 2021 21:35:01 +0900
+Message-ID: <CAM9d7chNh5vS3vOVT+d7U4L=YCRB5W6FgbtvdWnh3t2vdAMhww@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] perf stat: Introduce iostat mode to provide I/O
+ performance metrics
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Alexander Antonov <alexander.antonov@linux.intel.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org
+        Jiri Olsa <jolsa@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 8:07 PM Robert Foss <robert.foss@linaro.org> wrote:
->
-> Hi Xin,
->
-> Thanks for the patch.
->
-> On Thu, 28 Jan 2021 at 12:17, Xin Ji <xji@analogixsemi.com> wrote:
-> >
-> > Enable DSI EOTP feature for fixing some panel screen constance
-> > shift issue.
-> > Removing MIPI flag MIPI_DSI_MODE_EOT_PACKET to enable DSI EOTP.
->
-> I don't think I quite understand how removing the
-> MIPI_DSI_MODE_EOT_PACKET flag will cause DSI EOTP to be enabled. Could
-> you extrapolate on this in the commit message?
+Hi Arnaldo,
 
-That confused me as well, but it turns out that's how the flag is defined:
-```
-/* disable EoT packets in HS mode */
-#define MIPI_DSI_MODE_EOT_PACKET BIT(9)
-```
-(https://elixir.bootlin.com/linux/latest/source/include/drm/drm_mipi_dsi.h#L129)
-
-I'm almost tempted to put together a mass patch to rename all of these flags...
-
+On Thu, Feb 4, 2021 at 5:55 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 >
-> >
-> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > ---
-> >  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > index 65cc059..e31eeb1b 100644
-> > --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> > @@ -1334,7 +1334,6 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
-> >         dsi->format = MIPI_DSI_FMT_RGB888;
-> >         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
-> >                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
-> > -               MIPI_DSI_MODE_EOT_PACKET        |
-> >                 MIPI_DSI_MODE_VIDEO_HSE;
-> >
-> >         if (mipi_dsi_attach(dsi) < 0) {
-> > --
-> > 2.7.4
-> >
+> Em Wed, Feb 03, 2021 at 04:58:25PM +0300, Alexander Antonov escreveu:
+> > The previous version can be found at:
+> > v3: https://lkml.kernel.org/r/20210126080619.30275-1-alexander.antonov@linux.intel.com/
+> > Changes in this revision are:
+> > v3 -> v4:
+> > - Addressed comment from Namhyung Kim:
+> >    1. Removed NULL-termination of root ports list
+>
+> Hi Namhyung,
+>
+>         Are you ok with this patchkit now?
+
+I've left some more comments.
+
+Thanks,
+Namhyung
