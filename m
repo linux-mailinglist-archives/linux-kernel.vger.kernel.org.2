@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA8730FBC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F7330FBC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239248AbhBDSl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
+        id S238757AbhBDSmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238642AbhBDSgP (ORCPT
+        with ESMTP id S239092AbhBDSf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:36:15 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836BAC061797
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:34:50 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id t186so3471489qke.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:34:50 -0800 (PST)
+        Thu, 4 Feb 2021 13:35:57 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ABCC061356
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:34:52 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id v65so3304037qtd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=OEiarKErHeQBPZKsYeL3IkSXq4c5mYMZ0dIk1JQlp5Y=;
-        b=HaC1/BN3UFOD+8cUBOspMU73ct/e+qcOiXXFRVMYRHECbtjGH4eFsMreWMsc1gLI8E
-         D4HwfqBpv8ifvkQ0WTBn6pGbOvbPMH5naPNpoq6uIrdBp6aAsuqDwCDf2SHMU8U7EnQf
-         as+ddooJ5YbrDa0uuHll/bhyoJhHSwd8mgvYbwJbZpIPtS3RdBrNlhZIAxBzHn83KTEe
-         ColYJ67sQiwpnOsZb66BnQz+LGNeOAusyJeYaEc/NUueGhZQKpMBT4BxAkZqBVp13ukv
-         WAAZ4mkE7OgDpUP7dnncZRPz8SVVk3PinhZ4MkQv9OelGo/fPIj3rr0yOBddPveGFIiu
-         udHg==
+        bh=BOdWGt2YrrFhUAh6Oya9odQ31xPXJajGw7XfNah1Ei0=;
+        b=NBHdLCMVmjlgN5mUcDN7btxS+7ZLWcclBrRA56QJlXrMR8QRMxe4LKcc+rDaJR88Tg
+         81ZpUhmRyV+2iRs9b9i6X1F53gwpkWEkrPHiso9lwqtE01nZ0LC76zIowyeGwRQger9n
+         MvN1CUkSc5RzCH3+1uJPnTf4lcAKThO0g7tGROkLDYgTOlEt+CYUjMazGvYBxhzJ26is
+         2gH5HlvO0XbpfhMs2p9bBdRgOCjFHHwlv8y9M7F5y30awvPM3pYsdA3nlMCVnO+SfpbC
+         VJuVKmjkYK4vCc8vvFkmNhpnzIoB+2Lu2ef0b8fXz1jWw9ZJYS+CaSQD16ThR+WRoF/o
+         1JOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=OEiarKErHeQBPZKsYeL3IkSXq4c5mYMZ0dIk1JQlp5Y=;
-        b=Uit7St1iCN6PnDT6bbfUoKG/+lNp0B/qiCESTmUeXjj88M2fsQ66OBWNZSU9N8sU5j
-         qQbvz8CCUNb6n5pcVsvux+ez9nnJ1N/BiZgI6WGSF8Kro9KgnPAXPr3vIea/MX2KujeU
-         uLyQhy+CmxtskziVo8gRhoQ/qBqSEyoGUEReozuzm4V6RVaQKyfF+bHR3xqiXb32yjhZ
-         woyyuZBVuAKbXpGbcgmbf3SfMJmh88DpqIJUMjvdjqu16eLyOqpVTQ3VqYOj2kCUIVaA
-         N9zfmPGRTZCpuRf9dGGgFJ1XjjqFr7A1YAolCMGdTSDRN6KBg+zD3YHMCd20JzXK0/Rl
-         gwqA==
-X-Gm-Message-State: AOAM533qawn+gl72lEyntey/PjQPxIHSmz44wAhpy76ursTjOeV8vdxR
-        9qoQgTaz5uKbG2fkOIPxssJUPMBfwSaw70R2jyQz
-X-Google-Smtp-Source: ABdhPJwoP//UfZwpJJBLBfBtdgwOdsWrZ/lchYHtEI3yC3eDyBTvQXSkLtfePQ0byVtVxFApIJiz12FKAuAPClXh2/pD
+        bh=BOdWGt2YrrFhUAh6Oya9odQ31xPXJajGw7XfNah1Ei0=;
+        b=R7NuxlVHtgq8xhBgMzGTTIMvjWOe/eF0DNhngl4aPFarHAv55Z6EkwB9+bw98Gt7VQ
+         pt8iztXBFYzpgxM1zFUlH26+IEnzkWbvErccmxIDBiVeeD2lsjF9Rqa2dVRo1x5ECS7O
+         ToIPQCdbBpAoybgMkrgrlBD5PonpMuq3kLS2NEwrvuKst7i47rX2FBYM/0z4pniBA9UR
+         0QlBZkkBLJ2Je67QSqSc3h3BfMLX17Kw/e+VRH9QfxDyqqJbJawV6QhAP6LszfeX/m/H
+         GgwKpHf/1IUA+W/hUj88h7U2L5YaPre4FFE48CRIf2Ooy5fqGA52QEkjVNki41P4Rcg+
+         6Y2Q==
+X-Gm-Message-State: AOAM5333SVK0QRO7OC8UiPXKKGoKdURyXR5I9wuxmhMyGaAAeyFzjkn7
+        4yktipfJnsPO4Hn8Q46HAsmPafcr4dFf32Y1CJ7C
+X-Google-Smtp-Source: ABdhPJyPb3Mlg/0ElAXzwxLs8sVTCzLB5QqJgGLurcVZpTtQkepWRndQWdvko4eXoVcaKAI92jkYW/tc6Gcw4S4Evpba
 Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
 X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:b001:12c1:dc19:2089])
- (user=axelrasmussen job=sendgmr) by 2002:a0c:a692:: with SMTP id
- t18mr803070qva.18.1612463689620; Thu, 04 Feb 2021 10:34:49 -0800 (PST)
-Date:   Thu,  4 Feb 2021 10:34:26 -0800
+ (user=axelrasmussen job=sendgmr) by 2002:a05:6214:2ee:: with SMTP id
+ h14mr785467qvu.34.1612463691582; Thu, 04 Feb 2021 10:34:51 -0800 (PST)
+Date:   Thu,  4 Feb 2021 10:34:27 -0800
 In-Reply-To: <20210204183433.1431202-1-axelrasmussen@google.com>
-Message-Id: <20210204183433.1431202-4-axelrasmussen@google.com>
+Message-Id: <20210204183433.1431202-5-axelrasmussen@google.com>
 Mime-Version: 1.0
 References: <20210204183433.1431202-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v4 03/10] mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h
+Subject: [PATCH v4 04/10] hugetlb/userfaultfd: Unshare all pmds for hugetlbfs
+ when register wp
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Alexey Dobriyan <adobriyan@gmail.com>,
@@ -92,52 +93,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Xu <peterx@redhat.com>
 
-Prepare for it to be called outside of mm/hugetlb.c.
+Huge pmd sharing for hugetlbfs is racy with userfaultfd-wp because
+userfaultfd-wp is always based on pgtable entries, so they cannot be shared.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Walk the hugetlb range and unshare all such mappings if there is, right before
+UFFDIO_REGISTER will succeed and return to userspace.
+
+This will pair with want_pmd_share() in hugetlb code so that huge pmd sharing
+is completely disabled for userfaultfd-wp registered range.
+
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
- include/linux/hugetlb.h | 8 ++++++++
- mm/hugetlb.c            | 8 --------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ fs/userfaultfd.c             | 48 ++++++++++++++++++++++++++++++++++++
+ include/linux/mmu_notifier.h |  1 +
+ 2 files changed, 49 insertions(+)
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index f6d5939a6eb0..af40500c99f0 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -950,4 +950,12 @@ static inline __init void hugetlb_cma_check(void)
- 
- bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr);
- 
-+#ifndef __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
-+/*
-+ * ARCHes with special requirements for evicting HUGETLB backing TLB entries can
-+ * implement this.
-+ */
-+#define flush_hugetlb_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
-+#endif
-+
- #endif /* _LINUX_HUGETLB_H */
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 588c4c28c44d..5b3f00a1e276 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4924,14 +4924,6 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- 	return i ? i : err;
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 894cc28142e7..a0f66e12026b 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -15,6 +15,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/sched/mm.h>
+ #include <linux/mm.h>
++#include <linux/mmu_notifier.h>
+ #include <linux/poll.h>
+ #include <linux/slab.h>
+ #include <linux/seq_file.h>
+@@ -1190,6 +1191,50 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
+ 	}
  }
  
--#ifndef __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
--/*
-- * ARCHes with special requirements for evicting HUGETLB backing TLB entries can
-- * implement this.
-- */
--#define flush_hugetlb_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
--#endif
--
- unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
- 		unsigned long address, unsigned long end, pgprot_t newprot)
++/*
++ * This function will unconditionally remove all the shared pmd pgtable entries
++ * within the specific vma for a hugetlbfs memory range.
++ */
++static void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
++{
++#ifdef CONFIG_HUGETLB_PAGE
++	struct hstate *h = hstate_vma(vma);
++	unsigned long sz = huge_page_size(h);
++	struct mm_struct *mm = vma->vm_mm;
++	struct mmu_notifier_range range;
++	unsigned long address;
++	spinlock_t *ptl;
++	pte_t *ptep;
++
++	if (!(vma->vm_flags & VM_MAYSHARE))
++		return;
++
++	/*
++	 * No need to call adjust_range_if_pmd_sharing_possible(), because
++	 * we're going to operate on the whole vma
++	 */
++	mmu_notifier_range_init(&range, MMU_NOTIFY_HUGETLB_UNSHARE,
++				0, vma, mm, vma->vm_start, vma->vm_end);
++	mmu_notifier_invalidate_range_start(&range);
++	i_mmap_lock_write(vma->vm_file->f_mapping);
++	for (address = vma->vm_start; address < vma->vm_end; address += sz) {
++		ptep = huge_pte_offset(mm, address, sz);
++		if (!ptep)
++			continue;
++		ptl = huge_pte_lock(h, mm, ptep);
++		huge_pmd_unshare(mm, vma, &address, ptep);
++		spin_unlock(ptl);
++	}
++	flush_hugetlb_tlb_range(vma, vma->vm_start, vma->vm_end);
++	i_mmap_unlock_write(vma->vm_file->f_mapping);
++	/*
++	 * No need to call mmu_notifier_invalidate_range(), see
++	 * Documentation/vm/mmu_notifier.rst.
++	 */
++	mmu_notifier_invalidate_range_end(&range);
++#endif
++}
++
+ static void __wake_userfault(struct userfaultfd_ctx *ctx,
+ 			     struct userfaultfd_wake_range *range)
  {
+@@ -1448,6 +1493,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
+ 		vma->vm_flags = new_flags;
+ 		vma->vm_userfaultfd_ctx.ctx = ctx;
+ 
++		if (is_vm_hugetlb_page(vma) && uffd_disable_huge_pmd_share(vma))
++			hugetlb_unshare_all_pmds(vma);
++
+ 	skip:
+ 		prev = vma;
+ 		start = vma->vm_end;
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index b8200782dede..ff50c8528113 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -51,6 +51,7 @@ enum mmu_notifier_event {
+ 	MMU_NOTIFY_SOFT_DIRTY,
+ 	MMU_NOTIFY_RELEASE,
+ 	MMU_NOTIFY_MIGRATE,
++	MMU_NOTIFY_HUGETLB_UNSHARE,
+ };
+ 
+ #define MMU_NOTIFIER_RANGE_BLOCKABLE (1 << 0)
 -- 
 2.30.0.365.g02bc693789-goog
 
