@@ -2,99 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1A230F3D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A6030F3DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhBDNZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235605AbhBDNZa (ORCPT
+        id S236322AbhBDN12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:27:28 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41588 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236311AbhBDN1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:25:30 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA01AC0613D6;
-        Thu,  4 Feb 2021 05:24:49 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id v15so3498433wrx.4;
-        Thu, 04 Feb 2021 05:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2JrbOeo/eqiuhhp4mAU8EY7YTJyXEBNxg+GowildY+Y=;
-        b=fmxPYbdXNhu8Nzj05yTd9MFre9DKptuDsTCJmhfyOwyEuhOwmQcNDj32U4pAQpiVAk
-         Nps2u1b6GFyatQTlI7Z21dFsiUlUdZDTpfLc5qVxfh5mPdjvR3xE2YR68i34EhScw7yx
-         XONPWHHQ8CWvqqreKeo6IGwQ9KxgxnPRHlKAJo/EsU2cTqQLIFQwr5j3siRSHlaWg2Z4
-         5seuVDtEHHpEWR1Uw97tm+qZOBlGDr2ghW/fNOmOnu1ACR/4xHo6IuNo5cvZqxaP+meg
-         buLxYDyi5fgCybS5PEooQSOq0f+/97tQJGZu9Wnqft7GcJjVH/0HlthH2vzRG2L2+Xc4
-         xpPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2JrbOeo/eqiuhhp4mAU8EY7YTJyXEBNxg+GowildY+Y=;
-        b=taekPeIkNmxvmtYYMlKjThfwNcOZJaKAZ2ijF1PXbAzd2cbIvvos7YbdhbyfUOXghF
-         WLfGeUxQHnuxyKnWObgF8H+MFjYmBQV8tnE7J3ECwdIB5o1HEFc+YXS1mV2z960a5Hdc
-         hYByrvn/bxVuTcdiLZVvi0Y43dSW0VyHZTIVw7rl3F9gUQ2MokKgEShXSLcWHGi+bt18
-         RQ+lPjckhd7Cy/WMidajwpWFgBK99eH9m48fv5lCV+kxnwiZOhwColGOBBvcmwgFNHjX
-         jxOLVksy8ZUmYNPNb9sqnApGCLQ4LzlXihCHqzHk5vg2o56rxpbz/+xqgEAX1hv0x2po
-         j1Ew==
-X-Gm-Message-State: AOAM530INxJgA3TFwT+ThRwkOHJnyB8+Bo/XUUgOT0nI9JliSCnDRqxf
-        E0vCyVuPIDin5gLuqJUhDtYKaAnGzcg=
-X-Google-Smtp-Source: ABdhPJzMqgdrN9PXO+YaFnuK/OyTsth1c7LFxbqA+hx9vhHGLsnHT4tb0Vkill50W+l9KA4KWFobKQ==
-X-Received: by 2002:adf:f303:: with SMTP id i3mr9261684wro.60.1612445088600;
-        Thu, 04 Feb 2021 05:24:48 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with UTF8SMTPSA id l11sm7721279wrt.23.2021.02.04.05.24.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 05:24:48 -0800 (PST)
-Subject: Re: outb.2: What to do with prototypes?
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <6336a172-6bc5-bad8-21a4-0309a83728e7@gmail.com>
-Message-ID: <81b3d032-b862-f255-1e58-2c319772713f@gmail.com>
-Date:   Thu, 4 Feb 2021 14:24:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
- Thunderbird/84.0
+        Thu, 4 Feb 2021 08:27:17 -0500
+X-UUID: 1e28ea95ab33423aaa971d97ffaad201-20210204
+X-UUID: 1e28ea95ab33423aaa971d97ffaad201-20210204
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <ed.tsai@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 319922277; Thu, 04 Feb 2021 21:26:20 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 4 Feb 2021 21:25:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Feb 2021 21:25:58 +0800
+From:   Ed Tsai <ed.tsai@mediatek.com>
+To:     <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ed.tsai@mediatek.com>
+Subject: [PATCH] Documentation: f2fs: fix typo s/automaic/automatic
+Date:   Thu, 4 Feb 2021 21:25:56 +0800
+Message-ID: <20210204132556.14934-1-ed.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <6336a172-6bc5-bad8-21a4-0309a83728e7@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 264E744759CDFE8E1FA7B7EB4E35E7CEFEA19D310B34A1FB30C8694CD75E32962000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 1:59 PM, Alejandro Colomar (man-pages) wrote:
-> Hi Michael,
-> 
-> What would you do with the prototypes in outb.2?
-> They are different in glibc and the kernel.
-> However, since these are functions to be called mostly withing the
-> kernel, the kernel prototype is more important.  Would you use the glibc
-> one in SYNOPSIS, and then a C library / kernel differences with the
-> kernel prototypes?
-> 
-> Thanks,
-> 
-> Alex
-> 
+Fix typo in f2fs documentation.
 
-BTW, the declarations of those functions in the kernel are a bit
-different from the rest.  My grep_syscall function couldn't find them.
-There's no sys_inb, nor does it use SYSCALL_DEFINE?().
+Signed-off-by: Ed Tsai <ed.tsai@mediatek.com>
+---
+ Documentation/filesystems/f2fs.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There are a lot of different declarations like plain 'inb' (some static,
-some extern).  Where is the actual syscall defined?
-
-Thanks,
-
-Alex
-
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index dae15c96e659..e1cda214058e 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -831,7 +831,7 @@ This is the default option. f2fs does automatic compression in the writeback of
+ compression enabled files.
+ 
+ 2) compress_mode=user
+-This disables the automaic compression and gives the user discretion of choosing the
++This disables the automatic compression and gives the user discretion of choosing the
+ target file and the timing. The user can do manual compression/decompression on the
+ compression enabled files using F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+ ioctls like the below.
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+2.18.0
+
