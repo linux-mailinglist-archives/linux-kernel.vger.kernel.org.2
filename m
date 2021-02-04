@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0423630FB4E
+	by mail.lfdr.de (Postfix) with ESMTP id E7BD530FB50
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238919AbhBDSXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:23:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34228 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239050AbhBDSXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:23:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DEA59AE95;
-        Thu,  4 Feb 2021 18:22:25 +0000 (UTC)
-Subject: Re: [PATCH v6 10/10] drm/qxl: allocate dumb buffers in ram
-To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210204145712.1531203-1-kraxel@redhat.com>
- <20210204145712.1531203-11-kraxel@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <494099f2-01d7-fa62-9101-eb09765d7b98@suse.de>
-Date:   Thu, 4 Feb 2021 19:22:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S239027AbhBDSXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238990AbhBDSXX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:23:23 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D2BC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:22:42 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id a8so5967822lfi.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dl1jkO0fwdt4pUp2PZMa/AtL4iCw0WB6gtyM8w8mF88=;
+        b=dbsHHieWHrkFxo0Xsex1dXCpAjaZ2InxVFPEp2VXSoU9G0Bl8DUCqCegA00Mtxr08N
+         2LgEAkoO5XV7eaXMzAr4+ghm7PTh/+zfFocr4mnL44nAakoh15m8E1Za0UttJGG0t0jW
+         U+7O4Sq78Np1dnIS8mkSHL0iMgEEriNz40X6YBokwucZqKY6H1ICPDPbfPxWsPyo27NQ
+         cpXeEiiwkzh9qJwwXMcIbJAZkNHS+eBmpP+Kr2ZYQnRJTcggSP6qzQPgRJYW6LPykLc8
+         EnEsIKA6+Hlrf3tn7zek3YiDOFrPnmWZ+nSKZKEOGwAed29gmFGh/bU+rf7QrohOoi44
+         5LQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dl1jkO0fwdt4pUp2PZMa/AtL4iCw0WB6gtyM8w8mF88=;
+        b=F2LHgQQrk7mQrhQ4+qrulm6lM0hIcVTBopkbNm1WJ6snWJTBzHnQaZN14b7b3ZqkCi
+         omSSXGzf9A8+x2d1Sngmt6pfA4CT0LJ84Vdso/jQvjCZV4K2Dw8PBgRCTpm9A+SztAs/
+         Qb8+hN55PsVsk1g6JeKYIN6bIxJC96A7DAXnav3exkIvJlVSMrKxNOZUil4M792oimbv
+         8U+U1iRANv5Ivt6MNpeQGiN6bo/VthWSUFjA6muYrXu2FzOXPTU7kNZHiIMTHC6oPr2g
+         knZyTLzapvLHYWLRqugn7Dr/wAaO6wiXaNnaLcNlQLF0p0UTUuJGMTgJog8iknif4EZZ
+         Wu+w==
+X-Gm-Message-State: AOAM533/sdeY5NrEZZi98kgg99EHmGu/Qk/fMo+GbDNCf+gVDc0lasrX
+        +0cf7KtZQLP0karUos3kRFpktoxJXcZJ46HpTzOpOfUD27lZAw==
+X-Google-Smtp-Source: ABdhPJwTSKES/HRpi0u7z/hDixxZ6i0UmvJ5AuQQVLwNDoKVcLfRbLbRWwtIcyOeCOlyCd2CjvDEdEllM257X3YYD7k=
+X-Received: by 2002:a19:ad0d:: with SMTP id t13mr344921lfc.539.1612462960932;
+ Thu, 04 Feb 2021 10:22:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204145712.1531203-11-kraxel@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="pyZR8drgja7WQpmkmetYozYATek7dMo4p"
+References: <1612287314-5384-1-git-send-email-oliver.graute@gmail.com>
+In-Reply-To: <1612287314-5384-1-git-send-email-oliver.graute@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 4 Feb 2021 15:22:29 -0300
+Message-ID: <CAOMZO5CDhUprEn8umeBa0Y3kvU1qSawqJ2Y0-F-EMakmLOu4BQ@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/panel: simple: add SGD GKTW70SDAD1SD
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pyZR8drgja7WQpmkmetYozYATek7dMo4p
-Content-Type: multipart/mixed; boundary="9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <494099f2-01d7-fa62-9101-eb09765d7b98@suse.de>
-Subject: Re: [PATCH v6 10/10] drm/qxl: allocate dumb buffers in ram
-References: <20210204145712.1531203-1-kraxel@redhat.com>
- <20210204145712.1531203-11-kraxel@redhat.com>
-In-Reply-To: <20210204145712.1531203-11-kraxel@redhat.com>
+Hi Oliver,
 
---9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 2, 2021 at 2:35 PM Oliver Graute <oliver.graute@gmail.com> wrote:
 
+> +static const struct panel_desc sgd_gktw70sdad1sd = {
+> +       .timings = &sgd_gktw70sdad1sd_timing,
+> +       .num_timings = 1,
+> +       .bpc = 6,
+> +       .size = {
+> +               .width = 153,
+> +               .height = 86,
+> +       },
+> +       .delay = {
+> +               .prepare = 20 + 20 + 10 + 10,
 
+Adding the datasheet label like Marco suggested make it clearer where
+these numbers come from : /* T0 + T2 + T3 + T4 */
 
-Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
-> dumb buffers are shadowed anyway, so there is no need to store them
-> in device memory.  Use QXL_GEM_DOMAIN_CPU (TTM_PL_SYSTEM) instead.
+Glad you got it working on your imx6ul board:
 
-Makes sense. I had similar issues in other drivers about the placement=20
-of buffers. For them, all new buffers now go into system ram by default, =
-
-and only move into device memory when they have to.
-
->=20
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->   drivers/gpu/drm/qxl/qxl_dumb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_d=
-umb.c
-> index c04cd5a2553c..48a58ba1db96 100644
-> --- a/drivers/gpu/drm/qxl/qxl_dumb.c
-> +++ b/drivers/gpu/drm/qxl/qxl_dumb.c
-> @@ -59,7 +59,7 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
->   	surf.stride =3D pitch;
->   	surf.format =3D format;
->   	r =3D qxl_gem_object_create_with_handle(qdev, file_priv,
-> -					      QXL_GEM_DOMAIN_SURFACE,
-> +					      QXL_GEM_DOMAIN_CPU,
->   					      args->size, &surf, &qobj,
->   					      &handle);
->   	if (r)
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb--
-
---pyZR8drgja7WQpmkmetYozYATek7dMo4p
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcO2AFAwAAAAAACgkQlh/E3EQov+Dq
-Tw//Ss7qrE339QgFvgUo6KSyLaTR9reuXmew3gm2M+w7BM02VQBDcHJ6uEWDOHTQpxcki4wApp40
-/UQ5tZ6lRKqSPdYcz9CVNAwj0gYIqREeNIubHQd08Lzzx/kGv4Y/8xQ1Q1GrjIVejJvXOYe9KJhR
-dtAklxDPn1pRe8reSY5NRHuijsxX3RPIgUYgwPn1AwxS3faEIM1801ylnXdfdcgk7l4NvoXgt3D4
-dZSltupfezt3qIsQHmZX3f1BmYj8mvJDi9cGYhl4ij8LVcTlePQCV52wkW5aQiajpGJPxbVOIbMv
-G8jOx66aV2A92ZdO010Rfhz8kWL/StnjqvOhzYmmhoXeHrqUQNd28LGqgEbA8KMRVf9cYv5co9PW
-ouaNVKV1wzeuGSqYzWcDQ/7zirLjqh2Al+OvweNkG+5MGazdcjH/LMSH00PCJRIsUXZFt/obw6P6
-SPFmMpQARcaR/s2X5i9Aq8/mm9RPLzDLF35fs/pB+t4ZuJU5DM8o0+70GUpw4jF3f5ExLLhbQ13g
-7yrkjQkaavTeUAuk7TXmyDc0rKPrTr9KghpS0qxPT5OKHLsOIXiH5Er3RLo2JLGs76itxag0Scyo
-qh2icQZMUuPJP3MAXP5YL6oxB65ZoJbTB3VYBR9/1Y1AYrCX2qQJlBDKr0Xi/0zjnFrr1KE/3HVk
-dno=
-=OQ9o
------END PGP SIGNATURE-----
-
---pyZR8drgja7WQpmkmetYozYATek7dMo4p--
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
