@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6747130F6A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721D130F6B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237484AbhBDPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:43:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60606 "EHLO mail.kernel.org"
+        id S237438AbhBDPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:46:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237219AbhBDPk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:40:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 422E064F4A;
-        Thu,  4 Feb 2021 15:40:13 +0000 (UTC)
+        id S237388AbhBDPlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:41:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE3F64F47;
+        Thu,  4 Feb 2021 15:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612453216;
-        bh=oX49zY8OEwwhNvdM/kvlJEBpdDBF23mL3VHLWA6xajw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SFmZkxlKEWJGZ4cBkjku0jdiBKWAVeYXmZbAcjYFqpTpKsFY3+gjLigdazxK3h4mF
-         l++QutmqzUUf1s5Ba/lS1UqG5h8Hg0wWzaAO8+wpWPcI3ABjJAiZzkAnpwhb5NRMCH
-         ZuvJLcETBe4WQMVjuZREQ23mfKKHVQOIF7QAUs8M0hp52896rODOxVjg16E5Ya4VNS
-         PAloeKywkXROy8QTMsMeNlOkieUIIMhExpUiA3NR9K6RWjzi/nrB9m6ERE2ZFm0UwZ
-         e7EPpDLzfsWM0VjnnlSjpcrZNoabU0fMfgcFgntMF17dzIfXUgm2N076901MsNpZqY
-         ip2oOFNowJG6w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alex Elder <elder@linaro.org>, Chris Lew <clew@codeaurora.org>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
-        "Andrew F. Davis" <afd@ti.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] remoteproc: qcom: fix glink dependencies
-Date:   Thu,  4 Feb 2021 16:40:04 +0100
-Message-Id: <20210204154010.1585457-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1612453243;
+        bh=94cY1u+hNd+/OdEI6Ip/ZV8/7uanpQEYhbCY1QFgwsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SYOlSKMDU3k85Bue6/Kvbv8YYlR208G4wR+IqGqoxGeeBEl5q7f7hDS75PAk08Vay
+         0XfgTWIDrneQbfWOBqCMx/JOzMNaodgiE4PMwkXYG2b4/Am53ph/Q4LleNVwdt2kq4
+         lIUxJ7Qwfvlc3487jtpk9nS502ZxurDAG8f5h6DxREEcatMAfTg0h58i1xpgz2hrQv
+         bQhiaVpSx9zLEpXcHtORU+KIU1zA+4B3WQWbcGR8f1oXm8d2AzfS3viZVrHU562E2N
+         I16MbaV8JSF7ayzoil5coP0I94DuC1YjXJT/tI4jXWRO6hZE0w0kD73MRcBtIr5PAK
+         SNu6WIVqxBdMQ==
+Date:   Thu, 4 Feb 2021 15:40:39 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>, keescook@chromium.org
+Subject: Re: [PATCH 3/3] selftest/arm64/ptrace: add tests for
+ PTRACE_O_ARM64_RAW_REGS
+Message-ID: <20210204154038.GC21058@willie-the-truck>
+References: <20210201194012.524831-1-avagin@gmail.com>
+ <20210201194012.524831-4-avagin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201194012.524831-4-avagin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+[+Kees]
 
-Building the remoteproc drivers into the kernel while the qcom_glink
-code is in a loadable module results in a link error:
+On Mon, Feb 01, 2021 at 11:40:12AM -0800, Andrei Vagin wrote:
+> Test output:
+>  TAP version 13
+>  1..2
+>  # selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
+>  # 1..2
+>  # ok 1 x7: 686920776f726c64
+>  # ok 2 The child exited with code 0.
+>  # # Totals: pass:2 fail:0 xfail:0 xpass:0 skip:0 error:0
+>  ok 1 selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
+>  # selftests: arm64/ptrace: ptrace_syscall_regs_test
+>  # 1..3
+>  # ok 1 x7: 0
+>  # ok 2 x7: 1
+>  # ok 3 The child exited with code 0.
+>  # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+>  ok 2 selftests: arm64/ptrace: ptrace_syscall_regs_test
+> 
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> ---
+>  tools/testing/selftests/arm64/Makefile        |   2 +-
+>  tools/testing/selftests/arm64/ptrace/Makefile |   6 +
+>  .../ptrace/ptrace_syscall_raw_regs_test.c     | 142 +++++++++++++++++
+>  .../arm64/ptrace/ptrace_syscall_regs_test.c   | 150 ++++++++++++++++++
+>  4 files changed, 299 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
+>  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c
+>  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
 
-ld.lld: error: undefined symbol: qcom_glink_ssr_notify
->>> referenced by vmlinux.o:(glink_subdev_unprepare)
+Thanks for the tests!
 
-Add a Kconfig dependency to avoid this.
+We already have a pretty extensive set of syscall entry tests in
+tools/testing/selftests/seccomp, so perhaps this would be better off as part
+of that? Maybe worth a look.
 
-Fixes: 8527efc59d45 ("rpmsg: glink: Guard qcom_glink_ssr_notify() with correct config")
-Fixes: 5d1f2e3c8090 ("soc: qcom: glink_ssr: Internalize ssr_notifiers")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/remoteproc/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 9e7efe542f69..88488af01fd9 100644
---- a/drivers/remoteproc/Kconfig
-+++ b/drivers/remoteproc/Kconfig
-@@ -155,6 +155,7 @@ config QCOM_Q6V5_ADSP
- 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
- 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
-+	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	select MFD_SYSCON
- 	select QCOM_PIL_INFO
- 	select QCOM_MDT_LOADER
-@@ -171,6 +172,7 @@ config QCOM_Q6V5_MSS
- 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
- 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
-+	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	select MFD_SYSCON
- 	select QCOM_MDT_LOADER
- 	select QCOM_PIL_INFO
-@@ -188,6 +190,7 @@ config QCOM_Q6V5_PAS
- 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
- 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
-+	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	select MFD_SYSCON
- 	select QCOM_PIL_INFO
- 	select QCOM_MDT_LOADER
-@@ -206,6 +209,7 @@ config QCOM_Q6V5_WCSS
- 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
- 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
-+	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	select MFD_SYSCON
- 	select QCOM_MDT_LOADER
- 	select QCOM_PIL_INFO
-@@ -238,6 +242,7 @@ config QCOM_WCNSS_PIL
- 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
- 	depends on QCOM_SMEM
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
-+	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	select QCOM_MDT_LOADER
- 	select QCOM_PIL_INFO
- 	select QCOM_RPROC_COMMON
--- 
-2.29.2
-
+Will
