@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBF130F96D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1126230F960
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238328AbhBDRSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238374AbhBDRRI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:17:08 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B3AC061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:16:27 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id y79so3228312qka.23
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:16:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=CWs5UE8Kdmh+MQd8bFvaWH6vN8MkKdop27j3PZaaEEk=;
-        b=RvmiSNnpq5dIjK/KsaaPz8Tfp6HEdpvhnnQHoDk1y6rJOw7daASh69I/9qr3eTxurJ
-         QxdhYhSdCRC08n+OT+0GZ83cLaNqw8d0GXASpB0CVFn8RkwilEwy/NfTqX22URgGRg64
-         h3KIvUZs4chncId+curUsRE0pLO7Qk31y2+vE78sNziBdjWR1qR6PCBZC9QgvrfJjL0A
-         uhQD3QJlhZNqHAcsVO+a9GjOG0v0uV3LSt6omfqA4hkO95jxobHq2J6wIj53soo6ksOO
-         3HxqpLQd7qeK8fsN1id0eKJkt82pcGtts9Ly+gZIAo4N4PApGtoJrlf0vBO+AA+KiQ5z
-         iICg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=CWs5UE8Kdmh+MQd8bFvaWH6vN8MkKdop27j3PZaaEEk=;
-        b=RR0aUMLCzpuc189EvbwQgW9KpzrKDbIiN5DFighUoDnDJ/OeBM5oQ3OMkMidXGvpOx
-         63zqf9D/nV6OeNd7y4XljwFYsBhzCaZBPgU2S+1imiHYxIOaEytB2t8SuB1Tbv2wu6Z2
-         CvzcrduzkU4DW8UGbSgci2ZP9BivK0vl6hb6rNaDgm46EIDiqQsDhRK4d3+SlTdWtM/d
-         PQM7ThCHgR/rSDywwRadr+hpVVXkybyrH003md1MpfxJW/OP3FtGkCWOTBBM/KMwAVIi
-         uyvPVn10dUnHcqXoLXBYvdWYCIuTHrecSM4kMLY35PbgT34F59G0DtogRhVTuKsJGCCb
-         Qa+A==
-X-Gm-Message-State: AOAM531+CzKODNoneJXyKnqkvsStENH99nrDzqmGgfmJzzvehA6JCMTn
-        0TlKE5RObRzOCXuF/PKySW9/7FlxpL8=
-X-Google-Smtp-Source: ABdhPJwNFc/pfbYrCPQH1RwiV0zjReAT9g+Rvj4tY5TqJz3Zs1352G0A33nGNamEpCBSQz/ihOce7ZsjK2o=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:f16f:a28e:552e:abea])
- (user=seanjc job=sendgmr) by 2002:a05:6214:592:: with SMTP id
- bx18mr236964qvb.32.1612458986469; Thu, 04 Feb 2021 09:16:26 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Feb 2021 09:16:19 -0800
-Message-Id: <20210204171619.3640084-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] mm: Export follow_pte() for KVM so that KVM can stop using follow_pfn()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Stevens <stevensd@google.com>,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
+        id S238401AbhBDRSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:18:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237386AbhBDRRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:17:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 105E864F6C;
+        Thu,  4 Feb 2021 17:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612459016;
+        bh=4kbkHi3GCFWdJhpe+j8dWP0W/1NJJRTee0nUBDLf2mo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iED3joqbBocU9a6ef8oA9mVPNBkQbg2r/kfDbGa7xVfngLbaT1NMsi9vv95A4vVZq
+         plBf8KFtvbvsIeE3X2AFEDg+ORpsZxf7pH6wVDH21Wux6F0ivtXJaYayRtKruWUJLM
+         FAAhsFzlbKVIncTMxm2LDK+gMM/M+vZy4riZ4fFIOEgBLEDBhgopnXRIg3B+FLbPFF
+         dP89KEE3JSkheB6K76OaRMP4qqWRRTZZ/j2sF2gnceRUKKrER//4O94ehpINKFC/6X
+         w1grjB3+G6MrIzrOIJY2u/gQ+AEkL2tK9I6+9r2MlDvxLqQeC0ogK1Im0D7eYuCnyV
+         8X6/EaZHeBgbQ==
+Received: by mail-oi1-f172.google.com with SMTP id k25so4418817oik.13;
+        Thu, 04 Feb 2021 09:16:56 -0800 (PST)
+X-Gm-Message-State: AOAM532qmyA4KyTf1MVm8JGAMyHJaaMSMXdtjQoR+kyRjc4xWAvtYq39
+        r5FOcfkrd5fMs50X3RYd+eRjzutYXSYnRiV9JQQ=
+X-Google-Smtp-Source: ABdhPJzAbjseVdNh18mnAtJHEELLf6BF1925L/wgaNknmBjsPi1sa7VLaU0BTWl/yJC2jjuXCj2czRVNZF5+NW5Y4po=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr300430oig.67.1612459015329;
+ Thu, 04 Feb 2021 09:16:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20210204154010.1585457-1-arnd@kernel.org> <c326e5c8-e394-88bc-24f4-4dd8e246db3c@linaro.org>
+In-Reply-To: <c326e5c8-e394-88bc-24f4-4dd8e246db3c@linaro.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 4 Feb 2021 18:16:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a24WPVX3t4_X=muLfYUXtK6UOOHATrLQT3y_tWSb2XYrQ@mail.gmail.com>
+Message-ID: <CAK8P3a24WPVX3t4_X=muLfYUXtK6UOOHATrLQT3y_tWSb2XYrQ@mail.gmail.com>
+Subject: Re: [PATCH] remoteproc: qcom: fix glink dependencies
+To:     Alex Elder <elder@linaro.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Chris Lew <clew@codeaurora.org>,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
+        "Andrew F. Davis" <afd@ti.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-remoteproc@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export follow_pte() to fix build breakage when KVM is built as a module.
-An in-flight KVM fix switches from follow_pfn() to follow_pte() in order
-to grab the page protections along with the PFN.
+On Thu, Feb 4, 2021 at 5:16 PM Alex Elder <elder@linaro.org> wrote:
+>
+> On 2/4/21 9:40 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Building the remoteproc drivers into the kernel while the qcom_glink
+> > code is in a loadable module results in a link error:
+> >
+> > ld.lld: error: undefined symbol: qcom_glink_ssr_notify
+> >>>> referenced by vmlinux.o:(glink_subdev_unprepare)
+> >
+> > Add a Kconfig dependency to avoid this.
+>
+> So if they're incompatible in that way it's declared in the
+> header but not defined in the kernel so the link fails.
+>
+> And at issue is anything that calls qcom_add_glink_subdev(),
+> which is qcom_q6v5_{adsp,mss,pas,wcss}.c, and those are
+> selected by CONFIG_QCOM_Q6V5_{ADSP,MSS,PAS,WCSS}.
+>
+> But I don't see why QCOM_WCNSS_PIL needs the dependency.
+>
+> Can you explain that?  Other that that this looks good
+> to me (and I'll offer reviewed-by with your response).
 
-Fixes: bd2fae8da794 ("KVM: do not assume PTE is writable after follow_pfn")
-Cc: David Stevens <stevensd@google.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+The problem is that QCOM_WCNSS_PIL selects
+QCOM_RPROC_COMMON, so qcom_common.o is built-in
+whenever QCOM_WCNSS_PIL=y, and this will lead to the
+same link failure, regardless of whether the function is needed
+or not.
 
-Paolo, maybe you can squash this with the appropriate acks?
-
- mm/memory.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index feff48e1465a..15cbd10afd59 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4775,6 +4775,7 @@ int follow_pte(struct mm_struct *mm, unsigned long address,
- out:
- 	return -EINVAL;
- }
-+EXPORT_SYMBOL_GPL(follow_pte);
- 
- /**
-  * follow_pfn - look up PFN at a user virtual address
--- 
-2.30.0.365.g02bc693789-goog
-
+       Arnd
