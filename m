@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECDA30FFC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B8630FFC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBDV4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhBDV4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:56:15 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F23C0613D6;
-        Thu,  4 Feb 2021 13:55:35 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id z22so3597714qto.7;
-        Thu, 04 Feb 2021 13:55:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TpNR/qUQzjMgrNMY8WiD0ezGe7uykjtuTLC9thjn8a4=;
-        b=RNpwBclZVwN9RxcPCe+47atq297vQ3yjHyfe3aRBa0mPQyIzbTyjxaQLuP2D35m1HZ
-         aHLGzjzAiiItFIkjqEbKdKfcoofm5NnPSCK9xY0em2J1NLgx1YGFwSFutZcO/4Ex7796
-         U/WCHURkUYWOOrLYgnIzL0Cn1zTF5RbGEEqENiyXG/fJER1YJPUtq16vqJa67Rck5Ql/
-         GrqL03lMn3kbGbKMMpLQp+V1ws74gKDpRub9eyN4ky0E+DuXiiC5lOCZf0fTAaAthSvZ
-         RsQLKLRRkGRKCh9ZOlkq/+3xcFKfR3C0bUG2stT3yg7To/6QPy18i7+9/asarXLnMFlp
-         dBOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TpNR/qUQzjMgrNMY8WiD0ezGe7uykjtuTLC9thjn8a4=;
-        b=bvBjvTcjtKQ5nMhImSWB9dbMUvHhaoid+jE4BONIKUiICpLSDxQ9hpqnjTGK/tvl8J
-         RN+HSpYGtKBnwBiOrgr5Jl0BLCyFOJQqQedd1lvdqr/g60veK+sYMDoKd9Wd35ioQnBX
-         rmZmRrteFe5uoD3j4g8XnNdTn2S3hAAFB7+dL5DCwM8Ivvu91gM3yX7RoGai3E79lw/q
-         RffSguzZAVMfIdihtHmfSSW9G+JiZOYv98WKkh5FaIFXRRrEsVXBLEjJbEfS0K+hA9rS
-         w934hNpBslXuwHAlmFb9Y+w8qQ9AB5j+4MEtn0aNx0aVft97lVE5kaEET72ZnYBG95e+
-         UM/Q==
-X-Gm-Message-State: AOAM530t93wSX5ynEl6QCtXFVRlYk3Iog3w0kRptUDQS7ilwyf7DqGou
-        kQWq+68QlN8CIKNI4HmqmEA=
-X-Google-Smtp-Source: ABdhPJzlpDuhn/mJzhWCfkUnpQCI85+erWHahrbX/wavXQ+zIuymbwaFTRyApeqeHTmTBEzDIL8QKQ==
-X-Received: by 2002:ac8:5995:: with SMTP id e21mr1665445qte.294.1612475734577;
-        Thu, 04 Feb 2021 13:55:34 -0800 (PST)
-Received: from localhost.localdomain ([45.87.214.195])
-        by smtp.googlemail.com with ESMTPSA id l30sm5366573qtv.54.2021.02.04.13.55.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:55:33 -0800 (PST)
-From:   ameynarkhede02@gmail.com
-To:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        gregkh@linuxfoundation.org
-Cc:     netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede02@gmail.com>
-Subject: [PATCH] staging: qlge/qlge_main: Use min_t instead of min
-Date:   Fri,  5 Feb 2021 03:24:51 +0530
-Message-Id: <20210204215451.69928-1-ameynarkhede02@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S230098AbhBDV65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:58:57 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:49262 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230037AbhBDV64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:58:56 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l7mdT-004GdQ-MA; Thu, 04 Feb 2021 22:57:59 +0100
+Date:   Thu, 4 Feb 2021 22:57:59 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Lubomir Rintel <lkundrak@v3.sk>, Maen Suleiman <maen@marvell.com>,
+        Lior Amsalem <alior@marvell.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] docs: arm: marvell: drop some dead links
+Message-ID: <YBxt57h+dOl7grza@lunn.ch>
+References: <20210203235305.506528-1-lkundrak@v3.sk>
+ <20210203235305.506528-2-lkundrak@v3.sk>
+ <87pn1ffro8.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pn1ffro8.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amey Narkhede <ameynarkhede02@gmail.com>
+On Thu, Feb 04, 2021 at 02:29:11PM -0700, Jonathan Corbet wrote:
+> Lubomir Rintel <lkundrak@v3.sk> writes:
+> 
+> > Just remove these; there's good chance there wasn't anything useful
+> > there anyway.
+> >
+> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> >
+> > ---
+> > Changes since v1:
+> > - Adjust for removal of "[PATCH 1/5] docs: arm: marvell: turn the automatic
+> >   links into labels"
+> > - Split off the hunk that fixes 38x functional spec link
+> >
+> >  Documentation/arm/marvel.rst | 25 -------------------------
+> >  1 file changed, 25 deletions(-)
+> >
+> > diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
+> > index 16ab2eb085b86..502a1b89a2c85 100644
+> > --- a/Documentation/arm/marvel.rst
+> > +++ b/Documentation/arm/marvel.rst
+> > @@ -63,8 +63,6 @@ Kirkwood family
+> >                  - Product Brief  : http://www.marvell.com/embedded-processors/kirkwood/assets/88F6281-004_ver1.pdf
+> >                  - Hardware Spec  : http://www.marvell.com/embedded-processors/kirkwood/assets/HW_88F6281_OpenSource.pdf
+> >                  - Functional Spec: http://www.marvell.com/embedded-processors/kirkwood/assets/FS_88F6180_9x_6281_OpenSource.pdf
+> > -  Homepage:
+> > -	http://www.marvell.com/embedded-processors/kirkwood/
+> >    Core:
+> >  	Feroceon 88fr131 ARMv5 compatible
+> >    Linux kernel mach directory:
+> > @@ -126,7 +124,6 @@ EBU Armada family
+> >  	- 88F6820 Armada 385
+> >  	- 88F6828 Armada 388
+> >  
+> > -    - Product infos:   http://www.marvell.com/embedded-processors/armada-38x/
+> 
+> So these URLs do still exist in the Wayback machine; the above is
+> https://web.archive.org/web/20180829171124/http://www.marvell.com/embedded-processors/armada-38x/
+> for example.  If we delete the links, we make it harder for any
+> interested person to ever find them.  Assuming that we want to keep
+> information about these product families in the documentation at all,
+> I'd think that we would want to have the online information as well.  So
+> I'd replace these with wayback links, or else just leave them as they
+> are so that sufficiently motivated people can look them up themselves...
 
-Use min_t instead of min function in qlge/qlge_main.c
-Fixes following checkpatch.pl warning:
-WARNING: min() should probably be min_t(int, MAX_CPUS, num_online_cpus())
+The kirkwood processors are old, but they were used in NAS
+devices. They tend to have a long life time, and people do put Debian
+on them. Armada-38x is definitely still in use in NAS boxes.
 
-Signed-off-by: Amey Narkhede <ameynarkhede02@gmail.com>
----
- drivers/staging/qlge/qlge_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If we can have working links, that would be great.
 
-diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-index 402edaeff..29606d1eb 100644
---- a/drivers/staging/qlge/qlge_main.c
-+++ b/drivers/staging/qlge/qlge_main.c
-@@ -3938,7 +3938,7 @@ static int ql_configure_rings(struct ql_adapter *qdev)
- 	int i;
- 	struct rx_ring *rx_ring;
- 	struct tx_ring *tx_ring;
--	int cpu_cnt = min(MAX_CPUS, (int)num_online_cpus());
-+	int cpu_cnt = min_t(int, MAX_CPUS, (int)num_online_cpus());
-
- 	/* In a perfect world we have one RSS ring for each CPU
- 	 * and each has it's own vector.  To do that we ask for
---
-2.30.0
+   Andrew
