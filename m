@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14030F26F
+	by mail.lfdr.de (Postfix) with ESMTP id C0DE130F270
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236055AbhBDLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:37:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41398 "EHLO mail.kernel.org"
+        id S236062AbhBDLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:37:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:56552 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235541AbhBDLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:35:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B41964F45;
-        Thu,  4 Feb 2021 11:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612438488;
-        bh=kdvaYUzyR0twFNgrfjDXxc4xk/nIUc95siq77AcMxUw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sy9fx25cRRyQxUg4PQiuwRqTEHX658JxHyGPHq/88My/x1kvTH4DAJ2aISoI2aXkQ
-         7q4ImT49/hSnXgZZe5nIte5an8yCdFl3/nKBSmL1KtXUQmhK86d+bWvAKpFB/hCPJ+
-         vHFmENUyT6t71Pv7oR0jOWL5QdCiNYnsM7hkVvYdNA83FthQ8MT6l5HSIaqDtEq017
-         v3Uf42+f0Hl/atXgvQESI8GiyyIE+mqMxGUZE9ZuSWQ78rGF9JCQdy6unJPKAA/OZt
-         AfPnD+C9cBVf98rjrYDltnlBiJ+vDveF6Nvs2anXspx7fDGAP1j2/zrNQYpSDiRu3a
-         P3N5VPANbVUIA==
-Date:   Thu, 4 Feb 2021 13:34:32 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        id S235688AbhBDLfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:35:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A98E7D6E;
+        Thu,  4 Feb 2021 03:34:46 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5730B3F73B;
+        Thu,  4 Feb 2021 03:34:45 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210204113432.GS242749@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org>
- <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH 5/8] sched/fair: Make check_misfit_status() only compare dynamic capacities
+In-Reply-To: <f1ea5b53-5953-15dc-6b67-9b6d520c61fc@arm.com>
+References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-6-valentin.schneider@arm.com> <20210203151546.rwkbdjxc2vgiodvx@e107158-lin> <f1ea5b53-5953-15dc-6b67-9b6d520c61fc@arm.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Thu, 04 Feb 2021 11:34:38 +0000
+Message-ID: <jhja6sk2hip.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:15:58PM +0100, Michal Hocko wrote:
-> On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
-> > +static struct file *secretmem_file_create(unsigned long flags)
-> > +{
-> > +	struct file *file = ERR_PTR(-ENOMEM);
-> > +	struct secretmem_ctx *ctx;
-> > +	struct inode *inode;
-> > +
-> > +	inode = alloc_anon_inode(secretmem_mnt->mnt_sb);
-> > +	if (IS_ERR(inode))
-> > +		return ERR_CAST(inode);
-> > +
-> > +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> > +	if (!ctx)
-> > +		goto err_free_inode;
-> > +
-> > +	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
-> > +				 O_RDWR, &secretmem_fops);
-> > +	if (IS_ERR(file))
-> > +		goto err_free_ctx;
-> > +
-> > +	mapping_set_unevictable(inode->i_mapping);
-> 
-> Btw. you need also mapping_set_gfp_mask(mapping, GFP_HIGHUSER) because
-> the default is GFP_HIGHUSER_MOVABLE and you do not support migration so
-> no pages from movable zones should be allowed.
+On 04/02/21 11:49, Dietmar Eggemann wrote:
+> On 03/02/2021 16:15, Qais Yousef wrote:
+>> On 01/28/21 18:31, Valentin Schneider wrote:
+>
+> [...]
+>
+>>> @@ -10238,7 +10236,7 @@ static void nohz_balancer_kick(struct rq *rq)
+>>>  		 * When ASYM_CPUCAPACITY; see if there's a higher capacity CPU
+>>>  		 * to run the misfit task on.
+>>>  		 */
+>>> -		if (check_misfit_status(rq, sd)) {
+>>> +		if (check_misfit_status(rq)) {
+>
+> Since check_misfit_status() doesn't need sd anymore it looks like that
+> rcu_dereference(per_cpu(sd_asym_cpucapacity, cpu)) could be replaced by
+> static_branch_unlikely(&sched_asym_cpucapacity)) in nohz_balancer_kick().
+>
+> But as you mentioned in an earlier conversation we do need to check sd
+> because of asymmetric CPU capacity systems w/ exclusive cpusets which
+> could create symmetric islands (unique capacity_orig among CPUs).
+>
+> Maybe worth putting a comment here (similar to the one in sis()) so
+> people don't try to optimize?
 
-Ok.
+How about:
 
--- 
-Sincerely yours,
-Mike.
+--->8---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c2351b87824f..4b71f4d1d324 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6322,15 +6322,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	 * sd_asym_cpucapacity rather than sd_llc.
+ 	 */
+ 	if (static_branch_unlikely(&sched_asym_cpucapacity)) {
++		/* See sd_has_asym_cpucapacity() */
+ 		sd = rcu_dereference(per_cpu(sd_asym_cpucapacity, target));
+-		/*
+-		 * On an asymmetric CPU capacity system where an exclusive
+-		 * cpuset defines a symmetric island (i.e. one unique
+-		 * capacity_orig value through the cpuset), the key will be set
+-		 * but the CPUs within that cpuset will not have a domain with
+-		 * SD_ASYM_CPUCAPACITY. These should follow the usual symmetric
+-		 * capacity path.
+-		 */
+ 		if (sd) {
+ 			i = select_idle_capacity(p, sd, target);
+ 			return ((unsigned)i < nr_cpumask_bits) ? i : target;
+@@ -10274,6 +10267,10 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		}
+ 	}
+ 
++	/*
++	 * Below checks don't actually use the sd, but they still hinge on its
++	 * presence. See sd_has_asym_cpucapacity().
++	 */
+ 	sd = rcu_dereference(per_cpu(sd_asym_cpucapacity, cpu));
+ 	if (sd) {
+ 		/*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 21bd71f58c06..ea7f0155e268 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1482,6 +1482,33 @@ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
+ extern struct static_key_false sched_asym_cpucapacity;
+ 
++/*
++ * Note that the static key is system-wide, but the visibility of
++ * SD_ASYM_CPUCAPACITY isn't. Thus the static key being enabled does not
++ * imply all CPUs can see asymmetry.
++ *
++ * Consider an asymmetric CPU capacity system such as:
++ *
++ * MC [           ]
++ *     0 1 2 3 4 5
++ *     L L L L B B
++ *
++ * w/ arch_scale_cpu_capacity(L) < arch_scale_cpu_capacity(B)
++ *
++ * By default, booting this system will enable the sched_asym_cpucapacity
++ * static key, and all CPUs will see SD_ASYM_CPUCAPACITY set at their MC
++ * sched_domain.
++ *
++ * Further consider exclusive cpusets creating a "symmetric island":
++ *
++ * MC [   ][      ]
++ *     0 1  2 3 4 5
++ *     L L  L L B B
++ *
++ * Again, booting this will enable the static key, but CPUs 0-1 will *not* have
++ * SD_ASYM_CPUCAPACITY set in any of their sched_domain. This is the intending
++ * behaviour, as CPUs 0-1 should be treated as a regular, isolated SMP system.
++ */
+ static inline bool sd_has_asym_cpucapacity(struct sched_domain *sd)
+ {
+ 	return static_branch_unlikely(&sched_asym_cpucapacity) &&
