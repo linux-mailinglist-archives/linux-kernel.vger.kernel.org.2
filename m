@@ -2,387 +2,718 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3EA30F6C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C766130F69A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhBDPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:48:50 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:23332 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237141AbhBDPhw (ORCPT
+        id S237165AbhBDPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237493AbhBDPif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:37:52 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114FV4wt026901;
-        Thu, 4 Feb 2021 07:37:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pfpt0220; bh=49BAZs4Ewe3BfWGkhvZFRBwpVtF7KASYjv/W4tgI7J4=;
- b=Nygy5MLp0RvPe+N795ysI380gtxOn46QLHkB9JPuTHOTnEC6GySHvOonHnAfE2ZW+z93
- TdXeHKnCvDP+bxgqlDQizS/+91moIX844TBFpr2DZTqoPox/XnspKQXbPb41wbRblf8V
- VvojeWHEMRdvDG2QoFcqk3eZCR6ItqgeYiRn1PvHl2WvddRCPtFTTIzN+3/ZOgBJeWkb
- z7ilEfJFXhhfyUkF8pxl8XaZ8FrPdtjIZt/Pwe/LlL8718odYy/GMTpiPquAgmdr+FGv
- 4nVHQWEmLYgHPiX+jZvwXguicRI8Nftzt3A7+B7m5xafA86aMfYkEv3sgdAJytfelM4N EQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36gg1t0sqp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 07:37:07 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Feb
- 2021 07:37:06 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 4 Feb 2021 07:37:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FmMG6MmFWDsaoK6TeEJa9M9p8RQ2td9EE9G9Dss1iwNTroZDMbKAqzoOMi2R5ttMhic9vTqEaoOixhrpBe4HfnCcpKUAVGXI5yvRB8EknbA4Fl/ZJVD/WWi29QEYa1KKECGoEVyLTJB09kig0cj9h5xZGiiD33jDAxD7LxEQjnyLSLqLynMpvPeZbDZSXGE9rMMW0FVxEwc2n8IMax0rGZ4gUUifXV8lmFa3lQglPQIRvAzIWNu1lJDRTUs//gN+8O2VTkRx/hhBvEUb0m5dedoXLCPTiYZJ4QHXg3vvArNDO2u/TUo0tH0t3ekr0bA1lKyyEEc7DE/nQV9SCPyPiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49BAZs4Ewe3BfWGkhvZFRBwpVtF7KASYjv/W4tgI7J4=;
- b=gWO/UbC+5LX8vjC0/qKVKTEEavioa0CqtRBaJuajieHND8MQBRBVWuOaB0QcOGENbH/Wws5QoVcy8ZjnZ9HZmLI+iLzm0+U9UkKn/G4ge1EY5oloa1JYuZmBHdvHHLmvZQZTxs07EiJidLVpWCouAK3m7tbPJ/J+iSN9UjLolF//2RNglzGRyTGkqXbjQdr5GrHCRqsjW5P9fUgYomGdsjf/tFLzlQygXYwisLFLj2rLLfnT8eYjPu7YMLFyGaSX1bsZmafgeorqLEFHF4KP6PynX27bcsX37fPPS2NaPhMJ4cbiGwhYUJ+4nVV0FSpvnMiIfcdA6xv3FbVPWzhRwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Thu, 4 Feb 2021 10:38:35 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5310C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:37:54 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id c127so3352861wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:37:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49BAZs4Ewe3BfWGkhvZFRBwpVtF7KASYjv/W4tgI7J4=;
- b=i7teYgyLyt4J2wIAq8XxrvrUjsUVf7OnfAq2+ZKPD+R7TF2X8vlAz0K0AY5Q2e/27bQAUcaFUXpQmDTC98p3ODnDlUBAHEyVN5tqP+fswUinLnSWh2Yb8sBEnQdeG9O8wpoEDewl+sk80ccPp12IznED3T9ye06e0UEGRUIRlCQ=
-Received: from MWHPR18MB1421.namprd18.prod.outlook.com (2603:10b6:320:2a::23)
- by MW2PR18MB2218.namprd18.prod.outlook.com (2603:10b6:907:5::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Thu, 4 Feb
- 2021 15:37:04 +0000
-Received: from MWHPR18MB1421.namprd18.prod.outlook.com
- ([fe80::25eb:fce2:fba7:327d]) by MWHPR18MB1421.namprd18.prod.outlook.com
- ([fe80::25eb:fce2:fba7:327d%4]) with mapi id 15.20.3825.020; Thu, 4 Feb 2021
- 15:37:04 +0000
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        "Geethasowjanya Akula" <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-Subject: Re: [Patch v3 net-next 6/7] octeontx2-pf: ethtool physical link
- status
-Thread-Topic: [Patch v3 net-next 6/7] octeontx2-pf: ethtool physical link
- status
-Thread-Index: Adb7Czx0WXIL4L/US6mltHqeljehYw==
-Date:   Thu, 4 Feb 2021 15:37:04 +0000
-Message-ID: <MWHPR18MB14219B4BBFA1E9A7E23621D4DEB39@MWHPR18MB1421.namprd18.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [117.206.234.190]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6c78741c-6920-42d3-66c1-08d8c922b953
-x-ms-traffictypediagnostic: MW2PR18MB2218:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR18MB221899BF4F37448BC49A8709DEB39@MW2PR18MB2218.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fVC7yq9N9r7ZNwNx/IOnv15vKM1tBz6R4x+bKItt8YGbYKpknHe6nobZxWQKtmGGUloHauFAWhcXP5zE+7tJmWyEOgY8/OexQEoPA8Uh2sQ/HJYcAnBXqiPWiKawmCNV+X2IiRzGSzafURfJgzzwvOOUzAtaXE5+SRTTSXCYpY5mXxJ+bHVCcYyoZ4aEH3nTL53e1aRQMaTCd2z4WbpyZytDw6yaN+0FNNX0bJ87EVY7fK8WZSjH8t2A6wKcRzyoQbyJCddW9Xbi0ntPRwykSix8RStAmI7Uy6sHm/4IeOMfebsHaiDGBSews9PapHfIx94da+B1mD1IbA8dHeevoCWQOGn9uq61EG+VesscZ0o/QOvp6KnNaZa0K/x0Cb1iuSeIcmrFRtJOaMZb2ci9ZLiBveNHoJaD209T2BnStzBBK99LeLbraw+OFPuXZ/IawfWZgKQRIt3/eAqAy57+df1mOUfN4m6p+d6DGVc5nkI84edejUKlhtDgJPlMCfb1LzYBDOuaG7b7ZMfoqVlTjw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR18MB1421.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(366004)(136003)(376002)(9686003)(186003)(4326008)(478600001)(71200400001)(54906003)(86362001)(5660300002)(26005)(316002)(107886003)(66446008)(8676002)(7696005)(66476007)(66556008)(76116006)(55016002)(66946007)(6916009)(6506007)(83380400001)(8936002)(33656002)(2906002)(52536014)(64756008)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pXPGPmVfjBxde0T9H9YIYWCYiEZMPR8QFjmk6QxyjAD9wZzTCiOP4C2mnhmM?=
- =?us-ascii?Q?vFYacBa5QWsNSmF90yvOUQzRyw6rF7libRr3c+1EAirpsqWcxe3XkC2FKqJi?=
- =?us-ascii?Q?pgGV1zwPjLKcm31Y62VtzY7eGy1LI+7lh2NziS9T/ketmYtxJXU7oFS+Xl6X?=
- =?us-ascii?Q?6dDkZjDT+loRgwuDOwornrtJAiVPKZ2/AZfvQWHTC/FUhHWLAYz5BmCO4Y1e?=
- =?us-ascii?Q?2QqyVvz7mPavjiUE6Mhyf5MwImwpo/qfFJrHkcRsvjsWdeu6YIJQiYBiEBk4?=
- =?us-ascii?Q?JSuiylwWrzIk09zddEan+Djh5VxlHu9Jfp6jn4qDbpSCSynNJ3Ft0FSUuirA?=
- =?us-ascii?Q?JN1VkVin3yc63Hbe2bCBgZTpY33BwLOgx9++mIA21rd0i7mNw+GJFMvRppYH?=
- =?us-ascii?Q?FxR05M6Yyct11GoBA41wmcmyc4BUzFJUgd4Rw1t5i8Ynkx2qKhtOCgwdtz1j?=
- =?us-ascii?Q?a50vOzElx3A3rq8htjhKJTBN0Z7VmRMycnTBLZwhwj2a+Y9I6QLT9nVNCI8+?=
- =?us-ascii?Q?61goPngLYFI1nc6FtyJAPB/2qNDjF7fLTwct+t8gUsg4pig2tIMX9LdlGrhw?=
- =?us-ascii?Q?9EbGMmwMK8lCOixc6EtTrQTFVrXLmCUbLNib6eQGFkIJFOTo8y6GIUeLPTWP?=
- =?us-ascii?Q?X6VzNWkrHg8EYxBlJp4prQpLIjXHPIcA39Pp/5sFRSLwz4EnQzr8wumwsrdQ?=
- =?us-ascii?Q?gP+FIBWCXhfSecfzb/L77UjTb6TkZUOGDQR1zqRP8hVPEQRyKjOEoO+4lSYO?=
- =?us-ascii?Q?5um9JFXnev/N/VxVFvZSL3oGruCdKqI7NDgTYsZFvqCGgKBK2iYW9Li80CAE?=
- =?us-ascii?Q?fpehaQgBdfrlggcWkOsZgWpwGXJOOWsAwybu+/b906fWIQ07y4VvlqqaSebd?=
- =?us-ascii?Q?7zkLAcKkhW/lqxIqAo4kEEXGffdDOkQaTHxECFfaPkKQbWFsquhOQGyvmOo5?=
- =?us-ascii?Q?uvXfhNlo2i1pKbW5QqDM6woYbnhbt09T26Rahfs21kaw0y+XqFxDEoCnBubl?=
- =?us-ascii?Q?r31xUcTeYMPjfwc0dkZJVkTjpXA3sO1CJbuG0kGP+xguuyhdxtkIx3cffhK+?=
- =?us-ascii?Q?dCt7Eu+duqPZZMe9xgrsQDEjlCFfRvyu4SLyvz3mtSmEtOq0nFryWX/m0dgk?=
- =?us-ascii?Q?s9pQ1aBDojKDiBUO+aUBHLo+Hc71uLVCyhJYqjL03f6MtoCqmZAdQSqVVaMW?=
- =?us-ascii?Q?tZ0yS5FvwDnD6yYi7tyrM0w7I9Xwhqxwq4XTVUK7dDu/r0gXuG/zpyDzaNcK?=
- =?us-ascii?Q?oMdHzBiEHYApER2cNfXN2vn91uyGdyMN0Ir+E9zeS/6dqqfxbl6DMk0MFV0+?=
- =?us-ascii?Q?bo8g8CvaARsM/e8OlN4dJ4T0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=eN02A+mG8vRtyTaqry/W6yxty0jAVyWECrsaMROhQjA=;
+        b=WLGhbae0w2c1gffuyiZxDHGGs9NMDK+DkKuMdtLUvbyQyqBI0oC9yqsTKrYI7rDhwg
+         y5TN579SxHguWbuVj/bIWqpMFAR8Kyaf3L3B/a68Ad6z9EYz2eMykQrs0IM1egNTHOg9
+         Wexn6TKs2zxHtrpsBHg+C3Du5y2r6seqgCIJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=eN02A+mG8vRtyTaqry/W6yxty0jAVyWECrsaMROhQjA=;
+        b=UuUVvStO2FtP5EczIwe6LL80dODB92zuECB2bFBTeqNgIEs/cHUqTCNSDY34u60u/H
+         ZKLliZMZmGR6KCh605mSO7h3wQDbhHoE122MHLF7CkSdRC3w366G/9UeeDWL+Hi+q2UZ
+         icNvC+x8KAQWoYJYF/KHY0/LjBKPSp4C8jWeZmtYFwPVWUlA98jyWo/kcbk+SB1YnAgc
+         5Bzx6zmQGxVMfr5qZUfHNThLsok+AbRyquchcF45mw/BXaXAniz8UNfzqIVYoOw87x4d
+         a5tqKCVFRnIVP9G+QZN0yCzD7RHOhtxfrKz6t5qdxMvqnuxK6ZyIv86q/i1tdMO/FMoK
+         cS5g==
+X-Gm-Message-State: AOAM531SGIurHAwAr3RIRMwV7FC6luAY3Ee6plDmDkOyUDIa2dr9bFcr
+        Xl+3yrxQ68apGcUm3Y+m7EiRBish69gRIx6Y
+X-Google-Smtp-Source: ABdhPJwnjwd2xQHngs9YxDGGOODxKUYnMQHFj9D/mpb/OFzGauLrKa2ck+ng7ndkZlnH6Em4CS/s+Q==
+X-Received: by 2002:a1c:7711:: with SMTP id t17mr124893wmi.64.1612453073189;
+        Thu, 04 Feb 2021 07:37:53 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id k4sm9297051wrm.53.2021.02.04.07.37.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 07:37:52 -0800 (PST)
+Date:   Thu, 4 Feb 2021 15:37:52 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com
+Subject: [PATCH] printk: Userspace format enumeration support
+Message-ID: <YBwU0G+P0vb9wTwm@chrisdown.name>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR18MB1421.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c78741c-6920-42d3-66c1-08d8c922b953
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 15:37:04.6957
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c6Vd9e7SudtcCn4UkJFjFvZNJLbH77rfvV/+ZOjpXaRqH1Ve0u/498ev88k2v6zxpTSfzi8yYrSdpG3eZAHxAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR18MB2218
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_08:2021-02-04,2021-02-04 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+We have a number of systems industry-wide that have a subset of their
+functionality that works as follows:
 
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Wednesday, February 3, 2021 6:54 AM
-> To: Hariprasad Kelam <hkelam@marvell.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> davem@davemloft.net; willemdebruijn.kernel@gmail.com;
-> andrew@lunn.ch; Sunil Kovvuri Goutham <sgoutham@marvell.com>; Linu
-> Cherian <lcherian@marvell.com>; Geethasowjanya Akula
-> <gakula@marvell.com>; Jerin Jacob Kollanukkaran <jerinj@marvell.com>;
-> Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-> Subject: [EXT] Re: [Patch v3 net-next 6/7] octeontx2-pf: ethtool physical=
- link
-> status
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> On Sun, 31 Jan 2021 18:41:04 +0530 Hariprasad Kelam wrote:
-> > From: Christina Jacob <cjacob@marvell.com>
-> >
-> > Register get_link_ksettings callback to get link status information
-> > from the driver. As virtual function (vf) shares same physical link
-> > same API is used for both the drivers and for loop back drivers simply
-> > returns the fixed values as its does not have physical link.
-> >
-> > ethtool eth3
-> > Settings for eth3:
-> >         Supported ports: [ ]
-> >         Supported link modes:   10baseT/Half 10baseT/Full
-> >                                 100baseT/Half 100baseT/Full
-> >                                 1000baseT/Half 1000baseT/Full
-> >                                 10000baseKR/Full
-> >                                 1000baseX/Full
-> >         Supports auto-negotiation: No
-> >         Supported FEC modes: BaseR RS
-> >         Advertised link modes:  Not reported
-> >         Advertised pause frame use: No
-> >         Advertised auto-negotiation: No
-> >         Advertised FEC modes: None
-> >
-> > ethtool lbk0
-> > Settings for lbk0:
-> > 	Speed: 100000Mb/s
-> >         Duplex: Full
-> >
-> > Signed-off-by: Christina Jacob <cjacob@marvell.com>
-> > Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> > ---
-> >  .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  | 151
-> > +++++++++++++++++++++
-> >  1 file changed, 151 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-> > b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-> > index e5b1a57..d637815 100644
-> > --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-> > +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/etherdevice.h>
-> >  #include <linux/log2.h>
-> >  #include <linux/net_tstamp.h>
-> > +#include <linux/linkmode.h>
-> >
-> >  #include "otx2_common.h"
-> >  #include "otx2_ptp.h"
-> > @@ -32,6 +33,24 @@ struct otx2_stat {
-> >  	.index =3D offsetof(struct otx2_dev_stats, stat) / sizeof(u64), \  }
-> >
-> > +/* Physical link config */
-> > +#define OTX2_ETHTOOL_SUPPORTED_MODES 0x638CCBF
-> //110001110001100110010111111
-> > +#define OTX2_RESERVED_ETHTOOL_LINK_MODE	0
->=20
-> Just use 0 directly in the code.
->=20
-Will fix this in next version.
+1. Receive a message from local kmsg, serial console, or netconsole;
+2. Apply a set of rules to classify the message;
+3. Do something based on this classification (like scheduling a
+   remediation for the machine), rinse, and repeat.
 
-> > +static const int otx2_sgmii_features_array[6] =3D {
-> > +	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
-> > +	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-> > +	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
-> > +	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-> > +	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
-> > +	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-> > +};
->=20
-> Why is this one up at the top of the file but other arrays are not?
-> It seems to be used only in once function.
->
-Yes . This array used in only in once function.=20
-Will fix in next version.
-=20
-> > +enum link_mode {
-> > +	OTX2_MODE_SUPPORTED,
-> > +	OTX2_MODE_ADVERTISED
-> > +};
-> > +
-> >  static const struct otx2_stat otx2_dev_stats[] =3D {
-> >  	OTX2_DEV_STAT(rx_ucast_frames),
-> >  	OTX2_DEV_STAT(rx_bcast_frames),
-> > @@ -1034,6 +1053,123 @@ static int otx2_set_fecparam(struct net_device
-> *netdev,
-> >  	return err;
-> >  }
-> >
-> > +static void otx2_get_fec_info(u64 index, int req_mode,
-> > +			      struct ethtool_link_ksettings *link_ksettings) {
-> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(otx2_fec_modes) =3D { 0, };
-> > +
-> > +	switch (index) {
-> > +	case OTX2_FEC_NONE:
-> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_FEC_NONE_BIT,
-> otx2_fec_modes);
-> > +		break;
-> > +	case OTX2_FEC_BASER:
-> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_FEC_BASER_BIT,
-> otx2_fec_modes);
-> > +		break;
-> > +	case OTX2_FEC_RS:
-> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_FEC_RS_BIT,
-> otx2_fec_modes);
-> > +		break;
-> > +	case OTX2_FEC_BASER | OTX2_FEC_RS:
-> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_FEC_BASER_BIT,
-> otx2_fec_modes);
-> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_FEC_RS_BIT,
-> otx2_fec_modes);
-> > +		break;
-> > +	}
-> > +
-> > +	/* Add fec modes to existing modes */
-> > +	if (req_mode =3D=3D OTX2_MODE_ADVERTISED)
-> > +		linkmode_or(link_ksettings->link_modes.advertising,
-> > +			    link_ksettings->link_modes.advertising,
-> > +			    otx2_fec_modes);
-> > +	else
-> > +		linkmode_or(link_ksettings->link_modes.supported,
-> > +			    link_ksettings->link_modes.supported,
-> > +			    otx2_fec_modes);
-> > +}
-> > +
-> > +static void otx2_get_link_mode_info(u64 link_mode_bmap,
-> > +				    bool req_mode,
-> > +				    struct ethtool_link_ksettings
-> > +				    *link_ksettings)
-> > +{
-> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(otx2_link_modes) =3D { 0, };
-> > +	u8 bit;
-> > +
->=20
-> No empty lines in the middle of variable declarations.
->=20
-Thanks for pointing this. Will fix in next version.
+As a couple of examples of places we have this implemented just inside
+Facebook, although this isn't a Facebook-specific problem, we have this
+inside our netconsole processing (for alarm classification), and as part
+of our machine health checking. We use these messages to determine
+fairly important metrics around production health, and it's important
+that we get them right.
 
-> > +	/* CGX link modes to Ethtool link mode mapping */
-> > +	const int cgx_link_mode[27] =3D {
-> > +		0, /* SGMII  Mode */
-> > +		ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		ETHTOOL_LINK_MODE_25000baseSR_Full_BIT,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		ETHTOOL_LINK_MODE_25000baseCR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_25000baseKR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_40000baseLR4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_40000baseKR4_Full_BIT,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		ETHTOOL_LINK_MODE_50000baseSR_Full_BIT,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		ETHTOOL_LINK_MODE_50000baseLR_ER_FR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_50000baseCR_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_50000baseKR_Full_BIT,
-> > +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> > +		ETHTOOL_LINK_MODE_100000baseSR4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_100000baseCR4_Full_BIT,
-> > +		ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT
-> > +	};
-> > +
-> > +	link_mode_bmap =3D link_mode_bmap &
-> OTX2_ETHTOOL_SUPPORTED_MODES;
-> > +
-> > +	for_each_set_bit(bit, (unsigned long *)&link_mode_bmap, 27) {
-> > +		/* SGMII mode is set */
-> > +		if (bit  =3D=3D  0)
->=20
-> Double spaces x2
->
-Will fix this in next version.
-=20
-> > +			linkmode_set_bit_array(otx2_sgmii_features_array,
-> > +
-> ARRAY_SIZE(otx2_sgmii_features_array),
-> > +					       otx2_link_modes);
-> > +		else
-> > +			linkmode_set_bit(cgx_link_mode[bit],
-> otx2_link_modes);
-> > +	}
-> > +
-> > +	if (req_mode =3D=3D OTX2_MODE_ADVERTISED)
-> > +		linkmode_copy(link_ksettings->link_modes.advertising,
-> otx2_link_modes);
-> > +	else
-> > +		linkmode_copy(link_ksettings->link_modes.supported,
-> > +otx2_link_modes); }
->=20
-> > +	otx2_get_link_mode_info(rsp->fwdata.advertised_link_modes,
-> OTX2_MODE_ADVERTISED, cmd);
-> > +	otx2_get_fec_info(rsp->fwdata.advertised_fec,
-> OTX2_MODE_ADVERTISED,
-> > +cmd);
-> > +
-> > +	otx2_get_link_mode_info(rsp->fwdata.supported_link_modes,
-> OTX2_MODE_SUPPORTED, cmd);
-> > +	otx2_get_fec_info(rsp->fwdata.supported_fec,
-> OTX2_MODE_SUPPORTED,
-> > +cmd);
->=20
-> Wrap those lines please.
->=20
-Will fix this in next version.
+While for some kinds of issues we have counters, tracepoints, or metrics
+with a stable interface which can reliably indicate the issue, in order
+to react to production issues quickly we need to work with the interface
+which most kernel developers naturally use when developing: printk.
 
-> > +	return 0;
-> > +}
->=20
-> > +static int otx2vf_get_link_ksettings(struct net_device *netdev,
-> > +				     struct ethtool_link_ksettings *cmd) {
-> > +	struct otx2_nic *pfvf =3D netdev_priv(netdev);
-> > +
-> > +	if (is_otx2_lbkvf(pfvf->pdev)) {
-> > +		cmd->base.duplex =3D DUPLEX_FULL;
-> > +		cmd->base.speed =3D SPEED_100000;
-> > +	} else {
-> > +		return	otx2_get_link_ksettings(netdev, cmd);
->=20
-> Double space
+Most production issues come from unexpected phenomena, and as such
+usually the code in question doesn't have easily usable tracepoints or
+other counters available for the specific problem being mitigated. We
+have a number of lines of monitoring defence against problems in
+production (host metrics, process metrics, service metrics, etc), and
+where it's not feasible to reliably monitor at another level, this kind
+of pragmatic netconsole monitoring is essential.
 
-Will fix this in next version.
+As you'd expect, monitoring using printk is rather brittle for a number
+of reasons -- most notably that the message might disappear entirely in
+a new version of the kernel, or that the message may change in some way
+that the regex or other classification methods start to silently fail.
 
-Thanks,
-Hariprasad k
+One factor that makes this even harder is that, under normal operation,
+many of these messages are never expected to be hit. For example, there
+may be some rare hardware bug which you want to detect if it was to ever
+happen again, but its recurrence is not likely or anticipated. This
+precludes using something like checking whether the printk in question
+was printed somewhere fleetwide recently to determine whether the
+message in question is still present or not, since we don't anticipate
+that it should be printed anywhere, but still need to monitor for its
+future presence in the long-term.
+
+This class of issue has happened on a number of occasions, causing
+unhealthy machines with hardware issues to remain in production for
+longer than ideal. As a recent example, some monitoring around
+blk_update_request fell out of date and caused semi-broken machines to
+remain in production for longer than would be desirable.
+
+Searching through the codebase to find the message is also extremely
+fragile, because many of the messages are further constructed beyond
+their callsite (eg. btrfs_printk and other module-specific wrappers,
+each with their own functionality). Even if they aren't, guessing the
+format and formulation of the underlying message based on the aesthetics
+of the message emitted is not a recipe for success at scale, and our
+previous issues with fleetwide machine health checking demonstrate as
+much.
+
+This patch provides a solution to the issue of silently changed or
+deleted printks: we record pointers to all printk format strings known
+at compile time into a new .printk_fmts section, both in vmlinux and
+modules. At runtime, this can then be iterated by looking at
+/proc/printk_formats, which emits the same format as `printk` itself,
+which we already export elsewhere (for example, in netconsole):
+
+    # Format: <module>,<facility><level><format>\0
+    $ perl -p -e 's/\n/\\n/g;s/\0/\n/g' /proc/printk_formats | shuf -n 5
+    vmlinux,6Disabling APIC timer\n
+    intel_rapl_common,3intel_rapl_common: Cannot find matching power limit for constraint %d\n
+    dm_crypt,3device-mapper: crypt: %s: INTEGRITY AEAD ERROR, sector %llu\n
+    mac80211,6%s: AP bug: HT capability missing from AssocResp\n
+    vmlinux,3zpool: couldn't create zpool - out of memory\n
+
+This mitigates the majority of cases where we have a highly-specific
+printk which we want to match on, as we can now enumerate and check
+whether the format changed or the printk callsite disappeared entirely
+in userspace. This allows us to catch changes to printks we monitor
+earlier and decide what to do about it before it becomes problematic.
+
+There is no additional runtime cost for printk callers or printk itself,
+and the assembly generated is exactly the same.
+
+Signed-off-by: Chris Down <chris@chrisdown.name>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ arch/arm/kernel/entry-v7m.S          |   2 +-
+ arch/arm/lib/backtrace-clang.S       |   2 +-
+ arch/arm/lib/backtrace.S             |   2 +-
+ arch/arm/mach-rpc/io-acorn.S         |   2 +-
+ arch/arm/vfp/vfphw.S                 |   6 +-
+ arch/openrisc/kernel/entry.S         |   6 +-
+ arch/powerpc/kernel/head_fsl_booke.S |   2 +-
+ arch/x86/kernel/head_32.S            |   2 +-
+ include/asm-generic/vmlinux.lds.h    |  13 ++
+ include/linux/module.h               |   5 +
+ include/linux/printk.h               |  43 +++++-
+ init/Kconfig                         |  15 ++
+ kernel/module.c                      |   5 +
+ kernel/printk/printk.c               | 196 ++++++++++++++++++++++++++-
+ 14 files changed, 280 insertions(+), 21 deletions(-)
+
+diff --git a/arch/arm/kernel/entry-v7m.S b/arch/arm/kernel/entry-v7m.S
+index d0e898608d30..7bde93c10962 100644
+--- a/arch/arm/kernel/entry-v7m.S
++++ b/arch/arm/kernel/entry-v7m.S
+@@ -23,7 +23,7 @@ __invalid_entry:
+ 	adr	r0, strerr
+ 	mrs	r1, ipsr
+ 	mov	r2, lr
+-	bl	printk
++	bl	_printk
+ #endif
+ 	mov	r0, sp
+ 	bl	show_regs
+diff --git a/arch/arm/lib/backtrace-clang.S b/arch/arm/lib/backtrace-clang.S
+index 6174c45f53a5..5b2cdb1003e3 100644
+--- a/arch/arm/lib/backtrace-clang.S
++++ b/arch/arm/lib/backtrace-clang.S
+@@ -202,7 +202,7 @@ finished_setup:
+ 1006:		adr	r0, .Lbad
+ 		mov	r1, loglvl
+ 		mov	r2, frame
+-		bl	printk
++		bl	_printk
+ no_frame:	ldmfd	sp!, {r4 - r9, fp, pc}
+ ENDPROC(c_backtrace)
+ 		.pushsection __ex_table,"a"
+diff --git a/arch/arm/lib/backtrace.S b/arch/arm/lib/backtrace.S
+index 872f658638d9..e8408f22d4dc 100644
+--- a/arch/arm/lib/backtrace.S
++++ b/arch/arm/lib/backtrace.S
+@@ -103,7 +103,7 @@ for_each_frame:	tst	frame, mask		@ Check for address exceptions
+ 1006:		adr	r0, .Lbad
+ 		mov	r1, loglvl
+ 		mov	r2, frame
+-		bl	printk
++		bl	_printk
+ no_frame:	ldmfd	sp!, {r4 - r9, pc}
+ ENDPROC(c_backtrace)
+ 		
+diff --git a/arch/arm/mach-rpc/io-acorn.S b/arch/arm/mach-rpc/io-acorn.S
+index b9082a2a2a01..aa9bf0d771c0 100644
+--- a/arch/arm/mach-rpc/io-acorn.S
++++ b/arch/arm/mach-rpc/io-acorn.S
+@@ -25,4 +25,4 @@ ENTRY(insl)
+ ENTRY(outsl)
+ 		adr	r0, .Liosl_warning
+ 		mov	r1, lr
+-		b	printk
++		b	_printk
+diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+index d5837bf05a9a..6f7926c9c179 100644
+--- a/arch/arm/vfp/vfphw.S
++++ b/arch/arm/vfp/vfphw.S
+@@ -23,7 +23,7 @@
+ #ifdef DEBUG
+ 	stmfd	sp!, {r0-r3, ip, lr}
+ 	ldr	r0, =1f
+-	bl	printk
++	bl	_printk
+ 	ldmfd	sp!, {r0-r3, ip, lr}
+ 
+ 	.pushsection .rodata, "a"
+@@ -38,7 +38,7 @@
+ 	stmfd	sp!, {r0-r3, ip, lr}
+ 	mov	r1, \arg
+ 	ldr	r0, =1f
+-	bl	printk
++	bl	_printk
+ 	ldmfd	sp!, {r0-r3, ip, lr}
+ 
+ 	.pushsection .rodata, "a"
+@@ -55,7 +55,7 @@
+ 	mov	r2, \arg2
+ 	mov	r1, \arg1
+ 	ldr	r0, =1f
+-	bl	printk
++	bl	_printk
+ 	ldmfd	sp!, {r0-r3, ip, lr}
+ 
+ 	.pushsection .rodata, "a"
+diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
+index bc657e55c15f..947613f61d4a 100644
+--- a/arch/openrisc/kernel/entry.S
++++ b/arch/openrisc/kernel/entry.S
+@@ -551,7 +551,7 @@ EXCEPTION_ENTRY(_external_irq_handler)
+ 	l.movhi r3,hi(42f)
+ 	l.ori	r3,r3,lo(42f)
+ 	l.sw    0x0(r1),r3
+-	l.jal   printk
++	l.jal   _printk
+ 	l.sw    0x4(r1),r4
+ 	l.addi  r1,r1,0x8
+ 
+@@ -681,8 +681,8 @@ _syscall_debug:
+ 	l.sw    -4(r1),r27
+ 	l.sw    -8(r1),r11
+ 	l.addi  r1,r1,-8
+-	l.movhi r27,hi(printk)
+-	l.ori   r27,r27,lo(printk)
++	l.movhi r27,hi(_printk)
++	l.ori   r27,r27,lo(_printk)
+ 	l.jalr  r27
+ 	 l.nop
+ 	l.addi  r1,r1,8
+diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+index fdd4d274c245..f2c7ecef9b14 100644
+--- a/arch/powerpc/kernel/head_fsl_booke.S
++++ b/arch/powerpc/kernel/head_fsl_booke.S
+@@ -852,7 +852,7 @@ KernelSPE:
+ 	ori	r3,r3,87f@l
+ 	mr	r4,r2		/* current */
+ 	lwz	r5,_NIP(r1)
+-	bl	printk
++	bl	_printk
+ #endif
+ 	b	ret_from_except
+ #ifdef CONFIG_PRINTK
+diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
+index 7ed84c282233..c207b789dd22 100644
+--- a/arch/x86/kernel/head_32.S
++++ b/arch/x86/kernel/head_32.S
+@@ -446,7 +446,7 @@ SYM_FUNC_START(early_ignore_irq)
+ 	pushl 32(%esp)
+ 	pushl 40(%esp)
+ 	pushl $int_msg
+-	call printk
++	call _printk
+ 
+ 	call dump_stack
+ 
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 34b7e0d2346c..0ca6e28e05d6 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -309,6 +309,17 @@
+ #define ACPI_PROBE_TABLE(name)
+ #endif
+ 
++#ifdef CONFIG_PRINTK_ENUMERATION
++#define PRINTK_FMTS							\
++	.printk_fmts : AT(ADDR(.printk_fmts) - LOAD_OFFSET) {		\
++		__start_printk_fmts = .;				\
++		*(.printk_fmts)						\
++		__stop_printk_fmts = .;					\
++	}
++#else
++#define PRINTK_FMTS
++#endif
++
+ #ifdef CONFIG_THERMAL
+ #define THERMAL_TABLE(name)						\
+ 	. = ALIGN(8);							\
+@@ -480,6 +491,8 @@
+ 									\
+ 	TRACEDATA							\
+ 									\
++	PRINTK_FMTS							\
++									\
+ 	/* Kernel symbol table: Normal symbols */			\
+ 	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
+ 		__start___ksymtab = .;					\
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 7a0bcb5b1ffc..4235b14a22ef 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -516,6 +516,11 @@ struct module {
+ 	struct klp_modinfo *klp_info;
+ #endif
+ 
++#ifdef CONFIG_PRINTK_ENUMERATION
++	unsigned int printk_fmts_sec_size;
++	const char **printk_fmts_start;
++#endif
++
+ #ifdef CONFIG_MODULE_UNLOAD
+ 	/* What modules depend on me? */
+ 	struct list_head source_list;
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index d3c08095a9a3..745a9915ec72 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -173,12 +173,12 @@ asmlinkage __printf(1, 0)
+ int vprintk(const char *fmt, va_list args);
+ 
+ asmlinkage __printf(1, 2) __cold
+-int printk(const char *fmt, ...);
++int _printk(const char *fmt, ...);
+ 
+ /*
+  * Special printk facility for scheduler/timekeeping use only, _DO_NOT_USE_ !
+  */
+-__printf(1, 2) __cold int printk_deferred(const char *fmt, ...);
++__printf(1, 2) __cold int _printk_deferred(const char *fmt, ...);
+ 
+ /*
+  * Please don't use printk_ratelimit(), because it shares ratelimiting state
+@@ -216,12 +216,12 @@ int vprintk(const char *s, va_list args)
+ 	return 0;
+ }
+ static inline __printf(1, 2) __cold
+-int printk(const char *s, ...)
++int _printk(const char *s, ...)
+ {
+ 	return 0;
+ }
+ static inline __printf(1, 2) __cold
+-int printk_deferred(const char *s, ...)
++int _printk_deferred(const char *s, ...)
+ {
+ 	return 0;
+ }
+@@ -284,6 +284,11 @@ static inline void printk_safe_flush_on_panic(void)
+ 
+ extern int kptr_restrict;
+ 
++#ifdef CONFIG_PRINTK_ENUMERATION
++extern const char *__start_printk_fmts[];
++extern const char *__stop_printk_fmts[];
++#endif
++
+ /**
+  * pr_fmt - used by the pr_*() macros to generate the printk format string
+  * @fmt: format string passed from a pr_*() macro
+@@ -301,6 +306,36 @@ extern int kptr_restrict;
+ #define pr_fmt(fmt) fmt
+ #endif
+ 
++#ifdef CONFIG_PRINTK_ENUMERATION
++#define printk_store_fmt(func, fmt, ...)				       \
++	({								       \
++		int _printk_ret;					       \
++									       \
++		if (__builtin_constant_p(fmt)) {			       \
++			/*
++			 * The compiler may not be able to eliminate this
++			 * branch, so we need to make sure that it doesn't see
++			 * any hypothetical assignment for non-constants even
++			 * though this is already inside the
++			 * __builtin_constant_p guard.
++			 */						       \
++			static const char *_fmt __section(".printk_fmts") =    \
++				__builtin_constant_p(fmt) ? fmt : NULL;	       \
++			_printk_ret = func(_fmt, ##__VA_ARGS__);	       \
++		} else							       \
++			_printk_ret = func(fmt, ##__VA_ARGS__);		       \
++									       \
++		_printk_ret;						       \
++	})
++
++#define printk(fmt, ...) printk_store_fmt(_printk, fmt, ##__VA_ARGS__)
++#define printk_deferred(fmt, ...)					       \
++	printk_store_fmt(_printk_deferred, fmt, ##__VA_ARGS__)
++#else /* !CONFIG_PRINTK_ENUMERATION */
++#define printk(...) _printk(__VA_ARGS__)
++#define printk_deferred(...) _printk_deferred(__VA_ARGS__)
++#endif /* CONFIG_PRINTK_ENUMERATION */
++
+ /**
+  * pr_emerg - Print an emergency-level message
+  * @fmt: format string
+diff --git a/init/Kconfig b/init/Kconfig
+index e4e2932da237..d0839e901267 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -764,6 +764,21 @@ config PRINTK_SAFE_LOG_BUF_SHIFT
+ 		     13 =>   8 KB for each CPU
+ 		     12 =>   4 KB for each CPU
+ 
++config PRINTK_ENUMERATION
++	bool "/proc/printk_formats support"
++	depends on PRINTK
++	help
++	  Add support for enumeration of all printk formats known at compile
++	  time at /proc/printk_formats. This includes printk formats built into
++	  the kernel, and those in loaded modules.
++
++	  This can be used as part of maintaining daemons which monitor
++	  /dev/kmsg, as it permits auditing the printk formats present in a
++	  kernel, allowing monitoring of cases where monitored printks are
++	  changed or no longer present.
++
++	  There is no additional runtime cost to printk with this enabled.
++
+ #
+ # Architectures with an unreliable sched_clock() should select this:
+ #
+diff --git a/kernel/module.c b/kernel/module.c
+index 6ad424f07a4a..143f00545202 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3430,6 +3430,11 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+ 						sizeof(unsigned long),
+ 						&mod->num_kprobe_blacklist);
+ #endif
++#ifdef CONFIG_PRINTK_ENUMERATION
++	mod->printk_fmts_start = section_objs(info, ".printk_fmts",
++					      sizeof(*mod->printk_fmts_start),
++					      &mod->printk_fmts_sec_size);
++#endif
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+ 	mod->static_call_sites = section_objs(info, ".static_call_sites",
+ 					      sizeof(*mod->static_call_sites),
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 6639a0cfe0ac..57142f126a1b 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -47,6 +47,7 @@
+ #include <linux/sched/clock.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched/task_stack.h>
++#include <linux/proc_fs.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/sections.h>
+@@ -617,6 +618,188 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
+ 	return len;
+ }
+ 
++#ifdef CONFIG_PRINTK_ENUMERATION
++
++/* /proc/printk_formats - userspace enumeration of printk formats  */
++
++struct printk_fmt_sec {
++	struct list_head list;
++	const struct module *module;
++	const char **start;
++	const char **end;
++};
++
++/*
++ * Stores .printk_fmt section boundaries for vmlinux and all loaded modules.
++ * Add entries with store_printk_fmt_sec, remove entries with
++ * remove_printk_fmt_sec.
++ */
++static LIST_HEAD(printk_fmts_list);
++
++/*
++ * To prevent mutation, hold printk_fmts_mutex. If mutation is acceptable, this
++ * can be read at any time without the mutex as long as it is read with
++ * protection against data tearing.
++ */
++static size_t printk_fmts_total_size;
++
++/* For printk_fmts_list and printk_fmts_total_size. */
++static DEFINE_MUTEX(printk_fmts_mutex);
++
++static void store_printk_fmt_sec(const struct module *mod, const char **start,
++				 const char **end)
++{
++	struct printk_fmt_sec *ps = NULL;
++	const char **fptr = NULL;
++	size_t size = 0;
++
++	ps = kmalloc(sizeof(struct printk_fmt_sec), GFP_KERNEL);
++	if (!ps)
++		return;
++
++	ps->module = mod;
++	ps->start = start;
++	ps->end = end;
++
++	for (fptr = ps->start; fptr < ps->end; fptr++)
++		size += strlen(*fptr) + 1;
++
++	mutex_lock(&printk_fmts_mutex);
++	WRITE_ONCE(printk_fmts_total_size, printk_fmts_total_size + size);
++	list_add_tail(&ps->list, &printk_fmts_list);
++	mutex_unlock(&printk_fmts_mutex);
++}
++
++#ifdef CONFIG_MODULES
++
++static void remove_printk_fmt_sec(const struct module *mod)
++{
++	struct printk_fmt_sec *tmp = NULL, *ps = NULL;
++	const char **fptr = NULL;
++
++	if (WARN_ON_ONCE(!mod))
++		return;
++
++	mutex_lock(&printk_fmts_mutex);
++
++	list_for_each_entry_safe(ps, tmp, &printk_fmts_list, list) {
++		if (ps->module == mod) {
++			size_t new_size = printk_fmts_total_size;
++
++			for (fptr = ps->start; fptr < ps->end; fptr++)
++				new_size -= strlen(*fptr) + 1;
++
++			WRITE_ONCE(printk_fmts_total_size, new_size);
++			list_del(&ps->list);
++			kfree(ps);
++			break;
++		}
++	}
++
++	mutex_unlock(&printk_fmts_mutex);
++}
++
++static int module_printk_fmts_notify(struct notifier_block *self,
++				     unsigned long val, void *data)
++{
++	const struct module *mod = data;
++
++	if (mod->printk_fmts_sec_size) {
++		switch (val) {
++		case MODULE_STATE_COMING:
++			store_printk_fmt_sec(mod, mod->printk_fmts_start,
++					     mod->printk_fmts_start +
++						     mod->printk_fmts_sec_size);
++			break;
++
++		case MODULE_STATE_GOING:
++			remove_printk_fmt_sec(mod);
++			break;
++		}
++	}
++
++	return NOTIFY_OK;
++}
++
++static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
++{
++	return ps->module ? ps->module->name : "vmlinux";
++}
++
++static struct notifier_block module_printk_fmts_nb = {
++	.notifier_call = module_printk_fmts_notify,
++};
++
++static int __init module_printk_fmts_init(void)
++{
++	return register_module_notifier(&module_printk_fmts_nb);
++}
++
++core_initcall(module_printk_fmts_init);
++
++#else /* !CONFIG_MODULES */
++static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
++{
++	return "vmlinux";
++}
++#endif /* CONFIG_MODULES */
++
++static int proc_pf_show(struct seq_file *s, void *v)
++{
++	const struct printk_fmt_sec *ps = NULL;
++	const char **fptr = NULL;
++
++	mutex_lock(&printk_fmts_mutex);
++
++	list_for_each_entry(ps, &printk_fmts_list, list) {
++		const char *mod_name = ps_get_module_name(ps);
++
++		for (fptr = ps->start; fptr < ps->end; fptr++) {
++			seq_puts(s, mod_name);
++			seq_putc(s, ',');
++			seq_puts(s, *fptr);
++			seq_putc(s, '\0');
++		}
++	}
++
++	mutex_unlock(&printk_fmts_mutex);
++
++	return 0;
++}
++
++static int proc_pf_open(struct inode *inode, struct file *file)
++{
++	/*
++	 * We don't need to hold the mutex here to ensure that
++	 * printk_fmts_total_size doesn't change prior to iteration -- worst
++	 * case, seq_read_iter() will reallocate.
++	 */
++	return single_open_size(file, proc_pf_show, NULL,
++		READ_ONCE(printk_fmts_total_size));
++}
++
++static const struct proc_ops printk_proc_ops = {
++	.proc_flags	= PROC_ENTRY_PERMANENT,
++	.proc_open	= proc_pf_open,
++	.proc_read_iter	= seq_read_iter,
++	.proc_lseek	= seq_lseek,
++	.proc_release	= single_release,
++};
++
++static int __init init_printk_fmts(void)
++{
++	const struct proc_dir_entry *pd = NULL;
++
++	store_printk_fmt_sec(NULL, __start_printk_fmts, __stop_printk_fmts);
++	pd = proc_create("printk_formats", 0, NULL, &printk_proc_ops);
++
++	return pd ? 0 : -ENOMEM;
++}
++
++core_initcall(init_printk_fmts);
++
++#endif /* CONFIG_PRINTK_ENUMERATION */
++
+ /* /dev/kmsg - userspace message inject/listen interface */
+ struct devkmsg_user {
+ 	u64 seq;
+@@ -2111,10 +2294,13 @@ int vprintk_default(const char *fmt, va_list args)
+ EXPORT_SYMBOL_GPL(vprintk_default);
+ 
+ /**
+- * printk - print a kernel message
++ * _printk - print a kernel message
+  * @fmt: format string
+  *
+- * This is printk(). It can be called from any context. We want it to work.
++ * This is _printk(). It can be called from any context. We want it to work.
++ *
++ * If printk enumeration is enabled, _printk() is called from printk_store_fmt.
++ * Otherwise, printk is simply #defined to _printk.
+  *
+  * We try to grab the console_lock. If we succeed, it's easy - we log the
+  * output and call the console drivers.  If we fail to get the semaphore, we
+@@ -2131,7 +2317,7 @@ EXPORT_SYMBOL_GPL(vprintk_default);
+  *
+  * See the vsnprintf() documentation for format string extensions over C99.
+  */
+-asmlinkage __visible int printk(const char *fmt, ...)
++asmlinkage __visible int _printk(const char *fmt, ...)
+ {
+ 	va_list args;
+ 	int r;
+@@ -2142,7 +2328,7 @@ asmlinkage __visible int printk(const char *fmt, ...)
+ 
+ 	return r;
+ }
+-EXPORT_SYMBOL(printk);
++EXPORT_SYMBOL(_printk);
+ 
+ #else /* CONFIG_PRINTK */
+ 
+@@ -3133,7 +3319,7 @@ int vprintk_deferred(const char *fmt, va_list args)
+ 	return r;
+ }
+ 
+-int printk_deferred(const char *fmt, ...)
++int _printk_deferred(const char *fmt, ...)
+ {
+ 	va_list args;
+ 	int r;
+-- 
+2.30.0
+
