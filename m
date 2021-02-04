@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE7630F15C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA8930F14D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbhBDK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235463AbhBDK47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:56:59 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD700C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:56:19 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id r38so1796911pgk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
-        b=meRFeoFABKNahcTD5pEZi9cJb0xVYtEo0jR+vAzCdEludgjz8sf1Qlv2/xeRPDfibp
-         /MMKS0gDIAcIwS+spfwSSxSYmiHHlYLXKz78sdAEln7aHWvn0QsCJNlPvKVOmygR7EfF
-         nSWXTdN5o2V9xWtAhYeJgMlGZE86yc7er/RVSRnjuvKWa6RjgUQXsVKFyMLzh72oLILh
-         ZefaeRzKTsudfYwco8W1CE1Vr2eIFb+VxUGIitkSeo2UM5YS+/bx7Xwr9TH4t1EkX+rc
-         uS0RLOQkFJ07jRmOC12Y7X8c6oWiSWepD2xx1ceyRtqiYop3Hqiqt9lcpsOK7wc4pLM+
-         sZlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
-        b=qBBuN9ErbiT+UsDP2ocdZr/0w6/QN8EC+M+qCQ/Gz5PurZwI0IhzgvEwI5CbTNAjJT
-         JzMzr2ctzr9kuwLuEGmLgp0ocl0OUytKBIPKaB243PzI/AZvR4q5+KZGK4UJQDozpoki
-         3JDP+OgOETPgx9r9jK26haJjQa+VZ0YWqaUJb0c5889wuz39f7upyHedo+W6hp2fCFk9
-         LOhl9qmH9UKI1R08Ee3n6D4pAz092oNheF3F3jn9RGv29EUUpa6Ngn4ShZM54H+a5Q8n
-         ZPfTqk3N/FiJ06wcUGfrDw5Et/6toq+1qC5WKyIH4p7t5P7SvLx/P+IylqQMjmhxOCon
-         YW4A==
-X-Gm-Message-State: AOAM533Xy09sti+FQz3TUO/TaFs2Zz/LPxAXxRvOpmanuNOHS24GQHN8
-        t+fgnbEOigIjHfFjUnd51KZpCg==
-X-Google-Smtp-Source: ABdhPJxUgUArlXg8y2yW1BuiqYJ2lzKT+G+NfzP6TzP4jp5cEnjoQAINnZWIf/miYy7OqREs06CHgA==
-X-Received: by 2002:a63:375d:: with SMTP id g29mr4490430pgn.226.1612436179150;
-        Thu, 04 Feb 2021 02:56:19 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id z15sm2043493pjz.41.2021.02.04.02.56.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 02:56:18 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: replace the loop with a list_for_each_entry()
-Date:   Thu,  4 Feb 2021 18:53:20 +0800
-Message-Id: <20210204105320.46072-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S235433AbhBDKz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:55:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:55882 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234873AbhBDKz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:55:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C2DBD6E;
+        Thu,  4 Feb 2021 02:54:41 -0800 (PST)
+Received: from [10.57.60.124] (unknown [10.57.60.124])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95B653F73B;
+        Thu,  4 Feb 2021 02:54:37 -0800 (PST)
+Subject: Re: [PATCH v2 5/7] perf cs-etm: Add helper cs_etm__get_pid_fmt()
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210202163842.134734-1-leo.yan@linaro.org>
+ <20210202163842.134734-6-leo.yan@linaro.org>
+ <51a1e845-f9a4-3c6e-88a2-c105f5b5adfe@arm.com>
+ <20210204034743.GE11059@leoy-ThinkPad-X240s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <afb60e3b-697d-4503-a8de-11cd1a0bf97d@arm.com>
+Date:   Thu, 4 Feb 2021 10:54:24 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204034743.GE11059@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rule of list walk has gone since:
+On 2/4/21 3:47 AM, Leo Yan wrote:
+> On Tue, Feb 02, 2021 at 11:19:22PM +0000, Suzuki Kuruppassery Poulose wrote:
+>> On 2/2/21 4:38 PM, Leo Yan wrote:
+>>> This patch adds helper function cs_etm__get_pid_fmt(), by passing
+>>> parameter "traceID", it returns the PID format.
+>>>
+>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>>> ---
+>>>    tools/perf/util/cs-etm.c | 43 ++++++++++++++++++++++++++++++++++++++++
+>>>    tools/perf/util/cs-etm.h |  1 +
+>>>    2 files changed, 44 insertions(+)
+>>>
+>>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>>> index a2a369e2fbb6..8194ddbd01e5 100644
+>>> --- a/tools/perf/util/cs-etm.c
+>>> +++ b/tools/perf/util/cs-etm.c
+>>> @@ -7,6 +7,7 @@
+>>>     */
+>>>    #include <linux/bitops.h>
+>>> +#include <linux/coresight-pmu.h>
+>>>    #include <linux/err.h>
+>>>    #include <linux/kernel.h>
+>>>    #include <linux/log2.h>
+>>> @@ -156,6 +157,48 @@ int cs_etm__get_cpu(u8 trace_chan_id, int *cpu)
+>>>    	return 0;
+>>>    }
+>>> +/*
+>>> + * The returned PID format is presented by two bits:
+>>> + *
+>>> + *   Bit ETM_OPT_CTXTID: CONTEXTIDR or CONTEXTIDR_EL1 is traced;
+>>> + *   Bit ETM_OPT_CTXTID2: CONTEXTIDR_EL2 is traced.
+>>> + *
+>>> + * It's possible that these two bits are set together, this means the tracing
+>>> + * contains PIDs for both CONTEXTIDR_EL1 and CONTEXTIDR_EL2.
+>>
+>> This is a bit confusing. If both the bits are set, the session
+>> was run on an EL2 kernel. Thus, the PID is always in CONTEXTIDR_EL2.
+> 
+> Sorry for confusion.  I'd like to rephrase as:
+> 
+> It's possible that the two bits ETM_OPT_CTXTID and ETM_OPT_CTXTID2 are
+> enabled at the same time when the session runs on an EL2 kernel.  This
+> means the CONTEXTIDR_EL1 and CONTEXTIDR_EL2 both will be recorded in
+> the trace data, the tool will selectively use CONTEXTIDR_EL2 as PID.
+> 
+>>> + */
+>>> +int cs_etm__get_pid_fmt(u8 trace_chan_id, u64 *pid_fmt)
+>>> +{
+>>> +	struct int_node *inode;
+>>> +	u64 *metadata, val;
+>>> +
+>>> +	inode = intlist__find(traceid_list, trace_chan_id);
+>>> +	if (!inode)
+>>> +		return -EINVAL;
+>>> +
+>>> +	metadata = inode->priv;
+>>> +
+>>> +	if (metadata[CS_ETM_MAGIC] == __perf_cs_etmv3_magic) {
+>>> +		val = metadata[CS_ETM_ETMCR];
+>>> +		/* CONTEXTIDR is traced */
+>>> +		if (val & BIT(ETM_OPT_CTXTID))
+>>> +			*pid_fmt = BIT(ETM_OPT_CTXTID);
+>>> +	} else {
+>>> +		val = metadata[CS_ETMV4_TRCCONFIGR];
+>>> +
+>>> +		*pid_fmt = 0;
+>>> +
+>>> +		/* CONTEXTIDR_EL2 is traced */
+>>> +		if (val & (BIT(ETM4_CFG_BIT_VMID) | BIT(ETM4_CFG_BIT_VMID_OPT)))
+>>> +			*pid_fmt = BIT(ETM_OPT_CTXTID2);
+>>> +
+>>> +		/* CONTEXTIDR_EL1 is traced */
+>>> +		if (val & BIT(ETM4_CFG_BIT_CTXTID))
+>>
+>> I haven't looked at how this gets used. But, Shouldn't this be :
+>>
+>> 		else if (val & BIT(ETM4_CFG_BIT_CTXTID)) ?
+> 
+> Actually it's deliberately to set both bits ETM_OPT_CTXTID2 and
+> ETM_OPT_CTXTID if user has enable configs "contextid1" and
+> "contextid2".  So this is exactly the reversed flow in the
+> function cs_etmv4_get_config().
 
- commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
+The point is, we don't care if the user selected both options. What we
+care is, where can we find the PID. CONTEXTIDR_EL1 or CONTEXTIDR_EL2.
+As such, get_pid_fmt simply should make that decision and pass it on.
+So, if the CONTEXTIDR_EL2 is selected (which can only be done successfully
+on an EL2 kernel), thats our pid.
 
-So remove the strange comment and replace the loop with a
-list_for_each_entry().
+So we should return the format for the PID here. i.e
+  ETM_OPT_CTXTID2 OR ETM_OPT_CTXTID. But not both.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6c7f1ea3955e..43341bd7ea1c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6891,24 +6891,11 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- static void uncharge_list(struct list_head *page_list)
- {
- 	struct uncharge_gather ug;
--	struct list_head *next;
-+	struct page *page;
- 
- 	uncharge_gather_clear(&ug);
--
--	/*
--	 * Note that the list can be a single page->lru; hence the
--	 * do-while loop instead of a simple list_for_each_entry().
--	 */
--	next = page_list->next;
--	do {
--		struct page *page;
--
--		page = list_entry(next, struct page, lru);
--		next = page->lru.next;
--
-+	list_for_each_entry(page, page_list, lru)
- 		uncharge_page(page, &ug);
--	} while (next != page_list);
--
- 	uncharge_batch(&ug);
- }
- 
--- 
-2.11.0
-
+Cheers
+Suzuki
