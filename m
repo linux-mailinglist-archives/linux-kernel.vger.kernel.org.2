@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD8130EA11
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF56C30EA15
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbhBDCUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:20:55 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12119 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbhBDCUx (ORCPT
+        id S234556AbhBDCWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234520AbhBDCWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:20:53 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWMfy4s4bz162ZX;
-        Thu,  4 Feb 2021 10:18:50 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 10:20:06 +0800
-Subject: Re: [PATCH 2/4] hugetlg: Break earlier in add_reservation_in_range()
- when we can
-To:     Peter Xu <peterx@redhat.com>
-CC:     Wei Zhang <wzam@amazon.com>, Matthew Wilcox <willy@infradead.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Gal Pressman" <galpress@amazon.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Andrea Arcangeli" <aarcange@redhat.com>, Jan Kara <jack@suse.cz>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "Mike Rapoport" <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Jann Horn <jannh@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-References: <20210203210832.113685-1-peterx@redhat.com>
- <20210203210832.113685-3-peterx@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <22c64602-db2f-de36-ea54-5701f109368e@huawei.com>
-Date:   Thu, 4 Feb 2021 10:20:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210203210832.113685-3-peterx@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+        Wed, 3 Feb 2021 21:22:04 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57D5C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:21:23 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id e62so1921436yba.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:21:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=g/42xScXFf5XR9eMr0xLh0b+pVsAWUjZtArYlETXels=;
+        b=n7ZfzsEU5707Jb8IFDf1sI6TC1bWTqzNHAeSUUfZo6+TTa4G+zkrE+jq7EeB9rXt8b
+         bc8UrkS2HbhCKerZqsCgGukMrXyUy15p5GKBgj6kDkjwZ/Hjjxkv94K7l+CGf3FCnK5R
+         S/HcjwlI2u5ouqdYw8+yKCGfqROfXbjDVF/5UYAAVWQRb5kMzKxfbFwMe3UokrSa2b9C
+         q74Aw9KeYtT6BAab5JJuBH35KlcFsNmyNeeNMjrRbh8MmjL71ZTagaC7rpxW1sihQDPN
+         jtqdSBf4q1Wfc6R4fr+qQKvlaMi34nkMhOAr+IgDgeJb6fATQdaFd2hxB1OWqjlcNlH2
+         wE7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=g/42xScXFf5XR9eMr0xLh0b+pVsAWUjZtArYlETXels=;
+        b=DxEYhzGOom6uw4SLAXXvI7D39xLBIFA266LW24kAaaiczKrXZCD5KP4zqHJ8OchfPg
+         sDyN/OIscIH/oy+YPJjbVuRlO9H9dspV1ChU9aYEUcNOTn1kP5hUsyrrMKGDQUeXB2yh
+         meyumwUXD+FZ0oVoFAnAJ2ZDpg233XR5FXQHQWzHA0WFnyEGMn7JVvMvUpsWbWNr+lcd
+         6O94GvwCmDP4ihWyf0MBUJ30xB8y0NPHrKJLtGnAUNJm3w/U/wQvH5l6qwdXrZHj6uIz
+         wdy3OzL2eyoH9ya9kIUvuq65JsP5UOoEFZ04BLlZrJaRZ/JwDmd8AFohoyBYLTUoYCqI
+         e2qg==
+X-Gm-Message-State: AOAM530ar9kZYNp80mBD05xndUY42clpNsG1N6Hs6RtG5z/bx0Ym4j6c
+        IcZ5v4OREMKX9ahaA4sEp+Tqf2C/VlAc
+X-Google-Smtp-Source: ABdhPJwu2ZA9n2+TLDL/NzAiymCCkQ4vvqclLSJOsQaXBxoEArD/6YeR3BBlGNb705W0/KCS8ThQ+e2pD+ec
+Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:91f5:1565:43df:748a])
+ (user=amistry job=sendgmr) by 2002:a25:8311:: with SMTP id
+ s17mr8883399ybk.259.1612405283198; Wed, 03 Feb 2021 18:21:23 -0800 (PST)
+Date:   Thu,  4 Feb 2021 13:21:09 +1100
+Message-Id: <20210204132043.1.I2392cf11fb353d10459958100b69d93346fa167c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH] x86: Add a prompt for HPET_EMULATE_RTC
+From:   Anand K Mistry <amistry@google.com>
+To:     x86@kernel.org
+Cc:     Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/4 5:08, Peter Xu wrote:
-> All the regions maintained in hugetlb reserved map is inclusive on "from" but
-> exclusive on "to".  We can break earlier even if rg->from==t because it already
-> means no possible intersection.
-> 
-> This does not need a Fixes in all cases because when it happens (rg->from==t)
-> we'll not break out of the loop while we should, however the next thing we'd do
-> is still add the last file_region we'd need and quit the loop in the next
-> round.  So this change is not a bugfix (since the old code should still run
-> okay iiuc), but we'd better still touch it up to make it logically sane.
-> 
+This does two things:
+1. Makes the option visible in menuconfig, allowing the user to easily
+   disable this option
+2. Allows olddefconfig to respoct the option if it is set in the old
+   .config file
 
-I think the difference is when we handle the rg->from == t case. Previous one is in the loop, now below the
-loop. But the result should be same.
-Thanks.
+It's not clear exactly why the second consequence is true, but it
+appears to be because when the conf tool reads the config file, it only
+respects the existing setting if the option is "visible" (see
+scripts/kconfig/symbol.c:381).
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Anand K Mistry <amistry@google.com>
+---
 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/hugetlb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index d2859c2aecc9..9e6ea96bf33b 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -377,7 +377,7 @@ static long add_reservation_in_range(struct resv_map *resv, long f, long t,
->  		/* When we find a region that starts beyond our range, we've
->  		 * finished.
->  		 */
-> -		if (rg->from > t)
-> +		if (rg->from >= t)
->  			break;
->  
->  		/* Add an entry for last_accounted_offset -> rg->from, and
-> 
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..28f814493c7b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -890,6 +890,7 @@ config HPET_TIMER
+ 
+ config HPET_EMULATE_RTC
+ 	def_bool y
++	prompt "HPET RTC emulation"
+ 	depends on HPET_TIMER && (RTC=y || RTC=m || RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
+ 
+ config APB_TIMER
+-- 
+2.30.0.365.g02bc693789-goog
 
