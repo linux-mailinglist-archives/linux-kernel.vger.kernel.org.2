@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F0930E9E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9657230E9F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhBDCEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:04:30 -0500
-Received: from mga17.intel.com ([192.55.52.151]:22323 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232779AbhBDCEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:04:15 -0500
-IronPort-SDR: OlWZMc07NOmxMx/25Uq+Q+jCqdo4D4E3V4PTl3Vs7ytJOBvv8Y34CMNXv3eP34Frfx6vIF+R+g
- +WR7dosyYKXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160912519"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="160912519"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 18:03:22 -0800
-IronPort-SDR: uA73ZDLew+hYz7luCdUYFF7mAWAb/yK1kuDdvbo4tF+N1bYKVcIhwrhVMj2jKNJM2flJEmMgJO
- 7g2MORpNGRrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="480700880"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Feb 2021 18:03:19 -0800
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 3 Feb 2021 18:03:19 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 3 Feb 2021 18:03:18 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Wed, 3 Feb 2021 18:03:18 -0800
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.54) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 3 Feb 2021 18:03:18 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gdFmR7YDci1VrM5Zz1jeMoShkddh4u8LGAkpR8cHa5v5INHKRqGiiYA+LSk9PEkXsVh6vwOaiLuVP6gYuWRQ22ulpL/z12B2nXxeuHBjDcbnTUkIBQA6ho9Jtc73VcoV+LAjC9xZH2wDo40yuEzkSpVXpTgLbPRnve+m4E/up7BLyCJicu9oY6SCr5EwkFZNeF5xLUX9PO574osnMo37x1xcOCr06MHNUwKyxCIr9WgW0SF/kPaRU+J72R71iMo4u9OT1bAlT07U35PM41S/gCmrAgGpKlmKwdI+NJKGltnkTozmTGngJ4kfRat9sO1mTAFKaZLvo953BD/k3HR/xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+oa2Z6pv0cMbe6baevUoo1oyk+f7oZb1+6aOfUm94KA=;
- b=IkLEVziNbWV5O3sMDJyq3OsXe3PEQZccDKLvMqcgisUJ4njjAU3jVXgYu+t4TYdEL0bRigDClydWKT+Xu2HfbA2C9INWAAwpDLr6HcaWCj3YrTbP5nPXeT9sU10POgQzmJN75B6wra9XGPb+/kgyZXUvQgIiK6Q1liUzRFbXdC4reP7/0jRl1hjppn9If6Q7XV1cG7zn8i+Osg4HfNLZ4DYKIA03q7RqaZEChvjPNrfgTHZVnUCXCMVaD/xD3Q1rj5cUvBtPADrZx3+YWpjXWJpHwmHZq98AEh84fy4UlIq3lyDKupP7bFMW4B6YKifhTt/lYZPts4nilu2wJg6tjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+oa2Z6pv0cMbe6baevUoo1oyk+f7oZb1+6aOfUm94KA=;
- b=i+IPxNG7d0BVB6JPb41hQJETOPLXyFt9KhzOSXhMMPJ/HWniySbX45Mfqw3QlGOTuan0YrwjO6C0WpZ7nrR+NJLWgUNuQpYYNX9s6meg9hm88nE0xGsb0YaZbWupZP1Vcg9fjnW+WI5RseWIVo0UBiudmWC6ZfAMzMoOu23QU2o=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SN6PR11MB3375.namprd11.prod.outlook.com (2603:10b6:805:c0::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.21; Thu, 4 Feb
- 2021 02:03:17 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::ac4a:f330:44cb:fbf4]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::ac4a:f330:44cb:fbf4%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
- 02:03:17 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>
-CC:     "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Thread-Topic: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Thread-Index: AQHW+omuBE5yjAcpaU+GTJSpysfjUapHPrkA
-Date:   Thu, 4 Feb 2021 02:03:16 +0000
-Message-ID: <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
-References: <20210204000117.3303214-1-seanjc@google.com>
-         <20210204000117.3303214-8-seanjc@google.com>
-In-Reply-To: <20210204000117.3303214-8-seanjc@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.3 (3.38.3-1.fc33) 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.139.81]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5c37abce-3fea-4d6a-35fe-08d8c8b109b3
-x-ms-traffictypediagnostic: SN6PR11MB3375:
-x-microsoft-antispam-prvs: <SN6PR11MB33759C802C7F5D19B56C6839C9B39@SN6PR11MB3375.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m1tzESNCRMVP2CsCpLzqovJxCTI1ja3u01isdxLvAusiLiFGwl6TDQ2NBhsfsh6fhb+aIMOdgQRZ4E5gDOHhReFBAo1Sa3/7dYZ9zLdKIEJ4Y6lLcjN6roQec4RPMEKUDxBveEXOA0BAJjKM8CUElau11N5pCkwfGzbSm9awo/umXcINcOKsEJxjqLS8i1YumZmgtNpLMyqARGKgnvKsIKhqgtoV3vowbi1z1HPW6DLjjjyb3WVGdyRdEwzcvbIVU4Y0MqH2qtudDjspwS93cIhjf1+o1NBNGHs/4bsswDWHBa3SeLE2pnm+PSL6bKB95qABfYkM2/oECn2vhs5Uvk9U6v375CD/Zbvxz5AbyiFK61x0v+6zNNhPg5WLAXokWybDbVeQxJa4yRwRJY4t8/YyyD3ggvrOXMDaWZgXiFeNOidbHYO1D27EDyN20BIQ+TfFIB2e+EtcSN7s5cIo/s6kX7TOr8TS2Igy6xh6OKWPLrOraElklPNZyPA+7jG4kYHdyTuZN7AZ/RapgCI7oyR41NkEs54dDZXWbAvk+r0ZFbZjtLLpi/Nf9pkbJmgYi5knLCfa9O8c+cNS3q5/UfgCgCHh0bAUQWsybFf0td9M21kiS1pNB8qTRrM8KosnS7Aad9FCX8NSGMAdg+IUxQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(39860400002)(136003)(366004)(8936002)(66946007)(36756003)(4326008)(8676002)(966005)(26005)(4744005)(83380400001)(66476007)(86362001)(66446008)(64756008)(71200400001)(6506007)(2906002)(6512007)(316002)(5660300002)(7416002)(186003)(54906003)(2616005)(6486002)(76116006)(478600001)(66556008)(91956017)(110136005)(26953001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Eu3fsbzgcTziCIwg7EoMTJLUcRcM/xk5KZkz/vLqY3Eet/CbXMVgH+UY3jRhqIsFN0XiKtU1P8ffSV1CHKfMZq28TUiS/zg7/IOEENWvd4M5yV47KLZoos4N4ZOBT/c4tzTMJaqpISW2US/Fftx2GhHF0EV5Mn64L89Gwxky9l+J3Bs9GBg484pgyxUVye86E95vLb8vCd//Cml4kBupK0qsRNKhn5NBnx/+WpxBlrWckren/PzIWeBu1GFgAK5hsca0tWHXpPklE6H7iY4aOjnn1p7TKPZmbNYoX41ZHmM3dBwoRCjUETimU6/Ei2imMsE/VRxgeBVLSaNKKhr8S5JMZICjdBtgWwXR7jSyC9dKH2mighRbppUo9ecxQStheorL0HSnGSu0ol1SIilXL3hhPzi/wkf0Cul1YR7iEkuhfK89898TqA6dTR4Z1JvAGl5t++tEP2LDLXUBM+pVPYLHnLgBA5JvT++k0i4FkwlWc8YivVFRlP0ybK8/Od1KyWVYeBMarsMsoEUvXRPpbB0KDkfy7n+NuUQu47wHAxuGBWTZKnkEMWQs2mJb57z1Q1A+Ue0xKs7/KgDyD3YSZjJ32UJkKZAV049WdubpAOJTiIVsogLN87kiJoXrMM6hxkTNFymFpkvChRxCj1Ia+UrZcioupqfsLcZSZ7znSJpfLtctzMxw/Rx3J59nH3IvqmnVs+a107eZCSrKRrqufnvD4krA6fNobw6dUY/UVSMf7l2rwLFjSUtEAP69ZSGj
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <696647994DD37449AE13E0D2CE45C5A4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c37abce-3fea-4d6a-35fe-08d8c8b109b3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 02:03:16.9422
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TQHpstsXlBpy42ZMj7Ll07JZqVkL0Kzud5Z8fjdSple6sceq4U1yws4seugGv3nWVKf7484QWjwzwXhpwk6XkGD2d1oJ4nXD0mEBweWEmjY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3375
-X-OriginatorOrg: intel.com
+        id S234599AbhBDCGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:06:36 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:37756 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232411AbhBDCGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:06:22 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowADHZrhhVhtg3RA3AQ--.39496S2;
+        Thu, 04 Feb 2021 10:05:21 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     perex@perex.cz, tiwai@suse.com, alexander@tsoy.me,
+        e.burema@gmail.com, alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio: endpoint : remove redundant check before usb_free_coherent()
+Date:   Thu,  4 Feb 2021 02:05:18 +0000
+Message-Id: <20210204020518.76619-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADHZrhhVhtg3RA3AQ--.39496S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDWF4UJwb_yoW3Kwb_Za
+        ykCr4kWryDXwnIvryDGr4FyF4293yfZFn7WF4Iq398AFWUt3yYyr48Xr1kGF1rCan3tF95
+        Jws3Kr4rKr18KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ec7CjxVAajcxG14v26r
+        1j6r4UMcIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI
+        7VAKI48JMxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjxUcBHqUUUUU
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkCA1z4jWIVlAAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAyLTAzIGF0IDE2OjAxIC0wODAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOg0KPiDCoA0KPiAtwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBsb25nIGNyM19sbV9yc3ZkX2Jp
-dHM7DQo+ICvCoMKgwqDCoMKgwqDCoHU2NCByZXNlcnZlZF9ncGFfYml0czsNCg0KTEFNIGRlZmlu
-ZXMgYml0cyBhYm92ZSB0aGUgR0ZOIGluIENSMzoNCmh0dHBzOi8vc29mdHdhcmUuaW50ZWwuY29t
-L2NvbnRlbnQvd3d3L3VzL2VuL2RldmVsb3AvZG93bmxvYWQvaW50ZWwtYXJjaGl0ZWN0dXJlLWlu
-c3RydWN0aW9uLXNldC1leHRlbnNpb25zLXByb2dyYW1taW5nLXJlZmVyZW5jZS5odG1sDQoNCktW
-TSBkb2Vzbid0IHN1cHBvcnQgdGhpcyB0b2RheSBvZiBjb3Vyc2UsIGJ1dCBpdCBtaWdodCBiZSBj
-b25mdXNpbmcgdG8NCnRyeSB0byBjb21iaW5lIHRoZSB0d28gY29uY2VwdHMuDQoNCg==
+usb_free_coherent() is safe with NULL addr and this check is
+not required.
+
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ sound/usb/endpoint.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 8e568823c992..d5ed4ddfd451 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -82,10 +82,9 @@ static inline unsigned get_usb_high_speed_rate(unsigned int rate)
+  */
+ static void release_urb_ctx(struct snd_urb_ctx *u)
+ {
+-	if (u->buffer_size)
+-		usb_free_coherent(u->ep->chip->dev, u->buffer_size,
+-				  u->urb->transfer_buffer,
+-				  u->urb->transfer_dma);
++	usb_free_coherent(u->ep->chip->dev, u->buffer_size,
++			  u->urb->transfer_buffer,
++			  u->urb->transfer_dma);
+ 	usb_free_urb(u->urb);
+ 	u->urb = NULL;
+ }
+-- 
+2.17.1
+
