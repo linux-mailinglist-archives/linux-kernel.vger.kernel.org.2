@@ -2,130 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF9D30F3A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD6530F3A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236231AbhBDNG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:06:27 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56359 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235605AbhBDNGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:06:20 -0500
-X-UUID: 6ef6fe6e6c0a402a91e9207d653967c9-20210204
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xjPlZsUgJ8zWKx32syTlMFFWZeRIUmfEgX2pBjQv40w=;
-        b=afrLmZvNlDKffq4yrhcTZuJ9N84I3H93yxx8Vsj1JwuOAZ0KXVuiskN0QoyHRmf4Ov5t/J32K/Txy67eaZgZ7xy9UhGOOni/zP7IB9+TE/LiY8d2DncqN0oxqRDE69VpjEH5NjeWtiyW1c5vIbqoicp4vvi7t8g8M68GxnaQKsw=;
-X-UUID: 6ef6fe6e6c0a402a91e9207d653967c9-20210204
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 648410008; Thu, 04 Feb 2021 21:05:34 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Feb 2021 21:05:22 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Feb 2021 21:05:22 +0800
-Message-ID: <1612443922.32298.3.camel@mtksdaap41>
-Subject: Re: [PATCH v4 4/5] soc: mediatek: pwrap: add pwrap driver for
- MT6873/8192 SoCs
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fei Shao <fshao@chromium.org>,
-        Argus Lin <argus.lin@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 4 Feb 2021 21:05:22 +0800
-In-Reply-To: <CANMq1KBXKQOj=qUMULeJsqy8bvsJLgRniuF2kqzhxpKTWCVq1w@mail.gmail.com>
-References: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1605700894-32699-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <CANMq1KBXKQOj=qUMULeJsqy8bvsJLgRniuF2kqzhxpKTWCVq1w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S236242AbhBDNGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:06:40 -0500
+Received: from mail-co1nam11on2049.outbound.protection.outlook.com ([40.107.220.49]:20803
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236234AbhBDNGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:06:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HFG8iQoKXRHUjxq9vxhErFUZokWiBAuCGYPEdOs9NKwR1DGz9zoTDbDBFWKpIls28COfa28CZuwAMqHeVgdYYvnnoEjIeIYLkAdpCY+XVfykeo6X9XiyY0kHjOIAsRFsP+bt5Cl0WU/KVMo7ycQe8XwDVguWw3/suQDgfkgaN01b4GxroVh06tsPKiCm7FaIq+uTQlcuaN0oJjlx5VnRyZvh/e9wXVXteWho2OBm9K59l/D/GF0HUeZqabTvcGoXplB6BS2bX/CDBAhv7bX32HLOP2mFYpmmQxEZcVh4qsb973SGeQfwWGgyE6gxEKjJK4jHKqwpaaa3kcvsL8xrzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uGdJqWF+7YrMbxT/p68FbPsgOjvPPJj8PcQ2+4SWssI=;
+ b=Yb8EtoFAMOBLLkNWKcz1wOmcZRAxk94amG96yGUxrrqB0ueWZH9lwXZVTD1A4M/tqn5sLXdsFZ6x7eOu+/AthXT6HMV7fvj8VRQ7wHv7QkWJtROktxkxENxzYo3yLy3/Tvb3xau2qLfVu43eRJmJhuK3lrRcwM1F75o327TK1X+tDB9WbwsK+zHqG8PMaGMYK6gjabMmJrVSdjSbxeXoc91D9ezBOiXMDp7ROoI08fC6lATIvdJIwQROeNeBsJwme3JIgPyTxzyrhVGMzGTG7yPkqN/PKw7Wm+viwz0TzUr0u7oMwmhry/AQE3jMlqPu7fgKqmLEQdcvBHJZDNw3mQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uGdJqWF+7YrMbxT/p68FbPsgOjvPPJj8PcQ2+4SWssI=;
+ b=hs3mdzpJKjgI4yzy4ZqBrMswof1KgLMm+pxM9HppM0/yADbpEQo+j2aVwDDaC9QjiYdFfY5nu2ZeXG3gxMzKrMwSpxL77vrytQjnJiKSqwpvGvNjkGpsed5zrZ+pEe69Gp1UIMuAq/m4yyiEILm5gdCcVxJSfrgHQrqA97h/Dzw=
+Received: from MN2PR10CA0009.namprd10.prod.outlook.com (2603:10b6:208:120::22)
+ by CO6PR02MB7508.namprd02.prod.outlook.com (2603:10b6:303:a8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 4 Feb
+ 2021 13:05:45 +0000
+Received: from BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:120:cafe::f0) by MN2PR10CA0009.outlook.office365.com
+ (2603:10b6:208:120::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend
+ Transport; Thu, 4 Feb 2021 13:05:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT027.mail.protection.outlook.com (10.152.77.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3784.12 via Frontend Transport; Thu, 4 Feb 2021 13:05:45 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 4 Feb 2021 05:05:40 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Thu, 4 Feb 2021 05:05:40 -0800
+Envelope-to: michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ agust@denx.de,
+ atull@kernel.org,
+ trix@redhat.com,
+ mdf@kernel.org,
+ linux-fpga@vger.kernel.org,
+ luca@lucaceresoli.net
+Received: from [172.30.17.109] (port=59400)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1l7eKJ-0005X1-TQ; Thu, 04 Feb 2021 05:05:40 -0800
+Subject: Re: [PATCH] fpga: fpga-mgr: xilinx-spi: fix error messages on
+ -EPROBE_DEFER
+To:     Luca Ceresoli <luca@lucaceresoli.net>, <linux-fpga@vger.kernel.org>
+CC:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Alan Tull <atull@kernel.org>,
+        Anatolij Gustschin <agust@denx.de>,
+        <linux-kernel@vger.kernel.org>
+References: <20210204121313.24655-1-luca@lucaceresoli.net>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <42040ab3-d486-ecf4-ce22-bc4c992f3151@xilinx.com>
+Date:   Thu, 4 Feb 2021 14:05:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210204121313.24655-1-luca@lucaceresoli.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 42c4e553-7281-4b10-f335-08d8c90d9578
+X-MS-TrafficTypeDiagnostic: CO6PR02MB7508:
+X-Microsoft-Antispam-PRVS: <CO6PR02MB7508018A379F1F5D37A2530DC6B39@CO6PR02MB7508.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dEWMPpB1EqK0OPyeSNfyZ8D39lObz7kpUYz2ddFd9pNA8HKwk3w66WV7zEj2LwVuJNrz5ZPD6/gwcgx+gvPnlYYv56d8YAwGvxbFrQeOxtfE8xO+i7IXoFneVTXsJjbQdDpCVF1wnU9RvwIYRjz1xJEuyKVIGt1v5vPRh3YLFnAPLaMaABjqKESYFKmPqMww118cdeBdgAOqqDoh06FE1TvN64VPQYTArFOoGFpKZcjb6FISIj07Bki2jT/WVqfacNacKJhnvHXo+5L9OlqLfcnlR3pG9EraW58sEflsQPTU3AA2L1XMtx1H7JZiNzt+08Qd7JsEKNG/oju0AkpmfnSvGLm1GA37PmCstYBv/ZuKy3qBVtnNatNVRAWgJ0NI4MfNuYF5MBhQNFy+ozjCH5pbn9wxK3YCLvWsxYxmUeqHDqWUzAsVS5ljOw9+8H8hA8OgIZPqlQVVZBSw9G4jLn+HhdkY5uR+HklFX3zLdWOpNzYLfc2ScLO1OGbJEwIBXzaYXiAV6keiBJ7itFIwRLzigiViagdFQetvwhFlxytOlYyowtGhoKPioDmOnGWAjxd//Stsy+QeZeqZchNXIQ0W/ikekKay3d+H+jfnQ89v1aP0fOFwHNV3VS7b2gWBsXPkhN4sh2xE3i21Z8+s/L2k/tBEg0A73NGgdDo2sQ2bhCanNyH0B/QFw+6KBtJ44VhJcSfEgH5PNc5psUu892Jx5hPCrHbiudgZ4/Gfz4Q=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(376002)(46966006)(36840700001)(31686004)(9786002)(36860700001)(8676002)(316002)(54906003)(36756003)(36906005)(110136005)(44832011)(82740400003)(426003)(4326008)(53546011)(82310400003)(8936002)(356005)(70206006)(186003)(2616005)(2906002)(26005)(5660300002)(6666004)(478600001)(31696002)(83380400001)(7636003)(15650500001)(47076005)(336012)(70586007)(50156003)(2101003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 13:05:45.0995
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42c4e553-7281-4b10-f335-08d8c90d9578
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7508
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIE1vbiwgMjAyMC0xMi0yMSBhdCAxMDo0MiArMDgwMCwgTmljb2xhcyBCb2ljaGF0
-IHdyb3RlOg0KPiBPbiBXZWQsIE5vdiAxOCwgMjAyMCBhdCA4OjA4IFBNIEhzaW4tSHNpdW5nIFdh
-bmcNCj4gPGhzaW4taHNpdW5nLndhbmdAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IE1U
-Njg3My84MTkyIGFyZSBoaWdobHkgaW50ZWdyYXRlZCBTb0NzIGFuZCB1c2UgUE1JQ19NVDYzNTkg
-Zm9yDQo+ID4gcG93ZXIgbWFuYWdlbWVudC4gVGhpcyBwYXRjaCBhZGRzIHB3cmFwIG1hc3RlciBk
-cml2ZXIgdG8NCj4gPiBhY2Nlc3MgUE1JQ19NVDYzNTkuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBIc2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAt
-LS0NCj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtaWMtd3JhcC5jIHwgMjkgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDI5IGluc2VydGlv
-bnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1p
-Yy13cmFwLmMgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG1pYy13cmFwLmMNCj4gPiBpbmRl
-eCA1Njc4ZjQ2Li5kMWNkMDUwIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVr
-L210ay1wbWljLXdyYXAuYw0KPiA+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbWlj
-LXdyYXAuYw0KPiA+IEBAIC02MzIsNiArNjMyLDE3IEBAIHN0YXRpYyBpbnQgbXQ2Nzk3X3JlZ3Nb
-XSA9IHsNCj4gPiAgICAgICAgIFtQV1JBUF9EQ01fREJDX1BSRF0gPSAgICAgICAgICAgMHgxRDQs
-DQo+ID4gIH07DQo+ID4NCj4gPiArc3RhdGljIGludCBtdDY4NzNfcmVnc1tdID0gew0KPiA+ICsg
-ICAgICAgW1BXUkFQX0lOSVRfRE9ORTJdID0gICAgICAgICAgICAweDAsDQo+IA0KPiBJIGRvbid0
-IGhhdmUgdGhlIGRhdGFzaGVldCBmb3IgdGhlIFBXUkFQIGludGVyZmFjZSwgaXMgdGhpcyByZWdp
-c3Rlcg0KPiBhdCBvZmZzZXQgMHgwIHJlYWw/DQo+IA0KPiBJZiBzbywgSSdtIGNvbmNlcm5lZCB0
-aGF0IG10Njg3M19yZWdzIG9ubHkgZGVmaW5lcyB2ZXJ5IGZldyByZWdpc3RlcnMNCj4gb2Zmc2V0
-cywgc28gdGhlIGluaXQgY29kZSB3aWxsIGRvIGEgX2xvdF8gd3JpdGVzIGF0IHJlZ2lzdGVyIGFk
-ZHJlc3MNCj4gMHgwIChlLmcuIGZvciBhbGwgdGhlIHVuZGVmaW5lZCB2YWx1ZXMgaW4gdGhpcyBh
-cnJheTogUFdSQVBfV0FDUzBfRU4sDQo+IFBXUkFQX1dBQ1MxX0VOLCBQV1JBUF9XQUNTMl9FTiwg
-ZXRjLCBldGMuKQ0KPiANCg0KVGhlIHJlZ2lzdGVyIGZvciB0aGUgaW5pdF9kb25lIGlzIDB4MC4N
-Ckhvd2V2ZXIsIHRoZSBwd3JhcCBkcml2ZXIgb2YgbXQ2ODczIG9ubHkgY2hlY2tzIHRoaXMgcmVn
-aXN0ZXIgaW4gdGhlDQpiZWdpbm5pbmcgYW5kIHdvdWxkbid0IGNoZWNrIGl0IGFnYWluLg0KSW4g
-b3RoZXIgd29yZHMsIHRoZSAgcmVnaXN0ZXIgaXMgdGhlIGZpcnN0IHJlZ2lzdGVyIHdlIGNoZWNr
-LCBzbyBJIHRoaW5rDQp0aGVyZSBpcyBubyBwcm9ibGVtIGZvciBpdC4NCg0KPiA+ICsgICAgICAg
-W1BXUkFQX1RJTUVSX0VOXSA9ICAgICAgICAgICAgICAweDNFMCwNCj4gPiArICAgICAgIFtQV1JB
-UF9JTlRfRU5dID0gICAgICAgICAgICAgICAgMHg0NDgsDQo+ID4gKyAgICAgICBbUFdSQVBfV0FD
-UzJfQ01EXSA9ICAgICAgICAgICAgIDB4QzgwLA0KPiA+ICsgICAgICAgW1BXUkFQX1NXSU5GXzJf
-V0RBVEFfMzFfMF0gPSAgICAweEM4NCwNCj4gPiArICAgICAgIFtQV1JBUF9TV0lORl8yX1JEQVRB
-XzMxXzBdID0gICAgMHhDOTQsDQo+ID4gKyAgICAgICBbUFdSQVBfV0FDUzJfVkxEQ0xSXSA9ICAg
-ICAgICAgIDB4Q0E0LA0KPiA+ICsgICAgICAgW1BXUkFQX1dBQ1MyX1JEQVRBXSA9ICAgICAgICAg
-ICAweENBOCwNCj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBpbnQgbXQ3NjIyX3JlZ3NbXSA9
-IHsNCj4gPiAgICAgICAgIFtQV1JBUF9NVVhfU0VMXSA9ICAgICAgICAgICAgICAgMHgwLA0KPiA+
-ICAgICAgICAgW1BXUkFQX1dSQVBfRU5dID0gICAgICAgICAgICAgICAweDQsDQo+ID4gQEAgLTEw
-NTAsNiArMTA2MSw3IEBAIGVudW0gcHdyYXBfdHlwZSB7DQo+ID4gICAgICAgICBQV1JBUF9NVDY3
-NjUsDQo+ID4gICAgICAgICBQV1JBUF9NVDY3NzksDQo+ID4gICAgICAgICBQV1JBUF9NVDY3OTcs
-DQo+ID4gKyAgICAgICBQV1JBUF9NVDY4NzMsDQo+ID4gICAgICAgICBQV1JBUF9NVDc2MjIsDQo+
-ID4gICAgICAgICBQV1JBUF9NVDgxMzUsDQo+ID4gICAgICAgICBQV1JBUF9NVDgxNzMsDQo+ID4g
-QEAgLTE1MTIsNiArMTUyNCw3IEBAIHN0YXRpYyBpbnQgcHdyYXBfaW5pdF9jaXBoZXIoc3RydWN0
-IHBtaWNfd3JhcHBlciAqd3JwKQ0KPiA+ICAgICAgICAgY2FzZSBQV1JBUF9NVDc2MjI6DQo+ID4g
-ICAgICAgICAgICAgICAgIHB3cmFwX3dyaXRlbCh3cnAsIDAsIFBXUkFQX0NJUEhFUl9FTik7DQo+
-ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICsgICAgICAgY2FzZSBQV1JBUF9NVDY4NzM6
-DQo+ID4gICAgICAgICBjYXNlIFBXUkFQX01UODE4MzoNCj4gPiAgICAgICAgICAgICAgICAgYnJl
-YWs7DQo+ID4gICAgICAgICB9DQo+ID4gQEAgLTE5NDgsNiArMTk2MSwxOSBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IHBtaWNfd3JhcHBlcl90eXBlIHB3cmFwX210Njc5NyA9IHsNCj4gPiAgICAgICAg
-IC5pbml0X3NvY19zcGVjaWZpYyA9IE5VTEwsDQo+ID4gIH07DQo+ID4NCj4gPiArc3RhdGljIGNv
-bnN0IHN0cnVjdCBwbWljX3dyYXBwZXJfdHlwZSBwd3JhcF9tdDY4NzMgPSB7DQo+ID4gKyAgICAg
-ICAucmVncyA9IG10Njg3M19yZWdzLA0KPiA+ICsgICAgICAgLnR5cGUgPSBQV1JBUF9NVDY4NzMs
-DQo+ID4gKyAgICAgICAuYXJiX2VuX2FsbCA9IDB4Nzc3ZiwNCj4gPiArICAgICAgIC5pbnRfZW5f
-YWxsID0gQklUKDQpIHwgQklUKDUpLA0KPiA+ICsgICAgICAgLmludDFfZW5fYWxsID0gMCwNCj4g
-PiArICAgICAgIC5zcGlfdyA9IFBXUkFQX01BTl9DTURfU1BJX1dSSVRFLA0KPiA+ICsgICAgICAg
-LndkdF9zcmMgPSBQV1JBUF9XRFRfU1JDX01BU0tfQUxMLA0KPiA+ICsgICAgICAgLmNhcHMgPSBQ
-V1JBUF9DQVBfQVJCLA0KPiA+ICsgICAgICAgLmluaXRfcmVnX2Nsb2NrID0gcHdyYXBfY29tbW9u
-X2luaXRfcmVnX2Nsb2NrLA0KPiA+ICsgICAgICAgLmluaXRfc29jX3NwZWNpZmljID0gTlVMTCwN
-Cj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcG1pY193cmFwcGVyX3R5
-cGUgcHdyYXBfbXQ3NjIyID0gew0KPiA+ICAgICAgICAgLnJlZ3MgPSBtdDc2MjJfcmVncywNCj4g
-PiAgICAgICAgIC50eXBlID0gUFdSQVBfTVQ3NjIyLA0KPiA+IEBAIC0yMDI2LDYgKzIwNTIsOSBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBvZl9wd3JhcF9tYXRjaF90YmxbXSA9
-IHsNCj4gPiAgICAgICAgICAgICAgICAgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzk3LXB3
-cmFwIiwNCj4gPiAgICAgICAgICAgICAgICAgLmRhdGEgPSAmcHdyYXBfbXQ2Nzk3LA0KPiA+ICAg
-ICAgICAgfSwgew0KPiA+ICsgICAgICAgICAgICAgICAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxt
-dDY4NzMtcHdyYXAiLA0KPiA+ICsgICAgICAgICAgICAgICAuZGF0YSA9ICZwd3JhcF9tdDY4NzMs
-DQo+ID4gKyAgICAgICB9LCB7DQo+ID4gICAgICAgICAgICAgICAgIC5jb21wYXRpYmxlID0gIm1l
-ZGlhdGVrLG10NzYyMi1wd3JhcCIsDQo+ID4gICAgICAgICAgICAgICAgIC5kYXRhID0gJnB3cmFw
-X210NzYyMiwNCj4gPiAgICAgICAgIH0sIHsNCj4gPiAtLQ0KPiA+IDIuNi40DQo+ID4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBMaW51eC1tZWRp
-YXRlayBtYWlsaW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3Jn
-DQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-ZWRpYXRlaw0KDQo=
+Hi,
 
+On 2/4/21 1:13 PM, Luca Ceresoli wrote:
+> The current code produces an error message on devm_gpiod_get() errors even
+> when the error is -EPROBE_DEFER, which should be silent.
+> 
+> This has been observed producing a significant amount of messages like:
+> 
+>     xlnx-slave-spi spi1.1: Failed to get PROGRAM_B gpio: -517
+> 
+> Fix and simplify code by using the dev_err_probe() helper function.
+> 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Fixes: dd2784c01d93 ("fpga manager: xilinx-spi: check INIT_B pin during write_init")
+> Fixes: 061c97d13f1a ("fpga manager: Add Xilinx slave serial SPI driver")
+> ---
+>  drivers/fpga/xilinx-spi.c | 24 +++++++++---------------
+>  1 file changed, 9 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
+> index 27defa98092d..fee4d0abf6bf 100644
+> --- a/drivers/fpga/xilinx-spi.c
+> +++ b/drivers/fpga/xilinx-spi.c
+> @@ -233,25 +233,19 @@ static int xilinx_spi_probe(struct spi_device *spi)
+>  
+>  	/* PROGRAM_B is active low */
+>  	conf->prog_b = devm_gpiod_get(&spi->dev, "prog_b", GPIOD_OUT_LOW);
+> -	if (IS_ERR(conf->prog_b)) {
+> -		dev_err(&spi->dev, "Failed to get PROGRAM_B gpio: %ld\n",
+> -			PTR_ERR(conf->prog_b));
+> -		return PTR_ERR(conf->prog_b);
+> -	}
+> +	if (IS_ERR(conf->prog_b))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(conf->prog_b),
+> +				     "Failed to get PROGRAM_B gpio\n");
+>  
+>  	conf->init_b = devm_gpiod_get_optional(&spi->dev, "init-b", GPIOD_IN);
+> -	if (IS_ERR(conf->init_b)) {
+> -		dev_err(&spi->dev, "Failed to get INIT_B gpio: %ld\n",
+> -			PTR_ERR(conf->init_b));
+> -		return PTR_ERR(conf->init_b);
+> -	}
+> +	if (IS_ERR(conf->init_b))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(conf->init_b),
+> +				     "Failed to get INIT_B gpio\n");
+>  
+>  	conf->done = devm_gpiod_get(&spi->dev, "done", GPIOD_IN);
+> -	if (IS_ERR(conf->done)) {
+> -		dev_err(&spi->dev, "Failed to get DONE gpio: %ld\n",
+> -			PTR_ERR(conf->done));
+> -		return PTR_ERR(conf->done);
+> -	}
+> +	if (IS_ERR(conf->done))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(conf->done),
+> +				     "Failed to get DONE gpio\n");
+>  
+>  	mgr = devm_fpga_mgr_create(&spi->dev,
+>  				   "Xilinx Slave Serial FPGA Manager",
+> 
+
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
