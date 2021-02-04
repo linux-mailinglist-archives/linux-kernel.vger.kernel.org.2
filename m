@@ -2,274 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD9630FE95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04EC30FEA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240312AbhBDUhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240273AbhBDUgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:36:22 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2997C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:35:41 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id e9so2507640pjj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:35:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/YqqsMMXQlhsJbnhOFdOST+3qyRvfvIeEMX7fG1uGdk=;
-        b=TMxYcIftnS6MnaEQtUVCuD6J1E6iRmW9FqQUHJU+Ooydr+UbhkYdQDHgCjovgYGPs7
-         U5j6ptzCIuMqnipgc6lVxPZ5QKeTS/JDn7msUrTJsLioj63Zfmb2QgWii8mmnop/EWSg
-         /33SV+lg8zKH9VO+zpymZZQkvWhOCLV83M8Ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/YqqsMMXQlhsJbnhOFdOST+3qyRvfvIeEMX7fG1uGdk=;
-        b=lqglIW5I2fF2Ak0anYygrDWSfTRkJqpQEpOcHzRGlZtHx1/SzRIqugKX7EoWEeK1u8
-         fr/H+yLm49TPFVKE62l17rLkLb5P9BvsI8/cJPmWPNn65IsixAMyvSSmzvBoNtjCjhcy
-         i/IvkATMNgjUzq8aswAY5GbQfmHtOd7dzAHePhPTPXJcbNBsZW/SsTl21O5nUjbxaOP5
-         wv176yM1iUHsLQ74zBFueGKvcszOHXmySqL9SsAHymIWbyxUVx/J/3QqvBO0kMz7NtnC
-         48dgSMgC6Hr8HaU39cBARoWe6VZUFjnllGOhjNdufLKqICocbHp3WwC1og3WN9rKMVzU
-         Ms9A==
-X-Gm-Message-State: AOAM530uxmMgMde9mm3vueUopR62bnJahOWKXjNhlpqSreDq1PBE04Es
-        g5T78g8VktRernPoClua3Fe40g==
-X-Google-Smtp-Source: ABdhPJyDHR/CskCg3u5D/Yn4khY30VmVRvMUaSCxDPEOQHNERSWB14WBXQ2gR6mRGLnfIqdtKSKpeA==
-X-Received: by 2002:a17:90a:648f:: with SMTP id h15mr727537pjj.71.1612470941523;
-        Thu, 04 Feb 2021 12:35:41 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b65sm7086054pfg.139.2021.02.04.12.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 12:35:40 -0800 (PST)
-Date:   Thu, 4 Feb 2021 12:35:39 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v19 24/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-Message-ID: <202102041235.BA6C4982F@keescook>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-25-yu-cheng.yu@intel.com>
+        id S229581AbhBDUlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:41:06 -0500
+Received: from marcansoft.com ([212.63.210.85]:33002 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhBDUk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:40:56 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 88EF3425B6;
+        Thu,  4 Feb 2021 20:40:06 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Hector Martin <marcan@marcan.st>, soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: [PATCH 00/18] Apple M1 SoC platform bring-up
+Date:   Fri,  5 Feb 2021 05:39:33 +0900
+Message-Id: <20210204203951.52105-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203225547.32221-25-yu-cheng.yu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:55:46PM -0800, Yu-cheng Yu wrote:
-> arch_prctl(ARCH_X86_CET_STATUS, u64 *args)
->     Get CET feature status.
-> 
->     The parameter 'args' is a pointer to a user buffer.  The kernel returns
->     the following information:
-> 
->     *args = shadow stack/IBT status
->     *(args + 1) = shadow stack base address
->     *(args + 2) = shadow stack size
+This series brings up initial support for the Apple M1 SoC, used in the
+2020 Mac Mini, MacBook Pro, and MacBook Air models.
 
-What happens if this needs to grow in the future? Should the first u64
-contain the array size?
+The following features are supported in this initial port:
 
-Otherwise, looks sensible.
+- UART (samsung-style) with earlycon support
+- Interrupts, including affinity and IPIs (Apple Interrupt Controller)
+- SMP (through standard spin-table support)
+- simplefb-based framebuffer
+- Devicetree for the Mac Mini (should work for the others too at this
+  stage)
 
--Kees
+The primary pain points of this port are:
 
-> 
->     32-bit binaries use the same interface, but only lower 32-bits of each
->     item.
-> 
-> arch_prctl(ARCH_X86_CET_DISABLE, unsigned int features)
->     Disable CET features specified in 'features'.  Return -EPERM if CET is
->     locked.
-> 
-> arch_prctl(ARCH_X86_CET_LOCK)
->     Lock in CET features.
-> 
-> Also change do_arch_prctl_common()'s parameter 'cpuid_enabled' to
-> 'arg2', as it is now also passed to prctl_cet().
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
->  arch/x86/include/asm/cet.h        |  3 ++
->  arch/x86/include/uapi/asm/prctl.h |  4 +++
->  arch/x86/kernel/Makefile          |  2 +-
->  arch/x86/kernel/cet_prctl.c       | 60 +++++++++++++++++++++++++++++++
->  arch/x86/kernel/process.c         |  6 ++--
->  5 files changed, 71 insertions(+), 4 deletions(-)
->  create mode 100644 arch/x86/kernel/cet_prctl.c
-> 
-> diff --git a/arch/x86/include/asm/cet.h b/arch/x86/include/asm/cet.h
-> index ec4b5e62d0ce..16870e5bc8eb 100644
-> --- a/arch/x86/include/asm/cet.h
-> +++ b/arch/x86/include/asm/cet.h
-> @@ -14,9 +14,11 @@ struct sc_ext;
->  struct cet_status {
->  	unsigned long	shstk_base;
->  	unsigned long	shstk_size;
-> +	unsigned int	locked:1;
->  };
->  
->  #ifdef CONFIG_X86_CET
-> +int prctl_cet(int option, u64 arg2);
->  int cet_setup_shstk(void);
->  int cet_setup_thread_shstk(struct task_struct *p, unsigned long clone_flags);
->  void cet_disable_shstk(void);
-> @@ -25,6 +27,7 @@ int cet_verify_rstor_token(bool ia32, unsigned long ssp, unsigned long *new_ssp)
->  void cet_restore_signal(struct sc_ext *sc);
->  int cet_setup_signal(bool ia32, unsigned long rstor, struct sc_ext *sc);
->  #else
-> +static inline int prctl_cet(int option, u64 arg2) { return -EINVAL; }
->  static inline int cet_setup_thread_shstk(struct task_struct *p,
->  					 unsigned long clone_flags) { return 0; }
->  static inline void cet_disable_shstk(void) {}
-> diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-> index 5a6aac9fa41f..9245bf629120 100644
-> --- a/arch/x86/include/uapi/asm/prctl.h
-> +++ b/arch/x86/include/uapi/asm/prctl.h
-> @@ -14,4 +14,8 @@
->  #define ARCH_MAP_VDSO_32	0x2002
->  #define ARCH_MAP_VDSO_64	0x2003
->  
-> +#define ARCH_X86_CET_STATUS		0x3001
-> +#define ARCH_X86_CET_DISABLE		0x3002
-> +#define ARCH_X86_CET_LOCK		0x3003
-> +
->  #endif /* _ASM_X86_PRCTL_H */
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 4a9a7e7d00dc..2f60a28769f9 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -151,7 +151,7 @@ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
->  obj-$(CONFIG_UNWINDER_GUESS)		+= unwind_guess.o
->  
->  obj-$(CONFIG_AMD_MEM_ENCRYPT)		+= sev-es.o
-> -obj-$(CONFIG_X86_CET)			+= cet.o
-> +obj-$(CONFIG_X86_CET)			+= cet.o cet_prctl.o
->  
->  ###
->  # 64 bit specific files
-> diff --git a/arch/x86/kernel/cet_prctl.c b/arch/x86/kernel/cet_prctl.c
-> new file mode 100644
-> index 000000000000..0030c63a08c0
-> --- /dev/null
-> +++ b/arch/x86/kernel/cet_prctl.c
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/errno.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/prctl.h>
-> +#include <linux/compat.h>
-> +#include <linux/mman.h>
-> +#include <linux/elfcore.h>
-> +#include <linux/processor.h>
-> +#include <asm/prctl.h>
-> +#include <asm/cet.h>
-> +
-> +/* See Documentation/x86/intel_cet.rst. */
-> +
-> +static int cet_copy_status_to_user(struct cet_status *cet, u64 __user *ubuf)
-> +{
-> +	u64 buf[3] = {};
-> +
-> +	if (cet->shstk_size) {
-> +		buf[0] |= GNU_PROPERTY_X86_FEATURE_1_SHSTK;
-> +		buf[1] = cet->shstk_base;
-> +		buf[2] = cet->shstk_size;
-> +	}
-> +
-> +	return copy_to_user(ubuf, buf, sizeof(buf));
-> +}
-> +
-> +int prctl_cet(int option, u64 arg2)
-> +{
-> +	struct cet_status *cet;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_CET))
-> +		return -ENOTSUPP;
-> +
-> +	cet = &current->thread.cet;
-> +
-> +	if (option == ARCH_X86_CET_STATUS)
-> +		return cet_copy_status_to_user(cet, (u64 __user *)arg2);
-> +
-> +	switch (option) {
-> +	case ARCH_X86_CET_DISABLE:
-> +		if (cet->locked)
-> +			return -EPERM;
-> +
-> +		if (arg2 & ~GNU_PROPERTY_X86_FEATURE_1_VALID)
-> +			return -EINVAL;
-> +		if (arg2 & GNU_PROPERTY_X86_FEATURE_1_SHSTK)
-> +			cet_disable_shstk();
-> +		return 0;
-> +
-> +	case ARCH_X86_CET_LOCK:
-> +		if (arg2)
-> +			return -EINVAL;
-> +		cet->locked = 1;
-> +		return 0;
-> +
-> +	default:
-> +		return -ENOSYS;
-> +	}
-> +}
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index 3af6b36e1a5c..9e11e5f589f3 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -979,14 +979,14 @@ unsigned long get_wchan(struct task_struct *p)
->  }
->  
->  long do_arch_prctl_common(struct task_struct *task, int option,
-> -			  unsigned long cpuid_enabled)
-> +			  unsigned long arg2)
->  {
->  	switch (option) {
->  	case ARCH_GET_CPUID:
->  		return get_cpuid_mode();
->  	case ARCH_SET_CPUID:
-> -		return set_cpuid_mode(task, cpuid_enabled);
-> +		return set_cpuid_mode(task, arg2);
->  	}
->  
-> -	return -EINVAL;
-> +	return prctl_cet(option, arg2);
->  }
-> -- 
-> 2.21.0
-> 
-> 
+- Apple SoCs require FIQs, as the timers and "fast" IPIs are hardwired
+  to the FIQ interrupt line. This patchset introduces FIQ support through
+  the alternatives mechanism, so as to not affect other platforms,
+  implemented as simply merging IRQs and FIQs. The AIC driver takes care
+  of discriminating and routing IRQs to the right users.
 
--- 
-Kees Cook
+- These SoCs blackhole nGnRE writes to internal MMIO ranges, and require
+  nGnRnE. There is no obvious right solution to solve this. I do not
+  expect the two patches for that in this series to be merged as-is, but
+  the commit messages describe the problem and potential solutions. I
+  hope we can have a discussion and converge on the right approach to
+  solve this problem in the sanest way.
+
+These machines officially support booting unsigned/user-provided
+XNU-like kernels, with a very different boot protocol and devicetree
+format. We are developing an initial bootloader, m1n1 [1], to take care
+of as many hardware peculiarities as possible and present a standard
+Linux arm64 boot protocol and device tree. In the future, I expect that
+production setups will add U-Boot and perhaps GRUB into the boot chain,
+to make the boot process similar to other ARM64 platforms.
+
+The machines expose their debug UART over USB Type C, triggered with
+vendor-specific USB-PD commands. Currently, the easiest way to get a
+serial console on these machines is to use a second M1 box and a simple
+USB C cable [2]. You can also build a DIY interface using an Arduino, a
+FUSB302 chip or board, and a 1.2V UART-TTL adapter [3]. In the coming
+weeks we will be designing an open hardware project to provide
+serial/debug connectivity to these machines (and, hopefully, also
+support other UART-over-Type C setups from other vendors). Please
+contact me privately if you are interested in getting an early prototype
+version of one of these devices.
+
+A quickstart guide to booting Linux kernels on these machines is
+available at [4], and we are documenting the hardware at [5].
+
+[1] https://github.com/AsahiLinux/m1n1/
+[2] https://github.com/AsahiLinux/macvdmtool/
+[3] https://github.com/AsahiLinux/vdmtool/
+[4] https://github.com/AsahiLinux/docs/wiki/Developer-Quickstart
+[5] https://github.com/AsahiLinux/docs/wiki
+
+== Project Blurb ==
+
+Asahi Linux is an open community project dedicated to developing and
+maintaining mainline support for Apple Silicon on Linux. Feel free to
+drop by #asahi on freenode to chat with us, or check our website for
+more information on the project:
+
+https://asahilinux.org/
+
+
+Hector Martin (18):
+  dt-bindings: vendor-prefixes: add AAPL prefix
+  dt-bindings: arm: cpus: Add AAPL,firestorm & icestorm compatibles
+  dt-bindings: arm: AAPL: Add bindings for Apple ARM platforms
+  arm64: Kconfig: Introduce CONFIG_ARCH_APPLE
+  tty: serial: samsung_tty: add support for Apple UARTs
+  dt-bindings: serial: samsung: Add AAPL,s5l-uart compatible
+  tty: serial: samsung_tty: enable for ARCH_APPLE
+  arm64: cpufeature: Add a feature for FIQ support
+  arm64: cputype: Add CPU types for the Apple M1 big/little cores
+  arm64: Introduce FIQ support
+  arm64: Kconfig: Require FIQ support for ARCH_APPLE
+  arm64: setup: Use nGnRnE IO mappings for fixmap on Apple platforms
+  arm64: ioremap: use nGnRnE mappings on platforms that require it
+  dt-bindings: interrupt-controller: Add DT bindings for apple-aic
+  irqchip/apple-aic: Add support for the Apple Interrupt Controller
+  irqchip/apple-aic: Add SMP / IPI support
+  dt-bindings: display: add AAPL,simple-framebuffer
+  arm64: apple: Add initial Mac Mini 2020 (M1) devicetree
+
+ .../devicetree/bindings/arm/AAPL.yaml         |  36 ++
+ .../devicetree/bindings/arm/cpus.yaml         |   2 +
+ .../bindings/display/simple-framebuffer.yaml  |   5 +
+ .../interrupt-controller/AAPL,aic.yaml        |  88 +++
+ .../bindings/serial/samsung_uart.yaml         |   4 +-
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  14 +
+ arch/arm64/Kconfig                            |  10 +
+ arch/arm64/Kconfig.platforms                  |   8 +
+ arch/arm64/boot/dts/Makefile                  |   1 +
+ arch/arm64/boot/dts/apple/Makefile            |   2 +
+ arch/arm64/boot/dts/apple/apple-j274.dts      | 143 +++++
+ arch/arm64/include/asm/assembler.h            |   4 +
+ arch/arm64/include/asm/cpucaps.h              |   3 +-
+ arch/arm64/include/asm/cpufeature.h           |   6 +
+ arch/arm64/include/asm/cputype.h              |   6 +
+ arch/arm64/include/asm/daifflags.h            |   7 +
+ arch/arm64/include/asm/fixmap.h               |  10 +-
+ arch/arm64/include/asm/io.h                   |   9 +-
+ arch/arm64/include/asm/irqflags.h             |  17 +-
+ arch/arm64/kernel/cpufeature.c                |  32 ++
+ arch/arm64/kernel/entry.S                     |  27 +-
+ arch/arm64/kernel/setup.c                     |  12 +
+ drivers/irqchip/Kconfig                       |  10 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-apple-aic.c               | 501 ++++++++++++++++++
+ drivers/tty/serial/Kconfig                    |   2 +-
+ drivers/tty/serial/samsung_tty.c              | 297 +++++++++--
+ .../interrupt-controller/apple-aic.h          |  14 +
+ include/linux/serial_s3c.h                    |  16 +
+ include/uapi/linux/serial_core.h              |   3 +
+ 31 files changed, 1243 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/AAPL.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+ create mode 100644 arch/arm64/boot/dts/apple/Makefile
+ create mode 100644 arch/arm64/boot/dts/apple/apple-j274.dts
+ create mode 100644 drivers/irqchip/irq-apple-aic.c
+ create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
+
+--
+2.30.0
+
