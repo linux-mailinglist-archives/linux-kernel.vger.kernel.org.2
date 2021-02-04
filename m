@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2398830EA4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FFB30EA55
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbhBDCia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:38:30 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57896 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234613AbhBDCiZ (ORCPT
+        id S234653AbhBDClS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:41:18 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53602 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231299AbhBDClP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:38:25 -0500
-Received: from mail-lj1-f199.google.com ([209.85.208.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l7UWc-0003cr-Nm
-        for linux-kernel@vger.kernel.org; Thu, 04 Feb 2021 02:37:42 +0000
-Received: by mail-lj1-f199.google.com with SMTP id c1so1591333ljj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:37:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=azbWs7ZD4+6Ar0t1pBb2H4Mtgu0Vsr9n0qu2CiY2eBQ=;
-        b=Gy1QAkvP8Dtz9Agt94oEYcmAlrxQ3GIITXFgXIpbVVNNteZ1imK4RBKocY4fA7AjI+
-         0Ei0kqVn9MZbq28kyDKvCk1UtW2cLlaQXmnOkZuJ+Ii1yzTCi4gyUQlM89BSYGI4O331
-         Xmqgyq0H8hzP4rwvsDwc28LchcHPLvuQkJAi0Rl5kZGWpX23MYNzuRyFL5bV21ZYTPd8
-         lbaHcjsqvA0hVqRRsB/5PR/0a8hogH4G8inNZhtnE4MjYfkg+0EwU/Buy5W3oUCDhmjh
-         vLpqwXYcREYkViXSivhaB571MPYqXHqJ+Ghn9dJgIov7fvO7Yh4U8KhT8OHeTeOhqNIO
-         lWeQ==
-X-Gm-Message-State: AOAM533R5FyQzKCqTYW+mg+rFsNkTr36Zi2fXPBlrIdVkZBlYeE6CXGO
-        mvWMw1+WMrYn4Fi4Ksmq/TcwRMZif6XmS9f2nBQUPn0xamZf0gKnUa2Key9ibTUnvC5oZ6Thddf
-        /zk4x9b7C7fEIFaypVnIw7id6LShgBBd23b7l3L9vPR9pOQfw+nFknlZXSQ==
-X-Received: by 2002:a2e:9bd8:: with SMTP id w24mr3423324ljj.126.1612406262236;
-        Wed, 03 Feb 2021 18:37:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzEVPLLXFO6iRnQdbK0dcPElIqzITbQ+eHDsyN1Bhrh8vZrbecO5E15DYaFFP78Dihi5Tyi32Y7L9+TnnLVIdY=
-X-Received: by 2002:a2e:9bd8:: with SMTP id w24mr3423316ljj.126.1612406262014;
- Wed, 03 Feb 2021 18:37:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201213019.1558738-1-furquan@google.com> <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
- <CAJZ5v0jhniqG43F6hCqXdxQiQZRc67GdkdP0BXcRut=P7k7BVQ@mail.gmail.com>
- <X/2fzghPXnuDNBPU@kroah.com> <CAEGmHFEpPTuRuWFt0ba022BmGfaDmSTAgEApW9EzAa5CitmtbA@mail.gmail.com>
- <b4a931cf-5974-64d0-fdf2-693e418f3110@gmail.com>
-In-Reply-To: <b4a931cf-5974-64d0-fdf2-693e418f3110@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 4 Feb 2021 10:37:29 +0800
-Message-ID: <CAAd53p6PtdCRe50PFdn35S1mXHBACKUpmVVcE2qfZgVT3MKj5Q@mail.gmail.com>
-Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
-To:     Furquan Shaikh <furquan@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Feb 2021 21:41:15 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UNoQw31_1612406418;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNoQw31_1612406418)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 10:40:27 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     satishkh@cisco.com
+Cc:     sebaddel@cisco.com, kartilak@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] [SCSI] fnic: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Thu,  4 Feb 2021 10:40:16 +0800
+Message-Id: <1612406416-111761-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Furquan,
+Fix the following coccicheck warning:
 
-On Wed, Jan 13, 2021 at 10:31 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-[snipped]
-> Thank you all for addressing this problem!
+./drivers/scsi/fnic/fnic_attrs.c:43:8-16: WARNING: use scnprintf or
+sprintf.
 
-Are you still working on the alternate solution? This patch can
-address S5 power consumption issue for some laptops:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
+./drivers/scsi/fnic/fnic_attrs.c:35:8-16: WARNING: use scnprintf or
+sprintf.
 
-Kai-Heng
+./drivers/scsi/fnic/fnic_attrs.c:29:8-16: WARNING: use scnprintf or
+sprintf.
+
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/fnic/fnic_attrs.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/fnic/fnic_attrs.c b/drivers/scsi/fnic/fnic_attrs.c
+index aea0c3b..6e6e125 100644
+--- a/drivers/scsi/fnic/fnic_attrs.c
++++ b/drivers/scsi/fnic/fnic_attrs.c
+@@ -26,13 +26,13 @@ static ssize_t fnic_show_state(struct device *dev,
+ 	struct fc_lport *lp = shost_priv(class_to_shost(dev));
+ 	struct fnic *fnic = lport_priv(lp);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", fnic_state_str[fnic->state]);
++	return sysfs_emit(buf, "%s\n", fnic_state_str[fnic->state]);
+ }
+ 
+ static ssize_t fnic_show_drv_version(struct device *dev,
+ 				     struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%s\n", DRV_VERSION);
++	return sysfs_emit(buf, "%s\n", DRV_VERSION);
+ }
+ 
+ static ssize_t fnic_show_link_state(struct device *dev,
+@@ -40,8 +40,7 @@ static ssize_t fnic_show_link_state(struct device *dev,
+ {
+ 	struct fc_lport *lp = shost_priv(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", (lp->link_up)
+-			? "Link Up" : "Link Down");
++	return sysfs_emit(buf, "%s\n", (lp->link_up) ? "Link Up" : "Link Down");
+ }
+ 
+ static DEVICE_ATTR(fnic_state, S_IRUGO, fnic_show_state, NULL);
+-- 
+1.8.3.1
+
