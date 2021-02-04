@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CE430F7AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F185230F7A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237895AbhBDQYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:24:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:59908 "EHLO foss.arm.com"
+        id S237175AbhBDQXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:23:31 -0500
+Received: from mga12.intel.com ([192.55.52.136]:62963 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237104AbhBDPGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:06:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA03411D4;
-        Thu,  4 Feb 2021 07:05:40 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 684DB3F718;
-        Thu,  4 Feb 2021 07:05:39 -0800 (PST)
-Date:   Thu, 4 Feb 2021 15:05:36 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 1/8] sched/fair: Clean up active balance
- nr_balance_failed trickery
-Message-ID: <20210204150536.2d26y7zrp7vhmn53@e107158-lin>
-References: <20210128183141.28097-1-valentin.schneider@arm.com>
- <20210128183141.28097-2-valentin.schneider@arm.com>
- <20210203151429.rnbdgt7wyoaz2vui@e107158-lin>
- <jhjo8h12dsn.mognet@arm.com>
+        id S237042AbhBDPHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:07:37 -0500
+IronPort-SDR: IeMgd1RmCdrLHewfCP5nkj2MyMsY17rk04+6NvBtekd3QkPWUH579pPrvZMkYK2nEYzkmZ6Wn1
+ 6fOeTSzyXnAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160420162"
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="160420162"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:05:51 -0800
+IronPort-SDR: poRwnzyt7zxPp5Ci3mDHcdCKs79uKBOse0v7tl+uRAVzIK7YF8TVE7sVnl8mIsdzw0bsvJJYGo
+ arDlJe3hvjiA==
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="415395862"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:05:50 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l7gCZ-001vYb-6A; Thu, 04 Feb 2021 17:05:47 +0200
+Date:   Thu, 4 Feb 2021 17:05:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <mark.gross@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drivers-x86 tree
+Message-ID: <YBwNS6iO1RhY+2Lf@smile.fi.intel.com>
+References: <20210204161351.5c934ea2@canb.auug.org.au>
+ <5461d70a-39a0-0322-e2ae-6434e0d1e0a3@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <jhjo8h12dsn.mognet@arm.com>
+In-Reply-To: <5461d70a-39a0-0322-e2ae-6434e0d1e0a3@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/21 18:42, Valentin Schneider wrote:
-> >> @@ -9805,9 +9810,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >>  					active_load_balance_cpu_stop, busiest,
-> >>  					&busiest->active_balance_work);
-> >>  			}
-> >> -
-> >> -			/* We've kicked active balancing, force task migration. */
-> >> -			sd->nr_balance_failed = sd->cache_nice_tries+1;
-> >
-> > This has an impact on future calls to need_active_balance() too, no? We enter
-> > this path because need_active_balance() returned true; one of the conditions it
-> > checks for is
-> >
-> > 	return unlikely(sd->nr_balance_failed > sd->cache_nice_tries+2);
-> >
-> > So since we used to reset nr_balanced_failed to cache_nice_tries+1, the above
-> > condition would be false in the next call or two IIUC. But since we remove
-> > that, we could end up here again soon.
-> >
-> > Was this intentional?
-> >
+On Thu, Feb 04, 2021 at 08:38:40AM +0100, Hans de Goede wrote:
+> Hi Stephen, Andy,
 > 
-> Partially, I'd say :-)
+> On 2/4/21 6:13 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the drivers-x86 tree, today's linux-next build (x86_64
+> > allmodconfig) produced this warning:
+> > 
+> > drivers/platform/x86/intel_scu_wdt.c: In function 'register_mid_wdt':
+> > drivers/platform/x86/intel_scu_wdt.c:66:28: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+> >    66 |  wdt_dev.dev.platform_data = (const struct intel_mid_wdt_pdata *)id->driver_data;
+> >       |                            ^
+> > 
+> > Introduced by commit
+> > 
+> >   a507e5d90f3d ("platform/x86: intel_scu_wdt: Get rid of custom x86 model comparison")
 > 
-> If you look at active_load_balance_cpu_stop(), it does
+> Thank you for the bug report.
 > 
->   sd->nr_balance_failed = 0;
-> 
-> when it successfully pulls a task. So we get a reset of the failed counter
-> on pull, which I've preserved. As for interactions with later
-> need_active_balance(), the commit that introduced the current counter write
-> (which is over 15 years old!):  
-> 
->   3950745131e2 ("[PATCH] sched: fix SMT scheduling problems")
-> 
-> only states the task_hot() issue; thus I'm doubtful whether said
-> interaction was intentional.
+> Andy can you send me a fix for this please ?
 
-The '+1' was added in that comment. 'Original' code was just resetting the
-nr_balance_failed cache_nice_tries, so that we don't do another one too soon
-I think.
+Fix just has been sent.
 
-With this change, no active balance is allowed until later. Which makes sense.
-I can't see why we would have allowed another kick sooner tbh. But as you say,
-this is ancient piece of logic.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I agree I can't see a reason to worry about this (potential) change of
-behavior.
 
-Thanks
-
---
-Qais Yousef
