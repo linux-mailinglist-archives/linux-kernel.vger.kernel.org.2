@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E0B30FE7C
+	by mail.lfdr.de (Postfix) with ESMTP id 059A930FE7B
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240234AbhBDUfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S240259AbhBDUep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240228AbhBDUdu (ORCPT
+        with ESMTP id S240236AbhBDUdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:33:50 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E991C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:33:10 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id x81so4758149qkb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:33:10 -0800 (PST)
+        Thu, 4 Feb 2021 15:33:51 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7678FC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:33:11 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t25so2952236pga.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:33:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Dix9FkD7Q8YvsbhJky2+W/nmTrrOT5ZKalVOWF+tmA4=;
-        b=cDReKReTwzY2tEy8CRJVdi8dW4eTpCWSFoK/DAgetsqmSkAE0SjhMtop0C+tzZyHXe
-         ZFYbRiqB9GdxJTTYEmeOBWpGKktel0p5pbUaRtIDGCk+m8sDube/UYt33Kam9Ddu99Rh
-         XNEMmYFFu6iuQeUbcrdhEx7OznZh9uhoyM8jgiTREGAgvh+5nx71ab66DUY4tkuZnAqu
-         1HYufMlNMn1JGPbP5rTAgd+3qzl8iN+HCJHLVB/lsb6Vo/AxFckEVcxuAqnlxODzIjFW
-         4vFH8nqfzRKapeKAUSaYJ+aEe6hmE6tockmkb8P0l3xdZ0GnpilcTZl9Xh6JhFd9TPwS
-         KlGw==
+        bh=NeprK6JinSqU49dQ1nFPWFvDyk0tPt3L+sHTBjkAdOQ=;
+        b=D8TSY/I574CxB1blhR9D6u6bOcOmqMCyck3xJ5THhC5s9Yd8CgpIT8NoEAaCVNnzIF
+         hqt9PagwwXSj48djg6joitbyoM/L0tatsbpJDqfEOWr6yEJgz3sBN1eQVR4sg21XZUPY
+         mkH0vkZw4SIIvp4oxgImT0qojz0l3OFPib5Uw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Dix9FkD7Q8YvsbhJky2+W/nmTrrOT5ZKalVOWF+tmA4=;
-        b=Ak9JzIKC4/Y9A/4BSMAgvQPfEOP8kaaZBwx8NQsLsODnPxD1mCVLzsoPLTq0iGegv8
-         8T8gT2mlmwDB2Rnr/V/OtzV/vV7QaCwuMbBfOm2PBLBJEOQRxdAjS8Z+q7xlE1jLZH+a
-         5N0lpMvbAuh7CoP9HvoiwmnONUieG/Pm7k/GJl6Z8IPSKcCw+usa29wyXcfa/hfZnK6o
-         5gfKxmdRBAa3FOWaHCuz/k3GTtZ5b22Gy4w0r+j2HJ1ZwkdZ9OVacMkh1JdKO4kJfOE0
-         Ek3EA0aokKQcOB0ARn1OQLB1fiOfMbXxM1EGkJ5u6h6ZAiCK2opMCcMF2Lw55oM7GqIX
-         z0hA==
-X-Gm-Message-State: AOAM532grXVHpnR24RMyEaCsz7wymyr3pr8+3/4FpbNb+UHOSuklT9Dk
-        Qsfxo3SrAJVl3q/Z62JX11Z14g==
-X-Google-Smtp-Source: ABdhPJyEtwuXXyB00lgRC7eM+25Sj3EPce7HrV9Mel8mQaMcAOrHGScwlSChOxTQiprPAv/ifQ3CSg==
-X-Received: by 2002:a37:9aca:: with SMTP id c193mr925374qke.91.1612470789613;
-        Thu, 04 Feb 2021 12:33:09 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id h8sm5398309qtm.5.2021.02.04.12.33.08
+        bh=NeprK6JinSqU49dQ1nFPWFvDyk0tPt3L+sHTBjkAdOQ=;
+        b=EuRmSUp2k1UGta2tbK21ug7m+96RtQUo7WE+1eUVTnnn2vlQQqksPCzJNnf/+jJd/g
+         m57zVEaU08Y8kgOHVhzICmpfYo2VVyVPWhmnT5xmC51N2z7HLjT2P7N32e/Mj9rDQ2FZ
+         VjJR1fysPP2MHGOEp5vqt5HVyGHoyOUdl4erU2M8XN+r7ptkyMtfomDtTvUfq6cw3LlX
+         hXiw3sFk8dQ+oXgsRjcJrPYZt5i5Ari2PKpszz+AMGEyZ+koxDJRV/rcrc2mbshmDxtU
+         u9w6HOES7gBRTW30MQtGDHCgo8XKQtaUXZZ/dbyQSGg8kWztKrDlUP3ctnKAs0/QcEHK
+         qU9Q==
+X-Gm-Message-State: AOAM532KyTGgeTACaiIoD2gePj0vC28AixxIMl87agaD5+Zodh/B3x+v
+        bxPNzaOop7wKk8lzUKypa0zCjQ==
+X-Google-Smtp-Source: ABdhPJwJ8tkFZ1GvM2rS6EIJq9lw8kHUx/wvUF88J40CKTwNhAGVZNsM8/4iFq1PZVwRDJJhoNR3nQ==
+X-Received: by 2002:a65:6246:: with SMTP id q6mr807193pgv.6.1612470791075;
+        Thu, 04 Feb 2021 12:33:11 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r14sm7806546pgi.27.2021.02.04.12.33.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 12:33:08 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l7lJM-003bYY-Dq; Thu, 04 Feb 2021 16:33:08 -0400
-Date:   Thu, 4 Feb 2021 16:33:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, David Stevens <stevensd@google.com>,
-        Jann Horn <jannh@google.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH] mm: Export follow_pte() for KVM so that KVM can stop
- using follow_pfn()
-Message-ID: <20210204203308.GB4718@ziepe.ca>
-References: <20210204171619.3640084-1-seanjc@google.com>
- <42ac99c2-830e-e4b7-00b9-011d531a0dda@redhat.com>
+        Thu, 04 Feb 2021 12:33:10 -0800 (PST)
+Date:   Thu, 4 Feb 2021 12:33:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v19 22/25] ELF: Introduce arch_setup_elf_property()
+Message-ID: <202102041233.2FCCEABF1C@keescook>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-23-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42ac99c2-830e-e4b7-00b9-011d531a0dda@redhat.com>
+In-Reply-To: <20210203225547.32221-23-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 06:19:13PM +0100, Paolo Bonzini wrote:
-> On 04/02/21 18:16, Sean Christopherson wrote:
-> > Export follow_pte() to fix build breakage when KVM is built as a module.
-> > An in-flight KVM fix switches from follow_pfn() to follow_pte() in order
-> > to grab the page protections along with the PFN.
-> > 
-> > Fixes: bd2fae8da794 ("KVM: do not assume PTE is writable after follow_pfn")
-> > Cc: David Stevens <stevensd@google.com>
-> > Cc: Jann Horn <jannh@google.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: kvm@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > 
-> > Paolo, maybe you can squash this with the appropriate acks?
+On Wed, Feb 03, 2021 at 02:55:44PM -0800, Yu-cheng Yu wrote:
+> An ELF file's .note.gnu.property indicates arch features supported by the
+> file.  These features are extracted by arch_parse_elf_property() and stored
+> in 'arch_elf_state'.
 > 
-> Indeed, you beat me by a minute.  This change is why I hadn't sent out the
-> patch yet.
+> Introduce x86 feature definitions and arch_setup_elf_property(), which
+> enables such features.  The first use-case of this function is Shadow
+> Stack.
 > 
-> Andrew or Jason, ok to squash this?
+> ARM64 is the other arch that has ARCH_USE_GNU_PROPERTY and arch_parse_elf_
+> property().  Add arch_setup_elf_property() for it.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
-I think usual process would be to put this in the patch/series/pr that
-needs it.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Given how badly follow_pfn has been misused, I would greatly prefer to
-see you add a kdoc along with exporting it - making it clear about the
-rules.
-
-And it looks like we should remove the range argument for modular use
-
-And document the locking requirements, it does a lockless read of the
-page table:
-
-	pgd = pgd_offset(mm, address);
-	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
-		goto out;
-
-	p4d = p4d_offset(pgd, address);
-
-It doesn't do the trickery that fast GUP does, so it must require the
-mmap sem in read mode at least.
-
-Not sure I understand how fsdax is able to call it only under the
-i_mmap_lock_read lock? What prevents a page table level from being
-freed concurrently?
-
-And it is missing READ_ONCE's for the lockless page table walk.. :(
-
-Jason
+-- 
+Kees Cook
