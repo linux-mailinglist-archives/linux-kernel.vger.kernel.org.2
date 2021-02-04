@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F20930F47F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58CE30F488
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhBDODz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233305AbhBDN7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:59:24 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156D3C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y3YvMfYAL6UgrJ9vkGGctIPfcXYu1VvCoq1uURArgQI=; b=2LW3GcAhXz9LNG0iistWQ2pHa+
-        6632w7xkeHvCe2570eFslk8aq9C+aJ9ITc+SRW8keQfSFMN7RvQIWZJnuG97CA8H1kq19cZ3tEcE4
-        7JNSNVYXNi4YsNYaRCSfCQmm9XYtHybqVY0HHnahYwgFvC2GXyAWZEDxfWbqqHoHqxngJedGonR6r
-        aDxSsHbqAvQUu/jUistYlEeTKkcI0p37Bd9cwuf1q+ywgcvyPjbMGIIpoP3fx5q7pVE+yT0Iu+yhb
-        bT/Pf9HgNoekPnfWULFtRWXja3MzCxeVuZ6tlAkd5++7IhbFmYKWVkJykLl2OUXfzXIYopcxYv1fg
-        duhJ2Apg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7f8f-0008FV-U6; Thu, 04 Feb 2021 13:57:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 763CE3003D8;
-        Thu,  4 Feb 2021 14:57:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4902E2C12E919; Thu,  4 Feb 2021 14:57:39 +0100 (CET)
-Date:   Thu, 4 Feb 2021 14:57:39 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YBv9Uy1dyv8E2LAz@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
+        id S236621AbhBDOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:05:12 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52100 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236475AbhBDOBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:01:21 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l7fBQ-0004tX-00; Thu, 04 Feb 2021 15:00:32 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1AEF7C0D53; Thu,  4 Feb 2021 14:59:19 +0100 (CET)
+Date:   Thu, 4 Feb 2021 14:59:19 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ralink: manage low reset lines
+Message-ID: <20210204135919.GA13761@alpha.franken.de>
+References: <20210203092140.12458-1-sander@svanheule.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
+In-Reply-To: <20210203092140.12458-1-sander@svanheule.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> +/* Request the scheduler to share a core */
-> +#define PR_SCHED_CORE_SHARE		59
-> +# define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
-> +# define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
-> +# define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
+On Wed, Feb 03, 2021 at 10:21:41AM +0100, Sander Vanheule wrote:
+> Reset lines with indices smaller than 8 are currently considered invalid
+> by the rt2880-reset reset controller.
+> 
+> The MT7621 SoC uses a number of these low reset lines. The DTS defines
+> reset lines "hsdma", "fe", and "mcm" with respective values 5, 6, and 2.
+> As a result of the above restriction, these resets cannot be asserted or
+> de-asserted by the reset controller. In cases where the bootloader does
+> not de-assert these lines, this results in e.g. the MT7621's internal
+> switch staying in reset.
+> 
+> Change the reset controller to only ignore the system reset, so all
+> reset lines with index greater than 0 are considered valid.
+> 
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+> This patch was tested on a TP-Link EAP235-Wall, with an MT7621DA SoC.
+> The bootloader on this device would leave reset line 2 ("mcm") asserted,
+> which caused the internal switch to be unresponsive on an uninterrupted
+> boot from flash.
+> 
+> When tftpboot was used in the bootloader to load an initramfs, it did
+> initialise the internal switch, and cleared the mcm reset line. In this
+> case the switch could be used from the OS. With this patch applied, the
+> switch works both in an initramfs, and when (cold) booting from flash.
+> 
+>  arch/mips/ralink/reset.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Why ?
+applied to mips-next.
 
-Also, how do I set a unique cookie on myself with this interface?
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
