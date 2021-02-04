@@ -2,130 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A137D30FB7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A1730FB7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239136AbhBDS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238908AbhBDSTo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:19:44 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7826FC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:19:04 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id w22so2714723pll.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:19:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
-        b=JWES8rpo4FSC6YxM08B3ne3WSE8mwOoe4YXK22ypOyIhZRXvmJtav1bew84WSu2he1
-         o5oTUWlif2TQQ6ePgIqh8RMnovA2hkvSifp7ohmwld/5FAlGsUqFjp3umWZQ8ry6Vvgt
-         bmdrqAalBy3fjnn5ZB+2LdoKuiXdQjKnlpuDDp02oSdz1bVUG6r7drR4Y5yczWre7LJN
-         pyuUu7KqqxlZOB/64y6nG0p/VCy3vx40h2+kK6qgiN59kRw34gOs0oPCkvjasFWMVrEi
-         AX/7n9Hhs1w2NoAeUFG84NZxzCXroqpLRvQ/wTdc45/IAh74eK2h+lHZx7lsD9e8/zCU
-         tExQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
-        b=gUVjnYUdk9TvIEgGgdXOw+8X7lIJjr+3SqV0tDxUOZEVmxUzqfw9LCCZvkcLNzOrOS
-         BKkXXPJ9sU3Hmi1pIHSh9AwF85SVrA1GbxkFepiEcZZb/7kZYvye20sQs4aH7i6PYCS6
-         4ZxseSZY7ns7fKPmcW5QnaZgaIibDd5erOg2uwmrRFOtKHUFFphfO0ex8gKXq8+mVw/q
-         MBvBfLB6HufWONp2E/Qm0v4RLgAmmgglHyuZ9DQv1R8xKv+O10E24BOyGgS7vFEKa4hL
-         WPXroVVwQ6KhzMnFY8tcuNNyfNHZmQy9w1WmGmEZTJpCvlh+fuu+aw5kkAvsUfekRBRt
-         8sqg==
-X-Gm-Message-State: AOAM5316cAOWc5yUMR6w5BtjF8CL9bZ7x+faeyM/tSyJzrd+etDTTN3i
-        mAFxyz3qTF84YEC6Jwko2CfLkQ7YGjOw
-X-Google-Smtp-Source: ABdhPJzx1vsXHznamTaYWa9MvvPa0WoOBCyUpAAEP3hDPxjBYVWTXkLnj/RR88J2ZNL7dmnhiy+DO9nElJFi
-Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
-X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a17:90a:3b44:: with SMTP id
- t4mr64655pjf.1.1612462743645; Thu, 04 Feb 2021 10:19:03 -0800 (PST)
-Date:   Thu,  4 Feb 2021 18:18:39 +0000
-In-Reply-To: <20210204181839.558951-1-brianvv@google.com>
-Message-Id: <20210204181839.558951-2-brianvv@google.com>
-Mime-Version: 1.0
-References: <20210204181839.558951-1-brianvv@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH net-next 2/2] net: fix building errors on powerpc when
- CONFIG_RETPOLINE is not set
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S239122AbhBDS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:29:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239081AbhBDS1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:27:53 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F06664D9A;
+        Thu,  4 Feb 2021 18:27:12 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 13:27:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] tracepoints: Code clean up
+Message-ID: <20210204132710.00fdce4f@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes the errores reported when building for powerpc:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
- ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
+Restructure the code a bit to make it simpler, fix some formatting problems
+and add READ_ONCE/WRITE_ONCE to make sure there's no compiler tear downs on
+changes to variables that can be accessed across CPUs.
 
-Fixes: f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
-Fixes: bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functions")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Brian Vazquez <brianvv@google.com>
+Started with Mathieu Desnoyers's patch:
+
+  Link: https://lore.kernel.org/lkml/20210203175741.20665-1-mathieu.desnoyers@efficios.com/
+
+And will keep his signature, but I will take the responsibility of this
+being correct, and keep the authorship.
+
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- net/ipv4/route.c | 4 ++--
- net/ipv6/route.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/linux/tracepoint.h |  2 +-
+ kernel/tracepoint.c        | 92 +++++++++++++++-----------------------
+ 2 files changed, 37 insertions(+), 57 deletions(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 9e6537709794..be31e2446470 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1206,7 +1206,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
- 		return NULL;
- 	return dst;
- }
--EXPORT_SYMBOL(ipv4_dst_check);
-+EXPORT_INDIRECT_CALLABLE(ipv4_dst_check);
- 
- static void ipv4_send_dest_unreach(struct sk_buff *skb)
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 966ed8980327..dc1d4c612cc3 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -309,7 +309,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
+ 		if (it_func_ptr) {					\
+ 			do {						\
+-				it_func = (it_func_ptr)->func;		\
++				it_func = READ_ONCE((it_func_ptr)->func); \
+ 				__data = (it_func_ptr)->data;		\
+ 				((void(*)(void *, proto))(it_func))(__data, args); \
+ 			} while ((++it_func_ptr)->func);		\
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index e8f20ae29c18..4b9de79bb927 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -136,9 +136,9 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+ 	 int prio)
  {
-@@ -1337,7 +1337,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ipv4_mtu(const struct dst_entry *dst)
+ 	struct tracepoint_func *old, *new;
+-	int nr_probes = 0;
+-	int stub_funcs = 0;
+-	int pos = -1;
++	int iter_probes;	/* Iterate over old probe array. */
++	int nr_probes = 0;	/* Counter for probes */
++	int pos = -1;		/* New position */
  
- 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
- }
--EXPORT_SYMBOL(ipv4_mtu);
-+EXPORT_INDIRECT_CALLABLE(ipv4_mtu);
- 
- static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
- {
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 8d9e053dc071..0d1784b0d65d 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -2644,7 +2644,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
- 
- 	return dst_ret;
- }
--EXPORT_SYMBOL(ip6_dst_check);
-+EXPORT_INDIRECT_CALLABLE(ip6_dst_check);
- 
- static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
- {
-@@ -3115,7 +3115,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ip6_mtu(const struct dst_entry *dst)
- 
- 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
- }
--EXPORT_SYMBOL(ip6_mtu);
-+EXPORT_INDIRECT_CALLABLE(ip6_mtu);
- 
- /* MTU selection:
-  * 1. mtu on route is locked - use it
+ 	if (WARN_ON(!tp_func->func))
+ 		return ERR_PTR(-EINVAL);
+@@ -147,54 +147,39 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+ 	old = *funcs;
+ 	if (old) {
+ 		/* (N -> N+1), (N != 0, 1) probes */
+-		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+-			/* Insert before probes of lower priority */
+-			if (pos < 0 && old[nr_probes].prio < prio)
+-				pos = nr_probes;
+-			if (old[nr_probes].func == tp_func->func &&
+-			    old[nr_probes].data == tp_func->data)
++		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
++			if (old[iter_probes].func == tp_stub_func)
++				continue;	/* Skip stub functions. */
++			if (old[iter_probes].func == tp_func->func &&
++			    old[iter_probes].data == tp_func->data)
+ 				return ERR_PTR(-EEXIST);
+-			if (old[nr_probes].func == tp_stub_func)
+-				stub_funcs++;
++			nr_probes++;
+ 		}
+ 	}
+-	/* + 2 : one for new probe, one for NULL func - stub functions */
+-	new = allocate_probes(nr_probes + 2 - stub_funcs);
++	/* + 2 : one for new probe, one for NULL func */
++	new = allocate_probes(nr_probes + 2);
+ 	if (new == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 	if (old) {
+-		if (stub_funcs) {
+-			/* Need to copy one at a time to remove stubs */
+-			int probes = 0;
+-
+-			pos = -1;
+-			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+-				if (old[nr_probes].func == tp_stub_func)
+-					continue;
+-				if (pos < 0 && old[nr_probes].prio < prio)
+-					pos = probes++;
+-				new[probes++] = old[nr_probes];
+-			}
+-			nr_probes = probes;
+-			if (pos < 0)
+-				pos = probes;
+-			else
+-				nr_probes--; /* Account for insertion */
+-
+-		} else if (pos < 0) {
+-			pos = nr_probes;
+-			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
+-		} else {
+-			/* Copy higher priority probes ahead of the new probe */
+-			memcpy(new, old, pos * sizeof(struct tracepoint_func));
+-			/* Copy the rest after it. */
+-			memcpy(new + pos + 1, old + pos,
+-			       (nr_probes - pos) * sizeof(struct tracepoint_func));
++		pos = -1;
++		nr_probes = 0;
++		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
++			if (old[iter_probes].func == tp_stub_func)
++				continue;
++			/* Insert before probes of lower priority */
++			if (pos < 0 && old[iter_probes].prio < prio)
++				pos = nr_probes++;
++			new[nr_probes++] = old[iter_probes];
+ 		}
+-	} else
++		if (pos < 0)
++			pos = nr_probes++;
++		/* nr_probes now points to the end of the new array */
++	} else {
+ 		pos = 0;
++		nr_probes = 1; /* must point at end of array */
++	}
+ 	new[pos] = *tp_func;
+-	new[nr_probes + 1].func = NULL;
++	new[nr_probes].func = NULL;
+ 	*funcs = new;
+ 	debug_print_probes(*funcs);
+ 	return old;
+@@ -237,11 +222,12 @@ static void *func_remove(struct tracepoint_func **funcs,
+ 		/* + 1 for NULL */
+ 		new = allocate_probes(nr_probes - nr_del + 1);
+ 		if (new) {
+-			for (i = 0; old[i].func; i++)
+-				if ((old[i].func != tp_func->func
+-				     || old[i].data != tp_func->data)
+-				    && old[i].func != tp_stub_func)
++			for (i = 0; old[i].func; i++) {
++				if ((old[i].func != tp_func->func ||
++				     old[i].data != tp_func->data) &&
++				    old[i].func != tp_stub_func)
+ 					new[j++] = old[i];
++			}
+ 			new[nr_probes - nr_del].func = NULL;
+ 			*funcs = new;
+ 		} else {
+@@ -249,17 +235,11 @@ static void *func_remove(struct tracepoint_func **funcs,
+ 			 * Failed to allocate, replace the old function
+ 			 * with calls to tp_stub_func.
+ 			 */
+-			for (i = 0; old[i].func; i++)
++			for (i = 0; old[i].func; i++) {
+ 				if (old[i].func == tp_func->func &&
+-				    old[i].data == tp_func->data) {
+-					old[i].func = tp_stub_func;
+-					/* Set the prio to the next event. */
+-					if (old[i + 1].func)
+-						old[i].prio =
+-							old[i + 1].prio;
+-					else
+-						old[i].prio = -1;
+-				}
++				    old[i].data == tp_func->data)
++					WRITE_ONCE(old[i].func, tp_stub_func);
++			}
+ 			*funcs = old;
+ 		}
+ 	}
 -- 
-2.30.0.365.g02bc693789-goog
+2.25.4
 
