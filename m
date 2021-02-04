@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B8730FA5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913EB30FA66
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238686AbhBDRzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:55:13 -0500
-Received: from mail-mw2nam10on2103.outbound.protection.outlook.com ([40.107.94.103]:12609
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238201AbhBDRys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:54:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dzkTqxjUGoR5kW1t64coOS5sOmoX5ToSYa6uRLcdQcn/5JeKd7IFwQph66g2RTkoCWhgjlZxsb0QYLnUEnZ1F+kxvaHwaJfzXMOTRmeSVRawTTN71baG8KPxJKgzzw3+ISDNlga64YJrc7Rlh+mws7qje02OpSeDpVdA2ZW0Csn8PojG+sGUA5FOyq+Z1XvRjyneJcDoR9hoRJ40ISyNn9UYAGK+/9iMtDAWBRsyHKjE8MXOG0YHO0bt7KvFDhKbQPHK+iQrDNcoDuYOQYfXhsIzEPulmC/SbpMGriJLyGt4NhEcD1e4gzCIohFp47/Qv/kkksiKqMAJrxzvbPi16Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8a15breN6v7/6RZ8assTbzjyUpkox5g6VCUQvJu3rxI=;
- b=Xfb8fi7XM4sk9PdswCAzVYQr2D/CwphQ8TajTGJQRvoCeAcWyIby6rqIBQDo8W8F/fk+Out6Jl/EHTBqKe0/LOEdLWRbbHnaCGm4Cc0/OP5xvgcJFhfP6c0e/oxaIU7SdxPSNkh6+YBCX0pSEENo9GRDW1xVpqcPXM+ERuf0qgz4QMGEi6J0NGrsv+Cgf3UlZZvkmJ3MBcqIWEQG5+UkE5CQ9h0sTcSOyLUYSaPLiFjCljuaFTD6Fel6Gc8fNBQhfsKNNvEJYm2cwzez5GjNuuT/Ni7CZ8W1Zd3KYxE2SH1SxI/olFXPS9zMlgJsqgmbBFbiJcW/UyelkpbIlhzhww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8a15breN6v7/6RZ8assTbzjyUpkox5g6VCUQvJu3rxI=;
- b=HAIv6KsykTy+BBqf7BWzhkOCa5jHRLFnehMCcQ+pXbDZsh5bb+BZ1hF4vk5aohgIFsTDL8oUF2/fyTy4mkdcqnOosx5LiCSG/IaYHAGSwK0koFhXB66Sr3e7eW518zxSx6sQpI+vZhpGnmIhU9iO9jLOPceoPIlTcFj/KHfjnXk=
-Received: from (2603:10b6:301:7c::11) by
- MWHPR2101MB0873.namprd21.prod.outlook.com (2603:10b6:301:7e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.6; Thu, 4 Feb
- 2021 17:53:55 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3846.006; Thu, 4 Feb 2021
- 17:53:55 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-CC:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Subject: RE: [PATCH v6 16/16] iommu/hyperv: setup an IO-APIC IRQ remapping
- domain for root partition
-Thread-Topic: [PATCH v6 16/16] iommu/hyperv: setup an IO-APIC IRQ remapping
- domain for root partition
-Thread-Index: AQHW+j31sX8XTKaHaEW+K0rkDWqrRapISLLw
-Date:   Thu, 4 Feb 2021 17:53:55 +0000
-Message-ID: <MWHPR21MB159329D4EA13215C208D7828D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210203150435.27941-1-wei.liu@kernel.org>
- <20210203150435.27941-17-wei.liu@kernel.org>
-In-Reply-To: <20210203150435.27941-17-wei.liu@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-04T17:53:53Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ef2c78a6-f632-4744-a1c1-679068bd2287;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 949aa3eb-507f-490e-508e-08d8c935d74c
-x-ms-traffictypediagnostic: MWHPR2101MB0873:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR2101MB087360720F5F0F8A1F0C540AD7B39@MWHPR2101MB0873.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1051;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eguCWD75ZeKlC1x8rCdqJn75BSg1oU9+ceoFGDP5Ju7lTd38Si02+u46gaQRz2ie551/P6t2rbBAN4KjWv73mXLYQCavJeWRD6+H5ODmvaovjhL56LPFCQTELuNlwJIsvgBxJKz/wupM3uDkJogXaLF7nzafJTZj/MR+QB6QNz5ov2R98Fy8FJ2UOmas1ARKuw11Ft3ec42WMbr5MNrvNUtUURRB6lHbmSdfPpqkh35NBQ5dOMxkKhmiOqPZtZxbpJ5LUwcKCYD/fmi3WUSjNode3ycf/793pFWG3ghDaPRjCVVdIi8l+gQPRbqcmnmEWX9om9mGlr+krD2bsD3CjjH2HdpdgxFG1dtGlUo9BOFjFRqzJvf81lz0f8joD59eRvgE6C2mX9Y2NNSpNzosAzCBI2Bbzvwwq8lfE5tfz9qFZwPETHJhylW8HTx+LsLtA2URJNeswke3TyCApsfFdYe1Pov9a6l8CVwXccqCex9dTeOJYtOvwFIGEtBIsKJcMiwOGBS7UwY1ttkWXvaVBQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(366004)(136003)(346002)(6506007)(8676002)(33656002)(66556008)(26005)(82950400001)(8990500004)(66476007)(82960400001)(186003)(86362001)(2906002)(7696005)(10290500003)(4744005)(316002)(66446008)(76116006)(4326008)(110136005)(478600001)(55016002)(52536014)(7416002)(71200400001)(8936002)(64756008)(83380400001)(54906003)(66946007)(9686003)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: z1FZG/qVdzvPmsdw0RBb+ElltqpJLNjstJNUsWY9cDuDrHPdgecDMmvQzWwbRHmjh8gTSEVzP7jOZ55k4DH/uQiucvw+Q1fD1bfnEX80ofuCli8cZcOTyaYVLp65MXaKBdRfS/R2Y9l5phQtAPoGtLIMSWHAAQT0VXOOX2TiGoAoALKJd/LsXJ4JLLXslVfV3gIOnpKNSDnsFim2jFMZGjLd5dupqNPssgjn9mlzn1Go1zWc1g3jpXkpblMYpoFAtB3OzBiz1VaipZTBxQJdrYdkXEEJFTJmvGPwgB+EAAL6+xDp6q2D+Glph1y9e0LQVk+0BX+bBhUnqUizT+Dtb43b7YCqaN3RnEk1l8d9+nie2sk02JSgjCSEqPhfPN1JmM8LcF/MhEZJu3uqECpzRdOliinX9lpA7qPNshb63orlcXNXVGN3RZCPlEBZeU4AiRFs1PzgsDsXoatfZcRfoB47Sc9ucRktctxlSbJzdVC+/Z556VI7vmRThRGmq9g+/zMASW1+Ro7HgMLle6w13ymKQOkRFsDVlLqfMuHdWoJDUOlTK6fgfh6RyEN9DXZm5ztYnH2rgUmLebGAgRyEUejB9HKWTzmHfhcbCC80kUFApzT6qE3MpjVcFtwmLy5nH3rE7on7AoW/LQb/OLkiwrp10d7knbFU59xlPcs5GAF8qzSBPId4P5kVSVaIjBSUTLAJks0mugwReKv1X3cWgTpoIT9bwc7KRTqg9MrYGVc=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S238539AbhBDR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238675AbhBDR4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:56:17 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A93C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:55:37 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id c18so4453713ljd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=voNiwPhzeLAZNHX2oRQL59Hxy42wWXI9DL6jmHv2mf0=;
+        b=NUI9thqKSFpWLW3nPn6698yvI2J++NtLklBNQ+xHDuLU0hK9vHDTLtOsI88z5efBKG
+         8uCbzqHIDFL7NCjPcpmxpKuVrzdrJkALf3jaBFQky7nr8k1jo5+j5RhC3jzu3Fehs4lq
+         k6G5sz9oPMVP3kBQajQ0ZaZP5M53dDdKmwQsU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=voNiwPhzeLAZNHX2oRQL59Hxy42wWXI9DL6jmHv2mf0=;
+        b=cxwOn7Pwkm12ZVRVaGZINTjeQuKT6YjbMl2ViOj+7Aqj8CBd5HQ16AGDR+/UnFwmwS
+         raFUMuDMouhqk/caBKr6qT+eydiuXv9L8jz6LS6mMvnbrmrtL12GLEk77c42LBSi1k5A
+         7FlllxoMq5y06XiocvrnaSPItr3tWGdlMqznFVdhe8WRc0M/2FejtwL67iOqdUdgN8On
+         3sutZN603WrQLrmRJavx72NmOls3vhkRSNKRFIK1XINSTzVGSXT3mAnPmM8ccZAdgbAn
+         Lvi5e/NRAreavsoKReCnRHHcgHvqjV+OEerJcf280g0atsbNvFMbZLq71lbPtH/J8BWV
+         Z+ZQ==
+X-Gm-Message-State: AOAM532SBfk+uirlTDdObtetEkSo2XYuFQyNkWyIOpzgWcMoDs6RmcZ4
+        LDZva8L8IHID0JSFhzSWJgYHOs8ebqhkfw==
+X-Google-Smtp-Source: ABdhPJygUNpsYU/NRJ4SGfuixwUQ99mNQeRWAjEhWVXkz2oGz+pumeC0kMgsBO24+fRkgIHSujw/xw==
+X-Received: by 2002:a2e:2ac4:: with SMTP id q187mr301709ljq.151.1612461335040;
+        Thu, 04 Feb 2021 09:55:35 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id x144sm694590lff.89.2021.02.04.09.55.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 09:55:33 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id i187so5863244lfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:55:33 -0800 (PST)
+X-Received: by 2002:a19:8186:: with SMTP id c128mr273214lfd.377.1612461332734;
+ Thu, 04 Feb 2021 09:55:32 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 949aa3eb-507f-490e-508e-08d8c935d74c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 17:53:55.3368
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WyxcVU5EQHqyF1Nzke/qbyUVZXNeLMmsPIkHC849qCzSS4GCVlIpHf6jYD9Ja6Fq995VazWiXmci5Ovx/ho3AY3ExV3rS1FYJN5JbFe4mkE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0873
+References: <20210204145033.136755-1-peterx@redhat.com> <20210204145033.136755-4-peterx@redhat.com>
+In-Reply-To: <20210204145033.136755-4-peterx@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Feb 2021 09:54:37 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiP8fB7R70h5MqDUFu2=nVHytsrdDKmQHmQTeYbyhifrA@mail.gmail.com>
+Message-ID: <CAHk-=wiP8fB7R70h5MqDUFu2=nVHytsrdDKmQHmQTeYbyhifrA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mm: Introduce page_needs_cow_for_dma() for
+ deciding whether cow
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Wei Zhang <wzam@amazon.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Gal Pressman <galpress@amazon.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, February 3, 2021 7:05 A=
-M
->=20
-> Just like MSI/MSI-X, IO-APIC interrupts are remapped by Microsoft
-> Hypervisor when Linux runs as the root partition. Implement an IRQ
-> domain to handle mapping and unmapping of IO-APIC interrupts.
->=20
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
-> v6:
-> 1. Simplify code due to changes in a previous patch.
-> ---
->  arch/x86/hyperv/irqdomain.c     |  25 +++++
->  arch/x86/include/asm/mshyperv.h |   4 +
->  drivers/iommu/hyperv-iommu.c    | 177 +++++++++++++++++++++++++++++++-
->  3 files changed, 203 insertions(+), 3 deletions(-)
->=20
+On Thu, Feb 4, 2021 at 6:50 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1291,6 +1291,27 @@ static inline bool page_maybe_dma_pinned(struct page *page)
+>                 GUP_PIN_COUNTING_BIAS;
+>  }
+>
+> +static inline bool is_cow_mapping(vm_flags_t flags)
+> +{
+> +       return (flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
+> +}
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Oh, and I just realized: moving this to <linux/mm.h> means that this
+patch could/should also get rid of
+
+ - manual copy of this in mm/hugetlb.c:
+
+        cow = (vma->vm_flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
+
+ - private #define for the same thing in fs/proc/task_mmu.c
+
+    #define is_cow_mapping(flags) (((flags) & (VM_SHARED |
+VM_MAYWRITE)) == VM_MAYWRITE)
+
+ - manual copy in drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c:
+
+        bool is_cow_mapping =
+                (vma->vm_flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
+
+I guess it could be a later cleanup patch too, but maybe best done in
+this series just to not forget about it.
+
+               Linus
