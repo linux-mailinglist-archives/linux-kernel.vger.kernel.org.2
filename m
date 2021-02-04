@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84F2310064
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5486731005D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhBDW4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S229881AbhBDWyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhBDW4Q (ORCPT
+        with ESMTP id S229549AbhBDWyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:56:16 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47204C061794
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:55:01 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id q191so4838619ybg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:55:01 -0800 (PST)
+        Thu, 4 Feb 2021 17:54:54 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BE2C0613D6;
+        Thu,  4 Feb 2021 14:54:13 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id z21so3177290pgj.4;
+        Thu, 04 Feb 2021 14:54:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Wkqh1wBZi1KMSWP9n4B3+7R4NMp7xQIbcrZ87gljot4=;
-        b=iYbKyTjxF+2utdWW8EqdT/kRukPx6bdkOrTGffBQ3EQrvhGlQhMUHl9GQzbCEjBDRk
-         WyU4ioaBh/EghQ4qsB08wQUS+sh9s9/zbXYZUP6fnKZd9xakktG/+CYlj12MKFPFaJC+
-         RPm4eTDjCGHR9Eyt6MO6LqsklaY2Wtfft1AJ6oFyvC3cE/eCjZQFNRwwkHXe8Oil1Bk9
-         UgfjWtqPaiBO7r4jVqQb77XUeK5LvbHuUEObXh43X63HHx73M6IwvkvgNll9ofNG/huK
-         e0PGax3yohgTMXAN7PNdMPkK9359NPAuCHEPOhMt2wENbMkcX49Ce3Lbc1kRA4TTv3S3
-         ZfWQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mdTwxZRVmDjNbDvFpGlHxe4YobP1MixFfZCkGPsWCxs=;
+        b=qCSC/wVatdr4qz/USj4a8Cm09DUro653to4ZGejSPTfuHxXsMrHxCpCtDgsbgoNr/1
+         Ticsyi1hD+0BKN2I+9oXDvYMJ5zcjTeCNxuhh050tDGo0pjzwAqt3iqLyq8fecaAyC9G
+         ajJZEjYBlywf0SoTCwmZasrQgz46PGLYOiXeVQhrKIUdg5MRmuz2+iB8xgPCMIIzKrQL
+         NyLGgw+LptN0tSEWvy1mSY5m+EdfJXy4tcdcJ1VDz+fhtK+IfO4o9FDtRkjt9exsQjnU
+         Vu08fGozzk5eMj+v9QII9BhCTy3V8Vqi4SzwFkBzBSiSRzkpg18s9NQ74qyK8+hIZ0Ji
+         HxpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Wkqh1wBZi1KMSWP9n4B3+7R4NMp7xQIbcrZ87gljot4=;
-        b=NKPmgZNJVol1TEr9m0YfTBEX+cKYDOJW6dyCCvfbV+VVUok39rcUn9XGaxrcQ9ePNe
-         Vwqpjtq4X89nVJ0oweCctl2C8B9s4rV/gJxJCAi5NAsYZH8AKs4XSuj6238hy5tyXXu4
-         Pp4ZR6VnDv4x/R50K21KFcTvLn+lTbRMoR9z7qV9SypYdd7anduCaH8p17sTbNMGEl7P
-         Lvu1GncGAjMaFjn/g5e5avd8RZnL+9u9cfCB+vfcXJrE7O1S1aroWunaaacUf6BYxx1c
-         SnoUwcmLa1UtrwYOo54UE8YZwLp4xVY7xfpvor4lpfc2DKC5XNcUm0+oQNtNomif17aG
-         u/mg==
-X-Gm-Message-State: AOAM5309TlbAD2Z/FkPhO/kvaWLUWN9BtEroEUip5J7K2Hvjm8Lsthiw
-        +kVYGfo1lWAoD08YEuIZWD/4FqpJDS1BsQ==
-X-Google-Smtp-Source: ABdhPJwoINV61XBqm1+2y6JBPKINVE5ci4YcuQgf9RpZwrWA4UcY6q/lgnsC0tACbu0OUhf3hAuSoOwt1qLA3w==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:bd7a:7717:5b5b:de27])
- (user=dlatypov job=sendgmr) by 2002:a25:d441:: with SMTP id
- m62mr1482057ybf.109.1612479300511; Thu, 04 Feb 2021 14:55:00 -0800 (PST)
-Date:   Thu,  4 Feb 2021 14:54:48 -0800
-In-Reply-To: <20210204225448.1393741-1-dlatypov@google.com>
-Message-Id: <20210204225448.1393741-4-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210204225448.1393741-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v3 3/3] kunit: tool: fix unintentional statefulness in run_kernel()
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mdTwxZRVmDjNbDvFpGlHxe4YobP1MixFfZCkGPsWCxs=;
+        b=G4X9aQup7ZpVC4Krk+kGgUclCN9UBHjjLxQSenCq5HEENjtUk9QnUfg3FAkpRfEt39
+         OW24c9h6ejUCzw7Nl8niGC5R4Tx/Q/2dDanGZ8ErV8QRWfIsxO9wIN/I09GB8df8o8b4
+         alVMjaMyMqzCVubT7oHA868yeZ5uQ2lguA2TIrxO066IfBG+QuRj+7wY6Rx1SuIIX0B3
+         uh8bSQIsEFW58xq0Xspe36oqamMHsOAxT7NZXIoondu5YhfcreoTAgxFgDZBryE9CDXa
+         co34PYZ+8CZYSR9FYf0dhL0h7nRwZhV8fh7ESb2ez9/MuPqlRzYBx3pt8cBVbAYv517V
+         jaUg==
+X-Gm-Message-State: AOAM533AHOQJJMBujs6vEM18aGUEzGHPn+bVI0BrbP/eaFPNc8ovGVRr
+        bYhEC7tMuEFSSb3Yr8aDWMc=
+X-Google-Smtp-Source: ABdhPJxvN4byxugjYm4+2KCdf2189pKaG5B0yxje7rgqJb8Kx9C6qDRtFqbmjRmwrty6MCrhIrxolQ==
+X-Received: by 2002:a63:7051:: with SMTP id a17mr1248360pgn.26.1612479253528;
+        Thu, 04 Feb 2021 14:54:13 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id b65sm7277488pfg.3.2021.02.04.14.54.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 14:54:12 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm: Fix legacy relocs path
+Date:   Thu,  4 Feb 2021 14:56:49 -0800
+Message-Id: <20210204225650.1284384-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a bug that has been present since the first version of this
-code.
-Using [] as a default parameter is dangerous, since it's mutable.
+From: Rob Clark <robdclark@chromium.org>
 
-Example using the REPL:
->>> def bad(param = []):
-...     param.append(len(param))
-...     print(param)
-...
->>> bad()
-[0]
->>> bad()
-[0, 1]
+In moving code around, we ended up using the same pointer to
+copy_from_user() the relocs tables as we used for the cmd table
+entry, which is clearly not right.  This went unnoticed because
+modern mesa on non-ancent kernels does not actually use relocs.
+But this broke ancient mesa on modern kernels.
 
-This wasn't a concern in the past since it would just keep appending the
-same values to it.
-
-E.g. before, `args` would just grow in size like:
-  [mem=1G', 'console=tty']
-  [mem=1G', 'console=tty', mem=1G', 'console=tty']
-
-But with now filter_glob, this is more dangerous, e.g.
-  run_kernel(filter_glob='my-test*') # default modified here
-  run_kernel()			     # filter_glob still applies here!
-That earlier `filter_glob` will affect all subsequent calls that don't
-specify `args`.
-
-Note: currently the kunit tool only calls run_kernel() at most once, so
-it's not possible to trigger any negative side-effects right now.
-
-Fixes: 6ebf5866f2e8 ("kunit: tool: add Python wrappers for running KUnit tests")
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Reported-by: Emil Velikov <emil.velikov@collabora.com>
+Fixes: 20224d715a88 ("drm/msm/submit: Move copy_from_user ahead of locking bos")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- tools/testing/kunit/kunit_kernel.py | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_gem_submit.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 71b1942f5ccd..6dd3cf6e8efa 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -199,7 +199,9 @@ class LinuxSourceTree(object):
- 			return False
- 		return self.validate_config(build_dir)
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index d04c349d8112..5480852bdeda 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -198,6 +198,8 @@ static int submit_lookup_cmds(struct msm_gem_submit *submit,
+ 		submit->cmd[i].idx  = submit_cmd.submit_idx;
+ 		submit->cmd[i].nr_relocs = submit_cmd.nr_relocs;
  
--	def run_kernel(self, args=[], build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
-+	def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
-+		if not args:
-+			args = []
- 		args.extend(['mem=1G', 'console=tty'])
- 		if filter_glob:
- 			args.append('kunit.filter_glob='+filter_glob)
++		userptr = u64_to_user_ptr(submit_cmd.relocs);
++
+ 		sz = array_size(submit_cmd.nr_relocs,
+ 				sizeof(struct drm_msm_gem_submit_reloc));
+ 		/* check for overflow: */
 -- 
-2.30.0.478.g8a0d178c01-goog
+2.29.2
 
