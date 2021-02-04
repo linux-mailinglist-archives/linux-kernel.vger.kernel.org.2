@@ -2,92 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA9E30EA96
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B691330EA99
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbhBDDA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhBDDA4 (ORCPT
+        id S233106AbhBDDCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:02:46 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55403 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232138AbhBDDCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:00:56 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D74C061573;
-        Wed,  3 Feb 2021 19:00:16 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id r199so435694oor.2;
-        Wed, 03 Feb 2021 19:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cxh7dUMIL7BPYdgMoXE3JEI/hHRYkvMS8bnj28tZcZ8=;
-        b=WlpqNmUQB3+7RuywIxM4HehzGzv4f4/QEiT0jgOdiA2yR1iInrmP/lht/kolBd9pyH
-         S2i02qL1xMr6cW7of9zfqeeOzmC/hfzj4fbpSnQ99Y53/aAtgFfVM4EeQvMHQaVJ1XMD
-         //Zho4sd067ZJepKf09IbDq2SuFrXq3xKZaVTox2zvT7zGzYg8MZimhGS6qujxyfgBdE
-         gkpYeoNzWCQLoPP5VRJG7YAZLnBk+2FWQWYXhfrrrVkaESq0n+YGaweN9bYAEDNbcUp3
-         Gkh4WqcrkZOyfNoFDAPv7mP2kUqFP9wFjZr6M6vZtGBYCVXPV9cSZrBlOyuUtdQw92AK
-         r+3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cxh7dUMIL7BPYdgMoXE3JEI/hHRYkvMS8bnj28tZcZ8=;
-        b=pNjgtRCbnnfGSmDW3lKkfRrfpe1hvfQEeyOKXFk8Ou0vZLrkdRKJegigoKtebl953X
-         ljHzAjLDImlKT9UucBdQ4yeNUXIRbJZJtta4STvhoVOv+4wjKDn2Fo4t7Tm+n5nbA7na
-         g1z+n1OEha4+BbtfkTnkX4i25p5M60SFreGJhhFSx/rzcTOrIggeVxWiiBWgNc40wYql
-         3Zewhx4rsALVzcXwCtnDzbApqOlHmoqz6NmAmzHoSjotkTrv61SVmnPsBH+5Mova08e0
-         03o3cLQ05PCcJlU/KpbvTELuJYKBIITch49ozHRP/m5VKpSR5+m4r6IQrauzJoHdVJj7
-         ueew==
-X-Gm-Message-State: AOAM531xBOGpszGXk1TcLp+/7YG6B2E6DF+NZ3wWyMEM2QyLmPVDlctl
-        mzEA8OTTRwJy2eTfdoMs8VgQgYMCEZg=
-X-Google-Smtp-Source: ABdhPJy7t+G8+FCYjaqizk2Y7XwXX6SQDeqVDySGyWwPhuyK4CaESAqkI2hgx4/7K4IiQ6MkMPbp4g==
-X-Received: by 2002:a4a:a381:: with SMTP id s1mr4260432ool.37.1612407615452;
-        Wed, 03 Feb 2021 19:00:15 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.50])
-        by smtp.googlemail.com with ESMTPSA id t16sm844818otc.30.2021.02.03.19.00.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 19:00:14 -0800 (PST)
-Subject: Re: [PATCH net-next] seg6: fool-proof the processing of SRv6 behavior
- attributes
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-References: <20210202185648.11654-1-andrea.mayer@uniroma2.it>
- <6fe3beb2-4306-11cd-83ce-66072db81346@gmail.com>
- <20210204032727.ffd2c1ae3410147ba7598d78@uniroma2.it>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <b9971d41-7349-a6cf-3ec2-0d7accbfa5c2@gmail.com>
-Date:   Wed, 3 Feb 2021 20:00:11 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210204032727.ffd2c1ae3410147ba7598d78@uniroma2.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 3 Feb 2021 22:02:42 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNoQzB8_1612407713;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNoQzB8_1612407713)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 11:01:58 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     anil.gurumurthy@qlogic.com
+Cc:     sudarsana.kalluru@qlogic.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: bfa: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Thu,  4 Feb 2021 11:01:51 +0800
+Message-Id: <1612407711-3498-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:27 PM, Andrea Mayer wrote:
-> 
-> I think there is an issue here because BITS_PER_TYPE(unsigned long) is greater
-> than the SEG6_LOCAL_MAX (currently = 9).
-> 
-> I think it should be like this:
-> 
->  BUILD_BUG_ON(SEG6_LOCAL_MAX + 1 > BITS_PER_TYPE(unsigned long))
-> 
-> I will send a v2 with the changes discussed so far.
+Fix the following coccicheck warning:
 
-yes, I had that backwards.
+./drivers/scsi/fnic/fnic_attrs.c: WARNING: use scnprintf or
+sprintf.
 
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/bfa/bfad_attr.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/scsi/bfa/bfad_attr.c b/drivers/scsi/bfa/bfad_attr.c
+index 5ae1e3f..ba890b1 100644
+--- a/drivers/scsi/bfa/bfad_attr.c
++++ b/drivers/scsi/bfa/bfad_attr.c
+@@ -711,7 +711,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	char serial_num[BFA_ADAPTER_SERIAL_NUM_LEN];
+ 
+ 	bfa_get_adapter_serial_num(&bfad->bfa, serial_num);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", serial_num);
++	return sysfs_emit(buf, "%s\n", serial_num);
+ }
+ 
+ static ssize_t
+@@ -725,7 +725,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	char model[BFA_ADAPTER_MODEL_NAME_LEN];
+ 
+ 	bfa_get_adapter_model(&bfad->bfa, model);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", model);
++	return sysfs_emit(buf, "%s\n", model);
+ }
+ 
+ static ssize_t
+@@ -805,7 +805,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
+ 			"Invalid Model");
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", model_descr);
++	return sysfs_emit(buf, "%s\n", model_descr);
+ }
+ 
+ static ssize_t
+@@ -819,7 +819,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	u64        nwwn;
+ 
+ 	nwwn = bfa_fcs_lport_get_nwwn(port->fcs_port);
+-	return snprintf(buf, PAGE_SIZE, "0x%llx\n", cpu_to_be64(nwwn));
++	return sysfs_emit(buf, "0x%llx\n", cpu_to_be64(nwwn));
+ }
+ 
+ static ssize_t
+@@ -836,7 +836,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	bfa_fcs_lport_get_attr(&bfad->bfa_fcs.fabric.bport, &port_attr);
+ 	strlcpy(symname, port_attr.port_cfg.sym_name.symname,
+ 			BFA_SYMNAME_MAXLEN);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", symname);
++	return sysfs_emit(buf, "%s\n", symname);
+ }
+ 
+ static ssize_t
+@@ -850,14 +850,14 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	char hw_ver[BFA_VERSION_LEN];
+ 
+ 	bfa_get_pci_chip_rev(&bfad->bfa, hw_ver);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", hw_ver);
++	return sysfs_emit(buf, "%s\n", hw_ver);
+ }
+ 
+ static ssize_t
+ bfad_im_drv_version_show(struct device *dev, struct device_attribute *attr,
+ 				char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%s\n", BFAD_DRIVER_VERSION);
++	return sysfs_emit(buf, "%s\n", BFAD_DRIVER_VERSION);
+ }
+ 
+ static ssize_t
+@@ -871,7 +871,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	char optrom_ver[BFA_VERSION_LEN];
+ 
+ 	bfa_get_adapter_optrom_ver(&bfad->bfa, optrom_ver);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", optrom_ver);
++	return sysfs_emit(buf, "%s\n", optrom_ver);
+ }
+ 
+ static ssize_t
+@@ -885,7 +885,7 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	char fw_ver[BFA_VERSION_LEN];
+ 
+ 	bfa_get_adapter_fw_ver(&bfad->bfa, fw_ver);
+-	return snprintf(buf, PAGE_SIZE, "%s\n", fw_ver);
++	return sysfs_emit(buf, "%s\n", fw_ver);
+ }
+ 
+ static ssize_t
+@@ -897,15 +897,14 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 			(struct bfad_im_port_s *) shost->hostdata[0];
+ 	struct bfad_s *bfad = im_port->bfad;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n",
+-			bfa_get_nports(&bfad->bfa));
++	return sysfs_emit(buf, "%d\n", bfa_get_nports(&bfad->bfa));
+ }
+ 
+ static ssize_t
+ bfad_im_drv_name_show(struct device *dev, struct device_attribute *attr,
+ 				char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%s\n", BFAD_DRIVER_NAME);
++	return sysfs_emit(buf, "%s\n", BFAD_DRIVER_NAME);
+ }
+ 
+ static ssize_t
+@@ -924,14 +923,14 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
+ 	rports = kcalloc(nrports, sizeof(struct bfa_rport_qualifier_s),
+ 			 GFP_ATOMIC);
+ 	if (rports == NULL)
+-		return snprintf(buf, PAGE_SIZE, "Failed\n");
++		return sysfs_emit(buf, "Failed\n");
+ 
+ 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+ 	bfa_fcs_lport_get_rport_quals(port->fcs_port, rports, &nrports);
+ 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+ 	kfree(rports);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", nrports);
++	return sysfs_emit(buf, "%d\n", nrports);
+ }
+ 
+ static          DEVICE_ATTR(serial_number, S_IRUGO,
+-- 
+1.8.3.1
 
