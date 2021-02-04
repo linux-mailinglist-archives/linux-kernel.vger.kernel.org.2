@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2303030F44F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5661A30F461
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236493AbhBDN4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S236124AbhBDN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236450AbhBDNzY (ORCPT
+        with ESMTP id S236273AbhBDN40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:55:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E25C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:54:41 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l7f5j-0005Ff-6n; Thu, 04 Feb 2021 14:54:39 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l7f5g-0007to-TZ; Thu, 04 Feb 2021 14:54:36 +0100
-Date:   Thu, 4 Feb 2021 14:54:36 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-pwm@vger.kernel.org, Ban Tao <fengzheng923@gmail.com>,
-        linux-kernel@vger.kernel.org, mripard@kernel.org, wens@csie.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
-Message-ID: <20210204135436.xkxkp6qxjpcnfxgg@pengutronix.de>
-References: <20210203125317.1975-1-fengzheng923@gmail.com>
- <20210203151200.fdzzq23teoypbxad@pengutronix.de>
- <YBrQTM5iADZgA2v1@ulmo>
- <20210203205913.dvmppahnkmcj2dac@pengutronix.de>
- <YBv44P71Z0cD1BSG@ulmo>
+        Thu, 4 Feb 2021 08:56:26 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42691C061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:55:17 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id m13so3556195wro.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:55:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Hzfyw7cGPV/6uJGFEu+jTS7JZCswuKZE6330B5/rJRw=;
+        b=HDJME6Og8gQPqE8NM81cSx+88PddfmG5gPVNemmtSq3Y8X8suM8zbGaTP9KZzoBKEM
+         hRhB0B9ZL1ycoNLqPCiyb3kxYAewRT3Zq5kPQgOx2VQBidV7D8zZKbwvn4eXQYgE+YDY
+         cvuHGM8Z9TPcylYKpwXnkfl9+Zu8Y4f/Q1T3aZC/pj2i6+R2T0ZYs2mh4zF/B+dPtN6O
+         m7VrYgcxl3IA2oXP9JPvpq3FWQXG0VFueDmfqymKV7wuw+8083nvNMAL9JafODYTdfB3
+         iRjYWt0m7/F8hiH9t/dlPsrbhaY4db1+rnd0tZOTNxlY5G8ERYfp8K25YHmHAZViut4v
+         0mtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Hzfyw7cGPV/6uJGFEu+jTS7JZCswuKZE6330B5/rJRw=;
+        b=ZNJccqGxKcsc0Oa5gdkmqNZOc/+peGWmkdBBkU3ylcC4AioBtcBrh4UKPb1DUXSdvH
+         oHngm5lbOimhftEFvxsZ8B+5C9wAE4XQhkMrqy6mG+Qg93hBlmIqLq6a9fLkS87xw0/Q
+         6KaRge+kiHAP03E50HHDE7EAc2gji1VDJqo2sQ3xM+TgWpXYHui02tvgXcD5AmRT953Q
+         jRxzhaTGUZPhNCnLEAXwIKTcP//s8Mk3tHekETPG9n+ZzrIiPhWVqjM3J/7bs5n0sVA4
+         5+239JnHeF35pidziAd5KFWYgKu3XKOihE9lGE9qjBeOYY4JQeXza4aP0UXVYTtm3zgD
+         iWzA==
+X-Gm-Message-State: AOAM530zJ8G1gC97nckapqi5C5TZtMZtHMZOysDM+fxTGELZ6TO0N9OJ
+        tXZ90Vzaa5TUZ/9SWTdci2ZUYg==
+X-Google-Smtp-Source: ABdhPJwVtEgqFoIpPqm9mOUpNe597hHfgmhLCj7nzFG8QdQDBA4AccFnlrQRCr4Ieq2ypY5AazLUsA==
+X-Received: by 2002:a5d:53c3:: with SMTP id a3mr9212935wrw.43.1612446915658;
+        Thu, 04 Feb 2021 05:55:15 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id x82sm856894wmg.31.2021.02.04.05.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 05:55:15 -0800 (PST)
+Date:   Thu, 4 Feb 2021 13:55:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 2/5] mfd: arizona: Replace arizona_of_get_type() with
+ device_get_match_data()
+Message-ID: <20210204135513.GI2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <20210120214957.140232-3-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5n55ifqwrdmxs635"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YBv44P71Z0cD1BSG@ulmo>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210120214957.140232-3-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 20 Jan 2021, Hans de Goede wrote:
 
---5n55ifqwrdmxs635
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Replace the custom arizona_of_get_type() function with the generic
+> device_get_match_data() helper. Besides being a nice cleanup this
+> also makes it easier to add support for binding to ACPI enumerated
+> devices.
+> 
+> While at it also fix a possible NULL pointer deref of the id
+> argument to the probe functions (this could happen on e.g. manual
+> driver binding through sysfs).
+> 
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Changes in v2:
+> - New patch in v2 of this patchset
+> ---
+>  drivers/mfd/arizona-core.c | 11 -----------
+>  drivers/mfd/arizona-i2c.c  | 10 ++++++----
+>  drivers/mfd/arizona-spi.c  | 10 ++++++----
+>  drivers/mfd/arizona.h      |  9 ---------
+>  4 files changed, 12 insertions(+), 28 deletions(-)
 
-Hello Thierry,
+Applied, thanks.
 
-On Thu, Feb 04, 2021 at 02:38:40PM +0100, Thierry Reding wrote:
-> All I'm saying is that I don't think we need to require everyone to
-> adopt a prefix, especially if this hasn't been followed consistently,
-> because then we don't actually gain anything.
-
-Is "we didn't do this consistently in the past" a reason to never
-improve here? I hope it's not ...
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---5n55ifqwrdmxs635
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAb/JkACgkQwfwUeK3K
-7AnaxQf9EqzF2WspMJC8fSN3GE4BD1gqJYSbjZfa7M8+apxIRpbITARFTlBxpTQc
-UQ0YWm3rtSwHfcs5ta/SoBBvCi66A2TcrdVbGo+ShByNBKr7aQpVlKUw20AB8+cS
-Xo9KgQNSqULN+qzh4rxZXeVv20DKamENwZ3FNtnwgN/tDZcDAfhK0k7b1USIwA/9
-dz0PPL/DeFMCimiWCKn2wv+2bc8LdL7gO68b9gSmtVMySvfDVMrhA+JEZimH0puM
-5LGEmN4OX3yifk0ljYFyBJBhj8terLo/isnUjY4jXp/IIJiFVDVBkc4RSHdD2k9i
-2qv88x9eUn2lFbRk4w8MUOWNkkTirw==
-=1dCm
------END PGP SIGNATURE-----
-
---5n55ifqwrdmxs635--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
