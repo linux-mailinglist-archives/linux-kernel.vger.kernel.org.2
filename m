@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB12A31003E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C55F31003B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhBDWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
+        id S230110AbhBDWko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhBDWkr (ORCPT
+        with ESMTP id S230033AbhBDWkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:40:47 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8B1C061222
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:39:34 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id p185so4044633qkc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:39:34 -0800 (PST)
+        Thu, 4 Feb 2021 17:40:22 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDFEC061223
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 14:39:36 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 78so1170364ybn.14
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 14:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=gziCZeOtguvR7/4aBYbBoYzK8/554eSy4zrpV/kkJaA=;
-        b=MHR4Xli2I24AgwyqdRLzwHrMHNz+YM3B3CFbZSeGTIC9ecnhC6BTfbFshQf9VDrOib
-         Dku27VBPwSlAgujBVLjbKGsE7CbggU3xzinvdRqIASUenJvR2fqAHmH1Lml2Jy02U8vB
-         +irs4Nhrfo4sDOF1oj2TLfQSCIXyeFQGkPLQo7+rzdMqh3LxQuN5Eu+/jFHN6FCmnQPY
-         K+lh/eyJDpDBirApdHC8h4+CkwW90qnk+HaglF8oqOQ2D1+lasYCsM4gJRIIdaoqbiyj
-         pbeYqd9s06YjMTiWxYOmrnsbPvDkXkJ1+TkSalZoV0EMcSTbFgYEqsw62Tyve2rIphOO
-         lrfA==
+        bh=0dbkPCei0EVZxiD/xgF8DsX5xGgDmOcId+wNtSYzaY4=;
+        b=Fpa96Kq7NFETtqxrJ7hdmqTO6wZkjuxubgRR7/8v7tw0ssWWJXO00+GHBbsCaytH3N
+         di/IFDwL3tNHRnlG+ZRfBlrH/Flao5qRyDIv7m8Zj5pbFF7izx3uOMZh6brCNdUyxG4T
+         WnRJHR2OwpYnXpY6R/IOM+bgZ29PwcYgwfmAHxBELprTBayUssCjsKTLmN8VT2SLIND6
+         FI8XNLLkV5yv3Nq7w6ulX6KqbE0We/Mv6DXgOLku0BkZjGcpGa7tVpZaKBFLzk9NHvcT
+         KZC4xDAvCPuBWU3oQqZ9booDuDNuPpJ1SXQWP14XOjQ9f2ctM7X/tifJESiMPNuzcGWs
+         NjBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=gziCZeOtguvR7/4aBYbBoYzK8/554eSy4zrpV/kkJaA=;
-        b=NWhlKUznoYuWMfbivSdiu+37BxW4k+9cHNEwcCTS99NJtAw4n+ZV9NexKL07rL2Hjn
-         aSy4IkLmYv5Tkc965dxWC4Tf5CdMH780jENN0G/5Dc1G/JymLWolrhXYH4beKyqz/fxS
-         djNhzAMY6KsL1UjBnPIPjKQdSrup4wMPFpAHor55agRcO++7WsCL7ozABkfFsR9yiRjF
-         eRXfUHMDA/rD4Lmf8bkhhlyh8lUKmjQ3QSr9w7dHhuUH2SAUGygUc1H6jFte++W2DPKd
-         5dDoYx0p+J/ukhU7mK9k8N4fUffcf69U8f4ivhnJwrBsarChFN5g1LQIYaC4jm6uyqCp
-         x++Q==
-X-Gm-Message-State: AOAM530Y742WXpru6GReltUosNbT2n+pq12MMXWthqm9yxG5sbPcmVIU
-        9ZNKsjSilOCNs0APYX7fFT7jCMve43wE5EM=
-X-Google-Smtp-Source: ABdhPJwXyRBXE/1Uh19s4fjUEN6pHJQGzbSU9PJuDLDzC9SG8AghYE2YKw0bDYwV0yzV+iVGC4j3lO96SpvvN+Y=
+        bh=0dbkPCei0EVZxiD/xgF8DsX5xGgDmOcId+wNtSYzaY4=;
+        b=eV45rWSo4syZghJwx6E/B54zA/V04lnAVPXzrM7FqNRHOoKLrrsxJLYThpvb80TZbG
+         XICRWb/3EziR61mcbQ68b9dv+mnTmlxVxHqTzxlPtzG2WoKZTRhZP8XQkR7HYSRzU/jc
+         1MyIimZVzwgtEV3EOdprnW1lD60d4Mq6awC3V7PO++ET/kBn0orIwYloorNt9JRk2oYS
+         pCBWvlUQp79wsW21NOyG5CbNw3S6oxMzmSmR1gKg4Xf1uc5nGjBwNhLQXRD0kqv5S4AE
+         NqEE487PWNIG8l04Lp+5dtgfYgfy82V4EiGU4K2L4PZGjmY6TsMmNpnTnZKyacJrDOnd
+         3tUw==
+X-Gm-Message-State: AOAM533woEI7nuEtWsV03/Xjeb8EOQI2CJh7zorjzK8Dmiaxe3vjY2c3
+        fW9JcIVnU50kGm3GkXjwbz9Hfz1Rx03aNSk=
+X-Google-Smtp-Source: ABdhPJzFSX+PON0ie+o6EiaxXNdvovbgxp9M0i+ykscDv1cefCl6vtAT+nFkuA4cAkgfz5AnpSUCldUZ6G7XQok=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:8475:2f1d:e8b4:f65a])
- (user=saravanak job=sendgmr) by 2002:a0c:a99e:: with SMTP id
- a30mr1594869qvb.38.1612478373421; Thu, 04 Feb 2021 14:39:33 -0800 (PST)
-Date:   Thu,  4 Feb 2021 14:39:20 -0800
+ (user=saravanak job=sendgmr) by 2002:a25:83d0:: with SMTP id
+ v16mr2494628ybm.40.1612478375921; Thu, 04 Feb 2021 14:39:35 -0800 (PST)
+Date:   Thu,  4 Feb 2021 14:39:21 -0800
 In-Reply-To: <20210204223921.1693487-1-saravanak@google.com>
-Message-Id: <20210204223921.1693487-4-saravanak@google.com>
+Message-Id: <20210204223921.1693487-5-saravanak@google.com>
 Mime-Version: 1.0
 References: <20210204223921.1693487-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 3/4] driver core: Add fw_devlink.strict kernel param
+Subject: [PATCH v3 4/4] of: property: Add fw_devlink support for optional properties
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -74,75 +74,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This param allows forcing all dependencies to be treated as mandatory.
-This will be useful for boards in which all optional dependencies like
-IOMMUs and DMAs need to be treated as mandatory dependencies.
+Not all DT bindings are mandatory bindings. Add support for optional DT
+bindings and mark iommus, iommu-map, dmas as optional DT bindings.
 
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  5 +++++
- drivers/base/core.c                             | 12 ++++++++++++
- include/linux/fwnode.h                          |  1 +
- 3 files changed, 18 insertions(+)
+ drivers/of/property.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a10b545c2070..692b63644133 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1433,6 +1433,11 @@
- 				to enforce probe and suspend/resume ordering.
- 			rpm --	Like "on", but also use to order runtime PM.
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 53d163c8d39b..962109082df1 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1235,6 +1235,7 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
+ struct supplier_bindings {
+ 	struct device_node *(*parse_prop)(struct device_node *np,
+ 					  const char *prop_name, int index);
++	bool optional;
+ };
  
-+	fw_devlink.strict=<bool>
-+			[KNL] Treat all inferred dependencies as mandatory
-+			dependencies. This only applies for fw_devlink=on|rpm.
-+			Format: <bool>
+ DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
+@@ -1308,12 +1309,12 @@ static struct device_node *parse_interrupts(struct device_node *np,
+ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_clocks, },
+ 	{ .parse_prop = parse_interconnects, },
+-	{ .parse_prop = parse_iommus, },
+-	{ .parse_prop = parse_iommu_maps, },
++	{ .parse_prop = parse_iommus, .optional = true, },
++	{ .parse_prop = parse_iommu_maps, .optional = true, },
+ 	{ .parse_prop = parse_mboxes, },
+ 	{ .parse_prop = parse_io_channels, },
+ 	{ .parse_prop = parse_interrupt_parent, },
+-	{ .parse_prop = parse_dmas, },
++	{ .parse_prop = parse_dmas, .optional = true, },
+ 	{ .parse_prop = parse_power_domains, },
+ 	{ .parse_prop = parse_hwlocks, },
+ 	{ .parse_prop = parse_extcon, },
+@@ -1368,6 +1369,11 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
+ 
+ 	/* Do not stop at first failed link, link all available suppliers. */
+ 	while (!matched && s->parse_prop) {
++		if (s->optional && !fw_devlink_is_strict()) {
++			s++;
++			continue;
++		}
 +
- 	gamecon.map[2|3]=
- 			[HW,JOY] Multisystem joystick and NES/SNES/PSX pad
- 			support via parallel port (up to 5 devices per port)
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index c95b1daabac7..f466ab4f1c35 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1521,6 +1521,13 @@ static int __init fw_devlink_setup(char *arg)
- }
- early_param("fw_devlink", fw_devlink_setup);
- 
-+static bool fw_devlink_strict;
-+static int __init fw_devlink_strict_setup(char *arg)
-+{
-+	return strtobool(arg, &fw_devlink_strict);
-+}
-+early_param("fw_devlink.strict", fw_devlink_strict_setup);
-+
- u32 fw_devlink_get_flags(void)
- {
- 	return fw_devlink_flags;
-@@ -1531,6 +1538,11 @@ static bool fw_devlink_is_permissive(void)
- 	return fw_devlink_flags == FW_DEVLINK_FLAGS_PERMISSIVE;
- }
- 
-+bool fw_devlink_is_strict(void)
-+{
-+	return fw_devlink_strict && !fw_devlink_is_permissive();
-+}
-+
- static void fw_devlink_parse_fwnode(struct fwnode_handle *fwnode)
- {
- 	if (fwnode->flags & FWNODE_FLAG_LINKS_ADDED)
-diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-index 21082f11473f..d5caefe39d93 100644
---- a/include/linux/fwnode.h
-+++ b/include/linux/fwnode.h
-@@ -162,6 +162,7 @@ static inline void fwnode_init(struct fwnode_handle *fwnode,
- }
- 
- extern u32 fw_devlink_get_flags(void);
-+extern bool fw_devlink_is_strict(void);
- int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
- void fwnode_links_purge(struct fwnode_handle *fwnode);
- 
+ 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
+ 			matched = true;
+ 			i++;
 -- 
 2.30.0.365.g02bc693789-goog
 
