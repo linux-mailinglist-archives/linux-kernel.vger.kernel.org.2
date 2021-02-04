@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A513930FA9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399E830FAB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238798AbhBDSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:04:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238785AbhBDSCG (ORCPT
+        id S238716AbhBDSGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:06:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:59026 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238784AbhBDSEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:02:06 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D1EC0617A9
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:01:21 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id i63so2583693pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:01:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VwQNuwUjwq+Nww2o+LSNyWsERhy5B65x0MZjKZu7QiE=;
-        b=V9WwpPLP510i8wJfZNgvI28QHF86yvPAF2UbjF490A7UdbG6rWNl1lQHI6iUez5P5I
-         q6P3soanpTjeUf7jM1+3IbMM+rTkkV/uuAaPppCcVM/cZI6cBnr5ZUijJ6+z0XQp+sEx
-         qtiNPD/C/bRpT/qHUjo1Wx3gZ4c/7Ko9mzN1N8JLcdN+7NuNDQ6Z2kwJEgogdx8chFsV
-         Zjk1/y8n+y+ml5Mh/X8H/kCSTrosuDhIluZYTHjJuFXHJ4jjWKNzrgrIt7PumonTLmiy
-         zZDxXOLnfnoOYKdnCEBlvNQeWMN7qt/V6dy0jLRKgqhvzYfaM/qFP2o0gXdD7TozX+KR
-         CSBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VwQNuwUjwq+Nww2o+LSNyWsERhy5B65x0MZjKZu7QiE=;
-        b=sMfFJCwqDaajGfk0Vj5sydOd76ziLRqfjz6ohqYuqJkaxL+fxRXXoJePLiSKHPirPw
-         +yTiRicU9X07YRtcLvbScaSA3JdbDsd6DFgoPumgJB8htkYZFlySNFdTB7KOzeHWvjU8
-         73iRbnQfNQznGaUAKObrw8tPCOVOZOD/aw3FO0Vf60vX3lUDOrf+t69HF/Ee+N18F/lf
-         4fB+EhS6c5SwyGi5ESoHZOhSJJUfhFSaz9yZ/sRnMb5nbe6enPSUha2RcQmfNKWSfHSO
-         kG6/n918uEhRtfD1TV2qbecwzuP0YEmckWNQOHhyMJRcsCt7MyqSIA0ktoObuSFPLHke
-         BlCA==
-X-Gm-Message-State: AOAM533GV2t1pgUqF+dxNj4L3SwPMV1t7NTofLLwbrwmhG7vrTuUHmGh
-        UiX62ONxmSl5baadBtuRmleq0w==
-X-Google-Smtp-Source: ABdhPJzOC4xxlH8L2u8oSxdvrRQJdYz2hMvPZgL6PoMbtEguOgWPoV+goVrLoronxVDJyxq5LXLWEQ==
-X-Received: by 2002:a63:1110:: with SMTP id g16mr136027pgl.357.1612461680989;
-        Thu, 04 Feb 2021 10:01:20 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:f16f:a28e:552e:abea])
-        by smtp.gmail.com with ESMTPSA id v21sm6613993pfn.80.2021.02.04.10.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 10:01:20 -0800 (PST)
-Date:   Thu, 4 Feb 2021 10:01:14 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>
-Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Message-ID: <YBw2akNhCBGkoaSZ@google.com>
-References: <20210204000117.3303214-1-seanjc@google.com>
- <20210204000117.3303214-8-seanjc@google.com>
- <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
- <YBtZs4Z2ROeHyf3m@google.com>
- <f1d2f324-d309-5039-f4f6-bbec9220259f@redhat.com>
- <e68beed4c536712ddf28cdd8296050222731415e.camel@intel.com>
- <YBw0a5fFvtOrDwOR@google.com>
- <c16cbc1c-a834-edd4-bfdf-753ec07c7008@redhat.com>
+        Thu, 4 Feb 2021 13:04:00 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l7iyH-0005JS-IL; Thu, 04 Feb 2021 18:03:13 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] phy: qcom-qmp: make a const array static, makes object smaller
+Date:   Thu,  4 Feb 2021 18:03:13 +0000
+Message-Id: <20210204180313.108876-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c16cbc1c-a834-edd4-bfdf-753ec07c7008@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021, Paolo Bonzini wrote:
-> On 04/02/21 18:52, Sean Christopherson wrote:
-> > > Alternatively there could be something like a is_rsvd_cr3_bits() helper that
-> > > just uses reserved_gpa_bits for now. Probably put the comment in the wrong
-> > > place.  It's a minor point in any case.
-> > That thought crossed my mind, too.  Maybe kvm_vcpu_is_illegal_cr3() to match
-> > the gpa helpers?
-> 
-> Yes, that's certainly a good name but it doesn't have to be done now. Or at
-> least, if you do it, somebody is guaranteed to send a patch after one month
-> because the wrapper is useless. :)
+From: Colin Ian King <colin.king@canonical.com>
 
-LOL, I can see myself doing that...
+Don't populate the const array cfg1_settings on the stack but instead make
+it static. Makes the object code smaller by 24 bytes:
+
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  73585	  20240	     64	  93889	  16ec1	drivers/phy/qualcomm/phy-qcom-qmp.o
+
+After:
+   text	   data	    bss	    dec	    hex	filename
+  73465	  20336	     64	  93865	  16ea9	drivers/phy/qualcomm/phy-qcom-qmp.o
+
+(gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index a679b5fb7b48..d0dfb6743965 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -3421,7 +3421,7 @@ static int qcom_qmp_phy_configure_dp_phy(struct qmp_phy *qphy)
+ static int qcom_qmp_dp_phy_calibrate(struct phy *phy)
+ {
+ 	struct qmp_phy *qphy = phy_get_drvdata(phy);
+-	const u8 cfg1_settings[] = { 0x13, 0x23, 0x1d };
++	static const u8 cfg1_settings[] = { 0x13, 0x23, 0x1d };
+ 	u8 val;
+ 
+ 	qphy->dp_aux_cfg++;
+-- 
+2.29.2
+
