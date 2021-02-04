@@ -2,147 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F78C30FA03
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A1C30F9DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbhBDRna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:43:30 -0500
-Received: from mga17.intel.com ([192.55.52.151]:19396 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238610AbhBDRcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:32:03 -0500
-IronPort-SDR: Cpvku/SXqJ5UkvXYeJJlz1HhyVbzlx7anQd8Ns7ACtvw5MXMMUFcSPG8w1HDJ5fMgA7Ps4JwfW
- 4pMjHIRlzZTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161045469"
-X-IronPort-AV: E=Sophos;i="5.81,401,1610438400"; 
-   d="scan'208";a="161045469"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 09:31:19 -0800
-IronPort-SDR: /Tih8dIiTD5YVADC9tGE3K5wcnKnmVVpJfJqH9sKIZwpAHZ56jcl22/oG2HF5GTg4lHANFOupn
- WNaP5kE5PLAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,401,1610438400"; 
-   d="scan'208";a="483637387"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Feb 2021 09:31:19 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+        id S237649AbhBDRgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:36:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2499 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238646AbhBDRdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:33:44 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DWlsh2lJTz67k33;
+        Fri,  5 Feb 2021 01:29:28 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 4 Feb 2021 09:31:18 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Thu, 4 Feb 2021 09:31:18 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 4 Feb 2021 09:31:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d6148vMcbPyR1wN47wRGLRh00K/wy2waGQo43SV0k95AM8TSSoXehjN9KXhzA8ayN4Xkj/eHaEnDBAS7boVYHVqW0G+VE6wxigCZ53Jfh8m6NItZI/V/YWB3cQNLo71ftFpkuyu9575Iuyj8PnLOQH11LkcUEXjYt6xCbry0tJfi0nmDzWGu9HUiraypQP0g26ELnKBwWkp+FBebN/RuHghZvSsT6FTQx4Iq+ryYlwPa0miTdv000ktfGop2FCQ6Z7INa0m0DxvyMgS4oC/QQWh8AIdacdXIHOm29kOfAeEhfj6IanXn38c6Bxag0740m18iSm3K3dt9JLVEqKTDdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U0L/OzmWMAPUStiAObxzJCU3WL2Vb1EzEQnv9uQWenk=;
- b=oRUAVAgQzwXvGiHfBaG+WU59p7kneBCFEF0MG1Tihrd8zzu9rgpjQxM8V7Zi5PUOdSjavcHle88WBoHUhWeriwl2BMJwJ769ky8KYr9UNxSHgzuObp5GhGo3kdKZW34OnjJsWEEoxnaQpOeM5EkehrL4tC/6z4u4FZjHD5e0IMM4j0RxWfaohBaNVeUkfViaSRL1BpsoLXWa9TmgQK6MwHBhZ3KR5rqGA4TrqswP7M24PSuGWlZD5vEY/9CpUObI7kTavhUulwgeOtPJVt7Lb3el/eCg6HzMYA/Ozsv6+vJW96u0mh/jWV+pgk6yv6R2zFY76KDe2SfIV4nQ7nMmvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U0L/OzmWMAPUStiAObxzJCU3WL2Vb1EzEQnv9uQWenk=;
- b=Y898eQ1KvlKtBruNY69HAM3dZsziZeRmviVWKkPdyzj5EnyuqBjwIdZp8myix+8Ym2CuRd6oXbTZrFNu1Zt1ppw8oIfOfyVSJD8yRz9ytdtmqWIzq6R7yXBaJ7Zq98/qojmZWD4ECyPDzpYMgnCQcy9ZcEXUVJyiUb96KYJLXmM=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SA2PR11MB5068.namprd11.prod.outlook.com (2603:10b6:806:116::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Thu, 4 Feb
- 2021 17:31:11 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::ac4a:f330:44cb:fbf4]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::ac4a:f330:44cb:fbf4%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
- 17:31:11 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>
-CC:     "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>
-Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Thread-Topic: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Thread-Index: AQHW+omuBE5yjAcpaU+GTJSpysfjUapHPrkAgAAEi4CAAIo6gIAAdHwA
-Date:   Thu, 4 Feb 2021 17:31:11 +0000
-Message-ID: <e68beed4c536712ddf28cdd8296050222731415e.camel@intel.com>
-References: <20210204000117.3303214-1-seanjc@google.com>
-         <20210204000117.3303214-8-seanjc@google.com>
-         <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
-         <YBtZs4Z2ROeHyf3m@google.com>
-         <f1d2f324-d309-5039-f4f6-bbec9220259f@redhat.com>
-In-Reply-To: <f1d2f324-d309-5039-f4f6-bbec9220259f@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.3 (3.38.3-1.fc33) 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.139.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c358900f-da92-4bda-f704-08d8c932aa46
-x-ms-traffictypediagnostic: SA2PR11MB5068:
-x-microsoft-antispam-prvs: <SA2PR11MB50688DF4063874479E71918AC9B39@SA2PR11MB5068.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oVinA0ftOzRjD2XM9t5oq2jNWXHWuYvrFBJ/rWfuCgHP7PjNqUekwfXnmx8kIqFcbhng9w303iKUiCgdWT1X+VG3HeDfc+AgC048g8NGic4JhmH8F3VojtG1Pp7V/dD0tsEH0JcU80HDWZ2F0k49b+7q+LuDht/gzbPn3revUXy/QHenms2hsaQhZk/xMo6DMVPZKgFLUHre84LXvG+hAx2MBIXodBZ19MeNxQQRNeVe8C4+WtBwMPr6ha9gCeO+5gxHWGVN+Vs6mqp1ZZfHMnlbQwnw0S089m25U3MMk4d1YnHHh/+vGnt98j5xFMoz5QEVjZokjXIrqxrz/NYZ1P4pZS66I3vmt6UfBi9eoGFFPLa6Yb2+y87lN+ZR17iD+5kdIrl8sNpTv5qmdAMD3kdqCQadhlDcnlZ7T+NrC2zYgSh2rwaD+D3Ttu6Ee6ErVmZhm9IvOj1zD9AksMpt6Bgb+yjGFn4K+nqHYOkUhMT+80zo1tZL6sEw1PsZE3BDBymY1PJYJyabYzxOg6zEs5avEc3vkc4FEAheCNgwxB6D1Gtf63NcdALrVDNG9RLU
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(366004)(136003)(39860400002)(6506007)(53546011)(66446008)(186003)(76116006)(8936002)(8676002)(66946007)(6512007)(86362001)(91956017)(71200400001)(2616005)(316002)(64756008)(5660300002)(54906003)(36756003)(110136005)(66556008)(478600001)(7416002)(26005)(66476007)(4326008)(6486002)(2906002)(26953001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 53063fcBARt8CpDYlrTEGp1veTFJdrwRtTzejaBeyLtMF3oU9wrB6O2IAFlN1sXxdydti6JBPEWROHaxOluFEaxB7hCi6SBhcW7n1Ex/U+yoBy5ohFnxto8iigFByDQ2gbLpmhOlXz+hXT/Mqz52X4kunSNya66mpjIJmWlOqKtDNiTlwKjantN+D0rZlnUBeuQOXaLQ1lvLnT+2R4he6vRkPiAreHobvjeUAL202ydvu5hhlGkvfu8UZee0+RMrlPuGNfkpJ2aKA4AaxLxr3vO9ay4v9s2+CkRJStHC1qcRYIMZZvNi9ZU2kXFEWKKJAHbq29a15agb6Sjb3jAXdMqPaXmNV5adHeNc6vz8xd/vgg2ShMwIxbesIyYXpmFJ3NYyCv6SJQv6IseSPwnEp8G9tM4idjQrefuqs2xeed99BN5fMnfPJ+scZ61fjAJDas5mrcivL1+I/m3KN4qIVwcOdWWzNmPmQPGnTy2nWLtEh/yl08blYoHZ+3aWMVUNrN6m8r65D+d6b4oVTvDv+GPq6dbsBt4m0HpAzx4kN9Tlfz05FAcqm1Al/RCVm4i3jkolquiK+tpqiVbCgb9vIagp6vz9SOnG+A0HjwsjC5SFnmM/p046aXpmIa+AXJbAmIRHL1JteTtcVf817pyEg3ddy0+RK65PXbPA2Qvr0PyGgzJjNk/twVEZKWzRzO82AH4j/geWitJKnEOPCit50wQbwdOwKqXNlJ7WmjZcqN7Z4FFp+ZsPwidtZCqPZUf2
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <92F6C51863FB40408AC12E0F660A147D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ 15.1.2106.2; Thu, 4 Feb 2021 18:33:00 +0100
+Received: from localhost (10.47.65.115) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 4 Feb 2021
+ 17:32:59 +0000
+Date:   Thu, 4 Feb 2021 17:32:14 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
+        <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 04/11] iio: core: rework iio device group creation
+Message-ID: <20210204173214.00000fb9@Huawei.com>
+In-Reply-To: <20210201145105.20459-5-alexandru.ardelean@analog.com>
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+        <20210201145105.20459-5-alexandru.ardelean@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c358900f-da92-4bda-f704-08d8c932aa46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 17:31:11.3401
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +avXqYgJjLmLddiyzUJSMCnWSaSxUZLLjhplNP3omfnf+don0NO6uIRJwffC1J8baxKiBiiXbzc0BzkpcKJHJIX8DOqSzgMBgBlcBfZYhRQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5068
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.65.115]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAyLTA0IGF0IDExOjM0ICswMTAwLCBQYW9sbyBCb256aW5pIHdyb3RlOg0K
-PiBPbiAwNC8wMi8yMSAwMzoxOSwgU2VhbiBDaHJpc3RvcGhlcnNvbiB3cm90ZToNCj4gPiBBaCwg
-dG9vayBtZSBhIGZldyBtaW51dGVzLCBidXQgSSBzZWUgd2hhdCB5b3UncmUgc2F5aW5nLsKgIExB
-TSB3aWxsDQo+ID4gaW50cm9kdWNlDQo+ID4gYml0cyB0aGF0IGFyZSByZXB1cnBvc2VkIGZvciBD
-UjMsIGJ1dCBub3QgZ2VuZXJpYyBHUEFzLsKgIEFuZCwgdGhlDQo+ID4gYmVoYXZpb3IgaXMNCj4g
-PiBiYXNlZCBvbiBDUFUgc3VwcG9ydCwgc28gaXQnZCBtYWtlIHNlbnNlIHRvIGhhdmUgYSBtYXNr
-IGNhY2hlZCBpbg0KPiA+IHZjcHUtPmFyY2gNCj4gPiBhcyBvcHBvc2VkIHRvIGNvbnN0YW50bHkg
-Z2VuZXJhdGluZyBpdCBvbiB0aGUgZmx5Lg0KPiA+IA0KPiA+IERlZmluaXRlbHkgYWdyZWUgdGhh
-dCBoYXZpbmcgYSBzZXBhcmF0ZSBjcjNfbG1fcnN2ZF9iaXRzIG9yDQo+ID4gd2hhdGV2ZXIgaXMg
-dGhlDQo+ID4gcmlnaHQgd2F5IHRvIGdvIHdoZW4gTEFNIGNvbWVzIGFsb25nLsKgIE5vdCBzdXJl
-IGl0J3Mgd29ydGgga2VlcGluZw0KPiA+IGEgZHVwbGljYXRlDQo+ID4gZmllbGQgaW4gdGhlIG1l
-YW50aW1lLCB0aG91Z2ggaXQgd291bGQgYXZvaWQgYSBzbWFsbCBhbW91bnQgb2YNCj4gPiB0aHJh
-c2guDQo+IA0KPiBXZSBkb24ndCBldmVuIGtub3cgaWYgdGhlIGNyM19sbV9yc3ZkX2JpdHMgd291
-bGQgYmUgYSBmaWVsZCBpbiANCj4gdmNwdS0+YXJjaCwgb3IgcmF0aGVyIGNvbXB1dGVkIG9uIHRo
-ZSBmbHkuwqAgU28gcmVuYW1pbmcgdGhlIGZpZWxkIGluIA0KPiB2Y3B1LT5hcmNoIHNlZW1zIGxp
-a2UgdGhlIHNpbXBsZXN0IHRoaW5nIHRvIGRvIG5vdy4NCg0KRmFpciBlbm91Z2guIEJ1dCBqdXN0
-IHRvIGNsYXJpZnksIEkgbWVhbnQgdGhhdCBJIHRob3VnaHQgdGhlIGNvZGUgd291bGQNCmJlIG1v
-cmUgY29uZnVzaW5nIHRvIHVzZSBpbGxlZ2FsIGdwYSBiaXQgY2hlY2tzIGZvciBjaGVja2luZyBj
-cjMuIEl0DQpzZWVtcyB0aGV5IGFyZSBvbmx5IGluY2lkZW50YWxseSB0aGUgc2FtZSB2YWx1ZS4g
-QWx0ZXJuYXRpdmVseSB0aGVyZQ0KY291bGQgYmUgc29tZXRoaW5nIGxpa2UgYSBpc19yc3ZkX2Ny
-M19iaXRzKCkgaGVscGVyIHRoYXQganVzdCB1c2VzDQpyZXNlcnZlZF9ncGFfYml0cyBmb3Igbm93
-LiBQcm9iYWJseSBwdXQgdGhlIGNvbW1lbnQgaW4gdGhlIHdyb25nIHBsYWNlLg0KSXQncyBhIG1p
-bm9yIHBvaW50IGluIGFueSBjYXNlLg0KDQo=
+On Mon, 1 Feb 2021 16:50:58 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+
+> Up until now, the device groups that an IIO device had were limited to 6.
+> Two of these groups would account for buffer attributes (the buffer/ and
+> scan_elements/ directories).
+> 
+> Since we want to add multiple buffers per IIO device, this number may not
+> be enough, when adding a second buffer. So, this change reallocates the
+> groups array whenever an IIO device group is added, via a
+> iio_device_register_sysfs_group() helper.
+> 
+> This also means that the groups array should be assigned to
+> 'indio_dev.dev.groups' really late, right before {cdev_}device_add() is
+> called to do the entire setup.
+> And we also must take care to free this array when the sysfs resources are
+> being cleaned up.
+> 
+> With this change we can also move the 'groups' & 'groupcounter' fields to
+> the iio_dev_opaque object. Up until now, this didn't make a whole lot of
+> sense (especially since we weren't sure how multibuffer support would look
+> like in the end).
+> But doing it now kills one birds with one stone.
+> 
+> An alternative, would be to add a configurable Kconfig symbol
+> CONFIG_IIO_MAX_BUFFERS_PER_DEVICE (or something like that) and compute a
+> static maximum of the groups we can support per IIO device. But that would
+> probably annoy a few people since that would make the system less
+> configurable.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Nice change irrespective of the rest of the series needing it.
+
+Few comments below.
+
+Jonathan
+
+> ---
+>  drivers/iio/iio_core.h             |  3 +++
+>  drivers/iio/industrialio-buffer.c  | 12 +++++++++--
+>  drivers/iio/industrialio-core.c    | 32 +++++++++++++++++++++++++++---
+>  drivers/iio/industrialio-event.c   |  5 ++++-
+>  drivers/iio/industrialio-trigger.c |  6 ++----
+>  include/linux/iio/iio-opaque.h     |  4 ++++
+>  include/linux/iio/iio.h            |  5 -----
+>  7 files changed, 52 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> index fced02cadcc3..7d5b179c1fe7 100644
+> --- a/drivers/iio/iio_core.h
+> +++ b/drivers/iio/iio_core.h
+> @@ -46,6 +46,9 @@ int __iio_add_chan_devattr(const char *postfix,
+>  			   struct list_head *attr_list);
+>  void iio_free_chan_devattr_list(struct list_head *attr_list);
+>  
+> +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
+> +				    const struct attribute_group *group);
+> +
+>  ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
+>  
+>  /* Event interface flags */
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index 2f7426a2f47c..cc846988fdb9 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1287,7 +1287,9 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+>  	buffer->buffer_group.name = "buffer";
+>  	buffer->buffer_group.attrs = attr;
+>  
+> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->buffer_group;
+> +	ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
+> +	if (ret)
+> +		goto error_free_buffer_attrs;
+>  
+>  	attrcount = 0;
+>  	INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> @@ -1330,14 +1332,20 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+>  
+>  	list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+>  		buffer->scan_el_group.attrs[attrn++] = &p->dev_attr.attr;
+> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->scan_el_group;
+> +
+> +	ret = iio_device_register_sysfs_group(indio_dev, &buffer->scan_el_group);
+> +	if (ret)
+> +		goto error_free_scan_el_attrs;
+>  
+>  	return 0;
+>  
+> +error_free_scan_el_attrs:
+> +	kfree(buffer->scan_el_group.attrs);
+>  error_free_scan_mask:
+>  	bitmap_free(buffer->scan_mask);
+>  error_cleanup_dynamic:
+>  	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> +error_free_buffer_attrs:
+>  	kfree(buffer->buffer_group.attrs);
+>  
+>  	return ret;
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 0a6fd299a978..ccd7aaff6d13 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1452,6 +1452,25 @@ static ssize_t iio_store_timestamp_clock(struct device *dev,
+>  	return len;
+>  }
+>  
+> +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
+> +				    const struct attribute_group *group)
+> +{
+> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> +	const struct attribute_group **new, **old = iio_dev_opaque->groups;
+> +	unsigned int cnt = iio_dev_opaque->groupcounter;
+> +
+> +	new = krealloc(old, sizeof(*new) * (cnt + 2), GFP_KERNEL);
+> +	if (!new)
+> +		return -ENOMEM;
+> +
+> +	new[iio_dev_opaque->groupcounter++] = group;
+> +	new[iio_dev_opaque->groupcounter] = NULL;
+> +
+> +	iio_dev_opaque->groups = new;
+> +
+> +	return 0;
+> +}
+> +
+>  static DEVICE_ATTR(current_timestamp_clock, S_IRUGO | S_IWUSR,
+>  		   iio_show_timestamp_clock, iio_store_timestamp_clock);
+>  
+> @@ -1525,8 +1544,10 @@ static int iio_device_register_sysfs(struct iio_dev *indio_dev)
+>  	if (clk)
+>  		iio_dev_opaque->chan_attr_group.attrs[attrn++] = clk;
+>  
+> -	indio_dev->groups[indio_dev->groupcounter++] =
+> -		&iio_dev_opaque->chan_attr_group;
+> +	ret = iio_device_register_sysfs_group(indio_dev,
+> +					      &iio_dev_opaque->chan_attr_group);
+> +	if (ret)
+> +		goto error_clear_attrs;
+>  
+>  	return 0;
+>  
+> @@ -1543,6 +1564,9 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
+>  	iio_free_chan_devattr_list(&iio_dev_opaque->channel_attr_list);
+>  	kfree(iio_dev_opaque->chan_attr_group.attrs);
+>  	iio_dev_opaque->chan_attr_group.attrs = NULL;
+> +	kfree(iio_dev_opaque->groups);
+> +	iio_dev_opaque->groups = NULL;
+I can see you are matching style above, but right now I can't see why
+we set chan_attr_group.attrs = NULL 
+or this new case.
+
+> +	iio_dev_opaque->groupcounter = 0;
+
+or indeed groupcounter.
+
+>  }
+>  
+>  static void iio_dev_release(struct device *device)
+> @@ -1592,7 +1616,6 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
+>  		ALIGN(sizeof(struct iio_dev_opaque), IIO_ALIGN);
+>  
+>  	dev->dev.parent = parent;
+> -	dev->dev.groups = dev->groups;
+
+Hohum. Nothing to do with this patch but not sure why the iio_dev is called dev here...
+I (or someone else) should fix that at somepoint after this is in place as it confused me.
+
+
+>  	dev->dev.type = &iio_device_type;
+>  	dev->dev.bus = &iio_bus_type;
+>  	device_initialize(&dev->dev);
+> @@ -1853,6 +1876,9 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+>  		indio_dev->chrdev.owner = this_mod;
+>  	}
+>  
+> +	/* assign device groups now; they should be all registered now */
+> +	indio_dev->dev.groups = iio_dev_opaque->groups;
+> +
+>  	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+>  	if (ret < 0)
+>  		goto error_unreg_eventset;
+> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> index 7e532117ac55..ea8947cc21e4 100644
+> --- a/drivers/iio/industrialio-event.c
+> +++ b/drivers/iio/industrialio-event.c
+> @@ -544,7 +544,10 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
+>  	/* Add all elements from the list. */
+>  	list_for_each_entry(p, &ev_int->dev_attr_list, l)
+>  		ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
+> -	indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
+> +
+> +	ret = iio_device_register_sysfs_group(indio_dev, &ev_int->group);
+> +	if (ret)
+> +		goto error_free_setup_event_lines;
+>  
+>  	ev_int->ioctl_handler.ioctl = iio_event_ioctl;
+>  	iio_device_ioctl_handler_register(&iio_dev_opaque->indio_dev,
+> diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
+> index 438d5012e8b8..a035d5c2a445 100644
+> --- a/drivers/iio/industrialio-trigger.c
+> +++ b/drivers/iio/industrialio-trigger.c
+> @@ -694,10 +694,8 @@ EXPORT_SYMBOL(iio_trigger_validate_own_device);
+>  
+>  int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
+>  {
+> -	indio_dev->groups[indio_dev->groupcounter++] =
+> -		&iio_trigger_consumer_attr_group;
+> -
+> -	return 0;
+> +	return iio_device_register_sysfs_group(indio_dev,
+> +					       &iio_trigger_consumer_attr_group);
+>  }
+>  
+>  void iio_device_unregister_trigger_consumer(struct iio_dev *indio_dev)
+> diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
+> index 07c5a8e52ca8..8ba13a5c7af6 100644
+> --- a/include/linux/iio/iio-opaque.h
+> +++ b/include/linux/iio/iio-opaque.h
+> @@ -12,6 +12,8 @@
+>   *				attributes
+>   * @chan_attr_group:		group for all attrs in base directory
+>   * @ioctl_handlers:		ioctl handlers registered with the core handler
+> + * @groups:			attribute groups
+> + * @groupcounter:		index of next attribute group
+>   * @debugfs_dentry:		device specific debugfs dentry
+>   * @cached_reg_addr:		cached register address for debugfs reads
+>   * @read_buf:			read buffer to be used for the initial reg read
+> @@ -24,6 +26,8 @@ struct iio_dev_opaque {
+>  	struct list_head		channel_attr_list;
+>  	struct attribute_group		chan_attr_group;
+>  	struct list_head		ioctl_handlers;
+> +	const struct attribute_group	**groups;
+> +	int				groupcounter;
+>  #if defined(CONFIG_DEBUG_FS)
+>  	struct dentry			*debugfs_dentry;
+>  	unsigned			cached_reg_addr;
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index e4a9822e6495..f8585d01fc76 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -518,8 +518,6 @@ struct iio_buffer_setup_ops {
+>   * @setup_ops:		[DRIVER] callbacks to call before and after buffer
+>   *			enable/disable
+>   * @chrdev:		[INTERN] associated character device
+> - * @groups:		[INTERN] attribute groups
+> - * @groupcounter:	[INTERN] index of next attribute group
+>   * @flags:		[INTERN] file ops related flags including busy flag.
+>   * @priv:		[DRIVER] reference to driver's private information
+>   *			**MUST** be accessed **ONLY** via iio_priv() helper
+> @@ -556,9 +554,6 @@ struct iio_dev {
+>  	struct mutex			info_exist_lock;
+>  	const struct iio_buffer_setup_ops	*setup_ops;
+>  	struct cdev			chrdev;
+> -#define IIO_MAX_GROUPS 6
+> -	const struct attribute_group	*groups[IIO_MAX_GROUPS + 1];
+> -	int				groupcounter;
+>  
+>  	unsigned long			flags;
+>  	void				*priv;
+
