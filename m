@@ -2,136 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A417B30F11F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B0530F11B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhBDKpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:45:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235439AbhBDKpm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:45:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612435456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qc79/SydJqJc0GnAvKYNJ7NyXEgSRB74d6Ask0k4LBQ=;
-        b=R5G256rID/wqQLoU7ABTU1mZkV3HvIfWA7AIcJ4Q+FC0AKRTdwXuz7Mil7oq5IqOOEqJCf
-        3z8O/qzjEn+W7ZVIMAR0UUqFonsoOsN5beOeyXpeg/SunuX9yyfmqV17lBe/4i1I1X9HTO
-        l3RyCA/VriMeahEybsaRYcDBod8Pt4A=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-sMscHBVsNcimeoOBdJkQLQ-1; Thu, 04 Feb 2021 05:44:12 -0500
-X-MC-Unique: sMscHBVsNcimeoOBdJkQLQ-1
-Received: by mail-ej1-f69.google.com with SMTP id w16so2370933ejk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:44:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qc79/SydJqJc0GnAvKYNJ7NyXEgSRB74d6Ask0k4LBQ=;
-        b=CDXoif77ieC8CaADHGgnYRL/P9jYEN1/j1hh9dzr7p9tVv5JnhJo7oJzVvm7NxcbwA
-         p1/KAhk1tNnY0Pp/3UtXl+YzMmX2vJW/FsNMfzShIeTPIaTm3BHLkZeOGk8+XHnlL8Hm
-         FVQafOUIYvhSeYrVLWtH5xdlF2UUft3QGMSI+2N3W0qFUYkggqlrCpUh6iG+xeUlkmsL
-         o0OupWANhKWnfnK+bV3UBbp8NKHa3rSfDfEe8rV3G29XxPh542hx2lTfuy30p6c7FGOy
-         W4RdBqjbqVW+H8nMIGUpFl6HD9n1MiiVUIXSm5oyjEGSwAPZSwatqaMILaGkuqBGNlBQ
-         rqpw==
-X-Gm-Message-State: AOAM530DmJG7BTqtgoLpGyncgMRLeH7clt45Lnub+L+nicM3xS82Kicr
-        XjoK+0auCqXjhrQYF6YN92bjYaw2jO39Kw0OfeVApapoDz5RgRev6tV6akG7MdgW9Ci57fbNtY3
-        kQZ0eWv98IDS5WuAjOABwYNYk
-X-Received: by 2002:a17:906:b28f:: with SMTP id q15mr7361956ejz.77.1612435451358;
-        Thu, 04 Feb 2021 02:44:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwy+5l4EFKjhd+GCohRu7VTnNQ3UVBq14t2IhrB9IdvriyD15u2dLRadVo5ok1j+WIsJpTfLg==
-X-Received: by 2002:a17:906:b28f:: with SMTP id q15mr7361943ejz.77.1612435451149;
-        Thu, 04 Feb 2021 02:44:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id hb24sm787738ejb.16.2021.02.04.02.44.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 02:44:10 -0800 (PST)
-Subject: Re: [PATCH 00/12] KVM: x86: Legal GPA fixes and cleanups
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210204000117.3303214-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <112585a1-713c-54ac-3d8b-ce913faec3a5@redhat.com>
-Date:   Thu, 4 Feb 2021 11:44:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S235433AbhBDKpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:45:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:52906 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235037AbhBDKpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:45:19 -0500
+IronPort-SDR: j/GbsNOoNowtUHBalcuGDyhLqBxrJINjf7Ou5qit2/qzgnfPPzf8q/j1L1snEqjxbx8VbBmlvQ
+ m7DkVzm/icrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="242723583"
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="242723583"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:44:37 -0800
+IronPort-SDR: PVOI/G2+/ZiQWeX5LUb4HtD1Ld7CVXQhvQyVaAW11Nq0aIYkKueAedfuUUi80zuDxgX09iFQS8
+ IN+encK524Uw==
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="393103840"
+Received: from dbmayer-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:44:34 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/i915/display: fix spelling mistake "Couldnt" -> "Couldn't"
+In-Reply-To: <20210203110803.17894-1-colin.king@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210203110803.17894-1-colin.king@canonical.com>
+Date:   Thu, 04 Feb 2021 12:44:31 +0200
+Message-ID: <87eehwf6y8.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204000117.3303214-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/21 01:01, Sean Christopherson wrote:
-> Add helpers to consolidate the GPA reserved bits checks that are scattered
-> all over KVM, and fix a few bugs in the process.
-> 
-> The original motivation was simply to get rid of all the different open
-> coded variations of the checks (there were a lot), but this snowballed
-> into a more ambitious cleanup when I realized common helpers are more or
-> less required to correctly handle repurposed GPA bits, e.g. SEV's C-bit.
-> 
-> The last two patches (use nested VM-Enter failure tracepoints in SVM)
-> aren't directly related to the GPA checks, but the conflicts would be
-> rather messy, so I included them here.
-> 
-> Note, the SEV C-bit changes are technically bug fixes, but getting them in
-> stable kernels would require backporting this entire pile.  IMO, it's not
-> worth the effort given that it's extremely unlikely anyone will encounter
-> the bugs in anything but synthetic negative tests.
-> 
-> Based on kvm/queue, commit 3f87cb8253c3 ("KVM: X86: Expose bus lock debug
-> exception to guest").
+On Wed, 03 Feb 2021, Colin King <colin.king@canonical.com> wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in a drm_dbg message. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Queued 1 for 5.11 and 2-10 for 5.12; the VMCB01/VMCB02 patches are 
-unlikely to make it in 5.12 so 11-12 won't be in kvm/next anytime 
-soon---but you don't have to care about them anyway.
+Thanks, pushed to drm-intel-next.
 
-Paolo
+BR,
+Jani.
 
-> Sean Christopherson (12):
->    KVM: x86: Set so called 'reserved CR3 bits in LM mask' at vCPU reset
->    KVM: nSVM: Don't strip host's C-bit from guest's CR3 when reading
->      PDPTRs
->    KVM: x86: Add a helper to check for a legal GPA
->    KVM: x86: Add a helper to handle legal GPA with an alignment
->      requirement
->    KVM: VMX: Use GPA legality helpers to replace open coded equivalents
->    KVM: nSVM: Use common GPA helper to check for illegal CR3
->    KVM: x86: SEV: Treat C-bit as legal GPA bit regardless of vCPU mode
->    KVM: x86: Use reserved_gpa_bits to calculate reserved PxE bits
->    KVM: x86/mmu: Add helper to generate mask of reserved HPA bits
->    KVM: x86: Add helper to consolidate "raw" reserved GPA mask
->      calculations
->    KVM: x86: Move nVMX's consistency check macro to common code
->    KVM: nSVM: Trace VM-Enter consistency check failures
-> 
->   arch/x86/include/asm/kvm_host.h |   2 +-
->   arch/x86/kvm/cpuid.c            |  20 +++++-
->   arch/x86/kvm/cpuid.h            |  24 +++++--
->   arch/x86/kvm/mmu/mmu.c          | 110 ++++++++++++++++----------------
->   arch/x86/kvm/mtrr.c             |  12 ++--
->   arch/x86/kvm/svm/nested.c       |  35 +++++-----
->   arch/x86/kvm/svm/svm.c          |   2 +-
->   arch/x86/kvm/vmx/nested.c       |  34 +++-------
->   arch/x86/kvm/vmx/vmx.c          |   2 +-
->   arch/x86/kvm/x86.c              |  11 ++--
->   arch/x86/kvm/x86.h              |   8 +++
->   11 files changed, 140 insertions(+), 120 deletions(-)
-> 
 
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 8c12d5375607..a338720cee2e 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -2650,7 +2650,7 @@ void intel_dp_check_frl_training(struct intel_dp *intel_dp)
+>  	if (intel_dp_pcon_start_frl_training(intel_dp) < 0) {
+>  		int ret, mode;
+>  
+> -		drm_dbg(&dev_priv->drm, "Couldnt set FRL mode, continuing with TMDS mode\n");
+> +		drm_dbg(&dev_priv->drm, "Couldn't set FRL mode, continuing with TMDS mode\n");
+>  		ret = drm_dp_pcon_reset_frl_config(&intel_dp->aux);
+>  		mode = drm_dp_pcon_hdmi_link_mode(&intel_dp->aux, NULL);
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
