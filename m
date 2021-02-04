@@ -2,195 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDB030EC34
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B88530EC3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhBDFro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 00:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S231767AbhBDFy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 00:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhBDFrm (ORCPT
+        with ESMTP id S231132AbhBDFyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:47:42 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2E1C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 21:47:02 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id lw17so4522784pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 21:47:02 -0800 (PST)
+        Thu, 4 Feb 2021 00:54:23 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B14C06178A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 21:53:37 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id y199so587131oia.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 21:53:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KyojcS0OuJamrwyKsNSmnu2upiRPh0xOegZncnEILlM=;
-        b=Rps3pL2i1mnueKuQdus5KbOfSZ48aSMWFXDPs/Lm8FDW42pAdWx2J+RlEODeCuoPl6
-         XUnAECdOyiInABbGe6jy2qhTW8zBJWo3xk3G97wMzGER5JsimF3g9GNtz2OQ0H+M93Z+
-         oQ/OalyZF76Nx2n8+hC2mO5xieOYo3uWIOEpuoB1cDz89sPeuUKDWEhPE9M8TRMwzqCx
-         zAamPPHk2C0+6XJ2B22uI4InfP2rLNHt5ljw9DIk35K64jVozhRo7oeT7k9plAtfWaPP
-         Pu+e6dK6V7oVuDqKZzDiZdTKbgj9YpI5599Wj8SOwgQ+wENig6y2+k/WUvKeVVJ0bub7
-         Ee3A==
+         :content-disposition:in-reply-to;
+        bh=NQEoj3DyDWokFAcyDU8p8YsOVdnIb4zToBI0nVhbNx4=;
+        b=Jz31lhz8A3hydQGpprqs4dFv3Ba/suWBsbpVwkGUzi6czH5E4cSO/3df7DDS0j5m2E
+         hMTfvqyMn4uq1rhC1fOzPVRrk4mmCy3btK3HxvX94VlKTi62eArHBut5GGHQziJMIcbc
+         By8kXEsizJcvGAn0OhbAddR+r6mQTPtQHDFkPxRGgs7q3i7OYo7avwPAZ+CNBG6Zl/k3
+         mdp9MoKF+EbtX+pvL9JJz2jI5EHFWIMW+tV5tPIO2oCI/46821pFo3I328qjEOBaSQeu
+         0tKKwkKki0mElr+cMapQnHobwTic/N8vNe/InbbUnVu+DdFSUqHAMW8zwtNH162WWWGv
+         w9Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KyojcS0OuJamrwyKsNSmnu2upiRPh0xOegZncnEILlM=;
-        b=FCAwjDo8ROCCsAMTC8o0J3G3o1+GAJFHhvgsY1yklFzzwPtU7uJuYScd/Oiqr53j4T
-         7xR/Kkv743K31gvVdlly4gHUTI8w41nmvM4s7vM1iA4LzxB521Vzrv2svf7Ed2MJukY5
-         yEy53VI+Z4+S/EtiPmYiOdPM5fI1dn1niK2fOHI1j3R8LYH+BVfa7IpifEEgM/B1gFsJ
-         i0px2n1M+mbyG7D0VC5s68MJIB6Did9j+Padp+xCr4n1+H8vUxq8XPMi2AJ27636tZ5v
-         qSvpTrDa5V8VG+qH85PZ10kLPlzM/gau/cFdT/hEvNR5jCGIXpZbien7jmx2Hnud7JFd
-         F3OA==
-X-Gm-Message-State: AOAM531iDL0GgAV+dMi+f7Vp0CY67OyhFJWtLijzGHtdSXqV9iSMW1at
-        Kzo5aqM7knDNS82rc1or1wTnmA==
-X-Google-Smtp-Source: ABdhPJxEz9ldCJgsznq5Y6JcqW64A2UI/RgTpTn5aXnweesuyk54aeQVELxDSPgngm59yrngRCn/kQ==
-X-Received: by 2002:a17:902:b190:b029:df:fff2:c345 with SMTP id s16-20020a170902b190b02900dffff2c345mr6402458plr.17.1612417621764;
-        Wed, 03 Feb 2021 21:47:01 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id z11sm4270598pfk.97.2021.02.03.21.47.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 21:47:00 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:16:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org,
-        "MyungJoo Ham )" <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v5 1/3] OPP: Add function to look up required OPP's for a
- given OPP
-Message-ID: <20210204054658.aujpukq657ziabde@vireshk-i7>
-References: <20210203092400.1791884-1-hsinyi@chromium.org>
- <20210203092400.1791884-2-hsinyi@chromium.org>
+         :mime-version:content-disposition:in-reply-to;
+        bh=NQEoj3DyDWokFAcyDU8p8YsOVdnIb4zToBI0nVhbNx4=;
+        b=COLX53okfFcQVoa3uvlzymFjRIlP/AWJboGCwyaZyVj0h8P95zWDaYEh+bp4AnNCbl
+         rgDJb7gsgsd0GJHTPb9A1B5nZuGTzmb6sRcx3QIdQbFa/zi3AS2jBGCeU77loTqGkqaO
+         lVg3zGy1kNN1OIrtntU3EFAVSL7sKzq3sPoBHK9NHfnuMWuRRMN2CWQMh8dOPOf9rTBv
+         Z3VqTgJQBxV5DNOa89MyV/5OG+zgKohtA63AMJiAkS5X8GMr/4PnpxfZuzW4KBRhB9XU
+         PFt973tZGUeH3+jZkzOkLJ9SXvWxpBIaCMWaRnHHQIRbKYuTPQdw6yPXFb9evJuocPJS
+         GtNg==
+X-Gm-Message-State: AOAM531zlLFpjuPOglSrNNQcoGDiQlpKaYwXAEdX08+yQbufG/gNwxpU
+        JUWuOD54MhzFyLAyBIBSV2hx3A==
+X-Google-Smtp-Source: ABdhPJxCTqK2aD9g0iKF41lhpXvA8z5S60R5eiZqR/Y/4vjqoXIzwmTLzewljBXiMyUdnGjE5cDzsg==
+X-Received: by 2002:aca:c60d:: with SMTP id w13mr4286563oif.26.1612418016593;
+        Wed, 03 Feb 2021 21:53:36 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q195sm951787oic.15.2021.02.03.21.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 21:53:35 -0800 (PST)
+Date:   Wed, 3 Feb 2021 23:53:33 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+Message-ID: <YBuL3bdxFmRwLtdo@builder.lan>
+References: <YBGDng3VhE1Yw6zt@kroah.com>
+ <20210201105549.GB108653@thinkpad>
+ <YBfi573Bdfxy0GBt@kroah.com>
+ <20210201121322.GC108653@thinkpad>
+ <20210202042208.GB840@work>
+ <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
+ <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
+ <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203092400.1791884-2-hsinyi@chromium.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-02-21, 17:23, Hsin-Yi Wang wrote:
-> From: Saravana Kannan <saravanak@google.com>
-> 
-> Add a function that allows looking up required OPPs given a source OPP
-> table, destination OPP table and the source OPP.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/opp/core.c     | 58 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h | 11 ++++++++
->  2 files changed, 69 insertions(+)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index dc95d29e94c1b..878f066b972cc 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -2398,6 +2398,64 @@ devm_pm_opp_attach_genpd(struct device *dev, const char **names,
->  }
->  EXPORT_SYMBOL_GPL(devm_pm_opp_attach_genpd);
->  
-> +/**
-> + * dev_pm_opp_xlate_required_opp() - Find required OPP for @src_table OPP.
-> + * @src_table: OPP table which has @dst_table as one of its required OPP table.
-> + * @dst_table: Required OPP table of the @src_table.
-> + *
-> + * This function returns the OPP (present in @dst_table) pointed out by the
-> + * "required-opps" property of the OPP (present in @src_table).
-> + *
-> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
-> + * use.
-> + *
-> + * Return: destination table OPP on success, otherwise NULL on errors.
-> + */
-> +struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table,
-> +						 struct opp_table *dst_table,
-> +						 struct dev_pm_opp *src_opp)
-> +{
-> +	struct dev_pm_opp *opp, *dest_opp = NULL;
-> +	int i;
-> +
-> +	if (!src_table || !dst_table || !src_opp ||
-> +	    !src_table->required_opp_tables)
-> +		return NULL;
-> +
-> +	/* required-opps not fully initialized yet */
-> +	if (lazy_linking_pending(src_table))
-> +		return NULL;
-> +
-> +	for (i = 0; i < src_table->required_opp_count; i++) {
-> +		if (src_table->required_opp_tables[i] == dst_table)
-> +			break;
-> +	}
-> +
-> +	if (unlikely(i == src_table->required_opp_count)) {
-> +		pr_err("%s: Couldn't find matching OPP table (%p: %p)\n",
-> +		       __func__, src_table, dst_table);
-> +		return NULL;
-> +	}
-> +
-> +	mutex_lock(&src_table->lock);
-> +
-> +	list_for_each_entry(opp, &src_table->opp_list, node) {
-> +		if (opp == src_opp) {
-> +			dest_opp = opp->required_opps[i];
-> +			dev_pm_opp_get(dest_opp);
-> +			goto unlock;
-> +		}
-> +	}
-> +
-> +	pr_err("%s: Couldn't find matching OPP (%p: %p)\n", __func__, src_table,
-> +	       dst_table);
-> +
-> +unlock:
-> +	mutex_unlock(&src_table->lock);
-> +
-> +	return dest_opp;
-> +}
-> +
->  /**
->   * dev_pm_opp_xlate_performance_state() - Find required OPP's pstate for src_table.
->   * @src_table: OPP table which has dst_table as one of its required OPP table.
-> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-> index ab1d15ce559db..6f5f72a7f601c 100644
-> --- a/include/linux/pm_opp.h
-> +++ b/include/linux/pm_opp.h
-> @@ -156,6 +156,9 @@ struct opp_table *devm_pm_opp_register_set_opp_helper(struct device *dev, int (*
->  struct opp_table *dev_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
->  void dev_pm_opp_detach_genpd(struct opp_table *opp_table);
->  struct opp_table *devm_pm_opp_attach_genpd(struct device *dev, const char **names, struct device ***virt_devs);
-> +struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table,
-> +						 struct opp_table *dst_table,
-> +						 struct dev_pm_opp *src_opp);
->  int dev_pm_opp_xlate_performance_state(struct opp_table *src_table, struct opp_table *dst_table, unsigned int pstate);
->  int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq);
->  int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp);
-> @@ -367,6 +370,14 @@ static inline struct opp_table *devm_pm_opp_attach_genpd(struct device *dev,
->  	return ERR_PTR(-EOPNOTSUPP);
->  }
->  
-> +static inline struct dev_pm_opp *dev_pm_opp_xlate_required_opp(
-> +						struct opp_table *src_table,
-> +						struct opp_table *dst_table,
-> +						struct dev_pm_opp *src_opp)
-> +{
-> +	return NULL;
-> +}
+On Wed 03 Feb 12:40 CST 2021, Jakub Kicinski wrote:
 
-Like other routines that return opp *, don't return NULL on errors but
-a valid error number instead. And follow the declaration format of
-other routines from this file, don't break lines etc.. 
+> On Wed, 3 Feb 2021 19:28:28 +0100 Loic Poulain wrote:
+> > On Wed, 3 Feb 2021 at 19:05, Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:  
+> > > > The current patchset only supports QMI channel so I'd request you to
+> > > > review the chardev node created for it. The QMI chardev node created
+> > > > will be unique for the MHI bus and the number of nodes depends on the
+> > > > MHI controllers in the system (typically 1 but not limited).  
+> > >
+> > > If you want to add a MHI QMI driver, please write a QMI-only driver.
+> > > This generic "userspace client interface" driver is a no go. Nobody will
+> > > have the time and attention to police what you throw in there later.  
+> > 
+> > Think it should be seen as filtered userspace access to MHI bus
+> > (filtered because not all channels are exposed), again it's not
+> > specific to MHI, any bus in Linux offers that (i2c, spi, usb, serial,
+> > etc...). It will not be specific to QMI, since we will also need it
+> > for MBIM (modem control path), AT commands, and GPS (NMEA frames), all
+> > these protocols are usually handled by userspace tools and not linked
+> > to any internal Linux framework, so it would be better not having a
+> > dedicated chardev for each of them.
+> 
+> The more people argue for this backdoor interface the more distrustful
+> of it we'll become. Keep going at your own peril.
 
-> +
->  static inline int dev_pm_opp_xlate_performance_state(struct opp_table *src_table, struct opp_table *dst_table, unsigned int pstate)
->  {
->  	return -EOPNOTSUPP;
-> -- 
-> 2.30.0.365.g02bc693789-goog
+With things such as USBDEVFS, UIO, spi-dev and i2c-dev already exposing
+various forms of hardware directly to userspace in an identical fashion,
+can you please explain why you believe this would be inappropriate for
+MHI devices?
 
--- 
-viresh
+Thanks,
+Bjorn
