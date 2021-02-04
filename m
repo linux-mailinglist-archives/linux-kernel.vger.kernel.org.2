@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CC530EE55
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EB530EE5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbhBDI1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbhBDI1P (ORCPT
+        id S234966AbhBDIaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:30:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41030 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234646AbhBDIaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:27:15 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A96BC061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 00:26:34 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id s24so1276180pjp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=l37v/+IQCeAuiHht2ANiOQJ57lx2wA7Uo/VmPusIzyN4Onk0lptvEpl+jQLu/UN74Y
-         iFsl/tLthfjfPVMAx6HeFrFGRvuycZofEIay6tH3M1eudbiOHgSvGvycv9Fxl07cIg9B
-         cmrgtgWxt/QD2eCWsm885BFvXjBFYTnEm05SSFzOrCC5Xny4n2cSVdL8omzsC9K96imA
-         yekGtUViFFD+nlLsP2oqAfA9hrKiwfgqmyvRxfYTUMCs9t3XXx879qOQ7qc5vU4fzh3b
-         /hw9yW3a1q7OBde9GarC4MQAQPIEJAHSm/cxclo01bRP67oNtfFyv6eEqU3+tqslqD4X
-         EU9g==
+        Thu, 4 Feb 2021 03:30:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612427324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P2oFYh6GVLYKdkPoje25sIawi2slxCLU7zLus+5oLCk=;
+        b=h/pYbo9iOuvSXS19SC+X1Zle9Ei9rhi2l4rmmoqzlggMhlhPqY/Lin7sgMX/xrabT7UZhz
+        NJuJIaPzqmoELA1DDRnHA+QsZkiYE1Zllm9+SR6V0Nyi3ovS667gIpnwjdUldZ6jMTUJVH
+        5JpTFLpo596Aa5eLGT/T1kyCm4HuL6Y=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-O2fiNHjKM4ehtvaz-oWbLw-1; Thu, 04 Feb 2021 03:28:42 -0500
+X-MC-Unique: O2fiNHjKM4ehtvaz-oWbLw-1
+Received: by mail-ej1-f71.google.com with SMTP id by20so2054382ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:28:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=ln9YmIg4qpCpC08GlnhJTdMFxqOLFQR8jSCC8FT1LkYFplcQ6C83vFoJvQxQhdGUJU
-         4IBvllIfUvivZ9qYku/BfnSODy/hB48AgyIxeh+Hehin0aPL7FMxiGjjRVMZYQHuB48X
-         cE0KtkKmTZKKXQPuJuR5jiNsD9sQi68pVPuIbvfFzmcQuQKo7GwTDXcZ7UGFOvpyQFkp
-         1waB6zG68G/oslpBSSeH1N7IhHJsSVd/q5E7aQNAftugCEBUegDRREyoW6wemx7CT8V4
-         P86haC9i0HWPPyMondqMtIY8pgqpjDyk6rUi7ZndYkVX/gpnns0fnSwwgEFcU7R2Qctw
-         6vVw==
-X-Gm-Message-State: AOAM533wAnlKMY+nywik1EMglOeovr7KuRly/r1l40nnN/qxVIskVtGH
-        /zplARajdQ/AY3dQZ1q6rQLOVMmmnr4KB6ck0MQ=
-X-Google-Smtp-Source: ABdhPJzusEya84UEZMFzRQ2jsnWwcUWbQ5gcbeWzx/p19KMW6BEmWzzxRkB5wPAKmjLrJrl6yJcyAO8uCeAV6CoDGIo=
-X-Received: by 2002:a17:902:e5cc:b029:df:bc77:3aba with SMTP id
- u12-20020a170902e5ccb02900dfbc773abamr7041186plf.72.1612427193466; Thu, 04
- Feb 2021 00:26:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P2oFYh6GVLYKdkPoje25sIawi2slxCLU7zLus+5oLCk=;
+        b=njDqm9u7zJWpgfmZyqr2BuXL4jvX9QeL4JyAGjpRL/W9dwW/WUYFySd7iva3nhY9mn
+         HJdA9eh2Vm/k9qxItSUR/qGz7kZx8kIhTEK4U5WVAnI+KDnkdapmjqG4koTx6irzI+RE
+         wWWoicDZOSjtPPgVwYECSd3o3Mg5uiAgSy52slro/xvZZhMjLBpCJSKydLzb373IuESy
+         IDgWduClbyG5vfU+AMoMgcRQ5aJRqqwuk6/BYIEac05kzw7jsyJInUyd2buFpe5BXbwf
+         LH2n4CEyuaxkDc6DiQpOa+ZCybf3J/0aBUpJRgJ/TGVnXtkiJ+LWrZ0t/1KIHCrrYCin
+         /zRg==
+X-Gm-Message-State: AOAM530oi1o7S9zCJksAAGkOPnmKiP/1MrVOBX5Vx4k0xBS3NAfgU/U3
+        MjRUZHJ/Vju6f36+akqf3ainbspzMn8MCb5bRhIA9RMrFjS61uVUlCzK3cgClxiWqphGBMmqxns
+        qNQGsjKsUVTZfovlSI7+1FwuD
+X-Received: by 2002:a17:906:36cc:: with SMTP id b12mr4960399ejc.323.1612427321478;
+        Thu, 04 Feb 2021 00:28:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzhUozLKCqWBce20CvYC68TLIJHGPCCMCYWvHS3x3dpV/ZT5Q1tLgy0cJnAg7GfHz3Ml5fH/g==
+X-Received: by 2002:a17:906:36cc:: with SMTP id b12mr4960379ejc.323.1612427321081;
+        Thu, 04 Feb 2021 00:28:41 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y20sm1999655edc.84.2021.02.04.00.28.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 00:28:40 -0800 (PST)
+Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
+ dispatch
+To:     Yang Weijiang <weijiang.yang@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     jmattson@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yu.c.zhang@linux.intel.com
+References: <20210203113421.5759-1-weijiang.yang@intel.com>
+ <20210203113421.5759-5-weijiang.yang@intel.com> <YBsZwvwhshw+s7yQ@google.com>
+ <20210204072200.GA10094@local-michael-cet-test>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d41eaeaa-4470-33a5-0d18-cdcb4b180197@redhat.com>
+Date:   Thu, 4 Feb 2021 09:28:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Received: by 2002:a17:90b:4b0f:0:0:0:0 with HTTP; Thu, 4 Feb 2021 00:26:32
- -0800 (PST)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <vijairaja789@gmail.com>
-Date:   Thu, 4 Feb 2021 00:26:32 -0800
-Message-ID: <CAGZ0r_+M24a3vuyZPEw69xFecBNkVqRoiVRR=AtSpFnA+OW61Q@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204072200.GA10094@local-michael-cet-test>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On 04/02/21 08:22, Yang Weijiang wrote:
+> Thanks Sean for catching this!
+> 
+> Hi, Paolo,
+> Do I need to send another version to include Sean's change?
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+No, it's okay.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+Paolo
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
-
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
