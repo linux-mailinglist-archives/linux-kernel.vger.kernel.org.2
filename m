@@ -2,154 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197FA30F047
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFD830F045
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhBDKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:15:44 -0500
-Received: from relay.sw.ru ([185.231.240.75]:55030 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235409AbhBDKPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:15:40 -0500
-Received: from [192.168.15.247]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1l7beN-001fd2-Of; Thu, 04 Feb 2021 13:14:11 +0300
-Subject: Re: [v6 PATCH 09/11] mm: vmscan: don't need allocate
- shrinker->nr_deferred for memcg aware shrinkers
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203172042.800474-1-shy828301@gmail.com>
- <20210203172042.800474-10-shy828301@gmail.com>
- <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com>
-Message-ID: <5e335e4a-1556-e694-8f0b-192d924f99e5@virtuozzo.com>
-Date:   Thu, 4 Feb 2021 13:14:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235405AbhBDKPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235310AbhBDKPX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:15:23 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416F8C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:14:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d26so584263pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ihO1Bw9PZGVXNi4lRJ7ISn0OCRqLi6mJnCqOoIVfBhY=;
+        b=VA2luoRv4U/JwrdENGJD9ug/MP4yLZV8jDFJAh0T2PmjYRlgBEkJR+Jj0l/XqOh9lO
+         FZWBjiGnj/tPjL2oL/6P+uM5w5djRVMwJoP1hnMbZP+x2ClE5h/YMPQ45+buvnDnsNG0
+         wN12wjFVzhQ3fmbfKvaj0NfnGIICyYbhbpBRtR2zS3bcC0OlAny+F5PxJ6NM0KaIi4l1
+         MY55bcDYbq/JSoTV9aAm6S79n/mTZf5WjbXnChF26nZJoulE03VfhOZCruHEzrsW0WJU
+         B7CP+4fZrLrQ3YornOgHX8a/iWdju7LULoKzLT/F9by4sNfhKLxiHbVFKvz/q9znfCax
+         3r3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ihO1Bw9PZGVXNi4lRJ7ISn0OCRqLi6mJnCqOoIVfBhY=;
+        b=k/nyVueanMR6GH4eTwVBJhQImk6epWhovP93kERW0D5q/Y7iClPIOJ83RWUrl53oNc
+         pxn+9E9eF7gBgWuOHpKS15Mfp0wXl59JEyqfsjFE5iC18lgCrVCX62bPbSg/4qu4Hqar
+         MGT69PPFcf+0Vk6yOj6JAzOkhHE/Ti6y/XBAM2a3sGhQxKdSJroWZYOnb36//z7E5/vx
+         naoad6WSB1wlEYXW1P+CK7FcTrsTqHScYGN8a04bJDx7X7vrxNJ0HYVlTfbPZX3Ev5T3
+         bJinUOxa1OumoXqgpdNVdX9Ffc6fEKoaRwpmbQqbScGuhAC3CgsCahL2VBGaam4OxqjE
+         pmlA==
+X-Gm-Message-State: AOAM531AEr2cWF6CkfQsbdFKsAoI/8B31kXwDRbd2BwytHHLBP9BF0JC
+        Km/DwC6hMf+7ZUOhSi8rWmTteg==
+X-Google-Smtp-Source: ABdhPJzr4IVo1KRB0oUmKA8V+67C9Q6qvDs6ikyR9FHb4z/hb2cmdHr7cjgzRjXMyI0gcLTuHoiOYA==
+X-Received: by 2002:a63:e50:: with SMTP id 16mr8213310pgo.74.1612433682594;
+        Thu, 04 Feb 2021 02:14:42 -0800 (PST)
+Received: from localhost.localdomain ([110.226.34.123])
+        by smtp.gmail.com with ESMTPSA id g5sm5363771pfm.115.2021.02.04.02.14.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 02:14:41 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v2] kdb: Refactor env variables get/set code
+Date:   Thu,  4 Feb 2021 15:44:20 +0530
+Message-Id: <1612433660-32661-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.02.2021 12:29, Kirill Tkhai wrote:
-> On 03.02.2021 20:20, Yang Shi wrote:
->> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
->> allocate shrinker->nr_deferred for such shrinkers anymore.
->>
->> The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
->> by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
->> This makes the implementation of this patch simpler.
->>
->> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->> Signed-off-by: Yang Shi <shy828301@gmail.com>
->> ---
->>  mm/vmscan.c | 31 ++++++++++++++++---------------
->>  1 file changed, 16 insertions(+), 15 deletions(-)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 545422d2aeec..20a35d26ae12 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -334,6 +334,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->>  {
->>  	int id, ret = -ENOMEM;
->>  
->> +	if (mem_cgroup_disabled())
->> +		return -ENOSYS;
->> +
->>  	down_write(&shrinker_rwsem);
->>  	/* This may call shrinker, so it must use down_read_trylock() */
->>  	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
->> @@ -414,7 +417,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->>  #else
->>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->>  {
->> -	return 0;
->> +	return -ENOSYS;
->>  }
->>  
->>  static void unregister_memcg_shrinker(struct shrinker *shrinker)
->> @@ -525,8 +528,18 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
->>   */
->>  int prealloc_shrinker(struct shrinker *shrinker)
->>  {
->> -	unsigned int size = sizeof(*shrinker->nr_deferred);
->> +	unsigned int size;
->> +	int err;
->> +
->> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->> +		err = prealloc_memcg_shrinker(shrinker);
->> +		if (err != -ENOSYS)
->> +			return err;
->>  
->> +		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
->> +	}
->> +
->> +	size = sizeof(*shrinker->nr_deferred);
->>  	if (shrinker->flags & SHRINKER_NUMA_AWARE)
->>  		size *= nr_node_ids;
-> 
-> This may sound surprisingly, but IIRC do_shrink_slab() may be called on early boot
-> *even before* root_mem_cgroup is allocated. AFAIR, I received syzcaller crash report
-> because of this, when I was implementing shrinker_maps.
-> 
-> This is a reason why we don't use shrinker_maps even in case of mem cgroup is not
-> disabled: we iterate every shrinker of shrinker_list. See check in shrink_slab():
-> 
-> 	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
-> 
-> Possible, we should do the same for nr_deferred: 1)always allocate shrinker->nr_deferred,
-> 2)use shrinker->nr_deferred in count_nr_deferred() and set_nr_deferred().
+Add two new kdb environment access methods as kdb_setenv() and
+kdb_printenv() in order to abstract out environment access code
+from kdb command functions.
 
-I looked over my mail box, and I can't find that crash report and conditions to reproduce.
+Also, replace (char *)0 with NULL as an initializer for environment
+variables array.
 
-Hm, let's remain this as is, and we rework this in case of such early shrinker call is still
-possible, and there will be a report...
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
 
-Reviewed-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+Changes in v2:
+- Get rid of code motion to separate kdb_env.c file.
+- Replace (char *)0 with NULL.
+- Use kernel-doc style function comments.
+- s/kdb_prienv/kdb_printenv/
 
-With only nit:
+ kernel/debug/kdb/kdb_main.c | 166 +++++++++++++++++++++++++-------------------
+ 1 file changed, 93 insertions(+), 73 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 588062a..b257d35 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -142,40 +142,40 @@ static const int __nkdb_err = ARRAY_SIZE(kdbmsgs);
  
->>  
->> @@ -534,26 +547,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
->>  	if (!shrinker->nr_deferred)
->>  		return -ENOMEM;
->>  
->> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->> -		if (prealloc_memcg_shrinker(shrinker))
->> -			goto free_deferred;
->> -	}
->>  
->>  	return 0;
->> -
->> -free_deferred:
->> -	kfree(shrinker->nr_deferred);
->> -	shrinker->nr_deferred = NULL;
->> -	return -ENOMEM;
->>  }
->>  
->>  void free_prealloced_shrinker(struct shrinker *shrinker)
->>  {
->> -	if (!shrinker->nr_deferred)
->> -		return;
->> -
->>  	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->> -		unregister_memcg_shrinker(shrinker);
->> +		return unregister_memcg_shrinker(shrinker);
-
-I've never seen return of void function in linux kernel. I'm not sure this won't confuse people.
-
->>  
->>  	kfree(shrinker->nr_deferred);
->>  	shrinker->nr_deferred = NULL;
->>
-> 
+ static char *__env[] = {
+ #if defined(CONFIG_SMP)
+- "PROMPT=[%d]kdb> ",
++	"PROMPT=[%d]kdb> ",
+ #else
+- "PROMPT=kdb> ",
++	"PROMPT=kdb> ",
+ #endif
+- "MOREPROMPT=more> ",
+- "RADIX=16",
+- "MDCOUNT=8",			/* lines of md output */
+- KDB_PLATFORM_ENV,
+- "DTABCOUNT=30",
+- "NOSECT=1",
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
++	"MOREPROMPT=more> ",
++	"RADIX=16",
++	"MDCOUNT=8",		/* lines of md output */
++	KDB_PLATFORM_ENV,
++	"DTABCOUNT=30",
++	"NOSECT=1",
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
+ };
+ 
+ static const int __nenv = ARRAY_SIZE(__env);
+@@ -318,6 +318,65 @@ int kdbgetintenv(const char *match, int *value)
+ }
+ 
+ /*
++ * kdb_setenv() - Alter an existing environment variable or create a new one.
++ * @var: Name of the variable
++ * @val: Value of the variable
++ *
++ * Return: Zero on success, a kdb diagnostic on failure.
++ */
++static int kdb_setenv(const char *var, const char *val)
++{
++	int i;
++	char *ep;
++	size_t varlen, vallen;
++
++	varlen = strlen(var);
++	vallen = strlen(val);
++	ep = kdballocenv(varlen + vallen + 2);
++	if (ep == (char *)0)
++		return KDB_ENVBUFFULL;
++
++	sprintf(ep, "%s=%s", var, val);
++
++	ep[varlen+vallen+1] = '\0';
++
++	for (i = 0; i < __nenv; i++) {
++		if (__env[i]
++		 && ((strncmp(__env[i], var, varlen) == 0)
++		   && ((__env[i][varlen] == '\0')
++		    || (__env[i][varlen] == '=')))) {
++			__env[i] = ep;
++			return 0;
++		}
++	}
++
++	/*
++	 * Wasn't existing variable.  Fit into slot.
++	 */
++	for (i = 0; i < __nenv-1; i++) {
++		if (__env[i] == (char *)0) {
++			__env[i] = ep;
++			return 0;
++		}
++	}
++
++	return KDB_ENVFULL;
++}
++
++/*
++ * kdb_printenv() - Display the current environment variables.
++ */
++static void kdb_printenv(void)
++{
++	int i;
++
++	for (i = 0; i < __nenv; i++) {
++		if (__env[i])
++			kdb_printf("%s\n", __env[i]);
++	}
++}
++
++/*
+  * kdbgetularg - This function will convert a numeric string into an
+  *	unsigned long value.
+  * Parameters:
+@@ -374,10 +433,6 @@ int kdbgetu64arg(const char *arg, u64 *value)
+  */
+ int kdb_set(int argc, const char **argv)
+ {
+-	int i;
+-	char *ep;
+-	size_t varlen, vallen;
+-
+ 	/*
+ 	 * we can be invoked two ways:
+ 	 *   set var=value    argv[1]="var", argv[2]="value"
+@@ -422,37 +477,7 @@ int kdb_set(int argc, const char **argv)
+ 	 * Tokenizer squashed the '=' sign.  argv[1] is variable
+ 	 * name, argv[2] = value.
+ 	 */
+-	varlen = strlen(argv[1]);
+-	vallen = strlen(argv[2]);
+-	ep = kdballocenv(varlen + vallen + 2);
+-	if (ep == (char *)0)
+-		return KDB_ENVBUFFULL;
+-
+-	sprintf(ep, "%s=%s", argv[1], argv[2]);
+-
+-	ep[varlen+vallen+1] = '\0';
+-
+-	for (i = 0; i < __nenv; i++) {
+-		if (__env[i]
+-		 && ((strncmp(__env[i], argv[1], varlen) == 0)
+-		   && ((__env[i][varlen] == '\0')
+-		    || (__env[i][varlen] == '=')))) {
+-			__env[i] = ep;
+-			return 0;
+-		}
+-	}
+-
+-	/*
+-	 * Wasn't existing variable.  Fit into slot.
+-	 */
+-	for (i = 0; i < __nenv-1; i++) {
+-		if (__env[i] == (char *)0) {
+-			__env[i] = ep;
+-			return 0;
+-		}
+-	}
+-
+-	return KDB_ENVFULL;
++	return kdb_setenv(argv[1], argv[2]);
+ }
+ 
+ static int kdb_check_regs(void)
+@@ -2055,12 +2080,7 @@ static int kdb_lsmod(int argc, const char **argv)
+ 
+ static int kdb_env(int argc, const char **argv)
+ {
+-	int i;
+-
+-	for (i = 0; i < __nenv; i++) {
+-		if (__env[i])
+-			kdb_printf("%s\n", __env[i]);
+-	}
++	kdb_printenv();
+ 
+ 	if (KDB_DEBUG(MASK))
+ 		kdb_printf("KDBDEBUG=0x%x\n",
+-- 
+2.7.4
 
