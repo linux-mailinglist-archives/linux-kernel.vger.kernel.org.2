@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9657230E9F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADAA30E9FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbhBDCGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:06:36 -0500
-Received: from smtp23.cstnet.cn ([159.226.251.23]:37756 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232411AbhBDCGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:06:22 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-03 (Coremail) with SMTP id rQCowADHZrhhVhtg3RA3AQ--.39496S2;
-        Thu, 04 Feb 2021 10:05:21 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     perex@perex.cz, tiwai@suse.com, alexander@tsoy.me,
-        e.burema@gmail.com, alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: endpoint : remove redundant check before usb_free_coherent()
-Date:   Thu,  4 Feb 2021 02:05:18 +0000
-Message-Id: <20210204020518.76619-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowADHZrhhVhtg3RA3AQ--.39496S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDWF4UJwb_yoW3Kwb_Za
-        ykCr4kWryDXwnIvryDGr4FyF4293yfZFn7WF4Iq398AFWUt3yYyr48Xr1kGF1rCan3tF95
-        Jws3Kr4rKr18KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ec7CjxVAajcxG14v26r
-        1j6r4UMcIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI
-        7VAKI48JMxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
-        73UjIFyTuYvjxUcBHqUUUUU
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkCA1z4jWIVlAAAsI
+        id S233077AbhBDCKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhBDCKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:10:44 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD4CC0613D6;
+        Wed,  3 Feb 2021 18:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=qpZXbW6EJfxgDufWrNMMYF+eNpvsq+lvzqFizGqVhaw=; b=LYnWJpaHdQRlqryZJtk5hjlnWM
+        zebhtvBAVeIQ/8eqLc7/AgEYRe/OW12kGVqAjqPnaPvYBbY99KKGOAhcrLG4PFgUwFg3R7ZhaHgIB
+        CRw00VCXz9AYn3+bZMnlnMcojekI3kT2k+85AWColBGffhddK8cq4GASCSTcD1NcrE3j84+oGgH4+
+        ZjxaZO5RYQ8Q0967lwEi2FCUu7DbbN1vygKurEmLt0pVvk9jlEIGZitonB1XhBHdKzIv/EHdflL8I
+        K6LMwuEGls8qgsyaY0UWKoo2tKKs12eFlfq1UHURpT1xH+GniYBzH3Qcdh2urbpRxJAp5VFVG1nqg
+        FVO2lRrw==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7U5p-0002nc-Ap; Thu, 04 Feb 2021 02:10:01 +0000
+Subject: Re: [PATCH V2] drivers: net: ethernet: i825xx: Fix couple of
+ spellings and get rid of blank lines too in the file ether1.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210204011821.18356-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bea4f9c4-b1bb-eab6-3125-bfe69938fa5b@infradead.org>
+Date:   Wed, 3 Feb 2021 18:09:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20210204011821.18356-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_free_coherent() is safe with NULL addr and this check is
-not required.
+On 2/3/21 5:18 PM, Bhaskar Chowdhury wrote:
+> 
+> s/initialsation/initialisation/
+> s/specifiing/specifying/
+> 
+> Plus get rid of few blank lines.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+> Changes from V1:
+>    Fix typo in the subject line
+>    Give explanation of all the changes in changelog text
+> 
+>  drivers/net/ethernet/i825xx/ether1.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
+> index a0bfb509e002..850ea32091ed 100644
+> --- a/drivers/net/ethernet/i825xx/ether1.c
+> +++ b/drivers/net/ethernet/i825xx/ether1.c
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- sound/usb/endpoint.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+a. don't delete the blank lines
+b. the change below is not described and does not change any whitespace AFAICT.
+   I.e., DDT [don't do that].
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 8e568823c992..d5ed4ddfd451 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -82,10 +82,9 @@ static inline unsigned get_usb_high_speed_rate(unsigned int rate)
-  */
- static void release_urb_ctx(struct snd_urb_ctx *u)
- {
--	if (u->buffer_size)
--		usb_free_coherent(u->ep->chip->dev, u->buffer_size,
--				  u->urb->transfer_buffer,
--				  u->urb->transfer_dma);
-+	usb_free_coherent(u->ep->chip->dev, u->buffer_size,
-+			  u->urb->transfer_buffer,
-+			  u->urb->transfer_dma);
- 	usb_free_urb(u->urb);
- 	u->urb = NULL;
- }
+> @@ -1047,7 +1044,7 @@ static void ether1_remove(struct expansion_card *ec)
+>  {
+>  	struct net_device *dev = ecard_get_drvdata(ec);
+> 
+> -	ecard_set_drvdata(ec, NULL);
+> +	ecard_set_drvdata(ec, NULL);
+> 
+>  	unregister_netdev(dev);
+>  	free_netdev(dev);
+
+
 -- 
-2.17.1
+~Randy
 
