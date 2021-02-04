@@ -2,117 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E715630FC7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2484230FC89
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239705AbhBDTUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238713AbhBDTTi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:19:38 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D3C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:18:56 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id g15so2390946pjd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:18:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gpuC+d2FUOI/ZHg93wQH+r85JDI4pp/FX9Ub2W2auJA=;
-        b=IeotN/9b8v5XKf4EhKYsx0kfJDGFixxFAbgIG7uuE5tnabLRIRh0tUk3+MzaseOpkO
-         MGOfJLn/t0mNBWKilsOO0R1ZgJ6TjREJeV04mMuqVPU0OoeZfGS3dqy0VbE+EvvmXJgg
-         ra34agXgJ5zd5/OLk3jfRChhcNS4ABtu9mHgG8ARfKSTgC/4vLvvrSay2qoLL3Gzr3Dd
-         HAdmCEbXZErEAO0aPLwRJ+qLYZN2w7HXPO6aKm0qC4+1SK+wu7rNYvqDwzUbY9GsiJ51
-         NPYomZ2yLP+eL9f0GUvcJMzbF+QnmE0YujcWl0QGEnpL1s/uI3nJkw08iQvzzN3jBl/q
-         xS8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gpuC+d2FUOI/ZHg93wQH+r85JDI4pp/FX9Ub2W2auJA=;
-        b=S4meZMErvYMHHhIMCpYS567SXOJtatc0nmzEZkb/+fJxJ4PEMnidhnBs0GMFEX9Nat
-         kE7oSopDWqUGcgkk51j4R4CqqdYqmyGviML8b98gM6XKhzPJVl0vqE9QFx3jvZlKFy4f
-         clsWe9fg3DZGLRmJ4Vq2XlXurtd25n+hk8T9dP8XHX28lYl4d6Px9iCEmfjktagGyYKo
-         X5aluJZOs9GGQM+xEwh0kPo5ImxFgZArWzxo1js3QFEZm7cL5+xfpcCUwcOvWq+ACxZW
-         ib2VJ41QHw1H2MqPi856RUOjOphDkNsBHHZ4053crEpnoTjeBGiN2tjRlqhjTjG5Ye/s
-         8mHQ==
-X-Gm-Message-State: AOAM532KF1+UvICZg8ZHIbzPTPn9SZNnClYrFmrMBiFCW7MO3u1RlFVk
-        08oQgWMi+iuO200fc6XpmJN5QyDRufkWpRFqAkcpBg==
-X-Google-Smtp-Source: ABdhPJzl7LAFaClTjRx4s2bi9MKyf3s0L375hLNeyyqodeJV4B0xlBdb5b8nigoIhDlFSEWostsGA+rxdrWqOWCmz5U=
-X-Received: by 2002:a17:90a:bf10:: with SMTP id c16mr435444pjs.101.1612466335618;
- Thu, 04 Feb 2021 11:18:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-2-ndesaulniers@google.com> <20210204103946.GA14802@wildebeest.org>
-In-Reply-To: <20210204103946.GA14802@wildebeest.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 4 Feb 2021 11:18:44 -0800
-Message-ID: <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
+        id S238410AbhBDTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:22:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239733AbhBDTWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:22:37 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A09564E7B;
+        Thu,  4 Feb 2021 19:21:55 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 14:21:54 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] tracepoints: Code clean up
+Message-ID: <20210204142154.45bdf354@gandalf.local.home>
+In-Reply-To: <677733063.7658.1612466039188.JavaMail.zimbra@efficios.com>
+References: <20210204132710.00fdce4f@gandalf.local.home>
+        <677733063.7658.1612466039188.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:41 AM Mark Wielaard <mark@klomp.org> wrote:
->
-> Hi Nick,
->
-> On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
-> > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
-> > the default. Does so in a way that's forward compatible with existing
-> > configs, and makes adding future versions more straightforward.
-> >
-> > GCC since ~4.8 has defaulted to this DWARF version implicitly.
->
-> And since GCC 11 it defaults to DWARF version 5.
->
-> It would be better to set the default to the DWARF version that the
-> compiler generates. So if the user doesn't select any version then it
-> should default to just -g (or -gdwarf).
+On Thu, 4 Feb 2021 14:13:59 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-I disagree.
+> ----- On Feb 4, 2021, at 1:27 PM, rostedt rostedt@goodmis.org wrote:
+> 
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > 
+> > Restructure the code a bit to make it simpler, fix some formatting problems
+> > and add READ_ONCE/WRITE_ONCE to make sure there's no compiler tear downs on  
+> 
+> compiler tear downs -> compiler load/store tearing.
 
-https://lore.kernel.org/lkml/CAKwvOdk0zxewEOaFuqK0aSMz3vKNzDOgmez=-Dae4+bodsSg5w@mail.gmail.com/
-"""
-I agree that this patch takes away the compiler vendor's choice as to
-what the implicit default choice is for dwarf version for the kernel.
-(We, the Linux kernel, do so already for implicit default -std=gnuc*
-as well). ...
-But I'm
-going to suggest we follow the Zen of Python: explicit is better than
-implicit.
-"""
-We have a number of in tree and out of tree DWARF consumers that
-aren't ready for DWARF v5.  Kernel developers need a way to disable
-DWARF v5 until their dependencies are deployed or more widely
-available.
+Will change.
 
-I'm happy to consider eventually moving the default DWARF version for
-the kernel to v5, and ideas for how to wean developers off of v4, but
-I don't think forcing v5 on kernel developers right now is the most
-delicate approach.
--- 
-Thanks,
-~Nick Desaulniers
+> 
+> > changes to variables that can be accessed across CPUs.
+> > 
+> > Started with Mathieu Desnoyers's patch:
+> > 
+> >  Link:
+> >  https://lore.kernel.org/lkml/20210203175741.20665-1-mathieu.desnoyers@efficios.com/
+> > 
+> > And will keep his signature, but I will take the responsibility of this
+> > being correct, and keep the authorship.
+> > 
+> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---
+> > include/linux/tracepoint.h |  2 +-
+> > kernel/tracepoint.c        | 92 +++++++++++++++-----------------------
+> > 2 files changed, 37 insertions(+), 57 deletions(-)
+> > 
+> > diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> > index 966ed8980327..dc1d4c612cc3 100644
+> > --- a/include/linux/tracepoint.h
+> > +++ b/include/linux/tracepoint.h
+> > @@ -309,7 +309,7 @@ static inline struct tracepoint
+> > *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> > 			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
+> > 		if (it_func_ptr) {					\
+> > 			do {						\
+> > -				it_func = (it_func_ptr)->func;		\
+> > +				it_func = READ_ONCE((it_func_ptr)->func); \
+> > 				__data = (it_func_ptr)->data;		\
+> > 				((void(*)(void *, proto))(it_func))(__data, args); \
+> > 			} while ((++it_func_ptr)->func);		\
+> > diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> > index e8f20ae29c18..4b9de79bb927 100644
+> > --- a/kernel/tracepoint.c
+> > +++ b/kernel/tracepoint.c
+> > @@ -136,9 +136,9 @@ func_add(struct tracepoint_func **funcs, struct
+> > tracepoint_func *tp_func,
+> > 	 int prio)
+> > {
+> > 	struct tracepoint_func *old, *new;
+> > -	int nr_probes = 0;
+> > -	int stub_funcs = 0;
+> > -	int pos = -1;
+> > +	int iter_probes;	/* Iterate over old probe array. */
+> > +	int nr_probes = 0;	/* Counter for probes */
+> > +	int pos = -1;		/* New position */  
+> 
+> New position -> Insertion position into new array
+
+OK.
+
+> 
+> > 
+> > 	if (WARN_ON(!tp_func->func))
+> > 		return ERR_PTR(-EINVAL);
+> > @@ -147,54 +147,39 @@ func_add(struct tracepoint_func **funcs, struct
+> > tracepoint_func *tp_func,
+> > 	old = *funcs;
+> > 	if (old) {
+> > 		/* (N -> N+1), (N != 0, 1) probes */
+> > -		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> > -			/* Insert before probes of lower priority */
+> > -			if (pos < 0 && old[nr_probes].prio < prio)
+> > -				pos = nr_probes;
+> > -			if (old[nr_probes].func == tp_func->func &&
+> > -			    old[nr_probes].data == tp_func->data)
+> > +		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
+> > +			if (old[iter_probes].func == tp_stub_func)
+> > +				continue;	/* Skip stub functions. */
+> > +			if (old[iter_probes].func == tp_func->func &&
+> > +			    old[iter_probes].data == tp_func->data)
+> > 				return ERR_PTR(-EEXIST);
+> > -			if (old[nr_probes].func == tp_stub_func)
+> > -				stub_funcs++;
+> > +			nr_probes++;
+> > 		}
+> > 	}
+> > -	/* + 2 : one for new probe, one for NULL func - stub functions */
+> > -	new = allocate_probes(nr_probes + 2 - stub_funcs);
+> > +	/* + 2 : one for new probe, one for NULL func */
+> > +	new = allocate_probes(nr_probes + 2);
+> > 	if (new == NULL)
+> > 		return ERR_PTR(-ENOMEM);
+> > 	if (old) {
+> > -		if (stub_funcs) {
+> > -			/* Need to copy one at a time to remove stubs */
+> > -			int probes = 0;
+> > -
+> > -			pos = -1;
+> > -			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> > -				if (old[nr_probes].func == tp_stub_func)
+> > -					continue;
+> > -				if (pos < 0 && old[nr_probes].prio < prio)
+> > -					pos = probes++;
+> > -				new[probes++] = old[nr_probes];
+> > -			}
+> > -			nr_probes = probes;
+> > -			if (pos < 0)
+> > -				pos = probes;
+> > -			else
+> > -				nr_probes--; /* Account for insertion */
+> > -
+> > -		} else if (pos < 0) {
+> > -			pos = nr_probes;
+> > -			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
+> > -		} else {
+> > -			/* Copy higher priority probes ahead of the new probe */
+> > -			memcpy(new, old, pos * sizeof(struct tracepoint_func));
+> > -			/* Copy the rest after it. */
+> > -			memcpy(new + pos + 1, old + pos,
+> > -			       (nr_probes - pos) * sizeof(struct tracepoint_func));
+> > +		pos = -1;  
+> 
+> pos is already initialized to -1 at function beginning.
+
+Ah. I noticed near the end of developing this, that we were calculating
+"pos" twice. Once in the search for stub functions, and again later, where
+the above assignment was necessary. I then realized that finding pos the
+first time wasn't necessary and removed it, but didn't remove this second
+initialization of pos.
+
+Will remove it in v2.
+
+> 
+> > +		nr_probes = 0;
+> > +		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
+> > +			if (old[iter_probes].func == tp_stub_func)
+> > +				continue;
+> > +			/* Insert before probes of lower priority */
+> > +			if (pos < 0 && old[iter_probes].prio < prio)
+> > +				pos = nr_probes++;
+> > +			new[nr_probes++] = old[iter_probes];
+> > 		}
+> > -	} else
+> > +		if (pos < 0)
+> > +			pos = nr_probes++;
+> > +		/* nr_probes now points to the end of the new array */
+> > +	} else {
+> > 		pos = 0;
+> > +		nr_probes = 1; /* must point at end of array */  
+> 
+> Yep, much nicer.
+> 
+> > +	}
+> > 	new[pos] = *tp_func;
+> > -	new[nr_probes + 1].func = NULL;
+> > +	new[nr_probes].func = NULL;
+> > 	*funcs = new;
+> > 	debug_print_probes(*funcs);
+> > 	return old;
+> > @@ -237,11 +222,12 @@ static void *func_remove(struct tracepoint_func **funcs,
+> > 		/* + 1 for NULL */
+> > 		new = allocate_probes(nr_probes - nr_del + 1);
+> > 		if (new) {
+> > -			for (i = 0; old[i].func; i++)
+> > -				if ((old[i].func != tp_func->func
+> > -				     || old[i].data != tp_func->data)
+> > -				    && old[i].func != tp_stub_func)
+> > +			for (i = 0; old[i].func; i++) {
+> > +				if ((old[i].func != tp_func->func ||
+> > +				     old[i].data != tp_func->data) &&
+> > +				    old[i].func != tp_stub_func)
+> > 					new[j++] = old[i];
+> > +			}
+> > 			new[nr_probes - nr_del].func = NULL;
+> > 			*funcs = new;
+> > 		} else {
+> > @@ -249,17 +235,11 @@ static void *func_remove(struct tracepoint_func **funcs,
+> > 			 * Failed to allocate, replace the old function
+> > 			 * with calls to tp_stub_func.
+> > 			 */
+> > -			for (i = 0; old[i].func; i++)
+> > +			for (i = 0; old[i].func; i++) {
+> > 				if (old[i].func == tp_func->func &&
+> > -				    old[i].data == tp_func->data) {
+> > -					old[i].func = tp_stub_func;
+> > -					/* Set the prio to the next event. */
+> > -					if (old[i + 1].func)
+> > -						old[i].prio =
+> > -							old[i + 1].prio;
+> > -					else
+> > -						old[i].prio = -1;
+> > -				}
+> > +				    old[i].data == tp_func->data)
+> > +					WRITE_ONCE(old[i].func, tp_stub_func);
+> > +			}  
+> 
+> The rest looks good, thanks!
+> 
+> You can keep my signed-off-by, and if needed may add my reviewed-by tag
+> as well. ;-)
+> 
+
+I'll send a v2. Thanks for looking at it.
+
+-- Steve
