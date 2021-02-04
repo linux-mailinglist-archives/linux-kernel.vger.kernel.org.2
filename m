@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C9F30F0F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1EB30F0FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbhBDKel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:34:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235603AbhBDKdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:33:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0520C64DDE;
-        Thu,  4 Feb 2021 10:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612434757;
-        bh=EArjMRkmeuzvN8JsNJ4vSIHnn+1xYVxH7SoMRVxmXw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nNzaMZmNi2fPLT5jJ1FU/xbW/ucUzV3vSg4M34QbPJf57oqeKuDiDCX2A6fk0+cBR
-         YJPYCpmGENXHgmosjyejIsJKr/k6zLho9WPQ41KHook0yEolJc0Q69gD3RrUjq7ZJL
-         XMlyJjHeG9/3DsVzsCYyRd7IwnbKOaFryKfBHyTk=
-Date:   Thu, 4 Feb 2021 11:32:33 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, ruifeng.zhang1@unisoc.com,
-        linux-kernel@vger.kernel.org, chunyan.zhang@unisoc.com
-Subject: Re: [PATCH] RFC syscore: add suspend type to syscore
-Message-ID: <YBvNQfJyzEpuwcvl@kroah.com>
-References: <20210129082726.19406-1-ruifeng.zhang0110@gmail.com>
- <YBPNAoitmgnTxiqQ@kroah.com>
- <CAG7+-3NGUgryomKB=_W=p9nADPJVnns_x9oWpAFCEei7RiyrOA@mail.gmail.com>
+        id S235569AbhBDKfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235568AbhBDKdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:33:43 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D09AC061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:33:03 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id p15so2845361wrq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:33:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hsN/OapOEplhri1ngP6qr+RO+51gU8IM8nQPOqxMvVQ=;
+        b=EH3VfFhRjeXA5UtS/Yj+qDHIfaYbcWFBhV9MxtZ+xXWzTjfYWRujowx5LH9RKJIKMA
+         WtyM2sMythgEQqf75Rn8DEEEeTX7zQpC46tppaAgrdqPN1DHFgTmgOQeORoqKQllaiFm
+         kDVryYMeAD4kPWq5ziqL37Ml2HWdGzcBZqPYSgczVxihAe4aty8rzr/axgVWbkFHbnZb
+         yCpV+gmR9HaUNPsjgPSMfivNdZyOS3mbjlvgk6NbYJn1krCRsbskztFZyAnZu2ryFnYU
+         r7s0bxc6qAxgUSdwswooOSCqKhrdDX7Ww+wENsY+aT95cOYyAHbf1ba0YyMoCKHAkxDS
+         heuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hsN/OapOEplhri1ngP6qr+RO+51gU8IM8nQPOqxMvVQ=;
+        b=TGAPBEy5Kpl9QuR0oUn3Oe61ChZgwagSFGhWFh9SJjVHLE6wcRfLJ53iMFO0Uzh0IB
+         cVWGKsUwe9oknJ7IjpqhD8FCovo3Bnvg0oQPAspyRYpK95kvc1leg2jDnkbEWL1w+LUY
+         ieDLgzHBYMrvXdfbcpy7+YumD/HMo3A7BaFIIAGzdAK+bJYGzDa7i7OIajJWO9q5foHZ
+         NhNacKO75eszwe9YQ+IFrcvhNATUAtt1nSfr3lA1RM/Q45couFv2LO/GNYBTiGiEC8Df
+         /O/6EumnR4CEU+ghtgzQzCk0AjU1pDV9Tt+qsUhQgcu1tCZQCLltwYhoGF7Sa/b9d1Ee
+         GB1w==
+X-Gm-Message-State: AOAM533IAUfmSVCmxocqCZtpomJYrDj9kvzIz7RFRac9GyTV76KMdUVd
+        CHCbuBnx3LD0YP1XdwKZp7JyiBbhU+JjiA==
+X-Google-Smtp-Source: ABdhPJxHWLcMprdKmr42u2S4LwyYNw2r3RuA7Pr0JTirLj5GS/slybEW2EcRSZFRbhWP+hBUdlOhpQ==
+X-Received: by 2002:a5d:6d06:: with SMTP id e6mr8670513wrq.425.1612434782343;
+        Thu, 04 Feb 2021 02:33:02 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id m205sm5665340wmf.40.2021.02.04.02.33.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 02:33:01 -0800 (PST)
+Date:   Thu, 4 Feb 2021 10:32:59 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Campion Kang <campion.kang@advantech.com.tw>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        AceLan Kao <chia-lin.kao@canonical.com>
+Subject: Re: [PATCH v6 2/6] mfd: ahc1ec0: Add Advantech EC include file used
+ by dt-bindings
+Message-ID: <20210204103259.GB2789116@dell>
+References: <20210118123749.4769-1-campion.kang@advantech.com.tw>
+ <20210118123749.4769-2-campion.kang@advantech.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG7+-3NGUgryomKB=_W=p9nADPJVnns_x9oWpAFCEei7RiyrOA@mail.gmail.com>
+In-Reply-To: <20210118123749.4769-2-campion.kang@advantech.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 05:06:25PM +0800, Ruifeng Zhang wrote:
-> Greg KH <gregkh@linuxfoundation.org> 于2021年1月29日周五 下午4:53写道：
-> >
-> > On Fri, Jan 29, 2021 at 04:27:26PM +0800, Ruifeng Zhang wrote:
-> > > From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
-> > >
-> > > Suspend type contains s2ram and s2idle, but syscore is only
-> > > available for S2RAM.
-> >
-> > Who else needs this?
-> In the s2idle suspend and resume, some vendors want to do some
-> things, for example the vendor implemented the watchdog driver.
+On Mon, 18 Jan 2021, Campion Kang wrote:
 
-We can not add things to the kernel for code that is not in the kernel
-tree itself, you know this.  Please don't try to go around this
-well-known rule.
+> This files defines the sud-device types and hwmon profiles support by
+> Advantech embedded controller.
+> 
+> Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
+> ---
+>  include/dt-bindings/mfd/ahc1ec0-dt.h | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 include/dt-bindings/mfd/ahc1ec0-dt.h
 
-> The GKI requires that no modification of the kernel source is allowed,
-> so an syscore_s2idle is added for use.
+For my own reference (apply this as-is to your sign-off block):
 
-I have no idea what "GKI" is with regards to the kernel project, sorry.
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
-> The reason device_suspend was not chosen was that I wanted it to
-> monitor for longer periods, such as between device_suspend and
-> syscore_suspend.
-
-Why does that matter?  What do you do with that information?
-
-> > > S2idle requires a similar feature, so a new parameter
-> > > "enum suspend_type" is added to distinguish it.
-> >
-> > Who requires this export?
-> >
-> > I don't see a user of this new code/api in this patch, so why would it
-> > be accepted?
-> >
-> > Also, you are doing many different things in the same patch, please
-> > break this up into a patch series where you only do one logical change
-> > at a time.
-> I think it's only one things in patch
-> 0001-RFC-syscore-add-suspend-type-to-syscore.patch,
-
-I do not understand what you mean here, emails do not name patches :)
-
-> add a new s2ildle type for syscore.
-
-But why is that needed?
-
-thanks,
-
-greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
