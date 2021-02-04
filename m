@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB29B30F535
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8128830F54A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236782AbhBDOlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:41:09 -0500
-Received: from mail-eopbgr150092.outbound.protection.outlook.com ([40.107.15.92]:21991
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        id S236785AbhBDOoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:44:06 -0500
+Received: from mail-eopbgr30120.outbound.protection.outlook.com ([40.107.3.120]:59486
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236854AbhBDOic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:38:32 -0500
+        id S236755AbhBDOiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:38:51 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NMepqI2S0GOoLRAqfX6AlSkRY4O6v79FLpHGOZf7fAXmNW/R+tJ8cMSoiqZuU5ZT1HMKOcT3zCuLXqigM2AKT3p8R4vJpm+Au0Et4GcKhr6R7ArevniJGTsnfIHKn7e43D1M6NbTtHjTZOsK6LN9IoX8x2mPiTDUwWuWlVUIGzwXHUCt1MXy7uU5tKlO4lj68atSVXsfPLmAPoUxArQMbL+ywhPQMD14r0q1gWbi6lxAhC8jffT6NJciCL5bBlARFe7Ty1tv96k6e3xFn8E7Ex8nnbvb/bdpJEMOeVXoW7vsECENEGQ/cbM6y4AT3fS8yAAdg2vqjpMWCTmny/5zfA==
+ b=KIMTX1dry8vQrnTSSazGWEaxj3gtnD/Rxs8fkdaMnW3F1v3H1sLC7Kz9nlx1HwFVfJs+Z4moMbAA8YKtzTTdv/l1e9MM7oBNV1UkruY/t0rlsEPGRQOxN/yzSjF2XK1PsC1LP4Rm3eUw65Dzd4hIhaitXJ1jfYr/pU0AFyDHIhV9gWg6crATWVv+4PMYqBkIBBMjwtzbw4j//nPB1e76iEItW/I4AOZUkLf5mLqYoA+2WbOMbifogClfmP6cGR8agMpyg+K5mCiLQiDO1NU7NHBRAD4V1Ep3WVRTeQP7mPP/X+C6d9wsKTNPH/Gp06oLidtCYUnzEWCE25gL3eXFng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U8hwsuotRJyFZlNoGcVUj+0hWqgZSxHdgSkrE5F3vSI=;
- b=Zp7v5oqtCnN6pQXFJ0qLCe4m6sL6Z5p03w5u8xqG9im3hdqEEChItiZRPUvv3GGmlOyKECuNxS0XI/kazY7o1ic2w12s10oiAlzV84gsHl1bvXKFXoMV/sDiLHiBq5+BoIrPRlUQtI8PU9je6I0+lsLc2BJ5WiVcCoHnghQXITHByE0aXEAd3zLXtun2bFPp8MXcJ9kstcUVMRIkXIHEOGj/E8t0LS/aTSskS3i5XB6II7YIrhFWjAQYxcHtgAshOjZ+gUX2FXBmV4zLHy/ttJwjngvMbZRd0lWO3ulzTSFpsqEC3af97JMfYOcEpJy1JMvkgEkjuy4ePG4maY2i9g==
+ bh=dFrn7Vt1je7kdjp8cC5anRNu7TqR8GzlT3IrLRF893c=;
+ b=Q0kdwi92jnEYO1eaqwXK3EeT7qB2pQmvaxJYJTHGeNUH2qLxEh9be6FkIPTWZRxQQfkcxNPiy+gwqEjUt6TJMSj9zvxWNh88+Dmr37aiEq2TaA5NhqIw0HYy7cf6IiTtNU/fH9dJUP3Pu7FB1FetQzjCLwRw1KXL2lWO6CakGFhi2/DhyuDgMH6/sP7dVpY1+0sEFBN1Qv9ufK4XI1SRWQAmgd8nf2t1SuSgoGW8MM4rbBXY1VU8qMfg9TnQr7yam063rNgdZ6lcKglX6xRfGuS9bAzrKSA3St1gWbbxyTC5m6UEbtuDTlRwb6BimIXvFgBcUhlSua4BnXlXd8piwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  62.153.209.162) smtp.rcpttodomain=vger.kernel.org
  smtp.mailfrom=schleissheimer.de; dmarc=none action=none
@@ -27,17 +27,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U8hwsuotRJyFZlNoGcVUj+0hWqgZSxHdgSkrE5F3vSI=;
- b=XHx35wpjaF6ncmCPrAcpH64RfW717kLpYZHQByx3q0BNRwVSHovKPhqToGXjlgZA8uQBgoSpMiH5bdPUDqIB2G6JjeTQsDnbc1w1S756f5jPsDvPj3SdU2pGhDPwfrfC5Cg5jAJy/GfosEjwKq7ImWRj+L691E/ik5VSB3Gi/8Q=
-Received: from MR2P264CA0173.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::12) by
- AS8P190MB1317.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:2e8::6) with Microsoft
+ bh=dFrn7Vt1je7kdjp8cC5anRNu7TqR8GzlT3IrLRF893c=;
+ b=P5fkwEvpPauRFsKqswLqQn+vep8BseCU//n43ra1GOhJ1Ed/WK9b+1mnzNZgszt37sP/mxySpzOh5Re8bgTdcr0ll48u6X5zmxjXye3EtBmHeBQF4yOhF4yUK5fmS/kZatrMMCgHB/w2nG8fry+kS28qyVPYLLIA3iGkMKBIBu4=
+Received: from AM5PR04CA0027.eurprd04.prod.outlook.com (2603:10a6:206:1::40)
+ by DB6P190MB0534.EURP190.PROD.OUTLOOK.COM (2603:10a6:6:33::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.17; Thu, 4 Feb 2021 14:37:44 +0000
-Received: from VI1EUR04FT021.eop-eur04.prod.protection.outlook.com
- (2603:10a6:501:0:cafe::cf) by MR2P264CA0173.outlook.office365.com
- (2603:10a6:501::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.18 via Frontend
- Transport; Thu, 4 Feb 2021 14:37:43 +0000
+ 15.20.3825.17; Thu, 4 Feb 2021 14:38:01 +0000
+Received: from VI1EUR04FT017.eop-eur04.prod.protection.outlook.com
+ (2603:10a6:206:1:cafe::9f) by AM5PR04CA0027.outlook.office365.com
+ (2603:10a6:206:1::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend
+ Transport; Thu, 4 Feb 2021 14:38:01 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 62.153.209.162)
  smtp.mailfrom=schleissheimer.de; vger.kernel.org; dkim=fail (no key for
  signature) header.d=schleissheimer.de;vger.kernel.org; dmarc=none action=none
@@ -47,47 +47,47 @@ Received-SPF: Fail (protection.outlook.com: domain of schleissheimer.de does
  receiver=protection.outlook.com; client-ip=62.153.209.162;
  helo=mail.schleissheimer.de;
 Received: from mail.schleissheimer.de (62.153.209.162) by
- VI1EUR04FT021.mail.protection.outlook.com (10.152.29.63) with Microsoft SMTP
+ VI1EUR04FT017.mail.protection.outlook.com (10.152.28.228) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3784.11 via Frontend Transport; Thu, 4 Feb 2021 14:37:43 +0000
+ 15.20.3784.11 via Frontend Transport; Thu, 4 Feb 2021 14:38:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=schleissheimer.de; s=dkim1;
-        h=Message-Id:Date:Subject:Cc:To:From; bh=U8hwsuotRJyFZlNoGcVUj+0hWqgZSxHdgSkrE5F3vSI=;
-        b=XIa+P2RRW7UyamNm4sr8MiWKyRyPniw+zSDXBZYeKiIPPuMWTTnmHbtaVmgMerK8zXRSaZ7b7BzlNr/0pz70lAJrz86Pf80v8SEANUfzQVtsDmLxMudfm6gCMmKL3dZiaZPihDbBUTOjUZ2FaEM0gSt0YAM0/KaAt+p32ApTivU=;
-Received: from [192.168.10.165] (port=41972 helo=contiredmine.schleissheimer.de)
+        h=Message-Id:Date:Subject:Cc:To:From; bh=dFrn7Vt1je7kdjp8cC5anRNu7TqR8GzlT3IrLRF893c=;
+        b=PwBeeBShfeX9QSZk4jqnhs/IGysUq8cuLP05N4Nb1Fnn4WGWQFap5HzzeRQ+FAe2DDbm20BCap8guNOZ47F3XP0j69swlg9v/Ha63BKEUkKTarGT2ekqjS2+svtH70P5PY4FSwry/EuLyU5wsR2e2C+QXVruvGzJGvktPkQni5E=;
+Received: from [192.168.10.165] (port=41974 helo=contiredmine.schleissheimer.de)
         by mail.schleissheimer.de with esmtp (Exim 4.82_1-5b7a7c0-XX)
         (envelope-from <schuchmann@schleissheimer.de>)
-        id 1l7flL-00040F-1q; Thu, 04 Feb 2021 15:37:39 +0100
-X-CTCH-RefID: str=0001.0A782F17.601C06B3.0090,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+        id 1l7fld-000419-0I; Thu, 04 Feb 2021 15:37:57 +0100
+X-CTCH-RefID: str=0001.0A782F1F.601C06C5.0018,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
 From:   Sven Schuchmann <schuchmann@schleissheimer.de>
 Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
         Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
         linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity from DT
-Date:   Thu,  4 Feb 2021 14:37:38 +0000
-Message-Id: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+Subject: [PATCH v2 3/4] leds: lp50xx: add setting of default intensity from DT
+Date:   Thu,  4 Feb 2021 14:37:56 +0000
+Message-Id: <20210204143756.28088-1-schuchmann@schleissheimer.de>
 X-Mailer: git-send-email 2.17.1
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 7adff074-655b-47ca-46ec-08d8c91a6e61
-X-MS-TrafficTypeDiagnostic: AS8P190MB1317:
-X-Microsoft-Antispam-PRVS: <AS8P190MB1317369DD9E81C3F70FD1FD786B39@AS8P190MB1317.EURP190.PROD.OUTLOOK.COM>
+X-MS-Office365-Filtering-Correlation-Id: e8ab3cff-d509-4914-758f-08d8c91a78fa
+X-MS-TrafficTypeDiagnostic: DB6P190MB0534:
+X-Microsoft-Antispam-PRVS: <DB6P190MB053440AE577924789E918C4E86B39@DB6P190MB0534.EURP190.PROD.OUTLOOK.COM>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fqqtNRmPA1PA4l1w/dM3DN/yucOW/w35Rd4kxE1cG285gVVTBqO8e+/4W8vYTWYY2tV18W+MhxQhUj7+UY723a7vR3C4EPvugQ/g2g2AcN/UczZhrxk+deU5xwPQ9qtRG7uXEi8nTs5cKV+OzbEfDzYieg2EQLKrAn07h5jwpcmkXcL1KOfm6UXOvXJIuX+Qg6bnQwf/pbp7KS54NPkvJvy2EdDhrTmmDEMISUzKJ1AUPv8tQpHhHLgVSjdX7UUiUYX1XOS1g0Jg0oQ1nDrGYjj27YebTLkGMf/Kn1fOtLCjhwy21RLOrg/GOUom0C4EFmHcWYGmNy/hP8BWZ5KgAILJ43Gg7Sx6a8LEJ8VIkO80vfVeo9t77A6O+ugb+nhmGaU7jUyhSdyeDiSrSjDxoyA9rUU6vJtC5Ptq8Vb2MCa96nsAW9aqYOXLH0dLPk9k8zcMLFms82QAXRSm5x3d2Af2V8EoyB5N3E73Ie45bIh1/cAAra0S7EGlvYhzUH8mtA0wOaL3X//hrq7+MXLSTddFXyjy2FrP+nuyWDJCe2DRxqAyF5RoDoirn1lNj2gGgbLb2Mz7my2I75tEUOgVUsccN+lXYKZerhm0wo18dShwv+tD2jpn2n3Dyn414CTRtjm5v8TckOzM3So48MxxuZSIkRbEi6aAfPiBfe/4Aco=
-X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:mail.schleissheimer.de;CAT:NONE;SFS:(136003)(396003)(376002)(39840400004)(346002)(46966006)(36840700001)(83380400001)(36860700001)(109986005)(4326008)(7696005)(5660300002)(7636003)(356005)(7596003)(70586007)(47076005)(82310400003)(54906003)(8936002)(36756003)(2906002)(70206006)(336012)(426003)(26005)(9786002)(186003)(1076003)(478600001)(316002)(8676002)(2616005)(266003);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: DhFnswV2cM29ImXq8E6zuDZyw3UWotHEv6MSfHGNDRgZFWVN+OFa7E+9t6miZTg6mW7/BdoqawuagHmVVPUQ+g0RrHYJgy0NAhPbKdaqJGEUA63LSXKZ5HrUDOHMgYuOI1WxxFeNRG47CcUK730bowkFFASxEkMqQMFHHJ4sEmN+TtUrn+W0DV1rgqzBNCraB8XTYL5Dt3O7304FlTy0h75XwRDpkxnBlQK1RqJbY4uLtheyZ84vmZ5zHhB9WP8goOLiQWOUMcKgib5yXV8E5uBoWoJLLquVDbXv/luYd7FxnYyR4/pl52XbhjK1NFs40FKopH4evEosOHqfWwc4EZTqhpH3YlwLO/DljYFU5TxYZ4YpQV5+uzgn0I2gqDmhmYZsJ8KWjqCvZSccxG/EWHVyVqX+N1qfQ5QO9E2FYRxDXgveS8QO6y+iJtvPBPk7bBosv8DPPN4Fx/OjKeMdL8Yf4hE5dU4Be2qdMmQtNUFsBgkA91kmZUN5FikUlFg07keba7XGfbDEQy8Fd4Nb0xwAxFu9jkBKHwy3Re/SHv+1DEpSl01zwlBOol2NOoIrcCzTZmIYAnsfQB0IxpZVfpNxRLoiKzKS1Ty0Pif+cQD2fifK1ZK953CRW4zZ6fRKEnNHF/gpNd7PFoCnxINx5yUCc9lWkF+XUChYSzbMVSs=
+X-Forefront-Antispam-Report: CIP:62.153.209.162;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.schleissheimer.de;PTR:www.schleissheimer.de;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(39840400004)(46966006)(36840700001)(83380400001)(109986005)(2906002)(4326008)(36756003)(5660300002)(7636003)(356005)(9786002)(316002)(82310400003)(8676002)(47076005)(336012)(186003)(8936002)(1076003)(2616005)(478600001)(7696005)(36860700001)(70586007)(26005)(70206006)(54906003)(426003)(266003);DIR:OUT;SFP:1102;
 X-OriginatorOrg: schleissheimer.de
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 14:37:43.0367
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 14:38:00.8168
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7adff074-655b-47ca-46ec-08d8c91a6e61
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8ab3cff-d509-4914-758f-08d8c91a78fa
 X-MS-Exchange-CrossTenant-Id: ba05321a-a007-44df-8805-c7e62d5887b5
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ba05321a-a007-44df-8805-c7e62d5887b5;Ip=[62.153.209.162];Helo=[mail.schleissheimer.de]
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT021.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT017.eop-eur04.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P190MB1317
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6P190MB0534
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -117,21 +117,21 @@ changes in v2
 
 Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
 ---
- drivers/leds/leds-lp50xx.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/leds/leds-lp50xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-index f13117eed976..4b40bf66483c 100644
+index 4b40bf66483c..79bc071c31fb 100644
 --- a/drivers/leds/leds-lp50xx.c
 +++ b/drivers/leds/leds-lp50xx.c
-@@ -267,7 +267,6 @@ struct lp50xx_led {
- 	struct led_classdev_mc mc_cdev;
- 	struct lp50xx *priv;
- 	unsigned long bank_modules;
--	int led_intensity[LP50XX_LEDS_PER_MODULE];
- 	u8 ctrl_bank_enabled;
- 	int led_number;
- };
+@@ -500,6 +500,7 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
+ 			}
+ 
+ 			mc_led_info[num_colors].color_index = color_id;
++			mc_led_info[num_colors].intensity = LED_FULL;
+ 			num_colors++;
+ 		}
+ 
 -- 
 2.17.1
 
