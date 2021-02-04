@@ -2,58 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A1D30ED48
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD0030ED4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbhBDHZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:25:46 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:43437 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230146AbhBDHZi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:25:38 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNpwDV6_1612423454;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNpwDV6_1612423454)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Feb 2021 15:24:19 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     jamie@jamieiles.com
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] crypto: picoxcell - convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Thu,  4 Feb 2021 15:24:13 +0800
-Message-Id: <1612423453-78809-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234383AbhBDH0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:26:10 -0500
+Received: from relay.sw.ru ([185.231.240.75]:46720 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230146AbhBDH0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:26:05 -0500
+Received: from [192.168.15.247]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l7Z0L-001eHJ-Ak; Thu, 04 Feb 2021 10:24:41 +0300
+Subject: Re: [v6 PATCH 03/11] mm: vmscan: use shrinker_rwsem to protect
+ shrinker_maps allocation
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-4-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <e22026cb-c4c9-9c1b-388b-74b8dbebb26a@virtuozzo.com>
+Date:   Thu, 4 Feb 2021 10:24:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210203172042.800474-4-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On 03.02.2021 20:20, Yang Shi wrote:
+> Since memcg_shrinker_map_size just can be changed under holding shrinker_rwsem
+> exclusively, the read side can be protected by holding read lock, so it sounds
+> superfluous to have a dedicated mutex.
+> 
+> Kirill Tkhai suggested use write lock since:
+> 
+>   * We want the assignment to shrinker_maps is visible for shrink_slab_memcg().
+>   * The rcu_dereference_protected() dereferrencing in shrink_slab_memcg(), but
+>     in case of we use READ lock in alloc_shrinker_maps(), the dereferrencing
+>     is not actually protected.
+>   * READ lock makes alloc_shrinker_info() racy against memory allocation fail.
+>     alloc_shrinker_info()->free_shrinker_info() may free memory right after
+>     shrink_slab_memcg() dereferenced it. You may say
+>     shrink_slab_memcg()->mem_cgroup_online() protects us from it? Yes, sure,
+>     but this is not the thing we want to remember in the future, since this
+>     spreads modularity.
+> 
+> And a test with heavy paging workload didn't show write lock makes things worse.
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
- ./drivers/crypto/picoxcell_crypto.c:1201:8-16: WARNING: use scnprintf
-or sprintf.
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/crypto/picoxcell_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
-index 84f9c16..d7a7def 100644
---- a/drivers/crypto/picoxcell_crypto.c
-+++ b/drivers/crypto/picoxcell_crypto.c
-@@ -1198,7 +1198,7 @@ static ssize_t spacc_stat_irq_thresh_show(struct device *dev,
- {
- 	struct spacc_engine *engine = spacc_dev_to_engine(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", engine->stat_irq_thresh);
-+	return sysfs_emit(buf, "%u\n", engine->stat_irq_thresh);
- }
- 
- static ssize_t spacc_stat_irq_thresh_store(struct device *dev,
--- 
-1.8.3.1
+> ---
+>  mm/vmscan.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 96b08c79f18d..e4ddaaaeffe2 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -187,7 +187,6 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>  #ifdef CONFIG_MEMCG
+>  
+>  static int memcg_shrinker_map_size;
+> -static DEFINE_MUTEX(memcg_shrinker_map_mutex);
+>  
+>  static void free_shrinker_map_rcu(struct rcu_head *head)
+>  {
+> @@ -200,8 +199,6 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
+>  	struct memcg_shrinker_map *new, *old;
+>  	int nid;
+>  
+> -	lockdep_assert_held(&memcg_shrinker_map_mutex);
+> -
+>  	for_each_node(nid) {
+>  		old = rcu_dereference_protected(
+>  			mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
+> @@ -249,7 +246,7 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+>  	if (mem_cgroup_is_root(memcg))
+>  		return 0;
+>  
+> -	mutex_lock(&memcg_shrinker_map_mutex);
+> +	down_write(&shrinker_rwsem);
+>  	size = memcg_shrinker_map_size;
+>  	for_each_node(nid) {
+>  		map = kvzalloc_node(sizeof(*map) + size, GFP_KERNEL, nid);
+> @@ -260,7 +257,7 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+>  		}
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, map);
+>  	}
+> -	mutex_unlock(&memcg_shrinker_map_mutex);
+> +	up_write(&shrinker_rwsem);
+>  
+>  	return ret;
+>  }
+> @@ -275,9 +272,8 @@ static int expand_shrinker_maps(int new_id)
+>  	if (size <= old_size)
+>  		return 0;
+>  
+> -	mutex_lock(&memcg_shrinker_map_mutex);
+>  	if (!root_mem_cgroup)
+> -		goto unlock;
+> +		goto out;
+>  
+>  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>  	do {
+> @@ -286,13 +282,13 @@ static int expand_shrinker_maps(int new_id)
+>  		ret = expand_one_shrinker_map(memcg, size, old_size);
+>  		if (ret) {
+>  			mem_cgroup_iter_break(NULL, memcg);
+> -			goto unlock;
+> +			goto out;
+>  		}
+>  	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+> -unlock:
+> +out:
+>  	if (!ret)
+>  		memcg_shrinker_map_size = size;
+> -	mutex_unlock(&memcg_shrinker_map_mutex);
+> +
+>  	return ret;
+>  }
+>  
+> 
 
