@@ -2,217 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE16630F83B
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDA730F839
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhBDQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:41:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236930AbhBDO4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:56:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612450494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8iBj0wuM07dI7iQONn5zv06J3XRXvw3wPfuXWUn8/9g=;
-        b=iyb6hCYT7/uVzZKhzzRDdwAhNLHqxFOGR/JeSUXHEoaNpyvDO/dbGVvmaEua3T3UFaUZqL
-        HYQWjRHRN4H395DEs5PoiQh6Ht51LL6RPs3wNgVL1EsYV5gcj81JnB5Ct0rt3GwXulodc+
-        xmulnIQppQ2ZdNGPv7A//YLyXAZkJMY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-p7j8p1xbPkCObg9Myn3T9A-1; Thu, 04 Feb 2021 09:54:49 -0500
-X-MC-Unique: p7j8p1xbPkCObg9Myn3T9A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45986107ACE4;
-        Thu,  4 Feb 2021 14:54:35 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EA49C60BE2;
-        Thu,  4 Feb 2021 14:54:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com
-Subject: [PATCH v2 2/2] KVM: x86: move kvm_inject_gp up from kvm_set_dr to callers
-Date:   Thu,  4 Feb 2021 09:54:33 -0500
-Message-Id: <20210204145433.243806-3-pbonzini@redhat.com>
-In-Reply-To: <20210204145433.243806-1-pbonzini@redhat.com>
-References: <20210204145433.243806-1-pbonzini@redhat.com>
+        id S237058AbhBDQlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:41:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237010AbhBDO4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:56:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D40264DBA;
+        Thu,  4 Feb 2021 14:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612450554;
+        bh=gJBWS+RDASWfFxTsTMTHeqe/fRxDGgTZWYX8LP56QXc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a7nY5mV5TDyeWRHBNdaAPYZGrAmUJ9OVl1GnIoM6FJSErf2tfxQMmLmQhLcWr+GP7
+         yrk2646E8w5/Le8UItOJgJh5I/esEUF4+G6fbi74EYA1+lB8/t5Oc+5bTbgLLQBbol
+         KzJ3vu8utyERGuJfiAPQE9ZR0h8hp2Vuat+6e+f+Io4kSlobHDOhfO5RH+VZcPGamq
+         aJ9WxHEQG0b2nSmT7anK+yHenIOKCVVPuGU71Pb2/buwav1JGJbQMMEIUvnVbw0wki
+         Mb7R0ePnIW7Hmf6l7rNSgyX5wNqdK6wBbl8hxI6zb24BrfV5EaCbJl65UDBpCc7GnA
+         uIkvChaFE+vRg==
+Date:   Thu, 4 Feb 2021 14:55:48 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lecopzer Chen <lecopzer@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
+        aryabinin@virtuozzo.com, broonie@kernel.org,
+        catalin.marinas@arm.com, dan.j.williams@intel.com,
+        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
+        linux@roeck-us.net, robin.murphy@arm.com, rppt@kernel.org,
+        tyhicks@linux.microsoft.com, vincenzo.frascino@arm.com,
+        yj.chiang@mediatek.com
+Subject: Re: [PATCH v2 2/4] arm64: kasan: abstract _text and _end to
+ KERNEL_START/END
+Message-ID: <20210204145547.GD20815@willie-the-truck>
+References: <20210204124658.GB20468@willie-the-truck>
+ <20210204145127.75856-1-lecopzer@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204145127.75856-1-lecopzer@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Push the injection of #GP up to the callers, since they can just use
-kvm_complete_insn_gp and __kvm_set_dr pretty much returns what the
-callers can pass to kvm_complete_insn_gp.
+On Thu, Feb 04, 2021 at 10:51:27PM +0800, Lecopzer Chen wrote:
+> > On Sat, Jan 09, 2021 at 06:32:50PM +0800, Lecopzer Chen wrote:
+> > > Arm64 provide defined macro for KERNEL_START and KERNEL_END,
+> > > thus replace them by the abstration instead of using _text and _end.
+> > > 
+> > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > > ---
+> > >  arch/arm64/mm/kasan_init.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> > > index 39b218a64279..fa8d7ece895d 100644
+> > > --- a/arch/arm64/mm/kasan_init.c
+> > > +++ b/arch/arm64/mm/kasan_init.c
+> > > @@ -218,8 +218,8 @@ static void __init kasan_init_shadow(void)
+> > >  	phys_addr_t pa_start, pa_end;
+> > >  	u64 i;
+> > >  
+> > > -	kimg_shadow_start = (u64)kasan_mem_to_shadow(_text) & PAGE_MASK;
+> > > -	kimg_shadow_end = PAGE_ALIGN((u64)kasan_mem_to_shadow(_end));
+> > > +	kimg_shadow_start = (u64)kasan_mem_to_shadow(KERNEL_START) & PAGE_MASK;
+> > > +	kimg_shadow_end = PAGE_ALIGN((u64)kasan_mem_to_shadow(KERNEL_END));
+> > >  
+> > >  	mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
+> > >  	mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
+> > > @@ -241,7 +241,7 @@ static void __init kasan_init_shadow(void)
+> > >  	clear_pgds(KASAN_SHADOW_START, KASAN_SHADOW_END);
+> > >  
+> > >  	kasan_map_populate(kimg_shadow_start, kimg_shadow_end,
+> > > -			   early_pfn_to_nid(virt_to_pfn(lm_alias(_text))));
+> > > +			   early_pfn_to_nid(virt_to_pfn(lm_alias(KERNEL_START))));
+> > 
+> > To be honest, I think this whole line is pointless. We should be able to
+> > pass NUMA_NO_NODE now that we're not abusing the vmemmap() allocator to
+> > populate the shadow.
+> 
+> Do we need to fix this in this series? it seems another topic.
+> If not, should this patch be removed in this series?
 
-Therefore, rename __kvm_set_dr to kvm_set_dr and drop the kvm_set_dr
-wrapper.  This also allows nested VMX code, which really wanted to use
-__kvm_set_dr, to use the right function.
+Since you're reposting anyway, you may as well include a patch doing that.
+If you don't, then I will.
 
-While at it, remove the kvm_require_dr() check from the SVM handler.
-The APM states:
-
-  All normal exception checks take precedence over the SVM intercepts.
-
-and that includes the CR4.DE=1 #UD.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 13 +++++--------
- arch/x86/kvm/vmx/vmx.c | 17 ++++++++++-------
- arch/x86/kvm/x86.c     | 19 +++++--------------
- 3 files changed, 20 insertions(+), 29 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4141caea857a..ea1bd96a9804 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2619,6 +2619,7 @@ static int dr_interception(struct vcpu_svm *svm)
- {
- 	int reg, dr;
- 	unsigned long val;
-+	int err = 0;
- 
- 	if (svm->vcpu.guest_debug == 0) {
- 		/*
-@@ -2636,20 +2637,16 @@ static int dr_interception(struct vcpu_svm *svm)
- 
- 	reg = svm->vmcb->control.exit_info_1 & SVM_EXITINFO_REG_MASK;
- 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
--
- 	if (dr >= 16) { /* mov to DRn */
--		if (!kvm_require_dr(&svm->vcpu, dr - 16))
--			return 1;
-+		dr -= 16;
- 		val = kvm_register_read(&svm->vcpu, reg);
--		kvm_set_dr(&svm->vcpu, dr - 16, val);
-+		err = kvm_set_dr(&svm->vcpu, dr, val);
- 	} else {
--		if (!kvm_require_dr(&svm->vcpu, dr))
--			return 1;
- 		kvm_get_dr(&svm->vcpu, dr, &val);
- 		kvm_register_write(&svm->vcpu, reg, val);
- 	}
- 
--	return kvm_skip_emulated_instruction(&svm->vcpu);
-+	return kvm_complete_insn_gp(&svm->vcpu, err);
- }
- 
- static int cr8_write_interception(struct vcpu_svm *svm)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 049fbbd0aa1a..13898871e5b0 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5095,6 +5095,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- {
- 	unsigned long exit_qualification;
- 	int dr, dr7, reg;
-+	int err = 1;
- 
- 	exit_qualification = vmx_get_exit_qual(vcpu);
- 	dr = exit_qualification & DEBUG_REG_ACCESS_NUM;
-@@ -5103,9 +5104,9 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 	if (!kvm_require_dr(vcpu, dr))
- 		return 1;
- 
--	/* Do not handle if the CPL > 0, will trigger GP on re-entry */
--	if (!kvm_require_cpl(vcpu, 0))
--		return 1;
-+	if (kvm_x86_ops.get_cpl(vcpu) > 0)
-+		goto out;
-+
- 	dr7 = vmcs_readl(GUEST_DR7);
- 	if (dr7 & DR7_GD) {
- 		/*
-@@ -5144,11 +5145,13 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 
- 		kvm_get_dr(vcpu, dr, &val);
- 		kvm_register_write(vcpu, reg, val);
--	} else
--		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
--			return 1;
-+		err = 0;
-+	} else {
-+		err = kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg));
-+	}
- 
--	return kvm_skip_emulated_instruction(vcpu);
-+out:
-+	return kvm_complete_insn_gp(vcpu, err);
- }
- 
- static void vmx_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index dcb67429b75d..baa90ae76ba5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1143,7 +1143,7 @@ static u64 kvm_dr6_fixed(struct kvm_vcpu *vcpu)
- 	return fixed;
- }
- 
--static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
-+int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- {
- 	size_t size = ARRAY_SIZE(vcpu->arch.db);
- 
-@@ -1156,13 +1156,13 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- 	case 4:
- 	case 6:
- 		if (!kvm_dr6_valid(val))
--			return -1; /* #GP */
-+			return 1; /* #GP */
- 		vcpu->arch.dr6 = (val & DR6_VOLATILE) | kvm_dr6_fixed(vcpu);
- 		break;
- 	case 5:
- 	default: /* 7 */
- 		if (!kvm_dr7_valid(val))
--			return -1; /* #GP */
-+			return 1; /* #GP */
- 		vcpu->arch.dr7 = (val & DR7_VOLATILE) | DR7_FIXED_1;
- 		kvm_update_dr7(vcpu);
- 		break;
-@@ -1170,15 +1170,6 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- 
- 	return 0;
- }
--
--int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
--{
--	if (__kvm_set_dr(vcpu, dr, val)) {
--		kvm_inject_gp(vcpu, 0);
--		return 1;
--	}
--	return 0;
--}
- EXPORT_SYMBOL_GPL(kvm_set_dr);
- 
- void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
-@@ -6619,7 +6610,7 @@ static int emulator_set_dr(struct x86_emulate_ctxt *ctxt, int dr,
- 			   unsigned long value)
- {
- 
--	return __kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
-+	return kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
- }
- 
- static u64 mk_cr_64(u64 curr_cr, u32 new_val)
-@@ -8664,7 +8655,7 @@ static void enter_smm(struct kvm_vcpu *vcpu)
- 	dt.address = dt.size = 0;
- 	static_call(kvm_x86_set_idt)(vcpu, &dt);
- 
--	__kvm_set_dr(vcpu, 7, DR7_FIXED_1);
-+	kvm_set_dr(vcpu, 7, DR7_FIXED_1);
- 
- 	cs.selector = (vcpu->arch.smbase >> 4) & 0xffff;
- 	cs.base = vcpu->arch.smbase;
--- 
-2.26.2
-
+Will
