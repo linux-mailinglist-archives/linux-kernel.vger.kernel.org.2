@@ -2,307 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E80A30EF6F
+	by mail.lfdr.de (Postfix) with ESMTP id DEC6F30EF70
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbhBDJOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhBDJOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:14:14 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D26C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 01:13:33 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id w8so3040224oie.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 01:13:33 -0800 (PST)
+        id S235214AbhBDJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:15:00 -0500
+Received: from mail-bn8nam12on2084.outbound.protection.outlook.com ([40.107.237.84]:22960
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234721AbhBDJO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:14:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhjFaEQzctPKwaIk/YWlK6v7TQ1BDGw0VE0n2j2LlKWOsyqx6hZvxGmvOtVqCCTDmJCmSNdz/zmwgItojkudX8AWFV8C0L7Ox82Lpu6RS7n7KeKk/xyNbV9HnrhcOKpy4qDcRa3y25DVzSIliK9CY5OIvB6a27nk0bFzVCNHZO8TJE+4BQd5RxDVmwOU7DvV7avUckKUFBvkDAnMYZsUDIPkApf6RD2xewKcGrZfALFNiAL+ejKRXzvJpw2ov6WL28IceYscw7ga9f4TTwaNSp9ilhUpSN/KrJiWKDcywLkLqKVufXIGkOJuZR7gyI1RJO4PqYl4pnMf5YC585kBIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5SDZO0+Sy6O+RGfQ2ID0i3n3StTsptoHsePOGzPrgdc=;
+ b=GRtoFjY61HxFUiEEjcxqPO5WwQ8QekJlweKTfvs8r75x9Q16YdSnZVlaqiSWj7NC0i99SfZks/UCHaP0O6ivi+u8UCcmypSOyFFbwfnLaZbTWBYMH0qRxNFgQKe5N8044nyiZW4x1LrQ8IregIwPSx3zHhLiJ2AVTJv7iokYlbj9xIjXUyPBx4pXQ9FlOM+AL0wq58tJysgQeGwgEWfzYKp6wp0IziWJpPpJXMYHsUCcRylTFaNYy1fU+55qDX4FNnAGOZ6rC8UYwVuV/xb//4VpDP9Q++oxT8btadrrWy6xOxhV1XHTGz2dnu6FNIgAbjhQ+oZtoAPKBExFqRBI7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GcZr/lXOtFtdlVQFOf0O+ERf98wRvIkOP/xyvZUm54o=;
-        b=Bnnen8yiBU+K8PYVDd7zG3RPsHggkh5OAm8UCFxkCeNMfELGiXS0iAimTdU1oDcOR0
-         mfXw66KeJE3FVmtnb+tA4FoHZ0Gyx/GS9iO9f8Hw96Z80R9RHPxZhF1YM1EcwH95GKFw
-         3XPXeosqWPSJ/pA3hQAzQSfIPInv6LnlpGT5BNdIN+a8PcR0bZ9dCLjFPXqy6HTYKs06
-         AOMiNlrBR8t4GnouUOlw4eXlnb+yp7Rgjlcmsg9/Rbr6PZ19dp1oGRtnWmcrasvNuQlM
-         pMYZwb4rC3VFt3HF+KX9xVgcOenO6fspdIvHjf5V/DhFKgww7cejCMaWNMX0K//K6Z81
-         wPkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GcZr/lXOtFtdlVQFOf0O+ERf98wRvIkOP/xyvZUm54o=;
-        b=G0K2FDKjAK2gnxbx6v/58TAS6Ij4dfNSThz+lK3LFtiHwHz85+ZM2YV1Xig8hsrfzk
-         883QRSjBEJ48LOl5i1WNTDvMsdG3GHgDdzQtu1xgIOX2kfkUeHQ9m6QZCyfqtBazjjup
-         uzDdSGk/ahbVTVmYomafRoOg3iuLNobnlLFN7ICAJDfPxPjIE3faYZ+LwsSk0bVoURg9
-         VGkmKHpSfYxzP/+9hmcD6FFDxVGX474dKeVZcHPlbtkUDEPAPp8yg0U8j/FX2B6RITUu
-         G31lp/ZYjgDhW5lmrzEgJuqRMws5+fdCmp62VBNDNqvv7RJhMfc2UcE+dY2aOwnQlJc4
-         j8Mg==
-X-Gm-Message-State: AOAM533lmfTuQVK5BZ20WnJAZuy8bUMTYdr8KqA4/0xkn/cbwnJGv0qI
-        Rbg8saoXcKmCtAtBm5howx+X3OyW1BuaPHthntk=
-X-Google-Smtp-Source: ABdhPJxFqvY2nylLMNXzuk22H5R4RcNMz1OUdPqMumY5F8MN/t0xFKprcKPpriIuXmcdPQ6+x+TG9Nr8ehb4+Cqa5y0=
-X-Received: by 2002:aca:1808:: with SMTP id h8mr4702477oih.150.1612430013306;
- Thu, 04 Feb 2021 01:13:33 -0800 (PST)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5SDZO0+Sy6O+RGfQ2ID0i3n3StTsptoHsePOGzPrgdc=;
+ b=a1ANAmQK2FFfSBMjv7KaZLFJh4pRhaJYuDd18GU6yHh7SIfx4OWNpMbkY7OtzS5LWXy2beNKegbyTgGny6qsdNBOEM2eLY5srC7UutGMYPKeRZTJioVDPUdoyDDpHE9rBLG4xI/18+8bFfWkklf3f5HhEgB8PAesVX2vLLXijJw=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB5136.namprd11.prod.outlook.com (2603:10b6:a03:2d1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 4 Feb
+ 2021 09:13:37 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.023; Thu, 4 Feb 2021
+ 09:13:37 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYzXSBrdmZyZWVfcmN1OiBSZWxlYXNlIHBhZ2UgY2Fj?=
+ =?gb2312?Q?he_under_memory_pressure?=
+Thread-Topic: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
+Thread-Index: AQHW9wfxGJ2IWJwsv0i2q1lIZ3Sxz6pDuv2AgACRBPmAA3GuVg==
+Date:   Thu, 4 Feb 2021 09:13:36 +0000
+Message-ID: <BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210130131851.23285-1-qiang.zhang@windriver.com>,<20210201195753.GA2026@pc638.lan>,<BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 030ab6cb-8d2f-4386-1b8d-08d8c8ed279c
+x-ms-traffictypediagnostic: SJ0PR11MB5136:
+x-microsoft-antispam-prvs: <SJ0PR11MB513649ABE2C4E984D5A41A99FFB39@SJ0PR11MB5136.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SzNMJCwcHnHqH/+ZXEpgaaWb/rBy8Y/WGRJf9UjX4eC1quyMmg4MUOekPWLwRjgY/jNdNJbNonvdJ8JppqNwYZL+AspzrZ++WZH1W4DAid+7Qks4IYB6Q2oKsdYMW4jjs5167Ow14BFu3lAwn67uvzjI/oo2bF7+oCed89tdsBaY+S1eDiLi9tMhb7tOnlSJpx7+wFbpe7dhKMoEwJfAGEIZuK8mnX4mXk4+AH+t+vOwKW8wGxWNVneB7N24JC5k6idi+mb55Q/e2TRY0aWiAbv3msdgZkfSwgWtdUxp5aT0Sw44Zs6mNPwp7J7/MSYZjJAsHtO+ivtliTIfdWLZRokBtXcqXCIn6Nkp7mhrvVDqXO3HUcoyQUm1sXD0RvMLYICtf4GBNPa5E4hYpiJtkm4y2qm01KNydB78FQx99yuxRlOpdfF/ayf/oIMgeVvZBiOk7LJSfGBsdD/JIApUKCgj75Shqwl6FujA48ss8LZIqKaaMxBUq5gvf5WrFW14ozBwUPjhSj876G2NXmZTbLRyCHX0uCBla//Hij8cix8ML9C84tfTkAD4o38sOZ2c2hAtXBdujKjUBArrzo8ycpMp90n18gZHSCUo3xP/2/dQwuoJPELzI9ZVr91LTFFcMOk8RGoM81aGFDXEztyn1w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(376002)(396003)(346002)(136003)(54906003)(2906002)(33656002)(478600001)(6506007)(316002)(86362001)(71200400001)(83380400001)(5660300002)(52536014)(26005)(64756008)(76116006)(6916009)(55016002)(66476007)(7696005)(66556008)(66446008)(9686003)(4326008)(186003)(66946007)(91956017)(224303003)(8936002)(3557205002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?dnMvVW1oNEFCbC9LRENaRFRaU3NTTWo1azcxc1RFWnZUb3orN3R1MzlxU3Rv?=
+ =?gb2312?B?dExMNXNIaldzTGpIL2NSbVpWTXVEMUNya09FY2tSZzY3L0VsMlcrcmF2QWpK?=
+ =?gb2312?B?SFpIZnIwV2dsRHdtT2IzQXRDVERuZ3pWaTNOdWVhV3puWXdHSUMrdG1mdWRK?=
+ =?gb2312?B?RUFxbDcraDQ1K1ZYM0h6cU5BQ1JRMUk3VmVNNldhZ3A1V1JCRC85YkI4akFT?=
+ =?gb2312?B?RGNJNG53NXhQczkwU3FsaktJQ2hTZTgwZEhkRHE3a0RFeW5nYlVPdHRpUDd1?=
+ =?gb2312?B?Ymo0MjQ0eDRXdEZiQ0NubVV1cFNWMFNwUm1KcTlyV3daMlBreXdJWExtZFJT?=
+ =?gb2312?B?WHZQMWxkME44RUFYekhCYU5HNG11dHRaUzlJQkFDU0tzb2JpRWhlb2RtV1BJ?=
+ =?gb2312?B?UHkzV0tSUlVJUUE1V0tCK25iQ285S2RQZlNTWVNtTTEvMlM5MFU3clpyTTQx?=
+ =?gb2312?B?d0IrYjlwaktCUlhGTCtYSUUralhlRzd2eFcxQXUrYnlWZmdzVzhDR0lTc2d4?=
+ =?gb2312?B?M3kwUnZleHV4aGI5d0VGemlyMDdlTUVHejVSajNObUN1Rm80UmpHeEI5YWl4?=
+ =?gb2312?B?Z1VNV1BGZ1RSNWtHMWsrVHM4TmVVRWI3SnpOL0JZTFpJYnNGMTVOOEVkUytu?=
+ =?gb2312?B?c1lsTjJURmZUOVBoQ1BHQVA5b1ZRamZZdFdjWExXSUwyMDVQRElQL3VnZ283?=
+ =?gb2312?B?dk1LZGE2ZjBaY3dzcVk1aTJiUVhFZTlJWXBLblppSnlFd0RRcmNjV0N3a2hN?=
+ =?gb2312?B?OTJ1bFhxR1JzcTJCaWhOU0poclFiY0ZWcWNuRmNpcGZNemxSK2t5ZWpLRlBX?=
+ =?gb2312?B?WHBYNFJhMnlTNDlmcm12WDJpdXIyZm9CK0RsdXZKODJCVmtJVWNpUEJSbmc4?=
+ =?gb2312?B?eXZDa2JReXpzbTZsbHhLSHJFVDA4UGdOZ3laZ0Z2QldCQ1VTQ0VYYWpyMHRr?=
+ =?gb2312?B?bWNsUktoczQ0U3hkQWgyd3RBVE9Ka2xlbzNMdTV1ZkJKRDdEMDZzbEJuNjd0?=
+ =?gb2312?B?Q3VVUjRpbTg3a2I2eXF1VlV2MWd5NWlQenY1bUdoTG16dzl6aVdPdTVZWnJh?=
+ =?gb2312?B?K0ZzQ3hBVi9ickNBa3lmZmNkVC9Xc2pJdkczb0d6MHEraHdxWndjb3I5akNU?=
+ =?gb2312?B?aVNLcHpTWHRLSWNFN0JoV3ErYVpoT1l3MzUrZlo0bElJRG9xckJYZ3NxdU1i?=
+ =?gb2312?B?clFuMlBURTF2M1dNbmhJaTlXWDJ6ZldibldkUWNmS3R6QkJ6dUs1NkplYmIv?=
+ =?gb2312?B?RDh3enNqSkd2eWZCMUlibEVSWUJtYmdsWjhFUmJ6Vm96bGNCL1JUMHl6RXAx?=
+ =?gb2312?B?K1ZDYml6bEhMUFFsSmdXNlh3QmUrRmdYN2NaUWIvQWhGQ1d5Wjk0Qnd3eitw?=
+ =?gb2312?Q?1cfgIO/JJ3jKPD9F8mPjJvW4Ua/nJr4Q=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
- <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
- <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com> <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
- <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com> <CAKfTPtCSra_kfncR7J_7ona+8MoO0ZX8uTEXvZ7PU7C0pYiM5w@mail.gmail.com>
- <38c1aeee.2d5f.176f9bb0cfb.Coremail.ultrachin@163.com> <CAKfTPtAYoBm1se=HAcsyxwZTQ=XW+HcQJsP3maZy6CNgLSfLZA@mail.gmail.com>
- <4e2f3ac4.2b66.17761bc6eb9.Coremail.ultrachin@163.com> <CAKfTPtBCrzLUnwVv6ExcUgScE9_q2ZZs4SyzV58ASBTY_ZPpyg@mail.gmail.com>
-In-Reply-To: <CAKfTPtBCrzLUnwVv6ExcUgScE9_q2ZZs4SyzV58ASBTY_ZPpyg@mail.gmail.com>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Thu, 4 Feb 2021 17:13:22 +0800
-Message-ID: <CAPJCdB=KSuES_=ctaj2D3UggQr-Exi=Hfffd_MU3UCp_ygtkPQ@mail.gmail.com>
-Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE tasks
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     chin <ultrachin@163.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        heddchen@tencent.com,
-        =?UTF-8?B?eGlhb2dnY2hlbijpmYjlsI/lhYkp?= <xiaoggchen@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 030ab6cb-8d2f-4386-1b8d-08d8c8ed279c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 09:13:36.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QHaVaxmxtExQEpJ5t/FKS7lkJIcr6XgzloVo6B6jXCHwWc/I4QdMh1p3yHKVe/l74Ja6X4rcLGT6uUgJGcj20pV5wdAqen3ZGgByn8yaRVY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vincent
-
-On Thu, 4 Feb 2021 at 16:04, Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> On Tue, 2 Feb 2021 at 08:56, chin <ultrachin@163.com> wrote:
-> >
-> >
-> >
-> >
-> > At 2021-01-13 16:30:14, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
-> > >On Wed, 13 Jan 2021 at 04:14, chin <ultrachin@163.com> wrote:
-> > >>
-> > >>
-> > >>
-> > >>
-> > >> At 2021-01-12 16:18:51, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
-> > >> >On Tue, 12 Jan 2021 at 07:59, chin <ultrachin@163.com> wrote:
-> > >> >>
-> > >> >>
-> > >> >>
-> > >> >>
-> > >> >> At 2021-01-11 19:04:19, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
-> > >> >> >On Mon, 11 Jan 2021 at 09:27, chin <ultrachin@163.com> wrote:
-> > >> >> >>
-> > >> >> >>
-> > >> >> >> At 2020-12-23 19:30:26, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
-> > >> >> >> >On Wed, 23 Dec 2020 at 09:32, <ultrachin@163.com> wrote:
-> > >> >> >> >>
-> > >> >> >> >> From: Chen Xiaoguang <xiaoggchen@tencent.com>
-> > >> >> >> >>
-> > >> >> >> >> Before a CPU switches from running SCHED_NORMAL task to
-> > >> >> >> >> SCHED_IDLE task, trying to pull SCHED_NORMAL tasks from other
-> > >> >> >> >
-> > >> >> >> >Could you explain more in detail why you only care about this use case
-> > >> >> >>
-> > >> >> >> >in particular and not the general case?
-> > >> >> >>
-> > >> >> >>
-> > >> >> >> We want to run online tasks using SCHED_NORMAL policy and offline tasks
-> > >> >> >> using SCHED_IDLE policy. The online tasks and the offline tasks run in
-> > >> >> >> the same computer in order to use the computer efficiently.
-> > >> >> >> The online tasks are in sleep in most times but should responce soon once
-> > >> >> >> wake up. The offline tasks are in low priority and will run only when no online
-> > >> >> >> tasks.
-> > >> >> >>
-> > >> >> >> The online tasks are more important than the offline tasks and are latency
-> > >> >> >> sensitive we should make sure the online tasks preempt the offline tasks
-> > >> >> >> as soon as possilbe while there are online tasks waiting to run.
-> > >> >> >> So in our situation we hope the SCHED_NORMAL to run if has any.
-> > >> >> >>
-> > >> >> >> Let's assume we have 2 CPUs,
-> > >> >> >> In CPU1 we got 2 SCHED_NORMAL tasks.
-> > >> >> >> in CPU2 we got 1 SCHED_NORMAL task and 2 SCHED_IDLE tasks.
-> > >> >> >>
-> > >> >> >>              CPU1                      CPU2
-> > >> >> >>         curr       rq1            curr          rq2
-> > >> >> >>       +------+ | +------+       +------+ | +----+ +----+
-> > >> >> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
-> > >> >> >>       +------+ | +------+       +------+ | +----+ +----+
-> > >> >> >>
-> > >> >> >>                                  NORMAL exits or blocked
-> > >> >> >>       +------+ | +------+                | +----+ +----+
-> > >> >> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
-> > >> >> >>       +------+ | +------+                | +----+ +----+
-> > >> >> >>
-> > >> >> >>                                  pick_next_task_fair
-> > >> >> >>       +------+ | +------+         +----+ | +----+
-> > >> >> >> t2    |NORMAL| | |NORMAL|         |IDLE| | |IDLE|
-> > >> >> >>       +------+ | +------+         +----+ | +----+
-> > >> >> >>
-> > >> >> >>                                  SCHED_IDLE running
-> > >> >> >> t3    +------+ | +------+        +----+  | +----+
-> > >> >> >>       |NORMAL| | |NORMAL|        |IDLE|  | |IDLE|
-> > >> >> >>       +------+ | +------+        +----+  | +----+
-> > >> >> >>
-> > >> >> >>                                  run_rebalance_domains
-> > >> >> >>       +------+ |                +------+ | +----+ +----+
-> > >> >> >> t4    |NORMAL| |                |NORMAL| | |IDLE| |IDLE|
-> > >> >> >>       +------+ |                +------+ | +----+ +----+
-> > >> >> >>
-> > >> >> >> As we can see
-> > >> >> >> t1: NORMAL task in CPU2 exits or blocked
-> > >> >> >> t2: CPU2 pick_next_task_fair would pick a SCHED_IDLE to run while
-> > >> >> >> another SCHED_NORMAL in rq1 is waiting.
-> > >> >> >> t3: SCHED_IDLE run in CPU2 while a SCHED_NORMAL wait in CPU1.
-> > >> >> >> t4: after a short time, periodic load_balance triggerd and pull
-> > >> >> >> SCHED_NORMAL in rq1 to rq2, and SCHED_NORMAL likely preempts SCHED_IDLE.
-> > >> >> >>
-> > >> >> >> In this scenario, SCHED_IDLE is running while SCHED_NORMAL is waiting to run.
-> > >> >> >> The latency of this SCHED_NORMAL will be high which is not acceptble.
-> > >> >> >>
-> > >> >> >> Do a load_balance before running the SCHED_IDLE may fix this problem.
-> > >> >> >>
-> > >> >> >> This patch works as below:
-> > >> >> >>
-> > >> >> >>              CPU1                      CPU2
-> > >> >> >>         curr       rq1            curr          rq2
-> > >> >> >>       +------+ | +------+       +------+ | +----+ +----+
-> > >> >> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
-> > >> >> >>       +------+ | +------+       +------+ | +----+ +----+
-> > >> >> >>
-> > >> >> >>                                  NORMAL exits or blocked
-> > >> >> >>       +------+ | +------+                | +----+ +----+
-> > >> >> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
-> > >> >> >>       +------+ | +------+                | +----+ +----+
-> > >> >> >>
-> > >> >> >> t2                            pick_next_task_fair (all se are SCHED_IDLE)
-> > >> >> >>
-> > >> >> >>                                  newidle_balance
-> > >> >> >>       +------+ |                 +------+ | +----+ +----+
-> > >> >> >> t3    |NORMAL| |                 |NORMAL| | |IDLE| |IDLE|
-> > >> >> >>       +------+ |                 +------+ | +----+ +----+
-> > >> >> >>
-> > >> >> >>
-> > >> >> >> t1: NORMAL task in CPU2 exits or blocked
-> > >> >> >> t2: pick_next_task_fair check all se in rbtree are SCHED_IDLE and calls
-> > >> >> >> newidle_balance who tries to pull a SCHED_NORMAL(if has).
-> > >> >> >> t3: pick_next_task_fair would pick a SCHED_NORMAL to run instead of
-> > >> >> >> SCHED_IDLE(likely).
-> > >> >> >>
-> > >> >> >> >
-> > >> >> >> >> CPU by doing load_balance first.
-> > >> >> >> >>
-> > >> >> >> >> Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
-> > >> >> >> >> Signed-off-by: Chen He <heddchen@tencent.com>
-> > >> >> >> >> ---
-> > >> >> >> >>  kernel/sched/fair.c | 5 +++++
-> > >> >> >> >>  1 file changed, 5 insertions(+)
-> > >> >> >> >>
-> > >> >> >> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > >> >> >> >> index ae7ceba..0a26132 100644
-> > >> >> >> >> --- a/kernel/sched/fair.c
-> > >> >> >> >> +++ b/kernel/sched/fair.c
-> > >> >> >> >> @@ -7004,6 +7004,11 @@ struct task_struct *
-> > >> >> >> >>         struct task_struct *p;
-> > >> >> >> >>         int new_tasks;
-> > >> >> >> >>
-> > >> >> >> >> +       if (prev &&
-> > >> >> >> >> +           fair_policy(prev->policy) &&
-> > >> >> >> >
-> > >> >> >> >Why do you need a prev and fair task  ? You seem to target the special
-> > >> >> >> >case of pick_next_task  but in this case why not only testing rf!=null
-> > >> >> >> > to make sure to not return immediately after jumping to the idle
-> > >> >> >>
-> > >> >> >> >label?
-> > >> >> >> We just want to do load_balance only when CPU switches from SCHED_NORMAL
-> > >> >> >> to SCHED_IDLE.
-> > >> >> >> If not check prev, when the running tasks are all SCHED_IDLE, we would
-> > >> >> >> do newidle_balance everytime in pick_next_task_fair, it makes no sense
-> > >> >> >> and kind of wasting.
-> > >> >> >
-> > >> >> >I agree that calling newidle_balance every time pick_next_task_fair is
-> > >> >> >called when there are only sched_idle tasks is useless.
-> > >> >> >But you also have to take into account cases where there was another
-> > >> >> >class of task running on the cpu like RT one. In your example above,
-> > >> >> >if you replace the normal task on CPU2 by a RT task, you still want to
-> > >> >>
-> > >> >> >pick the normal task on CPU1 once RT task goes to sleep.
-> > >> >> Sure, this case should be taken into account,  we should also try to
-> > >> >> pick normal task in this case.
-> > >> >>
-> > >> >> >
-> > >> >> >Another point that you will have to consider the impact on
-> > >> >> >rq->idle_stamp because newidle_balance is assumed to be called before
-> > >> >>
-> > >> >> >going idle which is not the case anymore with your use case
-> > >> >> Yes. rq->idle_stamp should not be changed in this case.
-> > >> >>
-> > >> >>
-> > >> >>
-> > >> >> Actually we want to pull a SCHED_NORMAL task (if possible) to run when a cpu is
-> > >> >> about to run SCHED_IDLE task. But currently newidle_balance is not
-> > >> >> designed for SCHED_IDLE  so SCHED_IDLE can also be pulled which
-> > >> >> is useless in our situation.
-> > >> >
-> > >> >newidle_balance will pull a sched_idle task only if there is an
-> > >> >imbalance which is the right thing to do IMO to ensure fairness
-> > >> >between sched_idle tasks.  Being a sched_idle task doesn't mean that
-> > >> >we should break the fairness
-> > >> >
-> > >> >>
-> > >> >> So we plan to add a new function sched_idle_balance which only try to
-> > >> >> pull SCHED_NORMAL tasks from the busiest cpu. And we will call
-> > >> >> sched_idle_balance when the previous task is normal or RT and
-> > >> >> hoping we can pull a SCHED_NORMAL task to run.
-> > >> >>
-> > >> >> Do you think it is ok to add a new sched_idle_balance?
-> > >> >
-> > >> >I don't see any reason why the scheduler should not pull a sched_idle
-> > >> >task if there is an imbalance. That will happen anyway during the next
-> > >>
-> > >> >periodic load balance
-> > >> OK. We should not pull the SCHED_IDLE tasks only in load_balance.
-> > >>
-> > >>
-> > >> Do you think it make sense to do an extra load_balance when cpu is
-> > >> about to run SCHED_IDLE task (switched from normal/RT)?
-> > >
-> > >I'm not sure to get your point here.
-> > >Do you mean if a sched_idle task is picked to become the running task
-> > >whereas there are runnable normal tasks ? This can happen if normal
-> > >tasks are long running tasks. We should not in this case. The only
-> > >case is when the running task, which is not a sched_idle task but a
-> > >normal/rt/deadline one, goes to sleep and there are only sched_idle
-> > >tasks enqueued. In this case and only in this case, we should trigger
-> > >a load_balance to get a chance to pull a waiting normal task from
-> > >another CPU.
-> > >
-> > >This means checking this state in pick_next_task_fair() and in balance_fair()
-> >
-> > We made another change would you please give some comments?
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 04a3ce2..2357301 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7029,6 +7029,10 @@ struct task_struct *
-> >         struct task_struct *p;
-> >         int new_tasks;
-> >
-> > +       if (sched_idle_rq(rq) && prev && prev->state &&
-> > +           prev->policy != SCHED_IDLE)
->
-> This need a comment to explain what it want to achieve
->
-> Why do you need to test prev->state ?
-Just to avoid triggering load_balance for the case if prev normal
-tasks are long running tasks, as you said. :)
-Or could testing (prev->state & TASK_NORMAL) be better?
-
-Thx.
-Jiang,
-Regards
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwq3orz+yMs6IFVsYWR6
+aXNsYXUgUmV6a2kgPHVyZXpraUBnbWFpbC5jb20+Creiy83KsbzkOiAyMDIxxOoy1MIyyNUgMzo1
+NwrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiB1cmV6a2lAZ21haWwuY29tOyBwYXVsbWNrQGtl
+cm5lbC5vcmc7IGpvZWxAam9lbGZlcm5hbmRlcy5vcmc7IHJjdUB2Z2VyLmtlcm5lbC5vcmc7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcK1vfM4jogUmU6IFtQQVRDSCB2M10ga3ZmcmVlX3Jj
+dTogUmVsZWFzZSBwYWdlIGNhY2hlIHVuZGVyIG1lbW9yeSBwcmVzc3VyZQoKW1BsZWFzZSBub3Rl
+OiBUaGlzIGUtbWFpbCBpcyBmcm9tIGFuIEVYVEVSTkFMIGUtbWFpbCBhZGRyZXNzXQoKSGVsbG8s
+IFpxaWFuZy4KCj4gRnJvbTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+Cj4g
+QWRkIGZyZWUgcGVyLWNwdSBleGlzdGluZyBrcmNwJ3MgcGFnZSBjYWNoZSBvcGVyYXRpb24sIHdo
+ZW4KPiB0aGUgc3lzdGVtIGlzIHVuZGVyIG1lbW9yeSBwcmVzc3VyZS4KPgo+IFNpZ25lZC1vZmYt
+Ynk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KPiAtLS0KPiAga2VybmVsL3Jj
+dS90cmVlLmMgfCAyNiArKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMjYgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5jIGIv
+a2VybmVsL3JjdS90cmVlLmMKPiBpbmRleCBjMWFlMWU1MmY2MzguLjY0NGIwZjNjN2I5ZiAxMDA2
+NDQKPiAtLS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZS5jCj4g
+QEAgLTM1NzEsMTcgKzM1NzEsNDEgQEAgdm9pZCBrdmZyZWVfY2FsbF9yY3Uoc3RydWN0IHJjdV9o
+ZWFkICpoZWFkLCByY3VfY2FsbGJhY2tfdCBmdW5jKQo+ICB9Cj4gIEVYUE9SVF9TWU1CT0xfR1BM
+KGt2ZnJlZV9jYWxsX3JjdSk7Cj4KPiArc3RhdGljIGludCBmcmVlX2tyY19wYWdlX2NhY2hlKHN0
+cnVjdCBrZnJlZV9yY3VfY3B1ICprcmNwKQo+ICt7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFn
+czsKPiArICAgICBzdHJ1Y3QgbGxpc3Rfbm9kZSAqcGFnZV9saXN0LCAqcG9zLCAqbjsKPiArICAg
+ICBpbnQgZnJlZWQgPSAwOwo+ICsKPiArICAgICByYXdfc3Bpbl9sb2NrX2lycXNhdmUoJmtyY3At
+PmxvY2ssIGZsYWdzKTsKPiArICAgICBwYWdlX2xpc3QgPSBsbGlzdF9kZWxfYWxsKCZrcmNwLT5i
+a3ZjYWNoZSk7Cj4gKyAgICAga3JjcC0+bnJfYmt2X29ianMgPSAwOwo+ICsgICAgIHJhd19zcGlu
+X3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gKwo+ICsgICAgIGxsaXN0
+X2Zvcl9lYWNoX3NhZmUocG9zLCBuLCBwYWdlX2xpc3QpIHsKPiArICAgICAgICAgICAgIGZyZWVf
+cGFnZSgodW5zaWduZWQgbG9uZylwb3MpOwo+ICsgICAgICAgICAgICAgZnJlZWQrKzsKPiArICAg
+ICB9Cj4gKwo+ICsgICAgIHJldHVybiBmcmVlZDsKPiArfQo+ICsKPiAgc3RhdGljIHVuc2lnbmVk
+IGxvbmcKPiAga2ZyZWVfcmN1X3Nocmlua19jb3VudChzdHJ1Y3Qgc2hyaW5rZXIgKnNocmluaywg
+c3RydWN0IHNocmlua19jb250cm9sICpzYykKPiAgewo+ICAgICAgIGludCBjcHU7Cj4gICAgICAg
+dW5zaWduZWQgbG9uZyBjb3VudCA9IDA7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsKPgo+
+ICAgICAgIC8qIFNuYXBzaG90IGNvdW50IG9mIGFsbCBDUFVzICovCj4gICAgICAgZm9yX2VhY2hf
+cG9zc2libGVfY3B1KGNwdSkgewo+ICAgICAgICAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9jcHUg
+KmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+Cj4gICAgICAgICAgICAgICBjb3VudCAr
+PSBSRUFEX09OQ0Uoa3JjcC0+Y291bnQpOwo+ICsKPiArICAgICAgICAgICAgIHJhd19zcGluX2xv
+Y2tfaXJxc2F2ZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICsgICAgICAgICAgICAgY291bnQgKz0g
+a3JjcC0+bnJfYmt2X29ianM7Cj4gKyAgICAgICAgICAgICByYXdfc3Bpbl91bmxvY2tfaXJxcmVz
+dG9yZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICAgICAgIH0KPgo+ICAgICAgIHJldHVybiBjb3Vu
+dDsKPiBAQCAtMzU5OCw2ICszNjIyLDggQEAga2ZyZWVfcmN1X3Nocmlua19zY2FuKHN0cnVjdCBz
+aHJpbmtlciAqc2hyaW5rLCBzdHJ1Y3Qgc2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAgICAg
+ICAgc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+
+Cj4gICAgICAgICAgICAgICBjb3VudCA9IGtyY3AtPmNvdW50Owo+ICsgICAgICAgICAgICAgY291
+bnQgKz0gZnJlZV9rcmNfcGFnZV9jYWNoZShrcmNwKTsKPiArCj4gICAgICAgICAgICAgICByYXdf
+c3Bpbl9sb2NrX2lycXNhdmUoJmtyY3AtPmxvY2ssIGZsYWdzKTsKPiAgICAgICAgICAgICAgIGlm
+IChrcmNwLT5tb25pdG9yX3RvZG8pCj4gICAgICAgICAgICAgICAgICAgICAgIGtmcmVlX3JjdV9k
+cmFpbl91bmxvY2soa3JjcCwgZmxhZ3MpOwo+IC0tCj4gMi4xNy4xCj4+Cj5UaGFuayB5b3UgZm9y
+IHlvdXIgcGF0Y2ghCj4KPkkgc3BlbnQgc29tZSB0aW1lIHRvIHNlZSBob3cgdGhlIHBhdGNoIGJl
+aGF2ZXMgdW5kZXIgbG93IG1lbW9yeSBjb25kaXRpb24uCj5UbyBzaW11bGF0ZSBpdCwgaSB1c2Vk
+ICJyY3VzY2FsZSIgdG9vbCB3aXRoIGJlbG93IHBhcmFtZXRlcnM6Cj4KPi4uL3JjdXRvcnR1cmUv
+YmluL2t2bS5zaCAtLXRvcnR1cmUgcmN1c2NhbGUgLS1hbGxjcHVzIC0tZHVyYXRpb24gMTAgLS1r
+Y29uZmlnID5DT05GSUdfTlJfQ1BVUz02NCBcCj4tLWJvb3RhcmdzICJyY3VzY2FsZS5rZnJlZV9y
+Y3VfdGVzdD0xIHJjdXNjYWxlLmtmcmVlX250aHJlYWRzPTE2ID5yY3VzY2FsZS5ob2xkb2ZmPTIw
+IHJjdXNjYWxlLmtmcmVlX2xvb3BzPTEwMDAwIFwKPnRvcnR1cmUuZGlzYWJsZV9vbm9mZl9hdF9i
+b290IiAtLXRydXN0LW1ha2UKPgo+NjQgQ1BVcyArIDUxMiBNQiBvZiBtZW1vcnkuIEluIGdlbmVy
+YWwsIG15IHRlc3Qgc3lzdGVtIHdhcyBydW5uaW5nIG9uIGVkZ2UKPmhpdHRpbmcgYW4gb3V0IG9m
+IG1lbW9yeSBzb21ldGltZXMsIGJ1dCBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIHN0YWJsZSBpbgo+
+cmVnYXJkcyB0byBhIHRlc3QgY29tcGxldGlvbiBhbmQgdGFrZW4gdGltZSwgc28gYm90aCB3ZXJl
+IHByZXR0eSBzb2xpZC4KPgo+WW91IGNhbiBmaW5kIGEgY29tcGFyaXNvbiBvbiBhIHBsb3QsIHRo
+YXQgY2FuIGJlIGRvd25sb2FkZWQgZm9sbG93aW5nCj5hIGxpbms6IHdnZXQgPmZ0cDovL3ZwczQx
+ODMwMS5vdmgubmV0L2luY29taW5nL3JlbGVhc2VfcGFnZV9jYWNoZV91bmRlcl9sb3dfbWVtb3J5
+LnBuZwo+Cj5JbiBzaG9ydCwgaSBzZWUgdGhhdCBhIHBhdGNoZWQgdmVyc2lvbiBjYW4gbGVhZCB0
+byBsb25nZXIgdGVzdCBjb21wbGV0aW9uLAo+d2hlcmVhcyB0aGUgZGVmYXVsdCB2YXJpYW50IGlz
+IHN0YWJsZSBvbiBhbG1vc3QgYWxsIHJ1bnMuIEFmdGVyIHNvbWUgYW5hbHlzaXMKPmFuZCBmdXJ0
+aGVyIGRpZ2dpbmcgaSBjYW1lIHRvIGNvbmNsdXNpb24gdGhhdCBhIHNocmlua2VyIGZyZWVfa3Jj
+X3BhZ2VfY2FjaGUoKQo+Y29uY3VycyB3aXRoIHJ1bl9wYWdlX2NhY2hlX3dvcmtlcihrcmNwKSBy
+dW5uaW5nIGZyb20ga3ZmcmVlX3JjdSgpIGNvbnRleHQuCj4KPmkuZS4gRHVyaW5nIHRoZSB0ZXN0
+IGEgcGFnZSBzaHJpbmtlciBpcyBwcmV0dHkgYWN0aXZlLCBiZWNhdXNlIG9mIGxvdyBtZW1vcnkK
+PmNvbmRpdGlvbi4gT3VyIGNhbGxiYWNrIGRyYWlucyBpdCB3aGVyZWFzIGt2ZnJlZV9yY3UoKSBw
+YXJ0IHJlZmlsbCBpdCByaWdodAo+YXdheSBtYWtpbmcga2luZCBvZiB2aWNpb3VzIGNpcmNsZS4K
+Pgo+U28sIGEgcnVuX3BhZ2VfY2FjaGVfd29ya2VyKCkgc2hvdWxkIGJlIGJhY2tvZmYgZm9yIHNv
+bWUgdGltZSB3aGVuIGEgc3lzdGVtCj5ydW5zIGludG8gYSBsb3cgbWVtb3J5IGNvbmRpdGlvbiBv
+ciBoaWdoIHByZXNzdXJlOgo+Cj5kaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJu
+ZWwvcmN1L3RyZWUuYwo+aW5kZXggNzA3N2Q3M2ZjYjUzLi40NDY3MjNiOTY0NmIgMTAwNjQ0Cj4t
+LS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+KysrIGIva2VybmVsL3JjdS90cmVlLmMKPkBAIC0zMTYz
+LDcgKzMxNjMsNyBAQCBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSB7Cj4gICAgICAgIGJvb2wgaW5pdGlh
+bGl6ZWQ7Cj4gICAgICAgIGludCBjb3VudDsKPgo+LSAgICAgICBzdHJ1Y3Qgd29ya19zdHJ1Y3Qg
+cGFnZV9jYWNoZV93b3JrOwo+KyAgICAgICBzdHJ1Y3QgZGVsYXllZF93b3JrIHBhZ2VfY2FjaGVf
+d29yazsKPiAgICAgICAgYXRvbWljX3Qgd29ya19pbl9wcm9ncmVzczsKPiAgICAgICAgc3RydWN0
+IGhydGltZXIgaHJ0aW1lcjsKPgo+QEAgLTM0MTksNyArMzQxOSw3IEBAIHNjaGVkdWxlX3BhZ2Vf
+d29ya19mbihzdHJ1Y3QgaHJ0aW1lciAqdCkKPiAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9jcHUg
+KmtyY3AgPQo+ICAgICAgICAgICAgICAgIGNvbnRhaW5lcl9vZih0LCBzdHJ1Y3Qga2ZyZWVfcmN1
+X2NwdSwgaHJ0aW1lcik7Cj4KPi0gICAgICAgcXVldWVfd29yayhzeXN0ZW1faGlnaHByaV93cSwg
+JmtyY3AtPnBhZ2VfY2FjaGVfd29yayk7Cj4rICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhzeXN0
+ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgMCk7Cj4gICAgICAgIHJldHVy
+biBIUlRJTUVSX05PUkVTVEFSVDsKPiB9Cj4KPkBAIC0zNDI4LDcgKzM0MjgsNyBAQCBzdGF0aWMg
+dm9pZCBmaWxsX3BhZ2VfY2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4gICAg
+ICAgIHN0cnVjdCBrdmZyZWVfcmN1X2J1bGtfZGF0YSAqYm5vZGU7Cj4gICAgICAgIHN0cnVjdCBr
+ZnJlZV9yY3VfY3B1ICprcmNwID0KPiAgICAgICAgICAgICAgICBjb250YWluZXJfb2Yod29yaywg
+c3RydWN0IGtmcmVlX3JjdV9jcHUsCj4tICAgICAgICAgICAgICAgICAgICAgICBwYWdlX2NhY2hl
+X3dvcmspOwo+KyAgICAgICAgICAgICAgICAgICAgICAgcGFnZV9jYWNoZV93b3JrLndvcmspOwo+
+ICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+ICAgICAgICBib29sIHB1c2hlZDsKPiAgICAg
+ICAgaW50IGk7Cj5AQCAtMzQ1MiwxNSArMzQ1MiwyMiBAQCBzdGF0aWMgdm9pZCBmaWxsX3BhZ2Vf
+Y2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgPip3b3JrKQo+ICAgICAgICBhdG9taWNfc2V0
+KCZrcmNwLT53b3JrX2luX3Byb2dyZXNzLCAwKTsKPiB9Cj4KPitzdGF0aWMgYm9vbCBiYWNrb2Zm
+X3BhZ2VfY2FjaGVfZmlsbDsKPisKPiBzdGF0aWMgdm9pZAo+IHJ1bl9wYWdlX2NhY2hlX3dvcmtl
+cihzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAqa3JjcCkKPiB7Cj4gICAgICAgIGlmIChyY3Vfc2NoZWR1
+bGVyX2FjdGl2ZSA9PSBSQ1VfU0NIRURVTEVSX1JVTk5JTkcgJiYKPiAgICAgICAgICAgICAgICAg
+ICAgICAgICFhdG9taWNfeGNoZygma3JjcC0+d29ya19pbl9wcm9ncmVzcywgMSkpIHsKPi0gICAg
+ICAgICAgICAgICBocnRpbWVyX2luaXQoJmtyY3AtPmhydGltZXIsIENMT0NLX01PTk9UT05JQywK
+Pi0gICAgICAgICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+LSAgICAgICAgICAg
+ICAgIGtyY3AtPmhydGltZXIuZnVuY3Rpb24gPSBzY2hlZHVsZV9wYWdlX3dvcmtfZm47Cj4tICAg
+ICAgICAgICAgICAgaHJ0aW1lcl9zdGFydCgma3JjcC0+aHJ0aW1lciwgMCwgSFJUSU1FUl9NT0RF
+X1JFTCk7Cj4rICAgICAgICAgICAgICAgaWYgKFJFQURfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVf
+ZmlsbCkpIHsKPisgICAgICAgICAgICAgICAgICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhzeXN0
+ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgPkhaKTsKPisgICAgICAgICAg
+ICAgICAgICAgICAgIFdSSVRFX09OQ0UoYmFja29mZl9wYWdlX2NhY2hlX2ZpbGwsIGZhbHNlKTsK
+PisgICAgICAgICAgICAgICB9IGVsc2Ugewo+KyAgICAgICAgICAgICAgICAgICAgICAgaHJ0aW1l
+cl9pbml0KCZrcmNwLT5ocnRpbWVyLCBDTE9DS19NT05PVE9OSUMsCj4rICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgICAgICAg
+ICAga3JjcC0+aHJ0aW1lci5mdW5jdGlvbiA9IHNjaGVkdWxlX3BhZ2Vfd29ya19mbjsKPisgICAg
+ICAgICAgICAgICAgICAgICAgIGhydGltZXJfc3RhcnQoJmtyY3AtPmhydGltZXIsIDAsIEhSVElN
+RVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgIH0KPiAgICAgICAgfQo+IH0KPgo+QEAgLTM2
+NDQsNiArMzY1MSw4IEBAIGtmcmVlX3JjdV9zaHJpbmtfY291bnQoc3RydWN0IHNocmlua2VyICpz
+aHJpbmssIHN0cnVjdCA+c2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAgICAgICAgIHJhd19z
+cGluX3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gICAgICAgIH0KPgo+
+KyAgICAgICAvLyBMb3cgbWVtb3J5IGNvbmRpdGlvbiwgbGltaXQgYSBwYWdlIGNhY2hlIHdvcmtl
+ciBhY3Rpdml0eS4KPisgICAgICAgV1JJVEVfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCwg
+dHJ1ZSk7Cj4gICAgICAgIHJldHVybiBjb3VudDsKPiB9Cgo+QEAgLTQ2MzQsNyArNDY0Myw3IEBA
+IHN0YXRpYyB2b2lkIF9faW5pdCBrZnJlZV9yY3VfYmF0Y2hfaW5pdCh2b2lkKQo+ICAgICAgICAg
+ICAgICAgIH0KPgo+ICAgICAgICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5tb25p
+dG9yX3dvcmssIGtmcmVlX3JjdV9tb25pdG9yKTsKPi0gICAgICAgICAgICAgICBJTklUX1dPUkso
+JmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgZmlsbF9wYWdlX2NhY2hlX2Z1bmMpOwo+KyAgICAgICAg
+ICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5wYWdlX2NhY2hlX3dvcmssIGZpbGxfcGFn
+ZV9jYWNoZV9mdW5jKTsKPiAgICAgICAgICAgICAgICBrcmNwLT5pbml0aWFsaXplZCA9IHRydWU7
+Cj4gICAgICAgIH0KPiAgICAgICAgaWYgKHJlZ2lzdGVyX3Nocmlua2VyKCZrZnJlZV9yY3Vfc2hy
+aW5rZXIpKQo+Cj5iZWxvdyBwYXRjaCBmaXhlcyBpdC4gV2Ugc2hvdWxkIGJhY2tvZmYgdGhlIHBh
+Z2UgZmlsbCB3b3JrZXIga2VlcGluZyBpdCBlbXB0eQo+dW50aWwgdGhlIHNpdHVhdGlvbiB3aXRo
+IG1lbW9yeSBjb25zdW1wdGlvbiBpcyBub3JtYWxpemVkLgoKICBNYXliZSBjYW4gY2FuY2VsIHRo
+ZSB0aW1lciBhbmQgY2FuY2VsIHdvcmsgaW4gdGhlIHJjdV9zaHJpbmtfY291bnQgZnVuY3Rpb24s
+IGFmdGVyCiAgdGhlIHJjdV9zaHJpbmtfc2NhbiBmdW5jdGlvbiBpcyBleGVjdXRlZCBhbmQgcmVj
+b3ZlciB0aW1lci4KICBXaGF0IGRvIHlvdSB0aGluaz8KCiAgCgo+Cj5BbnkgdGhvdWdodHMgaWRl
+YXM/Cj4KPi0tCj5WbGFkIFJlemtpCg==
