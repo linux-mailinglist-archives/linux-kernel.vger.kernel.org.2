@@ -2,260 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46E130EEAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E7B30EEB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbhBDIlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhBDIln (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:41:43 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FD8C061573;
-        Thu,  4 Feb 2021 00:41:03 -0800 (PST)
-Received: from [2a04:4540:1402:a1ac::c66]
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <john@phrozen.org>)
-        id 1l7aCC-0006Bk-UO; Thu, 04 Feb 2021 09:41:00 +0100
-Subject: Re: [PATCH v4 2/2] irqchip: Add support for Realtek RTL838x/RTL839x
- interrupt controller
-To:     Bert Vermeulen <bert@biot.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210122204224.509124-1-bert@biot.com>
- <20210122204224.509124-3-bert@biot.com>
-From:   John Crispin <john@phrozen.org>
-Message-ID: <9ec31fee-124b-f16d-f7e3-fb440b5246ea@phrozen.org>
-Date:   Thu, 4 Feb 2021 09:41:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235050AbhBDIn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:43:29 -0500
+Received: from relay.sw.ru ([185.231.240.75]:33942 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234946AbhBDInX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:43:23 -0500
+Received: from [192.168.15.247]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l7aD7-001eyv-7R; Thu, 04 Feb 2021 11:41:57 +0300
+Subject: Re: [v6 PATCH 08/11] mm: vmscan: use per memcg nr_deferred of
+ shrinker
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-9-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <44cc18d2-5a47-91d0-dad2-599c251a3a8b@virtuozzo.com>
+Date:   Thu, 4 Feb 2021 11:41:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210122204224.509124-3-bert@biot.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210203172042.800474-9-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 22.01.21 21:42, Bert Vermeulen wrote:
-> This is a standard IRQ driver with only status and mask registers.
->
-> The mapping from SoC interrupts (18-31) to MIPS core interrupts is
-> done via an interrupt-map in device tree.
->
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> Signed-off-by: Birger Koblitz <mail@birger-koblitz.de>
-
-Acked-by: John Crispin <john@phrozen.org>
-
-Thanks !
-
+On 03.02.2021 20:20, Yang Shi wrote:
+> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+> will be used in the following cases:
+>     1. Non memcg aware shrinkers
+>     2. !CONFIG_MEMCG
+>     3. memcg is disabled by boot parameter
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 > ---
->   drivers/irqchip/Makefile          |   1 +
->   drivers/irqchip/irq-realtek-rtl.c | 180 ++++++++++++++++++++++++++++++
->   2 files changed, 181 insertions(+)
->   create mode 100644 drivers/irqchip/irq-realtek-rtl.c
->
-> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-> index 0ac93bfaec61..4fc1086bed7e 100644
-> --- a/drivers/irqchip/Makefile
-> +++ b/drivers/irqchip/Makefile
-> @@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
->   obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
->   obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
->   obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
-> +obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-> diff --git a/drivers/irqchip/irq-realtek-rtl.c b/drivers/irqchip/irq-realtek-rtl.c
-> new file mode 100644
-> index 000000000000..b57c67dfab5b
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-realtek-rtl.c
-> @@ -0,0 +1,180 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 Birger Koblitz <mail@birger-koblitz.de>
-> + * Copyright (C) 2020 Bert Vermeulen <bert@biot.com>
-> + * Copyright (C) 2020 John Crispin <john@phrozen.org>
-> + */
-> +
-> +#include <linux/of_irq.h>
-> +#include <linux/irqchip.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/of_address.h>
-> +#include <linux/irqchip/chained_irq.h>
-> +
-> +/* Global Interrupt Mask Register */
-> +#define RTL_ICTL_GIMR		0x00
-> +/* Global Interrupt Status Register */
-> +#define RTL_ICTL_GISR		0x04
-> +/* Interrupt Routing Registers */
-> +#define RTL_ICTL_IRR0		0x08
-> +#define RTL_ICTL_IRR1		0x0c
-> +#define RTL_ICTL_IRR2		0x10
-> +#define RTL_ICTL_IRR3		0x14
-> +
-> +#define REG(x)		(realtek_ictl_base + x)
-> +
-> +static DEFINE_RAW_SPINLOCK(irq_lock);
-> +static void __iomem *realtek_ictl_base;
-> +
-> +static void realtek_ictl_unmask_irq(struct irq_data *i)
+>  mm/vmscan.c | 94 +++++++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 77 insertions(+), 17 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index d9126f12890f..545422d2aeec 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -190,6 +190,13 @@ static int shrinker_nr_max;
+>  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
+>  	(DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
+>  
+> +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> +						     int nid)
 > +{
-> +	unsigned long flags;
-> +	u32 value;
+> +	return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> +					 lockdep_is_held(&shrinker_rwsem));
+> +}
+
+Thanks for the helper. Why not to introduce and become to use it in old places
+in a separate patch?
+
 > +
-> +	raw_spin_lock_irqsave(&irq_lock, flags);
+>  static void free_shrinker_info_rcu(struct rcu_head *head)
+>  {
+>  	kvfree(container_of(head, struct shrinker_info, rcu));
+> @@ -204,8 +211,7 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>  	int size = m_size + d_size;
+>  
+>  	for_each_node(nid) {
+> -		old = rcu_dereference_protected(
+> -			mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
+> +		old = shrinker_info_protected(memcg, nid);
+>  		/* Not yet online memcg */
+>  		if (!old)
+>  			return 0;
+> @@ -239,7 +245,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>  
+>  	for_each_node(nid) {
+>  		pn = mem_cgroup_nodeinfo(memcg, nid);
+> -		info = rcu_dereference_protected(pn->shrinker_info, true);
+> +		info = shrinker_info_protected(memcg, nid);
+>  		kvfree(info);
+>  		rcu_assign_pointer(pn->shrinker_info, NULL);
+>  	}
+> @@ -358,6 +364,25 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>  	up_write(&shrinker_rwsem);
+>  }
+>  
 > +
-> +	value = readl(REG(RTL_ICTL_GIMR));
-> +	value |= BIT(i->hwirq);
-> +	writel(value, REG(RTL_ICTL_GIMR));
+> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> +				    struct mem_cgroup *memcg)
+> +{
+> +	struct shrinker_info *info;
 > +
-> +	raw_spin_unlock_irqrestore(&irq_lock, flags);
+> +	info = shrinker_info_protected(memcg, nid);
+> +	return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
 > +}
 > +
-> +static void realtek_ictl_mask_irq(struct irq_data *i)
+> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> +				  struct mem_cgroup *memcg)
 > +{
-> +	unsigned long flags;
-> +	u32 value;
+> +	struct shrinker_info *info;
 > +
-> +	raw_spin_lock_irqsave(&irq_lock, flags);
-> +
-> +	value = readl(REG(RTL_ICTL_GIMR));
-> +	value &= ~BIT(i->hwirq);
-> +	writel(value, REG(RTL_ICTL_GIMR));
-> +
-> +	raw_spin_unlock_irqrestore(&irq_lock, flags);
+> +	info = shrinker_info_protected(memcg, nid);
+> +	return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
 > +}
-> +
-> +static struct irq_chip realtek_ictl_irq = {
-> +	.name = "realtek-rtl-intc",
-> +	.irq_mask = realtek_ictl_mask_irq,
-> +	.irq_unmask = realtek_ictl_unmask_irq,
-> +};
-> +
-> +static int intc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
+
+Names confuse me a little bit. What about xchg_nr_deferred_memcg() and add_nr_deferred_memcg()?
+
+>  static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+>  	return sc->target_mem_cgroup;
+> @@ -396,6 +421,18 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>  {
+>  }
+>  
+> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> +				    struct mem_cgroup *memcg)
 > +{
-> +	irq_set_chip_and_handler(hw, &realtek_ictl_irq, handle_level_irq);
-> +
 > +	return 0;
 > +}
 > +
-> +static const struct irq_domain_ops irq_domain_ops = {
-> +	.map = intc_map,
-> +	.xlate = irq_domain_xlate_onecell,
-> +};
-> +
-> +static void realtek_irq_dispatch(struct irq_desc *desc)
+> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> +				  struct mem_cgroup *memcg)
 > +{
-> +	struct irq_chip *chip = irq_desc_get_chip(desc);
-> +	struct irq_domain *domain;
-> +	unsigned int pending;
-> +
-> +	chained_irq_enter(chip, desc);
-> +	pending = readl(REG(RTL_ICTL_GIMR)) & readl(REG(RTL_ICTL_GISR));
-> +	if (unlikely(!pending)) {
-> +		spurious_interrupt();
-> +		goto out;
-> +	}
-> +	domain = irq_desc_get_handler_data(desc);
-> +	generic_handle_irq(irq_find_mapping(domain, __ffs(pending)));
-> +
-> +out:
-> +	chained_irq_exit(chip, desc);
-> +}
-> +
-> +/*
-> + * SoC interrupts are cascaded to MIPS CPU interrupts according to the
-> + * interrupt-map in the device tree. Each SoC interrupt gets 4 bits for
-> + * the CPU interrupt in an Interrupt Routing Register. Max 32 SoC interrupts
-> + * thus go into 4 IRRs.
-> + */
-> +static int __init map_interrupts(struct device_node *node, struct irq_domain *domain)
-> +{
-> +	struct device_node *cpu_ictl;
-> +	const __be32 *imap;
-> +	u32 imaplen, soc_int, cpu_int, tmp, regs[4];
-> +	int ret, i, irr_regs[] = {
-> +		RTL_ICTL_IRR3,
-> +		RTL_ICTL_IRR2,
-> +		RTL_ICTL_IRR1,
-> +		RTL_ICTL_IRR0,
-> +	};
-> +	u8 mips_irqs_set;
-> +
-> +	ret = of_property_read_u32(node, "#address-cells", &tmp);
-> +	if (ret || tmp)
-> +		return -EINVAL;
-> +
-> +	imap = of_get_property(node, "interrupt-map", &imaplen);
-> +	if (!imap || imaplen % 3)
-> +		return -EINVAL;
-> +
-> +	mips_irqs_set = 0;
-> +	memset(regs, 0, sizeof(regs));
-> +	for (i = 0; i < imaplen; i += 3 * sizeof(u32)) {
-> +		soc_int = be32_to_cpup(imap);
-> +		if (soc_int > 31)
-> +			return -EINVAL;
-> +
-> +		cpu_ictl = of_find_node_by_phandle(be32_to_cpup(imap + 1));
-> +		if (!cpu_ictl)
-> +			return -EINVAL;
-> +		ret = of_property_read_u32(cpu_ictl, "#interrupt-cells", &tmp);
-> +		if (ret || tmp != 1)
-> +			return -EINVAL;
-> +		of_node_put(cpu_ictl);
-> +
-> +		cpu_int = be32_to_cpup(imap + 2);
-> +		if (cpu_int > 7)
-> +			return -EINVAL;
-> +
-> +		if (!(mips_irqs_set & BIT(cpu_int))) {
-> +			irq_set_chained_handler_and_data(cpu_int, realtek_irq_dispatch,
-> +							 domain);
-> +			mips_irqs_set |= BIT(cpu_int);
-> +		}
-> +
-> +		regs[(soc_int * 4) / 32] |= cpu_int << (soc_int * 4) % 32;
-> +		imap += 3;
-> +	}
-> +
-> +	for (i = 0; i < 4; i++)
-> +		writel(regs[i], REG(irr_regs[i]));
-> +
 > +	return 0;
 > +}
 > +
-> +static int __init realtek_rtl_of_init(struct device_node *node, struct device_node *parent)
+>  static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+>  	return false;
+> @@ -407,6 +444,39 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+>  }
+>  #endif
+>  
+> +static long count_nr_deferred(struct shrinker *shrinker,
+> +			      struct shrink_control *sc)
 > +{
-> +	struct irq_domain *domain;
-> +	int ret;
+> +	int nid = sc->nid;
 > +
-> +	realtek_ictl_base = of_iomap(node, 0);
-> +	if (!realtek_ictl_base)
-> +		return -ENXIO;
+> +	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> +		nid = 0;
 > +
-> +	/* Disable all cascaded interrupts */
-> +	writel(0, REG(RTL_ICTL_GIMR));
+> +	if (sc->memcg &&
+> +	    (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> +		return count_nr_deferred_memcg(nid, shrinker,
+> +					       sc->memcg);
 > +
-> +	domain = irq_domain_add_simple(node, 32, 0,
-> +				       &irq_domain_ops, NULL);
-> +
-> +	ret = map_interrupts(node, domain);
-> +	if (ret) {
-> +		pr_err("invalid interrupt map\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
+> +	return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
 > +}
 > +
-> +IRQCHIP_DECLARE(realtek_rtl_intc, "realtek,rtl-intc", realtek_rtl_of_init);
+> +
+> +static long set_nr_deferred(long nr, struct shrinker *shrinker,
+> +			    struct shrink_control *sc)
+> +{
+> +	int nid = sc->nid;
+> +
+> +	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> +		nid = 0;
+> +
+> +	if (sc->memcg &&
+> +	    (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> +		return set_nr_deferred_memcg(nr, nid, shrinker,
+> +					     sc->memcg);
+> +
+> +	return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
+> +}
+> +
+>  /*
+>   * This misses isolated pages which are not accounted for to save counters.
+>   * As the data only determines if reclaim or compaction continues, it is
+> @@ -539,14 +609,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	long freeable;
+>  	long nr;
+>  	long new_nr;
+> -	int nid = shrinkctl->nid;
+>  	long batch_size = shrinker->batch ? shrinker->batch
+>  					  : SHRINK_BATCH;
+>  	long scanned = 0, next_deferred;
+>  
+> -	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> -		nid = 0;
+> -
+>  	freeable = shrinker->count_objects(shrinker, shrinkctl);
+>  	if (freeable == 0 || freeable == SHRINK_EMPTY)
+>  		return freeable;
+> @@ -556,7 +622,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	 * and zero it so that other concurrent shrinker invocations
+>  	 * don't also do this scanning work.
+>  	 */
+> -	nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
+> +	nr = count_nr_deferred(shrinker, shrinkctl);
+>  
+>  	total_scan = nr;
+>  	if (shrinker->seeks) {
+> @@ -647,14 +713,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  		next_deferred = 0;
+>  	/*
+>  	 * move the unused scan count back into the shrinker in a
+> -	 * manner that handles concurrent updates. If we exhausted the
+> -	 * scan, there is no need to do an update.
+> +	 * manner that handles concurrent updates.
+>  	 */
+> -	if (next_deferred > 0)
+> -		new_nr = atomic_long_add_return(next_deferred,
+> -						&shrinker->nr_deferred[nid]);
+> -	else
+> -		new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
+> +	new_nr = set_nr_deferred(next_deferred, shrinker, shrinkctl);
+>  
+>  	trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
+>  	return freed;
+> @@ -674,8 +735,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>  	if (!down_read_trylock(&shrinker_rwsem))
+>  		return 0;
+>  
+> -	info = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> -					 true);
+> +	info = shrinker_info_protected(memcg, nid);
+>  	if (unlikely(!info))
+>  		goto unlock;
+>  
+> 
+
