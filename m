@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E8530F5CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B70130F5DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbhBDPGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S237173AbhBDPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236988AbhBDO7t (ORCPT
+        with ESMTP id S236972AbhBDPAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:59:49 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E37CC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:59:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XyOwXOoeFZVqveQ9nuOPRZtCFtnB9kvZkp68qQBH4v8=; b=ADLGmyoynXDwSot65CsQLkbkSy
-        Th5W55fZXqQWXAMJLlWZEg+V/cWwKcjfyGP+NHgMzvCkGPoMbo1Sidq+7CmrAUDnMXdPQwgIv6JpU
-        Mf3qqlQ8nsPeZS+a8VBjlc3ILUmEUfE5Bw82Rk+J/bO6Pfqi+nuods2JQWiNNwdk2DiDvuzy75Nuy
-        cvs/hTRrBnTOlYc/bonCffTwMI2/t9J8P4M7mLgMsEKHTLL/wiNeyRl5+XWnXZ8d5XrO38djXSg4e
-        0T0ftl11Ap07Cg8zhJcbtkoFEG6L1doHJ4aNtKeAbMfmWo3KOHsyQpeDH61O5yAPfdkMXd4PGV+Wg
-        Nm9h0I9g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7g63-0006K9-25; Thu, 04 Feb 2021 14:59:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 4 Feb 2021 10:00:32 -0500
+Received: from cc-smtpout3.netcologne.de (cc-smtpout3.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEAAC06178A;
+        Thu,  4 Feb 2021 06:59:51 -0800 (PST)
+Received: from cc-smtpin2.netcologne.de (cc-smtpin2.netcologne.de [89.1.8.202])
+        by cc-smtpout3.netcologne.de (Postfix) with ESMTP id 113E31297E;
+        Thu,  4 Feb 2021 15:59:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by cc-smtpin2.netcologne.de (Postfix) with ESMTP id 0C72811D8D;
+        Thu,  4 Feb 2021 15:59:49 +0100 (CET)
+Received: from [87.79.223.205] (helo=cc-smtpin2.netcologne.de)
+        by localhost with ESMTP (eXpurgate 4.19.0)
+        (envelope-from <kurt@garloff.de>)
+        id 601c0be4-0254-7f0000012729-7f0000018ffc-1
+        for <multiple-recipients>; Thu, 04 Feb 2021 15:59:48 +0100
+Received: from nas2.garloff.de (xdsl-87-79-223-205.nc.de [87.79.223.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 725ED3003D8;
-        Thu,  4 Feb 2021 15:59:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 372D62C1C47CA; Thu,  4 Feb 2021 15:59:01 +0100 (CET)
-Date:   Thu, 4 Feb 2021 15:59:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Subject: Re: Process-wide watchpoints
-Message-ID: <YBwLtbqZFeqXkmTn@hirez.programming.kicks-ass.net>
-References: <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net>
- <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
- <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net>
- <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
- <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
- <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
- <YBvj6eJR/DY2TsEB@hirez.programming.kicks-ass.net>
- <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
- <YBvyTDR+q0M62vKR@hirez.programming.kicks-ass.net>
- <CACT4Y+ZbWMa7zsa84dOBZ0C0Qgik2uDST+bzX=TrSU6vFXkkCQ@mail.gmail.com>
+        (No client certificate requested)
+        by cc-smtpin2.netcologne.de (Postfix) with ESMTPSA;
+        Thu,  4 Feb 2021 15:59:44 +0100 (CET)
+Received: from [192.168.155.24] (ap4.garloff.de [192.168.155.15])
+        by nas2.garloff.de (Postfix) with ESMTPSA id 81696B3B13A5;
+        Thu,  4 Feb 2021 15:59:43 +0100 (CET)
+Subject: Re: [GIT PULL] Floppy patch for 5.12
+To:     Jens Axboe <axboe@kernel.dk>, efremov@linux.com
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>
+References: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
+ <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk>
+From:   Kurt Garloff <kurt@garloff.de>
+Message-ID: <925c6067-f317-70d1-231d-9d97c517212b@garloff.de>
+Date:   Thu, 4 Feb 2021 15:59:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZbWMa7zsa84dOBZ0C0Qgik2uDST+bzX=TrSU6vFXkkCQ@mail.gmail.com>
+In-Reply-To: <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 02:35:36PM +0100, Dmitry Vyukov wrote:
+Hi Jens,
 
-> I meant that we could restrict synchronous SIGTRAP for (1)
-> perf_event_open(pid != 0) and (2) disable it after exec.
+Am 04.02.21 um 15:37 schrieb Jens Axboe:
+> On 2/4/21 3:12 AM, Denis Efremov wrote:
+>> The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
+>>
+>>   Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>   https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
+> Pulled, thanks.
 
-Hmm, I think I finally get what you're after. And yes, multi-process or
-fork() based thingies are common and might well work too.
+Great, thanks!
 
-disable_on_exec isn't quite right though, it needs to be something that
-kills the events entirely. I'll think about it.
+Next is -stable then ... so all those cloud images using floppy to inject metadata
+work again, despite current libblkid.
+(Fortunately, most use cdrom these days.)
+
+Best,
+
+-- 
+Kurt Garloff <kurt@garloff.de>, Cologne, Germany
+
