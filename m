@@ -2,388 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1FA30F509
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A907330F4F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbhBDOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:32:21 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:11763 "EHLO so15.mailgun.net"
+        id S236723AbhBDOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:30:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:59204 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236703AbhBDOXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:23:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612448586; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=0oqLiRY2zSPbdH99XRMVDIldv0zDnjyDqx5ulcH4+g8=; b=gdtuC1W9hEFBnn8v/irqRjswzUIyDn5W8gTvg5a+au0QD3hCDtaDLp0J6KI6Nnx+z/IpsXF0
- kP9M68V+IvI1fe/+Ne8rEeWzLPKER5mQuSxif23YHD2XrlRzaDHlzDO6KO1CFmtijpK32haT
- /OBpRnpqitQ03WKwRnKNLmAj4fo=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 601c0320f112b7872c0a041b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 14:22:24
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B3AF2C43464; Thu,  4 Feb 2021 14:22:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FAABC43461;
-        Thu,  4 Feb 2021 14:22:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5FAABC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v6 2/4] soc: qcom: Add SoC sleep stats driver
-Date:   Thu,  4 Feb 2021 19:51:46 +0530
-Message-Id: <1612448508-9179-3-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org>
-References: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org>
+        id S236655AbhBDOYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:24:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C2DAD6E;
+        Thu,  4 Feb 2021 06:24:00 -0800 (PST)
+Received: from [10.57.11.154] (unknown [10.57.11.154])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7A223F694;
+        Thu,  4 Feb 2021 06:23:57 -0800 (PST)
+Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
+To:     Robin Murphy <robin.murphy@arm.com>, Qiang Yu <yuq825@gmail.com>
+Cc:     lima@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210127105121.20345-1-lukasz.luba@arm.com>
+ <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
+ <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
+ <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
+ <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
+ <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
+ <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <deb2c075-4177-d487-b1cd-1c60790ca625@arm.com>
+Date:   Thu, 4 Feb 2021 14:23:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
 
-Let's add a driver to read the stats from remote processor and
-export to debugfs.
 
-The driver creates "qcom_sleep_stats" directory in debugfs and
-adds files for various low power mode available. Below is sample
-output with command
+On 2/4/21 1:39 PM, Robin Murphy wrote:
+> On 2021-02-03 02:01, Qiang Yu wrote:
+>> On Tue, Feb 2, 2021 at 10:02 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>
+>>>
+>>>
+>>> On 2/2/21 1:01 AM, Qiang Yu wrote:
+>>>> Hi Lukasz,
+>>>>
+>>>> Thanks for the explanation. So the deferred timer option makes a 
+>>>> mistake that
+>>>> when GPU goes from idle to busy for only one poll periodic, in this
+>>>> case 50ms, right?
+>>>
+>>> Not exactly. Driver sets the polling interval to 50ms (in this case)
+>>> because it needs ~3-frame average load (in 60fps). I have discovered the
+>>> issue quite recently that on systems with 2 CPUs or more, the devfreq
+>>> core is not monitoring the devices even for seconds. Therefore, we might
+>>> end up with quite big amount of work that GPU is doing, but we don't
+>>> know about it. Devfreq core didn't check <- timer didn't fired. Then
+>>> suddenly that CPU, which had the deferred timer registered last time,
+>>> is waking up and timer triggers to check our device. We get the stats,
+>>> but they might be showing load from 1sec not 50ms. We feed them into
+>>> governor. Governor sees the new load, but was tested and configured for
+>>> 50ms, so it might try to rise the frequency to max. The GPU work might
+>>> be already lower and there is no need for such freq. Then the CPU goes
+>>> idle again, so no devfreq core check for next e.g. 1sec, but the
+>>> frequency stays at max OPP and we burn power.
+>>>
+>>> So, it's completely unreliable. We might stuck at min frequency and
+>>> suffer the frame drops, or sometimes stuck to max freq and burn more
+>>> power when there is no such need.
+>>>
+>>> Similar for thermal governor, which is confused by this old stats and
+>>> long period stats, longer than 50ms.
+>>>
+>>> Stats from last e.g. ~1sec tells you nothing about real recent GPU
+>>> workload.
+>> Oh, right, I missed this case.
+>>
+>>>
+>>>> But delayed timer will wakeup CPU every 50ms even when system is 
+>>>> idle, will this
+>>>> cause more power consumption for the case like phone suspend?
+>>>
+>>> No, in case of phone suspend it won't increase the power consumption.
+>>> The device won't be woken up, it will stay in suspend.
+>> I mean the CPU is waked up frequently by timer when phone suspend,
+>> not the whole device (like the display).
+>>
+>> Seems it's better to have deferred timer when device is suspended for
+>> power saving,
+>> and delayed timer when device in working state. User knows this and
+>> can use sysfs
+>> to change it.
+> 
+> Doesn't devfreq_suspend_device() already cancel any timer work either 
+> way in that case?
 
-cat /sys/kernel/debug/qcom_sleep_stats/ddr
-count = 0
-Last Entered At = 0
-Last Exited At = 0
-Accumulated Duration = 0
+Correct, the governor should pause the monitoring mechanism (and timer).
 
-Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-[mkshah: add subsystem sleep stats, create one file for each stat]
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
- drivers/soc/qcom/Kconfig           |  10 ++
- drivers/soc/qcom/Makefile          |   1 +
- drivers/soc/qcom/soc_sleep_stats.c | 258 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 269 insertions(+)
- create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
-
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 79b568f..e80b63a 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -190,6 +190,16 @@ config QCOM_SOCINFO
- 	 Say yes here to support the Qualcomm socinfo driver, providing
- 	 information about the SoC to user space.
- 
-+config QCOM_SOC_SLEEP_STATS
-+	tristate "Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver"
-+	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
-+	depends on QCOM_SMEM
-+	help
-+	  Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver to read
-+	  the shared memory exported by the remote processor related to
-+	  various SoC level low power modes statistics and export to debugfs
-+	  interface.
-+
- config QCOM_WCNSS_CTRL
- 	tristate "Qualcomm WCNSS control driver"
- 	depends on ARCH_QCOM || COMPILE_TEST
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index ad675a6..5f30d74 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
- obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
- obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
- obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
-+obj-$(CONFIG_QCOM_SOC_SLEEP_STATS)	+= soc_sleep_stats.o
- obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
- obj-$(CONFIG_QCOM_APR) += apr.o
- obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
-diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
-new file mode 100644
-index 0000000..66df638
---- /dev/null
-+++ b/drivers/soc/qcom/soc_sleep_stats.c
-@@ -0,0 +1,258 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/seq_file.h>
-+
-+#include <linux/soc/qcom/smem.h>
-+#include <clocksource/arm_arch_timer.h>
-+
-+#define STAT_TYPE_ADDR		0x0
-+#define COUNT_ADDR		0x4
-+#define LAST_ENTERED_AT_ADDR	0x8
-+#define LAST_EXITED_AT_ADDR	0x10
-+#define ACCUMULATED_ADDR	0x18
-+#define CLIENT_VOTES_ADDR	0x1c
-+
-+#define STAT_OFFSET(record_no, type) (((record_no)*(sizeof(struct sleep_stats))) + (type))
-+#define APPENDED_STAT_OFFSET(record_no) ((record_no)*(sizeof(struct appended_stats)))
-+
-+struct subsystem_data {
-+	const char *name;
-+	u32 smem_item;
-+	u32 pid;
-+};
-+
-+static const struct subsystem_data subsystems[] = {
-+	{ "modem", 605, 1 },
-+	{ "adsp", 606, 2 },
-+	{ "cdsp", 607, 5 },
-+	{ "slpi", 608, 3 },
-+	{ "gpu", 609, 0 },
-+	{ "display", 610, 0 },
-+	{ "adsp_island", 613, 2 },
-+	{ "slpi_island", 613, 3 },
-+};
-+
-+struct stats_config {
-+	u32 offset_addr;
-+	u32 num_records;
-+	bool appended_stats_avail;
-+};
-+
-+struct stats_prv_data {
-+	bool appended_stats_avail;
-+	void __iomem *reg;
-+};
-+
-+struct sleep_stats {
-+	u32 stat_type;
-+	u32 count;
-+	u64 last_entered_at;
-+	u64 last_exited_at;
-+	u64 accumulated;
-+};
-+
-+struct appended_stats {
-+	u32 client_votes;
-+	u32 reserved[3];
-+};
-+
-+static void print_sleep_stats(struct seq_file *s, const struct sleep_stats *stat)
-+{
-+	u64 accumulated = stat->accumulated;
-+	/*
-+	 * If a subsystem is in sleep when reading the sleep stats adjust
-+	 * the accumulated sleep duration to show actual sleep time.
-+	 */
-+	if (stat->last_entered_at > stat->last_exited_at)
-+		accumulated += arch_timer_read_counter()
-+			       - stat->last_entered_at;
-+
-+	seq_printf(s, "Count = %u\n", stat->count);
-+	seq_printf(s, "Last Entered At = %llu\n", stat->last_entered_at);
-+	seq_printf(s, "Last Exited At = %llu\n", stat->last_exited_at);
-+	seq_printf(s, "Accumulated Duration = %llu\n", accumulated);
-+}
-+
-+static int subsystem_sleep_stats_show(struct seq_file *s, void *d)
-+{
-+	struct subsystem_data *subsystem = s->private;
-+	struct sleep_stats *stat;
-+
-+	/*
-+	 * Saving this pointer during probe may not help in cases like
-+	 * subsystem restart, beside not each subsystem is a remote processor
-+	 * for e.g display for which we can get start and stop notification
-+	 *
-+	 * Lookup smem pointer each time to keep it simple.
-+	 */
-+	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
-+	if (IS_ERR(stat))
-+		return PTR_ERR(stat);
-+
-+	print_sleep_stats(s, stat);
-+
-+	return 0;
-+}
-+
-+static int soc_sleep_stats_show(struct seq_file *s, void *d)
-+{
-+	struct stats_prv_data *prv_data = s->private;
-+	void __iomem *reg = prv_data->reg;
-+	struct sleep_stats stat;
-+
-+	stat.count = readl(reg + COUNT_ADDR);
-+	stat.last_entered_at = readq(reg + LAST_ENTERED_AT_ADDR);
-+	stat.last_exited_at = readq(reg + LAST_EXITED_AT_ADDR);
-+	stat.accumulated = readq(reg + ACCUMULATED_ADDR);
-+
-+	print_sleep_stats(s, &stat);
-+
-+	if (prv_data->appended_stats_avail) {
-+		struct appended_stats app_stat;
-+
-+		app_stat.client_votes = readl(reg + CLIENT_VOTES_ADDR);
-+		seq_printf(s, "Client_votes = %#x\n", app_stat.client_votes);
-+	}
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(soc_sleep_stats);
-+DEFINE_SHOW_ATTRIBUTE(subsystem_sleep_stats);
-+
-+static struct dentry *create_debugfs_entries(void __iomem *reg,
-+					     struct stats_prv_data *prv_data,
-+					     u32 num_records)
-+{
-+	struct dentry *root;
-+	struct sleep_stats *stat;
-+	char stat_type[sizeof(u32)] = {0};
-+	u32 offset, type;
-+	int i;
-+
-+	root = debugfs_create_dir("qcom_sleep_stats", NULL);
-+
-+	for (i = 0; i < num_records; i++) {
-+		offset = STAT_OFFSET(i, STAT_TYPE_ADDR);
-+
-+		if (prv_data[i].appended_stats_avail)
-+			offset += APPENDED_STAT_OFFSET(i);
-+
-+		prv_data[i].reg = reg + offset;
-+
-+		type = readl(prv_data[i].reg);
-+		memcpy_fromio(stat_type, &type, sizeof(u32));
-+		strim(stat_type);
-+		debugfs_create_file(stat_type, 0400, root,
-+				    &prv_data[i],
-+				    &soc_sleep_stats_fops);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
-+		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item,
-+				     NULL);
-+		if (IS_ERR(stat))
-+			continue;
-+
-+		debugfs_create_file(subsystems[i].name, 0400, root,
-+				    (void *)&subsystems[i],
-+				    &subsystem_sleep_stats_fops);
-+	}
-+
-+	return root;
-+}
-+
-+static int soc_sleep_stats_probe(struct platform_device *pdev)
-+{
-+	struct resource *res;
-+	void __iomem *reg;
-+	void __iomem *offset_addr;
-+	phys_addr_t stats_base;
-+	resource_size_t stats_size;
-+	struct dentry *root;
-+	const struct stats_config *config;
-+	struct stats_prv_data *prv_data;
-+	int i;
-+
-+	config = device_get_match_data(&pdev->dev);
-+	if (!config)
-+		return -ENODEV;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return PTR_ERR(res);
-+
-+	offset_addr = ioremap(res->start + config->offset_addr, sizeof(u32));
-+	if (IS_ERR(offset_addr))
-+		return PTR_ERR(offset_addr);
-+
-+	stats_base = res->start | readl_relaxed(offset_addr);
-+	stats_size = resource_size(res);
-+	iounmap(offset_addr);
-+
-+	reg = devm_ioremap(&pdev->dev, stats_base, stats_size);
-+	if (!reg)
-+		return -ENOMEM;
-+
-+	prv_data = devm_kcalloc(&pdev->dev, config->num_records,
-+				sizeof(struct stats_prv_data), GFP_KERNEL);
-+	if (!prv_data)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < config->num_records; i++)
-+		prv_data[i].appended_stats_avail = config->appended_stats_avail;
-+
-+	root = create_debugfs_entries(reg, prv_data, config->num_records);
-+	platform_set_drvdata(pdev, root);
-+
-+	return 0;
-+}
-+
-+static int soc_sleep_stats_remove(struct platform_device *pdev)
-+{
-+	struct dentry *root = platform_get_drvdata(pdev);
-+
-+	debugfs_remove_recursive(root);
-+
-+	return 0;
-+}
-+
-+static const struct stats_config rpm_data = {
-+	.offset_addr = 0x14,
-+	.num_records = 2,
-+	.appended_stats_avail = true,
-+};
-+
-+static const struct stats_config rpmh_data = {
-+	.offset_addr = 0x4,
-+	.num_records = 3,
-+	.appended_stats_avail = false,
-+};
-+
-+static const struct of_device_id soc_sleep_stats_table[] = {
-+	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
-+	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
-+	{ }
-+};
-+
-+static struct platform_driver soc_sleep_stats_driver = {
-+	.probe = soc_sleep_stats_probe,
-+	.remove = soc_sleep_stats_remove,
-+	.driver = {
-+		.name = "soc_sleep_stats",
-+		.of_match_table = soc_sleep_stats_table,
-+	},
-+};
-+module_platform_driver(soc_sleep_stats_driver);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
-+MODULE_LICENSE("GPL v2");
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Regards,
+Lukasz
