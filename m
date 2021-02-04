@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8E130EBC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79730EBCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBDFOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 00:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhBDFOg (ORCPT
+        id S230146AbhBDFTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 00:19:50 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35631 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhBDFTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:14:36 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC38BC061573;
-        Wed,  3 Feb 2021 21:13:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWRXw5QXQz9sjJ;
-        Thu,  4 Feb 2021 16:13:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612415632;
-        bh=g9IsbOeoSY8KcmdjfDbMJUNHzUDclc5vninqn3OnmNc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=T2v1iq9+Af/pxmHsJv8PmEDjyje2e9aDu7hipFvINc8Rv8Do7R3WYBa3SH7wOdwWR
-         gk3Hcg18k6/QxiOnFHNVjf+2QGxmmYhx2HafGz1Gtq8rVWrTXPj5c+BtJn4bEcXvLw
-         5GS77vJQdlB4v38M8kqLqFCjwdNKx2Ke7MaGW9wLTOFHK5WAcasVIh1Endls+PIhff
-         gY5wrIH5eJe7KKvNy6cMZaakoyxArtsT0qf9EQm1cb3FbwUUSSS/XtZymhW5EsNDNq
-         8uRS6gmPW5ZOX4IHjXjTuSlAlcsqSMRRbwbhi6x3YpQE9S7rjaBbQABuyg7uPwwleY
-         Xd4u91Zl5nyZg==
-Date:   Thu, 4 Feb 2021 16:13:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drivers-x86 tree
-Message-ID: <20210204161351.5c934ea2@canb.auug.org.au>
+        Thu, 4 Feb 2021 00:19:50 -0500
+Received: from [222.129.39.10] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1l7X2k-0005uP-ES; Thu, 04 Feb 2021 05:19:03 +0000
+From:   Aaron Ma <aaron.ma@canonical.com>
+To:     aaron.ma@canonical.com, gregkh@linuxfoundation.org,
+        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
+        lee.jones@linaro.org, peter.chen@nxp.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xhci-pci: Set AMD Renoir USB controller to D3 when shutdown
+Date:   Thu,  4 Feb 2021 13:18:50 +0800
+Message-Id: <20210204051850.64857-1-aaron.ma@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RWzQo=VpZdEzZIQN.B_hF8S";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RWzQo=VpZdEzZIQN.B_hF8S
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On AMD Renoir/Cezanne platforms, when set "Always on USB" to "On" in BIOS,
+USB controller will consume more power than 0.03w.
 
-Hi all,
+Set it to D3cold when shutdown, S5 power consumption will be 0.03w lower.
+The USB can charge other devices as before.
+USB controller works fine after power on and reboot.
 
-After merging the drivers-x86 tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+---
+ drivers/usb/host/xhci-pci.c | 8 ++++++++
+ drivers/usb/host/xhci.h     | 1 +
+ 2 files changed, 9 insertions(+)
 
-drivers/platform/x86/intel_scu_wdt.c: In function 'register_mid_wdt':
-drivers/platform/x86/intel_scu_wdt.c:66:28: warning: assignment discards 'c=
-onst' qualifier from pointer target type [-Wdiscarded-qualifiers]
-   66 |  wdt_dev.dev.platform_data =3D (const struct intel_mid_wdt_pdata *)=
-id->driver_data;
-      |                            ^
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index 84da8406d5b4..a31be1ba927f 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -62,6 +62,7 @@
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_3			0x43ba
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_2			0x43bb
+ #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
++#define PCI_DEVICE_ID_AMD_RENOIR_USB31			0x1639
+ #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
+ #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+@@ -171,6 +172,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+ 	if (pdev->vendor == PCI_VENDOR_ID_AMD)
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+ 
++	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
++		pdev->device == PCI_DEVICE_ID_AMD_RENOIR_USB31)
++		xhci->quirks |= XHCI_SHUTDOWN_D3COLD;
++
+ 	if ((pdev->vendor == PCI_VENDOR_ID_AMD) &&
+ 		((pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4) ||
+ 		(pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_3) ||
+@@ -594,6 +599,9 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
+ 	/* Yet another workaround for spurious wakeups at shutdown with HSW */
+ 	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
+ 		pci_set_power_state(pdev, PCI_D3hot);
++
++	if (xhci->quirks & XHCI_SHUTDOWN_D3COLD)
++		pci_set_power_state(pdev, PCI_D3cold);
+ }
+ #endif /* CONFIG_PM */
+ 
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 25e57bc9c3cc..0684193da4bd 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1883,6 +1883,7 @@ struct xhci_hcd {
+ #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
+ #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
+ #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
++#define XHCI_SHUTDOWN_D3COLD	BIT_ULL(40)
+ 
+ 	unsigned int		num_active_eps;
+ 	unsigned int		limit_active_eps;
+-- 
+2.30.0
 
-Introduced by commit
-
-  a507e5d90f3d ("platform/x86: intel_scu_wdt: Get rid of custom x86 model c=
-omparison")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RWzQo=VpZdEzZIQN.B_hF8S
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAbgo8ACgkQAVBC80lX
-0Gw/CQf+JkkPcHCpMifpv91fbXx0P3Sg8dXEzGbvYHnWgtggYXp+LUPzNX+sK5FX
-vh1IYjq9905DfxJXcPF4/DwwUIftpI0gZRiJNtw0NOOo4obGt1+CxWrZVwnZB/y9
-qsYo1DVJMmHnkksfWppR1bHCJmSEhS3S94P18Bn8yBpuQ2cn0p7VXpfi06uqo0tw
-nxQdqXjCzLcJ1YaJ/ZMAW7tr3hpkESa/FmK/kT6hDY4NIgbmcBCJVSNMheWizpqt
-GnVR79xA5A5hGbAd1+wFXNPZ2Yt+tvMmeIgUGXpWb0gQrfMwfyy403kjsK0+bRnI
-HvcyoZjoGJ0j9smWXTSpcoGysYTQBQ==
-=ds+d
------END PGP SIGNATURE-----
-
---Sig_/RWzQo=VpZdEzZIQN.B_hF8S--
