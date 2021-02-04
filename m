@@ -2,200 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF01C30F244
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6D930F245
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236023AbhBDLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:32:19 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:33756 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235780AbhBDL2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235759AbhBDLcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:32:43 -0500
+Received: from [1.6.215.26] ([1.6.215.26]:20257 "EHLO hyd1soter2"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235778AbhBDL2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 06:28:48 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BP0IA101418;
-        Thu, 4 Feb 2021 11:27:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
- b=YAUXsY4WT8vsI6QNiJIrZ3NGiXJgngfXNwvDvNydHb8Ft0ncyqzbJpHQFj/MYdSZLafy
- Xp6U0s2FqmxS+iVI7vWyKQB4GryG1b/G03ntPPq8BzEhK92ZoczrHt56OA3k1nx/nDu8
- YBxQo4aOZA7vnDcr7ydqUx4w2rJhJGRqzb5CyLoY21PO6GB8kdfW1sKrCjPE9Oe1c3wR
- r4xlxPDHTWQM015zcsizh49edZ3/3eLA8chxGaMiFw7+TPTZLNK+rW9WrM4oHDVdFWDx
- e/BylhBZjxxoO925A9v1y0MrYeNWhOuYG4gKwnqR/yFzOROqdJmNJB3F3w5JCYjlquox MQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 36cydm4qgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 11:27:50 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BLbhl062688;
-        Thu, 4 Feb 2021 11:27:50 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-        by aserp3030.oracle.com with ESMTP id 36dh1sbq50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 11:27:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GblT9XpbjsYbhLB/p5thPm8aKdxBvlayWciZw916ea+VXBI23sbnAGtmRi54OLQ6Ff+WrTRwzb2bD1qgXL2L/75caXKAzm++3wZfgczouIoe5CzetYGqdnemC6Uo0Pobo8+WYbBQJ63WyHjnsadpmKvanAULbC5V/Pavi7DEF2eHfyrCU0b2tUT1ICG18TvpGBfI1BO6ZafeoV48XAISKWEjdH2iKLO0reVWcUdB+LBSYg2yb/C3JtDWWdTjunH+2MoaqlJaVfn51Zn4hlXAAxtTqztRuFC2zK0wCGprPEf/Ca9JjMjgiNM8nBK0vdURAaXfyXbAeSemS2m7tdSmRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
- b=jyo9tj39QCzMtyg6GEtWlZdL75IEMUR9fSupTrF7jbXeKzlR+HLxtFa/u9N6xmTYw/3Y+80WGSdk/gKM3R3Cx9JoYWOibrUEQ2di1xZuQir0Wg5U4ajmcnl6+nNglvjuE4O4E8dU3ARrrN2Ru9vi248yiEJTwixtdI6KYe9aaYDoT2bI78Jfk+2ZqQvuuBoOISjgORlOy9LtZWp53W4od5/eTnVQgFZgIa6x6UlRaCTuEHu90xCRMTW0WzYttfqr6DBxwSIJINbHIJMYaGMXuFqH9nUcwtDD17+BGQrlwCR0Btbj22Ce6GRG+52dWtC673h93kiOrsFSOFG44BeJYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
- b=kdmPlOR7WVGyLWWbb+al9Xs8cjV4j6qj9l5IteC9EUBD2MSc2hhUkN+Uq9PtXe23HItDcQOrGc10/XP30vGsIUffZq05JFhHwQYWUZmv+Rj+7pcLnupVNRns6lwuA5aOxSgLIgzmLSGIQRjTNk0wKpdHNTelBTw13fyjtFxmiqM=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
- by BY5PR10MB3970.namprd10.prod.outlook.com (2603:10b6:a03:1ff::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 4 Feb
- 2021 11:27:48 +0000
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Thu, 4 Feb 2021
- 11:27:48 +0000
-Subject: Re: [PATCH 2/4] mm/gup: decrement head page once for group of
- subpages
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-3-joao.m.martins@oracle.com>
- <a1f9ba72-67c3-7307-89e6-d995ab782b42@nvidia.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <b7904b60-d7a6-d57b-3bc1-4b5afa92db44@oracle.com>
-Date:   Thu, 4 Feb 2021 11:27:40 +0000
-In-Reply-To: <a1f9ba72-67c3-7307-89e6-d995ab782b42@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [94.61.1.144]
-X-ClientProxiedBy: LNXP265CA0001.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5e::13) To BYAPR10MB3077.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.67] (94.61.1.144) by LNXP265CA0001.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Thu, 4 Feb 2021 11:27:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5a98a080-0ffa-4887-9796-08d8c8ffe65a
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3970:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3970AB8D7F2C4B5E9D0AD32EBBB39@BY5PR10MB3970.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7Rsy7AufiJdK9oeCvAy8ZLlNcRRGuuN1u4snObIPVQ3T0D08+6Bo/1nByaWBRfkHVUbTmpItYSL7gc2zbOwHv3U+9B9hm/PRMGmNX/dXQ9ry2P2VvW3jmOC96DXs46rCk/QjHR8ZVf9VGKRMsWqS0GGPKKKUr5zcnr2WaK3fvyKPP99kA9EC45uqxmSpxUITBReWwdzKOm2Wv2my98HIjooBKwiUJd18HMm25ugf/FmMx5GBHzNt3z2uEnOrYtAIK7G83CTJlvqSLa00tlKFWPOddGhLznWjf7liWgIsLvbafSsrKdFv3hV944R523wasvR7KmQ1LWj8Gna6jKI41+ggkxO9bnM4HFmQ5+ASQCNYgLIsRAibIBhza8C/J+vIPaZNUcTPbQAxID+uW748wF8vXPdMqtGVbmxUH0vb9o5TI3TZQ8+cUm+xgASdeg6RwRJF73Vxicrpyr9l9VJmBCaI8RxlNZ/isuCFznTUEnpYG2fTmPr2g2gF6rmrDwA8tUDmX2ffsiPrrix3JEFykjqxP4VL+1/rEnSMK4QJ7K1Ul4ShdITmpjLmcuxkdpfZQedRuLwjJBFVwOcpzAZTPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39860400002)(36756003)(5660300002)(16576012)(6916009)(4326008)(66476007)(66556008)(83380400001)(26005)(66946007)(31686004)(478600001)(186003)(2616005)(956004)(53546011)(2906002)(316002)(31696002)(6666004)(86362001)(8936002)(54906003)(6486002)(8676002)(16526019)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MXJsT1I3RTVFWCtGZ0YzMHJ1OEowcm9yMTZVTXY5bi9mU201SnRRQzg5blJL?=
- =?utf-8?B?UUZCWGlaNVBIMC9EbmZId3dXRC8vSCtWaGxJMXNkajJHYzUxdUVpTzZPTlJO?=
- =?utf-8?B?cDNNQmg1WEVFc2QxRUlaRStoZkpUMkQvVEpzMHVac2wrQUhlMldvTkZ0SU1k?=
- =?utf-8?B?eFdwRjRnTnN3Nm1CcEdESTdxRkFKQ2Q5S2tCYkhxemZidDA3WFBhNzEyY1R2?=
- =?utf-8?B?N3hBWjg2eFBlWnVURy9MUTJlcXorUVJRS3hrLzZrSEUwN1dtZ0FIMjE3bU1Q?=
- =?utf-8?B?MlM1ZE14ck5zRFZkMUJDeXFOUERIblVoOWNxMW5zR0JTNmg5ZmJscE53cG55?=
- =?utf-8?B?VGVWSWR1ZkhSTDB5aEVxMmdwV3BoclduNDlZODBQWE1oTnUwRzkwNnRQV0Ur?=
- =?utf-8?B?eEdhSXFVdGZ5K3lFcWtQSU1oZjViZGNETUlWaHRzcVU3MGVEbGJlR3hEdlRW?=
- =?utf-8?B?czhraHJKSVlkZ21GbWx4c3c2K0laekVVNjErQUtxL09aMUszaVRIaW42RG91?=
- =?utf-8?B?M0N6QjhvYVAweTY2WmJMN1Azdk4rVWFhNUxSOE5VaFNvUi8rUDFLbTQ4Vmpj?=
- =?utf-8?B?bHNiR0Y5RGluUzRHSndYemNXMFpDeE5sYzlwSCt4ZmZsMXhseFUwSUhDVzV2?=
- =?utf-8?B?RzZtM0NOZ0s0V3NYTkV5NXVxeS83ZkxHdmh5b3NUNEZUcFFxRnVzNk80cmRp?=
- =?utf-8?B?d0xONXlQYWpVQ1FGK2JoUXJtUENJTHBoaDNiQlRmYlZYdFQzcW50RXFoa3pU?=
- =?utf-8?B?Ukkxb3BEa2lxRWxHUjJHNTdTLzM4Ymdia0lNWUpHenQrcXREQ0Z2NzZJSFk2?=
- =?utf-8?B?VUpVOGJuc2U5aFFXUFBBSDBmWVQrNll1ZllEZlUyL1lpV1ZKZ1dPRStoMVRO?=
- =?utf-8?B?cG5nWk1xanRON1owc3Vyb21XNVVKN3VCSWwrTEk4K1hzYllwblVKcUp2NXc1?=
- =?utf-8?B?b1Y1S2ZWSmNMS0dHcDV5N2VsbEo0amdzN3RtWGtkSFdWYXZCTmgrdGhOckdO?=
- =?utf-8?B?RHlTaExaODVKb2R2eG9tVnQ1azNRVUdVZXZpVmt0Z2xUMS9KUnFKOHZxWFhk?=
- =?utf-8?B?OTBybzE2Zk9QWnBFSjllL0hydmo1OHFjanRKc2VRWXZWbDFyekE3bSs0bTFD?=
- =?utf-8?B?U2hZb0NUbzBEUEFubXZNdkhSbHpMaEVlTXNxUUZjdzZuRnpueHFZYlp3NFp0?=
- =?utf-8?B?V0RTbW1OWlZxZXBaZ1AvNVNKUitsbDhhNGFVMS9iQ0QrTVU0TmhZdzJlbGFO?=
- =?utf-8?B?RjUzR2tMNjA1RVIxaGFuT0t6LzhFTjhlMnpjbDlCbVRKdGl4TTcrRXhSNWxY?=
- =?utf-8?B?S1JQM3FwVXhIMFVxSnBoZzV4OE9ITWtwRGhCRThQU0JmcEY5UENZcGZBbHpu?=
- =?utf-8?B?Yy9QMlBJZDVybHM4UjdiTGs0WTlTNkU4ajZTZjJETjRwZTFhUzRaeU5IK2kv?=
- =?utf-8?Q?rH55E+Nj?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a98a080-0ffa-4887-9796-08d8c8ffe65a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 11:27:48.0857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FuI5ie+tDBeR5ug2uk3pxa5IoZzTO2IycrnXtz6Eg5U3DMVCHiLYyTVFGai1xGyxWon2puoubQBN7g7cwYpOXljQhzE0jargGFCvlWodAdM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3970
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102040071
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040071
+Received: from hyd1soter2.caveonetworks.com (localhost [127.0.0.1])
+        by hyd1soter2 (8.15.2/8.15.2/Debian-3) with ESMTP id 114BRqbv052260;
+        Thu, 4 Feb 2021 16:57:52 +0530
+Received: (from geetha@localhost)
+        by hyd1soter2.caveonetworks.com (8.15.2/8.15.2/Submit) id 114BRqEo052259;
+        Thu, 4 Feb 2021 16:57:52 +0530
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        sbhatta@marvell.com, hkelam@marvell.com, jerinj@marvell.com,
+        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v3 10/14] octeontx2-af: cn10K: Add MTU configuration
+Date:   Thu,  4 Feb 2021 16:57:43 +0530
+Message-Id: <1612438063-52219-1-git-send-email-gakula@marvell.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hariprasad Kelam <hkelam@marvell.com>
 
+OcteonTx3 CN10K silicon supports bigger MTU when compared
+to 9216 MTU supported by OcteonTx2 silicon variants. Lookback
+interface supports upto 64K and RPM LMAC interfaces support
+upto 16K.
 
-On 2/3/21 11:28 PM, John Hubbard wrote:
-> On 2/3/21 2:00 PM, Joao Martins wrote:
->> Rather than decrementing the head page refcount one by one, we
->> walk the page array and checking which belong to the same
->> compound_head. Later on we decrement the calculated amount
->> of references in a single write to the head page. To that
->> end switch to for_each_compound_head() does most of the work.
->>
->> set_page_dirty() needs no adjustment as it's a nop for
->> non-dirty head pages and it doesn't operate on tail pages.
->>
->> This considerably improves unpinning of pages with THP and
->> hugetlbfs:
->>
->> - THP
->> gup_test -t -m 16384 -r 10 [-L|-a] -S -n 512 -w
->> PIN_LONGTERM_BENCHMARK (put values): ~87.6k us -> ~23.2k us
->>
->> - 16G with 1G huge page size
->> gup_test -f /mnt/huge/file -m 16384 -r 10 [-L|-a] -S -n 512 -w
->> PIN_LONGTERM_BENCHMARK: (put values): ~87.6k us -> ~27.5k us
->>
->> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->> ---
->>   mm/gup.c | 29 +++++++++++------------------
->>   1 file changed, 11 insertions(+), 18 deletions(-)
->>
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 4f88dcef39f2..971a24b4b73f 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -270,20 +270,15 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->>   				 bool make_dirty)
->>   {
->>   	unsigned long index;
->> -
->> -	/*
->> -	 * TODO: this can be optimized for huge pages: if a series of pages is
->> -	 * physically contiguous and part of the same compound page, then a
->> -	 * single operation to the head page should suffice.
->> -	 */
-> 
-> Great to see this TODO (and the related one below) finally done!
-> 
-> Everything looks correct here.
-> 
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> 
-Thank you!
+This patch does the necessary configuration and adds support
+for PF/VF drivers to retrieve max packet size supported via mbox
 
-	Joao
+This patch also configures tx link credit by considering supported
+fifo size and max packet length for Octeontx3 silicon.
+
+This patch also removes platform specific name from the driver name.
+
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/Makefile |  8 +--
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 10 +++
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  1 +
+ drivers/net/ethernet/marvell/octeontx2/af/common.h |  2 +
+ .../ethernet/marvell/octeontx2/af/lmac_common.h    |  1 +
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  9 ++-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c    | 29 ++++++++-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  2 +
+ .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    | 13 ++++
+ .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    | 74 ++++++++++++++++++++--
+ .../net/ethernet/marvell/octeontx2/af/rvu_reg.h    |  1 +
+ 11 files changed, 138 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/Makefile b/drivers/net/ethernet/marvell/octeontx2/af/Makefile
+index 621cc5b..1a34556 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/Makefile
++++ b/drivers/net/ethernet/marvell/octeontx2/af/Makefile
+@@ -4,10 +4,10 @@
+ #
+ 
+ ccflags-y += -I$(src)
+-obj-$(CONFIG_OCTEONTX2_MBOX) += octeontx2_mbox.o
+-obj-$(CONFIG_OCTEONTX2_AF) += octeontx2_af.o
++obj-$(CONFIG_OCTEONTX2_MBOX) += rvu_mbox.o
++obj-$(CONFIG_OCTEONTX2_AF) += rvu_af.o
+ 
+-octeontx2_mbox-y := mbox.o rvu_trace.o
+-octeontx2_af-y := cgx.o rvu.o rvu_cgx.o rvu_npa.o rvu_nix.o \
++rvu_mbox-y := mbox.o rvu_trace.o
++rvu_af-y := cgx.o rvu.o rvu_cgx.o rvu_npa.o rvu_nix.o \
+ 		  rvu_reg.o rvu_npc.o rvu_debugfs.o ptp.o rvu_npc_fs.o \
+ 		  rvu_cpt.o rvu_devlink.o rpm.o rvu_cn10k.o
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+index e3f063e..86f519f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+@@ -895,6 +895,14 @@ int cgx_lmac_linkup_start(void *cgxd)
+ 	return 0;
+ }
+ 
++void cgx_lmac_get_fifolen(struct cgx *cgx)
++{
++	u64 cfg;
++
++	cfg = cgx_read(cgx, 0, CGX_CONST);
++	cgx->mac_ops->fifo_len = FIELD_GET(CGX_CONST_RXFIFO_SIZE, cfg);
++}
++
+ static int cgx_configure_interrupt(struct cgx *cgx, struct lmac *lmac,
+ 				   int cnt, bool req_free)
+ {
+@@ -949,6 +957,8 @@ static int cgx_lmac_init(struct cgx *cgx)
+ 	u64 lmac_list;
+ 	int i, err;
+ 
++	cgx_lmac_get_fifolen(cgx);
++
+ 	cgx->lmac_count = cgx->mac_ops->get_nr_lmacs(cgx);
+ 	/* lmac_list specifies which lmacs are enabled
+ 	 * when bit n is set to 1, LMAC[n] is enabled
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
+index 7589721..f2c77e0 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
+@@ -56,6 +56,7 @@
+ #define CGXX_SCRATCH0_REG		0x1050
+ #define CGXX_SCRATCH1_REG		0x1058
+ #define CGX_CONST			0x2000
++#define CGX_CONST_RXFIFO_SIZE	        GENMASK_ULL(23, 0)
+ #define CGXX_SPUX_CONTROL1		0x10000
+ #define CGXX_SPUX_CONTROL1_LBK		BIT_ULL(14)
+ #define CGXX_GMP_PCS_MRX_CTL		0x30000
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/common.h b/drivers/net/ethernet/marvell/octeontx2/af/common.h
+index 0100e70..e661093 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/common.h
+@@ -155,6 +155,8 @@ enum nix_scheduler {
+ #define	NIC_HW_MIN_FRS			40
+ #define	NIC_HW_MAX_FRS			9212
+ #define	SDP_HW_MAX_FRS			65535
++#define CN10K_LMAC_LINK_MAX_FRS		16380 /* 16k - FCS */
++#define CN10K_LBK_LINK_MAX_FRS		65535 /* 64k */
+ 
+ /* NIX RX action operation*/
+ #define NIX_RX_ACTIONOP_DROP		(0x0ull)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+index ac36e15..9c5a9c5 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+@@ -61,6 +61,7 @@ struct mac_ops {
+ 	u8			irq_offset;
+ 	u8			int_ena_bit;
+ 	u8			lmac_fwi;
++	u32			fifo_len;
+ 	bool			non_contiguous_serdes_lane;
+ 	/* Incase of RPM get number of lmacs from RPMX_CMR_RX_LMACS[LMAC_EXIST]
+ 	 * number of setbits in lmac_exist tells number of lmacs
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 333fa5e..fe36a07 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -244,7 +244,8 @@ M(NIX_BP_ENABLE,	0x8016, nix_bp_enable, nix_bp_cfg_req,	\
+ M(NIX_BP_DISABLE,	0x8017, nix_bp_disable, nix_bp_cfg_req, msg_rsp) \
+ M(NIX_GET_MAC_ADDR, 0x8018, nix_get_mac_addr, msg_req, nix_get_mac_addr_rsp) \
+ M(NIX_CN10K_AQ_ENQ,	0x8019, nix_cn10k_aq_enq, nix_cn10k_aq_enq_req, \
+-				nix_cn10k_aq_enq_rsp)
++				nix_cn10k_aq_enq_rsp)			\
++M(NIX_GET_HW_INFO,	0x801a, nix_get_hw_info, msg_req, nix_hw_info)
+ 
+ /* Messages initiated by AF (range 0xC00 - 0xDFF) */
+ #define MBOX_UP_CGX_MESSAGES						\
+@@ -861,6 +862,12 @@ struct nix_bp_cfg_rsp {
+ 	u8	chan_cnt; /* Number of channel for which bpids are assigned */
+ };
+ 
++struct nix_hw_info {
++	struct mbox_msghdr hdr;
++	u16 max_mtu;
++	u16 min_mtu;
++};
++
+ /* NPC mbox message structs */
+ 
+ #define NPC_MCAM_ENTRY_INVALID	0xFFFF
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index 9686395..be4731f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -22,7 +22,7 @@
+ 
+ #include "rvu_trace.h"
+ 
+-#define DRV_NAME	"octeontx2-af"
++#define DRV_NAME	"rvu_af"
+ #define DRV_STRING      "Marvell OcteonTX2 RVU Admin Function Driver"
+ 
+ static int rvu_get_hwvf(struct rvu *rvu, int pcifunc);
+@@ -855,6 +855,31 @@ static int rvu_setup_cpt_hw_resource(struct rvu *rvu, int blkaddr)
+ 	return rvu_alloc_bitmap(&block->lf);
+ }
+ 
++static void rvu_get_lbk_bufsize(struct rvu *rvu)
++{
++	struct pci_dev *pdev = NULL;
++	void __iomem *base;
++	u64 lbk_const;
++
++	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
++			      PCI_DEVID_OCTEONTX2_LBK, pdev);
++	if (!pdev)
++		return;
++
++	base = pci_ioremap_bar(pdev, 0);
++	if (!base)
++		goto err_put;
++
++	lbk_const = readq(base + LBK_CONST);
++
++	/* cache fifo size */
++	rvu->hw->lbk_bufsize = FIELD_GET(LBK_CONST_BUF_SIZE, lbk_const);
++
++	iounmap(base);
++err_put:
++	pci_dev_put(pdev);
++}
++
+ static int rvu_setup_hw_resources(struct rvu *rvu)
+ {
+ 	struct rvu_hwinfo *hw = rvu->hw;
+@@ -1025,6 +1050,8 @@ static int rvu_setup_hw_resources(struct rvu *rvu)
+ 	if (err)
+ 		goto npa_err;
+ 
++	rvu_get_lbk_bufsize(rvu);
++
+ 	err = rvu_nix_init(rvu);
+ 	if (err)
+ 		goto nix_err;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+index bedccff..651407e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+@@ -329,6 +329,7 @@ struct rvu_hwinfo {
+ 	u8	npc_intfs;         /* No of interfaces */
+ 	u8	npc_kpu_entries;   /* No of KPU entries */
+ 	u16	npc_counters;	   /* No of match stats counters */
++	u32	lbk_bufsize;	   /* FIFO size supported by LBK */
+ 	bool	npc_ext_set;	   /* Extended register set */
+ 
+ 	struct hw_cap    cap;
+@@ -672,6 +673,7 @@ void npc_read_mcam_entry(struct rvu *rvu, struct npc_mcam *mcam,
+ 			 int blkaddr, u16 src, struct mcam_entry *entry,
+ 			 u8 *intf, u8 *ena);
+ bool is_mac_feature_supported(struct rvu *rvu, int pf, int feature);
++u32  rvu_cgx_get_fifolen(struct rvu *rvu);
+ 
+ /* CPT APIs */
+ int rvu_cpt_lf_teardown(struct rvu *rvu, u16 pcifunc, int lf, int slot);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index 8ec9b04..5e514f2 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -14,6 +14,7 @@
+ 
+ #include "rvu.h"
+ #include "cgx.h"
++#include "lmac_common.h"
+ #include "rvu_reg.h"
+ #include "rvu_trace.h"
+ 
+@@ -669,6 +670,18 @@ int rvu_mbox_handler_cgx_features_get(struct rvu *rvu,
+ 	return 0;
+ }
+ 
++u32 rvu_cgx_get_fifolen(struct rvu *rvu)
++{
++	struct mac_ops *mac_ops;
++	int rvu_def_cgx_id = 0;
++	u32 fifo_len;
++
++	mac_ops = get_mac_ops(rvu_cgx_pdata(rvu_def_cgx_id, rvu));
++	fifo_len = mac_ops ? mac_ops->fifo_len : 0;
++
++	return fifo_len;
++}
++
+ static int rvu_cgx_config_intlbk(struct rvu *rvu, u16 pcifunc, bool en)
+ {
+ 	int pf = rvu_get_pf(pcifunc);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index cf9e88c..ee27ddd 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -2543,6 +2543,43 @@ static int nix_af_mark_format_setup(struct rvu *rvu, struct nix_hw *nix_hw,
+ 	return 0;
+ }
+ 
++static void rvu_get_lbk_link_max_frs(struct rvu *rvu,  u16 *max_mtu)
++{
++	/* CN10K supports LBK FIFO size 72 KB */
++	if (rvu->hw->lbk_bufsize == 0x12000)
++		*max_mtu = CN10K_LBK_LINK_MAX_FRS;
++	else
++		*max_mtu = NIC_HW_MAX_FRS;
++}
++
++static void rvu_get_lmac_link_max_frs(struct rvu *rvu, u16 *max_mtu)
++{
++	/* RPM supports FIFO len 128 KB */
++	if (rvu_cgx_get_fifolen(rvu) == 0x20000)
++		*max_mtu = CN10K_LMAC_LINK_MAX_FRS;
++	else
++		*max_mtu = NIC_HW_MAX_FRS;
++}
++
++int rvu_mbox_handler_nix_get_hw_info(struct rvu *rvu, struct msg_req *req,
++				     struct nix_hw_info *rsp)
++{
++	u16 pcifunc = req->hdr.pcifunc;
++	int blkaddr;
++
++	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
++	if (blkaddr < 0)
++		return NIX_AF_ERR_AF_LF_INVALID;
++
++	if (is_afvf(pcifunc))
++		rvu_get_lbk_link_max_frs(rvu, &rsp->max_mtu);
++	else
++		rvu_get_lmac_link_max_frs(rvu, &rsp->max_mtu);
++
++	rsp->min_mtu = NIC_HW_MIN_FRS;
++	return 0;
++}
++
+ int rvu_mbox_handler_nix_stats_rst(struct rvu *rvu, struct msg_req *req,
+ 				   struct msg_rsp *rsp)
+ {
+@@ -3107,6 +3144,7 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu, struct nix_frs_cfg *req,
+ 	u64 cfg, lmac_fifo_len;
+ 	struct nix_hw *nix_hw;
+ 	u8 cgx = 0, lmac = 0;
++	u16 max_mtu;
+ 
+ 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+ 	if (blkaddr < 0)
+@@ -3116,7 +3154,12 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu, struct nix_frs_cfg *req,
+ 	if (!nix_hw)
+ 		return -EINVAL;
+ 
+-	if (!req->sdp_link && req->maxlen > NIC_HW_MAX_FRS)
++	if (is_afvf(pcifunc))
++		rvu_get_lbk_link_max_frs(rvu, &max_mtu);
++	else
++		rvu_get_lmac_link_max_frs(rvu, &max_mtu);
++
++	if (!req->sdp_link && req->maxlen > max_mtu)
+ 		return NIX_AF_ERR_FRS_INVALID;
+ 
+ 	if (req->update_minlen && req->minlen < NIC_HW_MIN_FRS)
+@@ -3176,7 +3219,8 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu, struct nix_frs_cfg *req,
+ 
+ 	/* Update transmit credits for CGX links */
+ 	lmac_fifo_len =
+-		CGX_FIFO_LEN / cgx_get_lmac_cnt(rvu_cgx_pdata(cgx, rvu));
++		rvu_cgx_get_fifolen(rvu) /
++		cgx_get_lmac_cnt(rvu_cgx_pdata(cgx, rvu));
+ 	cfg = rvu_read64(rvu, blkaddr, NIX_AF_TX_LINKX_NORM_CREDIT(link));
+ 	cfg &= ~(0xFFFFFULL << 12);
+ 	cfg |=  ((lmac_fifo_len - req->maxlen) / 16) << 12;
+@@ -3216,23 +3260,40 @@ int rvu_mbox_handler_nix_set_rx_cfg(struct rvu *rvu, struct nix_rx_cfg *req,
+ 	return 0;
+ }
+ 
++static u64 rvu_get_lbk_link_credits(struct rvu *rvu, u16 lbk_max_frs)
++{
++	/* CN10k supports 72KB FIFO size and max packet size of 64k */
++	if (rvu->hw->lbk_bufsize == 0x12000)
++		return (rvu->hw->lbk_bufsize - lbk_max_frs) / 16;
++
++	return 1600; /* 16 * max LBK datarate = 16 * 100Gbps */
++}
++
+ static void nix_link_config(struct rvu *rvu, int blkaddr)
+ {
+ 	struct rvu_hwinfo *hw = rvu->hw;
+ 	int cgx, lmac_cnt, slink, link;
++	u16 lbk_max_frs, lmac_max_frs;
+ 	u64 tx_credits;
+ 
++	rvu_get_lbk_link_max_frs(rvu, &lbk_max_frs);
++	rvu_get_lmac_link_max_frs(rvu, &lmac_max_frs);
++
+ 	/* Set default min/max packet lengths allowed on NIX Rx links.
+ 	 *
+ 	 * With HW reset minlen value of 60byte, HW will treat ARP pkts
+ 	 * as undersize and report them to SW as error pkts, hence
+ 	 * setting it to 40 bytes.
+ 	 */
+-	for (link = 0; link < (hw->cgx_links + hw->lbk_links); link++) {
++	for (link = 0; link < hw->cgx_links; link++) {
+ 		rvu_write64(rvu, blkaddr, NIX_AF_RX_LINKX_CFG(link),
+-			    NIC_HW_MAX_FRS << 16 | NIC_HW_MIN_FRS);
++				((u64)lmac_max_frs << 16) | NIC_HW_MIN_FRS);
+ 	}
+ 
++	for (link = hw->cgx_links; link < hw->lbk_links; link++) {
++		rvu_write64(rvu, blkaddr, NIX_AF_RX_LINKX_CFG(link),
++			    ((u64)lbk_max_frs << 16) | NIC_HW_MIN_FRS);
++	}
+ 	if (hw->sdp_links) {
+ 		link = hw->cgx_links + hw->lbk_links;
+ 		rvu_write64(rvu, blkaddr, NIX_AF_RX_LINKX_CFG(link),
+@@ -3244,7 +3305,8 @@ static void nix_link_config(struct rvu *rvu, int blkaddr)
+ 	 */
+ 	for (cgx = 0; cgx < hw->cgx; cgx++) {
+ 		lmac_cnt = cgx_get_lmac_cnt(rvu_cgx_pdata(cgx, rvu));
+-		tx_credits = ((CGX_FIFO_LEN / lmac_cnt) - NIC_HW_MAX_FRS) / 16;
++		tx_credits = ((rvu_cgx_get_fifolen(rvu) / lmac_cnt) -
++			       lmac_max_frs) / 16;
+ 		/* Enable credits and set credit pkt count to max allowed */
+ 		tx_credits =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
+ 		slink = cgx * hw->lmac_per_cgx;
+@@ -3258,7 +3320,7 @@ static void nix_link_config(struct rvu *rvu, int blkaddr)
+ 	/* Set Tx credits for LBK link */
+ 	slink = hw->cgx_links;
+ 	for (link = slink; link < (slink + hw->lbk_links); link++) {
+-		tx_credits = 1000; /* 10 * max LBK datarate = 10 * 100Gbps */
++		tx_credits = rvu_get_lbk_link_credits(rvu, lbk_max_frs);
+ 		/* Enable credits and set credit pkt count to max allowed */
+ 		tx_credits =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
+ 		rvu_write64(rvu, blkaddr,
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+index 2460d71..3e401fd 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+@@ -656,6 +656,7 @@
+ #define LBK_CONST_CHANS			GENMASK_ULL(47, 32)
+ #define LBK_CONST_DST			GENMASK_ULL(31, 28)
+ #define LBK_CONST_SRC			GENMASK_ULL(27, 24)
++#define LBK_CONST_BUF_SIZE		GENMASK_ULL(23, 0)
+ #define LBK_LINK_CFG_RANGE_MASK		GENMASK_ULL(19, 16)
+ #define LBK_LINK_CFG_ID_MASK		GENMASK_ULL(11, 6)
+ #define LBK_LINK_CFG_BASE_MASK		GENMASK_ULL(5, 0)
+-- 
+2.7.4
+
