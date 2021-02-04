@@ -2,88 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D377F30EE22
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D867530EE24
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhBDIOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:14:41 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:60335 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234658AbhBDIOZ (ORCPT
+        id S234841AbhBDIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234836AbhBDIPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:14:25 -0500
-Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id DC160100012;
-        Thu,  4 Feb 2021 08:13:37 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 09:13:36 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>, richard@nod.at,
-        vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
- unavailable
-Message-ID: <20210204091336.1406ca3b@xps13>
-In-Reply-To: <F55F9D7B-0542-448E-A711-D1035E467ACA@linaro.org>
-References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
-        <20210201151824.5a9dca4a@xps13>
-        <20210202041614.GA840@work>
-        <20210202091459.0c41a769@xps13>
-        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
-        <20210203110522.12f2b326@xps13>
-        <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
-        <20210203111914.1c2f68f6@collabora.com>
-        <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
-        <20210203122422.6963b0ed@collabora.com>
-        <F55F9D7B-0542-448E-A711-D1035E467ACA@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 4 Feb 2021 03:15:10 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544CC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 00:14:29 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id y142so1641158pfb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:14:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X41ZVpkm4N3FHW1l7EM/KlfjzpLXKJMjAogx1w2NMzw=;
+        b=deuWGVTk8lcuam/3+G2HtN0HD8YFeWkivhhyZ86Dq/tn1C9LXgbar8ajvaPlpvCF04
+         aLULln21el5/h1Wbd/G9i3NEqH8rH7iQ5VXTQ4Xmm7zcbQo/tpJKiZUCkwOJMgb3+y0X
+         adZx7YViNQAfQvT+ZBlNeV5DRVZ5gHFLd59j4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X41ZVpkm4N3FHW1l7EM/KlfjzpLXKJMjAogx1w2NMzw=;
+        b=iYQgdR7AFyJIve0RPTZV2C5DuhwViONUJvT/SicY1lkMHnOvsLaSvQjK8474gAOZc3
+         Z/pP/3mc5mAS6k6kFYSrkyXeFQXX6LsBgoTGu2uJefaBuHEcFTo8O84VNd8kAZwSfmsz
+         ezNP9M07uLCt1YPyD0ad63rov2A6ghseAu1+OTOocGrh6FBOw470EXVDCMG5fp7qYEkK
+         8WUf8XLdGFtOxfxMPXvp/577vV/ZIBBRWREVtHxwoUECN1/8Gda3u/GCfE2DsIMIvfUr
+         7VNs2hHvgVwdRTHy9VM98RkUYWmKm7aJx0B0ccmMy8Vitrv+rmpeIKRf3JPBpSAsdlTk
+         Spgw==
+X-Gm-Message-State: AOAM533DcJoNUqKQQq0xVh3DymER997+mfy65klhH3fewo/jY7MR5dfB
+        aezrGSf6FUs+XVWOc1eZsRmOmQ==
+X-Google-Smtp-Source: ABdhPJx6HQaIlvGtLQ0Jj2RFHTgKw7dQej0JpeKIzqm53d6NckluV7ll0BiijAafN3TSR124+3bM2Q==
+X-Received: by 2002:aa7:80c6:0:b029:1b6:92ae:a199 with SMTP id a6-20020aa780c60000b02901b692aea199mr6878721pfn.71.1612426469239;
+        Thu, 04 Feb 2021 00:14:29 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:ed70:6d43:9c6a:2e22])
+        by smtp.gmail.com with ESMTPSA id e3sm5091258pgs.60.2021.02.04.00.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 00:14:28 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH v6 0/3] Add required-opps support to devfreq passive gov
+Date:   Thu,  4 Feb 2021 16:14:21 +0800
+Message-Id: <20210204081424.2219311-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan,
+The devfreq passive governor scales the frequency of a "child" device based
+on the current frequency of a "parent" device (not parent/child in the
+sense of device hierarchy). As of today, the passive governor requires one
+of the following to work correctly:
+1. The parent and child device have the same number of frequencies
+2. The child device driver passes a mapping function to translate from
+   parent frequency to child frequency.
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-03 Feb 2021 17:11:31 +0530:
+When (1) is not true, (2) is the only option right now. But often times,
+all that is required is a simple mapping from parent's frequency to child's
+frequency.
 
-> On 3 February 2021 4:54:22 PM IST, Boris Brezillon <boris.brezillon@collabora.com> wrote:
-> >On Wed, 03 Feb 2021 16:22:42 +0530
-> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> >  
-> >> On 3 February 2021 3:49:14 PM IST, Boris Brezillon  
-> ><boris.brezillon@collabora.com> wrote:  
-> >> >On Wed, 03 Feb 2021 15:42:02 +0530
-> >> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
-> >> >    
-> >> >> >> 
-> >> >> >> I got more information from the vendor, Telit. The access to  
-> >the    
-> >> >3rd      
-> >> >> >partition is protected by Trustzone and any access in non  
-> >privileged  
-> >> >> >mode (where Linux kernel runs) causes kernel panic and the device
-> >> >> >reboots.     
-> >> >
-> >> >Out of curiosity, is it a per-CS-line thing or is this section
-> >> >protected on all CS?
-> >> >    
-> >> 
-> >> Sorry, I didn't get your question.   
-> >
-> >The qcom controller can handle several chips, each connected through a
-> >different CS (chip-select) line, right? I'm wondering if the firmware
-> >running in secure mode has the ability to block access for a specific
-> >CS line or if all CS lines have the same constraint. That will impact
-> >the way you describe it in your DT (in one case the secure-region
-> >property should be under the controller node, in the other case it
-> >should be under the NAND chip node).  
-> 
-> Right. I believe the implementation is common to all NAND chips so the property should be in the controller node. 
+Since OPPs already support pointing to other "required-opps", add support
+for using that to map from parent device frequency to child device
+frequency. That way, every child device driver doesn't have to implement a
+separate mapping function anytime (1) isn't true.
 
-Looks weird: do you mean that each of the chips will have a secure area?
+Some common (but not comprehensive) reason for needing a devfreq passive
+governor to adjust the frequency of one device based on another are:
+
+1. These were the combination of frequencies that were validated/screened
+   during the manufacturing process.
+2. These are the sensible performance combinations between two devices
+   interacting with each other. So that when one runs fast the other
+   doesn't become the bottleneck.
+3. Hardware bugs requiring some kind of frequency ratio between devices.
+
+For example, the following mapping can't be captured in DT as it stands
+today because the parent and child device have different number of OPPs.
+But with this patch series, this mapping can be captured cleanly.
+
+In arch/arm64/boot/dts/exynos/exynos5433-bus.dtsi you have something
+like this with the following changes:
+
+        bus_g2d_400: bus0 {
+                compatible = "samsung,exynos-bus";
+                clocks = <&cmu_top CLK_ACLK_G2D_400>;
+                clock-names = "bus";
+                operating-points-v2 = <&bus_g2d_400_opp_table>;
+                status = "disabled";
+        };
+
+        bus_noc2: bus9 {
+                compatible = "samsung,exynos-bus";
+                clocks = <&cmu_mif CLK_ACLK_BUS2_400>;
+                clock-names = "bus";
+                operating-points-v2 = <&bus_noc2_opp_table>;
+                status = "disabled";
+        };
+
+        bus_g2d_400_opp_table: opp_table2 {
+                compatible = "operating-points-v2";
+                opp-shared;
+
+                opp-400000000 {
+                        opp-hz = /bits/ 64 <400000000>;
+                        opp-microvolt = <1075000>;
+                        required-opps = <&noc2_400>;
+                };
+                opp-267000000 {
+                        opp-hz = /bits/ 64 <267000000>;
+                        opp-microvolt = <1000000>;
+                        required-opps = <&noc2_200>;
+                };
+                opp-200000000 {
+                        opp-hz = /bits/ 64 <200000000>;
+                        opp-microvolt = <975000>;
+                        required-opps = <&noc2_200>;
+                };
+                opp-160000000 {
+                        opp-hz = /bits/ 64 <160000000>;
+                        opp-microvolt = <962500>;
+                        required-opps = <&noc2_134>;
+                };
+                opp-134000000 {
+                        opp-hz = /bits/ 64 <134000000>;
+                        opp-microvolt = <950000>;
+                        required-opps = <&noc2_134>;
+                };
+                opp-100000000 {
+                        opp-hz = /bits/ 64 <100000000>;
+                        opp-microvolt = <937500>;
+                        required-opps = <&noc2_100>;
+                };
+        };
+
+        bus_noc2_opp_table: opp_table6 {
+                compatible = "operating-points-v2";
+
+                noc2_400: opp-400000000 {
+                        opp-hz = /bits/ 64 <400000000>;
+                };
+                noc2_200: opp-200000000 {
+                        opp-hz = /bits/ 64 <200000000>;
+                };
+                noc2_134: opp-134000000 {
+                        opp-hz = /bits/ 64 <134000000>;
+                };
+                noc2_100: opp-100000000 {
+                        opp-hz = /bits/ 64 <100000000>;
+                };
+        };
+
+-Saravana
+
+v5 -> v6:
+- fix review comments
+
+v4 -> v5:
+- drop patch "OPP: Improve required-opps linking" and rebase to
+  https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=opp/linux-next
+- Compare pointers in dev_pm_opp_xlate_required_opp().
+
+v3 -> v4:
+- Fixed documentation comments
+- Fixed order of functions in .h file
+- Renamed the new xlate API
+- Caused _set_required_opps() to fail if all required opps tables aren't
+  linked.
+v2 -> v3:
+- Rebased onto linux-next.
+- Added documentation comment for new fields.
+- Added support for lazy required-opps linking.
+- Updated Ack/Reviewed-bys.
+v1 -> v2:
+- Cached OPP table reference in devfreq to avoid looking up every time.
+- Renamed variable in passive governor to be more intuitive.
+- Updated cover letter with examples.
+
+Saravana Kannan (3):
+  OPP: Add function to look up required OPP's for a given OPP
+  PM / devfreq: Cache OPP table reference in devfreq
+  PM / devfreq: Add required OPPs support to passive governor
+
+ drivers/devfreq/devfreq.c          |  6 +++
+ drivers/devfreq/governor_passive.c | 25 +++++++++----
+ drivers/opp/core.c                 | 59 ++++++++++++++++++++++++++++++
+ include/linux/devfreq.h            |  2 +
+ include/linux/pm_opp.h             |  7 ++++
+ 5 files changed, 92 insertions(+), 7 deletions(-)
+
+-- 
+2.30.0.365.g02bc693789-goog
+
