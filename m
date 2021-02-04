@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E6130ED80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51ED30ED8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbhBDHib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:38:31 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61226 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233516AbhBDHi0 (ORCPT
+        id S234694AbhBDHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:40:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31904 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234708AbhBDHkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:38:26 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1147WVCh081037;
-        Thu, 4 Feb 2021 02:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject : to
- : cc : references : from : message-id : date : mime-version : in-reply-to
- : content-type : content-transfer-encoding; s=pp1;
- bh=TJR3Tk1aFST8qdXh/a914iqptdMPK9i2vtz1+sNSTJc=;
- b=bqURimFFPWmJdO5/psTrw+95u7nP8DNE6ZhMmH5Zza6NscSMkKV+tjhQM00fLY4mgPuH
- AfhiMg7LcHVprwQvWiRjJf4NrMaOcQqBtBiC70VRxIahqD1yy7TZ6gImcJSSBOmHZEx4
- xqCQzyxFqWbJodFpQxt3Q5mUPtm5i5Yvsn7jp2Zj67KYJVJBYryS03LFHrIqk/gC9ob8
- VBb1J6g3g0uPWubYteb7sZEyYgVnMSCdqdl7Z4zBJYjd/I4VZsD305/ILQXBKxveeWWG
- nR3av80yZ5xuJAv/IG7G4VK1fYWKQVzdYdNHwSM9JkrCzCtlwIi9YKU3OgM7H0mvzVy5 NQ== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36gcd0re53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 02:36:28 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1147W88c004759;
-        Thu, 4 Feb 2021 07:36:28 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 36f3kvkjr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 07:36:28 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1147aRo912583308
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Feb 2021 07:36:27 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 491B1AC05F;
-        Thu,  4 Feb 2021 07:36:27 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D95ABAC05B;
-        Thu,  4 Feb 2021 07:36:24 +0000 (GMT)
-Received: from [9.85.93.213] (unknown [9.85.93.213])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Feb 2021 07:36:24 +0000 (GMT)
-Reply-To: ananth@linux.ibm.com
-Subject: Re: [PATCH] kprobes: Warn if the kprobe is reregistered
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>,
-        linux-kernel@vger.kernel.org
-References: <161236436734.194052.4058506306336814476.stgit@devnote2>
-From:   Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
-Organization: IBM
-Message-ID: <c2b78276-1083-5cd3-909f-b2478b195d47@linux.ibm.com>
-Date:   Thu, 4 Feb 2021 13:06:23 +0530
+        Thu, 4 Feb 2021 02:40:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612424324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UQ0eTVPL8hjhBEzJ8ELtfQWdOLooTVyajO3Fy8uNSZ8=;
+        b=UJI7kkUhslW0gxJmlNJfci5wKcRbJZX5Vy1aJclFfYGOJIeCpFrRrJXfOXgFmMDHwS95bk
+        EYVPWejsocMes33JEgMudxPPO4I+VF83XiT8Gmgf5YzSLuusjXCaeNJdkGqXsNEiZ+ckhn
+        MlTUvPw/SzcZ5szNqBBqvuuazKdk7cw=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-sMGutKixNquw1K0DOAbF4Q-1; Thu, 04 Feb 2021 02:38:42 -0500
+X-MC-Unique: sMGutKixNquw1K0DOAbF4Q-1
+Received: by mail-ej1-f71.google.com with SMTP id x22so1970305ejb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:38:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UQ0eTVPL8hjhBEzJ8ELtfQWdOLooTVyajO3Fy8uNSZ8=;
+        b=l6fj6RdKdUu62ufEUebmT/YSITeMiHjjGWl7CKZ+H9auLAnb5CYv5aimx2R2EVPLMh
+         4auBZbhAUohikjg/rbH0RbmTB2P446cmUH6KX3WkZdEKkicKlpanIb1BGUDut9b2m2V8
+         YKqnjNWr+ytWljYyF8njUnrsUhxoE55IbD/J4M6wGBoWABbLleQsvsIgI6CciplEQIQt
+         9OJDnxFvylbm1+coCzAgQ1La3rndxaGR8j9oqjBxtd0mia/PW/ADsV/LyHONMqV+FHnH
+         jV6Mtk4nLhd5f50WkcrTxbrAQaCQnkUKD7jOk0tWCyi8Z9nG/zUrXl97QAWS+LjQnrsQ
+         AcaA==
+X-Gm-Message-State: AOAM533k12gE21wMIibHWn1hmfFEs02nf5jGF3zPfdGZhiOQkTft8Q5k
+        UzzKVFsOWUEMGzJBu67oKRw6Jjd9zJCVLSvHjUyonLaxsSQ6RJPupoDjriuE9AffswHnlteVPWD
+        CJYPINis/aUVCQuqFdCdpFfpr
+X-Received: by 2002:a17:906:7191:: with SMTP id h17mr7044015ejk.54.1612424321322;
+        Wed, 03 Feb 2021 23:38:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxqMJ/NojtP+0ID/tXGNmwGoEtk5rny6JED/4q/QSBepALPvSdTcf9hvXY/ZLz3BCvMVUv/9g==
+X-Received: by 2002:a17:906:7191:: with SMTP id h17mr7044003ejk.54.1612424321208;
+        Wed, 03 Feb 2021 23:38:41 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id a15sm2009838edy.86.2021.02.03.23.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Feb 2021 23:38:40 -0800 (PST)
+Subject: Re: linux-next: build warning after merge of the drivers-x86 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210204161351.5c934ea2@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <5461d70a-39a0-0322-e2ae-6434e0d1e0a3@redhat.com>
+Date:   Thu, 4 Feb 2021 08:38:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <161236436734.194052.4058506306336814476.stgit@devnote2>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210204161351.5c934ea2@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_03:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- mlxlogscore=876 malwarescore=0 lowpriorityscore=0 spamscore=0 phishscore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102040041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 8:29 PM, Masami Hiramatsu wrote:
-> Warn if the kprobe is reregistered, since there must be
-> a software bug (actively used resource must not be re-registered)
-> and caller must be fixed.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Hi Stephen, Andy,
 
-Acked-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+On 2/4/21 6:13 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the drivers-x86 tree, today's linux-next build (x86_64
+> allmodconfig) produced this warning:
+> 
+> drivers/platform/x86/intel_scu_wdt.c: In function 'register_mid_wdt':
+> drivers/platform/x86/intel_scu_wdt.c:66:28: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>    66 |  wdt_dev.dev.platform_data = (const struct intel_mid_wdt_pdata *)id->driver_data;
+>       |                            ^
+> 
+> Introduced by commit
+> 
+>   a507e5d90f3d ("platform/x86: intel_scu_wdt: Get rid of custom x86 model comparison")
+
+Thank you for the bug report.
+
+Andy can you send me a fix for this please ?
+
+Regards,
+
+Hans
+
