@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F076330F69E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F1030F69F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237495AbhBDPl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:41:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
+        id S237542AbhBDPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:42:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237407AbhBDPi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:38:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E026D64F44;
-        Thu,  4 Feb 2021 15:38:15 +0000 (UTC)
+        id S237468AbhBDPkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:40:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08A5964F45;
+        Thu,  4 Feb 2021 15:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612453098;
-        bh=Za7/JigMay2H08zCfoFaKH8zh1lEWxdc4RaDwMpdQ7I=;
+        s=k20201202; t=1612453173;
+        bh=XTFLMa/UxoOM0Hs6QWQqKQ+VwM3an2Nk3IYqSINJUCg=;
         h=From:To:Cc:Subject:Date:From;
-        b=kemxjGicQXB92hwsg4Zbdb9VO+WIvTBz89JBR9RjL2Ja4B/jzb2jbe2eS5v+4QTU8
-         YtZAuHmDjYWGgXzl4bqSdy2ATeZSXJZGG6y1VIfT2nmwPi2+qUiN9+vr5e8MzSfuNI
-         5EXN+9B5lXijENQjFr3I1G803hYukok+eb/yGahk3ozXEQtqQvz0Ep/zy3sexbfRb7
-         pOFqph1mxON9pYoZSq9f/Q3j/jJUF1FOFE7lqOSJozoZYuZP5Pio9+FWx4Elgamu9Q
-         c4LWHikKPTTzumMmftTTlAzodyPsoc95fUji+KbtvowHMRxg2IoCIHuzHRcCm1Uq8E
-         U20M9ESkV+1KA==
+        b=kA7j7SlPHHthFW27pKp32Q2yWwvLaZEjkEkbcP3iu0QOGroxg69nI6fljDslp9eeW
+         VMJOrBbJJHzrRKhwTSQwLBQk5XopFAqDH5VtCC7FLl4lGNGwh2mDG6vjF2P56sgQL8
+         jkArptFqcjN1n3NqZgB2GQYQdoTonQks/ii5aZh0R2YBDju291le2vvxjK5GCf4uSM
+         DIEnGHXr5ZLriSFfx8pvFYfUNQnmszj7ZFHpYIE4C8uGtBTqrlbOH+V7Y/JqNFlNnN
+         +pZbMGwmZs8I31kcjNaICYPUWD9cI3+AeQKOlrSDELO7XUfTH+lHUmiryW8lIF4lAh
+         4vo4yRtvympKw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Yufeng Mo <moyufeng@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>,
-        Yonglong Liu <liuyonglong@huawei.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] net: hns3: avoid -Wpointer-bool-conversion warning
-Date:   Thu,  4 Feb 2021 16:38:06 +0100
-Message-Id: <20210204153813.1520736-1-arnd@kernel.org>
+To:     Ike Panhc <ike.pan@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mark Pearson <markpearson@lenovo.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nitin Joshi <njoshi1@lenovo.com>, Tom Rix <trix@redhat.com>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net
+Subject: [PATCH] platform/x86: ideapad-laptop/thinkpad_acpi: mark conflicting symbols static
+Date:   Thu,  4 Feb 2021 16:38:54 +0100
+Message-Id: <20210204153924.1534813-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,32 +48,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang points out a redundant sanity check:
+Three of the newly added functions are accidently not marked 'static' which
+causes a warning when building with W=1
 
-drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c:497:28: error: address of array 'filp->f_path.dentry->d_iname' will always evaluate to 'true' [-Werror,-Wpointer-bool-conversion]
+drivers/platform/x86/thinkpad_acpi.c:10081:5: warning: no previous prototype for function 'dytc_profile_get' [-Wmissing-prototypes]
+drivers/platform/x86/thinkpad_acpi.c:10095:5: warning: no previous prototype for function 'dytc_cql_command' [-Wmissing-prototypes]
+drivers/platform/x86/thinkpad_acpi.c:10133:5: warning: no previous prototype for function 'dytc_profile_set' [-Wmissing-prototypes]
 
-This can never fail, so just remove the check.
+The functions are also present in two files, causing a link error when
+both are built into the kernel:
 
-Fixes: 04987ca1b9b6 ("net: hns3: add debugfs support for tm nodes, priority and qset info")
+ld.lld: error: duplicate symbol: dytc_cql_command
+>>> defined at ideapad-laptop.c
+>>>            platform/x86/ideapad-laptop.o:(dytc_cql_command) in archive drivers/built-in.a
+>>> defined at thinkpad_acpi.c
+>>>            platform/x86/thinkpad_acpi.o:(.text+0x20) in archive drivers/built-in.a
+
+ld.lld: error: duplicate symbol: dytc_profile_get
+>>> defined at ideapad-laptop.c
+>>>            platform/x86/ideapad-laptop.o:(dytc_profile_get) in archive drivers/built-in.a
+>>> defined at thinkpad_acpi.c
+>>>            platform/x86/thinkpad_acpi.o:(.text+0x0) in archive drivers/built-in.a
+
+ld.lld: error: duplicate symbol: dytc_profile_set
+>>> defined at ideapad-laptop.c
+>>>            platform/x86/ideapad-laptop.o:(dytc_profile_set) in archive drivers/built-in.a
+>>> defined at thinkpad_acpi.c
+>>>            platform/x86/thinkpad_acpi.o:(.text+0x220) in archive drivers/built-in.a
+
+Mark these all as static to avoid both problems.
+
+Fixes: eabe533904cb ("platform/x86: ideapad-laptop: DYTC Platform profile support")
+Fixes: c3bfcd4c6762 ("platform/x86: thinkpad_acpi: Add platform profile support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/platform/x86/ideapad-laptop.c | 11 ++++++-----
+ drivers/platform/x86/thinkpad_acpi.c  | 10 +++++-----
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index 6978304f1ac5..c5958754f939 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -494,9 +494,6 @@ static ssize_t hns3_dbg_read(struct file *filp, char __user *buffer,
- 	ssize_t size = 0;
- 	int ret = 0;
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index cc42af2a0a98..6095a4d54881 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -656,8 +656,8 @@ static int convert_profile_to_dytc(enum platform_profile_option profile, int *pe
+  * dytc_profile_get: Function to register with platform_profile
+  * handler. Returns current platform profile.
+  */
+-int dytc_profile_get(struct platform_profile_handler *pprof,
+-			enum platform_profile_option *profile)
++static int dytc_profile_get(struct platform_profile_handler *pprof,
++			    enum platform_profile_option *profile)
+ {
+ 	struct ideapad_dytc_priv *dytc;
  
--	if (!filp->f_path.dentry->d_iname)
--		return -EINVAL;
--
- 	read_buf = kzalloc(HNS3_DBG_READ_LEN, GFP_KERNEL);
- 	if (!read_buf)
- 		return -ENOMEM;
+@@ -673,7 +673,8 @@ int dytc_profile_get(struct platform_profile_handler *pprof,
+  *  - enable CQL
+  *  If not in CQL mode, just run the command
+  */
+-int dytc_cql_command(struct ideapad_private *priv, int command, int *output)
++static int dytc_cql_command(struct ideapad_private *priv, int command,
++			    int *output)
+ {
+ 	int err, cmd_err, dummy;
+ 	int cur_funcmode;
+@@ -710,8 +711,8 @@ int dytc_cql_command(struct ideapad_private *priv, int command, int *output)
+  * dytc_profile_set: Function to register with platform_profile
+  * handler. Sets current platform profile.
+  */
+-int dytc_profile_set(struct platform_profile_handler *pprof,
+-			enum platform_profile_option profile)
++static int dytc_profile_set(struct platform_profile_handler *pprof,
++			    enum platform_profile_option profile)
+ {
+ 	struct ideapad_dytc_priv *dytc;
+ 	struct ideapad_private *priv;
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 18b390153e7f..42e0a497d69e 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -10078,8 +10078,8 @@ static int convert_profile_to_dytc(enum platform_profile_option profile, int *pe
+  * dytc_profile_get: Function to register with platform_profile
+  * handler. Returns current platform profile.
+  */
+-int dytc_profile_get(struct platform_profile_handler *pprof,
+-			enum platform_profile_option *profile)
++static int dytc_profile_get(struct platform_profile_handler *pprof,
++			    enum platform_profile_option *profile)
+ {
+ 	*profile = dytc_current_profile;
+ 	return 0;
+@@ -10092,7 +10092,7 @@ int dytc_profile_get(struct platform_profile_handler *pprof,
+  *  - enable CQL
+  *  If not in CQL mode, just run the command
+  */
+-int dytc_cql_command(int command, int *output)
++static int dytc_cql_command(int command, int *output)
+ {
+ 	int err, cmd_err, dummy;
+ 	int cur_funcmode;
+@@ -10130,8 +10130,8 @@ int dytc_cql_command(int command, int *output)
+  * dytc_profile_set: Function to register with platform_profile
+  * handler. Sets current platform profile.
+  */
+-int dytc_profile_set(struct platform_profile_handler *pprof,
+-			enum platform_profile_option profile)
++static int dytc_profile_set(struct platform_profile_handler *pprof,
++			    enum platform_profile_option profile)
+ {
+ 	int output;
+ 	int err;
 -- 
 2.29.2
 
