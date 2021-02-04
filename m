@@ -2,239 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B768B30FB6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D6F30FB96
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239105AbhBDS2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:28:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239113AbhBDS1H (ORCPT
+        id S239155AbhBDSdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:33:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238947AbhBDSTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:27:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612463134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1xldkfZkqWfGGk6TArkScHUALBjtnF9wc0SKvfCMMaM=;
-        b=YeV/nEeu/i0nlFYIXUOrH5bY4jxIELLJBnHzEE1/Q34Bp6MhH1hpuA48BwhBvT9+jKSQTF
-        lTnaWq4LPuqCUk/z/Jko81nZuIFWDTj4BE/BLCcwmt28c2Oi+N0z05NhkVkkd7pU98qhkg
-        XoHsodyDxRJz5HFjLHSr4+dCDTXZAk4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-QghDSG9NNDaDmNcE11Tmhw-1; Thu, 04 Feb 2021 13:25:32 -0500
-X-MC-Unique: QghDSG9NNDaDmNcE11Tmhw-1
-Received: by mail-ed1-f72.google.com with SMTP id u26so3595154edv.18
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:25:31 -0800 (PST)
+        Thu, 4 Feb 2021 13:19:35 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48463C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:18:55 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id f16so3386879qkk.20
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:18:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=jVxxi2FsPuJw4XM1jbb8exuFnk/zAFQh52OuUnL6x5c=;
+        b=eoiLv4Fjju3JEfXDuHbAba/lObCo1w6vbwyoS7MtecyRwqYnXpMFoZNAYuf+W6oplH
+         gED96JwbPRY7jeChrEt5R+59xV+yLfGj24fcQAeQ3kg+O5aLSKHWIqNnkUhhZ+dn8Rq4
+         BSdC2ZaIBJTBtyH56RgpmICjqdLlGqg7bhCp5MvnfQftXNufcaTDf86YmN34tkYl8nUh
+         E1TEXeKWOfc62QBEEL4iaICZJUqV2BK4Tg1pQtpDeOKiotE8p202ib96xqd5eEqoxJGm
+         +lkG9dpS6gQ0YmtwBPKtO1zwA8TCpj/+Qfh0XPeMeyCRpOBP6XgHl3PnRK0X4FR79HSi
+         HU0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1xldkfZkqWfGGk6TArkScHUALBjtnF9wc0SKvfCMMaM=;
-        b=gRAUVDDQ9L+B5wdPpqfjIqpMQI6PDBmSmq3/bmbX8Ayq6Y71rUFzRsN9kmq9wXIvYr
-         TKyZy9lzRYyUELTbuNF15F7e4yk7Za47c06aP1N/pYOhcxGTmPTYEajpEBwwqqLaV+wh
-         BY52FItUQJFG1p8JIYZayIwt/23O9w82X7Tyo264YyHmFCLqSs229CRMkoq7uhGrZIu3
-         1S1cOWI5THobR1IT9GZuGDmmbnU8q1qTy/Qan62r0f9PXFY+vHwffYvIfQ9pNsOHaRTw
-         u3P8DWQrd2oEHxw9z2F6LpYBqmsMNV9T91518hLVap0TjTYu7S+WmHc7uEpId1PP5BaL
-         hK5g==
-X-Gm-Message-State: AOAM533AIELd4H3iQDyAGq5bjIhX8AMAdqb2jpHvru+rg5rdNlShlnlp
-        mlyzerQOk5en4IYFr0towqeTayaxK774LEslDtH0qY33gS78mtzt8baPr1qnBt5BUCbv/EG+hwR
-        WAcWtdbTASRydsTD1iBscclJo
-X-Received: by 2002:a17:906:5ac8:: with SMTP id x8mr371577ejs.347.1612463130797;
-        Thu, 04 Feb 2021 10:25:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw/zCYJ0KGwPPt4Ohj9Wlhj90xFLRGk/jUWth5vtj8+7OUdv41IsVDNVbAFTKPUHKxuBDh1/Q==
-X-Received: by 2002:a17:906:5ac8:: with SMTP id x8mr371565ejs.347.1612463130633;
-        Thu, 04 Feb 2021 10:25:30 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id u17sm2914283edr.0.2021.02.04.10.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 10:25:29 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] ACPI: AC: Clean up printing messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
- <1961054.9MKZ8ejxOh@kreacher> <15677254.uJehtQVoeh@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <754e838c-b3e3-9759-51f2-5e4022f42e91@redhat.com>
-Date:   Thu, 4 Feb 2021 19:25:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <15677254.uJehtQVoeh@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=jVxxi2FsPuJw4XM1jbb8exuFnk/zAFQh52OuUnL6x5c=;
+        b=adrgtDk15dlGSpPPmqsrqAzVcRJwc+gN97CmPsev/asAs2wlZp1HeDYN/fykJcY1O1
+         ZTI3/XNOAzB7p9jtyNM5GtMZ8MfHHjXKVydEG6VJjwkVpRIZ4UVYHTz/fpvkrxYorR8l
+         k4ZE4abrzXsnXVL0PPHokvFHOGUe/92TkZRfblveCJ8DZl6qNc2luZ2o7z1Fu02nI180
+         e/BU58s8IEq1eJvCbe+l1Zy2S+yTunmQ4FVF78iThsAHS0MbaQom6138YWJZn49TRgns
+         CgmK6Rw53IX/QbUgHDrMsq6NXinPIPijNFZtvVDFK5oMXjcRHgkYGIxMKqwSofhjpPF9
+         Z8wg==
+X-Gm-Message-State: AOAM530d/vZ5nYAq85HSUhWuhKeQCbLga6Vt5N9sdqV+AZsoIGsNOyUb
+        hpzgF+hXziKzvx7wLijhxu0Cfevpb6lQ
+X-Google-Smtp-Source: ABdhPJyMx58OK+cTr24By73GqN8pUy8WYFcuOgVnb6Mlp/ZIQ5bdJXL9uXFa9JTBMZrMJ90CejS/EeyKo95s
+Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
+X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
+ (user=brianvv job=sendgmr) by 2002:a0c:e652:: with SMTP id
+ c18mr436707qvn.59.1612462734464; Thu, 04 Feb 2021 10:18:54 -0800 (PST)
+Date:   Thu,  4 Feb 2021 18:18:38 +0000
+Message-Id: <20210204181839.558951-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH net-next 1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When a static function is annotated with INDIRECT_CALLABLE_SCOPE and
+CONFIG_RETPOLINE is set, the static keyword is removed. Sometimes the
+function needs to be exported but EXPORT_SYMBOL can't be used because if
+CONFIG_RETPOLINE is not set, we will attempt to export a static symbol.
 
-On 2/3/21 7:43 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
-> in ac.c with acpi_handle_debug() and acpi_handle_info() calls,
-> respectively, which among other things causes the excessive log
-> level of the messages previously printed via ACPI_EXCEPTION() to
-> be increased.
-> 
-> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-> used any more, drop the no longer needed ACPI_AC_COMPONENT definition
-> from the headers and update the documentation accordingly.
-> 
-> While at it, replace the direct printk() invocation with pr_info(),
-> add a pr_fmt() definition to ac.c and drop the unneeded PREFIX
-> symbol definition from there.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This patch introduces a new indirect call wrapper:
+EXPORT_INDIRECT_CALLABLE. This basically does EXPORT_SYMBOL when
+CONFIG_RETPOLINE is set, but does nothing when it's not.
 
-Thanks, patch looks good to me:
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+ include/linux/indirect_call_wrapper.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
-> 
-> v2 -> v3: Also add a pr_fmt() definition to ac.c and replace direct
->           printk() with pr_info (no log level change).
-> 
-> v1 -> v2: Changelog update.
-> 
-> ---
->  Documentation/firmware-guide/acpi/debug.rst |    1 -
->  drivers/acpi/ac.c                           |   23 ++++++++++-------------
->  drivers/acpi/sysfs.c                        |    1 -
->  include/acpi/acpi_drivers.h                 |    1 -
->  4 files changed, 10 insertions(+), 16 deletions(-)
-> 
-> Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> ===================================================================
-> --- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-> +++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> @@ -52,7 +52,6 @@ shows the supported mask values, current
->      ACPI_CA_DISASSEMBLER            0x00000800
->      ACPI_COMPILER                   0x00001000
->      ACPI_TOOLS                      0x00002000
-> -    ACPI_AC_COMPONENT               0x00020000
->      ACPI_BATTERY_COMPONENT          0x00040000
->      ACPI_BUTTON_COMPONENT           0x00080000
->      ACPI_SBS_COMPONENT              0x00100000
-> Index: linux-pm/drivers/acpi/ac.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/ac.c
-> +++ linux-pm/drivers/acpi/ac.c
-> @@ -6,6 +6,8 @@
->   *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
->   */
->  
-> +#define pr_fmt(fmt) "ACPI: AC: " fmt
-> +
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
-> @@ -18,8 +20,6 @@
->  #include <linux/acpi.h>
->  #include <acpi/battery.h>
->  
-> -#define PREFIX "ACPI: "
-> -
->  #define ACPI_AC_CLASS			"ac_adapter"
->  #define ACPI_AC_DEVICE_NAME		"AC Adapter"
->  #define ACPI_AC_FILE_STATE		"state"
-> @@ -28,9 +28,6 @@
->  #define ACPI_AC_STATUS_ONLINE		0x01
->  #define ACPI_AC_STATUS_UNKNOWN		0xFF
->  
-> -#define _COMPONENT		ACPI_AC_COMPONENT
-> -ACPI_MODULE_NAME("ac");
-> -
->  MODULE_AUTHOR("Paul Diefenbaugh");
->  MODULE_DESCRIPTION("ACPI AC Adapter Driver");
->  MODULE_LICENSE("GPL");
-> @@ -102,8 +99,9 @@ static int acpi_ac_get_state(struct acpi
->  	status = acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
->  				       &ac->state);
->  	if (ACPI_FAILURE(status)) {
-> -		ACPI_EXCEPTION((AE_INFO, status,
-> -				"Error reading AC Adapter state"));
-> +		acpi_handle_info(ac->device->handle,
-> +				"Error reading AC Adapter state: %s\n",
-> +				acpi_format_exception(status));
->  		ac->state = ACPI_AC_STATUS_UNKNOWN;
->  		return -ENODEV;
->  	}
-> @@ -153,8 +151,8 @@ static void acpi_ac_notify(struct acpi_d
->  
->  	switch (event) {
->  	default:
-> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-> -				  "Unsupported event [0x%x]\n", event));
-> +		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
-> +				  event);
->  		fallthrough;
->  	case ACPI_AC_NOTIFY_STATUS:
->  	case ACPI_NOTIFY_BUS_CHECK:
-> @@ -278,9 +276,8 @@ static int acpi_ac_add(struct acpi_devic
->  		goto end;
->  	}
->  
-> -	printk(KERN_INFO PREFIX "%s [%s] (%s)\n",
-> -	       acpi_device_name(device), acpi_device_bid(device),
-> -	       ac->state ? "on-line" : "off-line");
-> +	pr_info("%s [%s] (%s)\n", acpi_device_name(device),
-> +		acpi_device_bid(device), ac->state ? "on-line" : "off-line");
->  
->  	ac->battery_nb.notifier_call = acpi_ac_battery_notify;
->  	register_acpi_notifier(&ac->battery_nb);
-> @@ -348,7 +345,7 @@ static int __init acpi_ac_init(void)
->  		for (i = 0; i < ARRAY_SIZE(acpi_ac_blacklist); i++)
->  			if (acpi_dev_present(acpi_ac_blacklist[i].hid, "1",
->  					     acpi_ac_blacklist[i].hrv)) {
-> -				pr_info(PREFIX "AC: found native %s PMIC, not loading\n",
-> +				pr_info("found native %s PMIC, not loading\n",
->  					acpi_ac_blacklist[i].hid);
->  				return -ENODEV;
->  			}
-> Index: linux-pm/drivers/acpi/sysfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/sysfs.c
-> +++ linux-pm/drivers/acpi/sysfs.c
-> @@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
->  	ACPI_DEBUG_INIT(ACPI_COMPILER),
->  	ACPI_DEBUG_INIT(ACPI_TOOLS),
->  
-> -	ACPI_DEBUG_INIT(ACPI_AC_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
-> Index: linux-pm/include/acpi/acpi_drivers.h
-> ===================================================================
-> --- linux-pm.orig/include/acpi/acpi_drivers.h
-> +++ linux-pm/include/acpi/acpi_drivers.h
-> @@ -15,7 +15,6 @@
->   * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
->   * if you add to this list.
->   */
-> -#define ACPI_AC_COMPONENT		0x00020000
->  #define ACPI_BATTERY_COMPONENT		0x00040000
->  #define ACPI_BUTTON_COMPONENT		0x00080000
->  #define ACPI_SBS_COMPONENT		0x00100000
-> 
-> 
-> 
+diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
+index 54c02c84906a..a8345c8a613d 100644
+--- a/include/linux/indirect_call_wrapper.h
++++ b/include/linux/indirect_call_wrapper.h
+@@ -36,6 +36,7 @@
+ 
+ #define INDIRECT_CALLABLE_DECLARE(f)	f
+ #define INDIRECT_CALLABLE_SCOPE
++#define EXPORT_INDIRECT_CALLABLE(f)	EXPORT_SYMBOL(f)
+ 
+ #else
+ #define INDIRECT_CALL_1(f, f1, ...) f(__VA_ARGS__)
+@@ -44,6 +45,7 @@
+ #define INDIRECT_CALL_4(f, f4, f3, f2, f1, ...) f(__VA_ARGS__)
+ #define INDIRECT_CALLABLE_DECLARE(f)
+ #define INDIRECT_CALLABLE_SCOPE		static
++#define EXPORT_INDIRECT_CALLABLE(f)
+ #endif
+ 
+ /*
+-- 
+2.30.0.365.g02bc693789-goog
 
