@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8431D30F556
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285F530F550
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhBDOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:47:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41010 "EHLO mail.kernel.org"
+        id S236866AbhBDOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:45:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236829AbhBDOkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:40:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B2764EE2;
-        Thu,  4 Feb 2021 14:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612449550;
-        bh=iLvEJLr/7hPAPOQD8ilNW6UIeGHzslNxwFZrNXPAO6I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pyf9Sg4Ur8iSkZwKQ1Cm1DvsyHUM4e1646IjfATSRa08fAP/bUPq/P1Mamu80JyOV
-         O2ls5/1k+qrcGUeNkG3bYn97mp4YMa8rn5j+T3bBfpQYP21/JCNXv8Qfko9f7JOwkf
-         MT9ysBlNW4AVAEEfh3yohzba73x5ttx5Us6K/ldGjuDkx2x3lfRpy4TQhhj4fzyrD2
-         J8uZVMgc1XfyYsHcR0kpkbxSwtO66mI8PU4ZfD6acL27PXDrsAE9KHhuekaBcVIWdd
-         EUPguUFUqA7gmxN76jHzOI9cqLuFkBtDN+XDkF4wpZsV7Sw4WCzZGNuQLjPIQJt4vU
-         JeDIuoVP+EX8g==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, stable@vger.kernel.org,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6] x86/sgx: Maintain encl->refcount for each encl->mm_list entry
-Date:   Thu,  4 Feb 2021 16:38:45 +0200
-Message-Id: <20210204143845.39697-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        id S236864AbhBDOks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:40:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F63864F42;
+        Thu,  4 Feb 2021 14:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612449607;
+        bh=kVmYv5gZTHyQL2Dwt36m5YgYZwdwCLXW0K16gp0A8dI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R0UVXkzfMSGNn8Euh4XgcA5i6TZxQnNla+PdmdIsE9MmvHDsZW2/6y35WIaSQG2KT
+         OCWRg0CH5HPLJPUSOToS2lVJasC/i0bPsSZTmFOWdVA4Wg+e51i6oKeSgwjK2qDo8M
+         Txb2YBCzlebie9R6OMIITRK1tbGQIF/UHcndqjsY=
+Date:   Thu, 4 Feb 2021 15:40:05 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Minas Harutyunyan <hminas@synopsys.com>
+Subject: Re: [PATCH v2 2/6] usb: dwc2: pci: Drop the empty quirk function
+Message-ID: <YBwHRcyjmvPhajGX@kroah.com>
+References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+ <20210204141711.53775-3-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204141711.53775-3-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This has been shown in tests:
+On Thu, Feb 04, 2021 at 05:17:07PM +0300, Heikki Krogerus wrote:
+> The function dwc2_pci_quirks() does nothing. Removing.
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Minas Harutyunyan <hminas@synopsys.com>
+> ---
+>  drivers/usb/dwc2/pci.c | 18 ------------------
+>  1 file changed, 18 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc2/pci.c b/drivers/usb/dwc2/pci.c
+> index 7afc10872f1f0..0000151e3ca96 100644
+> --- a/drivers/usb/dwc2/pci.c
+> +++ b/drivers/usb/dwc2/pci.c
+> @@ -63,20 +63,6 @@ struct dwc2_pci_glue {
+>  	struct platform_device *phy;
+>  };
+>  
+> -static int dwc2_pci_quirks(struct pci_dev *pdev, struct platform_device *dwc2)
+> -{
+> -	if (pdev->vendor == PCI_VENDOR_ID_SYNOPSYS &&
+> -	    pdev->device == PCI_PRODUCT_ID_HAPS_HSOTG) {
+> -		struct property_entry properties[] = {
+> -			{ },
+> -		};
+> -
+> -		return platform_device_add_properties(dwc2, properties);
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  /**
+>   * dwc2_pci_probe() - Provides the cleanup entry points for the DWC_otg PCI
+>   * driver
+> @@ -143,10 +129,6 @@ static int dwc2_pci_probe(struct pci_dev *pci,
+>  
+>  	dwc2->dev.parent = dev;
+>  
+> -	ret = dwc2_pci_quirks(pci, dwc2);
+> -	if (ret)
+> -		goto err;
+> -
+>  	glue = devm_kzalloc(dev, sizeof(*glue), GFP_KERNEL);
+>  	if (!glue) {
+>  		ret = -ENOMEM;
 
-[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
+This is crazy.  I'll go apply this right now :)
 
-There are two functions that drain encl->mm_list:
+thanks,
 
-- sgx_release() (i.e. VFS release) removes the remaining mm_list entries.
-- sgx_mmu_notifier_release() removes mm_list entry for the registered
-  process, if it still exists.
-
-If encl->refcount is taken only for VFS, this can lead to
-sgx_encl_release() being executed before sgx_mmu_notifier_release()
-completes, which is exactly what happens in the above klog entry.
-
-Each process also needs its own enclave reference.
-
-In order to fix the race condition, increase encl->refcount when an
-entry to encl->mm_list added for a process. Release this reference
-when the mm_list entry is cleaned up, either in
-sgx_mmu_notifier_release() or sgx_release().
-
-Cc: stable@vger.kernel.org
-Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v6:
-- Maintain refcount for each encl->mm_list entry.
-v5:
-- To make sure that the instance does not get deleted use kref_get()
-  kref_put(). This also removes the need for additional
-  synchronize_srcu().
-v4:
-- Rewrite the commit message.
-- Just change the call order. *_expedited() is out of scope for this
-  bug fix.
-v3: Fine-tuned tags, and added missing change log for v2.
-v2: Switch to synchronize_srcu_expedited().
- arch/x86/kernel/cpu/sgx/driver.c | 6 ++++++
- arch/x86/kernel/cpu/sgx/encl.c   | 8 ++++++++
- 2 files changed, 14 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-index f2eac41bb4ff..8d8fcc91c0d6 100644
---- a/arch/x86/kernel/cpu/sgx/driver.c
-+++ b/arch/x86/kernel/cpu/sgx/driver.c
-@@ -72,6 +72,12 @@ static int sgx_release(struct inode *inode, struct file *file)
- 		synchronize_srcu(&encl->srcu);
- 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
- 		kfree(encl_mm);
-+
-+		/*
-+		 * Release the mm_list reference, as sgx_mmu_notifier_release()
-+		 * will only do this only, when it grabs encl_mm.
-+		 */
-+		kref_put(&encl->refcount, sgx_encl_release);
- 	}
- 
- 	kref_put(&encl->refcount, sgx_encl_release);
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index ee50a5010277..c1d9c86c0265 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -474,6 +474,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
- 	if (tmp == encl_mm) {
- 		synchronize_srcu(&encl_mm->encl->srcu);
- 		mmu_notifier_put(mn);
-+		kref_put(&encl_mm->encl->refcount, sgx_encl_release);
- 	}
- }
- 
-@@ -545,6 +546,13 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm)
- 	}
- 
- 	spin_lock(&encl->mm_lock);
-+
-+	/*
-+	 * Take a reference to guarantee that the enclave is not destroyed,
-+	 * while sgx_mmu_notifier_release() is active.
-+	 */
-+	kref_get(&encl->refcount);
-+
- 	list_add_rcu(&encl_mm->list, &encl->mm_list);
- 	/* Pairs with smp_rmb() in sgx_reclaimer_block(). */
- 	smp_wmb();
--- 
-2.30.0
-
+greg k-h
