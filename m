@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9E330E98C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1873830E98F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhBDBl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:41:59 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:46286
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S231761AbhBDBl4 (ORCPT
+        id S234032AbhBDBnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:43:42 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12413 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhBDBnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:41:56 -0500
-Received: from daizhiyuan$phytium.com.cn ( [202.43.158.76] ) by
- ajax-webmail-c1app3 (Coremail) ; Thu, 4 Feb 2021 09:40:45 +0800 (GMT+08:00)
-X-Originating-IP: [202.43.158.76]
-Date:   Thu, 4 Feb 2021 09:40:45 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?5oi05b+X6L+c?= <daizhiyuan@phytium.com.cn>
-To:     "Mark Rutland" <mark.rutland@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        jeyu@kernel.org, keescook@chromium.org, vincenzo.frascino@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH 2/2] arm64/kernel: improve the coding style
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20201102(b8f77813)
- Copyright (c) 2002-2021 www.mailtech.cn icmhosting
-In-Reply-To: <20210203114158.GD55896@C02TD0UTHF1T.local>
-References: <1612331299-21127-1-git-send-email-daizhiyuan@phytium.com.cn>
- <20210203114158.GD55896@C02TD0UTHF1T.local>
-Content-Transfer-Encoding: base64
-X-CM-CTRLDATA: 8urXIGZvb3Rlcl90eHQ9MzYxNzoxMA==
-Content-Type: text/plain; charset=UTF-8
+        Wed, 3 Feb 2021 20:43:40 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DWLrL4yrSzjHfM;
+        Thu,  4 Feb 2021 09:41:54 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 09:42:57 +0800
+Subject: Re: [PATCH v3 4/5] ACPI: video: Clean up printing messages
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Joe Perches" <joe@perches.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <1961054.9MKZ8ejxOh@kreacher> <1924490.ZvBDFke9FE@kreacher>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <53bc0b9e-e036-1dda-139c-8347e90f0921@huawei.com>
+Date:   Thu, 4 Feb 2021 09:42:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Message-ID: <70e779c3.3fab.1776ab2e6c9.Coremail.daizhiyuan@phytium.com.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AwINCgCn9CWdUBtgdSBwAg--.3576W
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/1tbiDAEuaF7uIgF0MAAFsZ
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <1924490.ZvBDFke9FE@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SSBhbSB2ZXJ5IHNvcnJ5LCBteSBFbmdsaXNoIGNvb3BlcmF0aW9uIGlzIHBvb3IsIGp1c3Qgd2Fu
-dCB0byBjb250cmlidXRl44CCCgoyMDIxLTAyLTAzIDE5OjQxOjU4ICJNYXJrIFJ1dGxhbmQiIDxt
-YXJrLnJ1dGxhbmRAYXJtLmNvbT4g5YaZ6YGT77yaCj4gT24gV2VkLCBGZWIgMDMsIDIwMjEgYXQg
-MDE6NDg6MTlQTSArMDgwMCwgWmhpeXVhbiBEYWkgd3JvdGU6DQo+ID4gSnVzdCBpbXByb3ZlIHRo
-ZSBjb2Rpbmcgc3R5bGUuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWmhpeXVhbiBEYWkgPGRh
-aXpoaXl1YW5AcGh5dGl1bS5jb20uY24+DQo+IA0KPiBUaGlzIGlzIHRlcnNlIGFuZCBkb2Vzbid0
-IHRlbGwgdGhlIHJlYWRlciB3aGF0IHRvIGV4cGVjdC4gSXQgd291bGQgYmUNCj4gYmV0dGVyIHRv
-IHNheSBzb21ldGhpbmcgbW9yZSBzcGVjaWZpYywgZS5nLg0KPiANCj4gfCBhcm02NDogaW1wcm92
-ZSB3aGl0ZXNwYWNlDQo+IHwNCj4gfCBJbiBhIGZldyBwbGFjZXMgd2UgZG9uJ3QgaGF2ZSB3aGl0
-ZXNwYWNlIGJldHdlZW4gbWFjcm8gcGFyYW1ldGVycywNCj4gfCB3aGljaCBtYWtlcyB0aGVtIGhh
-cmQgdG8gcmVhZC4gVGhpcyBwYXRjaCBhZGRzIHdoaXRlc3BhY2UgdG8gY2xlYXJseQ0KPiB8IHNl
-cGFyYXRlIHRoZSBwYXJhbWV0ZXJzLg0KPiB8DQo+IHwgSW4gYSBmZXcgcGxhY2VzIHdlIGhhdmUg
-dW5uZWNlc3Nhcnkgd2hpdGVzcGFjZSBhcm91bmQgdW5hcnkgb3BlcmF0b3JzLA0KPiB8IHdoaWNo
-IGlzIGNvbmZ1c2luZywgVGhpcyBwYXRjaCByZW1vdmVzIHRoZSB1bm5lY2Vzc2FyeSB3aGl0ZXNw
-YWNlLg0KPiANCj4gLi4uIHdoaWNoIG1vcmUgY2xlYXJseSBqdXN0aWZpZXMgdGhlIGNoYW5nZS4N
-Cj4gDQo+IFRoZSBwYXRjaCBpdHNlbGYgbG9va3Mgc2FuZSB0byBtZSAoYW5kIHRoZSB1bmFyeSBv
-cGVyYXRvciBjbGVhbnVwIGlzDQo+IGNlcnRpYW5seSBuaWNlKSwgc28gd2l0aCB0aGF0IHdvcmRp
-bmc6DQo+IA0KPiBBY2tlZC1ieTogTWFyayBSdXRsYW5kIDxtYXJrLnJ1dGxhbmRAYXJtLmNvbT4N
-Cj4gDQo+IFRoYW5rcywNCj4gTWFyay4NCj4gDQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQva2Vy
-bmVsL2FsdGVybmF0aXZlLmMgfCAyICstDQo+ID4gIGFyY2gvYXJtNjQva2VybmVsL21vZHVsZS1w
-bHRzLmMgfCAyICstDQo+ID4gIGFyY2gvYXJtNjQva2VybmVsL3BlcmZfZXZlbnQuYyAgfCAyICst
-DQo+ID4gIGFyY2gvYXJtNjQva2VybmVsL3Byb2Nlc3MuYyAgICAgfCA0ICsrLS0NCj4gPiAgNCBm
-aWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQva2VybmVsL2FsdGVybmF0aXZlLmMgYi9hcmNoL2FybTY0
-L2tlcm5lbC9hbHRlcm5hdGl2ZS5jDQo+ID4gaW5kZXggYTU3Y2ZmYi4uMTE4NGM0NCAxMDA2NDQN
-Cj4gPiAtLS0gYS9hcmNoL2FybTY0L2tlcm5lbC9hbHRlcm5hdGl2ZS5jDQo+ID4gKysrIGIvYXJj
-aC9hcm02NC9rZXJuZWwvYWx0ZXJuYXRpdmUuYw0KPiA+IEBAIC0xNyw3ICsxNyw3IEBADQo+ID4g
-ICNpbmNsdWRlIDxhc20vc2VjdGlvbnMuaD4NCj4gPiAgI2luY2x1ZGUgPGxpbnV4L3N0b3BfbWFj
-aGluZS5oPg0KPiA+ICANCj4gPiAtI2RlZmluZSBfX0FMVF9QVFIoYSxmKQkJKCh2b2lkICopJihh
-KS0+ZiArIChhKS0+ZikNCj4gPiArI2RlZmluZSBfX0FMVF9QVFIoYSwgZikJCSgodm9pZCAqKSYo
-YSktPmYgKyAoYSktPmYpDQo+ID4gICNkZWZpbmUgQUxUX09SSUdfUFRSKGEpCQlfX0FMVF9QVFIo
-YSwgb3JpZ19vZmZzZXQpDQo+ID4gICNkZWZpbmUgQUxUX1JFUExfUFRSKGEpCQlfX0FMVF9QVFIo
-YSwgYWx0X29mZnNldCkNCj4gPiAgDQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQva2VybmVs
-L21vZHVsZS1wbHRzLmMgYi9hcmNoL2FybTY0L2tlcm5lbC9tb2R1bGUtcGx0cy5jDQo+ID4gaW5k
-ZXggMmUyMjQ0My4uZTUzNDkzZCAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybTY0L2tlcm5lbC9t
-b2R1bGUtcGx0cy5jDQo+ID4gKysrIGIvYXJjaC9hcm02NC9rZXJuZWwvbW9kdWxlLXBsdHMuYw0K
-PiA+IEBAIC0xMzEsNyArMTMxLDcgQEAgdTY0IG1vZHVsZV9lbWl0X3ZlbmVlcl9mb3JfYWRycChz
-dHJ1Y3QgbW9kdWxlICptb2QsIEVsZjY0X1NoZHIgKnNlY2hkcnMsDQo+ID4gIH0NCj4gPiAgI2Vu
-ZGlmDQo+ID4gIA0KPiA+IC0jZGVmaW5lIGNtcF8zd2F5KGEsYikJKChhKSA8IChiKSA/IC0xIDog
-KGEpID4gKGIpKQ0KPiA+ICsjZGVmaW5lIGNtcF8zd2F5KGEsIGIpCSgoYSkgPCAoYikgPyAtMSA6
-IChhKSA+IChiKSkNCj4gPiAgDQo+ID4gIHN0YXRpYyBpbnQgY21wX3JlbGEoY29uc3Qgdm9pZCAq
-YSwgY29uc3Qgdm9pZCAqYikNCj4gPiAgew0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2tl
-cm5lbC9wZXJmX2V2ZW50LmMgYi9hcmNoL2FybTY0L2tlcm5lbC9wZXJmX2V2ZW50LmMNCj4gPiBp
-bmRleCAzNjA1Zjc3YS4uZDFmZWM0YSAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybTY0L2tlcm5l
-bC9wZXJmX2V2ZW50LmMNCj4gPiArKysgYi9hcmNoL2FybTY0L2tlcm5lbC9wZXJmX2V2ZW50LmMN
-Cj4gPiBAQCAtODEwLDcgKzgxMCw3IEBAIHN0YXRpYyBpbnQgYXJtdjhwbXVfZ2V0X3NpbmdsZV9p
-ZHgoc3RydWN0IHBtdV9od19ldmVudHMgKmNwdWMsDQo+ID4gIHsNCj4gPiAgCWludCBpZHg7DQo+
-ID4gIA0KPiA+IC0JZm9yIChpZHggPSBBUk1WOF9JRFhfQ09VTlRFUjA7IGlkeCA8IGNwdV9wbXUt
-Pm51bV9ldmVudHM7IGlkeCArKykgew0KPiA+ICsJZm9yIChpZHggPSBBUk1WOF9JRFhfQ09VTlRF
-UjA7IGlkeCA8IGNwdV9wbXUtPm51bV9ldmVudHM7IGlkeCsrKSB7DQo+ID4gIAkJaWYgKCF0ZXN0
-X2FuZF9zZXRfYml0KGlkeCwgY3B1Yy0+dXNlZF9tYXNrKSkNCj4gPiAgCQkJcmV0dXJuIGlkeDsN
-Cj4gPiAgCX0NCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9rZXJuZWwvcHJvY2Vzcy5jIGIv
-YXJjaC9hcm02NC9rZXJuZWwvcHJvY2Vzcy5jDQo+ID4gaW5kZXggNjYxNjQ4Ni4uNGNjMWNjYyAx
-MDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybTY0L2tlcm5lbC9wcm9jZXNzLmMNCj4gPiArKysgYi9h
-cmNoL2FybTY0L2tlcm5lbC9wcm9jZXNzLmMNCj4gPiBAQCAtMzA0LDcgKzMwNCw3IEBAIHZvaWQg
-X19zaG93X3JlZ3Moc3RydWN0IHB0X3JlZ3MgKnJlZ3MpDQo+ID4gIAl9DQo+ID4gIH0NCj4gPiAg
-DQo+ID4gLXZvaWQgc2hvd19yZWdzKHN0cnVjdCBwdF9yZWdzICogcmVncykNCj4gPiArdm9pZCBz
-aG93X3JlZ3Moc3RydWN0IHB0X3JlZ3MgKnJlZ3MpDQo+ID4gIHsNCj4gPiAgCV9fc2hvd19yZWdz
-KHJlZ3MpOw0KPiA+ICAJZHVtcF9iYWNrdHJhY2UocmVncywgTlVMTCwgS0VSTl9ERUZBVUxUKTsN
-Cj4gPiBAQCAtNTg3LDcgKzU4Nyw3IEBAIHVuc2lnbmVkIGxvbmcgZ2V0X3djaGFuKHN0cnVjdCB0
-YXNrX3N0cnVjdCAqcCkNCj4gPiAgCQkJcmV0ID0gZnJhbWUucGM7DQo+ID4gIAkJCWdvdG8gb3V0
-Ow0KPiA+ICAJCX0NCj4gPiAtCX0gd2hpbGUgKGNvdW50ICsrIDwgMTYpOw0KPiA+ICsJfSB3aGls
-ZSAoY291bnQrKyA8IDE2KTsNCj4gPiAgDQo+ID4gIG91dDoNCj4gPiAgCXB1dF90YXNrX3N0YWNr
-KHApOw0KPiA+IC0tIA0KPiA+IDEuOC4zLjENCj4gPiANCg0KDQoNCg0KDQo=
+On 2021/2/4 2:48, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+> 
+> Replace the ACPI_DEBUG_PRINT() instances in acpi_video.c with
+> acpi_handle_debug() calls and the ACPI_EXCEPTION()/ACPI_ERROR()/
+> ACPI_WARNING() instances in there with acpi_handle_info() calls,
+> which among other things causes the excessive log levels of those
+> messages to be increased.
+> 
+> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+> used any more from acpi_video.c, drop the no longer needed
+> ACPI_VIDEO_COMPONENT definition from the headers and update the
+> documentation accordingly.
+> 
+> While at it, add a pr_fmt() definition to acpi_video.c, replace the
+> direct printk() invocations in there with acpi_handle_info() or
+> pr_info() (and reduce the excessive log level where applicable) and
+> drop the PREFIX sybmbol definition which is not necessary any more
+> from acpi_video.c.
+> 
+> Also make unrelated janitorial changes to fix up white space and
+> use ACPI_FAILURE() instead of negating ACPI_SUCCESS().
+> 
+> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+
+Thanks
+Hanjun
