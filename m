@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2681E30F03D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DF930F03A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhBDKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:13:30 -0500
-Received: from mga07.intel.com ([134.134.136.100]:13170 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235364AbhBDKNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:13:07 -0500
-IronPort-SDR: r/IG2V1WDwmcauwHvpBtwNMdEkM0n0vc0ujJ+nb8r10jZ3TzedAL1enK43mD4lHyaRmXtahhFO
- W6P36/Gn+Eig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="245284005"
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="245284005"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:12:07 -0800
-IronPort-SDR: iXKFfAUODQbiP17TynK/66aRPZZEhUX2EB1LJa4fxDX6XWUcK6ZZB5LMG36Dg2HBfK7Gl6HMON
- kOAczPLv4sIg==
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="393093528"
-Received: from qwang9-mobl.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.213.123])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:12:04 -0800
-From:   Huang Ying <ying.huang@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [RFC -V5 6/6] memory tiering: add page promotion counter
-Date:   Thu,  4 Feb 2021 18:10:56 +0800
-Message-Id: <20210204101056.89336-7-ying.huang@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210204101056.89336-1-ying.huang@intel.com>
-References: <20210204101056.89336-1-ying.huang@intel.com>
+        id S235367AbhBDKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:13:09 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:37715 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235350AbhBDKM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:12:56 -0500
+Received: by mail-lj1-f170.google.com with SMTP id m22so2716261ljj.4;
+        Thu, 04 Feb 2021 02:12:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:to:cc:from:subject:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=miyRJuOeBOtEV39DJpRHkSNP1r8kzb8jg7PJ/3fyMug=;
+        b=m0/AmqfsV0vE3w/bR5saGcx1LpZyCp31kc94fsPY9rYkWYU+87c/tGRYb6Kr2x6kf3
+         fxGno+XK/rURVUwAV5iyIkIUHsmHXAHkcwPxzpZr0G1wOti4bQyYvq9jk4vxJu20XNjB
+         zPSUuN000caVZvxF/JhZqxNFv4ymdprQYM+5ev66AbUyrL+nkS1ImmnvcKceCRhGNoMe
+         i3RDkHnV6YY72qhkRRgX6X5Ix+k/W4f0WiEuWpLuFAziKAcp8yO3+coasByVav7qIFvY
+         IRv9iLJz71opuPF3L7MKFwbD2OGcJu/QpzNQxkqx42DYNB1/ajlPVFs0PDnyBhSdgE+t
+         oi5g==
+X-Gm-Message-State: AOAM533bhXpSkFRn9Sm+RMqfKro75LU8qY/YVwsswsKPJmZKdb0RiOkB
+        oSzlwaGJi+ChIcWvAL6axg53Jli5Mf0=
+X-Google-Smtp-Source: ABdhPJwXmCVETvaxv5iW5esOR1QNiHMfQn3s/NKlGMoSPgONQgN65H5rjGU2EBFoGR4fIFBuUymIiw==
+X-Received: by 2002:a2e:3307:: with SMTP id d7mr4423040ljc.155.1612433533888;
+        Thu, 04 Feb 2021 02:12:13 -0800 (PST)
+Received: from [10.68.32.65] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id b24sm554880lfc.160.2021.02.04.02.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 02:12:13 -0800 (PST)
+Reply-To: efremov@linux.com
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>, Kurt Garloff <kurt@garloff.de>
+From:   Denis Efremov <efremov@linux.com>
+Subject: [GIT PULL] Floppy patch for 5.12
+Message-ID: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com>
+Date:   Thu, 4 Feb 2021 13:12:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To distinguish the number of the memory tiering promoted pages from
-that of the originally inter-socket NUMA balancing migrated pages.
-The counter is per-node (count in the target node).  So this can be
-used to identify promotion imbalance among the NUMA nodes.
+The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Rik van Riel <riel@redhat.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
----
- include/linux/mmzone.h |  1 +
- mm/migrate.c           | 10 +++++++++-
- mm/vmstat.c            |  1 +
- 3 files changed, 11 insertions(+), 1 deletion(-)
+  Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 897331d5e57c..52c68f59f378 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -209,6 +209,7 @@ enum node_stat_item {
- #endif
- #ifdef CONFIG_NUMA_BALANCING
- 	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
-+	PGPROMOTE_SUCCESS,	/* promote successfully */
- #endif
- 	NR_VM_NODE_STAT_ITEMS
- };
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 0982919f6798..eb2130b4ecb5 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2175,8 +2175,13 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
- 			putback_lru_page(page);
- 		}
- 		isolated = 0;
--	} else
-+	} else {
- 		count_vm_numa_event(NUMA_PAGE_MIGRATE);
-+		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
-+		    !node_is_toptier(page_to_nid(page)) && node_is_toptier(node))
-+			mod_node_page_state(NODE_DATA(node), PGPROMOTE_SUCCESS,
-+					    nr_succeeded);
-+	}
- 	BUG_ON(!list_empty(&migratepages));
- 	return isolated;
- 
-@@ -2301,6 +2306,9 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
- 	mod_node_page_state(page_pgdat(page),
- 			NR_ISOLATED_ANON + page_lru,
- 			-HPAGE_PMD_NR);
-+	if (!node_is_toptier(page_to_nid(page)) && node_is_toptier(node))
-+		mod_node_page_state(NODE_DATA(node), PGPROMOTE_SUCCESS,
-+				    HPAGE_PMD_NR);
- 	return isolated;
- 
- out_fail:
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 0678da1db47a..3786d8773404 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1217,6 +1217,7 @@ const char * const vmstat_text[] = {
- #endif
- #ifdef CONFIG_NUMA_BALANCING
- 	"pgpromote_candidate",
-+	"pgpromote_success",
- #endif
- 
- 	/* enum writeback_stat_item counters */
--- 
-2.29.2
+are available in the Git repository at:
 
+  https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
+
+for you to fetch changes up to 8a0c014cd20516ade9654fc13b51345ec58e7be8:
+
+  floppy: reintroduce O_NDELAY fix (2021-02-04 13:00:24 +0300)
+
+----------------------------------------------------------------
+Floppy patch for 5.12
+
+- O_NDELAY/O_NONBLOCK fix for floppy from Jiri Kosina.
+  libblkid is using O_NONBLOCK when probing devices.
+  This leads to pollution of kernel log with error
+  messages from floppy driver. Also the driver fails
+  a mount prior to being opened without O_NONBLOCK
+  at least once. The patch fixes the issues.
+
+Signed-off-by: Denis Efremov <efremov@linux.com>
+
+----------------------------------------------------------------
+Jiri Kosina (1):
+      floppy: reintroduce O_NDELAY fix
+
+ drivers/block/floppy.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
