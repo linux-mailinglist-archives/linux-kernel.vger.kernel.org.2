@@ -2,262 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C55930F971
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9615C30F976
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238380AbhBDRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237797AbhBDRSW (ORCPT
+        id S238149AbhBDRUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:20:55 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2498 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237866AbhBDRTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:18:22 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B6FC0613D6;
-        Thu,  4 Feb 2021 09:17:42 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id h12so5634652lfp.9;
-        Thu, 04 Feb 2021 09:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=we57E+UnULJ0e1+k8Qouq8mtW4H8T+LwgEARxNrur7c=;
-        b=RVRBIuxWi9E4oMIxMdwocQ6KUHIeKv+BAmzMOeTTMNZnpq3htRmHKqVcWnowo8ifa9
-         nu1VDiiMOJNFfmNCCnRQyfLnif+TzqgLRycQvJRVKi+/K+mMLN4LTM69VS7QuSkGCLD1
-         cldFBVDdBmkONITgU6FUQ0HmjlT3hfABmuCyyD0DKB0aajkpwY0lS3WBloSxSBtlnSnZ
-         eN94Yx3SIvRj2o47tk+DKWz+pt4hsYmFSYLIXEc1ZyUClK775L7K4M2clq9nHeZx4OA0
-         ccsDmOseSKAPeqjbB5Mxu/KvRFys891ZUeKrXVbTDEZMyn58sf/oHg6/WUsEEjM8JvE0
-         upFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=we57E+UnULJ0e1+k8Qouq8mtW4H8T+LwgEARxNrur7c=;
-        b=BqqImSSwhOSvU1wd8BLCH0Zh+VpU1EA4loqGVegAWz/3o+XCDGX3fjydObeUTmWVNT
-         MSyzhjo2dvRZ5RgOZ9oR0KBwBLc6tiLGhLbQk621nRc2br+Xf/L10LGm8jYa+zCcJ2t9
-         KxRsCv6orZhffqJQ9GhgzltYFo6Xw0mdBCy4AwSlzOm9+Efitmj06a2t0MfRDmwL8/oJ
-         TT/utAnLFcH6qn9hTCUTnUXvNzwplqWMMSPsMeks+EMd5xAXid7avWuDNT23TQlPn3pz
-         L6hqZ+OK4atxoeTMtlKAYyaaGRSZ3BCz3KN4YXOoqDjqoAtOpbuWXOIko3ev+hWjnDq2
-         wzOA==
-X-Gm-Message-State: AOAM533pCLzHvRNiIvqu4KjYVkb2RZ1FDB51H6x//tRzVaf5rnWIy2Y3
-        nR7D1cJlTf9hy5UBhG8JfpAcgdQrk0dfBYHApTs=
-X-Google-Smtp-Source: ABdhPJwXb9hSdSuAhB6BIV1dO3NpauTN7OTiqcR9t/8uM0vsLFoYv0N6huRGpPUNdg3MQn3g7pb2sU5Z0HaHGtKbRNE=
-X-Received: by 2002:a19:ccf:: with SMTP id 198mr238092lfm.422.1612459060592;
- Thu, 04 Feb 2021 09:17:40 -0800 (PST)
+        Thu, 4 Feb 2021 12:19:17 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DWlWh0l6mz67kJW;
+        Fri,  5 Feb 2021 01:13:52 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 4 Feb 2021 18:18:34 +0100
+Received: from localhost (10.47.65.115) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 4 Feb 2021
+ 17:18:33 +0000
+Date:   Thu, 4 Feb 2021 17:17:48 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
+        <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 02/11] iio: core: register chardev only if needed
+Message-ID: <20210204171748.00002316@Huawei.com>
+In-Reply-To: <20210201145105.20459-3-alexandru.ardelean@analog.com>
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+        <20210201145105.20459-3-alexandru.ardelean@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-8-shy828301@gmail.com>
- <374a5513-9e80-f240-ef82-ef35c13931c1@virtuozzo.com>
-In-Reply-To: <374a5513-9e80-f240-ef82-ef35c13931c1@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 4 Feb 2021 09:17:28 -0800
-Message-ID: <CAHbLzkpSSkgiSewqu2ie8N7yESqkoGtAOmQrZYFEb-2CRBCWiQ@mail.gmail.com>
-Subject: Re: [v6 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.65.115]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 12:31 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 03.02.2021 20:20, Yang Shi wrote:
-> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> >
-> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > may suffer from over shrink, excessive reclaim latency, etc.
-> >
-> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> >
-> > We observed this hit in our production environment which was running vfs heavy workload
-> > shown as the below tracing log:
-> >
-> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > cache items 246404277 delta 31345 total_scan 123202138
-> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > last shrinker return val 123186855
-> >
-> > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> >
-> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > better isolation.
-> >
-> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |  7 +++---
-> >  mm/vmscan.c                | 45 ++++++++++++++++++++++++--------------
-> >  2 files changed, 33 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 4c9253896e25..c457fc7bc631 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -93,12 +93,13 @@ struct lruvec_stat {
-> >  };
-> >
-> >  /*
-> > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> > - * which have elements charged to this memcg.
-> > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-> > + * shrinkers, which have elements charged to this memcg.
-> >   */
-> >  struct shrinker_info {
-> >       struct rcu_head rcu;
-> > -     unsigned long map[];
-> > +     atomic_long_t *nr_deferred;
-> > +     unsigned long *map;
-> >  };
-> >
-> >  /*
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index dc0d69e081b0..d9126f12890f 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -196,10 +196,12 @@ static void free_shrinker_info_rcu(struct rcu_head *head)
-> >  }
-> >
-> >  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> > -                                int size, int old_size)
-> > +                                 int m_size, int d_size,
-> > +                                 int old_m_size, int old_d_size)
-> >  {
-> >       struct shrinker_info *new, *old;
-> >       int nid;
-> > +     int size = m_size + d_size;
-> >
-> >       for_each_node(nid) {
-> >               old = rcu_dereference_protected(
-> > @@ -212,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> >               if (!new)
-> >                       return -ENOMEM;
-> >
-> > -             /* Set all old bits, clear all new bits */
-> > -             memset(new->map, (int)0xff, old_size);
-> > -             memset((void *)new->map + old_size, 0, size - old_size);
-> > +             new->nr_deferred = (atomic_long_t *)(new + 1);
-> > +             new->map = (void *)new->nr_deferred + d_size;
-> > +
-> > +             /* map: set all old bits, clear all new bits */
-> > +             memset(new->map, (int)0xff, old_m_size);
-> > +             memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
-> > +             /* nr_deferred: copy old values, clear all new values */
-> > +             memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
-> > +             memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
-> >
-> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> >               call_rcu(&old->rcu, free_shrinker_info_rcu);
-> > @@ -229,9 +237,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
-> >       struct shrinker_info *info;
-> >       int nid;
-> >
-> > -     if (mem_cgroup_is_root(memcg))
-> > -             return;
-> > -
-> >       for_each_node(nid) {
-> >               pn = mem_cgroup_nodeinfo(memcg, nid);
-> >               info = rcu_dereference_protected(pn->shrinker_info, true);
-> > @@ -244,12 +249,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >  {
-> >       struct shrinker_info *info;
-> >       int nid, size, ret = 0;
-> > -
-> > -     if (mem_cgroup_is_root(memcg))
-> > -             return 0;
-> > +     int m_size, d_size = 0;
-> >
-> >       down_write(&shrinker_rwsem);
-> > -     size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> > +     m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> > +     d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> > +     size = m_size + d_size;
-> > +
-> >       for_each_node(nid) {
-> >               info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
-> >               if (!info) {
-> > @@ -257,6 +263,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >                       ret = -ENOMEM;
-> >                       break;
-> >               }
-> > +             info->nr_deferred = (atomic_long_t *)(info + 1);
-> > +             info->map = (void *)info->nr_deferred + d_size;
-> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
-> >       }
-> >       up_write(&shrinker_rwsem);
-> > @@ -268,10 +276,16 @@ static int expand_shrinker_info(int new_id)
-> >  {
-> >       int size, old_size, ret = 0;
-> >       int new_nr_max = new_id + 1;
-> > +     int m_size, d_size = 0;
-> > +     int old_m_size, old_d_size = 0;
-> >       struct mem_cgroup *memcg;
-> >
-> > -     size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
-> > -     old_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> > +     m_size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
-> > +     d_size = new_nr_max * sizeof(atomic_long_t);
-> > +     size = m_size + d_size;
-> > +     old_m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> > +     old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> > +     old_size = old_m_size + old_d_size;
-> >       if (size <= old_size)
-> >               goto out;
->
-> Before this patch we used to allocate shrinker_info with BITS_PER_LONG batching.
-> So, first registered shrinker used to allocate a map of unsigned long size, and
-> we could to allocate 63 more shrinkers without maps expanding.
->
-> After this patch we will expand maps on every shrinker registration, won't we?
+On Mon, 1 Feb 2021 16:50:56 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Yes, I'm supposed "maps" means "info". I'm supposed the most shrinkers
-should be registered at boot time, and typically very few memcgs are
-created at boot time so I didn't treat it as a hot path.
+> We only need a chardev if we need to support buffers and/or events.
+> 
+> With this change, a chardev will be created only if an IIO buffer is
+> attached OR an event_interface is configured.
+> 
+> Otherwise, no chardev will be created, and the IIO device will get
+> registered with the 'device_add()' call.
+> 
+> Quite a lot of IIO devices don't really need a chardev, so this is a minor
+> improvement to the IIO core, as the IIO device will take up (slightly)
+> fewer resources.
+> 
+> In order to not create a chardev, we mostly just need to not initialize the
+> indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
+> behaves like device_add().
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-> What do you think about batching here?
+Perhaps add a note to this description that it's 'sort' of a breaking ABI
+change, but we don't believe it will affect any userspace code as they
+likely check there is some point in opening the file before trying to do
+so.
 
-Just off the top of my head, we could allocate, for example, 64
-nr_deferred (64 * sizeof(atomic_long_t)) so that we just need to
-expand info for every 64 shrinker registrations. Maybe define it
-depends on the machine (64 bit - 64, 32 bit - 32).
+If we are wrong we can revert it but I doubt we are - subject to the normal
+small fixable scripts people might be using and are happy to fix.
 
-Why 64? Basically a magic number. And when I was investigating that
-list_lru reparent race issue
-(https://lore.kernel.org/linux-mm/20201202171749.264354-1-shy828301@gmail.com/)
-I happened to notice that there are at most 64 shrinkers registered in
-our production environment (a typical data center configuration).
+Jonathan
 
-How do you think about it?
+> ---
+>  drivers/iio/industrialio-core.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 7db761afa578..0a6fd299a978 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1761,6 +1761,15 @@ static const struct file_operations iio_buffer_fileops = {
+>  	.release = iio_chrdev_release,
+>  };
+>  
+> +static const struct file_operations iio_event_fileops = {
+> +	.owner = THIS_MODULE,
+> +	.llseek = noop_llseek,
+> +	.unlocked_ioctl = iio_ioctl,
+> +	.compat_ioctl = compat_ptr_ioctl,
+> +	.open = iio_chrdev_open,
+> +	.release = iio_chrdev_release,
+> +};
+> +
+>  static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
+>  {
+>  	int i, j;
+> @@ -1788,6 +1797,7 @@ static const struct iio_buffer_setup_ops noop_ring_setup_ops;
+>  
+>  int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+>  {
+> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+>  	int ret;
+>  
+>  	if (!indio_dev->info)
+> @@ -1805,9 +1815,6 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	/* configure elements for the chrdev */
+> -	indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
+> -
+>  	iio_device_register_debugfs(indio_dev);
+>  
+>  	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
+> @@ -1836,9 +1843,15 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+>  		indio_dev->setup_ops == NULL)
+>  		indio_dev->setup_ops = &noop_ring_setup_ops;
+>  
+> -	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
+> +	if (indio_dev->buffer)
+> +		cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
+> +	else if (iio_dev_opaque->event_interface)
+> +		cdev_init(&indio_dev->chrdev, &iio_event_fileops);
+>  
+> -	indio_dev->chrdev.owner = this_mod;
+> +	if (indio_dev->buffer || iio_dev_opaque->event_interface) {
+> +		indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
+> +		indio_dev->chrdev.owner = this_mod;
+> +	}
+>  
+>  	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+>  	if (ret < 0)
 
-> >
-> > @@ -280,9 +294,8 @@ static int expand_shrinker_info(int new_id)
-> >
-> >       memcg = mem_cgroup_iter(NULL, NULL, NULL);
-> >       do {
-> > -             if (mem_cgroup_is_root(memcg))
-> > -                     continue;
-> > -             ret = expand_one_shrinker_info(memcg, size, old_size);
-> > +             ret = expand_one_shrinker_info(memcg, m_size, d_size,
-> > +                                            old_m_size, old_d_size);
-> >               if (ret) {
-> >                       mem_cgroup_iter_break(NULL, memcg);
-> >                       goto out;
-> >
->
->
