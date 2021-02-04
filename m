@@ -2,346 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C746030F114
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782F430F119
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbhBDKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:43:08 -0500
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:59519 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231387AbhBDKnG (ORCPT
+        id S235422AbhBDKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:44:50 -0500
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:59969 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235389AbhBDKot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:43:06 -0500
+        Thu, 4 Feb 2021 05:44:49 -0500
 Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
         by smtp-cloud8.xs4all.net with ESMTPA
-        id 7c5alHa2hW4yN7c5dlc7NP; Thu, 04 Feb 2021 11:42:22 +0100
+        id 7c7HlHadHW4yN7c7Klc7g7; Thu, 04 Feb 2021 11:44:07 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612435342; bh=LVXj6WynYlSNFB/7qrJPD0cd3kyvAhOVIs5+V5Y2e1s=;
+        t=1612435447; bh=qBOFjvexQpx6t074gNfGRNYI60yBOOT2dXXGLoJP60A=;
         h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
          Subject;
-        b=kdRIBR/dAzJfwX7jnHieZ4LtdBqEhfN0hDb7KWsWsmOCNDIOI/79Wt598c45snkMp
-         2iAmbKirBarPb/1NB5OBsxXznxl72k7c3k7US2h/MHqbcdB8y4eaiSe1aDuiflxu5Q
-         h0VtwbhFQx5hCFUgU1+fDdSncjVsqjNxt0a5H2C4ufQHycgqtIlYZH7Y25ZmthyOsx
-         HuKC7Tf3Tjc8Jw2q7SzTRNwMVbl9SXJQ+0v2I7XgCGpOpW3HvcqN9kNwBYBk6SlrB6
-         Go9000otaICiLXFkN/vtjb4/T4PIaGK7uDX4Ueplc5MNf2lz9y/ORy/PCLXFmyebbs
-         TZCKetbG1Q26w==
-Subject: Re: [PATCH v3 4/4] drm_dp_cec: add MST support
-To:     Sam McNally <sammc@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+        b=DQm6x9oVafxGzRLY1EDIeMUPsytsXJRz/XyA6S6VHxXZanM23Ai3CLgSjLFO6jZ7V
+         k29muxcJ0TthMeXBApHUWhvdRh6PYWsVRLEu68+Fnqowb/GSP8iOZcFM3TC6UXdD2F
+         64jVtLRc2CSwR2PWjuTg7vut5Q33YyXJFOK0DwECP7PDA3PQ8LXpSyZUrEMHDse547
+         um/uStR2f4aaY+iFj/TafCDdTCHtx+EtWG+Sh+wUn2uOKWFZsMF18ee+q9aOdNRv51
+         7RZ+z/kX2FYLubIc5+n7aDHDG0jQmZ8X6riaQb6B0ScZ7aMPSOdKM+ksRsyJ/cUNqA
+         JtG/fDAM4ApCw==
+Subject: Re: [PATCH v3 1/4] dp/dp_mst: Add support for sink event notify
+ messages
+To:     Sam McNally <sammc@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, lyude@redhat.com
 References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
- <20200923121320.v3.4.If7fc06fd679af0665ada9ff0524291c61dd35d24@changeid>
+ <57384ff32e3b42e8ea72ca298e9ae1f7fdac25d7.camel@redhat.com>
+ <a2a23c6a-4c38-59ee-7b96-70140ada0f44@xs4all.nl>
+ <CAJqEsoAAgqnirFirxfiAvTObG-j9DRE_qvMd1uu5DRTHAyFq=Q@mail.gmail.com>
 From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <ad36a026-e5b4-1822-15c2-e918aa2cbc7e@xs4all.nl>
-Date:   Thu, 4 Feb 2021 11:42:18 +0100
+Message-ID: <5d171f6b-4dd5-48ee-bf6e-affed41fc271@xs4all.nl>
+Date:   Thu, 4 Feb 2021 11:44:03 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200923121320.v3.4.If7fc06fd679af0665ada9ff0524291c61dd35d24@changeid>
+In-Reply-To: <CAJqEsoAAgqnirFirxfiAvTObG-j9DRE_qvMd1uu5DRTHAyFq=Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfASQ8SdGrgk7PHBsmQiCN2CCqAy1mrLcnKLFmmUWSf05HMYVegrRfkCElRhG+bi3/7KHQYsPce518W9bXtdWHL/rgtYJRjfEc5BSAS11O9rgWfPBWemB
- ccZ46OGP35BbMQuuBlsEFev/yRIeOHPWmxZHU1WKz9hL/o9uupLOtbRWeNEZ9SiDg+EVOQfTTwTHemy9d6ja7PtHzWygiX2Dnd40fx8qJYO7edyYqGMGmBJX
- 9nX7Ypk/dKFhCdSNTkFV/AD92Nf/CVTLBpWSHpog8lQCY6LyjJvAuuVRg5hGHl9YyprE9FCZhzLHW5V9jQ5DXjx8bs49X3cWuzWNHXQazVmFt9qCqGKn504O
- PsY5gZKmmurN3rsL3HPhItwNSnmYnNqTBMsfdyw1gW3iHanA2w0Ye2t4mFaMyFvTsUKbIa4Hlyhe9bzatJxsX9O8b5RTJg==
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfP5nKHa/hZ4jepDNuozwqJQHVwDbeefgvpV6/X7lNCPEPHWKQJe//snfgR5hAYXp5cw/8/o3N/FvqPWWhJ58YSYShw5DgAfsrRTJU1Y2LjgxeazZeh7+
+ qVryipONG9jvb9ebqE5QUX/T2Z8l/zw8HjI8bDmMFXR3PIPwHPJYs/Qqd0HGuRsyjeqCN3Ua2/6JM/0GgcobuKjrm+Z+JV+x0NtURw2A1YjJMt/Gmp98xwUh
+ d/qtUl/x21nhm8yt0+wF6wUnT6qzaM9IsOiUMdH1qUZguGjQUk6GGm37htlxV+/wOVN2G+96xmrJUfVwGDz3G8x0FuyK6EdDdpBXVqo0DmmWcMKsIt8ZFyqE
+ kuNHUvJR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2020 04:13, Sam McNally wrote:
-> With DP v2.0 errata E5, CEC tunneling can be supported through an MST
-> topology.
-> 
-> There are some minor differences for CEC tunneling through an MST
-> topology compared to CEC tunneling to an SST port:
-> - CEC IRQs are delivered via a sink event notify message
-> - CEC-related DPCD registers are accessed via remote DPCD reads and
->   writes.
-> 
-> This results in the MST implementation diverging from the existing SST
-> implementation:
-> - sink event notify messages with CEC_IRQ ID set indicate CEC IRQ rather
->   than ESI1
-> - setting edid and handling CEC IRQs, which can be triggered from
->   contexts where locks held preclude HPD handling, are deferred to avoid
->   remote DPCD access which would block until HPD handling is performed
->   or a timeout
-> 
-> Register and unregister for all MST connectors, ensuring their
-> drm_dp_aux_cec struct won't be accessed uninitialized.
-> 
-> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Sam McNally <sammc@chromium.org>
-> ---
-> 
-> Changes in v3:
-> - Fixed whitespace in drm_dp_cec_mst_irq_work()
-> - Moved drm_dp_cec_mst_set_edid_work() with the other set_edid functions
-> 
-> Changes in v2:
-> - Used aux->is_remote instead of aux->cec.is_mst, removing the need for
->   the previous patch in the series
-> - Added a defensive check for null edid in the deferred set_edid work,
->   in case the edid is no longer valid at that point
-> 
->  drivers/gpu/drm/drm_dp_cec.c          | 68 +++++++++++++++++++++++++--
->  drivers/gpu/drm/drm_dp_mst_topology.c | 24 ++++++++++
->  include/drm/drm_dp_helper.h           |  4 ++
->  3 files changed, 91 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_dp_cec.c b/drivers/gpu/drm/drm_dp_cec.c
-> index 3ab2609f9ec7..1020b2cffdf0 100644
-> --- a/drivers/gpu/drm/drm_dp_cec.c
-> +++ b/drivers/gpu/drm/drm_dp_cec.c
-> @@ -14,6 +14,7 @@
->  #include <drm/drm_connector.h>
->  #include <drm/drm_device.h>
->  #include <drm/drm_dp_helper.h>
-> +#include <drm/drm_dp_mst_helper.h>
->  
->  /*
->   * Unfortunately it turns out that we have a chicken-and-egg situation
-> @@ -248,6 +249,10 @@ void drm_dp_cec_irq(struct drm_dp_aux *aux)
->  	if (!aux->transfer)
->  		return;
->  
-> +	if (aux->is_remote) {
-> +		schedule_work(&aux->cec.mst_irq_work);
-> +		return;
-> +	}
+Hi Sam,
 
-Are these workqueues for cec_irq and cec_set_edid actually needed? They are called
-directly from drm_dp_mst_topology.c, and I think they can be handled identically to
-a normal, non-remote, aux device.
-
-Avoiding using a workqueue probably also means that there is no need for exporting
-drm_dp_mst_topology_get_port_validated and drm_dp_mst_topology_put_port.
-
-Provided that I am not missing something, this should simplify the code quite a bit.
+I replied to several of the patches: it looks like the drm code has changed since
+some of this patches were written, and I think it can be simplified quite a bit.
 
 Regards,
 
 	Hans
 
->  	mutex_lock(&aux->cec.lock);
->  	if (!aux->cec.adap)
->  		goto unlock;
-> @@ -276,6 +281,23 @@ static bool drm_dp_cec_cap(struct drm_dp_aux *aux, u8 *cec_cap)
->  	return true;
->  }
->  
-> +static void drm_dp_cec_mst_irq_work(struct work_struct *work)
-> +{
-> +	struct drm_dp_aux *aux = container_of(work, struct drm_dp_aux,
-> +					      cec.mst_irq_work);
-> +	struct drm_dp_mst_port *port =
-> +		container_of(aux, struct drm_dp_mst_port, aux);
-> +
-> +	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-> +	if (!port)
-> +		return;
-> +	mutex_lock(&aux->cec.lock);
-> +	if (aux->cec.adap)
-> +		drm_dp_cec_handle_irq(aux);
-> +	mutex_unlock(&aux->cec.lock);
-> +	drm_dp_mst_topology_put_port(port);
-> +}
-> +
->  /*
->   * Called if the HPD was low for more than drm_dp_cec_unregister_delay
->   * seconds. This unregisters the CEC adapter.
-> @@ -297,7 +319,8 @@ static void drm_dp_cec_unregister_work(struct work_struct *work)
->   * were unchanged and just update the CEC physical address. Otherwise
->   * unregister the old CEC adapter and create a new one.
->   */
-> -void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-> +static void drm_dp_cec_handle_set_edid(struct drm_dp_aux *aux,
-> +				       const struct edid *edid)
->  {
->  	struct drm_connector *connector = aux->cec.connector;
->  	u32 cec_caps = CEC_CAP_DEFAULTS | CEC_CAP_NEEDS_HPD |
-> @@ -306,10 +329,6 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  	unsigned int num_las = 1;
->  	u8 cap;
->  
-> -	/* No transfer function was set, so not a DP connector */
-> -	if (!aux->transfer)
-> -		return;
-> -
->  #ifndef CONFIG_MEDIA_CEC_RC
->  	/*
->  	 * CEC_CAP_RC is part of CEC_CAP_DEFAULTS, but it is stripped by
-> @@ -320,6 +339,7 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  	 */
->  	cec_caps &= ~CEC_CAP_RC;
->  #endif
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
->  	cancel_delayed_work_sync(&aux->cec.unregister_work);
->  
->  	mutex_lock(&aux->cec.lock);
-> @@ -375,8 +395,40 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  unlock:
->  	mutex_unlock(&aux->cec.lock);
->  }
-> +
-> +void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-> +{
-> +	/* No transfer function was set, so not a DP connector */
-> +	if (!aux->transfer)
-> +		return;
-> +
-> +	if (aux->is_remote)
-> +		schedule_work(&aux->cec.mst_set_edid_work);
-> +	else
-> +		drm_dp_cec_handle_set_edid(aux, edid);
-> +}
->  EXPORT_SYMBOL(drm_dp_cec_set_edid);
->  
-> +static void drm_dp_cec_mst_set_edid_work(struct work_struct *work)
-> +{
-> +	struct drm_dp_aux *aux =
-> +		container_of(work, struct drm_dp_aux, cec.mst_set_edid_work);
-> +	struct drm_dp_mst_port *port =
-> +		container_of(aux, struct drm_dp_mst_port, aux);
-> +	struct edid *edid = NULL;
-> +
-> +	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-> +	if (!port)
-> +		return;
-> +
-> +	edid = drm_get_edid(port->connector, &port->aux.ddc);
-> +
-> +	if (edid)
-> +		drm_dp_cec_handle_set_edid(aux, edid);
-> +
-> +	drm_dp_mst_topology_put_port(port);
-> +}
-> +
->  /*
->   * The EDID disappeared (likely because of the HPD going down).
->   */
-> @@ -393,6 +445,8 @@ void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
->  		goto unlock;
->  
->  	cec_phys_addr_invalidate(aux->cec.adap);
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
-> +
->  	/*
->  	 * We're done if we want to keep the CEC device
->  	 * (drm_dp_cec_unregister_delay is >= NEVER_UNREG_DELAY) or if the
-> @@ -433,6 +487,8 @@ void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
->  	aux->cec.connector = connector;
->  	INIT_DELAYED_WORK(&aux->cec.unregister_work,
->  			  drm_dp_cec_unregister_work);
-> +	INIT_WORK(&aux->cec.mst_irq_work, drm_dp_cec_mst_irq_work);
-> +	INIT_WORK(&aux->cec.mst_set_edid_work, drm_dp_cec_mst_set_edid_work);
->  }
->  EXPORT_SYMBOL(drm_dp_cec_register_connector);
->  
-> @@ -442,6 +498,8 @@ EXPORT_SYMBOL(drm_dp_cec_register_connector);
->   */
->  void drm_dp_cec_unregister_connector(struct drm_dp_aux *aux)
->  {
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
-> +	cancel_work_sync(&aux->cec.mst_set_edid_work);
->  	if (!aux->cec.adap)
->  		return;
->  	cancel_delayed_work_sync(&aux->cec.unregister_work);
-> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-> index c783a2a1c114..221c30133739 100644
-> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> @@ -2183,6 +2183,8 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
->  int drm_dp_mst_connector_late_register(struct drm_connector *connector,
->  				       struct drm_dp_mst_port *port)
->  {
-> +	drm_dp_cec_register_connector(&port->aux, connector);
-> +
->  	DRM_DEBUG_KMS("registering %s remote bus for %s\n",
->  		      port->aux.name, connector->kdev->kobj.name);
->  
-> @@ -2206,6 +2208,8 @@ void drm_dp_mst_connector_early_unregister(struct drm_connector *connector,
->  	DRM_DEBUG_KMS("unregistering %s remote bus for %s\n",
->  		      port->aux.name, connector->kdev->kobj.name);
->  	drm_dp_aux_unregister_devnode(&port->aux);
-> +
-> +	drm_dp_cec_unregister_connector(&port->aux);
->  }
->  EXPORT_SYMBOL(drm_dp_mst_connector_early_unregister);
->  
-> @@ -2515,6 +2519,21 @@ drm_dp_mst_handle_conn_stat(struct drm_dp_mst_branch *mstb,
->  		queue_work(system_long_wq, &mstb->mgr->work);
->  }
->  
-> +static void
-> +drm_dp_mst_handle_sink_event(struct drm_dp_mst_branch *mstb,
-> +			    struct drm_dp_sink_event_notify *sink_event)
-> +{
-> +	struct drm_dp_mst_port *port;
-> +
-> +	if (sink_event->event_id & DP_SINK_EVENT_CEC_IRQ_EVENT) {
-> +		port = drm_dp_get_port(mstb, sink_event->port_number);
-> +		if (port) {
-> +			drm_dp_cec_irq(&port->aux);
-> +			drm_dp_mst_topology_put_port(port);
-> +		}
-> +	}
-> +}
-> +
->  static struct drm_dp_mst_branch *drm_dp_get_mst_branch_device(struct drm_dp_mst_topology_mgr *mgr,
->  							       u8 lct, u8 *rad)
->  {
-> @@ -3954,6 +3973,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr *mgr,
->  	if (msg->req_type == DP_CONNECTION_STATUS_NOTIFY) {
->  		drm_dp_mst_handle_conn_stat(mstb, &msg->u.conn_stat);
->  		hotplug = true;
-> +	} else if (msg->req_type == DP_SINK_EVENT_NOTIFY) {
-> +		drm_dp_mst_handle_sink_event(mstb, &msg->u.sink_event);
->  	}
->  
->  	drm_dp_mst_topology_put_mstb(mstb);
-> @@ -4147,6 +4168,8 @@ drm_dp_mst_detect_port(struct drm_connector *connector,
->  		break;
->  	}
->  out:
-> +	if (ret != connector_status_connected)
-> +		drm_dp_cec_unset_edid(&port->aux);
->  	drm_dp_mst_topology_put_port(port);
->  	return ret;
->  }
-> @@ -4177,6 +4200,7 @@ struct edid *drm_dp_mst_get_edid(struct drm_connector *connector, struct drm_dp_
->  		edid = drm_get_edid(connector, &port->aux.ddc);
->  	}
->  	port->has_audio = drm_detect_monitor_audio(edid);
-> +	drm_dp_cec_set_edid(&port->aux, edid);
->  	drm_dp_mst_topology_put_port(port);
->  	return edid;
->  }
-> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-> index 85513eeb2196..d8ee24a6319c 100644
-> --- a/include/drm/drm_dp_helper.h
-> +++ b/include/drm/drm_dp_helper.h
-> @@ -1496,12 +1496,16 @@ struct drm_connector;
->   * @adap: the CEC adapter for CEC-Tunneling-over-AUX support.
->   * @connector: the connector this CEC adapter is associated with
->   * @unregister_work: unregister the CEC adapter
-> + * @mst_irq_work: IRQ for CEC events on an MST branch
-> + * @mst_set_edid_work: set the EDID for an MST branch
->   */
->  struct drm_dp_aux_cec {
->  	struct mutex lock;
->  	struct cec_adapter *adap;
->  	struct drm_connector *connector;
->  	struct delayed_work unregister_work;
-> +	struct work_struct mst_irq_work;
-> +	struct work_struct mst_set_edid_work;
->  };
->  
->  /**
+On 04/02/2021 10:54, Sam McNally wrote:
+> I can for this patch; I'm not really sure of the right approach for the other two though.
+> 
+> On Wed, 3 Feb 2021 at 20:57, Hans Verkuil <hverkuil@xs4all.nl <mailto:hverkuil@xs4all.nl>> wrote:
+> 
+>     Hi Sam,
+> 
+>     Are you able to work on a v4?
+> 
+>     I haven't heard from you for some time now. I would be willing to take over
+>     this series if it wasn't for the fact that I do not have any hardware to test
+>     this with.
+> 
+>     Regards,
+> 
+>             Hans
+> 
+>     On 01/02/2021 22:56, Lyude Paul wrote:
+>     > On Wed, 2020-09-23 at 12:13 +1000, Sam McNally wrote:
+>     >> Sink event notify messages are used for MST CEC IRQs. Add parsing
+>     >> support for sink event notify messages in preparation for handling MST
+>     >> CEC IRQs.
+>     >>
+>     >> Signed-off-by: Sam McNally <sammc@chromium.org <mailto:sammc@chromium.org>>
+>     >> ---
+>     >>
+>     >> (no changes since v1)
+>     >>
+>     >>  drivers/gpu/drm/drm_dp_mst_topology.c | 37 ++++++++++++++++++++++++++-
+>     >>  include/drm/drm_dp_mst_helper.h       | 14 ++++++++++
+>     >>  2 files changed, 50 insertions(+), 1 deletion(-)
+>     >>
+>     >> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
+>     >> b/drivers/gpu/drm/drm_dp_mst_topology.c
+>     >> index 17dbed0a9800..15b6cc39a754 100644
+>     >> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+>     >> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+>     >> @@ -1027,6 +1027,30 @@ static bool
+>     >> drm_dp_sideband_parse_resource_status_notify(struct drm_dp_sideband_
+>     >>         return false;
+>     >>  }
+>     >>  
+>     >> +static bool drm_dp_sideband_parse_sink_event_notify(
+>     >> +       struct drm_dp_sideband_msg_rx *raw,
+>     >> +       struct drm_dp_sideband_msg_req_body *msg)
+>     >> +{
+>     >> +       int idx = 1;
+>     >> +
+>     >> +       msg->u.sink_event.port_number = (raw->msg[idx] & 0xf0) >> 4;
+>     >> +       idx++;
+>     >> +       if (idx > raw->curlen)
+>     >> +               goto fail_len;
+>     >> +
+>     >> +       memcpy(msg->u.sink_event.guid, &raw->msg[idx], 16);
+>     >> +       idx += 16;
+>     >> +       if (idx > raw->curlen)
+>     >> +               goto fail_len;
+>     >> +
+>     >> +       msg->u.sink_event.event_id = (raw->msg[idx] << 8) | (raw->msg[idx +
+>     >> 1]);
+>     >> +       idx++;
+>     >> +       return true;
+>     >> +fail_len:
+>     >> +       DRM_DEBUG_KMS("sink event notify parse length fail %d %d\n", idx, raw-
+>     >>> curlen);
+>     >
+>     > Is it possible for us to use drm_dbg_kms() here?
+>     >
+>     > Also-there is an MST selftest you should update for this
+>     >
+>     >> +       return false;
+>     >> +}
+>     >> +
+>     >>  static bool drm_dp_sideband_parse_req(struct drm_dp_sideband_msg_rx *raw,
+>     >>                                       struct drm_dp_sideband_msg_req_body
+>     >> *msg)
+>     >>  {
+>     >> @@ -1038,6 +1062,8 @@ static bool drm_dp_sideband_parse_req(struct
+>     >> drm_dp_sideband_msg_rx *raw,
+>     >>                 return drm_dp_sideband_parse_connection_status_notify(raw,
+>     >> msg);
+>     >>         case DP_RESOURCE_STATUS_NOTIFY:
+>     >>                 return drm_dp_sideband_parse_resource_status_notify(raw, msg);
+>     >> +       case DP_SINK_EVENT_NOTIFY:
+>     >> +               return drm_dp_sideband_parse_sink_event_notify(raw, msg);
+>     >>         default:
+>     >>                 DRM_ERROR("Got unknown request 0x%02x (%s)\n", msg->req_type,
+>     >>                           drm_dp_mst_req_type_str(msg->req_type));
+>     >> @@ -3875,6 +3901,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr
+>     >> *mgr,
+>     >>                         guid = msg->u.conn_stat.guid;
+>     >>                 else if (msg->req_type == DP_RESOURCE_STATUS_NOTIFY)
+>     >>                         guid = msg->u.resource_stat.guid;
+>     >> +               else if (msg->req_type == DP_SINK_EVENT_NOTIFY)
+>     >> +                       guid = msg->u.sink_event.guid;
+>     >>  
+>     >>                 if (guid)
+>     >>                         mstb = drm_dp_get_mst_branch_device_by_guid(mgr,
+>     >> guid);
+>     >> @@ -3948,7 +3976,8 @@ static int drm_dp_mst_handle_up_req(struct
+>     >> drm_dp_mst_topology_mgr *mgr)
+>     >>         drm_dp_sideband_parse_req(&mgr->up_req_recv, &up_req->msg);
+>     >>  
+>     >>         if (up_req->msg.req_type != DP_CONNECTION_STATUS_NOTIFY &&
+>     >> -           up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY) {
+>     >> +           up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY &&
+>     >> +           up_req->msg.req_type != DP_SINK_EVENT_NOTIFY) {
+>     >>                 DRM_DEBUG_KMS("Received unknown up req type, ignoring: %x\n",
+>     >>                               up_req->msg.req_type);
+>     >>                 kfree(up_req);
+>     >> @@ -3976,6 +4005,12 @@ static int drm_dp_mst_handle_up_req(struct
+>     >> drm_dp_mst_topology_mgr *mgr)
+>     >>                 DRM_DEBUG_KMS("Got RSN: pn: %d avail_pbn %d\n",
+>     >>                               res_stat->port_number,
+>     >>                               res_stat->available_pbn);
+>     >> +       } else if (up_req->msg.req_type == DP_SINK_EVENT_NOTIFY) {
+>     >> +               const struct drm_dp_sink_event_notify *sink_event =
+>     >> +                       &up_req->msg.u.sink_event;
+>     >> +
+>     >> +               DRM_DEBUG_KMS("Got SEN: pn: %d event_id %d\n",
+>     >> +                             sink_event->port_number, sink_event->event_id);
+>     >>         }
+>     >>  
+>     >>         up_req->hdr = mgr->up_req_recv.initial_hdr;
+>     >> diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
+>     >> index 6ae5860d8644..c7c79e0ced18 100644
+>     >> --- a/include/drm/drm_dp_mst_helper.h
+>     >> +++ b/include/drm/drm_dp_mst_helper.h
+>     >> @@ -402,6 +402,19 @@ struct drm_dp_resource_status_notify {
+>     >>         u16 available_pbn;
+>     >>  };
+>     >>  
+>     >> +#define DP_SINK_EVENT_PANEL_REPLAY_ACTIVE_FRAME_CRC_ERROR      BIT(0)
+>     >> +#define DP_SINK_EVENT_PANEL_REPLAY_RFB_STORAGE_ERROR           BIT(1)
+>     >> +#define DP_SINK_EVENT_DSC_RC_BUFFER_UNDER_RUN                  BIT(2)
+>     >> +#define DP_SINK_EVENT_DSC_RC_BUFFER_OVERFLOW                   BIT(3)
+>     >> +#define DP_SINK_EVENT_DSC_CHUNK_LENGTH_ERROR                   BIT(4)
+>     >> +#define DP_SINK_EVENT_CEC_IRQ_EVENT                            BIT(5)
+>     >> +
+>     >> +struct drm_dp_sink_event_notify {
+>     >> +       u8 port_number;
+>     >> +       u8 guid[16];
+>     >> +       u16 event_id;
+>     >> +};
+>     >> +
+>     >>  struct drm_dp_query_payload_ack_reply {
+>     >>         u8 port_number;
+>     >>         u16 allocated_pbn;
+>     >> @@ -413,6 +426,7 @@ struct drm_dp_sideband_msg_req_body {
+>     >>                 struct drm_dp_connection_status_notify conn_stat;
+>     >>                 struct drm_dp_port_number_req port_num;
+>     >>                 struct drm_dp_resource_status_notify resource_stat;
+>     >> +               struct drm_dp_sink_event_notify sink_event;
+>     >>  
+>     >>                 struct drm_dp_query_payload query_payload;
+>     >>                 struct drm_dp_allocate_payload allocate_payload;
+>     >
 > 
 
