@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A764030F5DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A265F30F5B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbhBDPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:11:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:59756 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237015AbhBDO6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:58:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1988511D4;
-        Thu,  4 Feb 2021 06:57:08 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18A773F718;
-        Thu,  4 Feb 2021 06:57:05 -0800 (PST)
-Subject: Re: [PATCH 5/8] sched/fair: Make check_misfit_status() only compare
- dynamic capacities
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-References: <20210128183141.28097-1-valentin.schneider@arm.com>
- <20210128183141.28097-6-valentin.schneider@arm.com>
- <20210203151546.rwkbdjxc2vgiodvx@e107158-lin>
- <f1ea5b53-5953-15dc-6b67-9b6d520c61fc@arm.com> <jhja6sk2hip.mognet@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <1c4c5ff0-f29e-3f08-7ba0-6173bda888cd@arm.com>
-Date:   Thu, 4 Feb 2021 15:57:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237055AbhBDPBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:01:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50432 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237073AbhBDO6s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:58:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612450642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORpRb/MAulS9LThamNcuHHfH5N6/z3HKl9IcxPXaxJg=;
+        b=D/1IyQtsGZ53BhQr/8SjwIpLqIv7RP8rjnSj3z4eZXg16WozQlgVGr5XGk2qWMZAy23nZu
+        UY1aLWnDxfVnKaIj6PvMzj6PAPmlKaUvtNkkuHglyw+mwbvoZKnoT7mKpg6dIq6bPr2G43
+        RYPinFtCm/yaIKlDK5v7GFCZv9O4kG0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-Fonb5rb1MtKOdseNGrGGXg-1; Thu, 04 Feb 2021 09:57:19 -0500
+X-MC-Unique: Fonb5rb1MtKOdseNGrGGXg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B84A7192CC42;
+        Thu,  4 Feb 2021 14:57:17 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-113-108.ams2.redhat.com [10.36.113.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB9A85B695;
+        Thu,  4 Feb 2021 14:57:13 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 28221180101D; Thu,  4 Feb 2021 15:57:12 +0100 (CET)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v6 01/10] [hack] silence ttm fini WARNING
+Date:   Thu,  4 Feb 2021 15:57:02 +0100
+Message-Id: <20210204145712.1531203-2-kraxel@redhat.com>
+In-Reply-To: <20210204145712.1531203-1-kraxel@redhat.com>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <jhja6sk2hip.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/2021 12:34, Valentin Schneider wrote:
-> On 04/02/21 11:49, Dietmar Eggemann wrote:
->> On 03/02/2021 16:15, Qais Yousef wrote:
->>> On 01/28/21 18:31, Valentin Schneider wrote:
+kobject: '(null)' ((____ptrval____)): is not initialized, yet kobject_put() is being called.
+WARNING: CPU: 0 PID: 209 at lib/kobject.c:750 kobject_put+0x3a/0x60
+[ ... ]
+Call Trace:
+ ttm_device_fini+0x133/0x1b0 [ttm]
+ qxl_ttm_fini+0x2f/0x40 [qxl]
+---
+ drivers/gpu/drm/ttm/ttm_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
+diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+index ac0903c9e60a..b638cbb0bd45 100644
+--- a/drivers/gpu/drm/ttm/ttm_device.c
++++ b/drivers/gpu/drm/ttm/ttm_device.c
+@@ -50,7 +50,7 @@ static void ttm_global_release(void)
+ 		goto out;
+ 
+ 	kobject_del(&glob->kobj);
+-	kobject_put(&glob->kobj);
++//	kobject_put(&glob->kobj);
+ 	ttm_mem_global_release(&ttm_mem_glob);
+ 	__free_page(glob->dummy_read_page);
+ 	memset(glob, 0, sizeof(*glob));
+-- 
+2.29.2
 
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 21bd71f58c06..ea7f0155e268 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1482,6 +1482,33 @@ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
->  extern struct static_key_false sched_asym_cpucapacity;
->  
-> +/*
-> + * Note that the static key is system-wide, but the visibility of
-> + * SD_ASYM_CPUCAPACITY isn't. Thus the static key being enabled does not
-> + * imply all CPUs can see asymmetry.
-> + *
-> + * Consider an asymmetric CPU capacity system such as:
-> + *
-> + * MC [           ]
-> + *     0 1 2 3 4 5
-> + *     L L L L B B
-> + *
-> + * w/ arch_scale_cpu_capacity(L) < arch_scale_cpu_capacity(B)
-> + *
-> + * By default, booting this system will enable the sched_asym_cpucapacity
-> + * static key, and all CPUs will see SD_ASYM_CPUCAPACITY set at their MC
-> + * sched_domain.
-> + *
-> + * Further consider exclusive cpusets creating a "symmetric island":
-> + *
-> + * MC [   ][      ]
-> + *     0 1  2 3 4 5
-> + *     L L  L L B B
-> + *
-> + * Again, booting this will enable the static key, but CPUs 0-1 will *not* have
-> + * SD_ASYM_CPUCAPACITY set in any of their sched_domain. This is the intending
-
-s/intending/intended
-
-> + * behaviour, as CPUs 0-1 should be treated as a regular, isolated SMP system.
-> + */
-
-LGTM.
