@@ -2,128 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC8130FCAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B7F30FCB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239768AbhBDT03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238271AbhBDTZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:25:47 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E64C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:25:07 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id q131so2718926pfq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:25:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=1GnUxKkhjneeSJIWMbBvJAykBt2ypw4KIhXpEtHr2Dc=;
-        b=Lk/Q2iuq3Jh5IppKh8zwBDaY4bEDz6ah3/EhNzMsSF3MksmjH8TlJXXoYrvn4tikO7
-         pmupq+B/Ud0M67vwtJzL+80Q2c3Lj3YJ0OEWbl8lu2UT7k+Rjr7z9M5FXGJS+4R/+of/
-         tgukUPOQeqi4C1vQuMOnc+NMezJjUkQxhuqx3bah1lAli4csfEJVVveFPJ2lQsoD0qWt
-         XWwtje0yl1zFGzhIpko1YOpkbDgl2Xa3CKkUY1udzNyYVU11MtxCz5phQ/2rr0mHX7DV
-         gunD4IbzXnmfL6ZoaXeB1nHseYh6TkYHmTaV95cFrTtS45PtzJtGhlUWrpsbewZ0eSkO
-         MAOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1GnUxKkhjneeSJIWMbBvJAykBt2ypw4KIhXpEtHr2Dc=;
-        b=lRyUxow97ESoCCYUEu7Nz7Addfy2kTyZcT9POCn8NXO3brF+V3jJR9pCNX0YAoIx5X
-         vlaUFK8Um5OG5DZysrbECputUVB8/S7tlRRdQSFPYDUGucrZN8U6z+qghs3IJ6X7XMSO
-         +cQp7niqF382YFVJsxFciY5kXr6QK6qg7b8T3CS2RqIXgb7lwlYQcFw0qYKtG+OdqmyX
-         1+GZh2oWbw6L5nEeHplh2RLgY2XfIILaSBzzrbONABvYTN6j3s7wRRzTX8E2LMLmmT9T
-         yyZAXdyg1ot3qqyjWNHvzpCD0Qnrpow7RdX3WbbwenGtOUdYa95mpxGeZ3d/LO0dLsLH
-         dCjQ==
-X-Gm-Message-State: AOAM532KF3KnZLDbiCa9bBy2w6NowasgdIOOYz33pgK33QxoL3peQIf2
-        7um92y4nRPHtuavE532GhssU/A==
-X-Google-Smtp-Source: ABdhPJwFCK+6EOqwTuOitk8H1KkcvY1XU7Yz3d19djjGaNOBZuDGqeEWyl5kUXfKTDYcPpuaaWeRaw==
-X-Received: by 2002:a63:5309:: with SMTP id h9mr495555pgb.19.1612466706158;
-        Thu, 04 Feb 2021 11:25:06 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:5cde:5545:a9de:114f])
-        by smtp.gmail.com with ESMTPSA id i25sm7225284pgb.33.2021.02.04.11.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 11:25:04 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:24:59 -0800
-From:   Benson Leung <bleung@google.com>
-To:     gregkh@linuxfoundation.org
-Cc:     enric.balletbo@collabora.com, bleung@chromium.org,
-        bleung@google.com, bleung@kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Fix for cros_ec_typec for USB for v5.12 merge window
-Message-ID: <YBxKC0IeWBJ/X/wJ@google.com>
+        id S239795AbhBDT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:27:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237163AbhBDT1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:27:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C07B64F8D;
+        Thu,  4 Feb 2021 19:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612466799;
+        bh=IvMJSuyPBSKjwbm0NKGnjjVxnlF+lFnyli8//jgP4To=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WXxs/7dHLkaq67YvXGWOnv2I/WzI0QGo2RQfoo8V2WtA7gnyuTom7GR07avIJJGkg
+         TSfrnR42J3Ymq5oyiYtuoxeJ6fbb2DLKDygQzpFwnDYG5BDXzkCfU5If/C6yUbMm9c
+         fcE18MT6x4jGswF4yGXK97jOOy2AeksQj6bDbLjQkEL7dah5jLZwlWasvUgAwoGcPr
+         3xjBiUi4RFdkp5FJY5V254KANqVislrd3ItcnJjXvTlIWr6YdHhA8CuhINmZcPsKKL
+         TRPSYVj0/6fsv5dwCv9ZRmtKddt6WqUHSLf2PRUsf4Ts98MJAuDqH0Z0UTXuVxohWH
+         gGVg0YnDHC2Rg==
+Received: by mail-lf1-f48.google.com with SMTP id a12so6330747lfb.1;
+        Thu, 04 Feb 2021 11:26:38 -0800 (PST)
+X-Gm-Message-State: AOAM53366240JLioSUe80Lv0ns3PHEdh1mp9xPskYXYy9GpBdW4jhubB
+        9upQfh2hoJgUM3eu92SSgzT9iLPY92+njUrWnw==
+X-Google-Smtp-Source: ABdhPJx63WCpS5SsKFaBszMRfMahLoCwwtc3D3JN1mgTmRNm7HQGsxD6WPtyKilkAM9Ji9QNM2AWrXo4LO963CHlF9s=
+X-Received: by 2002:a17:906:4301:: with SMTP id j1mr643389ejm.108.1612466796391;
+ Thu, 04 Feb 2021 11:26:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9eWf2OmYOPdG8cOw"
-Content-Disposition: inline
+References: <20210204164135.29856-1-nramas@linux.microsoft.com> <20210204164135.29856-12-nramas@linux.microsoft.com>
+In-Reply-To: <20210204164135.29856-12-nramas@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Feb 2021 13:26:24 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
+Message-ID: <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
+Subject: Re: [PATCH v16 11/12] powerpc: Use OF alloc and free for FDT
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 4, 2021 at 10:42 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> of_alloc_and_init_fdt() and of_free_fdt() have been defined in
+> drivers/of/kexec.c to allocate and free memory for FDT.
+>
+> Use of_alloc_and_init_fdt() and of_free_fdt() to allocate and
+> initialize the FDT, and to free the FDT respectively.
+>
+> powerpc sets the FDT address in image_loader_data field in
+> "struct kimage" and the memory is freed in
+> kimage_file_post_load_cleanup().  This cleanup function uses kfree()
+> to free the memory. But since of_alloc_and_init_fdt() uses kvmalloc()
+> for allocation, the buffer needs to be freed using kvfree().
 
---9eWf2OmYOPdG8cOw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You could just change the kexec core to call kvfree() instead.
 
-Hi Greg,
+> Define "fdt" field in "struct kimage_arch" for powerpc to store
+> the address of FDT, and free the memory in powerpc specific
+> arch_kimage_file_post_load_cleanup().
 
-I found a bug in the typec driver you pulled earlier this week
-and Prashant developed a fix.
+However, given all the other buffers have an explicit field in kimage
+or kimage_arch, changing powerpc is to match arm64 is better IMO.
 
-The following changes since commit 64eaa0fa66ac55965f793a8b65730299854e55cd:
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Suggested-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> ---
+>  arch/powerpc/include/asm/kexec.h  |  2 ++
+>  arch/powerpc/kexec/elf_64.c       | 26 ++++++++++++++++----------
+>  arch/powerpc/kexec/file_load_64.c |  3 +++
+>  3 files changed, 21 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
+> index 2c0be93d239a..d7d13cac4d31 100644
+> --- a/arch/powerpc/include/asm/kexec.h
+> +++ b/arch/powerpc/include/asm/kexec.h
+> @@ -111,6 +111,8 @@ struct kimage_arch {
+>         unsigned long elf_headers_mem;
+>         unsigned long elf_headers_sz;
+>         void *elf_headers;
+> +
+> +       void *fdt;
+>  };
+>
+>  char *setup_kdump_cmdline(struct kimage *image, char *cmdline,
+> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
+> index d0e459bb2f05..51d2d8eb6c1b 100644
+> --- a/arch/powerpc/kexec/elf_64.c
+> +++ b/arch/powerpc/kexec/elf_64.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kexec.h>
+>  #include <linux/libfdt.h>
+>  #include <linux/module.h>
+> +#include <linux/of.h>
+>  #include <linux/of_fdt.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+> @@ -32,7 +33,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>         unsigned int fdt_size;
+>         unsigned long kernel_load_addr;
+>         unsigned long initrd_load_addr = 0, fdt_load_addr;
+> -       void *fdt;
+> +       void *fdt = NULL;
+>         const void *slave_code;
+>         struct elfhdr ehdr;
+>         char *modified_cmdline = NULL;
+> @@ -103,18 +104,12 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>         }
+>
+>         fdt_size = fdt_totalsize(initial_boot_params) * 2;
+> -       fdt = kmalloc(fdt_size, GFP_KERNEL);
+> +       fdt = of_alloc_and_init_fdt(fdt_size);
+>         if (!fdt) {
+>                 pr_err("Not enough memory for the device tree.\n");
+>                 ret = -ENOMEM;
+>                 goto out;
+>         }
+> -       ret = fdt_open_into(initial_boot_params, fdt, fdt_size);
+> -       if (ret < 0) {
+> -               pr_err("Error setting up the new device tree.\n");
+> -               ret = -EINVAL;
+> -               goto out;
+> -       }
+>
+>         ret = setup_new_fdt_ppc64(image, fdt, initrd_load_addr,
 
-  platform/chrome: cros_ec_typec: Fix call to typec_partner_set_pd_revision=
- (2021-02-02 19:42:52 +0100)
+The first thing this function does is call setup_new_fdt() which first
+calls of_kexec_setup_new_fdt(). (Note, I really don't understand the
+PPC code split. It looks like there's a 32-bit and 64-bit split, but
+32-bit looks broken to me. Nothing ever calls setup_new_fdt() except
+setup_new_fdt_ppc64()). The arm64 version is calling
+of_alloc_and_init_fdt() and then of_kexec_setup_new_fdt() directly.
 
-are available in the Git repository at:
+So we can just make of_alloc_and_init_fdt() also call
+of_kexec_setup_new_fdt() (really, just tweak of_kexec_setup_new_fdt do
+the alloc and copy). I don't think the architecture needs to pick the
+size either. It's doubtful that either one is that sensitive to the
+amount of extra space.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git t=
-ags/tag-ib-usb-typec-chrome-platform-cros-ec-typec-clear-pd-discovery-event=
-s-for-5.12
+>                                   initrd_len, cmdline);
+> @@ -131,6 +126,10 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>         ret = kexec_add_buffer(&kbuf);
+>         if (ret)
+>                 goto out;
+> +
+> +       /* FDT will be freed in arch_kimage_file_post_load_cleanup */
+> +       image->arch.fdt = fdt;
+> +
+>         fdt_load_addr = kbuf.mem;
+>
+>         pr_debug("Loaded device tree at 0x%lx\n", fdt_load_addr);
+> @@ -145,8 +144,15 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>         kfree(modified_cmdline);
+>         kexec_free_elf_info(&elf_info);
+>
+> -       /* Make kimage_file_post_load_cleanup free the fdt buffer for us. */
+> -       return ret ? ERR_PTR(ret) : fdt;
+> +       /*
+> +        * Once FDT buffer has been successfully passed to kexec_add_buffer(),
+> +        * the FDT buffer address is saved in image->arch.fdt. In that case,
+> +        * the memory cannot be freed here in case of any other error.
+> +        */
+> +       if (ret && !image->arch.fdt)
+> +               of_free_fdt(fdt);
 
-for you to fetch changes up to c8ec21c6d25c2a8895614ea38575dadb8570c2f9:
+Just call kvfree() directly.
 
-  platform/chrome: cros_ec_typec: Clear Type C disc events (2021-02-04 10:2=
-9:30 -0800)
-
-----------------------------------------------------------------
-clear-pd-discovery-events
-
-This pair of patches fixes an issue where cros_ec_typec creates stale
-cable nodes on detach because of uncleared pd discovery status events.
-
-----------------------------------------------------------------
-Prashant Malani (2):
-      platform/chrome: cros_ec: Import Type C control command
-      platform/chrome: cros_ec_typec: Clear Type C disc events
-
- drivers/platform/chrome/cros_ec_typec.c        | 29 ++++++++++++++++++++++=
-+---
- include/linux/platform_data/cros_ec_commands.h | 26 +++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 3 deletions(-)
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---9eWf2OmYOPdG8cOw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBxKCwAKCRBzbaomhzOw
-whVGAQCdvLlEyv/Y8YyQlK/Sgp6pLt+0BOWs8+hLyctYyAnZaQD+NgGhIF2+yWaf
-eUvEXs6S0R34UVl1CFgJ1ToVoI9J2go=
-=vQlY
------END PGP SIGNATURE-----
-
---9eWf2OmYOPdG8cOw--
+> +
+> +       return ret ? ERR_PTR(ret) : NULL;
+>  }
+>
+>  const struct kexec_file_ops kexec_elf64_ops = {
+> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+> index 3cab318aa3b9..d9d5b5569a6d 100644
+> --- a/arch/powerpc/kexec/file_load_64.c
+> +++ b/arch/powerpc/kexec/file_load_64.c
+> @@ -1113,5 +1113,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image)
+>         image->arch.elf_headers = NULL;
+>         image->arch.elf_headers_sz = 0;
+>
+> +       of_free_fdt(image->arch.fdt);
+> +       image->arch.fdt = NULL;
+> +
+>         return kexec_image_post_load_cleanup_default(image);
+>  }
+> --
+> 2.30.0
+>
