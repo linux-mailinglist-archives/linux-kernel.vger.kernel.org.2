@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFBD30F5D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B0330F5D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237161AbhBDPIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:08:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51178 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237077AbhBDO6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:58:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612450644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dedRHYzwonhzROXGgAgNhZ07YZHUiaQwRn4N3ZaMxto=;
-        b=WrvunFUmPA6o+KOnQEOg1s9BCRcuMSA9QQGMviqGvfsacSPxG7zKlSto7rBX7mqNwnZ0ox
-        8A3DdTYcDHniw4JNX19QVCsrwXIPXJGUZLl+IlYiGRF9OVTccONTEeqzonaBIe/ynbaJWW
-        rr8ckGPRbIZm7MYdyGA8Bn9QIlUDTXk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-vH0n3oGYORW10Y6Hqu7wSA-1; Thu, 04 Feb 2021 09:57:20 -0500
-X-MC-Unique: vH0n3oGYORW10Y6Hqu7wSA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75E69801967;
-        Thu,  4 Feb 2021 14:57:19 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-113-108.ams2.redhat.com [10.36.113.108])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36B79722C6;
-        Thu,  4 Feb 2021 14:57:19 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 65FD71801026; Thu,  4 Feb 2021 15:57:13 +0100 (CET)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
-        VIRTUAL GPU),
-        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v6 10/10] drm/qxl: allocate dumb buffers in ram
-Date:   Thu,  4 Feb 2021 15:57:11 +0100
-Message-Id: <20210204145712.1531203-11-kraxel@redhat.com>
-In-Reply-To: <20210204145712.1531203-1-kraxel@redhat.com>
-References: <20210204145712.1531203-1-kraxel@redhat.com>
+        id S236975AbhBDPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:07:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237042AbhBDPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:00:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E1864F60;
+        Thu,  4 Feb 2021 14:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612450711;
+        bh=Gkl5QjMLL9cstN7D689exW6RO9F/yfq6ZQ1XMZN1V+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r1FvdF0heZuFmuqdo0dHu3sLr8/I8cmWlT2CSDUdGkPM/JF0RyifSAFkwLaPLumqI
+         4sOOu4MH1lODcMRT4j5Ncjve0F5oGTNNamwSzKrdbYhzmd0K+5Dpc3nIuqaGI3OSpI
+         B4/xOw4I5xKsdGR9v6dqRwSDaPIPO2cNTrO9aZPONvd6sS+ksHXU56ovqPJk8Xqz4Y
+         9xuDQiz32W/CoLoiLjgOEBiuyUQOGW9A32jKRkPor9SCx9+Pw67Gs8PhhwKgifCOVy
+         RYyy7eTRduNvneoqUyJui+ZV1Jm2w2TNAJ+N+Nd2FbmMIKndRxSup9Fr7QAzNh8+Ga
+         AdXSDhTqCNbtA==
+Date:   Thu, 4 Feb 2021 16:58:23 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Stefan Berger <stefanb@linux.ibm.com>,
+        Saulo Alessandre <saulo.alessandre@gmail.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v7 1/4] crypto: Add support for ECDSA signature
+ verification
+Message-ID: <YBwLj+8kHIHMA3xH@kernel.org>
+References: <20210201151910.1465705-1-stefanb@linux.ibm.com>
+ <20210201151910.1465705-2-stefanb@linux.ibm.com>
+ <20210204052738.GA7086@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204052738.GA7086@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dumb buffers are shadowed anyway, so there is no need to store them
-in device memory.  Use QXL_GEM_DOMAIN_CPU (TTM_PL_SYSTEM) instead.
+On Thu, Feb 04, 2021 at 04:27:39PM +1100, Herbert Xu wrote:
+> On Mon, Feb 01, 2021 at 10:19:07AM -0500, Stefan Berger wrote:
+> > Add support for parsing the parameters of a NIST P256 or NIST P192 key.
+> > Enable signature verification using these keys. The new module is
+> > enabled with CONFIG_ECDSA:
+> >   Elliptic Curve Digital Signature Algorithm (NIST P192, P256 etc.)
+> >   is A NIST cryptographic standard algorithm. Only signature verification
+> >   is implemented.
+> > 
+> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: linux-crypto@vger.kernel.org
+> > ---
+> >  crypto/Kconfig               |  10 +
+> >  crypto/Makefile              |   6 +
+> >  crypto/ecc.c                 |  13 +-
+> >  crypto/ecc.h                 |  28 +++
+> >  crypto/ecdsa.c               | 361 +++++++++++++++++++++++++++++++++++
+> >  crypto/ecdsasignature.asn1   |   4 +
+> >  crypto/testmgr.c             |  12 ++
+> >  crypto/testmgr.h             | 267 ++++++++++++++++++++++++++
+> >  include/linux/oid_registry.h |   4 +
+> >  9 files changed, 694 insertions(+), 11 deletions(-)
+> >  create mode 100644 crypto/ecdsa.c
+> >  create mode 100644 crypto/ecdsasignature.asn1
 
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/gpu/drm/qxl/qxl_dumb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_dumb.c
-index c04cd5a2553c..48a58ba1db96 100644
---- a/drivers/gpu/drm/qxl/qxl_dumb.c
-+++ b/drivers/gpu/drm/qxl/qxl_dumb.c
-@@ -59,7 +59,7 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
- 	surf.stride = pitch;
- 	surf.format = format;
- 	r = qxl_gem_object_create_with_handle(qdev, file_priv,
--					      QXL_GEM_DOMAIN_SURFACE,
-+					      QXL_GEM_DOMAIN_CPU,
- 					      args->size, &surf, &qobj,
- 					      &handle);
- 	if (r)
--- 
-2.29.2
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
+Great, ECDSA has been lacking for a way too long. Just wanted to
+acknowledge support for this, I just now also skimmed the change
+from patchwrok (way too quickly for reviewed-by but well enough
+for ack).
+
+/Jarkko
