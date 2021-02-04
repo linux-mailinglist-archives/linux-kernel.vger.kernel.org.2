@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8618930EB16
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D504330EB18
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbhBDDj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:39:57 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11188 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbhBDDjy (ORCPT
+        id S234489AbhBDDkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:40:22 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41288 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233449AbhBDDkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:39:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601b6c620003>; Wed, 03 Feb 2021 19:39:14 -0800
-Received: from [10.25.102.154] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 03:39:11 +0000
-Subject: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-CC:     <broonie@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>
-References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
- <1612368575-25991-2-git-send-email-spujar@nvidia.com>
- <87zh0k94eo.wl-kuninori.morimoto.gx@renesas.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <691678f3-d0da-2320-ef6f-82090b9d8f9d@nvidia.com>
-Date:   Thu, 4 Feb 2021 09:09:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <87zh0k94eo.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612409954; bh=3Lj3YB24wWeojwA714T0pgTPArxLvGfmTOgyy4fsztg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=ov9XZCg0goglyOSfH20N2P+qSa+DoUpUvCaxtRnUo+CCqWYEQGi1yZiQ+Tb6L/ltk
-         lNXpRqJdCjOVw3qxT5dWUfHWkO+C71ehTjj0QwLTRAgyLG816doZ5d87Cqqyq3Yxx9
-         fanXnNdWV4f8XzJkh7Rwg4rNMojU50nySwW+dwee/gsYomNgmnM+betuWJLOUn9cjZ
-         vkVaXMrfJvFoBLw9AVingzVOe7v3l46pYp8GH+/bFTxKuIFDym+OjU8EaF+TxtKzee
-         dj098Zs0S3y7PKZSAWgST/DmKKc7dWUZ246QBbrKZbAsKKcUInVF2jyfgY3AYkEksa
-         vg+B7Bgw4D6Og==
+        Wed, 3 Feb 2021 22:40:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UNozYtZ_1612409975;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNozYtZ_1612409975)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 11:39:36 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] jfs: Remove unneeded return variable
+Date:   Thu,  4 Feb 2021 11:39:34 +0800
+Message-Id: <1612409974-63355-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch removes unneeded return variables, using only
+'0' instead.
+It fixes the following warning detected by coccinelle:
+./fs/jfs/jfs_txnmgr.c:1370:5-7: Unneeded variable: "rc". Return "0" on
+line 1417
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/jfs/jfs_txnmgr.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-On 2/4/2021 4:01 AM, Kuninori Morimoto wrote:
->> Audio graph based sound card drivers can call graph_remove() function
->> for cleanups during driver removal. To facilitate this export above
->> mentioned function.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> (snip)
->> -static int graph_remove(struct platform_device *pdev)
->> +int graph_remove(struct platform_device *pdev)
->>   {
->>        struct snd_soc_card *card = platform_get_drvdata(pdev);
->>
->>        return asoc_simple_clean_reference(card);
->>   }
->> +EXPORT_SYMBOL_GPL(graph_remove);
-> Not a big deal, but
-> it is just calling asoc_simple_clean_reference() which is
-> already global function.
+diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+index dca8edd..87ef2a2 100644
+--- a/fs/jfs/jfs_txnmgr.c
++++ b/fs/jfs/jfs_txnmgr.c
+@@ -1367,7 +1367,6 @@ int txCommit(tid_t tid,		/* transaction identifier */
+  */
+ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+ {
+-	int rc = 0;
+ 	struct inode *ip;
+ 	lid_t lid;
+ 	struct tlock *tlck;
+@@ -1414,7 +1413,7 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+ 		}
+ 	}
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ /*
+@@ -1425,7 +1424,6 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 		 struct tlock * tlck, struct commit * cd)
+ {
+-	int rc = 0;
+ 	struct metapage *mp;
+ 	pxd_t *pxd;
+ 	struct pxd_lock *pxdlock;
+@@ -1527,7 +1525,7 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 	}
+ #endif				/* _JFS_WIP */
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ /*
+-- 
+1.8.3.1
 
-Yes that is true, but idea was to put dependency on graph_remove() so 
-that any additions/changes here in future will be automatically taken 
-care for Tegra graph card.
