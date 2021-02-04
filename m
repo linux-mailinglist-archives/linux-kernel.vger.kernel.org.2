@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBB6310120
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D714310121
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhBDXxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 18:53:10 -0500
-Received: from mout.gmx.net ([212.227.15.15]:58187 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231239AbhBDXw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 18:52:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612482672;
-        bh=3ITnrUmgpoREt7A8+/KZYb1DEC4DF6i6j7F4yydeo6c=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=jp6Dw9g8Zsbp6o5/S88Cy4nDr9rDr1xQZDWZsXZ2Vv4cl+oQD82h95367s4EdDshS
-         69lp7Dz97brz7C0MKIKRsnItmuBYvofJdPECfgzyyYXxmRd0sqvfX/TJ53p5V4crM/
-         qHy1ad1kxNlya5AvBsES49naTOJ49VRTM0Vz+JCY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MKKUv-1lN0Ge3aFr-00Lkpm; Fri, 05
- Feb 2021 00:51:11 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org
-Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        LinoSanfilippo@gmx.de, Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is still valid
-Date:   Fri,  5 Feb 2021 00:50:43 +0100
-Message-Id: <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+        id S231383AbhBDXxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 18:53:49 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:13993 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231320AbhBDXxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 18:53:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612482807; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uGT+mmLcNimmrF5O0goRR8yE0/KU/5rkdgh5w5fKbJg=;
+ b=Kwx77i8amVguSgWUwzDhX1IbZuCIcS4YXUqW17lD4WuEUeQLh5CVGhTKwR8EQBXuorZs8y1u
+ jHKPjwsAYcEF9Y6iiGY+unDPbaFvMTJpssz5pbApgP0VNCO3xeMzzQ7voJtjEGcxlFMQuuKq
+ 6jV7i6zMQFIayPwgk2Af4UH/Zok=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 601c88d35d0f3847870441fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 23:52:51
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3CF2CC43462; Thu,  4 Feb 2021 23:52:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0088C433C6;
+        Thu,  4 Feb 2021 23:52:49 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:RswaLHu/9erJ2Tp2QWvHm/a/KaCjM6zsK2OLBsiQZEGxLHQB0Kt
- uChSLi++YeHcSQrWm437t2QIZlE2df2VOC6HCk9poPFrh+iHcQ4q44sCEbQuNMMAgp1n7Tt
- eLwxt2m1F6vOaMb0phPeIdjOaMomWMxPkAzxNPg8lKpzXMLNsAZUgWYsEWGuUTsMZxgNKXd
- IHy6j/xG8S5igk9Cvsq4w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gUxVhZFlBIU=:WcwaAZcnoISX6uLZt4csmp
- 9p4M2k5DHTWo1qqYKFCH46h6bQrUMvflplAdqWDIi2YlPmSPaA/0Me7QKS5RFbkPlf9m+uk7X
- YgHNxUQkCFT/chgTPgGOLboYj2bSELke86NuPQRXiy65i/LW4Z6L69DLRHVHdCEiDld6z+xaR
- 9DSfBYwkCMeNI/XzPrsCUoKx+3745l520PIcaTb0D5pBqur4DN8hjClOieCgeLO6KyEisp3cQ
- NcZTMdSfFOxYBrC+PzlBcmoUiidrkSthLzlrm1w7QZqQAVrSffSgO/MvPF7K8SiBYTTmQW3s/
- RcLlilZJeu7o6T47wmu87jCezi2AFzQ0e1Z2rKnIt3TiP3zbcS3IJ8QB8B9wL+nMF6KalFyPJ
- vK4a87+Vi7XawGi3Fu4G5855k+F77l4a6NXV3c/2BLyDV8a0+pt6xu8Zc2kzURTcqAwrdQ578
- IQOEzjhdci61cEHMFJgL3ecx+e7ZO12Mr+QRXyoUAtzK+8eunVbV/a+8ALyucA5CPtfSP+cRK
- 3WF/+kiCW3OsL+jgYhWo2aPDGemcCI59DlxO5xjJohSs/kwbRBEvgQXuDyWbVAHQzZiTZqgZ6
- twf/X50L4W25oSbBNXifzEtwlXerBq2WJE+DBMOOtTOrfcRl2nQBpJU3BnVcZQXWb8SQ4kdPF
- GMheG/wdtMX7ROjJMguV1Lu+MpaPSfse0/ldftNXW453jdSSpDmO0M0ID4u24O6qtNNBSOuGs
- RlB5x3yoDxk9m/c+GAk6WeVcOJPPzHL07Ueasnoa658uXzTHLoJ+ci1w4yOr0HtLEmcK7B3uP
- KPTAkDhCsPY2wR9lNCO7aSD4WkjCouXJx/hIh7l3lqkTBwP6PdLB/ODhRGS62dmUFAuqR4eVC
- MqF6bFb8sMichW8pjcNw==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 04 Feb 2021 15:52:49 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v2 1/3] bus: mhi: core: Clear devices when moving
+ execution environments
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210121075022.GA30041@thinkpad>
+References: <1610651795-31287-1-git-send-email-bbhatt@codeaurora.org>
+ <1610651795-31287-2-git-send-email-bbhatt@codeaurora.org>
+ <20210121075022.GA30041@thinkpad>
+Message-ID: <fb1246c0bbc2ebef6ef97f2645d3a741@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlubyBTYW5maWxpcHBvIDxsLnNhbmZpbGlwcG9Aa3VuYnVzLmNvbT4KCkluIHRwbTJf
-ZGVsX3NwYWNlKCkgY2hpcC0+b3BzIGlzIHVzZWQgZm9yIGZsdXNoaW5nIHRoZSBzZXNzaW9ucy4g
-SG93ZXZlcgp0aGlzIGZ1bmN0aW9uIG1heSBiZSBjYWxsZWQgYWZ0ZXIgdHBtX2NoaXBfdW5yZWdp
-c3RlcigpIHdoaWNoIHNldHMKdGhlIGNoaXAtPm9wcyBwb2ludGVyIHRvIE5VTEwuCkF2b2lkIGEg
-cG9zc2libGUgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGJ5IGNoZWNraW5nIGlmIGNoaXAtPm9w
-cyBpcyBzdGlsbAp2YWxpZCBiZWZvcmUgYWNjZXNzaW5nIGl0LgoKRml4ZXM6IGEzZmJmYWU4MmI0
-YyAoInRwbTogdGFrZSBUUE0gY2hpcCBwb3dlciBnYXRpbmcgb3V0IG9mIHRwbV90cmFuc21pdCgp
-IikKU2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxsLnNhbmZpbGlwcG9Aa3VuYnVzLmNv
-bT4KLS0tCiBkcml2ZXJzL2NoYXIvdHBtL3RwbTItc3BhY2UuYyB8IDE1ICsrKysrKysrKystLS0t
-LQogMSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9jaGFyL3RwbS90cG0yLXNwYWNlLmMgYi9kcml2ZXJzL2NoYXIvdHBt
-L3RwbTItc3BhY2UuYwppbmRleCA3ODRiOGIzLi45YTI5YTQwIDEwMDY0NAotLS0gYS9kcml2ZXJz
-L2NoYXIvdHBtL3RwbTItc3BhY2UuYworKysgYi9kcml2ZXJzL2NoYXIvdHBtL3RwbTItc3BhY2Uu
-YwpAQCAtNTgsMTIgKzU4LDE3IEBAIGludCB0cG0yX2luaXRfc3BhY2Uoc3RydWN0IHRwbV9zcGFj
-ZSAqc3BhY2UsIHVuc2lnbmVkIGludCBidWZfc2l6ZSkKIAogdm9pZCB0cG0yX2RlbF9zcGFjZShz
-dHJ1Y3QgdHBtX2NoaXAgKmNoaXAsIHN0cnVjdCB0cG1fc3BhY2UgKnNwYWNlKQogewotCW11dGV4
-X2xvY2soJmNoaXAtPnRwbV9tdXRleCk7Ci0JaWYgKCF0cG1fY2hpcF9zdGFydChjaGlwKSkgewot
-CQl0cG0yX2ZsdXNoX3Nlc3Npb25zKGNoaXAsIHNwYWNlKTsKLQkJdHBtX2NoaXBfc3RvcChjaGlw
-KTsKKwlkb3duX3JlYWQoJmNoaXAtPm9wc19zZW0pOworCWlmIChjaGlwLT5vcHMpIHsKKwkJbXV0
-ZXhfbG9jaygmY2hpcC0+dHBtX211dGV4KTsKKwkJaWYgKCF0cG1fY2hpcF9zdGFydChjaGlwKSkg
-eworCQkJdHBtMl9mbHVzaF9zZXNzaW9ucyhjaGlwLCBzcGFjZSk7CisJCQl0cG1fY2hpcF9zdG9w
-KGNoaXApOworCQl9CisJCW11dGV4X3VubG9jaygmY2hpcC0+dHBtX211dGV4KTsKIAl9Ci0JbXV0
-ZXhfdW5sb2NrKCZjaGlwLT50cG1fbXV0ZXgpOworCXVwX3JlYWQoJmNoaXAtPm9wc19zZW0pOwor
-CiAJa2ZyZWUoc3BhY2UtPmNvbnRleHRfYnVmKTsKIAlrZnJlZShzcGFjZS0+c2Vzc2lvbl9idWYp
-OwogfQotLSAKMi43LjQKCg==
+Hi Mani,
+
+On 2021-01-20 11:50 PM, Manivannan Sadhasivam wrote:
+> On Thu, Jan 14, 2021 at 11:16:33AM -0800, Bhaumik Bhatt wrote:
+>> When moving from SBL to mission mode execution environment, there
+>> is no remove callback notification to MHI client drivers which
+>> operate on SBL mode only. Client driver devices are being created
+>> in SBL or AMSS(mission mode) and only destroyed after power down
+>> or SYS_ERROR. If there exist any SBL-specific channels, those are
+>> left open and client drivers are thus unaware of the new execution
+>> environment where those channels cannot operate. Close the gap and
+>> issue remove callbacks to SBL-specific client drivers once device
+>> enters mission mode.
+>> 
+> 
+> What are the SBL specific channels and the client drivers operating on 
+> them?
+> If this is something going to come in future, then this patch can come 
+> later.
+> 
+> Thanks,
+> Mani
+
+Carl from Quectel (CC'd here) will need this patch as he works on EDL 
+and Flash
+Programmer changes which also needs usage of QSAHARA server over SBL.
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
