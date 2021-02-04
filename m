@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7699130EFF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA05130EFF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbhBDJuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:50:03 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:48779 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhBDJuC (ORCPT
+        id S235305AbhBDJub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:50:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:41749 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233597AbhBDJu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:50:02 -0500
-Received: by mail-io1-f70.google.com with SMTP id v25so2335733ioj.15
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 01:49:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wezkJ1F8agCdcNjDqul8IKeKPpbHJSliiOEYiB+1HcI=;
-        b=XTSyiPTxJjwlfr1XbpT3918tasTrGj9e+ZjvO6n5NOGl7o4UBSYmVJ+Eo+fG4n+Ba7
-         w0s0to6S/dUIyLVbzdzFznJStmBk1/GExqsXoPnyRy2x58jtsYrm1zic+wl65SQnSFzI
-         pYw+MMj6dCrOWRAq/09+agk/e2+KD4r09St4pzTdNLbsTjDcehcGOdgAqQnpU7pJr+bS
-         ARF7+GsepTPNvqIAPyLMqN6DfD31sCshToefpM/vvdsXqwKOpPyYeG5zMf4WwXuz8clY
-         BYQE+5SQ0kkb//t6QEjrcRSZsUnUSmaoziJ/ABcOnxMoXgSYqE/LNzCIJC1p4RW8WRvX
-         g5Ww==
-X-Gm-Message-State: AOAM533vtyVUoFGIY1DSxIs32YYVOT9AL4myiFlVs8dCVbnNz0nQwz2R
-        eH95MEMPHFg9CGZIJp1i3KLiw7Yfu4oVbY6UwKZhdrMPMPp8
-X-Google-Smtp-Source: ABdhPJxn89wvVSmBzs6jHR80e7eLfWyCrqqkfpQY9GIw7QqyDMM0XTCeEtaxzkQIEKZ9HDpKwbO80s3x/PkycV1C71SYU8DODBYz
+        Thu, 4 Feb 2021 04:50:28 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l7bGi-0001fi-6J; Thu, 04 Feb 2021 09:49:44 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jose Abreu <Jose.Abreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: dwc-xlgmac: Fix spelling mistake in function name
+Date:   Thu,  4 Feb 2021 09:49:44 +0000
+Message-Id: <20210204094944.51460-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6b2:: with SMTP id d18mr4855450jad.26.1612432161207;
- Thu, 04 Feb 2021 01:49:21 -0800 (PST)
-Date:   Thu, 04 Feb 2021 01:49:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003178bf05ba7f9e84@google.com>
-Subject: upstream test error: BUG: got no fallback coverage:
-From:   syzbot <syzbot+e6ca682acbbf21043787@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-syzbot found the following issue on:
+There is a spelling mistake in the function name alloc_channles_and_rings.
+Fix this by renaming it to alloc_channels_and_rings.
 
-HEAD commit:    6642d600 Merge tag '5.11-rc5-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14de59e8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f75d66d6d359ef2f
-dashboard link: https://syzkaller.appspot.com/bug?extid=e6ca682acbbf21043787
-userspace arch: arm64
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e6ca682acbbf21043787@syzkaller.appspotmail.com
-
-1970/01/01 00:02:05 connecting to host at 10.0.2.10:40353
-1970/01/01 00:02:05 checking machine...
-1970/01/01 00:02:05 checking revisions...
-ps_root_recvmsgcb: failed to send message to pid 4476: Connection refused
-1970/01/01 00:02:05 testing simple program...
-1970/01/01 00:02:08 BUG: got no fallback coverage:
-loop exited with status 11
-ps_root_recvmsgcb: failed to send message to pid 4508: Connection refused
-ps_root_recvmsgcb: failed to send message to pid 4544: Connection refused
-ps_root_recvmsgcb: failed to send message to pid 4543: Connection refused
-ps_bpf_start_bpf: bpf_open: Invalid argument
-ps_root_recvmsg: Invalid argument
-ps_bpf_start_bpf: bpf_open: Invalid argument
-ps_root_recvmsg: Invalid argument
-ps_bpf_start_bpf: bpf_open: Invalid argument
-ps_root_recvmsg: Invalid argument
-
-
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/ethernet/synopsys/dwc-xlgmac-desc.c | 2 +-
+ drivers/net/ethernet/synopsys/dwc-xlgmac-net.c  | 2 +-
+ drivers/net/ethernet/synopsys/dwc-xlgmac.h      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/ethernet/synopsys/dwc-xlgmac-desc.c b/drivers/net/ethernet/synopsys/dwc-xlgmac-desc.c
+index 8c4195a9a2cc..589797bad1f9 100644
+--- a/drivers/net/ethernet/synopsys/dwc-xlgmac-desc.c
++++ b/drivers/net/ethernet/synopsys/dwc-xlgmac-desc.c
+@@ -634,7 +634,7 @@ static int xlgmac_map_tx_skb(struct xlgmac_channel *channel,
+ 
+ void xlgmac_init_desc_ops(struct xlgmac_desc_ops *desc_ops)
+ {
+-	desc_ops->alloc_channles_and_rings = xlgmac_alloc_channels_and_rings;
++	desc_ops->alloc_channels_and_rings = xlgmac_alloc_channels_and_rings;
+ 	desc_ops->free_channels_and_rings = xlgmac_free_channels_and_rings;
+ 	desc_ops->map_tx_skb = xlgmac_map_tx_skb;
+ 	desc_ops->map_rx_buffer = xlgmac_map_rx_buffer;
+diff --git a/drivers/net/ethernet/synopsys/dwc-xlgmac-net.c b/drivers/net/ethernet/synopsys/dwc-xlgmac-net.c
+index 26aa7f32151f..26d178f8616b 100644
+--- a/drivers/net/ethernet/synopsys/dwc-xlgmac-net.c
++++ b/drivers/net/ethernet/synopsys/dwc-xlgmac-net.c
+@@ -654,7 +654,7 @@ static int xlgmac_open(struct net_device *netdev)
+ 	pdata->rx_buf_size = ret;
+ 
+ 	/* Allocate the channels and rings */
+-	ret = desc_ops->alloc_channles_and_rings(pdata);
++	ret = desc_ops->alloc_channels_and_rings(pdata);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/ethernet/synopsys/dwc-xlgmac.h b/drivers/net/ethernet/synopsys/dwc-xlgmac.h
+index cab3e40a86b9..8598aaf3ec99 100644
+--- a/drivers/net/ethernet/synopsys/dwc-xlgmac.h
++++ b/drivers/net/ethernet/synopsys/dwc-xlgmac.h
+@@ -379,7 +379,7 @@ struct xlgmac_channel {
+ } ____cacheline_aligned;
+ 
+ struct xlgmac_desc_ops {
+-	int (*alloc_channles_and_rings)(struct xlgmac_pdata *pdata);
++	int (*alloc_channels_and_rings)(struct xlgmac_pdata *pdata);
+ 	void (*free_channels_and_rings)(struct xlgmac_pdata *pdata);
+ 	int (*map_tx_skb)(struct xlgmac_channel *channel,
+ 			  struct sk_buff *skb);
+-- 
+2.29.2
+
