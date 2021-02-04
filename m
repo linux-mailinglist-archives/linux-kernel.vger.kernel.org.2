@@ -2,82 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E6430ED76
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4705F30ED7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhBDHfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234521AbhBDHfA (ORCPT
+        id S234639AbhBDHga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:36:30 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:49273 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234609AbhBDHgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:35:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75294C061786;
-        Wed,  3 Feb 2021 23:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j1kpXURjn61beaZACs444oPTRgteMVTAE7uewxPoWWI=; b=gUXXygg9mr5a+bqnfdf29rxDdo
-        DgHENm0/vDLbyy2oc4B5RZ9VtsI70pG0vMXSE2iDxN7pcrK4+qk3FaXtnekN7CO65HtApHtnae/Ul
-        BROrnz0O3DuA03UyGSx6ADw7eBxH0eOrCtoR1x725nHFkFabqo3VqqnQyq27uqHKdjAPuLyDtwCC9
-        3g93/jHNfgolnzXxT1QusxsbR6YKYDRRzPS/p7Sw4IFwOOxJcWIf44zFPpTYC5i8dReyC7/uDAVbY
-        60I1ISMHU1QxWwZ6IAqdCRU0WSI+h0vAOb6lCLFkVERZntsJAVlu8EfSZpCuTK06wCxNs3yx4sPaC
-        U8JmGCXg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7Z9a-000X7T-Bq; Thu, 04 Feb 2021 07:34:15 +0000
-Date:   Thu, 4 Feb 2021 07:34:14 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Jan Kara <jack@suse.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 1/2] quota: Add mountpath based quota support
-Message-ID: <20210204073414.GA126863@infradead.org>
-References: <20210128141713.25223-1-s.hauer@pengutronix.de>
- <20210128141713.25223-2-s.hauer@pengutronix.de>
- <20210128143552.GA2042235@infradead.org>
- <20210202180241.GE17147@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202180241.GE17147@quack2.suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Thu, 4 Feb 2021 02:36:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UNpof-u_1612424127;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNpof-u_1612424127)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 15:35:27 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     christian.koenig@amd.com
+Cc:     sumit.semwal@linaro.org, martin.petersen@oracle.com,
+        jejb@linux.ibm.com, dick.kennedy@broadcom.com,
+        james.smart@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] scsi: lpfc: Remove unneeded return variable
+Date:   Thu,  4 Feb 2021 15:35:25 +0800
+Message-Id: <1612424125-91111-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 07:02:41PM +0100, Jan Kara wrote:
-> Hum, let me think out loud. The path we pass to Q_QUOTAON is a path to
-> quota file - unless the filesystem stores quota in hidden files in which
-> case this argument is just ignored. You're right we could require that
-> specifically for Q_QUOTAON, the mountpoint path would actually need to
-> point to the quota file if it is relevant, otherwise anywhere in the
-> appropriate filesystem. We don't allow quota file to reside on a different
-> filesystem (for a past decade or so) so it should work fine.
-> 
-> So the only problem I have is whether requiring the mountpoint argument to
-> point quota file for Q_QUOTAON isn't going to be somewhat confusing to
-> users. At the very least it would require some careful explanation in the
-> manpage to explain the difference between quotactl_path() and quotactl()
-> in this regard. But is saving the second path for Q_QUOTAON really worth the
-> bother?
+This patch removes unneeded return variables, using only
+'1' instead.
+It fixes the following warning detected by coccinelle:
 
-I find the doubled path argument a really horrible API, so I'd pretty
-strongly prefer to avoid that.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/scsi/lpfc/lpfc_sli.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> > Given how cheap quotactl_cmd_onoff and quotactl_cmd_write are we
-> > could probably simplify this down do:
-> > 
-> > 	if (quotactl_cmd_write(cmd)) {
-> 
-> This needs to be (quotactl_cmd_write(cmd) || quotactl_cmd_onoff(cmd)).
-> Otherwise I agree what you suggest is somewhat more readable given how
-> small the function is.
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 95caad7..31f97f6 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -3376,7 +3376,6 @@ struct lpfc_hbq_init *lpfc_hbq_defs[] = {
+ 			  struct lpfc_iocbq *saveq)
+ {
+ 	struct lpfc_iocbq *cmdiocbp;
+-	int rc = 1;
+ 	unsigned long iflag;
+ 
+ 	cmdiocbp = lpfc_sli_iocbq_lookup(phba, pring, saveq);
+@@ -3501,7 +3500,7 @@ struct lpfc_hbq_init *lpfc_hbq_defs[] = {
+ 		}
+ 	}
+ 
+-	return rc;
++	return 1;
+ }
+ 
+ /**
+-- 
+1.8.3.1
 
-The way I read quotactl_cmd_write, it only special cases a few commands
-and returns 0 there, so we should not need the extra quotactl_cmd_onoff
-call, as all those commands are not explicitly listed.
