@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B0030FC76
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E715630FC7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239784AbhBDTS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:18:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239580AbhBDTSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:18:25 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 594CE64F10;
-        Thu,  4 Feb 2021 19:17:44 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 14:17:42 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH] tracepoints: Do not punish non static call users
-Message-ID: <20210204141742.46739ed2@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239705AbhBDTUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238713AbhBDTTi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:19:38 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D3C06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:18:56 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id g15so2390946pjd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gpuC+d2FUOI/ZHg93wQH+r85JDI4pp/FX9Ub2W2auJA=;
+        b=IeotN/9b8v5XKf4EhKYsx0kfJDGFixxFAbgIG7uuE5tnabLRIRh0tUk3+MzaseOpkO
+         MGOfJLn/t0mNBWKilsOO0R1ZgJ6TjREJeV04mMuqVPU0OoeZfGS3dqy0VbE+EvvmXJgg
+         ra34agXgJ5zd5/OLk3jfRChhcNS4ABtu9mHgG8ARfKSTgC/4vLvvrSay2qoLL3Gzr3Dd
+         HAdmCEbXZErEAO0aPLwRJ+qLYZN2w7HXPO6aKm0qC4+1SK+wu7rNYvqDwzUbY9GsiJ51
+         NPYomZ2yLP+eL9f0GUvcJMzbF+QnmE0YujcWl0QGEnpL1s/uI3nJkw08iQvzzN3jBl/q
+         xS8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gpuC+d2FUOI/ZHg93wQH+r85JDI4pp/FX9Ub2W2auJA=;
+        b=S4meZMErvYMHHhIMCpYS567SXOJtatc0nmzEZkb/+fJxJ4PEMnidhnBs0GMFEX9Nat
+         kE7oSopDWqUGcgkk51j4R4CqqdYqmyGviML8b98gM6XKhzPJVl0vqE9QFx3jvZlKFy4f
+         clsWe9fg3DZGLRmJ4Vq2XlXurtd25n+hk8T9dP8XHX28lYl4d6Px9iCEmfjktagGyYKo
+         X5aluJZOs9GGQM+xEwh0kPo5ImxFgZArWzxo1js3QFEZm7cL5+xfpcCUwcOvWq+ACxZW
+         ib2VJ41QHw1H2MqPi856RUOjOphDkNsBHHZ4053crEpnoTjeBGiN2tjRlqhjTjG5Ye/s
+         8mHQ==
+X-Gm-Message-State: AOAM532KF1+UvICZg8ZHIbzPTPn9SZNnClYrFmrMBiFCW7MO3u1RlFVk
+        08oQgWMi+iuO200fc6XpmJN5QyDRufkWpRFqAkcpBg==
+X-Google-Smtp-Source: ABdhPJzl7LAFaClTjRx4s2bi9MKyf3s0L375hLNeyyqodeJV4B0xlBdb5b8nigoIhDlFSEWostsGA+rxdrWqOWCmz5U=
+X-Received: by 2002:a17:90a:bf10:: with SMTP id c16mr435444pjs.101.1612466335618;
+ Thu, 04 Feb 2021 11:18:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-2-ndesaulniers@google.com> <20210204103946.GA14802@wildebeest.org>
+In-Reply-To: <20210204103946.GA14802@wildebeest.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 4 Feb 2021 11:18:44 -0800
+Message-ID: <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
+To:     Mark Wielaard <mark@klomp.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With static calls, a tracepoint can call the callback directly if there is
-only one callback registered to that tracepoint. When there is more than
-one, the static call will call the tracepoint's "iterator" function, which
-needs to reload the tracepoint's "funcs" array again, as it could have
-changed since the first time it was loaded.
+On Thu, Feb 4, 2021 at 2:41 AM Mark Wielaard <mark@klomp.org> wrote:
+>
+> Hi Nick,
+>
+> On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
+> > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
+> > the default. Does so in a way that's forward compatible with existing
+> > configs, and makes adding future versions more straightforward.
+> >
+> > GCC since ~4.8 has defaulted to this DWARF version implicitly.
+>
+> And since GCC 11 it defaults to DWARF version 5.
+>
+> It would be better to set the default to the DWARF version that the
+> compiler generates. So if the user doesn't select any version then it
+> should default to just -g (or -gdwarf).
 
-But an arch without static calls is punished by having to load the
-tracepoint's "funcs" array twice. Once in the DO_TRACE macro, and once
-again in the iterator macro.
+I disagree.
 
-For archs without static calls, there's no reason to load the array macro
-in the first place, since the iterator function will do it anyway.
+https://lore.kernel.org/lkml/CAKwvOdk0zxewEOaFuqK0aSMz3vKNzDOgmez=-Dae4+bodsSg5w@mail.gmail.com/
+"""
+I agree that this patch takes away the compiler vendor's choice as to
+what the implicit default choice is for dwarf version for the kernel.
+(We, the Linux kernel, do so already for implicit default -std=gnuc*
+as well). ...
+But I'm
+going to suggest we follow the Zen of Python: explicit is better than
+implicit.
+"""
+We have a number of in tree and out of tree DWARF consumers that
+aren't ready for DWARF v5.  Kernel developers need a way to disable
+DWARF v5 until their dependencies are deployed or more widely
+available.
 
-Change the __DO_TRACE_CALL() macro to do the double call only for
-architectures with static calls, and just call the iterator function
-directly for architectures without static calls.
-
-[ Tested only on architectures with static calls, will test on those
-  without later ]
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index dc1d4c612cc3..966bfa6a861c 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -152,9 +152,18 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- #ifdef TRACEPOINTS_ENABLED
- 
- #ifdef CONFIG_HAVE_STATIC_CALL
--#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
-+#define __DO_TRACE_CALL(name, args)					\
-+	do {								\
-+		struct tracepoint_func *it_func_ptr;			\
-+		it_func_ptr =						\
-+			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
-+		if (it_func_ptr) {					\
-+			__data = (it_func_ptr)->data;			\
-+			static_call(tp_func_##name)(args);		\
-+		}							\
-+	} while (0)
- #else
--#define __DO_TRACE_CALL(name)	__traceiter_##name
-+#define __DO_TRACE_CALL(name, args)	__traceiter_##name(args)
- #endif /* CONFIG_HAVE_STATIC_CALL */
- 
- /*
-@@ -168,7 +177,6 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-  */
- #define __DO_TRACE(name, proto, args, cond, rcuidle)			\
- 	do {								\
--		struct tracepoint_func *it_func_ptr;			\
- 		int __maybe_unused __idx = 0;				\
- 		void *__data;						\
- 									\
-@@ -190,12 +198,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 			rcu_irq_enter_irqson();				\
- 		}							\
- 									\
--		it_func_ptr =						\
--			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
--		if (it_func_ptr) {					\
--			__data = (it_func_ptr)->data;			\
--			__DO_TRACE_CALL(name)(args);			\
--		}							\
-+		__DO_TRACE_CALL(name, TP_ARGS(args));			\
- 									\
- 		if (rcuidle) {						\
- 			rcu_irq_exit_irqson();				\
+I'm happy to consider eventually moving the default DWARF version for
+the kernel to v5, and ideas for how to wean developers off of v4, but
+I don't think forcing v5 on kernel developers right now is the most
+delicate approach.
+-- 
+Thanks,
+~Nick Desaulniers
