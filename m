@@ -2,106 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B8D30F66B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE0730F65F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237291AbhBDPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:33:59 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:35172 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237253AbhBDPVr (ORCPT
+        id S237205AbhBDPc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:32:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237303AbhBDPXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:21:47 -0500
-Received: by mail-oi1-f175.google.com with SMTP id w8so4082453oie.2;
-        Thu, 04 Feb 2021 07:21:31 -0800 (PST)
+        Thu, 4 Feb 2021 10:23:44 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B3C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:23:04 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id o10so6143300wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:23:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FOhHJFN1Uk3imxDHDCmlGLnl9VnriOFj98ccGjxS3EU=;
+        b=F1sXbq67W/pxmK1zXgV072u16BTrlrCAVP0it0HAR2Fp+Zt8xtCTCV7y3dnPlv8saB
+         C+cdlziGxcEaC41JXpDQHnBBFrlli0RiOpXwtfNzva6k49/rHVQWlo7T6bMUHbsWzn6Y
+         S/kZWGhIJchjl7dG5v++X+mpllv4Fcml2LDrc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=oZGNs7nDtUphRDqGl7ohIJDPCE6d+t9/b/EDhVvQ54c=;
-        b=BCnySCurRtJ47ZvicmY52iqFTu5Fsnc4SUhNxsF+o3cEXRzjLkkOd0XAwcKXsAKSh6
-         +J8smvm0HT+of2bUy2HtkuXHpWtgB6qVqFxKUiTe+6HrtP9ii1aDlVLoamkP+GK3eSkF
-         sxdebAIQDwxVA6DJiyJRCWPcbQJv2Ya+Jmd3dHKBHfj5YkVqjWVnsPx8GkrMxc4zRgVP
-         NLte0wUwu9bc84gyDB7CVDR0x4IiHxdpvgHblAa458WEQ8+Q1uT1oBrENDeMofZ+DgpG
-         9ZEFCA+Ql/zYcDtiNui4TdAEEiYOEDmD392LVVbKnElb7cgvZ3q7wG/j63meNMPgqyC1
-         3ZAA==
-X-Gm-Message-State: AOAM530NxZYAJvGOg4wypjZRJCdyBmjsVM228xDE3uEw2niYeeXRhLuj
-        s4TQLdrNgUM6omT3hqPCSg==
-X-Google-Smtp-Source: ABdhPJzmWXw4pcODtvLNukgjmc7B4wfiFPEAQGPUlYnM0+PkwlQXIRZiIHbcH4hj4u6Wx4RDAlnugg==
-X-Received: by 2002:a05:6808:b03:: with SMTP id s3mr40824oij.40.1612452066140;
-        Thu, 04 Feb 2021 07:21:06 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s123sm1142562oos.3.2021.02.04.07.21.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=FOhHJFN1Uk3imxDHDCmlGLnl9VnriOFj98ccGjxS3EU=;
+        b=mML0K3qaDXaD1yRr5j6aDa/wQFemb42POWfQ2hiWFzDKkKzW832zcmfrUT2vCnM6vX
+         ngj0NAFZNHB71m+jVFUhs4T6FZU87cNCbZEOOSzB17tZTJIoxsdTWuUFT7XBZTvlzeAU
+         /CCyY+yuje/NwlVV4ZWQx2u2kXdaqATATuk1fBqkb8zRpBjI8bBgKNWOoDoRsBskwx8+
+         10rIaNiUtkXmh9M5nw6/fGKItIxCpa7ZSWw/eMM0ERTDkLT6Sc7ZY3QPKb8Wkao/9o2P
+         qqnYrOPsSDJD9LQ1D4gXplFiRbO9Pfao1nvcQbha+nJAm5xqF64lN+CLAzY4QcgMCaKl
+         uW7Q==
+X-Gm-Message-State: AOAM533lOfnOPT8M9dCH6joN1L53pLNWsL6ZvFqe6RlJuTQYk4fooTpj
+        v6KGR5DTWjfh6Xijs1Q8RRngHw==
+X-Google-Smtp-Source: ABdhPJzWUE8+keCZMjDw4Qd96B14poTeso3FJmwHG+VBS+pVfTYio5MuASNi3L9GB8fNZbR908SB5g==
+X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr6103154wmk.163.1612452183199;
+        Thu, 04 Feb 2021 07:23:03 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v6sm8776760wrx.32.2021.02.04.07.23.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 07:21:05 -0800 (PST)
-Received: (nullmailer pid 452040 invoked by uid 1000);
-        Thu, 04 Feb 2021 15:20:57 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     balbi@kernel.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org
-In-Reply-To: <20210203165233.22177-1-jbx6244@gmail.com>
-References: <20210203165233.22177-1-jbx6244@gmail.com>
-Subject: Re: [PATCH v2 1/7] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
-Date:   Thu, 04 Feb 2021 09:20:57 -0600
-Message-Id: <1612452057.718435.452039.nullmailer@robh.at.kernel.org>
+        Thu, 04 Feb 2021 07:23:02 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:22:59 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Matthew Wilcox <willy@infradead.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Sandeep Patil <sspatil@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        James Jones <jajones@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        John Stultz <john.stultz@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH 1/2] mm: replace BUG_ON in vm_insert_page
+ with a return of an error
+Message-ID: <YBwRU1nrE3mfYbWK@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Sandeep Patil <sspatil@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        James Jones <jajones@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Minchan Kim <minchan@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        John Stultz <john.stultz@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210203003134.2422308-1-surenb@google.com>
+ <20210203015553.GX308988@casper.infradead.org>
+ <CAKMK7uHnNdjOYX5Rhj=uGMz7hSz12JhgkZJCfiqgkpjXnMfL4A@mail.gmail.com>
+ <CAJuCfpG4GkVbeW=bB+Qrm5GPrZAwg0_rmyG05iwQmL7GrWAYHw@mail.gmail.com>
+ <CAKMK7uHi+mG0z0HUmNt13QCCvutuRVjpcR0NjRL12k-WbWzkRg@mail.gmail.com>
+ <CAKMK7uETu_m+=MHyPmqBbEP__qjMF_wmr4c2BiVTPcwE8c+5Mg@mail.gmail.com>
+ <CAJuCfpHC6P5cJh-1hv=vjGHCCkM6mA_p19H6tCZmCDxhTuASkQ@mail.gmail.com>
+ <ced1c1be-e731-946e-e9ce-919520fe935a@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ced1c1be-e731-946e-e9ce-919520fe935a@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Feb 2021 17:52:27 +0100, Johan Jonker wrote:
-> In the past Rockchip dwc3 usb nodes were manually checked.
-> With the conversion of snps,dwc3.yaml as common document
-> we now can convert rockchip,dwc3.txt to yaml as well.
-> Remove node wrapper.
+On Thu, Feb 04, 2021 at 09:16:32AM +0100, Christian König wrote:
+> Am 03.02.21 um 22:41 schrieb Suren Baghdasaryan:
+> > [SNIP]
+> > > > How many semi-unrelated buffer accounting schemes does google come up with?
+> > > > 
+> > > > We're at three with this one.
+> > > > 
+> > > > And also we _cannot_ required that all dma-bufs are backed by struct
+> > > > page, so requiring struct page to make this work is a no-go.
+> > > > 
+> > > > Second, we do not want to all get_user_pages and friends to work on
+> > > > dma-buf, it causes all kinds of pain. Yes on SoC where dma-buf are
+> > > > exclusively in system memory you can maybe get away with this, but
+> > > > dma-buf is supposed to work in more places than just Android SoCs.
+> > > I just realized that vm_inser_page doesn't even work for CMA, it would
+> > > upset get_user_pages pretty badly - you're trying to pin a page in
+> > > ZONE_MOVEABLE but you can't move it because it's rather special.
+> > > VM_SPECIAL is exactly meant to catch this stuff.
+> > Thanks for the input, Daniel! Let me think about the cases you pointed out.
+> > 
+> > IMHO, the issue with PSS is the difficulty of calculating this metric
+> > without struct page usage. I don't think that problem becomes easier
+> > if we use cgroups or any other API. I wanted to enable existing PSS
+> > calculation mechanisms for the dmabufs known to be backed by struct
+> > pages (since we know how the heap allocated that memory), but sounds
+> > like this would lead to problems that I did not consider.
 > 
-> Added properties for rk3399 are:
->   power-domains
->   resets
->   reset-names
+> Yeah, using struct page indeed won't work. We discussed that multiple times
+> now and Daniel even has a patch to mangle the struct page pointers inside
+> the sg_table object to prevent abuse in that direction.
 > 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
->  .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 103 +++++++++++++++++++++
->  2 files changed, 103 insertions(+), 56 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> On the other hand I totally agree that we need to do something on this side
+> which goes beyong what cgroups provide.
 > 
+> A few years ago I came up with patches to improve the OOM killer to include
+> resources bound to the processes through file descriptors. I unfortunately
+> can't find them of hand any more and I'm currently to busy to dig them up.
+> 
+> In general I think we need to make it possible that both the in kernel OOM
+> killer as well as userspace processes and handlers have access to that kind
+> of data.
+> 
+> The fdinfo approach as suggested in the other thread sounds like the easiest
+> solution to me.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Yeah for OOM handling cgroups alone isn't enough as the interface - we
+need to make sure that oom killer takes into account the system memory
+usage (ideally zone aware, for CMA pools).
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml:13:7: [warning] wrong indentation: expected 2 but found 6 (indentation)
-
-dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml] Error 255
-make[1]: *** Waiting for unfinished jobs....
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/intel,keembay-dwc3.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/intel,keembay-dwc3.example.dt.yaml] Error 255
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.example.dt.yaml] Error 255
-make: *** [Makefile:1370: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1435466
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+But to track that we still need that infrastructure first I think.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
