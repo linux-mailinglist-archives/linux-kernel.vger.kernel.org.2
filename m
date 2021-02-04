@@ -2,185 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D490C30FA00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE3030F9F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhBDRmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:42:43 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39750 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238644AbhBDRk6 (ORCPT
+        id S238721AbhBDRmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:42:01 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:45485 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238589AbhBDRlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:40:58 -0500
-Received: by mail-io1-f71.google.com with SMTP id r140so3570207iod.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:40:42 -0800 (PST)
+        Thu, 4 Feb 2021 12:41:20 -0500
+Received: by mail-oi1-f181.google.com with SMTP id m7so4504587oiw.12;
+        Thu, 04 Feb 2021 09:41:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=SKawFtHmVUvK9ogagJWV/d3JLfJ7PCa7VvPMesvyybU=;
-        b=kYk2Lo4vNhkZlaOie/0NQ6VL5vkTRjCI0k0hFjbi+z7Rpv1q61IrBkvCjlEtZB3bV3
-         AIapQeGzKZ7QPpL/QEdGvGseaVgp8K7s9psk4VJDAeee51XcRAyr+BXqyaKeq1WDMIFq
-         vV1ikFqR39TtNw8O0J0h8UcSp1vqj+74IRNxLNn0PDft75AcvX/qtoMJK4+uzO3XYwub
-         QLNqsSApiYPEJVn6ewA1byfdq9ub0Ff5hie9HG90T4omoI7PnyTINx7NRCiIDoFfoLpR
-         folEJTrJMHnDwbii5hEFzwu4onp6sJuMSTARUEmK14UHsVgGuJuflbL6ga8eYSsQp1Ku
-         f7Bg==
-X-Gm-Message-State: AOAM532sEzMFpbnW98mLiCxOzqwmkHal0vSFc/ylDjhIcjM2R3kKIHp8
-        t7HeqigOEjxAJNeCCVN6iQ+uX+I8RnDO9liqG+R+6FIGKuFw
-X-Google-Smtp-Source: ABdhPJymkNeSf6wtiMNOKNY2WO3Evmag/b6JVGBRO10eyoqPP8Li0QiZ5gO90g2rzf169dZWgu9+gqwfsJsJIfBs2fQjwC2o7TaN
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ppFNAnwz/O2d3fmUTcOou1FwVZxpBcox4zp0+9mjbI0=;
+        b=O78orqmvTwrEOs7ZHGwoIQl2PrVvCEHDeNP7rieH4kcKwMTamRDmB4VMMBvuE6j/n8
+         93xsfODX/QS0nUVBwRKgCpTrituU35FOqqO9JeYUs8VP63e0mDL3zHtq5Bpmg8LFcY6Y
+         32vhSbGTR9O0PpiaydF3jjTDaDgtV7P1IoLvV5yUCYPa+onhb/HVvAkxfbHBRjyvsck9
+         OpL9QKAAzlfgsyspXIKL2UD67ctIvkUqgz9PFaNTUpmTCPibvIA+nyWDXsroGAUqs2OW
+         LNZbCT9ac5nQ1U2FEYDJ8Ri3mwZsHOEcaHtj/bIOnLj+Ev/fo0doweldDlQ1aeFONfhw
+         N50A==
+X-Gm-Message-State: AOAM532CcB66+fR4UJ7BN9yeswIqcYmkrvbVRD1qu9G8ck4fkZwYZv58
+        FeFryvtoIKVfnJbig6t+2A==
+X-Google-Smtp-Source: ABdhPJwyQZK/KLQa58IT9c/ne8vaoP5CTOrMYyKDPUl4t2Upj/dzcMYl4KNRnM0QPe8DsbgWaulQrw==
+X-Received: by 2002:a05:6808:145:: with SMTP id h5mr406403oie.87.1612460439336;
+        Thu, 04 Feb 2021 09:40:39 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a63sm1233750otc.75.2021.02.04.09.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 09:40:38 -0800 (PST)
+Received: (nullmailer pid 702724 invoked by uid 1000);
+        Thu, 04 Feb 2021 17:40:37 -0000
+Date:   Thu, 4 Feb 2021 11:40:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: bridge: Add documentation
+ for SN65DSI84
+Message-ID: <20210204174037.GA690342@robh.at.kernel.org>
+References: <20210203071256.42050-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:164c:: with SMTP id a12mr650591jat.128.1612460417360;
- Thu, 04 Feb 2021 09:40:17 -0800 (PST)
-Date:   Thu, 04 Feb 2021 09:40:17 -0800
-In-Reply-To: <0000000000006637f205ba55aa77@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000064319505ba86323c@google.com>
-Subject: Re: KASAN: use-after-free Read in find_uprobe
-From:   syzbot <syzbot+9b2492a161dae05a29f0@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203071256.42050-1-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Feb 03, 2021 at 12:42:55PM +0530, Jagan Teki wrote:
+> SN65DSI84 is a Single Channel DSI to Dual-link LVDS bridge from
+> Texas Instruments.
+> 
+> SN65DSI83, SN65DSI85 are variants of the same family of bridge
+> controllers.
+> 
+> Right now the bridge driver is supporting a single link, dual-link
+> support requires to initiate I2C Channel B registers, so dt-bindings
+> documented with single link LVDS.
+> 
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+> Changes for v2:
+> - none
+> 
+>  .../bindings/display/bridge/ti,sn65dsi84.yaml | 127 ++++++++++++++++++
+>  1 file changed, 127 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+> new file mode 100644
+> index 000000000000..891382a76c1a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi84.yaml
+> @@ -0,0 +1,127 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/ti,sn65dsi84.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI SN65DSI84 MIPI DSI to LVDS bridge bindings
+> +
+> +maintainers:
+> +  - Jagan Teki <jagan@amarulasolutions.com>
+> +
+> +description: |
+> +  The SN65DSI84 DSI to FlatLink bridge features a single channel MIPI D-PHY receiver
+> +  front-end configuration with 4 lanes per channel operating at 1 Gbps per lanes.
+> +  The bridge decodes MIPI DSI 18bpp RGB666 and 240bpp RG888 packets and converts
+> +  the formatted video data stream to a FlatLink compatible LVDS output operating
+> +  at pixel clocks operating from 25 MHx to 154 MHz, offering a Dual-Link LVDS,
+> +  Single-Link LVDS interface with four data lanes per link.
+> +
+> +  https://www.ti.com/product/SN65DSI84
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,sn65dsi84
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: i2c address of the bridge, 0x2c
 
-HEAD commit:    0e2c50f4 Add linux-next specific files for 20210204
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12665674d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b5009c5bf1512a87
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b2492a161dae05a29f0
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178163e8d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1094915f500000
+Just 'const: 0x2c' if that's the only valid address.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b2492a161dae05a29f0@syzkaller.appspotmail.com
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO specifier for bridge enable pin (active high).
+> +
+> +  ports:
+> +    type: object
+> +    description:
+> +      A node containing input and output port nodes with endpoint definitions
+> +      as documented in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +      port@0:
+> +        type: object
+> +        description: |
+> +          DSI Input. The remote endpoint phandle should be a
+> +          reference to a valid mipi_dsi_host device node.
+> +
+> +      port@1:
+> +        type: object
+> +        description: |
+> +          Video port for LVDS output (panel or connector).
 
-==================================================================
-BUG: KASAN: use-after-free in uprobe_cmp kernel/events/uprobes.c:620 [inline]
-BUG: KASAN: use-after-free in __uprobe_cmp_key kernel/events/uprobes.c:646 [inline]
-BUG: KASAN: use-after-free in rb_find include/linux/rbtree.h:289 [inline]
-BUG: KASAN: use-after-free in __find_uprobe kernel/events/uprobes.c:661 [inline]
-BUG: KASAN: use-after-free in find_uprobe+0x12c/0x150 kernel/events/uprobes.c:678
-Read of size 8 at addr ffff888017f05d68 by task syz-executor109/8411
+This needs to use the graph.yaml schema. See the ones in drm-misc-next 
+that are already converted.
 
-CPU: 1 PID: 8411 Comm: syz-executor109 Not tainted 5.11.0-rc6-next-20210204-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- uprobe_cmp kernel/events/uprobes.c:620 [inline]
- __uprobe_cmp_key kernel/events/uprobes.c:646 [inline]
- rb_find include/linux/rbtree.h:289 [inline]
- __find_uprobe kernel/events/uprobes.c:661 [inline]
- find_uprobe+0x12c/0x150 kernel/events/uprobes.c:678
- uprobe_unregister+0x1e/0x70 kernel/events/uprobes.c:1111
- __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
- probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
- trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
- perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
- perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
- _free_event+0x2ee/0x1380 kernel/events/core.c:4830
- put_event kernel/events/core.c:4924 [inline]
- perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
- perf_release+0x33/0x40 kernel/events/core.c:5049
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xc5c/0x2ae0 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43daf9
-Code: Unable to access opcode bytes at RIP 0x43dacf.
-RSP: 002b:00007ffd1d03f8e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043daf9
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004ae230
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-
-Allocated by task 8411:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:403 [inline]
- ____kasan_kmalloc mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
- kmalloc include/linux/slab.h:556 [inline]
- kzalloc include/linux/slab.h:686 [inline]
- alloc_uprobe kernel/events/uprobes.c:731 [inline]
- __uprobe_register+0x19c/0x850 kernel/events/uprobes.c:1167
- trace_uprobe_enable kernel/trace/trace_uprobe.c:1060 [inline]
- probe_event_enable+0x357/0xa00 kernel/trace/trace_uprobe.c:1129
- trace_uprobe_register+0x443/0x880 kernel/trace/trace_uprobe.c:1456
- perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
- perf_trace_event_init+0x549/0xa20 kernel/trace/trace_event_perf.c:204
- perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
- perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
- perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
- perf_init_event kernel/events/core.c:11090 [inline]
- perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
- perf_event_alloc kernel/events/core.c:11749 [inline]
- __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8411:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
- kasan_slab_free include/linux/kasan.h:191 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4202
- put_uprobe kernel/events/uprobes.c:612 [inline]
- put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
- uprobe_apply+0xfc/0x130 kernel/events/uprobes.c:1231
- uprobe_perf_open kernel/trace/trace_uprobe.c:1311 [inline]
- trace_uprobe_register+0x5c9/0x880 kernel/trace/trace_uprobe.c:1463
- perf_trace_event_open kernel/trace/trace_event_perf.c:186 [inline]
- perf_trace_event_init kernel/trace/trace_event_perf.c:208 [inline]
- perf_trace_event_init+0x17a/0xa20 kernel/trace/trace_event_perf.c:195
- perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
- perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
- perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
- perf_init_event kernel/events/core.c:11090 [inline]
- perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
- perf_event_alloc kernel/events/core.c:11749 [inline]
- __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888017f05c00
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 360 bytes inside of
- 512-byte region [ffff888017f05c00, ffff888017f05e00)
-The buggy address belongs to the page:
-page:00000000b82340ef refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x17f04
-head:00000000b82340ef order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010841c80
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888017f05c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888017f05c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888017f05d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                          ^
- ffff888017f05d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888017f05e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - enable-gpios
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    dsi {
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +
+> +       ports {
+> +           #address-cells = <1>;
+> +           #size-cells = <0>;
+> +
+> +           port@0 {
+> +               reg = <0>;
+> +               dsi_in: endpoint {
+> +                   remote-endpoint = <&ltdc_ep0_out>;
+> +               };
+> +           };
+> +
+> +           port@1 {
+> +               reg = <1>;
+> +               dsi_out: endpoint {
+> +                   remote-endpoint = <&bridge_in>;
+> +                   data-lanes = <0 1>;
+> +               };
+> +           };
+> +       };
+> +    };
+> +
+> +    i2c6 {
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +
+> +       bridge@2c {
+> +           compatible = "ti,sn65dsi84";
+> +           reg = <0x2c>;
+> +           enable-gpios = <&gpiof 15 GPIO_ACTIVE_HIGH>;
+> +
+> +           ports {
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               port@0 {
+> +                   reg = <0>;
+> +                   bridge_in: endpoint {
+> +                        remote-endpoint = <&dsi_out>;
+> +                   };
+> +               };
+> +
+> +               port@1 {
+> +                   reg = <1>;
+> +                   bridge_out: endpoint {
+> +                        remote-endpoint = <&panel_in_lvds>;
+> +                   };
+> +               };
+> +           };
+> +       };
+> +    };
+> -- 
+> 2.25.1
+> 
