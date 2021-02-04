@@ -2,177 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED4B30FC17
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB7D30FCAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239388AbhBDS54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:57:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:2119 "EHLO mga09.intel.com"
+        id S239792AbhBDT06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:26:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239410AbhBDS4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:56:33 -0500
-IronPort-SDR: OOLtcW5BNSMu6RWIunb+wEeiCXaWGZREjqp0sfGc8J2FRYMgY2l0sqoqJwuW0xXhZbRj+429cN
- CX/3NtrKOu5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="181455269"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="181455269"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 10:55:43 -0800
-IronPort-SDR: 9kuExkt4nlo9ze0QjfV35lBjvzzDxy7AIn6Rd/7Gtw34q0j+7KGDkY/Ai8mQRDq1jem7DKVmTh
- NU1MVdRLFXUQ==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="393322655"
-Received: from jguillor-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.14])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 10:55:42 -0800
-Date:   Thu, 4 Feb 2021 10:55:40 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 13/14] cxl/mem: Add limited Get Log command (0401h)
-Message-ID: <20210204185540.oxwurggwd7a37a2o@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-14-ben.widawsky@intel.com>
- <20210201182848.GL197521@fedora>
- <20210202235103.v36v3znh5tsi4g5x@intel.com>
- <CAPcyv4i3MMY=WExfvcPFYiJkHoM_UeZ63ORZqi0Vbm76JapS8A@mail.gmail.com>
- <20210203171610.2y2x4krijol5dvkk@intel.com>
- <YBroGrVd76p+BF0v@Konrads-MacBook-Pro.local>
- <CAPcyv4hMM9isho5d8wS=5vtP0NxE5KA0HrMp+Bx2PZhPDrrWsg@mail.gmail.com>
+        id S238268AbhBDQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:59:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83EBF64F72;
+        Thu,  4 Feb 2021 16:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612457909;
+        bh=J778l9M1K8153trMZBWLrcMcnqBtk9mX7SssLwTjnZg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Sr/7UWgOOzsbZ+6eyN8VQRljp/yFgix0YHfd8FdGDBIWWQ6/rRpChV+Vr8c3DEoag
+         EUNNpauXVD0laBCGDzODaLxwcKbCQ3RPA4P1+7FRvnvhyyciHarKnlDB+X66HIqBY6
+         GWcAhn1KkW7qaYeXqEgBAf5xezhIojXJgZmoJOggTWQ5EjB26PYNayxvOs8HMGjKV8
+         EhnQOUlRLyIscKKm30hZ1VCXn3unlz5HyBBD1krE6ck+Xhd5H0RTCy0rZyg0hs/8Uh
+         GdlZGgp+RGoV0WN+QVL/UwBMVYa0f3duHSgeghTvUCxPqN5eI+czl6q+54oNkqFuJM
+         Qqlg8GgIwA/0A==
+From:   Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/3] phy: qcom-qmp: Add UFS V5 registers found in SM8350
+Date:   Thu,  4 Feb 2021 22:28:04 +0530
+Message-Id: <20210204165805.62235-3-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210204165805.62235-1-vkoul@kernel.org>
+References: <20210204165805.62235-1-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hMM9isho5d8wS=5vtP0NxE5KA0HrMp+Bx2PZhPDrrWsg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-03 12:31:00, Dan Williams wrote:
-> On Wed, Feb 3, 2021 at 10:16 AM Konrad Rzeszutek Wilk
-> <konrad.wilk@oracle.com> wrote:
-> >
-> > On Wed, Feb 03, 2021 at 09:16:10AM -0800, Ben Widawsky wrote:
-> > > On 21-02-02 15:57:03, Dan Williams wrote:
-> > > > On Tue, Feb 2, 2021 at 3:51 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > > > >
-> > > > > On 21-02-01 13:28:48, Konrad Rzeszutek Wilk wrote:
-> > > > > > On Fri, Jan 29, 2021 at 04:24:37PM -0800, Ben Widawsky wrote:
-> > > > > > > The Get Log command returns the actual log entries that are advertised
-> > > > > > > via the Get Supported Logs command (0400h). CXL device logs are selected
-> > > > > > > by UUID which is part of the CXL spec. Because the driver tries to
-> > > > > > > sanitize what is sent to hardware, there becomes a need to restrict the
-> > > > > > > types of logs which can be accessed by userspace. For example, the
-> > > > > > > vendor specific log might only be consumable by proprietary, or offline
-> > > > > > > applications, and therefore a good candidate for userspace.
-> > > > > > >
-> > > > > > > The current driver infrastructure does allow basic validation for all
-> > > > > > > commands, but doesn't inspect any of the payload data. Along with Get
-> > > > > > > Log support comes new infrastructure to add a hook for payload
-> > > > > > > validation. This infrastructure is used to filter out the CEL UUID,
-> > > > > > > which the userspace driver doesn't have business knowing, and taints on
-> > > > > > > invalid UUIDs being sent to hardware.
-> > > > > >
-> > > > > > Perhaps a better option is to reject invalid UUIDs?
-> > > > > >
-> > > > > > And if you really really want to use invalid UUIDs then:
-> > > > > >
-> > > > > > 1) Make that code wrapped in CONFIG_CXL_DEBUG_THIS_IS_GOING_TO..?
-> > > > > >
-> > > > > > 2) Wrap it with lockdown code so that you can't do this at all
-> > > > > >    when in LOCKDOWN_INTEGRITY or such?
-> > > > > >
-> > > > >
-> > > > > The commit message needs update btw as CEL is allowed in the latest rev of the
-> > > > > patches.
-> > > > >
-> > > > > We could potentially combine this with the now added (in a branch) CONFIG_RAW
-> > > > > config option. Indeed I think that makes sense. Dan, thoughts?
-> > > >
-> > > > Yeah, unknown UUIDs blocking is the same risk as raw commands as a
-> > > > vendor can trigger any behavior they want. A "CONFIG_RAW depends on
-> > > > !CONFIG_INTEGRITY" policy sounds reasonable as well.
-> > >
-> > > What about LOCKDOWN_NONE though? I think we need something runtime for this.
-> > >
-> > > Can we summarize the CONFIG options here?
-> > >
-> > > CXL_MEM_INSECURE_DEBUG // no change
-> > > CXL_MEM_RAW_COMMANDS // if !security_locked_down(LOCKDOWN_NONE)
-> > >
-> > > bool cxl_unsafe()
-> >
-> > Would it be better if this inverted? Aka cxl_safe()..
-> > ?
-> > > {
-> > > #ifndef CXL_MEM_RAW_COMMANDS
-> 
-> nit use IS_ENABLED() if this function lives in a C file, or provide
-> whole alternate static inline versions in a header gated by ifdefs.
-> 
+Add the registers for UFS found in SM8350. The UFS phy used in SM8350
+seems to have same offsets as V5 phy, although Documentation for that is
+lacking.
 
-I had done this independently since... but agreed.
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.h | 47 +++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-> > >       return false;
-> > > #else
-> > >       return !security_locked_down(LOCKDOWN_NONE);
-> >
-> > :thumbsup:
-> >
-> > (Naturally this would inverted if this was cxl_safe()).
-> >
-> >
-> > > #endif
-> > > }
-> > >
-> > > ---
-> > >
-> > > Did I get that right?
-> >
-> > :nods:
-> 
-> Looks good which means it's time to bikeshed the naming. I'd call it
-> cxl_raw_allowed(). As "safety" isn't the only reason for blocking raw,
-> it's also to corral the userspace api. I.e. things like enforcing
-> security passphrase material through the Linux keys api.
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
+index dff7be5a1cc1..71ce3aa174ae 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.h
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
+@@ -824,6 +824,32 @@
+ #define QPHY_V4_PCS_PCIE_PRESET_P10_PRE			0xbc
+ #define QPHY_V4_PCS_PCIE_PRESET_P10_POST		0xe0
+ 
++/* Only for QMP V5 PHY - QSERDES COM registers */
++#define QSERDES_V5_COM_PLL_IVCO				0x058
++#define QSERDES_V5_COM_CP_CTRL_MODE0			0x074
++#define QSERDES_V5_COM_CP_CTRL_MODE1			0x078
++#define QSERDES_V5_COM_PLL_RCTRL_MODE0			0x07c
++#define QSERDES_V5_COM_PLL_RCTRL_MODE1			0x080
++#define QSERDES_V5_COM_PLL_CCTRL_MODE0			0x084
++#define QSERDES_V5_COM_PLL_CCTRL_MODE1			0x088
++#define QSERDES_V5_COM_SYSCLK_EN_SEL			0x094
++#define QSERDES_V5_COM_LOCK_CMP_EN			0x0a4
++#define QSERDES_V5_COM_LOCK_CMP1_MODE0			0x0ac
++#define QSERDES_V5_COM_LOCK_CMP2_MODE0			0x0b0
++#define QSERDES_V5_COM_LOCK_CMP1_MODE1			0x0b4
++#define QSERDES_V5_COM_DEC_START_MODE0			0x0bc
++#define QSERDES_V5_COM_LOCK_CMP2_MODE1			0x0b8
++#define QSERDES_V5_COM_DEC_START_MODE1			0x0c4
++#define QSERDES_V5_COM_VCO_TUNE_MAP			0x10c
++#define QSERDES_V5_COM_VCO_TUNE_INITVAL2		0x124
++#define QSERDES_V5_COM_HSCLK_SEL			0x158
++#define QSERDES_V5_COM_HSCLK_HS_SWITCH_SEL		0x15c
++#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE1_MODE0	0x1ac
++#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE2_MODE0	0x1b0
++#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE1_MODE1	0x1b4
++#define QSERDES_V5_COM_BIN_VCOCAL_HSCLK_SEL		0x1bc
++#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE2_MODE1	0x1b8
++
+ /* Only for QMP V5 PHY - TX registers */
+ #define QSERDES_V5_TX_RES_CODE_LANE_TX			0x34
+ #define QSERDES_V5_TX_RES_CODE_LANE_RX			0x38
+@@ -837,6 +863,10 @@
+ #define QSERDES_V5_TX_RCV_DETECT_LVL_2			0xa4
+ #define QSERDES_V5_TX_TRAN_DRVR_EMP_EN			0xc0
+ #define QSERDES_V5_TX_PI_QEC_CTRL			0xe4
++#define QSERDES_V5_TX_PWM_GEAR_1_DIVIDER_BAND0_1	0x178
++#define QSERDES_V5_TX_PWM_GEAR_2_DIVIDER_BAND0_1	0x17c
++#define QSERDES_V5_TX_PWM_GEAR_3_DIVIDER_BAND0_1	0x180
++#define QSERDES_V5_TX_PWM_GEAR_4_DIVIDER_BAND0_1	0x184
+ 
+ /* Only for QMP V5 PHY - RX registers */
+ #define QSERDES_V5_RX_UCDR_FO_GAIN			0x008
+@@ -893,6 +923,23 @@
+ #define QSERDES_V5_RX_DCC_CTRL1				0x1a8
+ #define QSERDES_V5_RX_VTH_CODE				0x1b0
+ 
++/* Only for QMP V5 PHY - UFS PCS registers */
++#define QPHY_V5_PCS_UFS_TIMER_20US_CORECLK_STEPS_MSB	0x00c
++#define QPHY_V5_PCS_UFS_TIMER_20US_CORECLK_STEPS_LSB	0x010
++#define QPHY_V5_PCS_UFS_PLL_CNTL			0x02c
++#define QPHY_V5_PCS_UFS_TX_LARGE_AMP_DRV_LVL		0x030
++#define QPHY_V5_PCS_UFS_TX_SMALL_AMP_DRV_LVL		0x038
++#define QPHY_V5_PCS_UFS_TX_HSGEAR_CAPABILITY		0x074
++#define QPHY_V5_PCS_UFS_RX_HSGEAR_CAPABILITY		0x0b4
++#define QPHY_V5_PCS_UFS_DEBUG_BUS_CLKSEL		0x124
++#define QPHY_V5_PCS_UFS_RX_MIN_HIBERN8_TIME		0x150
++#define QPHY_V5_PCS_UFS_RX_SIGDET_CTRL1			0x154
++#define QPHY_V5_PCS_UFS_RX_SIGDET_CTRL2			0x158
++#define QPHY_V5_PCS_UFS_TX_PWM_GEAR_BAND		0x160
++#define QPHY_V5_PCS_UFS_TX_HS_GEAR_BAND			0x168
++#define QPHY_V5_PCS_UFS_TX_MID_TERM_CTRL1		0x1d8
++#define QPHY_V5_PCS_UFS_MULTI_LANE_CTRL1		0x1e0
++
+ /* Only for QMP V5 PHY - USB3 have different offsets than V4 */
+ #define QPHY_V5_PCS_USB3_POWER_STATE_CONFIG1		0x300
+ #define QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_STATUS		0x304
+-- 
+2.26.2
 
-It actually got pushed into cxl_mem_raw_command_allowed()
-
-static bool cxl_mem_raw_command_allowed(u16 opcode)
-{
-        int i;
-
-        if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
-                return false;
-
-        if (security_locked_down(LOCKDOWN_NONE))
-                return false;
-
-        if (raw_allow_all)
-                return true;
-
-        if (is_security_command(opcode))
-                return false;
-
-        for (i = 0; i < ARRAY_SIZE(disabled_raw_commands); i++)
-                if (disabled_raw_commands[i] == opcode)
-                        return false;
-
-        return true;
-}
-
-That work for you?
