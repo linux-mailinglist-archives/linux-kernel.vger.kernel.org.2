@@ -2,660 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7A130F243
+	by mail.lfdr.de (Postfix) with ESMTP id EF01C30F244
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhBDLcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:32:08 -0500
-Received: from [1.6.215.26] ([1.6.215.26]:29447 "EHLO hyd1soter2"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235891AbhBDL2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:28:21 -0500
-Received: from hyd1soter2.caveonetworks.com (localhost [127.0.0.1])
-        by hyd1soter2 (8.15.2/8.15.2/Debian-3) with ESMTP id 114BRXgn052211;
-        Thu, 4 Feb 2021 16:57:33 +0530
-Received: (from geetha@localhost)
-        by hyd1soter2.caveonetworks.com (8.15.2/8.15.2/Submit) id 114BRXas052210;
-        Thu, 4 Feb 2021 16:57:33 +0530
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        sbhatta@marvell.com, hkelam@marvell.com, jerinj@marvell.com,
-        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>
-Subject: [net-next v3 09/14] octeontx2-af: cn10k: Add support for programmable channels
-Date:   Thu,  4 Feb 2021 16:57:31 +0530
-Message-Id: <1612438051-52170-1-git-send-email-gakula@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        id S236023AbhBDLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:32:19 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33756 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235780AbhBDL2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:28:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BP0IA101418;
+        Thu, 4 Feb 2021 11:27:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
+ b=YAUXsY4WT8vsI6QNiJIrZ3NGiXJgngfXNwvDvNydHb8Ft0ncyqzbJpHQFj/MYdSZLafy
+ Xp6U0s2FqmxS+iVI7vWyKQB4GryG1b/G03ntPPq8BzEhK92ZoczrHt56OA3k1nx/nDu8
+ YBxQo4aOZA7vnDcr7ydqUx4w2rJhJGRqzb5CyLoY21PO6GB8kdfW1sKrCjPE9Oe1c3wR
+ r4xlxPDHTWQM015zcsizh49edZ3/3eLA8chxGaMiFw7+TPTZLNK+rW9WrM4oHDVdFWDx
+ e/BylhBZjxxoO925A9v1y0MrYeNWhOuYG4gKwnqR/yFzOROqdJmNJB3F3w5JCYjlquox MQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36cydm4qgj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 11:27:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BLbhl062688;
+        Thu, 4 Feb 2021 11:27:50 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by aserp3030.oracle.com with ESMTP id 36dh1sbq50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 11:27:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GblT9XpbjsYbhLB/p5thPm8aKdxBvlayWciZw916ea+VXBI23sbnAGtmRi54OLQ6Ff+WrTRwzb2bD1qgXL2L/75caXKAzm++3wZfgczouIoe5CzetYGqdnemC6Uo0Pobo8+WYbBQJ63WyHjnsadpmKvanAULbC5V/Pavi7DEF2eHfyrCU0b2tUT1ICG18TvpGBfI1BO6ZafeoV48XAISKWEjdH2iKLO0reVWcUdB+LBSYg2yb/C3JtDWWdTjunH+2MoaqlJaVfn51Zn4hlXAAxtTqztRuFC2zK0wCGprPEf/Ca9JjMjgiNM8nBK0vdURAaXfyXbAeSemS2m7tdSmRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
+ b=jyo9tj39QCzMtyg6GEtWlZdL75IEMUR9fSupTrF7jbXeKzlR+HLxtFa/u9N6xmTYw/3Y+80WGSdk/gKM3R3Cx9JoYWOibrUEQ2di1xZuQir0Wg5U4ajmcnl6+nNglvjuE4O4E8dU3ARrrN2Ru9vi248yiEJTwixtdI6KYe9aaYDoT2bI78Jfk+2ZqQvuuBoOISjgORlOy9LtZWp53W4od5/eTnVQgFZgIa6x6UlRaCTuEHu90xCRMTW0WzYttfqr6DBxwSIJINbHIJMYaGMXuFqH9nUcwtDD17+BGQrlwCR0Btbj22Ce6GRG+52dWtC673h93kiOrsFSOFG44BeJYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6K0sRyhxeE3HiIPaFb+0BqlB2ygCid+dTv1mp9SOamg=;
+ b=kdmPlOR7WVGyLWWbb+al9Xs8cjV4j6qj9l5IteC9EUBD2MSc2hhUkN+Uq9PtXe23HItDcQOrGc10/XP30vGsIUffZq05JFhHwQYWUZmv+Rj+7pcLnupVNRns6lwuA5aOxSgLIgzmLSGIQRjTNk0wKpdHNTelBTw13fyjtFxmiqM=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by BY5PR10MB3970.namprd10.prod.outlook.com (2603:10b6:a03:1ff::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 4 Feb
+ 2021 11:27:48 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Thu, 4 Feb 2021
+ 11:27:48 +0000
+Subject: Re: [PATCH 2/4] mm/gup: decrement head page once for group of
+ subpages
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+References: <20210203220025.8568-1-joao.m.martins@oracle.com>
+ <20210203220025.8568-3-joao.m.martins@oracle.com>
+ <a1f9ba72-67c3-7307-89e6-d995ab782b42@nvidia.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <b7904b60-d7a6-d57b-3bc1-4b5afa92db44@oracle.com>
+Date:   Thu, 4 Feb 2021 11:27:40 +0000
+In-Reply-To: <a1f9ba72-67c3-7307-89e6-d995ab782b42@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LNXP265CA0001.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5e::13) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.67] (94.61.1.144) by LNXP265CA0001.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Thu, 4 Feb 2021 11:27:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5a98a080-0ffa-4887-9796-08d8c8ffe65a
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3970:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3970AB8D7F2C4B5E9D0AD32EBBB39@BY5PR10MB3970.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7Rsy7AufiJdK9oeCvAy8ZLlNcRRGuuN1u4snObIPVQ3T0D08+6Bo/1nByaWBRfkHVUbTmpItYSL7gc2zbOwHv3U+9B9hm/PRMGmNX/dXQ9ry2P2VvW3jmOC96DXs46rCk/QjHR8ZVf9VGKRMsWqS0GGPKKKUr5zcnr2WaK3fvyKPP99kA9EC45uqxmSpxUITBReWwdzKOm2Wv2my98HIjooBKwiUJd18HMm25ugf/FmMx5GBHzNt3z2uEnOrYtAIK7G83CTJlvqSLa00tlKFWPOddGhLznWjf7liWgIsLvbafSsrKdFv3hV944R523wasvR7KmQ1LWj8Gna6jKI41+ggkxO9bnM4HFmQ5+ASQCNYgLIsRAibIBhza8C/J+vIPaZNUcTPbQAxID+uW748wF8vXPdMqtGVbmxUH0vb9o5TI3TZQ8+cUm+xgASdeg6RwRJF73Vxicrpyr9l9VJmBCaI8RxlNZ/isuCFznTUEnpYG2fTmPr2g2gF6rmrDwA8tUDmX2ffsiPrrix3JEFykjqxP4VL+1/rEnSMK4QJ7K1Ul4ShdITmpjLmcuxkdpfZQedRuLwjJBFVwOcpzAZTPA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39860400002)(36756003)(5660300002)(16576012)(6916009)(4326008)(66476007)(66556008)(83380400001)(26005)(66946007)(31686004)(478600001)(186003)(2616005)(956004)(53546011)(2906002)(316002)(31696002)(6666004)(86362001)(8936002)(54906003)(6486002)(8676002)(16526019)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MXJsT1I3RTVFWCtGZ0YzMHJ1OEowcm9yMTZVTXY5bi9mU201SnRRQzg5blJL?=
+ =?utf-8?B?UUZCWGlaNVBIMC9EbmZId3dXRC8vSCtWaGxJMXNkajJHYzUxdUVpTzZPTlJO?=
+ =?utf-8?B?cDNNQmg1WEVFc2QxRUlaRStoZkpUMkQvVEpzMHVac2wrQUhlMldvTkZ0SU1k?=
+ =?utf-8?B?eFdwRjRnTnN3Nm1CcEdESTdxRkFKQ2Q5S2tCYkhxemZidDA3WFBhNzEyY1R2?=
+ =?utf-8?B?N3hBWjg2eFBlWnVURy9MUTJlcXorUVJRS3hrLzZrSEUwN1dtZ0FIMjE3bU1Q?=
+ =?utf-8?B?MlM1ZE14ck5zRFZkMUJDeXFOUERIblVoOWNxMW5zR0JTNmg5ZmJscE53cG55?=
+ =?utf-8?B?VGVWSWR1ZkhSTDB5aEVxMmdwV3BoclduNDlZODBQWE1oTnUwRzkwNnRQV0Ur?=
+ =?utf-8?B?eEdhSXFVdGZ5K3lFcWtQSU1oZjViZGNETUlWaHRzcVU3MGVEbGJlR3hEdlRW?=
+ =?utf-8?B?czhraHJKSVlkZ21GbWx4c3c2K0laekVVNjErQUtxL09aMUszaVRIaW42RG91?=
+ =?utf-8?B?M0N6QjhvYVAweTY2WmJMN1Azdk4rVWFhNUxSOE5VaFNvUi8rUDFLbTQ4Vmpj?=
+ =?utf-8?B?bHNiR0Y5RGluUzRHSndYemNXMFpDeE5sYzlwSCt4ZmZsMXhseFUwSUhDVzV2?=
+ =?utf-8?B?RzZtM0NOZ0s0V3NYTkV5NXVxeS83ZkxHdmh5b3NUNEZUcFFxRnVzNk80cmRp?=
+ =?utf-8?B?d0xONXlQYWpVQ1FGK2JoUXJtUENJTHBoaDNiQlRmYlZYdFQzcW50RXFoa3pU?=
+ =?utf-8?B?Ukkxb3BEa2lxRWxHUjJHNTdTLzM4Ymdia0lNWUpHenQrcXREQ0Z2NzZJSFk2?=
+ =?utf-8?B?VUpVOGJuc2U5aFFXUFBBSDBmWVQrNll1ZllEZlUyL1lpV1ZKZ1dPRStoMVRO?=
+ =?utf-8?B?cG5nWk1xanRON1owc3Vyb21XNVVKN3VCSWwrTEk4K1hzYllwblVKcUp2NXc1?=
+ =?utf-8?B?b1Y1S2ZWSmNMS0dHcDV5N2VsbEo0amdzN3RtWGtkSFdWYXZCTmgrdGhOckdO?=
+ =?utf-8?B?RHlTaExaODVKb2R2eG9tVnQ1azNRVUdVZXZpVmt0Z2xUMS9KUnFKOHZxWFhk?=
+ =?utf-8?B?OTBybzE2Zk9QWnBFSjllL0hydmo1OHFjanRKc2VRWXZWbDFyekE3bSs0bTFD?=
+ =?utf-8?B?U2hZb0NUbzBEUEFubXZNdkhSbHpMaEVlTXNxUUZjdzZuRnpueHFZYlp3NFp0?=
+ =?utf-8?B?V0RTbW1OWlZxZXBaZ1AvNVNKUitsbDhhNGFVMS9iQ0QrTVU0TmhZdzJlbGFO?=
+ =?utf-8?B?RjUzR2tMNjA1RVIxaGFuT0t6LzhFTjhlMnpjbDlCbVRKdGl4TTcrRXhSNWxY?=
+ =?utf-8?B?S1JQM3FwVXhIMFVxSnBoZzV4OE9ITWtwRGhCRThQU0JmcEY5UENZcGZBbHpu?=
+ =?utf-8?B?Yy9QMlBJZDVybHM4UjdiTGs0WTlTNkU4ajZTZjJETjRwZTFhUzRaeU5IK2kv?=
+ =?utf-8?Q?rH55E+Nj?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a98a080-0ffa-4887-9796-08d8c8ffe65a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 11:27:48.0857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FuI5ie+tDBeR5ug2uk3pxa5IoZzTO2IycrnXtz6Eg5U3DMVCHiLYyTVFGai1xGyxWon2puoubQBN7g7cwYpOXljQhzE0jargGFCvlWodAdM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3970
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040071
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
 
-NIX uses unique channel numbers to identify the packet sources/sinks
-like CGX,LBK and SDP. The channel numbers assigned to each block are
-hardwired in CN9xxx silicon.
-The fixed channel numbers in CN9xxx are:
 
-0x0 | a << 8 | b            - LBK(0..3)_CH(0..63)
-0x0 | a << 8                - Reserved
-0x700 | a                   - SDP_CH(0..255)
-0x800 | a << 8 | b << 4 | c - CGX(0..7)_LMAC(0..3)_CH(0..15)
+On 2/3/21 11:28 PM, John Hubbard wrote:
+> On 2/3/21 2:00 PM, Joao Martins wrote:
+>> Rather than decrementing the head page refcount one by one, we
+>> walk the page array and checking which belong to the same
+>> compound_head. Later on we decrement the calculated amount
+>> of references in a single write to the head page. To that
+>> end switch to for_each_compound_head() does most of the work.
+>>
+>> set_page_dirty() needs no adjustment as it's a nop for
+>> non-dirty head pages and it doesn't operate on tail pages.
+>>
+>> This considerably improves unpinning of pages with THP and
+>> hugetlbfs:
+>>
+>> - THP
+>> gup_test -t -m 16384 -r 10 [-L|-a] -S -n 512 -w
+>> PIN_LONGTERM_BENCHMARK (put values): ~87.6k us -> ~23.2k us
+>>
+>> - 16G with 1G huge page size
+>> gup_test -f /mnt/huge/file -m 16384 -r 10 [-L|-a] -S -n 512 -w
+>> PIN_LONGTERM_BENCHMARK: (put values): ~87.6k us -> ~27.5k us
+>>
+>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>> ---
+>>   mm/gup.c | 29 +++++++++++------------------
+>>   1 file changed, 11 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index 4f88dcef39f2..971a24b4b73f 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -270,20 +270,15 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>>   				 bool make_dirty)
+>>   {
+>>   	unsigned long index;
+>> -
+>> -	/*
+>> -	 * TODO: this can be optimized for huge pages: if a series of pages is
+>> -	 * physically contiguous and part of the same compound page, then a
+>> -	 * single operation to the head page should suffice.
+>> -	 */
+> 
+> Great to see this TODO (and the related one below) finally done!
+> 
+> Everything looks correct here.
+> 
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> 
+Thank you!
 
-All the channels in the above fixed enumerator(with maximum
-number of blocks) are not required since some chips
-have less number of blocks.
-For CN10K silicon the channel numbers need to be programmed by
-software in each block with the base channel number and range of
-channels. This patch calculates and assigns the channel numbers
-to efficiently distribute the channel number range(0-4095) among
-all the blocks. The assignment is made based on the actual number of
-blocks present and also contiguously leaving no holes.
-The channel numbers remaining after the math are used as new CPT
-replay channels present in CN10K. Also since channel numbers are
-not fixed the transmit channel link number needed by AF consumers
-is calculated by AF and sent along with nix_lf_alloc mailbox response.
-
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- MAINTAINERS                                        |   1 +
- drivers/net/ethernet/marvell/octeontx2/af/Makefile |   2 +-
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    |  14 ++
- drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |   2 +
- drivers/net/ethernet/marvell/octeontx2/af/common.h |   3 +
- drivers/net/ethernet/marvell/octeontx2/af/rpm.h    |   6 +
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |   8 +-
- drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  44 ++++
- .../net/ethernet/marvell/octeontx2/af/rvu_cn10k.c  | 261 +++++++++++++++++++++
- .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  16 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |   4 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_reg.h    |  16 ++
- 12 files changed, 360 insertions(+), 17 deletions(-)
- create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0c39376..1a4f56d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10711,6 +10711,7 @@ M:	Linu Cherian <lcherian@marvell.com>
- M:	Geetha sowjanya <gakula@marvell.com>
- M:	Jerin Jacob <jerinj@marvell.com>
- M:	hariprasad <hkelam@marvell.com>
-+M:	Subbaraya Sundeep <sbhatta@marvell.com>
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/Makefile b/drivers/net/ethernet/marvell/octeontx2/af/Makefile
-index a6afbde..621cc5b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/Makefile
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/Makefile
-@@ -10,4 +10,4 @@ obj-$(CONFIG_OCTEONTX2_AF) += octeontx2_af.o
- octeontx2_mbox-y := mbox.o rvu_trace.o
- octeontx2_af-y := cgx.o rvu.o rvu_cgx.o rvu_npa.o rvu_nix.o \
- 		  rvu_reg.o rvu_npc.o rvu_debugfs.o ptp.o rvu_npc_fs.o \
--		  rvu_cpt.o rvu_devlink.o rpm.o
-+		  rvu_cpt.o rvu_devlink.o rpm.o rvu_cn10k.o
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 29b3705c..e3f063e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -122,6 +122,20 @@ void *cgx_get_pdata(int cgx_id)
- 	return NULL;
- }
- 
-+void cgx_lmac_write(int cgx_id, int lmac_id, u64 offset, u64 val)
-+{
-+	struct cgx *cgx_dev = cgx_get_pdata(cgx_id);
-+
-+	cgx_write(cgx_dev, lmac_id, offset, val);
-+}
-+
-+u64 cgx_lmac_read(int cgx_id, int lmac_id, u64 offset)
-+{
-+	struct cgx *cgx_dev = cgx_get_pdata(cgx_id);
-+
-+	return cgx_read(cgx_dev, lmac_id, offset);
-+}
-+
- int cgx_get_cgxid(void *cgxd)
- {
- 	struct cgx *cgx = cgxd;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-index 7c76fd0..7589721 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-@@ -152,4 +152,6 @@ struct mac_ops *get_mac_ops(void *cgxd);
- int cgx_get_nr_lmacs(void *cgxd);
- u8 cgx_get_lmacid(void *cgxd, u8 lmac_index);
- unsigned long cgx_get_lmac_bmap(void *cgxd);
-+void cgx_lmac_write(int cgx_id, int lmac_id, u64 offset, u64 val);
-+u64 cgx_lmac_read(int cgx_id, int lmac_id, u64 offset);
- #endif /* CGX_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/common.h b/drivers/net/ethernet/marvell/octeontx2/af/common.h
-index 17f6f42..0100e70 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/common.h
-@@ -191,6 +191,9 @@ enum nix_scheduler {
- #define NIX_LINK_LBK(a)			(12 + (a))
- #define NIX_CHAN_CGX_LMAC_CHX(a, b, c)	(0x800 + 0x100 * (a) + 0x10 * (b) + (c))
- #define NIX_CHAN_LBK_CHX(a, b)		(0 + 0x100 * (a) + (b))
-+#define NIX_CHAN_SDP_CH_START		(0x700ull)
-+
-+#define SDP_CHANNELS			256
- 
- /* NIX LSO format indices.
-  * As of now TSO is the only one using, so statically assigning indices.
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-index 7f45c1c..1779e8b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-@@ -8,6 +8,8 @@
- #ifndef RPM_H
- #define RPM_H
- 
-+#include <linux/bits.h>
-+
- /* PCI device IDs */
- #define PCI_DEVID_CN10K_RPM		0xA060
- 
-@@ -15,6 +17,10 @@
- #define RPMX_CMRX_SW_INT                0x180
- #define RPMX_CMRX_SW_INT_W1S            0x188
- #define RPMX_CMRX_SW_INT_ENA_W1S        0x198
-+#define RPMX_CMRX_LINK_CFG		0x1070
-+
-+#define RPMX_CMRX_LINK_RANGE_MASK	GENMASK_ULL(19, 16)
-+#define RPMX_CMRX_LINK_BASE_MASK	GENMASK_ULL(11, 0)
- 
- #define RPM_LMAC_FWI			0xa
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index 8c63299..9686395 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -1006,6 +1006,10 @@ static int rvu_setup_hw_resources(struct rvu *rvu)
- 		rvu_scan_block(rvu, block);
- 	}
- 
-+	err = rvu_set_channels_base(rvu);
-+	if (err)
-+		goto msix_err;
-+
- 	err = rvu_npc_init(rvu);
- 	if (err)
- 		goto npc_err;
-@@ -1025,6 +1029,8 @@ static int rvu_setup_hw_resources(struct rvu *rvu)
- 	if (err)
- 		goto nix_err;
- 
-+	rvu_program_channels(rvu);
-+
- 	return 0;
- 
- nix_err:
-@@ -2721,8 +2727,6 @@ static void rvu_enable_afvf_intr(struct rvu *rvu)
- 	rvupf_write64(rvu, RVU_PF_VFME_INT_ENA_W1SX(1), INTR_MASK(vfs - 64));
- }
- 
--#define PCI_DEVID_OCTEONTX2_LBK 0xA061
--
- int rvu_get_num_lbk_chans(void)
- {
- 	struct pci_dev *pdev;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-index e9f6c0a..bedccff 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-@@ -19,9 +19,11 @@
- #include "common.h"
- #include "mbox.h"
- #include "npc.h"
-+#include "rvu_reg.h"
- 
- /* PCI device IDs */
- #define	PCI_DEVID_OCTEONTX2_RVU_AF		0xA065
-+#define	PCI_DEVID_OCTEONTX2_LBK			0xA061
- 
- /* Subsystem Device ID */
- #define PCI_SUBSYS_DEVID_96XX                  0xB200
-@@ -305,6 +307,7 @@ struct hw_cap {
- 	bool	nix_tx_link_bp;		 /* Can link backpressure TL queues ? */
- 	bool	nix_rx_multicast;	 /* Rx packet replication support */
- 	bool	per_pf_mbox_regs; /* PF mbox specified in per PF registers ? */
-+	bool	programmable_chans; /* Channels programmable ? */
- };
- 
- struct rvu_hwinfo {
-@@ -313,9 +316,14 @@ struct rvu_hwinfo {
- 	u16	max_vfs_per_pf; /* Max VFs that can be attached to a PF */
- 	u8	cgx;
- 	u8	lmac_per_cgx;
-+	u16	cgx_chan_base;	/* CGX base channel number */
-+	u16	lbk_chan_base;	/* LBK base channel number */
-+	u16	sdp_chan_base;	/* SDP base channel number */
-+	u16	cpt_chan_base;	/* CPT base channel number */
- 	u8	cgx_links;
- 	u8	lbk_links;
- 	u8	sdp_links;
-+	u8	cpt_links;	/* Number of CPT links */
- 	u8	npc_kpus;          /* No of parser units */
- 	u8	npc_pkinds;        /* No of port kinds */
- 	u8	npc_intfs;         /* No of interfaces */
-@@ -495,6 +503,38 @@ static inline bool is_rvu_otx2(struct rvu *rvu)
- 		midr == PCI_REVISION_ID_95XXMM);
- }
- 
-+static inline u16 rvu_nix_chan_cgx(struct rvu *rvu, u8 cgxid,
-+				   u8 lmacid, u8 chan)
-+{
-+	u64 nix_const = rvu_read64(rvu, BLKADDR_NIX0, NIX_AF_CONST);
-+	u16 cgx_chans = nix_const & 0xFFULL;
-+	struct rvu_hwinfo *hw = rvu->hw;
-+
-+	if (!hw->cap.programmable_chans)
-+		return NIX_CHAN_CGX_LMAC_CHX(cgxid, lmacid, chan);
-+
-+	return rvu->hw->cgx_chan_base +
-+		(cgxid * hw->lmac_per_cgx + lmacid) * cgx_chans + chan;
-+}
-+
-+static inline u16 rvu_nix_chan_lbk(struct rvu *rvu, u8 lbkid,
-+				   u8 chan)
-+{
-+	u64 nix_const = rvu_read64(rvu, BLKADDR_NIX0, NIX_AF_CONST);
-+	u16 lbk_chans = (nix_const >> 16) & 0xFFULL;
-+	struct rvu_hwinfo *hw = rvu->hw;
-+
-+	if (!hw->cap.programmable_chans)
-+		return NIX_CHAN_LBK_CHX(lbkid, chan);
-+
-+	return rvu->hw->lbk_chan_base + lbkid * lbk_chans + chan;
-+}
-+
-+static inline u16 rvu_nix_chan_cpt(struct rvu *rvu, u8 chan)
-+{
-+	return rvu->hw->cpt_chan_base + chan;
-+}
-+
- /* Function Prototypes
-  * RVU
-  */
-@@ -636,6 +676,10 @@ bool is_mac_feature_supported(struct rvu *rvu, int pf, int feature);
- /* CPT APIs */
- int rvu_cpt_lf_teardown(struct rvu *rvu, u16 pcifunc, int lf, int slot);
- 
-+/* CN10K RVU */
-+int rvu_set_channels_base(struct rvu *rvu);
-+void rvu_program_channels(struct rvu *rvu);
-+
- #ifdef CONFIG_DEBUG_FS
- void rvu_dbg_init(struct rvu *rvu);
- void rvu_dbg_exit(struct rvu *rvu);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-new file mode 100644
-index 0000000..7d9e71c
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-@@ -0,0 +1,261 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*  Marvell RPM CN10K driver
-+ *
-+ * Copyright (C) 2020 Marvell.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/pci.h>
-+#include "rvu.h"
-+#include "cgx.h"
-+#include "rvu_reg.h"
-+
-+int rvu_set_channels_base(struct rvu *rvu)
-+{
-+	struct rvu_hwinfo *hw = rvu->hw;
-+	u16 cpt_chan_base;
-+	u64 nix_const;
-+	int blkaddr;
-+
-+	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, 0);
-+	if (blkaddr < 0)
-+		return blkaddr;
-+
-+	nix_const = rvu_read64(rvu, blkaddr, NIX_AF_CONST);
-+
-+	hw->cgx = (nix_const >> 12) & 0xFULL;
-+	hw->lmac_per_cgx = (nix_const >> 8) & 0xFULL;
-+	hw->cgx_links = hw->cgx * hw->lmac_per_cgx;
-+	hw->lbk_links = (nix_const >> 24) & 0xFULL;
-+	hw->cpt_links = (nix_const >> 44) & 0xFULL;
-+	hw->sdp_links = 1;
-+
-+	hw->cgx_chan_base = NIX_CHAN_CGX_LMAC_CHX(0, 0, 0);
-+	hw->lbk_chan_base = NIX_CHAN_LBK_CHX(0, 0);
-+	hw->sdp_chan_base = NIX_CHAN_SDP_CH_START;
-+
-+	/* No Programmable channels */
-+	if (!(nix_const & BIT_ULL(60)))
-+		return 0;
-+
-+	hw->cap.programmable_chans = true;
-+
-+	/* If programmable channels are present then configure
-+	 * channels such that all channel numbers are contiguous
-+	 * leaving no holes. This way the new CPT channels can be
-+	 * accomodated. The order of channel numbers assigned is
-+	 * LBK, SDP, CGX and CPT.
-+	 */
-+	hw->sdp_chan_base = hw->lbk_chan_base + hw->lbk_links *
-+				((nix_const >> 16) & 0xFFULL);
-+	hw->cgx_chan_base = hw->sdp_chan_base + hw->sdp_links * SDP_CHANNELS;
-+
-+	cpt_chan_base = hw->cgx_chan_base + hw->cgx_links *
-+				(nix_const & 0xFFULL);
-+
-+	/* Out of 4096 channels start CPT from 2048 so
-+	 * that MSB for CPT channels is always set
-+	 */
-+	if (cpt_chan_base <= 0x800) {
-+		hw->cpt_chan_base = 0x800;
-+	} else {
-+		dev_err(rvu->dev,
-+			"CPT channels could not fit in the range 2048-4095\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+#define LBK_CONNECT_NIXX(a)		(0x0 + (a))
-+
-+static void __rvu_lbk_set_chans(struct rvu *rvu, void __iomem *base,
-+				u64 offset, int lbkid, u16 chans)
-+{
-+	struct rvu_hwinfo *hw = rvu->hw;
-+	u64 cfg;
-+
-+	cfg = readq(base + offset);
-+	cfg &= ~(LBK_LINK_CFG_RANGE_MASK |
-+		 LBK_LINK_CFG_ID_MASK | LBK_LINK_CFG_BASE_MASK);
-+	cfg |=	FIELD_PREP(LBK_LINK_CFG_RANGE_MASK, ilog2(chans));
-+	cfg |=	FIELD_PREP(LBK_LINK_CFG_ID_MASK, lbkid);
-+	cfg |=	FIELD_PREP(LBK_LINK_CFG_BASE_MASK, hw->lbk_chan_base);
-+
-+	writeq(cfg, base + offset);
-+}
-+
-+static void rvu_lbk_set_channels(struct rvu *rvu)
-+{
-+	struct pci_dev *pdev = NULL;
-+	void __iomem *base;
-+	u64 lbk_const;
-+	u8 src, dst;
-+	u16 chans;
-+
-+	/* To loopback packets between multiple NIX blocks
-+	 * mutliple LBK blocks are needed. With two NIX blocks,
-+	 * four LBK blocks are needed and each LBK block
-+	 * source and destination are as follows:
-+	 * LBK0 - source NIX0 and destination NIX1
-+	 * LBK1 - source NIX0 and destination NIX1
-+	 * LBK2 - source NIX1 and destination NIX0
-+	 * LBK3 - source NIX1 and destination NIX1
-+	 * As per the HRM channel numbers should be programmed as:
-+	 * P2X and X2P of LBK0 as same
-+	 * P2X and X2P of LBK3 as same
-+	 * P2X of LBK1 and X2P of LBK2 as same
-+	 * P2X of LBK2 and X2P of LBK1 as same
-+	 */
-+	while (true) {
-+		pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
-+				      PCI_DEVID_OCTEONTX2_LBK, pdev);
-+		if (!pdev)
-+			return;
-+
-+		base = pci_ioremap_bar(pdev, 0);
-+		if (!base)
-+			goto err_put;
-+
-+		lbk_const = readq(base + LBK_CONST);
-+		chans = FIELD_GET(LBK_CONST_CHANS, lbk_const);
-+		dst = FIELD_GET(LBK_CONST_DST, lbk_const);
-+		src = FIELD_GET(LBK_CONST_SRC, lbk_const);
-+
-+		if (src == dst) {
-+			if (src == LBK_CONNECT_NIXX(0)) { /* LBK0 */
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_X2P,
-+						    0, chans);
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_P2X,
-+						    0, chans);
-+			} else if (src == LBK_CONNECT_NIXX(1)) { /* LBK3 */
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_X2P,
-+						    1, chans);
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_P2X,
-+						    1, chans);
-+			}
-+		} else {
-+			if (src == LBK_CONNECT_NIXX(0)) { /* LBK1 */
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_X2P,
-+						    0, chans);
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_P2X,
-+						    1, chans);
-+			} else if (src == LBK_CONNECT_NIXX(1)) { /* LBK2 */
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_X2P,
-+						    1, chans);
-+				__rvu_lbk_set_chans(rvu, base, LBK_LINK_CFG_P2X,
-+						    0, chans);
-+			}
-+		}
-+		iounmap(base);
-+	}
-+err_put:
-+	pci_dev_put(pdev);
-+}
-+
-+static void __rvu_nix_set_channels(struct rvu *rvu, int blkaddr)
-+{
-+	u64 nix_const = rvu_read64(rvu, blkaddr, NIX_AF_CONST);
-+	u16 cgx_chans, lbk_chans, sdp_chans, cpt_chans;
-+	struct rvu_hwinfo *hw = rvu->hw;
-+	int link, nix_link = 0;
-+	u16 start;
-+	u64 cfg;
-+
-+	cgx_chans = nix_const & 0xFFULL;
-+	lbk_chans = (nix_const >> 16) & 0xFFULL;
-+	sdp_chans = SDP_CHANNELS;
-+	cpt_chans = (nix_const >> 32) & 0xFFFULL;
-+
-+	start = hw->cgx_chan_base;
-+	for (link = 0; link < hw->cgx_links; link++, nix_link++) {
-+		cfg = rvu_read64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link));
-+		cfg &= ~(NIX_AF_LINKX_BASE_MASK | NIX_AF_LINKX_RANGE_MASK);
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_RANGE_MASK, ilog2(cgx_chans));
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_BASE_MASK, start);
-+		rvu_write64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link), cfg);
-+		start += cgx_chans;
-+	}
-+
-+	start = hw->lbk_chan_base;
-+	for (link = 0; link < hw->lbk_links; link++, nix_link++) {
-+		cfg = rvu_read64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link));
-+		cfg &= ~(NIX_AF_LINKX_BASE_MASK | NIX_AF_LINKX_RANGE_MASK);
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_RANGE_MASK, ilog2(lbk_chans));
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_BASE_MASK, start);
-+		rvu_write64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link), cfg);
-+		start += lbk_chans;
-+	}
-+
-+	start = hw->sdp_chan_base;
-+	for (link = 0; link < hw->sdp_links; link++, nix_link++) {
-+		cfg = rvu_read64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link));
-+		cfg &= ~(NIX_AF_LINKX_BASE_MASK | NIX_AF_LINKX_RANGE_MASK);
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_RANGE_MASK, ilog2(sdp_chans));
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_BASE_MASK, start);
-+		rvu_write64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link), cfg);
-+		start += sdp_chans;
-+	}
-+
-+	start = hw->cpt_chan_base;
-+	for (link = 0; link < hw->cpt_links; link++, nix_link++) {
-+		cfg = rvu_read64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link));
-+		cfg &= ~(NIX_AF_LINKX_BASE_MASK | NIX_AF_LINKX_RANGE_MASK);
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_RANGE_MASK, ilog2(cpt_chans));
-+		cfg |=	FIELD_PREP(NIX_AF_LINKX_BASE_MASK, start);
-+		rvu_write64(rvu, blkaddr, NIX_AF_LINKX_CFG(nix_link), cfg);
-+		start += cpt_chans;
-+	}
-+}
-+
-+static void rvu_nix_set_channels(struct rvu *rvu)
-+{
-+	int blkaddr = 0;
-+
-+	blkaddr = rvu_get_next_nix_blkaddr(rvu, blkaddr);
-+	while (blkaddr) {
-+		__rvu_nix_set_channels(rvu, blkaddr);
-+		blkaddr = rvu_get_next_nix_blkaddr(rvu, blkaddr);
-+	}
-+}
-+
-+static void __rvu_rpm_set_channels(int cgxid, int lmacid, u16 base)
-+{
-+	u64 cfg;
-+
-+	cfg = cgx_lmac_read(cgxid, lmacid, RPMX_CMRX_LINK_CFG);
-+	cfg &= ~(RPMX_CMRX_LINK_BASE_MASK | RPMX_CMRX_LINK_RANGE_MASK);
-+
-+	/* There is no read-only constant register to read
-+	 * the number of channels for LMAC and it is always 16.
-+	 */
-+	cfg |=	FIELD_PREP(RPMX_CMRX_LINK_RANGE_MASK, ilog2(16));
-+	cfg |=	FIELD_PREP(RPMX_CMRX_LINK_BASE_MASK, base);
-+	cgx_lmac_write(cgxid, lmacid, RPMX_CMRX_LINK_CFG, cfg);
-+}
-+
-+static void rvu_rpm_set_channels(struct rvu *rvu)
-+{
-+	struct rvu_hwinfo *hw = rvu->hw;
-+	u16 base = hw->cgx_chan_base;
-+	int cgx, lmac;
-+
-+	for (cgx = 0; cgx < rvu->cgx_cnt_max; cgx++) {
-+		for (lmac = 0; lmac < hw->lmac_per_cgx; lmac++) {
-+			__rvu_rpm_set_channels(cgx, lmac, base);
-+			base += 16;
-+		}
-+	}
-+}
-+
-+void rvu_program_channels(struct rvu *rvu)
-+{
-+	struct rvu_hwinfo *hw = rvu->hw;
-+
-+	if (!hw->cap.programmable_chans)
-+		return;
-+
-+	rvu_nix_set_channels(rvu);
-+	rvu_lbk_set_channels(rvu);
-+	rvu_rpm_set_channels(rvu);
-+}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index 0c9b1c3..cf9e88c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -233,7 +233,7 @@ static int nix_interface_init(struct rvu *rvu, u16 pcifunc, int type, int nixlf)
- 				"PF_Func 0x%x: Invalid pkind\n", pcifunc);
- 			return -EINVAL;
- 		}
--		pfvf->rx_chan_base = NIX_CHAN_CGX_LMAC_CHX(cgx_id, lmac_id, 0);
-+		pfvf->rx_chan_base = rvu_nix_chan_cgx(rvu, cgx_id, lmac_id, 0);
- 		pfvf->tx_chan_base = pfvf->rx_chan_base;
- 		pfvf->rx_chan_cnt = 1;
- 		pfvf->tx_chan_cnt = 1;
-@@ -262,10 +262,10 @@ static int nix_interface_init(struct rvu *rvu, u16 pcifunc, int type, int nixlf)
- 		 * loopback channels.Therefore if odd number of AF VFs are
- 		 * enabled then the last VF remains with no pair.
- 		 */
--		pfvf->rx_chan_base = NIX_CHAN_LBK_CHX(lbkid, vf);
-+		pfvf->rx_chan_base = rvu_nix_chan_lbk(rvu, lbkid, vf);
- 		pfvf->tx_chan_base = vf & 0x1 ?
--					NIX_CHAN_LBK_CHX(lbkid, vf - 1) :
--					NIX_CHAN_LBK_CHX(lbkid, vf + 1);
-+					rvu_nix_chan_lbk(rvu, lbkid, vf - 1) :
-+					rvu_nix_chan_lbk(rvu, lbkid, vf + 1);
- 		pfvf->rx_chan_cnt = 1;
- 		pfvf->tx_chan_cnt = 1;
- 		rvu_npc_install_promisc_entry(rvu, pcifunc, nixlf,
-@@ -3389,14 +3389,6 @@ static int rvu_nix_block_init(struct rvu *rvu, struct nix_hw *nix_hw)
- 	if (err)
- 		return err;
- 
--	/* Set num of links of each type */
--	cfg = rvu_read64(rvu, blkaddr, NIX_AF_CONST);
--	hw->cgx = (cfg >> 12) & 0xF;
--	hw->lmac_per_cgx = (cfg >> 8) & 0xF;
--	hw->cgx_links = hw->cgx * hw->lmac_per_cgx;
--	hw->lbk_links = (cfg >> 24) & 0xF;
--	hw->sdp_links = 1;
--
- 	/* Initialize admin queue */
- 	err = nix_aq_init(rvu, block);
- 	if (err)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 5cf9b7a..04bb080 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -102,9 +102,9 @@ int npc_mcam_verify_channel(struct rvu *rvu, u16 pcifunc, u8 intf, u16 channel)
- 			return -EINVAL;
- 	} else {
- 		rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
--		base = NIX_CHAN_CGX_LMAC_CHX(cgx_id, lmac_id, 0x0);
-+		base = rvu_nix_chan_cgx(rvu, cgx_id, lmac_id, 0x0);
- 		/* CGX mapped functions has maximum of 16 channels */
--		end = NIX_CHAN_CGX_LMAC_CHX(cgx_id, lmac_id, 0xF);
-+		end = rvu_nix_chan_cgx(rvu, cgx_id, lmac_id, 0xF);
- 	}
- 
- 	if (channel < base || channel > end)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-index 78395c7..2460d71 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
-@@ -406,12 +406,16 @@
- #define NIX_AF_RX_NPC_MIRROR_RCV	(0x4720)
- #define NIX_AF_RX_NPC_MIRROR_DROP	(0x4730)
- #define NIX_AF_RX_ACTIVE_CYCLES_PCX(a)	(0x4800 | (a) << 16)
-+#define NIX_AF_LINKX_CFG(a)		(0x4010 | (a) << 17)
- 
- #define NIX_PRIV_AF_INT_CFG		(0x8000000)
- #define NIX_PRIV_LFX_CFG		(0x8000010)
- #define NIX_PRIV_LFX_INT_CFG		(0x8000020)
- #define NIX_AF_RVU_LF_CFG_DEBUG		(0x8000030)
- 
-+#define NIX_AF_LINKX_BASE_MASK		GENMASK_ULL(11, 0)
-+#define NIX_AF_LINKX_RANGE_MASK		GENMASK_ULL(19, 16)
-+
- /* SSO */
- #define SSO_AF_CONST			(0x1000)
- #define SSO_AF_CONST1			(0x1008)
-@@ -644,4 +648,16 @@
- 		(0x00F00 | (a) << 5 | (b) << 4)
- #define NDC_AF_BANKX_HIT_PC(a)		(0x01000 | (a) << 3)
- #define NDC_AF_BANKX_MISS_PC(a)		(0x01100 | (a) << 3)
-+
-+/* LBK */
-+#define LBK_CONST			(0x10ull)
-+#define LBK_LINK_CFG_P2X		(0x400ull)
-+#define LBK_LINK_CFG_X2P		(0x408ull)
-+#define LBK_CONST_CHANS			GENMASK_ULL(47, 32)
-+#define LBK_CONST_DST			GENMASK_ULL(31, 28)
-+#define LBK_CONST_SRC			GENMASK_ULL(27, 24)
-+#define LBK_LINK_CFG_RANGE_MASK		GENMASK_ULL(19, 16)
-+#define LBK_LINK_CFG_ID_MASK		GENMASK_ULL(11, 6)
-+#define LBK_LINK_CFG_BASE_MASK		GENMASK_ULL(5, 0)
-+
- #endif /* RVU_REG_H */
--- 
-2.7.4
-
+	Joao
