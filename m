@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D7030FBE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAE330FBFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239372AbhBDSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:48:03 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:8537 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239366AbhBDSoz (ORCPT
+        id S239475AbhBDSwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239316AbhBDSqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:44:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612464295; x=1644000295;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=bLTbvpLrEHxq5RI+rYCa3j+E1tXZ1nPttjCvTxH1lBo=;
-  b=nigY+C90r0EymCjua+vR3S7rP9qTdssPISrRYRCH/l0/rceGsfydVdkT
-   mO3mnu7TipSokIbltfNB/0VzKp9CogFKQyEDsjeCdBj3gCBehh/cV1kjJ
-   +9ulfsfkZ26lmyHl0TQaKABpG5d1vAxfcuLaYVt1WFfI1Y5l+qJVZjpOO
-   kySnm9LJZtxfGbAUqcw9KTNVRT+ekocFfBkJUA1v0nT8Q0bKfYYJkk6+r
-   xpmnSZOt/B+d5luPDl8nNJncqVGxaN/XYtLO5PmclXMi62l+nAhH5l/wQ
-   I2rGG85eR8TS5lMxB5h83uihOl1urub4/+9JhyPZvlUBJpjsc/0teZIFF
-   g==;
-IronPort-SDR: eBql+5flRwgc+oDmGTlZF9RKUq4v1KWEeMtbEx4ZXLcJYkkofIYtx8AbnPU149a+52HFeWaWwy
- OqBtCZt5W4f1jRgAmbNCHQC+wTEf2qeuymTAJifC63KzX4wNqZcu6UOj9wiNc21lveeu/tVp0S
- TqiLjvljRimti5Iv/prihHIgIy3TCgs+d5XlrjQDhNAtwz3lxJFwRS1LJfTV0NFwcLHnj5qRWx
- hvZJs0Dz01fO8ix3KL4Wk4UOpSLcNWW/ev5F4CXRda1DSXWQLAYqtDTU7WeJ52A+Ecoelw//yH
- mEU=
-X-IronPort-AV: E=Sophos;i="5.81,153,1610434800"; 
-   d="scan'208";a="102622916"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Feb 2021 11:43:37 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 4 Feb 2021 11:43:37 -0700
-Received: from [10.171.246.84] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 4 Feb 2021 11:43:33 -0700
-Subject: Re: [PATCH] ARM: at91: use proper asm syntax in pm_suspend
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-CC:     <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        <clang-built-linux@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210204160129.2249394-1-arnd@kernel.org>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <d5cc7f4f-ef4a-dbe6-6f87-918a1d96603e@microchip.com>
-Date:   Thu, 4 Feb 2021 19:43:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Feb 2021 13:46:08 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069A7C06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:45:28 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 190so4038014wmz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:45:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PDlKe0WbpqBDHIpCDDh4FugA9Yl2NTww4rbLOTGr+nM=;
+        b=BSD24lcMJFm1yoPHDL+vPC2t6eYWXJl+gb63Lc2kEu4Y6EX8foAiW4INgUcC7527BK
+         is+2hBSUdsPg0+Z3aHdGn8s4rSjiYJZI/Wed+PMMBRS5JJPUJEcRXT6pfG8B2lPQ4COf
+         jC+i/6A1QM62BytlMc5wKaK52uyyRjCdedByQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PDlKe0WbpqBDHIpCDDh4FugA9Yl2NTww4rbLOTGr+nM=;
+        b=KYgQSn8HArPqzodh43R452eAkX7YVfqu/jDfszvi6CPl4LgT3RBW2+szLiTZxtnqno
+         OeYzfXYjQcM/vq/r3PensxYElIu9ZfxnURJUt/+2FBZb5s9k/6vqBwbbFQha3j2CJ3aY
+         w8xrTIFn2sIPlYb+TOOsFlXFx5OC4R+T6Kf+XiLSAuNM96rt17Pr0lJEsWWz9Me/aTK4
+         VRUDfO9XYqMqEiBRmW426LDMSVtJ7ixDRzUk+h6QK60m+/9maBraJQ0SiQCrk/taJM9Y
+         e2571IurEPv4ismiivRV1J/YBDvBuB1iXBf3bB4JjclvEiN6TpRQLQdJ85/FIba09DRS
+         bXqg==
+X-Gm-Message-State: AOAM5324eXBZNAQ5TIZIIq44mmgh9P4WAgOPmB4iYhCfAmumHnPTYaA2
+        aKVrESVF0d/IDzV04fmGwL2VhYiH+n6S5J5c
+X-Google-Smtp-Source: ABdhPJwr8sCr/vTIsvxni8hp5KegeEeUyEeymi2FitAM/6CHsPHduLd2lAH04rBfHoBvmYrzEYKENw==
+X-Received: by 2002:a1c:105:: with SMTP id 5mr469215wmb.89.1612464326728;
+        Thu, 04 Feb 2021 10:45:26 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m10sm9322997wro.7.2021.02.04.10.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 10:45:26 -0800 (PST)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH] x86/sgx: Drop racy follow_pfn check
+Date:   Thu,  4 Feb 2021 19:45:19 +0100
+Message-Id: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210204160129.2249394-1-arnd@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/2021 at 17:01, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Compiling with the clang integrated assembler warns about
-> a recently added instruction:
-> 
-> <instantiation>:14:13: error: unknown token in expression
->   ldr tmp1, =#0x00020010UL
-> arch/arm/mach-at91/pm_suspend.S:542:2: note: while in macro instantiation
->   at91_plla_enable
-> 
-> Remove the extra '#' character that is not used for the 'ldr'
-> instruction when doing an indirect load of a constant.
-> 
-> Fixes: 4fd36e458392 ("ARM: at91: pm: add plla disable/enable support for sam9x60")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+PTE insertion is fundamentally racy, and this check doesn't do
+anything useful. Quoting Sean:
 
-Looks good to me:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+"Yeah, it can be whacked.  The original, never-upstreamed code asserted that the
+resolved PFN matched the PFN being installed by the fault handler as a sanity
+check on the SGX driver's EPC management.  The WARN assertion got dropped for
+whatever reason, leaving that useless chunk."
 
-Thanks!
+Jason stumbled over this as a new user of follow_pfn, and I'm trying
+to get rid of unsafe callers of that function so it can be locked down
+further.
 
-Best regards,
-   Nicolas
+This is independent prep work for the referenced patch series.
 
-> ---
->   arch/arm/mach-at91/pm_suspend.S | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-> index 909856c8a8c6..0d467cc40129 100644
-> --- a/arch/arm/mach-at91/pm_suspend.S
-> +++ b/arch/arm/mach-at91/pm_suspend.S
-> @@ -446,7 +446,7 @@ ENDPROC(at91_backup_mode)
->          str     tmp1, [pmc, #AT91_PMC_PLL_UPDT]
-> 
->          /* step 2. */
-> -       ldr     tmp1, =#AT91_PMC_PLL_ACR_DEFAULT_PLLA
-> +       ldr     tmp1, =AT91_PMC_PLL_ACR_DEFAULT_PLLA
->          str     tmp1, [pmc, #AT91_PMC_PLL_ACR]
-> 
->          /* step 3. */
-> --
-> 2.29.2
-> 
+References: https://lore.kernel.org/dri-devel/20201127164131.2244124-1-daniel.vetter@ffwll.ch/
+Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Sean Christopherson <seanjc@google.com>
+Fixes: 947c6e11fa43 ("x86/sgx: Add ptrace() support for the SGX driver")
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: linux-sgx@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+---
+ arch/x86/kernel/cpu/sgx/encl.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index ee50a5010277..20a2dd5ba2b4 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -141,7 +141,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
+ 	struct sgx_encl_page *entry;
+ 	unsigned long phys_addr;
+ 	struct sgx_encl *encl;
+-	unsigned long pfn;
+ 	vm_fault_t ret;
+ 
+ 	encl = vma->vm_private_data;
+@@ -168,13 +167,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
+ 
+ 	phys_addr = sgx_get_epc_phys_addr(entry->epc_page);
+ 
+-	/* Check if another thread got here first to insert the PTE. */
+-	if (!follow_pfn(vma, addr, &pfn)) {
+-		mutex_unlock(&encl->lock);
+-
+-		return VM_FAULT_NOPAGE;
+-	}
+-
+ 	ret = vmf_insert_pfn(vma, addr, PFN_DOWN(phys_addr));
+ 	if (ret != VM_FAULT_NOPAGE) {
+ 		mutex_unlock(&encl->lock);
 -- 
-Nicolas Ferre
+2.30.0
+
