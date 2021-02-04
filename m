@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CE530FA6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1068D30FAA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhBDR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        id S238669AbhBDSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:05:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238600AbhBDR5J (ORCPT
+        with ESMTP id S238460AbhBDSDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:57:09 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36851C0613D6;
-        Thu,  4 Feb 2021 09:56:23 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id j84so4083358ybg.1;
-        Thu, 04 Feb 2021 09:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5I40DHI/h59AkCtOXx10UCUmoyFeXFyTwT5DDhItD+s=;
-        b=sQYVIXMpXitQanDKb7QPgpDnb2TJSZ9VvJGyEsEDQ1LfFxgQyMeOz7Vij2ju750L+K
-         5H/8M/sQXwzXMLQcn/DvDzCWi/PHvofauix/xAMagKVrUxn639HKW7iy2wLipqKhenHE
-         j2UBhZCSG+KcWRfpRSo8xb2uwrrUs1XwjFEKj0ei4s340WkvyOCvd+qEEvScyEa8X2HU
-         iSnoeC3+fo7vV/j1dMopp2Z92aqMhnYVJComXEwvnxFEmWE1X4jEg0HnpnHts6i8ifbs
-         kRYmgUKTdWIVd2/OhafehvjlYe1Kf3Qu6GPjN4CvSPxf06jKAkSr+fhj7/MNK2U8J+E1
-         eLkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5I40DHI/h59AkCtOXx10UCUmoyFeXFyTwT5DDhItD+s=;
-        b=YMZgo6w1PD6Ftuz1INE3xReGu3zfcVOvBxCywK7o7bxt5cjzTkDdV/MYqv+U+fEmxp
-         p5w9Jux8qs/BNQ0YiAibcEqZCHB3qreiYFRkIh61/N9r1+PQhtnbcZqzKXT/SPNUVphn
-         T2dpIvOOzH1faQ29dczYn3oC1T85ZtLzZKq/IaFhcILc6H/z/Lu/TASXhsjOkFCrWaJt
-         iYHo0hm83RdZgCZ7I6RN3BlvuhAoc799DbmCz5cE4GjROnGBADjYoYkwOlXM5/OpTWhi
-         uxNSUHBHi0nJ+AyPwFQCHPiiVxXOvb+5/Cp8/bsEQ86BlW/xr8BWClkh3aptF+WDQAZc
-         1oVA==
-X-Gm-Message-State: AOAM530Gp/ugyLP0MwFrgTv5OugRr9b1aXLw0r1x7VCafJZWrEPq1SPm
-        prJHmnYSvfOf5meZPCeRFmZzqLixm15wgfmqDnw=
-X-Google-Smtp-Source: ABdhPJxRhWC5NXV5JEwvpeirQWFd4d1jO969HaFhJMvCmJoiKJN53VaDPC9gdMOgfDY66tag+jQ5od8h4l/1G1xtlOM=
-X-Received: by 2002:a25:6c08:: with SMTP id h8mr454596ybc.499.1612461382582;
- Thu, 04 Feb 2021 09:56:22 -0800 (PST)
+        Thu, 4 Feb 2021 13:03:01 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FE5C06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:02:20 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id R62J2400E4C55Sk0162Jxs; Thu, 04 Feb 2021 19:02:19 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l7im7-003Fgj-Jt; Thu, 04 Feb 2021 18:50:39 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l7del-006syv-Mo; Thu, 04 Feb 2021 13:22:43 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-ide@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>, Li Yang <leoyang.li@nxp.com>
+Subject: [PATCH resend v2] ahci: qoriq: Add platform dependencies
+Date:   Thu,  4 Feb 2021 13:22:42 +0100
+Message-Id: <20210204122242.1641273-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210204171942.469883-1-brianvv@google.com> <CAFSKS=P2d-szPdjukc_3HGBXKYv4k-fwh=OWBdHy2knqr-4-Hg@mail.gmail.com>
-In-Reply-To: <CAFSKS=P2d-szPdjukc_3HGBXKYv4k-fwh=OWBdHy2knqr-4-Hg@mail.gmail.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Thu, 4 Feb 2021 09:56:11 -0800
-Message-ID: <CABCgpaVCgBKGG8EeopROm4sGWyD_FHRveUpB1xyuy1n2=X3waA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yeah, I'm also not seeing it on patchwork. But I did get the email on
-both corp and personal email. So maybe something is failing at
-patchwork?
+The Freescale QorIQ AHCI SATA controller is only present on Freescale
+Layerscape SoCs.  Add platform dependencies to the AHCI_QORIQ config
+symbol, to avoid asking the user about it when configuring a kernel
+without Layerscape support.
 
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+---
+v2:
+  - Add Acked-by.
+---
+ drivers/ata/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Thu, Feb 4, 2021 at 9:50 AM George McCollister
-<george.mccollister@gmail.com> wrote:
->
-> I don't see the second patch.
->
-> Regards,
-> George McCollister
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index 030cb32da980fc47..9ec6bce27c91511b 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -264,6 +264,7 @@ config AHCI_XGENE
+ config AHCI_QORIQ
+ 	tristate "Freescale QorIQ AHCI SATA support"
+ 	depends on OF
++	depends on SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
+ 	select SATA_HOST
+ 	help
+ 	  This option enables support for the Freescale QorIQ AHCI SoC's
+-- 
+2.25.1
+
