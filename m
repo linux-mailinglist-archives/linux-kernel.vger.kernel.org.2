@@ -2,147 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1797630F407
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081B630F409
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236403AbhBDNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:40:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45088 "EHLO mail.kernel.org"
+        id S236238AbhBDNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:41:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:58592 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236314AbhBDNj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:39:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD2364F51;
-        Thu,  4 Feb 2021 13:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612445927;
-        bh=/vMj2ElIAY5QBQ/A7h2cgJR0XVTGKsD9U/MoAjjyImo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P0CylK1rd+DfXEfCKpU0+E8R3/wdNJYV+yEIQSjyDpkjUf0mVFC8gzTyKP2AYto7G
-         IZ83+afkTx5bhGD2ctUqDuIRFZstt2FkAXydGxrEC9nT9HL6sDhDKx1ppPMzIMUap1
-         hAJBualufN6psFbdbRAjNwcAT5z6a4M1r0nXJR+Y=
-Date:   Thu, 4 Feb 2021 14:38:44 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: Re: [RFC v2 1/1] PCI: Add s390 specific UID uniqueness attribute
-Message-ID: <YBv45HFPe109GT9e@kroah.com>
-References: <20210204094353.63819-1-schnelle@linux.ibm.com>
- <20210204094353.63819-2-schnelle@linux.ibm.com>
- <YBvPBD+fCtQkCFFD@kroah.com>
- <7b85c218-88a4-b6db-e5de-7004475564ee@linux.ibm.com>
+        id S236358AbhBDNju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:39:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4035D6E;
+        Thu,  4 Feb 2021 05:39:02 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B90333F694;
+        Thu,  4 Feb 2021 05:39:01 -0800 (PST)
+Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
+To:     Qiang Yu <yuq825@gmail.com>, Lukasz Luba <lukasz.luba@arm.com>
+Cc:     lima@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210127105121.20345-1-lukasz.luba@arm.com>
+ <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
+ <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
+ <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
+ <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
+ <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com>
+Date:   Thu, 4 Feb 2021 13:39:00 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b85c218-88a4-b6db-e5de-7004475564ee@linux.ibm.com>
+In-Reply-To: <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 01:02:51PM +0100, Niklas Schnelle wrote:
+On 2021-02-03 02:01, Qiang Yu wrote:
+> On Tue, Feb 2, 2021 at 10:02 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 2/2/21 1:01 AM, Qiang Yu wrote:
+>>> Hi Lukasz,
+>>>
+>>> Thanks for the explanation. So the deferred timer option makes a mistake that
+>>> when GPU goes from idle to busy for only one poll periodic, in this
+>>> case 50ms, right?
+>>
+>> Not exactly. Driver sets the polling interval to 50ms (in this case)
+>> because it needs ~3-frame average load (in 60fps). I have discovered the
+>> issue quite recently that on systems with 2 CPUs or more, the devfreq
+>> core is not monitoring the devices even for seconds. Therefore, we might
+>> end up with quite big amount of work that GPU is doing, but we don't
+>> know about it. Devfreq core didn't check <- timer didn't fired. Then
+>> suddenly that CPU, which had the deferred timer registered last time,
+>> is waking up and timer triggers to check our device. We get the stats,
+>> but they might be showing load from 1sec not 50ms. We feed them into
+>> governor. Governor sees the new load, but was tested and configured for
+>> 50ms, so it might try to rise the frequency to max. The GPU work might
+>> be already lower and there is no need for such freq. Then the CPU goes
+>> idle again, so no devfreq core check for next e.g. 1sec, but the
+>> frequency stays at max OPP and we burn power.
+>>
+>> So, it's completely unreliable. We might stuck at min frequency and
+>> suffer the frame drops, or sometimes stuck to max freq and burn more
+>> power when there is no such need.
+>>
+>> Similar for thermal governor, which is confused by this old stats and
+>> long period stats, longer than 50ms.
+>>
+>> Stats from last e.g. ~1sec tells you nothing about real recent GPU
+>> workload.
+> Oh, right, I missed this case.
 > 
+>>
+>>> But delayed timer will wakeup CPU every 50ms even when system is idle, will this
+>>> cause more power consumption for the case like phone suspend?
+>>
+>> No, in case of phone suspend it won't increase the power consumption.
+>> The device won't be woken up, it will stay in suspend.
+> I mean the CPU is waked up frequently by timer when phone suspend,
+> not the whole device (like the display).
 > 
-> On 2/4/21 11:40 AM, Greg Kroah-Hartman wrote:
-> > On Thu, Feb 04, 2021 at 10:43:53AM +0100, Niklas Schnelle wrote:
-> >> The global UID uniqueness attribute exposes whether the platform
-> >> guarantees that the user-defined per-device UID attribute values
-> >> (/sys/bus/pci/device/<dev>/uid) are unique and can thus be used as
-> >> a global identifier for the associated PCI device. With this commit
-> >> it is exposed at /sys/bus/pci/zpci/unique_uids
-> >>
-> >> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> >> ---
-> >>  Documentation/ABI/testing/sysfs-bus-pci |  9 +++++++++
-> >>  drivers/pci/pci-sysfs.c                 | 21 +++++++++++++++++++++
-> >>  2 files changed, 30 insertions(+)
-> >>
-> >> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> >> index 25c9c39770c6..812dd9d3f80d 100644
-> >> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> >> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> >> @@ -375,3 +375,12 @@ Description:
-> >>  		The value comes from the PCI kernel device state and can be one
-> >>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
-> >>  		The file is read only.
-> >> +What:		/sys/bus/pci/zpci/unique_uids
-> > 
-> > No blank line before this new line?
+> Seems it's better to have deferred timer when device is suspended for
+> power saving,
+> and delayed timer when device in working state. User knows this and
+> can use sysfs
+> to change it.
+
+Doesn't devfreq_suspend_device() already cancel any timer work either 
+way in that case?
+
+Robin.
+
+> Set the delayed timer as default is reasonable, so patch is:
+> Reviewed-by: Qiang Yu <yuq825@gmail.com>
 > 
-> Good catch, thanks!
+> Regards,
+> Qiang
 > 
-> > 
-> > And why "zpci"?
+>>
+>> Regards,
+>> Lukasz
+>>
+>>
+>>>
+>>> Regards,
+>>> Qiang
+>>>
+>>>
+>>> On Mon, Feb 1, 2021 at 5:53 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> Hi Qiang,
+>>>>
+>>>> On 1/30/21 1:51 PM, Qiang Yu wrote:
+>>>>> Thanks for the patch. But I can't observe any difference on glmark2
+>>>>> with or without this patch.
+>>>>> Maybe you can provide other test which can benefit from it.
+>>>>
+>>>> This is a design problem and has impact on the whole system.
+>>>> There is a few issues. When the device is not checked and there are
+>>>> long delays between last check and current, the history is broken.
+>>>> It confuses the devfreq governor and thermal governor (Intelligent Power
+>>>> Allocation (IPA)). Thermal governor works on stale stats data and makes
+>>>> stupid decisions, because there is no new stats (device not checked).
+>>>> Similar applies to devfreq simple_ondemand governor, where it 'tires' to
+>>>> work on a loooong period even 3sec and make prediction for the next
+>>>> frequency based on it (which is broken).
+>>>>
+>>>> How it should be done: constant reliable check is needed, then:
+>>>> - period is guaranteed and has fixed size, e.g 50ms or 100ms.
+>>>> - device status is quite recent so thermal devfreq cooling provides
+>>>>      'fresh' data into thermal governor
+>>>>
+>>>> This would prevent odd behavior and solve the broken cases.
+>>>>
+>>>>>
+>>>>> Considering it will wake up CPU more frequently, and user may choose
+>>>>> to change this by sysfs,
+>>>>> I'd like to not apply it.
+>>>>
+>>>> The deferred timer for GPU is wrong option, for UFS or eMMC makes more
+>>>> sense. It's also not recommended for NoC busses. I've discovered that
+>>>> some time ago and proposed to have option to switch into delayed timer.
+>>>> Trust me, it wasn't obvious to find out that this missing check has
+>>>> those impacts. So the other engineers or users might not know that some
+>>>> problems they faces (especially when the device load is changing) is due
+>>>> to this delayed vs deffered timer and they will change it in the sysfs.
+>>>>
+>>>> Regards,
+>>>> Lukasz
+>>>>
+>>>>>
+>>>>> Regards,
+>>>>> Qiang
+>>>>>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 > 
-> There doesn't seem to be a precedent for arch specific attributes under
-> /sys/bus/pci so I went with a separate group for the RFC.
-
-Why?  There's nothing arch-specific here, right?  Either the file is
-present or not.
-
-> "zpci" since that's what we've been calling the s390 specific PCI.
-> I'm not attached to that name or having a separate group, from
-> my perspective /sys/bus/pci/unique_uids would actually be ideal
-> if Bjorn is okay with that, we don't currently foresee any additional
-> global attributes and no one else seems to have them but
-> one never knows and a separate group would then of course,
-> well group them.
-
-Why not just a simple file, no need for arch-specific names if this
-really can show up under other arches?
-
-> >> +Date:		February 2021
-> >> +Contact:	Niklas Schnelle <schnelle@linux.ibm.com>
-> >> +Description:
-> >> +		This attribute exposes the global state of UID Uniqueness on an
-> >> +		s390 Linux system. If this file contains '1' the per-device UID
-> >> +		attribute is guaranteed to provide a unique user defined
-> >> +		identifier for that PCI device. If this file contains '0' UIDs
-> >> +		may collide and do not provide a unique identifier.
-> > 
-> > What are they "colliding" with?  And where does the UID come from, the
-> > device itself or somewhere else?
-> 
-> If this attribute is 0 multiple PCI devices seen by Linux may have the same UID i.e.
-> they may collide with each other on the same Linux instance.
-
-So can't userspace figure this out on its own?
-
-> The
-> UIDs are exposed under /sys/bus/pci/devices/<dev>/uid. Even if the attribute is 1
-> multiple Linux instances will often see the same UID. The main use case
-> we currently envision is naming PCI based network interfaces "eno<UID>"
-> which of course only works if the UIDs are unique for that Linux.
-> On the same mainframe multiple Linux instances may then e.g. use the same
-> UID for VFs from the same physical PCI network card or different cards
-> but the same physical network all defined by an administrator/management
-> system.
-> 
-> The UIDs come from the platform/firmware/hypervisor and are provided
-> for each device by the CLP List PCI Functions "instruction" that is used
-> on s390x where an OS can't probe the physical PCI bus but instead
-> that is done by firmware. On QEMU/KVM they can be set on the QEMU cli,
-> on our machine hypervisor they are defined by the machine administrator/management
-> software as part of the definition of VMs/Partitions on that mainframe which includes
-> everything from the number of CPUs, memory, I/O devices etc. With the exposed UID uniqueness
-> attribute the platform then certifies that it will ensure that a UID is set to
-> a unique non-zero value. I can of course add more of this explanation
-> in the documentation too.
-
-Please explain it more, but why would userspace care about this?  If
-userspace sees a UID "collision" then it just adds something else to the
-end of the name to make it unique.
-
-What is it supposed to do differently based on the value/presense of
-this file?
-
-> Both the uniqueness guarantee (this attribute) as well as the UIDs themselves
-> are part of the Z (s390x) architecture so fall under the mainframe typical
-> backwards compatibility considerations.
-
-So what can userspace do with this?  What tool is going to rely on this?
-
-thanks,
-
-greg k-h
