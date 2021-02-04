@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18B530F050
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B0F30F04D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbhBDKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:16:58 -0500
-Received: from relay.sw.ru ([185.231.240.75]:56350 "EHLO relay.sw.ru"
+        id S235399AbhBDKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:16:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45166 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235302AbhBDKQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:16:50 -0500
-Received: from [192.168.15.247]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1l7bfZ-001fdg-PK; Thu, 04 Feb 2021 13:15:25 +0300
-Subject: Re: [v6 PATCH 10/11] mm: memcontrol: reparent nr_deferred when memcg
- offline
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203172042.800474-1-shy828301@gmail.com>
- <20210203172042.800474-11-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <05b2ce17-9fd3-5702-8eeb-bcbb671d8716@virtuozzo.com>
-Date:   Thu, 4 Feb 2021 13:15:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S235298AbhBDKQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:16:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612433761; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YQZOldqCtjkPupLVxZdZt2KMNRlzizKTv66MNg9zXPI=;
+        b=eG3gMKWPwUW01tBEcoF29Eq8Y2qgWWLBNZ4+YaIbBZueMMVpDTfz8dCp+gPebXm6bb9Uyr
+        5KShIQZ5qKE24SnDt53w84yolfaTNcLWCnwArKLdZ6BnyxhVhsi0OUrlmnGKLhqto6NEKb
+        y18uDsei/XZXTChu+NYikcxbz/ke1mQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 478AFAC97;
+        Thu,  4 Feb 2021 10:16:01 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 11:16:00 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Peter Jones <pjones@redhat.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, X86 ML <x86@kernel.org>
+Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
+Message-ID: <YBvJYHW7iVhtlJfh@alley>
+References: <20210202070218.856847-1-masahiroy@kernel.org>
+ <87eehy27b5.fsf@jogness.linutronix.de>
+ <YBq/2ojccc4ZZp9y@alley>
+ <CAK7LNAQyV-asWNY6CK6MWze9sFZS3CgXxtH2LEht5e=kjrLu7w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210203172042.800474-11-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQyV-asWNY6CK6MWze9sFZS3CgXxtH2LEht5e=kjrLu7w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.02.2021 20:20, Yang Shi wrote:
-> Now shrinker's nr_deferred is per memcg for memcg aware shrinkers, add to parent's
-> corresponding nr_deferred when memcg offline.
+On Thu 2021-02-04 06:51:09, Masahiro Yamada wrote:
+> On Thu, Feb 4, 2021 at 12:23 AM Petr Mladek <pmladek@suse.com> wrote:
+> >
+> > On Tue 2021-02-02 09:44:22, John Ogness wrote:
+> > > On 2021-02-02, Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > > CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
+> > > > CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
+> > > >
+> > > > When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
+> > > > all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
+> > > > used in <linux/printk.h>, which is included from most of source files.
+> > > >
+> > > > In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
+> > > >
+> > > >   arch/x86/platform/uv/uv_nmi.c
+> > > >   drivers/firmware/efi/libstub/efi-stub-helper.c
+> > > >   drivers/tty/sysrq.c
+> > > >   kernel/printk/printk.c
+> > > >
+> > > > So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
+> > > > kernel, it is enough to recompile those 4 files.
+> > > >
+> > > > Remove the CONSOLE_LOGLEVEL_DEFAULT definition from <linux/printk.h>,
+> > > > and use CONFIG_CONSOLE_LOGLEVEL_DEFAULT directly.
+> > >
+> > > With commit a8fe19ebfbfd ("kernel/printk: use symbolic defines for
+> > > console loglevels") it can be seen that various drivers used to
+> > > hard-code their own values. The introduction of the macros in an
+> > > intuitive location (include/linux/printk.h) made it easier for authors
+> > > to find/use the various available printk settings and thresholds.
+> > >
+> > > Technically there is no problem using Kconfig macros directly. But will
+> > > authors bother to hunt down available Kconfig settings? Or will they
+> > > only look in printk.h to see what is available?
+> > >
+> > > IMHO if code wants to use settings from a foreign subsystem, it should
+> > > be taking those from headers of that subsystem, rather than using some
+> > > Kconfig settings from that subsystem. Headers exist to make information
+> > > available to external code. Kconfig (particularly for a subsystem) exist
+> > > to configure that subsystem.
+> >
+> > I agree with this this view.
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-
-> ---
->  include/linux/memcontrol.h |  1 +
->  mm/memcontrol.c            |  1 +
->  mm/vmscan.c                | 24 ++++++++++++++++++++++++
->  3 files changed, 26 insertions(+)
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index c457fc7bc631..e1c4b93889ad 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1585,6 +1585,7 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
->  int alloc_shrinker_info(struct mem_cgroup *memcg);
->  void free_shrinker_info(struct mem_cgroup *memcg);
->  void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id);
-> +void reparent_shrinker_deferred(struct mem_cgroup *memcg);
->  #else
->  #define mem_cgroup_sockets_enabled 0
->  static inline void mem_cgroup_sk_alloc(struct sock *sk) { };
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f64ad0d044d9..21f36b73f36a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5282,6 +5282,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
->  	page_counter_set_low(&memcg->memory, 0);
->  
->  	memcg_offline_kmem(memcg);
-> +	reparent_shrinker_deferred(memcg);
->  	wb_memcg_offline(memcg);
->  
->  	drain_all_stock(memcg);
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 20a35d26ae12..574d920c4cab 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -386,6 +386,30 @@ static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
->  	return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
->  }
->  
-> +void reparent_shrinker_deferred(struct mem_cgroup *memcg)
-> +{
-> +	int i, nid;
-> +	long nr;
-> +	struct mem_cgroup *parent;
-> +	struct shrinker_info *child_info, *parent_info;
-> +
-> +	parent = parent_mem_cgroup(memcg);
-> +	if (!parent)
-> +		parent = root_mem_cgroup;
-> +
-> +	/* Prevent from concurrent shrinker_info expand */
-> +	down_read(&shrinker_rwsem);
-> +	for_each_node(nid) {
-> +		child_info = shrinker_info_protected(memcg, nid);
-> +		parent_info = shrinker_info_protected(parent, nid);
-> +		for (i = 0; i < shrinker_nr_max; i++) {
-> +			nr = atomic_long_read(&child_info->nr_deferred[i]);
-> +			atomic_long_add(nr, &parent_info->nr_deferred[i]);
-> +		}
-> +	}
-> +	up_read(&shrinker_rwsem);
-> +}
-> +
->  static bool cgroup_reclaim(struct scan_control *sc)
->  {
->  	return sc->target_mem_cgroup;
-> 
+> I have never seen a policy to restrict
+> the use of CONFIG options in relevant
+> subsystem headers.
 
+I would say that it is a common sense. But I admit that I did not look
+at the code in detail. See below.
+
+> > What about using default_console_loglevel() in the external code?
+> > It reads the value from an array. This value is initialized to
+> > CONSOLE_LOGLEVEL_DEFAULT and never modified later.
+> 
+> I do not think default_console_loglevel()
+> is a perfect constant
+> because it can be modified via
+> /proc/sys/kernel/printk
+
+And that is the problem. I somehow expected that the external code
+wanted to have the currently valid value and not the prebuilt one.
+
+When I look closely:
+
+  + arch/x86/platform/uv/uv_nmi.c
+  + drivers/firmware/efi/libstub/efi-stub-helper.c
+
+    These use the value to statically initialize global variables that
+    might later be modified by subsystem-specific kernel parameters.
+
+    CONFIG_CONSOLE_LOGLEVEL_DEFAULT is acceptable here from my POV.
+    The build dependency sucks. And it is not worth any too complicated
+    solution.
+
+
+  + drivers/tty/sysrq.c
+
+    The intention here is to use the highest console loglevel so that
+    people really see them. It used to be hardcoded "7". sysrq is
+    typically the last chance to get some information from the system.
+
+    We actually want to use the hardcoded "7" here. But we should
+    define it via a macro in printk.h, e.g.
+
+     #define CONSOLE_LOGLEVEL_ALL_NORMAL 7 /* all non-debugging messages */
+
+     or
+
+     #define CONSOLE_LOGLEVEL_NO_DEBUG 7  /* all non-debugging messages */
+
+Best Regards,
+Petr
