@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D144F30F5ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFE830F5F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237133AbhBDPOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:14:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49548 "EHLO mail.kernel.org"
+        id S237061AbhBDPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:16:47 -0500
+Received: from mga17.intel.com ([192.55.52.151]:4525 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237056AbhBDPNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:13:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 584E964DF2;
-        Thu,  4 Feb 2021 15:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612451548;
-        bh=G4jmW1klxSDhuyqLVoj50N0KykhbrDTq8TJm7ElTHpY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h1EODtEGbjMAIDkq072psv/urRdZPDKRVv6TZJAOxW+XAnE6Vb5Uwjt0aMx7AnstA
-         j7n0VVxrsfX2rFgn0P1Sd/nf/wEvgGKKuTkXvEueJkjKh4fzyKlgzSH0n69EG1P04w
-         KVO0UNXhRj6FebbVfYiUg69guvDqpmZ30p2Lq51rF7gu3rPePkdkqF7+b6C9zYST5C
-         9wZsrVy08GhsDx0yLQGhmlB/N5p7clax1eIu41pfFnxZQldhFgD7wkCl2SQpblZdh4
-         tDvRmUtzKwcHYSmqMmTlxHv8sGh+mhPkW6G8OoV0AP5GdwBxe4lmETKSS1tYj0tE3o
-         BxGljiI5oxnYw==
-Date:   Thu, 4 Feb 2021 15:11:40 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Message-ID: <20210204151139.GE4288@sirena.org.uk>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-5-hdegoede@redhat.com>
- <20210204135616.GL2789116@dell>
- <20210204140515.GC4288@sirena.org.uk>
- <20210204150456.GN2789116@dell>
+        id S237107AbhBDPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:15:47 -0500
+IronPort-SDR: TiQ9iVcpZUcHYK5pPxich3UODayVnWNYWtkoKEby4l8Jll8YXdw7EFSFv+sOIcLszSumaj4g3J
+ rSW8U4rkV+rQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="161013714"
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="161013714"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:14:01 -0800
+IronPort-SDR: fUWOH2XXoBytr+VSynl5yUbVuoa1+cd1LEsUGWADXT64FliTJN0lqF2nChXzaX3E1YgmiPTNu2
+ iFVYhjhS3esA==
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="508170614"
+Received: from anumolux-mobl1.amr.corp.intel.com (HELO spandruv-mobl.amr.corp.intel.com) ([10.209.40.39])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:14:00 -0800
+Message-ID: <85a4e6e61ac977d0d00dd9140a9e85f1102b3a6d.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     You-Sheng Yang <vicamo.yang@canonical.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 04 Feb 2021 07:13:47 -0800
+In-Reply-To: <20210204083315.122952-1-vicamo.yang@canonical.com>
+References: <20210204083315.122952-1-vicamo.yang@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Oiv9uiLrevHtW1RS"
-Content-Disposition: inline
-In-Reply-To: <20210204150456.GN2789116@dell>
-X-Cookie: Truth can wait
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-02-04 at 16:33 +0800, You-Sheng Yang wrote:
+> Added Tiger Lake H PCI device ID to the supported device list.
+> 
+> Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
+Did you get chance to verify on a platform?
+Do you see sensors enumerated in /sys/bus/iio?
 
---Oiv9uiLrevHtW1RS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
+Srinivas
 
-On Thu, Feb 04, 2021 at 03:04:56PM +0000, Lee Jones wrote:
-> On Thu, 04 Feb 2021, Mark Brown wrote:
-> > On Thu, Feb 04, 2021 at 01:56:16PM +0000, Lee Jones wrote:
+> ---
+>  drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> index 1fb294ca463e..21b0e6123754 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> +++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> @@ -27,6 +27,7 @@
+>  #define CMP_H_DEVICE_ID		0x06FC
+>  #define EHL_Ax_DEVICE_ID	0x4BB3
+>  #define TGL_LP_DEVICE_ID	0xA0FC
+> +#define TGL_H_DEVICE_ID		0x43FC
+>  
+>  #define	REVISION_ID_CHT_A0	0x6
+>  #define	REVISION_ID_CHT_Ax_SI	0x0
+> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> index c6d48a8648b7..6dea657b7b15 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> @@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
+> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
+>  	{0, }
+>  };
+>  MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
 
-> > > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > > Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > > Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-> > > Applied, thanks.
-
-> > While we we were just having a discussion about what to do about this
-> > stuff...
-
-> We were?
-
-> This set has all the Acks we need to proceed.  What's blocking?
-
-There's the subsystem maintainer...
-
---Oiv9uiLrevHtW1RS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAcDqsACgkQJNaLcl1U
-h9AqDgf/XzyTNV0AwXM8ECOYYqs8avg1zJ118ZJf4W3sf0LRQzsUidYaLfh7btT6
-ax+t2Pm1s145XuvGeFEJFAx9UDaqWQRa7/WPGTveZmnPYgSHryMK8pmtWyc1STcY
-iQKV0b/kLwUTn9V9Hu/jejpRl+a3N87j2hYIKK5Y3o+3wVjvFPj9FHSpdKFNvy0k
-HKrV9GhZzMOHM30JfgBvAjNOoutBAhHe8agmQOcvK526XY3JBw6DctrG5vSXaj9q
-w8yLcOmdv56laLX76e4dzXPCjGTqxlDop2MeyaNg3fmZ99kxLGumgMmNdggRU/xa
-QPHYEKBU4bfMkXhTYk1yqct/Y4O5rA==
-=1Vn6
------END PGP SIGNATURE-----
-
---Oiv9uiLrevHtW1RS--
