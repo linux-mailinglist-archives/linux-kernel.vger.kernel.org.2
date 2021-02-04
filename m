@@ -2,266 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEE030EB82
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3437130EB89
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhBDEP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 23:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        id S230432AbhBDEW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 23:22:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhBDEP4 (ORCPT
+        with ESMTP id S229771AbhBDEW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 23:15:56 -0500
+        Wed, 3 Feb 2021 23:22:26 -0500
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB51C061573;
-        Wed,  3 Feb 2021 20:15:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4485BC061573;
+        Wed,  3 Feb 2021 20:21:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
         :Reply-To:Content-ID:Content-Description;
-        bh=JWNpbnyZqzRYkEJKXFPpQ+gv+9VW0iywE8N5U6sRF7c=; b=B8ZWvHmU8IR1lHV82/Zk+3KMk/
-        KQRGMXzimBvhlMSaxNKiR4+KVFTYZCaX4NWfL9xKZj4XxCDH0pN2esF6XZyJSkOdwAfcRxX4C4TTq
-        eHatHIFz90VrKwJTWk2EQ2QiuKABvrVkXXufUoNZdwTqOh7nSILewW41G0JXcaRLF3raoh+HKujHl
-        ZzVcx69Wxr0lvrxG/aW9XYIyKxDzTBfUA/qmiQAqqziD4HN08hpOK8erMj1MhkwXxo+ysb86bKB+b
-        hOZLx0O5jf9dHpNvG5wWdP8d4eh8tzG5DbSMGs3XcHveHrJHWZH0hipL/EHBjy87c4bgOWJEfzwLm
-        EuVD+ezg==;
+        bh=WMId+cxkCWnvOqXDQrIS9DTWp8t6upKk/k1BmoUUQwU=; b=H7DiSRpo4WoTTloZz/lJb8YPyu
+        y6PEevzTClujUfBlG8PpHjE+HLmW6+D3XB9JI1fZSaJLK/lemFHODhF/MUF4G/X0atwRClYdrw++z
+        rvfKZE/ra4DwapzJfpcp99aBkGuIYC3W6NqLcv5IAcbe7wbvNRDXSHC3NlJo1JR8QbKg2itTJuVih
+        E5ylPtz21/3qXBC5ma62SYyydsym6AFm79KgaVWdnm1Rb2TKkgsPoLEQj0BLe/b9G9jJqU3fWzmBX
+        2TtDeSWOHTupc7mcNfhXCzJFIw9bftFUiWyCf1JB+E5xbzXbkQttxdKpT8wt+CzlGvwBd9UPt2qjS
+        F4DV1oAg==;
 Received: from [2601:1c0:6280:3f0::aec2]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7W2w-0002Ru-Mv; Thu, 04 Feb 2021 04:15:11 +0000
-Subject: Re: [PATCH v4 1/6] docs: device-mapper: add remap_and_filter
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>, Damien.LeMoal@wdc.com,
-        snitzer@redhat.com, hare@suse.de, ming.lei@redhat.com,
-        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
-        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
-        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     pavgel.tide@veeam.com
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
- <1612367638-3794-2-git-send-email-sergei.shtepa@veeam.com>
+        id 1l7W9H-0002ih-VU; Thu, 04 Feb 2021 04:21:44 +0000
+Subject: Re: [PATCH] MIPS: Use common way to parse elfcorehdr
+To:     Jinyang He <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1612408033-5446-1-git-send-email-hejinyang@loongson.cn>
+ <57e74a56-abc1-dbc0-1277-5effb0e4e4c6@infradead.org>
+ <eff38b91-edd9-6f03-fd47-17932025f2ff@loongson.cn>
+ <b19fd98a-13a0-75ef-37d6-b9e3d4cf5102@infradead.org>
+ <0c36f7e5-ce5d-e2ed-55a0-2f9113ac06bb@loongson.cn>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ef604ad7-1348-1ffa-e3c4-67d153620e08@infradead.org>
-Date:   Wed, 3 Feb 2021 20:15:03 -0800
+Message-ID: <9d275273-cafb-5f1c-9d83-a43e55cab7ac@infradead.org>
+Date:   Wed, 3 Feb 2021 20:21:40 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <1612367638-3794-2-git-send-email-sergei.shtepa@veeam.com>
+In-Reply-To: <0c36f7e5-ce5d-e2ed-55a0-2f9113ac06bb@loongson.cn>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 7:53 AM, Sergei Shtepa wrote:
-> remap_and_filter - describes the new features that
-> blk_interposer provides for device mapper.
+On 2/3/21 8:19 PM, Jinyang He wrote:
+> On 02/04/2021 12:01 PM, Randy Dunlap wrote:
 > 
-> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+>> On 2/3/21 7:57 PM, Jinyang He wrote:
+>>> On 02/04/2021 11:28 AM, Randy Dunlap wrote:
+>>>
+>>>> On 2/3/21 7:07 PM, Jinyang He wrote:
+>>>>> "elfcorehdr" can be parsed at kernel/crash_dump.c
+>>>>>
+>>>>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>>>> Hm, looks like that would require CONFIG_CRASH_DUMP?
+>>> Hi,
+>>>
+>>> I don't think so. We expect to generate a /proc/vmcore when we reserved
+>>> memory for elfcorehdr. So put it under CONFIG_PROC_VMCORE. If only rely
+>>> on CONFIG_CRASH_DUMP and CONFIG_PROC_VMCORE is not enabled, we will
+>>> reserve these memory while cannot use these later. And the reason why
+>>> kernel/crash_dump.c being under CONFIG_CRASH_DUMP is that it provide
+>>> is_kdump_kernel() for others.
+>>>
+>>> Thanks,
+>>> Jinyang
+>> Hi,
+>>
+>> I'm referring to kernel/Makefile:
+>>
+>> obj-$(CONFIG_CRASH_DUMP) += crash_dump.o
+>>
+>> so that's not an issue here?  Please explain.
+> Hi,
+> 
+> CONFIG_PROC_VMCORE depends on CONFIG_PROC_FS && CONFIG_CRASH_DUMP.
+> So...
 
-Hi--
-Please see comments below.
+Got it. Thank you.
 
-
-> ---
->  .../admin-guide/device-mapper/index.rst       |   1 +
->  .../device-mapper/remap_and_filter.rst        | 132 ++++++++++++++++++
->  2 files changed, 133 insertions(+)
->  create mode 100644 Documentation/admin-guide/device-mapper/remap_and_filter.rst
-
-> diff --git a/Documentation/admin-guide/device-mapper/remap_and_filter.rst b/Documentation/admin-guide/device-mapper/remap_and_filter.rst
-> new file mode 100644
-> index 000000000000..616b67998305
-> --- /dev/null
-> +++ b/Documentation/admin-guide/device-mapper/remap_and_filter.rst
-> @@ -0,0 +1,132 @@
-> +=================
-> +DM remap & filter
-> +=================
-> +
-> +Introduction
-> +============
-> +
-> +Usually LVM should be used for new devices.
-> +The administrator have to create logical volumes for the system partition
-
-                     has
-
-> +when installing the operating system. For a running system with
-> +partitioned disk space and mounted file systems, it is quite difficult to
-> +reconfigure to logical volumes. As a result, all the features that Device
-> +Mapper provides are not available for non-LVM systems.
-> +This problem is partially solved by the dm remap functionality, which
-> +uses the kernel's blk_interposer.
-> +
-> +blk_interposer
-> +==============
-> +
-> +Blk_interposer extends the capabilities of the DM, as it allows to
-> +intercept and redirect bio requests for block devices that are not
-> +dm device. At the same time, blk_interposer allows to attach and detach
-
-      devices.
-
-> +from devices "on the fly", without stopping the execution of user
-> +programs.
-> +
-> +Blk_interposer allows to do two tasks: remap and filter.
-> +Remap allows to redirect all requests from one block device to another.
-> +Filter allows to do additional processing of the request, but without
-> +redirection. An intercepted request can get to the block device to which
-> +it was addressed, without changes.
-> +
-> +Remap
-> +=====
-> +
-> +Consider the functionality of the remap. This will allow to connect
-> +any block device with a dm device "on the fly".
-> +Suppose we have a file system mounted on the block device /dev/sda1::
-> +
-> +  +-------------+
-> +  | file system |
-> +  +-------------+
-> +        ||
-> +        \/
-> +  +-------------+
-> +  | /dev/sda1   |
-> +  +-------------+
-> +
-> +Creating a new DM device that will be mapped on the same /dev/sda1::
-
-Sometimes it's "DM", other times it's "dm" device. Please be consistent.
-
-> +
-> +  +-------------+  +-----------+
-> +  | file system |  | dm-linear |
-> +  +-------------+  +-----------+
-> +           ||         ||
-> +           \/         \/
-> +         +---------------+
-> +         |   /dev/sda1   |
-> +         +---------------+
-> +
-> +Redirecting all bio requests for the /dev/sda1 device to the new dm
-> +device::
-> +
-> +  +-------------+
-> +  | file system |
-> +  +-------------+
-> +        ||
-> +        \/
-> +   +----------+    +-----------+
-> +   |  remap   | => | dm-linear |
-> +   +----------+    +-----------+
-> +                         ||
-> +                         \/
-> +                   +-----------+
-> +                   | /dev/sda1 |
-> +                   +-----------+
-> +
-> +To achieve this, you need to:
-> +
-> +Create new dm device with option 'noexcl'. It's allow to open
-
-                                                   allowed to open the
-
-> +underlying block-device without the FMODE_EXCL flag::
-> +
-> +  echo "0 `blockdev --getsz $1` linear $DEV 0 noexcl" | dmsetup create dm-noexcl
-> +
-> +Call remap command::
-> +
-> +  dmsetup remap start dm-noexcl $1
-> +
-> +Remap can be used to extend the functionality of dm-snap. This will allow
-> +to take snapshots from any block devices, not just logical volumes.
-> +
-> +Filter
-> +======
-> +
-> +Filter does not redirect the bio to another device. It does not create
-> +a clone of the bio request. After receiving the request, the filter can
-> +only add some processing, complete the bio request, or return the bio
-> +for further processing.
-> +
-> +Suppose we have a file system mounted on the block device /dev/sda1::
-> +
-> +  +-------------+
-> +  | file system |
-> +  +-------------+
-> +        ||
-> +        \/
-> +  +-------------+
-> +  | /dev/sda1   |
-> +  +-------------+
-> +
-> +Creating a new dm device that will implement filter::
-> +
-> +  +-------------+
-> +  | file system |
-> +  +-------------+
-> +        ||
-> +        \/
-> +    +--------+    +----------+
-> +    | filter | => | dm-delay |
-> +    +--------+    +----------+
-> +        ||
-> +        \/
-> +  +-------------+
-> +  | /dev/sda1   |
-> +  +-------------+
-> +
-> +Using filter we can change the behavior of debugging tools:
-> + * dm-dust,
-> + * dm-delay,
-> + * dm-flakey,
-> + * dm-verity.
-> +
-> +In the new version, they are will be able to change the behavior of any
-
-          Either       they are able to change the behavior of any
-            or         they will be able to change the behavior of any
-
-I prefer the first choice.
-
-> +existing block device, without creating a new one.
-
-
-According to Documentation/doc-guide/sphinx.rst, here is how
-chapters, sections, etc., should be indicated:
-
-
-* Please stick to this order of heading adornments:
-
-  1. ``=`` with overline for document title::
-
-       ==============
-       Document title
-       ==============
-
-  2. ``=`` for chapters::
-
-       Chapters
-       ========
-
-  3. ``-`` for sections::
-
-       Section
-       -------
-
-  4. ``~`` for subsections::
-
-       Subsection
-       ~~~~~~~~~~
-
-  Although RST doesn't mandate a specific order ("Rather than imposing a fixed
-  number and order of section title adornment styles, the order enforced will be
-  the order as encountered."), having the higher levels the same overall makes
-  it easier to follow the documents.
-
-
-
-thanks.
 -- 
 ~Randy
 
