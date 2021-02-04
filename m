@@ -2,179 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1553530F044
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8642A30F034
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhBDKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:14:11 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:42518 "EHLO mx4.veeam.com"
+        id S235311AbhBDKM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:12:28 -0500
+Received: from mga07.intel.com ([134.134.136.100]:13159 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235328AbhBDKOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:14:07 -0500
-X-Greylist: delayed 405 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Feb 2021 05:14:04 EST
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id EDA60874F7;
-        Thu,  4 Feb 2021 13:06:34 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1612433195; bh=9Db75ZmRMikGsOb+9U+OZ6pWHWJ+9SIXaqigvPh1SI0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=eIf5dY0lfRBubBO9VnQNP7z8iz0Yx+z2D5HAsbDslBCHXhi0iUpuzKPO7pL0AfGAW
-         kb4skIYCVq5plycqMBaJThxdvQIznk/yrh5RdfUJyNcOsT8W8pF2nGDK3RhVxMhklc
-         5Ob57DAQeYPu/qggU2pwnM3/XAQhSJyielDmR9XU=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 4 Feb 2021
- 11:06:33 +0100
-Date:   Thu, 4 Feb 2021 13:06:31 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Mike Snitzer <snitzer@redhat.com>
-CC:     <Damien.LeMoal@wdc.com>, <hare@suse.de>, <ming.lei@redhat.com>,
-        <agk@redhat.com>, <corbet@lwn.net>, <axboe@kernel.dk>,
-        <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
-        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
-        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pavgel.tide@veeam.com>
-Subject: Re: [PATCH v4 2/6] block: add blk_interposer
-Message-ID: <20210204100631.GB4325@veeam.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
- <1612367638-3794-3-git-send-email-sergei.shtepa@veeam.com>
- <20210203161836.GB21359@redhat.com>
+        id S235044AbhBDKM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:12:26 -0500
+IronPort-SDR: oAIi5HS8tvn7NmFpldVEQcpUfHsHWuLvkNirW9W3n7IjNNKAl7tkKkni7oYAHYwdzn2xRyopyL
+ n78AWYu/j8Lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="245283979"
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="245283979"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:11:46 -0800
+IronPort-SDR: txp9yY4J58LI53q7uHt2PN5KOlXyGRZIVvD3bCiaQvVsgHmZZOUj7PeHJGxy9jCML+EEJYYin+
+ MMCBCjvKdh5Q==
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
+   d="scan'208";a="393093391"
+Received: from qwang9-mobl.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.213.123])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 02:11:43 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [RFC -V5 0/6] autonuma: Optimize memory placement for memory tiering system
+Date:   Thu,  4 Feb 2021 18:10:50 +0800
+Message-Id: <20210204101056.89336-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210203161836.GB21359@redhat.com>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D265667362
-X-Veeam-MMEX: True
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/03/2021 11:18, Mike Snitzer wrote:
-> On Wed, Feb 03 2021 at 10:53am -0500,
-> Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
-> 
-> > blk_interposer allows to intercept bio requests, remap bio to another devices or add new bios.
-> > 
-> > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
-> > ---
-> >  block/bio.c               |  2 +
-> >  block/blk-core.c          | 33 ++++++++++++++++
-> >  block/genhd.c             | 82 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/blk_types.h |  6 ++-
-> >  include/linux/genhd.h     | 18 +++++++++
-> >  5 files changed, 139 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/block/bio.c b/block/bio.c
-> > index 1f2cc1fbe283..f6f135eb84b5 100644
-> > --- a/block/bio.c
-> > +++ b/block/bio.c
-> > @@ -684,6 +684,8 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
-> >  	bio_set_flag(bio, BIO_CLONED);
-> >  	if (bio_flagged(bio_src, BIO_THROTTLED))
-> >  		bio_set_flag(bio, BIO_THROTTLED);
-> > +	if (bio_flagged(bio_src, BIO_INTERPOSED))
-> > +		bio_set_flag(bio, BIO_INTERPOSED);
-> >  	bio->bi_opf = bio_src->bi_opf;
-> >  	bio->bi_ioprio = bio_src->bi_ioprio;
-> >  	bio->bi_write_hint = bio_src->bi_write_hint;
-> > diff --git a/block/blk-core.c b/block/blk-core.c
-> > index 7663a9b94b80..c84bc42ba88b 100644
-> > --- a/block/blk-core.c
-> > +++ b/block/blk-core.c
-> > @@ -1032,6 +1032,32 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
-> >  	return ret;
-> >  }
-> >  
-> > +static blk_qc_t __submit_bio_interposed(struct bio *bio)
-> > +{
-> > +	struct bio_list bio_list[2] = { };
-> > +	blk_qc_t ret = BLK_QC_T_NONE;
-> > +
-> > +	current->bio_list = bio_list;
-> > +	if (likely(bio_queue_enter(bio) == 0)) {
-> > +		struct gendisk *disk = bio->bi_disk;
-> > +
-> > +		if (likely(blk_has_interposer(disk))) {
-> > +			bio_set_flag(bio, BIO_INTERPOSED);
-> > +			disk->interposer->ip_submit_bio(bio);
-> > +		} else /* interposer was removed */
-> > +			bio_list_add(&current->bio_list[0], bio);
-> 
-> style nit:
-> 
-> } else {
-> 	/* interposer was removed */
-> 	bio_list_add(&current->bio_list[0], bio);
-> }
-> 
-> > +
-> > +		blk_queue_exit(disk->queue);
-> > +	}
-> > +	current->bio_list = NULL;
-> > +
-> > +	/* Resubmit remaining bios */
-> > +	while ((bio = bio_list_pop(&bio_list[0])))
-> > +		ret = submit_bio_noacct(bio);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  /**
-> >   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
-> >   * @bio:  The bio describing the location in memory and on the device.
-> > @@ -1057,6 +1083,13 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
-> >  		return BLK_QC_T_NONE;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> > +	 * created by the blk_interposer do not get to it for processing.
-> > +	 */
-> > +	if (blk_has_interposer(bio->bi_disk) &&
-> > +	    !bio_flagged(bio, BIO_INTERPOSED))
-> > +		return __submit_bio_interposed(bio);
-> >  	if (!bio->bi_disk->fops->submit_bio)
-> >  		return __submit_bio_noacct_mq(bio);
-> >  	return __submit_bio_noacct(bio);
-> > diff --git a/block/genhd.c b/block/genhd.c
-> > index 419548e92d82..39785a3ef703 100644
-> > --- a/block/genhd.c
-> > +++ b/block/genhd.c
-> > @@ -30,6 +30,7 @@
-> >  static struct kobject *block_depr;
-> >  
-> >  DECLARE_RWSEM(bdev_lookup_sem);
-> > +DEFINE_MUTEX(bdev_interposer_mutex);
-> 
-> Seems you're using this mutex to protect access to disk->interposer in
-> attach/detach.  This is to prevent attach/detach races to same device?
+With the advent of various new memory types, some machines will have
+multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+memory subsystem of these machines can be called memory tiering
+system, because the performance of the different types of memory are
+usually different.
 
-Yes. There is a probability of 0.00...01% that two different modules will
-try to attach/detach to the same disk at the same time.
-Since the attach/detach operation is infrequent, using mutex is quite appropriate.
-> 
-> Thankfully attach/detach isn't in the bio submission fast path but it'd
-> be helpful to document what this mutex is protecting).
+After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
+for use like normal RAM"), the PMEM could be used as the
+cost-effective volatile memory in separate NUMA nodes.  In a typical
+memory tiering system, there are CPUs, DRAM and PMEM in each physical
+NUMA node.  The CPUs and the DRAM will be put in one logical node,
+while the PMEM will be put in another (faked) logical node.
 
-I'll think about the name of this mutex and add a comment.
+To optimize the system overall performance, the hot pages should be
+placed in DRAM node.  To do that, we need to identify the hot pages in
+the PMEM node and migrate them to DRAM node via NUMA migration.
 
-> 
-> A storm of attach or detach will all hit this global mutex though...
-> 
-> Mike
-> 
+In the original AutoNUMA, there are already a set of existing
+mechanisms to identify the pages recently accessed by the CPUs in a
+node and migrate the pages to the node.  So we can reuse these
+mechanisms to build the mechanisms to optimize the page placement in
+the memory tiering system.  This has been implemented in this
+patchset.
 
-Thank you for the review.
-I am very interested in your opinion about [PATCH v4 4/6] and [PATCH v4 5/6].
-However, the kernel test robot has already found something there on sparc.
+At the other hand, the cold pages should be placed in PMEM node.  So,
+we also need to identify the cold pages in the DRAM node and migrate
+them to PMEM node.
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+In the following patchset,
+
+[RFC][PATCH 00/13] [v5] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210126003411.2AC51464@viggo.jf.intel.com/
+
+A mechanism to demote the cold DRAM pages to PMEM node under memory
+pressure is implemented.  Based on that, the cold DRAM pages can be
+demoted to PMEM node proactively to free some memory space on DRAM
+node.  And this frees the space on DRAM node for the hot PMEM pages to
+be promoted to.  This has been implemented in this patchset too.
+
+The patchset is based on the following not-yet-merged patchset,
+
+[RFC][PATCH 00/13] [v5] Migrate Pages in lieu of discard
+https://lore.kernel.org/lkml/20210126003411.2AC51464@viggo.jf.intel.com/
+
+This is part of a larger patch set.  If you want to apply these or
+play with them, I'd suggest using the tree from below,
+
+https://github.com/hying-caritas/linux/commits/autonuma-r5
+
+We have tested the solution with the pmbench memory accessing
+benchmark with the 80:20 read/write ratio and the normal access
+address distribution on a 2 socket Intel server with Optane DC
+Persistent Memory Model.  The test results of the base kernel and step
+by step optimizations are as follows,
+
+                Throughput	Promotion      DRAM bandwidth
+		  access/s           MB/s                MB/s
+               -----------     ----------      --------------
+Base            74238178.0                             4291.7
+Patch 1        146050652.3          359.4             11248.6
+Patch 2        146300787.1          355.2             11237.2
+Patch 3        162536383.0          211.7             11890.4
+Patch 4        157187775.0          105.9             10412.3
+Patch 5        164028415.2           73.3             10810.6
+Patch 6        162666229.4           74.6             10715.1
+
+The whole patchset improves the benchmark score up to 119.1%.  The
+basic AutoNUMA based optimization solution (patch 1), the hot page
+selection algorithm (patch 3), and the threshold automatic adjustment
+algorithms (patch 5) improves the performance or reduce the overhead
+(promotion MB/s) mostly.
+
+Changelog:
+
+v5:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.10)
+
+v4:
+
+- Rebased on the latest page demotion patchset. (which bases on v5.9-rc6)
+
+- Add page promotion counter.
+
+v3:
+
+- Move the rate limit control as late as possible per Mel Gorman's
+  comments.
+
+- Revise the hot page selection implementation to store page scan time
+  in struct page.
+
+- Code cleanup.
+
+- Rebased on the latest page demotion patchset.
+
+v2:
+
+- Addressed comments for V1.
+
+- Rebased on v5.5.
+
+Huang Ying (6):
+  NUMA balancing: optimize page placement for memory tiering system
+  memory tiering: skip to scan fast memory
+  memory tiering: hot page selection with hint page fault latency
+  memory tiering: rate limit NUMA migration throughput
+  memory tiering: adjust hot threshold automatically
+  memory tiering: add page promotion counter
+
+ include/linux/mm.h           |  29 ++++++++
+ include/linux/mmzone.h       |  11 ++++
+ include/linux/node.h         |   5 ++
+ include/linux/sched/sysctl.h |  12 ++++
+ kernel/sched/core.c          |   9 +--
+ kernel/sched/fair.c          | 124 +++++++++++++++++++++++++++++++++++
+ kernel/sysctl.c              |  22 ++++++-
+ mm/huge_memory.c             |  41 ++++++++----
+ mm/memory.c                  |  11 +++-
+ mm/migrate.c                 |  52 +++++++++++++--
+ mm/mmzone.c                  |  17 +++++
+ mm/mprotect.c                |  19 +++++-
+ mm/vmscan.c                  |  15 +++++
+ mm/vmstat.c                  |   4 ++
+ 14 files changed, 345 insertions(+), 26 deletions(-)
+
+Best Regards,
+Huang, Ying
