@@ -2,135 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F80430F7DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAAC30F7E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237089AbhBDQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:28:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45874 "EHLO mail.kernel.org"
+        id S238036AbhBDQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:29:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59038 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238013AbhBDQ2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:28:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E75564F42;
-        Thu,  4 Feb 2021 16:27:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612456055;
-        bh=HBfKOV5RuyAgb5pTWas7BF7KjE/lHPDguTOnk70YnVY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=L6HVI76SKfA6rUAHHdliYYmHKGgOnYsB3U+ov725YoRCXoJ5/7McpUummzwSBHTFx
-         voruiXeWZI7U6RGjngkLdRgITl9HafC0KjwdrsdGWT8ccnBeg6h8vZWjXoKMPKTXPT
-         ghR1FseJRVOFv6vxZmapc8EdJK4EaGKzId+YgJIBT4EU75HszSH6vopVTFxHxY/pAv
-         d3JYw+b/bHh1EkHGMFL/D5iuzSETyVU31w7sflWrIF8GOkQxFlaFncKwKwUgs2Gb3S
-         hcZQ+QKCRikBbMtM9rWLPPI8MdvDVtuA9jRUHBhRg59NgyyHxO+krvwg2US0RHZ8AV
-         jVUl+xJTyLZqQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt665x: fix alignment constraints
-Date:   Thu,  4 Feb 2021 17:27:17 +0100
-Message-Id: <20210204162731.3132069-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S238005AbhBDQ2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:28:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8BB14B0B3;
+        Thu,  4 Feb 2021 16:27:41 +0000 (UTC)
+Message-ID: <ff12c314f3c122de9f2d9f5d826fac9e5e6248dc.camel@suse.de>
+Subject: Re: [PATCH v14 07/11] arm64: kdump: introduce some macroes for
+ crash kernel reservation
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Chen Zhou <chenzhou10@huawei.com>, mingo@redhat.com,
+        tglx@linutronix.de, rppt@kernel.org, dyoung@redhat.com,
+        bhe@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        corbet@lwn.net, John.P.donnelly@oracle.com, bhsharma@redhat.com,
+        prabhakar.pkin@gmail.com
+Cc:     horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
+        james.morse@arm.com, xiexiuqi@huawei.com, guohanjun@huawei.com,
+        huawei.libin@huawei.com, wangkefeng.wang@huawei.com,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Date:   Thu, 04 Feb 2021 17:27:39 +0100
+In-Reply-To: <a7951d7f651681fcfd45cea4f8b173c23cc34aa0.camel@suse.de>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+         <20210130071025.65258-8-chenzhou10@huawei.com>
+         <a7951d7f651681fcfd45cea4f8b173c23cc34aa0.camel@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-hF9DE29OJv+9/WzzoEGg"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-multiple structures contains a ieee80211_rts structure, which is required to
-have at least two byte alignment, but are annotated with a __packed attribute
-to force single-byte alignment:
+--=-hF9DE29OJv+9/WzzoEGg
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-staging/vt6656/rxtx.h:98:1: warning: alignment 1 of 'struct vnt_rts_g' is less than 2 [-Wpacked-not-aligned]
-staging/vt6656/rxtx.h:106:1: warning: alignment 1 of 'struct vnt_rts_ab' is less than 2 [-Wpacked-not-aligned]
-staging/vt6656/rxtx.h:116:1: warning: alignment 1 of 'struct vnt_cts' is less than 2 [-Wpacked-not-aligned]
+On Thu, 2021-02-04 at 17:20 +0100, Nicolas Saenz Julienne wrote:
+> Hi Chen,
+>=20
+> On Sat, 2021-01-30 at 15:10 +0800, Chen Zhou wrote:
+> > Introduce macro CRASH_ALIGN for alignment, macro CRASH_ADDR_LOW_MAX
+> > for upper bound of low crash memory, macro CRASH_ADDR_HIGH_MAX for
+> > upper bound of high crash memory, use macroes instead.
+> >=20
+> > Besides, keep consistent with x86, use CRASH_ALIGN as the lower bound
+> > of crash kernel reservation.
+> >=20
+> > Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> > Tested-by: John Donnelly <John.p.donnelly@oracle.com>
+> > ---
+> > =C2=A0arch/arm64/include/asm/kexec.h | 6 ++++++
+> > =C2=A0arch/arm64/mm/init.c           | 6 +++---
+> > =C2=A02 files changed, 9 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/ke=
+xec.h
+> > index d24b527e8c00..3f6ecae0bc68 100644
+> > --- a/arch/arm64/include/asm/kexec.h
+> > +++ b/arch/arm64/include/asm/kexec.h
+> > @@ -25,6 +25,12 @@
+> > =C2=A0
+> >=20
+> > =C2=A0#define KEXEC_ARCH KEXEC_ARCH_AARCH64
+> > =C2=A0
+> >=20
+> > +/* 2M alignment for crash kernel regions */
+> > +#define CRASH_ALIGN	SZ_2M
+> > +
+> > +#define CRASH_ADDR_LOW_MAX	arm64_dma_phys_limit
+>=20
+> I wonder if you could use 'ARCH_LOW_ADDRESS_LIMIT', instead of creating a=
+ new
+> define.
+>=20
+> > +#define CRASH_ADDR_HIGH_MAX	MEMBLOCK_ALLOC_ACCESSIBLE
+> > +
+> > =C2=A0#ifndef __ASSEMBLY__
+> > =C2=A0
+> >=20
+> > =C2=A0/**
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index 709d98fea90c..912f64f505f7 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -84,8 +84,8 @@ static void __init reserve_crashkernel(void)
+> > =C2=A0
+> >=20
+> > =C2=A0	if (crash_base =3D=3D 0) {
+> > =C2=A0		/* Current arm64 boot protocol requires 2MB alignment */
+> > -		crash_base =3D memblock_find_in_range(0, arm64_dma_phys_limit,
+> > -				crash_size, SZ_2M);
+> > +		crash_base =3D memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MA=
+X,
+> > +				crash_size, CRASH_ALIGN);
+>=20
+> Actually we could get rid of CRASH_ADDR_LOW_MAX altogether if we used
+> memblock_alloc_low() here (modulo the slight refactoring needed to accomm=
+odate
+> it).
 
-I see no reason why the structure itself would be misaligned, and all members
-have at least two-byte alignment within the structure, so use the same
-constraint on the sturcture itself.
+Forget about these coments, I now see that you're deleting this whole funct=
+ion
+on the next patch and defaulting to a generic implementation. Sorry for the
+noise.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/staging/vt6655/rxtx.h | 8 ++++----
- drivers/staging/vt6656/rxtx.h | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Regards,
+Nicolas
 
-diff --git a/drivers/staging/vt6655/rxtx.h b/drivers/staging/vt6655/rxtx.h
-index 464dd89078b2..e7061d383306 100644
---- a/drivers/staging/vt6655/rxtx.h
-+++ b/drivers/staging/vt6655/rxtx.h
-@@ -111,7 +111,7 @@ struct vnt_rts_g {
- 	__le16 duration_bb;
- 	u16 reserved;
- 	struct ieee80211_rts data;
--} __packed;
-+} __packed __aligned(2);
- 
- struct vnt_rts_g_fb {
- 	struct vnt_phy_field b;
-@@ -125,14 +125,14 @@ struct vnt_rts_g_fb {
- 	__le16 rts_duration_ba_f1;
- 	__le16 rts_duration_aa_f1;
- 	struct ieee80211_rts data;
--} __packed;
-+} __packed __aligned(2);
- 
- struct vnt_rts_ab {
- 	struct vnt_phy_field ab;
- 	__le16 duration;
- 	u16 reserved;
- 	struct ieee80211_rts data;
--} __packed;
-+} __packed __aligned(2);
- 
- struct vnt_rts_a_fb {
- 	struct vnt_phy_field a;
-@@ -141,7 +141,7 @@ struct vnt_rts_a_fb {
- 	__le16 rts_duration_f0;
- 	__le16 rts_duration_f1;
- 	struct ieee80211_rts data;
--} __packed;
-+} __packed __aligned(2);
- 
- /* CTS buffer header */
- struct vnt_cts {
-diff --git a/drivers/staging/vt6656/rxtx.h b/drivers/staging/vt6656/rxtx.h
-index 6ca2ca32d036..f23440799443 100644
---- a/drivers/staging/vt6656/rxtx.h
-+++ b/drivers/staging/vt6656/rxtx.h
-@@ -95,7 +95,7 @@ struct vnt_rts_g {
- 	u16 wReserved;
- 	struct ieee80211_rts data;
- 	struct vnt_tx_datahead_g data_head;
--} __packed;
-+} __packed __aligned(2);
- 
- struct vnt_rts_ab {
- 	struct vnt_phy_field ab;
-@@ -103,7 +103,7 @@ struct vnt_rts_ab {
- 	u16 wReserved;
- 	struct ieee80211_rts data;
- 	struct vnt_tx_datahead_ab data_head;
--} __packed;
-+} __packed __aligned(2);
- 
- /* CTS buffer header */
- struct vnt_cts {
-@@ -113,7 +113,7 @@ struct vnt_cts {
- 	struct ieee80211_cts data;
- 	u16 reserved2;
- 	struct vnt_tx_datahead_g data_head;
--} __packed;
-+} __packed __aligned(2);
- 
- union vnt_tx_data_head {
- 	/* rts g */
--- 
-2.29.2
+
+--=-hF9DE29OJv+9/WzzoEGg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAcIHsACgkQlfZmHno8
+x/4koQf9FsJXXPPAo7MZvAypzOcOr8Kk3liIYdzd7FU2HxGgB/sYGnlYWzn5/Vsm
+tA7ay+h/LbTyM2lkYLQO27T8LQxl6kaaG0AzlEpMJWZKlJoxiWak6XOtNRlDROCB
+bAJ6lH8wh/DxbOKEtpYIXrCiJTiSGszErGj6qlRcGQEVe8//VeXAfVAsoR8AQ/jL
+7LRgDrTbjMakT/zrOVjNtRCtA6kpv3U04bmi53C2V1cgOlowQNJQlTJ2nQBmDwmR
+Vkze+pFW28MlYn70T8FEQCtehj41Sx83khwQysULZKQrGlEFOt8tlfNSlVL3muHv
+WQzt8y5R5NVjm51qZRewuOlnTuVoAA==
+=3xak
+-----END PGP SIGNATURE-----
+
+--=-hF9DE29OJv+9/WzzoEGg--
 
