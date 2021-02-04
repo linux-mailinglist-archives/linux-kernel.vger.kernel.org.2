@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5BF30F342
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AB630F34E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbhBDMgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:36:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:57632 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235990AbhBDMf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:35:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B58ABD6E;
-        Thu,  4 Feb 2021 04:35:11 -0800 (PST)
-Received: from [10.37.8.15] (unknown [10.37.8.15])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B65A63F73B;
-        Thu,  4 Feb 2021 04:35:08 -0800 (PST)
-Subject: Re: [PATCH 10/12] arm64: kasan: simplify and inline MTE functions
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1612208222.git.andreyknvl@google.com>
- <17d6bef698d193f5fe0d8baee0e232a351e23a32.1612208222.git.andreyknvl@google.com>
- <20210201144407.dd603ec4edcd589643654057@linux-foundation.org>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <f87043c9-6126-c87b-a5c6-b48f28556b92@arm.com>
-Date:   Thu, 4 Feb 2021 12:39:08 +0000
+        id S236095AbhBDMl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235605AbhBDMl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 07:41:26 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA65C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:40:45 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d16so3270623wro.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:40:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=64Odycx55fXWJ9DTcxk1MDYnJPu/Ei16vGB2nFXKKDs=;
+        b=QnIJfIeELhd2DJxZRhsEbuSaMIoBm0Sn402NgqI+4hX17Hmz2VKfQzF4C390gd9vUK
+         al5/p4LxDW+qNiY+Bc/LVqOfYUsXG0GVESICaIl5BuRoYxLYCzMNYz09+zLl1PCNqtQK
+         9QOLnlMJnyasDrYogtEVzOCZrLclCAr20W6++bSvdqCS0iks0vrFz1cMz+FTtrY2pK9K
+         O5hy9uUoKMdoJ9Omr/hrmAOp51fPVTnhsjbP/oE9CjjwyDWLyTLtlB/WkIMpYtvXogUL
+         OPz9gYYK6ZhISlvnvVo7EOdheIiU8gbIioNj792TMzozwhn6nel/u6bUGh97PKVigYeV
+         KJ5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=64Odycx55fXWJ9DTcxk1MDYnJPu/Ei16vGB2nFXKKDs=;
+        b=EmrR8vI/jAY2pdjUy4xG61VuIhvES4ISPuLrttUH7HHkKLz3j9uh7cOJ+0iFXWPiyJ
+         WZutBMjDGoHwyjPUru/Qcd7Xqj8utYmpaFUEVf6qBfNlOCfFXKeeWqTzciSOnLOutyZD
+         Ifrpe/oGPQLwJE2eo4NXKYifeUq0z6FyNOobmImpI+UzV+BlK7Vu+8YfZA1y8zwKGK9g
+         csBvClkkWEhaiA0+gM1BTw+vkh7cEGZ0MnZzftOoTWWEUgUE7NREEQHwewaRIEiuZPpN
+         J2DiWt/wmqN7WRM6fwGml1We2jvrcsEHexctvlrdRFG8QtUeLHRQLBV1rwxf2mQGyOCS
+         iZIw==
+X-Gm-Message-State: AOAM531bWBpk8153Yuk5KeTyF4BVVfW2BQ8t7/61OLTyR1++vRzHHMvn
+        YHOtri/y7laSUCDlqYir9+StPw==
+X-Google-Smtp-Source: ABdhPJwY2KA5oY8LjYkM8q3+aNSg4cx69BsDUl6PxpX0LT7eyytkdMjXYURZZLY0YQnBSHT7dHfu8g==
+X-Received: by 2002:a5d:6a8f:: with SMTP id s15mr8733945wru.252.1612442442945;
+        Thu, 04 Feb 2021 04:40:42 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:ed14:cc3b:a388:5de? ([2a01:e34:ed2f:f020:ed14:cc3b:a388:5de])
+        by smtp.googlemail.com with ESMTPSA id u142sm6231546wmu.3.2021.02.04.04.40.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 04:40:42 -0800 (PST)
+Subject: Re: [PATCH] clocksource: davinci: move pr_fmt() before the includes
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Lechner <david@lechnology.com>,
+        Sekhar Nori <nsekhar@ti.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20210111140814.3668-1-brgl@bgdev.pl>
+ <CAMRc=MfeAokkWdHNS1HES07YBFX6kM_JZRFehk0F+sB552_UbQ@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <ea8c409a-7544-133a-9407-a31a208033e3@linaro.org>
+Date:   Thu, 4 Feb 2021 13:40:41 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210201144407.dd603ec4edcd589643654057@linux-foundation.org>
+In-Reply-To: <CAMRc=MfeAokkWdHNS1HES07YBFX6kM_JZRFehk0F+sB552_UbQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On 04/02/2021 13:37, Bartosz Golaszewski wrote:
+> On Mon, Jan 11, 2021 at 3:08 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>
+>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>
+>> We no longer need to undef pr_fmt if we define our own before including
+>> any headers.
+>>
+>> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>> ---
 
-On 2/1/21 10:44 PM, Andrew Morton wrote:
-> On Mon,  1 Feb 2021 20:43:34 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
-> 
->> This change provides a simpler implementation of mte_get_mem_tag(),
->> mte_get_random_tag(), and mte_set_mem_tag_range().
->>
->> Simplifications include removing system_supports_mte() checks as these
->> functions are onlye called from KASAN runtime that had already checked
->> system_supports_mte(). Besides that, size and address alignment checks
->> are removed from mte_set_mem_tag_range(), as KASAN now does those.
->>
->> This change also moves these functions into the asm/mte-kasan.h header
->> and implements mte_set_mem_tag_range() via inline assembly to avoid
->> unnecessary functions calls.
->>
->> Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
->> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> Co-developed-by requires a Signed-off-by: as well.  Vincenzo, please
-> send us one?
-> 
-> 
+Applied.
 
-I added my Signed-off-by to the patch.
 
 -- 
-Regards,
-Vincenzo
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
