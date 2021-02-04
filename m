@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD8B30EFFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBE530F004
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhBDJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:52:28 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:51312 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235292AbhBDJwZ (ORCPT
+        id S235244AbhBDJzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234600AbhBDJzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:52:25 -0500
-X-UUID: aae8768ba5b347539e6247ef73a9929e-20210204
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yCGwEsEVjQoUIZ8It18p5vUYxvCyrioMe/9PFTM4Wv8=;
-        b=LfwqeIUU6kyKxpCCLwDesrEgvv/2Asn8gUZGGu7/gxLNhQUDM2APTpGKI0tHb3b8zWl86Sqxzzfd5B2S8Zhb6ZsABw+HqMs2WHojnQunYXmETTqgy2Lw+zvtvQhi5TyNdm0PLo+WMCjjxeJaQ2yZo0SCpbSlmbhVtOI+grAwXDU=;
-X-UUID: aae8768ba5b347539e6247ef73a9929e-20210204
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1961543882; Thu, 04 Feb 2021 17:51:37 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Feb
- 2021 17:51:31 +0800
-Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Feb 2021 17:51:30 +0800
-From:   <mingchuang.qiao@mediatek.com>
-To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
-        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
-        <mika.westerberg@linux.intel.com>, <alex.williamson@redhat.com>,
-        <rjw@rjwysocki.net>, <utkarsh.h.patel@intel.com>
-Subject: [v4] PCI: Avoid unsync of LTR mechanism configuration
-Date:   Thu, 4 Feb 2021 17:51:25 +0800
-Message-ID: <20210204095125.9212-1-mingchuang.qiao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 4 Feb 2021 04:55:35 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A703C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 01:54:55 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id l23so1880491qtq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 01:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gwoKI5+cSpuGhL3r0lZuUOMuyL0kTKIQYXZfMVQnS+M=;
+        b=P0o3DTNR5MxLgcX+yBoJeXbi7TkHK1HSACE3WhFC9oWxj5vxPztE3eaIA9gzEg7rYl
+         uYzty3SIlYh7iLcfRlmyMHYHkc/b/vy9S6tlrBPkSECcbjOWD23RSSAVRzd2R2q9nKwf
+         rmENZ9WqrF//kh59VmuJNIVDPZLdhkBdnWsH1qnDu+sI2Xd8cGGjh6/kfvDYIi+fG90t
+         ME06HIR1p2mMUEmEuJJrg9E2dyywL9OyyBVRu+4GDItZ3cC/Gyx0ovtKinwh3jsOiqwQ
+         TOaN5ITLveAVCF2JDjxvpvt21DUKDHy00a0huJvX23SW7NkRE1Jzc7/WnDxtlvgv+KkK
+         OZug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gwoKI5+cSpuGhL3r0lZuUOMuyL0kTKIQYXZfMVQnS+M=;
+        b=rdXhJzO88wK8lE11+pIWkexbeGK0/QOWSl162N4lJEMjwlDbuCsnGEPGQIoql/2jeO
+         tDpWYuqSPn/DPhQZqzMyeUw6U7yuD2/biJzGNfHjysK8Ummto90j/0GWYrBm9SYRtOGe
+         2wMxYqdxWGi9B7FGB4VxtxJM+4CVQ0zjCjLP8g2e6CpGeg0XrnXGkBlRgZF+UqOBzk4f
+         aMiOXOE+R4qGiDskHvhdRxQSXSnkmWOxcGOkI9sT1wjUeJ39kODNb7P1nzD4M8q67Oho
+         Ve6lT29HW8AZSvTrU8sEp5xEoXSAgXXAZbfJhmUEkn7EMMbi54xGjl0+fV9tGUrL3Mxx
+         jT9g==
+X-Gm-Message-State: AOAM5333uxFKdNhzjxWlhMO8qaS1I62jDIcDyFlCT8Gv8KsGlzaMP0ym
+        OVcR5zTLRtfipLOrPs9vGhKKO6ZkOxp7HGlBnx59Yg==
+X-Google-Smtp-Source: ABdhPJw7PWEQC+qR5wMdiG9WcptTFMJ1qqKqaxz0nQRjO1k6gcgozg+LmjXlH/dOOPDTWryvsuhvwXYPJPz8xRb/53E=
+X-Received: by 2002:ac8:e0e:: with SMTP id a14mr6304181qti.66.1612432494120;
+ Thu, 04 Feb 2021 01:54:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: A2F39DD1C52C3A4A4AADE6AFD365C93497CD1F4332D5C12853C645E0F0D636AF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
+ <20201112103125.GV2628@hirez.programming.kicks-ass.net> <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
+ <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
+ <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+ <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+ <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net> <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+ <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net> <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
+ <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 4 Feb 2021 10:54:42 +0100
+Message-ID: <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
+Subject: Re: Process-wide watchpoints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
-biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
-MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
-Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
-bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
-IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
-Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0cywgdGhlICJMVFIg
-TWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2Ugd2lsbCBjaGFuZ2UgdG8gMCBhY2NvcmRp
-bmcgdG8gUENJZSByNS4wLCBzZWMgNy41LjMuMTYuIEhvd2V2ZXIsDQp0aGUgcGNpX2Rldi0+bHRy
-X3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEuDQoNCkZvciBmb2xsb3dpbmcgY29uZGl0
-aW9ucywgY2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0K
-b2YgYnJpZGdlIHRvIG1ha2UgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbWF0Y2ggbHRyX3Bh
-dGggdmFsdWUuDQogICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmljZSdzIExUUiBmb3IgaG90LXJl
-bW92ZS9ob3QtYWRkDQogICAtYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UncyBERVZDVEwyIHJlZ2lz
-dGVyIHdoZW4gcmVzdG9yZSBkZXZpY2Ugc3RhdGUNCg0KU2lnbmVkLW9mZi1ieTogTWluZ2NodWFu
-ZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KLS0tDQpjaGFuZ2VzIG9mIHY0
-DQogLWZpeCB0eXBvIG9mIGNvbW1pdCBtZXNzYWdlDQogLXJlbmFtZTogcGNpX3JlY29uZmlndXJl
-X2JyaWRnZV9sdHIoKS0+cGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoKQ0KY2hhbmdlcyBvZiB2
-Mw0KIC1jYWxsIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKCkgaW4gcHJvYmUuYw0KY2hhbmdl
-cyBvZiB2Mg0KIC1tb2RpZnkgcGF0Y2ggZGVzY3JpcHRpb24NCiAtcmVjb25maWd1cmUgYnJpZGdl
-J3MgTFRSIGJlZm9yZSByZXN0b3JpbmcgZGV2aWNlIERFVkNUTDIgcmVnaXN0ZXINCi0tLQ0KIGRy
-aXZlcnMvcGNpL3BjaS5jICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrKysrDQogZHJpdmVy
-cy9wY2kvcGNpLmggICB8ICAxICsNCiBkcml2ZXJzL3BjaS9wcm9iZS5jIHwgMTMgKysrKysrKysr
-Ky0tLQ0KIDMgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
-Cg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5jIGIvZHJpdmVycy9wY2kvcGNpLmMNCmlu
-ZGV4IGI5ZmVjYzI1ZDIxMy4uNmJmNjVkMjk1MzMxIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kv
-cGNpLmMNCisrKyBiL2RyaXZlcnMvcGNpL3BjaS5jDQpAQCAtMTQzNyw2ICsxNDM3LDI0IEBAIHN0
-YXRpYyBpbnQgcGNpX3NhdmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIAlyZXR1
-cm4gMDsNCiB9DQogDQordm9pZCBwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNp
-X2RldiAqZGV2KQ0KK3sNCisjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQorCXN0cnVjdCBwY2lfZGV2
-ICpicmlkZ2U7DQorCXUzMiBjdGw7DQorDQorCWJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2Uo
-ZGV2KTsNCisJaWYgKGJyaWRnZSAmJiBicmlkZ2UtPmx0cl9wYXRoKSB7DQorCQlwY2llX2NhcGFi
-aWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwgJmN0bCk7DQorCQlpZiAo
-IShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KKwkJCXBjaV9kYmcoYnJpZGdlLCAi
-cmUtZW5hYmxpbmcgTFRSXG4iKTsNCisJCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdl
-LCBQQ0lfRVhQX0RFVkNUTDIsDQorCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KKwkJ
-fQ0KKwl9DQorI2VuZGlmDQorfQ0KKw0KIHN0YXRpYyB2b2lkIHBjaV9yZXN0b3JlX3BjaWVfc3Rh
-dGUoc3RydWN0IHBjaV9kZXYgKmRldikNCiB7DQogCWludCBpID0gMDsNCkBAIC0xNDQ3LDYgKzE0
-NjUsMTMgQEAgc3RhdGljIHZvaWQgcGNpX3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2Rl
-diAqZGV2KQ0KIAlpZiAoIXNhdmVfc3RhdGUpDQogCQlyZXR1cm47DQogDQorCS8qDQorCSAqIERv
-d25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gbGluayBnb2VzIGRv
-d24uDQorCSAqIENoZWNrIGFuZCByZS1jb25maWd1cmUgdGhlIGJpdCBoZXJlIGJlZm9yZSByZXN0
-b3JpbmcgZGV2aWNlLg0KKwkgKiBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4NCisJICovDQorCXBj
-aV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKGRldik7DQorDQogCWNhcCA9ICh1MTYgKikmc2F2ZV9z
-dGF0ZS0+Y2FwLmRhdGFbMF07DQogCXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGRldiwgUENJ
-X0VYUF9ERVZDVEwsIGNhcFtpKytdKTsNCiAJcGNpZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2
-LCBQQ0lfRVhQX0xOS0NUTCwgY2FwW2krK10pOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Bj
-aS5oIGIvZHJpdmVycy9wY2kvcGNpLmgNCmluZGV4IDVjNTkzNjUwOTJmYS4uYjNhNWU1Mjg3Y2I3
-IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kvcGNpLmgNCisrKyBiL2RyaXZlcnMvcGNpL3BjaS5o
-DQpAQCAtMTExLDYgKzExMSw3IEBAIHZvaWQgcGNpX2ZyZWVfY2FwX3NhdmVfYnVmZmVycyhzdHJ1
-Y3QgcGNpX2RldiAqZGV2KTsNCiBib29sIHBjaV9icmlkZ2VfZDNfcG9zc2libGUoc3RydWN0IHBj
-aV9kZXYgKmRldik7DQogdm9pZCBwY2lfYnJpZGdlX2QzX3VwZGF0ZShzdHJ1Y3QgcGNpX2RldiAq
-ZGV2KTsNCiB2b2lkIHBjaV9icmlkZ2Vfd2FpdF9mb3Jfc2Vjb25kYXJ5X2J1cyhzdHJ1Y3QgcGNp
-X2RldiAqZGV2KTsNCit2b2lkIHBjaV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpOw0KIA0KIHN0YXRpYyBpbmxpbmUgdm9pZCBwY2lfd2FrZXVwX2V2ZW50KHN0cnVj
-dCBwY2lfZGV2ICpkZXYpDQogew0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Byb2JlLmMgYi9k
-cml2ZXJzL3BjaS9wcm9iZS5jDQppbmRleCA5NTNmMTVhYmM4NTAuLmFkZTA1NWU5ZmI1OCAxMDA2
-NDQNCi0tLSBhL2RyaXZlcnMvcGNpL3Byb2JlLmMNCisrKyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMN
-CkBAIC0yMTMyLDkgKzIxMzIsMTYgQEAgc3RhdGljIHZvaWQgcGNpX2NvbmZpZ3VyZV9sdHIoc3Ry
-dWN0IHBjaV9kZXYgKmRldikNCiAJICogQ29tcGxleCBhbmQgYWxsIGludGVybWVkaWF0ZSBTd2l0
-Y2hlcyBpbmRpY2F0ZSBzdXBwb3J0IGZvciBMVFIuDQogCSAqIFBDSWUgcjQuMCwgc2VjIDYuMTgu
-DQogCSAqLw0KLQlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BP
-UlQgfHwNCi0JICAgICgoYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpKSAmJg0KLQkg
-ICAgICBicmlkZ2UtPmx0cl9wYXRoKSkgew0KKwlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBD
-SV9FWFBfVFlQRV9ST09UX1BPUlQpIHsNCisJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChkZXYs
-IFBDSV9FWFBfREVWQ1RMMiwNCisJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCisJCWRl
-di0+bHRyX3BhdGggPSAxOw0KKwkJcmV0dXJuOw0KKwl9DQorDQorCWJyaWRnZSA9IHBjaV91cHN0
-cmVhbV9icmlkZ2UoZGV2KTsNCisJaWYgKGJyaWRnZSAmJiBicmlkZ2UtPmx0cl9wYXRoKSB7DQor
-CQlwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihkZXYpOw0KIAkJcGNpZV9jYXBhYmlsaXR5X3Nl
-dF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0KIAkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJf
-RU4pOw0KIAkJZGV2LT5sdHJfcGF0aCA9IDE7DQotLSANCjIuMTguMA0K
+On Thu, Feb 4, 2021 at 10:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Feb 04, 2021 at 09:10:11AM +0100, Dmitry Vyukov wrote:
+> > On Wed, Feb 3, 2021 at 2:37 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > Letting perf send a signal to the monitored task is intrusive.. let me
+> > > think on that.
+> >
+> > I was thinking of something very similar to that bpf_send_signal that
+> > delays sending to exit from irq:
+> > https://elixir.bootlin.com/linux/latest/source/kernel/trace/bpf_trace.c#L1091
+>
+> Oh, making code to do it isn't the problem. The problem stems from the
+> fact that perf is supposed to be observant only. The exception is when
+> you monitor yourself, in that case you can send signals to yourself,
+> because you know what you're doing (supposedly ;-).
+>
+> But if you go send signals to the task you're monitoring, you're
+> actually changing their code-flow, you're an active participant instead
+> of an observer.
+>
+> Also, they might not be able to handle the signal, in which case you're
+> not changing the program but terminating it entirely.
+>
+> That's a big conceptual shift.
+>
+> OTOH, we're using ptrace permission checks, and ptrace() can inject
+> signals just fine. But it's a fairly big departure from what perf set
+> out to be.
 
+Oh, I see, I did not think about this.
+
+FWIW it's doable today by attaching a BPF program.
+
+Will it help if this mode is restricted to monitoring the current
+process? Sending signals indeed usually requires cooperation, so doing
+it for the current process looks like a reasonable restriction.
+This may be not a fundamental restriction, but rather "we don't have
+any use cases and are not sure about implications, so this is a
+precaution measure, may be relaxed in future".
