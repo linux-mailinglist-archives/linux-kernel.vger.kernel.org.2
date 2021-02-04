@@ -2,110 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A907330F4F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6B630F502
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236723AbhBDOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:30:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:59204 "EHLO foss.arm.com"
+        id S236706AbhBDObn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:31:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236655AbhBDOYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:24:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C2DAD6E;
-        Thu,  4 Feb 2021 06:24:00 -0800 (PST)
-Received: from [10.57.11.154] (unknown [10.57.11.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7A223F694;
-        Thu,  4 Feb 2021 06:23:57 -0800 (PST)
-Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
-To:     Robin Murphy <robin.murphy@arm.com>, Qiang Yu <yuq825@gmail.com>
-Cc:     lima@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <20210127105121.20345-1-lukasz.luba@arm.com>
- <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
- <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
- <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
- <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
- <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
- <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <deb2c075-4177-d487-b1cd-1c60790ca625@arm.com>
-Date:   Thu, 4 Feb 2021 14:23:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S236606AbhBDO0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:26:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2050F64F51;
+        Thu,  4 Feb 2021 14:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612448737;
+        bh=Gr4b/J785GlPvzDdYWqYJ53aK/gX7CDc6tMbxuNI4LY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=N+FbCqoimT9jtDMtjua4RPdqP0nWGCIuu7oOg8Bg8hwORSJ9qJLEZpcoWxyGkr0Ui
+         tfi0B/xDWHGFkGEZES4uK+GyTQCGPyDEgf6VpsINGQyQOLEDXF0TgTaTRPWVS8g9d/
+         R8eNIvxR4e/kUNcpL7+nILOp9OKSlh9Sai3AbRN7/xrsidExk34/cAGcBMS0LSXOOZ
+         /Vj2D1KXMKbwNtVpiIpILqdCIyHu5vKH0Gw9xOlMKvHlJMtwZysuh+bfxtXGVWjWBI
+         9BrdmM44NY8WdIJ61kZ41RLhdLziq3gi2wW/Q+AIxqG+oNLEDhaZDp6rmaPWT2V6Ju
+         iYzfwu0vru/mg==
+Received: by mail-ej1-f51.google.com with SMTP id b9so5515916ejy.12;
+        Thu, 04 Feb 2021 06:25:37 -0800 (PST)
+X-Gm-Message-State: AOAM531ZTUL6YTcJ4V8Gh2dOiBm8NTgkMtE3PGYvb8jJ+HoRVtQpZYnD
+        a+p7aJMlmjVojsB4tmlPujSnvri4Z7SYlm9YPQ==
+X-Google-Smtp-Source: ABdhPJw0ZvhHzSy2d7rADwFFVVYmHHpeI+dqVFEn7EHEW7VDQrK6kxdxSd1A1FMKHqv9FS3gOGNpvzuHIo2PPfq1Vew=
+X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr8217803ejb.359.1612448735635;
+ Thu, 04 Feb 2021 06:25:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1610431620.git.viresh.kumar@linaro.org> <74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com>
+ <20210120051740.yph4v7zldvs7szdz@vireshk-i7> <20210122063455.GE4400@yekko.fritz.box>
+ <83242f56-19a5-6d32-c050-8d9f63ac1e47@gmail.com> <20210201040748.GB2251@yekko.fritz.box>
+In-Reply-To: <20210201040748.GB2251@yekko.fritz.box>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 4 Feb 2021 08:25:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJjR7EknfnbA7RKckUtYVu9jmjf7L_DC=LmF=jMGfThgQ@mail.gmail.com>
+Message-ID: <CAL_JsqJjR7EknfnbA7RKckUtYVu9jmjf7L_DC=LmF=jMGfThgQ@mail.gmail.com>
+Subject: Re: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 10:39 PM David Gibson
+<david@gibson.dropbear.id.au> wrote:
+>
+> On Mon, Jan 25, 2021 at 09:42:21PM -0600, Frank Rowand wrote:
+> > Hi David,
+> >
+> > On 1/22/21 12:34 AM, David Gibson wrote:
+> > > On Wed, Jan 20, 2021 at 10:47:40AM +0530, Viresh Kumar wrote:
+> > >> +David.
+> > >>
+> > >> On 19-01-21, 11:12, Frank Rowand wrote:
+> > >>> On 1/12/21 2:28 AM, Viresh Kumar wrote:
+> > >>>> We will start building overlays for platforms soon in the kernel and
+> > >>>> would need fdtoverlay tool going forward. Lets start fetching and
+> > >>>> building it.
+> > >>>>
+> > >>>> While at it, also remove fdtdump.c file, which isn't used by the kernel.
+> > >>>>
+> > >>>> V4:
+> > >>>> - Don't fetch and build fdtdump.c
+> > >>>> - Remove fdtdump.c
+> > >>>>
+> > >>>> Viresh Kumar (3):
+> > >>>>   scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
+> > >>>>   scripts: dtc: Build fdtoverlay tool
+> > >>>>   scripts: dtc: Remove the unused fdtdump.c file
+> > >>>>
+> > >>>>  scripts/dtc/Makefile             |   6 +-
+> > >>>>  scripts/dtc/fdtdump.c            | 163 -------------------------------
+> > >>>>  scripts/dtc/update-dtc-source.sh |   6 +-
+> > >>>>  3 files changed, 8 insertions(+), 167 deletions(-)
+> > >>>>  delete mode 100644 scripts/dtc/fdtdump.c
+> > >>>>
+> > >>>
+> > >>> My first inclination was to accept fdtoverlay, as is, from the upstream
+> > >>> project.
+> > >>>
+> > >>> But my experiences debugging use of fdtoverlay against the existing
+> > >>> unittest overlay files has me very wary of accepting fdtoverlay in
+> > >>> it's current form.
+> > >>>
+> > >>> As an exmple, adding an overlay that fails to reply results in the
+> > >>> following build messages:
+> > >>>
+> > >>>    linux--5.11-rc> make zImage
+> > >>>    make[1]: Entering directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
+> > >>>      GEN     Makefile
+> > >>>      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/checksyscalls.sh
+> > >>>      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/atomic/check-atomics.sh
+> > >>>      CHK     include/generated/compile.h
+> > >>>      FDTOVERLAY drivers/of/unittest-data/static_test.dtb
+> > >>>
+> > >>>    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
+> > >>>    make[4]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/drivers/of/unittest-data/Makefile:96: drivers/of/unittest-data/static_test.dtb] Error 1
+> > >>>    make[3]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of/unittest-data] Error 2
+> > >>>    make[2]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of] Error 2
+> > >>>    make[1]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/Makefile:1805: drivers] Error 2
+> > >>>    make[1]: Leaving directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
+> > >>>    make: *** [Makefile:185: __sub-make] Error 2
+> > >>>
+> > >>>
+> > >>> The specific error message (copied from above) is:
+> > >>>
+> > >>>    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
+> > >>>
+> > >>> which is cryptic and does not even point to the location in the overlay that
+> > >>> is problematic.  If you look at the source of fdtoverlay / libfdt, you will
+> > >>> find that FDT_ERR_NOTFOUND may be generated in one of many places.
+> > >>>
+> > >>> I do _not_ want to do a full review of fdtoverlay, but I think that it is
+> > >>> reasonable to request enhancing fdtoverlay in the parent project to generate
+> > >>> usable error messages before enabling fdtoverlay in the Linux kernel tree.
+> > >
+> >
+> > > That's... actually much harder than it sounds.  fdtoverlay is
+> > > basically a trivial wrapper around the fdt_overlay_apply() function in
+> > > libfdt.  Matching the conventions of the rest of the library, really
+> > > it's only way to report errors is a single error code.
+> > >
+> > > Returning richer errors is not an easy problem in a C library,
+> > > especially one designed to be usable in embedded systems, without an
+> > > allocator or much else available.
+> > >
+> > > Of course it would be possible to write a friendly command line tool
+> > > specifically for applying overlays, which could give better errors.
+> > > fdtoverlay as it stands isn't really that - it was pretty much written
+> > > just to invoke fdt_overlay_apply() in testcases.
+> >
+> > Thank you for providing that context.
+> >
+> > I do not know if there is a way to enable the code that is currently in libfdt
+> > to both be useful as an embedded library (for example, U-boot seems to often
+> > have a need to keep memory usage very small) and also be part of a tool with
+> > effective warning and error messages.
+>
+> Yeah, I don't know either.
+>
+> > Before having looked at libfdt only at a cursory level while debugging the proposed
+> > use of fdtoverlay in Linux, my first thought was that maybe it would be possible
+> > to add warning and error messages within "#ifdef" blocks, or other ways that
+> > cause the error code to _not_ be compiled as part of library version of libfdt,
+> > but only be compiled as part of fdtoverlay _when built in the Linux kernel_
+> > (noting that the proposed Linux patch builds the libfdt files as part of
+> > the fdtoverlay compile instead of as a discrete library).  After looking at
+> > the libfdt source a tiny bit more carefully, I would probably shoot down this
+> > suggestion, as it makes the source code uglier and harder to understand and
+> > maintain for the primary purpose of being an embedded library.
+>
+> Oof.  That sounds really ugly, but maybe it could be pulled off.
+>
+> > Do you have any thoughts on how warning and error messages could be added,
+> > or if it is even possible?  Or maybe your suggestion of writing a "friendly
+> > command line tool specifically for applying overlays" is the path that
+> > Viresh should pursue?
+>
+> I think at this stage it's a matter of trying a few approaches and
+> seeing what works out.
 
+Another way would be applying overlays to dtc's live tree. This could
+apply overlays from dts in addition to dtb. It could be a plug-in if
+we ever get that finished up.
 
-On 2/4/21 1:39 PM, Robin Murphy wrote:
-> On 2021-02-03 02:01, Qiang Yu wrote:
->> On Tue, Feb 2, 2021 at 10:02 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>
->>>
->>>
->>> On 2/2/21 1:01 AM, Qiang Yu wrote:
->>>> Hi Lukasz,
->>>>
->>>> Thanks for the explanation. So the deferred timer option makes a 
->>>> mistake that
->>>> when GPU goes from idle to busy for only one poll periodic, in this
->>>> case 50ms, right?
->>>
->>> Not exactly. Driver sets the polling interval to 50ms (in this case)
->>> because it needs ~3-frame average load (in 60fps). I have discovered the
->>> issue quite recently that on systems with 2 CPUs or more, the devfreq
->>> core is not monitoring the devices even for seconds. Therefore, we might
->>> end up with quite big amount of work that GPU is doing, but we don't
->>> know about it. Devfreq core didn't check <- timer didn't fired. Then
->>> suddenly that CPU, which had the deferred timer registered last time,
->>> is waking up and timer triggers to check our device. We get the stats,
->>> but they might be showing load from 1sec not 50ms. We feed them into
->>> governor. Governor sees the new load, but was tested and configured for
->>> 50ms, so it might try to rise the frequency to max. The GPU work might
->>> be already lower and there is no need for such freq. Then the CPU goes
->>> idle again, so no devfreq core check for next e.g. 1sec, but the
->>> frequency stays at max OPP and we burn power.
->>>
->>> So, it's completely unreliable. We might stuck at min frequency and
->>> suffer the frame drops, or sometimes stuck to max freq and burn more
->>> power when there is no such need.
->>>
->>> Similar for thermal governor, which is confused by this old stats and
->>> long period stats, longer than 50ms.
->>>
->>> Stats from last e.g. ~1sec tells you nothing about real recent GPU
->>> workload.
->> Oh, right, I missed this case.
->>
->>>
->>>> But delayed timer will wakeup CPU every 50ms even when system is 
->>>> idle, will this
->>>> cause more power consumption for the case like phone suspend?
->>>
->>> No, in case of phone suspend it won't increase the power consumption.
->>> The device won't be woken up, it will stay in suspend.
->> I mean the CPU is waked up frequently by timer when phone suspend,
->> not the whole device (like the display).
->>
->> Seems it's better to have deferred timer when device is suspended for
->> power saving,
->> and delayed timer when device in working state. User knows this and
->> can use sysfs
->> to change it.
-> 
-> Doesn't devfreq_suspend_device() already cancel any timer work either 
-> way in that case?
+The downside of this is not testing libfdt's code and possible
+differences between 2 implementations.
 
-Correct, the governor should pause the monitoring mechanism (and timer).
-
-Regards,
-Lukasz
+Rob
