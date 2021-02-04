@@ -2,132 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69C030E95F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C030230E95D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhBDBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:19:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234448AbhBDBTf (ORCPT
+        id S234401AbhBDBTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:19:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11676 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234270AbhBDBTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:19:35 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A336FC061573;
-        Wed,  3 Feb 2021 17:18:55 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id a7so1813437qkb.13;
-        Wed, 03 Feb 2021 17:18:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BRSeNrAgqYoEdIAaT/E3XS8qfSyBH3EgUU59Y30fA1s=;
-        b=ZAss0ce0fku95ORQy+ibGYidBLcsdTDqWw1eMlcT8L+29e0PCrsgRy09+VdAQlqD0t
-         w3L03foqeCX4ms+DzBr8aiUcBbt79RQLUJXOA1KcYjYeM0eY9leq5l46BdyBpbaK2czN
-         Sw/Vi5qOw3tFt38jA3WMg+9bnfxW+4nXwb/exiZ7LPLucW9BwNnqPm/lpjDjvNblnVxI
-         4SdeLvCsHiOHYqWJ9ZUTtWdJWwknimfiy4oiGT4u5+Ju717WfjMx58y6VDVib36Ank9G
-         dGOWolWB73ePrCudDeVnOyAmGMSyXyJX7OvEjjkfn9yF59rNDdw6oDHulKFlq8nn5R7W
-         E99g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BRSeNrAgqYoEdIAaT/E3XS8qfSyBH3EgUU59Y30fA1s=;
-        b=sWaAL1gufs3fzMJRgs82amtxICxG04oYWgFZYgWTX3CkOjUKmjy0+/iGPJ0Pu6fBte
-         bEp+hH6NkoVG9D/kv0LHN4JAu5YjsDVdq4PrYACyTG4IneuqHrP6KEVfNJnjDWVv0mPf
-         7ujE3OwKjKKlKWaAv/yc1KiHnd+5A74hGLdzeHlTzoPJN5dY3eBqgJWSIDIA1Gccnqrc
-         Fy4d3mdwU9sXdXf4e/6+95j7iSiDSIe+NivjFKa7+VShHZGH93jmxdM00RBcmfU5XGJX
-         ErCtdRJ8DuVOjyg1jXF3Ubo5a5zZAPQJSsm7r193+IZ/JsKYMOyLsnOFNhV1mgLJWW2j
-         kCDw==
-X-Gm-Message-State: AOAM530/5pqnS4xcGGSCNlGTnn866ThKh3U4af0+FZ3zUjqaVGWnqFEC
-        nPxDdJOKD3cfqTw1IUCG6RpyPnHnAeLU16Ct
-X-Google-Smtp-Source: ABdhPJzLTf/Qhr+L0sRCIEXwIUmlTRpWottYJiVdVtcdEGcmSO+elbFSLDO2CoYMpAOeUN4YFWISQQ==
-X-Received: by 2002:a37:be04:: with SMTP id o4mr5562190qkf.373.1612401534828;
-        Wed, 03 Feb 2021 17:18:54 -0800 (PST)
-Received: from localhost.localdomain ([138.199.13.179])
-        by smtp.gmail.com with ESMTPSA id w28sm3007719qtv.93.2021.02.03.17.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 17:18:54 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] drivers: net: ethernet: i825xx: Fix couple of spellings and get rid of blank lines too in the file ether1.c
-Date:   Thu,  4 Feb 2021 06:48:21 +0530
-Message-Id: <20210204011821.18356-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 3 Feb 2021 20:19:15 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWLHS38MGzlDhN;
+        Thu,  4 Feb 2021 09:16:52 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 09:18:29 +0800
+Subject: Re: [PATCH v3 2/5] ACPI: battery: Clean up printing messages
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Joe Perches" <joe@perches.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <1961054.9MKZ8ejxOh@kreacher> <1731128.lCOlkKr4QW@kreacher>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <056c6a20-4957-e112-6a8f-62fe39247e56@huawei.com>
+Date:   Thu, 4 Feb 2021 09:18:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1731128.lCOlkKr4QW@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/2/4 2:44, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+> 
+> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
+> in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
+> respectively, which among other things causes the excessive log
+> level of the messages previously printed via ACPI_EXCEPTION() to
+> be increased.
+> 
+> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
+> used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
+> definition from the headers and update the documentation accordingly.
+> 
+> While at it, update the pr_fmt() definition and drop the unneeded
+> PREFIX sybmbol definition from battery.c.  Also adapt the existing
+> pr_info() calls to the new pr_fmt() definition.
+> 
+> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
 
-s/initialsation/initialisation/
-s/specifiing/specifying/
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
-Plus get rid of few blank lines.
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Changes from V1:
-   Fix typo in the subject line
-   Give explanation of all the changes in changelog text
-
- drivers/net/ethernet/i825xx/ether1.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
-index a0bfb509e002..850ea32091ed 100644
---- a/drivers/net/ethernet/i825xx/ether1.c
-+++ b/drivers/net/ethernet/i825xx/ether1.c
-@@ -20,7 +20,7 @@
-  * 1.02	RMK	25/05/1997	Added code to restart RU if it goes not ready
-  * 1.03	RMK	14/09/1997	Cleaned up the handling of a reset during the TX interrupt.
-  *				Should prevent lockup.
-- * 1.04 RMK	17/09/1997	Added more info when initialsation of chip goes wrong.
-+ * 1.04 RMK	17/09/1997	Added more info when initialisation of chip goes wrong.
-  *				TDR now only reports failure when chip reports non-zero
-  *				TDR time-distance.
-  * 1.05	RMK	31/12/1997	Removed calls to dev_tint for 2.1
-@@ -117,7 +117,7 @@ ether1_outw_p (struct net_device *dev, unsigned short val, int addr, int svflgs)
-  * Some inline assembler to allow fast transfers on to/off of the card.
-  * Since this driver depends on some features presented by the ARM
-  * specific architecture, and that you can't configure this driver
-- * without specifiing ARM mode, this is not a problem.
-+ * without specifying ARM mode, this is not a problem.
-  *
-  * This routine is essentially an optimised memcpy from the card's
-  * onboard RAM to kernel memory.
-@@ -885,7 +885,6 @@ ether1_recv_done (struct net_device *dev)
- 		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_command, NORMALIRQS);
- 		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_status, NORMALIRQS);
- 		ether1_writew(dev, 0, priv(dev)->rx_tail, rfd_t, rfd_rbdoffset, NORMALIRQS);
--
- 		priv(dev)->rx_tail = nexttail;
- 		priv(dev)->rx_head = ether1_readw(dev, priv(dev)->rx_head, rfd_t, rfd_link, NORMALIRQS);
- 	} while (1);
-@@ -1028,10 +1027,8 @@ ether1_probe(struct expansion_card *ec, const struct ecard_id *id)
- 	ret = register_netdev(dev);
- 	if (ret)
- 		goto free;
--
- 	printk(KERN_INFO "%s: ether1 in slot %d, %pM\n",
- 		dev->name, ec->slot_no, dev->dev_addr);
--
- 	ecard_set_drvdata(ec, dev);
- 	return 0;
-
-@@ -1047,7 +1044,7 @@ static void ether1_remove(struct expansion_card *ec)
- {
- 	struct net_device *dev = ecard_get_drvdata(ec);
-
--	ecard_set_drvdata(ec, NULL);
-+	ecard_set_drvdata(ec, NULL);
-
- 	unregister_netdev(dev);
- 	free_netdev(dev);
---
-2.26.2
-
+Thanks
+Hanjun
