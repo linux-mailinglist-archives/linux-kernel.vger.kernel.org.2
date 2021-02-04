@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F0630F4EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE4230F4E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbhBDO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:27:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236679AbhBDO0M (ORCPT
+        id S236742AbhBDO1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236699AbhBDOZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:26:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612448685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XpXFDxYEEygOiSW0EwEnIt2QyvX50R8LwyF4+V7RRmU=;
-        b=GBU8J6wJ1yh68epHGlcF91DT43IFU1KuElFbjH8Nt3RXgT28xIHRGGXqzTx2FxTwsV1UPm
-        6sJ6hZqA5eBoXowQSApV/wbtk9ERGnje+P8QJ6rEEk1CJluT72k+HSkCGcVMyMRIgAOZ6q
-        yXMy2yIRWDzKy5x483NrxBOiT5T7yZc=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-XehxD632MHeTGtPEd7q89g-1; Thu, 04 Feb 2021 09:24:43 -0500
-X-MC-Unique: XehxD632MHeTGtPEd7q89g-1
-Received: by mail-qt1-f199.google.com with SMTP id p20so2641353qtn.23
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:24:43 -0800 (PST)
+        Thu, 4 Feb 2021 09:25:33 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA49C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:24:51 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id m1so3157631wml.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:24:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=R1KAZ4C9ZeFSR+FFennp2QasFQcPFSyFTyZPPFMkXU8=;
+        b=fCG8+WqCngaRVeR+fwhWXAcIWBn5Sl2e4mDoXuHKx8d69fodkwnVanTjcKzun/Oq1F
+         aTuzHpifYoZkmVn9bAHqWJgOJOooBfSwFajyd2zSvXQqpExigCq2XXq0+QtPS5k0mrbC
+         x0q4/10MpavYzq68sUQS9x65l72az1O6NDyfucEPMbG4JeQlFbs9Q2nyOXha6I4TQIEc
+         PO/rwCmZ4HiKjmoHcQS6UP/eZBjC0WutDWRCjo2hkH2sCoVsGdcL/3M82SEwcTCBi9Vn
+         dH03nNLXfcRs2DN/nVxzrDRf5njO6cbdUEANrH34er4ju+uET6WVTEZVNMKVoC/U2Mmk
+         aF3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=XpXFDxYEEygOiSW0EwEnIt2QyvX50R8LwyF4+V7RRmU=;
-        b=AAviv1/7XQMP6WqXFOj2TJlqm0y+6cxMFIWztM/0o0ttn7A7OyLusU6nDwVx8RUoj1
-         tPpiEQnfz4qTpgE+GmShs9D18riifXJHXrJpaH0Y5/iugpfsbOIrP2/dmu2BJMNwhz/u
-         ewdcGt9Jo+OEn25jBbKilCcAYthSHVlj2pnKZGb55hRnkHcM+aNPMuc0on1X2slHmsTe
-         1MTwodiBcqLg2AlKI6PYcw19jYi0PU0IpSf8QW6tV+UhMDVv3u2JwRkXKcDvPT0Hl65Y
-         nz7+W11I8Qok1If621ntoSOgzGumFmqN9ffmMAHc0uCb1IBssF7cfNzPxPMrKshOiSpX
-         T2DA==
-X-Gm-Message-State: AOAM532n+bXrq6Hw0aPUcBqBEXuO92PsgBcQBBAUrgY5VaBryuYU08fR
-        uktMymSymBwJ1PPZKWzRR4cFAsLHBZxK8UtWpaMhHxoQ/9DQ1N4sCzUR0iWWPebHMMGrEMx8MDj
-        rUj974oej1UwHM7t//T7uWF9R
-X-Received: by 2002:a37:60e:: with SMTP id 14mr7606616qkg.60.1612448682906;
-        Thu, 04 Feb 2021 06:24:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzlFRShimnFw8uB0YGrJn4zH7BpK44y33+Whl8wip1+QMHHK9wY+W9WC+2xok1oF9sj/wA8PA==
-X-Received: by 2002:a37:60e:: with SMTP id 14mr7606600qkg.60.1612448682692;
-        Thu, 04 Feb 2021 06:24:42 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u7sm4350137qta.75.2021.02.04.06.24.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 06:24:42 -0800 (PST)
-Subject: Re: [PATCH v3 1/1] fpga: dfl: afu: harden port enable logic
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20210202230631.198950-1-russell.h.weight@intel.com>
- <15f90871-170c-3487-0f99-47cf54163bb7@redhat.com>
- <9e53d35b-b1b5-5f21-f771-63ce689dd67e@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6751f883-36d1-dad8-7754-bd335fd767a5@redhat.com>
-Date:   Thu, 4 Feb 2021 06:24:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R1KAZ4C9ZeFSR+FFennp2QasFQcPFSyFTyZPPFMkXU8=;
+        b=cHj8M/xBwOEx2gSo10JnLiMi6IYXU7ZTclzYQt6tFQMTeqAMGA/9Llr5UQ5Zea0X1S
+         hFUApddGdaTnU2teqeokCAoyjHlWpP3Uf2nKxBsRct22hk/6S57oUwWv4ksAiVFDgLqA
+         XJ47vg1YM807dRD4mvQq4WeETayNH06xWoXNKrOakpzVfI3ts5aD9bUu5DnSQLvg54RM
+         LOtKDnonFvPCj5xckn9ke16gOO1IGrsjf/8KObf8qz8th9QNqQuTTJr/jbDBPZyL6gJ2
+         xV7/4bLtDqyDb3So/9qdAP6q0welgBOoNh9Pyb/sp3drMURCeskYrlRKjI11FKiOCM8+
+         cH1Q==
+X-Gm-Message-State: AOAM531asycB0aYnRWpeJhTXkZd8E2ZBUgB9ijV0sB3wwzb5f0NAlHpt
+        76zABPhIsDyQnmpk/D+V+PNyQw==
+X-Google-Smtp-Source: ABdhPJyG/2NylKDcXm3Y18fIrqWKuc6sdceMpQkq33NZ0aiLb5JS4Ixo+Ft8ux+j9u+mNAQt0C8/Cw==
+X-Received: by 2002:a7b:c153:: with SMTP id z19mr7657226wmi.87.1612448690019;
+        Thu, 04 Feb 2021 06:24:50 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id v6sm8568185wrx.32.2021.02.04.06.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 06:24:49 -0800 (PST)
+Date:   Thu, 4 Feb 2021 14:24:44 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 24/26] KVM: arm64: Make memcache anonymous in
+ pgtable allocator
+Message-ID: <YBwDrBH8p0aEpKKC@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-25-qperret@google.com>
+ <20210203155944.GH18974@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <9e53d35b-b1b5-5f21-f771-63ce689dd67e@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203155944.GH18974@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday 03 Feb 2021 at 15:59:44 (+0000), Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 12:15:22PM +0000, Quentin Perret wrote:
+> > The current stage2 page-table allocator uses a memcache to get
+> > pre-allocated pages when it needs any. To allow re-using this code at
+> > EL2 which uses a concept of memory pools, make the memcache argument to
+> > kvm_pgtable_stage2_map() anonymous. and let the mm_ops zalloc_page()
+> > callbacks use it the way they need to.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_pgtable.h | 6 +++---
+> >  arch/arm64/kvm/hyp/pgtable.c         | 4 ++--
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> > index 8e8f1d2c5e0e..d846bc3d3b77 100644
+> > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > @@ -176,8 +176,8 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
+> >   * @size:	Size of the mapping.
+> >   * @phys:	Physical address of the memory to map.
+> >   * @prot:	Permissions and attributes for the mapping.
+> > - * @mc:		Cache of pre-allocated GFP_PGTABLE_USER memory from which to
+> > - *		allocate page-table pages.
+> > + * @mc:		Cache of pre-allocated memory from which to allocate page-table
+> > + *		pages.
+> 
+> We should probably mention that this memory must be zeroed, since I don't
+> think the page-table code takes care of that.
 
-On 2/3/21 3:06 PM, Russ Weight wrote:
->
-> On 2/3/21 7:25 AM, Tom Rix wrote:
->> ..snip..
->>
->> On 2/2/21 3:06 PM, Russ Weight wrote:
->>> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
->>> index 576e94960086..e5020e2b1f3d 100644
->>> --- a/drivers/fpga/dfl-afu.h
->>> +++ b/drivers/fpga/dfl-afu.h
->>> @@ -80,7 +80,7 @@ struct dfl_afu {
->>>  };
->>>  
->>>  /* hold pdata->lock when call __afu_port_enable/disable */
->>> -void __afu_port_enable(struct platform_device *pdev);
->>> +int __afu_port_enable(struct platform_device *pdev);
->>>  int __afu_port_disable(struct platform_device *pdev);
->>>  
->> Should the '__' prefix be removed from __afu_port* ?
->>
->> This would make the function names consistent with the other decls
-> The '__' prefix is used here to help highlight the fact that these functions go not manage
-> the locking themselves and must be called while holding the port mutex. There are additional
-> functions, such as__port_reset(), that are following this same convention. I think these
-> are OK as they are.
+OK, though I think this is unrelated to this change -- this is already
+true today I believe. Anyhow, I'll pile a change on top.
 
-ok
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-Tom
-
->
-> - Russ
->
->> Tom
->>
->>>  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
-
+Cheers,
+Quentin
