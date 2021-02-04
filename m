@@ -2,247 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D29030F868
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436FA30F884
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhBDQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:48:14 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:48828 "EHLO mail.skyhub.de"
+        id S238018AbhBDQvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:51:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236971AbhBDQrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:47:37 -0500
-Received: from zn.tnic (p200300ec2f0c7e006c9e5905fdac8460.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7e00:6c9e:5905:fdac:8460])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BCC0A1EC01DF;
-        Thu,  4 Feb 2021 17:46:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612457213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zyGJ6/Zv/jlWekLvHdRZ9qZvj3WcVrl03ax/HB5JuI0=;
-        b=lyDt/9+nsiEGgfE+9kmHo46EKuBie+nYdB1zV715tusIhONjo7BhUUAzKAace37tJZdjqT
-        vf+8rScIIeNbLudlBbuezsB7ffHaOrt0tB0DxLEJeXaQS91jHW8TNEnLTLMNAVrkUFfa52
-        4yoyj1SJ0U6VtL6RjQ9XKDC1/T8RNpY=
-Date:   Thu, 4 Feb 2021 17:46:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kees Cook <keescook@chromium.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Brian Gerst <brgerst@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Jay Lang <jaytlang@mit.edu>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>
-Subject: Re: [PATCH V3 1/6] x86_64: move cpu_current_top_of_stack out of TSS
-Message-ID: <20210204164649.GB32255@zn.tnic>
-References: <20210127163231.12709-1-jiangshanlai@gmail.com>
- <20210127163231.12709-2-jiangshanlai@gmail.com>
+        id S238118AbhBDQsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:48:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFECC64DA3;
+        Thu,  4 Feb 2021 16:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612457293;
+        bh=XFs0VAuDxw0PgpvNH4+/XNKhcukc6dJkT0donvjsDTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dvEQU7mD+yC4zlV1QyQpO5Xfg/BZT8mIXuk35br3aM/07obutBF6xlhhreIOcOsbg
+         DxooHzE7Wl3KjQNCA6/bUMUfwJ9JTP/bHOkOc28izycBGDNVto+Qdbl9qzVyblD4bZ
+         wuq+av0rOpALgXYkrhGZTETw/EJXSVplEYLyFuXE=
+Date:   Thu, 4 Feb 2021 17:48:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Jiri Slaby' <jirislaby@kernel.org>,
+        Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>
+Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
+Message-ID: <YBwlSi85/IA5HytP@kroah.com>
+References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
+ <YBuSJqIG+AeqDuMl@kroah.com>
+ <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
+ <YBu1d0+nfbWGfMtj@kroah.com>
+ <a85b7749-38b2-8ce9-c15a-8acb9a54c5b5@kernel.org>
+ <b17b4c3b2e4b45f9b10206b276b7d831@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127163231.12709-2-jiangshanlai@gmail.com>
+In-Reply-To: <b17b4c3b2e4b45f9b10206b276b7d831@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH V3 1/6] x86_64: move cpu_current_top_of_stack out of TSS
-
-The tip tree preferred format for patch subject prefixes is
-'subsys/component:', e.g. 'x86/apic:', 'x86/mm/fault:', 'sched/fair:',
-'genirq/core:'. Please do not use file names or complete file paths as
-prefix. 'git log path/to/file' should give you a reasonable hint in most
-cases.
-
-The condensed patch description in the subject line should start with a
-uppercase letter and should be written in imperative tone.
-
-Fix all your subjects pls.
-
-On Thu, Jan 28, 2021 at 12:32:17AM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Thu, Feb 04, 2021 at 04:28:19PM +0000, David Laight wrote:
+> From: Jiri Slaby
+> > Sent: 04 February 2021 11:01
+> > 
+> > On 04. 02. 21, 9:51, Greg Kroah-Hartman wrote:
+> > >> It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + Z)
+> > >> assumptions all around the world. So this doesn't look like a good idea.
+> > >
+> > > Ok, so what happens if we "wrap"?  What will break with that?  At first
+> > > glance, I can't see anything as we keep the padding the same, and our
+> > > build scripts seem to pick the number up from the Makefile and treat it
+> > > like a string.
+> > >
+> > > It's only the crazy out-of-tree kernel stuff that wants to do minor
+> > > version checks that might go boom.  And frankly, I'm not all that
+> > > concerned if they have problems :)
+> > 
+> > Agreed. But currently, sublevel won't "wrap", it will "overflow" to
+> > patchlevel. And that might be a problem. So we might need to update the
+> > header generation using e.g. "sublevel & 0xff" (wrap around) or
+> > "sublevel > 255 : 255 : sublevel" (be monotonic and get stuck at 255).
+> > 
+> > In both LINUX_VERSION_CODE generation and KERNEL_VERSION proper.
 > 
-> When X86_BUG_CPU_MELTDOWN & KPTI,
+> A full wrap might catch checks for less than (say) 4.4.2 which
+> might be present to avoid very early versions.
 
-Please write that out properly.
+Who does that?
 
-> cpu_current_top_of_stack lives in the
-> TSS which is also in the user CR3 and it becomes a coveted fruit.  An
-> attacker can fetch the kernel stack top from it and continue next steps
-> of actions based on the kernel stack.
-> 
-> The address might not be very usefull for attacker,
+> So sticking at 255 or wrapping onto (say) 128 to 255 might be better.
 
-You just said it is a "coveted fruit" and now it is not very useful?!
-Which is it?
+Better how?
 
-Also, use spellchecker pls.
+> I'm actually intrigued about how often you expect people to update
+> systems running these LTS kernels.
 
-> but it is not so
-> necessary to be in TSS either.  It is only accessed when CR3 is kernel CR3
-> and gs_base is kernel gs_base
+Whenever they can, and should.
 
-You mean when at CPL0?
+> At a release every week it takes 5 years to run out of sublevels.
+> No one is going to reboot a server anywhere near that often.
 
-> which means it can be in any percpu variable.
-> 
-> The major reason it is in TSS might be performance because it is hot in
+Why not?
 
-"might be"?
+Usually kernels this old are stuck in legacy embedded systems, like last
+year's new phone models :)
 
-> cache and tlb since we just access sp2 as the scratch space in syscall.
+thanks,
 
-"TLB"
-
-You can use the comment text directly as it is more precise:
-
-"entry_SYSCALL_64 uses it as scratch space to stash the user RSP value."
-
-> 
-> So we can move it to a percpu variable near other hot percpu variables,
-
-Who's "we" ?
-
-Also, from Documentation/process/submitting-patches.rst:
-
- "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-  to do frotz", as if you are giving orders to the codebase to change
-  its behaviour."
-
-> such as current_task, __preempt_count, and they are in the same
-> cache line.
-> 
-> tools/testing/selftests/seccomp/seccomp_benchmark desn't show any
-> performance lost in "getpid native" result.  And actually, the result
-> changes from 93ns before patch to 92ns after patch when !KPTI, and the
-> test is very stable although the test desn't show a higher degree of
-> precision but enough to know it doesn't cause degression for the test.
-
-This paragraph belongs ...
-
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
-
-....
-
-<--- here.
-
->  arch/x86/include/asm/processor.h   | 10 ----------
->  arch/x86/include/asm/switch_to.h   |  7 +------
->  arch/x86/include/asm/thread_info.h |  6 ------
->  arch/x86/kernel/cpu/common.c       |  3 +++
->  arch/x86/kernel/process.c          |  7 +------
->  arch/x86/mm/pti.c                  |  7 +++----
->  6 files changed, 8 insertions(+), 32 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index c20a52b5534b..886d32da1318 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -314,11 +314,6 @@ struct x86_hw_tss {
->  struct x86_hw_tss {
->  	u32			reserved1;
->  	u64			sp0;
-> -
-> -	/*
-> -	 * We store cpu_current_top_of_stack in sp1 so it's always accessible.
-> -	 * Linux does not use ring 1, so sp1 is not otherwise needed.
-> -	 */
->  	u64			sp1;
->  
->  	/*
-> @@ -428,12 +423,7 @@ struct irq_stack {
->  
->  DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
->  
-> -#ifdef CONFIG_X86_32
->  DECLARE_PER_CPU(unsigned long, cpu_current_top_of_stack);
-> -#else
-> -/* The RO copy can't be accessed with this_cpu_xyz(), so use the RW copy. */
-> -#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
-> -#endif
->  
->  #ifdef CONFIG_X86_64
->  struct fixed_percpu_data {
-> diff --git a/arch/x86/include/asm/switch_to.h b/arch/x86/include/asm/switch_to.h
-> index 9f69cc497f4b..b5f0d2ff47e4 100644
-> --- a/arch/x86/include/asm/switch_to.h
-> +++ b/arch/x86/include/asm/switch_to.h
-> @@ -71,12 +71,7 @@ static inline void update_task_stack(struct task_struct *task)
->  	else
->  		this_cpu_write(cpu_tss_rw.x86_tss.sp1, task->thread.sp0);
->  #else
-> -	/*
-> -	 * x86-64 updates x86_tss.sp1 via cpu_current_top_of_stack. That
-> -	 * doesn't work on x86-32 because sp1 and
-> -	 * cpu_current_top_of_stack have different values (because of
-> -	 * the non-zero stack-padding on 32bit).
-> -	 */
-> +	/* Xen PV enters the kernel on the thread stack. */
-
-What's that comment here for?
-
->  	if (static_cpu_has(X86_FEATURE_XENPV))
->  		load_sp0(task_top_of_stack(task));
->  #endif
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index 0d751d5da702..3dc93d8df425 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -197,12 +197,6 @@ static inline int arch_within_stack_frames(const void * const stack,
->  #endif
->  }
->  
-> -#else /* !__ASSEMBLY__ */
-> -
-> -#ifdef CONFIG_X86_64
-> -# define cpu_current_top_of_stack (cpu_tss_rw + TSS_sp1)
-> -#endif
-> -
->  #endif
->  
->  #ifdef CONFIG_COMPAT
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 35ad8480c464..f3d7fd7e9684 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -1745,6 +1745,9 @@ DEFINE_PER_CPU(unsigned int, irq_count) __visible = -1;
->  DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
->  EXPORT_PER_CPU_SYMBOL(__preempt_count);
->  
-> +DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) = TOP_OF_INIT_STACK;
-> +EXPORT_PER_CPU_SYMBOL(cpu_current_top_of_stack);
-
-... _GPL, of course.
-
-Or lemme rephrase: who's going to cry if this export is _GPL?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
