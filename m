@@ -2,100 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308F130F417
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C51F30F419
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236355AbhBDNor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236325AbhBDNnW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:43:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C8C061786;
-        Thu,  4 Feb 2021 05:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=esfcV78RrU8nXrE72X9LckMx7X5reL/P0pwhKEpoq3w=; b=EEFa99xE3ECGRhB28SI4ZjY4Yi
-        2zi2lbL6t/w3MDJsqbSTTXxUCdkmZqMCffLyoGa4IXzIkJUDPq7rHzsGvE1/JYKmPObvd6XPxTjHK
-        f+DJOdmlIuE9n6P33PTnV3QEg5Z3a+ZlgO1dCIsog9ISzdkaPbj7f0DfcTU4AooM6CflEI1pOZQAn
-        J76NZlxMOEMnWAvW1L0hycrU6rlq+RaSYTZOBqJYv3/WVZ8mpCOpDuAO2yA58ifD+umhnRBTmNAc3
-        leFwjnf15NZFu8n4wCvXpHg28KOKHhyARfSXOvPz6P1do77EDtYVz4dwaVqihgV7O6m3QUjbvepck
-        KlC815Ug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7etV-000vze-JP; Thu, 04 Feb 2021 13:42:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BBD83003D8;
-        Thu,  4 Feb 2021 14:42:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E4752C0034C0; Thu,  4 Feb 2021 14:42:00 +0100 (CET)
-Date:   Thu, 4 Feb 2021 14:42:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-Message-ID: <YBv5qDBdb/VAq0Vw@hirez.programming.kicks-ass.net>
-References: <20210204010157.1823669-1-aklimov@redhat.com>
- <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
- <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
+        id S236410AbhBDNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:44:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56744 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236377AbhBDNo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:44:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 66717AC43;
+        Thu,  4 Feb 2021 13:43:45 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v3 0/3] Cleanup and fixups for vmemmap handling
+Date:   Thu,  4 Feb 2021 14:43:22 +0100
+Message-Id: <20210204134325.7237-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 12:50:34PM +0000, Alexey Klimov wrote:
-> On Thu, Feb 4, 2021 at 9:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
-> > > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-> > >       err = _cpu_up(cpu, 0, target);
-> > >  out:
-> > >       cpu_maps_update_done();
-> > > +
-> > > +     /* To avoid out of line uevent */
-> > > +     if (!err)
-> > > +             cpuset_wait_for_hotplug();
-> > > +
-> > >       return err;
-> > >  }
-> > >
-> >
-> > > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
-> > >       struct device *dev = get_cpu_device(cpu);
-> > >
-> > >       dev->offline = false;
-> > > -     /* Tell user space about the state change */
-> > > -     kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-> > >  }
-> > >
-> >
-> > One concequence of this is that you'll now get a bunch of notifications
-> > across things like suspend/hybernate.
-> 
-> The patch doesn't change the number of kobject_uevent()s. The
-> userspace will get the same number of uevents as before the patch (at
-> least if I can rely on my eyes).
+Hi,
 
-bringup_hibernate_cpu() didn't used to generate an event, it does now.
-Same for bringup_nonboot_cpus().
+this series contains cleanups to remove dead code that handles
+unaligned cases for 4K and 1GB pages (patch#1 and pathc#2) when
+removing the vemmmap range, and a fix (patch#3) to handle the case
+when two vmemmap ranges intersect a PMD.
 
-Also, looking again, you don't seem to be reinstating the OFFLINE event
-you took out.
+More details can be found in the respective changelogs.
 
+ v2 -> v3:
+ - Make sure we do not clear the PUD entry in case
+   we are not removing the whole range.
+ - Add Reviewed-by
+
+ v1 -> v2:
+ - Remove dead code in remove_pud_table as well
+ - Addessed feedback by David
+ - Place the vmemap functions that take care of unaligned PMDs
+   within CONFIG_SPARSEMEM_VMEMMAP
+
+Oscar Salvador (3):
+  x86/vmemmap: Drop handling of 4K unaligned vmemmap range
+  x86/vmemmap: Drop handling of 1GB vmemmap ranges
+  x86/vmemmap: Handle unpopulated sub-pmd ranges
+
+ arch/x86/mm/init_64.c | 189 ++++++++++++++++++++++++++----------------
+ 1 file changed, 118 insertions(+), 71 deletions(-)
+
+-- 
+2.26.2
 
