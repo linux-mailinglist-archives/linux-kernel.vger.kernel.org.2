@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BCD30FE5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5135630FE63
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240105AbhBDUa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:30:27 -0500
-Received: from mga03.intel.com ([134.134.136.65]:2185 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240060AbhBDU2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:28:38 -0500
-IronPort-SDR: VXwchtpjYCUrRSFb5TVExtTuN13N4enEq3dsNwcPj6+fi6XEHYFNdlHAbiYsGVCDPH6I5xJjzB
- nKflZoBxLXrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="181391437"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="181391437"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 12:27:53 -0800
-IronPort-SDR: /K+3Oq7Co2BriTI3sDGwdXTCFu7OL8ZXD3NHidW/C48Z0/CDB38uP2y9WMiMNfqUpOK0c+91/s
- eKIAHc1ajx7Q==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="483698775"
-Received: from mmjajodi-mobl1.amr.corp.intel.com (HELO [10.251.130.164]) ([10.251.130.164])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 12:27:53 -0800
-Subject: Re: [PATCH v19 08/25] x86/mm: Introduce _PAGE_COW
-To:     Kees Cook <keescook@chromium.org>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-9-yu-cheng.yu@intel.com>
- <202102041215.B54FCA552F@keescook>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2e43bf0b-e1a9-99f6-8d5d-d6e6886b4217@intel.com>
-Date:   Thu, 4 Feb 2021 12:27:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <202102041215.B54FCA552F@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S240196AbhBDUbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:31:08 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50623 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239486AbhBDU3E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:29:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612470521; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=vQ2EF5eRDQzzxbY0Yb+0v6gNppR10n77+3JxogqXiYw=; b=h6EjuHUkWxLGOi9K6JDvT9rwqGsKZkS6fO46TwxgtUqZaxCzdUVqKffAkK+44o0R/+xae0Nw
+ G501Sj2fxeNH0/xUN2+sU1B+sqgt2J2OYPYhcosINCe3ZPdeNjwtTw2BZFTP1dCRxmzjiE4p
+ I3GLPLUejm3VMKv/P4KRrVtPRYQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 601c58de5d0f384787866480 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 20:28:14
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9D99DC433CA; Thu,  4 Feb 2021 20:28:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D752C43461;
+        Thu,  4 Feb 2021 20:28:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8D752C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v6 0/8] Updates to MHI channel handling
+Date:   Thu,  4 Feb 2021 12:27:58 -0800
+Message-Id: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 12:19 PM, Kees Cook wrote:
->> (e) A page where the processor observed a Write=1 PTE, started a write, set
->>     Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
->>     will not happen on processors that support shadow stack.
-> What happens for "e" with/without CET? It sounds like direct writes to
-> such pages will be (correctly) rejected by the MMU?
+MHI specification shows a state machine with support for STOP channel command
+and the validity of certain state transitions. MHI host currently does not
+provide any mechanism to stop a channel and restart it without resetting it.
+There are also times when the device moves on to a different execution
+environment while client drivers on the host are unaware of it and still
+attempt to reset the channels facing unnecessary timeouts.
 
-A page fault would be generated regardless of CET support.
+This series addresses the above areas to provide support for stopping an MHI
+channel, resuming it back, improved documentation and improving upon channel
+state machine handling in general.
 
-If CET were not around, the fault would be reported as a present, write
-fault.
+This set of patches was tested on arm64 architecture.
 
-If this happened and CET were around (which shouldn't happen in
-practice, it means we have a hardware issue) a page fault exception is
-generated.  Yu-cheng, I'm not sure there's enough debugging around to
-tell us if this happens.  Would we even notice?
+v6:
+-Dropped the patch which introduced start/stop transfer APIs for lack of users
+-Updated error handling and debug prints on channel handling improvements patch
+-Improved commit text to better explain certain patches based on review comments
+-Removed references to new APIs from the documentation improvement patch
+
+v5:
+-Added reviewed-by tags from Hemant I missed earlier
+-Added patch to prevent kernel warnings on clearing channel context twice
+
+v4:
+-Updated commit text/descriptions and addressed checkpatch checks
+-Added context validity check before starting/stopping channels from new API
+-Added patch to clear channel context configuration after reset/unprepare
+
+v3:
+-Updated documentation for channel transfer APIs to highlight differences
+-Create separate patch for "allowing channel to be disabled from stopped state"
+
+v2:
+-Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+-Added improved documentation to avoid confusion with the new APIs
+-Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+
+Bhaumik Bhatt (8):
+  bus: mhi: core: Allow sending the STOP channel command
+  bus: mhi: core: Clear context for stopped channels from remove()
+  bus: mhi: core: Improvements to the channel handling state machine
+  bus: mhi: core: Clear configuration from channel context during reset
+  bus: mhi: core: Check channel execution environment before issuing
+    reset
+  bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+  bus: mhi: Improve documentation on channel transfer setup APIs
+  bus: mhi: core: Do not clear channel context more than once
+
+ drivers/bus/mhi/core/init.c     |  23 ++++-
+ drivers/bus/mhi/core/internal.h |  12 +++
+ drivers/bus/mhi/core/main.c     | 192 ++++++++++++++++++++++++----------------
+ include/linux/mhi.h             |  18 +++-
+ 4 files changed, 164 insertions(+), 81 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
