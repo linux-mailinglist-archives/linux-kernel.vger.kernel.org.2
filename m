@@ -2,174 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3D030EDD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69EC30EDDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbhBDH4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:56:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234723AbhBDH4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:56:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D931864F55;
-        Thu,  4 Feb 2021 07:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612425366;
-        bh=DSUZx40ENOPiuSW9/nMJGxTniUjgoz49uDMP6Q4Rxts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LxS79Ss5DQ0dXhKXHao/98/eVwjHS09vED9xZfaHRDONWllLCXNqhv0rDLX/2Eivv
-         6/MwSQ+7pMtdbxWPCj1h9gFhfXRlqTKhRwDN6PHKecUt7NEkO1EpCpesUf2mLSuOL3
-         PaNYaLt/WdNlgFK8EQLgvV/xhte4mtMdMNYAyT63BE+qOZsJTTetBcttot+eY/tTcQ
-         dCUvxJI6Q+UPkhZgeM7tYylrUiykhSICIzfvBejp+pDxYUKNKQdmVa0tFwbLLsshJf
-         iQj+1ZC99yjjC6zg+6+9Vc8U/qP7o2C+qTkf6QjvCBs9lblHhHuywdwkgFXhunwxuM
-         JMeX3Va5/kyDA==
-Date:   Thu, 4 Feb 2021 13:26:01 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v13 2/4] phy: Add ethernet serdes configuration option
-Message-ID: <20210204075601.GI3079@vkoul-mobl.Dlink>
-References: <20210129130748.373831-1-steen.hegelund@microchip.com>
- <20210129130748.373831-3-steen.hegelund@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129130748.373831-3-steen.hegelund@microchip.com>
+        id S234738AbhBDH5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232793AbhBDH5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:57:18 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462A9C061573;
+        Wed,  3 Feb 2021 23:56:37 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id o10so5364728wmc.1;
+        Wed, 03 Feb 2021 23:56:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=b+smnUyuE7wK61OgxqWN7JVnQDJSBJSmIoedEWNjQv4=;
+        b=s5Hf5E+rBCWZ6lRhqA35/hsHYMsvRS1rLqs+8SxZdi52f3gQJ8KmS0z2Gz6LIUsgrb
+         qRMhVECrHyifJ7sTr91bEZ+8ZpmGsx2Zrx1qwPiVjxwFHhCr22xfguXx3M2Y7MuG+AuC
+         GQvsG/535ao/vjz0sTbkXd+Nq1Yn8vfWZB+b5PZiAkxJBrp0kIDHrRc6MeRVoIKaC0Qt
+         /RHPQ/JfqLQhAMjpyWKKmW58lzbDXyrjgBmHrxbEs349gkTxOnvVEy0zjC9CoXVVHTiB
+         uQcfN3OUyXAgtYv7bd2UamUqKKRK/mF7f0YuiMGyEU+iXAFvw4QY7XQndoMpSC2Ky5lj
+         SKjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=b+smnUyuE7wK61OgxqWN7JVnQDJSBJSmIoedEWNjQv4=;
+        b=NX4aXkJDyHvqdcjl3Yn8cpsY6FjD48SHgrQrJdJaPb7FWr7+6NsKBgusSeH8eBKvsi
+         gFmhE7l3q03ohDqjlRjnBNo+n3dXhgFjkdDKzUmocyxZ2LZTNCVRkX3KcLXPFKgIyS6n
+         iEFqYS6FjW7SuktKFrikk6wRdnoyDpRD69WNjziufqmDlbaMBO2gh1+YPoQl4puKYS22
+         q5F/sATfI4VW6RBtGz9p0q6Yc+rAXmCQdgpP4fd0ROAVT7BdSCRC8njdaFaUOfQi6lsJ
+         Hjr9hgKbC0re7HKCFHfY5wfzgTycXgNuHMVxceGRkamjCc1je3KxMyVstaqbjXu173BA
+         FZMA==
+X-Gm-Message-State: AOAM5308nlfWSzZbXYMceKWDJiTqBtCceU2s0j591ZUJTY+PdzDM7qI6
+        BZFS+DSo+tiv2XPqLYJ5ldI=
+X-Google-Smtp-Source: ABdhPJznv8dlGhVT1RXWZc2O8Gbutrctv0DjJ0d2As5aR/nFBLQC467b/jdjfyj7wKr51SBKpu1FgA==
+X-Received: by 2002:a1c:7704:: with SMTP id t4mr6089144wmi.55.1612425395879;
+        Wed, 03 Feb 2021 23:56:35 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2de7:9900:a89a:b345:dd05:c439])
+        by smtp.gmail.com with ESMTPSA id v1sm5307806wmj.31.2021.02.03.23.56.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 23:56:35 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] fscache: rectify minor kernel-doc issues
+Date:   Thu,  4 Feb 2021 08:56:24 +0100
+Message-Id: <20210204075624.27915-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-01-21, 14:07, Steen Hegelund wrote:
-> Provide a new ethernet phy configuration structure, that
-> allow PHYs used for ethernet to be configured with
-> speed, media type and clock information.
+The command './scripts/kernel-doc -none include/linux/fscache.h' reports
+some minor mismatches of the kernel-doc and function signature, which are
+easily resolved.
 
-This lgtm, Kishon ?
+Rectify the kernel-doc, such that no issues remain for fscache.h.
 
-> 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
->  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
->  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
->  2 files changed, 56 insertions(+)
-> 
-> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-> index 71cb10826326..ccb575b13777 100644
-> --- a/drivers/phy/phy-core.c
-> +++ b/drivers/phy/phy-core.c
-> @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
->  }
->  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
->  
-> +int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_media)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_media(phy, media);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_media);
-> +
-> +int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_speed)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_speed(phy, speed);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_speed);
-> +
->  int phy_reset(struct phy *phy)
->  {
->  	int ret;
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb0bab3..e4fd69a1faa7 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -44,6 +44,12 @@ enum phy_mode {
->  	PHY_MODE_DP
->  };
->  
-> +enum phy_media {
-> +	PHY_MEDIA_DEFAULT,
-> +	PHY_MEDIA_SR,
-> +	PHY_MEDIA_DAC,
-> +};
-> +
->  /**
->   * union phy_configure_opts - Opaque generic phy configuration
->   *
-> @@ -64,6 +70,8 @@ union phy_configure_opts {
->   * @power_on: powering on the phy
->   * @power_off: powering off the phy
->   * @set_mode: set the mode of the phy
-> + * @set_media: set the media type of the phy (optional)
-> + * @set_speed: set the speed of the phy (optional)
->   * @reset: resetting the phy
->   * @calibrate: calibrate the phy
->   * @release: ops to be performed while the consumer relinquishes the PHY
-> @@ -75,6 +83,8 @@ struct phy_ops {
->  	int	(*power_on)(struct phy *phy);
->  	int	(*power_off)(struct phy *phy);
->  	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
-> +	int	(*set_media)(struct phy *phy, enum phy_media media);
-> +	int	(*set_speed)(struct phy *phy, int speed);
->  
->  	/**
->  	 * @configure:
-> @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
->  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
-> +int phy_set_media(struct phy *phy, enum phy_media media);
-> +int phy_set_speed(struct phy *phy, int speed);
->  int phy_configure(struct phy *phy, union phy_configure_opts *opts);
->  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
->  		 union phy_configure_opts *opts);
-> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
->  
-> +static inline int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENOSYS;
-> +}
-> +
->  static inline enum phy_mode phy_get_mode(struct phy *phy)
->  {
->  	return PHY_MODE_INVALID;
-> -- 
-> 2.30.0
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20210202
 
+David, please pick the quick kernel-doc fix.
+
+ include/linux/fscache.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/fscache.h b/include/linux/fscache.h
+index 3f177faa0ac2..7e1f12e52baf 100644
+--- a/include/linux/fscache.h
++++ b/include/linux/fscache.h
+@@ -418,7 +418,7 @@ int fscache_pin_cookie(struct fscache_cookie *cookie)
+ }
+ 
+ /**
+- * fscache_pin_cookie - Unpin a data-storage cache object in its cache
++ * fscache_unpin_cookie - Unpin a data-storage cache object in its cache
+  * @cookie: The cookie representing the cache object
+  *
+  * Permit data-storage cache objects to be unpinned from the cache.
+@@ -490,7 +490,7 @@ void fscache_wait_on_invalidate(struct fscache_cookie *cookie)
+ /**
+  * fscache_reserve_space - Reserve data space for a cached object
+  * @cookie: The cookie representing the cache object
+- * @i_size: The amount of space to be reserved
++ * @size: The amount of space to be reserved
+  *
+  * Reserve an amount of space in the cache for the cache object attached to a
+  * cookie so that a write to that object within the space can always be
 -- 
-~Vinod
+2.17.1
+
