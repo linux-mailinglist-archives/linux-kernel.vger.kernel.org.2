@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715C530F3F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC630F3F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236364AbhBDNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:36:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S236389AbhBDNh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236260AbhBDNga (ORCPT
+        with ESMTP id S236367AbhBDNg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:36:30 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A8EC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:35:48 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id e15so2307825qte.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:35:48 -0800 (PST)
+        Thu, 4 Feb 2021 08:36:56 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B970BC061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:36:14 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id d16so3473533wro.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:36:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uKZ8jOVXaGHt37s8mgAlb0QZlKKHVkfqK1l6zjxD0zE=;
-        b=Tp7+xVOkN7692sIbinqdK5pKIdTxjFRvN5TBKktfYa/OcV8vZXujRgWJpUprEotTvk
-         Ywh0AWOTjD4pyPJ+9ioiH1ghUScrk9zY3P8/XLs0m3mxDcsm8ke9jnfR/4FBPGv55mB0
-         lVnq5uOmwKA3KK0SHnu8sJ8Fgyda0ZF51Q24uo2sVgvVu85hjJUgTS2RzscFC9UPjFcU
-         NlPq+b70HxshgqfyALReSbkIuf6mUSFjMjzrxDPnmNo6vhyoEUvOxTz71tfud4eKGHRz
-         dPkA2tmAlG9geJOMKPMyoVO+2bXMfu9Vt+9zIQ+irREt+FOlcIwCAoInuO35O1NrKsrr
-         B6RQ==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2wNLIUP4Xf17KhdjtkEwog/CXYEKOouf43hiUeEcDII=;
+        b=Acq3HeMCg6A4IzKWo9Z8JsiKOLxtAiJP8UkpXJL3y3R0x2pfLlYRYei2qibzM+vEGG
+         I3QtwSwf+60HVR3isI6kiGY/lINuuOsSUbi8rFsn8bl83va0jOTvn+BmHkUBwViPVKes
+         HgeKhzIGlGpj3tvhVipCPTy1v0sDKmKcPSivTZo01uEcWYkbBM9AoPxsPoMNLg1pcyIJ
+         QWwunVoC7diVVldqj6/Pj3ocxCpWP16uIqy4Phd0T0qzYP0NE7OzOvhjOePq5XglKtHD
+         J+k3PuwqSashd6tuvX8AH+IlqoKmJ7lrd0dVRxMkeBMMxz1B2gLXSa1viXPc6HuAjLIW
+         +DtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uKZ8jOVXaGHt37s8mgAlb0QZlKKHVkfqK1l6zjxD0zE=;
-        b=bnRwDN4Lggm+ru6M3VvWt9J0kjTIwfTCzmyUG/QZqLMY0XWmOjwcoVW2pWH4rzd+Ap
-         Jl2MiTJo84raawRokgzA0y+DrvWiY9tBk8yDkZq/5CQL7Lzli71i1Hy/qT/LOMqWHpdN
-         56Jvk4rJ4u4CC7aKRkF1TYJIUpDRb6u5XA8zjP1nni7M5D3r80ypF+oeT/5r46h9p+1I
-         sHhoHqGyhYB6B7YvkyVwRyB2UWFQHsKBSUlwcU0XAFDa58fiXSDAP80x/16nRFQD3vMl
-         xMzi0qb6G6PuXK0tIC/fM3IPnhEuJXTyueMgcSa6fTIWHqMf0Vj52gqOFj/WubIzyary
-         pq0w==
-X-Gm-Message-State: AOAM530QG/kg2zKno89HMT1XI11BjXeFtbjxnnn4dv3+fEudvhHcAerU
-        GffcStE6xriOJL2NnPUpDwfX2JCqHjtupIeyDuy89Q==
-X-Google-Smtp-Source: ABdhPJysl3WfoClrkXYBxHK86kJI0Gz9JlpcZhPPm94ZZQlyp5AYwslMA04261A+csN+WG70clZW6b5+0JY9DKlbhTg=
-X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr6885875qtw.337.1612445747619;
- Thu, 04 Feb 2021 05:35:47 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=2wNLIUP4Xf17KhdjtkEwog/CXYEKOouf43hiUeEcDII=;
+        b=fgUzcoB2LhS7Zc7yYLvEHbbcvHXtIkSXU7un5/24MHEOejrp3m0L7frFQF1GxBaNzp
+         VKBE+5Qgw2qjxAviK7Ns1R6vDdo6R/EefzJ89WHg5m7l/J9x/GiZHXgS4myc+3c6yY9S
+         Kam83rHvKdMppa0ufuT7JVO7SyGZnf2JbOKObK5wthIrKW6C3LIxH/W52acuQr7W1CG2
+         8qRYY0OzB27b69qicZGo3LK/Tko/9K6bfTFWGnm00eXG6CCPRDXhnuzA9WSjF6nKUv2r
+         lKixw5kwKcPoVBq6BzN9/n8/QrekxUAWWOQRJdsK+aXjj8blnHdKs0j14CxNPAJTncxr
+         RNFw==
+X-Gm-Message-State: AOAM533KXkRilctEWI3q41TPmj8YTvFhrxgpVHMVMUudpzJMU1bXUB6h
+        REIgVdarwV5vM37/RBGBdmuMFAPOIhDpQK0j
+X-Google-Smtp-Source: ABdhPJz2G4W8/09FQulizSxZSffq8RFw/WyNnPD/E6nEF9+KBGabmxW9VIK0Pbljn9oDZPUqGM9ayw==
+X-Received: by 2002:a5d:49cf:: with SMTP id t15mr9252884wrs.217.1612445773300;
+        Thu, 04 Feb 2021 05:36:13 -0800 (PST)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id c62sm6212065wmd.43.2021.02.04.05.36.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Feb 2021 05:36:12 -0800 (PST)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-fpga@vger.kernel.org
+Subject: [PATCH] fpga: xilinx-pr-decoupler: Simplify code by using dev_err_probe()
+Date:   Thu,  4 Feb 2021 14:36:11 +0100
+Message-Id: <666708105c25ae5fa7bb23b5eabd7d12fe9cb1b3.1612445770.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
- <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
- <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net> <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
- <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net> <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
- <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net> <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
- <YBvj6eJR/DY2TsEB@hirez.programming.kicks-ass.net> <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
- <YBvyTDR+q0M62vKR@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBvyTDR+q0M62vKR@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 4 Feb 2021 14:35:36 +0100
-Message-ID: <CACT4Y+ZbWMa7zsa84dOBZ0C0Qgik2uDST+bzX=TrSU6vFXkkCQ@mail.gmail.com>
-Subject: Re: Process-wide watchpoints
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Feb 04, 2021 at 01:53:59PM +0100, Dmitry Vyukov wrote:
-> > Humm... I was thinking of perf_event_open(pid == 0).
-> > It does not make sense to send SIGTRAP in a remote process, because it
-> > does not necessarily cooperate with us.
-> >
-> > But is there any problem with clone w/o CLONE_THREAD? Assuming the
-> > current process has setup the signal handler, the child will have the
-> > same handler and the same code/address space. So delivery of SIGTRAP
-> > should work the same way in the child.
->
-> Nothing should be doing CLONE_VM without CLONE_THREAD. Yes, it's
-> possible, but if you do so, you get to keep the pieces IMO.
->
-> Current libc either does a full clone (fork) or pthread_create,
-> pthread_create does CLONE_THREAD.
+Use already prepared dev_err_probe() introduced by commit a787e5400a1c
+("driver core: add device probe log helper").
+It simplifies EPROBE_DEFER handling.
 
-I meant a different thing.
-I meant that we could restrict synchronous SIGTRAP for (1)
-perf_event_open(pid != 0) and (2) disable it after exec.
-What is the issue here for clone without CLONE_THREAD?
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+
+ drivers/fpga/xilinx-pr-decoupler.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
+index 7d69af230567..b0eaf26af6e7 100644
+--- a/drivers/fpga/xilinx-pr-decoupler.c
++++ b/drivers/fpga/xilinx-pr-decoupler.c
+@@ -100,11 +100,9 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->io_base);
+ 
+ 	priv->clk = devm_clk_get(&pdev->dev, "aclk");
+-	if (IS_ERR(priv->clk)) {
+-		if (PTR_ERR(priv->clk) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "input clock not found\n");
+-		return PTR_ERR(priv->clk);
+-	}
++	if (IS_ERR(priv->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(priv->clk),
++				     "input clock not found\n");
+ 
+ 	err = clk_prepare_enable(priv->clk);
+ 	if (err) {
+-- 
+2.30.0
+
