@@ -2,161 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DD530E884
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDA230E88F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbhBDAbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:31:09 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:17145 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbhBDAbI (ORCPT
+        id S233914AbhBDAec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231817AbhBDAea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:31:08 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 1140U0Jj024805;
-        Thu, 4 Feb 2021 09:30:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 1140U0Jj024805
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612398600;
-        bh=zhHO6YOqvfd2e0VJ7LUzPQqH8P+nIIHnnTyC4WEwfZE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=s9YgvvsAdo4MYL2cfptpkytEVQdCvVT1bxQtHtBYp6ws736lnEZFTPTLJDuGVIIze
-         SdbHBluApWRlhJ4Q9JLPznvBvwf9vJX14u+SlwcA717ANZtYqR898SvaA911/Pxvsf
-         lVEEZfshANvsiCd86NlMYPr2j4G/ONL7hYRFSUG0VD70MEzAbZkSKi8NHydHb23SW+
-         He7wEJJpa7958/lfo5s8VcIxdHRsTt5XAJzhmjpWQ3mFiZASYeQSkueYIW06vywvCz
-         l64JODS/pdakpzXa8LHtuLnoCbgf0BMO2sCro/949ilDKl9aDlwK+eL7m+N7buOufE
-         n1dl4ekZLbV5w==
-X-Nifty-SrcIP: [209.85.215.173]
-Received: by mail-pg1-f173.google.com with SMTP id s23so899176pgh.11;
-        Wed, 03 Feb 2021 16:30:00 -0800 (PST)
-X-Gm-Message-State: AOAM533DdMlNHmnBV3G81zFE8sc2ht6bJjOfR2wJC7PEcVakXpI5zLjf
-        Q60490zitgNcjPrE1sHhwOX3qF7leUrMiVflFHo=
-X-Google-Smtp-Source: ABdhPJzm1BiOfNz/pyberi6JyhtEIkNALKOgJACSZF025IEv8c7MPb7agCCLLUQ4hVo5kT/pkzBKfV7d0joPIW668oA=
-X-Received: by 2002:a62:2f07:0:b029:1bb:5f75:f985 with SMTP id
- v7-20020a622f070000b02901bb5f75f985mr5322944pfv.76.1612398599530; Wed, 03 Feb
- 2021 16:29:59 -0800 (PST)
+        Wed, 3 Feb 2021 19:34:30 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8DEC061573;
+        Wed,  3 Feb 2021 16:33:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=BG5xo57883wZFg8LT27wpBNLDvItg9xhNzOkMkfoe78=; b=qnVs1N+XmTfCeuJFXLBv1CEQ/f
+        Swrxm7740kgfWXderYwwkfa7mlqKgktEJtO9OD5n+jNpkuC4aZnw4LFMpzN7LmO4pAFThuc75vLUk
+        i12t76pBsj8R/Sj1qb9zXfGjp1NsCvhjzL4vOWrtEK6h866ZW6WvUhX9VF7B/XhGGemfusuvJutWq
+        2WQgX6XNrm9yOWvNx4buJfjr6Co7nex3BEhsGMtZb6jLc5bB6KTD0hUOVP0gJjhOwwTmZTmvBLW8L
+        7h51zYZmfYkX8pZ1h7v2PBz0K8jmfJVXvfvGFKjmP0xr+7muc+ONSuufBP10BZN/uPJ8hxWNb6Azj
+        46JoVBig==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7Sac-0004GE-Aj; Thu, 04 Feb 2021 00:33:42 +0000
+Subject: Re: [PATCH] rt2x00: remove duplicate word in comment
+To:     wengjianfeng <samirweng1979@163.com>
+Cc:     stf_xl@wp.pl, helmut.schaa@googlemail.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+References: <20210203063850.15844-1-samirweng1979@163.com>
+ <6bf90f62-f14e-9c4a-748b-4923fcae9bef@infradead.org>
+ <20210204083007.000069d2@163.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1ee1b354-0550-3fd8-f547-10827b3974ad@infradead.org>
+Date:   Wed, 3 Feb 2021 16:33:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-2-ndesaulniers@google.com> <20210130015222.GC2709570@localhost>
- <CAK7LNARfu-wqW9hfnoeeahiNPbwt4xhoWdxXtK8qjVfEi=7OOg@mail.gmail.com> <CAKwvOd=YVDS8tjnN6kFqe2FAhfSzVg870VsSvkNuvVZ7X6BrVg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=YVDS8tjnN6kFqe2FAhfSzVg870VsSvkNuvVZ7X6BrVg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 4 Feb 2021 09:29:20 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARWpPBpT7MXeUBYO3SNcB1UtTNrTcVeFW1QXRMfBrOZHQ@mail.gmail.com>
-Message-ID: <CAK7LNARWpPBpT7MXeUBYO3SNcB1UtTNrTcVeFW1QXRMfBrOZHQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204083007.000069d2@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 8:16 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Wed, Feb 3, 2021 at 2:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Sat, Jan 30, 2021 at 10:52 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
-> > > > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
-> > > > the default. Does so in a way that's forward compatible with existing
-> > > > configs, and makes adding future versions more straightforward.
-> > > >
-> > > > GCC since ~4.8 has defaulted to this DWARF version implicitly.
-> > > >
-> > > > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > > > Suggested-by: Fangrui Song <maskray@google.com>
-> > > > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > >
-> > > One comment below:
-> > >
-> > > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> > >
-> > > > ---
-> > > >  Makefile          |  5 ++---
-> > > >  lib/Kconfig.debug | 16 +++++++++++-----
-> > > >  2 files changed, 13 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/Makefile b/Makefile
-> > > > index 95ab9856f357..d2b4980807e0 100644
-> > > > --- a/Makefile
-> > > > +++ b/Makefile
-> > > > @@ -830,9 +830,8 @@ ifneq ($(LLVM_IAS),1)
-> > > >  KBUILD_AFLAGS        += -Wa,-gdwarf-2
-> > >
-> > > It is probably worth a comment somewhere that assembly files will still
-> > > have DWARF v2.
-> >
-> > I agree.
-> > Please noting the reason will be helpful.
->
-> Via a comment in the source, or in the commit message?
->
-> >
-> > Could you summarize Jakub's comment in short?
-> > https://patchwork.kernel.org/project/linux-kbuild/patch/20201022012106.1875129-1-ndesaulniers@google.com/#23727667
->
-> Via a comment in the source, or in the commit message?
+On 2/3/21 4:30 PM, wengjianfeng wrote:
+> On Wed, 3 Feb 2021 07:16:17 -0800
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+>> On 2/2/21 10:38 PM, samirweng1979 wrote:
+>>> From: wengjianfeng <wengjianfeng@yulong.com>
+>>>
+>>> remove duplicate word 'we' in comment
+>>>
+>>> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+>>> ---
+>>>  drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
+>>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c index
+>>> c861811..7158152 100644 ---
+>>> a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c +++
+>>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c @@ -179,7
+>>> +179,7 @@ void rt2x00crypto_rx_insert_iv(struct sk_buff *skb,
+>>>  	 * Make room for new data. There are 2 possibilities
+>>>  	 * either the alignment is already present between
+>>>  	 * the 802.11 header and payload. In that case we
+>>> -	 * we have to move the header less then the iv_len
+>>> +	 * have to move the header less then the iv_len
+>>
+>> s/then/than/
+>>
+>>>  	 * since we can use the already available l2pad bytes
+>>>  	 * for the iv data.
+>>>  	 * When the alignment must be added manually we must
+>>>
+>>
+>>
+> 
+> Hi Randy,
+>    So you means add it for byte alignment, right? if yes,just ignore
+>    the patch. thanks.
 
+No, I mean that there is a typo there also: "then" should be changed to "than"
+while you are making changes.
 
-Both in the source if you can summarize it in three lines or so.
+thanks.
+-- 
+~Randy
 
-
-If you need to add more detailed explanation,
-please provide it in the commit log.
-
-
-
-
-> >
-> > With this patch set applied, it is very explicit.
-> >
-> > Only the format type, but also the version.
-> >
-> > The compiler will be given either
-> > -gdwarf-4 or -gdwarf-5,
-> > making the -g option redundant, I think.
->
-> Can I provide that as a separate patch?  I don't want any breakage
-> from that to delay DWARF v5 support further.  If so, should it be the
-> first patch or last?
-
-
-OK.
-
-At the last to be safe?
-
-I am fine with doing a clean-up work later.
-
-
-
-
-
-
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
---
-Best Regards
-Masahiro Yamada
