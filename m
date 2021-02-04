@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51ED30ED8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB3730ED89
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbhBDHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:40:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31904 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234708AbhBDHkK (ORCPT
+        id S234704AbhBDHkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:40:06 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:33431 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234633AbhBDHjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:40:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612424324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UQ0eTVPL8hjhBEzJ8ELtfQWdOLooTVyajO3Fy8uNSZ8=;
-        b=UJI7kkUhslW0gxJmlNJfci5wKcRbJZX5Vy1aJclFfYGOJIeCpFrRrJXfOXgFmMDHwS95bk
-        EYVPWejsocMes33JEgMudxPPO4I+VF83XiT8Gmgf5YzSLuusjXCaeNJdkGqXsNEiZ+ckhn
-        MlTUvPw/SzcZ5szNqBBqvuuazKdk7cw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-sMGutKixNquw1K0DOAbF4Q-1; Thu, 04 Feb 2021 02:38:42 -0500
-X-MC-Unique: sMGutKixNquw1K0DOAbF4Q-1
-Received: by mail-ej1-f71.google.com with SMTP id x22so1970305ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:38:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UQ0eTVPL8hjhBEzJ8ELtfQWdOLooTVyajO3Fy8uNSZ8=;
-        b=l6fj6RdKdUu62ufEUebmT/YSITeMiHjjGWl7CKZ+H9auLAnb5CYv5aimx2R2EVPLMh
-         4auBZbhAUohikjg/rbH0RbmTB2P446cmUH6KX3WkZdEKkicKlpanIb1BGUDut9b2m2V8
-         YKqnjNWr+ytWljYyF8njUnrsUhxoE55IbD/J4M6wGBoWABbLleQsvsIgI6CciplEQIQt
-         9OJDnxFvylbm1+coCzAgQ1La3rndxaGR8j9oqjBxtd0mia/PW/ADsV/LyHONMqV+FHnH
-         jV6Mtk4nLhd5f50WkcrTxbrAQaCQnkUKD7jOk0tWCyi8Z9nG/zUrXl97QAWS+LjQnrsQ
-         AcaA==
-X-Gm-Message-State: AOAM533k12gE21wMIibHWn1hmfFEs02nf5jGF3zPfdGZhiOQkTft8Q5k
-        UzzKVFsOWUEMGzJBu67oKRw6Jjd9zJCVLSvHjUyonLaxsSQ6RJPupoDjriuE9AffswHnlteVPWD
-        CJYPINis/aUVCQuqFdCdpFfpr
-X-Received: by 2002:a17:906:7191:: with SMTP id h17mr7044015ejk.54.1612424321322;
-        Wed, 03 Feb 2021 23:38:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxqMJ/NojtP+0ID/tXGNmwGoEtk5rny6JED/4q/QSBepALPvSdTcf9hvXY/ZLz3BCvMVUv/9g==
-X-Received: by 2002:a17:906:7191:: with SMTP id h17mr7044003ejk.54.1612424321208;
-        Wed, 03 Feb 2021 23:38:41 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id a15sm2009838edy.86.2021.02.03.23.38.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Feb 2021 23:38:40 -0800 (PST)
-Subject: Re: linux-next: build warning after merge of the drivers-x86 tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210204161351.5c934ea2@canb.auug.org.au>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <5461d70a-39a0-0322-e2ae-6434e0d1e0a3@redhat.com>
-Date:   Thu, 4 Feb 2021 08:38:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 4 Feb 2021 02:39:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612424371; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=PNaFuQrq1FOPPvy1zsUBLo97crEnYUTCs9GUaPLmKcw=;
+ b=LcOmEUTEVCJyFU1AikWPXiQ+K+Zsop6/iq4Juq62qO4hBAFLB1hpMc3rj6QMwrsHKuJlYbg7
+ GMQm8MVv7jcyDNZAckFOF2LdkoeaUMzv9QHFrA7JsyV+ZsGlWXW1V0/G+LvJYrO+arRazGnR
+ a/daDe7UR+mQVWbDZ9yLbhfNqKU=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 601ba49087f205364e832d05 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 07:38:56
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D284BC43463; Thu,  4 Feb 2021 07:38:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53D36C433C6;
+        Thu,  4 Feb 2021 07:38:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53D36C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210204161351.5c934ea2@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: remove h from printk format specifier
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210127222344.2445641-1-trix@redhat.com>
+References: <20210127222344.2445641-1-trix@redhat.com>
+To:     trix@redhat.com
+Cc:     davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210204073855.D284BC43463@smtp.codeaurora.org>
+Date:   Thu,  4 Feb 2021 07:38:55 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen, Andy,
+trix@redhat.com wrote:
 
-On 2/4/21 6:13 AM, Stephen Rothwell wrote:
-> Hi all,
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
+>   unnecessary %h[xudi] and %hh[xudi]")
 > 
-> After merging the drivers-x86 tree, today's linux-next build (x86_64
-> allmodconfig) produced this warning:
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
 > 
-> drivers/platform/x86/intel_scu_wdt.c: In function 'register_mid_wdt':
-> drivers/platform/x86/intel_scu_wdt.c:66:28: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->    66 |  wdt_dev.dev.platform_data = (const struct intel_mid_wdt_pdata *)id->driver_data;
->       |                            ^
-> 
-> Introduced by commit
-> 
->   a507e5d90f3d ("platform/x86: intel_scu_wdt: Get rid of custom x86 model comparison")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Thank you for the bug report.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Andy can you send me a fix for this please ?
+779750bb153d ath10k: remove h from printk format specifier
 
-Regards,
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210127222344.2445641-1-trix@redhat.com/
 
-Hans
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
