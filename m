@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C030230E95D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E021830E939
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234401AbhBDBTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:19:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11676 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234270AbhBDBTP (ORCPT
+        id S234420AbhBDBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:13:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12018 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234240AbhBDBNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:19:15 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWLHS38MGzlDhN;
-        Thu,  4 Feb 2021 09:16:52 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 09:18:29 +0800
-Subject: Re: [PATCH v3 2/5] ACPI: battery: Clean up printing messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-CC:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Joe Perches" <joe@perches.com>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
- <1961054.9MKZ8ejxOh@kreacher> <1731128.lCOlkKr4QW@kreacher>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <056c6a20-4957-e112-6a8f-62fe39247e56@huawei.com>
-Date:   Thu, 4 Feb 2021 09:18:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 3 Feb 2021 20:13:52 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWL9f17CqzjJlD;
+        Thu,  4 Feb 2021 09:11:50 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 4 Feb 2021
+ 09:12:58 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <matthias.bgg@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Ye Bin <yebin10@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] Bluetooth: btusb: remove set but not used variable in btusb_mtk_setup_firmware_79xx
+Date:   Thu, 4 Feb 2021 09:18:56 +0800
+Message-ID: <20210204011856.3685334-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <1731128.lCOlkKr4QW@kreacher>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/4 2:44, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
-> 
-> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
-> in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
-> respectively, which among other things causes the excessive log
-> level of the messages previously printed via ACPI_EXCEPTION() to
-> be increased.
-> 
-> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-> used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
-> definition from the headers and update the documentation accordingly.
-> 
-> While at it, update the pr_fmt() definition and drop the unneeded
-> PREFIX sybmbol definition from battery.c.  Also adapt the existing
-> pr_info() calls to the new pr_fmt() definition.
-> 
-> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+Fix follow warning:
+drivers/bluetooth/btusb.c:3479:9: warning: variable ‘fw_size’ set but not used [-Wunused-but-set-variable]
+  size_t fw_size;
+         ^~~~~~~
+drivers/bluetooth/btusb.c:3473:29: warning: variable ‘patchhdr’ set but not used [-Wunused-but-set-variable]
+  struct btmtk_patch_header *patchhdr = NULL;
+                             ^~~~~~~~
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ drivers/bluetooth/btusb.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Thanks
-Hanjun
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index eeafb8432c0f..9609b6cbf20f 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3470,13 +3470,11 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ static int btusb_mtk_setup_firmware_79xx(struct hci_dev *hdev, const char *fwname)
+ {
+ 	struct btmtk_hci_wmt_params wmt_params;
+-	struct btmtk_patch_header *patchhdr = NULL;
+ 	struct btmtk_global_desc *globaldesc = NULL;
+ 	struct btmtk_section_map *sectionmap;
+ 	const struct firmware *fw;
+ 	const u8 *fw_ptr;
+ 	const u8 *fw_bin_ptr;
+-	size_t fw_size;
+ 	int err, dlen, i, status;
+ 	u8 flag, first_block, retry;
+ 	u32 section_num, dl_size, section_offset;
+@@ -3490,8 +3488,6 @@ static int btusb_mtk_setup_firmware_79xx(struct hci_dev *hdev, const char *fwnam
+ 
+ 	fw_ptr = fw->data;
+ 	fw_bin_ptr = fw_ptr;
+-	fw_size = fw->size;
+-	patchhdr = (struct btmtk_patch_header *)fw_ptr;
+ 	globaldesc = (struct btmtk_global_desc *)(fw_ptr + MTK_FW_ROM_PATCH_HEADER_SIZE);
+ 	section_num = globaldesc->section_num;
+ 
+-- 
+2.25.4
+
