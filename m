@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319C530F5B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9297F30F5C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237047AbhBDPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:00:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45731 "EHLO
+        id S237067AbhBDPD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:03:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47068 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236989AbhBDO6s (ORCPT
+        by vger.kernel.org with ESMTP id S237071AbhBDO6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 09:58:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -18,27 +18,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=21kTSpbci/GKul+97WxXMOEIvXz0qLwA8h+cgydNMqY=;
-        b=OnsVNR6Isn/Lyp8V0eC+WAqoqSuH3q1GVzWnvBjtnPIL2R7YbFP2X0DVEyAS+5wUorPUwL
-        +2ExXujNeMaS7LIXM5dggv0PpXA45FEOroVwP0/5yleXSaFq3k/qJyU0lDjnPu3cjk54NQ
-        DsVGqQnFxI92VAKK+vnYbC0ucMP5ozA=
+        bh=EA/nqaRotJYvNBeiSlgDMpuTxEUgkrxx00l2lNqSnQk=;
+        b=dLMjopbKAhqcXOXMtbwcmT5i6yFrYQaJMUlFaw5Ao/14C4SJ+HElKP5w8KgCWIe0ZbvrmN
+        4mUcGbiTJB3AywoBmA05butUkx9YnmU+CK1uMbG27vzJRON4F3IJdtzeeQzg7BZ/c1064h
+        tGsYdZcQkyWBvaBKc1HKxovNKiD9JVM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-cnLFCk8IOuGHiRtlyJv36w-1; Thu, 04 Feb 2021 09:57:20 -0500
-X-MC-Unique: cnLFCk8IOuGHiRtlyJv36w-1
+ us-mta-40-FOeDsbq6PK-AybmChuKnxg-1; Thu, 04 Feb 2021 09:57:20 -0500
+X-MC-Unique: FOeDsbq6PK-AybmChuKnxg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37967100C660;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B03C80402E;
         Thu,  4 Feb 2021 14:57:19 +0000 (UTC)
 Received: from sirius.home.kraxel.org (ovpn-113-108.ams2.redhat.com [10.36.113.108])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F0C875B695;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFCE45D6D7;
         Thu,  4 Feb 2021 14:57:18 +0000 (UTC)
 Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id A19F51801021; Thu,  4 Feb 2021 15:57:12 +0100 (CET)
+        id C26801801022; Thu,  4 Feb 2021 15:57:12 +0100 (CET)
 From:   Gerd Hoffmann <kraxel@redhat.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Dave Airlie <airlied@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -46,9 +47,9 @@ Cc:     Gerd Hoffmann <kraxel@redhat.com>,
         VIRTUAL GPU),
         spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v6 05/10] drm/qxl: release shadow on shutdown
-Date:   Thu,  4 Feb 2021 15:57:06 +0100
-Message-Id: <20210204145712.1531203-6-kraxel@redhat.com>
+Subject: [PATCH v6 06/10] drm/qxl: properly pin/unpin shadow
+Date:   Thu,  4 Feb 2021 15:57:07 +0100
+Message-Id: <20210204145712.1531203-7-kraxel@redhat.com>
 In-Reply-To: <20210204145712.1531203-1-kraxel@redhat.com>
 References: <20210204145712.1531203-1-kraxel@redhat.com>
 MIME-Version: 1.0
@@ -58,28 +59,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case we have a shadow surface on shutdown release
-it so it doesn't leak.
-
+Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
  drivers/gpu/drm/qxl/qxl_display.c | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
-index 38d6b596094d..60331e31861a 100644
+index 60331e31861a..d25fd3acc891 100644
 --- a/drivers/gpu/drm/qxl/qxl_display.c
 +++ b/drivers/gpu/drm/qxl/qxl_display.c
-@@ -1229,5 +1229,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+@@ -802,12 +802,14 @@ static int qxl_plane_prepare_fb(struct drm_plane *plane,
+ 		}
+ 		if (user_bo->shadow != qdev->dumb_shadow_bo) {
+ 			if (user_bo->shadow) {
++				qxl_bo_unpin(user_bo->shadow);
+ 				drm_gem_object_put
+ 					(&user_bo->shadow->tbo.base);
+ 				user_bo->shadow = NULL;
+ 			}
+ 			drm_gem_object_get(&qdev->dumb_shadow_bo->tbo.base);
+ 			user_bo->shadow = qdev->dumb_shadow_bo;
++			qxl_bo_pin(user_bo->shadow);
+ 		}
+ 	}
  
+@@ -833,6 +835,7 @@ static void qxl_plane_cleanup_fb(struct drm_plane *plane,
+ 	qxl_bo_unpin(user_bo);
+ 
+ 	if (old_state->fb != plane->state->fb && user_bo->shadow) {
++		qxl_bo_unpin(user_bo->shadow);
+ 		drm_gem_object_put(&user_bo->shadow->tbo.base);
+ 		user_bo->shadow = NULL;
+ 	}
+@@ -1230,6 +1233,7 @@ int qxl_modeset_init(struct qxl_device *qdev)
  void qxl_modeset_fini(struct qxl_device *qdev)
  {
-+	if (qdev->dumb_shadow_bo) {
-+		drm_gem_object_put(&qdev->dumb_shadow_bo->tbo.base);
-+		qdev->dumb_shadow_bo = NULL;
-+	}
- 	qxl_destroy_monitors_object(qdev);
- }
+ 	if (qdev->dumb_shadow_bo) {
++		qxl_bo_unpin(qdev->dumb_shadow_bo);
+ 		drm_gem_object_put(&qdev->dumb_shadow_bo->tbo.base);
+ 		qdev->dumb_shadow_bo = NULL;
+ 	}
 -- 
 2.29.2
 
