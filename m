@@ -2,81 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A3230F6E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F58E30F6E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbhBDPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:55:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237642AbhBDPyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:54:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C0864DA5;
-        Thu,  4 Feb 2021 15:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612454007;
-        bh=khs2i3o7OyLpByS4iRQitlaOIeP18Lqtszz7MVd7WSg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WCloZaO1gq9wEGgNOGoPV0d87TreZLfRu/7f/MA26tyjU+Ru6yMj8HTvUKCtqwpcB
-         gJYP+dBHnNpx5QLBd+YZP1KhLVoLcZXgluQoewwozQsn565g4vIkH/nF8HYlt9bSJm
-         /6K6Lg3RKKon6YUux3/YZCd2Zmfl3rm4eW2dNlOe5XdDsqTq+EIewXbyPr9wxBoyD1
-         X0XfE6f2ptOHJxzzfkkfdAjICiuDOCfTKXijzCDMRS0+s+SGlm/KPhzsbakn+x6/5b
-         5/5TU0WdJ/OBkqCnd/nZnsDrUmD713Pg3Mh2l2uzXFksuvJtb1nNwCKBKGUnZoviA1
-         SAM0go1xxT0jw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2F5C140513; Thu,  4 Feb 2021 12:53:24 -0300 (-03)
-Date:   Thu, 4 Feb 2021 12:53:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 04/24] perf daemon: Add server socket support
-Message-ID: <20210204155324.GC910119@kernel.org>
-References: <20210129134855.195810-1-jolsa@redhat.com>
- <20210130234856.271282-1-jolsa@kernel.org>
- <20210130234856.271282-5-jolsa@kernel.org>
- <20210203210423.GQ854763@kernel.org>
- <YBwJgC4QX5re1VNw@krava>
+        id S237529AbhBDPzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:55:51 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49260 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237231AbhBDPyP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:54:15 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id EF8D01F463D3
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
+ <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+ <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
+ <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com>
+Date:   Thu, 4 Feb 2021 15:53:26 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBwJgC4QX5re1VNw@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Feb 04, 2021 at 03:49:36PM +0100, Jiri Olsa escreveu:
-> On Wed, Feb 03, 2021 at 06:04:23PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Sun, Jan 31, 2021 at 12:48:36AM +0100, Jiri Olsa escreveu:
-> > > +static int setup_server_socket(struct daemon *daemon)
-> > > +{
-> > > +	struct sockaddr_un addr;
-> > > +	char path[100];
-> > > +	int fd;
-> > > +
-> > > +	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-> > 
-> > Minor, combine decl with use, since line isn't long and its one after
-> > the other, i.e.:
-> > 
-> > 	int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+On 04/02/2021 15:42, Ard Biesheuvel wrote:
+> On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
+> <guillaume.tucker@collabora.com> wrote:
+>>
+>> On 04/02/2021 10:33, Guillaume Tucker wrote:
+>>> On 04/02/2021 10:27, Ard Biesheuvel wrote:
+>>>> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
+>>>> <linux@armlinux.org.uk> wrote:
+>>>>>
+>>>>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
+>>>>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
+>>>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>>>
+>>>>>>> Hi Ard,
+>>>>>>>
+>>>>>>> Please see the bisection report below about a boot failure on
+>>>>>>> rk3288 with next-20210203.  It was also bisected on
+>>>>>>> imx6q-var-dt6customboard with next-20210202.
+>>>>>>>
+>>>>>>> Reports aren't automatically sent to the public while we're
+>>>>>>> trialing new bisection features on kernelci.org but this one
+>>>>>>> looks valid.
+>>>>>>>
+>>>>>>> The kernel is most likely crashing very early on, so there's
+>>>>>>> nothing in the logs.  Please let us know if you need some help
+>>>>>>> with debugging or trying a fix on these platforms.
+>>>>>>>
+>>>>>>
+>>>>>> Thanks for the report.
+>>>>>
+>>>>> Ard,
+>>>>>
+>>>>> I want to send my fixes branch today which includes your regression
+>>>>> fix that caused this regression.
+>>>>>
+>>>>> As this is proving difficult to fix, I can only drop your fix from
+>>>>> my fixes branch - and given that this seems to be problematical, I'm
+>>>>> tempted to revert the original change at this point which should fix
+>>>>> both of these regressions - and then we have another go at getting rid
+>>>>> of the set/way instructions during the next cycle.
+>>>>>
+>>>>> Thoughts?
+>>>>>
+>>>>
+>>>> Hi Russell,
+>>>>
+>>>> If Guillaume is willing to do the experiment, and it fixes the issue,
+>>>
+>>> Yes, I'm running some tests with that fix now and should have
+>>> some results shortly.
+>>
+>> Yes it does fix the issue:
+>>
+>>   https://lava.collabora.co.uk/scheduler/job/3173819
+>>
+>> with Ard's fix applied to this test branch:
+>>
+>>   https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
+>>
+>>
+>> +clang +Nick
+>>
+>> It's worth mentioning that the issue only happens with kernels
+>> built with Clang.  As you can see there are several other arm
+>> platforms failing with clang-11 builds but booting fine with
+>> gcc-8:
+>>
+>>   https://kernelci.org/test/job/next/branch/master/kernel/next-20210203/plan/baseline/
+>>
+>> Here's a sample build log:
+>>
+>>   https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/build.log
+>>
+>> Essentially:
+>>
+>>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+>>
+>> I believe it should be using the GNU assembler as LLVM_IAS=1 is
+>> not defined, but there may be something more subtle about it.
+>>
 > 
-> hum, sure, but I'm missing the point.. I think it's less readable
+> 
+> Do you have a link for a failing zImage built from multi_v7_defconfig?
 
-one line instead of three :-)
- 
-> > 
-> > > +	if (fd < 0) {
-> > > +		fprintf(stderr, "socket: %s\n", strerror(errno));
-> > > +		return -1;
+Sure, this one was built from a plain next-20210203:
 
-- Arnaldo
+  http://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/zImage
+
+You can also find the dtbs, modules and other things in that same
+directory.
+
+For the record, here's the test job that used it:
+
+  https://lava.collabora.co.uk/scheduler/job/3173792
+
+Guillaume
