@@ -2,186 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B0B30FF8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E9F30FF94
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhBDVqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:46:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S229518AbhBDVr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhBDVps (ORCPT
+        with ESMTP id S230209AbhBDVqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:45:48 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E8CC061226
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 13:44:11 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id j4so2503720qvk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 13:44:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g2H2M2trN7O+hF5UdQLkbd5BwU/Kqg0aOCrMAr9yvMA=;
-        b=DN1fAENQ8vD0G2gYQS+QnNBHTavkKklxLYVg8KfChPMydJuoC/EU+7T+uzg0AzhAm2
-         ESwVP9BcORzDD35xWtHGz7RlnRi7Ti3XWwNJb2wwt2doLQSfGxSS/DYFHmPyif0kYBtb
-         jQcQlXXRfgMPl26LS2sMhZP/bKdHbutn8vFa5nzb4JM7XG4NUt9KCNiv0qfGMhSeVR3/
-         C7jmxrZg8i3gfV0mtuHAYvnSVLOq1OJxwUWJ8Jr3hxDDXC19Ni9RI9igQcuzlPk3NvCJ
-         atcfoD+0+30M71J6FdUiVe6VF+a8Ye5JBya/o2j7oAzxCDswl2hhz/e122geO78QoXXK
-         Y4jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g2H2M2trN7O+hF5UdQLkbd5BwU/Kqg0aOCrMAr9yvMA=;
-        b=DnNW4KbIIxwQa0Bht9R62tbwXK+2zenJlDs8qWUi6aVEC4zUZ+qCjFNEBPNFmy+h3q
-         LsMpldE4VWGNhX2ngRhjpSjur/dOylpFOnceXcEOl9pk0FupubMLu+BB1RsPcDiOpc7p
-         2siFccU6A0eEKh3B87u+JluMV0YCESCmUPNYspixdhD36mYCyIhN1GgxlNA7PiCOI+yB
-         liDCooV5LWA6RS0fmlO/cf9+mSaqyhizbcU3wUriG3v1KKy9Mjx/cyQPxfF/70jKxii7
-         pDC4dLduNjw6iyqsVU08BUWKYJI2gGKXzr4VNVS7GUwTz0xmAlr/UHSmKQICsyeellVO
-         QsTg==
-X-Gm-Message-State: AOAM530tJ+bcSHOL3DPrhZx64F8yPIC4Ws4k/te8S/oWREi6SgfQCm/9
-        3xOrRLXPhWo9xbzI/qwEfwyi8A==
-X-Google-Smtp-Source: ABdhPJyyiYGCn5UaWmBikBJxL1aC3hTIbD6/m5+JoEMPHDZB3qbFRmEUv8v6rXZhO7NG4+n+k9pfBQ==
-X-Received: by 2002:ad4:58f1:: with SMTP id di17mr1336680qvb.57.1612475051044;
-        Thu, 04 Feb 2021 13:44:11 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id h185sm6353858qkd.122.2021.02.04.13.44.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:44:10 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 11/11] crypto: qce: Remove totallen and offset in qce_start
-Date:   Thu,  4 Feb 2021 16:43:59 -0500
-Message-Id: <20210204214359.1993065-12-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210204214359.1993065-1-thara.gopinath@linaro.org>
-References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
+        Thu, 4 Feb 2021 16:46:14 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F65C0611C0;
+        Thu,  4 Feb 2021 13:44:19 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 2DF0C425B6;
+        Thu,  4 Feb 2021 21:44:14 +0000 (UTC)
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <CAK8P3a3v6emxavbyjFhY+WdvH1t4EPMZSjEsSx0M+cRqjRCO1g@mail.gmail.com>
+From:   Hector Martin 'marcan' <marcan@marcan.st>
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <de236d0c-579d-c0d9-8d60-77f30889f50c@marcan.st>
+Date:   Fri, 5 Feb 2021 06:44:13 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a3v6emxavbyjFhY+WdvH1t4EPMZSjEsSx0M+cRqjRCO1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-totallen is used to get the size of the data to be transformed.
-This is also available via nbytes or cryptlen in the qce_sha_reqctx
-and qce_cipher_ctx. Similarly offset convey nothing for the supported
-encryption and authentication transformations and is always 0.
-Remove these two redundant parameters in qce_start.
+On 05/02/2021 06.29, Arnd Bergmann wrote:
+> On Thu, Feb 4, 2021 at 9:39 PM Hector Martin <marcan@marcan.st> wrote:
+> 
+>> +/ {
+>> +       model = "Apple Mac Mini M1 2020";
+>> +       compatible = "AAPL,j274", "AAPL,m1", "AAPL,arm-platform";
+>> +       #address-cells = <2>;
+>> +       #size-cells = <2>;
+>> +
+>> +       chosen {
+>> +               #address-cells = <2>;
+>> +               #size-cells = <2>;
+>> +               ranges;
+>> +
+>> +               bootargs = "earlycon";
+>> +               stdout-path = "serial0:1500000";
+>> +
+>> +               framebuffer0: framebuffer@0 {
+>> +                       compatible = "AAPL,simple-framebuffer", "simple-framebuffer";
+>> +                       reg = <0 0 0 0>; // To be filled by loader
+>> +                       // Format properties will be added by loader
+>> +                       status = "disabled";
+>> +               };
+>> +       };
+>> +
+>> +       memory@800000000 {
+>> +               device_type = "memory";
+>> +               reg = <0 0 0 0>; // To be filled by loader
+>> +       };
+>> +
+>> +       aliases {
+>> +               serial0 = &serial0;
+>> +       };
+> 
+> We tend to split the dts file into one file per SoC and one for the
+> specific board. I guess in this case the split can be slightly different,
+> but it does feel better to be prepared for sharing a lot of the contents
+> between the different products.
+> 
+> In most cases, you'd want the 'aliases' and 'chosen' nodes to be
+> in the board specific file.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/crypto/qce/common.c   | 17 +++++++----------
- drivers/crypto/qce/common.h   |  3 +--
- drivers/crypto/qce/sha.c      |  2 +-
- drivers/crypto/qce/skcipher.c |  2 +-
- 4 files changed, 10 insertions(+), 14 deletions(-)
+I thought about that, but wasn't sure if splitting it up at this early 
+stage made much sense since I'm not sure what the split should be, given 
+all supported hardware is the same for all 3 released devices.
 
-diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-index f7bc701a4aa2..dceb9579d87a 100644
---- a/drivers/crypto/qce/common.c
-+++ b/drivers/crypto/qce/common.c
-@@ -140,8 +140,7 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size)
- 	return cfg;
- }
- 
--static int qce_setup_regs_ahash(struct crypto_async_request *async_req,
--				u32 totallen, u32 offset)
-+static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
- {
- 	struct ahash_request *req = ahash_request_cast(async_req);
- 	struct crypto_ahash *ahash = __crypto_ahash_cast(async_req->tfm);
-@@ -306,8 +305,7 @@ static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
- 	qce_write(qce, REG_ENCR_XTS_DU_SIZE, cryptlen);
- }
- 
--static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
--				     u32 totallen, u32 offset)
-+static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
- {
- 	struct skcipher_request *req = skcipher_request_cast(async_req);
- 	struct qce_cipher_reqctx *rctx = skcipher_request_ctx(req);
-@@ -367,7 +365,7 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
- 
- 	qce_write(qce, REG_ENCR_SEG_CFG, encr_cfg);
- 	qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen);
--	qce_write(qce, REG_ENCR_SEG_START, offset & 0xffff);
-+	qce_write(qce, REG_ENCR_SEG_START, 0);
- 
- 	if (IS_CTR(flags)) {
- 		qce_write(qce, REG_CNTR_MASK, ~0);
-@@ -376,7 +374,7 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
- 		qce_write(qce, REG_CNTR_MASK2, ~0);
- 	}
- 
--	qce_write(qce, REG_SEG_SIZE, totallen);
-+	qce_write(qce, REG_SEG_SIZE, rctx->cryptlen);
- 
- 	/* get little endianness */
- 	config = qce_config_reg(qce, 1);
-@@ -388,17 +386,16 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
- }
- #endif
- 
--int qce_start(struct crypto_async_request *async_req, u32 type, u32 totallen,
--	      u32 offset)
-+int qce_start(struct crypto_async_request *async_req, u32 type)
- {
- 	switch (type) {
- #ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
- 	case CRYPTO_ALG_TYPE_SKCIPHER:
--		return qce_setup_regs_skcipher(async_req, totallen, offset);
-+		return qce_setup_regs_skcipher(async_req);
- #endif
- #ifdef CONFIG_CRYPTO_DEV_QCE_SHA
- 	case CRYPTO_ALG_TYPE_AHASH:
--		return qce_setup_regs_ahash(async_req, totallen, offset);
-+		return qce_setup_regs_ahash(async_req);
- #endif
- 	default:
- 		return -EINVAL;
-diff --git a/drivers/crypto/qce/common.h b/drivers/crypto/qce/common.h
-index 85ba16418a04..3bc244bcca2d 100644
---- a/drivers/crypto/qce/common.h
-+++ b/drivers/crypto/qce/common.h
-@@ -94,7 +94,6 @@ struct qce_alg_template {
- void qce_cpu_to_be32p_array(__be32 *dst, const u8 *src, unsigned int len);
- int qce_check_status(struct qce_device *qce, u32 *status);
- void qce_get_version(struct qce_device *qce, u32 *major, u32 *minor, u32 *step);
--int qce_start(struct crypto_async_request *async_req, u32 type, u32 totallen,
--	      u32 offset);
-+int qce_start(struct crypto_async_request *async_req, u32 type);
- 
- #endif /* _COMMON_H_ */
-diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
-index 2813c9a27a6e..8e6fcf2c21cc 100644
---- a/drivers/crypto/qce/sha.c
-+++ b/drivers/crypto/qce/sha.c
-@@ -113,7 +113,7 @@ static int qce_ahash_async_req_handle(struct crypto_async_request *async_req)
- 
- 	qce_dma_issue_pending(&qce->dma);
- 
--	ret = qce_start(async_req, tmpl->crypto_alg_type, 0, 0);
-+	ret = qce_start(async_req, tmpl->crypto_alg_type);
- 	if (ret)
- 		goto error_terminate;
- 
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index 8599250946b7..3fc0b263d498 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -144,7 +144,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 
- 	qce_dma_issue_pending(&qce->dma);
- 
--	ret = qce_start(async_req, tmpl->crypto_alg_type, req->cryptlen, 0);
-+	ret = qce_start(async_req, tmpl->crypto_alg_type);
- 	if (ret)
- 		goto error_terminate;
- 
+I'm happy to throw the aliases/chosen nodes into board specific files if 
+you think that's a good starting point. Perhaps /memory too? Those 
+properties are filled in/patched by the bootloader anyway...
+
+There are also DT overlays; I was wondering if we could use those to 
+keep the hierarchy and avoid having many duplicate trees in a 
+hypothetical bootloader that embeds support for a large set of hardware, 
+having it construct the final devicetree on the fly from SoC + a board 
+overlay (and possibly further levels); but I'm not sure how that ties in 
+with the device trees that live in the Linux tree. Do you have any 
+pointers about this?
+
+For reference, this is our current DT patching code in m1n1:
+
+https://github.com/AsahiLinux/m1n1/blob/main/src/kboot.c
+
+Eventually we're going to build some kind of tooling to automate diffing 
+Apple device trees and importing changes/new devices into our own, 
+though it will probably be quite a while until that is relevant; at this 
+stage hand-maintaining them is perfectly fine (in any case this wouldn't 
+be fully automated, so in the end our trees will still be organized 
+however we want).
+
+>> +       cpus {
+>> +               #address-cells = <2>;
+>> +               #size-cells = <0>;
+>> +
+>> +               cpu0: cpu@0 {
+>> +                       compatible = "AAPL,icestorm";
+>> +                       device_type = "cpu";
+>> +                       reg = <0x0 0x0>;
+>> +                       enable-method = "spin-table";
+>> +                       cpu-release-addr = <0 0>; // To be filled by loader
+>> +               };
+> 
+> Did you see the discussion on the #armlinux channel about the possibility
+> of moving the cpu-enable method to PSCI based on a UEFI runtime
+> interface?
+> 
+> There are a few open questions about what that would look like in the
+> end, but Ard has come up with a prototype for the kernel side of it
+> (obviously untested), which would interface either into the UEFI side
+> of u-boot, or a simple already-instantiated version that could be
+> kept inside of m1n1 and stay resident in memory.
+> 
+> I would like to see that model get adopted here eventually. If
+> we manage to get the other patches ready for an initial merge in
+> v5.12, we can probably start out with spin-table and move to that
+> in a following release though.
+
+I saw it go by but need to review it again; I've been missing too much 
+sleep this week :) thanks for the reminder.
+
+I think we might want to start with spin-table for now, given that there 
+are no kernel changes needed anyway, but I'm happy to take the protoype 
+for a spin (:)) and try implementing it in m1n1.
+
+I do think it's valuable for whatever we do, at this stage, to not 
+require u-boot; having that be an integral part of the boot chain is 
+perfectly fine in the future but right now it helps to have a simple 
+boot chain while we work out the early bring-up, and while u-boot grows 
+the required support.
+
 -- 
-2.25.1
-
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
