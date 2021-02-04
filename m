@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2370E30F997
+	by mail.lfdr.de (Postfix) with ESMTP id 941AA30F998
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238478AbhBDRYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:24:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33657 "EHLO
+        id S238486AbhBDRYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:24:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24893 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238346AbhBDRYL (ORCPT
+        by vger.kernel.org with ESMTP id S238435AbhBDRYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:24:11 -0500
+        Thu, 4 Feb 2021 12:24:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612459364;
+        s=mimecast20190719; t=1612459370;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Zc+XWtfGtASjsMASpHkffR1pL11AhNAnMUdubmKUbE8=;
-        b=NqG6ohqw0nQL5Ruvpqjl7wzvtwH9pPdnI14PLgFjPdJfG91r5shobxEFBPHzr7e7/t1Ii8
-        U7kEhLmfT3rR63Zc9EazWOD5/lgagIgjKppfU/YMK6BiUpHhqFp2Dohb+8D/x7bE8MKb5Z
-        BkVX3t5UaauG4SMDSZZP5590zdjNVtM=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UmOKLaTbJiQKcYt0L7iKZJy+Gn/RMRr8BGTDW6LVgJ8=;
+        b=HXA18pspGTbbDiK0DUVUY735rH9piUBFN9M+p/e71ruVFHOLdMtmvIq/ObjtsjDzgW9nIt
+        DEksR43iEkMFnxg6rr56Q4l/R1pRw5Ib3Woz6zrZVmepguT6Jdfx1d8oHsbCep2VQ+1QiT
+        0LTJh1ATy0VmGMTuOGUwx7zA1I1Kueg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-GuaFadePOfu83dcFO57M_A-1; Thu, 04 Feb 2021 12:22:41 -0500
-X-MC-Unique: GuaFadePOfu83dcFO57M_A-1
+ us-mta-420-4CDNnwrLMSiO3nF26848RA-1; Thu, 04 Feb 2021 12:22:48 -0500
+X-MC-Unique: 4CDNnwrLMSiO3nF26848RA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2E1C879A0D;
-        Thu,  4 Feb 2021 17:22:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BD0B8799EB;
+        Thu,  4 Feb 2021 17:22:47 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-113-213.ams2.redhat.com [10.36.113.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4092D1A87C;
-        Thu,  4 Feb 2021 17:22:31 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 436A1194A4;
+        Thu,  4 Feb 2021 17:22:45 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefano Garzarella <sgarzare@redhat.com>,
@@ -42,10 +43,11 @@ Cc:     Stefano Garzarella <sgarzare@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>,
         linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 00/13] vdpa: add vdpa simulator for block device
-Date:   Thu,  4 Feb 2021 18:22:17 +0100
-Message-Id: <20210204172230.85853-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset="utf-8"
+Subject: [PATCH v3 03/13] vringh: reset kiov 'consumed' field in __vringh_iov()
+Date:   Thu,  4 Feb 2021 18:22:20 +0100
+Message-Id: <20210204172230.85853-4-sgarzare@redhat.com>
+In-Reply-To: <20210204172230.85853-1-sgarzare@redhat.com>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
@@ -53,79 +55,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3:
-- added new patches
-  - 'vringh: explain more about cleaning riov and wiov'
-  - 'vdpa: add return value to get_config/set_config callbacks'
-  - 'vhost/vdpa: remove vhost_vdpa_config_validate()'
-- split Xie's patch 'vhost/vdpa: Remove the restriction that only supports
-  virtio-net devices'
-- updated Mellanox copyright to NVIDIA [Max]
-- explained in the 'vdpa: add vdpa simulator for block device' commit
-  message that inputs are validated in subsequent patches [Stefan]
+__vringh_iov() overwrites the contents of riov and wiov, in fact it
+resets the 'i' and 'used' fields, but also the 'consumed' field should
+be reset to avoid an inconsistent state.
 
-v2: https://lore.kernel.org/lkml/20210128144127.113245-1-sgarzare@redhat.com/
-v1: https://lore.kernel.org/lkml/93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com/
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ drivers/vhost/vringh.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This series is the second part of the v1 linked above. The first part with
-refactoring of vdpa_sim has already been merged.
-
-The patches are based on Max Gurtovoy's work and extend the block simulator to
-have a ramdisk behaviour.
-
-As mentioned in the v1 there was 2 issues and I fixed them in this series:
-1. The identical mapping in the IOMMU used until now in vdpa_sim created issues
-   when mapping different virtual pages with the same physical address.
-   Fixed by patch "vdpa_sim: use iova module to allocate IOVA addresses"
-
-2. There was a race accessing the IOMMU between the vdpasim_blk_work() and the
-   device driver that map/unmap DMA regions. Fixed by patch "vringh: add
-   'iotlb_lock' to synchronize iotlb accesses"
-
-I used the Xie's patch coming from VDUSE series to allow vhost-vdpa to use
-block devices. As Jason suggested I split it into two patches and I added
-a return value to get_config()/set_config() callbacks.
-
-The series also includes small fixes for vringh, vdpa, and vdpa_sim that I
-discovered while implementing and testing the block simulator.
-
-Thanks for your feedback,
-Stefano
-
-Max Gurtovoy (1):
-  vdpa: add vdpa simulator for block device
-
-Stefano Garzarella (11):
-  vdpa_sim: use iova module to allocate IOVA addresses
-  vringh: add 'iotlb_lock' to synchronize iotlb accesses
-  vringh: reset kiov 'consumed' field in __vringh_iov()
-  vringh: explain more about cleaning riov and wiov
-  vringh: implement vringh_kiov_advance()
-  vringh: add vringh_kiov_length() helper
-  vdpa_sim: cleanup kiovs in vdpasim_free()
-  vdpa: add return value to get_config/set_config callbacks
-  vhost/vdpa: remove vhost_vdpa_config_validate()
-  vdpa_sim_blk: implement ramdisk behaviour
-  vdpa_sim_blk: handle VIRTIO_BLK_T_GET_ID
-
-Xie Yongji (1):
-  vhost/vdpa: Remove the restriction that only supports virtio-net
-    devices
-
- drivers/vdpa/vdpa_sim/vdpa_sim.h     |   2 +
- include/linux/vdpa.h                 |  18 +-
- include/linux/vringh.h               |  19 +-
- drivers/vdpa/ifcvf/ifcvf_main.c      |  24 ++-
- drivers/vdpa/mlx5/net/mlx5_vnet.c    |  17 +-
- drivers/vdpa/vdpa_sim/vdpa_sim.c     | 134 ++++++++-----
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 288 +++++++++++++++++++++++++++
- drivers/vhost/vdpa.c                 |  47 ++---
- drivers/vhost/vringh.c               |  69 +++++--
- drivers/vdpa/Kconfig                 |   8 +
- drivers/vdpa/vdpa_sim/Makefile       |   1 +
- 11 files changed, 504 insertions(+), 123 deletions(-)
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-
+diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+index f68122705719..bee63d68201a 100644
+--- a/drivers/vhost/vringh.c
++++ b/drivers/vhost/vringh.c
+@@ -290,9 +290,9 @@ __vringh_iov(struct vringh *vrh, u16 i,
+ 		return -EINVAL;
+ 
+ 	if (riov)
+-		riov->i = riov->used = 0;
++		riov->i = riov->used = riov->consumed = 0;
+ 	if (wiov)
+-		wiov->i = wiov->used = 0;
++		wiov->i = wiov->used = wiov->consumed = 0;
+ 
+ 	for (;;) {
+ 		void *addr;
 -- 
 2.29.2
 
