@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A8330EE3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB3030EE3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbhBDITK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234603AbhBDITI (ORCPT
+        id S234888AbhBDIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:21:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234696AbhBDIV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:19:08 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472E9C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 00:18:28 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o21so174710pgn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y8SDePCP2k7/D0/1LaEKZCiCgjAw7SpIfFnhKEoussk=;
-        b=TW/Cyk6NllRtHj0dqazdLipT6kZ6QCQlJtfJWUyRgrZNQDVeev/kIxKaKjA86NnPLd
-         JRINzKJv7CY6UzvAp6aLmFXxpZ5jrsFUC2+KJt9ggZhBnY4PHmR5h4SsBx5ndifcOyra
-         XKy9b4Ay6NYN4PfbM9EuvrOAJa0jBhy3MK5UAELeE8p0++HuzNwpZ/cnX90zdNaNBOcx
-         SJ8aXklCyD9ecW8TXBwfpFFIsKokM9wJthkRMuMFDO8QcQypj3cs4WjAOZ7edZO93L3V
-         y0OoGMYoGgZKZnwy2QebBTzlCRQTkA5McjXC3mk1hRUBUfasUpYGnWPWzkHziyaDR0o5
-         TBXA==
+        Thu, 4 Feb 2021 03:21:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612426829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMux9xeg2o0Nzq5bnmpVyZk80lGMRhzWrGwfdgzhu+M=;
+        b=HaluePf0fuvZyYNcyuO64cMhBJWmCAJvBqMj4XsM3dMTSJlMZezXyo62YWyuQQ84wzEj2G
+        JShTWwbP07o0lBRZEYjwndQ6Ke7VPnUMtjDe0mlJfT3mELqLXkpEc5ZNfNzGL7v4pKtzMO
+        KDRJxYts7JCbp+8hZo4vUf9k3AxYcUE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-gzEghfrkP0C4DaoSTpdgbQ-1; Thu, 04 Feb 2021 03:20:27 -0500
+X-MC-Unique: gzEghfrkP0C4DaoSTpdgbQ-1
+Received: by mail-wr1-f71.google.com with SMTP id e15so2192752wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:20:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Y8SDePCP2k7/D0/1LaEKZCiCgjAw7SpIfFnhKEoussk=;
-        b=Vpa93DlXjJTFHUhcDuQ1BxQw3Ex/1WvukVi3FK9DAJxAgHoUtkeB3QZwXB620R7Cjz
-         Jt7Zfphql0aqxRpGD9OjR38JcSlCONdDurn/68E9oAj6g+eyD5PBxfTZkHdWu1QUBSrZ
-         QU/+E/FWBSFEVHJ9vvn+Cw5MAUldArINb1Dho5kZPgqeQFEjOTjuQ4TV/ZYTZwNylDNn
-         g975/zzHja9idE5IcQtEorPkvID3yVuemkUs6llDstSBT3GBPAa055+ESNKTDeUeWkAr
-         xBd8O2TtlQpn9QyisgKfhEPL2I+aNof+oJgnCG9p8MlPKtl1uk1moCSWWTqWXut5VJli
-         im8Q==
-X-Gm-Message-State: AOAM531zsdlvjo+uPfpWcqCC6Kj9qCPoZgVAyXtK6iiFnyZKN9uzchuU
-        hCUx3Yi8s/WW3WErPb/pk0k=
-X-Google-Smtp-Source: ABdhPJwJ1UsDG2L/tVwGCqWrE7+GwAgfBMnWzVjl17x4e+DA3u2XvIPVoDwPRqvndoD2DZ5jlfc6rA==
-X-Received: by 2002:a63:570c:: with SMTP id l12mr8006448pgb.194.1612426707809;
-        Thu, 04 Feb 2021 00:18:27 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id 194sm2800304pfu.165.2021.02.04.00.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 00:18:26 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Magnum Shan <magnum.shan@unisoc.com>,
-        Haidong Yao <haidong.yao@unisoc.com>
-Subject: [PATCH] mailbox: sprd: correct definition of SPRD_OUTBOX_FIFO_FULL
-Date:   Thu,  4 Feb 2021 16:18:19 +0800
-Message-Id: <20210204081819.892660-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=nMux9xeg2o0Nzq5bnmpVyZk80lGMRhzWrGwfdgzhu+M=;
+        b=hRsjwvhJSCr3IOGMTgn941ArLwecpKVSWrz+BMQiFcdFbBYxTifaKufW+CtfRbgdg1
+         rmU32UGbSBnHyucZEIUB5SkBILeNgYKRK+dSPPO5r34WDRLKB8Y7qneQpNGUMFNQVLiA
+         3+2qbST9AhLXm5caEGsBCoduMCPoRndHbLdrbh8+GMMi0nrNACHwJiBFHnMP4DikrPzm
+         1NkefeQgzhTs0rJqzAu+tSLoY0iuLeDwPXPNuq1QFd0/9uH0tPJWJxGOVRSa3qLMnoDA
+         j5ct3afRdt2cFgajElZte8BlsCt3N7v9HR5BDqSX6v8B1wC0ERp7KZ6YtI0rRazZXi/8
+         fkHw==
+X-Gm-Message-State: AOAM5320u2IG6yWB77lsznVLHTiYvs+ljdC0Kf1RZP+HUj/DvNmQ8yBW
+        bpFmwKj4VOllFPcvD9eFd8qqpjL4PhWrOi2dPZmM5zos4GTgXudy06RHIKEjRNU8zlBYrOm8ejU
+        f9jzRtdBKeIqwUauNSZkW1Cc/
+X-Received: by 2002:a05:6000:48:: with SMTP id k8mr8056028wrx.340.1612426826843;
+        Thu, 04 Feb 2021 00:20:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxCv+uSSCqNqJhvOGDIOprVqWzgGeSsvHNPHsJBguW10RgCtSVMlhGlz9OjHYpIL+UQJmeGFA==
+X-Received: by 2002:a05:6000:48:: with SMTP id k8mr8056011wrx.340.1612426826663;
+        Thu, 04 Feb 2021 00:20:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u10sm5071763wmj.40.2021.02.04.00.20.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 00:20:25 -0800 (PST)
+Subject: Re: [PATCH] KVM: SVM: Remove bogus WARN and emulation if guest #GPs
+ with EFER.SVME=1
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bandan Das <bsd@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210204023536.3397005-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dde46009-10b6-9274-fb36-a57c04bf1df5@redhat.com>
+Date:   Thu, 4 Feb 2021 09:20:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204023536.3397005-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnum Shan <magnum.shan@unisoc.com>
+On 04/02/21 03:35, Sean Christopherson wrote:
+> Immediately reinject #GP (if intercepted) if the VMware backdoor is
+> disabled and the instruction is not affected by the erratum that causes
+> bogus #GPs on SVM instructions.  It is completely reasonable for the
+> guest to take a #GP(0) with EFER.SVME=1, e.g. when probing an MSR, and
+> attempting emulation on an unknown instruction is obviously not good.
+> 
+> Fixes: b3f4e11adc7d ("KVM: SVM: Add emulation support for #GP triggered by SVM instructions")
+> Cc: Bandan Das <bsd@redhat.com>
+> Cc: Maxim Levitsky <mlevitsk@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index f53e6377a933..707a2f85bcc6 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2263,7 +2263,8 @@ static int gp_interception(struct vcpu_svm *svm)
+>   	opcode = svm_instr_opcode(vcpu);
+>   
+>   	if (opcode == NONE_SVM_INSTR) {
+> -		WARN_ON_ONCE(!enable_vmware_backdoor);
+> +		if (!enable_vmware_backdoor)
+> +			goto reinject;
+>   
+>   		/*
+>   		 * VMware backdoor emulation on #GP interception only handles
+> 
 
-According to the specification, bit[2] represents SPRD_OUTBOX_FIFO_FULL,
-not bit[0], so correct it.
+Squashed, thanks.
 
-Fixes: ca27fc26cd22 ("mailbox: sprd: Add Spreadtrum mailbox driver")
-Signed-off-by: Magnum Shan <magnum.shan@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/mailbox/sprd-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
-index f6fab24ae8a9..4c325301a2fe 100644
---- a/drivers/mailbox/sprd-mailbox.c
-+++ b/drivers/mailbox/sprd-mailbox.c
-@@ -35,7 +35,7 @@
- #define SPRD_MBOX_IRQ_CLR			BIT(0)
- 
- /* Bit and mask definiation for outbox's SPRD_MBOX_FIFO_STS register */
--#define SPRD_OUTBOX_FIFO_FULL			BIT(0)
-+#define SPRD_OUTBOX_FIFO_FULL			BIT(2)
- #define SPRD_OUTBOX_FIFO_WR_SHIFT		16
- #define SPRD_OUTBOX_FIFO_RD_SHIFT		24
- #define SPRD_OUTBOX_FIFO_POS_MASK		GENMASK(7, 0)
--- 
-2.25.1
+Paolo
 
