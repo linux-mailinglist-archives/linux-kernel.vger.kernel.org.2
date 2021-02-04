@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5CB30F5EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A3930F5F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237155AbhBDPM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:12:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237179AbhBDPKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:10:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1F664F43;
-        Thu,  4 Feb 2021 15:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612451394;
-        bh=7BSaK+ZjIjpF5DSdO5dB49yuTQ484kyKnlv7VuEFaec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=laHm4bRmvrJPYpkgTiWfZ/xHuz8b/6RAlI/QbuAn8MH9IrrGeM/CQSX8Q3wceniXw
-         FRvkTjp3kg+0uwyvSeFOpCGPJC0hTh5wkjhc+kxFLZVkRXz10vptQ7oBOjKgzFgh3J
-         9NLmdWdsqJY3dB04c1JOPPtqwnj3AqxRB6zpX1zdKpwcfxgGAuU2aan84JPMpWfDVE
-         tII+z0gKG3+mPI/vlH1yKbKFf5A2WWk8y5As6mPS6D4cNti+61He5S7qqkr+DY39Qv
-         UJzxkOLuwLZd7u8TXDiJQAV0LWp1AneJ+eRxmRLbU/VPGHg6LJaKvtUH0nlttdIjhh
-         2DIII7KjpLb4A==
-Date:   Thu, 4 Feb 2021 15:09:04 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
- with WM5102 codec
-Message-ID: <20210204150904.GD4288@sirena.org.uk>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
- <20210204105748.GD2789116@dell>
- <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
- <20210204124335.GA4288@sirena.org.uk>
- <20210204134606.GH2789116@dell>
+        id S237200AbhBDPPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:15:23 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:11302 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237111AbhBDPMS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:12:18 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114F2AAf019077;
+        Thu, 4 Feb 2021 16:11:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=sE6exNrtQq570ihFE/Urs/fOiX/fcIs+40k5WvNHbCU=;
+ b=3YP4elACwrLPsMfVFx3oqTAbN2nrwbUUjDET+rokUwyW58zM/vP0Lrxg01V/Ym4U5wsH
+ oIgiCByyqYsDajGrJl/M6v37u1OzgnSPLai11PKUjhUD97SfGlqT1erk2zfKiV9vNC9t
+ ZfleUze9tsFYrzJsutJpOfbSkMwIKO3cmPlCJfDp+5UOGIVlZD/l3AsRs1M9wLAi6dBm
+ b/I4LArXJ3vHXsns3MY57LxKVlhHAALkO2/f+nrV7zVnm6mqc9IwBRtDPLQehn49qpH0
+ hKuQWxs5fl0cAkmcIHMhY8tcxGvhoxzZWbZQ1DIymX3oflIpSVYr5Ec2ZddZV7jvquD/ GQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36d0fs86hx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 16:11:14 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AA37010002A;
+        Thu,  4 Feb 2021 16:11:13 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 62BEC2BA2CA;
+        Thu,  4 Feb 2021 16:11:13 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
+ 2021 16:11:12 +0100
+Subject: Re: [PATCH v3 06/15] rpmsg: update rpmsg_chrdev_register_device
+ function
+To:     kernel test robot <lkp@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>
+CC:     <kbuild-all@lists.01.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20210204084534.10516-7-arnaud.pouliquen@foss.st.com>
+ <202102042006.UBNrTXCE-lkp@intel.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <c853e1f6-d5f9-4270-5a78-2e9730e5089e@foss.st.com>
+Date:   Thu, 4 Feb 2021 16:11:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
-Content-Disposition: inline
-In-Reply-To: <20210204134606.GH2789116@dell>
-X-Cookie: Truth can wait
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202102042006.UBNrTXCE-lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_08:2021-02-04,2021-02-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fXStkuK2IQBfcDe+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Feb 04, 2021 at 01:46:06PM +0000, Lee Jones wrote:
-> On Thu, 04 Feb 2021, Mark Brown wrote:
+On 2/4/21 1:44 PM, kernel test robot wrote:
+> Hi Arnaud,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.11-rc6 next-20210125]
+> [cannot apply to rpmsg/for-next agross-msm/qcom/for-next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Arnaud-Pouliquen/introduce-a-generic-IOCTL-interface-for-RPMsg-channels-management/20210204-165337
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 61556703b610a104de324e4f061dc6cf7b218b46
+> config: openrisc-randconfig-r001-20210204 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/23c166e0b157f0695fa7daefb8c5e30f383c3efd
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Arnaud-Pouliquen/introduce-a-generic-IOCTL-interface-for-RPMsg-channels-management/20210204-165337
+>         git checkout 23c166e0b157f0695fa7daefb8c5e30f383c3efd
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>>
+> All errors (new ones prefixed by >>):
+> 
+>    or1k-linux-ld: drivers/rpmsg/qcom_glink_native.o: in function `qcom_glink_native_probe':
+>>> qcom_glink_native.c:(.text+0x2e88): undefined reference to `rpmsg_ctrl_register_device'
+>    qcom_glink_native.c:(.text+0x2e88): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `rpmsg_ctrl_register_device'
 
-> > The usual pattern here is that the MFD patches get merged and then I
-> > pull a shared branch in for any dependencies - at this point the series
-> > is now on the backlog of serieses where I'm waiting for the MFD to sort
-> > itself out before I really look at it again.
+Thanks for highlighting it!
 
-> I tend to push patches awaiting Acks to the back of the queue.
+I await further review comments first, but I will address this in my next
+revision, if it still relevant.
 
-> Stalemate.
-
-I'm only going to ack things if I expect to see them applied via another
-tree, that's generally what an ack means from a maintainer.  Especially
-with ASoC where we keep on having subsystem wide changes quite often I'm
-not likely to do that for things like new drivers unless it's very clear
-what the timelines are.
-
-It would be enormously helpful to get the bits of the core MFDs that
-create dependencies committed while the rest of the series is still in
-process, as well as allowing things to be applied it also helps with
-knowing if the dependencies are stable.
-
---fXStkuK2IQBfcDe+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAcDg8ACgkQJNaLcl1U
-h9DAUAf9HROtNJ38LsxGRnoLdtz5m9eyu/zq4B961taC1T6LQlGBOqTIF1MlCVyf
-8M5rdGI3N3kYlBTOvMspE0E34KWOA9IWE5CreCl9xxcZiNm0kLQtJtN3dmVBVESX
-90LWORwSt7+ezT4SvMZCL7wBe13BCjQJORYfGKJxsm+rA2qNIiyijfnVOa52tyVQ
-s/LbwZduYcSQXQxv24xgYhwOujAARjOxBlxhp+MedmeDWOzSWwflGyD9urxhjKiE
-0+oP8NRzbv+/LCyCPKKoqbWGGQx05ce5VUCgHLIehczCfX7p/kR0QekpUBYx2rCL
-1OWHZgvIArbJD/MpWfiqfcPUEgZVvA==
-=prQV
------END PGP SIGNATURE-----
-
---fXStkuK2IQBfcDe+--
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
