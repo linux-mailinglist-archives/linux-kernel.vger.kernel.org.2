@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533BC3101EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820C031020C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhBEA6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:58:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhBEA55 (ORCPT
+        id S232411AbhBEA7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:59:07 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44108 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232348AbhBEA6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:57:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA53C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=taptAJZGVKhfjl8ozXfnK9asETcneiqziSs3CSxtFhA=; b=g8iPGKLlFaBXUCALRtfaF9+wZD
-        h52jb08lSpIqM2riFRo9zpg6IQAbiUok5OI6xVtNHxjoUgIluzA5j5lORtyeLplRNJhpkqEgpg18T
-        /McpJ6otH7Ygr2cl8SVWcwI0k+fa416JxiYEK6GmaLyMkpaMEJh4Td2GvvaSziGHhjbDd7W5gNZcb
-        LC+XNg6sGFRBxjgZ5VCJB6V1RyyYFaJi6gOXWopfjdjK+O5Q2Rj9PFGH1Fh1CAqBXXx6ELBu5FaSw
-        tQcneTYbATb+l7VeWWb4ihQQxqUm0e9a0BH2qf9WsHkUH/FcyzJjAxy2EvDqgDmdvWb4TGgIj1gxK
-        c5Y/J5CA==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7pQv-0002t1-Q9; Fri, 05 Feb 2021 00:57:14 +0000
-Subject: Re: [PATCH] lib: crc-itu-t: Fix comment in typo
-To:     David Mosberger-Tang <davidm@egauge.net>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210205004636.477935-1-davidm@egauge.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0e0976ef-42a1-880d-2ec0-d22632004ff9@infradead.org>
-Date:   Thu, 4 Feb 2021 16:57:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 4 Feb 2021 19:58:35 -0500
+Message-Id: <20210204211154.513658079@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612486674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=WTKxw3cYU9sqIcWjJRqdyEqf3tBdofU/yBSNh3t9yJc=;
+        b=Fr4oxfzu8CPcY0QTU74YJvp0rdMBQib6yeXIhROxnbRVrj6H/5odlAYYW2OWQaiKd3e7bb
+        zcBcwQ9uAjJ0D1pQ+vSB1MtwicbJQBrAQd+ftZ+vcu7Ol3pCfu0dWUE4XxHMQKdQpKxOYy
+        X26qo/ckC0YqKWXCPKPYqF3STuif+BYHki2Uc6MeEkjTQWsbAPig8HmbRSyDn0fkZuGEgU
+        aTluFJ4NfLBnRJrOkJ2y+8ttlTVJ1PQM6lz231Jpoii9lgA999L38bkLjp+mcRK2h+IRq9
+        knkYBzmA9dDxu8384RDTTOzYJAepzwF1cMCPayP9CMyo2Hj0rwxnj5JufroP/A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612486674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=WTKxw3cYU9sqIcWjJRqdyEqf3tBdofU/yBSNh3t9yJc=;
+        b=7W4xfBIlt1CvqgeR6h3WSqJSacQLtAwI/t6Si4jQHbblumYAxNiq5u0ZAbQjSzZdRtYSP4
+        nqiM6ICD1UE4DjBA==
+Date:   Thu, 04 Feb 2021 21:49:07 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [patch 04/12] x86/apic: Split out spurious handling code
+References: <20210204204903.350275743@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210205004636.477935-1-davidm@egauge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 4:47 PM, David Mosberger-Tang wrote:
-> Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
-> ---
->  lib/crc-itu-t.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
-> index 1974b355c148..56e6e0d63d1e 100644
-> --- a/lib/crc-itu-t.c
-> +++ b/lib/crc-itu-t.c
-> @@ -7,7 +7,7 @@
->  #include <linux/module.h>
->  #include <linux/crc-itu-t.h>
->  
-> -/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
-> +/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
+sysvec_spurious_apic_interrupt() calls into the handling body of
+__spurious_interrupt() which is not obvious as that function is declared
+inside the DEFINE_IDTENTRY_IRQ(spurious_interrupt) macro.
 
-This comment should not be indicated as kernel-doc:
-please use /* instead of /**.
+As __spurious_interrupt() is currently always inlined this ends up with two
+copies of the same code for no reason.
 
->  const u16 crc_itu_t_table[256] = {
->  	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
->  	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
-> 
+Split the handling function out and invoke it from both entry points.
 
-thanks.
--- 
-~Randy
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/kernel/apic/apic.c |   31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
+
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2133,18 +2133,11 @@ void __init register_lapic_address(unsig
+  * Local APIC interrupts
+  */
+ 
+-/**
+- * spurious_interrupt - Catch all for interrupts raised on unused vectors
+- * @regs:	Pointer to pt_regs on stack
+- * @vector:	The vector number
+- *
+- * This is invoked from ASM entry code to catch all interrupts which
+- * trigger on an entry which is routed to the common_spurious idtentry
+- * point.
+- *
+- * Also called from sysvec_spurious_apic_interrupt().
++/*
++ * Common handling code for spurious_interrupt and spurious_vector entry
++ * points below. No point in allowing the compiler to inline it twice.
+  */
+-DEFINE_IDTENTRY_IRQ(spurious_interrupt)
++static noinline void handle_spurious_interrupt(u8 vector)
+ {
+ 	u32 v;
+ 
+@@ -2179,9 +2172,23 @@ DEFINE_IDTENTRY_IRQ(spurious_interrupt)
+ 	trace_spurious_apic_exit(vector);
+ }
+ 
++/**
++ * spurious_interrupt - Catch all for interrupts raised on unused vectors
++ * @regs:	Pointer to pt_regs on stack
++ * @vector:	The vector number
++ *
++ * This is invoked from ASM entry code to catch all interrupts which
++ * trigger on an entry which is routed to the common_spurious idtentry
++ * point.
++ */
++DEFINE_IDTENTRY_IRQ(spurious_interrupt)
++{
++	handle_spurious_interrupt(vector);
++}
++
+ DEFINE_IDTENTRY_SYSVEC(sysvec_spurious_apic_interrupt)
+ {
+-	__spurious_interrupt(regs, SPURIOUS_APIC_VECTOR);
++	handle_spurious_interrupt(SPURIOUS_APIC_VECTOR);
+ }
+ 
+ /*
 
