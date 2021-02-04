@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDD830F826
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2358230F837
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237298AbhBDQiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237308AbhBDQiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:38:13 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFFC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:37:33 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id m6so2455646pfk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:37:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nwObsRzKSVhqA/EbWV8d9m9v2JwQDreOVTF8iuaBQ+g=;
-        b=Qs76dodtfk29vh9y2oWEdTMAEgX8pR7GDXBRZt11OnuF+F3yrCFpGCfE3EUSAGkLGg
-         5jkQJMKtoXCFCFsOw41yy0P24mbEQnUU/PN1vC734l1/K39+46+VS6bbscHzj2L55Whw
-         FW22EBkyNiVCxmkNsXDYGEsP+zGH6f3LFIpXAoDhgixEHEseFXS8agAF7cSt15vBfmIu
-         sa7oQOcvJtNzr/K6/r+vpvpUh+C2Mr6l1bM36mquA5Xn9VwjHxOLJnJ4Q3BcPgr4LZ4Y
-         ey0TsDb+L/fowZ7+gofPOCsnCxtE2ihWeCgNDWMxadMu+izWumzDBNC7nofrD9894P78
-         GvUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nwObsRzKSVhqA/EbWV8d9m9v2JwQDreOVTF8iuaBQ+g=;
-        b=edbR+gW56WmKxEOhwO/bTKWEEfbGWrepjMBWifC8A7unN2AA0VPWs8r5jdC3wEtPD5
-         6CFDv8p/dahugual1Q4+Al+RmhG6PZHTYm7RP1gymci33SaF2L6ZTSOlZjASM+pverIa
-         QTKhgivSV0im7ARgD8emb0uCOyjSn0H9zXz5mgrjLZ2LMra0gVjvv3QyFvBarfHVkdUD
-         cgYF2CCple0erJT5ORNaYp4x78bj7mkjFf67usM3tb4jcTJc9dFL1r5zJO7x4Pqc/UmQ
-         lCRlONGXy0mcVQQO+WtBtGLk/zIy1aPJ+sykKbNNbfif7hyoPBj3UJeZPdnrIz130yzd
-         lCyA==
-X-Gm-Message-State: AOAM5306/GYjXtdh2IGQ9ToLw2Vu9orKIbHZM3WXepLvED0xYfMRptZ5
-        8kXN6Z/PXnoZUqbpoj+I8f8=
-X-Google-Smtp-Source: ABdhPJwYeZjRTrriYxBENEsGDiTCAauUg/JSwi9Ur6XUH/miSvOUu2eE8co0/Eh8tRvQGVqY8tG4fw==
-X-Received: by 2002:a62:e217:0:b029:1c1:59ed:ae73 with SMTP id a23-20020a62e2170000b02901c159edae73mr77195pfi.6.1612456652596;
-        Thu, 04 Feb 2021 08:37:32 -0800 (PST)
-Received: from localhost.localdomain (61-230-45-44.dynamic-ip.hinet.net. [61.230.45.44])
-        by smtp.gmail.com with ESMTPSA id 9sm2371133pgw.61.2021.02.04.08.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:37:31 -0800 (PST)
-From:   Lecopzer Chen <lecopzer@gmail.com>
-To:     will@kernel.org
-Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
-        aryabinin@virtuozzo.com, broonie@kernel.org,
-        catalin.marinas@arm.com, dan.j.williams@intel.com,
-        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
-        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
-        lecopzer@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-mm@kvack.org, linux@roeck-us.net, robin.murphy@arm.com,
-        rppt@kernel.org, tyhicks@linux.microsoft.com,
-        vincenzo.frascino@arm.com, yj.chiang@mediatek.com
-Subject: Re: [PATCH v2 1/4] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
-Date:   Fri,  5 Feb 2021 00:37:21 +0800
-Message-Id: <20210204163721.91295-1-lecopzer@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210204150100.GE20815@willie-the-truck>
-References: <20210204150100.GE20815@willie-the-truck>
+        id S237469AbhBDQlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:41:07 -0500
+Received: from mga06.intel.com ([134.134.136.31]:14883 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237225AbhBDQjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:39:53 -0500
+IronPort-SDR: qK1cKM1J4ZwiLliu7vt99qMIvkXp/UHV5cHcAyeNjmweeqFTL/RWyFtFO4gABgEOZbPmkjM7V8
+ 8yIIRc2BmzKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="242783609"
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="242783609"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 08:38:00 -0800
+IronPort-SDR: giWWPmCQgd86K39pTiIbV/vQ2aXf05lQ/EyipuWM8qdgzD6HoomGzbw8B5dDl0ktB0jlGsf5GA
+ RhusKalfkm7g==
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="483621578"
+Received: from mmjajodi-mobl1.amr.corp.intel.com (HELO [10.251.130.164]) ([10.251.130.164])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 08:38:00 -0800
+Subject: Re: [RFC][PATCH 2/2] x86: add extra serialization for non-serializing
+ MSRs
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     jan.kiszka@siemens.com, x86@kernel.org, peterz@infradead.org
+References: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
+ <20200305174708.F77040DD@viggo.jf.intel.com>
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Autocrypt: addr=dave.hansen@linux.intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <931db0dc-6a88-4dfd-02c8-73b095ed2f11@linux.intel.com>
+Date:   Thu, 4 Feb 2021 08:37:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200305174708.F77040DD@viggo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+...
+> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> Cc: x86@kernel.org
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-> On Thu, Feb 04, 2021 at 10:46:12PM +0800, Lecopzer Chen wrote:
-> > > On Sat, Jan 09, 2021 at 06:32:49PM +0800, Lecopzer Chen wrote:
-> > > > Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > > > ("kasan: support backing vmalloc space with real shadow memory")
-> > > >
-> > > > Like how the MODULES_VADDR does now, just not to early populate
-> > > > the VMALLOC_START between VMALLOC_END.
-> > > > similarly, the kernel code mapping is now in the VMALLOC area and
-> > > > should keep these area populated.
-> > > >
-> > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > > ---
-> > > >  arch/arm64/mm/kasan_init.c | 23 ++++++++++++++++++-----
-> > > >  1 file changed, 18 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> > > > index d8e66c78440e..39b218a64279 100644
-> > > > --- a/arch/arm64/mm/kasan_init.c
-> > > > +++ b/arch/arm64/mm/kasan_init.c
-> > > > @@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
-> > > >  {
-> > > >   u64 kimg_shadow_start, kimg_shadow_end;
-> > > >   u64 mod_shadow_start, mod_shadow_end;
-> > > > + u64 vmalloc_shadow_start, vmalloc_shadow_end;
-> > > >   phys_addr_t pa_start, pa_end;
-> > > >   u64 i;
-> > > >
-> > > > @@ -223,6 +224,9 @@ static void __init kasan_init_shadow(void)
-> > > >   mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
-> > > >   mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
-> > > >
-> > > > + vmalloc_shadow_start = (u64)kasan_mem_to_shadow((void *)VMALLOC_START);
-> > > > + vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
-> > > > +
-> > > >   /*
-> > > >    * We are going to perform proper setup of shadow memory.
-> > > >    * At first we should unmap early shadow (clear_pgds() call below).
-> > > > @@ -241,12 +245,21 @@ static void __init kasan_init_shadow(void)
-> > > >
-> > > >   kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
-> > > >                              (void *)mod_shadow_start);
-> > > > - kasan_populate_early_shadow((void *)kimg_shadow_end,
-> > > > -                            (void *)KASAN_SHADOW_END);
-> > > > + if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-> > >
-> > > Do we really need yet another CONFIG option for KASAN? What's the use-case
-> > > for *not* enabling this if you're already enabling one of the KASAN
-> > > backends?
-> >
-> > As I know, KASAN_VMALLOC now only supports KASAN_GENERIC and also
-> > KASAN_VMALLOC uses more memory to map real shadow memory (1/8 of vmalloc va).
->
-> The shadow is allocated dynamically though, isn't it?
+Don't know how I managed to miss it in the first place, but:
 
-Yes, but It's still a cost.
-
-> > There should be someone can enable KASAN_GENERIC but can't use VMALLOC
-> > due to memory issue.
->
-> That doesn't sound particularly realistic to me. The reason I'm pushing here
-> is because I would _really_ like to move to VMAP stack unconditionally, and
-> that would effectively force KASAN_VMALLOC to be set if KASAN is in use.
->
-> So unless there's a really good reason not to do that, please can we make
-> this unconditional for arm64? Pretty please?
-
-I think it's fine since we have a good reason.
-Also if someone have memory issue in KASAN_VMALLOC,
-they can use SW_TAG, right?
-
-However the SW_TAG/HW_TAG is not supported VMALLOC yet.
-So the code would be like
-
-	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
-		/* explain the relationship between 
-		 * KASAN_GENERIC and KASAN_VMALLOC in arm64
-		 * XXX: because we want VMAP stack....
-		 */
-		kasan_populate_early_shadow((void *)vmalloc_shadow_end,
-					    (void *)KASAN_SHADOW_END);
-	else {
-		kasan_populate_early_shadow((void *)kimg_shadow_end,
-					    (void *)KASAN_SHADOW_END);
-		if (kimg_shadow_start > mod_shadow_end)
-			kasan_populate_early_shadow((void *)mod_shadow_end,
-						    (void *)kimg_shadow_start);
-	}
-
-and the arch/arm64/Kconfig will add
-	select KASAN_VMALLOC if KASAN_GENERIC
-
-Is this code same as your thought?
-
-BRs,
-Lecopzer
-
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
