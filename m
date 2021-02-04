@@ -2,105 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE4E30F347
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBBF30F348
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236055AbhBDMis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S236075AbhBDMjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235858AbhBDMio (ORCPT
+        with ESMTP id S235605AbhBDMjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:38:44 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478AFC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:38:04 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id jj19so5049961ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:38:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2meDbtyGONrxJMGNQvqNi6iD/KDP6jfgGsOB/1E0xwI=;
-        b=py6mmFrKhu6e8bmetejikaW5cxyQ+bCMX27AZ4YPrz5HUATenX04nwCoWJ1aUu2JTS
-         7j93QpsWgR7NFIa4m9owjFaF9yl/qz5uBC2wAEzA8RerBe7B8HDF5MBXuJouInMx8PIQ
-         2ShOxc37XTnpNvFDtbcgB/4W0wzaKayRz5DS+uoVfMwdPTnM59pooUoLFSMARFUY4CrP
-         g3/9qMpF2+Scs+Suj7A6rQLf75rWWTyicml5siXuE44ALh8ux3eyKjBaQJMXrv1ISjh7
-         p3JXL6LR23Df94ikK4gHZzDWSMTcmibrrSsjH45epM+vTcieEQY1uIwXgHTQlNLOpAfc
-         SNHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2meDbtyGONrxJMGNQvqNi6iD/KDP6jfgGsOB/1E0xwI=;
-        b=PmA0hz+mFvsKmUcxUK77UCuOsDAw/8kwS5JniN7tpg09Lto2r2gjKJt0z5d73QtxNm
-         UM+urznzsHYEv0WG8sB76P4ApMRsduZ96Ib0Ktm6YyJaPmmiKz+lXpzMDwh3VcoqzSt5
-         SvO8Oybqq+bLpa4SCzaT9MSdPTbZkE8IaHky2CIMIQJGQSn3Fj0OdHeDNuxDFvS3HtHJ
-         2NxgQ31CdKrmfij1aMDdLXsLMNnIa8AXbBI9GUVSIp9brEiJPTySzNMmZ/PXle9Ht5Rk
-         Q1Dx6HRMKSwRk95A5X4R6gv0igvDu1HhgNsFWICdzY1ccIwnAKZSxmAHum4no+g0Q3ju
-         zGpA==
-X-Gm-Message-State: AOAM530odrTq1/4fuBlRDHwUNX82KHrCX0W5Sf+XOVHjiBI1+A/R42xt
-        U8SJHamg23R6GeV+vNKsNXIgLiZebs3B50ILRfFOFA==
-X-Google-Smtp-Source: ABdhPJztiyR/m3bmzNcgovCZL69Us1jNdugTJoTrpT/656WsCiSZwQvieiH0KCa4KRE4tkSJPy6oKdnx8loxQLMdmQ8=
-X-Received: by 2002:a17:906:eddd:: with SMTP id sb29mr7552229ejb.383.1612442283016;
- Thu, 04 Feb 2021 04:38:03 -0800 (PST)
+        Thu, 4 Feb 2021 07:39:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6819EC061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NjY5liFAlk+AQiAuqlneZkVZMjMxiky/Okh0XWtNNUY=; b=jgQNlr2Asr/peAmVBvLbuI7Zzm
+        4YECc6L6RVdMJjBfC3gzUjus9oPzwhHkzLpTn2cA0/8Ad/zo6dZJzex3IuV8Cl4dWuuF/BfDY0esw
+        1xDtrS72MXJdeTM+5/TCW4viT0iqy3BVBff/BIkD9O9eZF0d5NBVal28pKbkrVAtutf0XcAUVsQK+
+        0PnN1rNWW4vPz3jO1799PTL3Dr2Wii5K7FLmo4FLBSlubTjAv4A81LHGS+DSLwngZoiVmMmKJ/yx6
+        b0AQarcu1Je4J48SNyDmcNBjSgWL9O8UBT1+EtDyi18yfBjVBVeC80yfmPOgjNS4wN1oIEHBhyQy5
+        ajN7Zj3A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7dtf-000rrw-Rc; Thu, 04 Feb 2021 12:38:09 +0000
+Date:   Thu, 4 Feb 2021 12:38:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/rmap: Correct obsolete comment of page_get_anon_vma()
+Message-ID: <20210204123807.GE308988@casper.infradead.org>
+References: <20210203093215.31990-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-References: <20210111140814.3668-1-brgl@bgdev.pl>
-In-Reply-To: <20210111140814.3668-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 4 Feb 2021 13:37:52 +0100
-Message-ID: <CAMRc=MfeAokkWdHNS1HES07YBFX6kM_JZRFehk0F+sB552_UbQ@mail.gmail.com>
-Subject: Re: [PATCH] clocksource: davinci: move pr_fmt() before the includes
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203093215.31990-1-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:08 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> We no longer need to undef pr_fmt if we define our own before including
-> any headers.
->
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/clocksource/timer-davinci.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/clocksource/timer-davinci.c b/drivers/clocksource/timer-davinci.c
-> index bb4eee31ae08..9996c0542520 100644
-> --- a/drivers/clocksource/timer-davinci.c
-> +++ b/drivers/clocksource/timer-davinci.c
-> @@ -7,6 +7,8 @@
->   * (with tiny parts adopted from code by Kevin Hilman <khilman@baylibre.com>)
->   */
->
-> +#define pr_fmt(fmt) "%s: " fmt, __func__
-> +
->  #include <linux/clk.h>
->  #include <linux/clockchips.h>
->  #include <linux/interrupt.h>
-> @@ -17,9 +19,6 @@
->
->  #include <clocksource/timer-davinci.h>
->
-> -#undef pr_fmt
-> -#define pr_fmt(fmt) "%s: " fmt, __func__
-> -
->  #define DAVINCI_TIMER_REG_TIM12                        0x10
->  #define DAVINCI_TIMER_REG_TIM34                        0x14
->  #define DAVINCI_TIMER_REG_PRD12                        0x18
-> --
-> 2.29.1
->
+On Wed, Feb 03, 2021 at 04:32:15AM -0500, Miaohe Lin wrote:
+>   * Since there is no serialization what so ever against page_remove_rmap()
+> - * the best this function can do is return a locked anon_vma that might
+> - * have been relevant to this page.
+> + * the best this function can do is return a refcount increased anon_vma
+> + * that might have been relevant to this page.
 
-Gentle ping.
-
-Bart
+Just s/a locked/an/
+there's no need to mention again that the refcount
+is increased.
