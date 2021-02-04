@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836B930EF97
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB0C30EF9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhBDJXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S235158AbhBDJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234806AbhBDJXF (ORCPT
+        with ESMTP id S234788AbhBDJYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:23:05 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A371AC061573;
-        Thu,  4 Feb 2021 01:22:24 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id b2so3542875lfq.0;
-        Thu, 04 Feb 2021 01:22:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e9PGdb4IN4VkK+3y/9ewD9vvEijIYIKc2VsUuCpK0Ug=;
-        b=jOm09GXQBJpRw0PNookGOudZaXZ/1dGLOpPmmMhDxrhmzN+vqenh/CNE5E/T3IICU5
-         i43/mS7Baku8F5VQf5KZS3+yFF0CNvHRIbWFqkrr+V34NXcjAVDYlHTdRvTVwEMQkeNB
-         AxIoCYd1TQ8ne5zXZROlca+NjFeQS6fSQPooFjy00maTgHXRGY/VWZCa1imUeNBqVMLI
-         Z/09ztUQXZFR/cDZyZ+FPSCjO5Cslb7f3wja77Vi3P4Os8uvfWvWSlVYCk5nocmy6mkg
-         DSbLucpYS3l8ktWsYNhY3c8B4evNIxEJaK+li8BbSmRBRNJrRqqDnqOD+jpnd81E9dIH
-         Zy+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=e9PGdb4IN4VkK+3y/9ewD9vvEijIYIKc2VsUuCpK0Ug=;
-        b=l44iJGtbGj1nIVIULsfG505wLc9/ucQd6LnGNkBa4fceC1qGUHryRW3nUAQRKn3PBf
-         Y93rxDqQIFKmSyyZzB17rtJJH85C/+imMCxKx/RNgtnuJjxndgbtqntRtroGR9k/cP1s
-         8VFbKc6d2qg/6pyJHAzOEXjzRGMk+xuPA+QD04UehYFWJs7hcbw8sC7ukYIAftirLoJp
-         dl3MbFDcNAEVyjk7VbPHkSMMT7EpJ+S1RrLdJsOu0RdzCNjjaGqxLiKKTy+5TtYS5Dex
-         8q7byYL5WVQqnKQEUIAdqdkKhESjs5mRiJlVBQ1Hu8gLubTkxBiiVP+/84CQODhLUrm3
-         3o4Q==
-X-Gm-Message-State: AOAM533tEbzA8UpFgAr9iCOgRT2Rad00ouHoXGQXt9f4kdiAxBHH9KdO
-        LSDFOiZrC7iUPzTxO+zC77IFqY1RPkA=
-X-Google-Smtp-Source: ABdhPJxkjWv4vdk/polRHA/uyRz9vMtykwAw2KNF4Ao7Ox5IoIcCbS8XJ0IcdH/R8Y1fRSI+v7x4DQ==
-X-Received: by 2002:a19:ccf:: with SMTP id 198mr4300675lfm.422.1612430543029;
-        Thu, 04 Feb 2021 01:22:23 -0800 (PST)
-Received: from [192.168.1.100] ([31.173.82.125])
-        by smtp.gmail.com with ESMTPSA id k125sm531988lfd.127.2021.02.04.01.22.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 01:22:22 -0800 (PST)
-Subject: Re: [PATCH] usb: host: ehci: remove casting dma_alloc_coherent
-To:     Xu Wang <vulab@iscas.ac.cn>, stern@rowland.harvard.edu,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210204071738.84222-1-vulab@iscas.ac.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <6083596c-363f-5e75-9228-0b88cbaabd19@gmail.com>
-Date:   Thu, 4 Feb 2021 12:21:56 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 4 Feb 2021 04:24:16 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3470DC061573;
+        Thu,  4 Feb 2021 01:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CPyUnilJQ2QKupjj2xtE65PWmSMXgunXFpzexlPe1UE=; b=r0BCCyAZmU54nvsVfBVswXp6aR
+        KLl/ZzNbCFz0c1PR2bOqkBzRMxE/y4Rkk3SF8G2bcePsuQ+ey2Ss36eafH3GW3J/sZRG+xkmX1cdq
+        ladWBhYcO1uafEL2PC/2jWb2OJJ2qTlevwtaaIL1mhGr2B1XdzyK+Jlzrpg7wusl4voVeaGEB3MYk
+        0No9xiLDDGKEyJAgnBtsR4+PqWLhHqYzaC/KXHeD1vsganAlQMBPp+SkHc7avtO/ywZXekiSopdcE
+        1PHNzk8DzB8dcfQgr5G7wJeezVOQY/dWJaxyhhbYRZ/IKYrM4mY+oxURcc+vzjFUqKFjTMyjxm1N8
+        GBgYq4Vw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7aqj-0008Nd-U9; Thu, 04 Feb 2021 09:22:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 385F2301A32;
+        Thu,  4 Feb 2021 10:22:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15BDD213D2E27; Thu,  4 Feb 2021 10:22:48 +0100 (CET)
+Date:   Thu, 4 Feb 2021 10:22:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <YBu86G1ckCckRyim@hirez.programming.kicks-ass.net>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+ <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204071738.84222-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 04.02.2021 10:17, Xu Wang wrote:
-
-> Remove casting the values returned by dma_alloc_coherent.
-
-    I'm not seeing any casting, I'm seeing a trailing space removed.
-
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->   drivers/usb/host/ehci-mem.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > Can you pretty please not line-wrap console output? It's unreadable.
 > 
-> diff --git a/drivers/usb/host/ehci-mem.c b/drivers/usb/host/ehci-mem.c
-> index 6361d81272bc..769329032257 100644
-> --- a/drivers/usb/host/ehci-mem.c
-> +++ b/drivers/usb/host/ehci-mem.c
-> @@ -185,7 +185,7 @@ static int ehci_mem_init (struct ehci_hcd *ehci, gfp_t flags)
->   	}
->   
->   	/* Hardware periodic table */
-> -	ehci->periodic =
-> +	ehci->periodic =
->   		dma_alloc_coherent(ehci_to_hcd(ehci)->self.sysdev,
->   			ehci->periodic_size * sizeof(__le32),
->   			&ehci->periodic_dma, flags);
+> GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> Let me know if you'd like me to regenerate the decoded stack.
 
-MBR, Sergei
+Not my problem that you can't use email proper. Links go in the
+bitbucket. Either its in the email or it don't exist.
+
