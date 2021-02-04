@@ -2,144 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35C730EE2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD4130EE37
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbhBDIPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:15:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234901AbhBDIPv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:15:51 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659CBC061793
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 00:14:36 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id fa16so828605pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x7hwBm1kKlbRCUXjrjQz7CyPjQNfq9+xKEIyZstLmMQ=;
-        b=oXRtwD8S3IU7qmYkvuuwuGjjF13/SrDBBFsIC6RDA0gMdOXw2QlM6hRE3SJZ6mFLSv
-         KomcMdg4+2/7ctxnxSPcDtRdN2BKk7mkig3dr04m8kr9u/wvPbYYjwJJK4Vah3PODknL
-         z3Cp83gtMyMIbB+iJdtMRV2t2pH8SNBKpsrE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x7hwBm1kKlbRCUXjrjQz7CyPjQNfq9+xKEIyZstLmMQ=;
-        b=lMGiaakeOoRHT4xxaH+iO4D3kbkax0eoaJvQrqG5Snc5VHzYFQT2+mnzb87sTYenHd
-         LZBiG63oTYtspap/No2z50Uj10vf/BIkT4wU88DX9Fl2zYc20Vr2mCbDw2Ol31LoePxE
-         LxQjedFbdDUtkM/W+kWqvqLU3rye57aDnz+gt9RIBWKB77ArTfhMx+Cl+GktmhxdsNgn
-         W2gvIVzq7yUgbAPyKl5mxc1DXIHo5Z45TIMGnrBgvfy+gy7zGghRPelTWjtooWvq3Ve5
-         glGj5fUlJDlSzSBi1+x3iErTcg9LTyGH0gGevXVDG9hJ5bPDPewlremteoYg7CduNpQB
-         6Djw==
-X-Gm-Message-State: AOAM5321fN6yPmMY0yZPbJK7/jGJ3Ge+hlYrz1gUnaSOfgsnlFr6/klR
-        HM4rxHmQSpoZSBnmVvwUl3P4nw==
-X-Google-Smtp-Source: ABdhPJzuP6Azc8rztVE7Z5XDU8FeG4n072jg5T/rqE92DsgySeKm6X8FsaL9Jr4p6Jrn0x4xmz7pXQ==
-X-Received: by 2002:a17:90a:701:: with SMTP id l1mr7313673pjl.154.1612426475966;
-        Thu, 04 Feb 2021 00:14:35 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:ed70:6d43:9c6a:2e22])
-        by smtp.gmail.com with ESMTPSA id e3sm5091258pgs.60.2021.02.04.00.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 00:14:35 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v6 3/3] PM / devfreq: Add required OPPs support to passive governor
-Date:   Thu,  4 Feb 2021 16:14:24 +0800
-Message-Id: <20210204081424.2219311-4-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-In-Reply-To: <20210204081424.2219311-1-hsinyi@chromium.org>
-References: <20210204081424.2219311-1-hsinyi@chromium.org>
+        id S234976AbhBDIRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:17:16 -0500
+Received: from relay.sw.ru ([185.231.240.75]:46472 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234951AbhBDIQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 03:16:57 -0500
+Received: from [192.168.15.247]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l7ZnY-001emk-Kn; Thu, 04 Feb 2021 11:15:32 +0300
+Subject: Re: [v6 PATCH 06/11] mm: vmscan: use a new flag to indicate shrinker
+ is registered
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-7-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <3343b6a8-c192-9668-68ce-8b2abb7026ba@virtuozzo.com>
+Date:   Thu, 4 Feb 2021 11:15:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210203172042.800474-7-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+On 03.02.2021 20:20, Yang Shi wrote:
+> Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+> This approach is fine with nr_deferred at the shrinker level, but the following
+> patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+> shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+> from unregistering correctly.
+> 
+> Remove SHRINKER_REGISTERING since we could check if shrinker is registered
+> successfully by the new flag.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Look at the required OPPs of the "parent" device to determine the OPP that
-is required from the slave device managed by the passive governor. This
-allows having mappings between a parent device and a slave device even when
-they don't have the same number of OPPs.
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/devfreq/governor_passive.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
-index 63332e4a65ae8..8fd51cc9b991a 100644
---- a/drivers/devfreq/governor_passive.c
-+++ b/drivers/devfreq/governor_passive.c
-@@ -19,7 +19,7 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
- 			= (struct devfreq_passive_data *)devfreq->data;
- 	struct devfreq *parent_devfreq = (struct devfreq *)p_data->parent;
- 	unsigned long child_freq = ULONG_MAX;
--	struct dev_pm_opp *opp;
-+	struct dev_pm_opp *opp, *p_opp = ERR_PTR(-ENODEV);
- 	int i, count, ret = 0;
- 
- 	/*
-@@ -29,7 +29,7 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
- 	 */
- 	if (p_data->get_target_freq) {
- 		ret = p_data->get_target_freq(devfreq, freq);
--		goto out;
-+		return ret;
- 	}
- 
- 	/*
-@@ -56,13 +56,22 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
- 	 * list of parent device. Because in this case, *freq is temporary
- 	 * value which is decided by ondemand governor.
- 	 */
--	opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
--	if (IS_ERR(opp)) {
--		ret = PTR_ERR(opp);
--		goto out;
-+	p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
-+	if (IS_ERR(p_opp)) {
-+		ret = PTR_ERR(p_opp);
-+		return ret;
- 	}
- 
--	dev_pm_opp_put(opp);
-+	if (devfreq->opp_table && parent_devfreq->opp_table) {
-+		opp = dev_pm_opp_xlate_required_opp(parent_devfreq->opp_table,
-+						    devfreq->opp_table, p_opp);
-+		if (!IS_ERR(opp)) {
-+			*freq = dev_pm_opp_get_freq(opp);
-+			dev_pm_opp_put(opp);
-+		} else
-+			ret = PTR_ERR(opp);
-+		goto out;
-+	}
- 
- 	/*
- 	 * Get the OPP table's index of decided freqeuncy by governor
-@@ -89,6 +98,8 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
- 	*freq = child_freq;
- 
- out:
-+	dev_pm_opp_put(p_opp);
-+
- 	return ret;
- }
- 
--- 
-2.30.0.365.g02bc693789-goog
+> ---
+>  include/linux/shrinker.h |  7 ++++---
+>  mm/vmscan.c              | 31 +++++++++----------------------
+>  2 files changed, 13 insertions(+), 25 deletions(-)
+> 
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index 0f80123650e2..1eac79ce57d4 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -79,13 +79,14 @@ struct shrinker {
+>  #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
+>  
+>  /* Flags */
+> -#define SHRINKER_NUMA_AWARE	(1 << 0)
+> -#define SHRINKER_MEMCG_AWARE	(1 << 1)
+> +#define SHRINKER_REGISTERED	(1 << 0)
+> +#define SHRINKER_NUMA_AWARE	(1 << 1)
+> +#define SHRINKER_MEMCG_AWARE	(1 << 2)
+>  /*
+>   * It just makes sense when the shrinker is also MEMCG_AWARE for now,
+>   * non-MEMCG_AWARE shrinker should not have this flag set.
+>   */
+> -#define SHRINKER_NONSLAB	(1 << 2)
+> +#define SHRINKER_NONSLAB	(1 << 3)
+>  
+>  extern int prealloc_shrinker(struct shrinker *shrinker);
+>  extern void register_shrinker_prepared(struct shrinker *shrinker);
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 9436f9246d32..dc0d69e081b0 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -309,19 +309,6 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>  	}
+>  }
+>  
+> -/*
+> - * We allow subsystems to populate their shrinker-related
+> - * LRU lists before register_shrinker_prepared() is called
+> - * for the shrinker, since we don't want to impose
+> - * restrictions on their internal registration order.
+> - * In this case shrink_slab_memcg() may find corresponding
+> - * bit is set in the shrinkers map.
+> - *
+> - * This value is used by the function to detect registering
+> - * shrinkers and to skip do_shrink_slab() calls for them.
+> - */
+> -#define SHRINKER_REGISTERING ((struct shrinker *)~0UL)
+> -
+>  static DEFINE_IDR(shrinker_idr);
+>  
+>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> @@ -330,7 +317,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>  
+>  	down_write(&shrinker_rwsem);
+>  	/* This may call shrinker, so it must use down_read_trylock() */
+> -	id = idr_alloc(&shrinker_idr, SHRINKER_REGISTERING, 0, 0, GFP_KERNEL);
+> +	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
+>  	if (id < 0)
+>  		goto unlock;
+>  
+> @@ -493,10 +480,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
+>  {
+>  	down_write(&shrinker_rwsem);
+>  	list_add_tail(&shrinker->list, &shrinker_list);
+> -#ifdef CONFIG_MEMCG
+> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> -		idr_replace(&shrinker_idr, shrinker, shrinker->id);
+> -#endif
+> +	shrinker->flags |= SHRINKER_REGISTERED;
+>  	up_write(&shrinker_rwsem);
+>  }
+>  
+> @@ -516,13 +500,16 @@ EXPORT_SYMBOL(register_shrinker);
+>   */
+>  void unregister_shrinker(struct shrinker *shrinker)
+>  {
+> -	if (!shrinker->nr_deferred)
+> +	if (!(shrinker->flags & SHRINKER_REGISTERED))
+>  		return;
+> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> -		unregister_memcg_shrinker(shrinker);
+> +
+>  	down_write(&shrinker_rwsem);
+>  	list_del(&shrinker->list);
+> +	shrinker->flags &= ~SHRINKER_REGISTERED;
+>  	up_write(&shrinker_rwsem);
+> +
+> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> +		unregister_memcg_shrinker(shrinker);
+>  	kfree(shrinker->nr_deferred);
+>  	shrinker->nr_deferred = NULL;
+>  }
+> @@ -688,7 +675,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>  		struct shrinker *shrinker;
+>  
+>  		shrinker = idr_find(&shrinker_idr, i);
+> -		if (unlikely(!shrinker || shrinker == SHRINKER_REGISTERING)) {
+> +		if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
+>  			if (!shrinker)
+>  				clear_bit(i, info->map);
+>  			continue;
+> 
 
