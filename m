@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969A230EADB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66A730EADF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhBDDVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:21:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        id S233757AbhBDDYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhBDDVK (ORCPT
+        with ESMTP id S231475AbhBDDYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:21:10 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E98C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 19:20:30 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o63so1160758pgo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 19:20:30 -0800 (PST)
+        Wed, 3 Feb 2021 22:24:05 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104D4C061786;
+        Wed,  3 Feb 2021 19:23:25 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id q20so1203010pfu.8;
+        Wed, 03 Feb 2021 19:23:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Avw1TvqUwwHus+EY+wpOA2zHC5567oW2FndNzavcGMs=;
-        b=a1lFTIeFdl1IMuLaJ7vUSL/IHJb7veyblDNBwyc22xfZ75e9D+Qdn5TD6UuaEp0ayJ
-         S7sjPNgj71rM8MI8XTAD/nqDHWma+NQPoAubY/qRTW2Na+x+QPP59WUqm+/Fwn9Leqpg
-         3n9O2SzSF17JgBOHAfeC0BFIaac0j607pV3J0KJc97AN8Curd/e77qGwMPoDkj5hJJEJ
-         64ZK8MwdVvEfgFlDSWmIeBQ0M8u3AOs4HznxpX2eo7ABy3yE72qGs0aUcFJEADXujyes
-         g9vg10dz2OkBfjfmnuETKW1OfadT0JZyUVXlpLZgfoUTq+xl8xxsmkabkp5GE/IHNXpf
-         +6ag==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=2p3pUBdY1h3+/I+uMKphCmeip/rUaX6KNV7mEykP7XM=;
+        b=FYI8wFHP/GuSBPUntQS2XigFbbh+/+Xl/ANQy4yAyh4dA9JCECPoFBhbH35xhMlLIB
+         9JKcBOQCsz2/bIZipKRuR955rkZTxmecGYV8DcVACWfmZ6sYXfwPI9C7k3xixpHrUe5L
+         YWBO7YMygchoZ0VsTwt1nbjzezI7iEooCHbyF/eNLiZ4Jx4pJucIgLongB1ckYJaRsEn
+         8qQU5XQtBzjCzzscENMGzEuRGTh1HzCLAet69h/eZrerYj8AqNuV18EYyPBTBkefJl6l
+         nmCOK1Cdh/cH7T51zQd9AOyCsk4hAc/VZGG4DnMPr8oLlYO1eH96xJALl4KwFngT2ciR
+         HCww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Avw1TvqUwwHus+EY+wpOA2zHC5567oW2FndNzavcGMs=;
-        b=TlApq8mzUfg8wnHgrpoSRroF36ja7Cj7vC6qF32eu14hRiFRsc5x4uBsWXR8drFMzF
-         dQ6vbzV1TIO8nP+4Ejaj2z3QmNfMm4A3pLA9T13TbF3YqZ4rbTChCLzCi1ZcyMunDJNX
-         PWHE6FiQBHxoovTyj4wb7+v16IqFSQqlxc6xF0IxeCrgGgYcnhETyy4XH8f0Vr/KXMZO
-         fpVcCO6NrbH5G2VQj+JtfKcGqLYHV+7/fEABjyq5wGr8ZEI6UzmC/Nm/yLFZZWikjayT
-         2kJ7RGdKCgDsPpSEpfAUEgFYN1Xxd5HGsvyaBIV8T4hddp20NYNCopwMXGByosWGIx0Y
-         szdA==
-X-Gm-Message-State: AOAM533ypaRGHRLJumVXkHE0gfUVGuVmdGKp/KDeO0614Unf047gWQmk
-        xwESlfTNmFc3oRrirU8Hvs0=
-X-Google-Smtp-Source: ABdhPJwVtlCJKPyKiEzTVjy3HD2y12zdzMlEF//8xAMCROr1/HklX1eIFL9MWntKUqjeUWGFccIX/g==
-X-Received: by 2002:a63:c702:: with SMTP id n2mr6734803pgg.382.1612408829510;
-        Wed, 03 Feb 2021 19:20:29 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id y6sm3667118pfn.123.2021.02.03.19.20.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Feb 2021 19:20:28 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [RFC 01/20] mm/tlb: fix fullmm semantics
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20210203094459.GA18493@willie-the-truck>
-Date:   Wed, 3 Feb 2021 19:20:26 -0800
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yu Zhao <yuzhao@google.com>, Nick Piggin <npiggin@gmail.com>,
-        X86 ML <x86@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=2p3pUBdY1h3+/I+uMKphCmeip/rUaX6KNV7mEykP7XM=;
+        b=qEtugbQhymW1eOa05n1yDkarXh1QxA1MQLVxn1figrK6IdpPirtCtCs2SRZjjFjOrn
+         ZRTlm/0cTwu1LBup80mLnkcaS4VC7lnbr6oYGMMJswoaZe6PF+wN7Bc7z8qtAl8jMpge
+         4I3EjbJpowX6C5na9Wr407w6pOQ0bmomU/pupHzhpabC8vObJqBqxis18hKtEjRW/HUV
+         3udnLCylD1GNKuwmEnwAvlrUk+j/nk+/4HxhsVKVlctzPAW6vKriFTCKBh2ehIPWviGE
+         Qz4N9LRfcJBGJO4NN3X1SSolXAKoC2DTANX0EUeKEdC/ud7QA+L/9nEbXbMbx8/XT9Un
+         OYsA==
+X-Gm-Message-State: AOAM531OGxIxyRhvXBQ3D8I2t0YmVQn2ohJRKS9YoxlBrPpMv6v5XYRN
+        7vboZ6N+wzgFkqBvTd+eX7m/GrwZ8lY=
+X-Google-Smtp-Source: ABdhPJxrRli+GguIfnzaEVtdGLQNmKkSt3XzVijYqT3k/PJdRKG54vWXd6aG39jHcLMPXegMEPGP1Q==
+X-Received: by 2002:aa7:972c:0:b029:1bb:15d2:3b9f with SMTP id k12-20020aa7972c0000b02901bb15d23b9fmr5915894pfg.25.1612409004570;
+        Wed, 03 Feb 2021 19:23:24 -0800 (PST)
+Received: from localhost (60-242-11-44.static.tpgi.com.au. [60.242.11.44])
+        by smtp.gmail.com with ESMTPSA id x17sm3714593pff.180.2021.02.03.19.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 19:23:24 -0800 (PST)
+Date:   Thu, 04 Feb 2021 13:23:18 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] mm/memory.c: Remove pte_sw_mkyoung()
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Jia He <justin.he@arm.com>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        Bibo Mao <maobibo@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <f302ef92c48d1f08a0459aaee1c568ca11213814.1612345700.git.christophe.leroy@csgroup.eu>
+        <20210203164630.ada46d0c84e0e9f0a474b283@linux-foundation.org>
+In-Reply-To: <20210203164630.ada46d0c84e0e9f0a474b283@linux-foundation.org>
+MIME-Version: 1.0
+Message-Id: <1612408831.1l3aypsvyz.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <3EA63C0E-3420-4194-AA4F-A05A0B0AFF95@gmail.com>
-References: <20210131001132.3368247-1-namit@vmware.com>
- <20210131001132.3368247-2-namit@vmware.com>
- <YBfntzMgNlMDOP9s@hirez.programming.kicks-ass.net>
- <52673507-2C30-4AC6-8EBC-B5A313827FB0@gmail.com>
- <YBkwyEL2FKxlsgZ5@hirez.programming.kicks-ass.net>
- <5E9B0429-7E72-4E86-B91B-4718C4134B0F@gmail.com>
- <20210203094459.GA18493@willie-the-truck>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Feb 3, 2021, at 1:44 AM, Will Deacon <will@kernel.org> wrote:
+Excerpts from Andrew Morton's message of February 4, 2021 10:46 am:
+> On Wed,  3 Feb 2021 10:19:44 +0000 (UTC) Christophe Leroy <christophe.ler=
+oy@csgroup.eu> wrote:
 >=20
-> On Tue, Feb 02, 2021 at 01:35:38PM -0800, Nadav Amit wrote:
->>> On Feb 2, 2021, at 3:00 AM, Peter Zijlstra <peterz@infradead.org> =
-wrote:
->>>=20
->>> On Tue, Feb 02, 2021 at 01:32:36AM -0800, Nadav Amit wrote:
->>>>> On Feb 1, 2021, at 3:36 AM, Peter Zijlstra <peterz@infradead.org> =
-wrote:
->>>>>=20
->>>>>=20
->>>>> https://lkml.kernel.org/r/20210127235347.1402-1-will@kernel.org
->>>>=20
->>>> I have seen this series, and applied my patches on it.
->>>>=20
->>>> Despite Will=E2=80=99s patches, there were still inconsistencies =
-between fullmm
->>>> and need_flush_all.
->>>>=20
->>>> Am I missing something?
->>>=20
->>> I wasn't aware you were on top. I'll look again.
+>> Commit 83d116c53058 ("mm: fix double page fault on arm64 if PTE_AF
+>> is cleared") introduced arch_faults_on_old_pte() helper to identify
+>> platforms that don't set page access bit in HW and require a page
+>> fault to set it.
 >>=20
->> Looking on arm64=E2=80=99s tlb_flush() makes me think that there is =
-currently a bug
->> that this patch fixes. Arm64=E2=80=99s tlb_flush() does:
+>> Commit 44bf431b47b4 ("mm/memory.c: Add memory read privilege on page
+>> fault handling") added pte_sw_mkyoung() which is yet another way to
+>> manage platforms that don't set page access bit in HW and require a
+>> page fault to set it.
 >>=20
->>       /*
->>        * If we're tearing down the address space then we only care =
-about
->>        * invalidating the walk-cache, since the ASID allocator won't
->>        * reallocate our ASID without invalidating the entire TLB.
->>        */
->>       if (tlb->fullmm) {
->>               if (!last_level)
->>                       flush_tlb_mm(tlb->mm);
->>               return;
->>       }=20
->>=20
->> But currently tlb_mmu_finish() can mistakenly set fullmm incorrectly =
-(if
->> mm_tlb_flush_nested() is true), which might skip the TLB flush.
+>> Remove that pte_sw_mkyoung() helper and use the already existing
+>> arch_faults_on_old_pte() helper together with pte_mkyoung() instead.
 >=20
-> But in that case isn't 'freed_tables' set to 1, so 'last_level' will =
-be
-> false and we'll do the flush in the code above?
+> This conflicts with mm/memory.c changes in linux-next.  In
+> do_set_pte().  Please check my efforts:
 
-Indeed. You are right. So no rush.=
+I wanted to just get rid of it completely --
+
+https://marc.info/?l=3Dlinux-mm&m=3D160860750115163&w=3D2
+
+Waiting for MIPs to get that patch mentioned merged or nacked but
+as yet seems to be no response from maintainers.
+
+https://lore.kernel.org/linux-arch/20201019081257.32127-1-huangpei@loongson=
+.cn/
+
+Thanks,
+Nick
+
+>=20
+> --- a/arch/mips/include/asm/pgtable.h~mm-memoryc-remove-pte_sw_mkyoung
+> +++ a/arch/mips/include/asm/pgtable.h
+> @@ -406,8 +406,6 @@ static inline pte_t pte_mkyoung(pte_t pt
+>  	return pte;
+>  }
+> =20
+> -#define pte_sw_mkyoung	pte_mkyoung
+> -
+>  #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
+>  static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE=
+; }
+> =20
+> --- a/include/linux/pgtable.h~mm-memoryc-remove-pte_sw_mkyoung
+> +++ a/include/linux/pgtable.h
+> @@ -424,22 +424,6 @@ static inline void ptep_set_wrprotect(st
+>  }
+>  #endif
+> =20
+> -/*
+> - * On some architectures hardware does not set page access bit when acce=
+ssing
+> - * memory page, it is responsibilty of software setting this bit. It bri=
+ngs
+> - * out extra page fault penalty to track page access bit. For optimizati=
+on page
+> - * access bit can be set during all page fault flow on these arches.
+> - * To be differentiate with macro pte_mkyoung, this macro is used on pla=
+tforms
+> - * where software maintains page access bit.
+> - */
+> -#ifndef pte_sw_mkyoung
+> -static inline pte_t pte_sw_mkyoung(pte_t pte)
+> -{
+> -	return pte;
+> -}
+> -#define pte_sw_mkyoung	pte_sw_mkyoung
+> -#endif
+> -
+>  #ifndef pte_savedwrite
+>  #define pte_savedwrite pte_write
+>  #endif
+> --- a/mm/memory.c~mm-memoryc-remove-pte_sw_mkyoung
+> +++ a/mm/memory.c
+> @@ -2902,7 +2902,8 @@ static vm_fault_t wp_page_copy(struct vm
+>  		}
+>  		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
+>  		entry =3D mk_pte(new_page, vma->vm_page_prot);
+> -		entry =3D pte_sw_mkyoung(entry);
+> +		if (arch_faults_on_old_pte())
+> +			entry =3D pte_mkyoung(entry);
+>  		entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);
+> =20
+>  		/*
+> @@ -3560,7 +3561,8 @@ static vm_fault_t do_anonymous_page(stru
+>  	__SetPageUptodate(page);
+> =20
+>  	entry =3D mk_pte(page, vma->vm_page_prot);
+> -	entry =3D pte_sw_mkyoung(entry);
+> +	if (arch_faults_on_old_pte())
+> +		entry =3D pte_mkyoung(entry);
+>  	if (vma->vm_flags & VM_WRITE)
+>  		entry =3D pte_mkwrite(pte_mkdirty(entry));
+> =20
+> @@ -3745,8 +3747,8 @@ void do_set_pte(struct vm_fault *vmf, st
+> =20
+>  	if (prefault && arch_wants_old_prefaulted_pte())
+>  		entry =3D pte_mkold(entry);
+> -	else
+> -		entry =3D pte_sw_mkyoung(entry);
+> +	else if (arch_faults_on_old_pte())
+> +		entry =3D pte_mkyoung(entry);
+> =20
+>  	if (write)
+>  		entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);
+> _
+>=20
+>=20
+>=20
