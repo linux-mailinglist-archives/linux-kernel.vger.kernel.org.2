@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8552830E97F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89C630E988
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234463AbhBDBeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhBDBeR (ORCPT
+        id S234416AbhBDBjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:39:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231841AbhBDBjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:34:17 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0FCC061573;
-        Wed,  3 Feb 2021 17:33:36 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 3 Feb 2021 20:39:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612402671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=OCdZ2jNvOj5BMIALkYAvTgs5RXLYvCU9ccCxLkClJnM=;
+        b=N3OWRuLNCcJKDoBuOQv/WnkPJJyH5gZjSIg0a1qKJxMrm3FqgWGIQnI9QzMl4rNGL5BQlT
+        OOfDO3pdf2dqK7dQCpWlJx18ecB/R64NoM/BoqPXkrxprmJ6ft/82A5ldG4MC5GWPnE3k6
+        zNbpU1izeNKKU7HhTapByJ0aWL/wahg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-mFmD6EaNNZe-alWZr57G6A-1; Wed, 03 Feb 2021 20:37:47 -0500
+X-MC-Unique: mFmD6EaNNZe-alWZr57G6A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWLfj17YWz9sWw;
-        Thu,  4 Feb 2021 12:33:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612402413;
-        bh=6jjp+6nyWR2jPo5XxH6xsste0b+M2ZEy5UVWQVAwZpI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n5Z63ogthijkPYxZgua3pq+a8Qu8cebuAl5hZUgHHTUFpdS7fmqeSTzK9ji+TltnN
-         0r7UooVcb+uSc3jrPt9V5GkV+BwLHp8F0Q/px3C7ePsIkhbK+HTeWifjS5Y3dN4eCi
-         SsjWPnTN99F7FnAkR4vJ6wWCbExGo2Xn666S4i9wSzAjOC/LKbr5W2ate+Kb7vTvND
-         5lfTcrYWWecySTx4k1L2czyHqFPiafW4/B4lHHD2hO28ShM2xXkwyoqMWfLtNM6qkQ
-         /j8SpoR6Z84rWCOnDOVvqnfch8bzZBPO6Ha8Jdg7ziVLHWzIcBYmIP/8o+39uu/JdK
-         IoO695Vw2FoIg==
-Date:   Thu, 4 Feb 2021 12:33:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Brian Vazquez <brianvv@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210204123331.21e4598b@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45FDE801960;
+        Thu,  4 Feb 2021 01:37:46 +0000 (UTC)
+Received: from lclaudio.dyndns.org (ovpn-114-22.rdu2.redhat.com [10.10.114.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 705B877BE5;
+        Thu,  4 Feb 2021 01:37:45 +0000 (UTC)
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id 883133C00CE; Wed,  3 Feb 2021 22:37:43 -0300 (-03)
+Date:   Wed, 3 Feb 2021 22:37:43 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.9.255-rt170
+Message-ID: <20210204013743.GA696322@uudg.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uVh/AA+aBi57gbE1=4imCt3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uVh/AA+aBi57gbE1=4imCt3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello RT-list!
 
-Hi all,
+I'm pleased to announce the 4.9.255-rt170 stable release.
 
-After merging the net-next tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+You can get this release via the git tree at:
 
-ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
-ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
-ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
-ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-Caused by commits
+  branch: v4.9-rt
+  Head SHA1: 38abb89e640d41df8c16cc1b770853d278beec73
 
-  f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
-  bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functio=
-ns")
+Or to build 4.9.255-rt170 directly, the following patches should be applied:
 
-I have used the net-next tree from next-20210203 fot today.
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
 
---=20
-Cheers,
-Stephen Rothwell
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.255.xz
 
---Sig_/uVh/AA+aBi57gbE1=4imCt3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.255-rt170.patch.xz
 
------BEGIN PGP SIGNATURE-----
+Enjoy!
+Luis
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAbTusACgkQAVBC80lX
-0GwoxQf/Q5hK1sQNw652R+7Zy0UO8Dk6qtLelVaYFYBMUq3ATf1eAFyZO2ANcLVB
-TajdYhl0sbeWIP8Xxv3iP+rMpVR7I6QDbSm4uOZtMyL5IxidFIDADDklkItPl1A+
-Wsv4awlLJXebnF88al+mBPNJRz7v1KbHLjyCEGPhQDjVMOvXXZRmW7VMegESEvxp
-URqoB+plYGIfaqJJM0FBN/pQj1sqYaGuvW3wprpoZjJQ/OQmpn3RyYd/UjQfi5BP
-oyvEV1qMxUznDWDlmCNCxpek3fhkoPA22gx5CdSe0Cdsz4K3SvDiP07lBaRLJ6RM
-EkWxtary5Be5u2uIROHHa28b99Armw==
-=o7Kc
------END PGP SIGNATURE-----
-
---Sig_/uVh/AA+aBi57gbE1=4imCt3--
