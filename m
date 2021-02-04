@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827C330EDBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D2530EDB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhBDHuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:50:14 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:49333 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232190AbhBDHuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:50:03 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNpogdn_1612424916;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNpogdn_1612424916)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Feb 2021 15:48:37 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     intel-linux-scu@intel.com
-Cc:     artur.paszkiewicz@intel.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] scsi: isci: Remove redundant initialization of variable 'status'
-Date:   Thu,  4 Feb 2021 15:48:35 +0800
-Message-Id: <1612424915-106608-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234165AbhBDHtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:49:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231941AbhBDHtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:49:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B91E764F41;
+        Thu,  4 Feb 2021 07:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612424921;
+        bh=jZ5VkMV+yvTTGTBLPJwWZjNdJ6FEI+yUk1SW6gkvJFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T1cr0T0Bb8YdSuQS558nTlBpWsKr7YkV33KoyplTR3JJB3LUpUg5VVdirp2ZtZCen
+         QfNIK9zqj1YPoR8dPqLhpdlxcNIeCKf0FwgGUdUFyx5vaCHVI2mxHiszs++o3ilJQo
+         hnlyUiPcBK0Lu8V5ycceAOYS6iJ8aCnh7xJSUUiHpTu59fWfieXPPGGWpGwpJWLONR
+         Yn9QSylE+IZTbJt2u6MfxFnd78PoqhTtZWgHp2CSotQvjf7aHv0I7JMemXuDYPRLLb
+         Bb6HZeLSYUu6m8+JIkixO5EtcWCCvtFT5zCpiPA/BYJibxamgXUO+jPwQWtFpXCFY+
+         wAPc3ou2MiguQ==
+Date:   Thu, 4 Feb 2021 13:18:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 5/5] phy: phy-hi3670-usb3: move driver from staging
+ into phy
+Message-ID: <20210204074837.GE3079@vkoul-mobl.Dlink>
+References: <cover.1611052729.git.mchehab+huawei@kernel.org>
+ <82ce73ac9a383f0cae0faded5ec6fef2d3417d3c.1611052729.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82ce73ac9a383f0cae0faded5ec6fef2d3417d3c.1611052729.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch removes unneeded return variables.
-It fixes the following warning detected by coccinelle:
-./drivers/scsi/isci/request.c:1483:17-23: Unneeded variable: "status".
-Return "SCI_SUCCESS" on line 1503
-./drivers/scsi/isci/request.c:2157:17-23: Unneeded variable: "status".
-Return "SCI_SUCCESS" on line 2177
+On 19-01-21, 11:44, Mauro Carvalho Chehab wrote:
+> The phy USB3 driver for Hisilicon 970 (hi3670) is ready
+> for mainstream. Mode it from staging into the main driver's
+> phy/ directory.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/scsi/isci/request.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-diff --git a/drivers/scsi/isci/request.c b/drivers/scsi/isci/request.c
-index 6e08179..8676282 100644
---- a/drivers/scsi/isci/request.c
-+++ b/drivers/scsi/isci/request.c
-@@ -1480,8 +1480,6 @@ static enum sci_status sci_stp_request_pio_data_in_copy_data(
- stp_request_pio_await_h2d_completion_tc_event(struct isci_request *ireq,
- 					      u32 completion_code)
- {
--	enum sci_status status = SCI_SUCCESS;
--
- 	switch (SCU_GET_COMPLETION_TL_STATUS(completion_code)) {
- 	case SCU_MAKE_COMPLETION_STATUS(SCU_TASK_DONE_GOOD):
- 		ireq->scu_status = SCU_TASK_DONE_GOOD;
-@@ -1500,7 +1498,7 @@ static enum sci_status sci_stp_request_pio_data_in_copy_data(
- 		break;
- 	}
- 
--	return status;
-+	return SCI_SUCCESS;
- }
- 
- static enum sci_status
-@@ -2154,8 +2152,6 @@ static enum sci_status stp_request_udma_await_tc_event(struct isci_request *ireq
- static enum sci_status atapi_raw_completion(struct isci_request *ireq, u32 completion_code,
- 						  enum sci_base_request_states next)
- {
--	enum sci_status status = SCI_SUCCESS;
--
- 	switch (SCU_GET_COMPLETION_TL_STATUS(completion_code)) {
- 	case SCU_MAKE_COMPLETION_STATUS(SCU_TASK_DONE_GOOD):
- 		ireq->scu_status = SCU_TASK_DONE_GOOD;
-@@ -2174,7 +2170,7 @@ static enum sci_status atapi_raw_completion(struct isci_request *ireq, u32 compl
- 		break;
- 	}
- 
--	return status;
-+	return SCI_SUCCESS;
- }
- 
- static enum sci_status atapi_data_tc_completion_handler(struct isci_request *ireq,
+I think it makes sense if Greg applies this as well
+
 -- 
-1.8.3.1
-
+~Vinod
