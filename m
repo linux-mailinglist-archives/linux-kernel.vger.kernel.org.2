@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399E830FAB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2684330FAB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238716AbhBDSGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:06:31 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:59026 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238784AbhBDSEA (ORCPT
+        id S238786AbhBDSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:07:01 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:41838 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238011AbhBDSGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:04:00 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l7iyH-0005JS-IL; Thu, 04 Feb 2021 18:03:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] phy: qcom-qmp: make a const array static, makes object smaller
-Date:   Thu,  4 Feb 2021 18:03:13 +0000
-Message-Id: <20210204180313.108876-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 4 Feb 2021 13:06:39 -0500
+Received: by mail-oi1-f174.google.com with SMTP id m13so4620067oig.8;
+        Thu, 04 Feb 2021 10:06:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=QbiftXdgo4OS5KlhnsjjNU/h9Dr7caei4UL2Hb2vTbM=;
+        b=JzQ7IusY3FzBkK4pvlwHQU8lmGsBg3rx1eJKX3WNyyXrgbg5FxuBOPnuHw0gAMyz3h
+         HYv9TYNkFS9M6+wYHtmsa5vYOUln72QI96mnav2vikGLoP0LHmoLXWWYVz85l5oa1rM4
+         tffVzsl2YLIOgP4m0/ELCSMjQzP0RMqQvFoBzfmnLbCu6JqHyRUNKkJChbqC3ZmVx/6z
+         CqGfjJe68mr7OzRMQY7sOzrzqpOlaDihWMLZZe317rj3icZLeGqKRtpv7CnysBvokMxO
+         +JPqqcTKAbf7cnuuP99gZB62mXAbuHq7uEcS/VVGGP0PuEwoG5mDYU4cmO6vmUMeVCgX
+         wvDA==
+X-Gm-Message-State: AOAM531NOZbyVvCoHxgfEaTFTptgyOmdKqFH7k7o6dYyJI4AVo1O5czH
+        M/DlK4iKt5j8XEKqgttlFzRgfB0AAb16hUHD2zc=
+X-Google-Smtp-Source: ABdhPJwyb4/S5DaPrmtXR8vW3qSvXlxciI3NGr5Y19WV6x1it70XYyTXrNeOR3HAaqQ5fVHLvLEC2Nv07xea6earflw=
+X-Received: by 2002:aca:fc84:: with SMTP id a126mr481903oii.71.1612461955151;
+ Thu, 04 Feb 2021 10:05:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Feb 2021 19:05:44 +0100
+Message-ID: <CAJZ5v0hvbEQehBdq4FNtU9t0xQ1jEtcDVH5b96Bo=Me-dbNg-w@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v5.11-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Linus,
 
-Don't populate the const array cfg1_settings on the stack but instead make
-it static. Makes the object code smaller by 24 bytes:
+Please pull from the tag
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  73585	  20240	     64	  93889	  16ec1	drivers/phy/qualcomm/phy-qcom-qmp.o
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.11-rc7
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-  73465	  20336	     64	  93865	  16ea9	drivers/phy/qualcomm/phy-qcom-qmp.o
+with top-most commit 0f347aa07f15b346a001e557f4a0a45069f7fa3d
 
-(gcc version 10.2.0)
+ ACPI: scan: Fix battery devices sometimes never binding
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+on top of commit 1048ba83fb1c00cd24172e23e8263972f6b5d9ac
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index a679b5fb7b48..d0dfb6743965 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -3421,7 +3421,7 @@ static int qcom_qmp_phy_configure_dp_phy(struct qmp_phy *qphy)
- static int qcom_qmp_dp_phy_calibrate(struct phy *phy)
- {
- 	struct qmp_phy *qphy = phy_get_drvdata(phy);
--	const u8 cfg1_settings[] = { 0x13, 0x23, 0x1d };
-+	static const u8 cfg1_settings[] = { 0x13, 0x23, 0x1d };
- 	u8 val;
- 
- 	qphy->dp_aux_cfg++;
--- 
-2.29.2
+ Linux 5.11-rc6
 
+to receive an ACPI fix for 5.11-rc7.
+
+This addresses a recent regression causing battery devices to be
+never bound to a driver on some systems (Hans de Goede).
+
+Thanks!
+
+
+---------------
+
+Hans de Goede (1):
+      ACPI: scan: Fix battery devices sometimes never binding
+
+---------------
+
+ drivers/acpi/scan.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
