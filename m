@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB723101FE
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAEE3101FF
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhBEBAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbhBEA6s (ORCPT
+        id S232493AbhBEBAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:00:09 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44156 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232392AbhBEA6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:58:48 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6860C061797
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:58:00 -0800 (PST)
-Message-Id: <20210204211154.914335902@linutronix.de>
+        Thu, 4 Feb 2021 19:58:43 -0500
+Message-Id: <20210204211155.100196672@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612486679;
+        s=2020; t=1612486681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dT/y924f7WI1Ir3LaYEXpRg5aIdOERAtoWsMEx68dmk=;
-        b=0a61vNihPs+JqPRoCdBynhpeILHmE+MTp5TG6We0BKBcdNvP+hvVg791VgA1/IFDBT8FeQ
-        SnnRTR2nSmIcYSUx6JF6QphISwR1mnQHr4I6bZqqQ68EbiJnqO0PX/q8iuXfyaIneHR3zG
-        fZfj4NTRTD149gtPDxRLkZVu38JnShy+8NVNc2ySQlsb8QIA0/qplsonazXHp8TIiZ/8Uv
-        sMSoFCqgzz1+7qqRTYCrrq8F+vgEko3WRntsY/yQDAt+vM+qZv3iCJ3TPIga5tt689pTYT
-        lgbtOYTZizeAl+bFcSSq4zkSvloMdpTjgQr/6rXdlplerIMK2HCyqwsGyaNkjw==
+        bh=IeXqFHkyXQcQYKZrO/0J8hVsVVBF0HX1Izi/JiaMnro=;
+        b=sBo2Dn1i3A85iC8T2s9TAHvZMEgIgblH+iZ+tTp7EeLcCnDbvCHHX7Jf7T0ZhY65X866JA
+        gzosSXbdQ/AgRZfuCzR2WX5pko2cJpAZ2/mrQI+IVxwQsyxG9gtyc+xLxMLR2VoftCgabB
+        k0EJLfZ/ukI2z/SLRsOf4CVzlY2u1jhKpKj7QVsr4BTT2IC5UnmzvAf3CjOlV3+rw5j8on
+        CaG8RKNkVWaAsULnu2AsFSSjqUeqC2Js3iDT0iSsCStNrM3TswOCCTVSJswnK64uPT0FIN
+        fqu2/N/TuwiveD7EJRS6xZkmfruTSBG5IrDTBNSa3R61fYL9tz6+GazOV/+I+g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612486679;
+        s=2020e; t=1612486681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dT/y924f7WI1Ir3LaYEXpRg5aIdOERAtoWsMEx68dmk=;
-        b=23PwdcnoJOy7CczbT9VJ8pnBUjgnHEllT0Fxu0CU43EJ6N6OgpES5A2tM3k9Ak1p0Q6PkC
-        CrWfEmHjcVlrAjBQ==
-Date:   Thu, 04 Feb 2021 21:49:11 +0100
+        bh=IeXqFHkyXQcQYKZrO/0J8hVsVVBF0HX1Izi/JiaMnro=;
+        b=O0jh47SuUKv/oHsb6RB12meAyaXIaVo5PgcaoI13vGS8gSSHMs2HbmW5WZI/s9TgllApDQ
+        fRllmy6tcMr5ggBQ==
+Date:   Thu, 04 Feb 2021 21:49:13 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [patch 08/12] x86/entry: Use run_sysvec_on_irqstack_cond() for XEN upcall
+Subject: [patch 10/12] x86: Select CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
 References: <20210204204903.350275743@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,52 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid yet another macro implementation reuse the existing
-run_sysvec_on_irqstack_cond() and move the set_irq_regs() handling into the
-called function. Makes the code even simpler.
+Now that all invocations of irq_exit_rcu() happen on the irq stack, turn on
+CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK which causes the core code to invoke
+__do_softirq() directly without going through do_softirq_own_stack().
+
+That means do_softirq_own_stack() is only invoked from task context which
+means it can't be on the irq stack. Remove the conditional from
+run_softirq_on_irqstack_cond() and rename the function accordingly.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/common.c |   19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ arch/x86/Kconfig                 |    1 +
+ arch/x86/include/asm/irq_stack.h |   19 ++++++++-----------
+ arch/x86/kernel/irq_64.c         |    2 +-
+ 3 files changed, 10 insertions(+), 12 deletions(-)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -249,30 +249,23 @@ static __always_inline bool get_and_clea
- static __always_inline void restore_inhcall(bool inhcall) { }
- #endif
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -187,6 +187,7 @@ config X86
+ 	select HAVE_HW_BREAKPOINT
+ 	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
++	select HAVE_IRQ_EXIT_ON_IRQ_STACK	if X86_64
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KERNEL_BZIP2
+ 	select HAVE_KERNEL_GZIP
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -195,19 +195,16 @@
+ 	"call %P[__func]				\n"
  
--static void __xen_pv_evtchn_do_upcall(void)
-+static void __xen_pv_evtchn_do_upcall(struct pt_regs *regs)
- {
--	irq_enter_rcu();
-+	struct pt_regs *old_regs = set_irq_regs(regs);
-+
- 	inc_irq_stat(irq_hv_callback_count);
- 
- 	xen_hvm_evtchn_do_upcall();
- 
--	irq_exit_rcu();
-+	set_irq_regs(old_regs);
+ /*
+- * Macro to invoke __do_softirq on the irq stack. Contrary to the above
+- * the only check which is necessary is whether the interrupt stack is
+- * in use already.
++ * Macro to invoke __do_softirq on the irq stack. This is only called from
++ * task context when bottom halfs are about to be reenabled and soft
++ * interrupts are pending to be processed. The interrupt stack cannot be in
++ * use here.
+  */
+-#define run_softirq_on_irqstack_cond()					\
++#define run_softirq_on_irqstack()					\
+ {									\
+-	if (__this_cpu_read(hardirq_stack_inuse)) {			\
+-		__do_softirq();						\
+-	} else {							\
+-		__this_cpu_write(hardirq_stack_inuse, true);		\
+-		__call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);	\
+-		__this_cpu_write(hardirq_stack_inuse, false);		\
+-	}								\
++	__this_cpu_write(hardirq_stack_inuse, true);			\
++	__call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
++	__this_cpu_write(hardirq_stack_inuse, false);			\
  }
  
- __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
+ #else /* CONFIG_X86_64 */
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -76,5 +76,5 @@ int irq_init_percpu_irqstack(unsigned in
+ 
+ void do_softirq_own_stack(void)
  {
--	struct pt_regs *old_regs;
-+	irqentry_state_t state = irqentry_enter(regs);
- 	bool inhcall;
--	irqentry_state_t state;
--
--	state = irqentry_enter(regs);
--	old_regs = set_irq_regs(regs);
- 
--	instrumentation_begin();
--	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
--	instrumentation_end();
--
--	set_irq_regs(old_regs);
-+	run_sysvec_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
- 
- 	inhcall = get_and_clear_inhcall();
- 	if (inhcall && !WARN_ON_ONCE(state.exit_rcu)) {
+-	run_softirq_on_irqstack_cond();
++	run_softirq_on_irqstack();
+ }
 
