@@ -2,162 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7A730F73E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A6930F798
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhBDQHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:07:43 -0500
-Received: from mga17.intel.com ([192.55.52.151]:9802 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237795AbhBDQHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:07:12 -0500
-IronPort-SDR: ydMx5/AYZamQ/l+sg6ZQgkZGQfkcPRT0iWYsA7sZburc+PrVOxEFojRnRi+D5aJBQtAORi72B5
- CGSLTUA2wyHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161024683"
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="161024683"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 08:06:14 -0800
-IronPort-SDR: qrd4mranS5Z93xaQ0vMXNfqxwfu2ztxmMQgjN58iy6jxWX46uvXKM/l4ypBQ9sCdqnRRj+MZ3U
- yFx0s83CE5sQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="372728070"
-Received: from power-sh.sh.intel.com ([10.239.48.130])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Feb 2021 08:06:12 -0800
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        kan.liang@linux.intel.com, ak@linux.intel.com
-Subject: [PATCH V2 3/3] perf/x86/rapl: Fix psys-energy event on Intel SPR platform
-Date:   Fri,  5 Feb 2021 00:18:16 +0800
-Message-Id: <20210204161816.12649-3-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210204161816.12649-1-rui.zhang@intel.com>
-References: <20210204161816.12649-1-rui.zhang@intel.com>
+        id S237809AbhBDQV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:21:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237087AbhBDQVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:21:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612455585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oniC19vIHs0GOyeonXQqZoxxZ4D9xyTI9e3aNUHMkGA=;
+        b=R5sqHcpoZXqq6Minry8Gq9oCmyjiKgnP5frMdGuXL2cIxtzfEaL8Z0d7GrHI3vL08TYG6d
+        6vMQQiOqL6JNnFzMV7ZWomJ41x20ZLU/jzPr87BsWBq066qTnBD/QsOrgzeBqzqgy7IhR4
+        xWrt3PYXwNaEEsf8OWRVAUZsvudk4Kc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-hCIkd8OuM6KxG4En1Nc5ow-1; Thu, 04 Feb 2021 11:19:43 -0500
+X-MC-Unique: hCIkd8OuM6KxG4En1Nc5ow-1
+Received: by mail-ed1-f72.google.com with SMTP id i4so3250395edt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:19:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oniC19vIHs0GOyeonXQqZoxxZ4D9xyTI9e3aNUHMkGA=;
+        b=eM0bUXQZeIwSeJwWH+y3h7ILGTNFEWCkp6swmH3agYdt+t6ICDoJDoqsBwipSRxYho
+         uV7i82QeNXs6Ik0A2pjCAdjTcShkvavgie70oEd7rUG5VN8E8RarN3/jXmVEFwnyeSXA
+         G8HRU7sn5INmEtQ/3uzpCrAkGcOge6M9Xf0bv7mRLfhN941Z8ASfHh7WXVSArMYrjM5F
+         g7TRWALQtS6UN+f+cRmhgjaOUKk4hVsFbSRudj2CbhLP7J+iol8hQJf9SDPApley31bt
+         8XInXi0jikZg1Y0Wv2zon0i3KI0xs8Mc1gmMz8jHQ/hpkK3lFR3tgfBvhusmFVST+Vxu
+         yrVg==
+X-Gm-Message-State: AOAM533tN7EU9idDp5X3TqIExVPk6wZuyrY58hc6HbFKR4KMYOfUhueN
+        9nUrYI95qK2t8TedMUQEdbHITIZ2lxHlzknAhHlNIyEhWA9/80tG/n4ChWbR/Ihe0cOeqUU1nHr
+        lpVVzl29woJpMciYN3fwlY2XD
+X-Received: by 2002:aa7:cd61:: with SMTP id ca1mr3134596edb.76.1612455582594;
+        Thu, 04 Feb 2021 08:19:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwAArxXtNfuS5wkH6IxZvH0OCR4b34syfGKiK4rM9d9z+bZoBZJMjdTHD93a8h+1YeN761Ljw==
+X-Received: by 2002:aa7:cd61:: with SMTP id ca1mr3134572edb.76.1612455582282;
+        Thu, 04 Feb 2021 08:19:42 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id t3sm2709511eds.89.2021.02.04.08.19.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 08:19:41 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: ideapad-laptop/thinkpad_acpi: mark
+ conflicting symbols static
+To:     Arnd Bergmann <arnd@kernel.org>, Ike Panhc <ike.pan@canonical.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mark Pearson <markpearson@lenovo.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nitin Joshi <njoshi1@lenovo.com>, Tom Rix <trix@redhat.com>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net
+References: <20210204153924.1534813-1-arnd@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <2c686820-817a-8728-66e0-cbf1b3e64e2d@redhat.com>
+Date:   Thu, 4 Feb 2021 17:19:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210204153924.1534813-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several things special for the RAPL Psys energy counter, on
-Intel Sapphire Rapids platform.
-1. it contains one Psys master package, and only CPUs on the master
-   package can read valid value of the Psys energy counter, reading the
-   MSR on CPUs in the slave package returns 0.
-2. The master package does not have to be Physical package 0. And when
-   all the CPUs on the Psys master package are offlined, we lose the Psys
-   energy counter, at runtime.
-3. The Psys energy counter can be disabled by BIOS, while all the other
-   energy counters are not affected.
+Hi Arnd,
 
-It is not easy to handle all of these in the current RAPL PMU design
-because
-a) perf_msr_probe() validates the MSR on some random CPU, which may either
-   be in the Psys master package or in the Psys slave package.
-b) all the RAPL events share the same PMU, and there is not API to remove
-   the psys-energy event cleanly, without affecting the other events in
-   the same PMU.
+On 2/4/21 4:38 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Three of the newly added functions are accidently not marked 'static' which
+> causes a warning when building with W=1
+> 
+> drivers/platform/x86/thinkpad_acpi.c:10081:5: warning: no previous prototype for function 'dytc_profile_get' [-Wmissing-prototypes]
+> drivers/platform/x86/thinkpad_acpi.c:10095:5: warning: no previous prototype for function 'dytc_cql_command' [-Wmissing-prototypes]
+> drivers/platform/x86/thinkpad_acpi.c:10133:5: warning: no previous prototype for function 'dytc_profile_set' [-Wmissing-prototypes]
+> 
+> The functions are also present in two files, causing a link error when
+> both are built into the kernel:
 
-This patch addresses the problems in a simple way.
+Thank you for your patch, but the issue has already been fixed in both drivers
+in my review-hans branch (which will become for-next soon):
 
-First,  by setting .no_check bit for RAPL Psys MSR, the psys-energy event
-is always added, so we don't have to check the Psys ENERGY_STATUS MSR on
-master package.
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Then, by removing rapl_not_visible(), the psys-energy event is always
-available in sysfs. This does not affect the previous code because, for
-the RAPL MSRs with .no_check cleared, the .is_visible() callback is always
-overriden in the perf_msr_probe() function.
+(note the ideapad fix is part of the big set of ideapad cleanups)
 
-Note, although RAPL PMU is die-based, and the Psys energy counter MSR on
-Intel SPR is package scope, this is not a problem because there is only
-one die in each package on SPR.
+Regards,
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
- arch/x86/events/rapl.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+Hans
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index 7ed25b2ba05f..f42a70496a24 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -454,16 +454,9 @@ static struct attribute *rapl_events_cores[] = {
- 	NULL,
- };
- 
--static umode_t
--rapl_not_visible(struct kobject *kobj, struct attribute *attr, int i)
--{
--	return 0;
--}
--
- static struct attribute_group rapl_events_cores_group = {
- 	.name  = "events",
- 	.attrs = rapl_events_cores,
--	.is_visible = rapl_not_visible,
- };
- 
- static struct attribute *rapl_events_pkg[] = {
-@@ -476,7 +469,6 @@ static struct attribute *rapl_events_pkg[] = {
- static struct attribute_group rapl_events_pkg_group = {
- 	.name  = "events",
- 	.attrs = rapl_events_pkg,
--	.is_visible = rapl_not_visible,
- };
- 
- static struct attribute *rapl_events_ram[] = {
-@@ -489,7 +481,6 @@ static struct attribute *rapl_events_ram[] = {
- static struct attribute_group rapl_events_ram_group = {
- 	.name  = "events",
- 	.attrs = rapl_events_ram,
--	.is_visible = rapl_not_visible,
- };
- 
- static struct attribute *rapl_events_gpu[] = {
-@@ -502,7 +493,6 @@ static struct attribute *rapl_events_gpu[] = {
- static struct attribute_group rapl_events_gpu_group = {
- 	.name  = "events",
- 	.attrs = rapl_events_gpu,
--	.is_visible = rapl_not_visible,
- };
- 
- static struct attribute *rapl_events_psys[] = {
-@@ -515,7 +505,6 @@ static struct attribute *rapl_events_psys[] = {
- static struct attribute_group rapl_events_psys_group = {
- 	.name  = "events",
- 	.attrs = rapl_events_psys,
--	.is_visible = rapl_not_visible,
- };
- 
- static bool test_msr(int idx, void *data)
-@@ -534,6 +523,14 @@ static struct perf_msr intel_rapl_msrs[] = {
- 	[PERF_RAPL_PSYS] = { MSR_PLATFORM_ENERGY_STATUS, &rapl_events_psys_group,  test_msr, false, RAPL_MSR_MASK },
- };
- 
-+static struct perf_msr intel_rapl_spr_msrs[] = {
-+	[PERF_RAPL_PP0]  = { MSR_PP0_ENERGY_STATUS,      &rapl_events_cores_group, test_msr, false, RAPL_MSR_MASK },
-+	[PERF_RAPL_PKG]  = { MSR_PKG_ENERGY_STATUS,      &rapl_events_pkg_group,   test_msr, false, RAPL_MSR_MASK },
-+	[PERF_RAPL_RAM]  = { MSR_DRAM_ENERGY_STATUS,     &rapl_events_ram_group,   test_msr, false, RAPL_MSR_MASK },
-+	[PERF_RAPL_PP1]  = { MSR_PP1_ENERGY_STATUS,      &rapl_events_gpu_group,   test_msr, false, RAPL_MSR_MASK },
-+	[PERF_RAPL_PSYS] = { MSR_PLATFORM_ENERGY_STATUS, &rapl_events_psys_group,  test_msr, true, RAPL_MSR_MASK },
-+};
-+
- /*
-  * Force to PERF_RAPL_MAX size due to:
-  * - perf_msr_probe(PERF_RAPL_MAX)
-@@ -764,7 +761,7 @@ static struct rapl_model model_spr = {
- 			  BIT(PERF_RAPL_PSYS),
- 	.unit_quirk	= RAPL_UNIT_QUIRK_INTEL_SPR,
- 	.msr_power_unit = MSR_RAPL_POWER_UNIT,
--	.rapl_msrs      = intel_rapl_msrs,
-+	.rapl_msrs      = intel_rapl_spr_msrs,
- };
- 
- static struct rapl_model model_amd_fam17h = {
--- 
-2.17.1
+
+
+
+> 
+> ld.lld: error: duplicate symbol: dytc_cql_command
+>>>> defined at ideapad-laptop.c
+>>>>            platform/x86/ideapad-laptop.o:(dytc_cql_command) in archive drivers/built-in.a
+>>>> defined at thinkpad_acpi.c
+>>>>            platform/x86/thinkpad_acpi.o:(.text+0x20) in archive drivers/built-in.a
+> 
+> ld.lld: error: duplicate symbol: dytc_profile_get
+>>>> defined at ideapad-laptop.c
+>>>>            platform/x86/ideapad-laptop.o:(dytc_profile_get) in archive drivers/built-in.a
+>>>> defined at thinkpad_acpi.c
+>>>>            platform/x86/thinkpad_acpi.o:(.text+0x0) in archive drivers/built-in.a
+> 
+> ld.lld: error: duplicate symbol: dytc_profile_set
+>>>> defined at ideapad-laptop.c
+>>>>            platform/x86/ideapad-laptop.o:(dytc_profile_set) in archive drivers/built-in.a
+>>>> defined at thinkpad_acpi.c
+>>>>            platform/x86/thinkpad_acpi.o:(.text+0x220) in archive drivers/built-in.a
+> 
+> Mark these all as static to avoid both problems.
+> 
+> Fixes: eabe533904cb ("platform/x86: ideapad-laptop: DYTC Platform profile support")
+> Fixes: c3bfcd4c6762 ("platform/x86: thinkpad_acpi: Add platform profile support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/platform/x86/ideapad-laptop.c | 11 ++++++-----
+>  drivers/platform/x86/thinkpad_acpi.c  | 10 +++++-----
+>  2 files changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+> index cc42af2a0a98..6095a4d54881 100644
+> --- a/drivers/platform/x86/ideapad-laptop.c
+> +++ b/drivers/platform/x86/ideapad-laptop.c
+> @@ -656,8 +656,8 @@ static int convert_profile_to_dytc(enum platform_profile_option profile, int *pe
+>   * dytc_profile_get: Function to register with platform_profile
+>   * handler. Returns current platform profile.
+>   */
+> -int dytc_profile_get(struct platform_profile_handler *pprof,
+> -			enum platform_profile_option *profile)
+> +static int dytc_profile_get(struct platform_profile_handler *pprof,
+> +			    enum platform_profile_option *profile)
+>  {
+>  	struct ideapad_dytc_priv *dytc;
+>  
+> @@ -673,7 +673,8 @@ int dytc_profile_get(struct platform_profile_handler *pprof,
+>   *  - enable CQL
+>   *  If not in CQL mode, just run the command
+>   */
+> -int dytc_cql_command(struct ideapad_private *priv, int command, int *output)
+> +static int dytc_cql_command(struct ideapad_private *priv, int command,
+> +			    int *output)
+>  {
+>  	int err, cmd_err, dummy;
+>  	int cur_funcmode;
+> @@ -710,8 +711,8 @@ int dytc_cql_command(struct ideapad_private *priv, int command, int *output)
+>   * dytc_profile_set: Function to register with platform_profile
+>   * handler. Sets current platform profile.
+>   */
+> -int dytc_profile_set(struct platform_profile_handler *pprof,
+> -			enum platform_profile_option profile)
+> +static int dytc_profile_set(struct platform_profile_handler *pprof,
+> +			    enum platform_profile_option profile)
+>  {
+>  	struct ideapad_dytc_priv *dytc;
+>  	struct ideapad_private *priv;
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index 18b390153e7f..42e0a497d69e 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10078,8 +10078,8 @@ static int convert_profile_to_dytc(enum platform_profile_option profile, int *pe
+>   * dytc_profile_get: Function to register with platform_profile
+>   * handler. Returns current platform profile.
+>   */
+> -int dytc_profile_get(struct platform_profile_handler *pprof,
+> -			enum platform_profile_option *profile)
+> +static int dytc_profile_get(struct platform_profile_handler *pprof,
+> +			    enum platform_profile_option *profile)
+>  {
+>  	*profile = dytc_current_profile;
+>  	return 0;
+> @@ -10092,7 +10092,7 @@ int dytc_profile_get(struct platform_profile_handler *pprof,
+>   *  - enable CQL
+>   *  If not in CQL mode, just run the command
+>   */
+> -int dytc_cql_command(int command, int *output)
+> +static int dytc_cql_command(int command, int *output)
+>  {
+>  	int err, cmd_err, dummy;
+>  	int cur_funcmode;
+> @@ -10130,8 +10130,8 @@ int dytc_cql_command(int command, int *output)
+>   * dytc_profile_set: Function to register with platform_profile
+>   * handler. Sets current platform profile.
+>   */
+> -int dytc_profile_set(struct platform_profile_handler *pprof,
+> -			enum platform_profile_option profile)
+> +static int dytc_profile_set(struct platform_profile_handler *pprof,
+> +			    enum platform_profile_option profile)
+>  {
+>  	int output;
+>  	int err;
+> 
 
