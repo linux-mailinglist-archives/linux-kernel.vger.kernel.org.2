@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE48C30F579
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0D830F56F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236963AbhBDOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:54:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236911AbhBDOwu (ORCPT
+        id S236785AbhBDOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:53:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236905AbhBDOwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:52:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612450280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/bXhNm9KwpDexU8pLCeEwowBlnm7DpOxgyBpK3M5ji8=;
-        b=SH4u6COoPv3dSo/wMMSxdRaYsiloerIxKVraJ5OxZXnqh7KaptsGsetkSGXARYUyxQqqgD
-        dgI/CbKbGNPihVPdzlR9mG/XMvdEO4AMjZ0h00vY5kDXrpQ3UpAaHhSjKNJHw/c/1I5CD4
-        Nt+U+JRVaqYaacpwmCoXqkIGr3F5k6E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-EuZoKhJUOOKL2fX810sTFA-1; Thu, 04 Feb 2021 09:51:16 -0500
-X-MC-Unique: EuZoKhJUOOKL2fX810sTFA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E92691935780;
-        Thu,  4 Feb 2021 14:51:14 +0000 (UTC)
-Received: from krava (unknown [10.40.194.33])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 89F6F60CFA;
-        Thu,  4 Feb 2021 14:51:12 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 15:51:11 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 07/24] perf daemon: Add config file change check
-Message-ID: <YBwJ36m11cVh5G+u@krava>
-References: <20210129134855.195810-1-jolsa@redhat.com>
- <20210130234856.271282-1-jolsa@kernel.org>
- <20210130234856.271282-8-jolsa@kernel.org>
- <20210203211359.GT854763@kernel.org>
+        Thu, 4 Feb 2021 09:52:19 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169BFC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:51:38 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id e9so1895547plh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:51:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=j2b0oOc+rzmzi38W+sTrovSj5jDaFAC2TznS4DZxElU=;
+        b=soWUtNJ9rxQTjmER1hm91KKYjx1D2hTUbleBe3U3hCVjwO4eY8NS8NDaAfLP364QdJ
+         x0N62cGzoJOUzxf7o4kpGpqTEO0dMCK9GYj8A3kPFCAEeTPNzqZoP4Maj7xZeinOCCTa
+         XzOzVTL8cdIZUyBb2sR2ubIHIHAk07QzIkD1hCJM14rbEznL4BKjT8R4WGix86c+YGIf
+         47169whurzBYY8RW3AriKDY+Z/5S19xhPHW5qeMLPNgPUd1M9YS8cB+ia3XtVxoKqwhg
+         dfoqp+1nZiIcrGU78eAwRlfJ6WwbWxWRFCrnOd2A1MwvahD1X0kuFbsQ4HmlUb2MlfAq
+         m+TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=j2b0oOc+rzmzi38W+sTrovSj5jDaFAC2TznS4DZxElU=;
+        b=aA4ugm2IA091VYbU8ZRrlJxFVGL083YP5SgjENM84sgikfoUXEsHEVEiXVvf+KbEyC
+         d3GTL8Wj15OERGd/Z50SZljjWrsHYoyiYXv/KA9j0Ay0BGknOltm2airKOW6Enn04UaX
+         XBcbtVNZ3U02KFBEar3yQXX4NEyUnY4kzCLmKR5nCU0xgL1OSuOXNXo32dLwZmECtwXu
+         aO13gm+Z7XdyQGs4yMwpG5OC3ijBcUolmAxWrVrh8tTCyVgx8SGoWzJY11eXfopvFfyU
+         pzWc2G3TwLWYFAhrqZs7WcEAMM5CSdkZCpnNdlCEincxe2O+HsdNCCauauLdoXYtL7t/
+         aqFg==
+X-Gm-Message-State: AOAM530gCu8JoeRm+eicYDQsxSF5Vy9pwil8UGSVCj455tNZmUvsL4I8
+        IKlu3y2Tpy74IuPcMbUxF/gvnV4ytl0=
+X-Google-Smtp-Source: ABdhPJx7fA7KLsWP2F4d34Pj5VS0YAoanRrPZirQ5OS3yJ5pM2+RSI6hhGsHvsCd6yxeh/96BDE3Kw==
+X-Received: by 2002:a17:90a:6a43:: with SMTP id d3mr9043689pjm.224.1612450297639;
+        Thu, 04 Feb 2021 06:51:37 -0800 (PST)
+Received: from localhost.localdomain (61-230-45-44.dynamic-ip.hinet.net. [61.230.45.44])
+        by smtp.gmail.com with ESMTPSA id u3sm6866224pfm.144.2021.02.04.06.51.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 06:51:36 -0800 (PST)
+From:   Lecopzer Chen <lecopzer@gmail.com>
+To:     will@kernel.org
+Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
+        aryabinin@virtuozzo.com, broonie@kernel.org,
+        catalin.marinas@arm.com, dan.j.williams@intel.com,
+        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
+        lecopzer@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-mm@kvack.org, linux@roeck-us.net, robin.murphy@arm.com,
+        rppt@kernel.org, tyhicks@linux.microsoft.com,
+        vincenzo.frascino@arm.com, yj.chiang@mediatek.com
+Subject: Re: [PATCH v2 2/4] arm64: kasan: abstract _text and _end to KERNEL_START/END
+Date:   Thu,  4 Feb 2021 22:51:27 +0800
+Message-Id: <20210204145127.75856-1-lecopzer@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210204124658.GB20468@willie-the-truck>
+References: <20210204124658.GB20468@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203211359.GT854763@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 06:13:59PM -0300, Arnaldo Carvalho de Melo wrote:
-
-SNIP
-
-> >  #include <sys/types.h>
-> >  #include <sys/socket.h>
-> >  #include <sys/un.h>
-> > @@ -73,6 +75,7 @@ struct session {
-> >  struct daemon {
-> >  	const char		*config;
-> >  	char			*config_real;
-> > +	char			*config_base;
-> >  	const char		*base_user;
-> >  	char			*base;
-> >  	struct list_head	 sessions;
-> > @@ -493,6 +496,7 @@ static void daemon__free(struct daemon *daemon)
-> >  		session__remove(session);
+> On Sat, Jan 09, 2021 at 06:32:50PM +0800, Lecopzer Chen wrote:
+> > Arm64 provide defined macro for KERNEL_START and KERNEL_END,
+> > thus replace them by the abstration instead of using _text and _end.
+> > 
+> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > ---
+> >  arch/arm64/mm/kasan_init.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> > index 39b218a64279..fa8d7ece895d 100644
+> > --- a/arch/arm64/mm/kasan_init.c
+> > +++ b/arch/arm64/mm/kasan_init.c
+> > @@ -218,8 +218,8 @@ static void __init kasan_init_shadow(void)
+> >  	phys_addr_t pa_start, pa_end;
+> >  	u64 i;
 > >  
-> >  	free(daemon->config_real);
-> > +	free(daemon->config_base);
-> >  	free(daemon->base);
-> 
-> Please replace those with zfree()
-
-ok
-
-> 
-> >  }
+> > -	kimg_shadow_start = (u64)kasan_mem_to_shadow(_text) & PAGE_MASK;
+> > -	kimg_shadow_end = PAGE_ALIGN((u64)kasan_mem_to_shadow(_end));
+> > +	kimg_shadow_start = (u64)kasan_mem_to_shadow(KERNEL_START) & PAGE_MASK;
+> > +	kimg_shadow_end = PAGE_ALIGN((u64)kasan_mem_to_shadow(KERNEL_END));
 > >  
-> > @@ -535,6 +539,83 @@ static int daemon__reconfig(struct daemon *daemon)
-> >  	return 0;
-> >  }
+> >  	mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
+> >  	mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
+> > @@ -241,7 +241,7 @@ static void __init kasan_init_shadow(void)
+> >  	clear_pgds(KASAN_SHADOW_START, KASAN_SHADOW_END);
 > >  
-> > +static int setup_config_changes(struct daemon *daemon)
-> > +{
-> > +	char *basen = strdup(daemon->config_real);
-> > +	char *dirn  = strdup(daemon->config_real);
-> > +	char *base, *dir;
-> > +	int fd, wd;
-> > +
-> > +	if (!dirn || !basen)
-> > +		return -ENOMEM;
+> >  	kasan_map_populate(kimg_shadow_start, kimg_shadow_end,
+> > -			   early_pfn_to_nid(virt_to_pfn(lm_alias(_text))));
+> > +			   early_pfn_to_nid(virt_to_pfn(lm_alias(KERNEL_START))));
 > 
-> This may leak one of them
+> To be honest, I think this whole line is pointless. We should be able to
+> pass NUMA_NO_NODE now that we're not abusing the vmemmap() allocator to
+> populate the shadow.
 
-right, will fix
+Do we need to fix this in this series? it seems another topic.
+If not, should this patch be removed in this series?
 
-thanks,
-jirka
-
+Thanks,
+Lecopzer
