@@ -2,115 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5506D30F5D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6CC30F5CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237133AbhBDPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237089AbhBDO7P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:59:15 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA3FC061786;
-        Thu,  4 Feb 2021 06:58:35 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id r12so5773175ejb.9;
-        Thu, 04 Feb 2021 06:58:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fTTiHduwnoXqR6b8TrKcHrHm61227F3QjrDLKsXeD7I=;
-        b=SrYxamP4i+r8UNU02W7Z9zvldd7UYJ2fiJBl9hxzhqZ4/TOSWE6QqAMs5FgeZRvFMc
-         DZFihkjaIBZ5fdvMG0bsmxkwHGnBhB48wX7LtRVQTaI4jL/RI+Zo0XVIgTfBA49IX1au
-         thd9RR7Obc6ty0QQpY/oJsahU/Jj8/vfn0OuHbSMklMHJr/u935Wk2laCjaRjMFvEa6T
-         RJLoz7UK2o4WSRqvnuj595rI5U4iPAsrk1x/nGj0hP7Sfv1/SnR1ghnO1eQ53N2OM6SN
-         F/sIwUKUNsVlx75Sf+7OsG/qdnrTi2t13qPSavim+cihmCVf8yYGYOT5Nl/MeimrOnjl
-         kWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fTTiHduwnoXqR6b8TrKcHrHm61227F3QjrDLKsXeD7I=;
-        b=mk9+JFLNHDRMm7Xyp5hORGPMHFb4cZA3JDTcs9sWMBLC/ZhgYW3t3/zvNJ+upmYtLo
-         hJk51wE6s6xvrJWTuw9Bpj3bANsSXgTRKQ7kIedMFWTy/BNl3g8FGZvpbIsshR1cAWUK
-         QNp0X2VYQ/wlGhT39o8MZGS8QfLzTTfnEa2xsSZ9C9ISY6czjtW/YuqIL0/yyoVLi3gv
-         ZW5DjGPC+t7GnbsX1ZzeYx7s7VNWmhKtsP4MzT6GAAEym1uOagxhiTd1YIhA8N9wm+6F
-         C5XKimHBqoJmQpi9+MuVjuFDW5CNFPb57N2xjhzK2pg49kdzAk9ZisuXr9J2rRjVv/n+
-         +Gow==
-X-Gm-Message-State: AOAM533cfKQxIz2mFpOQ+Idm8RJaO4OzN8c1xWNA3M1ufVDZb303aPok
-        aOH3kq8C+oXjBFgyuz0xgsw=
-X-Google-Smtp-Source: ABdhPJxUzoQqufvj3OQgO85FemOV70JYaabYPzt7rEoWKyi722zVpTRCn2XzVNwW2Yct/PbfAjP8Xw==
-X-Received: by 2002:a17:906:494c:: with SMTP id f12mr8463064ejt.56.1612450713780;
-        Thu, 04 Feb 2021 06:58:33 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id qx8sm2565695ejb.48.2021.02.04.06.58.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Feb 2021 06:58:32 -0800 (PST)
-Message-ID: <372c6dbbda18cccdcf2b053ee87f2ada9640e2b8.camel@gmail.com>
-Subject: Re: [PATCH 3/4] scsi: ufs-debugfs: Add user-defined
- exception_event_mask
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Date:   Thu, 04 Feb 2021 15:58:31 +0100
-In-Reply-To: <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
-References: <20210119141542.3808-1-adrian.hunter@intel.com>
-         <20210119141542.3808-4-adrian.hunter@intel.com>
-         <85b6cbb805e97081a676aeb30fe76f059eba192e.camel@gmail.com>
-         <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S237084AbhBDPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:05:46 -0500
+Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:20896
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236899AbhBDO7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:59:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UkYDdiuC/gaCBWK2+QRPxAKsxYG/n9N3O1xKnkhcwhZjs3PUSG/KjSX7UvdfTXhPBrjUTeV6F36lRotYSi/pj8oWuyPv8Iq6LS87cmUhaLvNsR9yiTXsPpAQzxfnz+wXdJSqb5jDe5xMBgNZX7pmDxBd7+rCRNQfF9AHwo3EDPCDsUvtrxHMZpcY5OEGZz0fiaLNM7gjCp1zG+IbW8oAVpDkrj/2W/hj+PxHl5d7UPw6omVpEnOEDR4qeXRdMTdPZD91vS9yucsUbRuhnqUmNRsLEzAQXjP1F6uxj0FGLuED8ltmAWiOMosCLr3aTRXxE6msejGsuur2JTS2tE5zHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zJ5n5WuTwrJ0tDK9acn6/5AqVUgpvkwuiSaQmc7Qrxo=;
+ b=a/NWXQb3/z8gTjgCuSn7NUBd0f37lnr0UHnL4idYCsiV3bXsLk0R80+hrhghAX0Bky3xmOabWDFVbu7oSUQAoQ3gkXSSi3LOFoJ6vb587eKbeTlSj+RKOwtE/d/mtPeVaLme3qgWp8McQZk+cun+ig0aUbiKTQx1xeInlkwGd46MxWDPeiGknvbT2J2Rh3XsETBLQa5SFMxrVozLOzbcDeLT5Sf0s4OfBIPwJM3wL9mpO1IY+47N4MQyGohoI84YHV424Y4PUAD02nJCY6x3v77sNuzoH1Onq1xxvklQgfzw/trNFvAWdGtljzIYbh5UgrikHEAdr6Oeuyw11WK2RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zJ5n5WuTwrJ0tDK9acn6/5AqVUgpvkwuiSaQmc7Qrxo=;
+ b=1BHQ78XYmeJaIF2kfjC45FrFx8E7WOo6TN9oqfoDLJHCha9PYNbCfy1L0BRiEiwmervhIy8qHeKUF19Q/R3jZNe9q/1p6Kt6+bRQo/0zFL8SSv399xxDtS59TtLiMPU7mTBfdX1cABK9wiMNNmrqeWy7LFdzDFgAvdhByf4ZpxQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4253.namprd12.prod.outlook.com (2603:10b6:208:1de::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Thu, 4 Feb
+ 2021 14:58:40 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3805.024; Thu, 4 Feb 2021
+ 14:58:40 +0000
+Subject: Re: [PATCH v6 01/10] [hack] silence ttm fini WARNING
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-2-kraxel@redhat.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <1bb54d72-a9b5-0d9d-6f08-b8f9f4abe421@amd.com>
+Date:   Thu, 4 Feb 2021 15:58:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210204145712.1531203-2-kraxel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM3PR07CA0078.eurprd07.prod.outlook.com
+ (2603:10a6:207:6::12) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR07CA0078.eurprd07.prod.outlook.com (2603:10a6:207:6::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Thu, 4 Feb 2021 14:58:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e599659a-59c9-44c9-b441-08d8c91d5b48
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4253:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB42536A5E7BA7F8A665B2021783B39@MN2PR12MB4253.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IgG/C+0/pC5g/bi8aW0VmwyT1x+N/7jguKlw1a5AT/TwANp0v7RLlZpPJ5vrOKUKN6B49bWYwqRQzOR0euXlIDS8MR2pRJaQa3NjmicwuQL7E7JWaAfXiQF5/ucVA6yK7djIsNn9jFCFbTglGjssPiNMS8RiyRioRBau36v6kp+2LNJ206QMzUzMDYhj3nwpMCefJQgU0ZAQVjVlinR/bV5qCE52yZ+8E7weuiRsajuyOBiBDKGp/8t6KL+r92wZIHg2MUgevN8TiHY+Ngao+OE5bOkhuG+1Rfpop07r2wmYjil0eQg16DLoXYmRgJdTe6aY/TmDGdfVtBO0F4kWyMkCiwoqVQsz8oEm2aYH8lIrHS4T1OPfq+DLTfHjQcLv9jALFY3eKCVTDzjfYgymplArI29EVS5vuDiMsavMq2/Pb0JtM3g3P0SWcu6YB2HJp5jFJqQbl0SatQhRS9TANnFNUEhihLakHjDMpal8D8qQP9p6KlgUQP1wYsrFHPCS4TrPggrVIglVFPzIbn0+sT6jtxymA4G37yfws9bMM8C0s6jczJBp7Om7qa4sN9Ylio9b+NUj1Fzvl3cZEBb3DzoTps56oQmzsrw9DUeV6co=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(39860400002)(346002)(5660300002)(31686004)(4326008)(6666004)(86362001)(66946007)(66556008)(478600001)(8936002)(6486002)(16526019)(186003)(8676002)(4744005)(54906003)(316002)(2906002)(2616005)(52116002)(66476007)(83380400001)(36756003)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SWM4VVM3UjlFcS95cTRUajNWOTl1M3kyVndlMGZEUFAvdmhWc2NQd0ZESlJM?=
+ =?utf-8?B?aDMyMDJ1ZDNMQTZFSERwLzZ0MVh6dXRremE3Vk5yM2RBVWhPODZUUG41Lzdy?=
+ =?utf-8?B?UFFOWnlEU0hMbUVaR3UxZnB1aGVxZzk4bUt2eGREOWZlUXI0d08wakROcTVl?=
+ =?utf-8?B?Q1FGN0RtWmFRcEwrbTlXUms3UGROL2sxald2MGIyY0tkT3pReFltNk1xSFg3?=
+ =?utf-8?B?ZHFndDUyVVRJNk44aEluZ0hSYUQySFFkZ3MzcUtQeHRDMmNKd21iN2REa1NW?=
+ =?utf-8?B?a0gvRzFxUkkvaC9ZQUs1a2dISUtpQXVjamlJVlYyVzRZYVdtaFl4TGRJMmxC?=
+ =?utf-8?B?ZlRvTmJ6aUQrbUtZSmlBQ0FSOFNEVmt1OStlSDJUNExNYTRUUGt3RC9IZjQx?=
+ =?utf-8?B?aVRyWVFNVGltYVBxR0JPcFMzYTdXS1N1TWs3VHlTYUR5L25rMW5PQ0lwWTB4?=
+ =?utf-8?B?Ryt6bzFtelVKMllGcHBra1VjUlNzM0ViMGVXN1g2YjdJN2lIQ0tlbnBiVklE?=
+ =?utf-8?B?d1cxdEJDdXZod21DR3gxQUdFWlVHUGdtSm10a3NCVk1uMnZmdHorL2xNMFhI?=
+ =?utf-8?B?M3JqQThHRGk3am5BMFZJQ0d0eDFvK2JGS0MzM3VUajcrMjYrd1VCcEZHSkJZ?=
+ =?utf-8?B?N21DTTcxMm1rVUhJRlN0aCs5dy9SUWR2bUlHcjkvcGRZQlJTR0tmNjJmU0Zr?=
+ =?utf-8?B?TFdjbHFvRFVUS2FOKzdiZ3VLZ1FqOFh3cDVJSWIwazJYNzduK2hBeE9VQjdF?=
+ =?utf-8?B?eG5LT01jSEFaMGFwY1Nib1dDQmZVc2R3UzM0OFJ4TXBZMmg2bWdtTVMyTTdt?=
+ =?utf-8?B?RUh1VUZBOU9YRTNIWHo3MlNjRm5ycng4c1l3NzAvdVFqdVlwckNZZ0lXb3RR?=
+ =?utf-8?B?MHRuQ3hBNXJxSUpyT3JyN1BtV0Y0Qm15akZDS0YyS091MFN1V3lKN1J3ZjN3?=
+ =?utf-8?B?QllMYTdFa0tlOElrK09ycS9wR0JUN2ZGNlJ2aDJpT2lUaVVLdXVEZTUrNW1Z?=
+ =?utf-8?B?YU5aMy92eGlMT2RrR2FkWFJuVzdIRkhWOFBEdE04aWlYSnoyQnZMVWVoYXVx?=
+ =?utf-8?B?d3NSUEJiYmZTRk81dkF0RHhjS2U1NmF1eXFqZklRcTl4am9DZDlKdGdxWHQw?=
+ =?utf-8?B?UDNTamJWbEFGbDRpVWUzMmpuUW03VkNRU3M3czg0ZUxNTXV4STFvaUkyK3hh?=
+ =?utf-8?B?QVpqUEhTQm5PaXRzK0xnZEVOYkxZY29seG1ON1BBeU91ajNWbDhSSHhDdzd4?=
+ =?utf-8?B?b2ZrR2thODhjcjgwT3NYUzRidnhTWDlSeVRiWDJnZ3BVVjJvc3FOL2Nvd0I4?=
+ =?utf-8?B?VjNQV1lFL3Q3bzhoWndPSE9OQ3BkRGtaSXE1WHhub1M1ZDJOS2JCVDg0ZHc5?=
+ =?utf-8?B?dUt3b3lzWXozSG5saDFtYTVFbHhhMitHaCtlZzRsNmpMU0xTSmNObnk4UEU4?=
+ =?utf-8?B?RTkzL2FhU05WckZZMzR1Qi80YXRjdWQxdUgzRWtodE5QQzltaFVWbWxHc2hV?=
+ =?utf-8?B?ZE4yT0Q2dzdoemRxbUVweFZmdVNCTXh5SGdxNlJ3dVgvZTFFR1lFcHpDR3FJ?=
+ =?utf-8?B?ODlKTnZqeTNIRi8xbFVLVE1NKzZ4OXR0Rk10WVVUeE1pV0tadnp4NURFeTd5?=
+ =?utf-8?B?eC8zMHVrYWFPOVQyU1E0QkJ1YTBDS1liRUUrZmhCWEt2N1ZySkF0WkZNSjBt?=
+ =?utf-8?B?eXI0bHVQSExQUDU4d2VMY2hIWVhVamxDOVVKWU9jSnRYVHpKVyt1ckFmTGlt?=
+ =?utf-8?B?TytieXF1TzdFdmswSDA3MHJ6aVNteFBqOGxoV2lmN3RMWTFtWDduNHJuWG1I?=
+ =?utf-8?B?bC9CUlNoMTZWa1RRMmNzdUhMZ0dOemx4MVovSGdCbEY1WXVyRmlUNSt4QTR1?=
+ =?utf-8?Q?25yXXi1JNr6cs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e599659a-59c9-44c9-b441-08d8c91d5b48
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 14:58:39.9628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9eVz3NmPTziY/nOmGZ3QTiWCRSLQVKDlj4VNhG3rTEOj0cthB8mo7gt6YVLB0F0J
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4253
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-03 at 11:56 +0200, Adrian Hunter wrote:
-> > 
-> > Hallo Adrian
-> 
-> Hi Bean
-> 
-> Thanks for the review
-> 
-> > 
-> > Would you like sharing the advantage of this debugfs node comparing
-> > to
-> > sysfs node "attributes/exception_event_control(if it is writable)"?
-> 
-> Primarily this is being done as a debug interface, but the user's
-> exception
-> events also need to be kept separate from the driver's ones.
-> 
-> > what is the value of this?
-> 
-> To be able to determine if the UFS device is being affected by
-> exception events.
-> 
-> > Also, now I can disable/enable UFS event over ufs-bsg.
-> 
-> That will be overwritten by the driver when it updates the e.g. bkops
-> control, or sometimes also suspend/resume.
+?
 
-Hi Adrian
-yes, I saw that, they are not tracked by driver.
+What's the background here?
 
-I have one question that why "exception_event_mask" cannot represent
-the current QUERY_ATTR_IDN_EE_CONTROL value? only after writing it.
+Christian.
 
-
-thanks,
-Bean
-
-
-
+Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
+> kobject: '(null)' ((____ptrval____)): is not initialized, yet kobject_put() is being called.
+> WARNING: CPU: 0 PID: 209 at lib/kobject.c:750 kobject_put+0x3a/0x60
+> [ ... ]
+> Call Trace:
+>   ttm_device_fini+0x133/0x1b0 [ttm]
+>   qxl_ttm_fini+0x2f/0x40 [qxl]
+> ---
+>   drivers/gpu/drm/ttm/ttm_device.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+> index ac0903c9e60a..b638cbb0bd45 100644
+> --- a/drivers/gpu/drm/ttm/ttm_device.c
+> +++ b/drivers/gpu/drm/ttm/ttm_device.c
+> @@ -50,7 +50,7 @@ static void ttm_global_release(void)
+>   		goto out;
+>   
+>   	kobject_del(&glob->kobj);
+> -	kobject_put(&glob->kobj);
+> +//	kobject_put(&glob->kobj);
+>   	ttm_mem_global_release(&ttm_mem_glob);
+>   	__free_page(glob->dummy_read_page);
+>   	memset(glob, 0, sizeof(*glob));
 
