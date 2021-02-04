@@ -2,217 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ECF30FF9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C80230FF95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBDVsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:48:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        id S229625AbhBDVsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhBDVqO (ORCPT
+        with ESMTP id S230218AbhBDVqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 16:46:14 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84577C0611C1
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 13:44:29 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c1so3617013qtc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 13:44:29 -0800 (PST)
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D68C061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 13:44:46 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id a7so4879932qkb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 13:44:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hdmCgZ393K7NtOVzWLjmvQGdGZBIWfOaVwai+rEw85I=;
-        b=jkjnPSriyMdvqxobWFYWh3hZhn/hWIhTjYaTL23nTmILUBNx06PxjDyEFhcHo3iWYD
-         jwIllcZpJuQ5PgSvBHL0IOBGorD7GQMPPFJFv1w5SNabwNOHMzCs9yEJVnoBTHM7meFO
-         /7omOQveUP3Ai7kV3fiq23vkgXOVXF5zVgSRTwJAOqHZprFv7e1R7Gv0uU8R84aZn8JU
-         CzhDjbVpy4501FG0M9xSxrhAUpzhKZ1/wMW2I3Qf/ot0lgiNbAAydZdDeWmeWC+fraOF
-         AnjPpR7TihfJmYK7AxLuEPJVtazbqtt59rd80dPXKo0hwZHpgglyri+tKAiqmpQWsBTW
-         Ag4w==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hs1H1h3qwQTmNV+DMbywUe+Hs8J4rElNnCQHQMW80AE=;
+        b=tRQBCZJ+RkNH/wRu3kjQwVVRM3EjAps7GUkbn1aLAE25EO4DOxWSbQrCLKrxu7FtuK
+         dsqsMuv2UIvi2c7nvj91dqErnVdtW0+RDDTyXvqU92eFFAZRfhA1FY/FaRS6eR1/B6Pg
+         IKgj8VJkM3O1gB/0mluF2wrOqMAMYPLjyzWC1V1U6AF+vyZeTYY/8YIIjMrt1YSWVBk6
+         ijSsy5dXOMWi36V1eo7m01Yhq3K8qvU1DMqq3yfX4if8qr34BGPUNmHnQ50Zu62WOcF0
+         4tI+9SjRCz6WdNwr6mNJXkZSjHnkLEN2gNwCY4g/L72rgTge45ik1Y0eQh95TNeE0Gnf
+         1YQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hdmCgZ393K7NtOVzWLjmvQGdGZBIWfOaVwai+rEw85I=;
-        b=dtMyDsJq4Tu7xf729yA9ruPa4C+GRbu491PvE5cmmxhIgEot7nJGwYC2Jswlt+6SZf
-         C1BVf9cOPOzaRhyhcVlAye7vscL3T2bAkkj//fmmU1Opo2xOpZfmiKlGk8uMOwjDJpKb
-         tJCSAVA8p74/FbBRqG08ynlM0btAUQ9cbBnmIvEh8nQ9/uW3LMtbbPn9bhDWQ88Ccdad
-         D1GzNZHlyXdk3WFHQ593QFg0H4WHDbYxvV5wFSu4b8LItIH2OFzgH3j4S8WvsTbRwR3v
-         kHpZeOfwTMHhw6KWIJhiHdPmm4yk24kPoJgWmTNOWRZX/McCqWaggQhXUOZO5MqpvxYi
-         LGfQ==
-X-Gm-Message-State: AOAM531KnhK/wifZDRvLjnrLc4cGq9so0AvXfFDHfoW0QQXlqvOosEDz
-        cpazWudpqGL6N6Q9aaH85oPdmQ==
-X-Google-Smtp-Source: ABdhPJzI1jTQZBq+o0Y/ai6kkkQ0TaY0oCLymW7q3aOLrgtM0Cy+Vu9c2Z+AJxsx09a0O3HHMrGeuQ==
-X-Received: by 2002:ac8:1408:: with SMTP id k8mr1653281qtj.204.1612475068796;
-        Thu, 04 Feb 2021 13:44:28 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id t22sm5730090qtp.7.2021.02.04.13.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:44:27 -0800 (PST)
-Date:   Thu, 4 Feb 2021 16:44:27 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 7/7] mm: memcontrol: consolidate lruvec stat flushing
-Message-ID: <YBxquyq6XzWlV3Wv@cmpxchg.org>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-8-hannes@cmpxchg.org>
- <20210203022530.GF1812008@carbon.dhcp.thefacebook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hs1H1h3qwQTmNV+DMbywUe+Hs8J4rElNnCQHQMW80AE=;
+        b=BdiefzrkuHOanDP2vnrRd6/pWruVKc02WzYP1Y056D5b1ULGs0PXZwZyFDBeJLlAHO
+         l+3Uhh4drCHm4dYAyTodQuhTiSedNgc4yc3NtGGACyMEfxKbMmeTles5PeIf1yFmlp0q
+         N1/HUcZcSFqkWv/X9Tbr7dNQmDIbmSN+POgw2eWUR9IeLZwj49OuGVrdIc4i9ki1mrX3
+         2YQ89rlk/UZDIIhgRiLKFL4/tC4ifKK6rv3VxcrO8Ee1t5nxW7rtF2jWp+FDFaiq3Mc/
+         iSsfttIgPgkHSQ7Ym3gs+DuAFeaY1huFtFzWQgww09MUmta3yHvyc9LeWMOeBoF5AjWP
+         4eUg==
+X-Gm-Message-State: AOAM5314s/D6MoByNzxwPZ8eykj+4BkP6h4IZK3rryNvwR57gfH6V+8Z
+        bmZ0iZc+SijdnVrDZwltWG1Zc66J4idUmQ==
+X-Google-Smtp-Source: ABdhPJzEW8TZNA5pK2vWSA2qCo2LuMNHPTC69O6yViuae5CzKGqus/Hxf51EXpaHo+yCx3A64RXmzw==
+X-Received: by 2002:a37:e17:: with SMTP id 23mr1284287qko.185.1612475085182;
+        Thu, 04 Feb 2021 13:44:45 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id b16sm6133086qkh.21.2021.02.04.13.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 13:44:44 -0800 (PST)
+Subject: Re: [PATCH v4 01/11] crypto: qce: sha: Restore/save ahash state with
+ custom struct in export/import
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel test robot <lkp@intel.com>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210203143307.1351563-2-thara.gopinath@linaro.org>
+ <202102040442.I3XzFSaf-lkp@intel.com>
+ <20210204024250.GA5482@gondor.apana.org.au>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <64321827-068f-bb32-ea83-176c8fe88811@linaro.org>
+Date:   Thu, 4 Feb 2021 16:44:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203022530.GF1812008@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210204024250.GA5482@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:25:30PM -0800, Roman Gushchin wrote:
-> On Tue, Feb 02, 2021 at 01:47:46PM -0500, Johannes Weiner wrote:
-> > There are two functions to flush the per-cpu data of an lruvec into
-> > the rest of the cgroup tree: when the cgroup is being freed, and when
-> > a CPU disappears during hotplug. The difference is whether all CPUs or
-> > just one is being collected, but the rest of the flushing code is the
-> > same. Merge them into one function and share the common code.
-> > 
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  mm/memcontrol.c | 88 +++++++++++++++++++++++--------------------------
-> >  1 file changed, 42 insertions(+), 46 deletions(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index b205b2413186..88e8afc49a46 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2410,39 +2410,56 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
-> >  	mutex_unlock(&percpu_charge_mutex);
-> >  }
-> >  
-> > -static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> > +static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
-> >  {
-> > -	struct memcg_stock_pcp *stock;
-> > -	struct mem_cgroup *memcg;
-> > -
-> > -	stock = &per_cpu(memcg_stock, cpu);
-> > -	drain_stock(stock);
-> > +	int nid;
-> >  
-> > -	for_each_mem_cgroup(memcg) {
-> > +	for_each_node(nid) {
-> > +		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-> > +		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = { 0, };
->   			      				      ^^^^
-> 							   Same here.
+
+
+On 2/3/21 9:42 PM, Herbert Xu wrote:
+> On Thu, Feb 04, 2021 at 04:56:17AM +0800, kernel test robot wrote:
+>>
+>> Thank you for the patch! Yet something to improve:
 > 
-> > +		struct batched_lruvec_stat *lstatc;
-> >  		int i;
-> >  
-> > -		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-> > -			int nid;
-> > -
-> > -			for_each_node(nid) {
-> > -				struct batched_lruvec_stat *lstatc;
-> > -				struct mem_cgroup_per_node *pn;
-> > -				long x;
-> > -
-> > -				pn = memcg->nodeinfo[nid];
-> > +		if (cpu == -1) {
-> > +			int cpui;
-> > +			/*
-> > +			 * The memcg is about to be freed, collect all
-> > +			 * CPUs, no need to zero anything out.
-> > +			 */
-> > +			for_each_online_cpu(cpui) {
-> > +				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpui);
-> > +				for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> > +					stat[i] += lstatc->count[i];
-> > +			}
-> > +		} else {
-> > +			/*
-> > +			 * The CPU has gone away, collect and zero out
-> > +			 * its stats, it may come back later.
-> > +			 */
-> > +			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-> >  				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
-> > -
-> > -				x = lstatc->count[i];
-> > +				stat[i] = lstatc->count[i];
-> >  				lstatc->count[i] = 0;
-> > -
-> > -				if (x) {
-> > -					do {
-> > -						atomic_long_add(x, &pn->lruvec_stat[i]);
-> > -					} while ((pn = parent_nodeinfo(pn, nid)));
-> > -				}
-> >  			}
-> >  		}
-> > +
-> > +		do {
-> > +			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> > +				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
-> > +		} while ((pn = parent_nodeinfo(pn, nid)));
-> >  	}
-> > +}
-> > +
-> > +static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> > +{
-> > +	struct memcg_stock_pcp *stock;
-> > +	struct mem_cgroup *memcg;
-> > +
-> > +	stock = &per_cpu(memcg_stock, cpu);
-> > +	drain_stock(stock);
-> > +
-> > +	for_each_mem_cgroup(memcg)
-> > +		memcg_flush_lruvec_page_state(memcg, cpu);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -3636,27 +3653,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
-> >  	}
-> >  }
-> >  
-> > -static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg)
-> > -{
-> > -	int node;
-> > -
-> > -	for_each_node(node) {
-> > -		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
-> > -		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
-> > -		struct mem_cgroup_per_node *pi;
-> > -		int cpu, i;
-> > -
-> > -		for_each_online_cpu(cpu)
-> > -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> > -				stat[i] += per_cpu(
-> > -					pn->lruvec_stat_cpu->count[i], cpu);
-> > -
-> > -		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
-> > -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> > -				atomic_long_add(stat[i], &pi->lruvec_stat[i]);
-> > -	}
-> > -}
-> > -
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  static int memcg_online_kmem(struct mem_cgroup *memcg)
-> >  {
-> > @@ -5197,7 +5193,7 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
-> >  	 * Flush percpu lruvec stats to guarantee the value
-> >  	 * correctness on parent's and all ancestor levels.
-> >  	 */
-> > -	memcg_flush_lruvec_page_state(memcg);
-> > +	memcg_flush_lruvec_page_state(memcg, -1);
+> Please fix this before you resubmit again.
+
+Hi Herbert.
+
+Sorry about that. I have send the fix.
+
 > 
-> I wonder if adding "cpu" or "percpu" into the function name will make clearer what -1 means?
-> E.g. memcg_flush_(per)cpu_lruvec_stats(memcg, -1).
+> Thanks,
+> 
 
-Yes, it's a bit ominous. I changed it to
-
-	memcg_flush_lruvec_page_state_cpu(memcg, -1);
-
-percpu would have pushed the function signature over 80 characters.
-
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-
-Thanks
+-- 
+Warm Regards
+Thara
