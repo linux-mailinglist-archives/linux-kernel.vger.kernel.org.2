@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A4F30FC07
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6AB30FC0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239444AbhBDSzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:55:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238482AbhBDSyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:54:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4F7B64DE1;
-        Thu,  4 Feb 2021 18:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612464837;
-        bh=zLhrsQ3t0boP/eAaEbmY8Rcze1s9OVafy7KV+Tk7CrQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Z3ghuvAqq+zdbS8EvSzMw5PhYydM4BgjolpZ6p6bJPvk0PikHvX7rAyWuCE8BOsAR
-         Oqrk8Q949eR6YdC3Y1sw4rQhZW8/8j+2kjmezZwxYN5Tc2MmFWykZzEryZadNkZ6oM
-         XwGLMKOjOGrBtBZnKdm6vPc0c/ABpTUQ0LDSJi9a41AZKSGKvT8yFroYRtLpXJt6pN
-         5ySzmeti9PZYTWKcCedlpNEKDIh0PyLt46msjdvbKPUVL3IIBFOwWZOQ9AQgrC+2zt
-         C3hECIXlc/bFQWsr54VXE9kfcggSLh0z4wf1NSIOiSPp9sSZn25l9LW1OrKn1mcj7X
-         7ZtXgC/Tjjayw==
-Date:   Thu, 4 Feb 2021 10:53:56 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net/qrtr: replaced useless kzalloc with kmalloc in
- qrtr_tun_write_iter()
-Message-ID: <20210204105356.3f41b3e2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210204105159.2ae254b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210203162846.56a90288@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210204090230.1794169-1-snovitoll@gmail.com>
-        <20210204105159.2ae254b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S239480AbhBDS4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238820AbhBDSzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:55:52 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F583C061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:55:12 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id l12so4840382wry.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Z5lY9EzY3p+tNc4fTZ1yzC/M13ykEyZmAgfqdRyvqls=;
+        b=QqYJbWMrWsBlPFxWsCq0CbRDCvrcGl79aEqxSyQ1jKdOl4NRz8QU/H6DDQA90dDqh3
+         Rq7BNP+DV36q6uNft0NoUesCNmE9T7QJbGA8agou897MPhg0awcbrJP4/sia/y2ALZEu
+         ZMHL3hRtPdpO5e3op7CWmKq1OCqUWLs1p/Znt9M4Wg0ScGXsRgQoOYcp41GMsuKBQkla
+         3BQZQvGgi1afpIvGY4MBlknZsqu/w/xACPkHiXFcb9f30RQSVIYJskKMgPMowjkCgFM8
+         jNdK4PPruyK0aIaqbHM5MZowM7qP89hDwQpz4xaLDsgGTBdJ+oZx78wgGUke9zES/P2r
+         F1ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Z5lY9EzY3p+tNc4fTZ1yzC/M13ykEyZmAgfqdRyvqls=;
+        b=LWZcI1/fmscUl7fm+MFuAlAt4Emw+YcRD6GfwS54S31FUEtTdhaN35nJmAhuUaZ/BS
+         1NR8cWnwCT3kcHMieQCeSMpPU8hczj8YhyxqF9YFEV/K4VFXfG2KBYRPvf8gIXn7Q685
+         ZQZibV/WizruXr7PIeG6cZQArxAZF/UuAVk2YWPpS/nunwsMRRlf0F8eER+Djd9YmpK5
+         h0EEnXmlFgk31aggkfplpJjvHwwoH8Lao80EmC2ZPRQJffYOYFtlrPvX1MfVzKydLoKQ
+         FzpLfAgGZxXqJqFIjxkMOoeRDfnIPLeNVc6Ny4b/z5AHi/43mgOfN9FgnVfW8iUPKt5k
+         3MFQ==
+X-Gm-Message-State: AOAM531HKefSdYz23vUlxYFm6vGnqlXkcbZzUkt0sHuPbnvsApNeN8vC
+        sGP5FlzQMf+EubhWM0QZBednGA==
+X-Google-Smtp-Source: ABdhPJz0W8AtuWvK0NhRHzIgRg1okHD57QcG/E/zOoy/cUJzrM9giNm9DorwZAdlMJ4QhXI6l3b+/w==
+X-Received: by 2002:adf:b749:: with SMTP id n9mr784310wre.267.1612464911015;
+        Thu, 04 Feb 2021 10:55:11 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id w25sm7135203wmc.42.2021.02.04.10.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 10:55:10 -0800 (PST)
+Date:   Thu, 4 Feb 2021 18:55:08 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "Murphy, Declan" <declan.murphy@intel.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH 06/20] crypto: keembay: ocs-hcu: Fix incorrectly named
+ functions/structs
+Message-ID: <20210204185508.GQ2789116@dell>
+References: <20210204111000.2800436-1-lee.jones@linaro.org>
+ <20210204111000.2800436-7-lee.jones@linaro.org>
+ <b8425f8b292e0ca268a2f575e9053ed408bc4c6e.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8425f8b292e0ca268a2f575e9053ed408bc4c6e.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 10:51:59 -0800 Jakub Kicinski wrote:
-> On Thu,  4 Feb 2021 15:02:30 +0600 Sabyrzhan Tasbolatov wrote:
-> > Replaced kzalloc() with kmalloc(), there is no need for zeroed-out
-> > memory for simple void *kbuf.  
-> 
-> There is no need for zeroed-out memory because it's immediately
-> overwritten by copy_from_iter...
+On Thu, 04 Feb 2021, Alessandrelli, Daniele wrote:
 
-Also if you don't mind please wait a week until the fixes get merged
-back into net-next and then repost. Otherwise this patch will not apply
-cleanly. (Fixes are merged into a different tree than cleanups)
-
-> > Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> > ---
-> >  net/qrtr/tun.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Thu, 2021-02-04 at 11:09 +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
 > > 
-> > diff --git a/net/qrtr/tun.c b/net/qrtr/tun.c
-> > index b238c40a9984..9b607c7614de 100644
-> > --- a/net/qrtr/tun.c
-> > +++ b/net/qrtr/tun.c
-> > @@ -86,7 +86,7 @@ static ssize_t qrtr_tun_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> >  	if (len > KMALLOC_MAX_SIZE)
-> >  		return -ENOMEM;
-> >  
-> > -	kbuf = kzalloc(len, GFP_KERNEL);
-> > +	kbuf = kmalloc(len, GFP_KERNEL);
-> >  	if (!kbuf)
-> >  		return -ENOMEM;
-> >    
+> >  drivers/crypto/keembay/ocs-hcu.c:107: warning: expecting prototype for struct ocs_hcu_dma_list. Prototype was for struct ocs_hcu_dma_entry instead
+> >  drivers/crypto/keembay/ocs-hcu.c:127: warning: expecting prototype for struct ocs_dma_list. Prototype was for struct ocs_hcu_dma_list instead
+> >  drivers/crypto/keembay/ocs-hcu.c:610: warning: expecting prototype for ocs_hcu_digest(). Prototype was for ocs_hcu_hash_update() instead
+> >  drivers/crypto/keembay/ocs-hcu.c:648: warning: expecting prototype for ocs_hcu_hash_final(). Prototype was for ocs_hcu_hash_finup() instead
+> > 
+> > Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > Cc: Declan Murphy <declan.murphy@intel.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: linux-crypto@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
 > 
+> Acked-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> 
+> 
+> Thanks for fixing these.
+> 
+> For some reason, if the issues are there, I don't get those warnings
+> when compiling with W=1; the command I run is:
+> 
+>    make CROSS_COMPILE=<arm-compiler> ARCH=arm64 -j5 W=4 M=drivers/crypto/keembay
 
+Not sure what would happen with 'W=4'.
+
+Probably nothing, as it only goes up to 3 [0].
+
+> Which command are you running exactly? I'll use it for my next
+> submissions.
+
+ rm -rf ../builds/build-arm64/drivers/crypto/
+ make -f Makefile -j24 --quiet ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_OUTPUT=../builds/build-arm64 allmodconfig
+ make -f Makefile -j24 --quiet ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_OUTPUT=../builds/build-arm64  W=1 drivers/crypto/
+
+Hope that helps.
+
+[0] scripts/Makefile.extrawarn
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
