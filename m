@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4919230ECF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC7430ECF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhBDHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:06:10 -0500
-Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:43824 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229998AbhBDHGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:06:07 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 45834180A911F;
-        Thu,  4 Feb 2021 07:05:24 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:4321:5007:7652:7875:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21451:21611:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: tank64_5c15dea275da
-X-Filterd-Recvd-Size: 1662
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  4 Feb 2021 07:05:23 +0000 (UTC)
-Message-ID: <d4c12ffbfca8a66ddaa3224296e964ecf9aa0705.camel@perches.com>
-Subject: Re: [PATCH] firewire: convert sysfs sprintf/snprintf family to
- sysfs_emit
-From:   Joe Perches <joe@perches.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        stefanr@s5r6.in-berlin.de
-Cc:     linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Date:   Wed, 03 Feb 2021 23:05:22 -0800
-In-Reply-To: <1612421432-39124-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1612421432-39124-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233668AbhBDHGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:06:54 -0500
+Received: from smtp21.cstnet.cn ([159.226.251.21]:35324 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232704AbhBDHGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:06:51 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-01 (Coremail) with SMTP id qwCowABHTpbRnBtg_qJBAQ--.48912S2;
+        Thu, 04 Feb 2021 15:05:53 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, bridge@lists.linux-foundation.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: bridge: mcast: Use ERR_CAST instead of ERR_PTR(PTR_ERR())
+Date:   Thu,  4 Feb 2021 07:05:49 +0000
+Message-Id: <20210204070549.83636-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowABHTpbRnBtg_qJBAQ--.48912S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWDXw1rWFyftr17GrW7Arb_yoW3CFb_tr
+        1Fvw4kWr45trWvqa13A39xJan8G395Wrs3u3W8t3y3G3WkAr1xGas3Ww1Ivr1UCw17Ga4U
+        AwnrJF9xur1avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5pqcUUUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQoCA102Z6v0BgAAsX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-04 at 14:50 +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
-> ./drivers/firewire/core-device.c:375:8-16: WARNING: use scnprintf or
-> sprintf.
-[]
-> diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-[]
-> @@ -372,8 +372,7 @@ static ssize_t rom_index_show(struct device *dev,
->  	struct fw_device *device = fw_device(dev->parent);
->  	struct fw_unit *unit = fw_unit(dev);
->  
-> 
-> -	return snprintf(buf, PAGE_SIZE, "%d\n",
-> -			(int)(unit->directory - device->config_rom));
-> +	return sysfs_emit(buf, "%d\n", (int)(unit->directory - device->config_rom));
+Use ERR_CAST inlined function instead of ERR_PTR(PTR_ERR(...)).
 
-Perhaps this should use the ptrdiff_t qualifier '%td' instead:
+net/bridge/br_multicast.c:1246:9-16: WARNING: ERR_CAST can be used with mp
+Generated by: scripts/coccinelle/api/err_cast.cocci
 
-	return sysfs_emit(buf, "%td\n", unit->directory - device->config_rom);
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ net/bridge/br_multicast.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index 257ac4e25f6d..dfbb4dd01fa9 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -1243,7 +1243,7 @@ __br_multicast_add_group(struct net_bridge *br,
+ 
+ 	mp = br_multicast_new_group(br, group);
+ 	if (IS_ERR(mp))
+-		return ERR_PTR(PTR_ERR(mp));
++		return ERR_CAST(mp);
+ 
+ 	if (!port) {
+ 		br_multicast_host_join(mp, true);
+-- 
+2.17.1
 
