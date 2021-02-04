@@ -2,85 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C4630F175
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5857B30F185
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhBDLBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:01:35 -0500
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:37745 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235378AbhBDLBO (ORCPT
+        id S235514AbhBDLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235386AbhBDLER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:01:14 -0500
-Received: by mail-ej1-f46.google.com with SMTP id jj19so4609866ejc.4;
-        Thu, 04 Feb 2021 03:00:58 -0800 (PST)
+        Thu, 4 Feb 2021 06:04:17 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA8CC061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:03:37 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id s15so1559935plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 03:03:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=it3wy07edebQ9hk+ROqiwGhtErfJY9Cs78unbURg/p8=;
+        b=c1kksw3PiMsFz5TVTRhRNWciiaIvWVLutZHU+mfDfE3vQ6+nuThfep76r2wZUx1iTw
+         0518BmBwICcMfELJZbDD6ElxTXCN/z6cY9Ks5bVrZB3vIEhNrUBqEU8P4UXTvIklFJvS
+         FbEcw+rzWhcIhhlZcjvZRHO3lEyuCBmc4qizhjrIPDYZCyyhqvftFvY0e/qDt9BDgeIB
+         khRSEonddDO4AI51+oC+QuDQeNmrnpwjJljbgmeTVHn6DwuH7isxFTaXxyQ9vgTjpVR+
+         jRq3tYmLpDMoCPlIWZg4FSWk2Dbcg3oOWt6fC0vRAMTrqQpYRwG/hHgPjHU52bp7zpaB
+         rgzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lYj7+T0uhcqQ91m5FLh+plxjvp8VVf54myAhRXHsJLg=;
-        b=L1hhBRUkSVIkRnRcEHunMcIbB2gtTxEgpEaKlgMvSKKd7yzPIhuwqCQ8+2++Z6W3kI
-         4nQ6HG/pUcR9npUoYnBKt04DURAD4vRoDmYjj2vJeJ+e+qFysg+1Bl/clL79LB9Z9Z1y
-         TtUTX6suaD2mlwyKH/kt74UNvYhA44aHTcwbqW48HzlOZC64HLBicKY2WNaTxi4OBpGG
-         w1KLWyDWfEXJOeZzwdWClLaC0AsdkfkGADzWEp8svDviuxHr1lyvLOxkUWLqrtzn24rP
-         Xi8ALtuh/vJuzbjwZ86x/738rDgBXAB52+SkG1Q/W++RJgmuD5+FKqlI6Sxe/4196o/c
-         KZxw==
-X-Gm-Message-State: AOAM533Btxvh/coUnXJsQkdiD6YIXgAPLtuRwwbPgW8dGOlnRThQ87e1
-        TdhEjwtAlGXSuiOi1GdjwhQ=
-X-Google-Smtp-Source: ABdhPJwpkr/jHrKe8Ewv6L4nc2KPVwUXnxty6cATQegN+8BqxOyk20T+97wsJlpOdvLQppnrho4/kQ==
-X-Received: by 2002:a17:906:3e14:: with SMTP id k20mr7313111eji.42.1612436433117;
-        Thu, 04 Feb 2021 03:00:33 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id k9sm2273323edo.30.2021.02.04.03.00.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 03:00:32 -0800 (PST)
-Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jari Ruusu <jariruusu@protonmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        masahiroy@kernel.org
-References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
- <YBuSJqIG+AeqDuMl@kroah.com>
- <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
- <YBu1d0+nfbWGfMtj@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a85b7749-38b2-8ce9-c15a-8acb9a54c5b5@kernel.org>
-Date:   Thu, 4 Feb 2021 12:00:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=it3wy07edebQ9hk+ROqiwGhtErfJY9Cs78unbURg/p8=;
+        b=OUdnz4a8Ln/xJxw06v61ojV/V32KQpnPZupRrj7dD1WdjTvK8e3ouCsZ7OjsDU8l5K
+         JdemwQHFMTtBbHkizb/xgyBrtBHhbLFj3t4PLsaG9KmMnZ22fI570GEWAEPYjthV2CsA
+         wVDReSgVa1s0Ud69Urc2+w9jpEPwlKlV6vDxdQySdZXc1owAAf8vaFNAMg/Asbjwx8RF
+         hav4LaX39QLc0JzFID1KBcIE9Ftha0fyuLQVB53eCIwuILlozT81wR5H7jFYgayTkO+O
+         kZeS25rggFmsBqU7oFj7JP+3mk/69qqxkP06t5ry3qkH3TUf9AX5Hhzn1rDKwqMsb7Kx
+         qfXA==
+X-Gm-Message-State: AOAM531Mgm6pph3PGF2k/n/HC6uKFJMGb2mebCWLD58K1OVi3WLfBr0l
+        ttN25gavDHCWClEe5Ty3LuWZtw==
+X-Google-Smtp-Source: ABdhPJy0C5LpIC4vPl+2xdvMvTEiuZ2cbHz70Ml1jUMrLSYxuoYAOls6Zzbto9HOTHIkVzyNBWT8uA==
+X-Received: by 2002:a17:902:e846:b029:da:d44d:1968 with SMTP id t6-20020a170902e846b02900dad44d1968mr7402754plg.47.1612436617289;
+        Thu, 04 Feb 2021 03:03:37 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id a14sm6344845pfl.169.2021.02.04.03.03.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 03:03:36 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:33:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH v6 1/3] OPP: Add function to look up required OPP's for a
+ given OPP
+Message-ID: <20210204110334.kbsf2wvyv5tvkf46@vireshk-i7>
+References: <20210204081424.2219311-1-hsinyi@chromium.org>
+ <20210204081424.2219311-2-hsinyi@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YBu1d0+nfbWGfMtj@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204081424.2219311-2-hsinyi@chromium.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04. 02. 21, 9:51, Greg Kroah-Hartman wrote:
->> It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + Z)
->> assumptions all around the world. So this doesn't look like a good idea.
+On 04-02-21, 16:14, Hsin-Yi Wang wrote:
+> From: Saravana Kannan <saravanak@google.com>
 > 
-> Ok, so what happens if we "wrap"?  What will break with that?  At first
-> glance, I can't see anything as we keep the padding the same, and our
-> build scripts seem to pick the number up from the Makefile and treat it
-> like a string.
+> Add a function that allows looking up required OPPs given a source OPP
+> table, destination OPP table and the source OPP.
 > 
-> It's only the crazy out-of-tree kernel stuff that wants to do minor
-> version checks that might go boom.  And frankly, I'm not all that
-> concerned if they have problems :)
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/opp/core.c     | 59 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  7 +++++
+>  2 files changed, 66 insertions(+)
 
-Agreed. But currently, sublevel won't "wrap", it will "overflow" to 
-patchlevel. And that might be a problem. So we might need to update the 
-header generation using e.g. "sublevel & 0xff" (wrap around) or 
-"sublevel > 255 : 255 : sublevel" (be monotonic and get stuck at 255).
+I made some changes while applying:
 
-In both LINUX_VERSION_CODE generation and KERNEL_VERSION proper.
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index fba67ae40aef..c3f3d9249cc5 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2402,21 +2402,21 @@ EXPORT_SYMBOL_GPL(devm_pm_opp_attach_genpd);
+  * dev_pm_opp_xlate_required_opp() - Find required OPP for @src_table OPP.
+  * @src_table: OPP table which has @dst_table as one of its required OPP table.
+  * @dst_table: Required OPP table of the @src_table.
++ * @src_opp: OPP from the @src_table.
+  *
+  * This function returns the OPP (present in @dst_table) pointed out by the
+- * "required-opps" property of the OPP (present in @src_table).
++ * "required-opps" property of the @src_opp (present in @src_table).
+  *
+  * The callers are required to call dev_pm_opp_put() for the returned OPP after
+  * use.
+  *
+- * Return: destination table OPP on success, otherwise -EINVAL or -ENODEV based
+- * on errors.
++ * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
+  */
+ struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table,
+                                                 struct opp_table *dst_table,
+                                                 struct dev_pm_opp *src_opp)
+ {
+-       struct dev_pm_opp *opp, *dest_opp = ERR_PTR(-EINVAL);
++       struct dev_pm_opp *opp, *dest_opp = ERR_PTR(-ENODEV);
+        int i;
+ 
+        if (!src_table || !dst_table || !src_opp ||
+@@ -2425,37 +2425,33 @@ struct dev_pm_opp *dev_pm_opp_xlate_required_opp(struct opp_table *src_table,
+ 
+        /* required-opps not fully initialized yet */
+        if (lazy_linking_pending(src_table))
+-               return ERR_PTR(-EINVAL);
++               return ERR_PTR(-EBUSY);
+ 
+        for (i = 0; i < src_table->required_opp_count; i++) {
+-               if (src_table->required_opp_tables[i] == dst_table)
++               if (src_table->required_opp_tables[i] == dst_table) {
++                       mutex_lock(&src_table->lock);
++
++                       list_for_each_entry(opp, &src_table->opp_list, node) {
++                               if (opp == src_opp) {
++                                       dest_opp = opp->required_opps[i];
++                                       dev_pm_opp_get(dest_opp);
++                                       break;
++                               }
++                       }
++
++                       mutex_unlock(&src_table->lock);
+                        break;
+-       }
+-
+-       if (unlikely(i == src_table->required_opp_count)) {
+-               pr_err("%s: Couldn't find matching OPP table (%p: %p)\n",
+-                      __func__, src_table, dst_table);
+-               return ERR_PTR(-ENODEV);
+-       }
+-
+-       mutex_lock(&src_table->lock);
+-
+-       list_for_each_entry(opp, &src_table->opp_list, node) {
+-               if (opp == src_opp) {
+-                       dest_opp = opp->required_opps[i];
+-                       dev_pm_opp_get(dest_opp);
+-                       goto unlock;
+                }
+        }
+ 
+-       pr_err("%s: Couldn't find matching OPP (%p: %p)\n", __func__, src_table,
+-              dst_table);
+-
+-unlock:
+-       mutex_unlock(&src_table->lock);
++       if (IS_ERR(dest_opp)) {
++               pr_err("%s: Couldn't find matching OPP (%p: %p)\n", __func__,
++                      src_table, dst_table);
++       }
+ 
+        return dest_opp;
+ }
++EXPORT_SYMBOL_GPL(dev_pm_opp_xlate_required_opp);
+ 
+ /**
+  * dev_pm_opp_xlate_performance_state() - Find required OPP's pstate for src_table.
 
-thanks,
+
 -- 
-js
+viresh
