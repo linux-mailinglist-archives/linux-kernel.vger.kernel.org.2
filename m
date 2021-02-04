@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E040D30F3B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F0330F3B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236273AbhBDNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:10:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36790 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236223AbhBDNKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:10:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF6C8AC97;
-        Thu,  4 Feb 2021 13:10:13 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 14:10:02 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, x86-ml <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 07/21] x86/fpu/xstate: Introduce helpers to manage
- dynamic xstate buffers
-Message-ID: <20210204131002.GA17068@zn.tnic>
-References: <20201223155717.19556-1-chang.seok.bae@intel.com>
- <20201223155717.19556-8-chang.seok.bae@intel.com>
- <20210126201746.GB9662@zn.tnic>
- <80003059-987E-4FFA-8F9D-6A480192BE5D@intel.com>
- <20210127104110.GB8115@zn.tnic>
- <9A4E3B85-BE0C-40C6-B261-E634CFCD9819@intel.com>
+        id S236281AbhBDNLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236187AbhBDNLZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:11:25 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64265C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:10:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UZgksNxm6SOw/gXdBnvP4EnQzkpmeiBlC2lCiXVt8AE=; b=oXS9HxGii1LL4ZtEbzJwHNBxCq
+        DG4gZ1VgPF0D02+0H/rUyE3sgE/THb6wbRmK7XNOwCPLmUY7Mxf7vD2auu5Uj9Md3GCN/VIrT5Ows
+        /Sii0vPxK7OYoOCb21hQ6IHvOTteyMPLX87GzZWcqnzR8fw3XFydS+IX7s4AnXiT/09trjXz/HeX7
+        R7CFR4uaKFid3xMHzNxIHXJedu5hbv4InmofWR+Ikw1sh1xRwZAlO2jxDDh+wS33Lkehp1W/i/7te
+        WLdJofKGmDPPgr8Rtw/uAnbvpU3TnPUHHeyFVGDKFIbh9zWo8JprUn5dciCE/Je9J4Sx44YneVBVX
+        1xtk5mGQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7eP8-0005WU-My; Thu, 04 Feb 2021 13:10:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 425073003D8;
+        Thu,  4 Feb 2021 14:10:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27616213D2E27; Thu,  4 Feb 2021 14:10:36 +0100 (CET)
+Date:   Thu, 4 Feb 2021 14:10:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Subject: Re: Process-wide watchpoints
+Message-ID: <YBvyTDR+q0M62vKR@hirez.programming.kicks-ass.net>
+References: <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+ <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+ <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net>
+ <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+ <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net>
+ <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
+ <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
+ <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
+ <YBvj6eJR/DY2TsEB@hirez.programming.kicks-ass.net>
+ <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9A4E3B85-BE0C-40C6-B261-E634CFCD9819@intel.com>
+In-Reply-To: <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:10:24AM +0000, Bae, Chang Seok wrote:
-> Okay, how about:
-> “
-> This alignment bit is set if the state is saved on a 64B-aligned address in
-> the compacted format buffer.
-> "
-
-I'd prefer:
-
-/*
- * True if the buffer of the corresponding XFEATURE is located on the next 64
- * byte boundary. Otherwise, it follows the preceding component immediately.
- */
-static bool xstate_aligns[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = false };
-
-> The threshold here could be more than that. But the intention is a heads-up to
-> (re-)consider (a) a new allocation mechanism and (b) to shrink the memory
-> allocation.
+On Thu, Feb 04, 2021 at 01:53:59PM +0100, Dmitry Vyukov wrote:
+> Humm... I was thinking of perf_event_open(pid == 0).
+> It does not make sense to send SIGTRAP in a remote process, because it
+> does not necessarily cooperate with us.
 > 
-> Also, the AMX state size is limited to (a bit less than) 64KB and it was
-> discussed that vmalloc() will be okay with AMX [2].
+> But is there any problem with clone w/o CLONE_THREAD? Assuming the
+> current process has setup the signal handler, the child will have the
+> same handler and the same code/address space. So delivery of SIGTRAP
+> should work the same way in the child.
 
-So if nothing is going to grow over 64K, why are we even talking about this?
+Nothing should be doing CLONE_VM without CLONE_THREAD. Yes, it's
+possible, but if you do so, you get to keep the pieces IMO.
 
-> Maybe it is possible to backtrack this allocation failure out of #NM handling.
-> But the tracepoint can provide a clear context, although limited to those
-> using it.
-
-Yes, add it when it is really needed. Not slapping it proactively and
-hoping for any potential usage.
-
-> Indeed, this is the most preferred way on one hand. But there was a change to
-> the current allocation approach by Ingo about 6 years ago [3].
-
-Yah, there's that. :-\
-
-I guess it needs to stay embedded. Oh well.
-
-I guess you can diminish the confusion by doing this:
-
-struct fpu {
-
-	...
-
-	union fpregs_state		*state;
-
-	union fpregs_state		__default_state;
-};
-
-and tasks will have
-
-	state = &__default_state;
-
-set up by default in fpu__copy() etc.
-
-AMX tasks will simply change the pointer to the vmalloc'ed xstate
-buffer. This way at least the pointer will be a single one and the task
-alloc code will simply reroute it instead of having two things to pay
-attention to.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Current libc either does a full clone (fork) or pthread_create,
+pthread_create does CLONE_THREAD.
