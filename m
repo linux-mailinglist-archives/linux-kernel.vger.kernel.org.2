@@ -2,202 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9810030FDD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007B830FE0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239698AbhBDUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238703AbhBDUIA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:08:00 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA008C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:07:20 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id gx20so2464329pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3g2YdFFOBsK1UzWuh7itdWF6Pzv+CzXoJ4Ui6H/0fgA=;
-        b=VAyZpB7r+7xqgOIbs8+IuAKKdVcFH9OlkFXuOky917ADs2skp24/LthVyjdQZX2ayq
-         xXR/3YMo7ZsDaoagNtapW/b1Ibuhk/bpLmuj+s3QR4+qJqbao7Imd9GYxFwaAVUF9CXc
-         lMEL9coVZDJT3Vy5by7LrUvo8HfxZfbXl6qAnajX+5yUxYybs8ecBIG6943/oS1vwUsc
-         /niQoSJNsSDpqd5OVQ0Oc40arCqiXz8wAZo2g1V0Na+aLqHqvVlFFFTZZQSsp4tiAWBO
-         P46vVrZsnSjxghjOG6/XbxEBtioD4OnjB6drxUqwvkqE4KnN7HxitIrxIjYV8GaIe5Vx
-         E0og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3g2YdFFOBsK1UzWuh7itdWF6Pzv+CzXoJ4Ui6H/0fgA=;
-        b=CBOCwW/hjqlElkklSftDEeLEdpnDqw/lohN+dS6GQb9Jf70W8xoz8sh9r+U0WZz1rR
-         tBwA2PRhfN1Ye3T49JfuMNdXuCoFHzfcCoZ1rRdAaPv58Ol060UqKTpO9d1vafzjAc+v
-         h5TRjLI9po912bnUdnfXFSqAemiKu3uCdeOrJ8c/tPYfVCIpT2Lo9LdL087JVh69p8ed
-         BsBx/VMGrAgAriy4wQ6leysLxWCsTH6M20BiJr+wrd0igA+gPZEEGtSi/14hI+/jBNSu
-         kOSB7yIidZzOA0VxvfwDiUPolDn87ZoUp4U+wECHhuRdXIO0Ey/o7g1TOPZ76KaoMZmA
-         YxJg==
-X-Gm-Message-State: AOAM531ItVLeTeZmmG9g708dTV8qTaaziCRkJF5roxjo5qL5Q1arCktY
-        Yd1i1AAIIdfg8a4O+un1k6A=
-X-Google-Smtp-Source: ABdhPJx2pDxpy0ANrcj8xHkDPFXK9KldlEknHOtngWb1VJiCkVj1RQmCjG6+zyfoIdwVvObNdk6pAQ==
-X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr636974pjb.166.1612469240330;
-        Thu, 04 Feb 2021 12:07:20 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:598:57c0:5d30:3614])
-        by smtp.gmail.com with ESMTPSA id f3sm6278088pfe.25.2021.02.04.12.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 12:07:19 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 4 Feb 2021 12:07:17 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: cma: support sysfs
-Message-ID: <YBxT9XFE6QAQ4T9N@google.com>
-References: <20210203155001.4121868-1-minchan@kernel.org>
- <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
+        id S239866AbhBDUUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:20:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239971AbhBDUUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:20:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F6E164F6A;
+        Thu,  4 Feb 2021 20:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612469354;
+        bh=ZbLhFh9ekMPZ7GsNUm17lM69d0KfshZaVXI3G/nk2ms=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Npo7RmNAZ6aSCRqxm4nVlbaC/27YVRcbCPdd/fbIg19/B+FHezlIum4hWxlFIF7ON
+         HMOxuGrqn9JuVV79dSuBTZghrifXAnGKneLW7L/czTVKPl1MzkLQbuw3PahK1Amqy2
+         cnBZC/y1Ot1iy8ll6/IASEqB/ZdXLA7vrWkAmhvhtZHqT0hFRmnEt66ImRMlB13Icx
+         NtJeNk/LaUOIDjpJBVB9ebf1u9+lZOn+UsBT1S/liZzVG46TrZcZ4mHf1BkmjlJL5G
+         2cvkY+S7xZ8ThK83wbkfkmvi5O4WLdd7xBdUeGvpLT+Ss3FBG7ySG8TNHT77tD85JA
+         NkkFlyHwtO0Lg==
+Received: by mail-ed1-f47.google.com with SMTP id s26so46656edt.10;
+        Thu, 04 Feb 2021 12:09:14 -0800 (PST)
+X-Gm-Message-State: AOAM531K4uYq6IDJ93BAFYjox0VBQjP8N2zqqGGaHHen5cBcWwemTJcd
+        SCrjjyK05ugEGQarzr138Q9rU1Iqz4dJrQN67w==
+X-Google-Smtp-Source: ABdhPJyUV5HEhzX+4uiSU3UPrmRnNReleaqLxoxL2nV/uRrWwsFnvLuMCAGXLzBp06xeHA/+3g2JdEtwmOqvoL43N+E=
+X-Received: by 2002:aa7:c906:: with SMTP id b6mr311329edt.194.1612469352891;
+ Thu, 04 Feb 2021 12:09:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
+References: <91e3405245c89f134676449cf3822285798d2ed2.1612189652.git.michal.simek@xilinx.com>
+ <CAL_JsqJnu1M6ut8g_36ve-OG22jFsySHbmVHOgtDRhc-s37rpQ@mail.gmail.com>
+ <210b0e5a-767b-c285-62e2-23de19bd3cf1@xilinx.com> <CAL_Jsq+m7F+nD6VKd2L5i44hz32_-6iX3toZ0A0CBT-g7Xqu9g@mail.gmail.com>
+ <a2f10400-51e5-bb76-f5c4-3b8e2fbc2793@xilinx.com> <20210203144344.4e261aea@slackpad.fritz.box>
+ <CAL_JsqKfLM03of1Pzoxx=n_PaU9gnFuxt2zikGPuc1UkMK9PVQ@mail.gmail.com> <CAL_JsqJjBWpL=gpcNxQnN8Gkp+e=gxOVVmsZuaOz2+uuQ3QTOA@mail.gmail.com>
+In-Reply-To: <CAL_JsqJjBWpL=gpcNxQnN8Gkp+e=gxOVVmsZuaOz2+uuQ3QTOA@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 4 Feb 2021 14:09:01 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq++DyiKG9smQGx9FAPDJnVrezcXNb0Y5uh-5_2GBzTQpQ@mail.gmail.com>
+Message-ID: <CAL_Jsq++DyiKG9smQGx9FAPDJnVrezcXNb0Y5uh-5_2GBzTQpQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: zynq: Add address-cells property to interrupt controllers
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 12:50:58AM -0800, John Hubbard wrote:
-> On 2/3/21 7:50 AM, Minchan Kim wrote:
-> > Since CMA is getting used more widely, it's more important to
-> > keep monitoring CMA statistics for system health since it's
-> > directly related to user experience.
-> > 
-> > This patch introduces sysfs for the CMA and exposes stats below
-> > to keep monitor for telemetric in the system.
-> > 
-> >   * the number of CMA allocation attempts
-> >   * the number of CMA allocation failures
-> >   * the number of CMA page allocation attempts
-> >   * the number of CMA page allocation failures
-> 
-> The desire to report CMA data is understandable, but there are a few
-> odd things here:
-> 
-> 1) First of all, this has significant overlap with /sys/kernel/debug/cma
-> items. I suspect that all of these items could instead go into
+On Wed, Feb 3, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Wed, Feb 3, 2021 at 10:49 AM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Wed, Feb 3, 2021 at 8:44 AM Andre Przywara <andre.przywara@arm.com> wrote:
+> > >
+> > > On Wed, 3 Feb 2021 15:15:19 +0100
+> > > Michal Simek <michal.simek@xilinx.com> wrote:
+> > >
+> > > > On 2/3/21 3:12 PM, Rob Herring wrote:
+> > > > > On Wed, Feb 3, 2021 at 1:01 AM Michal Simek <michal.simek@xilinx.com> wrote:
+> > > > >>
+> > > > >>
+> > > > >>
+> > > > >> On 2/1/21 6:41 PM, Rob Herring wrote:
+> > > > >>> On Mon, Feb 1, 2021 at 8:27 AM Michal Simek <michal.simek@xilinx.com> wrote:
+> > > > >>>>
+> > > > >>>> The commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version
+> > > > >>>> v1.6.0-11-g9d7888cbf19c") updated dtc version which also contained DTC
+> > > > >>>> commit
+> > > > >>>> "81e0919a3e21 checks: Add interrupt provider test"
+> > > > >>>> where reasons for this checking are mentioned as
+> > > > >>>> "A missing #address-cells property is less critical, but creates
+> > > > >>>> ambiguities when used in interrupt-map properties, so warn about this as
+> > > > >>>> well now."
+> > > > >>>>
+> > > > >>>> Add address-cells property to gic and gpio nodes to get rid of this warning.
+> > > > >>>> The similar change has been done for ZynqMP too.
+> > > > >>>
+> > > > >>> FYI, we're going to make this check dependent on having an
+> > > > >>> interrupt-map property. So adding these isn't necessary.
+> > > > >>
+> > > > >> Good to know. Is there going to be report if interrupt-map doesn't
+> > > > >> exist? Which can end up with reverting these changes?
+> > > > >
+> > > > > You mean a warning if '#address-cells' is present and interrupt-map is
+> > > > > not? No, that would cause lots of warnings.
+> > > >
+> > > > yep.
+> > >
+> > > Why would we do that? That sounds dangerous and would be broken if the
+> > > IRQ controller is in a generic .dtsi (as it usually is), but the
+> > > interrupt map is only in *some* of the board .dts files.
+> > >
+> > > What is the problem of just putting #address-cells = <0>; in the
+> > > IRQ controller node, after checking that there currently no interrupt
+> > > maps in use and no IRQ children? And be safe for good? That's 16 bytes
+> > > in the DTB, IIUC.
+> >
+> > Because I don't think we need a bunch of warning fix patches to add
+> > these everywhere. Also, the need for #address-cells pretty much makes
+> > no sense on any modern system. It is a relic from days when the bus
+> > (address) topology and interrupt topology were related.
+> >
+> > > Because otherwise we have that lovely ambiguity between the
+> > > implicit default #address-cells = 2; and the assumed default of 0.
+> > >
+> > > And that's why I think we also cannot *automatically* add an #ac = <0>;
+> > > property, because that would change behaviour.
+> >
+> > I'd rather try to limit where we assume the default of 2. My guess is
+> > that's only some combination of old PowerPC and/or Sparc and no FDT
+> > based DT.
+>
+> Actually, after reviewing of_irq_parse_raw() again, I think you're
+> mixing the 2 different #address-cells involved. Let's review which
+> #*-cells applies to parts of interrupt-map:
+>
+> interrupt-map = <[ac current node or parent] [ic current node] [parent
+> intc phandle] [ac parent intc] [ic parent intc]>;
+>
+> For [ac current node or parent], we start in the 'interrupt-map' node
+> (because it's the interrupt parent). From there, we walk up the tree
+> to find #address-cells. Worst case is we find none and take the
+> default of 2. First, dtc has pretty much always made no root
+> #address-cells a warning. Second, Linux has notion of a default and
+> that varies by arch and isn't used here. Only Sparc defaults to 2 (see
+> of_private.h) which means we should never hit the default on PowerPC
+> or Arm (or anything else).
 
-At this moment, I don't see any overlap with item from cma_debugfs.
-Could you specify what item you are mentioning?
+Actually, Sparc doesn't even use this code. Turns out PowerPC is a bit
+more complicated.
 
-> /sys/kernel/debug/cma, right?
+I traced where the '2' in this code came from. PowerPC had a mixture
+of the default being 1 or 2. For the interrupt parsing code, it was 1
+(from prom_n_addr_cells()) before commit 0ebfff1491ef and 2
+(hardcoded) after it. That's not the only place that a default was
+set. The early_init_dt_scan_root() function at that time defaulted to
+2. Now it's 1 as we added per arch default defines which used the '1'
+from prom_n_addr_cells() (now of_n_addr_cells()). So in conclusion,
+PowerPC has had a mixture of defaults and no one cared since 2006 when
+it changed. I'm inclined to rip out these defaults and just fail.
 
-Anyway, thing is I need an stable interface for that and need to use
-it in Android production build, too(Unfortunately, Android deprecated
-the debugfs
-https://source.android.com/setup/start/android-11-release#debugfs
-)
-
-What should be in debugfs and in sysfs? What's the criteria?
-
-Some statistic could be considered about debugging aid or telemetric
-depening on view point and usecase. And here, I want to use it for
-telemetric, get an stable interface and use it in production build
-of Android. In this chance, I'd like to get concrete guideline
-what should be in sysfs and debugfs so that pointing out this thread
-whenever folks dump their stat into sysfs to avoid waste of time
-for others in future. :)
-
-> 
-> 2) The overall CMA allocation attempts/failures (first two items above) seem
-> an odd pair of things to track. Maybe that is what was easy to track, but I'd
-> vote for just omitting them.
-
-Then, how to know how often CMA API failed?
-There are various size allocation request for a CMA so only page
-allocation stat are not enough to know it.
-
-> > 
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> >   Documentation/ABI/testing/sysfs-kernel-mm-cma |  39 +++++
-> >   include/linux/cma.h                           |   1 +
-> >   mm/Makefile                                   |   1 +
-> >   mm/cma.c                                      |   6 +-
-> >   mm/cma.h                                      |  20 +++
-> >   mm/cma_sysfs.c                                | 143 ++++++++++++++++++
-> >   6 files changed, 209 insertions(+), 1 deletion(-)
-> >   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
-> >   create mode 100644 mm/cma_sysfs.c
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> > new file mode 100644
-> > index 000000000000..2a43c0aacc39
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> > @@ -0,0 +1,39 @@
-> > +What:		/sys/kernel/mm/cma/
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		/sys/kernel/mm/cma/ contains a number of subdirectories by
-> > +		cma-heap name. The subdirectory contains a number of files
-> > +		to represent cma allocation statistics.
-> 
-> Somewhere, maybe here, there should be a mention of the closely related
-> /sys/kernel/debug/cma files.
-> 
-> > +
-> > +		There are number of files under
-> > +				/sys/kernel/mm/cma/<cma-heap-name> directory
-> > +
-> > +			- cma_alloc_attempt
-> > +			- cma_alloc_fail
-> 
-> Are these really useful? They a summary of the alloc_pages items, really.
-> 
-> > +			- alloc_pages_attempt
-> > +			- alloc_pages_fail
-> 
-> This should also have "cma" in the name, really: cma_alloc_pages_*.
-
-No problem.
-
-> 
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_attempt
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of cma_alloc API attempted
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_fail
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of CMA_alloc API failed
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_attempt
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of pages CMA API tried to allocate
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of pages CMA API failed to allocate
-> > diff --git a/include/linux/cma.h b/include/linux/cma.h
-> > index 217999c8a762..71a28a5bb54e 100644
-> > --- a/include/linux/cma.h
-> > +++ b/include/linux/cma.h
-> > @@ -49,4 +49,5 @@ extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> >   extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
-> >   extern int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data);
-> > +
-> 
-> A single additional blank line seems to be the only change to this file. :)
-
-Oops.
+Rob
