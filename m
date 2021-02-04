@@ -2,144 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C98E30F3FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D763A30F401
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236124AbhBDNhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        id S236328AbhBDNiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236385AbhBDNhd (ORCPT
+        with ESMTP id S236392AbhBDNiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:37:33 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B86C061788;
-        Thu,  4 Feb 2021 05:36:48 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 7so3589476wrz.0;
-        Thu, 04 Feb 2021 05:36:48 -0800 (PST)
+        Thu, 4 Feb 2021 08:38:15 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF91EC061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:37:33 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id r77so3203473qka.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:37:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=i6/bNL7HF1iysG21qSzvFJ1UcbOS4/QnqxxVysWkLuU=;
-        b=UxD0a1lDoSmq0j3gyV+VewxgLUPZLnSVo0X+4W+gBeRF1M/LB7WycJ425L0kJsdjvV
-         nO2YKPHBbzX4gMH+gDIRb355VPuETYaTWSfc7AUmGaofrMlsQOsQmSO4a4fIpkQ/4W5v
-         L/zISmHYjpNtJPqmfGXMtCVbnLNlj/2HPhiGlhTeKkr5SZSndZUhr0jvkrCmPba7JX9Z
-         K9eGxkMxf2qd+47lNN+thrHQ/wlN3xSB38sw6m5tP+usZs9jT3q/nAMHHmxEhUoJEvBu
-         i6OMsx4qWLprLu2424I9ahf4eoSNELsw6bCxN2DuQxikVpzhZaJC8IEWma0cEPpp+Lgs
-         cxEA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j3ZkQWsxg3aFYMXeKp6mu4ADWU76FLvBpJNuDV6H2cs=;
+        b=bzvy8OMMpnldBw3JqxMuMaAuCUfpmTwsm2yfJLsyusUDfWbOaMA/3mQhf2O/ZWMjDk
+         RmpuL3V9q2jcFmfbvKbO1XIq5Uxo+HwVuBQf6hnXdeiXy4jKaL5aJmMRpy1LVC5pXEJD
+         dIft5Y8NJlhDknjSWfwvRpaDCkGQ5A0t2VV8bRRe78WmHzXU58lbvDs91CxAR6n25r6d
+         stFyt1t9EVvcIwHkwtIUtUsWKX/Lx4cWdbLiwlUYNAjRFTSM4EtMFhkMPxQ387hmmQsw
+         0FhxDZW5rgzW0L7+byD+k/e8KknUhndxeFi7L1NxGAvDqxJkqVufSrwCNWgL/RDaZMLn
+         NvaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=i6/bNL7HF1iysG21qSzvFJ1UcbOS4/QnqxxVysWkLuU=;
-        b=XMM7paZ0uN0o2ttNnUJuwdJ3YYtGNyzO7B+XSCXJDtR2IFmm9cYJZzAcjIqUr7k+KO
-         fKFKiBGHZ/EzubcgT85ZKaI6lEUz1u0H2OpgghZTQbwKQDIWxQ271XxANSR7LdnAmVf4
-         vecDgHhOf+QALxJU+x35eizwBxhW5NlzUKCIT6Yp5JrF9sDIM9nV+L2oPjsbk/6lzIez
-         zBRdl7r0+ex0Rom3yKgVfnXais4rJSpw5VZDsNio5/e4meZWu3Nk5rR+kzHLjUedKTAE
-         pjH88m+3bJsVdyDNrgzL9izcMs2zHUGxViPSkybsc+RxU8xiP5T0/gJzO0DMHD9R1ebB
-         gG/w==
-X-Gm-Message-State: AOAM532R7Kz+RF8W2Vm/zpjzBEGRuyvajcCSfw59DkOjeaLEtFUA37LH
-        NOMBUtDo4fJSE9HtEtpJd4k=
-X-Google-Smtp-Source: ABdhPJxrbWdFxZJl51XjeEhG+ltbbvljSjn6Y67jLdF39+NBwKsnOYIziLPvuvmZgWQqU9l0kMiy2w==
-X-Received: by 2002:adf:f743:: with SMTP id z3mr9523620wrp.165.1612445807699;
-        Thu, 04 Feb 2021 05:36:47 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id 35sm8993637wrn.42.2021.02.04.05.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 05:36:46 -0800 (PST)
-Message-ID: <164d778019f68dd024cb42f869e7d967618514cb.camel@gmail.com>
-Subject: Re: [PATCH v3 1/7] gpio: gpio-ep93xx: fix BUG_ON port F usage
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     "nikita.shubin@maquefel.me" <nikita.shubin@maquefel.me>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 04 Feb 2021 14:36:45 +0100
-In-Reply-To: <28201612442592@mail.yandex.ru>
-References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
-         <20210128122123.25341-2-nikita.shubin@maquefel.me>
-         <CAHp75VfBb5+K9cSAzj9EBD+KtswkHSNMZWoCaU=bKvOO3fXRjw@mail.gmail.com>
-         <a0c121fdfb2893ec89425534387212524e4ff7cf.camel@gmail.com>
-         <28201612442592@mail.yandex.ru>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3ZkQWsxg3aFYMXeKp6mu4ADWU76FLvBpJNuDV6H2cs=;
+        b=p0Oi0nnxbsDUW+lPa17A13xFksy/3c91LkG/qvHnbx/+6YpU1+dkTbqVLZaJCGnGw6
+         FcDcgFO2qy9CO9tl3gIddc4B5Yqbc+BGY674W9Odm/OECztstEINqZPsoUuunPaKrcME
+         Xikjnps5AUoKi9WX2DN7Wja0MLqdH+bOooLfTT7vgVz/Gm4zFSiX5dpWl8MiSllk2ZPO
+         9dyFKOtUC7MnkeCV0HniFpb5gX098YlX10ALGsRKjC62UImTwf2PAsfibPCwjtFKP589
+         Cdr3WtCfWLGwu3iRwnXaL28pKujzOp0ZD0KP2VwevaeXf6a0Mwia+6yYedPxaOre/LbQ
+         w2uw==
+X-Gm-Message-State: AOAM532U13aGB100BQbHGHncz/4Vrjx46NT+9vYr9vS+C0NUw3x2Uc8v
+        zdh4qzolGDClWg+SxQC/6+zYYUFV+XenKLIaHbp4gA==
+X-Google-Smtp-Source: ABdhPJygk3C1h9Qf1j4zpB6DJXi8B9cZOo8l3AQWm3wGUrBkmgpz+FuXljmdTmsuR67qcjJIjoJHI32MNp0FhhHQOJY=
+X-Received: by 2002:a05:620a:711:: with SMTP id 17mr7251292qkc.501.1612445852814;
+ Thu, 04 Feb 2021 05:37:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+ <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+ <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net> <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+ <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net> <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
+ <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net> <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
+ <YBvj6eJR/DY2TsEB@hirez.programming.kicks-ass.net> <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
+ <YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 4 Feb 2021 14:37:21 +0100
+Message-ID: <CACT4Y+Z+7zGD4_d-snEMLTin1a0C-yYQGKc0n+E6y7dBzY-OgQ@mail.gmail.com>
+Subject: Re: Process-wide watchpoints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On Thu, Feb 4, 2021 at 2:33 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Feb 04, 2021 at 01:53:59PM +0100, Dmitry Vyukov wrote:
+> > On Thu, Feb 4, 2021 at 1:09 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > What do we do then? The advantage of IOC_REFRESH is that it disables the
+> > > event until it gets explicitly re-armed, avoiding recursion issues etc.
+> > > Do you want those semantics? If so, we'd need to have IOC_REFRESH find
+> > > the actual event for the current task, which should be doable I suppose.
+> >
+> > Frankly, I don't know. I didn't use it in my prototype, nor I fully
+> > understand what it's doing. Does it make sense for breakpoints?
+> > I see IOC_REFRESH has a check for !attr.inherit, so it will fail for
+> > my use case currently. I would say we just leave it as is for now.
+>
+> Well, the way it works is that currently you set event_limit > 0. Then
+> each event will decrement, when we hit 0 we disable and raise a signal.
+>
+> REFRESH will increment event_limit and re-enable.
+>
+> This means you're guaranteed not to get another signal until you're
+> ready for it. It allows leaving the signal handler context to handle the
+> signal.
+>
+> I suppose you're looking for something like this, which goes in top of
+> that thread_only thing.
+>
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -389,7 +389,8 @@ struct perf_event_attr {
+>                                 cgroup         :  1, /* include cgroup events */
+>                                 text_poke      :  1, /* include text poke events */
+>                                 thread_only    :  1, /* only inherit on threads */
+> -                               __reserved_1   : 29;
+> +                               sigtrap        :  1, /* foo */
+> +                               __reserved_1   : 28;
+>
+>         union {
+>                 __u32           wakeup_events;    /* wakeup every n events */
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6273,6 +6273,13 @@ static void perf_pending_event_disable(s
+>
+>         if (cpu == smp_processor_id()) {
+>                 WRITE_ONCE(event->pending_disable, -1);
+> +
+> +               if (event->attr.sigtrap) {
+> +                       atomic_inc(&event->event_limit); /* rearm */
+> +                       send_sig_info(SIGTRAP, SEND_SIG_PRIV, current);
+> +                       return;
+> +               }
+> +
+>                 perf_event_disable_local(event);
+>                 return;
+>         }
+> @@ -8936,6 +8943,7 @@ static int __perf_event_overflow(struct
+>                                    int throttle, struct perf_sample_data *data,
+>                                    struct pt_regs *regs)
+>  {
+> +       perf_overflow_handler_t ovf;
+>         int events = atomic_read(&event->event_limit);
+>         int ret = 0;
+>
+> @@ -8961,7 +8969,15 @@ static int __perf_event_overflow(struct
+>                 perf_event_disable_inatomic(event);
+>         }
+>
+> -       READ_ONCE(event->overflow_handler)(event, data, regs);
+> +       ovf = READ_ONCE(event->overflow_handler);
+> +#ifdef CONFIG_RETPOLINE
+> +       if (ovf == perf_event_output_forward) {
+> +               perf_event_output_forward(event, data, regs);
+> +       } else if (ovf == perf_event_output_backward) {
+> +               perf_event_output_backward(event, data, regs);
+> +       } else
+> +#endif
+> +               ovf(event, data, regs);
+>
+>         if (*perf_event_fasync(event) && event->pending_kill) {
+>                 event->pending_wakeup = 1;
+> @@ -11281,6 +11297,9 @@ perf_event_alloc(struct perf_event_attr
+>
+>         event->state            = PERF_EVENT_STATE_INACTIVE;
+>
+> +       if (event->attr.sigtrap)
+> +               event->event_limit = ATOMIC_INIT(1);
+> +
+>         if (task) {
+>                 event->attach_state = PERF_ATTACH_TASK;
+>                 /*
+> @@ -11556,6 +11575,9 @@ static int perf_copy_attr(struct perf_ev
+>         if (attr->thread_only && !attr->inherit)
+>                 return -EINVAL;
+>
+> +       if (attr->sigtrap && attr->inherit && !attr->thread_only)
+> +               return -EINVAL;
+> +
+>  out:
+>         return ret;
 
-On Thu, 2021-02-04 at 15:55 +0300, nikita.shubin@maquefel.me wrote:
-> I considered your offer of using array with holes.
->  
-> It looks pretty ugly to me, couse it leads to bloated arrays:
->  
-> static unsigned char gpio_int_unmasked[EP93XX_GPIO_CHIP_NUM];
-> static unsigned char gpio_int_enabled[EP93XX_GPIO_CHIP_NUM];
-> static unsigned char gpio_int_type1[EP93XX_GPIO_CHIP_NUM];
-> static unsigned char gpio_int_type2[EP93XX_GPIO_CHIP_NUM];
-> static unsigned char gpio_int_debounce[EP93XX_GPIO_CHIP_NUM];
->  
-> /* Port ordering is: A B F */
-> static const u8 int_type1_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x90, 0xac, 0x0, 0x0, 0x0, 0x4c };
-> static const u8 int_type2_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x94, 0xb0, 0x0, 0x0, 0x0, 0x50 };
-> static const u8 eoi_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x98, 0xb4, 0x0, 0x0, 0x0, 0x54 };
-> static const u8 int_en_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x9c, 0xb8, 0x0, 0x0, 0x0, 0x58 };
-> static const u8 int_debounce_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0xa8, 0xc4, 0x0, 0x0, 0x0, 0x64 };
->  
-> Is this really the thing we want ?
 
-Even in this form it's less error-prone than to have two
-index-spaces, and hidden conversion from one numbering scheme
-to other.
-
-Alternatives that I see are:
-1.
-https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
-
-2.
-Embedd the necessary values into struct ep93xx_gpio_bank.
-This option can probably simplify the handling of the names
-for irq chips as well.
- 
-> 28.01.2021, 19:19, "Alexander Sverdlin" <alexander.sverdlin@gmail.com>:
-> > Hello Nikita,
-> > 
-> > On Thu, 2021-01-28 at 18:11 +0200, Andy Shevchenko wrote:
-> > >  > +/*
-> > >  > + * F Port index in GPIOCHIP'S array is 5
-> > >  > + * but we use index 2 for stored values and offsets
-> > >  > + */
-> > >  > +#define EP93XX_GPIO_F_PORT_INDEX 5
-> > >  
-> > >  Hmm... Why not to use an array with holes instead.
-> > >  
-> > >  ...
-> > >  
-> > >  > +       if (port == EP93XX_GPIO_F_PORT_INDEX)
-> > >  > +               port = 2;
-> > >  
-> > >  Sorry, but I'm not in favour of this as it adds confusion.
-> > >  See above for the potential way to solve.
-> > 
-> > well, I was thinking the same yesterday. It just adds another
-> > level on confusion into the code, which even the author got
-> > wrong :)
-> > 
-> > Array with holes would be more obvious, but one can also embedd
-> > the necessary values into struct ep93xx_gpio_bank.
-> >  
-> > --
-> > Alexander Sverdlin.
-> > 
-> >  
-
--- 
-Alexander Sverdlin.
-
-
+Thanks. Let me see if this will work for us and test.
