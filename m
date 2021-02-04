@@ -2,60 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5218330FB3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0423630FB4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239057AbhBDSWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:22:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42858 "EHLO mail.kernel.org"
+        id S238919AbhBDSXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:23:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34228 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239005AbhBDSUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:20:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7D00A64F4D;
-        Thu,  4 Feb 2021 18:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612462809;
-        bh=tXKNpie789U3LKbi50irPO/NqqIVBvEAxMks1HpsYPc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ncygWutmcQpzylNKLUP92Yv/zF7cw/SudzqSKZJW76kKYUN0O0Y8CAACGBi5RHAuL
-         cNRICP8aZaVVH6bxfUkdIsd9jIuIEB1+KGq/7KUKF9Iv8TMb++A4YEc0A+coNAx9VV
-         nbieGhoX/jFP8FmkyoO1Nkxmn6WXa5l6UAP+AuVdjLUzvCjKS4AFMDKC8GiV8m5y8D
-         /aRonoDfUEiKlgayfHUD5dbJnf8llY4Ap1um6JB1vwCr9RYyUZTNFepdRdAmsQi/Hh
-         xQAEIdT6aD3hXYhOTnCmPkXsb1RrNS/Fu64OGpj1JDVBl1AZZoRYyiCjUSzUAmr6dF
-         gg8iKmSsStxEw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 623D0609EB;
-        Thu,  4 Feb 2021 18:20:09 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fix for v5.11-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0hvbEQehBdq4FNtU9t0xQ1jEtcDVH5b96Bo=Me-dbNg-w@mail.gmail.com>
-References: <CAJZ5v0hvbEQehBdq4FNtU9t0xQ1jEtcDVH5b96Bo=Me-dbNg-w@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0hvbEQehBdq4FNtU9t0xQ1jEtcDVH5b96Bo=Me-dbNg-w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc7
-X-PR-Tracked-Commit-Id: 0f347aa07f15b346a001e557f4a0a45069f7fa3d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 927002ed29e2dda6dfacb87fe582d5495a03f096
-Message-Id: <161246280934.20291.3959318873933475356.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Feb 2021 18:20:09 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S239050AbhBDSXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:23:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DEA59AE95;
+        Thu,  4 Feb 2021 18:22:25 +0000 (UTC)
+Subject: Re: [PATCH v6 10/10] drm/qxl: allocate dumb buffers in ram
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-11-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <494099f2-01d7-fa62-9101-eb09765d7b98@suse.de>
+Date:   Thu, 4 Feb 2021 19:22:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210204145712.1531203-11-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="pyZR8drgja7WQpmkmetYozYATek7dMo4p"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 4 Feb 2021 19:05:44 +0100:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pyZR8drgja7WQpmkmetYozYATek7dMo4p
+Content-Type: multipart/mixed; boundary="9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>, open list
+ <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <494099f2-01d7-fa62-9101-eb09765d7b98@suse.de>
+Subject: Re: [PATCH v6 10/10] drm/qxl: allocate dumb buffers in ram
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-11-kraxel@redhat.com>
+In-Reply-To: <20210204145712.1531203-11-kraxel@redhat.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc7
+--9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/927002ed29e2dda6dfacb87fe582d5495a03f096
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
+> dumb buffers are shadowed anyway, so there is no need to store them
+> in device memory.  Use QXL_GEM_DOMAIN_CPU (TTM_PL_SYSTEM) instead.
+
+Makes sense. I had similar issues in other drivers about the placement=20
+of buffers. For them, all new buffers now go into system ram by default, =
+
+and only move into device memory when they have to.
+
+>=20
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>   drivers/gpu/drm/qxl/qxl_dumb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_d=
+umb.c
+> index c04cd5a2553c..48a58ba1db96 100644
+> --- a/drivers/gpu/drm/qxl/qxl_dumb.c
+> +++ b/drivers/gpu/drm/qxl/qxl_dumb.c
+> @@ -59,7 +59,7 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
+>   	surf.stride =3D pitch;
+>   	surf.format =3D format;
+>   	r =3D qxl_gem_object_create_with_handle(qdev, file_priv,
+> -					      QXL_GEM_DOMAIN_SURFACE,
+> +					      QXL_GEM_DOMAIN_CPU,
+>   					      args->size, &surf, &qobj,
+>   					      &handle);
+>   	if (r)
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--9hodCVcSmlM4NSTMnLoweg2r3f8cZ8USb--
+
+--pyZR8drgja7WQpmkmetYozYATek7dMo4p
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcO2AFAwAAAAAACgkQlh/E3EQov+Dq
+Tw//Ss7qrE339QgFvgUo6KSyLaTR9reuXmew3gm2M+w7BM02VQBDcHJ6uEWDOHTQpxcki4wApp40
+/UQ5tZ6lRKqSPdYcz9CVNAwj0gYIqREeNIubHQd08Lzzx/kGv4Y/8xQ1Q1GrjIVejJvXOYe9KJhR
+dtAklxDPn1pRe8reSY5NRHuijsxX3RPIgUYgwPn1AwxS3faEIM1801ylnXdfdcgk7l4NvoXgt3D4
+dZSltupfezt3qIsQHmZX3f1BmYj8mvJDi9cGYhl4ij8LVcTlePQCV52wkW5aQiajpGJPxbVOIbMv
+G8jOx66aV2A92ZdO010Rfhz8kWL/StnjqvOhzYmmhoXeHrqUQNd28LGqgEbA8KMRVf9cYv5co9PW
+ouaNVKV1wzeuGSqYzWcDQ/7zirLjqh2Al+OvweNkG+5MGazdcjH/LMSH00PCJRIsUXZFt/obw6P6
+SPFmMpQARcaR/s2X5i9Aq8/mm9RPLzDLF35fs/pB+t4ZuJU5DM8o0+70GUpw4jF3f5ExLLhbQ13g
+7yrkjQkaavTeUAuk7TXmyDc0rKPrTr9KghpS0qxPT5OKHLsOIXiH5Er3RLo2JLGs76itxag0Scyo
+qh2icQZMUuPJP3MAXP5YL6oxB65ZoJbTB3VYBR9/1Y1AYrCX2qQJlBDKr0Xi/0zjnFrr1KE/3HVk
+dno=
+=OQ9o
+-----END PGP SIGNATURE-----
+
+--pyZR8drgja7WQpmkmetYozYATek7dMo4p--
