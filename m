@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9D930ED50
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E4130ED51
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhBDH1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:27:14 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51228 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234179AbhBDH0y (ORCPT
+        id S234483AbhBDH1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:27:21 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12396 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234139AbhBDH0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 02:26:54 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNpW51s_1612423570;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNpW51s_1612423570)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Feb 2021 15:26:11 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     martin.petersen@oracle.com
-Cc:     jejb@linux.ibm.com, brking@us.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] scsi: ipr: Remove unneeded return variable
-Date:   Thu,  4 Feb 2021 15:26:08 +0800
-Message-Id: <1612423568-81006-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DWVS00K6Lz7gZq;
+        Thu,  4 Feb 2021 15:24:48 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 15:25:59 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: ipv4: Return the correct errno code
+Date:   Thu, 4 Feb 2021 15:26:57 +0800
+Message-ID: <20210204072657.17554-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch removes unneeded return variables, using only
-'0' instead.
-It fixes the following warning detected by coccinelle:
-./drivers/scsi/ipr.c:9508:5-7: Unneeded variable: "rc". Return "0" on
-line 9524
+When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/scsi/ipr.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/ipv4/devinet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index e451102..8eced7c 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -9505,7 +9505,6 @@ static pci_ers_result_t ipr_pci_error_detected(struct pci_dev *pdev,
-  **/
- static int ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
- {
--	int rc = 0;
- 	unsigned long host_lock_flags = 0;
- 
- 	ENTER;
-@@ -9521,7 +9520,7 @@ static int ipr_probe_ioa_part2(struct ipr_ioa_cfg *ioa_cfg)
- 	spin_unlock_irqrestore(ioa_cfg->host->host_lock, host_lock_flags);
- 
- 	LEAVE;
--	return rc;
-+	return 0;
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index 123a6d39438f..fa586e915621 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -2582,7 +2582,7 @@ static int __devinet_sysctl_register(struct net *net, char *dev_name,
+ free:
+ 	kfree(t);
+ out:
+-	return -ENOBUFS;
++	return -ENOMEM;
  }
  
- /**
+ static void __devinet_sysctl_unregister(struct net *net,
 -- 
-1.8.3.1
+2.22.0
 
