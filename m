@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D6F30FB96
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A137D30FB7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239155AbhBDSdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
+        id S239136AbhBDS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238947AbhBDSTf (ORCPT
+        with ESMTP id S238908AbhBDSTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:19:35 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48463C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:18:55 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id f16so3386879qkk.20
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:18:55 -0800 (PST)
+        Thu, 4 Feb 2021 13:19:44 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7826FC061788
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:19:04 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id w22so2714723pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:19:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=jVxxi2FsPuJw4XM1jbb8exuFnk/zAFQh52OuUnL6x5c=;
-        b=eoiLv4Fjju3JEfXDuHbAba/lObCo1w6vbwyoS7MtecyRwqYnXpMFoZNAYuf+W6oplH
-         gED96JwbPRY7jeChrEt5R+59xV+yLfGj24fcQAeQ3kg+O5aLSKHWIqNnkUhhZ+dn8Rq4
-         BSdC2ZaIBJTBtyH56RgpmICjqdLlGqg7bhCp5MvnfQftXNufcaTDf86YmN34tkYl8nUh
-         E1TEXeKWOfc62QBEEL4iaICZJUqV2BK4Tg1pQtpDeOKiotE8p202ib96xqd5eEqoxJGm
-         +lkG9dpS6gQ0YmtwBPKtO1zwA8TCpj/+Qfh0XPeMeyCRpOBP6XgHl3PnRK0X4FR79HSi
-         HU0A==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
+        b=JWES8rpo4FSC6YxM08B3ne3WSE8mwOoe4YXK22ypOyIhZRXvmJtav1bew84WSu2he1
+         o5oTUWlif2TQQ6ePgIqh8RMnovA2hkvSifp7ohmwld/5FAlGsUqFjp3umWZQ8ry6Vvgt
+         bmdrqAalBy3fjnn5ZB+2LdoKuiXdQjKnlpuDDp02oSdz1bVUG6r7drR4Y5yczWre7LJN
+         pyuUu7KqqxlZOB/64y6nG0p/VCy3vx40h2+kK6qgiN59kRw34gOs0oPCkvjasFWMVrEi
+         AX/7n9Hhs1w2NoAeUFG84NZxzCXroqpLRvQ/wTdc45/IAh74eK2h+lHZx7lsD9e8/zCU
+         tExQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=jVxxi2FsPuJw4XM1jbb8exuFnk/zAFQh52OuUnL6x5c=;
-        b=adrgtDk15dlGSpPPmqsrqAzVcRJwc+gN97CmPsev/asAs2wlZp1HeDYN/fykJcY1O1
-         ZTI3/XNOAzB7p9jtyNM5GtMZ8MfHHjXKVydEG6VJjwkVpRIZ4UVYHTz/fpvkrxYorR8l
-         k4ZE4abrzXsnXVL0PPHokvFHOGUe/92TkZRfblveCJ8DZl6qNc2luZ2o7z1Fu02nI180
-         e/BU58s8IEq1eJvCbe+l1Zy2S+yTunmQ4FVF78iThsAHS0MbaQom6138YWJZn49TRgns
-         CgmK6Rw53IX/QbUgHDrMsq6NXinPIPijNFZtvVDFK5oMXjcRHgkYGIxMKqwSofhjpPF9
-         Z8wg==
-X-Gm-Message-State: AOAM530d/vZ5nYAq85HSUhWuhKeQCbLga6Vt5N9sdqV+AZsoIGsNOyUb
-        hpzgF+hXziKzvx7wLijhxu0Cfevpb6lQ
-X-Google-Smtp-Source: ABdhPJyMx58OK+cTr24By73GqN8pUy8WYFcuOgVnb6Mlp/ZIQ5bdJXL9uXFa9JTBMZrMJ90CejS/EeyKo95s
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
+        b=gUVjnYUdk9TvIEgGgdXOw+8X7lIJjr+3SqV0tDxUOZEVmxUzqfw9LCCZvkcLNzOrOS
+         BKkXXPJ9sU3Hmi1pIHSh9AwF85SVrA1GbxkFepiEcZZb/7kZYvye20sQs4aH7i6PYCS6
+         4ZxseSZY7ns7fKPmcW5QnaZgaIibDd5erOg2uwmrRFOtKHUFFphfO0ex8gKXq8+mVw/q
+         MBvBfLB6HufWONp2E/Qm0v4RLgAmmgglHyuZ9DQv1R8xKv+O10E24BOyGgS7vFEKa4hL
+         WPXroVVwQ6KhzMnFY8tcuNNyfNHZmQy9w1WmGmEZTJpCvlh+fuu+aw5kkAvsUfekRBRt
+         8sqg==
+X-Gm-Message-State: AOAM5316cAOWc5yUMR6w5BtjF8CL9bZ7x+faeyM/tSyJzrd+etDTTN3i
+        mAFxyz3qTF84YEC6Jwko2CfLkQ7YGjOw
+X-Google-Smtp-Source: ABdhPJzx1vsXHznamTaYWa9MvvPa0WoOBCyUpAAEP3hDPxjBYVWTXkLnj/RR88J2ZNL7dmnhiy+DO9nElJFi
 Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
 X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a0c:e652:: with SMTP id
- c18mr436707qvn.59.1612462734464; Thu, 04 Feb 2021 10:18:54 -0800 (PST)
-Date:   Thu,  4 Feb 2021 18:18:38 +0000
-Message-Id: <20210204181839.558951-1-brianvv@google.com>
+ (user=brianvv job=sendgmr) by 2002:a17:90a:3b44:: with SMTP id
+ t4mr64655pjf.1.1612462743645; Thu, 04 Feb 2021 10:19:03 -0800 (PST)
+Date:   Thu,  4 Feb 2021 18:18:39 +0000
+In-Reply-To: <20210204181839.558951-1-brianvv@google.com>
+Message-Id: <20210204181839.558951-2-brianvv@google.com>
 Mime-Version: 1.0
+References: <20210204181839.558951-1-brianvv@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH net-next 1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
+Subject: [PATCH net-next 2/2] net: fix building errors on powerpc when
+ CONFIG_RETPOLINE is not set
 From:   Brian Vazquez <brianvv@google.com>
 To:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Brian Vazquez <brianvv@google.com>,
@@ -62,41 +66,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a static function is annotated with INDIRECT_CALLABLE_SCOPE and
-CONFIG_RETPOLINE is set, the static keyword is removed. Sometimes the
-function needs to be exported but EXPORT_SYMBOL can't be used because if
-CONFIG_RETPOLINE is not set, we will attempt to export a static symbol.
+This commit fixes the errores reported when building for powerpc:
 
-This patch introduces a new indirect call wrapper:
-EXPORT_INDIRECT_CALLABLE. This basically does EXPORT_SYMBOL when
-CONFIG_RETPOLINE is set, but does nothing when it's not.
+ ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
+ ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
 
+Fixes: f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
+Fixes: bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functions")
 Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- include/linux/indirect_call_wrapper.h | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/route.c | 4 ++--
+ net/ipv6/route.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
-index 54c02c84906a..a8345c8a613d 100644
---- a/include/linux/indirect_call_wrapper.h
-+++ b/include/linux/indirect_call_wrapper.h
-@@ -36,6 +36,7 @@
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 9e6537709794..be31e2446470 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -1206,7 +1206,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
+ 		return NULL;
+ 	return dst;
+ }
+-EXPORT_SYMBOL(ipv4_dst_check);
++EXPORT_INDIRECT_CALLABLE(ipv4_dst_check);
  
- #define INDIRECT_CALLABLE_DECLARE(f)	f
- #define INDIRECT_CALLABLE_SCOPE
-+#define EXPORT_INDIRECT_CALLABLE(f)	EXPORT_SYMBOL(f)
+ static void ipv4_send_dest_unreach(struct sk_buff *skb)
+ {
+@@ -1337,7 +1337,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ipv4_mtu(const struct dst_entry *dst)
  
- #else
- #define INDIRECT_CALL_1(f, f1, ...) f(__VA_ARGS__)
-@@ -44,6 +45,7 @@
- #define INDIRECT_CALL_4(f, f4, f3, f2, f1, ...) f(__VA_ARGS__)
- #define INDIRECT_CALLABLE_DECLARE(f)
- #define INDIRECT_CALLABLE_SCOPE		static
-+#define EXPORT_INDIRECT_CALLABLE(f)
- #endif
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ipv4_mtu);
++EXPORT_INDIRECT_CALLABLE(ipv4_mtu);
  
- /*
+ static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
+ {
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 8d9e053dc071..0d1784b0d65d 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2644,7 +2644,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
+ 
+ 	return dst_ret;
+ }
+-EXPORT_SYMBOL(ip6_dst_check);
++EXPORT_INDIRECT_CALLABLE(ip6_dst_check);
+ 
+ static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
+ {
+@@ -3115,7 +3115,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ip6_mtu(const struct dst_entry *dst)
+ 
+ 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ }
+-EXPORT_SYMBOL(ip6_mtu);
++EXPORT_INDIRECT_CALLABLE(ip6_mtu);
+ 
+ /* MTU selection:
+  * 1. mtu on route is locked - use it
 -- 
 2.30.0.365.g02bc693789-goog
 
