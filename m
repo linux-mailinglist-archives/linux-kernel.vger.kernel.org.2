@@ -2,136 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BED030FCD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BEB30FCCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239794AbhBDTac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:30:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236873AbhBDOye (ORCPT
+        id S239497AbhBDT2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:28:51 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:52442 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237583AbhBDQmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:54:34 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D87DC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eP1V3TSpPXmQZ6Iaw87n257Y5591XfLc3An7kGyi4kI=; b=orrfsRHvpJPtMIBC53dBItHHHV
-        MkgElGDNKsNh/M8QlxNTfwJyrD+XhiulESI2lfNOdXB2QFJAlG36ab0Lua+zWHcUFSe3MuSBragtm
-        O9+f+XpHwrEHT+2Mskdp9fDf8AhXDTvcZENhPRQtakFAT4rP8MYohaIkTnUm6mYEVWTUF24E8ZAkj
-        cn6wxHqJIJa6MMXnHe2CHqjLBDUq9oxPgV/k0Ef7BJN44UzAr4IsGisWKKW+q4ZF4OPkoQl+b7uSb
-        vnz138/ogrbCFK9FI4LAcaX3fanyOZ3OIZ3JXwoVfbnBYbI7UQfBCz4+SUJI5fiKRBLzlqsTc29Jp
-        1laoa31g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7g0A-0005Dq-HR; Thu, 04 Feb 2021 14:52:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E12203003D8;
-        Thu,  4 Feb 2021 15:52:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C22082138F7C4; Thu,  4 Feb 2021 15:52:53 +0100 (CET)
-Date:   Thu, 4 Feb 2021 15:52:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YBwKRaNKJ8lD8DgZ@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
+        Thu, 4 Feb 2021 11:42:43 -0500
+Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7CB6C20B6C44;
+        Thu,  4 Feb 2021 08:42:01 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CB6C20B6C44
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1612456922;
+        bh=Sd8T0e6P8u+loATpNeokWfqgEz2Z/zfdEmJ6vGkoVO0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DsNd3cTcPPuBR1KMib6S01rchtQemZ1WZn4tYKp9V+Gp0sh7NPle1NM6PixWwpGR/
+         xPeo4JFoCubdB2vB9Q46OtsYsnRyVZ0Iv4TiKadk6l/Al1ApVZ1RB8cQazbSviYwwR
+         wuvs3+ZrjZqJYyJsIiTevlfhBdoEqoy1f80bmPos=
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
+        mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v16 04/12] powerpc: Use common of_kexec_setup_new_fdt()
+Date:   Thu,  4 Feb 2021 08:41:27 -0800
+Message-Id: <20210204164135.29856-5-nramas@linux.microsoft.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210204164135.29856-1-nramas@linux.microsoft.com>
+References: <20210204164135.29856-1-nramas@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> +static void sched_core_update_cookie(struct task_struct *p, unsigned long cookie,
-> +				     enum sched_core_cookie_type cookie_type)
-> +{
-> +	struct rq_flags rf;
-> +	struct rq *rq;
-> +
-> +	if (!p)
-> +		return;
-> +
-> +	rq = task_rq_lock(p, &rf);
-> +
-> +	switch (cookie_type) {
-> +	case sched_core_task_cookie_type:
-> +		p->core_task_cookie = cookie;
-> +		break;
-> +	case sched_core_group_cookie_type:
-> +		p->core_group_cookie = cookie;
-> +		break;
-> +	default:
-> +		WARN_ON_ONCE(1);
-> +	}
-> +
-> +	/* Set p->core_cookie, which is the overall cookie */
-> +	__sched_core_update_cookie(p);
-> +
-> +	if (sched_core_enqueued(p)) {
-> +		sched_core_dequeue(rq, p);
-> +		if (!p->core_cookie) {
-> +			task_rq_unlock(rq, p, &rf);
-> +			return;
-> +		}
-> +	}
-> +
-> +	if (sched_core_enabled(rq) &&
-> +	    p->core_cookie && task_on_rq_queued(p))
-> +		sched_core_enqueue(task_rq(p), p);
-> +
-> +	/*
-> +	 * If task is currently running or waking, it may not be compatible
-> +	 * anymore after the cookie change, so enter the scheduler on its CPU
-> +	 * to schedule it away.
-> +	 */
-> +	if (task_running(rq, p) || p->state == TASK_WAKING)
-> +		resched_curr(rq);
+From: Rob Herring <robh@kernel.org>
 
-I'm not immediately seeing the need for that WAKING test. Since we're
-holding it's rq->lock, the only place that task can be WAKING is on the
-wake_list. And if it's there, it needs to acquire rq->lock to get
-enqueued, and rq->lock again to get scheduled.
+The code for setting up the /chosen node in the device tree
+and updating the memory reservation for the next kernel has been
+moved to of_kexec_setup_new_fdt() defined in "drivers/of/kexec.c".
 
-What am I missing?
+Use the common of_kexec_setup_new_fdt() to setup the device tree
+and update the memory reservation for kexec for powerpc.
 
-> +
-> +	task_rq_unlock(rq, p, &rf);
-> +}
+Signed-off-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+---
+ arch/powerpc/kexec/file_load.c | 125 ++-------------------------------
+ 1 file changed, 6 insertions(+), 119 deletions(-)
+
+diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
+index e452b11df631..956bcb2d1ec2 100644
+--- a/arch/powerpc/kexec/file_load.c
++++ b/arch/powerpc/kexec/file_load.c
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/slab.h>
+ #include <linux/kexec.h>
++#include <linux/of.h>
+ #include <linux/of_fdt.h>
+ #include <linux/libfdt.h>
+ #include <asm/setup.h>
+@@ -156,132 +157,18 @@ int setup_new_fdt(const struct kimage *image, void *fdt,
+ 		  unsigned long initrd_load_addr, unsigned long initrd_len,
+ 		  const char *cmdline)
+ {
+-	int ret, chosen_node;
+-	const void *prop;
+-
+-	/* Remove memory reservation for the current device tree. */
+-	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
+-				 fdt_totalsize(initial_boot_params));
+-	if (ret == 0)
+-		pr_debug("Removed old device tree reservation.\n");
+-	else if (ret != -ENOENT)
+-		return ret;
+-
+-	chosen_node = fdt_path_offset(fdt, "/chosen");
+-	if (chosen_node == -FDT_ERR_NOTFOUND) {
+-		chosen_node = fdt_add_subnode(fdt, fdt_path_offset(fdt, "/"),
+-					      "chosen");
+-		if (chosen_node < 0) {
+-			pr_err("Error creating /chosen.\n");
+-			return -EINVAL;
+-		}
+-	} else if (chosen_node < 0) {
+-		pr_err("Malformed device tree: error reading /chosen.\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Did we boot using an initrd? */
+-	prop = fdt_getprop(fdt, chosen_node, "linux,initrd-start", NULL);
+-	if (prop) {
+-		uint64_t tmp_start, tmp_end, tmp_size;
+-
+-		tmp_start = fdt64_to_cpu(*((const fdt64_t *) prop));
+-
+-		prop = fdt_getprop(fdt, chosen_node, "linux,initrd-end", NULL);
+-		if (!prop) {
+-			pr_err("Malformed device tree.\n");
+-			return -EINVAL;
+-		}
+-		tmp_end = fdt64_to_cpu(*((const fdt64_t *) prop));
+-
+-		/*
+-		 * kexec reserves exact initrd size, while firmware may
+-		 * reserve a multiple of PAGE_SIZE, so check for both.
+-		 */
+-		tmp_size = tmp_end - tmp_start;
+-		ret = delete_fdt_mem_rsv(fdt, tmp_start, tmp_size);
+-		if (ret == -ENOENT)
+-			ret = delete_fdt_mem_rsv(fdt, tmp_start,
+-						 round_up(tmp_size, PAGE_SIZE));
+-		if (ret == 0)
+-			pr_debug("Removed old initrd reservation.\n");
+-		else if (ret != -ENOENT)
+-			return ret;
+-
+-		/* If there's no new initrd, delete the old initrd's info. */
+-		if (initrd_len == 0) {
+-			ret = fdt_delprop(fdt, chosen_node,
+-					  "linux,initrd-start");
+-			if (ret) {
+-				pr_err("Error deleting linux,initrd-start.\n");
+-				return -EINVAL;
+-			}
+-
+-			ret = fdt_delprop(fdt, chosen_node, "linux,initrd-end");
+-			if (ret) {
+-				pr_err("Error deleting linux,initrd-end.\n");
+-				return -EINVAL;
+-			}
+-		}
+-	}
+-
+-	if (initrd_len) {
+-		ret = fdt_setprop_u64(fdt, chosen_node,
+-				      "linux,initrd-start",
+-				      initrd_load_addr);
+-		if (ret < 0)
+-			goto err;
+-
+-		/* initrd-end is the first address after the initrd image. */
+-		ret = fdt_setprop_u64(fdt, chosen_node, "linux,initrd-end",
+-				      initrd_load_addr + initrd_len);
+-		if (ret < 0)
+-			goto err;
+-
+-		ret = fdt_add_mem_rsv(fdt, initrd_load_addr, initrd_len);
+-		if (ret) {
+-			pr_err("Error reserving initrd memory: %s\n",
+-			       fdt_strerror(ret));
+-			return -EINVAL;
+-		}
+-	}
+-
+-	if (cmdline != NULL) {
+-		ret = fdt_setprop_string(fdt, chosen_node, "bootargs", cmdline);
+-		if (ret < 0)
+-			goto err;
+-	} else {
+-		ret = fdt_delprop(fdt, chosen_node, "bootargs");
+-		if (ret && ret != -FDT_ERR_NOTFOUND) {
+-			pr_err("Error deleting bootargs.\n");
+-			return -EINVAL;
+-		}
+-	}
++	int ret;
+ 
+-	if (image->type == KEXEC_TYPE_CRASH) {
+-		/*
+-		 * Avoid elfcorehdr from being stomped on in kdump kernel by
+-		 * setting up memory reserve map.
+-		 */
+-		ret = fdt_add_mem_rsv(fdt, image->arch.elf_headers_mem,
+-				      image->arch.elf_headers_sz);
+-		if (ret) {
+-			pr_err("Error reserving elfcorehdr memory: %s\n",
+-			       fdt_strerror(ret));
+-			goto err;
+-		}
+-	}
++	ret = of_kexec_setup_new_fdt(image, fdt, initrd_load_addr, initrd_len, cmdline);
++	if (ret)
++		goto err;
+ 
+-	ret = setup_ima_buffer(image, fdt, chosen_node);
++	ret = setup_ima_buffer(image, fdt, fdt_path_offset(fdt, "/chosen"));
+ 	if (ret) {
+ 		pr_err("Error setting up the new device tree.\n");
+ 		return ret;
+ 	}
+ 
+-	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
+-	if (ret)
+-		goto err;
+-
+ 	return 0;
+ 
+ err:
+-- 
+2.30.0
+
