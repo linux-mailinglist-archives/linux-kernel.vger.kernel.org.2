@@ -2,255 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C1730FE1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E25330FDEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240072AbhBDUWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240048AbhBDUWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:22:32 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DF7C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:09:11 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id nm1so2339827pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:09:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/l4RZQaOQ7d1ouPGYljMviXnbT3WGsKxbFcd6Drk0Lo=;
-        b=fGh06rg6gheCvBcGHTM1w3CvOKYBLWLRn9SsYCTlMhzkC4JaaPEVY9uKw0CvECVwVO
-         GLeSCKWBvTR1v0FQSiY/XKcTK9KT+DVTzTKdoaxaQIGfWrhvlikM3pXCSAnIygWSjYCw
-         2AQGbsH7tWwcwYgYIpccGn1vT6vFCvencsBi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/l4RZQaOQ7d1ouPGYljMviXnbT3WGsKxbFcd6Drk0Lo=;
-        b=TD2Mr29KUNqW3NcC4bz9InrKjSiw5mbreibZwU6JR2nzUbbgmjvI1cqpsMGDu9Yp8J
-         pMXSxjjJnJjATgUt2EwP5RaKHYA4i8o2zadvSmLd7ZuI4tDP4O2aY3eKpnf1mh9lY5Jt
-         MBXcYNXTeGqfXSfnE5OO4kFdhYRUbxmK6EBDnTmmb7+nj5l/fu5TqxmEJDbdCI207til
-         /1fkjFGdsG+goe+zD000XYiBUki42e1kh/fz8XpUi4ZTVS/uwMeKP+JcyGYOkaFRscaw
-         h0ICJytaVNoIcYtWsYr/KDzG6PJb3oY3FkZgs5OwC5lC+yR0xNYEucB+rn6IaZoiQy6d
-         7YDg==
-X-Gm-Message-State: AOAM532hRybx0uWW2HP0kACGfVZrKmRTNLeujzoUeO59VbhHfc5hYcYh
-        NVJJz5c7ZtugZQOHEPhwmCnlRQ==
-X-Google-Smtp-Source: ABdhPJznzHpDv1tAkuCyPFHIVKGk/b0KKU4u5/1VBsGpliEe4MBq48F17ma54ciAn2Co22Y5ztJK+w==
-X-Received: by 2002:a17:903:1d0:b029:df:d098:f1cb with SMTP id e16-20020a17090301d0b02900dfd098f1cbmr865803plh.49.1612469350638;
-        Thu, 04 Feb 2021 12:09:10 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k15sm510608pgt.35.2021.02.04.12.09.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 12:09:09 -0800 (PST)
-Date:   Thu, 4 Feb 2021 12:09:08 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-Message-ID: <202102041201.C2B93F8D8A@keescook>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
+        id S239924AbhBDURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239686AbhBDUQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:16:57 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFFC464E35;
+        Thu,  4 Feb 2021 20:09:24 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 15:09:23 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] tracepoints: Do not punish non static call users
+Message-ID: <20210204150923.0140fe55@gandalf.local.home>
+In-Reply-To: <238902062.7677.1612468371566.JavaMail.zimbra@efficios.com>
+References: <20210204141742.46739ed2@gandalf.local.home>
+        <238902062.7677.1612468371566.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203225547.32221-7-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
-> A control-protection fault is triggered when a control-flow transfer
-> attempt violates Shadow Stack or Indirect Branch Tracking constraints.
-> For example, the return address for a RET instruction differs from the copy
-> on the shadow stack; or an indirect JMP instruction, without the NOTRACK
-> prefix, arrives at a non-ENDBR opcode.
+On Thu, 4 Feb 2021 14:52:51 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+
+> ----- On Feb 4, 2021, at 2:17 PM, rostedt rostedt@goodmis.org wrote:
 > 
-> The control-protection fault handler works in a similar way as the general
-> protection fault handler.  It provides the si_code SEGV_CPERR to the signal
-> handler.
+> > With static calls, a tracepoint can call the callback directly if there is
+> > only one callback registered to that tracepoint. When there is more than
+> > one, the static call will call the tracepoint's "iterator" function, which
+> > needs to reload the tracepoint's "funcs" array again, as it could have
+> > changed since the first time it was loaded.
+> > 
+> > But an arch without static calls is punished by having to load the
+> > tracepoint's "funcs" array twice. Once in the DO_TRACE macro, and once
+> > again in the iterator macro.  
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> ---
->  arch/x86/include/asm/idtentry.h    |  4 ++
->  arch/x86/kernel/idt.c              |  4 ++
->  arch/x86/kernel/signal_compat.c    |  2 +-
->  arch/x86/kernel/traps.c            | 60 ++++++++++++++++++++++++++++++
->  include/uapi/asm-generic/siginfo.h |  3 +-
->  5 files changed, 71 insertions(+), 2 deletions(-)
+> In addition to loading it, it needs to test it against NULL twice.
+
+True, but it needs to be tested again because it was loaded again. So I
+consider the test as a result of the reload, and only indirectly of the
+double call. Thus, I left it out of the change log.
+
 > 
-> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-> index f656aabd1545..ff4b3bf634da 100644
-> --- a/arch/x86/include/asm/idtentry.h
-> +++ b/arch/x86/include/asm/idtentry.h
-> @@ -574,6 +574,10 @@ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_SS,	exc_stack_segment);
->  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_GP,	exc_general_protection);
->  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_AC,	exc_alignment_check);
->  
-> +#ifdef CONFIG_X86_CET
-> +DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_CP, exc_control_protection);
-> +#endif
-> +
->  /* Raw exception entries which need extra work */
->  DECLARE_IDTENTRY_RAW(X86_TRAP_UD,		exc_invalid_op);
->  DECLARE_IDTENTRY_RAW(X86_TRAP_BP,		exc_int3);
-> diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-> index ee1a283f8e96..e8166d9bbb10 100644
-> --- a/arch/x86/kernel/idt.c
-> +++ b/arch/x86/kernel/idt.c
-> @@ -105,6 +105,10 @@ static const __initconst struct idt_data def_idts[] = {
->  #elif defined(CONFIG_X86_32)
->  	SYSG(IA32_SYSCALL_VECTOR,	entry_INT80_32),
->  #endif
-> +
-> +#ifdef CONFIG_X86_CET
-> +	INTG(X86_TRAP_CP,		asm_exc_control_protection),
-> +#endif
->  };
->  
->  /*
-> diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
-> index a5330ff498f0..dd92490b1e7f 100644
-> --- a/arch/x86/kernel/signal_compat.c
-> +++ b/arch/x86/kernel/signal_compat.c
-> @@ -27,7 +27,7 @@ static inline void signal_compat_build_tests(void)
->  	 */
->  	BUILD_BUG_ON(NSIGILL  != 11);
->  	BUILD_BUG_ON(NSIGFPE  != 15);
-> -	BUILD_BUG_ON(NSIGSEGV != 9);
-> +	BUILD_BUG_ON(NSIGSEGV != 10);
->  	BUILD_BUG_ON(NSIGBUS  != 5);
->  	BUILD_BUG_ON(NSIGTRAP != 5);
->  	BUILD_BUG_ON(NSIGCHLD != 6);
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index 7f5aec758f0e..f5354c35df32 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -606,6 +606,66 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->  	cond_local_irq_disable(regs);
->  }
->  
-> +#ifdef CONFIG_X86_CET
-> +static const char * const control_protection_err[] = {
-> +	"unknown",
-> +	"near-ret",
-> +	"far-ret/iret",
-> +	"endbranch",
-> +	"rstorssp",
-> +	"setssbsy",
-> +};
-> +
-> +/*
-> + * When a control protection exception occurs, send a signal to the responsible
-> + * application.  Currently, control protection is only enabled for user mode.
-> + * This exception should not come from kernel mode.
-> + */
-> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> +{
-> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-> +				      DEFAULT_RATELIMIT_BURST);
-> +	struct task_struct *tsk;
-> +
-> +	if (!user_mode(regs)) {
-> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
-> +		die("kernel control protection fault", regs, error_code);
-> +		panic("Machine halted.");
-> +	}
-> +
-> +	cond_local_irq_enable(regs);
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_CET))
-> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
-> +
-> +	tsk = current;
-> +	tsk->thread.error_code = error_code;
-> +	tsk->thread.trap_nr = X86_TRAP_CP;
-> +
-> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-> +	    __ratelimit(&rs)) {
-> +		unsigned int max_err;
-> +		unsigned long ssp;
-> +
-> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
-> +		if (error_code < 0 || error_code > max_err)
-> +			error_code = 0;
+> > 
+> > For archs without static calls, there's no reason to load the array macro
+> > in the first place, since the iterator function will do it anyway.
+> > 
+> > Change the __DO_TRACE_CALL() macro to do the double call only for  
+> 
+> Do you mean "double call" or "double load and NULL check" ?
 
-Do you want to mask the error_code here before printing its value?
+I was thinking of it as double call, as calling once to the iterator, and
+once again to the functions that are loaded. But sure, because of the
+double load too (and the NULL check is only because of the load ;-)
 
-> +
-> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
-> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
-> +			 tsk->comm, task_pid_nr(tsk),
-> +			 regs->ip, regs->sp, ssp, error_code,
-> +			 control_protection_err[error_code]);
+> 
+> > architectures with static calls, and just call the iterator function
+> > directly for architectures without static calls.
+> > 
+> > [ Tested only on architectures with static calls, will test on those
+> >  without later ]
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---
+> > diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> > index dc1d4c612cc3..966bfa6a861c 100644
+> > --- a/include/linux/tracepoint.h
+> > +++ b/include/linux/tracepoint.h
+> > @@ -152,9 +152,18 @@ static inline struct tracepoint
+> > *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> > #ifdef TRACEPOINTS_ENABLED
+> > 
+> > #ifdef CONFIG_HAVE_STATIC_CALL
+> > -#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
+> > +#define __DO_TRACE_CALL(name, args)					\
+> > +	do {								\
+> > +		struct tracepoint_func *it_func_ptr;			\
+> > +		it_func_ptr =						\
+> > +			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
+> > +		if (it_func_ptr) {					\
+> > +			__data = (it_func_ptr)->data;			\
+> > +			static_call(tp_func_##name)(args);		\
+> > +		}							\
+> > +	} while (0)
+> > #else
+> > -#define __DO_TRACE_CALL(name)	__traceiter_##name
+> > +#define __DO_TRACE_CALL(name, args)	__traceiter_##name(args)  
+> 
+> Also, we may want to comment or annotate the "void *data" argument of
+> __traceiter_##_name() to state that it is unused.
 
-Instead, you could clamp error_code to ARRAY_SIZE(control_protection_err),
-and add another "unknown" to the end of the strings:
+Good point. (Which would have possibly been found in my more extensive
+testing).
 
-	control_protection_err[
-		array_index_nospec(error_code,
-				   ARRAY_SIZE(control_protection_err))]
+Thanks,
 
-Everything else looks good.
+-- Steve
 
-> +		print_vma_addr(KERN_CONT " in ", regs->ip);
-> +		pr_cont("\n");
-> +	}
-> +
-> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
-> +			(void __user *)uprobe_get_trap_addr(regs));
-> +	cond_local_irq_disable(regs);
-> +}
-> +#endif
-> +
->  static bool do_int3(struct pt_regs *regs)
->  {
->  	int res;
-> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> index d2597000407a..1c2ea91284a0 100644
-> --- a/include/uapi/asm-generic/siginfo.h
-> +++ b/include/uapi/asm-generic/siginfo.h
-> @@ -231,7 +231,8 @@ typedef struct siginfo {
->  #define SEGV_ADIPERR	7	/* Precise MCD exception */
->  #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
->  #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
-> -#define NSIGSEGV	9
-> +#define SEGV_CPERR	10	/* Control protection fault */
-> +#define NSIGSEGV	10
->  
->  /*
->   * SIGBUS si_codes
-> -- 
-> 2.21.0
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> > #endif /* CONFIG_HAVE_STATIC_CALL */
+> > 
+> > /*
+> > @@ -168,7 +177,6 @@ static inline struct tracepoint
+> > *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> >  */
+> > #define __DO_TRACE(name, proto, args, cond, rcuidle)			\
+> > 	do {								\
+> > -		struct tracepoint_func *it_func_ptr;			\
+> > 		int __maybe_unused __idx = 0;				\
+> > 		void *__data;						\
+> > 									\
+> > @@ -190,12 +198,7 @@ static inline struct tracepoint
+> > *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> > 			rcu_irq_enter_irqson();				\
+> > 		}							\
+> > 									\
+> > -		it_func_ptr =						\
+> > -			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
+> > -		if (it_func_ptr) {					\
+> > -			__data = (it_func_ptr)->data;			\
+> > -			__DO_TRACE_CALL(name)(args);			\
+> > -		}							\
+> > +		__DO_TRACE_CALL(name, TP_ARGS(args));			\
+> > 									\
+> > 		if (rcuidle) {						\
+> >  			rcu_irq_exit_irqson();				\  
 > 
 
--- 
-Kees Cook
