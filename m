@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178A130ED1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0879230ED21
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhBDHRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S234271AbhBDHRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhBDHRN (ORCPT
+        with ESMTP id S233253AbhBDHRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:17:13 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0348C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:16:33 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id my11so4624788pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:16:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=cYVhrYp+A5wMOttg3oEyP/BIlLuA0pdfVGJLCd/pDd8=;
-        b=EUp83HgeF9+rlhHz+jW7vL091x8VTpq6Mnh/pV1FTfHLRs/yVpl+S5wGtsqXg/jCoK
-         JShHXbi2ziXsootc+5Gx4PCZzZxdwKXu96GamTPLoGyE6P9cOFsR5+uHmQrb1UzXJdd8
-         sIABwGi/0Jsw68pguINhut1N67foxmZc414mJ6sjkefn7icHLuTJYrpYKq6PldkGI4g6
-         Fs7aljRkwplMizGFHDmH8n8aR8ZQrMtodb4Wi8FCERy5LD+B8ddXh/fvRDWn/EPYqgOS
-         6GCm3V6aH+TUwBgVtvLfa3ytDZoKBmbb2DEPhcfsid2iLDM17G3Tx8/shAQZ+h8T7p2B
-         O3ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=cYVhrYp+A5wMOttg3oEyP/BIlLuA0pdfVGJLCd/pDd8=;
-        b=skNH1X/mhZkLZ9poFF+SNbWSrEeO+1CyxCX+e3q2CLLfWJUZYFX+SajKYJYcs3MZxf
-         4+9WUXOUudTwa+0805kzJfl+o+XzgJCfu1nGMIbDG9bBBxJCknpOvRbgG7UYHzQt+CAW
-         /bGvzGMUKFGaEqLDKNHlSbHCkMK+GhQtnP3N99xims7EpbCGgKO3evwPOQ2PCjf9GOjK
-         ZAubX6SeqRbFXEaEOIdPQmCqMujqrrRjCFv4G3oNcDHGzTosiznQAtbzjlvAcjD9pnKJ
-         VM8qtbXB3gQlVdOgGrwxLmC8yqriXOOsf/kuZX68Ff9Apt7wmGN9/PGsZyv2GTwLxwgQ
-         HPjw==
-X-Gm-Message-State: AOAM5336XdKcINXc/3AvArE3u8MK0X8sLbhif9sC7++7vP7LMm4HEXVO
-        u6NcCafnveY5DV+5eHdlUTq/TuKh/wYxPw==
-X-Google-Smtp-Source: ABdhPJw/buOtxTEi7IvWLcHc+HV+sAvshKmgqeVECZb/OTF2xyOBFDVB1BKws0LarZMHQMpB/qX2ZA==
-X-Received: by 2002:a17:90a:fe11:: with SMTP id ck17mr7047170pjb.152.1612422992568;
-        Wed, 03 Feb 2021 23:16:32 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:5cde:5545:a9de:114f])
-        by smtp.gmail.com with ESMTPSA id q12sm4987214pgj.24.2021.02.03.23.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 23:16:30 -0800 (PST)
-Date:   Wed, 3 Feb 2021 23:16:25 -0800
-From:   Benson Leung <bleung@google.com>
-To:     linux-kernel@vger.kernel.org,
-        Prashant Malani <pmalani@chromium.org>,
-        heikki.krogerus@linux.intel.com
-Cc:     Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        bleung@chromium.org
-Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Decouple partner removal
-Message-ID: <161230696071.2129937.11319499145894560712.b4-ty@chromium.org>
+        Thu, 4 Feb 2021 02:17:35 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79C3C0613D6;
+        Wed,  3 Feb 2021 23:16:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QgfWxu4yt82JE/xIZ7oOgqgnaPHBT7dbTPo6JkGjbSA=; b=lwT7az+6ZMRVD6pMMGQeUxcGkz
+        3sALDZXQnzoZAsV22q0sZB+6S/aKedsLuXCbgPrJ755mQQeczFZ3/OkCvIZaNAN1CpijxKmBvg872
+        5+Dzv3/TXvRgYoYNI0fwjsd4wWwnvgiaKGwtH43/d+PMeW2C+pFw4V1KjDNnustdp1/7uD2knEK1p
+        2ZqTmGENdZcvywP7ZnZSFdo+Azf3/Gieg5+M1xCdPooxSra5JG9Qe7BFX4IkCr0LbJeKyz0MJpxrd
+        +rtljPjDSwGZkFQlZuyQQvP7Q0B3B0RBBv9nwpXRaHVzScnSqM6y4b/tUsWT6n88kcKSdYQvEM7nk
+        s5pqCAlg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7Ysg-000W3O-9s; Thu, 04 Feb 2021 07:16:46 +0000
+Date:   Thu, 4 Feb 2021 07:16:46 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210204071646.GA122880@infradead.org>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-4-ben.widawsky@intel.com>
+ <20210202181016.GD3708021@infradead.org>
+ <20210202182418.3wyxnm6rqeoeclu2@intel.com>
+ <20210203171534.GB4104698@infradead.org>
+ <20210203172342.fpn5vm4xj2xwh6fq@intel.com>
+ <CAPcyv4hvFjs=QqmUYqPipuaLoFiZ-dr6qVhqbDupWuKTw3QDkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WmFn4R3DiriAedGH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202224001.3810274-1-pmalani@chromium.org>
+In-Reply-To: <CAPcyv4hvFjs=QqmUYqPipuaLoFiZ-dr6qVhqbDupWuKTw3QDkg@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 03, 2021 at 01:23:31PM -0800, Dan Williams wrote:
+> > I'd prefer to keep the helpers for now as I do find them helpful, and so far
+> > nobody else who has touched the code has complained. If you feel strongly, I
+> > will change it.
+> 
+> After seeing the options, I think I'd prefer to not have to worry what
+> extra magic is happening with cxl_read_mbox_reg32()
+> 
+> cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> 
+> readl(cxlm->mbox_regs + CXLDEV_MB_CAPS_OFFSET);
+> 
+> The latter is both shorter and more idiomatic.
 
---WmFn4R3DiriAedGH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Prashant,
-
-On Tue, 2 Feb 2021 14:40:01 -0800, Prashant Malani wrote:
-> Currently, we return if there is no partner present when
-> !PD_CTRL_RESP_ENABLED_CONNECTED, without proceeding further. This ties
-> partner removal to cable removal, whereas the two should be independent.
->=20
-> Update the check to remove a partner if one was registered, but continue
-> after that instead of returning.
-
-Applied to for-kernelci, thanks!
-
-[1/1] platform/chrome: cros_ec_typec: Decouple partner removal
-      commit: d9f12f9e6c3695c32e681e9d266c4dc1c9016f66
-
-Best regards,
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---WmFn4R3DiriAedGH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBufSAAKCRBzbaomhzOw
-wrfuAP0dXIxw3BVKEWrrnm0wurqn0+9pAnfSuuPe0eI6R6DgiwD+PwrxcLTqegBg
-7dL9pk4TKkuQr+YDh7jD8OZAE7HkOQE=
-=tNYe
------END PGP SIGNATURE-----
-
---WmFn4R3DiriAedGH--
+Same here.  That being said I know some driver maintainers like
+wrappers, my real main irk was the macro magic to generate them.
