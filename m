@@ -2,74 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6442430FE99
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9916A30FE5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhBDUjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:39:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240106AbhBDU2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:28:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6779064DAF;
-        Thu,  4 Feb 2021 20:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612470450;
-        bh=qMu01akOZYpXmGHYUuu1m138FJMW47Beim3uHBhAVhE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KL/28hn+rxPMsO9DRoH3BcTDKtxHZbI/TiRoZ4t+uUQ6UAoT0Ou+Fob+2yCe0443Z
-         vUW4I5B+50F1gTmfdAS2M+S2YFMjLHgOZm23GJQ+9Pa6HhryB1KRUQJJUKu0SuOcLA
-         xvbNjMsDSIawle01MgSJ1zZYRXS1NtZvtcIZwlqiY/aMB8Fx9bxX8er1tG8Q4SzHfL
-         49O8DU2JJoQHim79GQIJvvEH/OPs4wMPWiZO1Wy0T9otOFQ5HFyPSZFq5BnTJmbyV5
-         mo65aTILAPmwiaYLZ1c6p47Vgw24cgsZx/Dccin0A4xm/BxiBU9wbcNQydw2QXqaAX
-         oNuHKURfy2r/Q==
-Date:   Thu, 4 Feb 2021 12:27:29 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Geetha sowjanya <gakula@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <davem@davemloft.net>, <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <jerinj@marvell.com>, <lcherian@marvell.com>
-Subject: Re: [net-next v3 00/14] Add Marvell CN10K support
-Message-ID: <20210204122729.5b1b592a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210204120454.000054d6@intel.com>
-References: <1612437872-51671-1-git-send-email-gakula@marvell.com>
-        <20210204120454.000054d6@intel.com>
+        id S240175AbhBDUaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240117AbhBDU2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:28:16 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCF3C06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:27:36 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id x9so2378179plb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:27:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/KkzilzXEisJddaLgkjR4cjm+2gZx2aIAgczeuG3frI=;
+        b=SQnBGiEH7SyjfxJqdii1BqfZaqzWi1I4ROQ+T9GW6ajXhOT3uDA3RK4TvfKWUbUWhy
+         MIj0IL32FR9WV3RHADy1VD4Q77Q6mNKUCLqwwws+lNkcfFqSMvCOp0kEeObfoGsW907m
+         zujxwsHELU1cNG7gpww149IJuWidCm5N4ZGL8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/KkzilzXEisJddaLgkjR4cjm+2gZx2aIAgczeuG3frI=;
+        b=ij9NG8xBq1QdXSzjEUQRGRVNtfWfKtDsxfCCYlcgGXTJLd2EBRqPfMSgdq6486jACV
+         LzuGqRWpd4u3hWfFxE6RS5v9FR+xYpLTCm7p2gqRMyeykgtq83LA9ZJwlwzEeRbwvXNd
+         WC1gRdsoMGGbThtLAu/lMHJpcWvNM7EP/ToyQFEztsyWzIo+19RkNnZnlr7vDHciYr5z
+         MloMfQPVsw/d0NBlQS38koWNXZ6U0VnhD0tmC71gqag50LoCt7LRDuCRMMTj4fQybqqx
+         TTYzk0mq89pEql8vImvbA6Wfuzfg7QA0Um91EBb+RZa2K6PlxQ3N+9C0r7Z4Fm0Vzugv
+         LTsA==
+X-Gm-Message-State: AOAM5335wWGkj+RRg/K5Uaj/+zFs5rBVT6Mc2jjKyqGxUF2yIdm5KhxD
+        6odGL+eITjD/7nZaapK0fX5C5g==
+X-Google-Smtp-Source: ABdhPJyj8hnNU5LEzeZQ1jHOEtqoFt0d6CyhuA9vknTPXqFjOzzNcOwB9CQKOQdvjeVU2Ogq22aWeA==
+X-Received: by 2002:a17:90a:c902:: with SMTP id v2mr720901pjt.144.1612470456119;
+        Thu, 04 Feb 2021 12:27:36 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q2sm6995012pfg.190.2021.02.04.12.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 12:27:34 -0800 (PST)
+Date:   Thu, 4 Feb 2021 12:27:34 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v19 18/25] mm: Update can_follow_write_pte() for shadow
+ stack
+Message-ID: <202102041226.D3E2B437@keescook>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-19-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203225547.32221-19-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 12:04:54 -0800 Jesse Brandeburg wrote:
-> Geetha sowjanya wrote:
+On Wed, Feb 03, 2021 at 02:55:40PM -0800, Yu-cheng Yu wrote:
+> Can_follow_write_pte() ensures a read-only page is COWed by checking the
+> FOLL_COW flag, and uses pte_dirty() to validate the flag is still valid.
 > 
-> > v2-v3
-> > Reposting as a single thread.  
+> Like a writable data page, a shadow stack page is writable, and becomes
+> read-only during copy-on-write, but it is always dirty.  Thus, in the
+> can_follow_write_pte() check, it belongs to the writable page case and
+> should be excluded from the read-only page pte_dirty() check.  Apply
+> the same changes to can_follow_write_pmd().
+
+Does this need the vma passed down? Should it just pass vm_flags? I
+suppose it doesn't really matter, though.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
 > 
-> FYI, it didn't work, suggest you try adding the git-send-email option
-> (via git-config)
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> ---
+>  mm/gup.c         | 8 +++++---
+>  mm/huge_memory.c | 8 +++++---
+>  2 files changed, 10 insertions(+), 6 deletions(-)
 > 
-> sendemail.thread=true
-> sendemail.chainreplyto=false
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e4c224cd9661..66ab67626f57 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -357,10 +357,12 @@ static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
+>   * FOLL_FORCE can write to even unwritable pte's, but only
+>   * after we've gone through a COW cycle and they are dirty.
+>   */
+> -static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
+> +static inline bool can_follow_write_pte(pte_t pte, unsigned int flags,
+> +					struct vm_area_struct *vma)
+>  {
+>  	return pte_write(pte) ||
+> -		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
+> +		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte) &&
+> +				  !arch_shadow_stack_mapping(vma->vm_flags));
+>  }
+>  
+>  static struct page *follow_page_pte(struct vm_area_struct *vma,
+> @@ -403,7 +405,7 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+>  	}
+>  	if ((flags & FOLL_NUMA) && pte_protnone(pte))
+>  		goto no_page;
+> -	if ((flags & FOLL_WRITE) && !can_follow_write_pte(pte, flags)) {
+> +	if ((flags & FOLL_WRITE) && !can_follow_write_pte(pte, flags, vma)) {
+>  		pte_unmap_unlock(ptep, ptl);
+>  		return NULL;
+>  	}
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index bfec65c9308b..eb64e2b56bc9 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -1337,10 +1337,12 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd)
+>   * FOLL_FORCE can write to even unwritable pmd's, but only
+>   * after we've gone through a COW cycle and they are dirty.
+>   */
+> -static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags)
+> +static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags,
+> +					struct vm_area_struct *vma)
+>  {
+>  	return pmd_write(pmd) ||
+> -	       ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd));
+> +	       ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd) &&
+> +				  !arch_shadow_stack_mapping(vma->vm_flags));
+>  }
+>  
+>  struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+> @@ -1353,7 +1355,7 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>  
+>  	assert_spin_locked(pmd_lockptr(mm, pmd));
+>  
+> -	if (flags & FOLL_WRITE && !can_follow_write_pmd(*pmd, flags))
+> +	if (flags & FOLL_WRITE && !can_follow_write_pmd(*pmd, flags, vma))
+>  		goto out;
+>  
+>  	/* Avoid dumping huge zero page */
+> -- 
+> 2.21.0
 > 
-> And you can test locally by using first using git send-email to export
-> to mbox and checking for References and In-Reply-to headers. Then
-> sending for real.
+> 
 
-And looks like there are build issues so you'll get a chance to try
-again :/
-
-Please make sure you don't add any new warnings to the build, with W=1
-C=1 flags. Each patch must build cleanly.
-
-Shooting from the hip something along the lines of:
-
- make allmodconfig
- current=$(make W=1 C=1 | wc -l)
-
- git rebase --exec '[ $current -eq $(make W=1 C=1 | wc -l) ]'
-
-Please do not repost until the tree can build cleanly at every commit
-of the series.
+-- 
+Kees Cook
