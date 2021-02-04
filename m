@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49D030FFBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C030FFC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhBDVwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:52:44 -0500
-Received: from ms.lwn.net ([45.79.88.28]:52624 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230224AbhBDVwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:52:05 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 946201E77;
-        Thu,  4 Feb 2021 21:51:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 946201E77
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1612475479; bh=JKWAHZUEZSPNRnRWcyM2ssLUmsuuTmFbsEXwJlB7SiU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rV3YIRtHR4MuWjipzYKONy79QxyimSKBIdJOHsg4O7oiGeAQ8zGqOiHAQmA9IN2/P
-         G267bkkU7Q7qrvDCEsPZS7P83iy8nPAWfZrpf7U0hmo3+n7c3KRNFXTcAKMv9ZPD+y
-         qiVkyMVTZNY1qqECVhuiFbuZy4Dj5GOuqAuD0cg+mfL8tcE1TVCbfDM6odMi43pKxV
-         ojYcC+qlT12yyo5pPeVQLyVVMCORbhSX4pgn45DIVgLF1Q8U9YOzFhWAqu/FnrqM61
-         ynnQyQos53VN8HZXc2hPC6+PvpBASzI1v7CkIy4LMSpF3zKokZpjNiZXn4uH2NuntU
-         j5zhYAzx4kRSg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Flavio Suligoi <f.suligoi@asem.it>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: Re: [PATCH] docs: thermal: fix spelling mistakes
-In-Reply-To: <20210129132035.16967-1-f.suligoi@asem.it>
-References: <20210129132035.16967-1-f.suligoi@asem.it>
-Date:   Thu, 04 Feb 2021 14:51:19 -0700
-Message-ID: <87wnvnec2w.fsf@meer.lwn.net>
+        id S229823AbhBDVzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhBDVzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:55:15 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08060C0613D6;
+        Thu,  4 Feb 2021 13:54:34 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id u25so6902676lfc.2;
+        Thu, 04 Feb 2021 13:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NAgqYHbywIYs2QshwFgb53FlD6EOq34SaKwHmoFcyVM=;
+        b=lXdPKhc3IDXew+8Sl8q4BmrYbduDfqCk1Mws3R1KsWf0yajkhguDZ7QTNgzRSu6bpF
+         Wu9d4gU2ZYPCxRpnLoszfYEP3lJkNa8NMIwznkV1ncfXvu1oZVqbE8YoolOqzgdSuIvP
+         CHnu2G4Yfp/qIWAdfyNoPEvZnnEazWKWzyo4KbJwVx7YZ2e29fDtCPpylwX31/BPnoDT
+         4eS5dvFtoOQbWKKUHmx1u+IXu0n4ZBwe58e8aZmsh9qyYErQrMlQ4G/g2zLMn3QBO0Gc
+         n/BSHCmNED4sHSAAvRbGYcuXBSUYse6F9+S/pOK9rTd2cFwY9BX3OjqNGmCMZH5ucaBm
+         ZPYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NAgqYHbywIYs2QshwFgb53FlD6EOq34SaKwHmoFcyVM=;
+        b=DUkhdZDRSyTndW+/iJPlEK1RXkDLubV/toj+JBly1UqndB2cMXR/uaLDbqZlmC5yl9
+         xKBxVn2Y/wVwjshiWT7I7Srs+/3aP21CPBFxf83MfzSHHwrw6DmbNEfHvh3qdND6hv9e
+         BMsHWtkhrQ77JQbUYgyZQKIvM6VM0QqI3rjzAsP7BzJ4WRMVfsJ1LlO7AzO8kMSNWKMN
+         chQH1tOc1S1cPk/fdSsK6IMfXADxLDIQAKfAfs7WfNX0zYyRjvKgixFdtx1strcONsbR
+         J85pYHtW1xgUQJmZqqFhDFWzOUg18FHnrIWR68IS5R0QuBdw9oI+9D/4bRIwoHETGvan
+         9RFA==
+X-Gm-Message-State: AOAM531LpMKFFmgv0ll/JZgjivTL5P4n8TmX7r0V7ncKPqQPpx5c70Is
+        rTZF5T6/lM1L1WIUpq2j3t4=
+X-Google-Smtp-Source: ABdhPJwlWUvIhc13/2RbhPaMewunp5RbevdWqUpLZH09DlBVAan2+n6kj6b/WBNtF18AMttZ/4DU1w==
+X-Received: by 2002:a05:6512:4c5:: with SMTP id w5mr753720lfq.92.1612475673375;
+        Thu, 04 Feb 2021 13:54:33 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
+        by smtp.gmail.com with ESMTPSA id u18sm796647ljl.57.2021.02.04.13.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 13:54:32 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] tpm/ppi: Constify static struct attribute_group
+Date:   Thu,  4 Feb 2021 22:54:27 +0100
+Message-Id: <20210204215427.49047-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flavio Suligoi <f.suligoi@asem.it> writes:
+The only usage of ppi_attr_grp is to put its address in an array of
+pointers to const struct attribute_group. Make it const to allow the
+compiler to put it in read-only memory.
 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  Documentation/driver-api/thermal/sysfs-api.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
-> index e7520cb439ac..71da7dc8c0ba 100644
-> --- a/Documentation/driver-api/thermal/sysfs-api.rst
-> +++ b/Documentation/driver-api/thermal/sysfs-api.rst
-> @@ -54,7 +54,7 @@ temperature) and throttle appropriate devices.
->      trips:
->  	the total number of trip points this thermal zone supports.
->      mask:
-> -	Bit string: If 'n'th bit is set, then trip point 'n' is writeable.
-> +	Bit string: If 'n'th bit is set, then trip point 'n' is writable.
->      devdata:
->  	device private data
->      ops:
-> @@ -406,7 +406,7 @@ Thermal cooling device sys I/F, created once it's registered::
->      |---stats/reset:		Writing any value resets the statistics
->      |---stats/time_in_state_ms:	Time (msec) spent in various cooling states
->      |---stats/total_trans:	Total number of times cooling state is changed
-> -    |---stats/trans_table:	Cooing state transition table
-> +    |---stats/trans_table:	Cooling state transition table
->  
->  
->  Then next two dynamic attributes are created/removed in pairs. They represent
-> @@ -779,5 +779,5 @@ emergency poweroff kicks in after the delay has elapsed and shuts down
->  the system.
->  
->  If set to 0 emergency poweroff will not be supported. So a carefully
-> -profiled non-zero positive value is a must for emergerncy poweroff to be
-> +profiled non-zero positive value is a must for emergency poweroff to be
->  triggered.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/char/tpm/tpm_ppi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.
+diff --git a/drivers/char/tpm/tpm_ppi.c b/drivers/char/tpm/tpm_ppi.c
+index b2dab941cb7f..40018a73b3cb 100644
+--- a/drivers/char/tpm/tpm_ppi.c
++++ b/drivers/char/tpm/tpm_ppi.c
+@@ -358,7 +358,7 @@ static struct attribute *ppi_attrs[] = {
+ 	&dev_attr_tcg_operations.attr,
+ 	&dev_attr_vs_operations.attr, NULL,
+ };
+-static struct attribute_group ppi_attr_grp = {
++static const struct attribute_group ppi_attr_grp = {
+ 	.name = "ppi",
+ 	.attrs = ppi_attrs
+ };
+-- 
+2.30.0
 
-jon
