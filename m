@@ -2,122 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC45830F639
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990D330F63B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237298AbhBDP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S237215AbhBDP05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:26:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237258AbhBDPWL (ORCPT
+        with ESMTP id S237239AbhBDPYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:22:11 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118B3C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:21:28 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id c4so3931236wru.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:21:27 -0800 (PST)
+        Thu, 4 Feb 2021 10:24:20 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1FFC061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:23:40 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id q2so1486961eds.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:23:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vA/eQ2S58koKaVheuxAPbUo6pEs5SmDGNUESF9JP+0A=;
-        b=VYti8uRm2dyw6UwX8aXW2oV2DL1UgHJ4rEUzb5RzcktTeGTufd/d6F/gqYPL+qhzzB
-         RbultCZ8rdkXrfv4yvMuSztOX25uVckOuykH+d7JKM2/E0RpttgrVpR7SmHbJbdaeBJ1
-         j7qGj70tVfcriTnXNOaSQrt+1q1Qrvnt6P8UBoZsGxK8S4ub/SJ7y8Mo39VuSUfceYnA
-         k6jIo7seCmvdOutxrRx0GGY9pwUF3U2ToL1Yfyfl2WWbZ3lSuBhls/u4duYxDl2al/Kt
-         hgubF2KfhfiQEVHRSCSUHhDHkP4mE/UguAVhkpWdzOLG1kicazqjfQPDUNSyqYIRBZ+c
-         cHmQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zEhxV9P2S1PvM6vEfxJN1WEpwz1WJWS0uG/glB9T2Jg=;
+        b=f8TCB65kOI/5YD4eYt2VzD1Wu2rvsxhlN8adiVviJVV4DA3Wl7/uHJ9CE575xk9utB
+         e6qh2Xgr7I53+Pacq4xLIECgNw/4wlm0i7bomuGKvWRbuKpt9myaXRmoMDNJmJrEiYC/
+         aSqgHfRGTgJ5ZdDcw3kflrqi+7tysmdWl9XC6RqMv9FTm4OdAGl5aMqf4cly/vuLcLgC
+         3nS+4V7vHsEWK0jeD1ISELKCGy+JAcZSrTPgupHHL1No+JZkz2nQueGJevCira8IouP2
+         KMxixMQIcqAwBkUg8LVD65bZtqvdWLcfPW5ipl9UPvJrc25Ux1fuacSJxpHfjpDD1+5o
+         MTEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vA/eQ2S58koKaVheuxAPbUo6pEs5SmDGNUESF9JP+0A=;
-        b=GfNOfN06KYqjleTapQ2aVeV94VYk/SLmhaUXJ4fTnWbWBvvYOYQ9bQLoirZuHusxQi
-         dROO7wu5o++pa9dFbPpz6LYakH3CJyF30+N3r9AGB3Um8+qO2jhT9kpdCL4ejzXVd7HM
-         bAP4MsS0n6masFlEKiGgIA9AG3rEP+f/kqgyPjueh37dP+dCm4mrIYH6iLKaJ5+4w8pb
-         l38wz3lp3pHHF4ulU3Wt6V33UF1JfkborTmgwTRXbqLl4gq7O+FW8jrlPg1XI755g+N0
-         Eoq6BxPZNzcz4+DFckCjtBC3jJZ84ttjqFrF2xiFy7ZYzIbe6b8Q9jMIGDWYAjzc6Dm/
-         qMRQ==
-X-Gm-Message-State: AOAM531f9Dvv7P+hIUdOmQvD9FjgLvYfi6U3hcHWr8Z6S0TalLfZ5fzm
-        s5cr7/EfnrINMHSuZWNcIQsJdg==
-X-Google-Smtp-Source: ABdhPJy0TbSsLuS/p2WzRPai8cnyw5jXXrUIeWK7iACJ/7tWSzo8KmbSSE4PPpWjajdKad9sJhaTuA==
-X-Received: by 2002:adf:ea51:: with SMTP id j17mr10448625wrn.382.1612452086502;
-        Thu, 04 Feb 2021 07:21:26 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id c18sm19955797wmk.0.2021.02.04.07.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 07:21:25 -0800 (PST)
-Date:   Thu, 4 Feb 2021 15:21:24 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
- with WM5102 codec
-Message-ID: <20210204152124.GO2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
- <20210204105748.GD2789116@dell>
- <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
- <20210204124335.GA4288@sirena.org.uk>
- <20210204134606.GH2789116@dell>
- <20210204150904.GD4288@sirena.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zEhxV9P2S1PvM6vEfxJN1WEpwz1WJWS0uG/glB9T2Jg=;
+        b=JHLGnOsalif4xrcuFpntbpOR/J8LEaon9II0gIbqitItmHx/S9P4rftDXZxHRYyxIA
+         zXzkwDzYRw5bqYn0gDKsyS4cx01jcZE61+tim+5yk4OKuDPs36PCgN0yUI25X5Cpw3jV
+         RioqzY4JIUeDJhBF9F2fENN5snuJsAxu8JAh94VVimTUeeO88vaTLBx5Hx1MqAyJDzE4
+         4rjnqgFrSPvYXxFtLjzP2uwCpREZa5G9NbeF6nt+LMW7ke70jeiydYoVaYTUTSw1UZ7O
+         aI8bZzo4bAw0mY032Pm6ndWubtEtwIDuX6hcLzP0tXN1kMubvpMslG1wc3OOYwC8MAGZ
+         Jjdg==
+X-Gm-Message-State: AOAM5325yMTPiAA/DRj27ckg5qbiZMwLkQDJNWCVQO6TjYE5v3NBqQbP
+        chNodir1WDhnH4YyeQSisBGE3ouv+4P+O6GENrr5Gw==
+X-Google-Smtp-Source: ABdhPJyUmQPsLbf5BWKf5fk9Y5JfnVPXqyhY/9QKj8WdKnBuqLGTetkIY8rtIz18JSsEieS+eamybo+g83gzcFyKHi0=
+X-Received: by 2002:aa7:cd0a:: with SMTP id b10mr8283776edw.153.1612452219646;
+ Thu, 04 Feb 2021 07:23:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210204150904.GD4288@sirena.org.uk>
+References: <20210127172706.617195-1-pasha.tatashin@soleen.com>
+ <a8a72826-0a27-de9b-bfb7-be8286cd61fe@arm.com> <CA+CK2bBSJaL9Hn_LBy78ccaCt7=r9cSaEqUVemRVmKg6cwpLnQ@mail.gmail.com>
+ <871rdwocwh.fsf@x220.int.ebiederm.org>
+In-Reply-To: <871rdwocwh.fsf@x220.int.ebiederm.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 4 Feb 2021 10:23:03 -0500
+Message-ID: <CA+CK2bD9NQ=waaoi4=Ub9o9uKWaAs_ZO8LEwxB2XFhacRhnbOQ@mail.gmail.com>
+Subject: Re: [PATCH v11 0/6] arm64: MMU enabled kexec relocation
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     James Morse <james.morse@arm.com>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Feb 2021, Mark Brown wrote:
+> > I understand that having an extra set of page tables could potentially
+> > waste memory, especially if VAs are sparse, but in this case we use
+> > page tables exclusively for contiguous VA space (copy [src, src +
+> > size]). Therefore, the extra memory usage is tiny. The ratio for
+> > kernels with  4K page_size is (size of relocated memory) / 512.  A
+> > normal initrd + kernel is usually under 64M, an extra space which
+> > means ~128K for the page table. Even with a huge relocation, where
+> > initrd is ~512M the extra memory usage in the worst case is just ~1M.
+> > I really doubt we will have any problem from users because of such
+> > small overhead in comparison to the total kexec-load size.
 
-> On Thu, Feb 04, 2021 at 01:46:06PM +0000, Lee Jones wrote:
-> > On Thu, 04 Feb 2021, Mark Brown wrote:
-> 
-> > > The usual pattern here is that the MFD patches get merged and then I
-> > > pull a shared branch in for any dependencies - at this point the series
-> > > is now on the backlog of serieses where I'm waiting for the MFD to sort
-> > > itself out before I really look at it again.
-> 
-> > I tend to push patches awaiting Acks to the back of the queue.
-> 
-> > Stalemate.
-> 
-> I'm only going to ack things if I expect to see them applied via another
-> tree, that's generally what an ack means from a maintainer.  Especially
-> with ASoC where we keep on having subsystem wide changes quite often I'm
-> not likely to do that for things like new drivers unless it's very clear
-> what the timelines are.
-> 
-> It would be enormously helpful to get the bits of the core MFDs that
-> create dependencies committed while the rest of the series is still in
-> process, as well as allowing things to be applied it also helps with
-> knowing if the dependencies are stable.
+Hi Eric,
 
-The default point-of-view is; if a patch was submitted as part of a
-set, it's likely that it makes the most sense to merge it as a set.
+>
+> Foolish question.
 
-Very often sets will have inter-dependencies (usually headers) which
-would otherwise require the base patches to be applied (perhaps the
-MFD core and the headers) in one release, followed by the accompanying
-child device changes during a subsequent release.  This doesn't scale
-well and puts the contributor in an unfair position.
+Thank you for your e-mail, you gave some interesting insights.
 
-This is how we usually work together.  Why is ASoC so different?
+>
+> Does arm64 have something like 2M pages that it can use for the
+> linear map?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yes, with 4K pages arm64 as well has 2M pages, but arm64 also has a
+choice of 16K and 64K and second level pages are bigger there.
+
+> On x86_64 we always generate page tables, because they are necessary to
+> be in 64bit mode.  As I recall on x86_64 we always use 2M pages which
+> means for each 4K of page tables we map 1GiB of memory.   Which is very
+> tiny.
+>
+> If you do as well as x86_64 for arm64 I suspect that will be good enough
+> for people to not claim regression.
+>
+> Would a variation on the x86_64 implementation that allocates page
+> tables work for arm64?
+...
+>
+> As long as the page table provided is a linear mapping of physical
+> memory (aka it looks like paging is disabled).  The the code that
+> relocates memory should be pretty much the same.
+>
+> My experience with other architectures suggests only a couple of
+> instructions need to be different to deal with a MMU being enabled.
+
+I think what you are proposing is similar to what James proposed. Yes,
+for a linear map relocation should be pretty much the same as we do
+relocation as with MMU disabled.
+
+Linear map still uses memory, because page tables must be outside of
+destination addresses of segments of the next kernel. Therefore, we
+must allocate a page table for the linear map. It might be a little
+smaller, but in reality the difference is small with 4K pages, and
+insignificant with 64K pages. The benefit of my approach is that the
+assembly copy loop is simpler, and allows hardware prefetching to
+work.
+
+The regular relocation loop works like this:
+
+for (entry = head; !(entry & IND_DONE); entry = *ptr++) {
+        addr = __va(entry & PAGE_MASK);
+
+        switch (entry & IND_FLAGS) {
+        case IND_DESTINATION:
+                dest = addr;
+                break;
+        case IND_INDIRECTION:
+                ptr = addr;
+                break;
+        case IND_SOURCE:
+                copy_page(dest, addr);
+                dest += PAGE_SIZE;
+        }
+}
+
+The entry for the next relocation page has to be always fetched, and
+therefore prefetching cannot help with the actual loop.
+
+In comparison, the loop that I am proposing is like this:
+
+for (addr = head; addr < end; addr += PAGE_SIZE, dst += PAGE_SIZE)
+        copy_page(dest, addr);
+
+Here is assembly code for my loop:
+
+1: copy_page x1, x2, x3, x4, x5, x6, x7, x8, x9, x10
+    sub x11, x11, #PAGE_SIZE
+    cbnz x11, 1b
+
+That said, if James and you agree that linear map is the way to go
+forward, I am OK with that as well, as it is still much better than
+having no caching at all.
+
+Thank you,
+Pasha
