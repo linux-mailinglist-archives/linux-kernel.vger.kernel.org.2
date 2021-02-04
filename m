@@ -2,171 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC8730F9CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095F330FA19
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhBDRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238592AbhBDRb0 (ORCPT
+        id S237125AbhBDRqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:46:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238572AbhBDRaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:31:26 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF378C061356;
-        Thu,  4 Feb 2021 09:29:21 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id f1so5749096lfu.3;
-        Thu, 04 Feb 2021 09:29:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X1ahJvFsrZks1Lk0ripDXnB6weXUyAGbfZ45blD5PTU=;
-        b=RSpK0Teg2yPbyx+tN32lHdP56HoEVGFGksT+JkghM2BilhAM++ndPSiHehfezfx0vv
-         2usPaDOoocqRjyGUkmvCzcEjiTOnJ2PIaLjJOc5JFg5xEG5bXNPJN0F0VhbqgEjH47jN
-         p4Dk8zw7m3i1JeiIVok9xhDnXN5EfMus1K9zEGqO1LCYAF1uYpHYDTl+HaMoKtVH4rVa
-         5I3b+VYivjxIgN7ELRhDJjjgz6Tfosbc/n7fZ6IeoDnX+lFZ0AYzwojGYqztUBUc33c2
-         Wi/aYf0LBhH1zzgtE7od4YXuk3tNwtoeK3gDzNkKvZs5U/GFOTgTWZFsccOJVHz+HqgM
-         nF9w==
+        Thu, 4 Feb 2021 12:30:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612459765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gFpHt7ahtiWyI8hSPQbU/qGuLyn4UFc9M7zanW3r47A=;
+        b=U3ERHe76RucETXQzAIqDO0iroIefYh+apdH/Rq++rzvyV7ZLGNYGUI8RrShc83Uj/BUYUr
+        kk9tcG7ZRkzhQeGwMER/tqWrYl/9I2xj9R/A2w4h08O/ibxSHpPh+AVSJfSQy30oF5SwzM
+        9xqetVRT4z+onF+3lrzY8TX6O8YSKdk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-eDWqDoaLMxChig-PECTsyw-1; Thu, 04 Feb 2021 12:29:21 -0500
+X-MC-Unique: eDWqDoaLMxChig-PECTsyw-1
+Received: by mail-ed1-f71.google.com with SMTP id f4so3432126eds.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:29:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X1ahJvFsrZks1Lk0ripDXnB6weXUyAGbfZ45blD5PTU=;
-        b=DdtRT9pajkg5Yl5jbwWRf3IjTnQNn9wxnlA+/4QJZhnym6lBI0ICIAbg8LRqZTL2HC
-         KfGWTJbUeXsuTzlijuFQITrjoRjUlbARErFPwi6KiiaTdp4NdzvyUbBkLDFkpplMLUeO
-         nk7ZGhSB2hpvnnE6zMGFgyzL742GuqMVgvfaCnqXKl04Ddwvo7p7mQ7/mlqIke1qZqAB
-         DPZ1VxmICXXdth2kzzAGjdTIglNVpG/KjOG3+dd+T1n9bz7RhHNkWWhJ40UDM0mWohVl
-         t7pVOwoZNuYcq27laFBCpmBZ7pss28iSpYemGBabt6G7gFKcRc1Ou2TI/rJGymsUwhm6
-         MY1w==
-X-Gm-Message-State: AOAM533JiKyq3kO7K5xhra2oCA+AueBaV2lMDQFx5G+c7PRkey3uhNWq
-        BBEK1CjmZQ4T2pcTB59mdtiJc6W0zGgPhXf3buM=
-X-Google-Smtp-Source: ABdhPJwT/uirdmDDpof36RQ4WHOo7qc+S6n5DG40Du1EdYVt6nWCd+lES33v9igd/hfr1ZQ/k/YbFx5uatDCgLJ9eOA=
-X-Received: by 2002:a19:23c5:: with SMTP id j188mr265462lfj.430.1612459759029;
- Thu, 04 Feb 2021 09:29:19 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gFpHt7ahtiWyI8hSPQbU/qGuLyn4UFc9M7zanW3r47A=;
+        b=NMO/mcVQLzdNGutreP5u6asfLONYgmWdrqIUNgpGdSPTKs4Rc+ebsiElGnqx+o3nr4
+         7mwHsjt0wA6xEB5sabLF6T6r04HunHHUygmce8+eCdbJkdv9QHzL2oj1oDJccliHT1Ew
+         qhd3a8+3btDwcqMSQHNhlq7wZt2Jtx7WbN28M3laqo1aOSD6p47hRD2x9XglzfzqjMiP
+         8iuicPRkjoVrAh9L9OKUdOFCOhFllui+iV92+mATOPrE1FtelwGNfbLMN9vCjAYEm4sN
+         Z1lmxPpUsxTZB97cYOdJqx9Zd1iUhmWA542/r2FL27h+gRP/FoSTMRzo4CT9FEQkMtKl
+         Vl4w==
+X-Gm-Message-State: AOAM532T4NB7o9Zt8G63Uun+ZtQb7UqGN5jRWwTFvU3x2i/EbxffHa9o
+        5GJBgIXkUyTK75X7s+TkL8UbRvTZAgM1JcH+3bsrDzmXXtHksnDSTt5W+famxgElsa2jsLZMOsK
+        H7Cv24qJzexvcS0m1G7+Vz8cG
+X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr61170edt.160.1612459760716;
+        Thu, 04 Feb 2021 09:29:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJztaTv2pVAyoYOPJ3kepgWu3iCSAzPutECTPP0Bi8bIM7i7j9sdJUrZNJqP2AyGVilMDYxYkw==
+X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr61158edt.160.1612459760554;
+        Thu, 04 Feb 2021 09:29:20 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y8sm2728387eje.37.2021.02.04.09.29.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 09:29:19 -0800 (PST)
+Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
+ dispatch
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, jmattson@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yu.c.zhang@linux.intel.com
+References: <20210203113421.5759-1-weijiang.yang@intel.com>
+ <20210203113421.5759-5-weijiang.yang@intel.com> <YBsZwvwhshw+s7yQ@google.com>
+ <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
+ <YBwj78dE5iGZOLed@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <aaf2c197-6122-3214-a0f1-d9a763c12439@redhat.com>
+Date:   Thu, 4 Feb 2021 18:29:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-12-shy828301@gmail.com>
- <8c11f94a-bd1a-3311-2160-0f2c83994a53@virtuozzo.com>
-In-Reply-To: <8c11f94a-bd1a-3311-2160-0f2c83994a53@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 4 Feb 2021 09:29:06 -0800
-Message-ID: <CAHbLzkp6du=4rRcy2hxQrWo_2GX9QUcZuAyFqe_hiimDr6axyQ@mail.gmail.com>
-Subject: Re: [v6 PATCH 11/11] mm: vmscan: shrink deferred objects proportional
- to priority
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBwj78dE5iGZOLed@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:23 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 03.02.2021 20:20, Yang Shi wrote:
-> > The number of deferred objects might get windup to an absurd number, and it
-> > results in clamp of slab objects.  It is undesirable for sustaining workingset.
-> >
-> > So shrink deferred objects proportional to priority and cap nr_deferred to twice
-> > of cache items.
-> >
-> > The idea is borrowed fron Dave Chinner's patch:
-> > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
-> >
-> > Tested with kernel build and vfs metadata heavy workload in our production
-> > environment, no regression is spotted so far.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
->
-> For some time I was away from this do_shrink_slab() magic formulas and recent changes,
-> so I hope somebody else, who is being in touch with this, can review.
+On 04/02/21 17:42, Sean Christopherson wrote:
+> On Thu, Feb 04, 2021, Paolo Bonzini wrote:
+>> On 03/02/21 22:46, Sean Christopherson wrote:
+>>>
+>>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>>> index dbca1687ae8e..0b6dab6915a3 100644
+>>> --- a/arch/x86/kvm/vmx/nested.c
+>>> +++ b/arch/x86/kvm/vmx/nested.c
+>>> @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
+>>>                  /* VM-entry interruption-info field: deliver error code */
+>>>                  should_have_error_code =
+>>>                          intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
+>>> -                       x86_exception_has_error_code(vector);
+>>> +                       x86_exception_has_error_code(vcpu, vector);
+>>>                  if (CC(has_error_code != should_have_error_code))
+>>>                          return -EINVAL;
+>>>
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index 28fea7ff7a86..0288d6a364bd 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
+>>>   #define EXCPT_CONTRIBUTORY     1
+>>>   #define EXCPT_PF               2
+>>>
+>>> -static int exception_class(int vector)
+>>> +static int exception_class(struct kvm_vcpu *vcpu, int vector)
+>>>   {
+>>>          switch (vector) {
+>>>          case PF_VECTOR:
+>>>                  return EXCPT_PF;
+>>> +       case CP_VECTOR:
+>>> +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
+>>> +                       return EXCPT_BENIGN;
+>>> +               return EXCPT_CONTRIBUTORY;
+>>>          case DE_VECTOR:
+>>>          case TS_VECTOR:
+>>>          case NP_VECTOR:
+>>>          case SS_VECTOR:
+>>>          case GP_VECTOR:
+>>> -       case CP_VECTOR:
+> 
+> This removal got lost when squasing.
+> 
+> arch/x86/kvm/x86.c: In function ‘exception_class’:
+> arch/x86/kvm/x86.c:455:2: error: duplicate case value
+>    455 |  case CP_VECTOR:
+>        |  ^~~~
+> arch/x86/kvm/x86.c:446:2: note: previously used here
+>    446 |  case CP_VECTOR:
+>        |  ^~~~
 
-Yes, I agree it is intimidating. The patch has been tested in our test
-and production environment for a couple of months, so far no
-regression is spotted. Of course it doesn't mean it will not incur
-regression for other workloads. My plan is to leave it stay in -mm
-then linux-next for a while for a broader test. The first 10 patches
-could go to Linus's tree separately.
+Well, it shows that I haven't even started including those 
+unlikely-for-5.12 patches (CET and #DB bus lock) in my builds, since 
+today I was focusing on getting a kvm/next push done.
 
->
-> > ---
-> >  mm/vmscan.c | 40 +++++-----------------------------------
-> >  1 file changed, 5 insertions(+), 35 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 574d920c4cab..d0a86170854b 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -649,7 +649,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >        */
-> >       nr = count_nr_deferred(shrinker, shrinkctl);
-> >
-> > -     total_scan = nr;
-> >       if (shrinker->seeks) {
-> >               delta = freeable >> priority;
-> >               delta *= 4;
-> > @@ -663,37 +662,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >               delta = freeable / 2;
-> >       }
-> >
-> > +     total_scan = nr >> priority;
-> >       total_scan += delta;
-> > -     if (total_scan < 0) {
-> > -             pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
-> > -                    shrinker->scan_objects, total_scan);
-> > -             total_scan = freeable;
-> > -             next_deferred = nr;
-> > -     } else
-> > -             next_deferred = total_scan;
-> > -
-> > -     /*
-> > -      * We need to avoid excessive windup on filesystem shrinkers
-> > -      * due to large numbers of GFP_NOFS allocations causing the
-> > -      * shrinkers to return -1 all the time. This results in a large
-> > -      * nr being built up so when a shrink that can do some work
-> > -      * comes along it empties the entire cache due to nr >>>
-> > -      * freeable. This is bad for sustaining a working set in
-> > -      * memory.
-> > -      *
-> > -      * Hence only allow the shrinker to scan the entire cache when
-> > -      * a large delta change is calculated directly.
-> > -      */
-> > -     if (delta < freeable / 4)
-> > -             total_scan = min(total_scan, freeable / 2);
-> > -
-> > -     /*
-> > -      * Avoid risking looping forever due to too large nr value:
-> > -      * never try to free more than twice the estimate number of
-> > -      * freeable entries.
-> > -      */
-> > -     if (total_scan > freeable * 2)
-> > -             total_scan = freeable * 2;
-> > +     total_scan = min(total_scan, (2 * freeable));
-> >
-> >       trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
-> >                                  freeable, delta, total_scan, priority);
-> > @@ -732,10 +703,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
-> >               cond_resched();
-> >       }
-> >
-> > -     if (next_deferred >= scanned)
-> > -             next_deferred -= scanned;
-> > -     else
-> > -             next_deferred = 0;
-> > +     next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
-> > +     next_deferred = min(next_deferred, (2 * freeable));
-> > +
-> >       /*
-> >        * move the unused scan count back into the shrinker in a
-> >        * manner that handles concurrent updates.
->
-> Thanks
->
->
+I'll probably push all those to kvm/intel-queue and remove them from 
+everyone's view, for now.
+
+Paolo
+
