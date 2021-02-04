@@ -2,120 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAE330FBFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685A330FBE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239475AbhBDSwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239316AbhBDSqI (ORCPT
+        id S239387AbhBDSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:48:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52766 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239320AbhBDSqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:46:08 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069A7C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:45:28 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 190so4038014wmz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:45:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PDlKe0WbpqBDHIpCDDh4FugA9Yl2NTww4rbLOTGr+nM=;
-        b=BSD24lcMJFm1yoPHDL+vPC2t6eYWXJl+gb63Lc2kEu4Y6EX8foAiW4INgUcC7527BK
-         is+2hBSUdsPg0+Z3aHdGn8s4rSjiYJZI/Wed+PMMBRS5JJPUJEcRXT6pfG8B2lPQ4COf
-         jC+i/6A1QM62BytlMc5wKaK52uyyRjCdedByQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PDlKe0WbpqBDHIpCDDh4FugA9Yl2NTww4rbLOTGr+nM=;
-        b=KYgQSn8HArPqzodh43R452eAkX7YVfqu/jDfszvi6CPl4LgT3RBW2+szLiTZxtnqno
-         OeYzfXYjQcM/vq/r3PensxYElIu9ZfxnURJUt/+2FBZb5s9k/6vqBwbbFQha3j2CJ3aY
-         w8xrTIFn2sIPlYb+TOOsFlXFx5OC4R+T6Kf+XiLSAuNM96rt17Pr0lJEsWWz9Me/aTK4
-         VRUDfO9XYqMqEiBRmW426LDMSVtJ7ixDRzUk+h6QK60m+/9maBraJQ0SiQCrk/taJM9Y
-         e2571IurEPv4ismiivRV1J/YBDvBuB1iXBf3bB4JjclvEiN6TpRQLQdJ85/FIba09DRS
-         bXqg==
-X-Gm-Message-State: AOAM5324eXBZNAQ5TIZIIq44mmgh9P4WAgOPmB4iYhCfAmumHnPTYaA2
-        aKVrESVF0d/IDzV04fmGwL2VhYiH+n6S5J5c
-X-Google-Smtp-Source: ABdhPJwr8sCr/vTIsvxni8hp5KegeEeUyEeymi2FitAM/6CHsPHduLd2lAH04rBfHoBvmYrzEYKENw==
-X-Received: by 2002:a1c:105:: with SMTP id 5mr469215wmb.89.1612464326728;
-        Thu, 04 Feb 2021 10:45:26 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m10sm9322997wro.7.2021.02.04.10.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 10:45:26 -0800 (PST)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH] x86/sgx: Drop racy follow_pfn check
-Date:   Thu,  4 Feb 2021 19:45:19 +0100
-Message-Id: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.30.0
+        Thu, 4 Feb 2021 13:46:38 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114IOeBJ009789;
+        Thu, 4 Feb 2021 10:45:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=n01RPg3dbG9s+6rokXNj955+ScFUZdwv9Sh/7kue/PI=;
+ b=htbSuhbKE2hY+UliGcsbu4VpxM2d4Uj26mLnvG/mSEobX0D+4qJysUpAJb0nrMl6RGnk
+ adRjhOQ60kG0qVmS++oJErTKpm6MUv4xfRhaHxHguEBqz6Y47n6E5Ey7V+HbvqwLPSmB
+ C5M2P8xp62myRY8Gc1ZoUgrJcGgOlXxUiMg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36fcs64h64-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 04 Feb 2021 10:45:26 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 4 Feb 2021 10:45:25 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dM6Se5Sv/6MSR1xjgBts8S/dZwBkaGMPM299FVuZLRkqHZkxsUAZ0d2Hh+uiiru086+DCgIA1SxXgQr/s053R+gAC7hkRz7c1GMbTzAEdAANmHzz9SIuhSw/c70ovAhprteT9/rQNGwDUYiqvNiDIECSosCEGNbo9h69+y7pj/bvY6Q8hXvxk4Wpr+OD/tVescgCTOnsk0xOZGaer4yRqmYz9aDcLzfWGnHjk/ywXiFt1vh8To0jnm6zVodNB4fnjRlP/RSP5/q1cb1J9/bNpG2c+Z/RhbB5iRyjy/GpbrNG4dav0FOIVLGgHKU73942Eo9f/HhYiAiyAnPpJU6rDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n01RPg3dbG9s+6rokXNj955+ScFUZdwv9Sh/7kue/PI=;
+ b=QANrbBVQKiyYaoepM8vAnBOQa6Mk8HoMQHYPUj/K+OdYyKn3xMe3TBQuyvd0KcG1arQ/Ef0EjeoCju1dZA2iNES/+xA1xCOCYwn5X3IoUXqbISF17yy/sKkQzRN98sQiG23pi3vx+Dv1SdRQkKqX2qtn68Ll1WcVpFzRMREX0djmKBOu01cHka6lHecNJOM21nsEdNyxg0pK6qJdlAOz4ZZw2TXCVzapOZuyiIkcI1xr6rgOy8eq0y3nhOB5WzuT/Ckja3g+xUDzk/vH1lILjOAgVeRWu3mkmuCkNNgDmu16B9ySM7FwCsgLTU5emY9AKm7J0YD9x/UOFuN7tcDFVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n01RPg3dbG9s+6rokXNj955+ScFUZdwv9Sh/7kue/PI=;
+ b=NZLctum1uviEgeWh41yirPqslx4TYb6qPx2dKoXp3w/Qf3bxj2a6vUtiLPmvzHVBmsMLhI2kKi6fhNMQk+6w0JIuiOYEZvRrO6szSd478OWjz/bRVbLRFbKB65mK1vnP9QVfB1cNqMup6zbF6QYKjChPPbbhMczAACoZRJZPlCg=
+Authentication-Results: cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by SJ0PR15MB4187.namprd15.prod.outlook.com (2603:10b6:a03:2e4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Thu, 4 Feb
+ 2021 18:45:24 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
+ 18:45:24 +0000
+Date:   Thu, 4 Feb 2021 10:45:20 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
+Message-ID: <20210204184520.GC1837780@carbon.DHCP.thefacebook.com>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-7-hannes@cmpxchg.org>
+ <20210203014726.GE1812008@carbon.dhcp.thefacebook.com>
+ <YBwgOHL8dTjJpnKU@cmpxchg.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBwgOHL8dTjJpnKU@cmpxchg.org>
+X-Originating-IP: [2620:10d:c090:400::5:b3b1]
+X-ClientProxiedBy: MWHPR01CA0030.prod.exchangelabs.com (2603:10b6:300:101::16)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:b3b1) by MWHPR01CA0030.prod.exchangelabs.com (2603:10b6:300:101::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Thu, 4 Feb 2021 18:45:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 94ee9d0d-3577-41ff-eb99-08d8c93d082c
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4187:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB418739A01911DBA806A44A20BEB39@SJ0PR15MB4187.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IxN11fBDeBQAxeqC1DeStx8Pi/luP/OlbJbWTEdVvEQzRZBINdOpLYSpIuspXEH/bw+ltIEF+upojU5hj97aSx4X0CtQYIIXvzGjxLQ/C+t/uFI0Jd+3Ug2Y+L1JzFWjERdFePN6I3F72lUsM6wdrXYDIuwcgCX+VdqtOUuaVaUrKz03ebGTFT0Ge6HUl9QHMKa7raLuTMUG2Ay7+usCVo0+ZjHOz0/tLopfmqLwnP6Fy37RUAKsxoKqx/PlpEOU8yBgUqtUwcHVoN1ay+PTM5kGvKFGeOBjsCtqMt2OEecjElErZIhDHIRAXaSSGTuM7FoCa7Wonco+3jjlHlXff7c5sYBaO4KZays+VqCx4Tuq3jH/HJqsOdQePgYAmngd6w6K/spS7M91XKbvflnqz71XgJ1jQJjUd3wHepiHWQuQIkDNlfg2btTYj8bUnDsVU1lp4Cv+6ylYUKbqTNDuDHqq0eiSC34luKK3KpRPlcws1BU8xSoQ8iviV797ONW1AGuzGTOm9NJ4mBDrZbkofw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(39860400002)(366004)(376002)(5660300002)(2906002)(66946007)(66476007)(86362001)(316002)(33656002)(52116002)(16526019)(9686003)(54906003)(4326008)(6506007)(8936002)(1076003)(478600001)(7696005)(186003)(66556008)(6916009)(8676002)(83380400001)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/MEfIhN6JSIoAYfoJhTiDeJSXwse3dMA3UboSYNKIGPYtuQy80lUezYcwIhZ?=
+ =?us-ascii?Q?RvuZfCODpQbyZgab58BAMUtMJQ+Or42rB04pQwbj8Tx0T+usiYWdFjItb1Yn?=
+ =?us-ascii?Q?G54WhyyQlwDl78dzAZfH7MELfoRdlhakjm8fnXhNlmCHYjUOmrlEnJxXagSs?=
+ =?us-ascii?Q?yQTeBDz5cl20lIcAKKw1VQ2D2SrVkXXeyhkRJ6paPKOI9k8kGw2VoBiN0F+A?=
+ =?us-ascii?Q?JXYZYnqOU/Ah6ZLPc/0jZNOAJ+E7ERgS6hugEFEh+8h1wtH+pPC6uX5FYk/4?=
+ =?us-ascii?Q?gPd2fLYtbS9Mnhi/21P9sOxv2kYYcQePtQYsq7GRxcpbTLFoq59mxCVJmK55?=
+ =?us-ascii?Q?nHSY8BbiQRZ9HsnSS3myctki1HIMWKU9qwyziopRyY13ie6zEijMtNIwiLJm?=
+ =?us-ascii?Q?FKSGMlabJ9839St31PWbIxOo2PQKj0cl7Vldc34WDeqUfrs12Egd4MonbAAg?=
+ =?us-ascii?Q?fQIsUTn4HSTEgWlfoN1wsRafBN2uEIN8DOiGOayYMf0s/7O2a1k9UcWAPfi3?=
+ =?us-ascii?Q?n90Ox4ifIuBpv7PU31ARN3qNmDglGXqpck9enumFJ8iW/WbVUNhSsBmHgBdy?=
+ =?us-ascii?Q?TXsCXE/uQjxORUh8qzIKSp/WxN5DWqbS2ezlJGfCFuleyHJhPAGAsbjk04WP?=
+ =?us-ascii?Q?9av/ioVWGrOupBMozMt19heWwwYEIF53Y1BtVbfUZcg5LDXzIcrhx6RvuVv9?=
+ =?us-ascii?Q?qQ6XYtgha+yJx9B/cDtoD5jeTJT2deYDbVAqi8Oj/pt+p43TWhM4BeC8jlHT?=
+ =?us-ascii?Q?4nx3y3zLrXv2ZAxiIWHRo01hEaln5UTVOTwvlpq+bEbaRI/LNqUVrnh7+MRX?=
+ =?us-ascii?Q?CFWm/QkeFjgemT2ebiub+y5tAU8888cZX+B686n7QkrYGPlajOMzEkN+L+YN?=
+ =?us-ascii?Q?4o5/0iFtunYBCWW3JJVK2YKE4Ft1oLw5e1ds7oikh/Hw8IDZUL/17QFrYkYl?=
+ =?us-ascii?Q?tZNGnxRKfFyquCGIAYBjCJ4/IvGEV2X22OB45dqJjXcsTwOX7I1xUFflXJLi?=
+ =?us-ascii?Q?Oza10nCUoUhxTxtXA1gLe7KzEyWt2pDdlXfR2qDlPvP3IlBGyzaToPG2ONOR?=
+ =?us-ascii?Q?M+zXdkzm7tMM28XsLgD/s6oNUQ+R504Uz7LgrLPkCJQf5w+xZ7k=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94ee9d0d-3577-41ff-eb99-08d8c93d082c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 18:45:24.1793
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EVExVVNrTuNQrAf8T6wWH0i953qDmnq5sF528HGchBw/waKTOWbs7QQl4pva2cxk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4187
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_09:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 priorityscore=1501 malwarescore=0 phishscore=0 impostorscore=0
+ clxscore=1015 mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040112
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PTE insertion is fundamentally racy, and this check doesn't do
-anything useful. Quoting Sean:
+On Thu, Feb 04, 2021 at 11:26:32AM -0500, Johannes Weiner wrote:
+> On Tue, Feb 02, 2021 at 05:47:26PM -0800, Roman Gushchin wrote:
+> > On Tue, Feb 02, 2021 at 01:47:45PM -0500, Johannes Weiner wrote:
+> > >  	for_each_node(node) {
+> > >  		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
+> > > +		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
+> >                                                               ^^
+> > I'd drop the comma here. It seems that "{0}" version is way more popular
+> > over the mm code and in the kernel in general.
+> 
+> Is there a downside to the comma? I'm finding more { 0, } than { 0 }
+> in mm code, and at least kernel-wide it seems both are acceptable
+> (although { 0 } is more popular overall).
 
-"Yeah, it can be whacked.  The original, never-upstreamed code asserted that the
-resolved PFN matched the PFN being installed by the fault handler as a sanity
-check on the SGX driver's EPC management.  The WARN assertion got dropped for
-whatever reason, leaving that useless chunk."
+{ 0 } is more obvious and saves a character. The "problem" with comma
+version is that { 1, } and { 0, } have a different meaning.
 
-Jason stumbled over this as a new user of follow_pfn, and I'm trying
-to get rid of unsafe callers of that function so it can be locked down
-further.
+It seems like 13 (no comma) vs 11 (comma) in the mm code:
+[guro@carbon mm]$ pwd
+/home/guro/linux/mm
+[guro@carbon mm]$ ag --nofilename "\{0\}"
+DEFINE_PER_CPU(struct vm_event_state, vm_event_states) = {{0}};
 
-This is independent prep work for the referenced patch series.
+	return (swp_entry_t) {0};
 
-References: https://lore.kernel.org/dri-devel/20201127164131.2244124-1-daniel.vetter@ffwll.ch/
-Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Sean Christopherson <seanjc@google.com>
-Fixes: 947c6e11fa43 ("x86/sgx: Add ptrace() support for the SGX driver")
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: linux-sgx@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
----
- arch/x86/kernel/cpu/sgx/encl.c | 8 --------
- 1 file changed, 8 deletions(-)
+	unsigned long stat[MEMCG_NR_STAT] = {0};
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index ee50a5010277..20a2dd5ba2b4 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -141,7 +141,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
- 	struct sgx_encl_page *entry;
- 	unsigned long phys_addr;
- 	struct sgx_encl *encl;
--	unsigned long pfn;
- 	vm_fault_t ret;
- 
- 	encl = vma->vm_private_data;
-@@ -168,13 +167,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
- 
- 	phys_addr = sgx_get_epc_phys_addr(entry->epc_page);
- 
--	/* Check if another thread got here first to insert the PTE. */
--	if (!follow_pfn(vma, addr, &pfn)) {
--		mutex_unlock(&encl->lock);
--
--		return VM_FAULT_NOPAGE;
--	}
--
- 	ret = vmf_insert_pfn(vma, addr, PFN_DOWN(phys_addr));
- 	if (ret != VM_FAULT_NOPAGE) {
- 		mutex_unlock(&encl->lock);
--- 
-2.30.0
+	swp_entry_t entry = (swp_entry_t){0};
+[guro@carbon mm]$ ag --nofilename "\{ 0 \}"
+	struct cleancache_filekey key = { .u.key = { 0 } };
+	struct cleancache_filekey key = { .u.key = { 0 } };
+	struct cleancache_filekey key = { .u.key = { 0 } };
+	struct cleancache_filekey key = { .u.key = { 0 } };
 
+	unsigned long stack_entries[KFENCE_STACK_DEPTH] = { 0 };
+
+	DECLARE_BITMAP(map, SUBSECTIONS_PER_SECTION) = { 0 };
+	DECLARE_BITMAP(tmp, SUBSECTIONS_PER_SECTION) = { 0 };
+	DECLARE_BITMAP(map, SUBSECTIONS_PER_SECTION) = { 0 };
+
+	unsigned long nr_zone_taken[MAX_NR_ZONES] = { 0 };
+[guro@carbon mm]$ ag --nofilename "\{ 0, \}"
+	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
+	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
+	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
+	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
+	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
+	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
+	unsigned long count[MIGRATE_TYPES] = { 0, };
+
+	struct memory_failure_entry entry = { 0, };
+
+	unsigned long nr_skipped[MAX_NR_ZONES] = { 0, };
+	unsigned long zone_boosts[MAX_NR_ZONES] = { 0, };
+
+	unsigned long count[MIGRATE_TYPES] = { 0, };
+
+> 
+> I don't care much either way. I can change it in v2 if there is one.
+
+Sure, of course it's not worth a separate version.
+
+Thanks!
