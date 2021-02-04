@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F3B310105
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE45B31010B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhBDXt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 18:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
+        id S231334AbhBDXt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 18:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhBDXt1 (ORCPT
+        with ESMTP id S230360AbhBDXtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 18:49:27 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3ACEC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 15:48:46 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id q7so5545332wre.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 15:48:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=M+Q2uu3mtJ218GEh+NneAkHcQuIWLoAibVLNNnrJdfE=;
-        b=mbdtuBQrIF7f3POD+AzUG3U1qpgi1DQcg/y/2DlRgeTlRjCdPgBivfC38oVMs8r6zJ
-         xaRjgU4BXPvtuLeXU0zZsrlHeMNLvRMq2g/myiOekb2peUtDCbtfCkVNZCQuiI31RbgV
-         hQh2cm0VVNGL3jes/7symOYkLM8aKlvwnA7WrnIc7DABrI4fTwdbhLb7tshTCakVskBd
-         UrB+MBJ74yiADMT9PmHoTHNrvliNfvd/3R4Kcl3nhdHyydIiTHhU0L2zQHZRRpfkOgld
-         rpHlUj0YJcKelAKSk6VCDIhgz6RXJNvKlSH+QgXVjKFV9+6ic3Dz2LwEnT1fahZfnyNP
-         qsBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=M+Q2uu3mtJ218GEh+NneAkHcQuIWLoAibVLNNnrJdfE=;
-        b=P9D0zmFmNZDTr+eKA9TDkuBZF5+yW+5Z82g4DCobD6McUxmyvmG4/t1X0nKdTey0lo
-         i5kAxvbyHId2K96LrUj74a9qKe1opVpffSNyJR6d2oaCnWLBOD+D5pJxq7JKthtn6g6k
-         cS7E6eC3nMWpAnZGI9HbqFjN/tIHkaUMUQhH7/X912pcftwtwXgInexuoIpDzxaTIf9P
-         Q9JdQeJw2N6KdgV/rDnqcEj5UdSTU/an0F1RUM0jUVHCCHuGxWhpJ+LfTNC1rL8HwTfu
-         yc3duVxTDZBzWFuS3VXEedmSr+waQbnFqtftXUwsVBaru2eg8VsB/tlFVG0vKMIIk3Cc
-         /Gow==
-X-Gm-Message-State: AOAM530U+KP5b5f2GVLM+3OcSbdohtEcGR08FWwWGzduEjMXoUoyr+T/
-        K9TILCa3ytKuSfcp1t0DREF4Kz5Lglu1Xg==
-X-Google-Smtp-Source: ABdhPJy18vZLH/ZELwQPE5pvoEkmF+U8yvZ9YDbEiV/e2jmo6TKlyeSEuiu0f60mdaHlVWCptBo9jQ==
-X-Received: by 2002:a05:6000:1364:: with SMTP id q4mr1822415wrz.335.1612482525672;
-        Thu, 04 Feb 2021 15:48:45 -0800 (PST)
-Received: from p4 ([151.82.81.135])
-        by smtp.gmail.com with ESMTPSA id m22sm11173232wrh.66.2021.02.04.15.48.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 15:48:45 -0800 (PST)
-Date:   Thu, 4 Feb 2021 23:48:42 +0000
-From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        penberg@kernel.org, geert@linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        rppt@kernel.org, giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210204234841.GA19339@p4>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201130344.GF1463@shell.armlinux.org.uk>
- <20210201135714.GB66060@C02TD0UTHF1T.local>
- <20210201160838.GH1463@shell.armlinux.org.uk>
- <20210201200734.GC15399@p4>
- <20210201201633.GJ1463@shell.armlinux.org.uk>
- <20210201202742.GA17243@p4>
+        Thu, 4 Feb 2021 18:49:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2963C061786;
+        Thu,  4 Feb 2021 15:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=RxMwGRAzLa4YpLotu83oCMZFWVpTttXVPtTu6l0zD0k=; b=QDfSlqpKht8ZMUBHklTZDTTRPy
+        6elMpT6y/AZODgS+QpQlXjus+61CNPBjAYOc9y7TUYILhHTF1q1d4C2f4U/RmRPDiDWen1rK1QJv6
+        rnHTv5QOkKeyuqoK6Vp7iOoet129uXf2RcGkBq9npaPGt1sHLjeDz/FNQT6ueX3Im5QCN1zx6uWbi
+        QiGze4ToLyhArVL7wW9Xxgy40vYIQdVlxzfaOXo1nkn/OC42XwXpTO350R75ztWsZCu3S/KgCt39i
+        WhGrG5oG1mOpOA2NgHeAeyQxYVMcRdSQ3EIFMjV9+/edGTwXVo2GqC9OH/pO+7KBL0CDRE7IFXJuq
+        vVyO93qA==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7oMw-0005r2-Qz; Thu, 04 Feb 2021 23:49:03 +0000
+Subject: Re: [PATCH 0/2] docs: Add support for relative paths in automarkup
+To:     Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+References: <20210128010028.58541-1-nfraprado@protonmail.com>
+ <87o8gzxvjl.fsf@meer.lwn.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <10b0104e-7d89-fcad-a27d-6d1463bf325c@infradead.org>
+Date:   Thu, 4 Feb 2021 15:48:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201202742.GA17243@p4>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87o8gzxvjl.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On 2/4/21 3:28 PM, Jonathan Corbet wrote:
+> Nícolas F. R. A. Prado <nfraprado@protonmail.com> writes:
+> 
+>> As Jon previously noted [1], it would be nice if automarkup supported relative
+>> paths as well when cross-referencing to other documents. This adds the support
+>> for it, and documents it.
+>>
+>> Jon, after applying this, 43bc3ed73639 ("docs: dt: Use full path to enable
+>> cross-reference") could be reverted without the link stopping to work.
+>>
+>> [1] https://lore.kernel.org/linux-doc/20201130142404.6ef6689e@lwn.net/
+>>
+>> Nícolas F. R. A. Prado (2):
+>>   docs: Enable usage of relative paths to docs on automarkup
+>>   docs: Document cross-referencing using relative path
+>>
+>>  Documentation/doc-guide/sphinx.rst | 30 ++++++++++++++++++++----------
+>>  Documentation/sphinx/automarkup.py |  7 +++++--
+>>  2 files changed, 25 insertions(+), 12 deletions(-)
+> 
+> So I finally got around to playing with this set.  One thing I found is
+> that some of the references that were being caught before were not
+> now...  after far too much time, I figured out that the problem was
+> references to .txt files, of which we have quite a few in the docs.
+> admin-guide/kernel-parameters.txt in particular is quite popular.
+> Before this change, those were being turned into xrefs, afterward not.
+> 
+> To address that, I applied this little tweak:
+> 
+> -RE_doc = re.compile(r'(\bDocumentation/)?((\.\./)*[\w\-/]+)\.rst')
+> +RE_doc = re.compile(r'(\bDocumentation/)?((\.\./)*[\w\-/]+)\.(rst|txt)')
+> 
+> That seems to make things work properly again.
+> 
+> While tracking this down I put in a print for failing cross references,
+> and noted that we have quite a few; it's a useful way to see where the
+> stale references are.  Maybe I'll try to hack together something to make
+> those stand out so we can fix them.
+> 
+> Thanks,
+> 
+> jon
 
-On Mon, Feb 01, 2021 at 10:18:26PM +0000, Giancarlo Ferrari wrote:
-> Russell,
-> 
-> On Mon, Feb 01, 2021 at 08:16:33PM +0000, Russell King - ARM Linux admin wrote:
-> > On Mon, Feb 01, 2021 at 08:07:37PM +0000, Giancarlo Ferrari wrote:
-> > > Hi,
-> > 
-> > Hi,
-> > 
-> > > Why we should align 3 ? For the fncpy I suppose.
-> > 
-> > Slightly arbitary really - it gives a nice 8-byte alignment to the data.
-> > .align 2 would also be sufficient.
-> > 
-> > > I don't know now how to proceed now, as you (Mark and you) do completely
-> > > the patch.
-> > 
-> > Please can you test my patch and let us know if it solves your problem
-> > (or even if it works! I haven't tested it beyond build-testing.)
-> >
+Hi,
+I just sent a patch for file name changes in
+Documentation/input/ff.rst
+(https://lore.kernel.org/linux-input/20210203050842.24190-1-rdunlap@infradead.org/T/#u).
 
-I have tested your patch and it works. I have tested using kexec -l/kexec -e.
-Considering that .text var are no more written, I assume the issue is gone.
+I sent it to the INPUT maintainer because I thought that he would
+want to review the changes.
 
-> 
-> sure, unfortunately due to restriction, I hope to test it by the end of the
-> week. I hope there will be no rush. Otherwise, please let me know.
-> 
-> > > You see is my first kernel patch submission :) .
-> > 
-> > Yay. Sorry for giving you a different patch - Mark is quite right that
-> > there's a better solution to this problem, which is eliminating the
-> > set_kernel_text_rw() call. The only reason I cooked up the patch was
-> > doing that would be more in-depth (as you can see from the increased
-> > size of the patch.)
-> > 
-> 
-> I definitely agree with you.
-> 
-> > -- 
-> > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> > FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-> 
-> Thanks again,
-> 
-> 
-> GF
+I could resend it to the DOCS maintainer.  :)
 
-Can I ask about having it integrated ?
+-- 
+~Randy
 
-Thanks in advance,
-
-
-GF
