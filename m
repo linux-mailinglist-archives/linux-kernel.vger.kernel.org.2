@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7399C30F646
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747330F64B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbhBDP2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:28:54 -0500
-Received: from mga01.intel.com ([192.55.52.88]:24041 "EHLO mga01.intel.com"
+        id S237328AbhBDPaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:30:02 -0500
+Received: from mga09.intel.com ([134.134.136.24]:45849 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237317AbhBDP0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:26:52 -0500
-IronPort-SDR: 1LlXnT1jrvWEBpEt8HxvonWCAmKknLkNJl6e+Fc7Hr/C857Uj8IrLIbe5Z1WKpiJxiNe37SZ3U
- YvmLYPStUvBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="200251273"
+        id S237248AbhBDPZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:25:50 -0500
+IronPort-SDR: 44f/ual3VdHpLTvG9d6Fy322EUPOp8WxG3JOIviZQvTl6Q2TGbAWmycHC+t4LN22QunWgLHCMb
+ pgY8qF1Dfj7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="181410965"
 X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="200251273"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:24:55 -0800
-IronPort-SDR: Z8sdaE1QS709wO454yZZVYcAe6h5P1bSghd+mysQDaQCEsDnnBICWneShtHNItKIuuhQhDrrK2
- NPfI5XzkbzKw==
+   d="scan'208";a="181410965"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:25:04 -0800
+IronPort-SDR: SrO7SuHPlHWikYTbmVkiTa5ISyfDiJUSCKwuFoung0M3TjbN4kIAtNn0oR+Sovzcr7MQ6KvNcT
+ HFpS9bPOGFJw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="356560440"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Feb 2021 07:24:55 -0800
-Received: from [10.251.24.66] (kliang2-MOBL.ccr.corp.intel.com [10.251.24.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 2C3B258087A;
-        Thu,  4 Feb 2021 07:24:54 -0800 (PST)
-Subject: Re: [PATCH V3 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, maddy@linux.vnet.ibm.com
-References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
- <1611873611-156687-2-git-send-email-kan.liang@linux.intel.com>
- <b970c739-6783-34d6-8676-44632c7c9428@linux.intel.com>
- <CAM9d7chzwnmSeKydv0Fb_iopcuMZxRsx2mZ66uVwcu_RMw+Vyg@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <4723a1de-9caa-e192-7b0d-8aced00b8f50@linux.intel.com>
-Date:   Thu, 4 Feb 2021 10:24:53 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+   d="scan'208";a="483274049"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Feb 2021 07:25:02 -0800
+Subject: Re: [PATCH 3/4] scsi: ufs-debugfs: Add user-defined
+ exception_event_mask
+To:     Bean Huo <huobean@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+References: <20210119141542.3808-1-adrian.hunter@intel.com>
+ <20210119141542.3808-4-adrian.hunter@intel.com>
+ <85b6cbb805e97081a676aeb30fe76f059eba192e.camel@gmail.com>
+ <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
+ <372c6dbbda18cccdcf2b053ee87f2ada9640e2b8.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a4102d62-9101-c69d-c030-ec6a6bad7fc7@intel.com>
+Date:   Thu, 4 Feb 2021 17:25:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7chzwnmSeKydv0Fb_iopcuMZxRsx2mZ66uVwcu_RMw+Vyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <372c6dbbda18cccdcf2b053ee87f2ada9640e2b8.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/4/2021 9:00 AM, Namhyung Kim wrote:
-> Hi Kan,
-> 
-> On Sat, Jan 30, 2021 at 2:25 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> [SNIP]
->> diff --git a/include/uapi/linux/perf_event.h
->> b/include/uapi/linux/perf_event.h
->> index b15e344..c50718a 100644
->> --- a/include/uapi/linux/perf_event.h
->> +++ b/include/uapi/linux/perf_event.h
->> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
->>          PERF_SAMPLE_CGROUP                      = 1U << 21,
->>          PERF_SAMPLE_DATA_PAGE_SIZE              = 1U << 22,
->>          PERF_SAMPLE_CODE_PAGE_SIZE              = 1U << 23,
->> +       PERF_SAMPLE_WEIGHT_STRUCT               = 1U << 24,
+On 4/02/21 4:58 pm, Bean Huo wrote:
+> On Wed, 2021-02-03 at 11:56 +0200, Adrian Hunter wrote:
+>>>
+>>> Hallo Adrian
 >>
->> -       PERF_SAMPLE_MAX = 1U << 24,             /* non-ABI */
->> +       PERF_SAMPLE_MAX = 1U << 25,             /* non-ABI */
+>> Hi Bean
 >>
->>          __PERF_SAMPLE_CALLCHAIN_EARLY           = 1ULL << 63, /* non-ABI; internal use */
->>    };
+>> Thanks for the review
 >>
->> +#define PERF_SAMPLE_WEIGHT_TYPE        (PERF_SAMPLE_WEIGHT |
->> PERF_SAMPLE_WEIGHT_STRUCT)
+>>>
+>>> Would you like sharing the advantage of this debugfs node comparing
+>>> to
+>>> sysfs node "attributes/exception_event_control(if it is writable)"?
+>>
+>> Primarily this is being done as a debug interface, but the user's
+>> exception
+>> events also need to be kept separate from the driver's ones.
+>>
+>>> what is the value of this?
+>>
+>> To be able to determine if the UFS device is being affected by
+>> exception events.
+>>
+>>> Also, now I can disable/enable UFS event over ufs-bsg.
+>>
+>> That will be overwritten by the driver when it updates the e.g. bkops
+>> control, or sometimes also suspend/resume.
 > 
-> I'm not sure you want to expose it in the uapi header as it's not
-> intended to be used IMHO.
+> Hi Adrian
+> yes, I saw that, they are not tracked by driver.
 > 
+> I have one question that why "exception_event_mask" cannot represent
+> the current QUERY_ATTR_IDN_EE_CONTROL value? only after writing it.
 
-I'm not sure I understood, but it's indeed used in the tool patch set.
-
-https://lore.kernel.org/lkml/1612296553-21962-6-git-send-email-kan.liang@linux.intel.com/
-
-
-Thanks,
-Kan
+It represents only the user's exception events (ee_usr_mask), not the
+driver's ones (ee_drv_mask) as well.  ee_usr_mask is updated after
+successfully ensuring it is set on the device.
