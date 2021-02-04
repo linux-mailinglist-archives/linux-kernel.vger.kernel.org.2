@@ -2,36 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EC230F6A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6747130F6A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237560AbhBDPmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:42:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60544 "EHLO mail.kernel.org"
+        id S237484AbhBDPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:43:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237484AbhBDPkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:40:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE22464F44;
-        Thu,  4 Feb 2021 15:39:53 +0000 (UTC)
+        id S237219AbhBDPk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:40:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 422E064F4A;
+        Thu,  4 Feb 2021 15:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612453195;
-        bh=0rVADc8DYJLXUAngr6xcgCUGDPQO+hMeabdF0zLfXo4=;
+        s=k20201202; t=1612453216;
+        bh=oX49zY8OEwwhNvdM/kvlJEBpdDBF23mL3VHLWA6xajw=;
         h=From:To:Cc:Subject:Date:From;
-        b=H5sF/SYuycmnMlgZhrvfUXPg0873Tnnv2nfG/NCRpXpfiu9mWOaW/GS88wyeziszZ
-         bR3UkQ4kP0jbD7zfhCcpdJ02L+koBL5rhv7B7+89pZy7s5EDedVpgmRKSl5Oxy2OOU
-         q8xvGCzmp4oU9ODpI23hN5y3YNM9WxwMDeUxlTtb4ECVfjXenMvV3ARd0LihO8buNY
-         VZXazqBb8lXAWQC0cjmsg+w9Mjz0eDHO1kZfuO0PSAhHGkp4/HHlvyORqEwdCYG5Vx
-         V6PR+Cj6EdAuEj3ONWO65KUFOYhogMthXXtm5jb3QIKegtsziVuK6REM3bE9IEarBh
-         jdqgjSp1uicbQ==
+        b=SFmZkxlKEWJGZ4cBkjku0jdiBKWAVeYXmZbAcjYFqpTpKsFY3+gjLigdazxK3h4mF
+         l++QutmqzUUf1s5Ba/lS1UqG5h8Hg0wWzaAO8+wpWPcI3ABjJAiZzkAnpwhb5NRMCH
+         ZuvJLcETBe4WQMVjuZREQ23mfKKHVQOIF7QAUs8M0hp52896rODOxVjg16E5Ya4VNS
+         PAloeKywkXROy8QTMsMeNlOkieUIIMhExpUiA3NR9K6RWjzi/nrB9m6ERE2ZFm0UwZ
+         e7EPpDLzfsWM0VjnnlSjpcrZNoabU0fMfgcFgntMF17dzIfXUgm2N076901MsNpZqY
+         ip2oOFNowJG6w==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: rt8515: add V4L2_FLASH_LED_CLASS dependency
-Date:   Thu,  4 Feb 2021 16:39:44 +0100
-Message-Id: <20210204153951.1551156-1-arnd@kernel.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alex Elder <elder@linaro.org>, Chris Lew <clew@codeaurora.org>,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
+        "Andrew F. Davis" <afd@ti.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] remoteproc: qcom: fix glink dependencies
+Date:   Thu,  4 Feb 2021 16:40:04 +0100
+Message-Id: <20210204154010.1585457-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,40 +48,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The leds-rt8515 driver can optionall use the v4l2 flash led class,
-but it causes a link error when that class is in a loadable module
-and the rt8515 driver itself is built-in:
+Building the remoteproc drivers into the kernel while the qcom_glink
+code is in a loadable module results in a link error:
 
-ld.lld: error: undefined symbol: v4l2_flash_init
->>> referenced by leds-rt8515.c
->>>               leds/flash/leds-rt8515.o:(rt8515_probe) in archive
-drivers/built-in.a
+ld.lld: error: undefined symbol: qcom_glink_ssr_notify
+>>> referenced by vmlinux.o:(glink_subdev_unprepare)
 
-Adding 'depends on V4L2_FLASH_LED_CLASS' in Kconfig would avoid that,
-but it would make it impossible to use the driver without the
-v4l2 support.
+Add a Kconfig dependency to avoid this.
 
-Add the same dependency that the other users of this class have
-instead, which just prevents the broken configuration.
-
-Fixes: e1c6edcbea13 ("leds: rt8515: Add Richtek RT8515 LED driver")
+Fixes: 8527efc59d45 ("rpmsg: glink: Guard qcom_glink_ssr_notify() with correct config")
+Fixes: 5d1f2e3c8090 ("soc: qcom: glink_ssr: Internalize ssr_notifiers")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/leds/flash/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/remoteproc/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/leds/flash/Kconfig b/drivers/leds/flash/Kconfig
-index d21d273ef3da..b580b416b9a4 100644
---- a/drivers/leds/flash/Kconfig
-+++ b/drivers/leds/flash/Kconfig
-@@ -5,6 +5,7 @@ if LEDS_CLASS_FLASH
- config LEDS_RT8515
- 	tristate "LED support for Richtek RT8515 flash/torch LED"
- 	depends on GPIOLIB
-+	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
- 	help
- 	  This option enables support for the Richtek RT8515 flash
- 	  and torch LEDs found on some mobile phones.
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index 9e7efe542f69..88488af01fd9 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -155,6 +155,7 @@ config QCOM_Q6V5_ADSP
+ 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
+ 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+ 	depends on QCOM_SYSMON || QCOM_SYSMON=n
++	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
+ 	select MFD_SYSCON
+ 	select QCOM_PIL_INFO
+ 	select QCOM_MDT_LOADER
+@@ -171,6 +172,7 @@ config QCOM_Q6V5_MSS
+ 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
+ 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+ 	depends on QCOM_SYSMON || QCOM_SYSMON=n
++	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
+ 	select MFD_SYSCON
+ 	select QCOM_MDT_LOADER
+ 	select QCOM_PIL_INFO
+@@ -188,6 +190,7 @@ config QCOM_Q6V5_PAS
+ 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
+ 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+ 	depends on QCOM_SYSMON || QCOM_SYSMON=n
++	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
+ 	select MFD_SYSCON
+ 	select QCOM_PIL_INFO
+ 	select QCOM_MDT_LOADER
+@@ -206,6 +209,7 @@ config QCOM_Q6V5_WCSS
+ 	depends on RPMSG_QCOM_SMD || (COMPILE_TEST && RPMSG_QCOM_SMD=n)
+ 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+ 	depends on QCOM_SYSMON || QCOM_SYSMON=n
++	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
+ 	select MFD_SYSCON
+ 	select QCOM_MDT_LOADER
+ 	select QCOM_PIL_INFO
+@@ -238,6 +242,7 @@ config QCOM_WCNSS_PIL
+ 	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+ 	depends on QCOM_SMEM
+ 	depends on QCOM_SYSMON || QCOM_SYSMON=n
++	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
+ 	select QCOM_MDT_LOADER
+ 	select QCOM_PIL_INFO
+ 	select QCOM_RPROC_COMMON
 -- 
 2.29.2
 
