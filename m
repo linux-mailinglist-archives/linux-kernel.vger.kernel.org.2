@@ -2,99 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDA230E88F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2E930E896
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhBDAec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbhBDAea (ORCPT
+        id S234096AbhBDAf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:35:27 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:29965 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231817AbhBDAfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:34:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8DEC061573;
-        Wed,  3 Feb 2021 16:33:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=BG5xo57883wZFg8LT27wpBNLDvItg9xhNzOkMkfoe78=; b=qnVs1N+XmTfCeuJFXLBv1CEQ/f
-        Swrxm7740kgfWXderYwwkfa7mlqKgktEJtO9OD5n+jNpkuC4aZnw4LFMpzN7LmO4pAFThuc75vLUk
-        i12t76pBsj8R/Sj1qb9zXfGjp1NsCvhjzL4vOWrtEK6h866ZW6WvUhX9VF7B/XhGGemfusuvJutWq
-        2WQgX6XNrm9yOWvNx4buJfjr6Co7nex3BEhsGMtZb6jLc5bB6KTD0hUOVP0gJjhOwwTmZTmvBLW8L
-        7h51zYZmfYkX8pZ1h7v2PBz0K8jmfJVXvfvGFKjmP0xr+7muc+ONSuufBP10BZN/uPJ8hxWNb6Azj
-        46JoVBig==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7Sac-0004GE-Aj; Thu, 04 Feb 2021 00:33:42 +0000
-Subject: Re: [PATCH] rt2x00: remove duplicate word in comment
-To:     wengjianfeng <samirweng1979@163.com>
-Cc:     stf_xl@wp.pl, helmut.schaa@googlemail.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-References: <20210203063850.15844-1-samirweng1979@163.com>
- <6bf90f62-f14e-9c4a-748b-4923fcae9bef@infradead.org>
- <20210204083007.000069d2@163.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1ee1b354-0550-3fd8-f547-10827b3974ad@infradead.org>
-Date:   Wed, 3 Feb 2021 16:33:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 3 Feb 2021 19:35:24 -0500
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 1140YJ9T001787;
+        Thu, 4 Feb 2021 09:34:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1140YJ9T001787
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612398860;
+        bh=YGqVi6q3wSmO46URzjWMbuYfJm4vGpRTzcS+y7ksq/s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KybUlGs9/rM0U6OILw77xgbdbxKWyEf3qd7Hz+DY1w4vjsbdSJ6MBHRKU0cpO+ps4
+         k5HtF1Iw+KP2rjDl6NWElK0YYKu754vaH0UWDmXUuq56YqI3lmRkAvpwt3J5hfvIlM
+         AmGECmQT1ytFQQtxvClLm0bzl+6Fp24nhK+XfHro/2tbvgBcrEymC3qDBhJ/Qq7/3y
+         3ambKjdrB4Nj3W6QBLi7CUcmFDEQCklP+JdzktZ0jTN+WDk7G+60HMoW+/owVwMtHL
+         hHmKQGTAkLjeYouqlMHpDjpED5QoZqDiMFbJiBomJiV1WVMXzwFi44GtzUdcGfx63B
+         o7otA9jdBujhw==
+X-Nifty-SrcIP: [209.85.215.170]
+Received: by mail-pg1-f170.google.com with SMTP id n10so912422pgl.10;
+        Wed, 03 Feb 2021 16:34:19 -0800 (PST)
+X-Gm-Message-State: AOAM532Vqw22uGLdGsosD1Us2Agtaplr+iDn8x7aEUXCenghkLSGgm+e
+        XPieBps+xDeWC9bTuR5MFAT8uj/p4in5HitcaNU=
+X-Google-Smtp-Source: ABdhPJz4t9naYuY+vi3PEb2skxTd/puVe252BsmS52Pl6DwHwISf7CWu1OEvd870/ktCX8PKE+PqT6VrghxOPPirMeI=
+X-Received: by 2002:aa7:8602:0:b029:1bb:4dfd:92fc with SMTP id
+ p2-20020aa786020000b02901bb4dfd92fcmr5544836pfn.63.1612398859091; Wed, 03 Feb
+ 2021 16:34:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204083007.000069d2@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-3-ndesaulniers@google.com> <CAK7LNAQW3XtBGAg6u+86wGc0tizDyezZ_f61JjkT15QH5BtGjA@mail.gmail.com>
+ <CAKwvOdnFQ+Y+QzHLVs-XNFtbNL8s236x6zS3QAkQ-unPvhbfEA@mail.gmail.com>
+In-Reply-To: <CAKwvOdnFQ+Y+QzHLVs-XNFtbNL8s236x6zS3QAkQ-unPvhbfEA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 4 Feb 2021 09:33:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASFBaJa-P88wNNgcESMV1YyFH0QxJXb52nauSCTfAifJA@mail.gmail.com>
+Message-ID: <CAK7LNASFBaJa-P88wNNgcESMV1YyFH0QxJXb52nauSCTfAifJA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nick Clifton <nickc@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 4:30 PM, wengjianfeng wrote:
-> On Wed, 3 Feb 2021 07:16:17 -0800
-> Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> On 2/2/21 10:38 PM, samirweng1979 wrote:
->>> From: wengjianfeng <wengjianfeng@yulong.com>
->>>
->>> remove duplicate word 'we' in comment
->>>
->>> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
->>> ---
->>>  drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
->>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c index
->>> c861811..7158152 100644 ---
->>> a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c +++
->>> b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c @@ -179,7
->>> +179,7 @@ void rt2x00crypto_rx_insert_iv(struct sk_buff *skb,
->>>  	 * Make room for new data. There are 2 possibilities
->>>  	 * either the alignment is already present between
->>>  	 * the 802.11 header and payload. In that case we
->>> -	 * we have to move the header less then the iv_len
->>> +	 * have to move the header less then the iv_len
->>
->> s/then/than/
->>
->>>  	 * since we can use the already available l2pad bytes
->>>  	 * for the iv data.
->>>  	 * When the alignment must be added manually we must
->>>
->>
->>
-> 
-> Hi Randy,
->    So you means add it for byte alignment, right? if yes,just ignore
->    the patch. thanks.
+On Thu, Feb 4, 2021 at 8:27 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Wed, Feb 3, 2021 at 3:07 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Nick, the patch set is getting simpler and simpler,
+> > and almost good enough to be merged.
+>
+> I agree.  I think Sedat pointed out a binutils 2.35.2 release; thanks
+> to Nick Clifton for that.
+>
+> >
+> >
+> > Please let me ask two questions below.
+> >
+> > There has been a lot of discussion, and
+> > I might have missed the context.
+> >
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
+> > >           It makes the debug information larger, but it significantly
+> > >           improves the success of resolving variables in gdb on optimized code.
+> > >
+> > > +config DEBUG_INFO_DWARF5
+> > > +       bool "Generate DWARF Version 5 debuginfo"
+> > > +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+> > > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> >
+> > Q1.
+> >
+> > This  "CC_IS_GCC ||" was introduced by v4.
+> >
+> > GCC never outputs '.file 0', which is why
+> > this test is only needed for Clang, correct?
+>
+> This test script is only needed when compiling with clang but without
+> its integrated assembler.  It checks that when clang is used as the
+> driver, but GAS is used as the assembler, that GAS will be able to
+> decode the DWARF v5 assembler additions Clang will produce without
+> needing an explicit -Wa,-gdwarf-5 flag passed.
+>
+> Technically, it is unnecessary for `LLVM=1 LLVM_IAS=1` or `CC=clang
+> LLVM_IAS=1` (ie. clang+clang's integrated assembler).  But there is no
+> way to express AS_IS_IAS today in KConfig (similar to
+> CC_IS_{GCC|CLANG} or LD_IS_LLD).  I don't think that's necessary;
+> whether or not clang's integrated assembler is used, when using clang,
+> run the simple check.
+>
+> > > --- /dev/null
+> > > +++ b/scripts/test_dwarf5_support.sh
+> > > @@ -0,0 +1,8 @@
+> > > +#!/bin/sh
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
+> > > +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
+> > > +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
+> >
+> >
+> > I saw the following links in v6.
+> >
+> > https://sourceware.org/bugzilla/show_bug.cgi?id=25612
+> > https://sourceware.org/bugzilla/show_bug.cgi?id=25614
+> >
+> > They were dropped in v7. Why?
+> >
+> > I just thought they were good to know...
+>
+> While having fixes for those bugs is required, technically
+> https://sourceware.org/bugzilla/show_bug.cgi?id=25611 is the latest
+> bug which was fixed.  Testing for a fix of
+> https://sourceware.org/bugzilla/show_bug.cgi?id=25611 implies that
+> fixes for 25612 and 25614 exist due to the order they were fixed in
+> GAS.
 
-No, I mean that there is a typo there also: "then" should be changed to "than"
-while you are making changes.
 
-thanks.
+It is difficult to know the patch order in the binutils project.
+
+Personally, I prefer having all the three references here.
+Otherwise, it is difficult to understand why
+this script is doing such complex checks.
+
+
+
+
+
+> Technically, you could argue that this script is quite GAS
+> centric; given an arbitrary "assembler" the test should check a few
+> things.  Realistically, I think that's overkill based on what
+> assemblers are in use today; we can always grow the script should we
+> identify other tests additional assemblers may need to pass, but until
+> then, I suspect YAGNI.  Maybe there's a more precise name for the
+> script to reflect that, but that gets close to "what color shall we
+> paint the bikeshed?"  Given the number of folks on the thread, plz no.
+
+
+No argument with this regard. I agree with you.
+
+
+
+
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
 -- 
-~Randy
-
+Best Regards
+Masahiro Yamada
