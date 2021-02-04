@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BA230F422
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AA830F426
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhBDNrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S236434AbhBDNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236452AbhBDNqd (ORCPT
+        with ESMTP id S236464AbhBDNqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:46:33 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6E9C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rrb7GIsALulMLgBpvfMJZt8+pR64np3LnHjQDkWTEbg=; b=ZB5GwrNmgI54ZMhy7qADcO5Cqe
-        pc2TmFfQLSnkqU1glto/94KgR/G3d3mRniKzXkzPeoyRA5ldwMlnvn3n6LDam++0CFlr7T2ovZcnu
-        Kjo2MGXvA5aR6SIaKa8YwUvsiFi1lNljVBGEXDam4TDBYmII7uBhtb0oY3iSNL0xs9+uNwX8gC+ro
-        FoZXo9W31kiLLOaSXJ7Da+E3kcrVv55vPMqpluufijq5k/C6fozVECaZkgDQdHHaTZ9zObMw5snJh
-        3gBeifdOkJolEQGsB4XxG4EOpd/mKpIIJzkemPPfS9kdyLGhV8ZZe1KHXWkhE5vQcnI9TBHhOjL6J
-        zjUwB3FA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7ex4-0007c4-Bp; Thu, 04 Feb 2021 13:45:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DB36230066E;
-        Thu,  4 Feb 2021 14:45:40 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A86D72C12E8F6; Thu,  4 Feb 2021 14:45:40 +0100 (CET)
-Date:   Thu, 4 Feb 2021 14:45:40 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Subject: Re: Process-wide watchpoints
-Message-ID: <YBv6hG0lD8bsiGG/@hirez.programming.kicks-ass.net>
-References: <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net>
- <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
- <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net>
- <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
- <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
- <CACT4Y+ZLSyVMkPfh3PftEWKC1kC+o1XLxo_o6i4BiyRuPig27g@mail.gmail.com>
- <YBvj6eJR/DY2TsEB@hirez.programming.kicks-ass.net>
- <CACT4Y+a17L2pUY1kkRB_v_y3P_sbMpSLb6rVfXmGM7LkbAvj5Q@mail.gmail.com>
- <YBvyTDR+q0M62vKR@hirez.programming.kicks-ass.net>
- <CACT4Y+ZbWMa7zsa84dOBZ0C0Qgik2uDST+bzX=TrSU6vFXkkCQ@mail.gmail.com>
+        Thu, 4 Feb 2021 08:46:52 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EDC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:46:09 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id u14so3586712wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Dc2qXVoLurmP1y6qGwsvfYp52EWzBpvbfbLeLIxscWo=;
+        b=vcX10tK1JXGeAOOqnN5qkSnrM0WTN2R/PdrCmgvbefToo/2uSgDcfLT6Xd8NM/mKEl
+         xMfRDm0yVYJQX8w/QhvLlCks+9AJgUiQlDMqupirjP9dAV0pn+XAbUpv9gpNFwEGNg22
+         q7fBzmF0ensUbqLyzqCPm+6i+m+rvJlO3fHrtyCKdwTStk1H03Adc9d3bxeuqJ5zRd4L
+         3vtLRDddOqVlUf9sVnHZ9h+8USZ3ZMEykRzMLAAoi6qeQWO328wvXjZNDf+2HmShrvoP
+         hRkKEUGLbrHEPnVLdHJ+K7BUj3rgzVaPyFWh11Q0ZFB93DpTM7LsdzjIbKazFBKf0Q8A
+         9l1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Dc2qXVoLurmP1y6qGwsvfYp52EWzBpvbfbLeLIxscWo=;
+        b=DqKPEDgRVoslrC9IQWf86Q4W3/ifZg4qrciOVsowdCtTmxfp1mk+Ua5tkpvsRj19Kj
+         cSUYf6Z6Foq8USvxpWAOa9sYy9EkoXi10U2FgQI5Rj1K/NZtej976T1LBJ8gztuF9tiR
+         6lVPm2rtCL3ZETkDOy5owrZcxVM0V1yIEdT25v5WUR+L0wIOI/dJc6LoKXAdH48NJrfy
+         sgf/BhDewY4OrB5FOwr2ApXF6gK14uZy1JnqmjGb0VobnT+pZ/aU1yA2OBG14OG7TWlL
+         NUnT4WNpSYnnG63mMLIjKFvAbaURp9JV25SDV08Rghsk55eCdLtSDjUWZzxof9l8b9eo
+         FdjA==
+X-Gm-Message-State: AOAM530p+OeNmnX9B8BGImAWXYO7RxeeE2MElSNaQw5SDDig/veDjIMi
+        Th6+8BhAmlgHIifSCmUQtLyedQ==
+X-Google-Smtp-Source: ABdhPJydeDZ+8e1+KMnG8GflcBvfY2Mg3GWNDaEqkj0KlgohdEXPBXZQ8GD5ktuU19qx3aBMThKUPA==
+X-Received: by 2002:adf:81e4:: with SMTP id 91mr9635163wra.161.1612446368624;
+        Thu, 04 Feb 2021 05:46:08 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id b4sm7912769wrn.12.2021.02.04.05.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 05:46:08 -0800 (PST)
+Date:   Thu, 4 Feb 2021 13:46:06 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+Message-ID: <20210204134606.GH2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
+ <20210204105748.GD2789116@dell>
+ <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
+ <20210204124335.GA4288@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZbWMa7zsa84dOBZ0C0Qgik2uDST+bzX=TrSU6vFXkkCQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204124335.GA4288@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 02:35:36PM +0100, Dmitry Vyukov wrote:
-> On Thu, Feb 4, 2021 at 2:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Feb 04, 2021 at 01:53:59PM +0100, Dmitry Vyukov wrote:
-> > > Humm... I was thinking of perf_event_open(pid == 0).
-> > > It does not make sense to send SIGTRAP in a remote process, because it
-> > > does not necessarily cooperate with us.
-> > >
-> > > But is there any problem with clone w/o CLONE_THREAD? Assuming the
-> > > current process has setup the signal handler, the child will have the
-> > > same handler and the same code/address space. So delivery of SIGTRAP
-> > > should work the same way in the child.
-> >
-> > Nothing should be doing CLONE_VM without CLONE_THREAD. Yes, it's
-> > possible, but if you do so, you get to keep the pieces IMO.
-> >
-> > Current libc either does a full clone (fork) or pthread_create,
-> > pthread_create does CLONE_THREAD.
+On Thu, 04 Feb 2021, Mark Brown wrote:
+
+> On Thu, Feb 04, 2021 at 12:07:49PM +0100, Hans de Goede wrote:
+> > On 2/4/21 11:57 AM, Lee Jones wrote:
+> > > On Thu, 04 Feb 2021, Hans de Goede wrote:
 > 
-> I meant a different thing.
-> I meant that we could restrict synchronous SIGTRAP for (1)
-> perf_event_open(pid != 0) and (2) disable it after exec.
+> > >> series are both ready for merging. All patches have Reviewed-by and/or
+> > >> Acked-by tags now.
+> 
+> > > I don't think they do.  You're missing ASoC and Extcon Acks.
+> 
+> > Right, what I meant is that the patches have been reviewed by other
+> > stake-holders, including the follow-up series being tested by the cirrus
+> > codec folks (thank you Charles).
+> 
+> > But yes the actual subsys maintainers have not acked these yet;
+> > and I'm aware that you will need those for merging this through
+> > the MFD tree.
+> 
+> The usual pattern here is that the MFD patches get merged and then I
+> pull a shared branch in for any dependencies - at this point the series
+> is now on the backlog of serieses where I'm waiting for the MFD to sort
+> itself out before I really look at it again.
 
-Ah, I figured a generic means to inherit across a process, but not a
-process tree might be useful.
+I tend to push patches awaiting Acks to the back of the queue.
 
-I don't much like magical/implied constraints.
+Stalemate.
 
-> What is the issue here for clone without CLONE_THREAD?
-
-It's an abomination that's possible and an endless cause of trouble :/
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
