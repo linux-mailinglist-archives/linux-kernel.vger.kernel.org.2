@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9333030FAA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A513930FA9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238886AbhBDSFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
+        id S238798AbhBDSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238716AbhBDSB6 (ORCPT
+        with ESMTP id S238785AbhBDSCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:01:58 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7997EC06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:01:17 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id c12so4591434wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:01:17 -0800 (PST)
+        Thu, 4 Feb 2021 13:02:06 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D1EC0617A9
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:01:21 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id i63so2583693pfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:01:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=sgNBgGYoMlIjzXJS7k+uTJr90AGrN8C+0QKMchqVgEw=;
-        b=Sge4JAbgrFLOizl11w9D9oQSAmAxwysJJW+ccrQVWH3ezom8wIwM6z9XWUlzOfNRhC
-         Jiz/Z0fwGZlSo+kWjB2iV8VlRI25x/wqVzkaVWFrDTrJLatKYfuN8jzaHg7RCdkDaqE5
-         VKKxtZNvMbU6xv1PrGxNgfs24F1XOAtvlS9QjdUgxxt0D6WrAVj8qoUhNoxMQ0JIEGRi
-         jm32ZYSURfxm7Bbxf95Qa4KEt5B3gzPag9r32O6cMQusXyCbiODFioaUjENYLWWWP+Tb
-         YbDAdDPDq8CFjHTGCe1PVUYpFrmKe/cvt2yMg6pVlCCnPTMOFH/igkbptVPNcYEO4OqS
-         OrGw==
+        bh=VwQNuwUjwq+Nww2o+LSNyWsERhy5B65x0MZjKZu7QiE=;
+        b=V9WwpPLP510i8wJfZNgvI28QHF86yvPAF2UbjF490A7UdbG6rWNl1lQHI6iUez5P5I
+         q6P3soanpTjeUf7jM1+3IbMM+rTkkV/uuAaPppCcVM/cZI6cBnr5ZUijJ6+z0XQp+sEx
+         qtiNPD/C/bRpT/qHUjo1Wx3gZ4c/7Ko9mzN1N8JLcdN+7NuNDQ6Z2kwJEgogdx8chFsV
+         Zjk1/y8n+y+ml5Mh/X8H/kCSTrosuDhIluZYTHjJuFXHJ4jjWKNzrgrIt7PumonTLmiy
+         zZDxXOLnfnoOYKdnCEBlvNQeWMN7qt/V6dy0jLRKgqhvzYfaM/qFP2o0gXdD7TozX+KR
+         CSBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=sgNBgGYoMlIjzXJS7k+uTJr90AGrN8C+0QKMchqVgEw=;
-        b=R8FMGFCSs1doo8jafWYCQjoWtzvjXJM8QQtFjHg0G/3ibZuaSd1v7DKl/9Hy5MLMpP
-         mawkDXwBQgWhztU6OKDjZHO+salQMFfveBYVFFots4VI0EVVKE4PVVwqXAiuOUub9Oy6
-         LKateqBxF/EXoaY8ZnrElcJyTqsGdKask+wx602WDbFtOKGzmwSETsm/YFko9lmztcu6
-         hoMf4ofQbPZKX5My8lOarYV1ZR4UXjRM6s8Vz/9NZcTAw2O4JaADY3yuiMjJFq9Zs1My
-         HzMX8rzj2szEKPbXya3alnHJji9FV9uhKFhWSjIJC3UoDYE0jRh0J+6Bi4Lsrq6z0EKC
-         nLqQ==
-X-Gm-Message-State: AOAM5303Kov/+P4HnqAd57eIgruKOJ/ntVMp9+tbovfv2uEsfwA8mdRA
-        HnSU5shTRwa7CypWzpx2Hwb3Xw==
-X-Google-Smtp-Source: ABdhPJxzVwJVmeoEOZDZT5PwvHVmhUwJ0gSawClAAnwU0xD6ZtCQJxYDI7bHVG6gBHJ0ToO7Ntu4zQ==
-X-Received: by 2002:adf:b749:: with SMTP id n9mr534156wre.267.1612461676095;
-        Thu, 04 Feb 2021 10:01:16 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id t18sm8959891wrr.56.2021.02.04.10.01.15
+        bh=VwQNuwUjwq+Nww2o+LSNyWsERhy5B65x0MZjKZu7QiE=;
+        b=sMfFJCwqDaajGfk0Vj5sydOd76ziLRqfjz6ohqYuqJkaxL+fxRXXoJePLiSKHPirPw
+         +yTiRicU9X07YRtcLvbScaSA3JdbDsd6DFgoPumgJB8htkYZFlySNFdTB7KOzeHWvjU8
+         73iRbnQfNQznGaUAKObrw8tPCOVOZOD/aw3FO0Vf60vX3lUDOrf+t69HF/Ee+N18F/lf
+         4fB+EhS6c5SwyGi5ESoHZOhSJJUfhFSaz9yZ/sRnMb5nbe6enPSUha2RcQmfNKWSfHSO
+         kG6/n918uEhRtfD1TV2qbecwzuP0YEmckWNQOHhyMJRcsCt7MyqSIA0ktoObuSFPLHke
+         BlCA==
+X-Gm-Message-State: AOAM533GV2t1pgUqF+dxNj4L3SwPMV1t7NTofLLwbrwmhG7vrTuUHmGh
+        UiX62ONxmSl5baadBtuRmleq0w==
+X-Google-Smtp-Source: ABdhPJzOC4xxlH8L2u8oSxdvrRQJdYz2hMvPZgL6PoMbtEguOgWPoV+goVrLoronxVDJyxq5LXLWEQ==
+X-Received: by 2002:a63:1110:: with SMTP id g16mr136027pgl.357.1612461680989;
+        Thu, 04 Feb 2021 10:01:20 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:f16f:a28e:552e:abea])
+        by smtp.gmail.com with ESMTPSA id v21sm6613993pfn.80.2021.02.04.10.01.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 10:01:15 -0800 (PST)
-Date:   Thu, 4 Feb 2021 18:01:12 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
- allocator
-Message-ID: <YBw2aIr/Ktx1dsOT@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-13-qperret@google.com>
- <20210202181307.GA17311@willie-the-truck>
- <YBrsep4xK1F4YRWb@google.com>
- <20210204143106.GA20792@willie-the-truck>
- <YBwKRM3uHDMC9S0U@google.com>
- <20210204174849.GA21303@willie-the-truck>
+        Thu, 04 Feb 2021 10:01:20 -0800 (PST)
+Date:   Thu, 4 Feb 2021 10:01:14 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>
+Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
+ regardless of vCPU mode
+Message-ID: <YBw2akNhCBGkoaSZ@google.com>
+References: <20210204000117.3303214-1-seanjc@google.com>
+ <20210204000117.3303214-8-seanjc@google.com>
+ <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
+ <YBtZs4Z2ROeHyf3m@google.com>
+ <f1d2f324-d309-5039-f4f6-bbec9220259f@redhat.com>
+ <e68beed4c536712ddf28cdd8296050222731415e.camel@intel.com>
+ <YBw0a5fFvtOrDwOR@google.com>
+ <c16cbc1c-a834-edd4-bfdf-753ec07c7008@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204174849.GA21303@willie-the-truck>
+In-Reply-To: <c16cbc1c-a834-edd4-bfdf-753ec07c7008@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 04 Feb 2021 at 17:48:49 (+0000), Will Deacon wrote:
-> On Thu, Feb 04, 2021 at 02:52:52PM +0000, Quentin Perret wrote:
-> > On Thursday 04 Feb 2021 at 14:31:08 (+0000), Will Deacon wrote:
-> > > On Wed, Feb 03, 2021 at 06:33:30PM +0000, Quentin Perret wrote:
-> > > > On Tuesday 02 Feb 2021 at 18:13:08 (+0000), Will Deacon wrote:
-> > > > > On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
-> > > > > > + *   __find_buddy(pool, page 0, order 0) => page 1
-> > > > > > + *   __find_buddy(pool, page 0, order 1) => page 2
-> > > > > > + *   __find_buddy(pool, page 1, order 0) => page 0
-> > > > > > + *   __find_buddy(pool, page 2, order 0) => page 3
-> > > > > > + */
-> > > > > > +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
-> > > > > > +				     unsigned int order)
-> > > > > > +{
-> > > > > > +	phys_addr_t addr = hyp_page_to_phys(p);
-> > > > > > +
-> > > > > > +	addr ^= (PAGE_SIZE << order);
-> > > > > > +	if (addr < pool->range_start || addr >= pool->range_end)
-> > > > > > +		return NULL;
-> > > > > 
-> > > > > Are these range checks only needed because the pool isn't required to be
-> > > > > an exact power-of-2 pages in size? If so, maybe it would be more
-> > > > > straightforward to limit the max order on a per-pool basis depending upon
-> > > > > its size?
-> > > > 
-> > > > More importantly, it is because pages outside of the pool are not
-> > > > guaranteed to be covered by the hyp_vmemmap, so I really need to make
-> > > > sure I don't dereference them.
-> > > 
-> > > Wouldn't having a per-pool max order help with that?
-> > 
-> > The issue is, I have no alignment guarantees for the pools, so I may end
-> > up with max_order = 0 ...
+On Thu, Feb 04, 2021, Paolo Bonzini wrote:
+> On 04/02/21 18:52, Sean Christopherson wrote:
+> > > Alternatively there could be something like a is_rsvd_cr3_bits() helper that
+> > > just uses reserved_gpa_bits for now. Probably put the comment in the wrong
+> > > place.  It's a minor point in any case.
+> > That thought crossed my mind, too.  Maybe kvm_vcpu_is_illegal_cr3() to match
+> > the gpa helpers?
 > 
-> Yeah, so you would still need the range tracking,
+> Yes, that's certainly a good name but it doesn't have to be done now. Or at
+> least, if you do it, somebody is guaranteed to send a patch after one month
+> because the wrapper is useless. :)
 
-Hmm actually I don't think I would, but that would essentially mean the
-'buddy' allocator is now turned into a free list of single pages
-(because we cannot create pages of order 1).
-
-> but it would at least help
-> to reduce HYP_MAX_ORDER failed searches each time. Still, we can always do
-> that later.
-
-Sorry but I am not following. In which case do we have HYP_MAX_ORDER
-failed searches?
-
-Thanks,
-Quentin
+LOL, I can see myself doing that...
