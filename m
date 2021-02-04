@@ -2,271 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D8A30F07F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C0430F0B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235377AbhBDKYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235359AbhBDKYR (ORCPT
+        id S235524AbhBDK1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:27:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235369AbhBDK1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:24:17 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5679BC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:23:37 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id k10so506188otl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:23:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XcgEW3mAYPX38OWQ50gNyoqFplO8jrqalewwDA0jJOE=;
-        b=YHA9xoBzq1LX0ETuIqq+7M2+Hnbb0ehp2yvYqQb4GOhhJPMSN3U0QTEpDUARMXC1HY
-         MXMnQ2EV3hmX4Fu1ljjOugipjxZO2S6o/TlKawHs9SpSwEIB/fWlPLtbEr1PEBTQArwm
-         gpsPmYli7yMR11+sEXcxnzrMHqvN3KCEdUpnw=
+        Thu, 4 Feb 2021 05:27:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612434362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OLWFqqioSQuJpJPY+zOLA8DJwaXfSTLmoy294A06xlY=;
+        b=I+knhNCpg1pJ6nrpESPJQVhk4rR3nqO37gVwWr4akdBDOdyKdegejfXO/3S9f4HG9ZCkm0
+        jKsNGUhEMvV5BJm0v4h75okg4T/BIU1AAWymA/3RM/XP3GE1eNRdMfBfXcDH38+3mEkK6F
+        mhHhEqy+JOQ2ooPKvq52mzskNEOHaEk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-H4JgKV9zO0Km38firua44Q-1; Thu, 04 Feb 2021 05:25:58 -0500
+X-MC-Unique: H4JgKV9zO0Km38firua44Q-1
+Received: by mail-ej1-f70.google.com with SMTP id h4so2341099eja.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:25:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XcgEW3mAYPX38OWQ50gNyoqFplO8jrqalewwDA0jJOE=;
-        b=K4pfQTu6HjPXo1vTX3D1gSbsKpxCcks6Aa47TVgbT/whrz1FjZqWFcvhh1ceOKp4wB
-         Nn6sUhW8mzzJDdHVu8daqZ6Vtfsev7IxDZqp2NqtbZOGeHsnnUtNgkHJw1olI7OT/tW0
-         /gXTgRl9CalrHYes1qF3FfSvpA1e7F6iHkJqHq82S2J99URSP/YIxfOuNcKv4EMol1A0
-         LJzGsAqlUv1FNEjhpcjOobhBLR30FpeVgqV6n7g3bMlI9fnCuWeHPwIaZzIWEkUlToyB
-         ENAbldkv94C/wDvrT3bgf6hS0062juwPwi8ONpvkmI1yQD82oGbq/vKgT7HRkj+sS/CC
-         dpMQ==
-X-Gm-Message-State: AOAM532W03tVICYQ10Djabb1VFD93atMWRweo2XoDcpXbTVH2f/j+cXl
-        yOYNm32JJCWYdujnUWKeYrDA4whziC8swAojuAczyw==
-X-Google-Smtp-Source: ABdhPJzddeDp5OzUDd1HqtYjqPJri1JJBUg1S8JFKKQ3zalVUTBaKJqBAv/x2Tx9XPv1Q79n65DE9uF+y8y59uO90FY=
-X-Received: by 2002:a9d:2265:: with SMTP id o92mr5162902ota.188.1612434216704;
- Thu, 04 Feb 2021 02:23:36 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OLWFqqioSQuJpJPY+zOLA8DJwaXfSTLmoy294A06xlY=;
+        b=OHSWLFdTytbotuApPJK0nSMKb6UeUoOO3TF3tI+SbOO064QCVW5xlAeBCqWbehW5/v
+         ufuYnA9qtlnyunvXvq0bWLsEK0qn6XpR7g4z1xRA6qHGyJVlqBI8TfjPjmVpH/zu8QJy
+         WDiNv8V2VTz1gN8fblwEB4xybcE43OWc1ZLxEBMf0ELGGYJ15g0ftY+1tAv/uBtOAyEw
+         IOXO875sLRduSF6JYloP4/JcW9d4W2sRbQ0R7lEQ05omJXH9o92OyGPF86szQj94N02z
+         E2HP5tCkrWM2ryZ2dVK7dmdrUzs2ibPgEhZrP7gkBIHC97ays4pM/aXJLbZ843Q88P/q
+         Vv+g==
+X-Gm-Message-State: AOAM530fU41bxZmwogsPu0cQj8+YNM3h335VzIHje6uqmP28UB1NL167
+        42Uu59Zg6CeotTJzBl3tyHxPKV9jZNZaUKzUQwtJ30FSa9DlTST0GdH88x7qDXboPsHuVhCfRnR
+        izd7UQreOFlFiVTe//jatUjZa
+X-Received: by 2002:a17:906:660b:: with SMTP id b11mr7786798ejp.458.1612434357561;
+        Thu, 04 Feb 2021 02:25:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyfUEL2lUcZLgfZ9Y/2lbVtndPBhLJVsJgRX8pZK0yj1Upi/WWsjVlAqx7qWdxEnRbUuMGGGA==
+X-Received: by 2002:a17:906:660b:: with SMTP id b11mr7786780ejp.458.1612434357413;
+        Thu, 04 Feb 2021 02:25:57 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id y8sm2119405edd.97.2021.02.04.02.25.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 02:25:56 -0800 (PST)
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+To:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
+Date:   Thu, 4 Feb 2021 11:25:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch>
- <20201127164131.2244124-13-daniel.vetter@ffwll.ch> <CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com>
- <YAbtZBU5PMr68q9E@kroah.com> <CAKMK7uGHSgetm7mDso6_vj+aGrR4u+ChwHb3k0QvgG0K6X2fPg@mail.gmail.com>
- <YAb4yD4IbpQ3qhJG@kroah.com> <CAKMK7uF9RfqhOGzcjgXTY62-dFS7ELr+uHuRDhEjOcO-kSgY+w@mail.gmail.com>
- <CAKMK7uG7QiP6m5jfidn7AWVhXp1JUZNpgpNPWOV6bqo9H+7vXA@mail.gmail.com>
-In-Reply-To: <CAKMK7uG7QiP6m5jfidn7AWVhXp1JUZNpgpNPWOV6bqo9H+7vXA@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 4 Feb 2021 11:23:25 +0100
-Message-ID: <CAKMK7uGbr0BQT65FT5iTBtiuorun+TtJdMyR2p_OAdfpHxCskg@mail.gmail.com>
-Subject: Re: [PATCH v7 12/17] PCI: Revoke mappings like devmem
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210120214957.140232-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 5:14 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote=
-:
->
-> On Tue, Jan 19, 2021 at 5:03 PM Daniel Vetter <daniel.vetter@ffwll.ch> wr=
-ote:
-> >
-> > On Tue, Jan 19, 2021 at 4:20 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Jan 19, 2021 at 03:34:47PM +0100, Daniel Vetter wrote:
-> > > > On Tue, Jan 19, 2021 at 3:32 PM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Tue, Jan 19, 2021 at 09:17:55AM +0100, Daniel Vetter wrote:
-> > > > > > On Fri, Nov 27, 2020 at 5:42 PM Daniel Vetter <daniel.vetter@ff=
-wll.ch> wrote:
-> > > > > > >
-> > > > > > > Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver =
-claims
-> > > > > > > the region") /dev/kmem zaps ptes when the kernel requests exc=
-lusive
-> > > > > > > acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM,=
- this is
-> > > > > > > the default for all driver uses.
-> > > > > > >
-> > > > > > > Except there's two more ways to access PCI BARs: sysfs and pr=
-oc mmap
-> > > > > > > support. Let's plug that hole.
-> > > > > > >
-> > > > > > > For revoke_devmem() to work we need to link our vma into the =
-same
-> > > > > > > address_space, with consistent vma->vm_pgoff. ->pgoff is alre=
-ady
-> > > > > > > adjusted, because that's how (io_)remap_pfn_range works, but =
-for the
-> > > > > > > mapping we need to adjust vma->vm_file->f_mapping. The cleane=
-st way is
-> > > > > > > to adjust this at at ->open time:
-> > > > > > >
-> > > > > > > - for sysfs this is easy, now that binary attributes support =
-this. We
-> > > > > > >   just set bin_attr->mapping when mmap is supported
-> > > > > > > - for procfs it's a bit more tricky, since procfs pci access =
-has only
-> > > > > > >   one file per device, and access to a specific resources fir=
-st needs
-> > > > > > >   to be set up with some ioctl calls. But mmap is only suppor=
-ted for
-> > > > > > >   the same resources as sysfs exposes with mmap support, and =
-otherwise
-> > > > > > >   rejected, so we can set the mapping unconditionally at open=
- time
-> > > > > > >   without harm.
-> > > > > > >
-> > > > > > > A special consideration is for arch_can_pci_mmap_io() - we ne=
-ed to
-> > > > > > > make sure that the ->f_mapping doesn't alias between ioport a=
-nd iomem
-> > > > > > > space. There's only 2 ways in-tree to support mmap of ioports=
-: generic
-> > > > > > > pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the s=
-ingle
-> > > > > > > architecture hand-rolling. Both approach support ioport mmap =
-through a
-> > > > > > > special pfn range and not through magic pte attributes. Alias=
-ing is
-> > > > > > > therefore not a problem.
-> > > > > > >
-> > > > > > > The only difference in access checks left is that sysfs PCI m=
-map does
-> > > > > > > not check for CAP_RAWIO. I'm not really sure whether that sho=
-uld be
-> > > > > > > added or not.
-> > > > > > >
-> > > > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > > > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > > > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > > > > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > > > > > > Cc: Jan Kara <jack@suse.cz>
-> > > > > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > > > Cc: linux-mm@kvack.org
-> > > > > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > > > > Cc: linux-samsung-soc@vger.kernel.org
-> > > > > > > Cc: linux-media@vger.kernel.org
-> > > > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > > > Cc: linux-pci@vger.kernel.org
-> > > > > > > Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > > > > > --
-> > > > > > > v2:
-> > > > > > > - Totally new approach: Adjust filp->f_mapping at open time. =
-Note that
-> > > > > > >   this now works on all architectures, not just those support
-> > > > > > >   ARCH_GENERIC_PCI_MMAP_RESOURCE
-> > > > > > > ---
-> > > > > > >  drivers/pci/pci-sysfs.c | 4 ++++
-> > > > > > >  drivers/pci/proc.c      | 1 +
-> > > > > > >  2 files changed, 5 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.=
-c
-> > > > > > > index d15c881e2e7e..3f1c31bc0b7c 100644
-> > > > > > > --- a/drivers/pci/pci-sysfs.c
-> > > > > > > +++ b/drivers/pci/pci-sysfs.c
-> > > > > > > @@ -929,6 +929,7 @@ void pci_create_legacy_files(struct pci_b=
-us *b)
-> > > > > > >         b->legacy_io->read =3D pci_read_legacy_io;
-> > > > > > >         b->legacy_io->write =3D pci_write_legacy_io;
-> > > > > > >         b->legacy_io->mmap =3D pci_mmap_legacy_io;
-> > > > > > > +       b->legacy_io->mapping =3D iomem_get_mapping();
-> > > > > > >         pci_adjust_legacy_attr(b, pci_mmap_io);
-> > > > > > >         error =3D device_create_bin_file(&b->dev, b->legacy_i=
-o);
-> > > > > > >         if (error)
-> > > > > > > @@ -941,6 +942,7 @@ void pci_create_legacy_files(struct pci_b=
-us *b)
-> > > > > > >         b->legacy_mem->size =3D 1024*1024;
-> > > > > > >         b->legacy_mem->attr.mode =3D 0600;
-> > > > > > >         b->legacy_mem->mmap =3D pci_mmap_legacy_mem;
-> > > > > > > +       b->legacy_io->mapping =3D iomem_get_mapping();
-> > > > > >
-> > > > > > Unlike the normal pci stuff below, the legacy files here go boo=
-m
-> > > > > > because they're set up much earlier in the boot sequence. This =
-only
-> > > > > > affects HAVE_PCI_LEGACY architectures, which aren't that many. =
-So what
-> > > > > > should we do here now:
-> > > > > > - drop the devmem revoke for these
-> > > > > > - rework the init sequence somehow to set up these files a lot =
-later
-> > > > > > - redo the sysfs patch so that it doesn't take an address_space
-> > > > > > pointer, but instead a callback to get at that (since at open t=
-ime
-> > > > > > everything is set up). Imo rather ugly
-> > > > > > - ditch this part of the series (since there's not really any t=
-akers
-> > > > > > for the latter parts it might just not make sense to push for t=
-his)
-> > > > > > - something else?
-> > > > > >
-> > > > > > Bjorn, Greg, thoughts?
-> > > > >
-> > > > > What sysfs patch are you referring to here?
-> > > >
-> > > > Currently in linux-next:
-> > > >
-> > > > commit 74b30195395c406c787280a77ae55aed82dbbfc7 (HEAD ->
-> > > > topic/iomem-mmap-vs-gup, drm/topic/iomem-mmap-vs-gup)
-> > > > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > > Date:   Fri Nov 27 17:41:25 2020 +0100
-> > > >
-> > > >    sysfs: Support zapping of binary attr mmaps
-> > > >
-> > > > Or the patch right before this one in this submission here:
-> > > >
-> > > > https://lore.kernel.org/dri-devel/20201127164131.2244124-12-daniel.=
-vetter@ffwll.ch/
-> > >
-> > > Ah.  Hm, a callback in the sysfs file logic seems really hairy, so I
-> > > would prefer that not happen.  If no one really needs this stuff, why
-> > > not just drop it like you mention?
-> >
-> > Well it is needed, but just on architectures I don't care about much.
-> > Most relevant is perhaps powerpc (that's where Stephen hit the issue).
-> > I do wonder whether we could move the legacy pci files setup to where
-> > the modern stuff is set up from pci_create_resource_files() or maybe
-> > pci_create_sysfs_dev_files() even for HAVE_PCI_LEGACY. I think that
-> > might work, but since it's legacy flow on some funny architectures
-> > (alpha, itanium, that kind of stuff) I have no idea what kind of
-> > monsters I'm going to anger :-)
->
-> Back from a week of vacation, I looked at this again and I think
-> shouldn't be hard to fix this with the sam trick
-> pci_create_sysfs_dev_files() uses: As long as sysfs_initialized isn't
-> set we skip, and then later on when the vfs is up&running we can
-> initialize everything.
->
-> To be able to apply the same thing to pci_create_legacy_files() I
-> think all I need is to iterate overa all struct pci_bus in
-> pci_sysfs_init() and we're good. Unfortunately I didn't find any
-> for_each_pci_bus(), so how do I do that?
+Hi all,
 
-pci_find_next_bus() seems to be the answer I want. I'll see whether
-that works and then send out new patches.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+On 1/20/21 10:49 PM, Hans de Goede wrote:
+> Hi All,
+> 
+> Here is v4 of my series to add support for Intel Bay Trail based devices
+> which use a WM5102 codec for audio output/input.
+> 
+> This was developed and tested on a Lenovo Yoga Tablet 1051L.
+> 
+> The MFD and ASoC parts do not have any build-time dependencies
+> on each other. But the follow-up jack-detect series does have
+> patches depending on each-other and on this series. So IMHO it
+> would be best if this entire series would be merged through the
+> MFD tree to make merging the follow-up series easier.
+> 
+> Mark, if that is ok with you (and you are happy with the ASoC
+> changes) can you please Ack this ?
+
+I believe that this series and the follow-up:
+
+"[PATCH v4 00/13] MFD/extcon/ASoC: Rework arizona codec jack-detect support"
+
+series are both ready for merging. All patches have Reviewed-by and/or
+Acked-by tags now.
+
+I guess it is too late for 5.12, but it would be nice to at least formulate
+a plan for getting this merged after 5.12-rc1 is out. Given the
+interdependencies I still believe that it is best to merge all the patches
+through the mfd tree and then have Lee provide an immutable branch for the
+other subsystems to merge.
+
+Mark and extcon-maintainers (for the follow-up series) may we have your ack
+for merging these through the MFD tree ?
+
+Regards,
+
+Hans
+
