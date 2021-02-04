@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E97630F2D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B903030F2D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbhBDMEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:04:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:57122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235578AbhBDMEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:04:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6CD6D6E;
-        Thu,  4 Feb 2021 04:03:50 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA3343F73B;
-        Thu,  4 Feb 2021 04:03:48 -0800 (PST)
-Subject: Re: [PATCH 0/8] sched/fair: misfit task load-balance tweaks
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-References: <20210128183141.28097-1-valentin.schneider@arm.com>
- <20210203151400.ommltjjyuok4yj5e@e107158-lin> <jhjim792dro.mognet@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <66efcfb1-d6ee-248a-e337-d690cda1bb5a@arm.com>
-Date:   Thu, 4 Feb 2021 13:03:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235817AbhBDMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:06:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235613AbhBDMGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 07:06:08 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65642C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:05:28 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id j11so1634814plt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3gCwnJ3I9TFynlXEE8EgeDSc39OV8tdTTKcZtSs6Ob4=;
+        b=pMVNR9XQ5X8T87rmsm48JCoslRIqG0EnlWBjAb6WHAvZOeIxyj2TRJh9wRqraexw/g
+         ziQJ35MJ8oLcyIL8gD73cX9x0S3QP3ZHCsXx1d9apIGe3IP2QhCrsODgomRmEuF/BM/s
+         TNiQTIGJWqXuqvTeF8rUedp93b/6llTNJfLExHC8WCB/2nLPdtBDEzD/KoXxLR2diMwW
+         cTtzZ8waYaNGVVS0S52ML3lY5B8vxdKUH8BHnp8l6/zclOWgJOio+28qUntlf8pp+Z+L
+         xn1NRzQ4BguP4n7giKheAxDsLeSPx5BnXRz9nbMgO81daLgjLIeuHQOF9gfltTISKdTl
+         8xxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3gCwnJ3I9TFynlXEE8EgeDSc39OV8tdTTKcZtSs6Ob4=;
+        b=rcQs9VETNSW/mo1U4zdM8BkI8i7cIC7RW+Bkm/H8FlxkGvqkyus79P6l38/uKIli6I
+         06QN4iYU0L94tFT6g9NUv+Uv4wweaB/sVk3HyyZm1GxdInWVZYl7Td6IohBI5EH/2Pm7
+         uagNhAJ3f39Oc+u4TRuDCaPj2+oU3kw/oOsV2W7Ltt0+D15Md4Lsgff+NcwP83xJ/eRz
+         /we9STFn4YjA8wpXZHoKKcRGwG5XsT6Fq2wgnAvDi4iUiu95+i1TnS46/zZ1Yyoi4r2N
+         DquDpXYvzt30x/O1nO71Hom2y7wsmAjLDOapilmZhJuk0sxnsPtWn0woqZsU2WN0tbBX
+         AvJA==
+X-Gm-Message-State: AOAM530uVfVk7FnSC2bQVl/NHmApqqxHz1bm2ndCTM6oBJ+gYwbhN23H
+        IG/vkb2pl4ZUJLTJ3Qe8GPpUBBcywiI2cavzJBtjgg==
+X-Google-Smtp-Source: ABdhPJwzDbuoQicSrDC63yyRE+e3cv4bXJqhpUMqxqgXg7BPyh+dk863cUQABNYOGRT+4bP925wm4mKt33lqmX4ll5A=
+X-Received: by 2002:a17:90a:4ecb:: with SMTP id v11mr8360759pjl.75.1612440327917;
+ Thu, 04 Feb 2021 04:05:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <jhjim792dro.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210128111549.GA8174@zhaomy-pc>
+In-Reply-To: <20210128111549.GA8174@zhaomy-pc>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 4 Feb 2021 13:05:16 +0100
+Message-ID: <CAG3jFysU4epjS3A85ZojrJn3TAC78O_jx5p_4SWsCdRBrQ5GXQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: anx7625: enable DSI EOTP
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/2021 19:43, Valentin Schneider wrote:
-> Hi Qais,
-> 
-> On 03/02/21 15:14, Qais Yousef wrote:
->> On 01/28/21 18:31, Valentin Schneider wrote:
->>> Hi folks,
->>>
->>> Here is this year's series of misfit changes. On the menu:
->>>
->>> o Patch 1 is an independent active balance cleanup
->>> o Patch 2 adds some more sched_asym_cpucapacity static branches
->>> o Patch 3 introduces yet another margin for capacity to capacity
->>>   comparisons
->>> o Patches 4-6 build on top of patch 3 and change capacity comparisons
->>>   throughout misfit load balancing  
->>> o Patches 7-8 fix some extra misfit issues I've been seeing on "real"
->>>   workloads.
->>>
->>> IMO the somewhat controversial bit is patch 3, because it attempts to solve
->>> margin issues by... Adding another margin. This does solve issues on
->>> existing platforms (e.g. Pixel4), but we'll be back to square one the day
->>> some "clever" folks spin a platform with two different CPU capacities less than
->>> 5% apart.
->>
->> One more margin is a cause of apprehension to me. But in this case I think it
->> is the appropriate thing to do now. I can't think of a scenario where this
->> could hurt.
->>
-> 
-> Thanks for having a look!
-> 
->> Thanks
->>
->> --
->> Qais Yousef
+Hi Xin,
 
-How did you verify the benefit of these changes?
+Thanks for the patch.
 
-It's clear that you need a platform with capacity_orig diffs <20%
-between CPU types (like Pixel4 - SD855 (4x261, 3x871, 1x1024) or QC's
-RB5 platform - SD865 (4x284, 3x871, 1*1024)) but which
-benchmark/testcase did you use?
+On Thu, 28 Jan 2021 at 12:17, Xin Ji <xji@analogixsemi.com> wrote:
+>
+> Enable DSI EOTP feature for fixing some panel screen constance
+> shift issue.
+> Removing MIPI flag MIPI_DSI_MODE_EOT_PACKET to enable DSI EOTP.
+
+I don't think I quite understand how removing the
+MIPI_DSI_MODE_EOT_PACKET flag will cause DSI EOTP to be enabled. Could
+you extrapolate on this in the commit message?
+
+>
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 65cc059..e31eeb1b 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -1334,7 +1334,6 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
+>                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
+> -               MIPI_DSI_MODE_EOT_PACKET        |
+>                 MIPI_DSI_MODE_VIDEO_HSE;
+>
+>         if (mipi_dsi_attach(dsi) < 0) {
+> --
+> 2.7.4
+>
