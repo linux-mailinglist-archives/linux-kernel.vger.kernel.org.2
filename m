@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3C030FFC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECDA30FFC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBDVzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        id S230033AbhBDV4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhBDVzP (ORCPT
+        with ESMTP id S229736AbhBDV4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:55:15 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08060C0613D6;
-        Thu,  4 Feb 2021 13:54:34 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id u25so6902676lfc.2;
-        Thu, 04 Feb 2021 13:54:34 -0800 (PST)
+        Thu, 4 Feb 2021 16:56:15 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F23C0613D6;
+        Thu,  4 Feb 2021 13:55:35 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id z22so3597714qto.7;
+        Thu, 04 Feb 2021 13:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NAgqYHbywIYs2QshwFgb53FlD6EOq34SaKwHmoFcyVM=;
-        b=lXdPKhc3IDXew+8Sl8q4BmrYbduDfqCk1Mws3R1KsWf0yajkhguDZ7QTNgzRSu6bpF
-         Wu9d4gU2ZYPCxRpnLoszfYEP3lJkNa8NMIwznkV1ncfXvu1oZVqbE8YoolOqzgdSuIvP
-         CHnu2G4Yfp/qIWAdfyNoPEvZnnEazWKWzyo4KbJwVx7YZ2e29fDtCPpylwX31/BPnoDT
-         4eS5dvFtoOQbWKKUHmx1u+IXu0n4ZBwe58e8aZmsh9qyYErQrMlQ4G/g2zLMn3QBO0Gc
-         n/BSHCmNED4sHSAAvRbGYcuXBSUYse6F9+S/pOK9rTd2cFwY9BX3OjqNGmCMZH5ucaBm
-         ZPYQ==
+        bh=TpNR/qUQzjMgrNMY8WiD0ezGe7uykjtuTLC9thjn8a4=;
+        b=RNpwBclZVwN9RxcPCe+47atq297vQ3yjHyfe3aRBa0mPQyIzbTyjxaQLuP2D35m1HZ
+         aHLGzjzAiiItFIkjqEbKdKfcoofm5NnPSCK9xY0em2J1NLgx1YGFwSFutZcO/4Ex7796
+         U/WCHURkUYWOOrLYgnIzL0Cn1zTF5RbGEEqENiyXG/fJER1YJPUtq16vqJa67Rck5Ql/
+         GrqL03lMn3kbGbKMMpLQp+V1ws74gKDpRub9eyN4ky0E+DuXiiC5lOCZf0fTAaAthSvZ
+         RsQLKLRRkGRKCh9ZOlkq/+3xcFKfR3C0bUG2stT3yg7To/6QPy18i7+9/asarXLnMFlp
+         dBOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NAgqYHbywIYs2QshwFgb53FlD6EOq34SaKwHmoFcyVM=;
-        b=DUkhdZDRSyTndW+/iJPlEK1RXkDLubV/toj+JBly1UqndB2cMXR/uaLDbqZlmC5yl9
-         xKBxVn2Y/wVwjshiWT7I7Srs+/3aP21CPBFxf83MfzSHHwrw6DmbNEfHvh3qdND6hv9e
-         BMsHWtkhrQ77JQbUYgyZQKIvM6VM0QqI3rjzAsP7BzJ4WRMVfsJ1LlO7AzO8kMSNWKMN
-         chQH1tOc1S1cPk/fdSsK6IMfXADxLDIQAKfAfs7WfNX0zYyRjvKgixFdtx1strcONsbR
-         J85pYHtW1xgUQJmZqqFhDFWzOUg18FHnrIWR68IS5R0QuBdw9oI+9D/4bRIwoHETGvan
-         9RFA==
-X-Gm-Message-State: AOAM531LpMKFFmgv0ll/JZgjivTL5P4n8TmX7r0V7ncKPqQPpx5c70Is
-        rTZF5T6/lM1L1WIUpq2j3t4=
-X-Google-Smtp-Source: ABdhPJwlWUvIhc13/2RbhPaMewunp5RbevdWqUpLZH09DlBVAan2+n6kj6b/WBNtF18AMttZ/4DU1w==
-X-Received: by 2002:a05:6512:4c5:: with SMTP id w5mr753720lfq.92.1612475673375;
-        Thu, 04 Feb 2021 13:54:33 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id u18sm796647ljl.57.2021.02.04.13.54.32
+        bh=TpNR/qUQzjMgrNMY8WiD0ezGe7uykjtuTLC9thjn8a4=;
+        b=bvBjvTcjtKQ5nMhImSWB9dbMUvHhaoid+jE4BONIKUiICpLSDxQ9hpqnjTGK/tvl8J
+         RN+HSpYGtKBnwBiOrgr5Jl0BLCyFOJQqQedd1lvdqr/g60veK+sYMDoKd9Wd35ioQnBX
+         rmZmRrteFe5uoD3j4g8XnNdTn2S3hAAFB7+dL5DCwM8Ivvu91gM3yX7RoGai3E79lw/q
+         RffSguzZAVMfIdihtHmfSSW9G+JiZOYv98WKkh5FaIFXRRrEsVXBLEjJbEfS0K+hA9rS
+         w934hNpBslXuwHAlmFb9Y+w8qQ9AB5j+4MEtn0aNx0aVft97lVE5kaEET72ZnYBG95e+
+         UM/Q==
+X-Gm-Message-State: AOAM530t93wSX5ynEl6QCtXFVRlYk3Iog3w0kRptUDQS7ilwyf7DqGou
+        kQWq+68QlN8CIKNI4HmqmEA=
+X-Google-Smtp-Source: ABdhPJzlpDuhn/mJzhWCfkUnpQCI85+erWHahrbX/wavXQ+zIuymbwaFTRyApeqeHTmTBEzDIL8QKQ==
+X-Received: by 2002:ac8:5995:: with SMTP id e21mr1665445qte.294.1612475734577;
+        Thu, 04 Feb 2021 13:55:34 -0800 (PST)
+Received: from localhost.localdomain ([45.87.214.195])
+        by smtp.googlemail.com with ESMTPSA id l30sm5366573qtv.54.2021.02.04.13.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 13:54:32 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] tpm/ppi: Constify static struct attribute_group
-Date:   Thu,  4 Feb 2021 22:54:27 +0100
-Message-Id: <20210204215427.49047-1-rikard.falkeborn@gmail.com>
+        Thu, 04 Feb 2021 13:55:33 -0800 (PST)
+From:   ameynarkhede02@gmail.com
+To:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        gregkh@linuxfoundation.org
+Cc:     netdev@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Amey Narkhede <ameynarkhede02@gmail.com>
+Subject: [PATCH] staging: qlge/qlge_main: Use min_t instead of min
+Date:   Fri,  5 Feb 2021 03:24:51 +0530
+Message-Id: <20210204215451.69928-1-ameynarkhede02@gmail.com>
 X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,28 +64,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of ppi_attr_grp is to put its address in an array of
-pointers to const struct attribute_group. Make it const to allow the
-compiler to put it in read-only memory.
+From: Amey Narkhede <ameynarkhede02@gmail.com>
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Use min_t instead of min function in qlge/qlge_main.c
+Fixes following checkpatch.pl warning:
+WARNING: min() should probably be min_t(int, MAX_CPUS, num_online_cpus())
+
+Signed-off-by: Amey Narkhede <ameynarkhede02@gmail.com>
 ---
- drivers/char/tpm/tpm_ppi.c | 2 +-
+ drivers/staging/qlge/qlge_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm_ppi.c b/drivers/char/tpm/tpm_ppi.c
-index b2dab941cb7f..40018a73b3cb 100644
---- a/drivers/char/tpm/tpm_ppi.c
-+++ b/drivers/char/tpm/tpm_ppi.c
-@@ -358,7 +358,7 @@ static struct attribute *ppi_attrs[] = {
- 	&dev_attr_tcg_operations.attr,
- 	&dev_attr_vs_operations.attr, NULL,
- };
--static struct attribute_group ppi_attr_grp = {
-+static const struct attribute_group ppi_attr_grp = {
- 	.name = "ppi",
- 	.attrs = ppi_attrs
- };
--- 
-2.30.0
+diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+index 402edaeff..29606d1eb 100644
+--- a/drivers/staging/qlge/qlge_main.c
++++ b/drivers/staging/qlge/qlge_main.c
+@@ -3938,7 +3938,7 @@ static int ql_configure_rings(struct ql_adapter *qdev)
+ 	int i;
+ 	struct rx_ring *rx_ring;
+ 	struct tx_ring *tx_ring;
+-	int cpu_cnt = min(MAX_CPUS, (int)num_online_cpus());
++	int cpu_cnt = min_t(int, MAX_CPUS, (int)num_online_cpus());
 
+ 	/* In a perfect world we have one RSS ring for each CPU
+ 	 * and each has it's own vector.  To do that we ask for
+--
+2.30.0
