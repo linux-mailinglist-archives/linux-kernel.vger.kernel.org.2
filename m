@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121C130FE19
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF5130FE25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhBDUWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:22:34 -0500
-Received: from mail-eopbgr00058.outbound.protection.outlook.com ([40.107.0.58]:16259
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240038AbhBDUWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:22:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wr9VtnR02dKxE2sJ1SdxVTXe37NO33EcdxCFpoDdTbFyKU7HR/nkfaiyQTVEo1Z4O+D5QnJz9Pj3P8/dvALglnBRh3EyKIT7twguEyX3Tat9gwzBDigLK4qWFNwQy5ew5h8a0w6Ijd1G9WLD5yXknqJEf1fhp/gmiLwGRgs2rf9A3Dxdpbs0ASTtUb1yu9j1JGH7CJuTZP77yppB87sAY1gw4NZ5i9EbpiyinbXOVq59IJ2EnUITH0Um7R+fz7TM3hexQ0aam2Ohm4yeS4/1NRVf9tvgOd/tjarutRP8Q/14+c2hrCCMnS49ZmzhUyroRgUvzaKGqGwqRP54AFdE0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XGPU55OFfOf8CZBS79tMR5QGuIhZxAPUUAd31w1UbXU=;
- b=JeT59jeBOSGOoRhO0v5JzXxvVQ+rRs5NAbD3kNBLLvQa96rguVGEmVa46jDb+aoYA9WNlfeygI3uAHtWSOT2AVxiKjO7zMQWu62hhuocG7cx0T/pozhr69FwesH1NHL9QYRQxXi5ZGOKzgm3Nczsh69iAtwIdLBfgDBIuaQy8N64spdPuEPd/ba1mTlGvoLMSST0mK+BQpslroCp44ThykUJBdk3FJUGytnR0e6c7Blj83er6kJXqi3vNoKpuQEjqmr62oxNItQ+thaCAULMr0d12CvwvnlLok2hNjN79IZeSmvuRCMMdjiFRyZUJ5ZjC5uCEiQk2HMGCWKmx49u6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XGPU55OFfOf8CZBS79tMR5QGuIhZxAPUUAd31w1UbXU=;
- b=3cmS1alU3zdeJAaf3WqEu22TKz6HVuRkHeZe2UMqKSSWzqaWxZuHtx5fwWe9By8UGirnHNC4E2iisegKBI3Yb1QjsynW1WFQSVO7vuuuMete602AlmwqgzrRsI5KPmxOnpeoJ4pcZEx5lEAgqsAylZeT0OQpXfocEbQGyGF0ysc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
-Received: from AM9PR03MB7251.eurprd03.prod.outlook.com (2603:10a6:20b:26e::16)
- by AM0PR03MB6132.eurprd03.prod.outlook.com (2603:10a6:20b:145::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Thu, 4 Feb
- 2021 20:21:37 +0000
-Received: from AM9PR03MB7251.eurprd03.prod.outlook.com
- ([fe80::a8f2:7dd:46e5:8526]) by AM9PR03MB7251.eurprd03.prod.outlook.com
- ([fe80::a8f2:7dd:46e5:8526%6]) with mapi id 15.20.3825.019; Thu, 4 Feb 2021
- 20:21:37 +0000
-From:   Sean Anderson <sean.anderson@seco.com>
-To:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH] builddeb: Don't look for a missing Module.symvers
-Date:   Thu,  4 Feb 2021 15:20:53 -0500
-Message-Id: <20210204202054.1608664-1-sean.anderson@seco.com>
-X-Mailer: git-send-email 2.25.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [50.195.82.171]
-X-ClientProxiedBy: BL1PR13CA0328.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::33) To AM9PR03MB7251.eurprd03.prod.outlook.com
- (2603:10a6:20b:26e::16)
+        id S240088AbhBDUXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:23:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48692 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240044AbhBDUW2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:22:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612470059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8RUhZ+EXApqGSb7+Tmq9sGFuKWAYlgVlaiJ/4jTiTkk=;
+        b=FNVzSmzDqn6Tf8pYUtOCmhbTipwWgF1uNTpBR5BWujukcSfCi2/a+N5oc5tc/1Tq47yyco
+        rRhjVtT8mmOGlfcVWivOfmOYS29wUUpJL2iiTD0/EdvqjhC/B7O/zZzYvqfKVq6ZC8k/Z3
+        3CG0/WuGI2v4/A6YQvlSrL4yIaK1uSo=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-wHCm88ATO3WRmZ4-YyOrQA-1; Thu, 04 Feb 2021 15:20:58 -0500
+X-MC-Unique: wHCm88ATO3WRmZ4-YyOrQA-1
+Received: by mail-qt1-f199.google.com with SMTP id 22so3519730qty.14
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:20:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8RUhZ+EXApqGSb7+Tmq9sGFuKWAYlgVlaiJ/4jTiTkk=;
+        b=tVU+68N6grJRsGCv3LeL2ElsXw2PgL5NrWFOKeaSaPlaTTP/0jdO82m0CEoL3BdDTI
+         rse9l5ieRTM3grJDbUu7MrCoGvRN1MYk2/8/w8TpfQwYmNgaghXgFGDS7zd5f1WyQgtg
+         cTUu7wW7X4/WacS7t23W22CLMq2VHGW0uafooryuxyTOsjzXrb4UMW0DITVl9eTYYFsD
+         Be+m9D2RrGVDDBPZvcIJ0SwJxN4xrycYXX1k1D9j/075v0y1/FNoaLbBAYnTBK/ME9ac
+         Kgqtv/sIgxS/SQ6zhvp/vJUBiMyW4QG7/qEZsTR8Ieq40ZwlrveQ5c7Dy1PLX4bG7jlz
+         7VaQ==
+X-Gm-Message-State: AOAM532dkEopupJ6a63jnRMWKCJVFgO8mIRMnNX276P4NVKhTOjVJ3Z+
+        qjuZK/SN1I4REmCjLXpc80Wlpwl4xer50CPk0zKml4+cJdcORs3cN3OrGg9okBPnLNtfCzphY/8
+        mNeSQ6LXVzHRSNIYaAZB0IiZV
+X-Received: by 2002:ae9:ef55:: with SMTP id d82mr991082qkg.243.1612470058081;
+        Thu, 04 Feb 2021 12:20:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwMrOpedoRrsIqyFMCtBNBcL9gayR8imVmM/6UmrovjTLeTt3NSZKJNQgK1fpK21QJITN0cvA==
+X-Received: by 2002:ae9:ef55:: with SMTP id d82mr991055qkg.243.1612470057866;
+        Thu, 04 Feb 2021 12:20:57 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id p18sm5990601qkj.130.2021.02.04.12.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 12:20:57 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, Jan Kara <jack@suse.cz>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Wei Zhang <wzam@amazon.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        peterx@redhat.com, Kirill Shutemov <kirill@shutemov.name>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexey Dobriyan <adobriyan@gmail.com>
+Subject: [PATCH v2 5/4] mm: Use is_cow_mapping() across tree where proper
+Date:   Thu,  4 Feb 2021 15:20:55 -0500
+Message-Id: <20210204202055.192260-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210204145033.136755-1-peterx@redhat.com>
+References: <20210204145033.136755-1-peterx@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plantagenet.inhand.com (50.195.82.171) by BL1PR13CA0328.namprd13.prod.outlook.com (2603:10b6:208:2c1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Thu, 4 Feb 2021 20:21:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1fe80c7b-43c3-46cd-5441-08d8c94a7903
-X-MS-TrafficTypeDiagnostic: AM0PR03MB6132:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR03MB6132FDD5378CDF25EB344EF996B39@AM0PR03MB6132.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:862;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tgQbBnhUXfndfYTVgqs3yDS9/DRi+GnMYXmpLAx5QSeFgji18w8A+06upWYs+c1DYBEICGaY6gDNXFT4s2vBd63w70QVV0IE2tDJbqULAfLTFoXMKyHFdzMl87NBYdaGRw/So6fgltbATpQUSqMiXnBQSFcd70WaacM2w5bpr6UNw1GfBCsFssKWDUDpVTWW/bAmHzwqfZgK90iTH3EuQvO3uU+AwbHH31qttWaSXozKF55s74qFiVPA2jVIjkV/XwPEWBi8W/UcLndh1ePjkyVvvkRg3zJ8cFzftUX7o/twASLdNEFsRNJ9diMrjv61hhlTB8hE2fqGIuBqm0L66M5OqWna1QlzvlzdDiTLObSVOLPLbaV3OWX5NY2pgI2XG6WGtCRcQfbs6hkIGhyvRDB02QnCX88NQPVQwvzMD87mxpIS5PkEvRful5FXKOsAy1lX61vffmXrYwXfBoYlf8VA0slSLlpPQ3Ie5GyHUa9+RRTFxEQYFJmKUaAeN5y03JH+Tox3Cb6tZtwKOtiJPw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR03MB7251.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(39840400004)(346002)(16526019)(44832011)(54906003)(6486002)(5660300002)(2906002)(2616005)(1076003)(6506007)(316002)(956004)(36756003)(478600001)(26005)(4744005)(6666004)(86362001)(107886003)(66476007)(4326008)(83380400001)(186003)(52116002)(8676002)(8936002)(66556008)(6512007)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cmpBMEpzbDU4N1E4MlhxV1d2NUhDYkJRQnJtbWpSTVJENUNRK3NvSmEzdlM3?=
- =?utf-8?B?N1h4V0J2YS85U3YxUmlpdlhLbndXWmRXQks3VE9keGQyY0NRVndDczZhMlV1?=
- =?utf-8?B?RDRFaHJVSC9SQTJiSTdDQlVDTktZcVFUL3ZDYWJxaG9wZERRRFdQc1FwUEla?=
- =?utf-8?B?RitmaVI2TXFNQ1RCN2xBZy9YSGpjK2JGSU8rcGRlQXkybTl2eTBVc2xDVnVx?=
- =?utf-8?B?TDJuUndSMGxDL2dibUxwRXJpbDF1UHRDOEs5V3dFQTVYL2tkNDE4ZXE0QVc0?=
- =?utf-8?B?MlN3SDYyVkpmUUdZWWF6cEIwWFNiNzFHY21JdVYrMXRqbyt5dDdpYUZBaE5F?=
- =?utf-8?B?SkhMOVRvRXBOSHZFcWNPRUJLVEFpaWErM0hNOGt6SzFxVi9FU2lvQ3h2U3JH?=
- =?utf-8?B?bDdiSTI0MXlXc3p2WjQ4Y00yODl3azAySktvR3AyWVdUcXlyY251a0xQQ1pa?=
- =?utf-8?B?eWFYNjUzMmlJVVM2NzdhUzJ2cXNBZ2ZLSUJTWGVsQ2prSFZLaFVkNjNzeVp5?=
- =?utf-8?B?VDV2OGZXcTg5K25uSHByL0h4S2xacFZKeDEySmFpVmd3c2lnNkVJYzhaSzZv?=
- =?utf-8?B?Yk1lU3dZQjdRODlQR2FMSE1uVTRqbDFVZkpLL3hjRHRveExVdFM4b0d6dHZl?=
- =?utf-8?B?cDE0SkYydG5oRWcxM2IzUkcvSmlZNmwwdkNzQXo0bDljZGtKb0U3MnFUdStk?=
- =?utf-8?B?MXhUZ1BzaEpMTkkvVjRkZERta2IybHR5aE1tMG0zTk5yZFp5Y1hkUGsvelpq?=
- =?utf-8?B?QlI2bjBBS3A2czF4cURLSXI2OXFMRlhuMlJPa0w4SDkxOHY1Q012ZytLRmFB?=
- =?utf-8?B?UlVZd2RxWHpmMlVkK1FKM3kvNUorQkg1YkEvd1daU0c5WlU4ZjZUR09qWGpT?=
- =?utf-8?B?TVJJanpJNjRlR21XcXNpdCtLZmxydFFRMTNCNTVIK1M2Lys4TWxqN2xaYVRx?=
- =?utf-8?B?bnVDQVFYTUZET2svM3A0Tyt2UG9jdEhkbmp5U252NCthMldXRnljdzRhTXNa?=
- =?utf-8?B?Q2l3eWpiUUZvMjJqQVRNSjJrTEF6U3F1Q2dTcFdia25jYnFtcmprWEI4eUlF?=
- =?utf-8?B?MnY3U1pycm5sNHJKOTFvT3VBd2JFa0M5TzdWcHhYcTRwU2tFd01vMWc0WFlw?=
- =?utf-8?B?SEtqc3JJam90cm1rUWFOZU96V1Y4NlZsamI4VDlzRzlaRVgrcnNnVTRrNk1F?=
- =?utf-8?B?eS8yTGZadndVa0VOZEQ2N2lHMjFNS2txL2pZRTA0bm5yeXUxa2NsZzZDeTE1?=
- =?utf-8?B?VC9kQnpWSFVwL0F5YS8xcUk5RmNpUlFtNFcybFJyNFdVK0NTS251M1NmYzhK?=
- =?utf-8?B?TWpONi93R2xKeURXMjI5UzczelZVK0JtQ2VvSGF4N0pRZkxpSjRpMGVENFZ3?=
- =?utf-8?B?MmhSa0hqWWxVOEVwWHZJRWpDaG0xZ2dSWGJhditiQWZESUhraUFXVCtoZ3Jv?=
- =?utf-8?Q?2TYxbI8T?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fe80c7b-43c3-46cd-5441-08d8c94a7903
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR03MB7251.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 20:21:37.0109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tN6rxnyc9kIFh9GojQVKP1V7AXqZke+JRpIn/X80HI3XK74Q80tvL2sBCyjmk9fMcquNAD6ZXF43n+M1yuInwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB6132
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If deb-pkg is run with CONFIG_MODULES disabled, then make fails with
+After is_cow_mapping() is exported in mm.h, replace some manual checks
+elsewhere throughout the tree but start to use the new helper.
 
-find: ‘Module.symvers’: No such file or directory
-make[4]: *** [scripts/Makefile.package:87: intdeb-pkg] Error 1
-make[3]: *** [Makefile:1523: intdeb-pkg] Error 2
-make[2]: *** [debian/rules:9: binary-arch] Error 2
-
-Only add it to headerobjfiles if we actually have modules.
-
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
+ drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c | 4 +---
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c   | 2 +-
+ fs/proc/task_mmu.c                         | 2 --
+ mm/hugetlb.c                               | 4 +---
+ 4 files changed, 3 insertions(+), 9 deletions(-)
 
- scripts/package/builddeb | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-index 91a502bb97e8..19d44704832b 100755
---- a/scripts/package/builddeb
-+++ b/scripts/package/builddeb
-@@ -71,7 +71,11 @@ deploy_kernel_headers () {
- 			echo tools/objtool/objtool
- 		fi
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
+index 0b76b3d17d4c..22c4a0e9d250 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_page_dirty.c
+@@ -500,8 +500,6 @@ vm_fault_t vmw_bo_vm_huge_fault(struct vm_fault *vmf,
+ 	vm_fault_t ret;
+ 	pgoff_t fault_page_size;
+ 	bool write = vmf->flags & FAULT_FLAG_WRITE;
+-	bool is_cow_mapping =
+-		(vma->vm_flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
  
--		find arch/$SRCARCH/include Module.symvers include scripts -type f
-+		if is_enabled CONFIG_MODULES; then
-+			echo Module.symvers
-+		fi
-+
-+		find arch/$SRCARCH/include include scripts -type f
+ 	switch (pe_size) {
+ 	case PE_SIZE_PMD:
+@@ -518,7 +516,7 @@ vm_fault_t vmw_bo_vm_huge_fault(struct vm_fault *vmf,
+ 	}
  
- 		if is_enabled CONFIG_GCC_PLUGINS; then
- 			find scripts/gcc-plugins -name \*.so
+ 	/* Always do write dirty-tracking and COW on PTE level. */
+-	if (write && (READ_ONCE(vbo->dirty) || is_cow_mapping))
++	if (write && (READ_ONCE(vbo->dirty) || is_cow_mapping(vma->vm_flags)))
+ 		return VM_FAULT_FALLBACK;
+ 
+ 	ret = ttm_bo_vm_reserve(bo, vmf);
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
+index 3c03b1746661..cb9975889e2f 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c
+@@ -49,7 +49,7 @@ int vmw_mmap(struct file *filp, struct vm_area_struct *vma)
+ 	vma->vm_ops = &vmw_vm_ops;
+ 
+ 	/* Use VM_PFNMAP rather than VM_MIXEDMAP if not a COW mapping */
+-	if ((vma->vm_flags & (VM_SHARED | VM_MAYWRITE)) != VM_MAYWRITE)
++	if (!is_cow_mapping(vma->vm_flags))
+ 		vma->vm_flags = (vma->vm_flags & ~VM_MIXEDMAP) | VM_PFNMAP;
+ 
+ 	return 0;
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 602e3a52884d..96c1682025f9 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1036,8 +1036,6 @@ struct clear_refs_private {
+ 
+ #ifdef CONFIG_MEM_SOFT_DIRTY
+ 
+-#define is_cow_mapping(flags) (((flags) & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE)
+-
+ static inline bool pte_is_pinned(struct vm_area_struct *vma, unsigned long addr, pte_t pte)
+ {
+ 	struct page *page;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 5793936e00ef..684d91b68b60 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3756,15 +3756,13 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 	pte_t *src_pte, *dst_pte, entry, dst_entry;
+ 	struct page *ptepage, *prealloc = NULL;
+ 	unsigned long addr;
+-	int cow;
++	int cow = is_cow_mapping(vma->vm_flags);
+ 	struct hstate *h = hstate_vma(vma);
+ 	unsigned long sz = huge_page_size(h);
+ 	struct address_space *mapping = vma->vm_file->f_mapping;
+ 	struct mmu_notifier_range range;
+ 	int ret = 0;
+ 
+-	cow = (vma->vm_flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
+-
+ 	if (cow) {
+ 		mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, src,
+ 					vma->vm_start,
 -- 
-2.25.1
+2.26.2
 
