@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF56C30EA15
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F9530EA25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbhBDCWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:22:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        id S234594AbhBDCZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbhBDCWE (ORCPT
+        with ESMTP id S233319AbhBDCZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:22:04 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57D5C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:21:23 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id e62so1921436yba.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:21:23 -0800 (PST)
+        Wed, 3 Feb 2021 21:25:45 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB35C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:25:05 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id x81so2031964qkb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=g/42xScXFf5XR9eMr0xLh0b+pVsAWUjZtArYlETXels=;
-        b=n7ZfzsEU5707Jb8IFDf1sI6TC1bWTqzNHAeSUUfZo6+TTa4G+zkrE+jq7EeB9rXt8b
-         bc8UrkS2HbhCKerZqsCgGukMrXyUy15p5GKBgj6kDkjwZ/Hjjxkv94K7l+CGf3FCnK5R
-         S/HcjwlI2u5ouqdYw8+yKCGfqROfXbjDVF/5UYAAVWQRb5kMzKxfbFwMe3UokrSa2b9C
-         q74Aw9KeYtT6BAab5JJuBH35KlcFsNmyNeeNMjrRbh8MmjL71ZTagaC7rpxW1sihQDPN
-         jtqdSBf4q1Wfc6R4fr+qQKvlaMi34nkMhOAr+IgDgeJb6fATQdaFd2hxB1OWqjlcNlH2
-         wE7Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=coQqiN3FjhMumWX+Pj5k2VahzTykRwZ/urCVvX96ACs=;
+        b=QRw9w8JbGadOnoLA6qR/63CZCpksB52KDOqQ3673VQ/ViuSlws/Hx9o/vcDJK+Khek
+         Wx4K29ZWJwSd2nZ0Ng5sOry3reqIeFnmjGYHi1IKgsAIHHrYEbhcMDwhAOv6EwObg2uX
+         LOXTgl+qcVDYtk4b+EgCf1YQRHhk28g0CFWXtsSw5P4/5gJgzTUze8qMhYgM+lFEd0yh
+         rh4K0YtwNz5aF/3/YyMjxRhEk7Dr53MWxvva2SqldUvT41+k8FuP1vVQThPHHjQknvQb
+         lq5Ok3CWLm1C0V2OqDOhe3jsWtiAcCwIcp2qnNWDqMHJ7Fvr6gdRY4qZdmrXQlLHwwNn
+         7NWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=g/42xScXFf5XR9eMr0xLh0b+pVsAWUjZtArYlETXels=;
-        b=DxEYhzGOom6uw4SLAXXvI7D39xLBIFA266LW24kAaaiczKrXZCD5KP4zqHJ8OchfPg
-         sDyN/OIscIH/oy+YPJjbVuRlO9H9dspV1ChU9aYEUcNOTn1kP5hUsyrrMKGDQUeXB2yh
-         meyumwUXD+FZ0oVoFAnAJ2ZDpg233XR5FXQHQWzHA0WFnyEGMn7JVvMvUpsWbWNr+lcd
-         6O94GvwCmDP4ihWyf0MBUJ30xB8y0NPHrKJLtGnAUNJm3w/U/wQvH5l6qwdXrZHj6uIz
-         wdy3OzL2eyoH9ya9kIUvuq65JsP5UOoEFZ04BLlZrJaRZ/JwDmd8AFohoyBYLTUoYCqI
-         e2qg==
-X-Gm-Message-State: AOAM530ar9kZYNp80mBD05xndUY42clpNsG1N6Hs6RtG5z/bx0Ym4j6c
-        IcZ5v4OREMKX9ahaA4sEp+Tqf2C/VlAc
-X-Google-Smtp-Source: ABdhPJwu2ZA9n2+TLDL/NzAiymCCkQ4vvqclLSJOsQaXBxoEArD/6YeR3BBlGNb705W0/KCS8ThQ+e2pD+ec
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:91f5:1565:43df:748a])
- (user=amistry job=sendgmr) by 2002:a25:8311:: with SMTP id
- s17mr8883399ybk.259.1612405283198; Wed, 03 Feb 2021 18:21:23 -0800 (PST)
-Date:   Thu,  4 Feb 2021 13:21:09 +1100
-Message-Id: <20210204132043.1.I2392cf11fb353d10459958100b69d93346fa167c@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] x86: Add a prompt for HPET_EMULATE_RTC
-From:   Anand K Mistry <amistry@google.com>
-To:     x86@kernel.org
-Cc:     Anand K Mistry <amistry@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=coQqiN3FjhMumWX+Pj5k2VahzTykRwZ/urCVvX96ACs=;
+        b=he6uH/O/a59ybJ41La+YnigYKD5hBc19Ghr16fb03NdrUwBAFyAXzrgFn8NZ6kXulj
+         q/ruMQm3zNCPcu1b9B7QaAhg8QqO20Nlal1Rt7Da8LGV6kI3vg88cDvERpVgahDobjAN
+         ZwR77+f0NdFrjYWqq2LJ7tVVG+TLEJgMTt+7GLv0XP26d4ilywUjUacEjWwOuHSFqa1f
+         89ZkC9AxssYMY1JNnaqgwwytQN7j5mbC0gwHcMVYgNjGNyBccOBYyrwh6C3KUtOzlKRY
+         blPknCjKK2qoBrpc5adthlmVRF8V48gNLoYCWa+Ll5qjToztBh/VM+ZcUNFsDF8kdTci
+         lG3g==
+X-Gm-Message-State: AOAM530jqsr9T6L/m00Ni2OdzvIIgOZvDV33IM7+g6w+8VUsn3Vc59Bt
+        dtVFvmzEzPW0+ep3N7JO1AGAzGgpiOcyIPFfEfEcLg==
+X-Google-Smtp-Source: ABdhPJyRfjc8PKg1KqpRhg1EDVcRoiAlJjnb05X+vD4GIEVsvYUxljT0A1kSoDUY0OLCR0KH4+t+b5gMLOv09r5pQgs=
+X-Received: by 2002:a37:cd5:: with SMTP id 204mr5690206qkm.410.1612405503880;
+ Wed, 03 Feb 2021 18:25:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202161733.932215-1-kyletso@google.com> <20210202161733.932215-3-kyletso@google.com>
+ <CANLzEksFtyYe01F_+MEFdG+KC83FAu00-PAtc95-v2GswMnTvw@mail.gmail.com>
+In-Reply-To: <CANLzEksFtyYe01F_+MEFdG+KC83FAu00-PAtc95-v2GswMnTvw@mail.gmail.com>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Thu, 4 Feb 2021 10:24:47 +0800
+Message-ID: <CAGZ6i=3EqLVJn+KE4TV2iq+Z+HKOJQzMOgODvw-Z0z3CpjYCzA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/8] usb: pd: Update VDO definitions
+To:     Benson Leung <bleung@chromium.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Prashant Malani <pmalani@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This does two things:
-1. Makes the option visible in menuconfig, allowing the user to easily
-   disable this option
-2. Allows olddefconfig to respoct the option if it is set in the old
-   .config file
+On Thu, Feb 4, 2021 at 12:55 AM Benson Leung <bleung@chromium.org> wrote:
+>
+> Hey Kyle,
+>
+> On Tue, Feb 2, 2021 at 8:23 AM Kyle Tso <kyletso@google.com> wrote:
+> >
+> > "PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10" introduces several
+> > changes regarding the ID Header VDO and the Product Type VDOs.
+> >
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+>
+> We have to actually be very careful in this change, because the switch
+> from PD 2.0 -> PD 3.0 does not mean that a PD 3.0 DFP will never
+> encounter a PD 2.0 partner or cable again.
+>
+> It actually has to be the case that we may have to maintain two sets
+> of these object field definitions (and any other PD object decoding we
+> do in the kernel) and switch the decoding on pd_revision (which I
+> recently added here:
+> https://lore.kernel.org/linux-usb/20210129061406.2680146-3-bleung@chromium.org).
+>
+> Just to put a point on it: PD 2.0's Passive Cable VDO has B4, which is
+> "Vbus through cable." PD 3.0, on the other hand, reserves this bit, so
+> the field is gone. We can't just delete that bit in the kernel's data
+> structures. We have to be able to refer to it if we encounter a PD 2.0
+> cable.
+>
+> I think this change needs to be reworked so that we strictly maintain
+> a PD 2.0 object field definitions, and a separate PD 3.0 one too. They
+> will operate on the same objects, but whoever's doing the decoding has
+> to check the revision (2.0 vs 3.0) first to check applicability of one
+> set or the other.
+>
+> Thanks,
+> Benson
+>
+>
+> --
+> Benson Leung
+> Staff Software Engineer
+> Chrome OS Kernel
+> Google Inc.
+> bleung@google.com
+> Chromium OS Project
+> bleung@chromium.org
 
-It's not clear exactly why the second consequence is true, but it
-appears to be because when the conf tool reads the config file, it only
-respects the existing setting if the option is "visible" (see
-scripts/kconfig/symbol.c:381).
+You are correct!
+Fix is here: https://patchwork.kernel.org/project/linux-usb/patch/20210204005036.1555294-1-kyletso@google.com/
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
-
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..28f814493c7b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -890,6 +890,7 @@ config HPET_TIMER
- 
- config HPET_EMULATE_RTC
- 	def_bool y
-+	prompt "HPET RTC emulation"
- 	depends on HPET_TIMER && (RTC=y || RTC=m || RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
- 
- config APB_TIMER
--- 
-2.30.0.365.g02bc693789-goog
-
+thanks,
+Kyle
