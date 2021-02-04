@@ -2,371 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5E730F7B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0165C30F7B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhBDQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236925AbhBDPEN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:04:13 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A788C0613D6;
-        Thu,  4 Feb 2021 07:03:33 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id c6so4562391ede.0;
-        Thu, 04 Feb 2021 07:03:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CsMggE1T6Db0Mf+4aVw1lDImMHCALtp0EmDWSQ+hzjk=;
-        b=AV1kUnKE/1+RMYTR27ymKOGjWJ6qOgNNUsA2hMtOHnHaUEtE1CKdU0Moc6ack+GDc5
-         fue56MImdLXqCDC6ZoQDfxRX5mUUYemTjEtws1sqlhilKMBnNieFsZDkdF9E3xPXf4it
-         jz+loR9sBN1Do/SpxALFE7Wka7GQ5XuYpjETDjTDDKAIjhY9DAr3ivoY2JAS0MOBFk1a
-         NWhk5g4pgpy/GzAXwtgb4dA3XdDirjhcVvKabilP8VgCjkawiPMqF3MYpYXTd5/mjHH8
-         gPPqxsSR9iHgBYbhMFWI4Of/FCIFIatYjXTvZ4B+5UGl3psrzRKXZ0KYL4rE0mIjm5q/
-         snxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CsMggE1T6Db0Mf+4aVw1lDImMHCALtp0EmDWSQ+hzjk=;
-        b=p+KJLnun+3ptVFHWwwHAuvPN3+iC5T/QCPAsWQPeBfSC3fALyOMY0LtKnqw13A37sY
-         q2ipEGUjGPvlGSAbsM/Wt66Hif1kpY6WAD89TLRywi5+/YE2oMUov6wqvaLqZeOyHe5O
-         FFx6WsK6j51ebYHFLKeHfyhD3fixccftCicheC6rpUJp5OubS4QEJOfZTfTCbfidKwhq
-         7PNqPwD3QmvOhax4+Ac+sypeOg8vfoNLMBmSJxV8iyCRjGMHpgGM+PaO+c9K8UjCPMFa
-         Mqq3UI6dqbuDTubnsWSckzuTbxmMWDWnbH1tTKiPQuRgQbKHdw4NNNmRvfXHG2mSe3Zc
-         VJ5Q==
-X-Gm-Message-State: AOAM531eE4f6/LnBVNvpQE79bC0NMh22/RqT+rrbTMLoLh1tqeO8PKry
-        KrKgiosB/AwD0wRZ2MU6aExgrAhN8KM=
-X-Google-Smtp-Source: ABdhPJxckEbUUMlxgF12SnhiHhLcZ9kucmRnh6hK8Pd16exBTu9Xyc0U9OpGDyGKzc7fLpT3LTn3og==
-X-Received: by 2002:a50:b746:: with SMTP id g64mr8325992ede.33.1612451008450;
-        Thu, 04 Feb 2021 07:03:28 -0800 (PST)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id u21sm2601234ejj.120.2021.02.04.07.03.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 07:03:27 -0800 (PST)
-Subject: Re: [PATCH v2 1/7] dt-bindings: usb: convert rockchip,dwc3.txt to
- yaml
-To:     Robin Murphy <robin.murphy@arm.com>, heiko@sntech.de,
-        Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210203165233.22177-1-jbx6244@gmail.com>
- <41efd28c-ff64-2b9f-2cdc-ac4aaaeb4611@arm.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <bc44860d-57e4-4717-739c-7bbac1d2f56e@gmail.com>
-Date:   Thu, 4 Feb 2021 16:03:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S237755AbhBDQZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:25:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237088AbhBDPE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:04:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD3864DBA;
+        Thu,  4 Feb 2021 15:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612451056;
+        bh=5wbQA0pqKCxKwBrohdwsCXvH4TBTm/K0JPHr/Ue0Dlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HO8/QAA9f3Fm69AZVQG5mrGLn/ebSPvv2XEssxdlcNXkzp9y3ptZknB219gMREw/v
+         Bu7vHyvQfjEY1bpWXrpIFny2Ii9sSMgdzKEf6wG/g4/A3W1vIoF37UYilj8auz5XTL
+         Wqo1JM5rMZo06v+Tfu6+yacEKPqYnq7a5oJG3IKI=
+Date:   Thu, 4 Feb 2021 16:04:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Andres Freund <andres@anarazel.de>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 103/142] Revert "block: end bio with BLK_STS_AGAIN in
+ case of non-mq devs and REQ_NOWAIT"
+Message-ID: <YBwM7mN4TNXWHpi/@kroah.com>
+References: <20200601174037.904070960@linuxfoundation.org>
+ <20200601174048.647302799@linuxfoundation.org>
+ <20210203123729.3pfsakawrkoh6qpu@alap3.anarazel.de>
+ <YBqfDdVaPurYzZM2@kroah.com>
+ <20210203212826.6esa5orgnworwel6@alap3.anarazel.de>
+ <YBsedX0/kLwMsgTy@kroah.com>
+ <14351e91-5a5f-d742-b087-dc9ec733bbfd@kernel.dk>
+ <20210203235941.2ibyrc5z3desyd2q@alap3.anarazel.de>
+ <207c4fb1-a3cb-9210-e2b6-8e5490872df6@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <41efd28c-ff64-2b9f-2cdc-ac4aaaeb4611@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <207c4fb1-a3cb-9210-e2b6-8e5490872df6@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-Thank you for your comments.
-The old binding txt is not so up to date.
-The question is now what do we add or not..
-
-On 2/4/21 12:35 PM, Robin Murphy wrote:
-> On 2021-02-03 16:52, Johan Jonker wrote:
->> In the past Rockchip dwc3 usb nodes were manually checked.
->> With the conversion of snps,dwc3.yaml as common document
->> we now can convert rockchip,dwc3.txt to yaml as well.
->> Remove node wrapper.
->>
->> Added properties for rk3399 are:
->>    power-domains
->>    resets
->>    reset-names
->>
->> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
->> ---
->>   .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
->>   .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 103
->> +++++++++++++++++++++
->>   2 files changed, 103 insertions(+), 56 deletions(-)
->>   delete mode 100644
->> Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->>   create mode 100644
->> Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->> b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->> deleted file mode 100644
->> index 945204932..000000000
->> --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->> +++ /dev/null
->> @@ -1,56 +0,0 @@
->> -Rockchip SuperSpeed DWC3 USB SoC controller
->> -
->> -Required properties:
->> -- compatible:    should contain "rockchip,rk3399-dwc3" for rk3399 SoC
->> -- clocks:    A list of phandle + clock-specifier pairs for the
->> -        clocks listed in clock-names
->> -- clock-names:    Should contain the following:
->> -  "ref_clk"    Controller reference clk, have to be 24 MHz
->> -  "suspend_clk"    Controller suspend clk, have to be 24 MHz or 32 KHz
->> -  "bus_clk"    Master/Core clock, have to be >= 62.5 MHz for SS
->> -        operation and >= 30MHz for HS operation
->> -  "grf_clk"    Controller grf clk
->> -
->> -Required child node:
->> -A child node must exist to represent the core DWC3 IP block. The name of
->> -the node is not important. The content of the node is defined in
->> dwc3.txt.
->> -
->> -Phy documentation is provided in the following places:
->> -Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml -
->> USB2.0 PHY
->> -Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     -
->> Type-C PHY
->> -
->> -Example device nodes:
->> -
->> -    usbdrd3_0: usb@fe800000 {
->> -        compatible = "rockchip,rk3399-dwc3";
->> -        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
->> -             <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
->> -        clock-names = "ref_clk", "suspend_clk",
->> -                  "bus_clk", "grf_clk";
->> -        #address-cells = <2>;
->> -        #size-cells = <2>;
->> -        ranges;
->> -        usbdrd_dwc3_0: dwc3@fe800000 {
->> -            compatible = "snps,dwc3";
->> -            reg = <0x0 0xfe800000 0x0 0x100000>;
->> -            interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
->> -            dr_mode = "otg";
->> -        };
->> -    };
->> -
->> -    usbdrd3_1: usb@fe900000 {
->> -        compatible = "rockchip,rk3399-dwc3";
->> -        clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
->> -             <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
->> -        clock-names = "ref_clk", "suspend_clk",
->> -                  "bus_clk", "grf_clk";
->> -        #address-cells = <2>;
->> -        #size-cells = <2>;
->> -        ranges;
->> -        usbdrd_dwc3_1: dwc3@fe900000 {
->> -            compatible = "snps,dwc3";
->> -            reg = <0x0 0xfe900000 0x0 0x100000>;
->> -            interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
->> -            dr_mode = "otg";
->> -        };
->> -    };
->> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
->> b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
->> new file mode 100644
->> index 000000000..fdf9497bc
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
->> @@ -0,0 +1,103 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Rockchip SuperSpeed DWC3 USB SoC controller
->> +
->> +maintainers:
->> +  - Heiko Stuebner <heiko@sntech.de>
->> +
->> +description:
->> +      The common content of the node is defined in snps,dwc3.yaml.
->> +
->> +      Phy documentation is provided in the following places.
->> +
->> +      USB2.0 PHY
->> +      Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
->> +
->> +      Type-C PHY
->> +      Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
->> +
->> +allOf:
-
->> +  - $ref: snps,dwc3.yaml#
-
-Could Rob advise here? Is this OK or not?
-
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - enum:
->> +          - rockchip,rk3399-dwc3
->> +      - const: snps,dwc3
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    items:
->> +      - description:
->> +          Controller reference clock, must to be 24 MHz
->> +      - description:
->> +          Controller suspend clock, must to be 24 MHz or 32 KHz
->> +      - description:
->> +          Master/Core clock, must to be >= 62.5 MHz for SS
->> +          operation and >= 30MHz for HS operation
->> +      - description:
->> +          Controller aclk_usb3_rksoc_axi_perf clock
+On Thu, Feb 04, 2021 at 07:36:18AM -0700, Jens Axboe wrote:
+> On 2/3/21 4:59 PM, Andres Freund wrote:
+> > Hi,
+> > 
+> > On 2021-02-03 15:58:33 -0700, Jens Axboe wrote:
+> >> On 2/3/21 3:06 PM, Greg Kroah-Hartman wrote:
+> >>> On Wed, Feb 03, 2021 at 01:28:26PM -0800, Andres Freund wrote:
+> >>>> On 2021-02-03 14:03:09 +0100, Greg Kroah-Hartman wrote:
+> >>>>>> On v5.4.43-101-gbba91cdba612 this fails with
+> >>>>>> fio: io_u error on file /mnt/t2/test.0.0: Input/output error: write offset=0, buflen=4096
+> >>>>>> fio: pid=734, err=5/file:io_u.c:1834, func=io_u error, error=Input/output error
+> >>>>>>
+> >>>>>> whereas previously it worked. libaio still works...
+> >>>>>>
+> >>>>>> I haven't checked which major kernel version fixed this again, but I did
+> >>>>>> verify that it's still broken in 5.4.94 and that 5.10.9 works.
+> >>>>>>
+> >>>>>> I would suspect it's
+> >>>>>>
+> >>>>>> commit 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048
+> >>>>>> Author: Jens Axboe <axboe@kernel.dk>
+> >>>>>> Date:   2020-06-01 10:00:27 -0600
+> >>>>>>
+> >>>>>>     io_uring: catch -EIO from buffered issue request failure
+> >>>>>>
+> >>>>>>     -EIO bubbles up like -EAGAIN if we fail to allocate a request at the
+> >>>>>>     lower level. Play it safe and treat it like -EAGAIN in terms of sync
+> >>>>>>     retry, to avoid passing back an errant -EIO.
+> >>>>>>
+> >>>>>>     Catch some of these early for block based file, as non-mq devices
+> >>>>>>     generally do not support NOWAIT. That saves us some overhead by
+> >>>>>>     not first trying, then retrying from async context. We can go straight
+> >>>>>>     to async punt instead.
+> >>>>>>
+> >>>>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> >>>>>>
+> >>>>>>
+> >>>>>> which isn't in stable/linux-5.4.y
+> >>>>>
+> >>>>> Can you test that if the above commit is added, all works well again?
+> >>>>
+> >>>> It doesn't apply cleanly, I'll try to resolve the conflict. However, I
+> >>>> assume that the revert was for a concrete reason - but I can't quite
+> >>>> figure out what b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e was concretely
+> >>>> solving, and whether reverting the revert in 5.4 would re-introduce a
+> >>>> different problem.
+> >>>>
+> >>>> commit b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e (tag: block-5.7-2020-05-29, linux-block/block-5.7)
+> >>>> Author: Jens Axboe <axboe@kernel.dk>
+> >>>> Date:   2020-05-28 13:19:29 -0600
+> >>>>
+> >>>>     Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT"
+> >>>>
+> >>>>     This reverts commit c58c1f83436b501d45d4050fd1296d71a9760bcb.
+> >>>>
+> >>>>     io_uring does do the right thing for this case, and we're still returning
+> >>>>     -EAGAIN to userspace for the cases we don't support. Revert this change
+> >>>>     to avoid doing endless spins of resubmits.
+> >>>>
+> >>>>     Cc: stable@vger.kernel.org # v5.6
+> >>>>     Reported-by: Bijan Mottahedeh <bijan.mottahedeh@oracle.com>
+> >>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> >>>>
+> >>>> I suspect it just wasn't aimed at 5.4, and that's that, but I'm not
+> >>>> sure. In which case presumably reverting
+> >>>> bba91cdba612fbce4f8575c5d94d2b146fb83ea3 would be the right fix, not
+> >>>> backporting 4503b7676a2e0abe69c2f2c0d8b03aec53f2f048 et al.
+> > 
+> > Having looked a bit more through the history, I suspect that the reason
+> > 5.6 doesn't need c58c1f83436b501d45d4050fd1296d71a9760bcb - which I have
+> > confirmed - is that ext4 was converted to the iomap infrastructure in
+> > 5.5, but not in 5.4.
+> > 
+> > I've confirmed that the repro I shared upthread triggers in
+> > 378f32bab3714f04c4e0c3aee4129f6703805550^ but not in
+> > 378f32bab3714f04c4e0c3aee4129f6703805550.
 > 
+> I checked up on this, and I do see the issue as well. As far as
+> io_uring is concerned, we don't need that revert in 5.4. So I think
+> the right solution here would be to... revert the revert :-)
 
-> I'm pretty sure these last 3 don't belong to the controller itself,
-> hence why they were in the glue layer node to being with.
+Thanks for looking at this, I'll go revert the revert now.
 
-New proposal:
-
-		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
-			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
-		clock-names = "ref_clk", "suspend_clk",
-			      "bus_clk", "grf_clk";
-
-Clocks seem to be enabled in bulk.
-
-	ret = clk_bulk_get_all(simple->dev, &simple->clks);
-
-With dt checks no longer able to add "@" in the nodename without reg
-property in the node.
-Given only clocks left in parent node and Rob's comment I've combined
-all in 1 node.
-
-> 
->> +      - description:
->> +          Controller aclk_usb3 clock
-> 
-
-> Does anything in the USB3 block actually consume this clock directly? If
-> not, then I don't think it needs to be specified since it's already the
-> parent of the controller's required bus_clk.
-
-The patch from the manufacturer tree in the link below seems to confirm
-this.
-
-////
-
-From manufacturer tree:
-
-arm64: dts: rockchip: optimize clks for rk3399 dwc3
-
-https://github.com/rockchip-linux/kernel/commit/1948bffacbc7a893d550141a63664b596717623a
-
-remove unnecessary clocks, refer to rk3399 TRM, aclk_usb3 is the
-parent of aclk_usb3otg0/1 and aclk_usb3_grf, and we will enable
-aclk_usb3otg0/1 and aclk_usb3_grf, so don't need to enable aclk_usb3
-again. In addition, the aclk_usb3_rksoc_axi_perf clk is used for usb3
-performance monitor module which we don't use now, so don't need to
-enable it.
-
-////
-> 
-> I'm similarly suspicious of ACLK_USB3_NOC which is currently marked as
-> CLK_IGNORE_UNUSED - if that's necessary for USB3 to function then it
-> probably *should* be specified as part of the glue layer binding here.
-
-Don't know about ACLK_USB3_NOC. I leave it as it is for now.
-
-> 
-> Robin.
-> 
->> +      - description:
->> +          Controller grf clock
->> +
->> +  clock-names:
->> +    items:
->> +      - const: ref_clk
->> +      - const: suspend_clk
->> +      - const: bus_clk
-
->> +      - const: aclk_usb3_rksoc_axi_perf
->> +      - const: aclk_usb3
-
-Remove these ??
-
->> +      - const: grf_clk
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +
-
->> +  resets:
->> +    maxItems: 1
->> +
->> +  reset-names:
->> +    const: usb3-otg
-
-From manufacturer tree:
-
-arm64: dts: rockchip: move resets to the subnode of dwc3 for rk3399
-
-https://github.com/rockchip-linux/kernel/commit/966da4dbacab847825f50a70036baacd74b2358d
-
-////
-
-In mainline:
-
-	/*
-	 * Some controllers need to toggle the usb3-otg reset before trying to
-	 * initialize the PHY, otherwise the PHY times out.
-	 */
-	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
-		simple->need_reset = true;
-	simple->resets = of_reset_control_array_get(np, false, true,
-						    true);
-////
-
-Do we still need "reset-names" here??
-
-
->> +
->> +unevaluatedProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - clock-names
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/rk3399-cru.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +
->> +    bus {
->> +      #address-cells = <2>;
->> +      #size-cells = <2>;
->> +
->> +      usbdrd3_0: usb@fe800000 {
->> +        compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
->> +        reg = <0x0 0xfe800000 0x0 0x100000>;
->> +        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
->> +        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
->> +                 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
->> +                 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
->> +        clock-names = "ref_clk", "suspend_clk",
->> +                      "bus_clk", "aclk_usb3_rksoc_axi_perf",
->> +                      "aclk_usb3", "grf_clk";
->> +        dr_mode = "otg";
->> +      };
->> +    };
->>
-
+greg k-h
