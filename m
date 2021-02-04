@@ -2,69 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D223730E8F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581F830E8F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbhBDAxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:53:22 -0500
-Received: from m12-16.163.com ([220.181.12.16]:36768 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234266AbhBDAxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:53:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=hMNO2n8NEeG+F1B2PO
-        O/M8BjP3yqWv44VFvbWtGSjq4=; b=l75cnHo0BJ0WkcXu9BsVHmM5uKXLS7cD/C
-        OiEVuTCObm/AvtlWzyxV5/lmYoLJgs37PsmhbzTG/UadiJY6FfZ2mxevVInirv8F
-        /zFcAvq604EKZtgZjh8ghZRxKUZ8T0xquzDa9ZrxAFY+PbiqBf4fFymCsF+OBzdN
-        tMADId97s=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowAAHDFD8RBtg9T6UaQ--.22444S2;
-        Thu, 04 Feb 2021 08:51:09 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     stf_xl@wp.pl, rdunlap@infradead.org, helmut.schaa@googlemail.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] rt2x00: remove duplicate word and fix typo in comment
-Date:   Thu,  4 Feb 2021 08:51:19 +0800
-Message-Id: <20210204005119.18060-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EMCowAAHDFD8RBtg9T6UaQ--.22444S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW3Gr48ZF1xCw1rZr4DCFg_yoWDZFg_ur
-        y8urs7Z348Ja4YvF4jvFW7Zrya9r93Zr1kGwnIg39xWryYvrWkWan3AF4Sqw1jkr4jvrnx
-        GF4DJF9Yv3yjqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYpnQUUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiLx0vsVUMXD4-kQAAs5
+        id S234179AbhBDAxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232478AbhBDAxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:53:45 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F569C061788
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 16:52:55 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id f1so2021422lfu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 16:52:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z0j8u/cgjNk63BrE1ROiiO7WIMH6hW9ZaraaxN/GjSE=;
+        b=gVr/bTGSubf6YnOvvpVG//iNim87v02Skx3jR2rMxXBTcD+HF8G3xEAnQQx+0Q+npP
+         pqDCNmdgNk9JsEEyyZ8pGBqPuhB0LWAtXIXpCnbR2QYDJ+XTkBpqezeM0VhEQL870N4F
+         uJkM0MIlJHoRCuuzrpOOrJtOOSiKWEnnBpQbw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z0j8u/cgjNk63BrE1ROiiO7WIMH6hW9ZaraaxN/GjSE=;
+        b=I4aUqJpYVJNZdxbkuzm0q4vuNvZzmQLs7qgFEJ1KFV37KH/EhgZ8PGZdGKYerPfuJn
+         brB/yQow+4YregnXlqatt9g1Nm2KSyY4UUexNTsovjaQxKsbSgveuu0tjnBQnibWjN2b
+         GHjPpOTEVhk9Va2EMl0flVb3taHMsaWJHTVisXXMF0Cf7yxhMVJZK1Je22o2OXAYhStW
+         9v7vH1JbaaXjljhx67er10OsxcIDcGGqzwFGlTSzL3AH1+ubsj88TiThfcQNLGKcDqdw
+         SHkc1OAQmJwGzbBXKMevZdh8E/lPbEg4oIJdx7Ut+DE45xEVLGjXgILN5F+3Iw9pXwsI
+         q3vg==
+X-Gm-Message-State: AOAM532Wg9rED/tBE6s2udV+HFtvImMfma+Y2T2x8F3taXGBzjxi+xjU
+        HnQd5PSm7Sa2OgdD8uwGsncT6znopmCAYyTVxw+uqg==
+X-Google-Smtp-Source: ABdhPJzSprHSC/hLTMNA1akLup57Be6R1Xs+6lZxUgJvmJt7gToshQ1KQ2TSXBrV4DDz+jJi75zB2VS7Nf0bWHH7qGc=
+X-Received: by 2002:a05:6512:3190:: with SMTP id i16mr3254379lfe.200.1612399973566;
+ Wed, 03 Feb 2021 16:52:53 -0800 (PST)
+MIME-Version: 1.0
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble> <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+ <20210203232735.nw73kugja56jp4ls@treble> <CABWYdi1zd51Jb35taWeGC-dR9SChq-4ixvyKms3KOKgV0idfPg@mail.gmail.com>
+ <20210204001700.ry6dpqvavcswyvy7@treble>
+In-Reply-To: <20210204001700.ry6dpqvavcswyvy7@treble>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Wed, 3 Feb 2021 16:52:42 -0800
+Message-ID: <CABWYdi0p91Y+TDUu38eey-p2GtxL6f=VHicTxS629VCMmrNLpQ@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, Feb 3, 2021 at 4:17 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Wed, Feb 03, 2021 at 03:30:35PM -0800, Ivan Babrou wrote:
+> > > > > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> > > > > It will spit out a bunch of stack data.
+> > > >
+> > > > Here's the three I'm building:
+> > > >
+> > > > * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> > > >
+> > > > It contains:
+> > > >
+> > > > * v5.9 tag as the base
+> > > > * static_call-2020-10-12 tag
+> > > > * dm-crypt patches to reproduce the issue with KASAN
+> > > > * x86/unwind: Add 'unwind_debug' cmdline option
+> > > > * tracepoint: Fix race between tracing and removing tracepoint
+> > > >
+> > > > The very same issue can be reproduced on 5.10.11 with no patches,
+> > > > but I'm going with 5.9, since it boils down to static call changes.
+> > > >
+> > > > Here's the decoded stack from the kernel with unwind debug enabled:
+> > > >
+> > > > * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+> > > >
+> > > > See my first email for the exact commands that trigger this.
+> > >
+> > > Thanks.  Do you happen to have the original dmesg, before running it
+> > > through the post-processing script?
+> >
+> > Yes, here it is:
+> >
+> > * https://gist.github.com/bobrik/8c13e6a02555fb21cadabb74cdd6f9ab
+>
+> It appears the unwinder is getting lost in crypto code.  No idea what
+> this has to do with static calls though.  Or maybe you're seeing
+> multiple issues.
+>
+> Does this fix it?
 
-remove duplicate word 'we' in comment
-change 'then' to 'than' in comment
+It does for the dm-crypt case! But so does the following commit in
+5.11 (and 5.10.12):
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+* https://github.com/torvalds/linux/commit/ce8f86ee94?w=1
 
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
-index c861811..ad95f9e 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2x00crypto.c
-@@ -179,7 +179,7 @@ void rt2x00crypto_rx_insert_iv(struct sk_buff *skb,
- 	 * Make room for new data. There are 2 possibilities
- 	 * either the alignment is already present between
- 	 * the 802.11 header and payload. In that case we
--	 * we have to move the header less then the iv_len
-+	 * have to move the header less than the iv_len
- 	 * since we can use the already available l2pad bytes
- 	 * for the iv data.
- 	 * When the alignment must be added manually we must
--- 
-1.9.1
+The reason I stuck to dm-crypt reproduction is that it reproduces reliably.
 
+We also have the following stack that doesn't touch any crypto:
 
+* https://gist.github.com/bobrik/40e2559add2f0b26ae39da30dc451f1e
+
+I cannot reproduce this one, and it took 2 days of uptime for it to
+happen. Is there anything I can do to help diagnose it?
+
+My goal is to enable multishot KASAN in our pre-production
+environment, but currently it sometimes starves TX queues on the NIC
+due to multiple reports in a row in an interrupt about
+unwind_next_frame, which disables network interface, which is not
+something we can tolerate.
