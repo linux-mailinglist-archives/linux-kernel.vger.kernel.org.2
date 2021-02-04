@@ -2,183 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1BF30F1F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF00A30F1FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbhBDLUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        id S235592AbhBDLYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235551AbhBDLUc (ORCPT
+        with ESMTP id S235549AbhBDLXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:20:32 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B2DC0613D6;
-        Thu,  4 Feb 2021 03:19:52 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id y187so2658262wmd.3;
-        Thu, 04 Feb 2021 03:19:52 -0800 (PST)
+        Thu, 4 Feb 2021 06:23:47 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448FBC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:22:50 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id i63so1926659pfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 03:22:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+NQNsmgLjymyzoU3Zkfr8Kgi3bLWvqv+FhgdKhN/wd8=;
-        b=Z4wbM/ZesE9e2jKkCM9CV63YrTCrSmXNRukY0KlRSHHUJM/MUBKgHelpTdSaRZz6A9
-         jic7/GxbnfRJcCvA2e+SvwIi00u/JIVSY7oMkK6NFDMqT0FqQcK4K3SZgz4M8U0JEauB
-         poBo/8lflLlKztlSr6qZ7JHhuc5ciY7Ajhah9dpmq69/NL4JcGppgYGHoE/ZECBR+Uk0
-         k3p3tNDXvTyByr2CmzIoUQtRkmqKNoKBeQ9OGreHRbCls3rY8VibZ9mT2v6QJWcmwXSy
-         LLbL0pTMs805ue4O9FrZmbjZ4SeTpi0jt4W3yy9QDnE5JrBtUzcP+I/SILff9XjGO09q
-         kutA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GLPiUGe2JfnMJOEbNg5zlg1nIqrKgmzt6+aWsIXvJ60=;
+        b=INwTIjT4bjYk+pdg0C5zt7VyXoUWxP1+GjvAIyHgnFZ0TtgKWo+PMoc4TVW9q0rAok
+         Qp4dfx0Bx4EFCseDmINXsM1z0C7kLroY/viwjQIqOAiDK81KHeLvQI5emacNuLQI02Vz
+         /Bt0zrboIoxSy4wtFS8O0Uo8D3ux6YVd9L3lN9AolCJYnnxeEqpwZAsj8NH7Qxh9fWtV
+         eEcZ/xKhfcOqV+vaFIhPEuojiyYJDy95szcDHu6EWjAoOFSdi9TpB8Lf+XZx4EgL++gf
+         opNG7n41Bgdn5vgIB01dM/2af+aitOynX1BlyJAEVlpcYbEthygXR0sq1DHM14CyTdom
+         xEgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+NQNsmgLjymyzoU3Zkfr8Kgi3bLWvqv+FhgdKhN/wd8=;
-        b=mRw8mhCRAHDIZxixuZgEB1PKejYND3WiLNWCw8IuH1OLNUAsKM0IMbBgFAY8+t9eaa
-         FBJLqO3vOXVLG7H/6zQjS1g1w0imrDLizhoFZ2h0V6w5jksPzutvsjswl+KBK7lf3Cg2
-         EyO297Qnqa+5+AgmaHtrF8GM4ODEP45WwOBvpPSQOCCm3OT+hgRTGUgci/hIWHRISFA5
-         oBqqIT9jrkzcBrre+w5pFe9gzXadka05AsMUnPpBZiIwnhq0Lp4NAaADEUPSlAEGyNkM
-         QCygM+RintZRDtHe4TjmADWUwlIc9hod/harxuB2GvihSNifR0LU5VB818xLamqaBqnS
-         MSsg==
-X-Gm-Message-State: AOAM533Va3vMjLDlEzhEZmlGvFcf+d4a/NwqNf0bC5K/aG+KL3dsvXn0
-        QjqYIjAQAAW+ftrhRs4e+xoRk1CODrw=
-X-Google-Smtp-Source: ABdhPJwM8QDtmlNOiM1gYBoPd1mLD70xtd52ge1IkHclh0vALb4mHAcenM/Tq4VZQ12Qu9IDfgjoAw==
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr6940730wmq.160.1612437591270;
-        Thu, 04 Feb 2021 03:19:51 -0800 (PST)
-Received: from debian.vlc ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id c62sm5849770wmd.43.2021.02.04.03.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 03:19:50 -0800 (PST)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mmap2.2: Fix prototype parameter types
-Date:   Thu,  4 Feb 2021 12:19:26 +0100
-Message-Id: <20210204111925.194705-1-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GLPiUGe2JfnMJOEbNg5zlg1nIqrKgmzt6+aWsIXvJ60=;
+        b=spFr7wSds2c+dNKAHwNKGGe5Z/tW3+Wfxf12OvVucBzR0MBy4KGbBi86iwP/P6e44R
+         PyYu4OioQtJRHJ63Kvai4yBeirsjrvzjSVcTq2PnFAHXk7vMpxaaOAIxcPMBD2DlvPe9
+         0+jCE96Y1rJNQaptVmBMzSDn9O/ED6GX/gjqr6Zj7yEfxszLt6LYtuX6NMWjHxbZpoYS
+         /T5bsYcQ2ot5+aJMUGcmv5gLZuwwrETBZEW4D5ZpzReuORI32KvI1yJOVa+W4lL5bUJr
+         GfkPS5AtbHuUJ5mqe0DUPBqilfFU2LSaMu8sfTPfAkWFbzpVp8pnGDYgE/57pBnfPXzR
+         lDBw==
+X-Gm-Message-State: AOAM532TU56eyknuDSNNwQGqUN+kSSRpKrs9EQIlPNLvFN/nXGPTx2GJ
+        OAKKX2CDloRM8Jqa4cFMRYY/YA==
+X-Google-Smtp-Source: ABdhPJxUYLNYiFxorNwBAEAuZl+tA8doYlbnY6d89h1pK8+cTNhpwD6TlPjoN1OJVWm97V94qINThQ==
+X-Received: by 2002:a63:c501:: with SMTP id f1mr8432194pgd.1.1612437769734;
+        Thu, 04 Feb 2021 03:22:49 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id u3sm6156425pfm.144.2021.02.04.03.22.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 03:22:48 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:52:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH v6 3/3] PM / devfreq: Add required OPPs support to
+ passive governor
+Message-ID: <20210204112246.yewojjxv7sy3bhky@vireshk-i7>
+References: <20210204081424.2219311-1-hsinyi@chromium.org>
+ <20210204081424.2219311-4-hsinyi@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204081424.2219311-4-hsinyi@chromium.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are many slightly different prototypes for this syscall,
-but none of them is like the documented one.
-Of all the different prototypes,
-let's document the asm-generic one.
+On 04-02-21, 16:14, Hsin-Yi Wang wrote:
+> From: Saravana Kannan <saravanak@google.com>
+> 
+> Look at the required OPPs of the "parent" device to determine the OPP that
+> is required from the slave device managed by the passive governor. This
+> allows having mappings between a parent device and a slave device even when
+> they don't have the same number of OPPs.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/devfreq/governor_passive.c | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
 
-......
+I have made changes to this patch as well, though I didn't wanted to
+do initially :)
 
-.../linux$ grep_syscall mmap2
-arch/csky/kernel/syscall.c:17:
-SYSCALL_DEFINE6(mmap2,
-	unsigned long, addr,
-	unsigned long, len,
-	unsigned long, prot,
-	unsigned long, flags,
-	unsigned long, fd,
-	off_t, offset)
-arch/microblaze/kernel/sys_microblaze.c:46:
-SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-		unsigned long, prot, unsigned long, flags, unsigned long, fd,
-		unsigned long, pgoff)
-arch/nds32/kernel/sys_nds32.c:12:
-SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-	       unsigned long, prot, unsigned long, flags,
-	       unsigned long, fd, unsigned long, pgoff)
-arch/powerpc/kernel/syscalls.c:60:
-SYSCALL_DEFINE6(mmap2, unsigned long, addr, size_t, len,
-		unsigned long, prot, unsigned long, flags,
-		unsigned long, fd, unsigned long, pgoff)
-arch/riscv/kernel/sys_riscv.c:37:
-SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-	unsigned long, prot, unsigned long, flags,
-	unsigned long, fd, off_t, offset)
-arch/s390/kernel/sys_s390.c:49:
-SYSCALL_DEFINE1(mmap2, struct s390_mmap_arg_struct __user *, arg)
-arch/sparc/kernel/sys_sparc_32.c:101:
-SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-	unsigned long, prot, unsigned long, flags, unsigned long, fd,
-	unsigned long, pgoff)
-arch/ia64/include/asm/unistd.h:30:
-asmlinkage unsigned long sys_mmap2(
-				unsigned long addr, unsigned long len,
-				int prot, int flags,
-				int fd, long pgoff);
-arch/ia64/kernel/sys_ia64.c:139:
-asmlinkage unsigned long
-sys_mmap2 (unsigned long addr, unsigned long len, int prot, int flags, int fd, long pgoff)
-arch/m68k/kernel/sys_m68k.c:40:
-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-	unsigned long prot, unsigned long flags,
-	unsigned long fd, unsigned long pgoff)
-arch/parisc/kernel/sys_parisc.c:275:
-asmlinkage unsigned long sys_mmap2(unsigned long addr, unsigned long len,
-	unsigned long prot, unsigned long flags, unsigned long fd,
-	unsigned long pgoff)
-arch/powerpc/include/asm/syscalls.h:15:
-asmlinkage long sys_mmap2(unsigned long addr, size_t len,
-		unsigned long prot, unsigned long flags,
-		unsigned long fd, unsigned long pgoff);
-arch/sh/include/asm/syscalls.h:8:
-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-			  unsigned long prot, unsigned long flags,
-			  unsigned long fd, unsigned long pgoff);
-arch/sh/kernel/sys_sh.c:41:
-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-	unsigned long prot, unsigned long flags,
-	unsigned long fd, unsigned long pgoff)
-arch/sparc/kernel/systbls.h:23:
-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-			  unsigned long prot, unsigned long flags,
-			  unsigned long fd, unsigned long pgoff);
-include/asm-generic/syscalls.h:14:
-asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
-			unsigned long prot, unsigned long flags,
-			unsigned long fd, unsigned long pgoff);
-.../linux$
+diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
+index 8fd51cc9b991..b094132bd20b 100644
+--- a/drivers/devfreq/governor_passive.c
++++ b/drivers/devfreq/governor_passive.c
+@@ -19,18 +19,16 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+                        = (struct devfreq_passive_data *)devfreq->data;
+        struct devfreq *parent_devfreq = (struct devfreq *)p_data->parent;
+        unsigned long child_freq = ULONG_MAX;
+-       struct dev_pm_opp *opp, *p_opp = ERR_PTR(-ENODEV);
+-       int i, count, ret = 0;
++       struct dev_pm_opp *opp, *p_opp;
++       int i, count;
+ 
+        /*
+         * If the devfreq device with passive governor has the specific method
+         * to determine the next frequency, should use the get_target_freq()
+         * of struct devfreq_passive_data.
+         */
+-       if (p_data->get_target_freq) {
+-               ret = p_data->get_target_freq(devfreq, freq);
+-               return ret;
+-       }
++       if (p_data->get_target_freq)
++               return p_data->get_target_freq(devfreq, freq);
+ 
+        /*
+         * If the parent and passive devfreq device uses the OPP table,
+@@ -56,35 +54,35 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+         * list of parent device. Because in this case, *freq is temporary
+         * value which is decided by ondemand governor.
+         */
+-       p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent, freq, 0);
+-       if (IS_ERR(p_opp)) {
+-               ret = PTR_ERR(p_opp);
+-               return ret;
+-       }
+-
+        if (devfreq->opp_table && parent_devfreq->opp_table) {
++               p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent,
++                                               freq, 0);
++               if (IS_ERR(p_opp))
++                       return PTR_ERR(p_opp);
++
+                opp = dev_pm_opp_xlate_required_opp(parent_devfreq->opp_table,
+                                                    devfreq->opp_table, p_opp);
+-               if (!IS_ERR(opp)) {
+-                       *freq = dev_pm_opp_get_freq(opp);
+-                       dev_pm_opp_put(opp);
+-               } else
+-                       ret = PTR_ERR(opp);
+-               goto out;
++               dev_pm_opp_put(p_opp);
++
++               if (IS_ERR(opp))
++                       return PTR_ERR(opp);
++
++               *freq = dev_pm_opp_get_freq(opp);
++               dev_pm_opp_put(opp);
++
++               return 0;
+        }
+ 
+        /*
+-        * Get the OPP table's index of decided freqeuncy by governor
++        * Get the OPP table's index of decided frequency by governor
+         * of parent device.
+         */
+        for (i = 0; i < parent_devfreq->profile->max_state; i++)
+                if (parent_devfreq->profile->freq_table[i] == *freq)
+                        break;
+ 
+-       if (i == parent_devfreq->profile->max_state) {
+-               ret = -EINVAL;
+-               goto out;
+-       }
++       if (i == parent_devfreq->profile->max_state)
++               return -EINVAL;
+ 
+        /* Get the suitable frequency by using index of parent device. */
+        if (i < devfreq->profile->max_state) {
+@@ -97,10 +95,7 @@ static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
+        /* Return the suitable frequency for passive device. */
+        *freq = child_freq;
+ 
+-out:
+-       dev_pm_opp_put(p_opp);
+-
+-       return ret;
++       return 0;
+ }
+ 
+ static int devfreq_passive_notifier_call(struct notifier_block *nb,
 
-function grep_syscall()
-{
-	if ! [ -v 1 ]; then
-		>&2 echo "Usage: ${FUNCNAME[0]} <syscall>";
-		return ${EX_USAGE};
-	fi
 
-	find * -type f \
-	|grep '\.c$' \
-	|sort -V \
-	|xargs pcregrep -Mn "(?s)^\w*SYSCALL_DEFINE.\(${1},.*?\)" \
-	|sed -E 's/^[^:]+:[0-9]+:/&\n/';
-
-	find * -type f \
-	|grep '\.[ch]$' \
-	|sort -V \
-	|xargs pcregrep -Mn "(?s)^asmlinkage\s+[\w\s]+\**sys_${1}\s*\(.*?\)" \
-	|sed -E 's/^[^:]+:[0-9]+:/&\n/';
-}
-
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- man2/mmap2.2 | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/man2/mmap2.2 b/man2/mmap2.2
-index 349ee45e5..f9f9e91cb 100644
---- a/man2/mmap2.2
-+++ b/man2/mmap2.2
-@@ -33,8 +33,9 @@ mmap2 \- map files or devices into memory
- .nf
- .B #include <sys/mman.h>
- .PP
--.BI "void *mmap2(void *" addr ", size_t " length ", int " prot ,
--.BI "             int " flags ", int " fd ", off_t " pgoffset );
-+.BI "void *mmap2(unsigned long " addr ", unsigned long " length ,
-+.BI "            unsigned long " prot ", unsigned long " flags ,
-+.BI "            unsigned long " fd ", unsigned long " pgoffset );
- .fi
- .SH DESCRIPTION
- This is probably not the system call that you are interested in; instead, see
 -- 
-2.30.0
-
+viresh
