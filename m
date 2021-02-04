@@ -2,153 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87EF30FBC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C630FBC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238272AbhBDSmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:42:52 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36474 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238874AbhBDSii (ORCPT
+        id S239341AbhBDSnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238463AbhBDSj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:38:38 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114ISpWu009686;
-        Thu, 4 Feb 2021 10:37:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=I+wcMkxu1gHxvwkIdOKsW51gMV+OmCz66XS8BFzjvio=;
- b=DMipOF940rKIY7luBNZy3ohCcaR/lnZSIQ612+Wh69Gw5sqjqO6hBLBe97AgzSb9WYkW
- IGT3NvxQ+3Bmg6C91tr38KLGRA8YnhvYBfHpNzDAjjo+mDJmZV7J6MCk+pgbx/K5PMV1
- EHZvQ3r52BEKvoVe7giQ0JZyVa683KRSrho= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36fx4nqsdg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 04 Feb 2021 10:37:49 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 4 Feb 2021 10:37:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bJhKJdz18xdBzdwCs8KELdUqqcrtEZw2Hfjs6jgd6BKCuz9Hhre1zKL5OjRv2nE1BKFO+4p46oVhahyc52xYJTiORjEcyhRbIQFY2WrT7vYGsnaMuAg/Bn5vTDE7FXHAtB6lofSfWhhEz/kL5vWhxuahDch1ieJMU3LPyLCGH81dE5s+XUVdjuZ4sP0b+p/RnHP86/rn740HgGMutemmS+4ko9lgxFwu7der2AmApBNNvYD03WnRsK0kZjk3fu5LlBR5A44e9ZhjXywLlyeTg/2Eh5yyat/VyJ5K356h21fdLUFzvsaGgFYdPal/VkHAZ+vOAz8td6PYuBUa45r29w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I+wcMkxu1gHxvwkIdOKsW51gMV+OmCz66XS8BFzjvio=;
- b=dA69uvi1fQgEjzuXyFYoZS/S5to7LLvE8lJVgD4XDXAeo92NwXpstGkH8rvWbVsQDLdP3E3/WqdaAhQcyv/Zpxh2hnm21Wx9jwmrJYYmrpuR/nFgbm7MZiNpumEERFOjJZXkAGntKdSJJc7XovJIcKvyIQzYOeuoGGEoDvyrtHi/xfy+jfpdqjD6qDLE9p0hqDTQAopfDW4z88Zk97VHZZn8LTbZRM4kI9YiJe2vcGv1I/xLWWZKOPHnr+k4KApoIzX30R+iUXWaDC2XIQSXjIRpf9+EFexlw9wjOzgYfsGLqJxsjFTL0efOAEkM4l94BJh/iA+oJ4tRpoYk4I29Fg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I+wcMkxu1gHxvwkIdOKsW51gMV+OmCz66XS8BFzjvio=;
- b=HNY5O6zS32kjp3jXkpXafmnSlBjsRLO1iP1hTirncRSpHgDUDOtmQaW8GAUxYXKzFWkI0wGNUuinNrPsGxlSRPpvHphTGgUGc1S+rUNxCT5EZT9J8cPNj/dx9+Svt9ZrT6J5AR75tw4OJygoip/a6TsS3BSpg9riQqFMt9fZIds=
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3286.namprd15.prod.outlook.com (2603:10b6:a03:110::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Thu, 4 Feb
- 2021 18:37:47 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
- 18:37:47 +0000
-Date:   Thu, 4 Feb 2021 10:37:43 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm: memcontrol: replace the loop with a
- list_for_each_entry()
-Message-ID: <20210204183743.GB1837780@carbon.DHCP.thefacebook.com>
-References: <20210204163055.56080-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204163055.56080-1-songmuchun@bytedance.com>
-X-Originating-IP: [2620:10d:c090:400::5:b3b1]
-X-ClientProxiedBy: SJ0PR03CA0056.namprd03.prod.outlook.com
- (2603:10b6:a03:33e::31) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Thu, 4 Feb 2021 13:39:26 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885F7C061793
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:38:40 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id s24so4316274iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:38:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=weEyJ4NqUKzgrDe976axknYedIOOmssjDmQJevNBFW0=;
+        b=MUIiQlwYWva12TZR2lmb+89nZsawdJbIyEf5ZHEPKW7k/wPQFjk5rV1/el4UOR1bOV
+         bYc+0XomeAFpg2YafF+3e4DlCPvgUVUsypEQ/fr+gzccXl0TPvP32besn7Yme4+sV2nH
+         oydU/scUWd1sYUZJRVbxgmINaSAIA2SEEdzSQzka1CoEy0VGDcnxshyVqXhRSefPIstL
+         qS6ij5WOm5sMsx6NEboPMReyk/5XXocU10MM98Ve4kRlu4Nj71mrHOOS+4wFmHboApka
+         0RYzs97mzQO5Q7u1HtnqTwtTc/bAs72cSxHVqhTtwVStPc6rBRSWzT2Szu8FweWMVXvV
+         vjgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=weEyJ4NqUKzgrDe976axknYedIOOmssjDmQJevNBFW0=;
+        b=EKHxq1h/qITJQwsoDYmijzj4hy1bcDuFPmHW9yLViHQ9hDNMcKEinXd9K4iF0rbtfP
+         qaXzVG4qPqNB5YZHfDDBQyAAEncypPHiRxso71kgs+T8Dc8ZkmXkZsKPfcAQ7vnbIjvj
+         oroBkN8GwdYekcPYzXnpdjwM/7xtNgi8j9UksjwjjpUN2qBWBpL11S/BNlre0f7+cMrL
+         +4pb5Y3iQMTR9LvsIHQP9tlQoR/uumZQlBpHl2F2WYLWPOiTWDztrnZFaCitkJNb2cg+
+         EqwHSYo2ecfxOIV0VU1jZYpCXaon/2cJ5fDGatgMTFMkDqG6x68mC/5Wq7yAFJHAkqqJ
+         k/LQ==
+X-Gm-Message-State: AOAM533C2HKn89xzmjRjC7dnkuuPrPttbjnCM/A5iMco5RSBoQ+S7klJ
+        aOn29yeau1Du4aaZv+QMbQNkfjhu8r3i/ObAK4hG5Q==
+X-Google-Smtp-Source: ABdhPJzHF0Jnubl5GY5YpP/GzWfIKSnTzH6dLwGle8kQioNfx8oFy5GRcwMMftTxFXDx6s2/OYRkyxFjfaTKbPD8trM=
+X-Received: by 2002:a6b:f112:: with SMTP id e18mr571110iog.57.1612463919646;
+ Thu, 04 Feb 2021 10:38:39 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:b3b1) by SJ0PR03CA0056.namprd03.prod.outlook.com (2603:10b6:a03:33e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Thu, 4 Feb 2021 18:37:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 31c54c98-d99a-4fbf-5a0d-08d8c93bf7be
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3286:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3286F3AB6DC40F9CBF66367DBEB39@BYAPR15MB3286.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:327;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iha5FZvqO9kPaDuw83o9oEqleltx2UvNNKs0ODj4MDLjwLOdndFaZckCK6o7QHku49zda0gNrL9M9uKf7PUAgl8I5jsnYdutdSTX9YMHAvh2I0S9Yn4Htu84k6ZHBaEUX4uyKSJ5IvMDuL75RwLbq1EkQR0jK+wkT0vYmn1/ijvQYuncvoO5z1PAu6S4KSbXdeH+kjXN2HQ9hklpL+2pjttxW9747SupqSwYyeQ4GHtFA4WYhcAyeSLtNuRvC7DX0RtBG3Mx1Q0kbPLTzFWthg0YgoKxlrfBdLTRW8a0k0o6jzzrSILM6RpWb2Y0ZjgjyvPObHvPM7fO9wfhGXgQwFn4uSVHXeKql1VeAraVGnL1cgwA9t/SMS5QuQ/8TMilBN0szd8UwLd5fsjSV22REYtIHn3PXagucYr7yM2sSh2zSXgbeymfacL6OcwZ94FhpJqLi+WKTFSv9t+AKMsMGZfRhZz5Mvm1fM5WJWBL2n4D+lfUVboadmwLOUsCjMFoYAqVD0lIpeFL+6YGeQj23g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(376002)(346002)(396003)(66476007)(33656002)(186003)(2906002)(83380400001)(6666004)(7696005)(5660300002)(4326008)(52116002)(55016002)(8936002)(16526019)(1076003)(4744005)(478600001)(6506007)(6916009)(8676002)(86362001)(66556008)(316002)(9686003)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?e99Gtp/iFY0ejctUqPTgFk1/20Quq3i8fiLgjf0KFx2evjh1K4DOs889tA1B?=
- =?us-ascii?Q?npFExTdN5c7d1uwxZpJJVrUl8C2ZDRcVDkjNg2oXPrabMnCdpsFiRQ3v6KwH?=
- =?us-ascii?Q?eBvdGyv8ckT9Sua1dVCEEKcrUwjisUlW+NsmiAEZqzQcv3njpEibYn9d3IUq?=
- =?us-ascii?Q?NlJm1DcgguusEIK9uUHPFlggLZD8I2KFM6HR7ZUT59ev3cQ9rJPuLowrCars?=
- =?us-ascii?Q?XAY/tLRfjKaMjqiUt5VtEzXsdaxfBM2BQiD0tew0BY0YwwK/XiFR5uRlgdXM?=
- =?us-ascii?Q?lmoGGX7PzXHhNgQgNkXcgwc4y5kBpZzCOKPkamQxXy0unmNS5QekczeJyxmi?=
- =?us-ascii?Q?2w/pVld3axdZ4mPsn7x+pA0aGADiyBXTWirl8M2qBF1GMuGCEGYQ2mnG6Jbu?=
- =?us-ascii?Q?E1n1YxXS5yO9RapvJ4pi86wJ/MFbMyDSX407Tieq6wKzYRXeqLOsOmfDwgbH?=
- =?us-ascii?Q?VyuHW0jKp/hJbj69/n/DtXe3UVTj7vteyP/TEA92XeXYbcBOtkm4ubLZGya1?=
- =?us-ascii?Q?/2/eEH54WLrfVAE9ScLqXzXB2XPeIXQVtKEwcL6RH00iKvkmizpmEsT8pS/9?=
- =?us-ascii?Q?M4ax6h6ManI8lfPnijS/BtKDDBj6558Oqf8ZJo02X962r/NmEz/lIfbYW4eU?=
- =?us-ascii?Q?4hqQOkJgCJx0rVqSahk59FmRo5ZLgSxcldlphN5BoZ7hbwN+NhWCYzO7N72B?=
- =?us-ascii?Q?ifVjnsBJGtLi0T+NU2bOX/7TlcUVsGcnGgI64gxNnjBRVzy4Ue1RC89INkip?=
- =?us-ascii?Q?2s8lffNoIMZlCA++VezLFE1O+fMzr87JeDLTiGyqlm7N2I4TOilWx+r83LOm?=
- =?us-ascii?Q?+L4C/jnFrAGCk22ka27DedZe7Ku9rbs4F/uHjdmz+tGVWUInXCDqWSJlqox1?=
- =?us-ascii?Q?HIGUpTKelrmImCjo008PQ5AAJVOANm6vaSa6Vk5PsYBU3u6xoXBLbLieGHrc?=
- =?us-ascii?Q?JKbRkbN+NBrxz41+vDELhAHlHCn1z80pI+iGxyS3FBXVO0E1frx4O4tYqVI3?=
- =?us-ascii?Q?NMPKKCPNHTtFbhqBlKq/Wtpz0Qh9D5Es5oH9W8knNsXJ0vkDbg+NGlU3oSDq?=
- =?us-ascii?Q?LF/cAVajzcIQxx30aSzKubR5DS4GMFrKn2LDNk662rMk8VlpJ4M=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31c54c98-d99a-4fbf-5a0d-08d8c93bf7be
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 18:37:47.1854
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rjCrwmhI1KgK6M+eh+6frdv8UxKoBIZc4oKsj6+1C2c+ejXLiPZizoFKYINN68cm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3286
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_09:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 suspectscore=0 spamscore=0 priorityscore=1501 adultscore=0
- mlxscore=0 clxscore=1011 impostorscore=0 bulkscore=0 mlxlogscore=644
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040112
-X-FB-Internal: deliver
+References: <20210204183433.1431202-1-axelrasmussen@google.com>
+In-Reply-To: <20210204183433.1431202-1-axelrasmussen@google.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 4 Feb 2021 10:38:02 -0800
+Message-ID: <CAJHvVcjMkTC7=gca9EDoKxpadvfyHP73cF6znLvew-F1pNXCeg@mail.gmail.com>
+Subject: Re: [PATCH v4 00/10] userfaultfd: add minor fault handling
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:30:55AM +0800, Muchun Song wrote:
-> The rule of list walk has gone since:
-> 
->  commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
-> 
-> So remove the strange comment and replace the loop with a
-> list_for_each_entry().
-> 
-> There is only one caller of the uncharge_list(). So just fold it into
-> mem_cgroup_uncharge_list() and remove it.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
-> v2:
->  - Fold uncharge_list() to mem_cgroup_uncharge_list().
-> 
->  mm/memcontrol.c | 35 ++++++++---------------------------
->  1 file changed, 8 insertions(+), 27 deletions(-)
+On Thu, Feb 4, 2021 at 10:34 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> Changelog
+> =========
+>
+> v3->v4:
+> - Reordered if() branches in hugetlb_mcopy_atomic_pte, so the conditions are
+>   simpler and easier to read.
+> - Reverted most of the mfill_atomic_pte change (the anon / shmem path). Just
+>   return -EINVAL for CONTINUE, and set zeropage = (mode ==
+>   MCOPY_ATOMIC_ZEROPAGE), so we can keep the delta small.
+> - Split out adding #ifdef CONFIG_USERFAULTFD to a separate patch (instead of
+>   lumping it together with adding UFFDIO_CONTINUE). Also, extended it to make
+>   the same change for shmem as well as suggested by Hugh Dickins.
+> - Fixed signature of hugetlb_mcopy_atomic_pte for !CONFIG_HUGETLB_PAGE
+>   (signature must be the same in either case).
+> - Rebased onto a newer version of Peter's patches to disable huge PMD sharing.
 
-Nice cleanup!
+Apologies for the email noise, of course immediately after doing git
+send-email I realized I forgot to document one item here:
 
-Acked-by: Roman Gushchin <guro@fb.com>
+- Relaxed restriction for minor registration to allow any hugetlb
+VMAs, not just those with VM_SHARED. Fixed setting VM_WRITE flag in a
+CONTINUE ioctl for non-VM_SHARED VMAs.
 
-Thanks.
+>
+> v2->v3:
+> - Added #ifdef CONFIG_USERFAULTFD around hugetlb helper functions, to fix build
+>   errors when building without CONFIG_USERFAULTFD set.
+>
+> v1->v2:
+> - Fixed a bug in the hugetlb_mcopy_atomic_pte retry case. We now plumb in the
+>   enum mcopy_atomic_mode, so we can differentiate between the three cases this
+>   function needs to handle:
+>   1) We're doing a COPY op, and need to allocate a page, add to cache, etc.
+>   2) We're doing a COPY op, but allocation in this function failed previously;
+>      we're in the retry path. The page was allocated, but not e.g. added to page
+>      cache, so that still needs to be done.
+>   3) We're doing a CONTINUE op, we need to look up an existing page instead of
+>      allocating a new one.
+> - Rebased onto a newer version of Peter's patches to disable huge PMD sharing,
+>   which fixes syzbot complaints on some non-x86 architectures.
+> - Moved __VM_UFFD_FLAGS into userfaultfd_k.h, so inline helpers can use it.
+> - Renamed UFFD_FEATURE_MINOR_FAULT_HUGETLBFS to UFFD_FEATURE_MINOR_HUGETLBFS,
+>   for consistency with other existing feature flags.
+> - Moved the userfaultfd_minor hook in hugetlb.c into the else block, so we don't
+>   have to explicitly check for !new_page.
+>
+> RFC->v1:
+> - Rebased onto Peter Xu's patches for disabling huge PMD sharing for certain
+>   userfaultfd-registered areas.
+> - Added commits which update documentation, and add a self test which exercises
+>   the new feature.
+> - Fixed reporting CONTINUE as a supported ioctl even for non-MINOR ranges.
+>
+> Overview
+> ========
+>
+> This series adds a new userfaultfd registration mode,
+> UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
+> By "minor" fault, I mean the following situation:
+>
+> Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
+> One of the mappings is registered with userfaultfd (in minor mode), and the
+> other is not. Via the non-UFFD mapping, the underlying pages have already been
+> allocated & filled with some contents. The UFFD mapping has not yet been
+> faulted in; when it is touched for the first time, this results in what I'm
+> calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
+> have huge_pte_none(), but find_lock_page() finds an existing page.
+>
+> We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
+> userspace resolves the fault by either a) doing nothing if the contents are
+> already correct, or b) updating the underlying contents using the second,
+> non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
+> or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
+> "I have ensured the page contents are correct, carry on setting up the mapping".
+>
+> Use Case
+> ========
+>
+> Consider the use case of VM live migration (e.g. under QEMU/KVM):
+>
+> 1. While a VM is still running, we copy the contents of its memory to a
+>    target machine. The pages are populated on the target by writing to the
+>    non-UFFD mapping, using the setup described above. The VM is still running
+>    (and therefore its memory is likely changing), so this may be repeated
+>    several times, until we decide the target is "up to date enough".
+>
+> 2. We pause the VM on the source, and start executing on the target machine.
+>    During this gap, the VM's user(s) will *see* a pause, so it is desirable to
+>    minimize this window.
+>
+> 3. Between the last time any page was copied from the source to the target, and
+>    when the VM was paused, the contents of that page may have changed - and
+>    therefore the copy we have on the target machine is out of date. Although we
+>    can keep track of which pages are out of date, for VMs with large amounts of
+>    memory, it is "slow" to transfer this information to the target machine. We
+>    want to resume execution before such a transfer would complete.
+>
+> 4. So, the guest begins executing on the target machine. The first time it
+>    touches its memory (via the UFFD-registered mapping), userspace wants to
+>    intercept this fault. Userspace checks whether or not the page is up to date,
+>    and if not, copies the updated page from the source machine, via the non-UFFD
+>    mapping. Finally, whether a copy was performed or not, userspace issues a
+>    UFFDIO_CONTINUE ioctl to tell the kernel "I have ensured the page contents
+>    are correct, carry on setting up the mapping".
+>
+> We don't have to do all of the final updates on-demand. The userfaultfd manager
+> can, in the background, also copy over updated pages once it receives the map of
+> which pages are up-to-date or not.
+>
+> Interaction with Existing APIs
+> ==============================
+>
+> Because it's possible to combine registration modes (e.g. a single VMA can be
+> userfaultfd-registered MINOR | MISSING), and because it's up to userspace how to
+> resolve faults once they are received, I spent some time thinking through how
+> the existing API interacts with the new feature.
+>
+> UFFDIO_CONTINUE cannot be used to resolve non-minor faults, as it does not
+> allocate a new page. If UFFDIO_CONTINUE is used on a non-minor fault:
+>
+> - For non-shared memory or shmem, -EINVAL is returned.
+> - For hugetlb, -EFAULT is returned.
+>
+> UFFDIO_COPY and UFFDIO_ZEROPAGE cannot be used to resolve minor faults. Without
+> modifications, the existing codepath assumes a new page needs to be allocated.
+> This is okay, since userspace must have a second non-UFFD-registered mapping
+> anyway, thus there isn't much reason to want to use these in any case (just
+> memcpy or memset or similar).
+>
+> - If UFFDIO_COPY is used on a minor fault, -EEXIST is returned.
+> - If UFFDIO_ZEROPAGE is used on a minor fault, -EEXIST is returned (or -EINVAL
+>   in the case of hugetlb, as UFFDIO_ZEROPAGE is unsupported in any case).
+> - UFFDIO_WRITEPROTECT simply doesn't work with shared memory, and returns
+>   -ENOENT in that case (regardless of the kind of fault).
+>
+> Dependencies
+> ============
+>
+> I've included 4 commits from Peter Xu's larger series
+> (https://lore.kernel.org/patchwork/cover/1366017/) in this series. My changes
+> depend on his work, to disable huge PMD sharing for MINOR registered userfaultfd
+> areas. I included the 4 commits directly because a) it lets this series just be
+> applied and work as-is, and b) they are fairly standalone, and could potentially
+> be merged even without the rest of the larger series Peter submitted. Thanks
+> Peter!
+>
+> Also, although it doesn't affect minor fault handling, I did notice that the
+> userfaultfd self test sometimes experienced memory corruption
+> (https://lore.kernel.org/patchwork/cover/1356755/). For anyone testing this
+> series, it may be useful to apply that series first to fix the selftest
+> flakiness. That series doesn't have to be merged into mainline / maintaner
+> branches before mine, though.
+>
+> Future Work
+> ===========
+>
+> Currently the patchset only supports hugetlbfs. There is no reason it can't work
+> with shmem, but I expect hugetlbfs to be much more commonly used since we're
+> talking about backing guest memory for VMs. I plan to implement shmem support in
+> a follow-up patch series.
+>
+> Axel Rasmussen (6):
+>   userfaultfd: add minor fault registration mode
+>   userfaultfd: disable huge PMD sharing for MINOR registered VMAs
+>   userfaultfd: hugetlbfs: only compile UFFD helpers if config enabled
+>   userfaultfd: add UFFDIO_CONTINUE ioctl
+>   userfaultfd: update documentation to describe minor fault handling
+>   userfaultfd/selftests: add test exercising minor fault handling
+>
+> Peter Xu (4):
+>   hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()
+>   hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled
+>   mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h
+>   hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp
+>
+>  Documentation/admin-guide/mm/userfaultfd.rst | 107 ++++++----
+>  arch/arm64/mm/hugetlbpage.c                  |   7 +-
+>  arch/ia64/mm/hugetlbpage.c                   |   3 +-
+>  arch/mips/mm/hugetlbpage.c                   |   4 +-
+>  arch/parisc/mm/hugetlbpage.c                 |   2 +-
+>  arch/powerpc/mm/hugetlbpage.c                |   3 +-
+>  arch/s390/mm/hugetlbpage.c                   |   2 +-
+>  arch/sh/mm/hugetlbpage.c                     |   2 +-
+>  arch/sparc/mm/hugetlbpage.c                  |   6 +-
+>  fs/proc/task_mmu.c                           |   1 +
+>  fs/userfaultfd.c                             | 196 ++++++++++++++++---
+>  include/linux/hugetlb.h                      |  22 ++-
+>  include/linux/mm.h                           |   1 +
+>  include/linux/mmu_notifier.h                 |   1 +
+>  include/linux/userfaultfd_k.h                |  49 ++++-
+>  include/trace/events/mmflags.h               |   1 +
+>  include/uapi/linux/userfaultfd.h             |  36 +++-
+>  mm/hugetlb.c                                 | 113 +++++++----
+>  mm/userfaultfd.c                             |  51 +++--
+>  tools/testing/selftests/vm/userfaultfd.c     | 147 +++++++++++++-
+>  20 files changed, 601 insertions(+), 153 deletions(-)
+>
+> --
+> 2.30.0.365.g02bc693789-goog
+>
