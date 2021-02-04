@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565A830F5AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9ADF30F5AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237069AbhBDO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:58:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56621 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236989AbhBDO4F (ORCPT
+        id S236867AbhBDO6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:58:07 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44518 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236982AbhBDOzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:56:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612450478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6jUr+tmlbfe26lT1HbTjriGoxUIz6fxE/dcDciuB+Ug=;
-        b=VvLzoGRETOzp7PaV6lrO04JyqDRf5zTHTYrqWxlRNUVYAT6BW/YtiDoCG9cFvie+fgVPC1
-        lxZzXlA/L1PG0OI/PQRJGiQdwykDatxhlV+1H8vi9TjQ/tEqpbfiUaMtmftnPl7pq+2U7j
-        3y3+g9ONfhVZJjd1ntOVlGHracmuh8E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-sxLL1LtJMmOxE-hTFQGubw-1; Thu, 04 Feb 2021 09:54:35 -0500
-X-MC-Unique: sxLL1LtJMmOxE-hTFQGubw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFF988030B1;
-        Thu,  4 Feb 2021 14:54:34 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80D7660BE2;
-        Thu,  4 Feb 2021 14:54:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com
-Subject: [PATCH v2 1/2] KVM: x86: reading debug registers cannot fail
-Date:   Thu,  4 Feb 2021 09:54:32 -0500
-Message-Id: <20210204145433.243806-2-pbonzini@redhat.com>
-In-Reply-To: <20210204145433.243806-1-pbonzini@redhat.com>
-References: <20210204145433.243806-1-pbonzini@redhat.com>
+        Thu, 4 Feb 2021 09:55:45 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E525A1C0B79; Thu,  4 Feb 2021 15:55:03 +0100 (CET)
+Date:   Thu, 4 Feb 2021 15:55:03 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] leds: lp50xx: add setting of default intensity
+ from DT
+Message-ID: <20210204145503.GD14305@duo.ucw.cz>
+References: <20210204143803.28140-1-schuchmann@schleissheimer.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
+Content-Disposition: inline
+In-Reply-To: <20210204143803.28140-1-schuchmann@schleissheimer.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_get_dr and emulator_get_dr accept an in-range value for the register
-number so they cannot fail.  Change the return type to void.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 2 +-
- arch/x86/kvm/kvm_emulate.h      | 2 +-
- arch/x86/kvm/vmx/vmx.c          | 3 +--
- arch/x86/kvm/x86.c              | 9 ++++-----
- 4 files changed, 7 insertions(+), 9 deletions(-)
+--5gxpn/Q6ypwruk0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 717940e97f66..c6215f62a0f6 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1560,7 +1560,7 @@ int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3);
- int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
- int kvm_set_cr8(struct kvm_vcpu *vcpu, unsigned long cr8);
- int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val);
--int kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val);
-+void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val);
- unsigned long kvm_get_cr8(struct kvm_vcpu *vcpu);
- void kvm_lmsw(struct kvm_vcpu *vcpu, unsigned long msw);
- void kvm_get_cs_db_l_bits(struct kvm_vcpu *vcpu, int *db, int *l);
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index 43c93ffa76ed..0d359115429a 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -205,7 +205,7 @@ struct x86_emulate_ops {
- 	ulong (*get_cr)(struct x86_emulate_ctxt *ctxt, int cr);
- 	int (*set_cr)(struct x86_emulate_ctxt *ctxt, int cr, ulong val);
- 	int (*cpl)(struct x86_emulate_ctxt *ctxt);
--	int (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong *dest);
-+	void (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong *dest);
- 	int (*set_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong value);
- 	u64 (*get_smbase)(struct x86_emulate_ctxt *ctxt);
- 	void (*set_smbase)(struct x86_emulate_ctxt *ctxt, u64 smbase);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 777177ea9a35..049fbbd0aa1a 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5142,8 +5142,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 	if (exit_qualification & TYPE_MOV_FROM_DR) {
- 		unsigned long val;
- 
--		if (kvm_get_dr(vcpu, dr, &val))
--			return 1;
-+		kvm_get_dr(vcpu, dr, &val);
- 		kvm_register_write(vcpu, reg, val);
- 	} else
- 		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d9f931c63293..dcb67429b75d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1181,7 +1181,7 @@ int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- }
- EXPORT_SYMBOL_GPL(kvm_set_dr);
- 
--int kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
-+void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
- {
- 	size_t size = ARRAY_SIZE(vcpu->arch.db);
- 
-@@ -1198,7 +1198,6 @@ int kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
- 		*val = vcpu->arch.dr7;
- 		break;
- 	}
--	return 0;
- }
- EXPORT_SYMBOL_GPL(kvm_get_dr);
- 
-@@ -6610,10 +6609,10 @@ static void emulator_wbinvd(struct x86_emulate_ctxt *ctxt)
- 	kvm_emulate_wbinvd_noskip(emul_to_vcpu(ctxt));
- }
- 
--static int emulator_get_dr(struct x86_emulate_ctxt *ctxt, int dr,
--			   unsigned long *dest)
-+static void emulator_get_dr(struct x86_emulate_ctxt *ctxt, int dr,
-+			    unsigned long *dest)
- {
--	return kvm_get_dr(emul_to_vcpu(ctxt), dr, dest);
-+	kvm_get_dr(emul_to_vcpu(ctxt), dr, dest);
- }
- 
- static int emulator_set_dr(struct x86_emulate_ctxt *ctxt, int dr,
--- 
-2.26.2
+On Thu 2021-02-04 14:38:03, Sven Schuchmann wrote:
+> In order to use a multicolor-led together with a trigger
+> the led needs to have an intensity set to see something.
+> The trigger changes the brightness of the led but if there
+> is no intensity we actually see nothing.
+>=20
+> This patch adds the ability to set the default intensity
+> of each multi-led node so that it is turned on from DT.
+> If no intensity is given the led will be initialized
+> with full intensity.
+
+> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
+
+Check your email headers, empty To: is strange.
+
+> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
+> index 79bc071c31fb..e8aa36c7e963 100644
+> --- a/drivers/leds/leds-lp50xx.c
+> +++ b/drivers/leds/leds-lp50xx.c
+> @@ -504,6 +504,24 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
+>  			num_colors++;
+>  		}
+> =20
+> +		if (fwnode_property_count_u32(child, "default-intensity")
+> +			=3D=3D num_colors) {
+> +
+> +			int j, def_int[LP50XX_LEDS_PER_MODULE];
+
+No need for empty line?
 
 
+> +			ret =3D fwnode_property_read_u32_array(child,
+> +				"default-intensity", def_int, num_colors);
+> +			if (ret) {
+> +				dev_err(&priv->client->dev,
+> +					"Cannot read default-intensity: %d\n",
+> +					ret);
+> +				goto child_out;
+> +			}
+
+Just ignore such error?
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--5gxpn/Q6ypwruk0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBwKxwAKCRAw5/Bqldv6
+8n4kAKDArF1ccOZdvNpMwNbEL7cmt6eTogCgh7RMntmvmdIaLF3NfqXaQYziIWA=
+=9Ern
+-----END PGP SIGNATURE-----
+
+--5gxpn/Q6ypwruk0T--
