@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C79730EBCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFA630EBCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhBDFTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 00:19:50 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:35631 "EHLO
+        id S230243AbhBDFUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 00:20:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35644 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhBDFTu (ORCPT
+        with ESMTP id S230172AbhBDFU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:19:50 -0500
-Received: from [222.129.39.10] (helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        Thu, 4 Feb 2021 00:20:29 -0500
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
-        (envelope-from <aaron.ma@canonical.com>)
-        id 1l7X2k-0005uP-ES; Thu, 04 Feb 2021 05:19:03 +0000
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     aaron.ma@canonical.com, gregkh@linuxfoundation.org,
-        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
-        lee.jones@linaro.org, peter.chen@nxp.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xhci-pci: Set AMD Renoir USB controller to D3 when shutdown
-Date:   Thu,  4 Feb 2021 13:18:50 +0800
-Message-Id: <20210204051850.64857-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l7X3T-0005xx-O8
+        for linux-kernel@vger.kernel.org; Thu, 04 Feb 2021 05:19:47 +0000
+Received: by mail-lf1-f72.google.com with SMTP id v25so1471194lfp.18
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 21:19:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R2bZh9FeRp09Ou5sZB44JPrOq861pcQFzyhy33EguiI=;
+        b=bPqF/F7BLUdpS8/U672xksKNJj7UCyFope4yCtDGn+z5vWz9FAq+aCf5iX+hJVUnmu
+         e+bp831Vdo1TFe8Ix6s9u2Z3WZ41q4KsI+bemjdYjdePr4eC8zX90keKu5Eotk/DW6PU
+         X+nmDDTjj6Upz6B6daWgBybtUxXgqKmNYZYgiKIAIuwojGUawkRUJDK3mORauvudB5kg
+         vpqVgP+dtdXFGHV9lTsZ1LdDEf9CjdbAaUx82qwfsEh+Q5sqBzbdQ+RsuOgcvt3wushH
+         27qntbb+iwk+3n9gU+EAL/WzAPUDJcE+q68PsZx8rHbOfAHTOPn9a+gqj7RtWgQwmMRI
+         Y9Dw==
+X-Gm-Message-State: AOAM533VSlidQHBdk0vR3eirpGjwalq0vguZG5eZJYQFkJVmuQMypfN9
+        16W4UlxqTZFM3Tnit+C6mPre8pqmpNZNBaSYrv1wks3MyhSNW68aWNGoQH6Kg8blc8bTtvES8f0
+        SOaEsO9vIEczdw3yy9GPNAFh1MAn+VoxHwxASX1ABXLdn+Z6HQIKMpIuFDw==
+X-Received: by 2002:a2e:7d11:: with SMTP id y17mr3723813ljc.116.1612415987219;
+        Wed, 03 Feb 2021 21:19:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJynTeiKtps1UfPiLxa5hGUP8TTsWuu0Pnjw0/yGvmieCTQWw+NnyyzMg1yMAuk9bQKxK28mceHx/mSm2khR9As=
+X-Received: by 2002:a2e:7d11:: with SMTP id y17mr3723804ljc.116.1612415987000;
+ Wed, 03 Feb 2021 21:19:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201201213019.1558738-1-furquan@google.com> <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
+ <CAJZ5v0jhniqG43F6hCqXdxQiQZRc67GdkdP0BXcRut=P7k7BVQ@mail.gmail.com>
+ <X/2fzghPXnuDNBPU@kroah.com> <CAEGmHFEpPTuRuWFt0ba022BmGfaDmSTAgEApW9EzAa5CitmtbA@mail.gmail.com>
+ <b4a931cf-5974-64d0-fdf2-693e418f3110@gmail.com> <CAAd53p6PtdCRe50PFdn35S1mXHBACKUpmVVcE2qfZgVT3MKj5Q@mail.gmail.com>
+ <CAEGmHFG-XXfhcO2ZJU0HwSmTAsYC-04F6by5td3+Ax4GbYLy+g@mail.gmail.com>
+In-Reply-To: <CAEGmHFG-XXfhcO2ZJU0HwSmTAsYC-04F6by5td3+Ax4GbYLy+g@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 4 Feb 2021 13:19:35 +0800
+Message-ID: <CAAd53p71kXLObKAYn45GAQ7GHE00wHZdsGnhj4QECCpNoX5ZxA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
+To:     Furquan Shaikh <furquan@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On AMD Renoir/Cezanne platforms, when set "Always on USB" to "On" in BIOS,
-USB controller will consume more power than 0.03w.
+On Thu, Feb 4, 2021 at 12:09 PM Furquan Shaikh <furquan@google.com> wrote:
+>
+> On Wed, Feb 3, 2021 at 6:37 PM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Hi Furquan,
+> >
+> > On Wed, Jan 13, 2021 at 10:31 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> > [snipped]
+> > > Thank you all for addressing this problem!
+> >
+> > Are you still working on the alternate solution?
+>
+> Yes, it is in my pipeline, but I have been distracted because of some
+> other high priority tasks. I plan to push something for review in ~3-4
+> weeks.
 
-Set it to D3cold when shutdown, S5 power consumption will be 0.03w lower.
-The USB can charge other devices as before.
-USB controller works fine after power on and reboot.
+Please Cc me in the revised patch.
+Thanks for your work.
 
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- drivers/usb/host/xhci-pci.c | 8 ++++++++
- drivers/usb/host/xhci.h     | 1 +
- 2 files changed, 9 insertions(+)
+Kai-Heng
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 84da8406d5b4..a31be1ba927f 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -62,6 +62,7 @@
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_3			0x43ba
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_2			0x43bb
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
-+#define PCI_DEVICE_ID_AMD_RENOIR_USB31			0x1639
- #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
- #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
- #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
-@@ -171,6 +172,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
- 	if (pdev->vendor == PCI_VENDOR_ID_AMD)
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 
-+	if (pdev->vendor == PCI_VENDOR_ID_AMD &&
-+		pdev->device == PCI_DEVICE_ID_AMD_RENOIR_USB31)
-+		xhci->quirks |= XHCI_SHUTDOWN_D3COLD;
-+
- 	if ((pdev->vendor == PCI_VENDOR_ID_AMD) &&
- 		((pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_4) ||
- 		(pdev->device == PCI_DEVICE_ID_AMD_PROMONTORYA_3) ||
-@@ -594,6 +599,9 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
- 	/* Yet another workaround for spurious wakeups at shutdown with HSW */
- 	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
- 		pci_set_power_state(pdev, PCI_D3hot);
-+
-+	if (xhci->quirks & XHCI_SHUTDOWN_D3COLD)
-+		pci_set_power_state(pdev, PCI_D3cold);
- }
- #endif /* CONFIG_PM */
- 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 25e57bc9c3cc..0684193da4bd 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1883,6 +1883,7 @@ struct xhci_hcd {
- #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
- #define XHCI_DISABLE_SPARSE	BIT_ULL(38)
- #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
-+#define XHCI_SHUTDOWN_D3COLD	BIT_ULL(40)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
--- 
-2.30.0
-
+>
+> > This patch can
+> > address S5 power consumption issue for some laptops:
+> > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
+> >
+> > Kai-Heng
