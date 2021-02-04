@@ -2,182 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED7E310110
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F854310112
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhBDXv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 18:51:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:40874 "EHLO foss.arm.com"
+        id S231335AbhBDXwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 18:52:55 -0500
+Received: from mout.gmx.net ([212.227.15.15]:56695 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231245AbhBDXv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 18:51:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8822FD6E;
-        Thu,  4 Feb 2021 15:50:39 -0800 (PST)
-Received: from [10.57.49.26] (unknown [10.57.49.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C5C63F719;
-        Thu,  4 Feb 2021 15:50:38 -0800 (PST)
-Subject: Re: [PATCH] dma-mapping: benchmark: pretend DMA is transmitting
-To:     Barry Song <song.bao.hua@hisilicon.com>, m.szyprowski@samsung.com,
-        hch@lst.de, iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-References: <20210204225847.8884-1-song.bao.hua@hisilicon.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8d714a55-7bbc-128e-3e39-492ebf204223@arm.com>
-Date:   Thu, 4 Feb 2021 23:50:37 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231239AbhBDXwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 18:52:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612482671;
+        bh=VQUCkj7jIWOGve7JPw0DV8vIa6RGd9aNey65ZHgCELo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Ma/F0U0xvpFdwhc43hAADfx3GYy9MHvu5VxooQbggxXNDtfox06KamLFsxoQEcZjy
+         Yg69v9uijpdz7RzdTtMSJR4cAagsc6vz0zMP/5T+OPE+M0b+FfETQ6wC2Wm8eP3jT/
+         dGtMnk6RpDxWpnklMgQhrAvvRItt3ZtzdLJmdyQw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MpDJd-1liqdU0Elb-00qm9S; Fri, 05
+ Feb 2021 00:51:11 +0100
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     peterhuewe@gmx.de, jarkko@kernel.org
+Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        LinoSanfilippo@gmx.de
+Subject: [PATCH v3 0/2] TPM fixes
+Date:   Fri,  5 Feb 2021 00:50:41 +0100
+Message-Id: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210204225847.8884-1-song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:z0+rthG6Pi9DyXxgJQtfhhNQPMTS82SH+kJInh2dypDqI9tD26P
+ l4cuciqxN6NZXF1YEffCF03dcW+k+IDjEMpVzn2SY8vA0a/pNY/XzbkVd8WIjA+f939G6+L
+ WeQK2eEhoWEPmpVNdn0DZ96XYw4hMVU6ykw8xn3SIMr1v01HIRfJtC1HF+XEZfVJRU5H0Zg
+ C5EjzoW8SLHlj5KFEhYUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UYQph2jlBp0=:RvqRfqSNs/pqbFDy9B67zv
+ KqMEVvgaBRs3gcOVnvN957oTfYuODhcJIuOGwWdmnMh9pSXOl4HOv0pJVqi4J7Et6lbwJm1U3
+ jeuV2hDbu5J5w6che9HvtoFo78AUAF2XFV3JDbT0OYtDtWe7WpumUGOqO6pvXcaMN6gD6We6l
+ /X7Hv5tKMbteDByXzIAU7pNn/E6Lb0qpebJhLAsVkis4Digag6FgTZfocikEgQ0TiRT9UiasO
+ iY3RJbZTx2zeHu7xm9Bx2W3CtwqLY732+Ft0jVUVdKYiWcNrrnYpyaJs2T6WPRPbiKxq9H7lI
+ Wwq0yF+J2OjarSr32Ynm4o/h1IRvDKR2XUwzEEM4vqHhBliFf1rK0xcyvXSsrcUj2+8Q7hYoT
+ aspxtqzGZCkR2uo8kFT6qKq6UdV2HNvvwTLt9EVByn4Vs+AafWFWPhhRH0kPr1xoV2jpLgQdx
+ oTe2/y9U5NYARWnW4mrUuNCy2HfDu/PbYJgwQd28Ug2/RFPyMq67yUYCTdZrI3emhhcr3OGLV
+ gxLIawdDPnPPynivy64htuFaOQgdcKuXoDrlunGgz/Mwt0IuD4gUFBoWPeJkRKO444tLR6gni
+ nBBKLGWvczxXPVA9PWvDlLNVofyGIefrcn6xtFuIeiUrJNOgmXp/YkUSICVfF5l5s1QqLyUVn
+ U1WuZQJh0LFmE7xGZzbIKQKym0KkflCbw4NevYh0kPQG8u32TlvemcnFP2miAk294wVbbLSuM
+ ZS/Mnxj5t/TZ6StDEb5ZXaokZVEgGwABsXcSabns/Ap+qS8MF/BSXbdhpIIJ0WpSZGh+iG5TK
+ m28D5/tU+4cP26AMvsGVszFKTCS9ysz8K2iPcDJHHdWVlXwx8BvMokEjhq9q8+HQ9T5JDAxVp
+ ot0Yhs6wM9lBaSirLtLg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-04 22:58, Barry Song wrote:
-> In a real dma mapping user case, after dma_map is done, data will be
-> transmit. Thus, in multi-threaded user scenario, IOMMU contention
-> should not be that severe. For example, if users enable multiple
-> threads to send network packets through 1G/10G/100Gbps NIC, usually
-> the steps will be: map -> transmission -> unmap.  Transmission delay
-> reduces the contention of IOMMU. Here a delay is added to simulate
-> the transmission for TX case so that the tested result could be
-> more accurate.
-> 
-> RX case would be much more tricky. It is not supported yet.
-
-I guess it might be a reasonable approximation to map several pages, 
-then unmap them again after a slightly more random delay. Or maybe 
-divide the threads into pairs of mappers and unmappers respectively 
-filling up and draining proper little buffer pools.
-
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->   kernel/dma/map_benchmark.c                      | 11 +++++++++++
->   tools/testing/selftests/dma/dma_map_benchmark.c | 17 +++++++++++++++--
->   2 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-> index 1b1b8ff875cb..1976db7e34e4 100644
-> --- a/kernel/dma/map_benchmark.c
-> +++ b/kernel/dma/map_benchmark.c
-> @@ -21,6 +21,7 @@
->   #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
->   #define DMA_MAP_MAX_THREADS	1024
->   #define DMA_MAP_MAX_SECONDS	300
-> +#define DMA_MAP_MAX_TRANS_DELAY	(10 * 1000 * 1000) /* 10ms */
-
-Using MSEC_PER_SEC might be sufficiently self-documenting?
-
->   #define DMA_MAP_BIDIRECTIONAL	0
->   #define DMA_MAP_TO_DEVICE	1
-> @@ -36,6 +37,7 @@ struct map_benchmark {
->   	__s32 node; /* which numa node this benchmark will run on */
->   	__u32 dma_bits; /* DMA addressing capability */
->   	__u32 dma_dir; /* DMA data direction */
-> +	__u32 dma_trans_ns; /* time for DMA transmission in ns */
->   	__u64 expansion[10];	/* For future use */
->   };
->   
-> @@ -87,6 +89,10 @@ static int map_benchmark_thread(void *data)
->   		map_etime = ktime_get();
->   		map_delta = ktime_sub(map_etime, map_stime);
->   
-> +		/* Pretend DMA is transmitting */
-> +		if (map->dir != DMA_FROM_DEVICE)
-> +			ndelay(map->bparam.dma_trans_ns);
-
-TBH I think the option of a fixed delay between map and unmap might be a 
-handy thing in general, so having the direction check at all seems 
-needlessly restrictive. As long as the driver implements all the basic 
-building blocks, combining them to simulate specific traffic patterns 
-can be left up to the benchmark tool.
-
-Robin.
-
-> +
->   		unmap_stime = ktime_get();
->   		dma_unmap_single(map->dev, dma_addr, PAGE_SIZE, map->dir);
->   		unmap_etime = ktime_get();
-> @@ -218,6 +224,11 @@ static long map_benchmark_ioctl(struct file *file, unsigned int cmd,
->   			return -EINVAL;
->   		}
->   
-> +		if (map->bparam.dma_trans_ns > DMA_MAP_MAX_TRANS_DELAY) {
-> +			pr_err("invalid transmission delay\n");
-> +			return -EINVAL;
-> +		}
-> +
->   		if (map->bparam.node != NUMA_NO_NODE &&
->   		    !node_possible(map->bparam.node)) {
->   			pr_err("invalid numa node\n");
-> diff --git a/tools/testing/selftests/dma/dma_map_benchmark.c b/tools/testing/selftests/dma/dma_map_benchmark.c
-> index 7065163a8388..dbf426e2fb7f 100644
-> --- a/tools/testing/selftests/dma/dma_map_benchmark.c
-> +++ b/tools/testing/selftests/dma/dma_map_benchmark.c
-> @@ -14,6 +14,7 @@
->   #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
->   #define DMA_MAP_MAX_THREADS	1024
->   #define DMA_MAP_MAX_SECONDS     300
-> +#define DMA_MAP_MAX_TRANS_DELAY	(10 * 1000 * 1000) /* 10ms */
->   
->   #define DMA_MAP_BIDIRECTIONAL	0
->   #define DMA_MAP_TO_DEVICE	1
-> @@ -35,6 +36,7 @@ struct map_benchmark {
->   	__s32 node; /* which numa node this benchmark will run on */
->   	__u32 dma_bits; /* DMA addressing capability */
->   	__u32 dma_dir; /* DMA data direction */
-> +	__u32 dma_trans_ns; /* delay for DMA transmission in ns */
->   	__u64 expansion[10];	/* For future use */
->   };
->   
-> @@ -45,12 +47,12 @@ int main(int argc, char **argv)
->   	/* default single thread, run 20 seconds on NUMA_NO_NODE */
->   	int threads = 1, seconds = 20, node = -1;
->   	/* default dma mask 32bit, bidirectional DMA */
-> -	int bits = 32, dir = DMA_MAP_BIDIRECTIONAL;
-> +	int bits = 32, xdelay = 0, dir = DMA_MAP_BIDIRECTIONAL;
->   
->   	int cmd = DMA_MAP_BENCHMARK;
->   	char *p;
->   
-> -	while ((opt = getopt(argc, argv, "t:s:n:b:d:")) != -1) {
-> +	while ((opt = getopt(argc, argv, "t:s:n:b:d:x:")) != -1) {
->   		switch (opt) {
->   		case 't':
->   			threads = atoi(optarg);
-> @@ -67,6 +69,9 @@ int main(int argc, char **argv)
->   		case 'd':
->   			dir = atoi(optarg);
->   			break;
-> +		case 'x':
-> +			xdelay = atoi(optarg);
-> +			break;
->   		default:
->   			return -1;
->   		}
-> @@ -84,6 +89,12 @@ int main(int argc, char **argv)
->   		exit(1);
->   	}
->   
-> +	if (xdelay < 0 || xdelay > DMA_MAP_MAX_TRANS_DELAY) {
-> +		fprintf(stderr, "invalid transmit delay, must be in 0-%d\n",
-> +			DMA_MAP_MAX_TRANS_DELAY);
-> +		exit(1);
-> +	}
-> +
->   	/* suppose the mininum DMA zone is 1MB in the world */
->   	if (bits < 20 || bits > 64) {
->   		fprintf(stderr, "invalid dma mask bit, must be in 20-64\n");
-> @@ -107,6 +118,8 @@ int main(int argc, char **argv)
->   	map.node = node;
->   	map.dma_bits = bits;
->   	map.dma_dir = dir;
-> +	map.dma_trans_ns = xdelay;
-> +
->   	if (ioctl(fd, cmd, &map)) {
->   		perror("ioctl");
->   		exit(1);
-> 
+Q2hhbmdlcyBpbiB2MwotIGRyb3AgdGhlIHBhdGNoIHRoYXQgaW50cm9kdWNlcyB0aGUgbmV3IGZ1
+bmN0aW9uIHRwbV9jaGlwX2ZyZWUoKQotIHJld29yayB0aGUgY29tbWl0IG1lc3NhZ2VzIGZvciB0
+aGUgcGF0Y2hlcyAoc3R5bGUsIHR5cG9zLCBldGMuKQotIGFkZCBmaXhlcyB0YWcgdG8gcGF0Y2gg
+MgotIGFkZCBKYW1lcyBCb3R0b21sZXkgdG8gY2MgbGlzdAotIGFkZCBzdGFibGUgbWFpbGluZyBs
+aXN0IHRvIGNjIGxpc3QKCkNoYW5nZXMgaW4gdjI6Ci0gZHJvcCB0aGUgcGF0Y2ggdGhhdCBlcnJv
+bmVvdXNseSBjbGVhbmVkIHVwIGFmdGVyIGZhaWxlZCBpbnN0YWxsYXRpb24gb2YKICBhbiBhY3Rp
+b24gaGFuZGxlciBpbiB0cG1tX2NoaXBfYWxsb2MoKSAocG9pbnRlZCBvdXQgYnkgSmFya2tvIFNh
+a2tpbmVuKQotIG1ha2UgdGhlIGNvbW1pdCBtZXNzYWdlIGZvciBwYXRjaCAxIG1vcmUgZGV0YWls
+ZWQKLSBhZGQgZml4ZXMgdGFncyBhbmQga2VybmVsIGxvZ3MKCkxpbm8gU2FuZmlsaXBwbyAoMik6
+CiAgdHBtOiBmaXggcmVmZXJlbmNlIGNvdW50aW5nIGZvciBzdHJ1Y3QgdHBtX2NoaXAKICB0cG06
+IGluIHRwbTJfZGVsX3NwYWNlIGNoZWNrIGlmIG9wcyBwb2ludGVyIGlzIHN0aWxsIHZhbGlkCgog
+ZHJpdmVycy9jaGFyL3RwbS90cG0tY2hpcC5jICAgICAgIHwgMTggKysrKysrKysrKysrKysrLS0t
+CiBkcml2ZXJzL2NoYXIvdHBtL3RwbTItc3BhY2UuYyAgICAgfCAxNSArKysrKysrKysrLS0tLS0K
+IGRyaXZlcnMvY2hhci90cG0vdHBtX2Z0cG1fdGVlLmMgICB8ICAyICsrCiBkcml2ZXJzL2NoYXIv
+dHBtL3RwbV92dHBtX3Byb3h5LmMgfCAgMSArCiA0IGZpbGVzIGNoYW5nZWQsIDI4IGluc2VydGlv
+bnMoKyksIDggZGVsZXRpb25zKC0pCgotLSAKMi43LjQKCg==
