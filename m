@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC8A30F775
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301A230F78C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237889AbhBDQP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:15:27 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53742 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237870AbhBDQN5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:13:57 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 44B691C0B77; Thu,  4 Feb 2021 17:12:43 +0100 (CET)
-Date:   Thu, 4 Feb 2021 17:12:42 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: rt8515: add V4L2_FLASH_LED_CLASS dependency
-Message-ID: <20210204161242.GE14305@duo.ucw.cz>
-References: <20210204153951.1551156-1-arnd@kernel.org>
+        id S237956AbhBDQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:19:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237830AbhBDQOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7849E64E2C;
+        Thu,  4 Feb 2021 16:13:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612455187;
+        bh=TIfCzhCipP4xK2VKKltkiXXtzpX6perlJg4lSjRnXe4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1bzTiaTYQTuZFj1ix7tTTc15iy/EN0h9b69uCVrD6OAz9o/zgARcpHbu12urcBJV5
+         fxk0iEJ8hDYtOmFGQ0wOFWCoywAujdDwd6/MlKenR1fS878B21ZB+ae302Yuuag3Fi
+         l8AOJhTSh1POvKxeRuU5pmuUFveT6Cifvt1++AuY=
+Date:   Thu, 4 Feb 2021 17:13:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 1/6] software node: Provide replacement for
+ device_add_properties()
+Message-ID: <YBwdEKPIDbbYWAbR@kroah.com>
+References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+ <20210204141711.53775-2-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0j+fTG4rw6Z9XU9h=UFSObT5s2a=EY21g5YYyk9BDNtsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204153951.1551156-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJZ5v0j+fTG4rw6Z9XU9h=UFSObT5s2a=EY21g5YYyk9BDNtsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 04, 2021 at 05:06:53PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Feb 4, 2021 at 3:17 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > At the moment the function device_del() is calling
+> > device_remove_properties() unconditionally. That will result into the
+> > reference count of the software node attached to the device being
+> > decremented, and in most cases it will hit 0 at that point. So in
+> > practice device_del() will unregister the software node attached to
+> > the device, even if that was not the intention of the caller. Right
+> > now software nodes can not be reused or shared because of that.
+> >
+> > So device_del() can not unregister the software nodes unconditionally
+> > like that. Unfortunately some of the users of device_add_properties()
+> > are now relying on this behaviour. Because of that, and also in
+> > general, we do need a function that can offer similar behaviour where
+> > the lifetime of the software node is bound to the lifetime of the
+> > device. But it just has to be a separate function so the behaviour is
+> > optional. We can not remove the device_remove_properties() call from
+> > device_del() before we have that new function, and before we have
+> > replaced device_add_properties() calls with it in all the places that
+> > require that behaviour.
+> >
+> > This adds function device_create_managed_software_node() that can be
+> > used for exactly that purpose. Software nodes created with it are
+> > declared "managed", and separate handling for those nodes is added to
+> > the software node code. The reference count of the "managed" nodes is
+> > decremented when the device they are attached to is removed. This will
+> > not affect the other nodes that are not declared "managed".
+> >
+> > The function device_create_managed_software_node() has also one
+> > additional feature that device_add_properties() does not have. It
+> > allows the software nodes created with it to be part of a node
+> > hierarchy by taking also an optional parent node as parameter.
+> >
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+> The rationale is clear now, so
+> 
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> and I'm assuming that this will be routed via the USB tree.
 
---ILuaRSyQpoVaJ1HG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I will do so, thanks.
 
-On Thu 2021-02-04 16:39:44, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The leds-rt8515 driver can optionall use the v4l2 flash led class,
-
-Optionally.
-
-> Add the same dependency that the other users of this class have
-> instead, which just prevents the broken configuration.
->=20
-> Fixes: e1c6edcbea13 ("leds: rt8515: Add Richtek RT8515 LED driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks for the fix. If you plan to send a pull request to linus before
-5.11, feel free to add it.
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
-Otherwise I'll queue it for -rc1, I guess.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---ILuaRSyQpoVaJ1HG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBwc+gAKCRAw5/Bqldv6
-8h6XAJwPVXcS26ScGLxjsgJDhXn/gY9QdgCdEj+hPjkck79RV7CoI2RHiyLtbn4=
-=aYuu
------END PGP SIGNATURE-----
-
---ILuaRSyQpoVaJ1HG--
+greg k-h
