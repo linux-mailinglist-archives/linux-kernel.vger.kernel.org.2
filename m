@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3C730F669
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B8D30F66B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237234AbhBDPdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:33:20 -0500
-Received: from mail-oo1-f44.google.com ([209.85.161.44]:44999 "EHLO
-        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbhBDPVs (ORCPT
+        id S237291AbhBDPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:33:59 -0500
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:35172 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237253AbhBDPVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:21:48 -0500
-Received: by mail-oo1-f44.google.com with SMTP id n19so827328ooj.11;
-        Thu, 04 Feb 2021 07:21:26 -0800 (PST)
+        Thu, 4 Feb 2021 10:21:47 -0500
+Received: by mail-oi1-f175.google.com with SMTP id w8so4082453oie.2;
+        Thu, 04 Feb 2021 07:21:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=P7JarkNG0Jr4x/lj1itZ7BSEgkDgo9dz5ORdHCgfdk8=;
-        b=Zo0NmWhlaKEdDnz60vg4clm2uM+qfG+TmAsZm9uWAvERLScDh4aCBssmqQmhsnkvXV
-         /KQr2iMRTO/5k7QcFS6a7Wmgc4frscHFgJ/Z49Spim8GruSrTb3q5oGm2o/AthpH6U6a
-         Hu06U+3yLqV/fGfYkgWDEzNGkzrRZ2k7YNkUb1CaIGUEPIbiLPMfQiaG+1mVl7CznLH+
-         QrWpqhtMpGgkBss750HPJDA9UsMCWfSHsT7A+ekoJqIA2Y595xd9RyZeA/ApKwpiy8dD
-         0JqJCXvBMJ75aDILVkggF62iWKAVWqWt34UGrPUQU4e9F4fypVNbtyAqqtT5sFmgLdAs
-         6EXQ==
-X-Gm-Message-State: AOAM533IhD3MzlLMZgW2JJ2jxZvgpOGejP280jVFylV82VZMS/tWJ7Ax
-        3At+zr8vNQY/6C3jFuEKlw==
-X-Google-Smtp-Source: ABdhPJzM3kHORViPede34wMD/uUSw98pduiPbhxgxRYTa/nSc0pWIAtPIW3tqD1eZiyu3WZiHYs1VA==
-X-Received: by 2002:a4a:d50d:: with SMTP id m13mr52826oos.2.1612452060739;
-        Thu, 04 Feb 2021 07:21:00 -0800 (PST)
+        bh=oZGNs7nDtUphRDqGl7ohIJDPCE6d+t9/b/EDhVvQ54c=;
+        b=BCnySCurRtJ47ZvicmY52iqFTu5Fsnc4SUhNxsF+o3cEXRzjLkkOd0XAwcKXsAKSh6
+         +J8smvm0HT+of2bUy2HtkuXHpWtgB6qVqFxKUiTe+6HrtP9ii1aDlVLoamkP+GK3eSkF
+         sxdebAIQDwxVA6DJiyJRCWPcbQJv2Ya+Jmd3dHKBHfj5YkVqjWVnsPx8GkrMxc4zRgVP
+         NLte0wUwu9bc84gyDB7CVDR0x4IiHxdpvgHblAa458WEQ8+Q1uT1oBrENDeMofZ+DgpG
+         9ZEFCA+Ql/zYcDtiNui4TdAEEiYOEDmD392LVVbKnElb7cgvZ3q7wG/j63meNMPgqyC1
+         3ZAA==
+X-Gm-Message-State: AOAM530NxZYAJvGOg4wypjZRJCdyBmjsVM228xDE3uEw2niYeeXRhLuj
+        s4TQLdrNgUM6omT3hqPCSg==
+X-Google-Smtp-Source: ABdhPJzmWXw4pcODtvLNukgjmc7B4wfiFPEAQGPUlYnM0+PkwlQXIRZiIHbcH4hj4u6Wx4RDAlnugg==
+X-Received: by 2002:a05:6808:b03:: with SMTP id s3mr40824oij.40.1612452066140;
+        Thu, 04 Feb 2021 07:21:06 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 33sm1139125ota.69.2021.02.04.07.20.58
+        by smtp.gmail.com with ESMTPSA id s123sm1142562oos.3.2021.02.04.07.21.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 07:20:59 -0800 (PST)
-Received: (nullmailer pid 452035 invoked by uid 1000);
+        Thu, 04 Feb 2021 07:21:05 -0800 (PST)
+Received: (nullmailer pid 452040 invoked by uid 1000);
         Thu, 04 Feb 2021 15:20:57 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@axis.com, Kevin Hilman <khilman@baylibre.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jonathan Chocron <jonnyc@amazon.com>,
-        devicetree@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-omap@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
-        linux-amlogic@lists.infradead.org,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>
-In-Reply-To: <bf3d0a5683c50062a55182922daeec5cfdbe00cc.1612335031.git.mchehab+huawei@kernel.org>
-References: <cover.1612335031.git.mchehab+huawei@kernel.org> <bf3d0a5683c50062a55182922daeec5cfdbe00cc.1612335031.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v2 01/11] doc: bindings: PCI: designware-pcie.txt: convert it to YAML
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     balbi@kernel.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org
+In-Reply-To: <20210203165233.22177-1-jbx6244@gmail.com>
+References: <20210203165233.22177-1-jbx6244@gmail.com>
+Subject: Re: [PATCH v2 1/7] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
 Date:   Thu, 04 Feb 2021 09:20:57 -0600
-Message-Id: <1612452057.699681.452034.nullmailer@robh.at.kernel.org>
+Message-Id: <1612452057.718435.452039.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Feb 2021 08:01:45 +0100, Mauro Carvalho Chehab wrote:
-> Convert the file into a DT schema.
+On Wed, 03 Feb 2021 17:52:27 +0100, Johan Jonker wrote:
+> In the past Rockchip dwc3 usb nodes were manually checked.
+> With the conversion of snps,dwc3.yaml as common document
+> we now can convert rockchip,dwc3.txt to yaml as well.
+> Remove node wrapper.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Added properties for rk3399 are:
+>   power-domains
+>   resets
+>   reset-names
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
->  .../bindings/pci/amlogic,meson-pcie.txt       |   4 +-
->  .../bindings/pci/axis,artpec6-pcie.txt        |   2 +-
->  .../bindings/pci/designware-pcie.txt          |  77 ----------
->  .../bindings/pci/fsl,imx6q-pcie.txt           |   2 +-
->  .../bindings/pci/hisilicon-histb-pcie.txt     |   2 +-
->  .../bindings/pci/hisilicon-pcie.txt           |   2 +-
->  .../devicetree/bindings/pci/kirin-pcie.txt    |   2 +-
->  .../bindings/pci/layerscape-pci.txt           |   2 +-
->  .../bindings/pci/nvidia,tegra194-pcie.txt     |   4 +-
->  .../devicetree/bindings/pci/pci-armada8k.txt  |   2 +-
->  .../devicetree/bindings/pci/pci-keystone.txt  |  10 +-
->  .../devicetree/bindings/pci/pcie-al.txt       |   2 +-
->  .../devicetree/bindings/pci/qcom,pcie.txt     |  14 +-
->  .../bindings/pci/samsung,exynos-pcie.yaml     |   2 +-
->  .../devicetree/bindings/pci/snps,pcie.yaml    | 139 ++++++++++++++++++
->  .../pci/socionext,uniphier-pcie-ep.yaml       |   2 +-
->  .../devicetree/bindings/pci/ti-pci.txt        |   4 +-
->  .../devicetree/bindings/pci/uniphier-pcie.txt |   2 +-
->  MAINTAINERS                                   |   2 +-
->  19 files changed, 169 insertions(+), 107 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/designware-pcie.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/snps,pcie.yaml
+>  .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
+>  .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 103 +++++++++++++++++++++
+>  2 files changed, 103 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml:13:7: [warning] wrong indentation: expected 2 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-	Additional properties are not allowed ('$ref' was unexpected)
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
-		'enum' is a required property
-		'const' is a required property
-	'/schemas/types.yaml#definitions/flag' does not match 'types.yaml#/definitions/'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: ignoring, error in schema: properties: snps,enable-cdm-check
-warning: no schema found in file: ./Documentation/devicetree/bindings/pci/snps,pcie.yaml
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml] Error 255
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/intel,keembay-dwc3.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/intel,keembay-dwc3.example.dt.yaml] Error 255
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/snps,dwc3.yaml'
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.example.dt.yaml] Error 255
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1435145
+See https://patchwork.ozlabs.org/patch/1435466
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
