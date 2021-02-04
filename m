@@ -2,145 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E230F2BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2F930F2DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235866AbhBDLxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:53:40 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:47295 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235669AbhBDLxf (ORCPT
+        id S235827AbhBDMG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:06:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9548 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235560AbhBDMG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:53:35 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210204115252euoutp01e4d2d06a630e907ad7b15660ae9b981c~giT_f43Rv1316513165euoutp01K
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:52:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210204115252euoutp01e4d2d06a630e907ad7b15660ae9b981c~giT_f43Rv1316513165euoutp01K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612439572;
-        bh=CrNgGnBdM3NHfovieeL3wYXRz6hRRA0BSDq+Zhi40gc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=opQRrg4yNliSwPvrTcw9NCGBZaU5+ib/zuJTVeAg8PuVl5TeCSC98Wclq2+i+a7lP
-         lS1J42MSY0lOXPwDA8TCO6bqefWMNBzLfLfNKj40M0JNbMEXMMOqaWvYGV5Rj9ZuY3
-         KLNUS5qXBGrZe5f2qSs0F7ze1GTRXv22j4R5xO0g=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210204115252eucas1p1687ce7461fd73e9919d4d03153359a52~giT_HgnrA0326603266eucas1p1L;
-        Thu,  4 Feb 2021 11:52:52 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id B2.75.27958.410EB106; Thu,  4
-        Feb 2021 11:52:52 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c~giT9p1X5J0269002690eucas1p2C;
-        Thu,  4 Feb 2021 11:52:52 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210204115252eusmtrp12f62cfd97065c534ade5377020fb5da9~giT9pCph30897708977eusmtrp1I;
-        Thu,  4 Feb 2021 11:52:52 +0000 (GMT)
-X-AuditID: cbfec7f2-efdff70000006d36-85-601be014fb48
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id C2.12.21957.310EB106; Thu,  4
-        Feb 2021 11:52:51 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210204115251eusmtip1b345e76e5f3e7e4261b975491b6070cb~giT81Cnlj0653106531eusmtip1g;
-        Thu,  4 Feb 2021 11:52:51 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for
- interrupts
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-tegra <linux-tegra@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
-Date:   Thu, 4 Feb 2021 12:52:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.7.0
+        Thu, 4 Feb 2021 07:06:26 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114C5SmC135427;
+        Thu, 4 Feb 2021 07:05:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cZTh+I5F9V24r0zN//Jr7xMF9Y0BpJvuCyeacWDt1Xs=;
+ b=L78uHQrIg5qaiTKtz4iV1QnxQEXmIw2emlQSXDpPnXQ/OI0aayTKbB0h/1eylKqJEzKs
+ sq4R/MZDz8cZIjEHhlhiUDXzdaP2t4vjWi+pguPLItD3jV/CpS5EwF2qbm8vIAAX5D63
+ DE/3LjqCOndboQdK1uyIALkrzU8ifyRbkY9YJZSWvzww8nk+Qbf8ppPUp8LXn19Ic+Mg
+ 9Y8W0RyuGRBbAhVunnzPEENub7BJzuiNjj3/AgtAPZSu+PIgII7/wthj+TgjFDq548fb
+ rtC++bU8/EgKOv/rOWL39tZCI8ZEfUxHPJEOO/FZPuMeFuebTj9XEdChIWSfCPNZagR5 DA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ggew0a91-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 07:05:44 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114C5fGg137276;
+        Thu, 4 Feb 2021 07:05:41 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ggew0945-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 07:05:40 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114C2t6A014468;
+        Thu, 4 Feb 2021 12:02:55 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 36evvf2fq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 12:02:55 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114C2qT741550204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 12:02:52 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58580A40EF;
+        Thu,  4 Feb 2021 12:02:52 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC8DEA40EB;
+        Thu,  4 Feb 2021 12:02:51 +0000 (GMT)
+Received: from [9.145.50.6] (unknown [9.145.50.6])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Feb 2021 12:02:51 +0000 (GMT)
+Subject: Re: [RFC v2 1/1] PCI: Add s390 specific UID uniqueness attribute
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20210204094353.63819-1-schnelle@linux.ibm.com>
+ <20210204094353.63819-2-schnelle@linux.ibm.com> <YBvPBD+fCtQkCFFD@kroah.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <7b85c218-88a4-b6db-e5de-7004475564ee@linux.ibm.com>
+Date:   Thu, 4 Feb 2021 13:02:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210121225712.1118239-3-saravanak@google.com>
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YBvPBD+fCtQkCFFD@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIKsWRmVeSWpSXmKPExsWy7djPc7oiD6QTDGb+lrH4MvcUi8X8I+dY
-        LWa++c9m8ezWXiaL5sXr2SxaZi1isdixXcTiZ/sWJospf5YzWVzeNYfNovPLLDaLnXNOslq0
-        7j3CbvF/zw52i65Df9ksbv/mcxDw2LZ7G6vH+xut7B47Z91l91iwqdRj06pONo871/aweRw6
-        3MHosX/uGnaP3uZ3bB6fN8kFcEVx2aSk5mSWpRbp2yVwZfw8Poup4A57xY8Le5kbGHexdTFy
-        cEgImEjcWmTZxcjFISSwglFi+Y6dTBDOF0aJBW2T2SCcz4wSR/b1wHW8eJgCEV/OKLHh/A2o
-        jo+MEid7r7F3MXJyCAsESnS1HmIGsUVA5l756wJSxCywl1li85dbjCAJNgFDia63XWwgNq+A
-        ncTOG+vAmlkEVCSuTtkCFhcVSJJYfvMPE0SNoMTJmU9YQGxOARuJPwuPg9nMAvIS29/OYYaw
-        xSVuPZkPdpGEwGFOicNX/rCCJCQEXCQudO9jh7CFJV4d3wJly0icntzDAtHQzCjx8Nxadgin
-        h1HictMMRogqa4k7536BA4BZQFNi/S59iLCjxN3fz1gh4cInceOtIMQRfBKTtk1nhgjzSnS0
-        CUFUq0nMOr4Obu3BC5eYJzAqzULy2iwk78xC8s4shL0LGFlWMYqnlhbnpqcWG+allusVJ+YW
-        l+al6yXn525iBKbC0/+Of9rBOPfVR71DjEwcjIcYJTiYlUR4E9ukEoR4UxIrq1KL8uOLSnNS
-        iw8xSnOwKInzrpq9Jl5IID2xJDU7NbUgtQgmy8TBKdXAlLcoMjD4wIyTW2LvrTrsYh8/7YFP
-        y7Vvy+sZtnK1v98onlp7vn/vq8XfrQq4N75sOKh46LlL9Imy+anNLDpJIo+Wrtu2JO+75pKH
-        nUf2n3FrMd+g3r1XbJXig4oma/nMN3JvjbL/1YheU1CrM2+6pn0q5c2Dg3Ls6+PVVsyf51st
-        kpBrZSFpF272SPmzmYhIv4DPG4290lXXnGQYVUSna7182MiQl/booaWjhIQAB/P9A6apRz5t
-        U2S7tHfBKcWevqufOGd/EV1s+eO6qCvDmr0T7qrs9jzBttTi/9bnkY0+uR/vvZt3dPvNnLi/
-        mtUaXDvSQ/dLOLrkGPPtZLLauKV3+81L1fl3GKv6ggIdlViKMxINtZiLihMBSKReA/QDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMIsWRmVeSWpSXmKPExsVy+t/xu7rCD6QTDO4dtbD4MvcUi8X8I+dY
-        LWa++c9m8ezWXiaL5sXr2SxaZi1isdixXcTiZ/sWJospf5YzWVzeNYfNovPLLDaLnXNOslq0
-        7j3CbvF/zw52i65Df9ksbv/mcxDw2LZ7G6vH+xut7B47Z91l91iwqdRj06pONo871/aweRw6
-        3MHosX/uGnaP3uZ3bB6fN8kFcEXp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZ
-        Kunb2aSk5mSWpRbp2yXoZfw8Poup4A57xY8Le5kbGHexdTFycEgImEi8eJjSxcjFISSwlFFi
-        64+drF2MnEBxGYmT0xqgbGGJP9e62CCK3jNKrNnWzwaSEBYIlOhqPcQMkhARWMEoMe9sEzuI
-        wyywl1li28TTTCArhARyJY718II0sAkYSnS97QJr5hWwk9h5Yx07iM0ioCJxdcoWsLioQJLE
-        41v3mSBqBCVOznzCAmJzCthI/Fl4HMxmFjCTmLf5ITOELS+x/e0cKFtc4taT+UwTGIVmIWmf
-        haRlFpKWWUhaFjCyrGIUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiM/W3Hfm7ewTjv1Ue9Q4xM
-        HIyHGCU4mJVEeBPbpBKEeFMSK6tSi/Lji0pzUosPMZoC/TORWUo0OR+YfPJK4g3NDEwNTcws
-        DUwtzYyVxHm3zl0TLySQnliSmp2aWpBaBNPHxMEp1cC0starKl/3doP3+Z7Y5jB55ResgqKn
-        k4Ki73w6u6Fi+4uJjJs2MlZXybt0KLx1mcaW6N2psGHxSvt75/ZcnqGctpH9tJqlSPsN/95I
-        vayf0XebvY42v97uO68zcMpO9ZuVMz+uCi7ekuhYcttG7+Rc1tWK72ZqXNA2yrf1cXtvf77+
-        UGX11llqL46kFR291HZg3W4XjthrG6LyL3hvjzOsupe09tXOOQa/N221Xfy478D1Vec/iVt/
-        O9g82VM/5BVP7da53EaBV1m4YniP/jc9Ua3xnEvt7QWuFqvPrxafPSDDm7tljsnus/ZL7rFm
-        lF+QfLRq9ZKOqTZGArIGU7eavz/pb+22NfrgjPm2esa3lViKMxINtZiLihMBbyoRwIYDAAA=
-X-CMS-MailID: 20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c
-References: <20210121225712.1118239-1-saravanak@google.com>
-        <20210121225712.1118239-3-saravanak@google.com>
-        <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_06:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ phishscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
 
-On 21.01.2021 23:57, Saravana Kannan wrote:
-> This allows fw_devlink to create device links between consumers of an
-> interrupt and the supplier of the interrupt.
->
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Kevin Hilman <khilman@baylibre.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Thierry Reding <treding@nvidia.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-This patch landed some time ago in linux-next as commit 4104ca776ba3 
-("of: property: Add fw_devlink support for interrupts"). It breaks MMC 
-host controller operation on ARM Juno R1 board (the mmci@50000 device 
-defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't 
-check further what's wrong there as without MMC mounting rootfs fails in 
-my test system.
+On 2/4/21 11:40 AM, Greg Kroah-Hartman wrote:
+> On Thu, Feb 04, 2021 at 10:43:53AM +0100, Niklas Schnelle wrote:
+>> The global UID uniqueness attribute exposes whether the platform
+>> guarantees that the user-defined per-device UID attribute values
+>> (/sys/bus/pci/device/<dev>/uid) are unique and can thus be used as
+>> a global identifier for the associated PCI device. With this commit
+>> it is exposed at /sys/bus/pci/zpci/unique_uids
+>>
+>> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+>> ---
+>>  Documentation/ABI/testing/sysfs-bus-pci |  9 +++++++++
+>>  drivers/pci/pci-sysfs.c                 | 21 +++++++++++++++++++++
+>>  2 files changed, 30 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+>> index 25c9c39770c6..812dd9d3f80d 100644
+>> --- a/Documentation/ABI/testing/sysfs-bus-pci
+>> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+>> @@ -375,3 +375,12 @@ Description:
+>>  		The value comes from the PCI kernel device state and can be one
+>>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>>  		The file is read only.
+>> +What:		/sys/bus/pci/zpci/unique_uids
+> 
+> No blank line before this new line?
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Good catch, thanks!
 
+> 
+> And why "zpci"?
+
+There doesn't seem to be a precedent for arch specific attributes under
+/sys/bus/pci so I went with a separate group for the RFC.
+"zpci" since that's what we've been calling the s390 specific PCI.
+I'm not attached to that name or having a separate group, from
+my perspective /sys/bus/pci/unique_uids would actually be ideal
+if Bjorn is okay with that, we don't currently foresee any additional
+global attributes and no one else seems to have them but
+one never knows and a separate group would then of course,
+well group them.
+
+> 
+>> +Date:		February 2021
+>> +Contact:	Niklas Schnelle <schnelle@linux.ibm.com>
+>> +Description:
+>> +		This attribute exposes the global state of UID Uniqueness on an
+>> +		s390 Linux system. If this file contains '1' the per-device UID
+>> +		attribute is guaranteed to provide a unique user defined
+>> +		identifier for that PCI device. If this file contains '0' UIDs
+>> +		may collide and do not provide a unique identifier.
+> 
+> What are they "colliding" with?  And where does the UID come from, the
+> device itself or somewhere else?
+
+If this attribute is 0 multiple PCI devices seen by Linux may have the same UID i.e.
+they may collide with each other on the same Linux instance. The
+UIDs are exposed under /sys/bus/pci/devices/<dev>/uid. Even if the attribute is 1
+multiple Linux instances will often see the same UID. The main use case
+we currently envision is naming PCI based network interfaces "eno<UID>"
+which of course only works if the UIDs are unique for that Linux.
+On the same mainframe multiple Linux instances may then e.g. use the same
+UID for VFs from the same physical PCI network card or different cards
+but the same physical network all defined by an administrator/management
+system.
+
+The UIDs come from the platform/firmware/hypervisor and are provided
+for each device by the CLP List PCI Functions "instruction" that is used
+on s390x where an OS can't probe the physical PCI bus but instead
+that is done by firmware. On QEMU/KVM they can be set on the QEMU cli,
+on our machine hypervisor they are defined by the machine administrator/management
+software as part of the definition of VMs/Partitions on that mainframe which includes
+everything from the number of CPUs, memory, I/O devices etc. With the exposed UID uniqueness
+attribute the platform then certifies that it will ensure that a UID is set to
+a unique non-zero value. I can of course add more of this explanation
+in the documentation too.
+
+Both the uniqueness guarantee (this attribute) as well as the UIDs themselves
+are part of the Z (s390x) architecture so fall under the mainframe typical
+backwards compatibility considerations.
+
+Thanks,
+Niklas
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
