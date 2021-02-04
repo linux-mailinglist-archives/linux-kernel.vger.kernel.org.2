@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A9030F9F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EEF30F9E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbhBDRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
+        id S238667AbhBDRhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238589AbhBDRdk (ORCPT
+        with ESMTP id S238631AbhBDRfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:33:40 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2355C061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:32:59 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id a16so3328683ilq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:32:59 -0800 (PST)
+        Thu, 4 Feb 2021 12:35:10 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E692C06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:34:30 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id w204so4011779ybg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:34:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p0Q2uFdsPG2m597Q9FFih/IKz1kEOh3l14NqTe6ccy4=;
-        b=mdksKdq/c8ZM+W9H8aGvPmb5nCMKi5nzFzgGAZFAhYG0HUWHHDvDk5YacZq1DW2tbb
-         oGNN62OhAkyE7P7DwhJIZLi2s3rJpelS0iwJfYZvAF1DLAxnWC6yA2IKsVHIxXHHcdn3
-         LPaIwsSoDEoz0THRbJDJW+cw4YBo68ZbticCnLZGiT5eW32sMvKmaU+DgC43Sg3YY073
-         lZsNWWTQ38AHLjKPxHNFi3VnRUEy8R66m4v1d+7WUufuwNr+WN1pMit+ZEUHgXu60vkD
-         pWGJ9SxVdk167I+UX/iMc0axVDA3SOlaaR0ofMxQVBJ2c84hSpPDadOyVf/mjajkbUGl
-         nxhA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g1sMYk4jMbfGlD37L/VSSp+6/9LFoKJqj/BayIq9xFk=;
+        b=aUg4gnPtZthLYhO5UXfTNeQARQ8mO6hJDqbNStk/Rz6UXyDW4t9Ju4/1uuLBavZoPo
+         4HDMBEtABl1u5Zch9srQ4DV3+HZ5qJcNNv/6AXBFuQCem6UwIGH/XeXL6ftv6qx62OqV
+         i2dC7ekpaZ/XPTxFQZVSht/S/+umYzxWEDTKAjhwVRjOyL3hfLgT3OwjqOMZuLfEQ0AQ
+         wzmMVvyKi0jdxLYJzYsccODml1pFsvtjW7RuYga6gsjE5WA/LuWiNUbP2VjDnu2RITnl
+         U3LncMsf3ICcj5Y7oHj/RZ2LQXIBM3NwSnSymqZHmf59mbBIESnMSynUTEjlPx4OL+ly
+         ALdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p0Q2uFdsPG2m597Q9FFih/IKz1kEOh3l14NqTe6ccy4=;
-        b=rQZMTqdCMAa0TBQfR+ZzI50DFwLAm2fUX6IxQCoVPpUnh6eBAXPMXb+Y1CYAKFoEwJ
-         nqaf6SghvTfCgjRmT3cW7kr+wNnHQtx8hI11njmjuGeBfVTNcTM5qzZxcKq8llXThiOL
-         GeFkcPjxcOQWPBrVlyNtjt3IJG37R5DuaPN2/qn+wTm7Y60V7a1hcJEjcQSZejXo2okf
-         LKYGFQ14WzA7T7jGUkEPbiByjDVW94iNt/dUczdqE8L+CH0eJt/jqG3zOQHrpS2twCeW
-         6b/R2Uk846resQIHYTsrcDTiFlsAESXvOotQgsBUSPydCQQ6pF5g7pTYgauilO/FUA5q
-         ZjLQ==
-X-Gm-Message-State: AOAM530Sn2cSKPuOYyvHz1fvQXL+3NqRy2jUTOrFPJ92QB7kAuZ1Nnr6
-        e0N9Nk4G7rniaRp56/i6KwfW7LfFuNWg+g==
-X-Google-Smtp-Source: ABdhPJxxHBTxw1u7BUN3/k+DkEdi8I+kF9ikRlGjWN8uogW9/4ZZnAtUFf1/kEs7CZfVkcXigtO84w==
-X-Received: by 2002:a92:ab0d:: with SMTP id v13mr169165ilh.119.1612459978950;
-        Thu, 04 Feb 2021 09:32:58 -0800 (PST)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id x7sm2959431ioa.48.2021.02.04.09.32.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 09:32:58 -0800 (PST)
-Subject: Re: [PATCH] remoteproc: qcom: fix glink dependencies
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Chris Lew <clew@codeaurora.org>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
-        "Andrew F. Davis" <afd@ti.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-remoteproc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210204154010.1585457-1-arnd@kernel.org>
- <c326e5c8-e394-88bc-24f4-4dd8e246db3c@linaro.org>
- <CAK8P3a24WPVX3t4_X=muLfYUXtK6UOOHATrLQT3y_tWSb2XYrQ@mail.gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <6fa5b9ca-8afd-e6f6-84ed-1e87d3a3c95f@linaro.org>
-Date:   Thu, 4 Feb 2021 11:32:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g1sMYk4jMbfGlD37L/VSSp+6/9LFoKJqj/BayIq9xFk=;
+        b=W5W4yEmL1BSfsQLDairGxdh/DRv5Eu168EtnqMLu++8yEMneZZALnSg2d9DbJhrd1Z
+         j55b0DTkPmVfuHVpmRvKALgtOdM6nRUpMckjAxOw85FQHNur9QAs4JSheK8jZTJ+rfP/
+         sYRqjU03ExMeEVfPsvn276Ow1wriopejYYprysmhU0ygp/bHBW/8QFZfkWDNp+qHRZ0F
+         lomSdfuLFH4Y2GzXMOpdo2m2jPNeyv5IpUmkWogHxUSYUebUWbWXp5iS+91zBLvp1Pws
+         6pYFELt0IaKIDUa2XTDu5LoH4GIzTRwdLy/zPGh8ffrPwP6KOVqCTE1VSMfXO6HCNW2s
+         b8tg==
+X-Gm-Message-State: AOAM531LoMQ9/b3qMghw/nLK5TXW5klTlbcfrAJDSslKNKTo/9NrQ5JF
+        49/il2RfRg0cyENEXoVIPNLbxWy5RSFGA0HE2TzwMw==
+X-Google-Smtp-Source: ABdhPJy4giCW2AraYjhK6Yjp2t0DYhM0Cmgsfyi0OtXVHYjSXtvXk7PVTdz2Hvycja2NhNqN3hztKLkbZZ5b2CdI/mA=
+X-Received: by 2002:a25:1086:: with SMTP id 128mr364500ybq.375.1612460069483;
+ Thu, 04 Feb 2021 09:34:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a24WPVX3t4_X=muLfYUXtK6UOOHATrLQT3y_tWSb2XYrQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210204123331.21e4598b@canb.auug.org.au> <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
+ <20210204153611.iqpok4ligorpujyo@skbuf>
+In-Reply-To: <20210204153611.iqpok4ligorpujyo@skbuf>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Thu, 4 Feb 2021 09:34:18 -0800
+Message-ID: <CAMzD94Th4aku5zsGfOp96kvk7VU5RE1+0AVszExB5-nogEaq4w@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 11:16 AM, Arnd Bergmann wrote:
-> On Thu, Feb 4, 2021 at 5:16 PM Alex Elder <elder@linaro.org> wrote:
->>
->> On 2/4/21 9:40 AM, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> Building the remoteproc drivers into the kernel while the qcom_glink
->>> code is in a loadable module results in a link error:
->>>
->>> ld.lld: error: undefined symbol: qcom_glink_ssr_notify
->>>>>> referenced by vmlinux.o:(glink_subdev_unprepare)
->>>
->>> Add a Kconfig dependency to avoid this.
->>
->> So if they're incompatible in that way it's declared in the
->> header but not defined in the kernel so the link fails.
->>
->> And at issue is anything that calls qcom_add_glink_subdev(),
->> which is qcom_q6v5_{adsp,mss,pas,wcss}.c, and those are
->> selected by CONFIG_QCOM_Q6V5_{ADSP,MSS,PAS,WCSS}.
->>
->> But I don't see why QCOM_WCNSS_PIL needs the dependency.
->>
->> Can you explain that?  Other that that this looks good
->> to me (and I'll offer reviewed-by with your response).
-> 
-> The problem is that QCOM_WCNSS_PIL selects
-> QCOM_RPROC_COMMON, so qcom_common.o is built-in
-> whenever QCOM_WCNSS_PIL=y, and this will lead to the
-> same link failure, regardless of whether the function is needed
-> or not.
+Hi all, I've just sent the patch series:
+https://patchwork.kernel.org/project/netdevbpf/list/?series=428099.
 
-Thanks for the explanation.  Maybe that is something
-than get fixed, maybe not.
+Thanks,
+Brian
 
-Reviewed-by: Alex Elder <elder@linaro.org>
-
->        Arnd
-> 
-
+On Thu, Feb 4, 2021 at 7:36 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> Hi Brian,
+>
+> On Wed, Feb 03, 2021 at 07:52:08PM -0800, Brian Vazquez wrote:
+> > Hi Stephen, thanks for the report. I'm having trouble trying to
+> > compile for ppc, but I believe this should fix the problem, could you
+> > test this patch, please? Thanks!
+>
+> Could you please submit the patch formally to net-next? Thanks.
