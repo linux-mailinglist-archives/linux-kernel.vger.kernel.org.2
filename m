@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1EB30F0FB
+	by mail.lfdr.de (Postfix) with ESMTP id BD3FE30F0FC
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhBDKfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
+        id S235634AbhBDKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235568AbhBDKdn (ORCPT
+        with ESMTP id S235527AbhBDKeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:33:43 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D09AC061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:33:03 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id p15so2845361wrq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hsN/OapOEplhri1ngP6qr+RO+51gU8IM8nQPOqxMvVQ=;
-        b=EH3VfFhRjeXA5UtS/Yj+qDHIfaYbcWFBhV9MxtZ+xXWzTjfYWRujowx5LH9RKJIKMA
-         WtyM2sMythgEQqf75Rn8DEEEeTX7zQpC46tppaAgrdqPN1DHFgTmgOQeORoqKQllaiFm
-         kDVryYMeAD4kPWq5ziqL37Ml2HWdGzcBZqPYSgczVxihAe4aty8rzr/axgVWbkFHbnZb
-         yCpV+gmR9HaUNPsjgPSMfivNdZyOS3mbjlvgk6NbYJn1krCRsbskztFZyAnZu2ryFnYU
-         r7s0bxc6qAxgUSdwswooOSCqKhrdDX7Ww+wENsY+aT95cOYyAHbf1ba0YyMoCKHAkxDS
-         heuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hsN/OapOEplhri1ngP6qr+RO+51gU8IM8nQPOqxMvVQ=;
-        b=TGAPBEy5Kpl9QuR0oUn3Oe61ChZgwagSFGhWFh9SJjVHLE6wcRfLJ53iMFO0Uzh0IB
-         cVWGKsUwe9oknJ7IjpqhD8FCovo3Bnvg0oQPAspyRYpK95kvc1leg2jDnkbEWL1w+LUY
-         ieDLgzHBYMrvXdfbcpy7+YumD/HMo3A7BaFIIAGzdAK+bJYGzDa7i7OIajJWO9q5foHZ
-         NhNacKO75eszwe9YQ+IFrcvhNATUAtt1nSfr3lA1RM/Q45couFv2LO/GNYBTiGiEC8Df
-         /O/6EumnR4CEU+ghtgzQzCk0AjU1pDV9Tt+qsUhQgcu1tCZQCLltwYhoGF7Sa/b9d1Ee
-         GB1w==
-X-Gm-Message-State: AOAM533IAUfmSVCmxocqCZtpomJYrDj9kvzIz7RFRac9GyTV76KMdUVd
-        CHCbuBnx3LD0YP1XdwKZp7JyiBbhU+JjiA==
-X-Google-Smtp-Source: ABdhPJxHWLcMprdKmr42u2S4LwyYNw2r3RuA7Pr0JTirLj5GS/slybEW2EcRSZFRbhWP+hBUdlOhpQ==
-X-Received: by 2002:a5d:6d06:: with SMTP id e6mr8670513wrq.425.1612434782343;
-        Thu, 04 Feb 2021 02:33:02 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id m205sm5665340wmf.40.2021.02.04.02.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 02:33:01 -0800 (PST)
-Date:   Thu, 4 Feb 2021 10:32:59 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Campion Kang <campion.kang@advantech.com.tw>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        AceLan Kao <chia-lin.kao@canonical.com>
-Subject: Re: [PATCH v6 2/6] mfd: ahc1ec0: Add Advantech EC include file used
- by dt-bindings
-Message-ID: <20210204103259.GB2789116@dell>
-References: <20210118123749.4769-1-campion.kang@advantech.com.tw>
- <20210118123749.4769-2-campion.kang@advantech.com.tw>
+        Thu, 4 Feb 2021 05:34:18 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DE0C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:33:38 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 4BB081F44AE3
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
+ <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+Date:   Thu, 4 Feb 2021 10:33:33 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210118123749.4769-2-campion.kang@advantech.com.tw>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Campion Kang wrote:
-
-> This files defines the sud-device types and hwmon profiles support by
-> Advantech embedded controller.
+On 04/02/2021 10:27, Ard Biesheuvel wrote:
+> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+>>
+>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
+>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
+>>> <guillaume.tucker@collabora.com> wrote:
+>>>>
+>>>> Hi Ard,
+>>>>
+>>>> Please see the bisection report below about a boot failure on
+>>>> rk3288 with next-20210203.  It was also bisected on
+>>>> imx6q-var-dt6customboard with next-20210202.
+>>>>
+>>>> Reports aren't automatically sent to the public while we're
+>>>> trialing new bisection features on kernelci.org but this one
+>>>> looks valid.
+>>>>
+>>>> The kernel is most likely crashing very early on, so there's
+>>>> nothing in the logs.  Please let us know if you need some help
+>>>> with debugging or trying a fix on these platforms.
+>>>>
+>>>
+>>> Thanks for the report.
+>>
+>> Ard,
+>>
+>> I want to send my fixes branch today which includes your regression
+>> fix that caused this regression.
+>>
+>> As this is proving difficult to fix, I can only drop your fix from
+>> my fixes branch - and given that this seems to be problematical, I'm
+>> tempted to revert the original change at this point which should fix
+>> both of these regressions - and then we have another go at getting rid
+>> of the set/way instructions during the next cycle.
+>>
+>> Thoughts?
+>>
 > 
-> Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
-> ---
->  include/dt-bindings/mfd/ahc1ec0-dt.h | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->  create mode 100644 include/dt-bindings/mfd/ahc1ec0-dt.h
+> Hi Russell,
+> 
+> If Guillaume is willing to do the experiment, and it fixes the issue,
 
-For my own reference (apply this as-is to your sign-off block):
+Yes, I'm running some tests with that fix now and should have
+some results shortly.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> it proves that rk3288 is relying on the flush before the MMU is
+> disabled, and so in that case, the fix is trivial, and we can just
+> apply it.
+> 
+> If the experiment fails (which would mean rk3288 does not tolerate the
+> cache maintenance being performed after cache off), it is going to be
+> hairy, and so it will definitely take more time.
+> 
+> So in the latter case (or if Guillaume does not get back to us), I
+> think reverting my queued fix is the only sane option. But in that
+> case, may I suggest that we queue the revert of the original by-VA
+> change for v5.12 so it gets lots of coverage in -next, and allows us
+> an opportunity to come up with a proper fix in the same timeframe, and
+> backport the revert and the subsequent fix as a pair? Otherwise, we'll
+> end up in the situation where v5.10.x until today has by-va, v5.10.x-y
+> has set/way, and v5.10y+ has by-va again. (I don't think we care about
+> anything before that, given that v5.4 predates any of this)
+> 
+> But in the end, I'm happy to go along with whatever works best for you.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Guillaume
