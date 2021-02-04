@@ -2,119 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB9730F14F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C7D30F15E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhBDK4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:56:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
+        id S235499AbhBDK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:58:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:55976 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235378AbhBDK4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:56:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB3864F72
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612436124;
-        bh=iVOYJyr/gInCGMuwQ7LepyUha9WX21AN5d8OqnfR7uU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qOtWVjpEAiUSSLXsoyrSjnKcWA56wnfg5Z7L2v++SB2a/rhBNl35GlYhtDkYPZjJs
-         7nNyhWIpMTk/fZicthRrKes4oM5F0J6Y9h3laweFtq3sMd9y9eVUTp7Jj7eZUaLsIQ
-         OngZ53jrn6HBCpW89NXpIViLkoUR/Rfz2oWZ3RoffC8E4CoKwZGqHVxWQh4I6f8JKV
-         LDQb09+nmK5gwOQ3daMw7Zo+JhfmemRyN7J/IQfjSFMLqtoG4qmfhN06tWoXV857nY
-         y0YZDJ3rIBwEoTrHDx/whsFqIEKBybxM1pV2OpfXjqvy5+JJn8FJ42pOHaX2hBWkvn
-         ODr4iHhIVY2ig==
-Received: by mail-oi1-f171.google.com with SMTP id u66so1329548oig.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:55:24 -0800 (PST)
-X-Gm-Message-State: AOAM530ey3b3zl6GdAkwfLjOK53kxfXUsXi1WvGHWTmMLaCIdi4v7uJF
-        nUzVPppC1+NgZK5ISPcY96+7CnugfZd6FIhC9CI=
-X-Google-Smtp-Source: ABdhPJw4JbNRArUMkqNa7P08Ruf3Tr/UdRMkHpqxhSV9cSbnh0Qa9NdrQXiRZyzMr7GGmJreApH8hXm7DEY/6Qfy3lc=
-X-Received: by 2002:aca:ea0b:: with SMTP id i11mr4914161oih.33.1612436123393;
- Thu, 04 Feb 2021 02:55:23 -0800 (PST)
+        id S235346AbhBDK6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:58:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB101D6E;
+        Thu,  4 Feb 2021 02:57:23 -0800 (PST)
+Received: from [10.57.60.124] (unknown [10.57.60.124])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF72B3F73B;
+        Thu,  4 Feb 2021 02:57:19 -0800 (PST)
+Subject: Re: [PATCH v2 6/7] perf cs-etm: Detect pid in VMID for kernel running
+ at EL2
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Al Grant <al.grant@arm.com>
+References: <20210202163842.134734-1-leo.yan@linaro.org>
+ <20210202163842.134734-7-leo.yan@linaro.org>
+ <f5158216-c3d1-10bb-02eb-00ff9a78f617@arm.com>
+ <20210204040021.GF11059@leoy-ThinkPad-X240s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <a8116024-76df-4c42-15ef-de3f02436b8c@arm.com>
+Date:   Thu, 4 Feb 2021 10:57:06 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com> <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk> <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <20210204104714.GU1463@shell.armlinux.org.uk>
-In-Reply-To: <20210204104714.GU1463@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Feb 2021 11:55:12 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
-Message-ID: <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204040021.GF11059@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Marc)
+On 2/4/21 4:00 AM, Leo Yan wrote:
+> On Tue, Feb 02, 2021 at 11:29:47PM +0000, Suzuki Kuruppassery Poulose wrote:
+>> On 2/2/21 4:38 PM, Leo Yan wrote:
+>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>
+>>> The PID of the task could be traced as VMID when the kernel is running
+>>> at EL2.  Teach the decoder to look for VMID when the CONTEXTIDR (Arm32)
+>>> or CONTEXTIDR_EL1 (Arm64) is invalid but we have a valid VMID.
+>>>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Al Grant <al.grant@arm.com>
+>>> Co-developed-by: Leo Yan <leo.yan@linaro.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>>> ---
+>>>    .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 32 ++++++++++++++++---
+>>>    1 file changed, 28 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> index 3f4bc4050477..fb2a163ff74e 100644
+>>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> @@ -6,6 +6,7 @@
+>>>     * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>     */
+>>> +#include <linux/coresight-pmu.h>
+>>>    #include <linux/err.h>
+>>>    #include <linux/list.h>
+>>>    #include <linux/zalloc.h>
+>>> @@ -491,13 +492,36 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
+>>>    			const ocsd_generic_trace_elem *elem,
+>>>    			const uint8_t trace_chan_id)
+>>>    {
+>>> -	pid_t tid;
+>>> +	pid_t tid = -1;
+>>> +	u64 pid_fmt;
+>>> +	int ret;
+>>> -	/* Ignore PE_CONTEXT packets that don't have a valid contextID */
+>>> -	if (!elem->context.ctxt_id_valid)
+>>> +	ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
+>>> +	if (ret)
+>>
+>> Is this something we can cache in this function ? e.g,
+>> 	static u64 pid_fmt;
+>>
+>> 	if (!pid_pfmt)
+>> 		ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
+>>
+>> As all the ETMs will be running at the same exception level.
+> 
+> Sorry that I let you repeated your comments again.
+> 
+> To be honest, I considered this after read your comment in the previous
+> series, but I thought it's possible that multiple CPUs have different
+> PID format, especially for big.LITTLE arch.  After read your suggestion
+> again, I think my concern is not valid, even for big.LITTLE, all CPUs
+> should run on the same kernel exception level.
+> 
+> So will follow up your suggestion to cache "pid_fmt".
 
-On Thu, 4 Feb 2021 at 11:48, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Thu, Feb 04, 2021 at 11:27:16AM +0100, Ard Biesheuvel wrote:
-> > Hi Russell,
-> >
-> > If Guillaume is willing to do the experiment, and it fixes the issue,
-> > it proves that rk3288 is relying on the flush before the MMU is
-> > disabled, and so in that case, the fix is trivial, and we can just
-> > apply it.
-> >
-> > If the experiment fails (which would mean rk3288 does not tolerate the
-> > cache maintenance being performed after cache off), it is going to be
-> > hairy, and so it will definitely take more time.
-> >
-> > So in the latter case (or if Guillaume does not get back to us), I
-> > think reverting my queued fix is the only sane option. But in that
-> > case, may I suggest that we queue the revert of the original by-VA
-> > change for v5.12 so it gets lots of coverage in -next, and allows us
-> > an opportunity to come up with a proper fix in the same timeframe, and
-> > backport the revert and the subsequent fix as a pair? Otherwise, we'll
-> > end up in the situation where v5.10.x until today has by-va, v5.10.x-y
-> > has set/way, and v5.10y+ has by-va again. (I don't think we care about
-> > anything before that, given that v5.4 predates any of this)
->
-> I'm suggesting dropping your fix (9052/1) and reverting
-> "ARM: decompressor: switch to by-VA cache maintenance for v7 cores"
-> which gets us to a point where _both_ regressions are fixed.
->
+No problem.
 
-I understand, but we don't know whether doing so might regress other
-platforms that were added in the mean time.
+> 
+>>
+>>> +		return OCSD_RESP_FATAL_SYS_ERR;
+>>> +
+>>> +	/*
+>>> +	 * Process the PE_CONTEXT packets if we have a valid contextID or VMID.
+>>> +	 * If the kernel is running at EL2, the PID is traced in CONTEXTIDR_EL2
+>>> +	 * as VMID, Bit ETM_OPT_CTXTID2 is set in this case.
+>>> +	 */
+>>> +	switch (pid_fmt) {
+>>> +	case BIT(ETM_OPT_CTXTID):
+>>> +		if (elem->context.ctxt_id_valid)
+>>> +			tid = elem->context.context_id;
+>>> +		break;
+>>> +	case BIT(ETM_OPT_CTXTID2) | BIT(ETM_OPT_CTXTID):
+>>
+>> I would rather fix the cs_etm__get_pid_fmt() to return either of these
+>> as commented. i.e, ETM_OPT_CTXTID or ETM_OPT_CTXTID2. Thus we don't
+>> need the this case.
+> 
+> I explained why I set both bits for ETM_OPT_CTXTID and ETM_OPT_CTXTID2
+> in the patch 05/07.  Could you take a look for it?
 
-> I'm of the opinion that the by-VA patch was incorrect when it was
-> merged (it caused a regression), and it's only a performance
-> improvement.
+I have responded to the comment in the patch.
 
-It is a correctness improvement, not a performance improvement.
-
-Without that change, the 32-bit ARM kernel cannot boot bare metal on
-platforms with a system cache such as 8040 or SynQuacer, and can only
-boot under KVM on such systems because of the special handling of
-set/way instructions by the host.
-
-The performance issue related to set/way ops under KVM was already
-fixed by describing data and unified caches as 1 set and 1 way when
-running in 32-bit mode.
+> 
+>> With the above two addressed:
+>>
+>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
 
 
-> Our attempts so far to fix it are just causing other
-> regressions. So, I think it is reasonable to revert both back to a
-> known good point which has worked over a decade. If doing so causes
-> regressions (which I think is unlikely), then that would be unfortunate
-> but alas is a price that's worth paying to get back to a known good
-> point - since then we're not stacking regression fixes on top of other
-> regression fixes.
->
-
-This is exactly why I am proposing to queue the revert of the original
-patch for v5.12, and only backport it to v5.10 and v5.11 once we are
-sure it does not break anything else.
+Thanks
+Suzuki
