@@ -2,455 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AE930F632
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC45830F639
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237308AbhBDPXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:23:52 -0500
-Received: from mga11.intel.com ([192.55.52.93]:40405 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237245AbhBDPVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:21:24 -0500
-IronPort-SDR: jcNa8fwHmM+HyeQu8zkYkqmH7Y8G8Ijvaat7wb1aTSmBMX9JwFMK8UkES6xzvJpXsJRlz2SbNG
- XdyP3ptcnfuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="177754008"
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="177754008"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:19:37 -0800
-IronPort-SDR: ltUyQwyzRkUYMZImBiv7vG2c5Xn3iIa3pz8AFjYdLAdQu8fXdMRTdlK5cqj5UaETTvrFOn7Rn2
- MJ6Ur+V0oMpg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="393216673"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 04 Feb 2021 07:19:37 -0800
-Received: from [10.251.24.66] (kliang2-MOBL.ccr.corp.intel.com [10.251.24.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 4DE1258087A;
-        Thu,  4 Feb 2021 07:19:36 -0800 (PST)
-Subject: Re: [PATCH 6/9] perf report: Support instruction latency
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, mingo@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, eranian@google.com,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, maddy@linux.vnet.ibm.com
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
- <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
- <A90940CE-3DFB-4774-BA46-0C5FEB4953A0@linux.vnet.ibm.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <27633871-eda5-7faa-8783-84dd49f8a6cd@linux.intel.com>
-Date:   Thu, 4 Feb 2021 10:19:34 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S237298AbhBDP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237258AbhBDPWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:22:11 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118B3C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:21:28 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id c4so3931236wru.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:21:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vA/eQ2S58koKaVheuxAPbUo6pEs5SmDGNUESF9JP+0A=;
+        b=VYti8uRm2dyw6UwX8aXW2oV2DL1UgHJ4rEUzb5RzcktTeGTufd/d6F/gqYPL+qhzzB
+         RbultCZ8rdkXrfv4yvMuSztOX25uVckOuykH+d7JKM2/E0RpttgrVpR7SmHbJbdaeBJ1
+         j7qGj70tVfcriTnXNOaSQrt+1q1Qrvnt6P8UBoZsGxK8S4ub/SJ7y8Mo39VuSUfceYnA
+         k6jIo7seCmvdOutxrRx0GGY9pwUF3U2ToL1Yfyfl2WWbZ3lSuBhls/u4duYxDl2al/Kt
+         hgubF2KfhfiQEVHRSCSUHhDHkP4mE/UguAVhkpWdzOLG1kicazqjfQPDUNSyqYIRBZ+c
+         cHmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vA/eQ2S58koKaVheuxAPbUo6pEs5SmDGNUESF9JP+0A=;
+        b=GfNOfN06KYqjleTapQ2aVeV94VYk/SLmhaUXJ4fTnWbWBvvYOYQ9bQLoirZuHusxQi
+         dROO7wu5o++pa9dFbPpz6LYakH3CJyF30+N3r9AGB3Um8+qO2jhT9kpdCL4ejzXVd7HM
+         bAP4MsS0n6masFlEKiGgIA9AG3rEP+f/kqgyPjueh37dP+dCm4mrIYH6iLKaJ5+4w8pb
+         l38wz3lp3pHHF4ulU3Wt6V33UF1JfkborTmgwTRXbqLl4gq7O+FW8jrlPg1XI755g+N0
+         Eoq6BxPZNzcz4+DFckCjtBC3jJZ84ttjqFrF2xiFy7ZYzIbe6b8Q9jMIGDWYAjzc6Dm/
+         qMRQ==
+X-Gm-Message-State: AOAM531f9Dvv7P+hIUdOmQvD9FjgLvYfi6U3hcHWr8Z6S0TalLfZ5fzm
+        s5cr7/EfnrINMHSuZWNcIQsJdg==
+X-Google-Smtp-Source: ABdhPJy0TbSsLuS/p2WzRPai8cnyw5jXXrUIeWK7iACJ/7tWSzo8KmbSSE4PPpWjajdKad9sJhaTuA==
+X-Received: by 2002:adf:ea51:: with SMTP id j17mr10448625wrn.382.1612452086502;
+        Thu, 04 Feb 2021 07:21:26 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id c18sm19955797wmk.0.2021.02.04.07.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 07:21:25 -0800 (PST)
+Date:   Thu, 4 Feb 2021 15:21:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+Message-ID: <20210204152124.GO2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
+ <20210204105748.GD2789116@dell>
+ <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
+ <20210204124335.GA4288@sirena.org.uk>
+ <20210204134606.GH2789116@dell>
+ <20210204150904.GD4288@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <A90940CE-3DFB-4774-BA46-0C5FEB4953A0@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210204150904.GD4288@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 04 Feb 2021, Mark Brown wrote:
 
-
-On 2/4/2021 8:11 AM, Athira Rajeev wrote:
+> On Thu, Feb 04, 2021 at 01:46:06PM +0000, Lee Jones wrote:
+> > On Thu, 04 Feb 2021, Mark Brown wrote:
 > 
+> > > The usual pattern here is that the MFD patches get merged and then I
+> > > pull a shared branch in for any dependencies - at this point the series
+> > > is now on the backlog of serieses where I'm waiting for the MFD to sort
+> > > itself out before I really look at it again.
 > 
->> On 03-Feb-2021, at 1:39 AM, kan.liang@linux.intel.com wrote:
->>
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> The instruction latency information can be recorded on some platforms,
->> e.g., the Intel Sapphire Rapids server. With both memory latency
->> (weight) and the new instruction latency information, users can easily
->> locate the expensive load instructions, and also understand the time
->> spent in different stages. The users can optimize their applications
->> in different pipeline stages.
->>
->> The 'weight' field is shared among different architectures. Reusing the
->> 'weight' field may impacts other architectures. Add a new field to store
->> the instruction latency.
->>
->> Like the 'weight' support, introduce a 'ins_lat' for the global
->> instruction latency, and a 'local_ins_lat' for the local instruction
->> latency version.
->>
->> Add new sort functions, INSTR Latency and Local INSTR Latency,
->> accordingly.
->>
->> Add local_ins_lat to the default_mem_sort_order[].
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->> tools/perf/Documentation/perf-report.txt |  6 +++-
->> tools/perf/util/event.h                  |  1 +
->> tools/perf/util/evsel.c                  |  4 ++-
->> tools/perf/util/hist.c                   | 12 ++++++--
->> tools/perf/util/hist.h                   |  2 ++
->> tools/perf/util/intel-pt.c               |  5 ++--
->> tools/perf/util/session.c                |  8 ++++--
->> tools/perf/util/sort.c                   | 47 +++++++++++++++++++++++++++++++-
->> tools/perf/util/sort.h                   |  3 ++
->> tools/perf/util/synthetic-events.c       |  4 ++-
->> 10 files changed, 81 insertions(+), 11 deletions(-)
->>
->> diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
->> index 826b5a9..0565b7c 100644
->> --- a/tools/perf/Documentation/perf-report.txt
->> +++ b/tools/perf/Documentation/perf-report.txt
->> @@ -108,6 +108,9 @@ OPTIONS
->> 	- period: Raw number of event count of sample
->> 	- time: Separate the samples by time stamp with the resolution specified by
->> 	--time-quantum (default 100ms). Specify with overhead and before it.
->> +	- ins_lat: Instruction latency in core cycles. This is the global
->> +	instruction latency
->> +	- local_ins_lat: Local instruction latency version
->>
->> 	By default, comm, dso and symbol keys are used.
->> 	(i.e. --sort comm,dso,symbol)
->> @@ -154,7 +157,8 @@ OPTIONS
->> 	- blocked: reason of blocked load access for the data at the time of the sample
->>
->> 	And the default sort keys are changed to local_weight, mem, sym, dso,
->> -	symbol_daddr, dso_daddr, snoop, tlb, locked, blocked, see '--mem-mode'.
->> +	symbol_daddr, dso_daddr, snoop, tlb, locked, blocked, local_ins_lat,
->> +	see '--mem-mode'.
->>
->> 	If the data file has tracepoint event(s), following (dynamic) sort keys
->> 	are also available:
->> diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
->> index ff403ea..5d50a49 100644
->> --- a/tools/perf/util/event.h
->> +++ b/tools/perf/util/event.h
->> @@ -141,6 +141,7 @@ struct perf_sample {
->> 	u16 insn_len;
->> 	u8  cpumode;
->> 	u16 misc;
->> +	u16 ins_lat;
->> 	bool no_hw_idx;		/* No hw_idx collected in branch_stack */
->> 	char insn[MAX_INSN];
->> 	void *raw_data;
->> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->> index 0a2a307..24c0b59 100644
->> --- a/tools/perf/util/evsel.c
->> +++ b/tools/perf/util/evsel.c
->> @@ -2337,8 +2337,10 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->> 		weight.full = *array;
->> 		if (type & PERF_SAMPLE_WEIGHT)
->> 			data->weight = weight.full;
->> -		else
->> +		else {
->> 			data->weight = weight.var1_dw;
->> +			data->ins_lat = weight.var2_w;
->> +		}
->> 		array++;
->> 	}
->>
->> diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
->> index 6866ab0..8a432f8 100644
->> --- a/tools/perf/util/hist.c
->> +++ b/tools/perf/util/hist.c
->> @@ -209,6 +209,8 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
->> 	hists__new_col_len(hists, HISTC_LOCAL_WEIGHT, 12);
->> 	hists__new_col_len(hists, HISTC_GLOBAL_WEIGHT, 12);
->> 	hists__new_col_len(hists, HISTC_MEM_BLOCKED, 10);
->> +	hists__new_col_len(hists, HISTC_LOCAL_INS_LAT, 13);
->> +	hists__new_col_len(hists, HISTC_GLOBAL_INS_LAT, 13);
->> 	if (symbol_conf.nanosecs)
->> 		hists__new_col_len(hists, HISTC_TIME, 16);
->> 	else
->> @@ -286,12 +288,13 @@ static long hist_time(unsigned long htime)
->> }
->>
->> static void he_stat__add_period(struct he_stat *he_stat, u64 period,
->> -				u64 weight)
->> +				u64 weight, u64 ins_lat)
->> {
->>
->> 	he_stat->period		+= period;
->> 	he_stat->weight		+= weight;
->> 	he_stat->nr_events	+= 1;
->> +	he_stat->ins_lat	+= ins_lat;
->> }
->>
->> static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
->> @@ -303,6 +306,7 @@ static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
->> 	dest->period_guest_us	+= src->period_guest_us;
->> 	dest->nr_events		+= src->nr_events;
->> 	dest->weight		+= src->weight;
->> +	dest->ins_lat		+= src->ins_lat;
->> }
->>
->> static void he_stat__decay(struct he_stat *he_stat)
->> @@ -591,6 +595,7 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
->> 	int64_t cmp;
->> 	u64 period = entry->stat.period;
->> 	u64 weight = entry->stat.weight;
->> +	u64 ins_lat = entry->stat.ins_lat;
->> 	bool leftmost = true;
->>
->> 	p = &hists->entries_in->rb_root.rb_node;
->> @@ -609,11 +614,11 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
->>
->> 		if (!cmp) {
->> 			if (sample_self) {
->> -				he_stat__add_period(&he->stat, period, weight);
->> +				he_stat__add_period(&he->stat, period, weight, ins_lat);
->> 				hist_entry__add_callchain_period(he, period);
->> 			}
->> 			if (symbol_conf.cumulate_callchain)
->> -				he_stat__add_period(he->stat_acc, period, weight);
->> +				he_stat__add_period(he->stat_acc, period, weight, ins_lat);
->>
->> 			/*
->> 			 * This mem info was allocated from sample__resolve_mem
->> @@ -723,6 +728,7 @@ __hists__add_entry(struct hists *hists,
->> 			.nr_events = 1,
->> 			.period	= sample->period,
->> 			.weight = sample->weight,
->> +			.ins_lat = sample->ins_lat,
->> 		},
->> 		.parent = sym_parent,
->> 		.filtered = symbol__parent_filter(sym_parent) | al->filtered,
->> diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
->> index 522486b..36bca33 100644
->> --- a/tools/perf/util/hist.h
->> +++ b/tools/perf/util/hist.h
->> @@ -72,6 +72,8 @@ enum hist_column {
->> 	HISTC_DSO_SIZE,
->> 	HISTC_SYMBOL_IPC,
->> 	HISTC_MEM_BLOCKED,
->> +	HISTC_LOCAL_INS_LAT,
->> +	HISTC_GLOBAL_INS_LAT,
->> 	HISTC_NR_COLS, /* Last entry */
->> };
->>
->> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
->> index a929f6d..c9477d0 100644
->> --- a/tools/perf/util/intel-pt.c
->> +++ b/tools/perf/util/intel-pt.c
->> @@ -1871,9 +1871,10 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->> 			 * cycles. Use latency >> 32 to distinguish the
->> 			 * different format of the mem access latency field.
->> 			 */
->> -			if (weight > 0)
->> +			if (weight > 0) {
->> 				sample.weight = weight & 0xffff;
->> -			else
->> +				sample.ins_lat = items->mem_access_latency & 0xffff;
->> +			} else
->> 				sample.weight = items->mem_access_latency;
->> 		}
->> 		if (!sample.weight && items->has_tsx_aux_info) {
->> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
->> index a35d8c2..330e591 100644
->> --- a/tools/perf/util/session.c
->> +++ b/tools/perf/util/session.c
->> @@ -1297,8 +1297,12 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
->> 	if (sample_type & PERF_SAMPLE_STACK_USER)
->> 		stack_user__printf(&sample->user_stack);
->>
->> -	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE)
->> -		printf("... weight: %" PRIu64 "\n", sample->weight);
->> +	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
->> +		printf("... weight: %" PRIu64 "", sample->weight);
->> +			if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT)
->> +				printf(",0x%"PRIx16"", sample->ins_lat);
->> +		printf("\n");
->> +	}
->>
->> 	if (sample_type & PERF_SAMPLE_DATA_SRC)
->> 		printf(" . data_src: 0x%"PRIx64"\n", sample->data_src);
->> diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
->> index 249a03c..e0529f2 100644
->> --- a/tools/perf/util/sort.c
->> +++ b/tools/perf/util/sort.c
->> @@ -36,7 +36,7 @@ const char	default_parent_pattern[] = "^sys_|^do_page_fault";
->> const char	*parent_pattern = default_parent_pattern;
->> const char	*default_sort_order = "comm,dso,symbol";
->> const char	default_branch_sort_order[] = "comm,dso_from,symbol_from,symbol_to,cycles";
->> -const char	default_mem_sort_order[] = "local_weight,mem,sym,dso,symbol_daddr,dso_daddr,snoop,tlb,locked,blocked";
->> +const char	default_mem_sort_order[] = "local_weight,mem,sym,dso,symbol_daddr,dso_daddr,snoop,tlb,locked,blocked,local_ins_lat";
->> const char	default_top_sort_order[] = "dso,symbol";
->> const char	default_diff_sort_order[] = "dso,symbol";
->> const char	default_tracepoint_sort_order[] = "trace";
->> @@ -1365,6 +1365,49 @@ struct sort_entry sort_global_weight = {
->> 	.se_width_idx	= HISTC_GLOBAL_WEIGHT,
->> };
->>
->> +static u64 he_ins_lat(struct hist_entry *he)
->> +{
->> +		return he->stat.nr_events ? he->stat.ins_lat / he->stat.nr_events : 0;
->> +}
->> +
->> +static int64_t
->> +sort__local_ins_lat_cmp(struct hist_entry *left, struct hist_entry *right)
->> +{
->> +		return he_ins_lat(left) - he_ins_lat(right);
->> +}
->> +
->> +static int hist_entry__local_ins_lat_snprintf(struct hist_entry *he, char *bf,
->> +					      size_t size, unsigned int width)
->> +{
->> +		return repsep_snprintf(bf, size, "%-*u", width, he_ins_lat(he));
->> +}
->> +
->> +struct sort_entry sort_local_ins_lat = {
->> +	.se_header	= "Local INSTR Latency",
->> +	.se_cmp		= sort__local_ins_lat_cmp,
->> +	.se_snprintf	= hist_entry__local_ins_lat_snprintf,
->> +	.se_width_idx	= HISTC_LOCAL_INS_LAT,
->> +};
+> > I tend to push patches awaiting Acks to the back of the queue.
 > 
-> Hi Kan Liang,
+> > Stalemate.
 > 
-> Currently with this changes, perf will display "Local INSTR Latency”  for the new column in ‘perf mem report’
+> I'm only going to ack things if I expect to see them applied via another
+> tree, that's generally what an ack means from a maintainer.  Especially
+> with ASoC where we keep on having subsystem wide changes quite often I'm
+> not likely to do that for things like new drivers unless it's very clear
+> what the timelines are.
 > 
-> Can we make this header string to be Architecture Specific ?
+> It would be enormously helpful to get the bits of the core MFDs that
+> create dependencies committed while the rest of the series is still in
+> process, as well as allowing things to be applied it also helps with
+> knowing if the dependencies are stable.
 
-I don't think current perf supports an arch specific header string. It 
-sounds like a new feature. I think it's a good feature.
+The default point-of-view is; if a patch was submitted as part of a
+set, it's likely that it makes the most sense to merge it as a set.
 
-Besides the instruction latency, we also introduce a 'block' field for 
-perf mem. I'm not sure if the field applies for PowerPC. You may want to 
-check it as well.
+Very often sets will have inter-dependencies (usually headers) which
+would otherwise require the base patches to be applied (perhaps the
+MFD core and the headers) in one release, followed by the accompanying
+child device changes during a subsequent release.  This doesn't scale
+well and puts the contributor in an unfair position.
 
-Could you please propose a patch to implement the feature? I think we 
-can have a further discussion based on it.
+This is how we usually work together.  Why is ASoC so different?
 
-> Because in other archs, the var2_w of ‘perf_sample_weight’ could be used to capture something else than the Local INSTR Latency.
-> Can we have some weak function to populate the header string ?
-> 
-
-I agree that the var2_w has different meanings among architectures. We 
-should not force it to data->ins_lat.
-
-The patch as below should fix it. Does it work for you?
-
-diff --git a/tools/perf/arch/x86/util/event.c 
-b/tools/perf/arch/x86/util/event.c
-index 047dc00..9b31734 100644
---- a/tools/perf/arch/x86/util/event.c
-+++ b/tools/perf/arch/x86/util/event.c
-@@ -75,3 +75,28 @@ int perf_event__synthesize_extra_kmaps(struct 
-perf_tool *tool,
-  }
-
-  #endif
-+
-+void arch_perf_parse_sample_weight(struct perf_sample *data,
-+				   const __u64 *array, u64 type)
-+{
-+	union perf_sample_weight weight;
-+
-+	weight.full = *array;
-+	if (type & PERF_SAMPLE_WEIGHT)
-+		data->weight = weight.full;
-+	else {
-+		data->weight = weight.var1_dw;
-+		data->ins_lat = weight.var2_w;
-+	}
-+}
-+
-+void arch_perf_synthesize_sample_weight(const struct perf_sample *data,
-+					__u64 *array, u64 type)
-+{
-+	*array = data->weight;
-+
-+	if (type & PERF_SAMPLE_WEIGHT_STRUCT) {
-+		*array &= 0xffffffff;
-+		*array |= ((u64)data->ins_lat << 32);
-+	}
-+}
-diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-index 60752e4..9f123aa 100644
---- a/tools/perf/util/event.h
-+++ b/tools/perf/util/event.h
-@@ -414,4 +414,7 @@ extern unsigned int proc_map_timeout;
-  #define PAGE_SIZE_NAME_LEN	32
-  char *get_page_size_name(u64 size, char *str);
-
-+void arch_perf_parse_sample_weight(struct perf_sample *data, const 
-__u64 *array, u64 type);
-+void arch_perf_synthesize_sample_weight(const struct perf_sample *data, 
-__u64 *array, u64 type);
-+
-  #endif /* __PERF_RECORD_H */
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 30b5452..1da8903 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2106,6 +2106,13 @@ perf_event__check_size(union perf_event *event, 
-unsigned int sample_size)
-  	return 0;
-  }
-
-+void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
-+					  const __u64 *array,
-+					  u64 type __maybe_unused)
-+{
-+	data->weight = *array;
-+}
-+
-  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-  			struct perf_sample *data)
-  {
-@@ -2347,16 +2354,8 @@ int evsel__parse_sample(struct evsel *evsel, 
-union perf_event *event,
-  	}
-
-  	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
--		union perf_sample_weight weight;
--
-  		OVERFLOW_CHECK_u64(array);
--		weight.full = *array;
--		if (type & PERF_SAMPLE_WEIGHT)
--			data->weight = weight.full;
--		else {
--			data->weight = weight.var1_dw;
--			data->ins_lat = weight.var2_w;
--		}
-+		arch_perf_parse_sample_weight(data, array, type);
-  		array++;
-  	}
-
-diff --git a/tools/perf/util/synthetic-events.c 
-b/tools/perf/util/synthetic-events.c
-index c6f9db3..412f4c3 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -1507,6 +1507,12 @@ size_t perf_event__sample_event_size(const struct 
-perf_sample *sample, u64 type,
-  	return result;
-  }
-
-+void __weak arch_perf_synthesize_sample_weight(const struct perf_sample 
-*data,
-+					       __u64 *array, u64 type __maybe_unused)
-+{
-+	*array = data->weight;
-+}
-+
-  int perf_event__synthesize_sample(union perf_event *event, u64 type, 
-u64 read_format,
-  				  const struct perf_sample *sample)
-  {
-@@ -1643,11 +1649,7 @@ int perf_event__synthesize_sample(union 
-perf_event *event, u64 type, u64 read_fo
-  	}
-
-  	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
--		*array = sample->weight;
--		if (type & PERF_SAMPLE_WEIGHT_STRUCT) {
--			*array &= 0xffffffff;
--			*array |= ((u64)sample->ins_lat << 32);
--		}
-+		arch_perf_synthesize_sample_weight(sample, array, type);
-  		array++;
-  	}
-
-Thanks,
-Kan
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
