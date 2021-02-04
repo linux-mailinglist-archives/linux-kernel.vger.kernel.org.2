@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278D630F4FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2784C30F4FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236725AbhBDOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:31:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        id S236626AbhBDObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:31:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236719AbhBDO0o (ORCPT
+        with ESMTP id S236699AbhBDO1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:26:44 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48451C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:26:02 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id u14so3751254wri.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:26:02 -0800 (PST)
+        Thu, 4 Feb 2021 09:27:45 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2342C06178B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:26:39 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id t142so1123042wmt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:26:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f+Kn5O5ZpiyxGVryHYtP1dHvnCa/0Doj6DjufSQG6+s=;
-        b=YS4z1atagIUMZKBbTg3QsyHjE/1Ce1TAm1g38OcbL+DaaCudgKyGyJ92SJH42zsX4o
-         pSaOnLZdh0aj4jek4bosFfEUVg6E42JOGYzdVhr5bvcRepLuke37hPevPn4XOOToG2/Y
-         54ftMvYMIxT77t56wHCgSvn1hhZdn8mvnZVL5IL8lSDlnUUGC8UdOMTCgC5YmDBrszY2
-         XthJ0EO+zWAKUpMU/7mMiR2j4tafLHb+NNFL/vTg5PM69hkH8l67NWOfmNo0veQkoxSj
-         fK4CwX0Xn3y0uYQuqfsIqiDJ09MbceOStRnmrN9S4/up5ra85FU1FbncX15gvjVK8/eS
-         uc9w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WHxuqsEXEN4au8FdhV49UEllGtCSQh/DCdcron9InCc=;
+        b=Pg47DSWBlJxWDTyOy0uhMGzKVxdYFLXQWQS0K5+zxLWQojmzL5h6ffmzz8z8JphFg+
+         GGQnNvn4zYaBYDPyC6oVULe1wxqtXA5XmivtJVmAw1gi3hAHI9cxbYJ8QeLjDxBqhN2z
+         sfjDy3JiEEXoc6s37Q0mTdakrkoM5BHiSvuWBi3o11isnRp8muh/HasfGTLX1h7INMPE
+         eu5FT15vPLlyQyL95luBYGKr7scOfYg8dDnnK/YcunKE0eaIWI/fCuGuv0YDlc808WV5
+         I+uMW4rSIiz6w0P13aivINkdIWrIx32dUc9bZPEOpmtG5xjHFd+ejnKzad1gnP1Q9wvP
+         8ztg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f+Kn5O5ZpiyxGVryHYtP1dHvnCa/0Doj6DjufSQG6+s=;
-        b=s6u+d7S8p2CWQE6M5WtTgj++tdPh7XDUIHQznCO58Vf5so3M7eZLzQSk4z5PiVIWab
-         Z5X+FV1DM6eJ6ecCuBe+6Sc8Lku8FyJv6FaRcXDZzhlBzbh+FVSCs7fG529Y8U5rbs+q
-         WJDoVbI19l6LnkrVL9Dt5c9cwTbaiPfNpdkV8m4H6e0QmRMgXcnZzvHeHPyR6I3+8dmV
-         ceQWdqSvtT0neY/hPbDe9Mjfo+wUu3pS7tx5YQXDpu7LazENtvFyyEBA/n5a7tDOhemh
-         Aa8cPaSK63Ty4Qwj206FhzJ0fZ7FXCPR1P5aPxBzltfcJm6KldEUh1BHIbXSxSyUFXBo
-         sH5Q==
-X-Gm-Message-State: AOAM533olayornrC36PH3FQhAtgZlv7Yvd82nxHB+h1hMneiaR6V6FAJ
-        XaR5qGLvbRR5vGiqExKcIJ2LdfO3b0L1/g==
-X-Google-Smtp-Source: ABdhPJy3YVPTtEMFX+kbmWAPhOQGMRkTso3UENHpJVHtcB2KmShXPEyR2Eaalgda73n4/ohX3xkeGA==
-X-Received: by 2002:adf:df0a:: with SMTP id y10mr9655161wrl.214.1612448761048;
-        Thu, 04 Feb 2021 06:26:01 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id y11sm8062875wrh.16.2021.02.04.06.25.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 06:26:00 -0800 (PST)
-Subject: Re: [RESEND PATCH] nvmem: qcom-spmi-sdam: Fix uninitialized pdev
- pointer
-To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <1612376126-31001-1-git-send-email-subbaram@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b369ae3e-38d5-7e41-1380-982a8fe66660@linaro.org>
-Date:   Thu, 4 Feb 2021 14:25:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WHxuqsEXEN4au8FdhV49UEllGtCSQh/DCdcron9InCc=;
+        b=h1YARs9PZq0Vx4FfFpEcK1LuU3F+S24Brxn2SI2iUnoUnZtoZwbXQ/6nQUVoD8i/Kf
+         6Oclb5zwmK4sf1EW27y9EsG+3RwgVKgBUo+0BqMGYT+Hd3+Lgnbwl9skpjpvb2cViiPL
+         f0Kp7xmzrh9LD1ntIG1ZAUvyOPcZVOjC8nOKfeYN0g8rnktrv/70lEGPV+v0/HAMCre2
+         CZedu/wCXkSOQ0U9dxG5sfHyqDIF/3zhphAqE0g2DSFb7BdpzfByA22NbMmGCe3T3xPp
+         UvfphT8P/be7r03Hy2O+8uSVgXynlhsFEb33ViCl5Ug0+Q5PC043904l93GKvpEr/Th0
+         yWLA==
+X-Gm-Message-State: AOAM5322/WxvGLYZHodgvZHygJ3nr3UKE3Wk8wPB1newAqJlZEV/8yDN
+        rnqCjC8E3Ak4+KnrLNNIkpnWuQ==
+X-Google-Smtp-Source: ABdhPJz8JyfdFBQ/Eq1UMUYtaCSGJYG+KqzKASSPlnHSKDldVsKHnk3I1lXTriVT3KNvdGryo6FBXw==
+X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr7619926wmq.70.1612448798327;
+        Thu, 04 Feb 2021 06:26:38 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id u3sm9286516wre.54.2021.02.04.06.26.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 06:26:37 -0800 (PST)
+Date:   Thu, 4 Feb 2021 14:26:35 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 26/26] KVM: arm64: Wrap the host with a stage 2
+Message-ID: <YBwEGx1tv8hob9ho@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-27-qperret@google.com>
+ <20210203161146.GJ18974@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <1612376126-31001-1-git-send-email-subbaram@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203161146.GJ18974@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03/02/2021 18:15, Subbaraman Narayanamurthy wrote:
-> "sdam->pdev" is uninitialized and it is used to print error logs.
-> Fix it. Since device pointer can be used from sdam_config, use it
-> directly thereby removing pdev pointer.
+On Wednesday 03 Feb 2021 at 16:11:47 (+0000), Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 12:15:24PM +0000, Quentin Perret wrote:
+> > When KVM runs in protected nVHE mode, make use of a stage 2 page-table
+> > to give the hypervisor some control over the host memory accesses. At
+> > the moment all memory aborts from the host will be instantly idmapped
+> > RWX at stage 2 in a lazy fashion. Later patches will make use of that
+> > infrastructure to implement access control restrictions to e.g. protect
+> > guest memory from the host.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_cpufeature.h       |   2 +
+> >  arch/arm64/kernel/image-vars.h                |   3 +
+> >  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  33 +++
+> >  arch/arm64/kvm/hyp/nvhe/Makefile              |   2 +-
+> >  arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   1 +
+> >  arch/arm64/kvm/hyp/nvhe/hyp-main.c            |   6 +
+> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 191 ++++++++++++++++++
+> >  arch/arm64/kvm/hyp/nvhe/setup.c               |   6 +
+> >  arch/arm64/kvm/hyp/nvhe/switch.c              |   7 +-
+> >  arch/arm64/kvm/hyp/nvhe/tlb.c                 |   4 +-
+> >  10 files changed, 248 insertions(+), 7 deletions(-)
+> >  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> >  create mode 100644 arch/arm64/kvm/hyp/nvhe/mem_protect.c
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-> ---
-
-Applied thanks,
-
---srini
-
->   drivers/nvmem/qcom-spmi-sdam.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
+> [...]
 > 
-> diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
-> index a72704c..f6e9f96 100644
-> --- a/drivers/nvmem/qcom-spmi-sdam.c
-> +++ b/drivers/nvmem/qcom-spmi-sdam.c
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0-only
->   /*
-> - * Copyright (c) 2017, 2020 The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2017, 2020-2021, The Linux Foundation. All rights reserved.
->    */
->   
->   #include <linux/device.h>
-> @@ -18,7 +18,6 @@
->   #define SDAM_PBS_TRIG_CLR		0xE6
->   
->   struct sdam_chip {
-> -	struct platform_device		*pdev;
->   	struct regmap			*regmap;
->   	struct nvmem_config		sdam_config;
->   	unsigned int			base;
-> @@ -65,7 +64,7 @@ static int sdam_read(void *priv, unsigned int offset, void *val,
->   				size_t bytes)
->   {
->   	struct sdam_chip *sdam = priv;
-> -	struct device *dev = &sdam->pdev->dev;
-> +	struct device *dev = sdam->sdam_config.dev;
->   	int rc;
->   
->   	if (!sdam_is_valid(sdam, offset, bytes)) {
-> @@ -86,7 +85,7 @@ static int sdam_write(void *priv, unsigned int offset, void *val,
->   				size_t bytes)
->   {
->   	struct sdam_chip *sdam = priv;
-> -	struct device *dev = &sdam->pdev->dev;
-> +	struct device *dev = sdam->sdam_config.dev;
->   	int rc;
->   
->   	if (!sdam_is_valid(sdam, offset, bytes)) {
+> > +void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
+> > +{
+> > +	enum kvm_pgtable_prot prot;
+> > +	u64 far, hpfar, esr, ipa;
+> > +	int ret;
+> > +
+> > +	esr = read_sysreg_el2(SYS_ESR);
+> > +	if (!__get_fault_info(esr, &far, &hpfar))
+> > +		hyp_panic();
+> > +
+> > +	prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W | KVM_PGTABLE_PROT_X;
+> > +	ipa = (hpfar & HPFAR_MASK) << 8;
+> > +	ret = host_stage2_map(ipa, PAGE_SIZE, prot);
 > 
+> Can we try to put down a block mapping if the whole thing falls within
+> memory?
+
+Yes we can! And in fact we can do that outside of memory too. It's
+queued for v3 already, so stay tuned ... :)
+
+Thanks,
+Quentin
