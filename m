@@ -2,222 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797730FFD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A16930FFD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBDWEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 17:04:22 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:54458 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhBDWEW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:04:22 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l7miw-001euo-3u; Thu, 04 Feb 2021 15:03:38 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l7miu-005DRQ-V7; Thu, 04 Feb 2021 15:03:37 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     James Morse <james.morse@arm.com>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-References: <20210127172706.617195-1-pasha.tatashin@soleen.com>
-        <a8a72826-0a27-de9b-bfb7-be8286cd61fe@arm.com>
-        <CA+CK2bBSJaL9Hn_LBy78ccaCt7=r9cSaEqUVemRVmKg6cwpLnQ@mail.gmail.com>
-        <871rdwocwh.fsf@x220.int.ebiederm.org>
-        <CA+CK2bD9NQ=waaoi4=Ub9o9uKWaAs_ZO8LEwxB2XFhacRhnbOQ@mail.gmail.com>
-Date:   Thu, 04 Feb 2021 16:02:10 -0600
-In-Reply-To: <CA+CK2bD9NQ=waaoi4=Ub9o9uKWaAs_ZO8LEwxB2XFhacRhnbOQ@mail.gmail.com>
-        (Pavel Tatashin's message of "Thu, 4 Feb 2021 10:23:03 -0500")
-Message-ID: <87mtwjlcf1.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229997AbhBDWFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229513AbhBDWFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 17:05:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D9C64E4A;
+        Thu,  4 Feb 2021 22:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612476268;
+        bh=qAAT9HJM7fwWVQbjvRZFdY2wmLu61Pae5PFcJmMxvus=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AOfsoaADnmbOOjbaaPvbhBwXuUa4tMIYeU1IHnDHnz8FSUaITsGDDnGCrc/Q8V3dd
+         bs68jhJn2SflfvAluCUmSuJ4hV5G4IEBnq+OMpdcakPbiNLO4bqf+RNrwkrsw5psZ3
+         IJiAWIPQ3JWXHB9FSuMtlSvcNkbiLcCWVx4tfGy5HchjHkq9J5A7AGjg07D8Xo/YB4
+         E5jnsHXeiK6KwkyyElrcOgCH38dlpOc1dRaCfYzFe2yWgcQYrBasmx5xys84mPRymQ
+         nBuDol2mQaZB+P95OomdpROLyUyH2MOxPZas0vr7Nnkwun67PrYBCky+uQ5Gv8TUcN
+         uCfdjDnBPbeVA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AEF013522F5F; Thu,  4 Feb 2021 14:04:27 -0800 (PST)
+Date:   Thu, 4 Feb 2021 14:04:27 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] kvfree_rcu: Use same set of flags as for
+ single-argument
+Message-ID: <20210204220427.GM2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210129200505.5273-1-urezki@gmail.com>
+ <20210129200505.5273-2-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1l7miu-005DRQ-V7;;;mid=<87mtwjlcf1.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1967rv9jJb2i/4oj5U7tM7yOiSVLl8Fvaw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4996]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Pavel Tatashin <pasha.tatashin@soleen.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 623 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 11 (1.8%), b_tie_ro: 10 (1.6%), parse: 1.31
-        (0.2%), extract_message_metadata: 14 (2.2%), get_uri_detail_list: 2.9
-        (0.5%), tests_pri_-1000: 6 (1.0%), tests_pri_-950: 1.31 (0.2%),
-        tests_pri_-900: 1.07 (0.2%), tests_pri_-90: 86 (13.8%), check_bayes:
-        84 (13.5%), b_tokenize: 12 (1.9%), b_tok_get_all: 11 (1.8%),
-        b_comp_prob: 3.5 (0.6%), b_tok_touch_all: 54 (8.6%), b_finish: 1.15
-        (0.2%), tests_pri_0: 474 (76.1%), check_dkim_signature: 1.27 (0.2%),
-        check_dkim_adsp: 2.4 (0.4%), poll_dns_idle: 0.60 (0.1%), tests_pri_10:
-        4.1 (0.7%), tests_pri_500: 20 (3.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v11 0/6] arm64: MMU enabled kexec relocation
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129200505.5273-2-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Tatashin <pasha.tatashin@soleen.com> writes:
-
->> > I understand that having an extra set of page tables could potentially
->> > waste memory, especially if VAs are sparse, but in this case we use
->> > page tables exclusively for contiguous VA space (copy [src, src +
->> > size]). Therefore, the extra memory usage is tiny. The ratio for
->> > kernels with  4K page_size is (size of relocated memory) / 512.  A
->> > normal initrd + kernel is usually under 64M, an extra space which
->> > means ~128K for the page table. Even with a huge relocation, where
->> > initrd is ~512M the extra memory usage in the worst case is just ~1M.
->> > I really doubt we will have any problem from users because of such
->> > small overhead in comparison to the total kexec-load size.
->
-> Hi Eric,
->
->>
->> Foolish question.
->
-> Thank you for your e-mail, you gave some interesting insights.
->
->>
->> Does arm64 have something like 2M pages that it can use for the
->> linear map?
->
-> Yes, with 4K pages arm64 as well has 2M pages, but arm64 also has a
-> choice of 16K and 64K and second level pages are bigger there.
-
->> On x86_64 we always generate page tables, because they are necessary to
->> be in 64bit mode.  As I recall on x86_64 we always use 2M pages which
->> means for each 4K of page tables we map 1GiB of memory.   Which is very
->> tiny.
->>
->> If you do as well as x86_64 for arm64 I suspect that will be good enough
->> for people to not claim regression.
->>
->> Would a variation on the x86_64 implementation that allocates page
->> tables work for arm64?
+On Fri, Jan 29, 2021 at 09:05:05PM +0100, Uladzislau Rezki (Sony) wrote:
+> Running an rcuscale stress-suite can lead to "Out of memory"
+> of a system. This can happen under high memory pressure with
+> a small amount of physical memory.
+> 
+> For example a KVM test configuration with 64 CPUs and 512 megabytes
+> can lead to of memory after running rcuscale with below parameters:
+> 
+> ../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
+> --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
+>   rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+> 
+> <snip>
+> [   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
+> [   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+> [   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+> [   12.056485] Workqueue: events_highpri fill_page_cache_func
+> [   12.056485] Call Trace:
+> [   12.056485]  dump_stack+0x57/0x6a
+> [   12.056485]  dump_header+0x4c/0x30a
+> [   12.056485]  ? del_timer_sync+0x20/0x30
+> [   12.056485]  out_of_memory.cold.47+0xa/0x7e
+> [   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
+> [   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
+> [   12.056485]  __get_free_pages+0x8/0x30
+> [   12.056485]  fill_page_cache_func+0x39/0xb0
+> [   12.056485]  process_one_work+0x1ed/0x3b0
+> [   12.056485]  ? process_one_work+0x3b0/0x3b0
+> [   12.060485]  worker_thread+0x28/0x3c0
+> [   12.060485]  ? process_one_work+0x3b0/0x3b0
+> [   12.060485]  kthread+0x138/0x160
+> [   12.060485]  ? kthread_park+0x80/0x80
+> [   12.060485]  ret_from_fork+0x22/0x30
+> [   12.062156] Mem-Info:
+> [   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
+> [   12.062350]  active_file:0 inactive_file:0 isolated_file:0
+> [   12.062350]  unevictable:0 dirty:0 writeback:0
+> [   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
+> [   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
+> [   12.062350]  free:10488 free_pcp:1227 free_cma:0
 > ...
->>
->> As long as the page table provided is a linear mapping of physical
->> memory (aka it looks like paging is disabled).  The the code that
->> relocates memory should be pretty much the same.
->>
->> My experience with other architectures suggests only a couple of
->> instructions need to be different to deal with a MMU being enabled.
->
-> I think what you are proposing is similar to what James proposed. Yes,
-> for a linear map relocation should be pretty much the same as we do
-> relocation as with MMU disabled.
->
-> Linear map still uses memory, because page tables must be outside of
-> destination addresses of segments of the next kernel. Therefore, we
-> must allocate a page table for the linear map. It might be a little
-> smaller, but in reality the difference is small with 4K pages, and
-> insignificant with 64K pages. The benefit of my approach is that the
-> assembly copy loop is simpler, and allows hardware prefetching to
-> work.
->
-> The regular relocation loop works like this:
->
-> for (entry = head; !(entry & IND_DONE); entry = *ptr++) {
->         addr = __va(entry & PAGE_MASK);
->
->         switch (entry & IND_FLAGS) {
->         case IND_DESTINATION:
->                 dest = addr;
->                 break;
->         case IND_INDIRECTION:
->                 ptr = addr;
->                 break;
->         case IND_SOURCE:
->                 copy_page(dest, addr);
->                 dest += PAGE_SIZE;
->         }
-> }
->
-> The entry for the next relocation page has to be always fetched, and
-> therefore prefetching cannot help with the actual loop.
+> [   12.101610] Out of memory and no killable processes...
+> [   12.102042] Kernel panic - not syncing: System is deadlocked on memory
+> [   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+> [   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+> <snip>
+> 
+> Having a fallback mechanism we should not go with "GFP_KERNEL | __GFP_NOWARN"
+> that implies a "hard" page request involving OOM killer. Replace such set with
+> the same as the one used for a single argument.
+> 
+> Thus it will follow same rules:
+>     a) minimize a fallback hitting;
+>     b) avoid of OOM invoking;
+>     c) do a light-wait page request;
+>     d) avoid of dipping into the emergency reserves.
+> 
+> With this change an rcuscale and the parameters which are in question
+> never runs into "Kernel panic".
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-True.
+I did have some misgivings about this one, but after a closer look at
+the GFP flags you suggest along with offlist discussions it looks like
+what needs to happen.  So thank you for persisting!  ;-)
 
-In the common case the loop looks like:
-> for (entry = head; !(entry & IND_DONE); entry = *ptr++) {
->         addr = __va(entry & PAGE_MASK);
->
->         switch (entry & IND_FLAGS) {
->         case IND_SOURCE:
->                 copy_page(dest, addr);
->                 dest += PAGE_SIZE;
->         }
-> }
+I did the usual wordsmithing as shown below, so please check to make
+sure that I did not mess anything up.
 
-Which is a read of the source address followed by the copy_page.
-I suspect the overhead of that loop is small enough that it swamped by
-the cost of the copy_page.
+							Thanx, Paul
 
-If not and a better data structure can be proposed we can look at that.
+------------------------------------------------------------------------
 
-> In comparison, the loop that I am proposing is like this:
->
-> for (addr = head; addr < end; addr += PAGE_SIZE, dst += PAGE_SIZE)
->         copy_page(dest, addr);
->
-> Here is assembly code for my loop:
->
-> 1: copy_page x1, x2, x3, x4, x5, x6, x7, x8, x9, x10
->     sub x11, x11, #PAGE_SIZE
->     cbnz x11, 1b
+commit f60c420f9de536e7fc397f0ad8d6677d782d0141
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Fri Jan 29 21:05:05 2021 +0100
 
-I think you may be hiding the cost of that loop in the page table
-fetches themselves.
+    kvfree_rcu: Use same set of GFP flags as does single-argument
+    
+    Running an rcuscale stress-suite can lead to "Out of memory" of a
+    system. This can happen under high memory pressure with a small amount
+    of physical memory.
+    
+    For example, a KVM test configuration with 64 CPUs and 512 megabytes
+    can result in OOM when running rcuscale with below parameters:
+    
+    ../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
+    --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
+      rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+    
+    <snip>
+    [   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
+    [   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+    [   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+    [   12.056485] Workqueue: events_highpri fill_page_cache_func
+    [   12.056485] Call Trace:
+    [   12.056485]  dump_stack+0x57/0x6a
+    [   12.056485]  dump_header+0x4c/0x30a
+    [   12.056485]  ? del_timer_sync+0x20/0x30
+    [   12.056485]  out_of_memory.cold.47+0xa/0x7e
+    [   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
+    [   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
+    [   12.056485]  __get_free_pages+0x8/0x30
+    [   12.056485]  fill_page_cache_func+0x39/0xb0
+    [   12.056485]  process_one_work+0x1ed/0x3b0
+    [   12.056485]  ? process_one_work+0x3b0/0x3b0
+    [   12.060485]  worker_thread+0x28/0x3c0
+    [   12.060485]  ? process_one_work+0x3b0/0x3b0
+    [   12.060485]  kthread+0x138/0x160
+    [   12.060485]  ? kthread_park+0x80/0x80
+    [   12.060485]  ret_from_fork+0x22/0x30
+    [   12.062156] Mem-Info:
+    [   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
+    [   12.062350]  active_file:0 inactive_file:0 isolated_file:0
+    [   12.062350]  unevictable:0 dirty:0 writeback:0
+    [   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
+    [   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
+    [   12.062350]  free:10488 free_pcp:1227 free_cma:0
+    ...
+    [   12.101610] Out of memory and no killable processes...
+    [   12.102042] Kernel panic - not syncing: System is deadlocked on memory
+    [   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+    [   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+    <snip>
+    
+    Because kvfree_rcu() has a fallback path, memory allocation failure is
+    not the end of the world.  Furthermore, the added overhead of aggressive
+    GFP settings must be balanced against the overhead of the fallback path,
+    which is a cache miss for double-argument kvfree_rcu() and a call to
+    synchronize_rcu() for single-argument kvfree_rcu().  The current choice
+    of GFP_KERNEL|__GFP_NOWARN can result in longer latencies than a call
+    to synchronize_rcu(), so less-tenacious GFP flags would be helpful.
+    
+    Here is the tradeoff that must be balanced:
+        a) Minimize use of the fallback path,
+        b) Avoid pushing the system into OOM,
+        c) Bound allocation latency to that of synchronize_rcu(), and
+        d) Leave the emergency reserves to use cases lacking fallbacks.
+    
+    This commit therefore changes GFP flags from GFP_KERNEL|__GFP_NOWARN to
+    GFP_KERNEL|__GFP_NORETRY|__GFP_NOMEMALLOC|__GFP_NOWARN.  This combination
+    leaves the emergency reserves alone and can initiate reclaim, but will
+    not invoke the OOM killer.
+    
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-It is possible though unlikely that a page table with huge pages
-(and thus smaller page fault costs) and the original loop is actually
-cheaper.
-
-> That said, if James and you agree that linear map is the way to go
-> forward, I am OK with that as well, as it is still much better than
-> having no caching at all.
-
-The big advantage of a linear map is that the kexec'd code can continue
-to use it until it sets up it's own page tables.
-
-I probably did not document it well enough but a linear map then
-equivalent of not having virtual addresses at all was always my
-intention for the hand-off state of kexec between kernels.
-
-So please try the linear map.  If it is noticably slower than your
-optimized page table give numbers and we can see if there is a way to
-improve the generic kexec data structures.
-
-Eric
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1e86212..2c9cf4d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3435,7 +3435,7 @@ static void fill_page_cache_func(struct work_struct *work)
+ 
+ 	for (i = 0; i < rcu_min_cached_objs; i++) {
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+-			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
++			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 
+ 		if (bnode) {
+ 			raw_spin_lock_irqsave(&krcp->lock, flags);
