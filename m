@@ -2,142 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31BE30FB31
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3006130FB2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238991AbhBDSUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:20:13 -0500
-Received: from mail-oln040092254055.outbound.protection.outlook.com ([40.92.254.55]:54448
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238771AbhBDSTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:19:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GSFx0bS2/wX1SHWBnUE8Jpi13vIpN9Gf+/AAt7mJx8HAuHhrWgQ2K3aDmGRwC0x3IJ0CZteIzqQAFJxUkPeFStpWSHn3BbgIUCNCy1oI/XEkhijeZvWiwR81Bc/xPA0/MObXzJQqZTcO1wq6SN9OMprb94Zp+be/X/Nwu54JF1/cg8uyMJz5WkBqSGN3F8VLdlsh9wEeKWTE2tz1oc+s+LP847wWHyOIzi/UGFntDxF3JH0tlvsIjD2570oi6HzV0ywYu6aNibykefkxskmw6eGocXBlqYwVE75HDassm0v6YxEixbbt7IMDBX5Y89zYJghS4ENiGqYr89wNJz+7XQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SlYsMWXWF+KXz/FIg6j2qXaxFe4kC57zApJSPPxG0aY=;
- b=Z76Sgzua+wiqh6iLbR2Y5sXCASHIDz/+Pib6YUi2WiI5rqZ4j5U9Fp3l6DFj5MvoDm2+y4maQm6HReGr3t+rQN9fT+10+e9GvV3/aXzHioxfWbEEMHj+NAgeK+w9dQEZ29XaW5ZuSJpo/4bEtol3isgCCettChRbEBu+GUrBp8Bo+IvQ/hk9xBAGhcFYpoxUakkUCDWabs9+8l8KGsRuiH3G0WpcW1P6pALqsO5UH7yW40b7Qm+W+OUCtFNEzsYgJEdftULlqPpaq1RG73890IiUmNQvMkrvPfXd8N64hPw7kMSnZT2F+JN1Ol5mP1Mzr+2VMo8zPOZqO4UiHPIH2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SlYsMWXWF+KXz/FIg6j2qXaxFe4kC57zApJSPPxG0aY=;
- b=qMyK/Gv4KINHcUm+q4LmzqZ3vN63wNWoGbBG6MGnxHiJB/C1CQpSUb82PpapqRu7zXcL9b8hBKrbMxFq2rJkQlEwBJKJfdi9j4iLYK0R7WM87IJYk10E4tXABI/uqG/jS0xTdYUKo40QGu+EQaB4m6mjzYMJj88tWBTSuB2OTNt2xFTPC87FcmCPRyNCAIwP6vrc8GLSWYdBx9J35aGzFARhYOL3JLqPdW0g524gtfFsPxmIUMyfrzjUkX94eTWpy6DkD2IrgCPdJsVQ7xSBtOCNTwgMwtK9fBja0nzVdg0RxiLGTd8bN8Ii35pDadvT+YjdYvnTq3/XXrUthMIOtA==
-Received: from HK2APC01FT048.eop-APC01.prod.protection.outlook.com
- (2a01:111:e400:7ebc::47) by
- HK2APC01HT153.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebc::468)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Thu, 4 Feb
- 2021 18:17:27 +0000
-Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
- (2a01:111:e400:7ebc::53) by HK2APC01FT048.mail.protection.outlook.com
- (2a01:111:e400:7ebc::456) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend
- Transport; Thu, 4 Feb 2021 18:17:27 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:8CB2F55384BD21EEA04F41EE72D1D29426A6C1CD0BE3FA5D7FD2BC0CD48A952C;UpperCasedChecksum:6054BF7ADE1E1C06637334551DD0E75CA799F85326622B6D661EC613D54CA32C;SizeAsReceived:7465;Count:45
-Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
- ([fe80::55d8:45ac:a6c8:b297]) by PS1PR04MB2934.apcprd04.prod.outlook.com
- ([fe80::55d8:45ac:a6c8:b297%3]) with mapi id 15.20.3825.019; Thu, 4 Feb 2021
- 18:17:26 +0000
-From:   Mayank Suman <mayanksuman@live.com>
-To:     ruscur@russell.cc, oohall@gmail.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Mayank Suman <mayanksuman@live.com>
-Subject: [PATCH] arch:powerpc simple_write_to_buffer return check
-Date:   Thu,  4 Feb 2021 23:46:19 +0530
-Message-ID: <PS1PR04MB29345AB59076B370A4F99F75D6B39@PS1PR04MB2934.apcprd04.prod.outlook.com>
-X-Mailer: git-send-email 2.30.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [sz0/pP+HJz3bSQLnDnIBTmKeRFbFDrxn/z2WqLxnna0=]
-X-ClientProxiedBy: BM1PR0101CA0053.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:19::15) To PS1PR04MB2934.apcprd04.prod.outlook.com
- (2603:1096:803:3e::21)
-X-Microsoft-Original-Message-ID: <20210204181618.1123522-1-mayanksuman@live.com>
+        id S238951AbhBDSTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:19:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58646 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238861AbhBDSSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:18:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9FFB2AF19;
+        Thu,  4 Feb 2021 18:17:50 +0000 (UTC)
+Subject: Re: [PATCH v6 05/10] drm/qxl: release shadow on shutdown
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-6-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <bcb00728-5798-aa19-0bf2-b52829916353@suse.de>
+Date:   Thu, 4 Feb 2021 19:17:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (103.127.101.171) by BM1PR0101CA0053.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:19::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Thu, 4 Feb 2021 18:17:23 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 45
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 6d5bf29e-4fa6-4257-6a65-08d8c9391ffb
-X-MS-Exchange-SLBlob-MailProps: NS9Gj58uCj1me8yJ5sSHKRjxNogQRwJMRwHwgD8E8ny6/MSlvU8mjfGRo2I3sVr3jUheImFF/O2JgsRDDZmEi9h707sO0kQCMBc5x1Nh8Z7AentdZW6wC8anZs1IiVfOSWYbkdRViEFSzDrUZ0UvoRCcKEz3xjif6ysVUmX9vz6vanffttQy2XpzWj4h8RH7wy9Wxoiu34o2QIb4VklLTsCUQmD6lSvR3+xGO81LF117/TEtQPvEgszfl6a1Nys8m+18Rw5/Gk4Ggju6Aefs0aY6xOSQUzCuUfko8fGncLaWA2POoy5OYQVLPv+W0+r1PZaYqhwUlJ3Pbqeq2JB/CPS2ZkO+ATLZWutmqLXYAgVBtXTRc15uUHSCp8G5mLZPJyJv3KwucbljuDWjpjb8fUAFa8Qro1utUWeyB8CixYQkciJQo0jWnLqQ2VExswHIt/Po2IPYVpvZ244mdT5SAkvy1lInR0WcSaDbw5/Cb3NXcnd87TZbjA0M0zK/rfGdn3S+pKJt3LiwbiDSZ4GdHruWTAPqML1+d1sgKH1hk0GGgDBbt1WpML/SRlcvoNN+jkkdeM+cueq+tji4okdHfYdY1F0bZEz9DbAnUxqTxGwVcbfmEmLAUKQ90NDAXYj04YJw3h6QbyKzHKxObYEUP/jVVnIcYHM8EJsJjd+CDm0fC+NgKwqvTqsJIarljcx/W0QVOFyBzTj6wDcXIGq+QA==
-X-MS-TrafficTypeDiagnostic: HK2APC01HT153:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7LkhaMl+kJUsXNgFRds+0P8tkAm4sM1/e/v1re1vVkhQedzVZ6j7zTmuYnN992Duk9XKBzMPBEIzZGpc5S/5s0FbIZVUeCdEZ3arPANBwB7BiFvuKWq8cBDYcmLTwTyJD3k4yOieh7FThP7jgbb7Uh4Xgev/UgWFlH+XMAgjs+LYin4kjx+H+P1wxWNDGqwHIdlHZ+4v9DhQd0R6ZgdjdXF0Kb9GzaeLYklZkT+2sD0Rm+f1idoYgsUbvxKgras58w0BTyXLDhHeJglntMQWz0PIG1I960X/71B83Zg8yAVbQ+2FDh/zAbT0QOfKgvw5l/h/9QmLT1NxFZZ8RrV8mvpnpqnjijcdSFHzg0cgEgdaMUXhZHg0Ew6HruXT6SD+ajKiAJKcgEFYCrclQIC5DA==
-X-MS-Exchange-AntiSpam-MessageData: 7wDfaMnfXNQmnZ5Gf3LUs0LvHYWIl3uDVvnRGRDOu4GK9qOvlNyBuCU9Bl1IdtEGBfPVXunj872SmLKyHnRwT5JYuxPOQMq+YuScJAH9KwudcnKgHUMueXDuz+GoXnfYz4bpemIAcs+xtwZTfmPDiA==
-X-OriginatorOrg: live.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5bf29e-4fa6-4257-6a65-08d8c9391ffb
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 18:17:26.5199
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: HK2APC01FT048.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2APC01HT153
+In-Reply-To: <20210204145712.1531203-6-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7IZlZjBb9k90ggGG1jTaJcJnFpkLl9eRf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Mayank Suman <mayanksuman@live.com>
----
- arch/powerpc/kernel/eeh.c                    | 8 ++++----
- arch/powerpc/platforms/powernv/eeh-powernv.c | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7IZlZjBb9k90ggGG1jTaJcJnFpkLl9eRf
+Content-Type: multipart/mixed; boundary="Pt9hD2fxGYr4bNM5i7RjcBEacqKwJegvC";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>, open list
+ <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <bcb00728-5798-aa19-0bf2-b52829916353@suse.de>
+Subject: Re: [PATCH v6 05/10] drm/qxl: release shadow on shutdown
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-6-kraxel@redhat.com>
+In-Reply-To: <20210204145712.1531203-6-kraxel@redhat.com>
 
-diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
-index 813713c9120c..2dbe1558a71f 100644
---- a/arch/powerpc/kernel/eeh.c
-+++ b/arch/powerpc/kernel/eeh.c
-@@ -1628,8 +1628,8 @@ static ssize_t eeh_force_recover_write(struct file *filp,
- 	char buf[20];
- 	int ret;
- 
--	ret = simple_write_to_buffer(buf, sizeof(buf), ppos, user_buf, count);
--	if (!ret)
-+	ret = simple_write_to_buffer(buf, sizeof(buf)-1, ppos, user_buf, count);
-+	if (ret <= 0)
- 		return -EFAULT;
- 
- 	/*
-@@ -1696,7 +1696,7 @@ static ssize_t eeh_dev_check_write(struct file *filp,
- 
- 	memset(buf, 0, sizeof(buf));
- 	ret = simple_write_to_buffer(buf, sizeof(buf)-1, ppos, user_buf, count);
--	if (!ret)
-+	if (ret <= 0)
- 		return -EFAULT;
- 
- 	ret = sscanf(buf, "%x:%x:%x.%x", &domain, &bus, &dev, &fn);
-@@ -1836,7 +1836,7 @@ static ssize_t eeh_dev_break_write(struct file *filp,
- 
- 	memset(buf, 0, sizeof(buf));
- 	ret = simple_write_to_buffer(buf, sizeof(buf)-1, ppos, user_buf, count);
--	if (!ret)
-+	if (ret <= 0)
- 		return -EFAULT;
- 
- 	ret = sscanf(buf, "%x:%x:%x.%x", &domain, &bus, &dev, &fn);
-diff --git a/arch/powerpc/platforms/powernv/eeh-powernv.c b/arch/powerpc/platforms/powernv/eeh-powernv.c
-index 89e22c460ebf..36ed2b8f7375 100644
---- a/arch/powerpc/platforms/powernv/eeh-powernv.c
-+++ b/arch/powerpc/platforms/powernv/eeh-powernv.c
-@@ -76,8 +76,8 @@ static ssize_t pnv_eeh_ei_write(struct file *filp,
- 		return -ENXIO;
- 
- 	/* Copy over argument buffer */
--	ret = simple_write_to_buffer(buf, sizeof(buf), ppos, user_buf, count);
--	if (!ret)
-+	ret = simple_write_to_buffer(buf, sizeof(buf)-1, ppos, user_buf, count);
-+	if (ret <= 0)
- 		return -EFAULT;
- 
- 	/* Retrieve parameters */
--- 
-2.30.0
+--Pt9hD2fxGYr4bNM5i7RjcBEacqKwJegvC
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
+
+
+Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
+> In case we have a shadow surface on shutdown release
+> it so it doesn't leak.
+>=20
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>   drivers/gpu/drm/qxl/qxl_display.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
+l_display.c
+> index 38d6b596094d..60331e31861a 100644
+> --- a/drivers/gpu/drm/qxl/qxl_display.c
+> +++ b/drivers/gpu/drm/qxl/qxl_display.c
+> @@ -1229,5 +1229,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+>  =20
+>   void qxl_modeset_fini(struct qxl_device *qdev)
+>   {
+> +	if (qdev->dumb_shadow_bo) {
+> +		drm_gem_object_put(&qdev->dumb_shadow_bo->tbo.base);
+> +		qdev->dumb_shadow_bo =3D NULL;
+> +	}
+>   	qxl_destroy_monitors_object(qdev);
+>   }
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--Pt9hD2fxGYr4bNM5i7RjcBEacqKwJegvC--
+
+--7IZlZjBb9k90ggGG1jTaJcJnFpkLl9eRf
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcOk0FAwAAAAAACgkQlh/E3EQov+Bf
+pxAAzhS9yhz/7odXPF65ASlBgs72y2q/jr9c8XrWtKuF+dnkmjfzmTs57Mb1tt2uLEJezZliNmhd
+Tk6Pz22ASPfstmuLFw3gRbwT1gjjwMIzZJzH5FqSFNHFGMhwtMWY8kNbDNGPTkjc/4ON+DTQ4Hj1
+AM6TLilIZVzM/uNZ04oOnpllo1Zpe7mntkS0/hL20vK5HXb0IuEiRLCowCGTu+4zqZJtGxcqaa0/
+IckeSfvu9BDGKI3MNZvxRMZGkjZpPZX7r/yN7qy6TbsNraGX22jNAPgEx3E0eIJR9NGwC+qxm3J3
+CAcd6IGMHhNPtkb/28Vg6+UsBYb5wL0d3PdXUjsAgZ94R/dc21bBb7+9cF+NqkovM/M44ieISjJr
+aqUJj5M3mtw02bXdTZUtSfdbdWAtpGnCQFTQgQtzOn8G19hc2rHDmcUSbqCYuipmyhLIQQAN43Jt
+XBJ9c9LvgLCQUYeGsROLUpTBS8YcCO/pYd0jSLrpNpGzokrXuiJC+Z24+QMWNULtUSukAASKMgnH
+mi3QEIkULGM8A447WcSYG+IiK0AEaLyhal9xaI1nR1Ie5dH10sOZmdUYKhZZqKuiQvy3wCg+b78U
+b6Ll7UXhqLSbi4en9av9ZABOWSXdSWZ4npX3HbYiAhDXsx4/rDCTq0u9ZQqkdVxTSlVZl7QMo1kn
+nFw=
+=qOcx
+-----END PGP SIGNATURE-----
+
+--7IZlZjBb9k90ggGG1jTaJcJnFpkLl9eRf--
