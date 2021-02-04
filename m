@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD57430F7E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECEC30F7DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238048AbhBDQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237964AbhBDQ1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:27:15 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D44BC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:26:34 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id r77so3811975qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ACIgalIASwLRIdWMuW6Oj7uCmIS5PMrqjcUMfzNwZKE=;
-        b=MhxcF478bHTzeOjaqn3t+dgrOQ2TemimDwkXVDLohFRJNl95pHbGa9lLMm7eUh47yK
-         hqGCwPMieGsvldBevk/GTzZFLDZryCRd8tlWXVG8uYNf9AohQdvgTb+LxFJwSEjutywo
-         3E18OctPqEd11DhJx4NgXE4Yj0fHAQ0WIyhu+wgSKgvMnTRsuVjDtnLBrLvkb4TXY9Om
-         LcJVZVFkYyCc7nEmtuJiow7He54ZkAWBEXGmmJe/6WxLOur+I/zZe0/QnliUXFYnnBc3
-         +cNlrBxAgNgbdTKF95BPokovA+P0SqJ0wm/w/bqBYg83pfhDJKy0DV+MBi+sqDRpT+Bx
-         ZldA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ACIgalIASwLRIdWMuW6Oj7uCmIS5PMrqjcUMfzNwZKE=;
-        b=VLpGQwzgx2geKYU8k3W56pduL2AARPcW4GUzQKKrYW8kHl1D6x2+w0rbB3jTICyqOi
-         i8QpjDq3M2ktnK9ntwCI715OXAwgcdI2JrQ2HckldeSYX7YxktnD+WYoa2il6StczTl6
-         2agbD2hIFeuhmoj8RtuV1TAFVCBNBTyO6xCKnMeUb5B6EhnLI8oM6FWc0TCHsmsYt9x8
-         cLZZ4ke/JlnbpdIKSt781oyhF5BQc5VHW6boYKO+J0yxi1/Dgy3oBGkoh2PmIB6VSQ19
-         Pd3KwYHHv0LSUmVVb9wyrXiAngrLBwCwGVxRUZvkVJMUIBLVENeA54pWjyILMDhBwP9w
-         bffA==
-X-Gm-Message-State: AOAM531HUG9OukONUETe0YymHremW+TRIckk5K4T+FNzRKs+urKKgc5L
-        QGoHHO5B9/E80EB7skCjTEjhHA==
-X-Google-Smtp-Source: ABdhPJxIV4CD4lGok1rJ7D4sC9j6L8cQiM/cMuIlBrELVi3sX2eGXEMa9a2jlGvNzQjeqYhitY/mZA==
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr8254731qkq.156.1612455993552;
-        Thu, 04 Feb 2021 08:26:33 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id k25sm5549112qkk.66.2021.02.04.08.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:26:32 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:26:32 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
-Message-ID: <YBwgOHL8dTjJpnKU@cmpxchg.org>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-7-hannes@cmpxchg.org>
- <20210203014726.GE1812008@carbon.dhcp.thefacebook.com>
+        id S238023AbhBDQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:28:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238005AbhBDQ1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:27:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A93C264F5E;
+        Thu,  4 Feb 2021 16:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612456018;
+        bh=7eAiSz3uE3FQW/p1sk6252RS2WSyjN+zC03YW782E9A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SxZKtfguKoH120d6TpQXaM8tCwTmuuOA6F4aQMGgqaXaCZs1C0FGyjTq7GIE4qVLB
+         qs+Z8AycXKCdGFuMrRAkUfFyVV4R6u/TbcW7XhJU8HjAm6CmJ1QLDd4M2hLiHTWJVB
+         Cw05TNJnn4tc0LDhoZSceXwIOyvMyujk2ZJmYuh6mgOx0UYBP2Rb1yGNK2RoNDM86q
+         uUgpABq1ViGZ47a4l+PjznlIzbe+Iy7pWKWAhlCaedMQ+Nsyn4aR6bZAKkhJJxc28t
+         VMK+Wk6UvauACffreNkMHjYN1GS7fDuRPYCs1nHpyrk4YCZ7UZbEMLouG+ofgpPDX/
+         P6wg2H0ApP0pQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] wl3501: fix alignment constraints
+Date:   Thu,  4 Feb 2021 17:26:43 +0100
+Message-Id: <20210204162653.3113749-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203014726.GE1812008@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 05:47:26PM -0800, Roman Gushchin wrote:
-> On Tue, Feb 02, 2021 at 01:47:45PM -0500, Johannes Weiner wrote:
-> >  	for_each_node(node) {
-> >  		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
-> > +		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
->                                                               ^^
-> I'd drop the comma here. It seems that "{0}" version is way more popular
-> over the mm code and in the kernel in general.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Is there a downside to the comma? I'm finding more { 0, } than { 0 }
-in mm code, and at least kernel-wide it seems both are acceptable
-(although { 0 } is more popular overall).
+struct wl3501_80211_tx_hdr contains a ieee80211_hdr structure, which is
+required to have at least two byte alignment, and this conflicts with
+the __packed attribute:
 
-I don't care much either way. I can change it in v2 if there is one.
+wireless/wl3501.h:553:1: warning: alignment 1 of 'struct wl3501_80211_tx_hdr' is less than 2 [-Wpacked-not-aligned]
+
+Mark wl3501_80211_tx_hdr itself as having two-byte alignment to ensure the
+inner structure is properly aligned.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/wl3501.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
+index b446cb369557..e98e04ee9a2c 100644
+--- a/drivers/net/wireless/wl3501.h
++++ b/drivers/net/wireless/wl3501.h
+@@ -550,7 +550,7 @@ struct wl3501_80211_tx_plcp_hdr {
+ struct wl3501_80211_tx_hdr {
+ 	struct wl3501_80211_tx_plcp_hdr	pclp_hdr;
+ 	struct ieee80211_hdr		mac_hdr;
+-} __packed;
++} __packed __aligned(2);
+ 
+ /*
+    Reserve the beginning Tx space for descriptor use.
+-- 
+2.29.2
+
