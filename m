@@ -2,131 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5BC30FC18
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906DF30FBDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239465AbhBDS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:58:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        id S239334AbhBDSqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239292AbhBDSmR (ORCPT
+        with ESMTP id S239303AbhBDSm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:42:17 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A92C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:41:32 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f19so4658878ljn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:41:32 -0800 (PST)
+        Thu, 4 Feb 2021 13:42:26 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FDAC061794
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:41:46 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id e12so2236276pls.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:41:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
-        b=wwOS3lN7TXu7QWeoGhYz2RQIaOHUMrxwlkR7ONEgKZc8tcuOjeXZTXB1WKjKgAsbTt
-         yBmSE3VnOWAKWOMUea3DJjb2qXnmzvGek24oz8Rn6MMVgsK6wQrdn+irVG6eFfiwAFAq
-         /d6esWbvjJAsIQ26Ihjbz7XJe2at9o+eKRRE8=
+        bh=xPJcixL5B72ONNeQTUrd/Ds+3cwL/OzxhJxazJOwdWU=;
+        b=hZEBnFadWKNcM22cVRU/a7ekIXxiGnvJaR2OBmXSBWA6MhsJnQ2IP0Ye4V2wat6Zrl
+         9XH7dXAdM9sS3FDL9bMNpEvQS1wZMWANxL4DrjDucQXa4SUlny92X0EuRxN1PAjCxlJC
+         m2Rdnf0rreJ+30C4IzBRjr9B+mS3tkPN+k1uZbx/dni+WSpZMxs84jLLonRWdR1XL4iv
+         Ol2ek6+pTFzt6KDgTWX+NVfz71eWtviLUCDaPXTDq6+0htUPSE9svu9bOcCSNrFn7Ufb
+         YmAsPAVPCxvO32sPjMwPhd6eq4IPf/91C/Uugg+0biZoHhKZNN6+wyPWEY1UtAdmpX65
+         uTDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
-        b=ocyD7F4TNPKrZnvM+9K/QpTMKLCnQiPJQJcMYNQ+HR6hexerP80wxXQBUqsadbn+Id
-         4Am35Cq3uRkaokveupZ23Kq/BEn+DQnc+d5/E4k+iMV5tMeWsNZLIDNplpU/ZZqcTeJC
-         L2miLJqy8rmv5M8IMBhjx+Ye6dsz0tzCHl/lDpukiIoiiyoK93uDq2K2zf8yaX1d9XTk
-         j7AAGyVSB9IoRmp4KlKjd/dbHjjMoHq30ZSnCL0VhDmNL9K3lKfdUbd7d/Cl6Yn0ksFC
-         yb9e+uhj717WaxddP3lMZjY7sqX5Mr0QC2ZH5DQ+nDfQbcChMkYGk6ZDXlEm2HCJVuYp
-         wzlg==
-X-Gm-Message-State: AOAM532wtCh70Uezxzi6RoIKFl9L0vLLoNzOEBihj9g3O6U4+dET2++E
-        CxVY92fAN3psCI/y8Tautf8dO7tp/+TmgGetUKu5Bw==
-X-Google-Smtp-Source: ABdhPJwJtrhYEdPaQdR6fHW3cU2NP6bOoOiL2TtDHuAX1Y9bu5c2RTiAw480hYJajzznm79yfeZHPAMVBc9ok0h1jMo=
-X-Received: by 2002:a2e:9b57:: with SMTP id o23mr427754ljj.314.1612464090601;
- Thu, 04 Feb 2021 10:41:30 -0800 (PST)
+        bh=xPJcixL5B72ONNeQTUrd/Ds+3cwL/OzxhJxazJOwdWU=;
+        b=ot2lfdBd+yBKcJ/GUqokRFEZOkT5Ay+rzob+Wr5klZZDIew6Jm5TC1a7oYTTeuf5fC
+         Ru9qkQcv+pNq4arxE2CWnDceUqB53r9r0Qbvmb+HzcT+0wHhYGU6FKKXbLqVpctbbWuZ
+         wgL5bsaj/DJbQzvonjsvhyGLeP/4ceraKQIxvXmFaZtLiryv40rNMUS6GhF73F6zvMCi
+         bHToHbkXUelDuqJIrEVT12kHlBaKzBHCyGQlrkgUbgmLBWx9WQfQHi/nqTHMP+fwneEQ
+         +qtJggKNd4oMea+S4qxAZxV9hbiZfvAdBGd9N3QgYhFw3k+FPafijw6ZCggYfuF5nDAY
+         CAYQ==
+X-Gm-Message-State: AOAM5318wOVywXTnMOHY2tonbpGY5jlPtfC3JJm6pKc1iq93OMm0Fgkk
+        82Y58HM9thfb4kimMdPRFKm93lPDlDkH/BzWHKM=
+X-Google-Smtp-Source: ABdhPJzy/LIgldY2il/NtwAfXOaYXEinArlc3vM117wT2mWj8AdIkX1bTtfJpk8Qa6r89tNQKFjtw0VzqsMn2rxOEpY=
+X-Received: by 2002:a17:90a:7787:: with SMTP id v7mr298480pjk.81.1612464105539;
+ Thu, 04 Feb 2021 10:41:45 -0800 (PST)
 MIME-Version: 1.0
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <20210203214448.2703930e@oasis.local.home> <20210204030948.dmsmwyw6fu5kzgey@treble>
-In-Reply-To: <20210204030948.dmsmwyw6fu5kzgey@treble>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Thu, 4 Feb 2021 10:41:18 -0800
-Message-ID: <CABWYdi15x=-2qenWSdX_ONSha_Pz7GFJrx8axN6CJS5cWxTTSg@mail.gmail.com>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
+References: <20210204124914.GC20468@willie-the-truck> <20210204155346.88028-1-lecopzer@gmail.com>
+ <20210204175659.GC21303@willie-the-truck>
+In-Reply-To: <20210204175659.GC21303@willie-the-truck>
+From:   Lecopzer Chen <lecopzer@gmail.com>
+Date:   Fri, 5 Feb 2021 02:41:34 +0800
+Message-ID: <CANr2M19xc+9UE3dZB5UA8HvgTGAcoSLOPAkeepExcUrKkNHt+g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
+To:     Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>, ardb@kernel.org,
+        aryabinin@virtuozzo.com, broonie@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dan.j.williams@intel.com, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com,
+        Jian-Lin Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
+        linux@roeck-us.net, robin.murphy@arm.com, rppt@kernel.org,
+        tyhicks@linux.microsoft.com, vincenzo.frascino@arm.com,
+        yj.chiang@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 7:10 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> On Thu, Feb 04, 2021 at 11:53:46PM +0800, Lecopzer Chen wrote:
+> > > On Sat, Jan 09, 2021 at 06:32:48PM +0800, Lecopzer Chen wrote:
+> > > > Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> > > > ("kasan: support backing vmalloc space with real shadow memory")
+> > > >
+> > > > Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> > > > but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> > > > by not to populate the vmalloc area except for kimg address.
+> > >
+> > > The one thing I've failed to grok from your series is how you deal with
+> > > vmalloc allocations where the shadow overlaps with the shadow which has
+> > > already been allocated for the kernel image. Please can you explain?
+> >
+> >
+> > The most key point is we don't map anything in the vmalloc shadow address.
+> > So we don't care where the kernel image locate inside vmalloc area.
+> >
+> >   kasan_map_populate(kimg_shadow_start, kimg_shadow_end,...)
+> >
+> > Kernel image was populated with real mapping in its shadow address.
+> > I `bypass' the whole shadow of vmalloc area, the only place you can find
+> > about vmalloc_shadow is
+> >       kasan_populate_early_shadow((void *)vmalloc_shadow_end,
+> >                       (void *)KASAN_SHADOW_END);
+> >
+> >       -----------  vmalloc_shadow_start
+> >  |           |
+> >  |           |
+> >  |           | <= non-mapping
+> >  |           |
+> >  |           |
+> >  |-----------|
+> >  |///////////|<- kimage shadow with page table mapping.
+> >  |-----------|
+> >  |           |
+> >  |           | <= non-mapping
+> >  |           |
+> >  ------------- vmalloc_shadow_end
+> >  |00000000000|
+> >  |00000000000| <= Zero shadow
+> >  |00000000000|
+> >  ------------- KASAN_SHADOW_END
+> >
+> > vmalloc shadow will be mapped 'ondemend', see kasan_populate_vmalloc()
+> > in mm/vmalloc.c in detail.
+> > So the shadow of vmalloc will be allocated later if anyone use its va.
+>
+> Indeed, but the question I'm asking is what happens when an on-demand shadow
+> allocation from vmalloc overlaps with the shadow that we allocated early for
+> the kernel image?
+>
+> Sounds like I have to go and read the code...
+oh, sorry I misunderstood your question.
 
-> This line gives a big clue:
->
->   [160676.608966][    C4] RIP: 0010:0xffffffffc17d814c
->
-> That address, without a function name, most likely means that it was
-> running in some generated code (mostly likely BPF) when it got
-> interrupted.
+FWIW,
+I think this won't happend because this mean vmalloc() provides va
+which already allocated by kimg, as I know, vmalloc_init() will insert
+early allocated vma into its vmalloc rb tree
 
-We do have eBPF/XDP in our environment.
+, and this early allocated vma will include  kernel image.
 
-> Right now, the ORC unwinder tries to fall back to frame pointers when it
-> encounters generated code:
->
->         orc = orc_find(state->signal ? state->ip : state->ip - 1);
->         if (!orc)
->                 /*
->                  * As a fallback, try to assume this code uses a frame pointer.
->                  * This is useful for generated code, like BPF, which ORC
->                  * doesn't know about.  This is just a guess, so the rest of
->                  * the unwind is no longer considered reliable.
->                  */
->                 orc = &orc_fp_entry;
->                 state->error = true;
->         }
->
-> Because the ORC unwinder is guessing from that point onward, it's
-> possible for it to read the KASAN stack redzone, if the generated code
-> hasn't set up frame pointers.  So the best fix may be for the unwinder
-> to just always bypass KASAN when reading the stack.
->
-> The unwinder has a mechanism for detecting and warning about
-> out-of-bounds, and KASAN is short-circuiting that.
->
-> This should hopefully get rid of *all* the KASAN unwinder warnings, both
-> crypto and networking.
+After quick review of mm init code,
+this early allocated for vma is at map_kernel() in arch/arm64/mm/mmu.c
 
-It definitely worked on my dm-crypt case, and I've tried it without
-your previous AVX related patch. I will apply it to our tree and
-deploy to the staging KASAN environment to see how it fares with
-respect to networking stacks. Feel free to ping me if I don't get back
-to you with the results on Monday.
 
-Thanks for looking into this!
+
+BRs
+Lecopzer
