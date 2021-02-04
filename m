@@ -2,203 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B21030EF54
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3CF30EF68
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbhBDJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:11:40 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:3600 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235045AbhBDJIu (ORCPT
+        id S235074AbhBDJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233214AbhBDJMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:08:50 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11496VRa023044;
-        Thu, 4 Feb 2021 04:08:08 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36dbud5gw2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 04:08:08 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 114987AM044094
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Feb 2021 04:08:07 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Thu, 4 Feb 2021 04:08:06 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Thu, 4 Feb 2021 04:08:05 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Thu, 4 Feb 2021 04:08:05 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 114982l5001727;
-        Thu, 4 Feb 2021 04:08:04 -0500
-From:   <alexandru.tachici@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
-Subject: [PATCH 2/2] dt-bindings: iio: adc: ad7124: add config nodes
-Date:   Thu, 4 Feb 2021 11:10:45 +0200
-Message-ID: <20210204091045.4175-3-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210204091045.4175-1-alexandru.tachici@analog.com>
-References: <20210204091045.4175-1-alexandru.tachici@analog.com>
+        Thu, 4 Feb 2021 04:12:24 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FF1C061573;
+        Thu,  4 Feb 2021 01:11:40 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id E7C281F45EBF
+Subject: Re: next/master bisection: baseline.login on
+ sun50i-h5-libretech-all-h3-cc
+To:     Maxime Ripard <mripard@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Chen-Yu Tsai <wens@csie.org>
+References: <601b368c.1c69fb81.97b07.770c@mx.google.com>
+Cc:     "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, clabbe.montjoie@gmail.com,
+        Kevin Hilman <khilman@baylibre.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <357810a1-4c66-063d-24a1-dacdf9a2aba5@collabora.com>
+Date:   Thu, 4 Feb 2021 09:11:35 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_05:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 clxscore=1015 suspectscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040057
+In-Reply-To: <601b368c.1c69fb81.97b07.770c@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+Hi Samuel,
 
-Document use of configurations in device-tree bindings.
+Please see the bisection report below about a boot failure on
+sun50i-h5-libretech-all-h3-cc with next-20210203.
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- .../bindings/iio/adc/adi,ad7124.yaml          | 72 +++++++++++++++----
- 1 file changed, 57 insertions(+), 15 deletions(-)
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-index fb3d0dae9bae..330064461d0a 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-@@ -62,20 +62,19 @@ required:
-   - interrupts
- 
- patternProperties:
--  "^channel@([0-9]|1[0-5])$":
--    $ref: "adc.yaml"
-+  "^config@(2[0-7])$":
-     type: object
-     description: |
--      Represents the external channels which are connected to the ADC.
-+      Represents a channel configuration.
-+      See Documentation/devicetree/bindings/iio/adc/adc.txt.
- 
-     properties:
-       reg:
-         description: |
--          The channel number. It can have up to 8 channels on ad7124-4
--          and 16 channels on ad7124-8, numbered from 0 to 15.
-+          The config number. It can have up to 8 configuration.
-         items:
--          minimum: 0
--          maximum: 15
-+         minimum: 20
-+         maximum: 27
- 
-       adi,reference-select:
-         description: |
-@@ -88,8 +87,6 @@ patternProperties:
-         $ref: /schemas/types.yaml#/definitions/uint32
-         enum: [0, 1, 3]
- 
--      diff-channels: true
--
-       bipolar: true
- 
-       adi,buffered-positive:
-@@ -100,6 +97,35 @@ patternProperties:
-         description: Enable buffered mode for negative input.
-         type: boolean
- 
-+    additionalProperties: false
-+
-+  "^channel@([0-9]|1[0-5])$":
-+    type: object
-+    description: |
-+      Represents the external channels which are connected to the ADC.
-+      See Documentation/devicetree/bindings/iio/adc/adc.txt.
-+
-+    properties:
-+      reg:
-+        description: |
-+          The channel number. It can have up to 8 channels on ad7124-4
-+          and 16 channels on ad7124-8, numbered from 0 to 15.
-+        items:
-+         minimum: 0
-+         maximum: 15
-+
-+      diff-channels: true
-+
-+      adi,configuration:
-+        description: |
-+          The devices has 8 configuration and ad7124-8 support up to 16 unipolar channels.
-+          Each channel can be assigned one configuration. Some channels will be sharing the
-+          same configuration.
-+        allOf:
-+          - $ref: /schemas/types.yaml#/definitions/uint32
-+        minimum: 20
-+        maximum: 27
-+
-     required:
-       - reg
-       - diff-channels
-@@ -127,30 +153,46 @@ examples:
-         #address-cells = <1>;
-         #size-cells = <0>;
- 
--        channel@0 {
--          reg = <0>;
--          diff-channels = <0 1>;
-+        config@20 {
-+          reg = <20>;
-           adi,reference-select = <0>;
-           adi,buffered-positive;
-         };
- 
--        channel@1 {
--          reg = <1>;
-+        config@21 {
-+          reg = <21>;
-           bipolar;
--          diff-channels = <2 3>;
-           adi,reference-select = <0>;
-           adi,buffered-positive;
-           adi,buffered-negative;
-         };
- 
-+        config@22 {
-+          reg = <22>;
-+        };
-+
-+        channel@0 {
-+          reg = <0>;
-+          diff-channels = <0 1>;
-+          adi,configuration = <20>;
-+        };
-+
-+        channel@1 {
-+          reg = <1>;
-+          diff-channels = <2 3>;
-+          adi,configuration = <21>;
-+        };
-+
-         channel@2 {
-           reg = <2>;
-           diff-channels = <4 5>;
-+          adi,configuration = <22>;
-         };
- 
-         channel@3 {
-           reg = <3>;
-           diff-channels = <6 7>;
-+          adi,configuration = <22>;
-         };
-       };
-     };
--- 
-2.20.1
+The kernel is most likely crashing very early on, so there's
+nothing in the logs.  Please let us know if you need some help
+with debugging or trying a fix on these platforms.
+
+Best wishes,
+Guillaume
+
+
+On 03/02/2021 23:49, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> next/master bisection: baseline.login on sun50i-h5-libretech-all-h3-cc
+> 
+> Summary:
+>   Start:      58b6c0e507b7 Add linux-next specific files for 20210203
+>   Plain log:  https://storage.kernelci.org/next/master/next-20210203/arm64/defconfig/gcc-8/lab-baylibre/baseline-sun50i-h5-libretech-all-h3-cc.txt
+>   HTML log:   https://storage.kernelci.org/next/master/next-20210203/arm64/defconfig/gcc-8/lab-baylibre/baseline-sun50i-h5-libretech-all-h3-cc.html
+>   Result:     7240f6156428 ARM: dts: sunxi: Move wakeup-capable IRQs to r_intc
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       next
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   Branch:     master
+>   Target:     sun50i-h5-libretech-all-h3-cc
+>   CPU arch:   arm64
+>   Lab:        lab-baylibre
+>   Compiler:   gcc-8
+>   Config:     defconfig
+>   Test case:  baseline.login
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 7240f6156428fd61a9b681db71cc288848dd04d7
+> Author: Samuel Holland <samuel@sholland.org>
+> Date:   Sun Jan 17 23:50:38 2021 -0600
+> 
+>     ARM: dts: sunxi: Move wakeup-capable IRQs to r_intc
+>     
+>     All IRQs that can be used to wake up the system must be routed through
+>     r_intc, so they are visible to firmware while the system is suspended.
+>     
+>     In addition to the external NMI input, which is already routed through
+>     r_intc, these include PIO and R_PIO (gpio-keys), the LRADC, and the RTC.
+>     
+>     Acked-by: Maxime Ripard <mripard@kernel.org>
+>     Signed-off-by: Samuel Holland <samuel@sholland.org>
+>     Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> 
+> diff --git a/arch/arm/boot/dts/sun6i-a31.dtsi b/arch/arm/boot/dts/sun6i-a31.dtsi
+> index 9532331af8ef..a31f9072bf79 100644
+> --- a/arch/arm/boot/dts/sun6i-a31.dtsi
+> +++ b/arch/arm/boot/dts/sun6i-a31.dtsi
+> @@ -611,6 +611,7 @@
+>  		pio: pinctrl@1c20800 {
+>  			compatible = "allwinner,sun6i-a31-pinctrl";
+>  			reg = <0x01c20800 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
+> @@ -802,6 +803,7 @@
+>  		lradc: lradc@1c22800 {
+>  			compatible = "allwinner,sun4i-a10-lradc-keys";
+>  			reg = <0x01c22800 0x100>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+>  			status = "disabled";
+>  		};
+> @@ -1299,6 +1301,7 @@
+>  			#clock-cells = <1>;
+>  			compatible = "allwinner,sun6i-a31-rtc";
+>  			reg = <0x01f00000 0x54>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc32k>;
+> @@ -1383,6 +1386,7 @@
+>  		r_pio: pinctrl@1f02c00 {
+>  			compatible = "allwinner,sun6i-a31-r-pinctrl";
+>  			reg = <0x01f02c00 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&apb0_gates 0>, <&osc24M>, <&rtc 0>;
+> diff --git a/arch/arm/boot/dts/sun8i-a23-a33.dtsi b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
+> index a84c90a660ca..4461d5098b20 100644
+> --- a/arch/arm/boot/dts/sun8i-a23-a33.dtsi
+> +++ b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
+> @@ -338,6 +338,7 @@
+>  		pio: pinctrl@1c20800 {
+>  			/* compatible gets set in SoC specific dtsi file */
+>  			reg = <0x01c20800 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			/* interrupts get set in SoC specific dtsi file */
+>  			clocks = <&ccu CLK_BUS_PIO>, <&osc24M>, <&rtc 0>;
+>  			clock-names = "apb", "hosc", "losc";
+> @@ -473,6 +474,7 @@
+>  		lradc: lradc@1c22800 {
+>  			compatible = "allwinner,sun4i-a10-lradc-keys";
+>  			reg = <0x01c22800 0x100>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+>  			status = "disabled";
+>  		};
+> @@ -709,6 +711,7 @@
+>  		rtc: rtc@1f00000 {
+>  			compatible = "allwinner,sun8i-a23-rtc";
+>  			reg = <0x01f00000 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+>  			clock-output-names = "osc32k", "osc32k-out";
+> @@ -805,6 +808,7 @@
+>  		r_pio: pinctrl@1f02c00 {
+>  			compatible = "allwinner,sun8i-a23-r-pinctrl";
+>  			reg = <0x01f02c00 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&apb0_gates 0>, <&osc24M>, <&rtc 0>;
+>  			clock-names = "apb", "hosc", "losc";
+> diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8i-a83t.dtsi
+> index 414a8f9c73d1..dcccdd7b0c5b 100644
+> --- a/arch/arm/boot/dts/sun8i-a83t.dtsi
+> +++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
+> @@ -708,6 +708,7 @@
+>  
+>  		pio: pinctrl@1c20800 {
+>  			compatible = "allwinner,sun8i-a83t-pinctrl";
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -1147,6 +1148,7 @@
+>  		r_lradc: lradc@1f03c00 {
+>  			compatible = "allwinner,sun8i-a83t-r-lradc";
+>  			reg = <0x01f03c00 0x100>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+>  			status = "disabled";
+>  		};
+> @@ -1154,6 +1156,7 @@
+>  		r_pio: pinctrl@1f02c00 {
+>  			compatible = "allwinner,sun8i-a83t-r-pinctrl";
+>  			reg = <0x01f02c00 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&r_ccu CLK_APB0_PIO>, <&osc24M>,
+>  				 <&osc16Md512>;
+> diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> index 4bf25c5b873e..c7428df9469e 100644
+> --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> @@ -395,6 +395,7 @@
+>  		pio: pinctrl@1c20800 {
+>  			/* compatible is in per SoC .dtsi file */
+>  			reg = <0x01c20800 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&ccu CLK_BUS_PIO>, <&osc24M>, <&rtc 0>;
+> @@ -852,6 +853,7 @@
+>  		rtc: rtc@1f00000 {
+>  			/* compatible is in per SoC .dtsi file */
+>  			reg = <0x01f00000 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+>  			clock-output-names = "osc32k", "osc32k-out", "iosc";
+> @@ -909,6 +911,7 @@
+>  		r_pio: pinctrl@1f02c00 {
+>  			compatible = "allwinner,sun8i-h3-r-pinctrl";
+>  			reg = <0x01f02c00 0x400>;
+> +			interrupt-parent = <&r_intc>;
+>  			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&r_ccu CLK_APB0_PIO>, <&osc24M>, <&rtc 0>;
+>  			clock-names = "apb", "hosc", "losc";
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [3aaf0a27ffc29b19a62314edd684b9bc6346f9a8] Merge tag 'clang-format-for-linux-v5.11-rc7' of git://github.com/ojeda/linux
+> git bisect good 3aaf0a27ffc29b19a62314edd684b9bc6346f9a8
+> # bad: [58b6c0e507b7421b03b2f2a92bddbb8c6fa1b2f6] Add linux-next specific files for 20210203
+> git bisect bad 58b6c0e507b7421b03b2f2a92bddbb8c6fa1b2f6
+> # bad: [f3c2d07b431902b54796d1f9900e204e259b3fbe] Merge remote-tracking branch 'crypto/master'
+> git bisect bad f3c2d07b431902b54796d1f9900e204e259b3fbe
+> # bad: [beaae3d63383e985ab1586e11ea920079f05f436] Merge remote-tracking branch 'printk/for-next'
+> git bisect bad beaae3d63383e985ab1586e11ea920079f05f436
+> # good: [54fb15f26a5df379e94312bc836479359224a10e] Merge remote-tracking branch 'qcom/for-next'
+> git bisect good 54fb15f26a5df379e94312bc836479359224a10e
+> # bad: [e6eac2cd0d330b34a20cc8d44d7d9128cb4c4546] Merge remote-tracking branch 'fscache/fscache-next'
+> git bisect bad e6eac2cd0d330b34a20cc8d44d7d9128cb4c4546
+> # bad: [262b65d26567fbd8c794ed38b3166a04fdb144a7] Merge remote-tracking branch 'mips/mips-next'
+> git bisect bad 262b65d26567fbd8c794ed38b3166a04fdb144a7
+> # bad: [c0c33fc2564d400e72dfd7aa5480fe00dcfa6f56] Merge remote-tracking branch 'clk-renesas/renesas-clk'
+> git bisect bad c0c33fc2564d400e72dfd7aa5480fe00dcfa6f56
+> # good: [83b531d880acaa48b922321d0474bc93794d1b06] Merge remote-tracking branch 'stm32/stm32-next'
+> git bisect good 83b531d880acaa48b922321d0474bc93794d1b06
+> # bad: [fd8a1ce48fdbaa03abddf604d4f69b8e4c4a0de4] Merge remote-tracking branch 'sunxi/sunxi/for-next'
+> git bisect bad fd8a1ce48fdbaa03abddf604d4f69b8e4c4a0de4
+> # bad: [02e07b8ada0e8933d8a7f6e1126658bdd2f322d2] arm64: dts: allwinner: Move wakeup-capable IRQs to r_intc
+> git bisect bad 02e07b8ada0e8933d8a7f6e1126658bdd2f322d2
+> # good: [ee3ff030a3a9a88f14148ab81d62945ffbd77396] arm64: dts: allwinner: pinephone: Remove useless light sensor supplies
+> git bisect good ee3ff030a3a9a88f14148ab81d62945ffbd77396
+> # good: [01223da25a060c456d5a50116bbce7f1c3de0f2a] ARM: dts: sunxi: Rename nmi_intc to r_intc
+> git bisect good 01223da25a060c456d5a50116bbce7f1c3de0f2a
+> # good: [f10d37f21eaf50458f215cc1d4cf1ea1d4adc6c7] ARM: dts: sunxi: h3/h5: Add r_intc node
+> git bisect good f10d37f21eaf50458f215cc1d4cf1ea1d4adc6c7
+> # bad: [77f8a235273909e2d9a6da787046355098f5331c] arm64: dts: allwinner: Use the new r_intc binding
+> git bisect bad 77f8a235273909e2d9a6da787046355098f5331c
+> # bad: [7240f6156428fd61a9b681db71cc288848dd04d7] ARM: dts: sunxi: Move wakeup-capable IRQs to r_intc
+> git bisect bad 7240f6156428fd61a9b681db71cc288848dd04d7
+> # first bad commit: [7240f6156428fd61a9b681db71cc288848dd04d7] ARM: dts: sunxi: Move wakeup-capable IRQs to r_intc
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#6404): https://groups.io/g/kernelci-results/message/6404
+> Mute This Topic: https://groups.io/mt/80368574/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
 
