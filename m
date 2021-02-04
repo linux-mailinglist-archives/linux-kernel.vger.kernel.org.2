@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE0730F65F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E9330F655
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237205AbhBDPc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237303AbhBDPXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:23:44 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B3C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:23:04 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id o10so6143300wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:23:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=FOhHJFN1Uk3imxDHDCmlGLnl9VnriOFj98ccGjxS3EU=;
-        b=F1sXbq67W/pxmK1zXgV072u16BTrlrCAVP0it0HAR2Fp+Zt8xtCTCV7y3dnPlv8saB
-         C+cdlziGxcEaC41JXpDQHnBBFrlli0RiOpXwtfNzva6k49/rHVQWlo7T6bMUHbsWzn6Y
-         S/kZWGhIJchjl7dG5v++X+mpllv4Fcml2LDrc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=FOhHJFN1Uk3imxDHDCmlGLnl9VnriOFj98ccGjxS3EU=;
-        b=mML0K3qaDXaD1yRr5j6aDa/wQFemb42POWfQ2hiWFzDKkKzW832zcmfrUT2vCnM6vX
-         ngj0NAFZNHB71m+jVFUhs4T6FZU87cNCbZEOOSzB17tZTJIoxsdTWuUFT7XBZTvlzeAU
-         /CCyY+yuje/NwlVV4ZWQx2u2kXdaqATATuk1fBqkb8zRpBjI8bBgKNWOoDoRsBskwx8+
-         10rIaNiUtkXmh9M5nw6/fGKItIxCpa7ZSWw/eMM0ERTDkLT6Sc7ZY3QPKb8Wkao/9o2P
-         qqnYrOPsSDJD9LQ1D4gXplFiRbO9Pfao1nvcQbha+nJAm5xqF64lN+CLAzY4QcgMCaKl
-         uW7Q==
-X-Gm-Message-State: AOAM533lOfnOPT8M9dCH6joN1L53pLNWsL6ZvFqe6RlJuTQYk4fooTpj
-        v6KGR5DTWjfh6Xijs1Q8RRngHw==
-X-Google-Smtp-Source: ABdhPJzWUE8+keCZMjDw4Qd96B14poTeso3FJmwHG+VBS+pVfTYio5MuASNi3L9GB8fNZbR908SB5g==
-X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr6103154wmk.163.1612452183199;
-        Thu, 04 Feb 2021 07:23:03 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v6sm8776760wrx.32.2021.02.04.07.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 07:23:02 -0800 (PST)
-Date:   Thu, 4 Feb 2021 16:22:59 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Matthew Wilcox <willy@infradead.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Sandeep Patil <sspatil@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        James Jones <jajones@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        John Stultz <john.stultz@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH 1/2] mm: replace BUG_ON in vm_insert_page
- with a return of an error
-Message-ID: <YBwRU1nrE3mfYbWK@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        Sandeep Patil <sspatil@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        James Jones <jajones@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Minchan Kim <minchan@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        John Stultz <john.stultz@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
-References: <20210203003134.2422308-1-surenb@google.com>
- <20210203015553.GX308988@casper.infradead.org>
- <CAKMK7uHnNdjOYX5Rhj=uGMz7hSz12JhgkZJCfiqgkpjXnMfL4A@mail.gmail.com>
- <CAJuCfpG4GkVbeW=bB+Qrm5GPrZAwg0_rmyG05iwQmL7GrWAYHw@mail.gmail.com>
- <CAKMK7uHi+mG0z0HUmNt13QCCvutuRVjpcR0NjRL12k-WbWzkRg@mail.gmail.com>
- <CAKMK7uETu_m+=MHyPmqBbEP__qjMF_wmr4c2BiVTPcwE8c+5Mg@mail.gmail.com>
- <CAJuCfpHC6P5cJh-1hv=vjGHCCkM6mA_p19H6tCZmCDxhTuASkQ@mail.gmail.com>
- <ced1c1be-e731-946e-e9ce-919520fe935a@amd.com>
+        id S237221AbhBDPa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:30:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54288 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237301AbhBDP2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:28:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35C54ACBA;
+        Thu,  4 Feb 2021 15:28:00 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id F1FB3DA849; Thu,  4 Feb 2021 16:26:08 +0100 (CET)
+Date:   Thu, 4 Feb 2021 16:26:08 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     ira.weiny@intel.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, Miao Xie <miaox@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Fix raid6 qstripe kmap'ing
+Message-ID: <20210204152608.GF1993@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com,
+        Miao Xie <miaox@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210128061503.1496847-1-ira.weiny@intel.com>
+ <20210203155648.GE1993@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ced1c1be-e731-946e-e9ce-919520fe935a@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210203155648.GE1993@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 09:16:32AM +0100, Christian König wrote:
-> Am 03.02.21 um 22:41 schrieb Suren Baghdasaryan:
-> > [SNIP]
-> > > > How many semi-unrelated buffer accounting schemes does google come up with?
-> > > > 
-> > > > We're at three with this one.
-> > > > 
-> > > > And also we _cannot_ required that all dma-bufs are backed by struct
-> > > > page, so requiring struct page to make this work is a no-go.
-> > > > 
-> > > > Second, we do not want to all get_user_pages and friends to work on
-> > > > dma-buf, it causes all kinds of pain. Yes on SoC where dma-buf are
-> > > > exclusively in system memory you can maybe get away with this, but
-> > > > dma-buf is supposed to work in more places than just Android SoCs.
-> > > I just realized that vm_inser_page doesn't even work for CMA, it would
-> > > upset get_user_pages pretty badly - you're trying to pin a page in
-> > > ZONE_MOVEABLE but you can't move it because it's rather special.
-> > > VM_SPECIAL is exactly meant to catch this stuff.
-> > Thanks for the input, Daniel! Let me think about the cases you pointed out.
+On Wed, Feb 03, 2021 at 04:56:48PM +0100, David Sterba wrote:
+> On Wed, Jan 27, 2021 at 10:15:03PM -0800, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > IMHO, the issue with PSS is the difficulty of calculating this metric
-> > without struct page usage. I don't think that problem becomes easier
-> > if we use cgroups or any other API. I wanted to enable existing PSS
-> > calculation mechanisms for the dmabufs known to be backed by struct
-> > pages (since we know how the heap allocated that memory), but sounds
-> > like this would lead to problems that I did not consider.
+> > When a qstripe is required an extra page is allocated and mapped.  There
+> > were 3 problems.
+> > 
+> > 1) There is no reason to map the qstripe page more than 1 time if the
+> >    number of bits set in rbio->dbitmap is greater than one.
+> > 2) There is no reason to map the parity page and unmap it each time
+> >    through the loop.
+> > 3) There is no corresponding call of kunmap() for the qstripe page.
+> > 
+> > The page memory can continue to be reused with a single mapping on each
+> > iteration by raid6_call.gen_syndrome() without remapping.  So map the
+> > page for the duration of the loop.
+> > 
+> > Similarly, improve the algorithm by mapping the parity page just 1 time.
+> > 
+> > Fixes: 5a6ac9eacb49 ("Btrfs, raid56: support parity scrub on raid56")
+> > To: Chris Mason <clm@fb.com>
+> > To: Josef Bacik <josef@toxicpanda.com>
+> > To: David Sterba <dsterba@suse.com>
+> > Cc: Miao Xie <miaox@cn.fujitsu.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > This was found while replacing kmap() with kmap_local_page().  After
+> > this patch unwinding all the mappings becomes pretty straight forward.
+> > 
+> > I'm not exactly sure I've worded this commit message intelligently.
+> > Please forgive me if there is a better way to word it.
 > 
-> Yeah, using struct page indeed won't work. We discussed that multiple times
-> now and Daniel even has a patch to mangle the struct page pointers inside
-> the sg_table object to prevent abuse in that direction.
-> 
-> On the other hand I totally agree that we need to do something on this side
-> which goes beyong what cgroups provide.
-> 
-> A few years ago I came up with patches to improve the OOM killer to include
-> resources bound to the processes through file descriptors. I unfortunately
-> can't find them of hand any more and I'm currently to busy to dig them up.
-> 
-> In general I think we need to make it possible that both the in kernel OOM
-> killer as well as userspace processes and handlers have access to that kind
-> of data.
-> 
-> The fdinfo approach as suggested in the other thread sounds like the easiest
-> solution to me.
+> Changelog is good, thanks. I've added stable tags as the missing unmap
+> is a potential problem.
 
-Yeah for OOM handling cgroups alone isn't enough as the interface - we
-need to make sure that oom killer takes into account the system memory
-usage (ideally zone aware, for CMA pools).
+There are lots of tests faling, stack traces like below. I haven't seen
+anything obvious in the patch so that needs a closer look and for the
+time being I can't add the patch to for-next.
 
-But to track that we still need that infrastructure first I think.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+ BUG: kernel NULL pointer dereference, address:0000000000000000
+ #PF: supervisor write access in kernel mode
+ #PF: error_code(0x0002) - not-present page
+ PGD 0 P4D 0
+ Oops: 0002 [#1] PREEMPT SMP
+ CPU: 2 PID: 17173 Comm: kworker/u8:5 Not tainted5.11.0-rc6-default+ #1422
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+ Workqueue: btrfs-rmw btrfs_work_helper [btrfs]
+ RIP: 0010:raid6_avx22_gen_syndrome+0x103/0x140 [raid6_pq]
+ RSP: 0018:ffffa090042cfcf8 EFLAGS: 00010246
+ RAX: ffff9e98e1848e80 RBX: ffff9e98d5849000 RCX:0000000000000020
+ RDX: ffff9e98e32be000 RSI: 0000000000000000 RDI:ffff9e98e1848e80
+ RBP: 0000000000000000 R08: 0000000000000000 R09:0000000000000001
+ R10: ffff9e98e1848e90 R11: ffff9e98e1848e98 R12:0000000000001000
+ R13: ffff9e98e1848e88 R14: 0000000000000005 R15:0000000000000002
+ FS:  0000000000000000(0000) GS:ffff9e993da00000(0000)knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 0000000023143003 CR4:0000000000170ea0
+ Call Trace:
+  finish_parity_scrub+0x47b/0x7a0 [btrfs]
+  raid56_parity_scrub_stripe+0x24e/0x260 [btrfs]
+  btrfs_work_helper+0xd5/0x1d0 [btrfs]
+  process_one_work+0x262/0x5f0
+  worker_thread+0x4e/0x300
+  ? process_one_work+0x5f0/0x5f0
+  kthread+0x151/0x170
+  ? __kthread_bind_mask+0x60/0x60
