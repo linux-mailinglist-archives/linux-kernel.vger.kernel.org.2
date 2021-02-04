@@ -2,169 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112ED30FA78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F06930FA7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbhBDR6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:58:10 -0500
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:34435 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238234AbhBDR5Z (ORCPT
+        id S237770AbhBDR6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:58:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25269 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237901AbhBDR6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:57:25 -0500
-Received: by mail-wm1-f52.google.com with SMTP id o10so6407220wmc.1;
-        Thu, 04 Feb 2021 09:57:08 -0800 (PST)
+        Thu, 4 Feb 2021 12:58:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612461418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s5YZVkjCD5/C4ET3SX6EfcYxaF5+N4XQ299/ZHaz3F4=;
+        b=WwZ6rbCmM3azz2xZpC0BAIZ/Yo3LWLQS7LGg3GH8L1sFDa/zR9FNcEXrDfMTV+6a4O5phI
+        fTxS6hSHIvg8wxN+U7OMk2bTRZ5nOyCTdjrtFNUgtzuwULU1jipMlmqHFt3UC3jL55KQI9
+        eeW1W5zZgb7zC3koVSMLVM/1Axyxc9A=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-zPuFeRb5MFaMZZpKNiU0og-1; Thu, 04 Feb 2021 12:56:56 -0500
+X-MC-Unique: zPuFeRb5MFaMZZpKNiU0og-1
+Received: by mail-wr1-f70.google.com with SMTP id o17so3277623wrv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:56:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9qa0Q6as6yv89x3GmsWvsZH1y46ZMh2uUbv+ovOA/44=;
-        b=BkypIh7P8FKFgZXM1SmFtZ81ujzw8p/QmTA0/O3Qh1rW8WlwD6nWNHrtuj+KMB6KMW
-         /jTJ3fWnuejgJX1xyIqECiQNZW0ArANemwbIZQTdSL34iyQIEJuIIIvqNifSRPB1BJ5K
-         0ndawLW1Mz7T0LAxsG96NYUxMuuoWzsSrip55IFqcT6C6O1aZgq8dG2YHsPXXHLLH1Pn
-         yf1Zb53Ju9jbp381uUwfxGYlxYiMr+LiXylG/V8Feau5/uzB1oALBoOwGJ7j0Pt0lReM
-         aNLAgJU14Z+VMC/kfmWtvB3IuVlIYizSzcrY/VBoNeFnV/lcFQkfL4EBrhzCAR17/SbQ
-         68pg==
-X-Gm-Message-State: AOAM531mgLeKjZPQTWtx9kuVgMKDuqf69bEgPSdGbF6/f57zsllL3wst
-        wxA+hlJp+jEpPe6nimmVuJw=
-X-Google-Smtp-Source: ABdhPJxtTbtDfvGZetjXqClkxgzmnR7cmouqoXEfNgjaGpEC8905RtICYozojetmaRaMNXfuogUtDw==
-X-Received: by 2002:a1c:7507:: with SMTP id o7mr289922wmc.165.1612461402824;
-        Thu, 04 Feb 2021 09:56:42 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t18sm8945483wrr.56.2021.02.04.09.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 09:56:42 -0800 (PST)
-Date:   Thu, 4 Feb 2021 17:56:41 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v6 15/16] x86/hyperv: implement an MSI domain for root
- partition
-Message-ID: <20210204175641.pzonxqrqlo7uvvze@liuwe-devbox-debian-v2>
-References: <20210203150435.27941-1-wei.liu@kernel.org>
- <20210203150435.27941-16-wei.liu@kernel.org>
- <MWHPR21MB15932010E9CF5975EBAD1EDAD7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s5YZVkjCD5/C4ET3SX6EfcYxaF5+N4XQ299/ZHaz3F4=;
+        b=bM592nAtAhbwWvmVHeMYYkDPL5U2mJeFAorr58hDTTF9D4UCg9aOMdXK5XSNyLOBQO
+         8vF1GB5RjWyI1ciw4o7UizCKsjcK0xDHhjNcD5poY57ovEhXWgvzguf703+rKenhyPa5
+         aK9Z6XDHE7EFvrcl5JDbC9ec5HxQvNQe0/ruCGsU3RWsb7Wwj3EL7MukBgDlXUwP97eE
+         Gn2N6FpXbIXsVKTt1niSzsjIr62Ha1xZmMOuudRZB6BPNYs0RTfaK1J/f/V1VTzX651M
+         ylwQe6oQgFN0nqC+j33+uyjR9NptxGux5u1i14UwlXXYDMAkSyQbGIcAJKzaqWuqrdb/
+         UqQQ==
+X-Gm-Message-State: AOAM531QBH8UJSshxtIHXZ1uZvAYHmiJa9YYiHjcLZsILInBSP2JtBvv
+        ZOBo+ct7q6F9zsYqW0HMOYOZc9Dxtz1oPOmHyGh6N4WhOucsYwHQumFbdJbOL+FUtCFc0aXZPs7
+        cZG099TH4ZWYIV8ZQEcZhqiyx
+X-Received: by 2002:a1c:e905:: with SMTP id q5mr335379wmc.84.1612461415359;
+        Thu, 04 Feb 2021 09:56:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwdM3Fux/LZYeI1PRL6P2CnPpwWo90HoYMM+BJpvd4gVKVgraKOTq986c9dJjLBOB4uFSVNNg==
+X-Received: by 2002:a1c:e905:: with SMTP id q5mr335372wmc.84.1612461415198;
+        Thu, 04 Feb 2021 09:56:55 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id i7sm9116584wru.49.2021.02.04.09.56.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 09:56:54 -0800 (PST)
+Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
+ regardless of vCPU mode
+To:     Sean Christopherson <seanjc@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>
+References: <20210204000117.3303214-1-seanjc@google.com>
+ <20210204000117.3303214-8-seanjc@google.com>
+ <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
+ <YBtZs4Z2ROeHyf3m@google.com>
+ <f1d2f324-d309-5039-f4f6-bbec9220259f@redhat.com>
+ <e68beed4c536712ddf28cdd8296050222731415e.camel@intel.com>
+ <YBw0a5fFvtOrDwOR@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c16cbc1c-a834-edd4-bfdf-753ec07c7008@redhat.com>
+Date:   Thu, 4 Feb 2021 18:56:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15932010E9CF5975EBAD1EDAD7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YBw0a5fFvtOrDwOR@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 05:43:16PM +0000, Michael Kelley wrote:
-[...]
-> >  remove_cpuhp_state:
-> > diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-> > new file mode 100644
-> > index 000000000000..117f17e8c88a
-> > --- /dev/null
-> > +++ b/arch/x86/hyperv/irqdomain.c
-> > @@ -0,0 +1,362 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * for Linux to run as the root partition on Microsoft Hypervisor.
-> 
-> Nit:  Looks like the initial word "Irqdomain" got dropped from the above
-> comment line.  But don't respin just for this.
-> 
+On 04/02/21 18:52, Sean Christopherson wrote:
+>> Alternatively there could be something like a is_rsvd_cr3_bits() helper that
+>> just uses reserved_gpa_bits for now. Probably put the comment in the wrong
+>> place.  It's a minor point in any case.
+> That thought crossed my mind, too.  Maybe kvm_vcpu_is_illegal_cr3() to match
+> the gpa helpers?
 
-I've added it back. Thanks.
+Yes, that's certainly a good name but it doesn't have to be done now. 
+Or at least, if you do it, somebody is guaranteed to send a patch after 
+one month because the wrapper is useless. :)
 
-> > +static int hv_map_interrupt(union hv_device_id device_id, bool level,
-> > +		int cpu, int vector, struct hv_interrupt_entry *entry)
-> > +{
-> > +	struct hv_input_map_device_interrupt *input;
-> > +	struct hv_output_map_device_interrupt *output;
-> > +	struct hv_device_interrupt_descriptor *intr_desc;
-> > +	unsigned long flags;
-> > +	u64 status;
-> > +	cpumask_t mask = CPU_MASK_NONE;
-> > +	int nr_bank, var_size;
-> > +
-> > +	local_irq_save(flags);
-> > +
-> > +	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> > +	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> > +
-> > +	intr_desc = &input->interrupt_descriptor;
-> > +	memset(input, 0, sizeof(*input));
-> > +	input->partition_id = hv_current_partition_id;
-> > +	input->device_id = device_id.as_uint64;
-> > +	intr_desc->interrupt_type = HV_X64_INTERRUPT_TYPE_FIXED;
-> > +	intr_desc->vector_count = 1;
-> > +	intr_desc->target.vector = vector;
-> > +
-> > +	if (level)
-> > +		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_LEVEL;
-> > +	else
-> > +		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-> > +
-> > +	cpumask_set_cpu(cpu, &mask);
-> > +	intr_desc->target.vp_set.valid_bank_mask = 0;
-> > +	intr_desc->target.vp_set.format = HV_GENERIC_SET_SPARSE_4K;
-> > +	nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
-> 
-> There's a function get_cpu_mask() that returns a pointer to a cpumask with only
-> the specified cpu set in the mask.  It returns a const pointer to the correct entry
-> in a pre-allocated array of all such cpumasks, so it's a lot more efficient than
-> allocating and initializing a local cpumask instance on the stack.
-> 
+Paolo
 
-That's nice.
 
-I've got the following diff to fix both issues. If you're happy with the
-changes, can you give your Reviewed-by? That saves a round of posting.
-
-diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-index 0cabc9aece38..fa71db798465 100644
---- a/arch/x86/hyperv/irqdomain.c
-+++ b/arch/x86/hyperv/irqdomain.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-
- /*
-- * for Linux to run as the root partition on Microsoft Hypervisor.
-+ * Irqdomain for Linux to run as the root partition on Microsoft Hypervisor.
-  *
-  * Authors:
-  *  Sunil Muthuswamy <sunilmut@microsoft.com>
-@@ -20,7 +20,7 @@ static int hv_map_interrupt(union hv_device_id device_id, bool level,
-        struct hv_device_interrupt_descriptor *intr_desc;
-        unsigned long flags;
-        u64 status;
--       cpumask_t mask = CPU_MASK_NONE;
-+       const cpumask_t *mask;
-        int nr_bank, var_size;
-
-        local_irq_save(flags);
-@@ -41,10 +41,10 @@ static int hv_map_interrupt(union hv_device_id device_id, bool level,
-        else
-                intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-
--       cpumask_set_cpu(cpu, &mask);
-+       mask = cpumask_of(cpu);
-        intr_desc->target.vp_set.valid_bank_mask = 0;
-        intr_desc->target.vp_set.format = HV_GENERIC_SET_SPARSE_4K;
--       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
-+       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), mask);
-        if (nr_bank < 0) {
-                local_irq_restore(flags);
-                pr_err("%s: unable to generate VP set\n", __func__);
