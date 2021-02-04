@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD06330F583
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6176230F586
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236742AbhBDO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:56:28 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:44336 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236938AbhBDOxw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:53:52 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D68541C0B79; Thu,  4 Feb 2021 15:53:08 +0100 (CET)
-Date:   Thu, 4 Feb 2021 15:53:08 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
- from DT
-Message-ID: <20210204145308.GC14305@duo.ucw.cz>
-References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+        id S237023AbhBDO5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:57:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236891AbhBDOyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:54:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BCBD64E42;
+        Thu,  4 Feb 2021 14:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612450430;
+        bh=scY1EUctLlHyJdhffM1YO119Qq4RStdexWZRn3yOoC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cl6/II/pP7hXlx/qGhE2nU/ur3bHmP4FoN8FWznMJEbivL2vDzrR/1+dJbe9yPtjy
+         JoaJKEVaeldLKq340MjgGU1Qn7wkPMsCEgSy+zTTfF+xuiU3VqOUZlJtxWTZhjoll9
+         s4A6p807Ze/iZ/SyyXwJatQaokMvwhZFyYEOqO420FWUqI8jr+AZIwIvy2hShuSXjk
+         e5FgjFedltdirbM4T0Y5ZChNuKMCijX/zdks/7zHls3ALivZV8t1EVU2cvfDY1co38
+         ygLm14xZi/neW7Wd++s/HJPWuXtPWYgMqbBc7cGKpELEPHp5GrILOk5YOmssdEdYYn
+         JH1+37gXVp/1Q==
+Date:   Thu, 4 Feb 2021 14:53:46 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: [PATCH 0/3 v2] arm64/ptrace: allow to get all registers on
+ syscall traps
+Message-ID: <20210204145345.GC20815@willie-the-truck>
+References: <20210201194012.524831-1-avagin@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="69pVuxX8awAiJ7fD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+In-Reply-To: <20210201194012.524831-1-avagin@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrei,
 
---69pVuxX8awAiJ7fD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 01, 2021 at 11:40:09AM -0800, Andrei Vagin wrote:
+> Right now, ip/r12 for AArch32 and x7 for AArch64 is used to indicate
+> whether or not the stop has been signalled from syscall entry or syscall
+> exit. This means that:
+> 
+> - Any writes by the tracer to this register during the stop are
+>   ignored/discarded.
+> 
+> - The actual value of the register is not available during the stop,
+>   so the tracer cannot save it and restore it later.
+> 
+> For applications like the user-mode Linux or gVisor, it is critical to
+> have access to the full set of registers in any moment. For example,
+> they need to change values of all registers to emulate rt_sigreturn or
+> execve and they need to have the full set of registers to build a signal
+> frame.
+> 
+> This series introduces the PTRACE_O_ARM64_RAW_REGS option. If it is set,
+> PTRACE_GETREGSET returns values of all registers, and PTRACE_SETREGSET
+> allows to change any of them.
 
-On Thu 2021-02-04 14:37:38, Sven Schuchmann wrote:
-> In order to use a multicolor-led together with a trigger
-> the led needs to have an intensity set to see something.
-> The trigger changes the brightness of the led but if there
-> is no intensity we actually see nothing.
->=20
-> This patch adds the ability to set the default intensity
-> of each multi-led node so that it is turned on from DT.
-> If no intensity is given the led will be initialized
-> with full intensity.
+I haven't had a chance to go through this properly yet, but I spotted a
+couple of things worth mentioning off the bat:
 
+  - Please drop all of the compat changes here. The compat layer is intended
+    to be compatible with arch/arm/, so if you want to introduce new ptrace
+    behaviours for 32-bit applications, you need to make the changes there
+    and then update our compat layer accordingly.
 
+  - When Keno mentioned this before [1,2], he also talked about making
+    orig_x0 available. Since extending the ABI is a giant pain, I think
+    this should be seriously considered.
 
-> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-> index f13117eed976..4b40bf66483c 100644
-> --- a/drivers/leds/leds-lp50xx.c
-> +++ b/drivers/leds/leds-lp50xx.c
-> @@ -267,7 +267,6 @@ struct lp50xx_led {
->  	struct led_classdev_mc mc_cdev;
->  	struct lp50xx *priv;
->  	unsigned long bank_modules;
-> -	int led_intensity[LP50XX_LEDS_PER_MODULE];
->  	u8 ctrl_bank_enabled;
->  	int led_number;
->  };
+[1] https://lore.kernel.org/r/CABV8kRzkLiVuqxT3+8c1o8m_OuROtXgfowQcrMVnrxu=CiGB=w@mail.gmail.com
+[2] https://lore.kernel.org/r/CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com
 
-? Does not make sense and changelog does not help.
-							Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---69pVuxX8awAiJ7fD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBwKVAAKCRAw5/Bqldv6
-8oCFAJ9k4DUcckX7+8MT0vDnApXzxdtzBgCfQkZntDCEehkBwZ3s3XF5XDAmPoA=
-=LhYK
------END PGP SIGNATURE-----
-
---69pVuxX8awAiJ7fD--
+Will
