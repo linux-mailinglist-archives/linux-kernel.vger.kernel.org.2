@@ -2,275 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B87C30FB81
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B83330FB7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239141AbhBDSam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:30:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239128AbhBDS3M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612463265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bgQhr2F2iWGQLtH9Fikx9Lr/KlJCKowpxuZEQeaIbIk=;
-        b=WHMfwaS3Hxa8ikrScJlcg8Eabz8xshgtkrjalx+3bNYJTzvUWlzo9k24QEymGWCOfQwLxk
-        8fSFNMZE/J0mMfDNSdG7iZV8iT81h76XVl8CJVxHlE8DuiBTLAv7X+IPmBTJth/+LE5kLb
-        QvZaMmUA2tGrZJh6nuyB/B6vNyv5atg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-IY2s8spUPjOCmDOivphg_g-1; Thu, 04 Feb 2021 13:27:41 -0500
-X-MC-Unique: IY2s8spUPjOCmDOivphg_g-1
-Received: by mail-ej1-f71.google.com with SMTP id hx26so3292943ejc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:27:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bgQhr2F2iWGQLtH9Fikx9Lr/KlJCKowpxuZEQeaIbIk=;
-        b=iqNYlJFxPZKh9WQ1a1nEpyxCCxaITOCbDevn5mO53eaX7VSPkfpWCwOjDssFLZ9QJz
-         9fijZ+CahL79EnXnzXXacqp1TPpb4YnQlEY3iSBpbMeYmcBQD9mCQJEQGC7MoNK3L+r4
-         byfekcG9ioglNI9HHfEVYDQtcgkL0cAY9QviPSxNWc4/RQSstFQ9TOrKbqJMRFzI3Vtx
-         rKONyeQtAcWkPfZoCFGzVxV0rswIL9s3Tcl967HJpHL3yphas0gw3Y2uVPHqC2nEKnhO
-         a55Z0neOCO8SUt2YaSK0w9cPgp3kvh5bMyk4Kp8YCMIV6RhQmNJ/IA1Xyay/edLaHYK7
-         F1NA==
-X-Gm-Message-State: AOAM530XDFUF9qs1wblG3UWL8jObJnyy1JXZkp52hGtsfcsHtDb1U+Ec
-        s5r2Ig7Vwkw+HutPNrM330gV+la5lrHDUuT+dQfjB/49niKUrtQ2YEqaaLBVhm88v1IR/O9KL10
-        Ek7AGr4RLjAq63U81W7nlgt8t
-X-Received: by 2002:a17:906:e106:: with SMTP id gj6mr366079ejb.337.1612463260222;
-        Thu, 04 Feb 2021 10:27:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy7EHttt3Ocd9Um49oN8bi+MGMe8Aenc72i4nYwgueWCXVsUO9BQN9mkLPSJXZLI9oq4d/yRg==
-X-Received: by 2002:a17:906:e106:: with SMTP id gj6mr366017ejb.337.1612463259068;
-        Thu, 04 Feb 2021 10:27:39 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id bf8sm2945126edb.34.2021.02.04.10.27.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 10:27:38 -0800 (PST)
-Subject: Re: [PATCH v3 2/5] ACPI: battery: Clean up printing messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
- <1961054.9MKZ8ejxOh@kreacher> <1731128.lCOlkKr4QW@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3ca5dcaa-094a-9f4f-a802-81c54a681c96@redhat.com>
-Date:   Thu, 4 Feb 2021 19:27:38 +0100
+        id S239083AbhBDSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:30:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238990AbhBDS2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:28:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7B15DAC45;
+        Thu,  4 Feb 2021 18:27:59 +0000 (UTC)
+To:     Colin King <colin.king@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210204181756.109549-1-colin.king@canonical.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm/mgag200: make a const array static, makes object
+ smaller
+Message-ID: <9e979113-1b38-66e5-efe7-8bef22087117@suse.de>
+Date:   Thu, 4 Feb 2021 19:27:58 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <1731128.lCOlkKr4QW@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210204181756.109549-1-colin.king@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw
+Content-Type: multipart/mixed; boundary="I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Colin King <colin.king@canonical.com>, Dave Airlie <airlied@redhat.com>,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <9e979113-1b38-66e5-efe7-8bef22087117@suse.de>
+Subject: Re: [PATCH] drm/mgag200: make a const array static, makes object
+ smaller
+References: <20210204181756.109549-1-colin.king@canonical.com>
+In-Reply-To: <20210204181756.109549-1-colin.king@canonical.com>
 
-On 2/3/21 7:44 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Replace the ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() instances
-> in battery.c with acpi_handle_debug() and acpi_handle_info() calls,
-> respectively, which among other things causes the excessive log
-> level of the messages previously printed via ACPI_EXCEPTION() to
-> be increased.
-> 
-> Drop the _COMPONENT and ACPI_MODULE_NAME() definitions that are not
-> used any more, drop the no longer needed ACPI_BATTERY_COMPONENT
-> definition from the headers and update the documentation accordingly.
-> 
-> While at it, update the pr_fmt() definition and drop the unneeded
-> PREFIX sybmbol definition from battery.c.  Also adapt the existing
-> pr_info() calls to the new pr_fmt() definition.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+--I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 04.02.21 um 19:17 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Don't populate the const array m_div_val on the stack but instead make
+> it static. Makes the object code smaller by 29 bytes:
+>=20
+> Before:
+>     text	   data	  bss   dec    hex filename
+>    34736	   4552	    0 39288   9978 drivers/gpu/drm/mgag200/mgag200_mod=
+e.o
+>=20
+> After:
+>     text	   data	  bss   dec    hex filename
+>    34625	   4616	    0 39241   9949 drivers/gpu/drm/mgag200/mgag200_mod=
+e.o
+>=20
+> (gcc version 10.2.0)
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Very nice. I'm actually surprised that the compiler doesn't figure this=20
+out automatically. When I once tested this (in userspace) it did so.=20
+Maybe the kernel is different?
+
+For style reasons, I would have moved the static definition to the top=20
+of the function; before the variable declarations. In any case:
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+If I don't here from you, I'll merge the patch soonish.
+
+Best regards
+Thomas
+
 > ---
-> 
-> v2 -> v3: Also adapt the existing pr_info() calls to the new pr_fmt()
->           definition.
-> 
-> v1 -> v2: Changelog update.
-> 
-> ---
->  Documentation/firmware-guide/acpi/debug.rst |    1 
->  drivers/acpi/battery.c                      |   33 +++++++++++++---------------
->  drivers/acpi/sysfs.c                        |    1 
->  include/acpi/acpi_drivers.h                 |    1 
->  4 files changed, 16 insertions(+), 20 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/battery.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/battery.c
-> +++ linux-pm/drivers/acpi/battery.c
-> @@ -8,7 +8,7 @@
->   *  Copyright (C) 2001, 2002 Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
->   */
->  
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +#define pr_fmt(fmt) "ACPI: battery: " fmt
->  
->  #include <linux/async.h>
->  #include <linux/delay.h>
-> @@ -29,8 +29,6 @@
->  
->  #include <acpi/battery.h>
->  
-> -#define PREFIX "ACPI: "
-> -
->  #define ACPI_BATTERY_VALUE_UNKNOWN 0xFFFFFFFF
->  #define ACPI_BATTERY_CAPACITY_VALID(capacity) \
->  	((capacity) != 0 && (capacity) != ACPI_BATTERY_VALUE_UNKNOWN)
-> @@ -44,10 +42,6 @@
->  #define ACPI_BATTERY_STATE_CHARGING	0x2
->  #define ACPI_BATTERY_STATE_CRITICAL	0x4
->  
-> -#define _COMPONENT		ACPI_BATTERY_COMPONENT
-> -
-> -ACPI_MODULE_NAME("battery");
-> -
->  MODULE_AUTHOR("Paul Diefenbaugh");
->  MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
->  MODULE_DESCRIPTION("ACPI Battery Driver");
-> @@ -466,7 +460,8 @@ static int extract_package(struct acpi_b
->  static int acpi_battery_get_status(struct acpi_battery *battery)
->  {
->  	if (acpi_bus_get_status(battery->device)) {
-> -		ACPI_EXCEPTION((AE_INFO, AE_ERROR, "Evaluating _STA"));
-> +		acpi_handle_info(battery->device->handle,
-> +				 "_STA evaluation failed\n");
+>   drivers/gpu/drm/mgag200/mgag200_mode.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/m=
+gag200/mgag200_mode.c
+> index 1dfc42170059..27f33af09798 100644
+> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
+> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+> @@ -712,7 +712,7 @@ static int mga_g200er_set_plls(struct mga_device *m=
+dev, long clock)
+>   	unsigned int p, m, n;
+>   	unsigned int computed, vco;
+>   	int tmp;
+> -	const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
+> +	static const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
+>  =20
+>   	m =3D n =3D p =3D 0;
+>   	vcomax =3D 1488000;
+>=20
 
-Missing ": %s", acpi_format_exception(status), or is that intentional
-(I did not see this mentioned in the commit msg) ?
-
-With that fixed, or explained, this is:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
+--I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb--
 
+--FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
->  		return -ENODEV;
->  	}
->  	return 0;
-> @@ -535,8 +530,10 @@ static int acpi_battery_get_info(struct
->  		mutex_unlock(&battery->lock);
->  
->  		if (ACPI_FAILURE(status)) {
-> -			ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s",
-> -					use_bix ? "_BIX":"_BIF"));
-> +			acpi_handle_info(battery->device->handle,
-> +					 "%s evaluation failed: %s\n",
-> +					 use_bix ?"_BIX":"_BIF",
-> +				         acpi_format_exception(status));
->  		} else {
->  			result = extract_battery_info(use_bix,
->  						      battery,
-> @@ -573,7 +570,9 @@ static int acpi_battery_get_state(struct
->  	mutex_unlock(&battery->lock);
->  
->  	if (ACPI_FAILURE(status)) {
-> -		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _BST"));
-> +		acpi_handle_info(battery->device->handle,
-> +				 "_BST evaluation failed: %s",
-> +				 acpi_format_exception(status));
->  		return -ENODEV;
->  	}
->  
-> @@ -590,7 +589,7 @@ static int acpi_battery_get_state(struct
->  		battery->rate_now != ACPI_BATTERY_VALUE_UNKNOWN &&
->  		(s16)(battery->rate_now) < 0) {
->  		battery->rate_now = abs((s16)battery->rate_now);
-> -		pr_warn_once(FW_BUG "battery: (dis)charge rate invalid.\n");
-> +		pr_warn_once(FW_BUG "(dis)charge rate invalid.\n");
->  	}
->  
->  	if (test_bit(ACPI_BATTERY_QUIRK_PERCENTAGE_CAPACITY, &battery->flags)
-> @@ -625,7 +624,9 @@ static int acpi_battery_set_alarm(struct
->  	if (ACPI_FAILURE(status))
->  		return -ENODEV;
->  
-> -	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Alarm set to %d\n", battery->alarm));
-> +	acpi_handle_debug(battery->device->handle, "Alarm set to %d\n",
-> +			  battery->alarm);
-> +
->  	return 0;
->  }
->  
-> @@ -1201,8 +1202,7 @@ static int acpi_battery_add(struct acpi_
->  	if (result)
->  		goto fail;
->  
-> -	pr_info(PREFIX "%s Slot [%s] (battery %s)\n",
-> -		ACPI_BATTERY_DEVICE_NAME, acpi_device_bid(device),
-> +	pr_info("Slot [%s] (battery %s)\n", acpi_device_bid(device),
->  		device->status.battery_present ? "present" : "absent");
->  
->  	battery->pm_nb.notifier_call = battery_notify;
-> @@ -1282,8 +1282,7 @@ static void __init acpi_battery_init_asy
->  	if (battery_check_pmic) {
->  		for (i = 0; i < ARRAY_SIZE(acpi_battery_blacklist); i++)
->  			if (acpi_dev_present(acpi_battery_blacklist[i], "1", -1)) {
-> -				pr_info(PREFIX ACPI_BATTERY_DEVICE_NAME
-> -					": found native %s PMIC, not loading\n",
-> +				pr_info("found native %s PMIC, not loading\n",
->  					acpi_battery_blacklist[i]);
->  				return;
->  			}
-> Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> ===================================================================
-> --- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-> +++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-> @@ -52,7 +52,6 @@ shows the supported mask values, current
->      ACPI_CA_DISASSEMBLER            0x00000800
->      ACPI_COMPILER                   0x00001000
->      ACPI_TOOLS                      0x00002000
-> -    ACPI_BATTERY_COMPONENT          0x00040000
->      ACPI_BUTTON_COMPONENT           0x00080000
->      ACPI_SBS_COMPONENT              0x00100000
->      ACPI_FAN_COMPONENT              0x00200000
-> Index: linux-pm/drivers/acpi/sysfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/sysfs.c
-> +++ linux-pm/drivers/acpi/sysfs.c
-> @@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
->  	ACPI_DEBUG_INIT(ACPI_COMPILER),
->  	ACPI_DEBUG_INIT(ACPI_TOOLS),
->  
-> -	ACPI_DEBUG_INIT(ACPI_BATTERY_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
->  	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
-> Index: linux-pm/include/acpi/acpi_drivers.h
-> ===================================================================
-> --- linux-pm.orig/include/acpi/acpi_drivers.h
-> +++ linux-pm/include/acpi/acpi_drivers.h
-> @@ -15,7 +15,6 @@
->   * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
->   * if you add to this list.
->   */
-> -#define ACPI_BATTERY_COMPONENT		0x00040000
->  #define ACPI_BUTTON_COMPONENT		0x00080000
->  #define ACPI_SBS_COMPONENT		0x00100000
->  #define ACPI_FAN_COMPONENT		0x00200000
-> 
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
 
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcPK4FAwAAAAAACgkQlh/E3EQov+Cx
+zhAAqVcT8R0Tx8DNGHI0CEr7QmJbo4UmV/vUC5eGo8TG1JAwZ9hmk++WTZa9yU8/aQnBvKcOg5vJ
+zHNs9VJ7eb9NKAsXMbLFK4wv9HLhpeqVMJvawKSFpvgWopyVl8kqSiTVrIqjwdI0vHRifw7d5IPB
+VGJwkwqx8tyhKzE7q5G7si3UcN/soYi/4O8DC9n8v5K01T2hKJCLH0cargbjFzCDKsn/cGw61W5w
+FEVPHZO1R5r3MtE0r6Kg5dNQ9hq/dMgONWU8ss4N8fsbq7sNx4S9YIPQqAdsT2SRgPQH+1JlX/0W
+sHLfNqxeXhZjoM4RefrG2ZiDF3XNPcAaZ9wC1T9Ie8GdqPLJhcyKbVSo0z5PpOxhUYk8XswPtdg0
+tzTjGWk638JjvU85nE5g4y0+sF0mYntp2/JrsuSc9A8O8XgJDS/KumwZ/tppGQ5JomnL7fOao9Iw
+x2HslwW1bsps1EJ/g+UlJCau4F791l2hQx3JQXE7Dp1cnWJwh4dxHpEMo01D0RcqM3XcGuC1id+B
+P2FRIjH9A8ElTUgT4zCKZHvLS1czTtw6741st3FKXPT0PdFwtfhPFwtzt+Q8nVV3RcaOTWZRseG/
+ONM5aptTefpTmAavlhGvwJjoNfV5limnekXDXvf9dnhE5wnVIF1VF/6XT6Zw2ebwu75Zuqi72/xp
+dRM=
+=Ppb5
+-----END PGP SIGNATURE-----
+
+--FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw--
