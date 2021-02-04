@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2210930E9ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB3F30E9E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhBDCF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:05:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:22437 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233106AbhBDCFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:05:39 -0500
-IronPort-SDR: 85XE3EY5ISzF5fj8aQ8f4nu+wSqxegNHxccQlvCORdJBm4aCSqsoyC32jfMBPQMyekRUL9KfJ9
- XlpRGkxiQrbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160912713"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="160912713"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 18:04:58 -0800
-IronPort-SDR: 2N7JdF2S40xsHZ5rzL5mIRLURmVISLSboB7h7pQkg7rWQdjv5DoktlLJ2todnWXNVo5TrBvkTy
- pnuzRc3yZAsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="433713859"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga001.jf.intel.com with ESMTP; 03 Feb 2021 18:04:56 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     gregkh@linuxfoundation.org, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com
-Subject: [PATCH v11 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Thu,  4 Feb 2021 09:59:31 +0800
-Message-Id: <1612403971-13291-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612403971-13291-1-git-send-email-yilun.xu@intel.com>
-References: <1612403971-13291-1-git-send-email-yilun.xu@intel.com>
+        id S233064AbhBDCCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:02:53 -0500
+Received: from mail.v3.sk ([167.172.186.51]:53800 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232768AbhBDCCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:02:47 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id E778EE0BB3;
+        Thu,  4 Feb 2021 01:57:52 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id XMmrYTYW4xfz; Thu,  4 Feb 2021 01:57:50 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 823C9E0BB2;
+        Thu,  4 Feb 2021 01:57:50 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ovieJ57w_w99; Thu,  4 Feb 2021 01:57:50 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 3E5DDE0BB1;
+        Thu,  4 Feb 2021 01:57:50 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Ivan Najdanovic <najdanovicivan@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] clk: mmp2: Enable the 3D GPU clock alongside the 2D clock
+Date:   Thu,  4 Feb 2021 03:01:54 +0100
+Message-Id: <20210204020155.527556-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
+Hi,
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Wu Hao <hao.wu@intel.com>
----
-v2: no doc in v1, add it for v2.
-v3: some documentation fixes.
-v4: documentation change since the driver matching is changed.
-v5: no change.
-v6: improve the title of the userspace driver support section.
-    some word improvement.
-v7: rebased to next-20210119
-v8: some doc fixes.
-v9: some doc change since we switch to the driver in drivers/uio.
-v10: no change.
-v11: add description that interrupt support is not implemented yet.
----
- Documentation/fpga/dfl.rst | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Please consider applying the sad little patch chained to this message. It
+is a workaround that makes the 2D GPU work on MMP3 when the 3D GPU is not
+used.
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index c41ac76..f3a1223 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -7,6 +7,7 @@ Authors:
- - Enno Luebbers <enno.luebbers@intel.com>
- - Xiao Guangrong <guangrong.xiao@linux.intel.com>
- - Wu Hao <hao.wu@intel.com>
-+- Xu Yilun <yilun.xu@intel.com>
- 
- The Device Feature List (DFL) FPGA framework (and drivers according to
- this framework) hides the very details of low layer hardwares and provides
-@@ -530,6 +531,31 @@ Being able to specify more than one DFL per BAR has been considered, but it
- was determined the use case did not provide value.  Specifying a single DFL
- per BAR simplifies the implementation and allows for extra error checking.
- 
-+
-+Userspace driver support for DFL devices
-+========================================
-+The purpose of an FPGA is to be reprogrammed with newly developed hardware
-+components. New hardware can instantiate a new private feature in the DFL, and
-+then present a DFL device in the system. In some cases users may need a
-+userspace driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardware.
-+* Users may prototype the kernel driver in user space.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires direct access to MMIO space and interrupt handling from
-+userspace. The uio_dfl module exposes the UIO device interfaces for this
-+purpose.
-+
-+Currently the uio_dfl driver only supports the Ether Group sub feature, which
-+has no irq in hardware. So the interrupt handling is not added in this driver.
-+
-+UIO_DFL should be selected to enable the uio_dfl module driver. To support a
-+new DFL feature via UIO direct access, its feature id should be added to the
-+driver's id_table.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
--- 
-2.7.4
+It's been observed that the 2D GPU won't work when what is understood to =
+be
+the 3D GPU clock is turned off. The etnaviv developers suggest [1][2] tha=
+t
+perhaps said understanding is wrong and they may be right. Unfortunately =
+no
+documentation is available, all we know is the register names.
+
+In any case it seems to make more sense to put the workaround in the MMP
+clock driver instead of to the etnaviv driver.
+
+[1] https://lists.freedesktop.org/archives/etnaviv/2020-November/003442.h=
+tml
+[2] https://lists.freedesktop.org/archives/etnaviv/2020-December/003445.h=
+tml
+
+Thanks
+Lubo
+
 
