@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1209130F3BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76A530F3C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236245AbhBDNRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:17:11 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30482 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236207AbhBDNRK (ORCPT
+        id S236231AbhBDNU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:20:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236029AbhBDNU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:17:10 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114D7KL6010963;
-        Thu, 4 Feb 2021 08:15:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=OiX/ZrJ19lWVFKhO3EJO6ksWn1lQxfzQr8aZJlxPtaY=;
- b=SHXdeGspIDj5tHuAlQlonJ1XdMb4BLatg3q0LR8h8JCTnVcTMfRxMQQT3RlnkLUGpmn1
- a1TeB+zY9csSI5YYj39bZdQ76waIvn02Ja6a619KVRyvHi1Z7iIrJifGINkc40caBTcR
- v+WPeE2TG8GDPdn8wHR2Xpi+vbXfdTj5Gpsi3/AgWTdtBkYxMZruYMlA7sGAs0lkF7MP
- IcmZkzThLtDwghLJEz3DZZ8XPLFxcHLmJR8f6xO5KBqzaxWLd9xY+pOdMKNLIR6r8JUC
- y08ix+BR+cUBacvvrSUS1wvabyb1b6FmLT5OYrJUd2Twbowf2azU9ITvwbVtfyVArjym vA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36gh56rx3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 08:15:43 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114D7OCq011250;
-        Thu, 4 Feb 2021 08:15:43 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36gh56rx2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 08:15:42 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114D7YVa013446;
-        Thu, 4 Feb 2021 13:15:40 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 36cy38ak1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 13:15:40 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114DFbGs28705096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Feb 2021 13:15:37 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4471C5205A;
-        Thu,  4 Feb 2021 13:15:37 +0000 (GMT)
-Received: from localhost (unknown [9.85.87.37])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C9E6C52051;
-        Thu,  4 Feb 2021 13:15:36 +0000 (GMT)
-Date:   Thu, 4 Feb 2021 18:45:34 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, oleg@redhat.com, rostedt@goodmis.org,
-        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
-Message-ID: <20210204131534.GL210@DESKTOP-TDPLP67.localdomain>
-References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
- <79b0bed7-8b98-d58d-dc47-644195bbc095@linux.ibm.com>
+        Thu, 4 Feb 2021 08:20:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612444740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vAM9v4eMZKg6YBIf04QqVg9hAruxcJZ81FnwmCn3uw=;
+        b=XKgEEhQ8n3iRIpNae7i7mPTBB8YGAdaIFwzBGQKnLARPnPDTh0QhLo71HiUa9XHFe4JxTt
+        WEdEB/W0FE2cTYaGRX9U+DOS/FJsAof0G+05RuS5feytP88v+qyjvf20kONgULH8h9oGL3
+        Z9Od7dtaduGwD3w3tG1TCYiuw0Z2ZSY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-60LBYem7OlK7pHNDp4q96Q-1; Thu, 04 Feb 2021 08:18:56 -0500
+X-MC-Unique: 60LBYem7OlK7pHNDp4q96Q-1
+Received: by mail-ed1-f72.google.com with SMTP id ck25so2733338edb.16
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:18:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+vAM9v4eMZKg6YBIf04QqVg9hAruxcJZ81FnwmCn3uw=;
+        b=OCaYfNiTsCxGczFxOafq8Bvif8T++zFFdL1pDEaoNL+8DX/YxMmveoTpl/+B+wqMvW
+         zVVpzpXLaUENl6pYdm4h5BZ4VcQKGbdCV64i/O1D9G7AplrYDPgNl7sXzaYJTjAyYMBl
+         uomb/4s1VzChKvHiSXzlFCqbwcsBicrjkZ3ugJZmmBCOWQ5UotPJqs7qZiFSGXzAUa2d
+         Y0PuNbcJMPRJg9whhRVMzt4xjDxhXuexmQnggy3/tq3J7AzzgJdXWIdhJW9PFWAXLSw4
+         9Xg5wB382/0OrZYzdM1OhtCH9+pxKSyiinH4c5SCjA4PpPwlYsD8LJ6PmJCfsbHq0UTw
+         7Y7g==
+X-Gm-Message-State: AOAM531P20TXxBXoZt9Rz8TM7EZhX81jnDO+WirnpkMpyj9blnF8m6Ft
+        M/nJVBgeKr99PjtGrwD9/uZb8LJDKFIwQC+1DCulhu1FV/MvJi975ok3Jg7ncbiWbljKfnvcvyz
+        RO8c6rh0m5PAg9bq5hwQXH8c8
+X-Received: by 2002:a50:b5c5:: with SMTP id a63mr7829383ede.227.1612444735672;
+        Thu, 04 Feb 2021 05:18:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy2epJQrWbJJX+FnAr7MKarJjT9f2YzxU/r4xM9FHyMjplb+G8hEPNok/ANUNzd9X3viV9Qzg==
+X-Received: by 2002:a50:b5c5:: with SMTP id a63mr7829370ede.227.1612444735537;
+        Thu, 04 Feb 2021 05:18:55 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id r4sm2445330edv.27.2021.02.04.05.18.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 05:18:55 -0800 (PST)
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
+ <20210204105748.GD2789116@dell>
+ <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
+ <20210204124335.GA4288@sirena.org.uk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e646cd26-f61c-8414-c3ae-15fb5d5cc21d@redhat.com>
+Date:   Thu, 4 Feb 2021 14:18:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79b0bed7-8b98-d58d-dc47-644195bbc095@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_07:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- clxscore=1015 adultscore=0 suspectscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040082
+In-Reply-To: <20210204124335.GA4288@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/02/04 04:19PM, Ravi Bangoria wrote:
-> 
-> 
-> On 2/4/21 4:17 PM, Ravi Bangoria wrote:
-> > Don't allow Uprobe on 2nd word of a prefixed instruction. As per
-> > ISA 3.1, prefixed instruction should not cross 64-byte boundary.
-> > So don't allow Uprobe on such prefixed instruction as well.
-> > 
-> > There are two ways probed instruction is changed in mapped pages.
-> > First, when Uprobe is activated, it searches for all the relevant
-> > pages and replace instruction in them. In this case, if we notice
-> > that probe is on the 2nd word of prefixed instruction, error out
-> > directly. Second, when Uprobe is already active and user maps a
-> > relevant page via mmap(), instruction is replaced via mmap() code
-> > path. But because Uprobe is invalid, entire mmap() operation can
-> > not be stopped. In this case just print an error and continue.
-> 
-> @mpe,
-> 
-> arch_uprobe_analyze_insn() can return early if
-> cpu_has_feature(CPU_FTR_ARCH_31) is not set. But that will
-> miss out a rare scenario of user running binary with prefixed
-> instruction on p10 predecessors. Please let me know if I
-> should add cpu_has_feature(CPU_FTR_ARCH_31) or not.
+Hi,
 
-The check you are adding is very specific to prefixed instructions, so 
-it makes sense to add a cpu feature check for v3.1.
+On 2/4/21 1:43 PM, Mark Brown wrote:
+> On Thu, Feb 04, 2021 at 12:07:49PM +0100, Hans de Goede wrote:
+>> On 2/4/21 11:57 AM, Lee Jones wrote:
+>>> On Thu, 04 Feb 2021, Hans de Goede wrote:
+> 
+>>>> series are both ready for merging. All patches have Reviewed-by and/or
+>>>> Acked-by tags now.
+> 
+>>> I don't think they do.  You're missing ASoC and Extcon Acks.
+> 
+>> Right, what I meant is that the patches have been reviewed by other
+>> stake-holders, including the follow-up series being tested by the cirrus
+>> codec folks (thank you Charles).
+> 
+>> But yes the actual subsys maintainers have not acked these yet;
+>> and I'm aware that you will need those for merging this through
+>> the MFD tree.
+> 
+> The usual pattern here is that the MFD patches get merged and then I
+> pull a shared branch in for any dependencies - at this point the series
+> is now on the backlog of serieses where I'm waiting for the MFD to sort
+> itself out before I really look at it again.
 
-On older processors, those are invalid instructions like any other. The 
-instruction emulation infrastructure will refuse to emulate it and the 
-instruction will be single stepped.
+I understand. But this series is somewhat special, if you also take
+the follow-up series into account:
 
-- Naveen
+"[PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec jack-detect support"
+
+That again has some MFD bits, and some extcon patches and ASoC patches
+which depend on the extcon bits and this series.
+
+So it is really hard to merge all the bits through there separate trees
+and just merging it all through one tree and then pulling in the end-result
+as a shared branch would IMHO be easier.
+
+In the follow-up series one of the patches is moving the jackdet code from the
+extcon dir to sound/asoc/codecs. So that is a single commit touching 2 trees ...
+
+Regards,
+
+Hans
+
