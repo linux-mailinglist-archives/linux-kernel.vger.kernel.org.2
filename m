@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218A930F4D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F6B30F4E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236627AbhBDOUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:20:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58368 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236639AbhBDOUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:20:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612448358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uNjcnDnZXUPYHHuK46oDIL84tyY2kS2LkC6T9yyAPCU=;
-        b=FpVLR3O5yTTiyeAwG18zs+GsUc9KTxfWONmuisoWJ5R5Qc+/oEzDmE8bSbH18CXTe6sjcR
-        iIb3W1B+PoapI11EyyaUQ6YIBmeGMGWmyFSi1EW3GHcp6M4GA6Qx4SolDI790FtL20ziY2
-        ZigN/iwMkJ+cKFNvY3YBp5715do75N0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A88CEB176;
-        Thu,  4 Feb 2021 14:19:18 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 15:19:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
-Message-ID: <YBwCZYWsQOFAGUar@dhcp22.suse.cz>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-7-hannes@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202184746.119084-7-hannes@cmpxchg.org>
+        id S236516AbhBDOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:25:52 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:23167 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236606AbhBDOXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:23:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612448564; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=7wJpQUhUKdisJi/nBL0j602/BJmGi54/LgyG/xEEfh8=; b=tOtm1Hpsr8K5CFWtLhMSmpIhBqawubO5QVqQme45H53N8/KmlpBYJYRjcLscvy6TMPqFF2Tk
+ bZiKATyWQPQhkTirPGyGjdDxxmsngepjATosezhW37A1hfZphSL3YG64o6wk/75oqUC+XUds
+ wJBGvgYWkpuwOjTVbjRAl05IOew=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 601c03168e43a988b7d9acae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 14:22:14
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76E11C43466; Thu,  4 Feb 2021 14:22:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C163FC433C6;
+        Thu,  4 Feb 2021 14:22:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C163FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v6 0/4] Introduce SoC sleep stats driver
+Date:   Thu,  4 Feb 2021 19:51:44 +0530
+Message-Id: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
-> Replace the memory controller's custom hierarchical stats code with
-> the generic rstat infrastructure provided by the cgroup core.
-> 
-> The current implementation does batched upward propagation from the
-> write side (i.e. as stats change). The per-cpu batches introduce an
-> error, which is multiplied by the number of subgroups in a tree. In
-> systems with many CPUs and sizable cgroup trees, the error can be
-> large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
-> subgroups results in an error of up to 128M per stat item). This can
-> entirely swallow allocation bursts inside a workload that the user is
-> expecting to see reflected in the statistics.
-> 
-> In the past, we've done read-side aggregation, where a memory.stat
-> read would have to walk the entire subtree and add up per-cpu
-> counts. This became problematic with lazily-freed cgroups: we could
-> have large subtrees where most cgroups were entirely idle. Hence the
-> switch to change-driven upward propagation. Unfortunately, it needed
-> to trade accuracy for speed due to the write side being so hot.
-> 
-> Rstat combines the best of both worlds: from the write side, it
-> cheaply maintains a queue of cgroups that have pending changes, so
-> that the read side can do selective tree aggregation. This way the
-> reported stats will always be precise and recent as can be, while the
-> aggregation can skip over potentially large numbers of idle cgroups.
-> 
-> This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
-> NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
-> aggregation. It removes 3 words from the per-cpu data. It eliminates
-> memcg_exact_page_state(), since memcg_page_state() is now exact.
+Changes in v6:
+- Address stephen's comments from v5 which includes below
+- Pad 0 in documentation example to make address 8 digit
+- define macro to calculate offset in driver
+- Add appended_stats_avail to prv_data instead of using entire stats_config
+- make array subsystems[] as const
+- Add comment for SSR case
+- Use memcpy_fromio() and devm_kcalloc() during probe
+- Change file permission mode from 444 to 400 
 
-I am still digesting details and need to look deeper into how rstat
-works but removing our own stats is definitely a good plan. Especially
-when there are existing limitations and problems that would need fixing.
+- Address guenter's comments to add depends on QCOM_SMEM
 
-Just to check that my high level understanding is correct. The
-transition is effectivelly removing a need to manually sync counters up
-the hierarchy and partially outsources that decision to rstat core. The
-controller is responsible just to tell the core how that syncing is done
-(e.g. which specific counters etc). Excplicit flushes are needed when
-you want an exact value (e.g. when values are presented to the
-userspace). I do not see any flushes to be done by the core pro-actively
-except for clean up on a release.
+- Add adsp_island and cdsp_island subsystems
+- Use strim() to remove whitespace in stat name
 
-Is the above correct understanding?
+Changes in v5:
+- Remove underscore from node name in Documentation and DTSI change
+- Remove global config from driver change
+
+Changes in v4:
+- Address bjorn's comments from v3 on change 2.
+- Add bjorn's Reviewed-by on change 3 and 4.
+
+Changes in v3:
+- Address stephen's comments from v2 in change 1 and 2.
+- Address bjorn's comments from v2 in change 3 and 4.
+- Add Rob and bjorn's Reviewed-by on YAML change.
+
+Changes in v2:
+- Convert Documentation to YAML.
+- Address stephen's comments from v1.
+- Use debugfs instead of sysfs.
+- Add sc7180 dts changes for sleep stats
+- Add defconfig changes to enable driver
+- Include subsystem stats from [1] in this single stats driver.
+- Address stephen's comments from [1]
+- Update cover letter inline to mention [1]
+
+Qualcomm Technologies, Inc. (QTI)'s chipsets support SoC level low power
+modes. SoCs Always On Processor/Resource Power Manager produces statistics
+of the SoC sleep modes involving lowering or powering down of the rails and
+the oscillator clock.
+
+Additionally multiple subsystems present on SoC like modem, spss, adsp,
+cdsp maintains their low power mode statistics in shared memory (SMEM).
+
+Statistics includes SoC sleep mode type, number of times LPM entered, time
+of last entry, exit, and accumulated sleep duration in seconds.
+
+This series adds a driver to read the stats and export to debugfs.
+
+[1] https://lore.kernel.org/patchwork/patch/1149381/
+
+Mahesh Sivasubramanian (2):
+  dt-bindings: Introduce SoC sleep stats bindings
+  soc: qcom: Add SoC sleep stats driver
+
+Maulik Shah (2):
+  arm64: dts: qcom: sc7180: Enable SoC sleep stats
+  arm64: defconfig: Enable SoC sleep stats driver
+
+ .../bindings/soc/qcom/soc-sleep-stats.yaml         |  46 ++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   7 +-
+ arch/arm64/configs/defconfig                       |   1 +
+ drivers/soc/qcom/Kconfig                           |  10 +
+ drivers/soc/qcom/Makefile                          |   1 +
+ drivers/soc/qcom/soc_sleep_stats.c                 | 258 +++++++++++++++++++++
+ 6 files changed, 322 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+ create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
+
 -- 
-Michal Hocko
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
