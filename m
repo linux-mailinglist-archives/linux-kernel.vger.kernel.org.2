@@ -2,174 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B0F30F85A
+	by mail.lfdr.de (Postfix) with ESMTP id B5DA530F85B
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237720AbhBDQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238025AbhBDQnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238016AbhBDQpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:45:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238019AbhBDQnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 11:43:11 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6496EC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:42:31 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id e9so2127695pjj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EEzkB6KBykSa84B36mWQtsqm2CNIxmUYCcv/2V8Jq/g=;
-        b=SKF4eIuVg/lLzlwuixMf3U19cEbR9jy4AizAJnOQ5pIYJ6jmpBaBxa9QlsnHGf6Bgz
-         qmGU1X98u0+ztfSTetCoYS72vf1RvBZWpiewzgf2K3IlnY+Wr3rQqEcZL+VuV+//4tZd
-         yt4/4fKsA9TwIm4IKznxWjgZ5TlAIMWPfwUBC/tzb2DN+VCfketn4VHOpd3HwlhP0/kd
-         nc8S2COcuhYY7v8vAi6mVfVW/4G/zQN8to3yVEhT0R8bZj+VvjCKSoBHXhvO10S2Zo0O
-         II/pCsLZohgRnSRBiEPTg9h3krsg6mxl3q1Qh6qCb2I/x0W+pNwWtoB0szPDSZsZADRv
-         Wg+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EEzkB6KBykSa84B36mWQtsqm2CNIxmUYCcv/2V8Jq/g=;
-        b=MjNn9XmGLW77KyLkfBVtT/ZpdIVmA0mMPwOvPDxG3PR6nF0BsdZuwCEMOyR63LiU3I
-         h7/6OoBdhSKvUOumvou/cu4nb5BaUL45oSaDenzbk3n3F+PJvOv3uLIgobRnKR7v7Sy9
-         M+U1C3ZM9a9KPUY93tJFnc2xOzUoSTryJOnqzpnNI4+sIbViLShPxRAbujNs89Tdi3CX
-         6YjAO6h4L+eD1rZ64EYI+WmViItZf/1197z7MAX/LurBU8V5PQw3svEYPyOdQmupIIon
-         UP0kDFzuncS9A/ld93DMwb/RiYDkYRn00H32jkFrOnhuEVX09qy6YNVizCjf0ALWFnfz
-         ZZDg==
-X-Gm-Message-State: AOAM531A1TjxI0n1cupxoyJqBAVs2hdn2kon/WrLjXu7y3dtvSB9w630
-        rH1o0DNBXHYF52+mfcDPuC+4qg==
-X-Google-Smtp-Source: ABdhPJzGptj9+SwXd4AANgey9HMIo3kKFzOkoPCSiJ7MsS+Qu19JvRFEx9zLyryYbckkmVfA6l1iFg==
-X-Received: by 2002:a17:90b:ed0:: with SMTP id gz16mr341695pjb.7.1612456950755;
-        Thu, 04 Feb 2021 08:42:30 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:f16f:a28e:552e:abea])
-        by smtp.gmail.com with ESMTPSA id bo1sm4822871pjb.7.2021.02.04.08.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:42:29 -0800 (PST)
-Date:   Thu, 4 Feb 2021 08:42:23 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, jmattson@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
- dispatch
-Message-ID: <YBwj78dE5iGZOLed@google.com>
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-5-weijiang.yang@intel.com>
- <YBsZwvwhshw+s7yQ@google.com>
- <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612456944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wsgw8MnfsGuS5yxbjBVn1LDBc6ZqPnfi34fb3SCAx6k=;
+        b=NgWdQMlyE3luXm8XWKjVOe9zxEg7WQv8SecLlF4cS78MHz5/hEi4X7DpQCw0sW1QSTz4hN
+        nktjmzFeN8/ZAV74ArRlOObu1QFbDkAvWW+gvQ0q7FaQ1W8UipbvtGwvyayYl/wCbxfbkn
+        Sjl3ubKHaA2GT9ueS1b9xCOOoCMP6GU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8941ABD5;
+        Thu,  4 Feb 2021 16:42:23 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 17:42:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 4/7] cgroup: rstat: support cgroup1
+Message-ID: <YBwj7wC4+mVcx8GO@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-5-hannes@cmpxchg.org>
+ <YBv5Dc1I9QpPH69n@dhcp22.suse.cz>
+ <YBwaWkJgqPNF3I3w@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
+In-Reply-To: <YBwaWkJgqPNF3I3w@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021, Paolo Bonzini wrote:
-> On 03/02/21 22:46, Sean Christopherson wrote:
+On Thu 04-02-21 11:01:30, Johannes Weiner wrote:
+> On Thu, Feb 04, 2021 at 02:39:25PM +0100, Michal Hocko wrote:
+> > On Tue 02-02-21 13:47:43, Johannes Weiner wrote:
+> > > Rstat currently only supports the default hierarchy in cgroup2. In
+> > > order to replace memcg's private stats infrastructure - used in both
+> > > cgroup1 and cgroup2 - with rstat, the latter needs to support cgroup1.
+> > > 
+> > > The initialization and destruction callbacks for regular cgroups are
+> > > already in place. Remove the cgroup_on_dfl() guards to handle cgroup1.
+> > > 
+> > > The initialization of the root cgroup is currently hardcoded to only
+> > > handle cgrp_dfl_root.cgrp. Move those callbacks to cgroup_setup_root()
+> > > and cgroup_destroy_root() to handle the default root as well as the
+> > > various cgroup1 roots we may set up during mounting.
+> > > 
+> > > The linking of css to cgroups happens in code shared between cgroup1
+> > > and cgroup2 as well. Simply remove the cgroup_on_dfl() guard.
+> > > 
+> > > Linkage of the root css to the root cgroup is a bit trickier: per
+> > > default, the root css of a subsystem controller belongs to the default
+> > > hierarchy (i.e. the cgroup2 root). When a controller is mounted in its
+> > > cgroup1 version, the root css is stolen and moved to the cgroup1 root;
+> > > on unmount, the css moves back to the default hierarchy. Annotate
+> > > rebind_subsystems() to move the root css linkage along between roots.
 > > 
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index dbca1687ae8e..0b6dab6915a3 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
-> >                 /* VM-entry interruption-info field: deliver error code */
-> >                 should_have_error_code =
-> >                         intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
-> > -                       x86_exception_has_error_code(vector);
-> > +                       x86_exception_has_error_code(vcpu, vector);
-> >                 if (CC(has_error_code != should_have_error_code))
-> >                         return -EINVAL;
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 28fea7ff7a86..0288d6a364bd 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
-> >  #define EXCPT_CONTRIBUTORY     1
-> >  #define EXCPT_PF               2
-> > 
-> > -static int exception_class(int vector)
-> > +static int exception_class(struct kvm_vcpu *vcpu, int vector)
-> >  {
-> >         switch (vector) {
-> >         case PF_VECTOR:
-> >                 return EXCPT_PF;
-> > +       case CP_VECTOR:
-> > +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
-> > +                       return EXCPT_BENIGN;
-> > +               return EXCPT_CONTRIBUTORY;
-> >         case DE_VECTOR:
-> >         case TS_VECTOR:
-> >         case NP_VECTOR:
-> >         case SS_VECTOR:
-> >         case GP_VECTOR:
-> > -       case CP_VECTOR:
-
-This removal got lost when squasing.
-
-arch/x86/kvm/x86.c: In function ‘exception_class’:
-arch/x86/kvm/x86.c:455:2: error: duplicate case value
-  455 |  case CP_VECTOR:
-      |  ^~~~
-arch/x86/kvm/x86.c:446:2: note: previously used here
-  446 |  case CP_VECTOR:
-      |  ^~~~
-
-> >                 return EXCPT_CONTRIBUTORY;
-> >         default:
-> >                 break;
-> > @@ -588,8 +591,8 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
-> >                 kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-> >                 return;
-> >         }
-> > -       class1 = exception_class(prev_nr);
-> > -       class2 = exception_class(nr);
-> > +       class1 = exception_class(vcpu, prev_nr);
-> > +       class2 = exception_class(vcpu, nr);
-> >         if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
-> >                 || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
-> >                 /*
-> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> > index a14da36a30ed..dce756ffb577 100644
-> > --- a/arch/x86/kvm/x86.h
-> > +++ b/arch/x86/kvm/x86.h
-> > @@ -120,12 +120,16 @@ static inline bool is_la57_mode(struct kvm_vcpu *vcpu)
-> >  #endif
-> >  }
-> > 
-> > -static inline bool x86_exception_has_error_code(unsigned int vector)
-> > +static inline bool x86_exception_has_error_code(struct kvm_vcpu *vcpu,
-> > +                                               unsigned int vector)
-> >  {
-> >         static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
-> >                         BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
-> >                         BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
-> > 
-> > +       if (vector == CP_VECTOR && (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET))
-> > +               return false;
-> > +
-> >         return (1U << vector) & exception_has_error_code;
-> >  }
-> > 
-> > 
-> > 
-> > 
+> > I am not familiar with rstat API and from this patch it is not really
+> > clear to me how does it deal with memcg v1 use_hierarchy oddness.
 > 
-> Squashed, thanks.  I made a small change to the last hunk:
+> That's gone, right?
 > 
->         if (!((1U << vector) & exception_has_error_code))
->                 return false;
+> static int mem_cgroup_hierarchy_write(struct cgroup_subsys_state *css,
+>                                       struct cftype *cft, u64 val)
+> {
+>         if (val == 1)
+>                 return 0;
 > 
->         if (vector == CP_VECTOR)
->                 return !(vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET);
+>         pr_warn_once("Non-hierarchical mode is deprecated. "
+>                      "Please report your usecase to linux-mm@kvack.org if you "
+>                      "depend on this functionality.\n");
 > 
->         return true;
+>         return -EINVAL;
+> }
 
-Ha, I guessed wrong, that was my first pass at it :-)
+Ohh, right! I have completely forgot it hit the Linus tree.
+
+-- 
+Michal Hocko
+SUSE Labs
