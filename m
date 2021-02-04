@@ -2,285 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACE730F9E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC8730F9CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238642AbhBDRh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:37:58 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50188 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238635AbhBDRgO (ORCPT
+        id S238596AbhBDRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238592AbhBDRb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:36:14 -0500
-Received: from 89-64-81-64.dynamic.chello.pl (89.64.81.64) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id 4257cd42a0606640; Thu, 4 Feb 2021 18:35:00 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michael Larabel <Michael@phoronix.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v1 1/2] cpufreq: ACPI: Extend frequency tables to cover boost frequencies
-Date:   Thu, 04 Feb 2021 18:25:37 +0100
-Message-ID: <8467867.3EdU9UaQ17@kreacher>
-In-Reply-To: <13690581.X0sz4iL7V8@kreacher>
-References: <13690581.X0sz4iL7V8@kreacher>
+        Thu, 4 Feb 2021 12:31:26 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF378C061356;
+        Thu,  4 Feb 2021 09:29:21 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id f1so5749096lfu.3;
+        Thu, 04 Feb 2021 09:29:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X1ahJvFsrZks1Lk0ripDXnB6weXUyAGbfZ45blD5PTU=;
+        b=RSpK0Teg2yPbyx+tN32lHdP56HoEVGFGksT+JkghM2BilhAM++ndPSiHehfezfx0vv
+         2usPaDOoocqRjyGUkmvCzcEjiTOnJ2PIaLjJOc5JFg5xEG5bXNPJN0F0VhbqgEjH47jN
+         p4Dk8zw7m3i1JeiIVok9xhDnXN5EfMus1K9zEGqO1LCYAF1uYpHYDTl+HaMoKtVH4rVa
+         5I3b+VYivjxIgN7ELRhDJjjgz6Tfosbc/n7fZ6IeoDnX+lFZ0AYzwojGYqztUBUc33c2
+         Wi/aYf0LBhH1zzgtE7od4YXuk3tNwtoeK3gDzNkKvZs5U/GFOTgTWZFsccOJVHz+HqgM
+         nF9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X1ahJvFsrZks1Lk0ripDXnB6weXUyAGbfZ45blD5PTU=;
+        b=DdtRT9pajkg5Yl5jbwWRf3IjTnQNn9wxnlA+/4QJZhnym6lBI0ICIAbg8LRqZTL2HC
+         KfGWTJbUeXsuTzlijuFQITrjoRjUlbARErFPwi6KiiaTdp4NdzvyUbBkLDFkpplMLUeO
+         nk7ZGhSB2hpvnnE6zMGFgyzL742GuqMVgvfaCnqXKl04Ddwvo7p7mQ7/mlqIke1qZqAB
+         DPZ1VxmICXXdth2kzzAGjdTIglNVpG/KjOG3+dd+T1n9bz7RhHNkWWhJ40UDM0mWohVl
+         t7pVOwoZNuYcq27laFBCpmBZ7pss28iSpYemGBabt6G7gFKcRc1Ou2TI/rJGymsUwhm6
+         MY1w==
+X-Gm-Message-State: AOAM533JiKyq3kO7K5xhra2oCA+AueBaV2lMDQFx5G+c7PRkey3uhNWq
+        BBEK1CjmZQ4T2pcTB59mdtiJc6W0zGgPhXf3buM=
+X-Google-Smtp-Source: ABdhPJwT/uirdmDDpof36RQ4WHOo7qc+S6n5DG40Du1EdYVt6nWCd+lES33v9igd/hfr1ZQ/k/YbFx5uatDCgLJ9eOA=
+X-Received: by 2002:a19:23c5:: with SMTP id j188mr265462lfj.430.1612459759029;
+ Thu, 04 Feb 2021 09:29:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-12-shy828301@gmail.com>
+ <8c11f94a-bd1a-3311-2160-0f2c83994a53@virtuozzo.com>
+In-Reply-To: <8c11f94a-bd1a-3311-2160-0f2c83994a53@virtuozzo.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 4 Feb 2021 09:29:06 -0800
+Message-ID: <CAHbLzkp6du=4rRcy2hxQrWo_2GX9QUcZuAyFqe_hiimDr6axyQ@mail.gmail.com>
+Subject: Re: [v6 PATCH 11/11] mm: vmscan: shrink deferred objects proportional
+ to priority
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Feb 4, 2021 at 2:23 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>
+> On 03.02.2021 20:20, Yang Shi wrote:
+> > The number of deferred objects might get windup to an absurd number, and it
+> > results in clamp of slab objects.  It is undesirable for sustaining workingset.
+> >
+> > So shrink deferred objects proportional to priority and cap nr_deferred to twice
+> > of cache items.
+> >
+> > The idea is borrowed fron Dave Chinner's patch:
+> > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
+> >
+> > Tested with kernel build and vfs metadata heavy workload in our production
+> > environment, no regression is spotted so far.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> For some time I was away from this do_shrink_slab() magic formulas and recent changes,
+> so I hope somebody else, who is being in touch with this, can review.
 
-A severe performance regression on AMD EPYC processors when using
-the schedutil scaling governor was discovered by Phoronix.com and
-attributed to the following commits:
+Yes, I agree it is intimidating. The patch has been tested in our test
+and production environment for a couple of months, so far no
+regression is spotted. Of course it doesn't mean it will not incur
+regression for other workloads. My plan is to leave it stay in -mm
+then linux-next for a while for a broader test. The first 10 patches
+could go to Linus's tree separately.
 
-    41ea667227ba ("x86, sched: Calculate frequency invariance for
-    AMD systems")
-
-    976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P
-    for frequency invariance on AMD EPYC")
-
-The source of the problem is that the maximum performance level taken
-for computing the arch_max_freq_ratio value used in the x86 scale-
-invariance code is higher than the one corresponding to the
-cpuinfo.max_freq value coming from the acpi_cpufreq driver.
-
-This effectively causes the scale-invariant utilization to fall below
-100% even if the CPU runs at cpuinfo.max_freq or slightly faster, so
-the schedutil governor selects a frequency below cpuinfo.max_freq
-then.  That frequency corresponds to a frequency table entry below
-the maximum performance level necessary to get to the "boost" range
-of CPU frequencies.
-
-However, if the cpuinfo.max_freq value coming from acpi_cpufreq was
-higher, the schedutil governor would select higher frequencies which
-in turn would allow acpi_cpufreq to set more adequate performance
-levels and to get to the "boost" range of CPU frequencies more often.
-
-This issue affects any systems where acpi_cpufreq is used and the
-"boost" (or "turbo") frequencies are enabled, not just AMD EPYC.
-Moreover, commit db865272d9c4 ("cpufreq: Avoid configuring old
-governors as default with intel_pstate") from the 5.10 development
-cycle made it extremely easy to default to schedutil even if the
-preferred driver is acpi_cpufreq as long as intel_pstate is built
-too, because the mere presence of the latter effectively removes the
-ondemand governor from the defaults.  Distro kernels are likely to
-include both intel_pstate and acpi_cpufreq on x86, so their users
-who cannot use intel_pstate or choose to use acpi_cpufreq may
-easily be affectecd by this issue.
-
-To address this issue, extend the frequency table constructed by
-acpi_cpufreq for each CPU to cover the entire range of available
-frequencies (including the "boost" ones) if CPPC is available and
-indicates that "boost" (or "turbo") frequencies are enabled.  That
-causes cpuinfo.max_freq to become the maximum "boost" frequency of
-the given CPU (instead of the maximum frequency returned by the ACPI
-_PSS object that corresponds to the "nominal" performance level).
-
-Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
-Fixes: 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
-Fixes: db865272d9c4 ("cpufreq: Avoid configuring old governors as default with intel_pstate")
-Link: https://www.phoronix.com/scan.php?page=article&item=linux511-amd-schedutil&num=1
-Link: https://lore.kernel.org/linux-pm/20210203135321.12253-2-ggherdovich@suse.cz/
-Reported-by: Michael Larabel <Michael@phoronix.com>
-Diagnosed-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/acpi-cpufreq.c |  107 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 95 insertions(+), 12 deletions(-)
-
-Index: linux-pm/drivers/cpufreq/acpi-cpufreq.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/acpi-cpufreq.c
-+++ linux-pm/drivers/cpufreq/acpi-cpufreq.c
-@@ -26,6 +26,7 @@
- #include <linux/uaccess.h>
- 
- #include <acpi/processor.h>
-+#include <acpi/cppc_acpi.h>
- 
- #include <asm/msr.h>
- #include <asm/processor.h>
-@@ -53,6 +54,7 @@ struct acpi_cpufreq_data {
- 	unsigned int resume;
- 	unsigned int cpu_feature;
- 	unsigned int acpi_perf_cpu;
-+	unsigned int first_perf_state;
- 	cpumask_var_t freqdomain_cpus;
- 	void (*cpu_freq_write)(struct acpi_pct_register *reg, u32 val);
- 	u32 (*cpu_freq_read)(struct acpi_pct_register *reg);
-@@ -221,10 +223,10 @@ static unsigned extract_msr(struct cpufr
- 
- 	perf = to_perf_data(data);
- 
--	cpufreq_for_each_entry(pos, policy->freq_table)
-+	cpufreq_for_each_entry(pos, policy->freq_table + data->first_perf_state)
- 		if (msr == perf->states[pos->driver_data].status)
- 			return pos->frequency;
--	return policy->freq_table[0].frequency;
-+	return policy->freq_table[data->first_perf_state].frequency;
- }
- 
- static unsigned extract_freq(struct cpufreq_policy *policy, u32 val)
-@@ -363,6 +365,7 @@ static unsigned int get_cur_freq_on_cpu(
- 	struct cpufreq_policy *policy;
- 	unsigned int freq;
- 	unsigned int cached_freq;
-+	unsigned int state;
- 
- 	pr_debug("%s (%d)\n", __func__, cpu);
- 
-@@ -374,7 +377,11 @@ static unsigned int get_cur_freq_on_cpu(
- 	if (unlikely(!data || !policy->freq_table))
- 		return 0;
- 
--	cached_freq = policy->freq_table[to_perf_data(data)->state].frequency;
-+	state = to_perf_data(data)->state;
-+	if (state < data->first_perf_state)
-+		state = data->first_perf_state;
-+
-+	cached_freq = policy->freq_table[state].frequency;
- 	freq = extract_freq(policy, get_cur_val(cpumask_of(cpu), data));
- 	if (freq != cached_freq) {
- 		/*
-@@ -628,16 +635,54 @@ static int acpi_cpufreq_blacklist(struct
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static u64 get_max_boost_ratio(unsigned int cpu)
-+{
-+	struct cppc_perf_caps perf_caps;
-+	u64 highest_perf, nominal_perf;
-+	int ret;
-+
-+	if (acpi_pstate_strict)
-+		return 0;
-+
-+	ret = cppc_get_perf_caps(cpu, &perf_caps);
-+	if (ret) {
-+		pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
-+			 cpu, ret);
-+		return 0;
-+	}
-+
-+	highest_perf = perf_caps.highest_perf;
-+	nominal_perf = perf_caps.nominal_perf;
-+
-+	if (!highest_perf || !nominal_perf) {
-+		pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
-+		return 0;
-+	}
-+
-+	if (highest_perf < nominal_perf) {
-+		pr_debug("CPU%d: nominal performance above highest\n", cpu);
-+		return 0;
-+	}
-+
-+	return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
-+}
-+#else
-+static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
-+#endif
-+
- static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
- {
--	unsigned int i;
--	unsigned int valid_states = 0;
--	unsigned int cpu = policy->cpu;
-+	struct cpufreq_frequency_table *freq_table;
-+	struct acpi_processor_performance *perf;
- 	struct acpi_cpufreq_data *data;
-+	unsigned int cpu = policy->cpu;
-+	struct cpuinfo_x86 *c = &cpu_data(cpu);
-+	unsigned int valid_states = 0;
- 	unsigned int result = 0;
--	struct cpuinfo_x86 *c = &cpu_data(policy->cpu);
--	struct acpi_processor_performance *perf;
--	struct cpufreq_frequency_table *freq_table;
-+	unsigned int state_count;
-+	u64 max_boost_ratio;
-+	unsigned int i;
- #ifdef CONFIG_SMP
- 	static int blacklisted;
- #endif
-@@ -750,8 +795,20 @@ static int acpi_cpufreq_cpu_init(struct
- 		goto err_unreg;
- 	}
- 
--	freq_table = kcalloc(perf->state_count + 1, sizeof(*freq_table),
--			     GFP_KERNEL);
-+	state_count = perf->state_count + 1;
-+
-+	max_boost_ratio = get_max_boost_ratio(cpu);
-+	if (max_boost_ratio) {
-+		/*
-+		 * Make a room for one more entry to represent the highest
-+		 * available "boost" frequency.
-+		 */
-+		state_count++;
-+		valid_states++;
-+		data->first_perf_state = valid_states;
-+	}
-+
-+	freq_table = kcalloc(state_count, sizeof(*freq_table), GFP_KERNEL);
- 	if (!freq_table) {
- 		result = -ENOMEM;
- 		goto err_unreg;
-@@ -785,6 +842,30 @@ static int acpi_cpufreq_cpu_init(struct
- 		valid_states++;
- 	}
- 	freq_table[valid_states].frequency = CPUFREQ_TABLE_END;
-+
-+	if (max_boost_ratio) {
-+		unsigned int state = data->first_perf_state;
-+		unsigned int freq = freq_table[state].frequency;
-+
-+		/*
-+		 * Because the loop above sorts the freq_table entries in the
-+		 * descending order, freq is the maximum frequency in the table.
-+		 * Assume that it corresponds to the CPPC nominal frequency and
-+		 * use it to populate the frequency field of the extra "boost"
-+		 * frequency entry.
-+		 */
-+		freq_table[0].frequency = freq * max_boost_ratio >> SCHED_CAPACITY_SHIFT;
-+		/*
-+		 * The purpose of the extra "boost" frequency entry is to make
-+		 * the rest of cpufreq aware of the real maximum frequency, but
-+		 * the way to request it is the same as for the first_perf_state
-+		 * entry that is expected to cover the entire range of "boost"
-+		 * frequencies of the CPU, so copy the driver_data value from
-+		 * that entry.
-+		 */
-+		freq_table[0].driver_data = freq_table[state].driver_data;
-+	}
-+
- 	policy->freq_table = freq_table;
- 	perf->state = 0;
- 
-@@ -858,8 +939,10 @@ static void acpi_cpufreq_cpu_ready(struc
- {
- 	struct acpi_processor_performance *perf = per_cpu_ptr(acpi_perf_data,
- 							      policy->cpu);
-+	struct acpi_cpufreq_data *data = policy->driver_data;
-+	unsigned int freq = policy->freq_table[data->first_perf_state].frequency;
- 
--	if (perf->states[0].core_frequency * 1000 != policy->cpuinfo.max_freq)
-+	if (perf->states[0].core_frequency * 1000 != freq)
- 		pr_warn(FW_WARN "P-state 0 is not max freq\n");
- }
- 
-
-
-
+>
+> > ---
+> >  mm/vmscan.c | 40 +++++-----------------------------------
+> >  1 file changed, 5 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 574d920c4cab..d0a86170854b 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -649,7 +649,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >        */
+> >       nr = count_nr_deferred(shrinker, shrinkctl);
+> >
+> > -     total_scan = nr;
+> >       if (shrinker->seeks) {
+> >               delta = freeable >> priority;
+> >               delta *= 4;
+> > @@ -663,37 +662,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >               delta = freeable / 2;
+> >       }
+> >
+> > +     total_scan = nr >> priority;
+> >       total_scan += delta;
+> > -     if (total_scan < 0) {
+> > -             pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
+> > -                    shrinker->scan_objects, total_scan);
+> > -             total_scan = freeable;
+> > -             next_deferred = nr;
+> > -     } else
+> > -             next_deferred = total_scan;
+> > -
+> > -     /*
+> > -      * We need to avoid excessive windup on filesystem shrinkers
+> > -      * due to large numbers of GFP_NOFS allocations causing the
+> > -      * shrinkers to return -1 all the time. This results in a large
+> > -      * nr being built up so when a shrink that can do some work
+> > -      * comes along it empties the entire cache due to nr >>>
+> > -      * freeable. This is bad for sustaining a working set in
+> > -      * memory.
+> > -      *
+> > -      * Hence only allow the shrinker to scan the entire cache when
+> > -      * a large delta change is calculated directly.
+> > -      */
+> > -     if (delta < freeable / 4)
+> > -             total_scan = min(total_scan, freeable / 2);
+> > -
+> > -     /*
+> > -      * Avoid risking looping forever due to too large nr value:
+> > -      * never try to free more than twice the estimate number of
+> > -      * freeable entries.
+> > -      */
+> > -     if (total_scan > freeable * 2)
+> > -             total_scan = freeable * 2;
+> > +     total_scan = min(total_scan, (2 * freeable));
+> >
+> >       trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
+> >                                  freeable, delta, total_scan, priority);
+> > @@ -732,10 +703,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >               cond_resched();
+> >       }
+> >
+> > -     if (next_deferred >= scanned)
+> > -             next_deferred -= scanned;
+> > -     else
+> > -             next_deferred = 0;
+> > +     next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
+> > +     next_deferred = min(next_deferred, (2 * freeable));
+> > +
+> >       /*
+> >        * move the unused scan count back into the shrinker in a
+> >        * manner that handles concurrent updates.
+>
+> Thanks
+>
+>
