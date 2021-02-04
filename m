@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FC430FE61
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDEF30FE75
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240168AbhBDUax convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 15:30:53 -0500
-Received: from wildebeest.demon.nl ([212.238.236.112]:38078 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240127AbhBDU24 (ORCPT
+        id S240184AbhBDUdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:33:40 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:12736 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240143AbhBDU3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:28:56 -0500
-Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 4 Feb 2021 15:29:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612470534; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=hbK6fy4IEb0Eekgpe2dfHwy2puVxFFmEFW8ZMxZZvyo=; b=r14N6LFOOaR1VSCy4La1lhLRI7qNz2K2IXk4mKf/Sx9W1hLfjlpVKnPMx2RU2Nq+FPceMGEj
+ FUedkqsfyDG0L8ISq8KvzgTYX8lpZ2fJAhEFuocj6M+VVexkhK5e/GdhxyRWwyy0gPSjvBYy
+ /juWGhhrls2WD5H0zVe/qs7rev0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 601c58e234db06ef79cbe54d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 20:28:18
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57830C43466; Thu,  4 Feb 2021 20:28:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 0C55230278CD;
-        Thu,  4 Feb 2021 21:28:05 +0100 (CET)
-Received: by tarox.wildebeest.org (Postfix, from userid 1000)
-        id D4F1840C9DA3; Thu,  4 Feb 2021 21:28:05 +0100 (CET)
-Message-ID: <42d2542d4b7f9836121b92d9bf349afa920bd4cd.camel@klomp.org>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-From:   Mark Wielaard <mark@klomp.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>
-Date:   Thu, 04 Feb 2021 21:28:05 +0100
-In-Reply-To: <CAKwvOdmT4t==akMN7eHWgD_XdpN--PLpUj8vgujGJ4TpREvteQ@mail.gmail.com>
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
-         <20210130004401.2528717-2-ndesaulniers@google.com>
-         <20210204103946.GA14802@wildebeest.org>
-         <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
-         <20fdd20fe067dba00b349407c4a0128c97c1a707.camel@klomp.org>
-         <CAKwvOdmT4t==akMN7eHWgD_XdpN--PLpUj8vgujGJ4TpREvteQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91A67C433CA;
+        Thu,  4 Feb 2021 20:28:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91A67C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v6 8/8] bus: mhi: core: Do not clear channel context more than once
+Date:   Thu,  4 Feb 2021 12:28:06 -0800
+Message-Id: <1612470486-10440-9-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
+References: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-04 at 12:04 -0800, Nick Desaulniers wrote:
-> On Thu, Feb 4, 2021 at 11:56 AM Mark Wielaard <mark@klomp.org> wrote:
-> > I agree with Jakub. Now that GCC has defaulted to DWARF5 all the
-> > tools
-> > have adopted to the new default version. And DWARF5 has been out
-> > for
-> 
-> "all of the tools" ?
+Clearing a channel context can happen twice if the client driver
+unprepares and reset the channels from the remove() callback from
+a controller requested MHI power down sequence. If there are
+multiple attempts at calling the mhi_free_coherent() API, we see
+kernel warnings such as "trying to free invalid coherent area".
+Example for one such client is the QRTR MHI driver. Avoid these
+warnings by skipping mhi_deinit_chan_ctxt() API call and prevent
+extra work from MHI as the channels are already disabled.
 
-I believe so yes, we did a mass-rebuild of all of Fedora a few weeks
-back with a GCC11 pre-release and did find some tools which weren't
-ready, but as far as I know all have been fixed now. I did try to
-coordinate with the Suse and Debian packagers too, so all the major
-distros should have all the necessary updates once switching to GCC11.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ drivers/bus/mhi/core/init.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > more than 4 years already. It isn't unreasonable to assume that people
-> > using GCC11 will also be using the rest of the toolchain that has moved
-> > on. Which DWARF consumers are you concerned about not being ready for
-> > GCC defaulting to DWARF5 once GCC11 is released?
-> 
-> Folks who don't have top of tree pahole or binutils are the two that
-> come to mind.
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 30eef19..272f350 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -1314,6 +1314,7 @@ static int mhi_driver_remove(struct device *dev)
+ 
+ 		if ((ch_state[dir] == MHI_CH_STATE_ENABLED ||
+ 		     ch_state[dir] == MHI_CH_STATE_STOP) &&
++		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED &&
+ 		    !mhi_chan->offload_ch)
+ 			mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-I believe pahole just saw a 1.20 release. I am sure it will be widely
-available once GCC11 is released (which will still be 1 or 2 months)
-and people are actually using it. Or do you expect distros/people are
-going to upgrade to GCC11 without updating their other toolchain tools?
-BTW. GCC11 doesn't need top of tree binutils, it will detect the
-binutils capabilities (bugs) and adjust its DWARF output based on it.
-
->   I don't have specifics on out of tree consumers, but
-> some Aarch64 extensions which had some changes to DWARF for ARMv8.3
-> PAC support broke some debuggers.
-
-It would be really helpful if you could provide some specifics. I did
-fix some consumers to handle the PAC operands in CFI last year, but I
-don't believe that had anything to do with the default DWARF version,
-just with dealing with DW_CFA_AARCH64_negate_ra_state.
-
-> I don't doubt a lot of work has gone into fixing many downstream
-> projects and then when building everything from ToT that there are no
-> issues with DWARF v5.  The issue is getting upgrades into developers
-> hands, and what to default to until then.
-
-I would suggest you simply default to what you already do when the
-compiler is given -g. Just like you do already for the implicit default
--std=gnuc*. Once GCC11 is actually released and people upgrade their
-toolchain to use it the tools will be ready and in developers hands.
-
-Cheers,
-
-Mark
