@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BC630F3F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C98E30F3FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236389AbhBDNh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:37:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        id S236124AbhBDNhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236367AbhBDNg4 (ORCPT
+        with ESMTP id S236385AbhBDNhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:36:56 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B970BC061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:36:14 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d16so3473533wro.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 05:36:14 -0800 (PST)
+        Thu, 4 Feb 2021 08:37:33 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B86C061788;
+        Thu,  4 Feb 2021 05:36:48 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id 7so3589476wrz.0;
+        Thu, 04 Feb 2021 05:36:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2wNLIUP4Xf17KhdjtkEwog/CXYEKOouf43hiUeEcDII=;
-        b=Acq3HeMCg6A4IzKWo9Z8JsiKOLxtAiJP8UkpXJL3y3R0x2pfLlYRYei2qibzM+vEGG
-         I3QtwSwf+60HVR3isI6kiGY/lINuuOsSUbi8rFsn8bl83va0jOTvn+BmHkUBwViPVKes
-         HgeKhzIGlGpj3tvhVipCPTy1v0sDKmKcPSivTZo01uEcWYkbBM9AoPxsPoMNLg1pcyIJ
-         QWwunVoC7diVVldqj6/Pj3ocxCpWP16uIqy4Phd0T0qzYP0NE7OzOvhjOePq5XglKtHD
-         J+k3PuwqSashd6tuvX8AH+IlqoKmJ7lrd0dVRxMkeBMMxz1B2gLXSa1viXPc6HuAjLIW
-         +DtQ==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=i6/bNL7HF1iysG21qSzvFJ1UcbOS4/QnqxxVysWkLuU=;
+        b=UxD0a1lDoSmq0j3gyV+VewxgLUPZLnSVo0X+4W+gBeRF1M/LB7WycJ425L0kJsdjvV
+         nO2YKPHBbzX4gMH+gDIRb355VPuETYaTWSfc7AUmGaofrMlsQOsQmSO4a4fIpkQ/4W5v
+         L/zISmHYjpNtJPqmfGXMtCVbnLNlj/2HPhiGlhTeKkr5SZSndZUhr0jvkrCmPba7JX9Z
+         K9eGxkMxf2qd+47lNN+thrHQ/wlN3xSB38sw6m5tP+usZs9jT3q/nAMHHmxEhUoJEvBu
+         i6OMsx4qWLprLu2424I9ahf4eoSNELsw6bCxN2DuQxikVpzhZaJC8IEWma0cEPpp+Lgs
+         cxEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2wNLIUP4Xf17KhdjtkEwog/CXYEKOouf43hiUeEcDII=;
-        b=fgUzcoB2LhS7Zc7yYLvEHbbcvHXtIkSXU7un5/24MHEOejrp3m0L7frFQF1GxBaNzp
-         VKBE+5Qgw2qjxAviK7Ns1R6vDdo6R/EefzJ89WHg5m7l/J9x/GiZHXgS4myc+3c6yY9S
-         Kam83rHvKdMppa0ufuT7JVO7SyGZnf2JbOKObK5wthIrKW6C3LIxH/W52acuQr7W1CG2
-         8qRYY0OzB27b69qicZGo3LK/Tko/9K6bfTFWGnm00eXG6CCPRDXhnuzA9WSjF6nKUv2r
-         lKixw5kwKcPoVBq6BzN9/n8/QrekxUAWWOQRJdsK+aXjj8blnHdKs0j14CxNPAJTncxr
-         RNFw==
-X-Gm-Message-State: AOAM533KXkRilctEWI3q41TPmj8YTvFhrxgpVHMVMUudpzJMU1bXUB6h
-        REIgVdarwV5vM37/RBGBdmuMFAPOIhDpQK0j
-X-Google-Smtp-Source: ABdhPJz2G4W8/09FQulizSxZSffq8RFw/WyNnPD/E6nEF9+KBGabmxW9VIK0Pbljn9oDZPUqGM9ayw==
-X-Received: by 2002:a5d:49cf:: with SMTP id t15mr9252884wrs.217.1612445773300;
-        Thu, 04 Feb 2021 05:36:13 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id c62sm6212065wmd.43.2021.02.04.05.36.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Feb 2021 05:36:12 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-fpga@vger.kernel.org
-Subject: [PATCH] fpga: xilinx-pr-decoupler: Simplify code by using dev_err_probe()
-Date:   Thu,  4 Feb 2021 14:36:11 +0100
-Message-Id: <666708105c25ae5fa7bb23b5eabd7d12fe9cb1b3.1612445770.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=i6/bNL7HF1iysG21qSzvFJ1UcbOS4/QnqxxVysWkLuU=;
+        b=XMM7paZ0uN0o2ttNnUJuwdJ3YYtGNyzO7B+XSCXJDtR2IFmm9cYJZzAcjIqUr7k+KO
+         fKFKiBGHZ/EzubcgT85ZKaI6lEUz1u0H2OpgghZTQbwKQDIWxQ271XxANSR7LdnAmVf4
+         vecDgHhOf+QALxJU+x35eizwBxhW5NlzUKCIT6Yp5JrF9sDIM9nV+L2oPjsbk/6lzIez
+         zBRdl7r0+ex0Rom3yKgVfnXais4rJSpw5VZDsNio5/e4meZWu3Nk5rR+kzHLjUedKTAE
+         pjH88m+3bJsVdyDNrgzL9izcMs2zHUGxViPSkybsc+RxU8xiP5T0/gJzO0DMHD9R1ebB
+         gG/w==
+X-Gm-Message-State: AOAM532R7Kz+RF8W2Vm/zpjzBEGRuyvajcCSfw59DkOjeaLEtFUA37LH
+        NOMBUtDo4fJSE9HtEtpJd4k=
+X-Google-Smtp-Source: ABdhPJxrbWdFxZJl51XjeEhG+ltbbvljSjn6Y67jLdF39+NBwKsnOYIziLPvuvmZgWQqU9l0kMiy2w==
+X-Received: by 2002:adf:f743:: with SMTP id z3mr9523620wrp.165.1612445807699;
+        Thu, 04 Feb 2021 05:36:47 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id 35sm8993637wrn.42.2021.02.04.05.36.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 05:36:46 -0800 (PST)
+Message-ID: <164d778019f68dd024cb42f869e7d967618514cb.camel@gmail.com>
+Subject: Re: [PATCH v3 1/7] gpio: gpio-ep93xx: fix BUG_ON port F usage
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     "nikita.shubin@maquefel.me" <nikita.shubin@maquefel.me>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 04 Feb 2021 14:36:45 +0100
+In-Reply-To: <28201612442592@mail.yandex.ru>
+References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
+         <20210128122123.25341-2-nikita.shubin@maquefel.me>
+         <CAHp75VfBb5+K9cSAzj9EBD+KtswkHSNMZWoCaU=bKvOO3fXRjw@mail.gmail.com>
+         <a0c121fdfb2893ec89425534387212524e4ff7cf.camel@gmail.com>
+         <28201612442592@mail.yandex.ru>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use already prepared dev_err_probe() introduced by commit a787e5400a1c
-("driver core: add device probe log helper").
-It simplifies EPROBE_DEFER handling.
+Hi Nikita,
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+On Thu, 2021-02-04 at 15:55 +0300, nikita.shubin@maquefel.me wrote:
+> I considered your offer of using array with holes.
+>  
+> It looks pretty ugly to me, couse it leads to bloated arrays:
+>  
+> static unsigned char gpio_int_unmasked[EP93XX_GPIO_CHIP_NUM];
+> static unsigned char gpio_int_enabled[EP93XX_GPIO_CHIP_NUM];
+> static unsigned char gpio_int_type1[EP93XX_GPIO_CHIP_NUM];
+> static unsigned char gpio_int_type2[EP93XX_GPIO_CHIP_NUM];
+> static unsigned char gpio_int_debounce[EP93XX_GPIO_CHIP_NUM];
+>  
+> /* Port ordering is: A B F */
+> static const u8 int_type1_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x90, 0xac, 0x0, 0x0, 0x0, 0x4c };
+> static const u8 int_type2_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x94, 0xb0, 0x0, 0x0, 0x0, 0x50 };
+> static const u8 eoi_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x98, 0xb4, 0x0, 0x0, 0x0, 0x54 };
+> static const u8 int_en_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0x9c, 0xb8, 0x0, 0x0, 0x0, 0x58 };
+> static const u8 int_debounce_register_offset[EP93XX_GPIO_CHIP_NUM]    = { 0xa8, 0xc4, 0x0, 0x0, 0x0, 0x64 };
+>  
+> Is this really the thing we want ?
 
- drivers/fpga/xilinx-pr-decoupler.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Even in this form it's less error-prone than to have two
+index-spaces, and hidden conversion from one numbering scheme
+to other.
 
-diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
-index 7d69af230567..b0eaf26af6e7 100644
---- a/drivers/fpga/xilinx-pr-decoupler.c
-+++ b/drivers/fpga/xilinx-pr-decoupler.c
-@@ -100,11 +100,9 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->io_base);
- 
- 	priv->clk = devm_clk_get(&pdev->dev, "aclk");
--	if (IS_ERR(priv->clk)) {
--		if (PTR_ERR(priv->clk) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "input clock not found\n");
--		return PTR_ERR(priv->clk);
--	}
-+	if (IS_ERR(priv->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(priv->clk),
-+				     "input clock not found\n");
- 
- 	err = clk_prepare_enable(priv->clk);
- 	if (err) {
+Alternatives that I see are:
+1.
+https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
+
+2.
+Embedd the necessary values into struct ep93xx_gpio_bank.
+This option can probably simplify the handling of the names
+for irq chips as well.
+ 
+> 28.01.2021, 19:19, "Alexander Sverdlin" <alexander.sverdlin@gmail.com>:
+> > Hello Nikita,
+> > 
+> > On Thu, 2021-01-28 at 18:11 +0200, Andy Shevchenko wrote:
+> > >  > +/*
+> > >  > + * F Port index in GPIOCHIP'S array is 5
+> > >  > + * but we use index 2 for stored values and offsets
+> > >  > + */
+> > >  > +#define EP93XX_GPIO_F_PORT_INDEX 5
+> > >  
+> > >  Hmm... Why not to use an array with holes instead.
+> > >  
+> > >  ...
+> > >  
+> > >  > +       if (port == EP93XX_GPIO_F_PORT_INDEX)
+> > >  > +               port = 2;
+> > >  
+> > >  Sorry, but I'm not in favour of this as it adds confusion.
+> > >  See above for the potential way to solve.
+> > 
+> > well, I was thinking the same yesterday. It just adds another
+> > level on confusion into the code, which even the author got
+> > wrong :)
+> > 
+> > Array with holes would be more obvious, but one can also embedd
+> > the necessary values into struct ep93xx_gpio_bank.
+> >  
+> > --
+> > Alexander Sverdlin.
+> > 
+> >  
+
 -- 
-2.30.0
+Alexander Sverdlin.
+
 
