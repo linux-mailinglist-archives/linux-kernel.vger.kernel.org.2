@@ -2,179 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C717330F1AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E74A30F1AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbhBDLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:10:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235460AbhBDLKe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:10:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612436947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S235619AbhBDLKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:10:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235462AbhBDLKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:10:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612436968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7n1Zx35K6Deya/aX+emtsNu6Y6NEAEqJ8jR2JgffGJA=;
-        b=dgd1rbKdYaNbdXD0CMxWyC5LbzSLp6HqVWbwOD0VQ9LbGPQsCiY88IZRPbhVAyWrj7qKKu
-        fBQum82p3Ff7nlHMrhI7xhfmc9I6KbKlZ6Bzp7Ext4/Y7RyjgfDFMgj8Y4JmRmk1EHXPGT
-        m837cZWsgi8Gq7mHjTW5WsiDx4GqdoQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-1Cn3eAHrOOS5GWWqtOfrig-1; Thu, 04 Feb 2021 06:09:05 -0500
-X-MC-Unique: 1Cn3eAHrOOS5GWWqtOfrig-1
-Received: by mail-ed1-f70.google.com with SMTP id w14so2609293edv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 03:09:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7n1Zx35K6Deya/aX+emtsNu6Y6NEAEqJ8jR2JgffGJA=;
-        b=YTUS0z0NBR2JOlVyi/23VQZbFT9EOFft00JYMh9VH2fYpk0W0Ew4bGdcMr9py7tmQn
-         Ru070etHlL5joT3ekCUJcGRp+ivGV1R1YS5PmU9XzjZFd5GH1YRXX+47SX/URLlhubNR
-         IeL8BgXX7cDEcxeLKSCGjRy1hthtaY0NMm48CzgGSwD9vD1ffURZxScw6ppfERDtaPh6
-         rk3WId8hF8FTHE1mU49OD6FHlbOgIx2JQPQAwIaOHM4hu7cwTFDQAqsQDctlk/Vx0hrj
-         0+yn9PVzzIcVVkLCOt8tl+LgrI6qMvAkr7e7v0svZxwoTzQZCDz1mf+KjuL/XRI+CE3t
-         +STw==
-X-Gm-Message-State: AOAM533j3McAhUbxZc5dzyAJMc//ZipHt8c2oDRD1qgxtY0rB4ahWZW/
-        E1+uOONay7kr7yscc/46dpHlGWMdPf9GTYptoIM6oHJCrD0J5a9+okB+FoVlVAOrrBXMzE1yUQs
-        jvOQwjeAYWN/UsHuxDBhoAFV+
-X-Received: by 2002:a50:eacd:: with SMTP id u13mr7277288edp.382.1612436944452;
-        Thu, 04 Feb 2021 03:09:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwGuuzsbw84IJLIU4lz2LAP6PzugOgBr0KFhBNcmyfRgNpmW6u6KnBMr6frXkyCEaJ8TAHcQA==
-X-Received: by 2002:a50:eacd:: with SMTP id u13mr7277258edp.382.1612436943892;
-        Thu, 04 Feb 2021 03:09:03 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id u23sm2287523edt.87.2021.02.04.03.09.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 03:09:03 -0800 (PST)
-Subject: Re: [PATCH v4 00/13] MFD/extcon/ASoC: Rework arizona codec
- jack-detect support
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-References: <20210123121313.79530-1-hdegoede@redhat.com>
- <20210204110539.GE2789116@dell>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3c996ea7-57dc-11ba-adc1-15fb7b97f107@redhat.com>
-Date:   Thu, 4 Feb 2021 12:09:02 +0100
+        bh=L38mQwxRm7OXz1bZGmxvDyR31jH2h3gLbIvIS9II5W8=;
+        b=KD9cRA413tks5HsHfBvnLwfhR8xvvv1jPn5ZWqAu0GVpAgHXvNyVTCk1A0VUALKpupdmNf
+        kwB2LTtNVZn0ICZWt9Vs7dZlm5zgN8RtS4iE1UBHt2Jsj7Eaf5sijLbTy2yzabIgx7JZo0
+        CW6ZJEQ/8UhtHyjBfNN25MbBBsmH9Ww=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DB6B5AC9B;
+        Thu,  4 Feb 2021 11:09:27 +0000 (UTC)
+Subject: Re: [PATCH] drivers: net: xen-netfront: Simplify the calculation of
+ variables
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        boris.ostrovsky@oracle.com
+Cc:     sstabellini@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <9598a7b4-a0f1-3f64-b239-50612cc5caae@suse.com>
+Date:   Thu, 4 Feb 2021 12:09:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210204110539.GE2789116@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp
+Content-Type: multipart/mixed; boundary="BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ boris.ostrovsky@oracle.com
+Cc: sstabellini@kernel.org, davem@davemloft.net, kuba@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+ songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+ xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <9598a7b4-a0f1-3f64-b239-50612cc5caae@suse.com>
+Subject: Re: [PATCH] drivers: net: xen-netfront: Simplify the calculation of
+ variables
+References: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 
-On 2/4/21 12:05 PM, Lee Jones wrote:
-> On Sat, 23 Jan 2021, Hans de Goede wrote:
-> 
->> Hi all,
->>
->> Here is v4 of my series to rework the arizona codec jack-detect support
->> to use the snd_soc_jack helpers instead of direct extcon reporting.
->>
->> This is done by reworking the extcon driver into an arizona-jackdet
->> library and then modifying the codec drivers to use that directly,
->> replacing the old separate extcon child-devices and extcon-driver.
->>
->> This brings the arizona-codec jack-detect handling inline with how
->> all other ASoC codec driver do this. This was developed and tested on
->> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
->>
->> There are various interdependencies between the patches in this
->> series, so IMHO it would be best if this entire series would be merged
->> through the MFD tree.
->>
->> Note this series applies on top of my "[PATCH v4 0/5] MFD/ASoC: Add
->> support for Intel Bay Trail boards with WM5102 codec" series.
->>
->> Changes in v4:
->> - Add sound/soc/codecs/arizona-jack.c to the WOLFSON MICROELECTRONICS DRIVERS
->>   MAINTAINERS section
->> - Small codying style tweaks to the "ASoC: arizona-jack: Cleanup logging" patch
->>
->> Changes in v3:
->> - Move the bugfix patches to earlier in the series so that they
->>   apply to drivers/extcon/extcon-arizona.c so that they can be
->>   cherry-picked into the stable series
->> - Split runtime_pm_get -> runtime_pm_get_sync changes out into their
->>   own patch
->> - Simply move drivers/extcon/extcon-arizona.c to
->>   sound/soc/codecs/arizona-jack.c instead of first adding arizona-jack.c
->>   as a copy and then later removing extcon-arizona.c
->> - Some other small tweaks, see individual patch changelogs
->>
->> Regards,
->>
->> Hans
->>
->>
->> Hans de Goede (13):
->>   mfd: arizona: Drop arizona-extcon cells
->>   extcon: arizona: Fix some issues when HPDET IRQ fires after the jack
->>     has been unplugged
->>   extcon: arizona: Fix various races on driver unbind
->>   extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol")
->>     call
->>   extcon: arizona: Always use pm_runtime_get_sync() when we need the
->>     device to be awake
->>   ASoC/extcon: arizona: Move arizona jack code to
->>     sound/soc/codecs/arizona-jack.c
->>   ASoC: arizona-jack: Move jack-detect variables to struct arizona_priv
->>   ASoC: arizona-jack: Use arizona->dev for runtime-pm
->>   ASoC: arizona-jack: convert into a helper library for codec drivers
->>   ASoC: arizona-jack: Use snd_soc_jack to report jack events
->>   ASoC: arizona-jack: Cleanup logging
->>   ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use
->>     the new jack library
-> 
->>   ASoC: Intel: bytcr_wm5102: Add jack detect support
-> 
-> Can't apply this patch ...
-> 
->>  MAINTAINERS                                   |   3 +-
->>  drivers/extcon/Kconfig                        |   8 -
->>  drivers/extcon/Makefile                       |   1 -
->>  drivers/mfd/arizona-core.c                    |  20 -
->>  sound/soc/codecs/Makefile                     |   2 +-
->>  .../soc/codecs/arizona-jack.c                 | 577 +++++++-----------
->>  sound/soc/codecs/arizona.h                    |  44 ++
->>  sound/soc/codecs/wm5102.c                     |  12 +-
->>  sound/soc/codecs/wm5110.c                     |  12 +-
->>  sound/soc/codecs/wm8997.c                     |  14 +-
->>  sound/soc/codecs/wm8998.c                     |   9 +
->>  sound/soc/intel/boards/bytcr_wm5102.c         |  28 +-
-> 
-> ... since this file doesn't exist?
+--BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8
+Content-Type: multipart/mixed;
+ boundary="------------5BC026031DA004FDEC7F39E2"
+Content-Language: en-US
 
-As mentioned this is a follow-up series on top of the:
+This is a multi-part message in MIME format.
+--------------5BC026031DA004FDEC7F39E2
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-"[PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec"
+On 02.02.21 11:17, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+>=20
+> ./drivers/net/xen-netfront.c:1816:52-54: WARNING !A || A && B is
+> equivalent to !A || B.
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Series, that series adds that file.
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-Regards,
 
-Hans
+Juergen
 
-p.s.
+--------------5BC026031DA004FDEC7F39E2
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-Do you want a resend of this one, with the new *-bys added too ?
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------5BC026031DA004FDEC7F39E2--
+
+--BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8--
+
+--P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAb1eYFAwAAAAAACgkQsN6d1ii/Ey+G
+swf7BiPLhOCdblIHtTfq8JmOqYP0/R82Hcc37LjlclTdT23Zl/WL2nbvw0cA+hQF5/6tJUytXifV
+B93gA0maGsZFbhNH8fo/vTZ2nQjpplhHdRaaLux+Rzmrof/is7H1eu/m4F/D2SOG7bYiS51hdHA/
+Q7ncG5p8rsjyPPLXKTksS+tNnMWMQ0k6a3DPIDzmJHt2cmxs9z5bIEDIc6l4F+AWhviYnJx+HXaW
+E5f576FZhnYCdMV5oIR9E+SfaVEU7Ps+qOAXZNLq3kxzZd2BVKYSxEahmV1+VPcmTaIZMIvgNLHS
+84/zTsja53kecocbbhSMnZEgAJ47Hqv4XqemBdm68g==
+=5Yma
+-----END PGP SIGNATURE-----
+
+--P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp--
