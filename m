@@ -2,196 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578C130FC19
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D8930FBDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239501AbhBDS7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239240AbhBDSlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:41:23 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D448C0613D6;
-        Thu,  4 Feb 2021 10:40:40 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 7D7F81F46467
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Linux API <linux-api@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: [PATCH RESEND] entry: Use different define for selector variable in SUD
-Date:   Thu,  4 Feb 2021 13:40:28 -0500
-Message-Id: <20210204184028.1516328-1-krisman@collabora.com>
-X-Mailer: git-send-email 2.30.0
+        id S239174AbhBDSpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:45:20 -0500
+Received: from mail-bn8nam11on2120.outbound.protection.outlook.com ([40.107.236.120]:41441
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239274AbhBDSlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:41:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V7Z5MkxyPiHgLgIC4PQAHvezCWW7sl3lAqvJRftfZZtamx+tgfTiNFfq90U4JivIhBn85ir1gIirZVevwujLyI2VuyLG9vyYiplDP/9gL0qjyApHTdqLIgaBudLBtRcEo+ZP4TZx+QxYXIKULDySsKR7muyvQelmABTa/ANouysebilEu5mWB3hwsOJE1h0DYNOLW/TOu5Ais034efuaDAuCj5n9bdwc3zCICUZCiglAz9qhwo42MdRfjuapms2iB+jZoiaFWahBbaUS9UVpdGomfeEklrTut6mOMSrXhu9B7JwyUt8eu4Ri2kKp1yE5MFVwjP4G6kMNeRSvMh32yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRXjisDPWgYI/0nBK3VGaCpcqkuMTYkPZTXg6S6cuy4=;
+ b=ffUB6ZpMo4+mem/QAYHnC1Wn4hbsTpBy1duft6BDxueBKH7TQbsPmA0h79wMSRPqurQbav6xyb9L5WIwFatnFaNVykcMFMH3+gAnfmsAj+Mr0XK5YVrFyAKOFk/TOj+/c1FF/snr3vSqKTPS7fmkCMvOgPB4GyMn7j/3mJRDxcLbY3i6P3t7Y6cpY/RPt2L/3PfWMZZG2wJI5lH+ovsMAm2dkyZ8Z0nWIeHEgkZHPpIADuCMY5fNFC5N8xFafzoT6B0wCKgi54ahi3fEmWzcNrZyhs4fCtdcbS9i6DVrEexp8woagBjK/TeEonsFU4wfAvxDJCaZjjRVSUsDH4oxUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRXjisDPWgYI/0nBK3VGaCpcqkuMTYkPZTXg6S6cuy4=;
+ b=f7BygmYTlyUvZldq72JuqJn9UZY64ahrdGdgyyN6rojdl/AZrflDFmAUTS6DGKenpPUvN3y/lSyRFrSn9zdbujIEkCTWw5dWrSRbCY67cAPHi24cpWr+EedF4wmzskdipspf9t5xP7Sh2JfRNTIlmfpnVtTq41HSJOhJaff8fCY=
+Received: from (2603:10b6:301:7c::11) by
+ MWHPR21MB0478.namprd21.prod.outlook.com (2603:10b6:300:ec::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.4; Thu, 4 Feb 2021 18:40:55 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3846.006; Thu, 4 Feb 2021
+ 18:40:55 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Wei Liu <wei.liu@kernel.org>
+CC:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH v6 15/16] x86/hyperv: implement an MSI domain for root
+ partition
+Thread-Topic: [PATCH v6 15/16] x86/hyperv: implement an MSI domain for root
+ partition
+Thread-Index: AQHW+j3xAalli8BY20CIoxf429V3G6pIPvGwgAAKwoCAAArKkA==
+Date:   Thu, 4 Feb 2021 18:40:55 +0000
+Message-ID: <MWHPR21MB15934AD184476EF14CF4C732D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210203150435.27941-1-wei.liu@kernel.org>
+ <20210203150435.27941-16-wei.liu@kernel.org>
+ <MWHPR21MB15932010E9CF5975EBAD1EDAD7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210204175641.pzonxqrqlo7uvvze@liuwe-devbox-debian-v2>
+In-Reply-To: <20210204175641.pzonxqrqlo7uvvze@liuwe-devbox-debian-v2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-04T18:40:53Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=bb9288e0-c62a-4f9b-96fb-f3b2506ec38f;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 28c569ea-82fa-4a45-8b09-08d8c93c67f6
+x-ms-traffictypediagnostic: MWHPR21MB0478:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB0478D422D7F7A7DC5A77060CD7B39@MWHPR21MB0478.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yYFnN/1gRLKhxrb1ZOYt14EWTeA3WEviQpXhvt/DgrAE5CLmZfsvoKhQdy6C2UzsMJFhPhoIxWvjfot+TKvwtHNUYKQvnV3+xCMvv0YZ2PB6oqF2kPrGdIHRb5qW9r/4bWhzWD9UUk3pvjIGSAAuH+a4eqIL4cL7eq/HSvJ/Q/1tAsP8lqMeetUr7XSxLy9ZSK2Velf8Q9jraPElqMG2L/xpAhz788ih9+yiitPpuoWrNU0jugesK+LXjTWaJYOnxFChGdJLxvw/6DDmuHZbg86MIhRbPaMklUfD9GBXfbMuvVcVeWa1KOp93AdDHdjI8p5oZO3oukbPWGgWjcFogLIR0CFFJHW2tqvBmtiTFW09G3ZJYOW6mUtlQ8dkMXxZ8cj920tOpZNJZgWqFyXMrz9qtAVOBvpXzmgSu13eBD7aFuPp7oyUBPlYis4BsTY4bvpoijFatfTSxDz7/DfKk9QUhn4zt7rp8n6dXTD+56S2lYpYtwxt8o57mtJWDadix5WQct2GIIIu/9tWzCbhLw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(478600001)(4326008)(86362001)(8990500004)(9686003)(6506007)(316002)(54906003)(8936002)(8676002)(55016002)(33656002)(26005)(7416002)(83380400001)(76116006)(66946007)(66556008)(10290500003)(52536014)(64756008)(66446008)(2906002)(7696005)(5660300002)(186003)(82950400001)(82960400001)(71200400001)(6916009)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?z8rrbrErdDL6OVKbZ5npQkta6XJ+mDOF2m8XfLCqN4AwLn83qRm65ScoqHF3?=
+ =?us-ascii?Q?p5PO8Knw+s981MowU9w6z8uDwA0PXxiFO/zlts48TtHi0iZxyR81vZlBiQOH?=
+ =?us-ascii?Q?deKc8Box2POoVYH6qvccX+MOR/oyFhcn+FpeYOjkAwj+4NMKwuRZvGCi5yyb?=
+ =?us-ascii?Q?FgjoXYjGv57motau7omJGdOlobcYxFOBsnjxsFXXa8VOiWuKjZjjlDFxKxwu?=
+ =?us-ascii?Q?clnAjhUnc+n2W3PdCkN+eUjup4hZJx80eWKE168paoKHpA7YU9oBEmji+pws?=
+ =?us-ascii?Q?4S0b2Ep/Mi2msSfC1270t3heaTNQL1bOVPwm+cFzEQZy3GtX4IWH+s8EiEQR?=
+ =?us-ascii?Q?3vhk1QoWo/pNZRhHBRgijAHc5uV1OLjtXb3UHRpsFX3S0wRk7+nXOKNmOaEz?=
+ =?us-ascii?Q?OL7m3GoPvcM9vPn2Gj3s6sx1WjTe4irY/+2s22l+ZMtPSqZur8GPDf4rsAKv?=
+ =?us-ascii?Q?LkBFjtJgYGFcxt+OyxXuNZii9g58GSzEoTT/WevzkhffB5E6TMZoTu6J76PY?=
+ =?us-ascii?Q?mmgeAIX8O7CPH/rjTsJoMzZa/GHHEpz6MJW6IDhkCyLQxC/hvv073/0cD2I5?=
+ =?us-ascii?Q?zG8fgeFZdEKj53n8/IadcZu15G7+28vE5NNTzk+9eoAPIitbCKeXlWirGW8v?=
+ =?us-ascii?Q?aIXfTZf/Cf1p1wvhARUODcvXN9s5w9eFnebPQARfUXOyFnhg+NPrpIWNK+dn?=
+ =?us-ascii?Q?xxmyvgb40oVPHwA0mRiucvphAGFz14e5vej67vR5qRZS8QZ61U+xqv9jxvIy?=
+ =?us-ascii?Q?w0+4sNLXDKykqm3CawuFDaVvtoQpSMChff0QJvATMS3pKh2Fj8Z3ETFt6yc2?=
+ =?us-ascii?Q?26X/19LUV8BqtKL1Jm69lnubB0kQHu2sguUImUS4f6pE0/aaQg7tjeffDfe2?=
+ =?us-ascii?Q?omQ9qkUE6dd3TWHQ7A//7Qtz4R4UudcO27LiWh4iauvdlRVUSl0K7EIxUfKX?=
+ =?us-ascii?Q?7wTlmZNbMEKUQ2wMcANW3LBsTs+c3P49e97xnRglSSiPqLNsy9s6PP7cyg3Y?=
+ =?us-ascii?Q?xHiOpoS4Q/ok4Nb5k+jsKdGl0uk4qY/5d5yZhPXP8e0qzlxgZklCOz4XNNIP?=
+ =?us-ascii?Q?vbEWDkInFMlDAOTcfSdqXSVXYqz6XyuWkO2nTIuM6TSXE29xGLC9MLsLtpK6?=
+ =?us-ascii?Q?DW1krd8QABypgEX/zApmoXo49eGZUAWcOVnGVQkxKCmB/N3sJ3/B5Hgudn8d?=
+ =?us-ascii?Q?5n0uWA4H197xsDiuz0z/lBPhTNK1qWMeHBg2f2ZRg3FDX5iQDQtwDwMcrd9X?=
+ =?us-ascii?Q?EpgJ/L0aIgumRx9mhCLOHVvV9x3QwbjzTfLVi9IB/WGdfcAs25h1FF8Qh8/e?=
+ =?us-ascii?Q?MljeYn3r0zuf2WIJ9lJKBPUk?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28c569ea-82fa-4a45-8b09-08d8c93c67f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 18:40:55.0977
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qUvRdhEByQcKAvDJCY5XZTigqhpjZ0xjmC6haqfx2fWKMTVp73vrOw1vFlFaXXYvnqbqHrNa3oj7YqhSBbmWrV9VjBKasRBU5dclz1bShGw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0478
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Kerrisk suggested that, from an API perspective, it is a bad
-idea to share the PR_SYS_DISPATCH_ defines between the prctl operation
-and the selector variable.  Therefore, define two new constants to be
-used by SUD's selector variable, and the corresponding documentation.
+From: Wei Liu <wei.liu@kernel.org> Sent: Thursday, February 4, 2021 9:57 AM
+>=20
+> On Thu, Feb 04, 2021 at 05:43:16PM +0000, Michael Kelley wrote:
+> [...]
+> > >  remove_cpuhp_state:
+> > > diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.=
+c
+> > > new file mode 100644
+> > > index 000000000000..117f17e8c88a
+> > > --- /dev/null
+> > > +++ b/arch/x86/hyperv/irqdomain.c
+> > > @@ -0,0 +1,362 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +/*
+> > > + * for Linux to run as the root partition on Microsoft Hypervisor.
+> >
+> > Nit:  Looks like the initial word "Irqdomain" got dropped from the abov=
+e
+> > comment line.  But don't respin just for this.
+> >
+>=20
+> I've added it back. Thanks.
+>=20
+> > > +static int hv_map_interrupt(union hv_device_id device_id, bool level=
+,
+> > > +		int cpu, int vector, struct hv_interrupt_entry *entry)
+> > > +{
+> > > +	struct hv_input_map_device_interrupt *input;
+> > > +	struct hv_output_map_device_interrupt *output;
+> > > +	struct hv_device_interrupt_descriptor *intr_desc;
+> > > +	unsigned long flags;
+> > > +	u64 status;
+> > > +	cpumask_t mask =3D CPU_MASK_NONE;
+> > > +	int nr_bank, var_size;
+> > > +
+> > > +	local_irq_save(flags);
+> > > +
+> > > +	input =3D *this_cpu_ptr(hyperv_pcpu_input_arg);
+> > > +	output =3D *this_cpu_ptr(hyperv_pcpu_output_arg);
+> > > +
+> > > +	intr_desc =3D &input->interrupt_descriptor;
+> > > +	memset(input, 0, sizeof(*input));
+> > > +	input->partition_id =3D hv_current_partition_id;
+> > > +	input->device_id =3D device_id.as_uint64;
+> > > +	intr_desc->interrupt_type =3D HV_X64_INTERRUPT_TYPE_FIXED;
+> > > +	intr_desc->vector_count =3D 1;
+> > > +	intr_desc->target.vector =3D vector;
+> > > +
+> > > +	if (level)
+> > > +		intr_desc->trigger_mode =3D HV_INTERRUPT_TRIGGER_MODE_LEVEL;
+> > > +	else
+> > > +		intr_desc->trigger_mode =3D HV_INTERRUPT_TRIGGER_MODE_EDGE;
+> > > +
+> > > +	cpumask_set_cpu(cpu, &mask);
+> > > +	intr_desc->target.vp_set.valid_bank_mask =3D 0;
+> > > +	intr_desc->target.vp_set.format =3D HV_GENERIC_SET_SPARSE_4K;
+> > > +	nr_bank =3D cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
+> >
+> > There's a function get_cpu_mask() that returns a pointer to a cpumask w=
+ith only
+> > the specified cpu set in the mask.  It returns a const pointer to the c=
+orrect entry
+> > in a pre-allocated array of all such cpumasks, so it's a lot more effic=
+ient than
+> > allocating and initializing a local cpumask instance on the stack.
+> >
+>=20
+> That's nice.
+>=20
+> I've got the following diff to fix both issues. If you're happy with the
+> changes, can you give your Reviewed-by? That saves a round of posting.
+>=20
+> diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
+> index 0cabc9aece38..fa71db798465 100644
+> --- a/arch/x86/hyperv/irqdomain.c
+> +++ b/arch/x86/hyperv/irqdomain.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>=20
+>  /*
+> - * for Linux to run as the root partition on Microsoft Hypervisor.
+> + * Irqdomain for Linux to run as the root partition on Microsoft Hypervi=
+sor.
+>   *
+>   * Authors:
+>   *  Sunil Muthuswamy <sunilmut@microsoft.com>
+> @@ -20,7 +20,7 @@ static int hv_map_interrupt(union hv_device_id device_i=
+d, bool level,
+>         struct hv_device_interrupt_descriptor *intr_desc;
+>         unsigned long flags;
+>         u64 status;
+> -       cpumask_t mask =3D CPU_MASK_NONE;
+> +       const cpumask_t *mask;
+>         int nr_bank, var_size;
+>=20
+>         local_irq_save(flags);
+> @@ -41,10 +41,10 @@ static int hv_map_interrupt(union hv_device_id device=
+_id, bool
+> level,
+>         else
+>                 intr_desc->trigger_mode =3D HV_INTERRUPT_TRIGGER_MODE_EDG=
+E;
+>=20
+> -       cpumask_set_cpu(cpu, &mask);
+> +       mask =3D cpumask_of(cpu);
+>         intr_desc->target.vp_set.valid_bank_mask =3D 0;
+>         intr_desc->target.vp_set.format =3D HV_GENERIC_SET_SPARSE_4K;
+> -       nr_bank =3D cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
+> +       nr_bank =3D cpumask_to_vpset(&(intr_desc->target.vp_set), mask);
 
-While this changes the API, it is backward compatible, as the values
-remained the same and the old defines are still in place.  In addition,
-SUD has never been part of a Linux release, it will show up for the
-first time in 5.11.
+Can you just do the following and get rid of the 'mask' local entirely?
 
-Cc: Linux API <linux-api@vger.kernel.org>
-Suggested-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- .../admin-guide/syscall-user-dispatch.rst          |  4 ++--
- include/uapi/linux/prctl.h                         |  2 ++
- kernel/entry/syscall_user_dispatch.c               |  4 ++--
- .../syscall_user_dispatch/sud_benchmark.c          |  8 +++++---
- .../selftests/syscall_user_dispatch/sud_test.c     | 14 ++++++++------
- 5 files changed, 19 insertions(+), 13 deletions(-)
+nr_bank =3D cpumask_to_vpset(&(intr_desc->target.vp_set), cpumask_of(cpu));
 
-diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
-index a380d6515774..fc13112e36e3 100644
---- a/Documentation/admin-guide/syscall-user-dispatch.rst
-+++ b/Documentation/admin-guide/syscall-user-dispatch.rst
-@@ -70,8 +70,8 @@ trampoline code on the vDSO, that trampoline is never intercepted.
- [selector] is a pointer to a char-sized region in the process memory
- region, that provides a quick way to enable disable syscall redirection
- thread-wide, without the need to invoke the kernel directly.  selector
--can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
--value should terminate the program with a SIGSYS.
-+can be set to PR_SYS_DISPATCH_FILTER_ALLOW or PR_SYS_DISPATCH_FILTER_BLOCK.
-+Any other value should terminate the program with a SIGSYS.
- 
- Security Notes
- --------------
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 90deb41c8a34..a66c9fe41249 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -251,5 +251,7 @@ struct prctl_mm_map {
- #define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF		0
- # define PR_SYS_DISPATCH_ON		1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- 
- #endif /* _LINUX_PRCTL_H */
-diff --git a/kernel/entry/syscall_user_dispatch.c b/kernel/entry/syscall_user_dispatch.c
-index b0338a5625d9..265c33b26dcf 100644
---- a/kernel/entry/syscall_user_dispatch.c
-+++ b/kernel/entry/syscall_user_dispatch.c
-@@ -50,10 +50,10 @@ bool syscall_user_dispatch(struct pt_regs *regs)
- 		if (unlikely(__get_user(state, sd->selector)))
- 			do_exit(SIGSEGV);
- 
--		if (likely(state == PR_SYS_DISPATCH_OFF))
-+		if (likely(state == PR_SYS_DISPATCH_FILTER_ALLOW))
- 			return false;
- 
--		if (state != PR_SYS_DISPATCH_ON)
-+		if (state != PR_SYS_DISPATCH_FILTER_BLOCK)
- 			do_exit(SIGSYS);
- 	}
- 
-diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-index 6689f1183dbf..7617bd9ba6e1 100644
---- a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-+++ b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
-@@ -22,6 +22,8 @@
- # define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF	0
- # define PR_SYS_DISPATCH_ON	1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- #endif
- 
- #ifdef __NR_syscalls
-@@ -55,8 +57,8 @@ unsigned long trapped_call_count = 0;
- unsigned long native_call_count = 0;
- 
- char selector;
--#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_ON)
--#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_OFF)
-+#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_FILTER_BLOCK)
-+#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_FILTER_ALLOW)
- 
- #define CALIBRATION_STEP 100000
- #define CALIBRATE_TO_SECS 5
-@@ -170,7 +172,7 @@ int main(void)
- 	syscall(MAGIC_SYSCALL_1);
- 
- #ifdef TEST_BLOCKED_RETURN
--	if (selector == PR_SYS_DISPATCH_OFF) {
-+	if (selector == PR_SYS_DISPATCH_FILTER_ALLOW) {
- 		fprintf(stderr, "Failed to return with selector blocked.\n");
- 		exit(-1);
- 	}
-diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-index 6498b050ef89..21e1550db118 100644
---- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-+++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-@@ -18,6 +18,8 @@
- # define PR_SET_SYSCALL_USER_DISPATCH	59
- # define PR_SYS_DISPATCH_OFF	0
- # define PR_SYS_DISPATCH_ON	1
-+# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-+# define PR_SYS_DISPATCH_FILTER_BLOCK	1
- #endif
- 
- #ifndef SYS_USER_DISPATCH
-@@ -30,8 +32,8 @@
- # define MAGIC_SYSCALL_1 (0xff00)  /* Bad Linux syscall number */
- #endif
- 
--#define SYSCALL_DISPATCH_ON(x) ((x) = 1)
--#define SYSCALL_DISPATCH_OFF(x) ((x) = 0)
-+#define SYSCALL_DISPATCH_ON(x) ((x) = PR_SYS_DISPATCH_FILTER_BLOCK)
-+#define SYSCALL_DISPATCH_OFF(x) ((x) = PR_SYS_DISPATCH_FILTER_ALLOW)
- 
- /* Test Summary:
-  *
-@@ -56,7 +58,7 @@
- 
- TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
- {
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	struct sysinfo info;
- 	int ret;
- 
-@@ -79,7 +81,7 @@ TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
- 
- TEST(bad_prctl_param)
- {
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	int op;
- 
- 	/* Invalid op */
-@@ -220,7 +222,7 @@ TEST_SIGNAL(bad_selector, SIGSYS)
- 	sigset_t mask;
- 	struct sysinfo info;
- 
--	glob_sel = 0;
-+	glob_sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 	nr_syscalls_emulated = 0;
- 	si_code = 0;
- 	si_errno = 0;
-@@ -288,7 +290,7 @@ TEST(direct_dispatch_range)
- {
- 	int ret = 0;
- 	struct sysinfo info;
--	char sel = 0;
-+	char sel = PR_SYS_DISPATCH_FILTER_ALLOW;
- 
- 	/*
- 	 * Instead of calculating libc addresses; allow the entire
--- 
-2.30.0
+Either way,
 
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+
+>         if (nr_bank < 0) {
+>                 local_irq_restore(flags);
+>                 pr_err("%s: unable to generate VP set\n", __func__);
