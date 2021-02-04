@@ -2,214 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B3C30E91D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF3C30E921
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhBDBDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:03:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233575AbhBDBDc (ORCPT
+        id S233851AbhBDBHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:07:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233860AbhBDBHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:03:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612400525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZAkXTLCQatITvM0DWGh6kbF0oAf7mL4HuXS0UNtLhwE=;
-        b=NiU+0emwcXPYLWUe/PZUq4Bm2SxEeL+YJH1O2iyOVfTMoqvZyB6YKHqWPXAXt1w4K2k4Cs
-        Pzu05ss3E7Yc7ClhfhttllrdfOmOjyW0zbxaf3ibReR8LMIH3Ln1/OQ8bqig6tYHX7AAsH
-        fZ5nm8NmxPL0KeSG1TKxzngtewBIdyk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-1k45HRQEPvWzPMc1PSl6Hg-1; Wed, 03 Feb 2021 20:02:04 -0500
-X-MC-Unique: 1k45HRQEPvWzPMc1PSl6Hg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 666E515725;
-        Thu,  4 Feb 2021 01:02:01 +0000 (UTC)
-Received: from rtux.redhat.com (unknown [10.33.36.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA040779DB;
-        Thu,  4 Feb 2021 01:01:57 +0000 (UTC)
-From:   Alexey Klimov <aklimov@redhat.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     peterz@infradead.org, yury.norov@gmail.com,
-        daniel.m.jordan@oracle.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu onlining
-Date:   Thu,  4 Feb 2021 01:01:57 +0000
-Message-Id: <20210204010157.1823669-1-aklimov@redhat.com>
+        Wed, 3 Feb 2021 20:07:40 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D95FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 17:07:00 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id n201so1426685iod.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 17:07:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgG8Hwt3SxrrGY2glvsXSBuEtqHY0gWizrBC8qUvw4s=;
+        b=D1pTorP4NprD0zWgkamOJfsGSCSkxnvm31BrzhpMlqbViV+4DDU9FL8W9UQt3bdOR7
+         KiQvr+MFwzkcYS9kqf9RoB8QlEHq6PdgxYv7r+HYot9Tz2LWutxOO6ub4pIE9pWitBg9
+         sVp8QqKP+4QKs0RuVoNGtkZVwai+UQu7UW55YdNtwxupxRYTgAzLZJsKcCsVq4QhPTYR
+         yRXgE1xutsru6N2nUJxUy3T1l7YiP/rXjUNsRxYlib8Tvy/S52qm/KGzacllErHf+4zt
+         TEdzSTn0f6cRKEHEmEztcLnpy6vPHrr8EeXrAx176Y0pd/A1tiokhPgXv87Zya1l+/ha
+         hdgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgG8Hwt3SxrrGY2glvsXSBuEtqHY0gWizrBC8qUvw4s=;
+        b=YQnz827jyv7als/50vBxsyb24s7z5gnO1lRmVCuJ7MN0mOw0jvmrWBIuYrPA1b0r/m
+         kKgYer8HZqhgzWLqKxQtHvJuoVzpH2J+oyl1ikCggYsMZThkZonJWRN3kzVo1H8kTkhR
+         dDQ1l6pMb1TyK3t9rVYytEX8ggCvHKjijPMZe3NbQ7zwaezfCXlV8DKEyw4zYiAK7ShL
+         VNGZPBOK0mYcHAIE+23SgFiRHuxEHhdXyW4POkfNuiVPYaUvfs//jVakuSO0aL0GmZjS
+         25kvizODOvjf2MPVJGlgiEOPhIK5G5zqxgTt+HDBjIopeLftOUffaLU/48R+aE6W2Bmb
+         M4og==
+X-Gm-Message-State: AOAM530lyGrsGpaU/e40wuqyqK3/aVFYGFc4eEQZni4Ye/7CLJzLIldh
+        8ln34ita2VvETck2mXAdt1E1RwSw8/Gq7Q==
+X-Google-Smtp-Source: ABdhPJxKmk71GPIYpaPKqRrvRpuGe1xO+J77RRLMh3ShL3srd/V74hqtyMo4vsgjpA7QsMaB7qke6w==
+X-Received: by 2002:a05:6602:1223:: with SMTP id z3mr4786869iot.130.1612400820029;
+        Wed, 03 Feb 2021 17:07:00 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id y16sm1813495ilm.7.2021.02.03.17.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 17:06:59 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     dan.carpenter@oracle.com, elder@kernel.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] net: ipa: set error code in gsi_channel_setup()
+Date:   Wed,  3 Feb 2021 19:06:55 -0600
+Message-Id: <20210204010655.15619-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU offlined and onlined via device_offline() and device_online()
-the userspace gets uevent notification. If, after receiving "online" uevent,
-userspace executes sched_setaffinity() on some task trying to move it
-to a recently onlined CPU, then it often fails with -EINVAL. Userspace needs
-to wait around 5..30 ms before sched_setaffinity() will succeed for the recently
-onlined CPU after receiving uevent.
+In gsi_channel_setup(), we check to see if the configuration data
+contains any information about channels that are not supported by
+the hardware.  If one is found, we abort the setup process, but
+the error code (ret) is not set in this case.  Fix this bug.
 
-If in_mask argument for sched_setaffinity() has only recently onlined CPU,
-it often fails with such flow:
-
-  sched_setaffinity()
-    cpuset_cpus_allowed()
-      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
-                                        contain recently onlined cpu
-    cpumask_and()               <-- final new_mask is empty
-    __set_cpus_allowed_ptr()
-      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
-      returns -EINVAL
-
-Cpusets used in guarantee_online_cpus() are updated using workqueue from
-cpuset_update_active_cpus() which in its turn is called from cpu hotplug callback
-sched_cpu_activate() hence it may not be observable by sched_setaffinity() if
-it is called immediately after uevent.
-Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
-has run to completion using cpuset_wait_for_hotplug() after onlining the
-cpu in cpu_up() and in cpuhp_smt_enable().
-
-Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
-Signed-off-by: Alexey Klimov <aklimov@redhat.com>
+Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
+v2: Added "Fixes" tag.
 
-Previous RFC patch and discussion is here:
-https://lore.kernel.org/lkml/20201203171431.256675-1-aklimov@redhat.com/
+ drivers/net/ipa/gsi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The commit a49e4629b5ed "cpuset: Make cpuset hotplug synchronous"
-would also get rid of the early uevent but it was reverted (deadlocks).
-
-The nature of this bug is also described here (with different consequences):
-https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
-
-Reproducer: https://gitlab.com/0xeafffffe/xlam
-
-Currently with such changes the reproducer code continues to work without issues.
-The idea is to avoid the situation when userspace receives the event about
-onlined CPU which is not ready to take tasks for a while after uevent.
-
-
- kernel/cpu.c | 47 +++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 41 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 4e11e91010e1..ea728e75a74d 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -15,6 +15,7 @@
- #include <linux/sched/smt.h>
- #include <linux/unistd.h>
- #include <linux/cpu.h>
-+#include <linux/cpuset.h>
- #include <linux/oom.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-@@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- 	err = _cpu_up(cpu, 0, target);
- out:
- 	cpu_maps_update_done();
-+
-+	/* To avoid out of line uevent */
-+	if (!err)
-+		cpuset_wait_for_hotplug();
-+
- 	return err;
- }
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 34e5f2155d620..b77f5fef7aeca 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1710,6 +1710,7 @@ static int gsi_channel_setup(struct gsi *gsi)
+ 		if (!channel->gsi)
+ 			continue;	/* Ignore uninitialized channels */
  
-@@ -2062,8 +2068,6 @@ static void cpuhp_offline_cpu_device(unsigned int cpu)
- 	struct device *dev = get_cpu_device(cpu);
- 
- 	dev->offline = true;
--	/* Tell user space about the state change */
--	kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
- }
- 
- static void cpuhp_online_cpu_device(unsigned int cpu)
-@@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
- 	struct device *dev = get_cpu_device(cpu);
- 
- 	dev->offline = false;
--	/* Tell user space about the state change */
--	kobject_uevent(&dev->kobj, KOBJ_ONLINE);
- }
- 
- int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- {
--	int cpu, ret = 0;
-+	struct device *dev;
-+	cpumask_var_t mask;
-+	int cpu, ret;
-+
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+                return -ENOMEM;
- 
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	for_each_online_cpu(cpu) {
- 		if (topology_is_primary_thread(cpu))
-@@ -2100,17 +2108,32 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- 		 * serialized against the regular offline usage.
- 		 */
- 		cpuhp_offline_cpu_device(cpu);
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	if (!ret)
- 		cpu_smt_control = ctrlval;
- 	cpu_maps_update_done();
-+
-+	/* Tell user space about the state changes */
-+	for_each_cpu(cpu, mask) {
-+		dev = get_cpu_device(cpu);
-+		kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
-+	}
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- 
- int cpuhp_smt_enable(void)
- {
--	int cpu, ret = 0;
-+	struct device *dev;
-+	cpumask_var_t mask;
-+	int cpu, ret;
- 
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+                return -ENOMEM;
-+
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	cpu_smt_control = CPU_SMT_ENABLED;
- 	for_each_present_cpu(cpu) {
-@@ -2122,8 +2145,20 @@ int cpuhp_smt_enable(void)
- 			break;
- 		/* See comment in cpuhp_smt_disable() */
- 		cpuhp_online_cpu_device(cpu);
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	cpu_maps_update_done();
-+
-+	/* To avoid out of line uevents */
-+	cpuset_wait_for_hotplug();
-+
-+	/* Tell user space about the state changes */
-+	for_each_cpu(cpu, mask) {
-+		dev = get_cpu_device(cpu);
-+		kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-+	}
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- #endif
++		ret = -EINVAL;
+ 		dev_err(gsi->dev, "channel %u not supported by hardware\n",
+ 			channel_id - 1);
+ 		channel_id = gsi->channel_count;
 -- 
-2.30.0
+2.20.1
 
