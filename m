@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0F630FCEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57F430FCD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236970AbhBDTcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:32:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236851AbhBDOw2 (ORCPT
+        id S239833AbhBDTa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:30:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44923 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236945AbhBDOyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:52:28 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC98C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:51:47 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id z6so3797842wrq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:51:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=1tKBbIR4fWGNy/DkjznXmDcn30clccCwDDnQOymnr5o=;
-        b=lowTAP/p6H/c5T3jDMEClUYbkbotY60JVGaI4ih0IGq5VPn6yxxxQO+B62cZoMjiBl
-         cv/HDKI2E4eQfXZsqaWD0iNTxO5wWBOFmgzWpR4FnZPir1hrncJjB9P9uhcEv0ivfiRW
-         cf4FN7n9dg7Vf2Xqg8s0qYBUQ/sUA8eDK1T5wMLsORUsSMzp3kJWoHIbB/xKm87/bAKp
-         zkiQW9MlF3ZXAlZC9sQ055QtC0X1wQOakhzbCjPsb1HlrIGtHjy2hZMmcien12IC7Ki3
-         rgUA+6vlbS6ErQXr1G1k6rdFvivBJtX4PnduA9sm6C816RnKiKEspYSq3F/3Zp5k8lwM
-         9b8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=1tKBbIR4fWGNy/DkjznXmDcn30clccCwDDnQOymnr5o=;
-        b=PHFTrwVQSDXlznVAPihUjvcce4X/u0St4LAVIGklhZI5SHrEhAiIWpwwrou/5pT0DG
-         6bFwPxHF0UHyUiUrD2m6MsiKrB+N+5Quw3AMGtjdblwpHEoiSnFFIl7QGuleutQCW9qQ
-         LkwGIntc+VGF0gXWyb760wXekgwgacNd5TiQXt1cYxdhAJwMz/XWtrkVWEA65LNWZlqv
-         s2p+NTFfb8VbFTVpEd75J0raPdLxvMCktRHkpqecEX447gMGHDDBlxT8nV7GwtpWL5Lx
-         y634LUrfsu9ZjXTInsQRc6InKQz1B6r1XPQdogvg2fquK4X4TY9tFVRcgcWEjIbt9L3y
-         utSA==
-X-Gm-Message-State: AOAM533SglWCzmGAzQnKok8DbV/ZQiA5fCfAjHS2psCX8ZWQs4Lw/U65
-        EKvIWduiZK/gKxNuC0Lj7Ew=
-X-Google-Smtp-Source: ABdhPJyVuSUWI6KjAL+pvJkLiegbo19gHvRJIW+dOyxIj8aGroNo8CIzFM4Hx8Sei42qQMHh5e61Vw==
-X-Received: by 2002:a5d:538b:: with SMTP id d11mr10047459wrv.334.1612450306719;
-        Thu, 04 Feb 2021 06:51:46 -0800 (PST)
-Received: from LEGION ([27.255.58.138])
-        by smtp.gmail.com with ESMTPSA id n187sm6323450wmf.29.2021.02.04.06.51.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 06:51:45 -0800 (PST)
-Message-ID: <3d1f36ebd3b59788a586e55bcaaad9705ecca4be.camel@gmail.com>
-Subject: Re: [PATCH] staging: rtl8192e, rtl8192u: use correct notation to
- define pointer
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Thu, 04 Feb 2021 19:51:42 +0500
-In-Reply-To: <20201028044232.qtzsnrrh7xgdzsoc@ltop.local>
-References: <20201026121435.GA782465@LEGION>
-         <20201027112303.GA405023@kroah.com>
-         <20201028044232.qtzsnrrh7xgdzsoc@ltop.local>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 4 Feb 2021 09:54:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612450353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAESHwW0WdZS/OpPzSsfCxam/5nXUCVRWHrWA65Cmj0=;
+        b=bL9Azq2HJHfhyV2q98GSbHLzRJnTEA3Slp+6tjYLJMzyl0NXkJKq1oEmDW/i1LrdpR2xVW
+        6ed4pYvzaET5NE4Doxw5ow3qWUqkVRHIHsB/L7p3Ai9XRoa0QfvnVvlqm5/m6HrqMwpuz6
+        Kr/aems5TEX+3reMVkYzOE74t2FQuSY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-EBK9w85QO6SBYoI8R0sZ5Q-1; Thu, 04 Feb 2021 09:52:31 -0500
+X-MC-Unique: EBK9w85QO6SBYoI8R0sZ5Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41653100C615;
+        Thu,  4 Feb 2021 14:52:29 +0000 (UTC)
+Received: from krava (unknown [10.40.194.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BD78C19708;
+        Thu,  4 Feb 2021 14:52:26 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 15:52:25 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 08/24] perf daemon: Add background support
+Message-ID: <YBwKKVRN1M8glFyN@krava>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-9-jolsa@kernel.org>
+ <20210203211611.GU854763@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203211611.GU854763@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sparse's warning is not about changing the definition of this member
-> as if it was the argument of a function. It's about how can you use
-> an array of structure when this structure has a flexible member.
+On Wed, Feb 03, 2021 at 06:16:11PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Jan 31, 2021 at 12:48:40AM +0100, Jiri Olsa escreveu:
+> > Adding support to put daemon process in the background.
+> > 
+> > It's now enabled by default and -f option is added to
+> > keep daemon process on the console for debugging.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/builtin-daemon.c | 66 +++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 63 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> > index d0a0a998e073..324666058842 100644
+> > --- a/tools/perf/builtin-daemon.c
+> > +++ b/tools/perf/builtin-daemon.c
+> > @@ -488,6 +488,13 @@ static void daemon__kill(struct daemon *daemon)
+> >  	daemon__signal(daemon, SIGTERM);
+> >  }
+> >  
+> > +static void __daemon__free(struct daemon *daemon)
+> > +{
+> > +	free(daemon->config_real);
+> > +	free(daemon->config_base);
+> > +	free(daemon->base);
+> > +}
+> 
+> Please use zfree(), and also please rename it to __daemon__delete(), in
+> other cases this pattern would be daemon__exit(), as the daemon
+> structure itself is not being freed, just its members, ditto for
+> foo__new() calling foo__init().
 
-We have the following structures in drivers/staging/rtl8192e. (I've
-simplified them for showing here.)
+ok, will change
 
-struct rtllib_hdr_3addr {
-	int a;	
-	int payload[];
-};
+SNIP
 
-struct rtllib_info_element {
-	int len;
-	int data[];
-};
+> >  static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+> >  		       int argc, const char **argv)
+> >  {
+> > +	bool foreground = false;
+> >  	struct option start_options[] = {
+> > +		OPT_BOOLEAN('f', "foreground", &foreground, "stay on console"),
+> 
+> 
+> You forgot to add the entry to the man page
 
-struct rtllib_probe_request {
-	struct rtllib_hdr_3addr header;
-	struct rtllib_info_element info_element[];
-};
+it's in the man page patch later in the patchset
 
-static void func(struct rtllib_probe_request *ptr) {
-	ptr->header.a = 1;
-}
+thanks,
+jirka
 
-Running sparse gives: 
-sparse -Wflexible-array-array flexible_array.c
-flexible_array.c:13:48: warning: array of flexible structures
-
-There are several such structures in rtl8192e and rtl8192u. I've been
-trying to fix one of them. But it seems like more knowledge is
-required to refactor the driver.
-
-Thanks,
-Usama
-
-
+> 
+> >  		OPT_PARENT(parent_options),
+> >  		OPT_END()
+> >  	};
+> > @@ -667,6 +716,17 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+> >  	if (setup_server_config(daemon))
+> >  		return -1;
+> >  
+> > +	if (!foreground) {
+> > +		err = go_background(daemon);
+> > +		if (err) {
+> > +			/* original process, exit normally */
+> > +			if (err == 1)
+> > +				err = 0;
+> > +			__daemon__free(daemon);
+> > +			return err;
+> > +		}
+> > +	}
+> > +
+> >  	debug_set_file(daemon->out);
+> >  	debug_set_display_time(true);
+> >  
+> > -- 
+> > 2.29.2
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+> 
 
