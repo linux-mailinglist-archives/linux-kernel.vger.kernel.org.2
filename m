@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071D30FE2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A58930FE32
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240123AbhBDUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:24:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240096AbhBDUXg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:23:36 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78421C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:22:56 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id t25so2933977pga.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 12:22:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=388dygswvemg3Mj3TiR7mQNJ/V6JIsMVBitRKVSrLsY=;
-        b=YBxlqh3o4VbdvCSD8fiFV07eUilq+0xn80cMGEG4eVl46Gc/k3lWSMs/5g7fP5iXe1
-         MHCEVDlZsBWs6S/5TBVbdo/n3Twj70ulawIUmo04ahBphIU6j6i7QJqqkR6EQp9e/h2D
-         vytPtTBr/gks7MTZzAPC5ap2f0bLl9MipDB0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=388dygswvemg3Mj3TiR7mQNJ/V6JIsMVBitRKVSrLsY=;
-        b=bC/qH+222uX3uYex2eD0mOaXpEwJda1RWs3RaR6I8EYSQx1J9mScYoSOmrg7eXskxU
-         sx7pkrpV7gRy11d+NshvjplKFOd2eiqFZWDC8qlWX9GZHeYQSdQUzEU6CKFYe/mCDC29
-         Dhlld+ZbiXWM4HXMtTBzllhjufWT7ePDMavTWJtsuPEuhHXvKh1Cm4t3iodxWt84Sx3x
-         W0TDizlR8XElEzF9ZZRqks/INH/MHqgqmDnlVIBukmD6sDCYjJ+kWob1vs3kzWkcjckb
-         408PeVlYKRBNlT22VxiD2pd6kh45UwGNzf5xcWkyQ/y9Nj93WH6VK9q07rb8CcbF413f
-         80hQ==
-X-Gm-Message-State: AOAM530Xkphn1jtv7hzu+WfrlHoA/O4Jdt6Uyj2Gs8HdisLmEgCZ1dus
-        Xj/0SnsLvCu72YLKGxfBeFbyVg==
-X-Google-Smtp-Source: ABdhPJwWgksGDBlRqYjE9XMhgf8NQ8Q9/HDu4uVh6JKJ+AthAtLYo5N1j7SLRKfmihKDYNlkwLJYqQ==
-X-Received: by 2002:a63:1865:: with SMTP id 37mr738085pgy.206.1612470176112;
-        Thu, 04 Feb 2021 12:22:56 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r194sm6560531pfr.168.2021.02.04.12.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 12:22:54 -0800 (PST)
-Date:   Thu, 4 Feb 2021 12:22:54 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v19 15/25] mm: Fixup places that call pte_mkwrite()
- directly
-Message-ID: <202102041222.C53C9A462@keescook>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-16-yu-cheng.yu@intel.com>
+        id S238716AbhBDUZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:25:24 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:15089 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240097AbhBDUY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 15:24:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612470271; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dkEyhqBrfEPv8uIIrUZLW7vzLutXTgK2aJSRf24Jy1Q=;
+ b=kCJp4cNg9sGPiAXcpvsk32TRN4mm6hSlfJ/ijFaL9ND/K8GFI8dicAk326DLeoKtwTmqskE8
+ 4wHdrgJYqaGSNtHZOixCKuu/AqyQvzhAW/HdMmcgxsZ8S4jv6x7R/z9vI5EOCo5HumFDL2m/
+ JzQ6Pv93jJLGjXq+qzjMa918Raw=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 601c57df5d0f38478782fa1a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 20:23:59
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BA15BC43464; Thu,  4 Feb 2021 20:23:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF1EEC43462;
+        Thu,  4 Feb 2021 20:23:57 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203225547.32221-16-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 04 Feb 2021 12:23:57 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v5 6/9] bus: mhi: core: Check channel execution
+ environment before issuing reset
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210121151226.GD5473@work>
+References: <1610139297-36435-1-git-send-email-bbhatt@codeaurora.org>
+ <1610139297-36435-7-git-send-email-bbhatt@codeaurora.org>
+ <20210121151226.GD5473@work>
+Message-ID: <44821b345e5c46c1532511c1d1a66fe4@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:55:37PM -0800, Yu-cheng Yu wrote:
-> When serving a page fault, maybe_mkwrite() makes a PTE writable if it is in
-> a writable vma.  A shadow stack vma is writable, but its PTEs need
-> _PAGE_DIRTY to be set to become writable.  For this reason, maybe_mkwrite()
-> has been updated.
-> 
-> There are a few places that call pte_mkwrite() directly, but effect the
-> same result as from maybe_mkwrite().  These sites need to be updated for
-> shadow stack as well.  Thus, change them to maybe_mkwrite():
-> 
-> - do_anonymous_page() and migrate_vma_insert_page() check VM_WRITE directly
->   and call pte_mkwrite(), which is the same as maybe_mkwrite().  Change
->   them to maybe_mkwrite().
-> 
-> - In do_numa_page(), if the numa entry 'was-writable', then pte_mkwrite()
->   is called directly.  Fix it by doing maybe_mkwrite().
-> 
-> - In change_pte_range(), pte_mkwrite() is called directly.  Replace it with
->   maybe_mkwrite().
-> 
->   A shadow stack vma is writable but has different vma
-> flags, and handled accordingly in maybe_mkwrite().
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Hi Mani,
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On 2021-01-21 07:12 AM, Manivannan Sadhasivam wrote:
+> On Fri, Jan 08, 2021 at 12:54:54PM -0800, Bhaumik Bhatt wrote:
+>> A client can attempt to unprepare certain channels for transfer even
+>> after the execution environment they are supposed to run in has 
+>> changed.
+> 
+> Just out of curiosity, under what circumstances it can happen? We don't
+> have any in kernel user for the mhi_unprepare_from_transfer() API :/
+> 
+We do and it's the qrtr-mhi driver where we can potentially see this 
+happen.
+Mainly, since they want to undo whatever they have done in probe(), this 
+can
+come from the remove() after MHI power down is initiated.
 
--- 
-Kees Cook
+I have updated this patch in upcoming v6 series with a debug message as 
+we only
+want to proceed with clean-up directly.
+
+>> In the event that happens, the device need not be notified of the 
+>> reset
+>> and the host can proceed with clean up for the channel context and
+>> memory allocated for it on the host as the device will no longer be 
+>> able
+>> to respond to such a request.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/main.c | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>> 
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index a84e6aa..ec720fe 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -1351,11 +1351,24 @@ static void __mhi_unprepare_channel(struct 
+>> mhi_controller *mhi_cntrl,
+>>  	/* no more processing events for this channel */
+>>  	mutex_lock(&mhi_chan->mutex);
+>> 
+>> +	if (!(BIT(mhi_cntrl->ee) & mhi_chan->ee_mask)) {
+>> +		dev_err(dev,
+>> +			"Current EE: %s Required EE Mask: 0x%x for chan: %s\n",
+>> +			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask,
+>> +			mhi_chan->name);
+> 
+> Again, use channel's struct dev here.
+> 
+Done.
+> Thanks,
+> Mani
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
