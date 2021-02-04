@@ -2,132 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A41E30F125
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DABA30F130
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235460AbhBDKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:46:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:55690 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235037AbhBDKqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:46:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A198911D4;
-        Thu,  4 Feb 2021 02:45:19 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF4243F719;
-        Thu,  4 Feb 2021 02:45:17 -0800 (PST)
-Date:   Thu, 4 Feb 2021 10:45:15 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Subject: Re: [PATCH] sched/fair: Rate limit calls to
- update_blocked_averages() for NOHZ
-Message-ID: <20210204104515.sa72pcyaihowtncx@e107158-lin>
-References: <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com>
- <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com>
- <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book>
- <20210203170916.ows7d2b56t34i2w4@e107158-lin>
- <CAKfTPtAZNLCfnuzFTU1DedL6EqpVWD6KjUZDGNQOOQwV7AfiVA@mail.gmail.com>
+        id S235462AbhBDKs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:48:56 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10918 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234873AbhBDKsu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:48:50 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 114Aa661170102;
+        Thu, 4 Feb 2021 05:47:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HPR6DlPSP7KvGkC0gv83txqaiUk9ktfHmIcuRJJqKpY=;
+ b=Exgd04b4gLK9KpVrnMDSBHhzM+TX7hbZSkpiNhkB9Y5jsEXOjsUCi8xVqkp/3w1dCbsU
+ HmFDrzyfhwjCWSkoevy6QATlcd1SpVe8anfBcaB7HDfdNccoHcrsRZIJ6DbvrdRzowaa
+ bodTTjJberNEKLRV2Q1CpuEIimOU9luoxOiOjHXsiZhHyK/Asm0l9LXcdLiJr/oRIkie
+ HAWSUNFzkhXS8VvhS8AlIBFkaOb35rrMCSrSHTNrUylF6W/pI1i+vsXPvvkiZmnIEC2q
+ zLBLtz8rhw89cZMs6OGUgjNz3D8NRnNwQ4tOS+v85pdNu5KDrYrrSgKNC3XpI+rp2oFC 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36gcu8m9x3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 05:47:25 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 114Aa9EL170232;
+        Thu, 4 Feb 2021 05:47:24 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36gcu8m9uv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 05:47:24 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 114AgAkT020751;
+        Thu, 4 Feb 2021 10:47:20 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 36g2a90a01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 10:47:19 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 114AlGC437355872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 10:47:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B549CA4060;
+        Thu,  4 Feb 2021 10:47:16 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 699F0A4054;
+        Thu,  4 Feb 2021 10:47:14 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.39.112])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Feb 2021 10:47:14 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     ravi.bangoria@linux.ibm.com, oleg@redhat.com, rostedt@goodmis.org,
+        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
+Date:   Thu,  4 Feb 2021 16:17:03 +0530
+Message-Id: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAZNLCfnuzFTU1DedL6EqpVWD6KjUZDGNQOOQwV7AfiVA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_05:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/21 18:35, Vincent Guittot wrote:
-> > >       raw_spin_unlock(&this_rq->lock);
-> > > -     /*
-> > > -      * This CPU is going to be idle and blocked load of idle CPUs
-> > > -      * need to be updated. Run the ilb locally as it is a good
-> > > -      * candidate for ilb instead of waking up another idle CPU.
-> > > -      * Kick an normal ilb if we failed to do the update.
-> > > -      */
-> > > -     if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE))
-> >
-> > Since we removed the call to this function (which uses this_rq)
-> >
-> > > -             kick_ilb(NOHZ_STATS_KICK);
-> > > +     kick_ilb(NOHZ_STATS_KICK);
-> >
-> > And unconditionally call kick_ilb() which will find a suitable cpu to run the
-> > lb at regardless what this_rq is.
-> >
-> > Doesn't the below become unnecessary now?
-> 
-> The end goal is to keep running on this cpu that is about to become idle.
-> 
-> This patch is mainly  there to check that Joel's problem disappears if
-> the update of the blocked load of the cpus is not done in the
-> newidle_balance context. I'm preparing few other patches on top to
-> clean up the full path
+Don't allow Uprobe on 2nd word of a prefixed instruction. As per
+ISA 3.1, prefixed instruction should not cross 64-byte boundary.
+So don't allow Uprobe on such prefixed instruction as well.
 
-+1
+There are two ways probed instruction is changed in mapped pages.
+First, when Uprobe is activated, it searches for all the relevant
+pages and replace instruction in them. In this case, if we notice
+that probe is on the 2nd word of prefixed instruction, error out
+directly. Second, when Uprobe is already active and user maps a
+relevant page via mmap(), instruction is replaced via mmap() code
+path. But because Uprobe is invalid, entire mmap() operation can
+not be stopped. In this case just print an error and continue.
 
-> >
-> >           10494         /*
-> >           10495          * This CPU doesn't want to be disturbed by scheduler
-> >           10496          * housekeeping
-> >           10497          */
-> >           10498         if (!housekeeping_cpu(this_cpu, HK_FLAG_SCHED))
-> >           10499                 return;
-> >           10500
-> >           10501         /* Will wake up very soon. No time for doing anything else*/
-> >           10502         if (this_rq->avg_idle < sysctl_sched_migration_cost)
-> >           10503                 return;
-> >
-> > And we can drop this_rq arg altogether?
-> >
-> > >       raw_spin_lock(&this_rq->lock);
-> > >  }
-> > >
-> > > @@ -10616,8 +10590,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> > >                       update_next_balance(sd, &next_balance);
-> > >               rcu_read_unlock();
-> > >
-> > > -             nohz_newidle_balance(this_rq);
-> > > -
-> > >               goto out;
-> > >       }
-> > >
-> > > @@ -10683,6 +10655,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> > >
-> > >       if (pulled_task)
-> > >               this_rq->idle_stamp = 0;
-> > > +     else
-> > > +             nohz_newidle_balance(this_rq);
-> >
-> > Since nohz_newidle_balance() will not do any real work now, I couldn't figure
-> > out what moving this here achieves. Fault from my end to parse the change most
-> > likely :-)
-> 
-> The goal is to schedule the update only if we are about to be idle and
-> nothing else has been queued in the meantime
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+v1: http://lore.kernel.org/r/20210119091234.76317-1-ravi.bangoria@linux.ibm.com
+v1->v2:
+  - Instead of introducing new arch hook from verify_opcode(), use
+    existing hook arch_uprobe_analyze_insn().
+  - Add explicit check for prefixed instruction crossing 64-byte
+    boundary. If probe is on such instruction, throw an error.
 
-I see. This short coming already existed and not *strictly* related to moving
-update of blocked load out of newidle balance.
+ arch/powerpc/kernel/uprobes.c | 66 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
 
-Thanks
+diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+index e8a63713e655..485d19a2a31f 100644
+--- a/arch/powerpc/kernel/uprobes.c
++++ b/arch/powerpc/kernel/uprobes.c
+@@ -7,6 +7,7 @@
+  * Adapted from the x86 port by Ananth N Mavinakayanahalli <ananth@in.ibm.com>
+  */
+ #include <linux/kernel.h>
++#include <linux/highmem.h>
+ #include <linux/sched.h>
+ #include <linux/ptrace.h>
+ #include <linux/uprobes.h>
+@@ -28,6 +29,69 @@ bool is_trap_insn(uprobe_opcode_t *insn)
+ 	return (is_trap(*insn));
+ }
+ 
++#ifdef CONFIG_PPC64
++static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
++{
++	struct page *page;
++	struct vm_area_struct *vma;
++	void *kaddr;
++	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
++
++	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
++		return -EINVAL;
++
++	kaddr = kmap_atomic(page);
++	*instr = *((u32 *)(kaddr + (addr & ~PAGE_MASK)));
++	kunmap_atomic(kaddr);
++	put_page(page);
++	return 0;
++}
++
++static int validate_prefixed_instr(struct mm_struct *mm, unsigned long addr)
++{
++	struct ppc_inst inst;
++	u32 prefix, suffix;
++
++	/*
++	 * No need to check if addr is pointing to beginning of the
++	 * page. Even if probe is on a suffix of page-unaligned
++	 * prefixed instruction, hw will raise exception and kernel
++	 * will send SIGBUS.
++	 */
++	if (!(addr & ~PAGE_MASK))
++		return 0;
++
++	if (get_instr(mm, addr, &prefix) < 0)
++		return -EINVAL;
++	if (get_instr(mm, addr + 4, &suffix) < 0)
++		return -EINVAL;
++
++	inst = ppc_inst_prefix(prefix, suffix);
++	if (ppc_inst_prefixed(inst) && (addr & 0x3F) == 0x3C) {
++		printk_ratelimited("Cannot register a uprobe on 64 byte "
++				   "unaligned prefixed instruction\n");
++		return -EINVAL;
++	}
++
++	suffix = prefix;
++	if (get_instr(mm, addr - 4, &prefix) < 0)
++		return -EINVAL;
++
++	inst = ppc_inst_prefix(prefix, suffix);
++	if (ppc_inst_prefixed(inst)) {
++		printk_ratelimited("Cannot register a uprobe on the second "
++				   "word of prefixed instruction\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++#else
++static int validate_prefixed_instr(struct mm_struct *mm, unsigned long addr)
++{
++	return 0;
++}
++#endif
++
+ /**
+  * arch_uprobe_analyze_insn
+  * @mm: the probed address space.
+@@ -41,7 +105,7 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+ 	if (addr & 0x03)
+ 		return -EINVAL;
+ 
+-	return 0;
++	return validate_prefixed_instr(mm, addr);
+ }
+ 
+ /*
+-- 
+2.26.2
 
---
-Qais Yousef
