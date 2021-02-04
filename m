@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF28430F2A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A2E30F2A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbhBDLpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:45:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12075 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235586AbhBDLpE (ORCPT
+        id S235721AbhBDLqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235586AbhBDLqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:45:04 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWc9W6SRBzMV3b;
-        Thu,  4 Feb 2021 19:42:39 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 19:44:13 +0800
-Subject: Re: [PATCH v14 2/8] mm: hugetlb: introduce a new config
- HUGETLB_PAGE_FREE_VMEMMAP
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <duanxiongchun@bytedance.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <corbet@lwn.net>,
-        <mike.kravetz@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <akpm@linux-foundation.org>, <paulmck@kernel.org>,
-        <mchehab+huawei@kernel.org>, <pawan.kumar.gupta@linux.intel.com>,
-        <rdunlap@infradead.org>, <oneukum@suse.com>,
-        <anshuman.khandual@arm.com>, <jroedel@suse.de>,
-        <almasrymina@google.com>, <rientjes@google.com>,
-        <willy@infradead.org>, <osalvador@suse.de>, <mhocko@suse.com>,
-        <song.bao.hua@hisilicon.com>, <david@redhat.com>,
-        <naoya.horiguchi@nec.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-3-songmuchun@bytedance.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <7349db78-9eeb-86e2-b5de-9ebbcba85e1d@huawei.com>
-Date:   Thu, 4 Feb 2021 19:44:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 4 Feb 2021 06:46:20 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0823AC061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=JGhVURvln/aI2r9tiRPahDvAcS6/jkWSFn2D77VPLeU=; b=dFRjefJBEbMh2cRlN7JhpLOnH
+        JjeqGzRYQySK5TNV5E54n3VHqawx5pyNS1WZKSRntLzT4NB31aHvuxYZVmCNB129uih0y5qxj+E+p
+        kId6f16iPz/kETZ/E0McmoJZhTv2jji7fNyOdCkMgy/21/hz3TJBbLftMDmjm9HIXX4k9yAakY+Jr
+        fe1cHXxQZ+0SNSRhKpFY+4c99J+rrhv32KrQuWbVBEew6q5QVcuntzl9k7LAME31OtknDHudNId6Y
+        Vs7Sen1OUvMf8RaVeyAG0uQxTYe+esxTF9YUmL/aqbbqqzSZbwQ25XUp91mqGk1+Nb4lgsh/74Hai
+        9qqr/S8dw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39068)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7d4d-0006V8-GY; Thu, 04 Feb 2021 11:45:23 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7d3c-00058V-FB; Thu, 04 Feb 2021 11:44:20 +0000
+Date:   Thu, 4 Feb 2021 11:44:20 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+Message-ID: <20210204114420.GW1463@shell.armlinux.org.uk>
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
+ <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+ <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204035043.36609-3-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/4 11:50, Muchun Song wrote:
-> The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
-> some vmemmap pages associated with pre-allocated HugeTLB pages.
-> For example, on X86_64 6 vmemmap pages of size 4KB each can be
-> saved for each 2MB HugeTLB page. 4094 vmemmap pages of size 4KB
-> each can be saved for each 1GB HugeTLB page.
+On Thu, Feb 04, 2021 at 11:32:05AM +0000, Guillaume Tucker wrote:
+> Yes it does fix the issue:
 > 
-> When a HugeTLB page is allocated or freed, the vmemmap array
-> representing the range associated with the page will need to be
-> remapped. When a page is allocated, vmemmap pages are freed
-> after remapping. When a page is freed, previously discarded
-> vmemmap pages must be allocated before remapping.
+>   https://lava.collabora.co.uk/scheduler/job/3173819
 > 
-> The config option is introduced early so that supporting code
-> can be written to depend on the option. The initial version of
-> the code only provides support for x86-64.
+> with Ard's fix applied to this test branch:
 > 
-> Like other code which frees vmemmap, this config option depends on
-> HAVE_BOOTMEM_INFO_NODE. The routine register_page_bootmem_info() is
-> used to register bootmem info. Therefore, make sure
-> register_page_bootmem_info is enabled if HUGETLB_PAGE_FREE_VMEMMAP
-> is defined.
+>   https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> 
+> +clang +Nick
+> 
+> It's worth mentioning that the issue only happens with kernels
+> built with Clang.  As you can see there are several other arm
+> platforms failing with clang-11 builds but booting fine with
+> gcc-8:
 
-LGTM. Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+My gut feeling is that it isn't Clang specific - it's likely down to
+the exact code/data placement, how things end up during decompression,
+and exactly what state the cache ends up in.
 
-> ---
->  arch/x86/mm/init_64.c | 2 +-
->  fs/Kconfig            | 6 ++++++
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 0a45f062826e..0435bee2e172 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
->  
->  static void __init register_page_bootmem_info(void)
->  {
-> -#ifdef CONFIG_NUMA
-> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->  	int i;
->  
->  	for_each_online_node(i)
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 97e7b77c9309..de87f234f1e9 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -237,6 +237,12 @@ config HUGETLBFS
->  config HUGETLB_PAGE
->  	def_bool HUGETLBFS
->  
-> +config HUGETLB_PAGE_FREE_VMEMMAP
-> +	def_bool HUGETLB_PAGE
-> +	depends on X86_64
-> +	depends on SPARSEMEM_VMEMMAP
-> +	depends on HAVE_BOOTMEM_INFO_NODE
-> +
->  config MEMFD_CREATE
->  	def_bool TMPFS || HUGETLBFS
->  
-> 
+That certainly was the case with the original regression.
 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
