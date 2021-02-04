@@ -2,122 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F36430F251
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FDD30F253
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236003AbhBDLex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:34:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235851AbhBDLcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8D5A64F43;
-        Thu,  4 Feb 2021 11:31:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612438323;
-        bh=2YjywL5SDoEOedQJhLkpDYn35JOZkPUsSSTuGmTvbGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kfyPb2gRQK0VJ0bG96IqzhK4wj3EQuLqLz846zpApxcBwm6WX5CtQsTqXRtAiettV
-         Besll6N47ziUztkxZ9uvbAsAManAgkDNtO1dfWhHGfCVtc763gwDqZuV/PJHM4amXe
-         NzZHR6+dZdeHxPTLxYHYjwbMQNb3w6QbyNiepEAxlD0e9d57gxLWScwoHeMOz0zzxT
-         Vme4kodJtOqIlDuUlby8EOucFxgZASr9qI2lvWzc7i6T1yxSrrhOjO19hjpFL65gQr
-         YqgO9vVlRT1CTjfaXTK0DGlZqxa/k2Qn7Vs36jPxV0PXtDTyFjDcxi+38fcdf2VRVr
-         ganUhejqO/Vig==
-Date:   Thu, 4 Feb 2021 13:31:45 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210204113145.GR242749@kernel.org>
-References: <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
- <YBlUXdwV93xMIff6@dhcp22.suse.cz>
- <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
- <YBlgCl8MQuuII22w@dhcp22.suse.cz>
- <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
- <YBlicIupOyPF9f3D@dhcp22.suse.cz>
- <95625b83-f7e2-b27a-2b99-d231338047fb@redhat.com>
- <20210202181546.GO242749@kernel.org>
- <f26a17366194880d58e67d10cb5d7d7fdf2f3c19.camel@linux.ibm.com>
- <YBqSejZ3XbUKFudR@dhcp22.suse.cz>
+        id S235951AbhBDLfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236031AbhBDLcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:32:48 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8199C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:32:08 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 19BB81F46091
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
+ <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+Message-ID: <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
+Date:   Thu, 4 Feb 2021 11:32:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBqSejZ3XbUKFudR@dhcp22.suse.cz>
+In-Reply-To: <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:09:30PM +0100, Michal Hocko wrote:
-> On Tue 02-02-21 10:55:40, James Bottomley wrote:
-> > On Tue, 2021-02-02 at 20:15 +0200, Mike Rapoport wrote:
-> > > On Tue, Feb 02, 2021 at 03:34:29PM +0100, David Hildenbrand wrote:
-> > > > On 02.02.21 15:32, Michal Hocko wrote:
-> > 
-> > Well the safest security statement is that we never expose the data to
-> > the kernel because it's a very clean security statement and easy to
-> > enforce. It's also the easiest threat model to analyse.   Once we do
-> > start exposing the secret to the kernel it alters the threat profile
-> > and the analysis and obviously potentially provides the ROP gadget to
-> > an attacker to do the same. Instinct tells me that the loss of
-> > security doesn't really make up for the ability to swap or migrate but
-> > if there were a case for doing the latter, it would have to be a
-> > security policy of the user (i.e. a user should be able to decide their
-> > data is too sensitive to expose to the kernel).
+On 04/02/2021 10:33, Guillaume Tucker wrote:
+> On 04/02/2021 10:27, Ard Biesheuvel wrote:
+>> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
+>> <linux@armlinux.org.uk> wrote:
+>>>
+>>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
+>>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
+>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>
+>>>>> Hi Ard,
+>>>>>
+>>>>> Please see the bisection report below about a boot failure on
+>>>>> rk3288 with next-20210203.  It was also bisected on
+>>>>> imx6q-var-dt6customboard with next-20210202.
+>>>>>
+>>>>> Reports aren't automatically sent to the public while we're
+>>>>> trialing new bisection features on kernelci.org but this one
+>>>>> looks valid.
+>>>>>
+>>>>> The kernel is most likely crashing very early on, so there's
+>>>>> nothing in the logs.  Please let us know if you need some help
+>>>>> with debugging or trying a fix on these platforms.
+>>>>>
+>>>>
+>>>> Thanks for the report.
+>>>
+>>> Ard,
+>>>
+>>> I want to send my fixes branch today which includes your regression
+>>> fix that caused this regression.
+>>>
+>>> As this is proving difficult to fix, I can only drop your fix from
+>>> my fixes branch - and given that this seems to be problematical, I'm
+>>> tempted to revert the original change at this point which should fix
+>>> both of these regressions - and then we have another go at getting rid
+>>> of the set/way instructions during the next cycle.
+>>>
+>>> Thoughts?
+>>>
+>>
+>> Hi Russell,
+>>
+>> If Guillaume is willing to do the experiment, and it fixes the issue,
 > 
-> The security/threat model should be documented in the changelog as
-> well. I am not a security expert but I would tend to agree that not
-> allowing even temporal mapping for data copying (in the kernel) is the
-> most robust approach. Whether that is generally necessary for users I do
-> not know.
+> Yes, I'm running some tests with that fix now and should have
+> some results shortly.
+
+Yes it does fix the issue:
+
+  https://lava.collabora.co.uk/scheduler/job/3173819
+
+with Ard's fix applied to this test branch:
+
+  https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
+
+
++clang +Nick
+
+It's worth mentioning that the issue only happens with kernels
+built with Clang.  As you can see there are several other arm
+platforms failing with clang-11 builds but booting fine with
+gcc-8:
+
+  https://kernelci.org/test/job/next/branch/master/kernel/next-20210203/plan/baseline/
+
+Here's a sample build log:
+
+  https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/build.log
+
+Essentially:
+
+  make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+
+I believe it should be using the GNU assembler as LLVM_IAS=1 is
+not defined, but there may be something more subtle about it.
+
+Thanks,
+Guillaume
+
+
+>> it proves that rk3288 is relying on the flush before the MMU is
+>> disabled, and so in that case, the fix is trivial, and we can just
+>> apply it.
+>>
+>> If the experiment fails (which would mean rk3288 does not tolerate the
+>> cache maintenance being performed after cache off), it is going to be
+>> hairy, and so it will definitely take more time.
+>>
+>> So in the latter case (or if Guillaume does not get back to us), I
+>> think reverting my queued fix is the only sane option. But in that
+>> case, may I suggest that we queue the revert of the original by-VA
+>> change for v5.12 so it gets lots of coverage in -next, and allows us
+>> an opportunity to come up with a proper fix in the same timeframe, and
+>> backport the revert and the subsequent fix as a pair? Otherwise, we'll
+>> end up in the situation where v5.10.x until today has by-va, v5.10.x-y
+>> has set/way, and v5.10y+ has by-va again. (I don't think we care about
+>> anything before that, given that v5.4 predates any of this)
+>>
+>> But in the end, I'm happy to go along with whatever works best for you.
 > 
-> From the API POV I think it makes sense to have two
-> modes. NEVER_MAP_IN_KERNEL which would imply no migrateability, no
-> copy_{from,to}_user, no gup or any other way for the kernel to access
-> content of the memory. Maybe even zero the content on the last unmap to
-> never allow any data leak. ALLOW_TEMPORARY would unmap the page from
-> the direct mapping but it would still allow temporary mappings for
-> data copying inside the kernel (thus allow CoW, copy*user, migration).
-> Which one should be default and which an opt-in I do not know. A less
-> restrictive mode to be default and the more restrictive an opt-in via
-> flags makes a lot of sense to me though.
+> Thanks,
+> Guillaume
+> 
 
-The default is already NEVER_MAP_IN_KERNEL, so there is no explicit flag
-for this. ALLOW_TEMPORARY should be opt-in, IMHO, and we can add it on top
-later on.
-
--- 
-Sincerely yours,
-Mike.
