@@ -2,191 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BF630ED09
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D011030ED3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhBDHKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:10:49 -0500
-Received: from mga18.intel.com ([134.134.136.126]:8709 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232704AbhBDHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:10:28 -0500
-IronPort-SDR: IBf5/UlxlLauNnha7Wiq99sm4hDTG5qq5ZDJuPBTCRAMY7/IHYD/BrPsdW5DTblM1E9SdoTxYE
- vY6SSMz+jU6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="168867254"
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="168867254"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 23:09:48 -0800
-IronPort-SDR: z+bWTJLNKhrD7CmO8Jvwa8HK3C5f51kv6G7DFXH+PfWsDQ/wbbpNlYfswQX3CcKeBYvlAtbbAA
- aEKuSx2Awi9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; 
-   d="scan'208";a="414887014"
-Received: from unknown (HELO localhost) ([10.239.159.166])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Feb 2021 23:09:45 -0800
-Date:   Thu, 4 Feb 2021 15:22:00 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
- dispatch
-Message-ID: <20210204072200.GA10094@local-michael-cet-test>
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-5-weijiang.yang@intel.com>
- <YBsZwvwhshw+s7yQ@google.com>
+        id S234371AbhBDHW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:22:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233803AbhBDHWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:22:53 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EF8C0613D6;
+        Wed,  3 Feb 2021 23:22:13 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id p15so1670525ilq.8;
+        Wed, 03 Feb 2021 23:22:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=J0Hhokg7bb4w32rTwE6DeGStp3ax7fi3VK+om+D8gps=;
+        b=vMbwPTWjoKKn4UtoCX2tY5RiZb8B7vThyDlUBBZW7TE26y4IOifKk7KPkgxvbmOHO0
+         6KVYtzuqS5f9z6GpXiY8YOl4ZaIAegheScHkXqduRs1pZGUOuzPljUxOlDkx02Uf44WK
+         HB6eqZPFkS5u7kveVWMZQWdgXOnOdxLw835vb/fgHoP4AJKZ8adYhcHOoqa5YCPvChIM
+         eXYUUNnNs4QxbES6nKSm3fCRYDzT3CptnNPL7wzUrIVi+q2jabNksuyTiIo0AHz+O55i
+         9/v/OIqQJ6H1fTlBqtgRm8VrEzAHrniGZZxOrISnXsMbjNgS4JWc1upqYaxdYYtRGmzL
+         hJFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=J0Hhokg7bb4w32rTwE6DeGStp3ax7fi3VK+om+D8gps=;
+        b=AXUFLnMxrKlt/rKe65v6rMVdEMnTYQcpIsNziuFxgaLWFlB9JyYpMbBA8iyJfs50le
+         1Z+eEK8W7pDTOdcyXWqqW+tp20ss/iP7xqwsGWojHJ4FHLsbeT7r2NSMc6G0Vfj7fZFd
+         38h0pSulshTpAcdOsOLPoCTcvv8EuowcmjaGvaymMflseVzCi4Mpb53kz6be5wo6FGOm
+         hSnLCwCf8WplFD6gBNU6x9Ve1HtLXB6V4nCYZ6usfqExfpXe/ecvhuFghPWBw9qCxU/u
+         DWhOb5MteAhIkhuUYL2OhMO9FByaOzYPqJOuASXP525enJsoqkWYxTJ2oY+Dbae0C1+W
+         1kqw==
+X-Gm-Message-State: AOAM533OIoXMA0gN26wR351LE9snfyS+XTVeOMEO8t6AR0y05HrdxkP/
+        NP87JBbS9Jj6SGQ1B+jPUwAHdtJFbT4Y3q0q+nU=
+X-Google-Smtp-Source: ABdhPJy/vmxig/W9Nw0gIHMoujn1aKGJuGQ4ghVxjXftdO9e/CK0p+9mzgPsiVHUi0Ph+DK34s+6mm6T4lDcs7oFmng=
+X-Received: by 2002:a92:444e:: with SMTP id a14mr5831856ilm.215.1612423333162;
+ Wed, 03 Feb 2021 23:22:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YBsZwvwhshw+s7yQ@google.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <20210111180609.713998-1-natechancellor@gmail.com>
+ <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
+ <20210111193400.GA1343746@ubuntu-m3-large-x86> <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
+ <20210111200010.GA3635011@ubuntu-m3-large-x86> <CAEf4BzaL18a2+j3EYaD7jcnbJzqwG2MuBxXR2iRZ3KV9Jwrj6w@mail.gmail.com>
+ <CAEf4Bzbv6nrJNxbZAvFx4Djvf1zbWnrV_i90vPGHtV-W7Tz=bQ@mail.gmail.com> <20210113230739.GA22747@Ryzen-9-3900X.localdomain>
+In-Reply-To: <20210113230739.GA22747@Ryzen-9-3900X.localdomain>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 4 Feb 2021 08:22:01 +0100
+Message-ID: <CA+icZUVfznOpAQK=6GWoF6XmzHyXjdUgNG5HeoQw3Dwb4wW9uA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:46:42PM -0800, Sean Christopherson wrote:
-> On Wed, Feb 03, 2021, Yang Weijiang wrote:
-> > Add handling for Control Protection (#CP) exceptions, vector 21, used
-> > and introduced by Intel's Control-Flow Enforcement Technology (CET).
-> > relevant CET violation case.  See Intel's SDM for details.
-> > 
-> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > ---
-> >  arch/x86/include/uapi/asm/kvm.h | 1 +
-> >  arch/x86/kvm/x86.c              | 1 +
-> >  arch/x86/kvm/x86.h              | 2 +-
-> >  3 files changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> > index 8e76d3701db3..507263d1d0b2 100644
-> > --- a/arch/x86/include/uapi/asm/kvm.h
-> > +++ b/arch/x86/include/uapi/asm/kvm.h
-> > @@ -32,6 +32,7 @@
-> >  #define MC_VECTOR 18
-> >  #define XM_VECTOR 19
-> >  #define VE_VECTOR 20
-> > +#define CP_VECTOR 21
-> >  
-> >  /* Select x86 specific features in <linux/kvm.h> */
-> >  #define __KVM_HAVE_PIT
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 99f787152d12..d9d3bae40a8c 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -436,6 +436,7 @@ static int exception_class(int vector)
-> >  	case NP_VECTOR:
-> >  	case SS_VECTOR:
-> >  	case GP_VECTOR:
-> > +	case CP_VECTOR:
-> >  		return EXCPT_CONTRIBUTORY;
-> >  	default:
-> >  		break;
-> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> > index c5ee0f5ce0f1..bdbd0b023ecc 100644
-> > --- a/arch/x86/kvm/x86.h
-> > +++ b/arch/x86/kvm/x86.h
-> > @@ -116,7 +116,7 @@ static inline bool x86_exception_has_error_code(unsigned int vector)
-> >  {
-> >  	static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
-> >  			BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
-> > -			BIT(PF_VECTOR) | BIT(AC_VECTOR);
-> > +			BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
-> 
-> These need to be conditional on CET being exposed to the guest.  TBD exceptions
-> are non-contributory and don't have an error code.  Found when running unit
-> tests in L1 with a kvm/queue as L1, but an older L0.  cr4_guest_rsvd_bits can be
-> used to avoid guest_cpuid_has() lookups.
-> 
-> The SDM also gets this wrong.  Section 26.2.1.3, VM-Entry Control Fields, needs
-> to be updated to add #CP to the list.
-> 
->   — The field's deliver-error-code bit (bit 11) is 1 if each of the following
->     holds: (1) the interruption type is hardware exception; (2) bit 0
->     (corresponding to CR0.PE) is set in the CR0 field in the guest-state area;
->     (3) IA32_VMX_BASIC[56] is read as 0 (see Appendix A.1); and (4) the vector
->     indicates one of the following exceptions: #DF (vector 8), #TS (10),
->     #NP (11), #SS (12), #GP (13), #PF (14), or #AC (17).
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index dbca1687ae8e..0b6dab6915a3 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
->                 /* VM-entry interruption-info field: deliver error code */
->                 should_have_error_code =
->                         intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
-> -                       x86_exception_has_error_code(vector);
-> +                       x86_exception_has_error_code(vcpu, vector);
->                 if (CC(has_error_code != should_have_error_code))
->                         return -EINVAL;
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 28fea7ff7a86..0288d6a364bd 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
->  #define EXCPT_CONTRIBUTORY     1
->  #define EXCPT_PF               2
-> 
-> -static int exception_class(int vector)
-> +static int exception_class(struct kvm_vcpu *vcpu, int vector)
->  {
->         switch (vector) {
->         case PF_VECTOR:
->                 return EXCPT_PF;
-> +       case CP_VECTOR:
-> +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
-> +                       return EXCPT_BENIGN;
-> +               return EXCPT_CONTRIBUTORY;
->         case DE_VECTOR:
->         case TS_VECTOR:
->         case NP_VECTOR:
->         case SS_VECTOR:
->         case GP_VECTOR:
-> -       case CP_VECTOR:
->                 return EXCPT_CONTRIBUTORY;
->         default:
->                 break;
-> @@ -588,8 +591,8 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
->                 kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
->                 return;
->         }
-> -       class1 = exception_class(prev_nr);
-> -       class2 = exception_class(nr);
-> +       class1 = exception_class(vcpu, prev_nr);
-> +       class2 = exception_class(vcpu, nr);
->         if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
->                 || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
->                 /*
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index a14da36a30ed..dce756ffb577 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -120,12 +120,16 @@ static inline bool is_la57_mode(struct kvm_vcpu *vcpu)
->  #endif
->  }
-> 
-> -static inline bool x86_exception_has_error_code(unsigned int vector)
-> +static inline bool x86_exception_has_error_code(struct kvm_vcpu *vcpu,
-> +                                               unsigned int vector)
->  {
->         static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
->                         BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
->                         BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
-> 
-> +       if (vector == CP_VECTOR && (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET))
-> +               return false;
-> +
->         return (1U << vector) & exception_has_error_code;
->  }
-Thanks Sean for catching this!
+On Thu, Jan 14, 2021 at 12:07 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Wed, Jan 13, 2021 at 02:38:27PM -0800, Andrii Nakryiko wrote:
+> > Hm.. Just saw Linus proposing using $(error-if) in Kconfig for an
+> > unrelated issue ([0]). If we can make this work, then it would catch
+> > such issue early on, yet won't have any downsides of hiding
+> > CONFIG_DEBUG_INFO_BTF if pahole is too old. WDYT?
+> >
+> >   [0] https://lore.kernel.org/lkml/CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com/
+>
+> Yes, I think that would be exactly what we want because DEBUG_INFO_BTF
+> could cause the build to error if PAHOLE_VERSION is not >= 116. I will
+> try to keep an eye on that thread to see how it goes then respin this
+> based on anything that comes from it.
+>
 
-Hi, Paolo,
-Do I need to send another version to include Sean's change?
+For BPF/pahole testing (see [1]) with CONFIG_DEBUG_INFO_DWARF5=y I did:
 
-> 
-> 
-> 
+$ git diff
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index b0840d192e95..f15b37143165 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -272,7 +272,7 @@ config DEBUG_INFO_DWARF5
+       bool "Generate DWARF Version 5 debuginfo"
+       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+       depends on CC_IS_GCC ||
+$(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC)
+$(CLANG_FLAGS))
+-       depends on !DEBUG_INFO_BTF
++       depends on !DEBUG_INFO_BTF || (DEBUG_INFO_BTF && PAHOLE_VERSION >= 120)
+       help
+         Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
+         5.0+ accepts the -gdwarf-5 flag but only had partial support for some
+
+Thanks again for that patch.
+
+- Sedat -
+
+[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=tmp.1.20
