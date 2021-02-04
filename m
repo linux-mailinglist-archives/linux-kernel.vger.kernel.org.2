@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE49E30F510
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6DE30F50F
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236729AbhBDOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:34:22 -0500
-Received: from mga12.intel.com ([192.55.52.136]:58197 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236503AbhBDOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:19:05 -0500
-IronPort-SDR: hUpb46HXQQ8Gk+FlZO7PhCMVG/P1vJCe6NubodeqxTZGFyvFlgPJT/TuF6zakesP9uQb3B4f+s
- ZfdGgf6hoCOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160410025"
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="160410025"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 06:17:18 -0800
-IronPort-SDR: 6b6M6f2dibT7wAlXrbOBoJ5nyiOv6umLWdcRaoKfVZXMvdIe4Tjkwr9Hlenka1B+ycaEj9dEnf
- VVUKxdZ5eQEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="483254618"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Feb 2021 06:17:16 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Minas Harutyunyan <hminas@synopsys.com>
-Subject: [PATCH v2 2/6] usb: dwc2: pci: Drop the empty quirk function
-Date:   Thu,  4 Feb 2021 17:17:07 +0300
-Message-Id: <20210204141711.53775-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
-References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+        id S236781AbhBDOdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236124AbhBDOT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:19:28 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35510C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:18:46 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id u14so3721942wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:18:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1A5jaGMH8v+8RmdU0UTE1kbhV4vjjan/ogFcu70QFBM=;
+        b=kRbGsvSTuji0iv5YtpH4MYYQqNnFddgufEy4QsAH7R2fLfOK7onqaAUtIbALHOKYnc
+         NAEQ9am67BI4JNDLRDj0tSJ5nfUszcCN6tSuhpwWcque/KXCX4cfDO0U8JK43+dsj+vx
+         1Y2kxvNZSdfgt2n4gKlVaxpCgAK0iZg3HekpS3oJRCfDdxiInXL1wH/eS5ZTRCsd5C47
+         zoHUZ9lKr0b9hqj1r4cvMY40hRG5umkYAWcWVgdL1nqFt4TxFku5KNI0DDFSqHDOJQ29
+         ENRRELa3ERiq5FgRUFXRNakDuEhpvvsXdHWHvn6eCuVv5LdB57u6hIYKryT8KZJ0fgD4
+         sj1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1A5jaGMH8v+8RmdU0UTE1kbhV4vjjan/ogFcu70QFBM=;
+        b=QihJDFwrcUzSsucIUIDPDtLpob8VrWqDEZu+76znGHuOZTNvDCMEnFRvJcuIG7US2i
+         coB+EbIh18RxWBIfFa6zKCVuM6FeLf5vPnO2ChCxqUJETddbaSUveAgucMRq2v/DVssw
+         C4m/zaxuL+2SjuNv2uAkwlTo9DwN+mmexWMUe6hbdzh3d8vimgFlCx/HT9hEu6hkZEXf
+         RM5xc3tImgiEwvU5PHvAAz1penkQ8ebP1l+WdkpmL27xsXZLEH/4P3lWTxKscYCavUhZ
+         cu/4BT+5QLzWFgDH+CT6szTI1KYbvfDpP7tqdi5wRLM/oAxg3KKv7dqB+hx+BT6JM0mc
+         EAyA==
+X-Gm-Message-State: AOAM5321kAIFzsGf37dq6EChl1LxXjUsSn9lwHQZrLFqjhIK9VXqvUF/
+        Q5ltpBYFy9WemX+yA9amgRCD/g==
+X-Google-Smtp-Source: ABdhPJwmxlEADo2pamrd4+uG+uA5gIHQiPMR8XnPrPRMCr82leKGAKYaVIlc3piIwQdzJpEdnxUfkQ==
+X-Received: by 2002:adf:9148:: with SMTP id j66mr10034560wrj.28.1612448324809;
+        Thu, 04 Feb 2021 06:18:44 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id 35sm9159761wrn.42.2021.02.04.06.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 06:18:43 -0800 (PST)
+Date:   Thu, 4 Feb 2021 14:18:41 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 23/26] KVM: arm64: Refactor __populate_fault_info()
+Message-ID: <YBwCQVi2JUxKUy9Y@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-24-qperret@google.com>
+ <20210203155831.GG18974@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203155831.GG18974@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function dwc2_pci_quirks() does nothing. Removing.
+On Wednesday 03 Feb 2021 at 15:58:32 (+0000), Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 12:15:21PM +0000, Quentin Perret wrote:
+> > Refactor __populate_fault_info() to introduce __get_fault_info() which
+> > will be used once the host is wrapped in a stage 2.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/kvm/hyp/include/hyp/switch.h | 36 +++++++++++++++----------
+> >  1 file changed, 22 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
+> > index 84473574c2e7..e9005255d639 100644
+> > --- a/arch/arm64/kvm/hyp/include/hyp/switch.h
+> > +++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
+> > @@ -157,19 +157,9 @@ static inline bool __translate_far_to_hpfar(u64 far, u64 *hpfar)
+> >  	return true;
+> >  }
+> >  
+> > -static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
+> > +static inline bool __get_fault_info(u64 esr, u64 *far, u64 *hpfar)
+> 
+> Could this take a pointer to a struct kvm_vcpu_fault_info instead?
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Minas Harutyunyan <hminas@synopsys.com>
----
- drivers/usb/dwc2/pci.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+The disr_el1 field will be unused in this case, but yes, that should
+work.
 
-diff --git a/drivers/usb/dwc2/pci.c b/drivers/usb/dwc2/pci.c
-index 7afc10872f1f0..0000151e3ca96 100644
---- a/drivers/usb/dwc2/pci.c
-+++ b/drivers/usb/dwc2/pci.c
-@@ -63,20 +63,6 @@ struct dwc2_pci_glue {
- 	struct platform_device *phy;
- };
- 
--static int dwc2_pci_quirks(struct pci_dev *pdev, struct platform_device *dwc2)
--{
--	if (pdev->vendor == PCI_VENDOR_ID_SYNOPSYS &&
--	    pdev->device == PCI_PRODUCT_ID_HAPS_HSOTG) {
--		struct property_entry properties[] = {
--			{ },
--		};
--
--		return platform_device_add_properties(dwc2, properties);
--	}
--
--	return 0;
--}
--
- /**
-  * dwc2_pci_probe() - Provides the cleanup entry points for the DWC_otg PCI
-  * driver
-@@ -143,10 +129,6 @@ static int dwc2_pci_probe(struct pci_dev *pci,
- 
- 	dwc2->dev.parent = dev;
- 
--	ret = dwc2_pci_quirks(pci, dwc2);
--	if (ret)
--		goto err;
--
- 	glue = devm_kzalloc(dev, sizeof(*glue), GFP_KERNEL);
- 	if (!glue) {
- 		ret = -ENOMEM;
--- 
-2.30.0
-
+Cheers,
+Quentin
