@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58FF30EC87
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD1630EC80
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhBDGcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 01:32:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12122 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhBDGcG (ORCPT
+        id S232190AbhBDGaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 01:30:15 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54083 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229711AbhBDGaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:32:06 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWTDb1Fdqz1640g;
-        Thu,  4 Feb 2021 14:29:51 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 14:31:01 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <bhelgaas@google.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <sean.v.kelley@intel.com>, <Jonathan.Cameron@huawei.com>,
-        <refactormyself@gmail.com>
-CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH 1/1] PCI/AER: Change to use helper pcie_aer_is_native() in some places
-Date:   Thu, 4 Feb 2021 14:28:47 +0800
-Message-ID: <1612420127-6447-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Thu, 4 Feb 2021 01:30:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNpIIO2_1612420145;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNpIIO2_1612420145)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 14:29:06 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] btrfs: Remove unneeded return variable
+Date:   Thu,  4 Feb 2021 14:29:03 +0800
+Message-Id: <1612420143-16004-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use helper function pcie_aer_is_native() in some places to keep
-the code tidy. No function changes.
+This patch removes unneeded return variables, using only
+'0' instead.
+It fixes the following warning detected by coccinelle:
+./fs/btrfs/extent_map.c:299:5-8: Unneeded variable: "ret". Return "0" on
+line 331
+./fs/btrfs/disk-io.c:4402:5-8: Unneeded variable: "ret". Return "0" on
+line 4410
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/pci/pcie/aer.c          | 4 ++--
- drivers/pci/pcie/err.c          | 2 +-
- drivers/pci/pcie/portdrv_core.c | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c    | 5 ++---
+ fs/btrfs/extent_map.c | 3 +--
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 77b0f2c..03212d0 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1397,7 +1397,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 	 */
- 	aer = root ? root->aer_cap : 0;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 6b35b7e..e951da7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4399,7 +4399,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	struct rb_node *node;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	struct btrfs_delayed_ref_node *ref;
+-	int ret = 0;
  
--	if ((host->native_aer || pcie_ports_native) && aer) {
-+	if (pcie_aer_is_native(dev) && aer) {
- 		/* Disable Root's interrupt in response to error messages */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
- 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-@@ -1417,7 +1417,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+ 	delayed_refs = &trans->delayed_refs;
+ 
+@@ -4407,7 +4406,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	if (atomic_read(&delayed_refs->num_entries) == 0) {
+ 		spin_unlock(&delayed_refs->lock);
+ 		btrfs_debug(fs_info, "delayed_refs has NO entry");
+-		return ret;
++		return 0;
  	}
  
--	if ((host->native_aer || pcie_ports_native) && aer) {
-+	if (pcie_aer_is_native(dev) && aer) {
- 		/* Clear Root Error Status */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
- 		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 510f31f..1d6cfb9 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -237,7 +237,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	 * this status.  In that case, the signaling device may not even be
- 	 * visible to the OS.
- 	 */
--	if (host->native_aer || pcie_ports_native) {
-+	if (pcie_aer_is_native(dev)) {
- 		pcie_clear_device_status(bridge);
- 		pci_aer_clear_nonfatal_status(bridge);
- 	}
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index e1fed664..1e6a690 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -222,7 +222,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+ 	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
+@@ -4473,7 +4472,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
  
- #ifdef CONFIG_PCIEAER
- 	if (dev->aer_cap && pci_aer_available() &&
--	    (pcie_ports_native || host->native_aer)) {
-+	    pcie_aer_is_native(dev)) {
- 		services |= PCIE_PORT_SERVICE_AER;
+ 	spin_unlock(&delayed_refs->lock);
  
- 		/*
+-	return ret;
++	return 0;
+ }
+ 
+ static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index bd6229f..bac7eba 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 		       u64 gen)
+ {
+-	int ret = 0;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
+ 
+@@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 	free_extent_map(em);
+ out:
+ 	write_unlock(&tree->lock);
+-	return ret;
++	return 0;
+ 
+ }
+ 
 -- 
-2.8.1
+1.8.3.1
 
