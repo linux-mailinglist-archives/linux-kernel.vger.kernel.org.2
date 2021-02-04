@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C23730FF0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF79E30FF0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhBDVD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:03:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53576 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230037AbhBDVDf (ORCPT
+        id S230136AbhBDVDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhBDVDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:03:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612472529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r8LJOJOCQ58un32theY/EJTbJf0j1q2uCcdggM463dA=;
-        b=jKMXhisQvZVOdb1xHc7og/UJTaO6+2tocpLIK+H0uewBeDIcfehbZ0niSF9ZU388JiVC+J
-        C7sC+57yTwuO8COTXanBYPKSFNAYrPrjP8kjArfDDh0qDyf30tWyal43OzGrFO8FbkRKuV
-        3RKH+8OomjVKHLnSv8rNs5NGVDa4LpY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-Z142Y3p_NmK3McYaol_iuw-1; Thu, 04 Feb 2021 16:02:08 -0500
-X-MC-Unique: Z142Y3p_NmK3McYaol_iuw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06A04801962;
-        Thu,  4 Feb 2021 21:02:07 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-68.ams2.redhat.com [10.36.112.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D462B1A38C;
-        Thu,  4 Feb 2021 21:02:05 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 1/1] genirq: Fix [devm_]irq_alloc_desc returning irq 0
-Date:   Thu,  4 Feb 2021 22:02:03 +0100
-Message-Id: <20210204210203.105934-2-hdegoede@redhat.com>
-In-Reply-To: <20210204210203.105934-1-hdegoede@redhat.com>
-References: <20210204210203.105934-1-hdegoede@redhat.com>
+        Thu, 4 Feb 2021 16:03:32 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BB3C061786;
+        Thu,  4 Feb 2021 13:02:52 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a9so7988887ejr.2;
+        Thu, 04 Feb 2021 13:02:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QM4H+AOas/ZTy6sjkxPDpMs06k7xsx9Ag86HzbisD/s=;
+        b=t7bAOfG9L1hfW8+U/sXI6TTV51MXxM7GIKim3muln2dxUXGfSCjq0wc/cOXeX5FNoV
+         Um2nreccGtzYdruUKiokkxMK4BaftyfKb4uPPcqRe4qAoh/Oi1qiyaUv2WaZ6UrEc4H4
+         w/Y+BBfcEXOz8UH+iwU6Izl7YpDelBBNEMk25KqeQF93tKER8vSPfPsUiFQwuo2sRqpz
+         D4TXAIdJqJEu9Dfx4KnDwanp7QDjORcT1HkQ/Bfdt6GMU6e+RUZH4+YkwfyLKY7YhM7t
+         pU5RfjM1/cjtqEch+dzqgKzVxdKim8BT2QWO3D/d1qhz7WMeytS4gRgJxW386U+qe3Re
+         CKQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QM4H+AOas/ZTy6sjkxPDpMs06k7xsx9Ag86HzbisD/s=;
+        b=dYel6g3PwuAPVCmmAMRXZqQ0l4YRwgVLLsac8DS+tOVBv2A6rwZGPgxxsvu/A+7XsM
+         IEaCQJyWSZSR4y3N33tlZPhMFiEyblDtV8N+9bqSBroUN60h7BQ2ofqEkjUTJ59dG2/n
+         KHWXA/BuwQ86kpKs6nJj5UlmhyNe2snBA2FLekTc8vqE9jF67df0nHNBRMF6GE0618N4
+         TOE4EO8cNCXTR8auWZ9fNJjAVc1MkRyJVlmctjvE63sdCAe4/nJUebfvvxBlZbprKPze
+         Vl1ZZyNy5pQyyjZTNusUz5t/RmHSaOkR3XXqT4o/tcG3rzHIml/x84HSOItsdjgi5i/Q
+         esSA==
+X-Gm-Message-State: AOAM53106uGlr0UjvGS81QMe06sjq5K0wYgSchWfYha/L5tY0Ggcvru/
+        TJJ4XOw/m0FTLhtzElrHf80u9eXMtWO13WnwfC4=
+X-Google-Smtp-Source: ABdhPJz48/Zvb8jOqshxuPl7OAhtiddClB2itrWe0Ka+BpWHWkCP6Zwb95XKwOR73Ng3MHnXus3YQXdrm8x52RuT3wk=
+X-Received: by 2002:a17:906:958f:: with SMTP id r15mr915426ejx.360.1612472571112;
+ Thu, 04 Feb 2021 13:02:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210204154716.1823454-1-arnd@kernel.org>
+In-Reply-To: <20210204154716.1823454-1-arnd@kernel.org>
+From:   Trent Piepho <tpiepho@gmail.com>
+Date:   Thu, 4 Feb 2021 13:02:39 -0800
+Message-ID: <CA+7tXii4h+GPp-+qG3m+zhDORLtU_ZS=eer_wCkxrWs6sZqT5A@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: btusb: fix excessive stack usage
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Chen <Mark-YW.Chen@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>, Kiran K <kiran.k@intel.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Sathish Narasimman <nsathish41@gmail.com>,
+        Rocky Liao <rjliao@codeaurora.org>,
+        Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
+        Hilda Wu <hildawu@realtek.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0
-is invalid"), having a linux-irq with number 0 will trigger a WARN
-when calling platform_get_irq*() to retrieve that linux-irq.
+On Thu, Feb 4, 2021 at 7:47 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> Enlarging the size of 'struct btmtk_hci_wmt_cmd' makes it no longer
+>
+> Unfortunately, I could not figure out why the message size is
+> increased in the previous patch. Using dynamic allocation means
 
-Since [devm_]irq_alloc_desc allocs 1 single irq and since irq 0 is
-normally not used, it would return 0 before this commit, triggering
-that WARN. This happens e.g. on Intel Bay Trail and Cherry Trail
-devices using the LPE audio engine for HDMI audio:
+That patch appears to be have been split out of fc342c4dc40
+"Bluetooth: btusb: Add protocol support for MediaTek MT7921U USB
+devices".  But there is no clear reason why those changes were split
+out, which is not helped by vague patch description, and size increase
+appears to be a totally random change to unrelated code.  This struct
+is used by that latter commit to download firmware with a new format
+for mt7921.
 
-[   22.761392] ------------[ cut here ]------------
-[   22.761405] 0 is an invalid IRQ number
-[   22.761462] WARNING: CPU: 3 PID: 472 at drivers/base/platform.c:238 platform_get_irq_optional+0x108/0x180
-[   22.761470] Modules linked in: snd_hdmi_lpe_audio(+) ...
+But new firmware download function uses code that is just copied from
+existing fw download function (should be refactored to share code),
+which has a max packet data size of "dlen = min_t(int, 250,
+dl_size);", so there was no need to increase size at all.  I'd guess
+someone experimented with larger chunks for firmware download, but
+then did not use them, but left the larger max size in because it was
+a separate commit.
+
+It looks like the new firmware download function will crash if the
+firmware file is not consistent:
+
+sectionmap = (struct btmtk_section_map *)(fw_ptr +
+MTK_FW_ROM_PATCH_HEADER_SIZE +
+              MTK_FW_ROM_PATCH_GD_SIZE + MTK_FW_ROM_PATCH_SEC_MAP_SIZE * i);
+section_offset = sectionmap->secoffset;
+dl_size = sectionmap->bin_info_spec.dlsize;
 ...
-[   22.762133] Call Trace:
-[   22.762158]  platform_get_irq+0x17/0x30
-[   22.762182]  hdmi_lpe_audio_probe+0x4a/0x6c0 [snd_hdmi_lpe_audio]
-...
-[   22.762726] ---[ end trace ceece38854223a0b ]---
+fw_ptr += section_offset;
+/* send fw_ptr[0] to fw_ptr[dl_size] via wmt_cmd(s) */
 
-Change the 'from' parameter passed to __[devm_]irq_alloc_descs() by the
-[devm_]irq_alloc_desc macros from 0 to 1, so that these macros
-will no longer return 0.
+Both section_offset and dl_size are used unsanitized from the firmware
+blob and could point outside the blob.
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Fixes: a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-A quick grep for 'irq_alloc_desc\(' shows only 2 users of irq_alloc_desc():
-1. drivers/gpu/drm/i915/display/intel_lpe_audio.c
-2. drivers/sh/intc/virq.c
-But that might very well be an incomplete list.
----
- include/linux/irq.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+And the manually calculated struct sizes aren't necessary, if the
+structs for the firmware were correct, it could just be:
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 4aeb1c4c7e07..2efde6a79b7e 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -928,7 +928,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
- 	__irq_alloc_descs(irq, from, cnt, node, THIS_MODULE, NULL)
- 
- #define irq_alloc_desc(node)			\
--	irq_alloc_descs(-1, 0, 1, node)
-+	irq_alloc_descs(-1, 1, 1, node)
- 
- #define irq_alloc_desc_at(at, node)		\
- 	irq_alloc_descs(at, at, 1, node)
-@@ -943,7 +943,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
- 	__devm_irq_alloc_descs(dev, irq, from, cnt, node, THIS_MODULE, NULL)
- 
- #define devm_irq_alloc_desc(dev, node)				\
--	devm_irq_alloc_descs(dev, -1, 0, 1, node)
-+	devm_irq_alloc_descs(dev, -1, 1, 1, node)
- 
- #define devm_irq_alloc_desc_at(dev, at, node)			\
- 	devm_irq_alloc_descs(dev, at, at, 1, node)
--- 
-2.29.2
+struct btmtk_firmware {
+       struct btmtk_patch_header header;
+       struct btmtk_global_desc desc;
+       struct btmtk_section_map sections[];
+} __packed;
 
+struct btmtk_firmware* fw_ptr = fw->data;
+
+sectionmap = &fw_ptr->sections[i];
