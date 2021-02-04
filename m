@@ -2,277 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DD430F2DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D2C30F2DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 13:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235804AbhBDMII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 07:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbhBDMIG (ORCPT
+        id S235833AbhBDMIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 07:08:50 -0500
+Received: from mail-qt1-f178.google.com ([209.85.160.178]:39226 "EHLO
+        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235635AbhBDMIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 07:08:06 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD23C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 04:07:26 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id nm1so1586164pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3mzpu0qu4PFpcQF0n9tQIBukqG1c/oqU6m6iIUEtS+I=;
-        b=Z9OFmDwFxcXtdJ63nGzqgA17+GGUGj9uv4d0QCGfKLCYH6NvGOrSTMS13RalK1U9Go
-         O8EJY4+ugocryYThjoKa0wubNNBpfAl8hDo79mqK7C1fjXsUfWJF5UIYtTaXqz3j0nVv
-         plnWIGCQTTtP6jEatWslZhYHXC3IcSh4Lc9SmplsXNPdqX2CtN4e8o21VnOjD+9ONlLr
-         NKgLY4ViLvCcUb7/xxBLCf49bQ6bVL66RGU+IigWI/j9ABkru8gz5mEfVdGDSIdPT7F+
-         SoAyXy13JvrUWhMUbGZlBGJECBIdLcxlgodYgs6L4sqZZN8XLlb1uwwhB4POsKi6xRjz
-         B2eQ==
+        Thu, 4 Feb 2021 07:08:48 -0500
+Received: by mail-qt1-f178.google.com with SMTP id e11so2130385qtg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 04:08:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3mzpu0qu4PFpcQF0n9tQIBukqG1c/oqU6m6iIUEtS+I=;
-        b=qHzdj1t+XmP3PZhnS3e0lXlC8bKr7Keqc4piksIoVbhQXl3hMgZNrWRVll/QdA6A0i
-         jLvqY18cuz3R3ZNOuEtLFJrDtPt56yQiIslQLKNdXCPgwjVFMykgT6zxdjOQeK6u+9+g
-         YuJ0DYvTEZwVIJvYzoqkwsR1PpTaDV+QllJ5CjvvS0HlhXWsShJZi3p7KZP/c86BDHOu
-         K+aQ47dmF+6t9STOS6BNw8/bIdLI/NhJ62vp+puyEJeCLIOi6rLvaIRPog1TM0PVD7sb
-         S+y6Iae60cIDlripNJeElH2ZJS42xqMhda2kXp43N9EotCUar3anBEvvZY1YQyzRjosp
-         xwJg==
-X-Gm-Message-State: AOAM531eHqSo3yFyMxrBQe/q/SvmoHqa5lfu+RvQ7CvBIHuO9ZXredQG
-        yal5sgbBjx3zvUJKVdkRSx8=
-X-Google-Smtp-Source: ABdhPJyssyf5i6PAJV+qqqOURlKAEXm7dt+uDWFmRmJF1qKSamfPaUoQ02f4yz4gNbhVHmZI9dT/hw==
-X-Received: by 2002:a17:90a:53:: with SMTP id 19mr8090330pjb.29.1612440446081;
-        Thu, 04 Feb 2021 04:07:26 -0800 (PST)
-Received: from localhost.localdomain ([125.227.22.95])
-        by smtp.gmail.com with ESMTPSA id mv14sm9059079pjb.0.2021.02.04.04.07.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 04:07:25 -0800 (PST)
-From:   Stephen Zhang <stephenzhangzsd@gmail.com>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, gustavoars@kernel.org
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>
-Subject: [PATCH v4] kdb: kdb_support: Fix debugging information problem
-Date:   Thu,  4 Feb 2021 20:07:09 +0800
-Message-Id: <1612440429-6391-1-git-send-email-stephenzhangzsd@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A2MnuWw/zsUlFQOtKqPMfK24NaxnUoxdjPMBpT4vbJs=;
+        b=L1uqHqEe9R91FrGmDXSyDb4WIk2+L3PVKJsoqoxySl3ELNa5k+A45qVpDEFIbulCXv
+         TmuoLmPEVe08vfhJuZssUqE7F9VA/FrS0Rs9fCrljDzASNtAzYnkN5ZCX6smpcEL/wbf
+         cO5AKM1oeGKrWyadKfntISNNbEWvcnVpXFUNP6q4FuJrS7tMVDTIqIkiHgp/YOgOQmI4
+         L72CMWq1hAscRHPnJvM8YPkf25Lq5oZvStpWB2FqWmJaP+P9ojRALPbq4ShJX6p7uWRR
+         xMhnFSOOzURT9KFuMn6oAmYXn29lR2rHe1N4CavsRWIRoqxAu+gHzi8yGv/aEf+FYkoX
+         ViBw==
+X-Gm-Message-State: AOAM530hTm+Fgab6glC4aQmmdX7+yrMbPOi/BS6Tp1wUQWO0Etg4S26t
+        eJX9X6wNJgQj2oSp5CkiDC33qbOSLHoHG9Nw4mmsoyGM
+X-Google-Smtp-Source: ABdhPJyJJInEPbFfXwmnso2JjU7iDgdLOUHISORfK8EpR2ONmQW8yfxoWkO1AnG3GSrzIf+JSVJmOb5MkXtOguH+8dI=
+X-Received: by 2002:ac8:7b89:: with SMTP id p9mr6831861qtu.276.1612440486825;
+ Thu, 04 Feb 2021 04:08:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20210203135830.38568-1-alexander.antonov@linux.intel.com> <20210203135830.38568-2-alexander.antonov@linux.intel.com>
+In-Reply-To: <20210203135830.38568-2-alexander.antonov@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 4 Feb 2021 21:07:55 +0900
+Message-ID: <CAM9d7ciCGd+mkLOyJciB4Oe6XEoFyKx_=zhnK1SDnDM3=0M5NQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] perf stat: Add AGGR_PCIE_PORT mode
+To:     Alexander Antonov <alexander.antonov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several common patterns.
+Hello,
 
-0:
-        kdb_printf("...",...);
+On Wed, Feb 3, 2021 at 10:58 PM Alexander Antonov
+<alexander.antonov@linux.intel.com> wrote:
+>
+> Adding AGGR_PCIE_PORT mode to be able to distinguish aggr_mode
+> for root ports in following patches.
 
-which is the normal one.
+I'm not sure adding the AGGR_PCIE_PORT is the right way.
+In my understanding, the aggr mode is to specify how we aggregate
+counter values of a single event from different cpus.  But this seems
+to aggregate counter values from different events.  Also the new
+mode is basically the same as AGGR_GLOBAL.
 
-1:
-        kdb_printf("%s: "...,__func__,...)
+As you will add stat_config.iostat_run to distinguish the iostat
+command, probably we just want to use the global aggr mode
+(and it's the default!) and get rid of the AGGR_PCIE_PORT.
 
-We could improve '1' to this :
+Thoughts?
 
-        #define kdb_func_printf(format, args...) \
-                   kdb_printf("%s: " format, __func__, ## args)
-
-2:
-        if(KDB_DEBUG(AR))
-                kdb_printf("%s "...,__func__,...);
-
-We could improve '2' to this :
-        #define kdb_dbg_printf(mask, format, args...) \
-                           do { \
-                                        if (KDB_DEBUG(mask)) \
-                                                kdb_func_printf(format, ## args); \
-                           } while (0)
-
-In additon, we changed the format code of size_t to %zu.
-
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
----
-v1->v2 Changelog:
-- Add 'mask' parameter in kdb_dbg_printf()
-
-Thanks to Daniel and Doug's suggestions and review.
-
-v2->v4 Changelog:
-- Adjust alignment for some lines.
-
-Suggested by Douglas Anderson.
-
- kernel/debug/kdb/kdb_private.h | 10 ++++++++
- kernel/debug/kdb/kdb_support.c | 53 ++++++++++++++++--------------------------
- 2 files changed, 30 insertions(+), 33 deletions(-)
-
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index a4281fb..0a56d35 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -254,4 +254,14 @@ extern unsigned long kdb_task_state(const struct task_struct *p,
- #define	KDB_WORD_SIZE	((int)sizeof(unsigned long))
- 
- #endif /* CONFIG_KGDB_KDB */
-+
-+#define kdb_func_printf(format, args...) \
-+	kdb_printf("%s: " format, __func__, ## args)
-+
-+#define kdb_dbg_printf(mask, format, args...) \
-+	do { \
-+		if (KDB_DEBUG(mask)) \
-+			kdb_func_printf(format, ## args); \
-+	} while (0)
-+
- #endif	/* !_KDBPRIVATE_H */
-diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-index 6226502..f7c1885 100644
---- a/kernel/debug/kdb/kdb_support.c
-+++ b/kernel/debug/kdb/kdb_support.c
-@@ -39,20 +39,15 @@
-  */
- int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
- {
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbgetsymval: symname=%s, symtab=%px\n", symname,
--			   symtab);
-+	kdb_dbg_printf(AR, "symname=%s, symtab=%px\n", symname, symtab);
- 	memset(symtab, 0, sizeof(*symtab));
- 	symtab->sym_start = kallsyms_lookup_name(symname);
- 	if (symtab->sym_start) {
--		if (KDB_DEBUG(AR))
--			kdb_printf("kdbgetsymval: returns 1, "
--				   "symtab->sym_start=0x%lx\n",
--				   symtab->sym_start);
-+		kdb_dbg_printf(AR, "returns 1, symtab->sym_start=0x%lx\n",
-+			       symtab->sym_start);
- 		return 1;
- 	}
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbgetsymval: returns 0\n");
-+	kdb_dbg_printf(AR, "returns 0\n");
- 	return 0;
- }
- EXPORT_SYMBOL(kdbgetsymval);
-@@ -87,16 +82,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
- #define knt1_size 128		/* must be >= kallsyms table size */
- 	char *knt1 = NULL;
- 
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
-+	kdb_dbg_printf(AR, "addr=0x%lx, symtab=%px\n", addr, symtab);
- 	memset(symtab, 0, sizeof(*symtab));
- 
- 	if (addr < 4096)
- 		goto out;
- 	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
- 	if (!knt1) {
--		kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
--			   addr);
-+		kdb_func_printf("addr=0x%lx cannot kmalloc knt1\n", addr);
- 		goto out;
- 	}
- 	symtab->sym_name = kallsyms_lookup(addr, &symbolsize , &offset,
-@@ -147,11 +140,8 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
- 
- 	if (symtab->mod_name == NULL)
- 		symtab->mod_name = "kernel";
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbnearsym: returns %d symtab->sym_start=0x%lx, "
--		   "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
--		   symtab->sym_start, symtab->mod_name, symtab->sym_name,
--		   symtab->sym_name);
-+	kdb_dbg_printf(AR, "returns %d symtab->sym_start=0x%lx, symtab->mod_name=%px, symtab->sym_name=%px (%s)\n",
-+		       ret, symtab->sym_start, symtab->mod_name, symtab->sym_name, symtab->sym_name);
- 
- out:
- 	debug_kfree(knt1);
-@@ -328,7 +318,7 @@ int kdb_getarea_size(void *res, unsigned long addr, size_t size)
- 	int ret = copy_from_kernel_nofault((char *)res, (char *)addr, size);
- 	if (ret) {
- 		if (!KDB_STATE(SUPPRESS)) {
--			kdb_printf("kdb_getarea: Bad address 0x%lx\n", addr);
-+			kdb_func_printf("Bad address 0x%lx\n", addr);
- 			KDB_STATE_SET(SUPPRESS);
- 		}
- 		ret = KDB_BADADDR;
-@@ -353,7 +343,7 @@ int kdb_putarea_size(unsigned long addr, void *res, size_t size)
- 	int ret = copy_from_kernel_nofault((char *)addr, (char *)res, size);
- 	if (ret) {
- 		if (!KDB_STATE(SUPPRESS)) {
--			kdb_printf("kdb_putarea: Bad address 0x%lx\n", addr);
-+			kdb_func_printf("Bad address 0x%lx\n", addr);
- 			KDB_STATE_SET(SUPPRESS);
- 		}
- 		ret = KDB_BADADDR;
-@@ -435,7 +425,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -484,7 +474,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -528,7 +518,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -602,8 +592,7 @@ unsigned long kdb_task_state_string(const char *s)
- 			res = ~0UL;
- 			break;
- 		default:
--			  kdb_printf("%s: unknown flag '%c' ignored\n",
--				     __func__, *s);
-+			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
- 			  break;
- 		}
- 		++s;
-@@ -884,18 +873,16 @@ void debug_kusage(void)
- 	if (!debug_kusage_one_time)
- 		goto out;
- 	debug_kusage_one_time = 0;
--	kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
--		   __func__, dah_first);
-+	kdb_func_printf("debug_kmalloc memory leak dah_first %d\n", dah_first);
- 	if (dah_first) {
- 		h_used = (struct debug_alloc_header *)debug_alloc_pool;
--		kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
--			   h_used->size);
-+		kdb_func_printf("h_used %px size %d\n", h_used, h_used->size);
- 	}
- 	do {
- 		h_used = (struct debug_alloc_header *)
- 			  ((char *)h_free + dah_overhead + h_free->size);
--		kdb_printf("%s: h_used %px size %d caller %px\n",
--			   __func__, h_used, h_used->size, h_used->caller);
-+		kdb_func_printf("h_used %px size %d caller %px\n",
-+				h_used, h_used->size, h_used->caller);
- 		h_free = (struct debug_alloc_header *)
- 			  (debug_alloc_pool + h_free->next);
- 	} while (h_free->next);
-@@ -903,8 +890,8 @@ void debug_kusage(void)
- 		  ((char *)h_free + dah_overhead + h_free->size);
- 	if ((char *)h_used - debug_alloc_pool !=
- 	    sizeof(debug_alloc_pool_aligned))
--		kdb_printf("%s: h_used %px size %d caller %px\n",
--			   __func__, h_used, h_used->size, h_used->caller);
-+		kdb_func_printf("h_used %px size %d caller %px\n",
-+				h_used, h_used->size, h_used->caller);
- out:
- 	spin_unlock(&dap_lock);
- }
--- 
-1.8.3.1
-
+Thanks,
+Namhyung
