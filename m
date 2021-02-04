@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E3E30EFE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A872D30EFE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbhBDJpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:45:20 -0500
-Received: from mx2.veeam.com ([64.129.123.6]:45208 "EHLO mx2.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233597AbhBDJpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:45:19 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        id S235267AbhBDJrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235073AbhBDJrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:47:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EFCC061573;
+        Thu,  4 Feb 2021 01:46:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QF37dPCi57HEpfqUEK+5VUOa3KKAQXFiBdpPks8yG20=; b=NlCodaOYD+cypLcm3DpzdiK5SG
+        enboRJqS7Gco2hpMe/1qaYVqdyNlxcLRp4nvUZJEg2FjEMadpp2grRgO50XSeWSi+2pvzxTpJt2xU
+        L80uLyOvmhiADkKp93jPjS1slDGSoMJCY36LVm3Px1jF/9iCRd5EIyUa/PS1ohZEmlctc7vnci27C
+        Og2Cd3illgZyC3Ie6gF4QqEFVonx/tmvnXfvKBVXVzFFUGvoBVGvTRvwzMod/u2JSP25tj1q44UkO
+        qApjLYLA7hTMClH89C37qIuoIugDL2WAOM+hK8EE/upbpZTd1D4mj5i/ekzPehAFe5E6GgA9EoRon
+        usv3VBgQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7bDI-000g7b-9V; Thu, 04 Feb 2021 09:46:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id BE54142313;
-        Thu,  4 Feb 2021 04:44:34 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1612431875; bh=8Q+YRaTK8pSGQxUE+Di9toxMhCZgzNBGr9VcCbi5JH4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=bjPq9Eh71wsDjK0/o0k4Re55zJLzZczHy1adnsBKzVl5Kmpp4i2A+j79DI5lNaDDZ
-         OEaZSr6LkatPl8ukXlQ31u6dqbzQIsZZTsPll+ed7x4hQ43d5tNuuS7kkzJohBoOhp
-         4H1QiedztvMeDxgA4zjzn5hhMZL6ZvYN9j1pnRRs=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 4 Feb 2021
- 10:44:32 +0100
-Date:   Thu, 4 Feb 2021 12:44:27 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     "Damien.LeMoal@wdc.com" <Damien.LeMoal@wdc.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "hare@suse.de" <hare@suse.de>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>, "jack@suse.cz" <jack@suse.cz>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pavgel.tide@veeam.com" <pavgel.tide@veeam.com>
-Subject: Re: [PATCH v4 1/6] docs: device-mapper: add remap_and_filter
-Message-ID: <20210204094427.GA4325@veeam.com>
-References: <1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com>
- <1612367638-3794-2-git-send-email-sergei.shtepa@veeam.com>
- <ef604ad7-1348-1ffa-e3c4-67d153620e08@infradead.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47F07303A02;
+        Thu,  4 Feb 2021 10:46:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 090352138F7C5; Thu,  4 Feb 2021 10:46:10 +0100 (CET)
+Date:   Thu, 4 Feb 2021 10:46:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexey Klimov <aklimov@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, daniel.m.jordan@oracle.com,
+        tglx@linutronix.de, jobaker@redhat.com, audralmitchel@gmail.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org, rafael@kernel.org,
+        tj@kernel.org, lizefan@huawei.com, qais.yousef@arm.com,
+        hannes@cmpxchg.org, klimov.linux@gmail.com
+Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+Message-ID: <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
+References: <20210204010157.1823669-1-aklimov@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef604ad7-1348-1ffa-e3c4-67d153620e08@infradead.org>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26566706A
-X-Veeam-MMEX: True
+In-Reply-To: <20210204010157.1823669-1-aklimov@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, I'll fix it all.
+On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
+> @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+>  	err = _cpu_up(cpu, 0, target);
+>  out:
+>  	cpu_maps_update_done();
+> +
+> +	/* To avoid out of line uevent */
+> +	if (!err)
+> +		cpuset_wait_for_hotplug();
+> +
+>  	return err;
+>  }
+>  
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+> @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
+>  	struct device *dev = get_cpu_device(cpu);
+>  
+>  	dev->offline = false;
+> -	/* Tell user space about the state change */
+> -	kobject_uevent(&dev->kobj, KOBJ_ONLINE);
+>  }
+>  
+
+One concequence of this is that you'll now get a bunch of notifications
+across things like suspend/hybernate.
