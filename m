@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5C530EC7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58FF30EC87
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhBDG1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 01:27:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232327AbhBDG1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:27:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0EF364DFF;
-        Thu,  4 Feb 2021 06:26:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612420011;
-        bh=DSoG/oJWMOu+0RpOPNhN7HpCx5+rWaZ/ag40G8wz3D4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vZvcw3PhGDFN5T/fIZQNMsrR36BbQ2XytPNc9vZqn7rwefnl2XKxG2LeWyC+bk7Uc
-         WeoGm0BSfiVZYG7UbpB2bRqnmQYhNHhbTAXClwvG+mSBCcMtH3ZNsn6B34wGgNtU63
-         Bo+ylE+r0z/u/HRG3yKzaJOj3joEoKGqpDfOEmGA=
-Date:   Thu, 4 Feb 2021 07:26:47 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        pmalani@chromium.org, Benson Leung <bleung@chromium.org>,
-        Benson Leung <bleung@google.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: pd: Reland VDO definitions of PD2.0
-Message-ID: <YBuTp7zIKswiXfWn@kroah.com>
-References: <20210204005036.1555294-1-kyletso@google.com>
- <CAGZ6i=3fdLt=MWZunfRDPpjcxjDO9K+v=64bpadvbpaxCUpHYg@mail.gmail.com>
- <CAGZ6i=3fgda+8brU49qG1pxc=1icM7eeuHx+oH6-bA9oa4qK1Q@mail.gmail.com>
+        id S232814AbhBDGcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 01:32:11 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12122 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232704AbhBDGcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 01:32:06 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWTDb1Fdqz1640g;
+        Thu,  4 Feb 2021 14:29:51 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 14:31:01 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <bhelgaas@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <sean.v.kelley@intel.com>, <Jonathan.Cameron@huawei.com>,
+        <refactormyself@gmail.com>
+CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH 1/1] PCI/AER: Change to use helper pcie_aer_is_native() in some places
+Date:   Thu, 4 Feb 2021 14:28:47 +0800
+Message-ID: <1612420127-6447-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGZ6i=3fgda+8brU49qG1pxc=1icM7eeuHx+oH6-bA9oa4qK1Q@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 02:17:56PM +0800, Kyle Tso wrote:
-> On Thu, Feb 4, 2021 at 8:55 AM Kyle Tso <kyletso@google.com> wrote:
-> >
-> > Hi, Benson and Prashant,
-> >
-> > On Thu, Feb 4, 2021 at 8:50 AM Kyle Tso <kyletso@google.com> wrote:
-> > >
-> > > Reland VDO definitions of PD Revision 2.0 as they are still used in
-> > > PD2.0 products.
-> > >
-> > > Fixes: 0e1d6f55a12e ("usb: pd: Update VDO definitions")
-> > > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > > ---
-> > >  include/linux/usb/pd_vdo.h | 69 ++++++++++++++++++++++++++++++++++++--
-> > >  1 file changed, 66 insertions(+), 3 deletions(-)
-> > >
-> > Is there any chance that you have free time to verify this patch with
-> > CrOS configuration?
-> >
-> > thanks,
-> > Kyle
-> >
-> 
-> Hi,
-> 
-> I tried to enable the config "CONFIG_CROS_EC_TYPEC=m" and it can make now.
+Use helper function pcie_aer_is_native() in some places to keep
+the code tidy. No function changes.
 
-Thanks for verifying, I'll go queue this up to keep the tree building
-properly.
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+---
+ drivers/pci/pcie/aer.c          | 4 ++--
+ drivers/pci/pcie/err.c          | 2 +-
+ drivers/pci/pcie/portdrv_core.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-greg k-h
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index 77b0f2c..03212d0 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -1397,7 +1397,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+ 	 */
+ 	aer = root ? root->aer_cap : 0;
+ 
+-	if ((host->native_aer || pcie_ports_native) && aer) {
++	if (pcie_aer_is_native(dev) && aer) {
+ 		/* Disable Root's interrupt in response to error messages */
+ 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+ 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+@@ -1417,7 +1417,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+ 		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+ 	}
+ 
+-	if ((host->native_aer || pcie_ports_native) && aer) {
++	if (pcie_aer_is_native(dev) && aer) {
+ 		/* Clear Root Error Status */
+ 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
+ 		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index 510f31f..1d6cfb9 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -237,7 +237,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	 * this status.  In that case, the signaling device may not even be
+ 	 * visible to the OS.
+ 	 */
+-	if (host->native_aer || pcie_ports_native) {
++	if (pcie_aer_is_native(dev)) {
+ 		pcie_clear_device_status(bridge);
+ 		pci_aer_clear_nonfatal_status(bridge);
+ 	}
+diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+index e1fed664..1e6a690 100644
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -222,7 +222,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+ 
+ #ifdef CONFIG_PCIEAER
+ 	if (dev->aer_cap && pci_aer_available() &&
+-	    (pcie_ports_native || host->native_aer)) {
++	    pcie_aer_is_native(dev)) {
+ 		services |= PCIE_PORT_SERVICE_AER;
+ 
+ 		/*
+-- 
+2.8.1
+
