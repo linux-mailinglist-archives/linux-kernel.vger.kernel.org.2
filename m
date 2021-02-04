@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD27730F460
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2303030F44F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhBDN52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S236493AbhBDN4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236485AbhBDN40 (ORCPT
+        with ESMTP id S236450AbhBDNzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:56:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EC2C06178B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DiD2UYQ2vcS4PPPHWLsjWMJjVSogeh5wJNa3h5rO1CY=; b=NnzATUNpRVNSOsY8FrBXNrcu54
-        MswekwphsKgfAfqRV9+X/gjwlt4eltuOy9xD/TB0CfKh7KuSukcxagOLcr7hVEXGoep5NU+E5qhXF
-        XTuLZV/b21gkaPQlKvRMd9WDwUfuTjuzdqJhUNetw0xlNcd6ZMpXrIpCWLK222kWwA/g4DA0/j6LU
-        VSS1CC2tYqdZqqyJwCZAsck0PeWs52bNmYGDeyKH9JFHAZYsdgCVn7iBXW/ngUtAset/y9uhFJ++r
-        Pazjk1UdeRTvMdMLTVZqzidWL2a5iIh3opCTkuH2DttXurkHTtfEpc0L9pw0IXS+bWONBqvXua75P
-        4tKw09qw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7f5I-000wig-Gx; Thu, 04 Feb 2021 13:54:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6931F3003D8;
-        Thu,  4 Feb 2021 14:54:08 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 452182C12E917; Thu,  4 Feb 2021 14:54:08 +0100 (CET)
-Date:   Thu, 4 Feb 2021 14:54:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YBv8gBSKU1MdtXuW@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
+        Thu, 4 Feb 2021 08:55:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E25C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 05:54:41 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7f5j-0005Ff-6n; Thu, 04 Feb 2021 14:54:39 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l7f5g-0007to-TZ; Thu, 04 Feb 2021 14:54:36 +0100
+Date:   Thu, 4 Feb 2021 14:54:36 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-pwm@vger.kernel.org, Ban Tao <fengzheng923@gmail.com>,
+        linux-kernel@vger.kernel.org, mripard@kernel.org, wens@csie.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
+Message-ID: <20210204135436.xkxkp6qxjpcnfxgg@pengutronix.de>
+References: <20210203125317.1975-1-fengzheng923@gmail.com>
+ <20210203151200.fdzzq23teoypbxad@pengutronix.de>
+ <YBrQTM5iADZgA2v1@ulmo>
+ <20210203205913.dvmppahnkmcj2dac@pengutronix.de>
+ <YBv44P71Z0cD1BSG@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5n55ifqwrdmxs635"
 Content-Disposition: inline
-In-Reply-To: <20210123011704.1901835-3-joel@joelfernandes.org>
+In-Reply-To: <YBv44P71Z0cD1BSG@ulmo>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
 
-I'm thinking this is too much credit, I didn't write much of this.
+--5n55ifqwrdmxs635
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Marks all tasks in a cgroup as matching for core-scheduling.
-> 
-> A task will need to be moved into the core scheduler queue when the cgroup
-> it belongs to is tagged to run with core scheduling.  Similarly the task
-> will need to be moved out of the core scheduler queue when the cgroup
-> is untagged.
-> 
-> Also after we forked a task, its core scheduler queue's presence will
-> need to be updated according to its new cgroup's status.
-> 
-> Use stop machine mechanism to update all tasks in a cgroup to prevent a
-> new task from sneaking into the cgroup, and missed out from the update
-> while we iterates through all the tasks in the cgroup.  A more complicated
-> scheme could probably avoid the stop machine.  Such scheme will also
-> need to resovle inconsistency between a task's cgroup core scheduling
-> tag and residency in core scheduler queue.
-> 
-> We are opting for the simple stop machine mechanism for now that avoids
-> such complications.
-> 
-> Core scheduler has extra overhead.  Enable it only for core with
-> more than one SMT hardware threads.
+Hello Thierry,
 
-Very little actual words on the desired and implemented semantics of the
-interface, while the patch contains much non-obvious complication.
+On Thu, Feb 04, 2021 at 02:38:40PM +0100, Thierry Reding wrote:
+> All I'm saying is that I don't think we need to require everyone to
+> adopt a prefix, especially if this hasn't been followed consistently,
+> because then we don't actually gain anything.
+
+Is "we didn't do this consistently in the past" a reason to never
+improve here? I hope it's not ...
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5n55ifqwrdmxs635
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAb/JkACgkQwfwUeK3K
+7AnaxQf9EqzF2WspMJC8fSN3GE4BD1gqJYSbjZfa7M8+apxIRpbITARFTlBxpTQc
+UQ0YWm3rtSwHfcs5ta/SoBBvCi66A2TcrdVbGo+ShByNBKr7aQpVlKUw20AB8+cS
+Xo9KgQNSqULN+qzh4rxZXeVv20DKamENwZ3FNtnwgN/tDZcDAfhK0k7b1USIwA/9
+dz0PPL/DeFMCimiWCKn2wv+2bc8LdL7gO68b9gSmtVMySvfDVMrhA+JEZimH0puM
+5LGEmN4OX3yifk0ljYFyBJBhj8terLo/isnUjY4jXp/IIJiFVDVBkc4RSHdD2k9i
+2qv88x9eUn2lFbRk4w8MUOWNkkTirw==
+=1dCm
+-----END PGP SIGNATURE-----
+
+--5n55ifqwrdmxs635--
