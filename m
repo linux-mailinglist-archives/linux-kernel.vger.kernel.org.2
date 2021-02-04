@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A505330EA0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD8130EA11
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbhBDCUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbhBDCUT (ORCPT
+        id S233863AbhBDCUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:20:55 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12119 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233311AbhBDCUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:20:19 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B376C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:19:39 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id a16so922359plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:19:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bI15oVQgc1lFGULeaCog8tE69ZYTPzxNtQA/R861SRY=;
-        b=Ul6QJPOqgKCpkIj2uU3Ya196bFz7RuWWlxzfr/nMwlbTiEGDHGVJTmdhE83/bPxc84
-         6J3JrRSXI8eEVh+dxZ1/9JzGIz+k5HZQn4NAzVeTnMx3iG/wLMNk/T8mM3jmPkrKSwWi
-         canJoZNADlCZC/y6Ej4WVzdIU5Vmb4YIbQCuuh1Cv/kDcze5rxHO0wd4iZIhF1oZS97J
-         jgaeP/ZYjTSP1vXp6b7p7Wi3rUkb7ZN6x8FCp89VRtGctCyV5gg1LlkcefV48s6qHRPL
-         bdE5ZIgnyhgsnAMnR+YoPYVZ7pDOBP2BkEBOhzBTi6kW1q75dsEAFi1w9eHRS7bDiATT
-         s2QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bI15oVQgc1lFGULeaCog8tE69ZYTPzxNtQA/R861SRY=;
-        b=apVmiEgNocg6rpkwrk2qcc6wBQ+SRRx2oAqoU8/ZDp0302h9Q6wNWdYWn7+b37lu5y
-         HbWqQCAI2LQl+fpcU72LxdR6E5bJQC3AhjUKuQsNxX3BUBWQIpHdgcSGMMhHTV1+n2ZC
-         /eCJ1nDhxnvWGLvTcYLCui3DPdkX5ZUA6pr8z6nHa6t2ZI5GgF6sIlIDDXsDD20yIKGx
-         Uce+2vOETXaubktuSHZGK0VydYlLdOCIhF5zl1yjej2Qul2ne8v1iQhxzIoP/phmRWoF
-         FQI4zWjFQWDJwNKPH5M/e0cQ05Ox9eFhK4xn7i9poYfX1DaT898li4uMThoZAESPEelL
-         xAig==
-X-Gm-Message-State: AOAM532vWp48HX2ItHQWNj5Mkv5P7G0a55PAY9Jkiejwn1nVLoc4T/1b
-        jNymywl5WiCu18LphhrCdjT/Fw==
-X-Google-Smtp-Source: ABdhPJypw/YUgiSi5ZA2WhWPE4I6mYx08kPE1EXRXSSrf4FwN3n6GhJer5RMDpiqQP5ClCUruKsa0w==
-X-Received: by 2002:a17:90b:4c85:: with SMTP id my5mr6184510pjb.225.1612405178717;
-        Wed, 03 Feb 2021 18:19:38 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:a9a0:e924:d161:b6cb])
-        by smtp.gmail.com with ESMTPSA id u26sm3497603pfm.61.2021.02.03.18.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 18:19:38 -0800 (PST)
-Date:   Wed, 3 Feb 2021 18:19:31 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/12] KVM: x86: SEV: Treat C-bit as legal GPA bit
- regardless of vCPU mode
-Message-ID: <YBtZs4Z2ROeHyf3m@google.com>
-References: <20210204000117.3303214-1-seanjc@google.com>
- <20210204000117.3303214-8-seanjc@google.com>
- <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
+        Wed, 3 Feb 2021 21:20:53 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWMfy4s4bz162ZX;
+        Thu,  4 Feb 2021 10:18:50 +0800 (CST)
+Received: from [10.174.179.241] (10.174.179.241) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 10:20:06 +0800
+Subject: Re: [PATCH 2/4] hugetlg: Break earlier in add_reservation_in_range()
+ when we can
+To:     Peter Xu <peterx@redhat.com>
+CC:     Wei Zhang <wzam@amazon.com>, Matthew Wilcox <willy@infradead.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Gal Pressman" <galpress@amazon.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Andrea Arcangeli" <aarcange@redhat.com>, Jan Kara <jack@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "Mike Rapoport" <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Jann Horn <jannh@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+References: <20210203210832.113685-1-peterx@redhat.com>
+ <20210203210832.113685-3-peterx@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <22c64602-db2f-de36-ea54-5701f109368e@huawei.com>
+Date:   Thu, 4 Feb 2021 10:20:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5fa85e81a54800737a1417be368f0061324e0aec.camel@intel.com>
+In-Reply-To: <20210203210832.113685-3-peterx@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021, Edgecombe, Rick P wrote:
-> On Wed, 2021-02-03 at 16:01 -0800, Sean Christopherson wrote:
-> >  
-> > -       unsigned long cr3_lm_rsvd_bits;
-> > +       u64 reserved_gpa_bits;
+Hi:
+On 2021/2/4 5:08, Peter Xu wrote:
+> All the regions maintained in hugetlb reserved map is inclusive on "from" but
+> exclusive on "to".  We can break earlier even if rg->from==t because it already
+> means no possible intersection.
 > 
-> LAM defines bits above the GFN in CR3:
-> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+> This does not need a Fixes in all cases because when it happens (rg->from==t)
+> we'll not break out of the loop while we should, however the next thing we'd do
+> is still add the last file_region we'd need and quit the loop in the next
+> round.  So this change is not a bugfix (since the old code should still run
+> okay iiuc), but we'd better still touch it up to make it logically sane.
 > 
-> KVM doesn't support this today of course, but it might be confusing to
-> try to combine the two concepts.
 
-Ah, took me a few minutes, but I see what you're saying.  LAM will introduce
-bits that are repurposed for CR3, but not generic GPAs.  And, the behavior is
-based on CPU support, so it'd make sense to have a mask cached in vcpu->arch
-as opposed to constantly generating it on the fly.
+I think the difference is when we handle the rg->from == t case. Previous one is in the loop, now below the
+loop. But the result should be same.
+Thanks.
 
-Definitely agree that having a separate cr3_lm_rsvd_bits or whatever is the
-right way to go when LAM comes along.  Not sure it's worth keeping a duplicate
-field in the meantime, though it would avoid a small amount of thrash.
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Paolo, any thoughts?
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  mm/hugetlb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index d2859c2aecc9..9e6ea96bf33b 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -377,7 +377,7 @@ static long add_reservation_in_range(struct resv_map *resv, long f, long t,
+>  		/* When we find a region that starts beyond our range, we've
+>  		 * finished.
+>  		 */
+> -		if (rg->from > t)
+> +		if (rg->from >= t)
+>  			break;
+>  
+>  		/* Add an entry for last_accounted_offset -> rg->from, and
+> 
+
