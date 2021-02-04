@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6DE30E833
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFADF30E83D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbhBDAC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:02:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
+        id S233530AbhBDAEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234084AbhBDACk (ORCPT
+        with ESMTP id S234244AbhBDADF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:02:40 -0500
+        Wed, 3 Feb 2021 19:03:05 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA72C06121C
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 16:01:50 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id l197so1524359ybf.17
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 16:01:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F2CC06121D
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 16:01:52 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id f127so1517022ybf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 16:01:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=Z9PY+ha0iNe1qhtrrDXpdGIAQqM4NawdTmEQfVlKh0A=;
-        b=uXPdQJNCax4ScHsyNG6CuYomNtv/cKnz/pychbfxxThSndPFgZ1ZfDnm52ODAY/qGn
-         09VhZi3QLmQmrscRMGiymFL2+iaw+pc0tf012Je5T97qs5kob1Gwbg0XGFhcxttGDB2l
-         MH5ssPdPA8WcYGOSqHLidXVEnKdYbvPFz1rJ5zNHOWLpuEt8Z08zpRtVHwl4VK+NwOyD
-         9YVXYHf5oakMsgvWDfsdGhQpGwZqdKdstc2ty32rzfb7yCd/KLBDvWlgaKACZ6I185ev
-         j3iMmMY9+sBsDzjqGM9r1HN8OW/B+Wz11NkP5cPgr5v8/s6LMs642cBx3efzJycb1OKz
-         7NYA==
+        bh=A6vZFDvp80hzL8bSGmgbXTenVplxRZt6FUQXbaMJFdM=;
+        b=iILJ48vL9bhmsbygJ+drqXyFr1y2A4TSk8IGIa4dcDPFX6fRXtdLP65EqBLBKnpsGV
+         wknSQuVLipRUANA3gQuUOnp2NsqDOedFFElNDsbmc7Aa9ix69g3i08n7T1Hg11QsntHo
+         NSJrc8S63wRb0Xf5mF3xttAFX4E0jq3wwHbWtSKeRVnt7NTS40zh5chTiil1PGCTIC9M
+         MS67NISELAvQ+wJfzM0f0JCGNGP5Uf/o84bYLNLGG1LWJKwktka0W1Ai3+wsjRl+5ONa
+         zkeKBtg7RDOzZgskjs9IBV+bObJr3kGUMEUb/URaqIXd4AfRsDts5U4njswutTrHyKcK
+         MUMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=Z9PY+ha0iNe1qhtrrDXpdGIAQqM4NawdTmEQfVlKh0A=;
-        b=rfI6aCG2Fi/A1ZrRMRf4mua78YTwuajH5/pXCgiTAMFqxDs1fdlE7/q1FTdI0tC7s3
-         DeXbN4SWHsUozDaKgWWeq6j7U4DU3/bgMb+7cz6rzEa/4Av4XpRncjAeDwcW7xV7sd5N
-         RLEFoPLcWMKhJYR1FvbUgwjoDGv9VmUPYBmOApKVgbQpiTmoxJYSqhzjotxhsiDwCKuN
-         dr8J7lu6SIeJW1lnm9emxapY9u02p8u0KQ/3fdeBJV3zsvFM9oBBQM0M3JDm104F68TA
-         nazEvc3IsCqm0XPSlCmoq5ljjeiY5DPWcKo7OHek30K0Bvj17kcnDPHKCU2v+ziIpYbM
-         516g==
-X-Gm-Message-State: AOAM530tmcmbWHHkrD8VoyBpuO4IrL3GTX3BkMBHSqqPY0Ve5hDOhACj
-        zGqqgXtIBNJEHSk9/tTrk9HUApLNySY=
-X-Google-Smtp-Source: ABdhPJwvmeMkJuxwu9FcSp7HWHK7vMfbcCJ+yABiDBg9vCaI2ywrOt7JzIJcO4BVv1b3p08eAK1OQ5inVEY=
+        bh=A6vZFDvp80hzL8bSGmgbXTenVplxRZt6FUQXbaMJFdM=;
+        b=Jql7y3DHOE1lmpiRU8jXCX5/EVKbPVgaMTEFvutZ1bozFc9g4Ei5PA8HYRrTRx/A8y
+         KVDjb+vJzCCc14ceQh7pSrL6rWzE0wsmiobbSNtRJQGG0p8jld1zy533OG9JDRO39lPj
+         uNKbeOEOvnrBOXWqCquFV869mUDxXPYhqX0WnUTU5kfxtI/3fxuXbFkI7JDiCqGuiY3U
+         dmLU9vRMEW303baQAkfh1xIk4KgeTqd6l24SwgBHwZ38ZAeaNxrtIT3Nq/KMSRgvaurH
+         NvFYkHfPOMszlSot096v3fUlXdyYOLiBao1iobfJDH90ASrFBgdAf+vmBZpcM5Z1BAhc
+         FhzQ==
+X-Gm-Message-State: AOAM533CKnxPkxW3FVD8wsSeMqHNJQ6tOdt6YOocI8cfWzi+fNsm/NKA
+        5W805p8lcGuTkFz4w9OR/adgsP2pW1Y=
+X-Google-Smtp-Source: ABdhPJzJssUlPvMCPA9v68raoyHoKIZLJwhTQkUnkx2kNJvyrd9sqrlkcPKamhZCcXSwN8F7zq+GTdpUfn8=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:a9a0:e924:d161:b6cb])
- (user=seanjc job=sendgmr) by 2002:a25:c04d:: with SMTP id c74mr7510990ybf.102.1612396909482;
- Wed, 03 Feb 2021 16:01:49 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:7c06:: with SMTP id x6mr8347021ybc.445.1612396911857;
+ Wed, 03 Feb 2021 16:01:51 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  3 Feb 2021 16:01:15 -0800
+Date:   Wed,  3 Feb 2021 16:01:16 -0800
 In-Reply-To: <20210204000117.3303214-1-seanjc@google.com>
-Message-Id: <20210204000117.3303214-11-seanjc@google.com>
+Message-Id: <20210204000117.3303214-12-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210204000117.3303214-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH 10/12] KVM: x86: Add helper to consolidate "raw" reserved GPA
- mask calculations
+Subject: [PATCH 11/12] KVM: x86: Move nVMX's consistency check macro to common code
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -71,125 +70,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a helper to generate the mask of reserved GPA bits _without_ any
-adjustments for repurposed bits, and use it to replace a variety of
-open coded variants in the MTRR and APIC_BASE flows.
+Move KVM's CC() macro to x86.h so that it can be reused by nSVM.
+Debugging VM-Enter is as painful on SVM as it is on VMX.
 
-No functional change intended.
+Rename the more visible macro to KVM_NESTED_VMENTER_CONSISTENCY_CHECK
+to avoid any collisions with the uber-concise "CC".
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/cpuid.c | 12 +++++++++++-
- arch/x86/kvm/cpuid.h |  1 +
- arch/x86/kvm/mtrr.c  | 12 ++++++------
- arch/x86/kvm/x86.c   |  4 ++--
- 4 files changed, 20 insertions(+), 9 deletions(-)
+ arch/x86/kvm/vmx/nested.c | 8 +-------
+ arch/x86/kvm/x86.h        | 8 ++++++++
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index d313b1804278..dd9406450696 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -188,7 +188,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	kvm_update_pv_runtime(vcpu);
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index b25ce704a2aa..dbca1687ae8e 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -21,13 +21,7 @@ module_param_named(enable_shadow_vmcs, enable_shadow_vmcs, bool, S_IRUGO);
+ static bool __read_mostly nested_early_check = 0;
+ module_param(nested_early_check, bool, S_IRUGO);
  
- 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
--	vcpu->arch.reserved_gpa_bits = rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
-+	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+-#define CC(consistency_check)						\
+-({									\
+-	bool failed = (consistency_check);				\
+-	if (failed)							\
+-		trace_kvm_nested_vmenter_failed(#consistency_check, 0);	\
+-	failed;								\
+-})
++#define CC KVM_NESTED_VMENTER_CONSISTENCY_CHECK
  
- 	kvm_pmu_refresh(vcpu);
- 	vcpu->arch.cr4_guest_rsvd_bits =
-@@ -242,6 +242,16 @@ int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
- 	return 36;
- }
+ /*
+  * Hyper-V requires all of these, so mark them as supported even though
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 4f875f8d93b3..a14da36a30ed 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -8,6 +8,14 @@
+ #include "kvm_cache_regs.h"
+ #include "kvm_emulate.h"
  
-+/*
-+ * This "raw" version returns the reserved GPA bits without any adjustments for
-+ * encryption technologies that usurp bits.  The raw mask should be used if and
-+ * only if hardware does _not_ strip the usurped bits, e.g. in virtual MTRRs.
-+ */
-+u64 kvm_vcpu_reserved_gpa_bits_raw(struct kvm_vcpu *vcpu)
-+{
-+	return rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
-+}
++#define KVM_NESTED_VMENTER_CONSISTENCY_CHECK(consistency_check)		\
++({									\
++	bool failed = (consistency_check);				\
++	if (failed)							\
++		trace_kvm_nested_vmenter_failed(#consistency_check, 0);	\
++	failed;								\
++})
 +
- /* when an old userspace process fills a new kernel module */
- int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
- 			     struct kvm_cpuid *cpuid,
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index f673f45bdf52..2a0c5064497f 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -30,6 +30,7 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
- 	       u32 *ecx, u32 *edx, bool exact_only);
- 
- int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu);
-+u64 kvm_vcpu_reserved_gpa_bits_raw(struct kvm_vcpu *vcpu);
- 
- static inline int cpuid_maxphyaddr(struct kvm_vcpu *vcpu)
- {
-diff --git a/arch/x86/kvm/mtrr.c b/arch/x86/kvm/mtrr.c
-index f472fdb6ae7e..a8502e02f479 100644
---- a/arch/x86/kvm/mtrr.c
-+++ b/arch/x86/kvm/mtrr.c
-@@ -75,7 +75,7 @@ bool kvm_mtrr_valid(struct kvm_vcpu *vcpu, u32 msr, u64 data)
- 	/* variable MTRRs */
- 	WARN_ON(!(msr >= 0x200 && msr < 0x200 + 2 * KVM_NR_VAR_MTRR));
- 
--	mask = (~0ULL) << cpuid_maxphyaddr(vcpu);
-+	mask = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
- 	if ((msr & 1) == 0) {
- 		/* MTRR base */
- 		if (!valid_mtrr_type(data & 0xff))
-@@ -351,14 +351,14 @@ static void set_var_mtrr_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data)
- 	if (var_mtrr_range_is_valid(cur))
- 		list_del(&mtrr_state->var_ranges[index].node);
- 
--	/* Extend the mask with all 1 bits to the left, since those
--	 * bits must implicitly be 0.  The bits are then cleared
--	 * when reading them.
-+	/*
-+	 * Set all illegal GPA bits in the mask, since those bits must
-+	 * implicitly be 0.  The bits are then cleared when reading them.
- 	 */
- 	if (!is_mtrr_mask)
- 		cur->base = data;
- 	else
--		cur->mask = data | (-1LL << cpuid_maxphyaddr(vcpu));
-+		cur->mask = data | kvm_vcpu_reserved_gpa_bits_raw(vcpu);
- 
- 	/* add it to the list if it's enabled. */
- 	if (var_mtrr_range_is_valid(cur)) {
-@@ -426,7 +426,7 @@ int kvm_mtrr_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata)
- 		else
- 			*pdata = vcpu->arch.mtrr_state.var_ranges[index].mask;
- 
--		*pdata &= (1ULL << cpuid_maxphyaddr(vcpu)) - 1;
-+		*pdata &= ~kvm_vcpu_reserved_gpa_bits_raw(vcpu);
- 	}
- 
- 	return 0;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 82a70511c0d3..28fea7ff7a86 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -408,7 +408,7 @@ int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- {
- 	enum lapic_mode old_mode = kvm_get_apic_mode(vcpu);
- 	enum lapic_mode new_mode = kvm_apic_mode(msr_info->data);
--	u64 reserved_bits = ((~0ULL) << cpuid_maxphyaddr(vcpu)) | 0x2ff |
-+	u64 reserved_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu) | 0x2ff |
- 		(guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) ? 0 : X2APIC_ENABLE);
- 
- 	if ((msr_info->data & reserved_bits) != 0 || new_mode == LAPIC_MODE_INVALID)
-@@ -10089,7 +10089,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	fx_init(vcpu);
- 
- 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
--	vcpu->arch.reserved_gpa_bits = rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
-+	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
- 
- 	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
- 
+ #define KVM_DEFAULT_PLE_GAP		128
+ #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
+ #define KVM_DEFAULT_PLE_WINDOW_GROW	2
 -- 
 2.30.0.365.g02bc693789-goog
 
