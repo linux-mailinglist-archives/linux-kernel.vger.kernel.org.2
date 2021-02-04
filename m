@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415E530F656
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3059830F658
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbhBDPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:30:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
+        id S237320AbhBDPbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:31:25 -0500
+Received: from mga01.intel.com ([192.55.52.88]:24482 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237325AbhBDP3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:29:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CEEE64DF5;
-        Thu,  4 Feb 2021 15:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612452539;
-        bh=I6xC+Xl7rj9KjJh8OT+FRp7sxPgM1E+61VHhivEMUsU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WcRZnvioNG7VFrSgWK+Z0q9blvJWKlVZ/fNFQTAkkNlXRbtu4XZ8YY6wTdroBK/q+
-         buNdv8g6BFDyuzSm6z/vgjSGHhnA39A3zw6/geD5Ho+lkj03jRecRw9hCzWKz7TnPf
-         L6QV8t86Vh+YIHEdlCZDx3Wnz3FaRCdaxFpEwBF8=
-Date:   Thu, 4 Feb 2021 16:28:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] gpio: uapi: use the preferred SPDX license identifier
-Message-ID: <YBwSuAjNu4FtXSn/@kroah.com>
-References: <20210204124357.3817-1-brgl@bgdev.pl>
- <YBv61eNnVksYq9mr@kroah.com>
- <CAMpxmJXcVOHbozzhQQW2GPg-6ivCWL3pQmyC-oU_YW5NX=gK3w@mail.gmail.com>
- <YBwGHWSV1/ZZm7u/@kroah.com>
- <CAMpxmJUof3DN2YHBOQm1Z-hrtS1cj6in5CAHowce++36XtqsnA@mail.gmail.com>
+        id S237164AbhBDP3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:29:46 -0500
+IronPort-SDR: bUN6V2kV8PHVnv6VaDvCBP+aKJeCFaRSGUr302Rh8UZTSW2ykZwjjy2iZEUewGr7E8pKgUE32C
+ nqxPGvyLbhJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200252103"
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="200252103"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:29:05 -0800
+IronPort-SDR: e/5p4pSuQmOb/MbMZ2Wp1tEb+Ne2uaNCe7q0PWUrRotDCKEL57esF7lmORz7DWpIeTm1AgiK/R
+ 1fiQGYbuvEGA==
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="415207885"
+Received: from jguillor-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.14])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 07:29:03 -0800
+Date:   Thu, 4 Feb 2021 07:29:01 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210204152901.pzjnyr64xlvo6yup@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-4-ben.widawsky@intel.com>
+ <20210202181016.GD3708021@infradead.org>
+ <20210202182418.3wyxnm6rqeoeclu2@intel.com>
+ <20210203171534.GB4104698@infradead.org>
+ <20210203172342.fpn5vm4xj2xwh6fq@intel.com>
+ <CAPcyv4hvFjs=QqmUYqPipuaLoFiZ-dr6qVhqbDupWuKTw3QDkg@mail.gmail.com>
+ <20210204071646.GA122880@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJUof3DN2YHBOQm1Z-hrtS1cj6in5CAHowce++36XtqsnA@mail.gmail.com>
+In-Reply-To: <20210204071646.GA122880@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 04:17:51PM +0100, Bartosz Golaszewski wrote:
-> On Thu, Feb 4, 2021 at 3:35 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Feb 04, 2021 at 03:15:50PM +0100, Bartosz Golaszewski wrote:
-> > > On Thu, Feb 4, 2021 at 2:47 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Thu, Feb 04, 2021 at 01:43:57PM +0100, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > >
-> > > > > GPL-2.0 license identifier is deprecated, let's use the preferred
-> > > > > identifier: GPL-2.0-only.
-> > > > >
-> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > ---
-> > > > > Hi Kent, Greg,
-> > > > >
-> > > > > I started working on making libgpiod licensing reuse-compliant and noticed
-> > > > > that the reuse-tool is telling me that the GPL-2.0 SPDX identifier in the
-> > > > > GPIO uapi header is deprecated. Since I'm required to copy the header
-> > > > > verbatim into libgpiod's repository, I think we need to fix that at source
-> > > > > first.
-> > > > >
-> > > > >  include/uapi/linux/gpio.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
-> > > > > index e4eb0b8c5cf9..3e01ededbf36 100644
-> > > > > --- a/include/uapi/linux/gpio.h
-> > > > > +++ b/include/uapi/linux/gpio.h
-> > > > > @@ -1,4 +1,4 @@
-> > > > > -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
-> > > >
-> > > > No, there is no need to convert the kernel to the "latest" spdx level,
-> > > > when we started out there was no "-only" nonsense (hint no other license
-> > > > has that crud), and "GPL-2.0" is a totally valid summary of the license.
-> > > >
-> > > > So please don't go changing it all in-kernel, that way lies madness.
-> > > > Let's finish fixing up ALL kernel files before worrying about what SPDX
-> > > > "version" we are at.
-> > > >
-> > >
-> > > But then, the reuse script is telling me:
-> > >
-> > >     Unfortunately, your project is not compliant with version 3.0 of
-> > > the REUSE Specification :-(
-> > >
-> > > because I'm using a deprecated license. :(
-> >
-> > Go yell at the REUSE people, there's no requirement to have the most
-> > recent version of SPDX, is there?   :)
-> >
-> > And if that's the only thing wrong with the project when running 'reuse
-> > lint' then you should be happy, no one will complain at all.
-> >
-> > thanks,
-> >
-> > greg k-h
+On 21-02-04 07:16:46, Christoph Hellwig wrote:
+> On Wed, Feb 03, 2021 at 01:23:31PM -0800, Dan Williams wrote:
+> > > I'd prefer to keep the helpers for now as I do find them helpful, and so far
+> > > nobody else who has touched the code has complained. If you feel strongly, I
+> > > will change it.
+> > 
+> > After seeing the options, I think I'd prefer to not have to worry what
+> > extra magic is happening with cxl_read_mbox_reg32()
+> > 
+> > cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> > 
+> > readl(cxlm->mbox_regs + CXLDEV_MB_CAPS_OFFSET);
+> > 
+> > The latter is both shorter and more idiomatic.
 > 
-> Ok, I get it but let me try one last time: there's absolutely no harm
-> in merging this patch for the next release, is there? Currently there
-> are around 15000 instances of "GPL-2.0-only" in the kernel vs 30000
-> "GPL-2.0" - so the former is not that uncommon.
+> Same here.  That being said I know some driver maintainers like
+> wrappers, my real main irk was the macro magic to generate them.
 
-It's up to the owner/maintainer of this file in the end, but I don't
-want to see patches doing this for many more files, as it's pointless
-churn as far as the kernel is concerned.
+I think the wrapper is often used as a means of trying to have cross OS
+compatibility to some degree. Just to be clear, that was *not* the purpose here.
 
-thanks,
+Stating I disagree for posterity, I'll begin reworking this code and it will be
+changed for v2.
 
-greg k-h
+Thanks.
+Ben
