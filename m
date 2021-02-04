@@ -2,154 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FDD30F253
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F14030F26F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235951AbhBDLfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236031AbhBDLcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:32:48 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8199C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:32:08 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 19BB81F46091
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
- <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk>
- <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
-Message-ID: <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
-Date:   Thu, 4 Feb 2021 11:32:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S236055AbhBDLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:37:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235541AbhBDLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:35:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B41964F45;
+        Thu,  4 Feb 2021 11:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612438488;
+        bh=kdvaYUzyR0twFNgrfjDXxc4xk/nIUc95siq77AcMxUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sy9fx25cRRyQxUg4PQiuwRqTEHX658JxHyGPHq/88My/x1kvTH4DAJ2aISoI2aXkQ
+         7q4ImT49/hSnXgZZe5nIte5an8yCdFl3/nKBSmL1KtXUQmhK86d+bWvAKpFB/hCPJ+
+         vHFmENUyT6t71Pv7oR0jOWL5QdCiNYnsM7hkVvYdNA83FthQ8MT6l5HSIaqDtEq017
+         v3Uf42+f0Hl/atXgvQESI8GiyyIE+mqMxGUZE9ZuSWQ78rGF9JCQdy6unJPKAA/OZt
+         AfPnD+C9cBVf98rjrYDltnlBiJ+vDveF6Nvs2anXspx7fDGAP1j2/zrNQYpSDiRu3a
+         P3N5VPANbVUIA==
+Date:   Thu, 4 Feb 2021 13:34:32 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210204113432.GS242749@kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-7-rppt@kernel.org>
+ <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBqT/nwFpfP2EyeJ@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/2021 10:33, Guillaume Tucker wrote:
-> On 04/02/2021 10:27, Ard Biesheuvel wrote:
->> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
->> <linux@armlinux.org.uk> wrote:
->>>
->>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
->>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
->>>> <guillaume.tucker@collabora.com> wrote:
->>>>>
->>>>> Hi Ard,
->>>>>
->>>>> Please see the bisection report below about a boot failure on
->>>>> rk3288 with next-20210203.  It was also bisected on
->>>>> imx6q-var-dt6customboard with next-20210202.
->>>>>
->>>>> Reports aren't automatically sent to the public while we're
->>>>> trialing new bisection features on kernelci.org but this one
->>>>> looks valid.
->>>>>
->>>>> The kernel is most likely crashing very early on, so there's
->>>>> nothing in the logs.  Please let us know if you need some help
->>>>> with debugging or trying a fix on these platforms.
->>>>>
->>>>
->>>> Thanks for the report.
->>>
->>> Ard,
->>>
->>> I want to send my fixes branch today which includes your regression
->>> fix that caused this regression.
->>>
->>> As this is proving difficult to fix, I can only drop your fix from
->>> my fixes branch - and given that this seems to be problematical, I'm
->>> tempted to revert the original change at this point which should fix
->>> both of these regressions - and then we have another go at getting rid
->>> of the set/way instructions during the next cycle.
->>>
->>> Thoughts?
->>>
->>
->> Hi Russell,
->>
->> If Guillaume is willing to do the experiment, and it fixes the issue,
+On Wed, Feb 03, 2021 at 01:15:58PM +0100, Michal Hocko wrote:
+> On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
+> > +static struct file *secretmem_file_create(unsigned long flags)
+> > +{
+> > +	struct file *file = ERR_PTR(-ENOMEM);
+> > +	struct secretmem_ctx *ctx;
+> > +	struct inode *inode;
+> > +
+> > +	inode = alloc_anon_inode(secretmem_mnt->mnt_sb);
+> > +	if (IS_ERR(inode))
+> > +		return ERR_CAST(inode);
+> > +
+> > +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> > +	if (!ctx)
+> > +		goto err_free_inode;
+> > +
+> > +	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
+> > +				 O_RDWR, &secretmem_fops);
+> > +	if (IS_ERR(file))
+> > +		goto err_free_ctx;
+> > +
+> > +	mapping_set_unevictable(inode->i_mapping);
 > 
-> Yes, I'm running some tests with that fix now and should have
-> some results shortly.
+> Btw. you need also mapping_set_gfp_mask(mapping, GFP_HIGHUSER) because
+> the default is GFP_HIGHUSER_MOVABLE and you do not support migration so
+> no pages from movable zones should be allowed.
 
-Yes it does fix the issue:
+Ok.
 
-  https://lava.collabora.co.uk/scheduler/job/3173819
-
-with Ard's fix applied to this test branch:
-
-  https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
-
-
-+clang +Nick
-
-It's worth mentioning that the issue only happens with kernels
-built with Clang.  As you can see there are several other arm
-platforms failing with clang-11 builds but booting fine with
-gcc-8:
-
-  https://kernelci.org/test/job/next/branch/master/kernel/next-20210203/plan/baseline/
-
-Here's a sample build log:
-
-  https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/build.log
-
-Essentially:
-
-  make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
-
-I believe it should be using the GNU assembler as LLVM_IAS=1 is
-not defined, but there may be something more subtle about it.
-
-Thanks,
-Guillaume
-
-
->> it proves that rk3288 is relying on the flush before the MMU is
->> disabled, and so in that case, the fix is trivial, and we can just
->> apply it.
->>
->> If the experiment fails (which would mean rk3288 does not tolerate the
->> cache maintenance being performed after cache off), it is going to be
->> hairy, and so it will definitely take more time.
->>
->> So in the latter case (or if Guillaume does not get back to us), I
->> think reverting my queued fix is the only sane option. But in that
->> case, may I suggest that we queue the revert of the original by-VA
->> change for v5.12 so it gets lots of coverage in -next, and allows us
->> an opportunity to come up with a proper fix in the same timeframe, and
->> backport the revert and the subsequent fix as a pair? Otherwise, we'll
->> end up in the situation where v5.10.x until today has by-va, v5.10.x-y
->> has set/way, and v5.10y+ has by-va again. (I don't think we care about
->> anything before that, given that v5.4 predates any of this)
->>
->> But in the end, I'm happy to go along with whatever works best for you.
-> 
-> Thanks,
-> Guillaume
-> 
-
+-- 
+Sincerely yours,
+Mike.
