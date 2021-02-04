@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7519E30F166
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E1830F16A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbhBDLAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:00:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235451AbhBDLAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:00:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A304364F78;
-        Thu,  4 Feb 2021 10:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612436360;
-        bh=TcXVmu+fm+5dg4n7lQxBdH6RO7TzX9jei0B4wo/LbuY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JAA4iEQsYiPxU9pe1NjJZP4Ks2SZh9HQ0pJyFaJCegO6NXbLJqJrVaemxy2FGUnjw
-         jsm+06QyRthDyIU2kL4jPmQky5QfBsvDZqjDuM+zubQ7voyOM72AuMXw0gFOUGBmUt
-         3TdXLyGd1zdS+U9YrpTEkFRyhINUu8CtcY+6eUAoKYxRoKTEvVVqwoic27LXCiwV/R
-         ILPJ0u+/jldIcgqr1OPgpNETE1bW+HIDDoKJDKAR5c0AjHoVbPiPmCQVETDIFX8iAN
-         2/SUAxvaqcE9ahiMEpfU+teKtziSeNOCgIv8V20Evqm1fTCpwfGM70QvGH2aFGc5Mg
-         TJh7esj9OaDWA==
-Received: by mail-oi1-f172.google.com with SMTP id k142so3251037oib.7;
-        Thu, 04 Feb 2021 02:59:20 -0800 (PST)
-X-Gm-Message-State: AOAM530JUCqP4nr9aPiCzOczMPg9fi0mQu6jcVsFFfvhkPXMrGzoY1jC
-        1sLqp3ixqE/3zED8DoYDiL7CUcYoQ9JwalC+rZM=
-X-Google-Smtp-Source: ABdhPJxxoDZ9P85GGLeXQpSikdoj66A14Va5HEghinCcn8haB0ubF4ZEW3ly1sI8Xqq8qm1KRLA+a+bG6w67KbW+XJw=
-X-Received: by 2002:aca:b6c1:: with SMTP id g184mr4797190oif.47.1612436359805;
- Thu, 04 Feb 2021 02:59:19 -0800 (PST)
+        id S235541AbhBDLAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235451AbhBDLAX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:00:23 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0AAC061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:59:43 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id l27so2797896qki.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:59:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lPpt1zKsfxioM+InYMsFlKI9UHzElWsHUVjSA2Fi07A=;
+        b=n/RVXHuFHBWjdzBNXn8SQCGQlpcw52+XpWJmq92Aixn1w5zETuSL2+E1S8l8m5asdN
+         UMmHVL3/vplybvbea9+k7WYLH210psTAVYrl3m+ZPS7PchMkmnJiT/YPDF1IGRKgUiZk
+         8Q0HK/jbVr52/n6IDNK8SbzNKgcE0J9It1+w+0e4nmTMcnP/fbzBiI/JBCXGTaPm8jTB
+         NdAv4EsYZcL+AdrQ19/am1J6+CitTdcW6YaOtYkCCSypGDq/i0924XkqsjcuvqrmKTPi
+         gPdZEvo9CdnoObgxC3PPVT+3oTDqeuXB28YyPrmwoG2wm+K+ceXiWjPpyCi/iW+wJdqP
+         70Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lPpt1zKsfxioM+InYMsFlKI9UHzElWsHUVjSA2Fi07A=;
+        b=GOlvylmCQbP9TmAn/zhLTPUvOvsoBOSxJHbqgNYGgwPaS+pdnggNtIEeGRTskcLTII
+         TH0Fz5NbNqHZrtPpDzWis/9tUKnNE7vUX3TYIDmiy1pJg7pJH/WY+7+Mxo7y+fRp0LsQ
+         REW3I31jgpJ0hdRYNEJaOtrRz+sFn1Mx59WbWtZPrYR41nKR4C6H1PUMJj0gjEzki1nP
+         KaI+CnHuMGTxrVLPFPrQ+44xeOVbn2BxoGgBLZjCOcen2VaDYnqVGfp9E6MpgU13bL6b
+         LLFwU96tOX6t/rnd4ssg8qydUOmmkhbFZhEhr6Ib6wP4P040oZR+8GzOqRRkf4LkEubF
+         ZIYQ==
+X-Gm-Message-State: AOAM53252T71gh8Ccpn3NtIx+Nv15vGwuv0UJ0LTDWREIPD5D79XPq8C
+        +l/rPa5GGhkUlfsPzy8YqQ3ZAjI0mmID+8uRXjbP3SXTQmo=
+X-Google-Smtp-Source: ABdhPJyZcMszXUDqRJU6y71xhdWORQZSu0y6BmXarfXjTLU9wTdxMn57NjtKn0VfEu2mxkqEHp7r7Z8Pi3DpwPcyrRI=
+X-Received: by 2002:a37:4d8e:: with SMTP id a136mr6503623qkb.317.1612436382917;
+ Thu, 04 Feb 2021 02:59:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107223424.4135538-1-arnd@kernel.org> <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan> <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic> <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
- <20210203185148.GA1711888@localhost> <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
- <20210204105155.GA32255@zn.tnic>
-In-Reply-To: <20210204105155.GA32255@zn.tnic>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Feb 2021 11:59:08 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGBUKA-LFsdBh19yqAOF8x=tYPff6Bw2Zxg31Oe9mGOQg@mail.gmail.com>
-Message-ID: <CAMj1kXGBUKA-LFsdBh19yqAOF8x=tYPff6Bw2Zxg31Oe9mGOQg@mail.gmail.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210204081819.892660-1-zhang.lyra@gmail.com>
+In-Reply-To: <20210204081819.892660-1-zhang.lyra@gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Thu, 4 Feb 2021 18:59:37 +0800
+Message-ID: <CADBw62qRZ77FM7S=ss3urJ+sB_P3VSYKt2hf6cWiPk8WPoo5-A@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: sprd: correct definition of SPRD_OUTBOX_FIFO_FULL
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Magnum Shan <magnum.shan@unisoc.com>,
+        Haidong Yao <haidong.yao@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 at 11:52, Borislav Petkov <bp@alien8.de> wrote:
+On Thu, Feb 4, 2021 at 4:18 PM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
 >
-> On Wed, Feb 03, 2021 at 09:29:18PM +0100, Ard Biesheuvel wrote:
-> > I think we have agreement on the approach but it is unclear who is
-> > going to write the patch.
+> From: Magnum Shan <magnum.shan@unisoc.com>
 >
-> How's that below?
+> According to the specification, bit[2] represents SPRD_OUTBOX_FIFO_FULL,
+> not bit[0], so correct it.
 >
-> And frankly, I'd even vote for removing those assertions altogether. If
-> somehow the EFI pgd lands somewhere else, the kernel will crash'n'burn
-> spectacularly and quickly so it's not like we won't catch it...
->
+> Fixes: ca27fc26cd22 ("mailbox: sprd: Add Spreadtrum mailbox driver")
+> Signed-off-by: Magnum Shan <magnum.shan@unisoc.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-+1 for just removing them
+LGTM.
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
 > ---
-> diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-> index 91ac10654570..b6be19c09841 100644
-> --- a/arch/x86/include/asm/pgtable_64_types.h
-> +++ b/arch/x86/include/asm/pgtable_64_types.h
-> @@ -156,8 +156,8 @@ extern unsigned int ptrs_per_p4d;
->  #define CPU_ENTRY_AREA_PGD     _AC(-4, UL)
->  #define CPU_ENTRY_AREA_BASE    (CPU_ENTRY_AREA_PGD << P4D_SHIFT)
+>  drivers/mailbox/sprd-mailbox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> -#define EFI_VA_START           ( -4 * (_AC(1, UL) << 30))
-> -#define EFI_VA_END             (-68 * (_AC(1, UL) << 30))
-> +#define EFI_VA_START           ( -4UL * (_AC(1, UL) << 30))
-> +#define EFI_VA_END             (-68UL * (_AC(1, UL) << 30))
+> diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+> index f6fab24ae8a9..4c325301a2fe 100644
+> --- a/drivers/mailbox/sprd-mailbox.c
+> +++ b/drivers/mailbox/sprd-mailbox.c
+> @@ -35,7 +35,7 @@
+>  #define SPRD_MBOX_IRQ_CLR                      BIT(0)
 >
->  #define EARLY_DYNAMIC_PAGE_TABLES      64
->
-> diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-> index e1e8d4e3a213..56fdc0bbb554 100644
-> --- a/arch/x86/platform/efi/efi_64.c
-> +++ b/arch/x86/platform/efi/efi_64.c
-> @@ -123,9 +123,7 @@ void efi_sync_low_kernel_mappings(void)
->          * only span a single PGD entry and that the entry also maps
->          * other important kernel regions.
->          */
-> -       MAYBE_BUILD_BUG_ON(pgd_index(EFI_VA_END) != pgd_index(MODULES_END));
-> -       MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) !=
-> -                       (EFI_VA_END & PGDIR_MASK));
-> +       MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) != PGDIR_MASK);
->
->         pgd_efi = efi_pgd + pgd_index(PAGE_OFFSET);
->         pgd_k = pgd_offset_k(PAGE_OFFSET);
-> @@ -137,8 +135,7 @@ void efi_sync_low_kernel_mappings(void)
->          * As with PGDs, we share all P4D entries apart from the one entry
->          * that covers the EFI runtime mapping space.
->          */
-> -       BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
-> -       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
-> +       BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != P4D_MASK);
->
->         pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
->         pgd_k = pgd_offset_k(EFI_VA_END);
->
->
+>  /* Bit and mask definiation for outbox's SPRD_MBOX_FIFO_STS register */
+> -#define SPRD_OUTBOX_FIFO_FULL                  BIT(0)
+> +#define SPRD_OUTBOX_FIFO_FULL                  BIT(2)
+>  #define SPRD_OUTBOX_FIFO_WR_SHIFT              16
+>  #define SPRD_OUTBOX_FIFO_RD_SHIFT              24
+>  #define SPRD_OUTBOX_FIFO_POS_MASK              GENMASK(7, 0)
 > --
-> Regards/Gruss,
->     Boris.
+> 2.25.1
 >
-> https://people.kernel.org/tglx/notes-about-netiquette
+
+
+-- 
+Baolin Wang
