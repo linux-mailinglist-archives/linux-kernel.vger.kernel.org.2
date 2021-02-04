@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CA030FBF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2202C30FBFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238754AbhBDSu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:50:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31274 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239248AbhBDStd (ORCPT
+        id S239448AbhBDSva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:51:30 -0500
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:54860 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239379AbhBDSth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:49:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612464478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lsNoUMCO1nEXOP2imOs5qf2e3v8YT9CdaCiUbwmZSYQ=;
-        b=aKj4qeT+8BUUY1Nml9dmC/661a9Cqn0J+a4eIWOBkCXV3ZOi5Vfs+9JLuE/HLWBjc5iqro
-        DqCuXHNhVOxP1lVES2uSG5Vf4t811c6cBaOL/uv8V4BR25YfmE5DwIe/AiGT9RD/efWwLD
-        IXo6OCJU7d1KGifXdvvycqoMnwjLLQ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-4YY6d1skPqyXhYA2hOoK-w-1; Thu, 04 Feb 2021 13:47:50 -0500
-X-MC-Unique: 4YY6d1skPqyXhYA2hOoK-w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA26801968;
-        Thu,  4 Feb 2021 18:47:47 +0000 (UTC)
-Received: from [10.10.116.135] (ovpn-116-135.rdu2.redhat.com [10.10.116.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 87DF960CCF;
-        Thu,  4 Feb 2021 18:47:40 +0000 (UTC)
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
- CPUs
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, frederic@kernel.org,
-        juri.lelli@redhat.com, abelits@marvell.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
-References: <20200625223443.2684-1-nitesh@redhat.com>
- <20200625223443.2684-2-nitesh@redhat.com>
- <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
- <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de>
- <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de>
- <20210204181546.GA30113@fuller.cnet>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Organization: Red Hat Inc,
-Message-ID: <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
-Date:   Thu, 4 Feb 2021 13:47:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 4 Feb 2021 13:49:37 -0500
+Received: by mail-wm1-f43.google.com with SMTP id w4so4026128wmi.4;
+        Thu, 04 Feb 2021 10:49:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GOOsv7iu4uxhMIW8Kn3SvcGAFHdQmyE/1M1/Ndzpetc=;
+        b=F8SIn+6yuWWeeGUlNIzpe3FTTdzs4IiXJK/7dK0vlS4SPnFv0dGZ2ZfXtRA1KZToIY
+         AAVVvVWFEidiBRHn4bQUtHqQQVYJakeq2lejeKUpnXPCPjeMYeK6JTvsXRA0koy33Vha
+         FIBDCr6sd8EroM3c2+6sFPqr+RDsyyvDBnlZEcfI0rPJ4/DbtJOa/kVlpVMTZ1YE9CIi
+         KCO/HFD3sTTGehAqbjoM/QPNwbCC938hOdXdmSVUC/kuYQ9KMFSfH7a4cgZXeKS/GQnD
+         FVMbuiBx9xVw9h37eL0cSAXnCsyOM8FpMEOIhxxq9oSjlFqRazQfm2pjLR0UE24zjczO
+         3RaA==
+X-Gm-Message-State: AOAM531/cl7sEsVLdec6bFUwcJyX1EG49TNjbH0IFkalZdCKEVSbX6g8
+        fRcS+fdMe2vGCBsVVOCQrw4V+p6w1F8=
+X-Google-Smtp-Source: ABdhPJx/QVCrF9T8JTZpgUmuDb824n1SNcWtl48mtsHmUpfIIVZNO3kWiVHrcu5JfDhtVIB+1H1OMA==
+X-Received: by 2002:a1c:a5d0:: with SMTP id o199mr470959wme.81.1612464531311;
+        Thu, 04 Feb 2021 10:48:51 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id e12sm9210080wrs.67.2021.02.04.10.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 10:48:50 -0800 (PST)
+Date:   Thu, 4 Feb 2021 18:48:49 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" 
+        <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Subject: Re: [PATCH v6 08/16] ACPI / NUMA: add a stub function for
+ node_to_pxm()
+Message-ID: <20210204184849.fx2bxwmy2a6rvgwo@liuwe-devbox-debian-v2>
+References: <20210203150435.27941-1-wei.liu@kernel.org>
+ <20210203150435.27941-9-wei.liu@kernel.org>
+ <20210204183841.y4fgwjuggtbrnere@liuwe-devbox-debian-v2>
+ <CAJZ5v0gJD1B92FsSo9xMrdFWYEh5DHqAQQ4TiFbHV=a2XpBEbg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204181546.GA30113@fuller.cnet>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gJD1B92FsSo9xMrdFWYEh5DHqAQQ4TiFbHV=a2XpBEbg@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 04, 2021 at 07:45:25PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Feb 4, 2021 at 7:41 PM Wei Liu <wei.liu@kernel.org> wrote:
+> >
+> > On Wed, Feb 03, 2021 at 03:04:27PM +0000, Wei Liu wrote:
+> > > There is already a stub function for pxm_to_node but conversion to the
+> > > other direction is missing.
+> > >
+> > > It will be used by Microsoft Hypervisor code later.
+> > >
+> > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> >
+> > Hi ACPI maintainers, if you're happy with this patch I can take it via
+> > the hyperv-next tree, given the issue is discovered when pxm_to_node is
+> > called in our code.
+> 
+> Yes, you can.
 
-On 2/4/21 1:15 PM, Marcelo Tosatti wrote:
-> On Thu, Jan 28, 2021 at 09:01:37PM +0100, Thomas Gleixner wrote:
->> On Thu, Jan 28 2021 at 13:59, Marcelo Tosatti wrote:
->>>> The whole pile wants to be reverted. It's simply broken in several ways.
->>> I was asking for your comments on interaction with CPU hotplug :-)
->> Which I answered in an seperate mail :)
->>
->>> So housekeeping_cpumask has multiple meanings. In this case:
->> ...
->>
->>> So as long as the meaning of the flags are respected, seems
->>> alright.
->> Yes. Stuff like the managed interrupts preference for housekeeping CPUs
->> when a affinity mask spawns housekeeping and isolated is perfectly
->> fine. It's well thought out and has no limitations.
->>
->>> Nitesh, is there anything preventing this from being fixed
->>> in userspace ? (as Thomas suggested previously).
->> Everything with is not managed can be steered by user space.
-> Yes, but it seems to be racy (that is, there is a window where the 
-> interrupt can be delivered to an isolated CPU).
->
-> ethtool ->
-> xgbe_set_channels ->
-> xgbe_full_restart_dev ->
-> xgbe_alloc_memory ->
-> xgbe_alloc_channels ->
-> cpumask_local_spread
->
-> Also ifconfig eth0 down / ifconfig eth0 up leads
-> to cpumask_spread_local.
+Thanks Rafael. I will add your ack to the patch as well.
 
-There's always that possibility.
-
-We have to ensure that we move the IRQs by a tuned daemon or some other
-userspace script every time there is a net-dev change (eg. device comes up,
-creates VFs, etc).
-
-> How about adding a new flag for isolcpus instead?
->
-
-Do you mean a flag based on which we can switch the affinity mask to
-housekeeping for all the devices at the time of IRQ distribution?
-
--- 
-Thanks
-Nitesh
-
+Wei.
