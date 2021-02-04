@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA8230EFD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E31E30EFD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhBDJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:39:21 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35547 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234689AbhBDJjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:39:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWYQL6g3Vz9sWl;
-        Thu,  4 Feb 2021 20:38:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612431515;
-        bh=GkEx+xpyKg8YhSyS0+o+FLZ1T3oYaokZiUmnkX7fgzM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZnbeILr2JrQhMuSCD4Ub9RJKyJFQ4f2LLWHTVwzSdJjB8PUsWEr97YEHcNwFHxT9w
-         eXou7cobOTkLey4PxS0HT7PaOd9U2mLMi60PfPwcxAGypYXbzbk01fJCOuIK2zZJMZ
-         MZgVGRpvUo7Fblwlt6Xo1zGqbEjsCF+YWPMvubtyHPkKom/1J9dgJeTsV8pz6HkJdF
-         e4FKzt4V2F9WUFgRcA2jdgWIVcGl34cd8skxtvM6xxvbtJEq2MoOirqdQLl6TDHlKg
-         ZvjeAHOAgZKRoycmSthOVz6fWKrXE815akxms4iSKLGrtq2Zg2FEtcZGZzj8aqDM1y
-         MA4u83k9J+2dw==
-Date:   Thu, 4 Feb 2021 20:38:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Brian Vazquez <brianvv@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210204203834.4cc1a307@canb.auug.org.au>
-In-Reply-To: <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
-References: <20210204123331.21e4598b@canb.auug.org.au>
-        <CAMzD94RaWQM3J8LctNE_C1fHKYCW8WkbVMda4UV95YbYskQXZw@mail.gmail.com>
+        id S235254AbhBDJjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234689AbhBDJjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:39:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88B9C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 01:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3o2saBcPyUQ6g/10+Rj6Ku6UfMXIXVT/67I546Blx18=; b=vIlYxDHoSkG7xyetvOcrUXHxn7
+        vlruNrOw3mqhF7OHZ9PhbqZWv4Ov6FPJGGT3kXeWxnkJ2lzi6SM/2sQr3qFAEEjeJ43iJc6jNQrvL
+        8sdRfvrgFXOVHJwBhI5vPjHWfrg9SMEfAzodtPEwIbPCLMV3JRwbTdNRu/2haO/n4uoW/PkixcQ8Y
+        e1pCOgJ8n3i0uYz5W17A+HMqa5wpxUK5cEWu4Xb2cUzM69n7BdymyT+O/N3L3cIT4DBmvIyMvxoJX
+        4Mi0Vut1Emfb+IpRMEhg8NsegIRXwBZ3OaUn7oqFjFIJzfn4vcdzZQJfc7Uk315Pk40QlMKglWbb7
+        yfeerTLg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7b6J-000feA-Ae; Thu, 04 Feb 2021 09:38:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC034301A32;
+        Thu,  4 Feb 2021 10:38:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ACC542138F7C5; Thu,  4 Feb 2021 10:38:58 +0100 (CET)
+Date:   Thu, 4 Feb 2021 10:38:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Subject: Re: Process-wide watchpoints
+Message-ID: <YBvAsku9OWM7KUno@hirez.programming.kicks-ass.net>
+References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
+ <20201112103125.GV2628@hirez.programming.kicks-ass.net>
+ <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
+ <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
+ <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+ <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+ <YBqXPmbpXf4hnlj3@hirez.programming.kicks-ass.net>
+ <CACT4Y+a-9kqX0ZkNz-ygib+ERn41HVo_8Wx6oYMQmPjTC06j7g@mail.gmail.com>
+ <YBqnAYVdNM4uyGny@hirez.programming.kicks-ass.net>
+ <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/670ir_=mK2RASorDf90bdFe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+btOt5QFKH9Q=81EnpDHoidJUHE2s0oZ8v65t-b__awuw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/670ir_=mK2RASorDf90bdFe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 04, 2021 at 09:10:11AM +0100, Dmitry Vyukov wrote:
+> On Wed, Feb 3, 2021 at 2:37 PM Peter Zijlstra <peterz@infradead.org> wrote:
 
-Hi Brian,
+> > Letting perf send a signal to the monitored task is intrusive.. let me
+> > think on that.
+> 
+> I was thinking of something very similar to that bpf_send_signal that
+> delays sending to exit from irq:
+> https://elixir.bootlin.com/linux/latest/source/kernel/trace/bpf_trace.c#L1091
 
-On Wed, 3 Feb 2021 19:52:08 -0800 Brian Vazquez <brianvv@google.com> wrote:
->
-> Hi Stephen, thanks for the report. I'm having trouble trying to
-> compile for ppc, but I believe this should fix the problem, could you
-> test this patch, please? Thanks!
+Oh, making code to do it isn't the problem. The problem stems from the
+fact that perf is supposed to be observant only. The exception is when
+you monitor yourself, in that case you can send signals to yourself,
+because you know what you're doing (supposedly ;-).
 
-That fixed it, thanks (though the patch was badly wrapped and
-whitespace damaged :-))
+But if you go send signals to the task you're monitoring, you're
+actually changing their code-flow, you're an active participant instead
+of an observer.
 
---=20
-Cheers,
-Stephen Rothwell
+Also, they might not be able to handle the signal, in which case you're
+not changing the program but terminating it entirely.
 
---Sig_/670ir_=mK2RASorDf90bdFe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+That's a big conceptual shift.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAbwJoACgkQAVBC80lX
-0GzWmgf/ZtCWjBm9z2ozvoasLSnlBHdRPZzOHIXAkhz/oKuqcU6Eya01heYx2zLT
-PQ9IRtSZInOdOAjXR16DOZ6rxKN/iFvGTfRag/b8Ba33U1+L48FQIsYe52T1Twm0
-3geKBo5GkonvJ32y8umffd/9B27543E2Pt3ntfMetl5gLh+Vqas3YqS7YDy483I8
-V3ZRAk18sSW794scEb5TpIfGJqTJHUlGLz2LtMHzMov4VP9RZYHMWSMskNngi2hg
-vUMEwF4AhXM2GYkiIwJdBrgONwW3GrPddBSd89Zb3d79ufUKIKMzTssBsovq3zoY
-myfPOAn3wF2esBto7fIt+qOiQCaCOQ==
-=Bgem
------END PGP SIGNATURE-----
-
---Sig_/670ir_=mK2RASorDf90bdFe--
+OTOH, we're using ptrace permission checks, and ptrace() can inject
+signals just fine. But it's a fairly big departure from what perf set
+out to be.
