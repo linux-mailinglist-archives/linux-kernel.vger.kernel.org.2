@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC1F30EC8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529FF30EC8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 07:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbhBDGei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 01:34:38 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12123 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhBDGeg (ORCPT
+        id S232663AbhBDGjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 01:39:18 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:52396 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231592AbhBDGjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:34:36 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWTHk4Fwjz1638H;
-        Thu,  4 Feb 2021 14:32:34 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 14:33:43 +0800
-Subject: Re: [PATCH v14 8/8] mm: hugetlb: optimize the code with the help of
- the compiler
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <duanxiongchun@bytedance.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <corbet@lwn.net>,
-        <mike.kravetz@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <akpm@linux-foundation.org>, <paulmck@kernel.org>,
-        <mchehab+huawei@kernel.org>, <pawan.kumar.gupta@linux.intel.com>,
-        <rdunlap@infradead.org>, <oneukum@suse.com>,
-        <anshuman.khandual@arm.com>, <jroedel@suse.de>,
-        <almasrymina@google.com>, <rientjes@google.com>,
-        <willy@infradead.org>, <osalvador@suse.de>, <mhocko@suse.com>,
-        <song.bao.hua@hisilicon.com>, <david@redhat.com>,
-        <naoya.horiguchi@nec.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-9-songmuchun@bytedance.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <657ef0d7-8c68-a0f2-de16-d524f0eb4cc7@huawei.com>
-Date:   Thu, 4 Feb 2021 14:33:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210204035043.36609-9-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+        Thu, 4 Feb 2021 01:39:17 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNpw7Hg_1612420709;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNpw7Hg_1612420709)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 14:38:34 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     james.qian.wang@arm.com
+Cc:     liviu.dudau@arm.com, mihail.atanassov@arm.com,
+        brian.starkey@arm.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/komeda: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Thu,  4 Feb 2021 14:38:28 +0800
+Message-Id: <1612420708-25297-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/4 11:50, Muchun Song wrote:
-> We cannot optimize if a "struct page" crosses page boundaries. If
-> it is true, we can optimize the code with the help of a compiler.
-> When free_vmemmap_pages_per_hpage() returns zero, most functions are
-> optimized by the compiler.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Fix the following coccicheck warning:
 
-I like it. Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+./drivers/gpu/drm/arm/display/komeda/komeda_dev.c:97:8-16: WARNING: use
+scnprintf or sprintf.
 
-> ---
->  include/linux/hugetlb.h |  3 ++-
->  mm/hugetlb_vmemmap.c    | 13 +++++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 822ab2f5542a..7bfb06e16298 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -878,7 +878,8 @@ extern bool hugetlb_free_vmemmap_enabled;
->  
->  static inline bool is_hugetlb_free_vmemmap_enabled(void)
->  {
-> -	return hugetlb_free_vmemmap_enabled;
-> +	return hugetlb_free_vmemmap_enabled &&
-> +	       is_power_of_2(sizeof(struct page));
->  }
->  #else
->  static inline bool is_hugetlb_free_vmemmap_enabled(void)
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 8efad9978821..068d0e0cebc8 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -211,6 +211,12 @@ early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
->   */
->  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
->  {
-> +	/*
-> +	 * This check aims to let the compiler help us optimize the code as
-> +	 * much as possible.
-> +	 */
-> +	if (!is_power_of_2(sizeof(struct page)))
-> +		return 0;
->  	return h->nr_free_vmemmap_pages;
->  }
->  
-> @@ -280,6 +286,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->  	BUILD_BUG_ON(NR_USED_SUBPAGE >=
->  		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
->  
-> +	/*
-> +	 * The compiler can help us to optimize this function to null
-> +	 * when the size of the struct page is not power of 2.
-> +	 */
-> +	if (!is_power_of_2(sizeof(struct page)))
-> +		return;
-> +
->  	if (!hugetlb_free_vmemmap_enabled)
->  		return;
->  
-> 
+./drivers/gpu/drm/arm/display/komeda/komeda_dev.c:88:8-16: WARNING: use
+scnprintf or sprintf.
+
+./drivers/gpu/drm/arm/display/komeda/komeda_dev.c:65:8-16: WARNING: use
+scnprintf or sprintf.
+
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/arm/display/komeda/komeda_dev.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
+index ca891ae..cc7664c 100644
+--- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
++++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
+@@ -62,7 +62,7 @@ static void komeda_debugfs_init(struct komeda_dev *mdev)
+ {
+ 	struct komeda_dev *mdev = dev_to_mdev(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "0x%08x\n", mdev->chip.core_id);
++	return sysfs_emit(buf, "0x%08x\n", mdev->chip.core_id);
+ }
+ static DEVICE_ATTR_RO(core_id);
+ 
+@@ -85,7 +85,7 @@ static void komeda_debugfs_init(struct komeda_dev *mdev)
+ 		if (pipe->layers[i]->layer_type == KOMEDA_FMT_RICH_LAYER)
+ 			config_id.n_richs++;
+ 	}
+-	return snprintf(buf, PAGE_SIZE, "0x%08x\n", config_id.value);
++	return sysfs_emit(buf, "0x%08x\n", config_id.value);
+ }
+ static DEVICE_ATTR_RO(config_id);
+ 
+@@ -94,7 +94,7 @@ static void komeda_debugfs_init(struct komeda_dev *mdev)
+ {
+ 	struct komeda_dev *mdev = dev_to_mdev(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%lu\n", clk_get_rate(mdev->aclk));
++	return sysfs_emit(buf, "%lu\n", clk_get_rate(mdev->aclk));
+ }
+ static DEVICE_ATTR_RO(aclk_hz);
+ 
+-- 
+1.8.3.1
 
