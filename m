@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB9530FBF9
+	by mail.lfdr.de (Postfix) with ESMTP id 29CA030FBF8
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239425AbhBDSvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:51:15 -0500
-Received: from mailoutvs27.siol.net ([185.57.226.218]:60136 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239402AbhBDStu (ORCPT
+        id S238754AbhBDSu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:50:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31274 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239248AbhBDStd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:49:50 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 25891523FCB;
-        Thu,  4 Feb 2021 19:48:24 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id a7TgomQtru73; Thu,  4 Feb 2021 19:48:23 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id D7688523FCC;
-        Thu,  4 Feb 2021 19:48:23 +0100 (CET)
-Received: from kista.localdomain (cpe-86-58-58-53.static.triera.net [86.58.58.53])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 8B28A523FCB;
-        Thu,  4 Feb 2021 19:48:21 +0100 (CET)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com,
-        Andre Heider <a.heider@gmail.com>
-Subject: [PATCH 5/5] drm/sun4i: dw-hdmi: Fix max. frequency for H6
-Date:   Thu,  4 Feb 2021 19:47:10 +0100
-Message-Id: <20210204184710.1880895-6-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204184710.1880895-1-jernej.skrabec@siol.net>
-References: <20210204184710.1880895-1-jernej.skrabec@siol.net>
+        Thu, 4 Feb 2021 13:49:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612464478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lsNoUMCO1nEXOP2imOs5qf2e3v8YT9CdaCiUbwmZSYQ=;
+        b=aKj4qeT+8BUUY1Nml9dmC/661a9Cqn0J+a4eIWOBkCXV3ZOi5Vfs+9JLuE/HLWBjc5iqro
+        DqCuXHNhVOxP1lVES2uSG5Vf4t811c6cBaOL/uv8V4BR25YfmE5DwIe/AiGT9RD/efWwLD
+        IXo6OCJU7d1KGifXdvvycqoMnwjLLQ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-4YY6d1skPqyXhYA2hOoK-w-1; Thu, 04 Feb 2021 13:47:50 -0500
+X-MC-Unique: 4YY6d1skPqyXhYA2hOoK-w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA26801968;
+        Thu,  4 Feb 2021 18:47:47 +0000 (UTC)
+Received: from [10.10.116.135] (ovpn-116-135.rdu2.redhat.com [10.10.116.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 87DF960CCF;
+        Thu,  4 Feb 2021 18:47:40 +0000 (UTC)
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
+ CPUs
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, frederic@kernel.org,
+        juri.lelli@redhat.com, abelits@marvell.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
+References: <20200625223443.2684-1-nitesh@redhat.com>
+ <20200625223443.2684-2-nitesh@redhat.com>
+ <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de>
+ <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+ <20210204181546.GA30113@fuller.cnet>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Organization: Red Hat Inc,
+Message-ID: <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
+Date:   Thu, 4 Feb 2021 13:47:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204181546.GA30113@fuller.cnet>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that reasoning for lowering max. supported frequency is
-wrong. Scrambling works just fine. Several now fixed bugs prevented
-proper functioning, even with rates lower than 340 MHz. Issues were just
-more pronounced with higher frequencies.
 
-Fix that by allowing max. supported frequency in HW and fix the comment.
+On 2/4/21 1:15 PM, Marcelo Tosatti wrote:
+> On Thu, Jan 28, 2021 at 09:01:37PM +0100, Thomas Gleixner wrote:
+>> On Thu, Jan 28 2021 at 13:59, Marcelo Tosatti wrote:
+>>>> The whole pile wants to be reverted. It's simply broken in several ways.
+>>> I was asking for your comments on interaction with CPU hotplug :-)
+>> Which I answered in an seperate mail :)
+>>
+>>> So housekeeping_cpumask has multiple meanings. In this case:
+>> ...
+>>
+>>> So as long as the meaning of the flags are respected, seems
+>>> alright.
+>> Yes. Stuff like the managed interrupts preference for housekeeping CPUs
+>> when a affinity mask spawns housekeeping and isolated is perfectly
+>> fine. It's well thought out and has no limitations.
+>>
+>>> Nitesh, is there anything preventing this from being fixed
+>>> in userspace ? (as Thomas suggested previously).
+>> Everything with is not managed can be steered by user space.
+> Yes, but it seems to be racy (that is, there is a window where the 
+> interrupt can be delivered to an isolated CPU).
+>
+> ethtool ->
+> xgbe_set_channels ->
+> xgbe_full_restart_dev ->
+> xgbe_alloc_memory ->
+> xgbe_alloc_channels ->
+> cpumask_local_spread
+>
+> Also ifconfig eth0 down / ifconfig eth0 up leads
+> to cpumask_spread_local.
 
-Fixes: cd9063757a22 ("drm/sun4i: DW HDMI: Lower max. supported rate for H=
-6")
-Tested-by: Andre Heider <a.heider@gmail.com>
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+There's always that possibility.
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4=
-i/sun8i_dw_hdmi.c
-index 23773a5e0650..bbdfd5e26ec8 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -47,11 +47,9 @@ sun8i_dw_hdmi_mode_valid_h6(struct dw_hdmi *hdmi, void=
- *data,
- {
- 	/*
- 	 * Controller support maximum of 594 MHz, which correlates to
--	 * 4K@60Hz 4:4:4 or RGB. However, for frequencies greater than
--	 * 340 MHz scrambling has to be enabled. Because scrambling is
--	 * not yet implemented, just limit to 340 MHz for now.
-+	 * 4K@60Hz 4:4:4 or RGB.
- 	 */
--	if (mode->clock > 340000)
-+	if (mode->clock > 594000)
- 		return MODE_CLOCK_HIGH;
-=20
- 	return MODE_OK;
---=20
-2.30.0
+We have to ensure that we move the IRQs by a tuned daemon or some other
+userspace script every time there is a net-dev change (eg. device comes up,
+creates VFs, etc).
+
+> How about adding a new flag for isolcpus instead?
+>
+
+Do you mean a flag based on which we can switch the affinity mask to
+housekeeping for all the devices at the time of IRQ distribution?
+
+-- 
+Thanks
+Nitesh
 
