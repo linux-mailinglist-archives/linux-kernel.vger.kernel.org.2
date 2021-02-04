@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BF130F1BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDED30F1BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbhBDLLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S235703AbhBDLML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235654AbhBDLLc (ORCPT
+        with ESMTP id S235663AbhBDLLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:11:32 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB928C061793
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:10:09 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id u14so3030687wri.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 03:10:09 -0800 (PST)
+        Thu, 4 Feb 2021 06:11:34 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02138C061797
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 03:10:11 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id m1so2640247wml.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 03:10:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UuJJvnBY1RT5AmJ5CEhkK6udrJuyZm280OjEkcYs/fQ=;
-        b=HCGu7dsDqG4pkWy8ockT5UO+pq22sAnePsOuQg+uVYtRaK/OQphQlcxTjFJIKCHuir
-         SpaoujMIk8FfAnv860dMGKAMiz0SMmR2yvVwDsC2bDsUxkESYR3eHXOdw5nZ0imM/tqA
-         7CRrZkRe0JtqTUdogu7T5Rv0Xq1l+VGdsQ/oc4EuB+y3/wUbyZtxGwDrBRj8R6hzcWs2
-         BAa0cQt4IQpXG4rs7bdLaZqfVrp2l5TdHxqHkDRd7enoxlJgCDUh+PKWyAdZs186elSe
-         yPaRNmsEb4r9Ihw3d6B9HW3+COwQVnGBWPb3eA+bXfKhYyLhDXGCWnTuhjxNnY8JUmlE
-         w5ew==
+        bh=9PQJyorI7NSFOmBlzU3qYIYb38rUcKuWau7MQ0QjGLc=;
+        b=FSr/KZivxIq+H/JsqxnJyXqNIN1K1v9CM8MSNUgKhBPSIYQoO9U08WhO3MexdqcSzu
+         gpILk81W/zf9kGFNHKPWIuVEZNPAcRAw39QXhu6cW1zh0dTinkZbWbc4dd09ItE6twgb
+         Fmhnwo5w4g0oDXtBu38c0voaX/yr0AlkAIvqVbWlfwz88N7myvfqTLv6to2OZDpMuZag
+         L6R6aj7lbNhQ6WkdObOHke2kK/qaRDeB4HhnJRr3rkqdCWcAr3qA4O7H9ATKSwDZ6DPy
+         CZaxYueFvtlzAd5KvpTMazQG34Ws82FZ6ActFk41KPqJJi48ARBHtoeY03glTGrZ1fSN
+         GN3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UuJJvnBY1RT5AmJ5CEhkK6udrJuyZm280OjEkcYs/fQ=;
-        b=RS0YEUJk1N7aFt9rkxHBKBPqI1PtuxmVUFIlxBi/TIs+FhYH6I7bVund5qB/sF1FJO
-         Lv4aijhjTv3r21ciLamFN5ULSlUSlnjJFP1ZvnDw/BOhpZjG+3EyYM0aHxpHfI0WHA2L
-         UQvkmaPFxKHTzyeWsy65IyN106U7F1p80RwzMJS95ATu6FG+fAXGyeTi+1pC2GT95NZp
-         o7izQ0pajNkO6IhsRvTPLgKwkwC9EpveM9Ff3SK/MeUQ3cyx/Dh5Gfjq0hy1kDK+fT8v
-         dEKj7z5GsY/sDEzt4bciD3qGEvNIgpdEs3uGNTTRt1xIwqaYQG2IW3Fk8LUUm228IeG5
-         nHxg==
-X-Gm-Message-State: AOAM5313KmLpbxWA7+dHj2/Q6GFbLFKjUeRHpD0UA7Hhh8STz96uAIqF
-        qnQU79XcI9UbvO4lAcWjDZXx5Q==
-X-Google-Smtp-Source: ABdhPJySJSWFjuE4JIiwrvf+jyaIlEDIGGf7ANwv7vOVJ9x5/EdqbI4lkAi16yQIPc4Drn88FhZFhQ==
-X-Received: by 2002:a05:6000:12c8:: with SMTP id l8mr8537957wrx.81.1612437008481;
-        Thu, 04 Feb 2021 03:10:08 -0800 (PST)
+        bh=9PQJyorI7NSFOmBlzU3qYIYb38rUcKuWau7MQ0QjGLc=;
+        b=mwKATFIzOz135F57CUAk1u8iYeZA8evll9L2fwyGwoZ0htK+9rVDUx/nxBd/81XliB
+         ApRJ++CVFQctBT5nsg0g9UBN/h3xL4teJUJZ26VGLEm0SypKVkDlMSk6zmnLlzUxbSFS
+         /JGDDIf1Qcxs1026fnfXO17uxqVShZChPKtcvPF2+oJnXzJk+i1/O81BfMB2d5CapuF/
+         vDUcYpcCaF0gzZFM6rrYv0HiGb7RJXV4w7an0m4TlQllzixhNv8fRNv4huaDgf+jJa8v
+         Gi2YD1FXKBfjJ6dVvkBw6PRRqymIN6Yw+7paqrX/wP8xlhBrg9cbsRXRyPf6r2QGm/zI
+         N5SQ==
+X-Gm-Message-State: AOAM533PFksbsP8eRVfSUFH7JtKZwnyKo/RgQtILhTJ8QoufyBJNMiiN
+        UMMnRBYnDTCM3CblzQAiz7R0Xw==
+X-Google-Smtp-Source: ABdhPJw0oFT5FZf9Plohvjcn/VRefliidr4eJiCyxMnCCg5f/bFrZ7r6V1nVsPxpSfSXwXt+rvWBjA==
+X-Received: by 2002:a05:600c:230e:: with SMTP id 14mr7003253wmo.161.1612437009685;
+        Thu, 04 Feb 2021 03:10:09 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.07
+        by smtp.gmail.com with ESMTPSA id y18sm7696218wrt.19.2021.02.04.03.10.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 03:10:07 -0800 (PST)
+        Thu, 04 Feb 2021 03:10:09 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Shujuan Chen <shujuan.chen@stericsson.com>,
-        Joakim Bech <joakim.xx.bech@stericsson.com>,
-        Berne Hebark <berne.herbark@stericsson.com>,
-        Niklas Hernaeus <niklas.hernaeus@stericsson.com>,
-        Andreas Westin <andreas.westin@stericsson.com>,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 04/20] crypto: ux500: hash: hash_core: Fix worthy kernel-doc headers and remove others
-Date:   Thu,  4 Feb 2021 11:09:44 +0000
-Message-Id: <20210204111000.2800436-5-lee.jones@linaro.org>
+Subject: [PATCH 05/20] crypto: bcm: spu: Fix formatting and misspelling issues
+Date:   Thu,  4 Feb 2021 11:09:45 +0000
+Message-Id: <20210204111000.2800436-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210204111000.2800436-1-lee.jones@linaro.org>
 References: <20210204111000.2800436-1-lee.jones@linaro.org>
@@ -71,103 +66,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ones remove here not only fail to conform to kernel-doc, but also
-provide no value, so let's remove them completely in this case.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/crypto/ux500/hash/hash_core.c:368: warning: Function parameter or member 'ctx' not described in 'hash_get_device_data'
- drivers/crypto/ux500/hash/hash_core.c:368: warning: Excess function parameter 'hash_ctx' description in 'hash_get_device_data'
- drivers/crypto/ux500/hash/hash_core.c:551: warning: expecting prototype for hash_init(). Prototype was for ux500_hash_init() instead
- drivers/crypto/ux500/hash/hash_core.c:592: warning: Function parameter or member 'length' not described in 'hash_processblock'
- drivers/crypto/ux500/hash/hash_core.c:1302: warning: expecting prototype for hash_update(). Prototype was for ahash_update() instead
- drivers/crypto/ux500/hash/hash_core.c:1322: warning: expecting prototype for hash_final(). Prototype was for ahash_final() instead
- drivers/crypto/ux500/hash/hash_core.c:1622: warning: Function parameter or member 'device_data' not described in 'ahash_algs_register_all'
- drivers/crypto/ux500/hash/hash_core.c:1622: warning: expecting prototype for hash_algs_register_all(). Prototype was for ahash_algs_register_all() instead
- drivers/crypto/ux500/hash/hash_core.c:1647: warning: Function parameter or member 'device_data' not described in 'ahash_algs_unregister_all'
- drivers/crypto/ux500/hash/hash_core.c:1647: warning: expecting prototype for hash_algs_unregister_all(). Prototype was for ahash_algs_unregister_all() instead
+ drivers/crypto/bcm/spu.c:464: warning: Excess function parameter 'Return' description in 'spum_gcm_ccm_pad_len'
+ drivers/crypto/bcm/spu.c:524: warning: Function parameter or member 'iv_len' not described in 'spum_aead_ivlen'
+ drivers/crypto/bcm/spu.c:524: warning: expecting prototype for spu_aead_ivlen(). Prototype was for spum_aead_ivlen() instead
+ drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'alg_digest_size' not described in 'spum_digest_size'
+ drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'alg' not described in 'spum_digest_size'
+ drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'htype' not described in 'spum_digest_size'
+ drivers/crypto/bcm/spu.c:583: warning: bad line:
+ drivers/crypto/bcm/spu.c:927: warning: Function parameter or member 'is_inbound' not described in 'spum_cipher_req_finish'
+ drivers/crypto/bcm/spu.c:927: warning: Excess function parameter 'isInbound' description in 'spum_cipher_req_finish'
 
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Shujuan Chen <shujuan.chen@stericsson.com>
-Cc: Joakim Bech <joakim.xx.bech@stericsson.com>
-Cc: Berne Hebark <berne.herbark@stericsson.com>
-Cc: Niklas Hernaeus <niklas.hernaeus@stericsson.com>
-Cc: Andreas Westin <andreas.westin@stericsson.com>
 Cc: linux-crypto@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/crypto/ux500/hash/hash_core.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/crypto/bcm/spu.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index da284b0ea1b26..bcaf6ba3e9235 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -356,7 +356,7 @@ static int hash_enable_power(struct hash_device_data *device_data,
- 
- /**
-  * hash_get_device_data - Checks for an available hash device and return it.
-- * @hash_ctx:		Structure for the hash context.
-+ * @ctx:		Structure for the hash context.
-  * @device_data:	Structure for the hash device.
+diff --git a/drivers/crypto/bcm/spu.c b/drivers/crypto/bcm/spu.c
+index 007abf92cc05b..6283e8c6d51d3 100644
+--- a/drivers/crypto/bcm/spu.c
++++ b/drivers/crypto/bcm/spu.c
+@@ -457,7 +457,7 @@ u16 spum_hash_pad_len(enum hash_alg hash_alg, enum hash_mode hash_mode,
+  * @cipher_mode:	Algo type
+  * @data_size:		Length of plaintext (bytes)
   *
-  * This function check for an available hash device and return it to
-@@ -542,7 +542,7 @@ static bool hash_dma_valid_data(struct scatterlist *sg, int datasize)
+- * @Return: Length of padding, in bytes
++ * Return: Length of padding, in bytes
+  */
+ u32 spum_gcm_ccm_pad_len(enum spu_cipher_mode cipher_mode,
+ 			 unsigned int data_size)
+@@ -510,10 +510,10 @@ u32 spum_assoc_resp_len(enum spu_cipher_mode cipher_mode,
  }
  
  /**
-- * hash_init - Common hash init function for SHA1/SHA2 (SHA256).
-+ * ux500_hash_init - Common hash init function for SHA1/SHA2 (SHA256).
-  * @req: The hash request for the job.
+- * spu_aead_ivlen() - Calculate the length of the AEAD IV to be included
++ * spum_aead_ivlen() - Calculate the length of the AEAD IV to be included
+  * in a SPU request after the AAD and before the payload.
+  * @cipher_mode:  cipher mode
+- * @iv_ctr_len:   initialization vector length in bytes
++ * @iv_len:   initialization vector length in bytes
   *
-  * Initialize structures.
-@@ -585,6 +585,7 @@ static int ux500_hash_init(struct ahash_request *req)
-  * @device_data:	Structure for the hash device.
-  * @message:		Block (512 bits) of message to be written to
-  *			the HASH hardware.
-+ * @length:		Message length
+  * In Linux ~4.2 and later, the assoc_data sg includes the IV. So no need
+  * to include the IV as a separate field in the SPU request msg.
+@@ -543,9 +543,9 @@ enum hash_type spum_hash_type(u32 src_sent)
+ /**
+  * spum_digest_size() - Determine the size of a hash digest to expect the SPU to
+  * return.
+- * alg_digest_size: Number of bytes in the final digest for the given algo
+- * alg:             The hash algorithm
+- * htype:           Type of hash operation (init, update, full, etc)
++ * @alg_digest_size: Number of bytes in the final digest for the given algo
++ * @alg:             The hash algorithm
++ * @htype:           Type of hash operation (init, update, full, etc)
   *
+  * When doing incremental hashing for an algorithm with a truncated hash
+  * (e.g., SHA224), the SPU returns the full digest so that it can be fed back as
+@@ -580,7 +580,7 @@ u32 spum_digest_size(u32 alg_digest_size, enum hash_alg alg,
+  * @aead_parms:   Parameters related to AEAD operation
+  * @data_size:    Length of data to be encrypted or authenticated. If AEAD, does
+  *		  not include length of AAD.
+-
++ *
+  * Return: the length of the SPU header in bytes. 0 if an error occurs.
   */
- static void hash_processblock(struct hash_device_data *device_data,
-@@ -1295,7 +1296,7 @@ void hash_get_digest(struct hash_device_data *device_data,
- }
- 
- /**
-- * hash_update - The hash update function for SHA1/SHA2 (SHA256).
-+ * ahash_update - The hash update function for SHA1/SHA2 (SHA256).
-  * @req: The hash request for the job.
-  */
- static int ahash_update(struct ahash_request *req)
-@@ -1315,7 +1316,7 @@ static int ahash_update(struct ahash_request *req)
- }
- 
- /**
-- * hash_final - The hash final function for SHA1/SHA2 (SHA256).
-+ * ahash_final - The hash final function for SHA1/SHA2 (SHA256).
-  * @req:	The hash request for the job.
-  */
- static int ahash_final(struct ahash_request *req)
-@@ -1615,9 +1616,6 @@ static struct hash_algo_template hash_algs[] = {
- 	}
- };
- 
--/**
-- * hash_algs_register_all -
-- */
- static int ahash_algs_register_all(struct hash_device_data *device_data)
- {
- 	int ret;
-@@ -1640,9 +1638,6 @@ static int ahash_algs_register_all(struct hash_device_data *device_data)
- 	return ret;
- }
- 
--/**
-- * hash_algs_unregister_all -
-- */
- static void ahash_algs_unregister_all(struct hash_device_data *device_data)
- {
- 	int i;
+ u32 spum_create_request(u8 *spu_hdr,
+@@ -911,7 +911,7 @@ u16 spum_cipher_req_init(u8 *spu_hdr, struct spu_cipher_parms *cipher_parms)
+  * setkey() time in spu_cipher_req_init().
+  * @spu_hdr:         Start of the request message header (MH field)
+  * @spu_req_hdr_len: Length in bytes of the SPU request header
+- * @isInbound:       0 encrypt, 1 decrypt
++ * @is_inbound:      0 encrypt, 1 decrypt
+  * @cipher_parms:    Parameters describing cipher operation to be performed
+  * @data_size:       Length of the data in the BD field
+  *
 -- 
 2.25.1
 
