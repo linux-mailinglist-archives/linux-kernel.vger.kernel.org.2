@@ -2,188 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A80D30EE80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F33330EEFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhBDIbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:31:46 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:42380 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbhBDIbo (ORCPT
+        id S235247AbhBDItn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235222AbhBDItK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:31:44 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210204083057epoutp01e7c21ae49a9b11af5c262ee84a9526ae~gfjriXwT01669116691epoutp01V
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:30:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210204083057epoutp01e7c21ae49a9b11af5c262ee84a9526ae~gfjriXwT01669116691epoutp01V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612427458;
-        bh=F82OQMapjm8Kpfz7PKfTvgHA4BtIyeEtvatODC7+Qjw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=kvsBl3eRYlL76ploEZ/SIvSYNIp42+9noZdw5LO79OXLfMZFVLUF14RTSCn7HDFEM
-         Yk0i9MokqTu0ZH9S8UzSI18Cp19yuHFERXk+suPpWIkG66jlc/8pmzOfhWxQIOmm9L
-         r9h9COeeftBSYK9s4o1NMiQE8J3sg21GlHhHFPqc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210204083055epcas1p347629df1529ba2d6b9077eee337d0585~gfjpj2KuF1399213992epcas1p3l;
-        Thu,  4 Feb 2021 08:30:55 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DWWwD1j7Qz4x9Q7; Thu,  4 Feb
-        2021 08:30:52 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8D.74.10463.CB0BB106; Thu,  4 Feb 2021 17:30:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210204083050epcas1p1c32da0192b0c74962adcfce3d3f55c3f~gfjk7DyfL1856818568epcas1p1u;
-        Thu,  4 Feb 2021 08:30:50 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210204083050epsmtrp153ed4547d75348068457789489fd55a8~gfjk6SjiD0552405524epsmtrp1v;
-        Thu,  4 Feb 2021 08:30:50 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-0f-601bb0bcad0a
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        76.B2.08745.AB0BB106; Thu,  4 Feb 2021 17:30:50 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210204083050epsmtip1c6c3e46d1302f7508e622f9459c23449~gfjkkmDgy1883918839epsmtip1p;
-        Thu,  4 Feb 2021 08:30:50 +0000 (GMT)
-Subject: Re: [PATCH v6 2/3] PM / devfreq: Cache OPP table reference in
- devfreq
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Saravana Kannan <saravanak@google.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <876e4164-1d28-9d0e-3b10-28d62099b904@samsung.com>
-Date:   Thu, 4 Feb 2021 17:46:58 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Thu, 4 Feb 2021 03:49:10 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35503C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 00:48:24 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id c12so2469405wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 00:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GX8PFk+rrBjk3+DRdB72kCYTMar9krxJSG+CXUd9b5Y=;
+        b=U7oSOy0n0eDTWoPFbM+ww1vFob047faR/zB0z3DXVnCKJPy2kf6ZyQYIg65jOiPbz+
+         XdyeZ1xkQUtIwxCv5RmQBKVygNsdOQwsIW7wznr1+N+ajPJ2QF1TkiOhAnn1p652lHPN
+         llqOPj8JfLpTKFR/gJa+5YkjVw09iZLaryIH6d67nB8XHW5GdUG3+7dE5wRq+DjJAl30
+         bgNWA6eB9zh9g00V3ZNo43fIWKNbnmo7ZIaw7gfnZAonZaLiKTliIhQtM1JrzyJqgkSb
+         2qm/5pod8zGlkPHYH/T+K4+6pWT9/ccIsKV8DWXG7XHfrRFaqe/2j15RObDO9IEH4qI8
+         zJYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GX8PFk+rrBjk3+DRdB72kCYTMar9krxJSG+CXUd9b5Y=;
+        b=aNtdVF6xTjNZEpnQ/3LlHXWkl35pc+hBzRw+yZ4hLnWm7DKpny74QPQ0SBmx1Am1RQ
+         SJd+OEJaFvDHFAwijbqT32Ge94JYT2EsFvwueabfVPb6vuhS2k61xkE+7scQduQEMr9w
+         kPLnkM+ZeFJePES3frhg4Ork1vWtJm3J/n1NbyKeWzRWCi+Erbk+0mnBeZcdr2ciHQYj
+         GoAOd88QcvMMT7evD7V5vjaeAFWVmpNV//csgu3v7E+rGRSp+l5NZjEv0EJGCYqnDSxb
+         4WVbEWceRpOvEmU+NrAvZiBTUmeMrmdmAZH0RJKR++KXcAhnjFnR4VL0vDMnhsRwQoL+
+         sDRg==
+X-Gm-Message-State: AOAM530IXRs0FSNUrKvGUrHrubr4E2iuMry5l6P/NzxrXXS2TIH9+gfu
+        h77W2NNTMY1wgnebwnZXv9RQsAt0sC+RZg==
+X-Google-Smtp-Source: ABdhPJzLe65V0rUsDWCfg8r1gcsnXpOBoDtmW7vFp3f8n8bR3WJMnfOYrW9ic840fJJPhft0iUPzew==
+X-Received: by 2002:a5d:49c1:: with SMTP id t1mr8123153wrs.56.1612428502591;
+        Thu, 04 Feb 2021 00:48:22 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:d57d:36c2:c8de:a0ef? ([2a01:e34:ed2f:f020:d57d:36c2:c8de:a0ef])
+        by smtp.googlemail.com with ESMTPSA id y63sm5237303wmd.21.2021.02.04.00.48.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 00:48:21 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] drivers/clocksource: Fixup csky,mptimer compile
+ error with CPU_CK610
+To:     guoren@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+References: <20210204074609.3553018-1-guoren@kernel.org>
+ <20210204074609.3553018-2-guoren@kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
+Date:   Thu, 4 Feb 2021 09:48:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210204081424.2219311-3-hsinyi@chromium.org>
+In-Reply-To: <20210204074609.3553018-2-guoren@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAJsWRmVeSWpSXmKPExsWy7bCmru6eDdIJBgevc1hMaN3ObHG26Q27
-        xeVdc9gsPvceYbS43biCzeLNj7NMFmdOX2K16Dr0l83i37WNLBabHxxjc+DymN1wkcVjwaZS
-        j02rOtk8tlxtZ/Ho27KK0eP4je1MHp83yQWwR2XbZKQmpqQWKaTmJeenZOal2yp5B8c7x5ua
-        GRjqGlpamCsp5CXmptoqufgE6Lpl5gCdp6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUot
-        SMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzIzri2dCpTwVrhir9XDrA3MH7l72Lk5JAQMJH4
-        9OcxWxcjF4eQwA5GiVd777NCOJ8YJXav3cgOUiUk8JlR4tjzMJiOj9PeMkMU7WKU+P5+FlT7
-        e0aJHx29jCBVwgIBEiv7/4PZIgKpEnt/rwYrYhboZJKYv+0vC0iCTUBLYv+LG2wgNr+AosTV
-        H4/BGngF7CS+T94IZrMIqEjM/bUT7AxRgTCJk9taoGoEJU7OfAI0h4ODU8BaYusPXZAws4C4
-        xK0n85kgbHmJ7W/ngF0qIbCHQ6J52UdmiBdcJCZ/3gdlC0u8Or6FHcKWknjZ3wZlV0usPHmE
-        DaK5g1Fiy/4LrBAJY4n9SyczgSxmFtCUWL9LHyKsKLHz91xGiMV8Eu++9rCClEgI8Ep0tAlB
-        lChLXH5wlwnClpRY3N7JNoFRaRaSb2YheWEWkhdmISxbwMiyilEstaA4Nz212LDABDm2NzGC
-        k66WxQ7GuW8/6B1iZOJgPMQowcGsJMKb2CaVIMSbklhZlVqUH19UmpNafIjRFBi+E5mlRJPz
-        gWk/ryTe0NTI2NjYwsTQzNTQUEmcN8ngQbyQQHpiSWp2ampBahFMHxMHp1QDU1D5QW+uK0ni
-        86d47q1sYXC62KFxp0s8+mjqmZO34y805a6f0/OwT2QX5wER7uYN5vx/JObOX+p05Wj414Yj
-        L0L2HvjGdTvl/bltG5KjW1rXSW5wzfNYmtK/xl9Nwe+E5P4lVgx+zjtO799YwPh8a3nY19UZ
-        Wj8cao+V9c9rWbrdbb1EIS8nZ1qamqrM/Fub/y6/dkuXYfGjV43Z+W9uSMcGrLdt7404+NDo
-        mn/5kxeXd1+Sc7i24pTWt9TzO88ve+HgZxy278j3tsIAhhehB1Qe3fp85MGyI1tq/xtXCv4s
-        rBUyfbH3VOGJvwzicx/ypzhLfnmz5qGmt09EyLx5jc+rWhiWfvc51fss//bEDaxKLMUZiYZa
-        zEXFiQAM/lhEQwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsWy7bCSnO6uDdIJBg8/a1pMaN3ObHG26Q27
-        xeVdc9gsPvceYbS43biCzeLNj7NMFmdOX2K16Dr0l83i37WNLBabHxxjc+DymN1wkcVjwaZS
-        j02rOtk8tlxtZ/Ho27KK0eP4je1MHp83yQWwR3HZpKTmZJalFunbJXBlXFs6lalgrXDF3ysH
-        2BsYv/J3MXJySAiYSHyc9pa5i5GLQ0hgB6PEygNvWSASkhLTLh4FSnAA2cIShw8XQ9S8ZZR4
-        MvM8O0iNsICfRH/nVkYQW0QgVWJiczcbSBGzQDeTxKNPU6Gm7meUWHLwPthUNgEtif0vbrCB
-        2PwCihJXfzwG6+YVsJP4PnkjmM0ioCIx99dOsA2iAmESO5c8ZoKoEZQ4OfMJC8hFnALWElt/
-        6IKEmQXUJf7Mu8QMYYtL3HoynwnClpfY/nYO8wRG4VlIumchaZmFpGUWkpYFjCyrGCVTC4pz
-        03OLDQuM8lLL9YoTc4tL89L1kvNzNzGC409LawfjnlUf9A4xMnEwHmKU4GBWEuFNbJNKEOJN
-        SaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoGp8Kb2v9b03En7
-        vrKcs5WZbJaqxGi59cTnvR7uLzkP5lhU9e521Q3vLou622mxMHDixPzOf5McOKNaX9touEzh
-        dVTxamyfnHi6dK743jjPvpimMtm7k8+ckpA+9Jr7hr/ETA4/tdV2N/ZWik8+4nbilr2zfg7j
-        hpKbLeqs1jl7Tq9Z+/qnWYdqo5HH+1Cbc+pc+d7CfYVZyaYu2iz34o3vfWRj32No/fXbkfaa
-        E+lfUra2/LTp3vrfSPv72VOLvd23Xc7++0TppN3iP8fudNZXsG4L/8hrUt+YFa1ZcUZU5i5n
-        cI/vc7doQVU+hm9dXTH6v2s9LD43v87vio2xlVH4eWPyPs59LFP+b9tvpcRSnJFoqMVcVJwI
-        AA8I96wuAwAA
-X-CMS-MailID: 20210204083050epcas1p1c32da0192b0c74962adcfce3d3f55c3f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210204081436epcas1p2acb2b052090c18979c48f2c343f6b7aa
-References: <20210204081424.2219311-1-hsinyi@chromium.org>
-        <CGME20210204081436epcas1p2acb2b052090c18979c48f2c343f6b7aa@epcas1p2.samsung.com>
-        <20210204081424.2219311-3-hsinyi@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+On 04/02/2021 08:46, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> The timer-mp-csky.c only could support CPU_CK860 and it will
+> compile error with CPU_CK610.
+> 
+> It has been selected in arch/csky/Kconfig.
 
-On 2/4/21 5:14 PM, Hsin-Yi Wang wrote:
-> From: Saravana Kannan <saravanak@google.com>
-> 
-> The OPP table can be used often in devfreq. Trying to get it each time can
-> be expensive, so cache it in the devfreq struct.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Acked-by: MyungJoo Ham <myungjoo.ham@samsung.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+It would be better if you fix the root cause of the compilation error.
+
+The COMPILE_TEST is there for compilation test coverage when the changes
+are touching a lot of drivers.
+
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
 > ---
->  drivers/devfreq/devfreq.c | 6 ++++++
->  include/linux/devfreq.h   | 2 ++
->  2 files changed, 8 insertions(+)
+>  drivers/clocksource/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 6aa10de792b33..a5899c9ae16fc 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -757,6 +757,8 @@ static void devfreq_dev_release(struct device *dev)
->  	if (devfreq->profile->exit)
->  		devfreq->profile->exit(devfreq->dev.parent);
+> ---
+> v2: Drop the string after bool,
+>     as suggested by Marc Zyngier <maz@kernel.org>
+> 
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 14c7c4712478..d39e6ca86d25 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -662,7 +662,7 @@ config CLINT_TIMER
+>  	  driver is usually used for NoMMU RISC-V systems.
 >  
-> +	if (devfreq->opp_table)
-> +		dev_pm_opp_put_opp_table(devfreq->opp_table);
->  	mutex_destroy(&devfreq->lock);
->  	kfree(devfreq);
->  }
-> @@ -844,6 +846,10 @@ struct devfreq *devfreq_add_device(struct device *dev,
->  	}
->  
->  	devfreq->suspend_freq = dev_pm_opp_get_suspend_opp_freq(dev);
-> +	devfreq->opp_table = dev_pm_opp_get_opp_table(dev);
-> +	if (IS_ERR(devfreq->opp_table))
-> +		devfreq->opp_table = NULL;
-> +
->  	atomic_set(&devfreq->suspend_count, 0);
->  
->  	dev_set_name(&devfreq->dev, "%s", dev_name(dev));
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index b6d3bae1c74d8..26ea0850be9bb 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -137,6 +137,7 @@ struct devfreq_stats {
->   *		using devfreq.
->   * @profile:	device-specific devfreq profile
->   * @governor:	method how to choose frequency based on the usage.
-> + * @opp_table:	Reference to OPP table of dev.parent, if one exists.
->   * @nb:		notifier block used to notify devfreq object that it should
->   *		reevaluate operable frequencies. Devfreq users may use
->   *		devfreq.nb to the corresponding register notifier call chain.
-> @@ -173,6 +174,7 @@ struct devfreq {
->  	struct device dev;
->  	struct devfreq_dev_profile *profile;
->  	const struct devfreq_governor *governor;
-> +	struct opp_table *opp_table;
->  	struct notifier_block nb;
->  	struct delayed_work work;
->  
+>  config CSKY_MP_TIMER
+> -	bool "SMP Timer for the C-SKY platform" if COMPILE_TEST
+> +	bool
+>  	depends on CSKY
+>  	select TIMER_OF
+>  	help
 > 
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
