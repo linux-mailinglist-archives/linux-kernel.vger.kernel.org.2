@@ -2,142 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F8830F806
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B83630F808
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238149AbhBDQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:33:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238113AbhBDQbt (ORCPT
+        id S238072AbhBDQdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:33:44 -0500
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:44443 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237994AbhBDQcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:31:49 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10190C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:31:09 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id o63so2466959pgo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:31:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
-        b=YZLEXsBAH1Q6e3Y+HQtqMaUhliU9SQ3zmhdOHQH+2rBPWuZlC8ivhzt6Rp6OoEW/zI
-         +t4hg5wwXDDgx7ZNPxXGePwQ4/FKQIYYw5+JknWED8xyAERQ6TzplGInxk5/dNmSJLKc
-         1Flm0SpW/RqCoLemrCbH1+qDjpIFDsQu7DlVvxFXWkY1q7U/mJH3XJIuHHXtTtU/9sEP
-         2n9WfMvAUFGCWLbLDaLrhc3U0cscXjgE4aE9lItHCXtTvFU1lvmuLzMpd5yJ75vEPyQD
-         /0Z3nI5rplhLrYHOkjAz2j0jNo1PTBXBbnVVzziipPHWjAGbQijoHvNCAOyip/wI6HXi
-         atwQ==
+        Thu, 4 Feb 2021 11:32:16 -0500
+Received: by mail-wr1-f50.google.com with SMTP id d16so4201547wro.11;
+        Thu, 04 Feb 2021 08:31:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
-        b=l8UFJOtLldf/x6Bm7bLuCtAjGUJwGi6MscRJ+YGf9GGaosfsDGQxGjsl4ZtSnCZImV
-         9MlqWJRdXB0EDcBaPPPY2p9k6t/QHgLnOuin5lw2hli3q5UQp7KMnYyT/jmMwV+tx3yu
-         CrH2Pr2iyP3GoROWXpp5j3TNQni+DEgkxlm/w+SiOuicMrdAqdmZRcoBgJKLqednmpux
-         /fdClvx40vWQfX/Iw5cKD63wjjiFI0OlzVt/QmHslm+2tWSeOB2pDi/T4q9lZ8cM6AaP
-         NuCb0Z5IqHQDmu4P7SB4JD+fvcUG/hzLsrKZX2xnAmvpgov9A3Utzyq2IxUWO44gi96C
-         Wz4Q==
-X-Gm-Message-State: AOAM532vDaxS2nhfr38+hVS3Dzs4CufYtcRTsXBqtUbJh+wl4Xagn/HM
-        Roive9a3Pbyk8nImuQXYW2uGgg==
-X-Google-Smtp-Source: ABdhPJwYlQXBXlvG9krnqTBuDUsLn1Qrh7OgLBhLSDi/A7rfI8RShj/W7jKDY33fbqL9CVTrk5oc1A==
-X-Received: by 2002:a62:6382:0:b029:1d2:46ed:d813 with SMTP id x124-20020a6263820000b02901d246edd813mr32411pfb.44.1612456268576;
-        Thu, 04 Feb 2021 08:31:08 -0800 (PST)
-Received: from localhost.bytedance.net ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id v23sm4728843pgo.43.2021.02.04.08.31.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 08:31:07 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: memcontrol: replace the loop with a list_for_each_entry()
-Date:   Fri,  5 Feb 2021 00:30:55 +0800
-Message-Id: <20210204163055.56080-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kYU9bh4CkxipE81WEoDluz6pVp6f8gibc7rj0DSwtJU=;
+        b=kCBFcWFsczeDEK/CqICnhJP0giiFGG3W6gwX60tzii9rK9ak04DLNtD08WTRvCu/Jy
+         0tkECAJuR/nFpQCs6iT3SWct0wH9jeIm6NgkIrtPSAk/QdfbbGHKnV5sGI/kZ11Ma5gH
+         1oazJT2nDeGVgLvmb5rYp2y3WVBFdpAAgIivVdnTsmOlVhUvc+NTCtUMJS+DV5QYPREs
+         sMnO8HStkDF6ZaQ/qJMNhF8BK8IrICMxWl/loiR/s8aryDqIBBb2fLhO2be8UyS3J+JE
+         g8fE0SuUXc82LE0D2pseUY+KQ0nDgKn7vt4BiMOAb/E5xl851MKLV+pG4hlXxW7NPW3J
+         eW+w==
+X-Gm-Message-State: AOAM532hfjbmU8/JOFZkyUEBq1KTHMXBYuHBwu+zPHZBEmqmdLxeCe8v
+        9NlN5nShFQYl7RLAnWBA29I=
+X-Google-Smtp-Source: ABdhPJzTbgWhdm9DCf+s2VSEHyWYnOJ0XIq4qUmMw/dSgwUJqX3hG9GJKdI3Tx/RMe50+5belhNhiQ==
+X-Received: by 2002:adf:e381:: with SMTP id e1mr194880wrm.22.1612456293701;
+        Thu, 04 Feb 2021 08:31:33 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id i7sm8818889wru.49.2021.02.04.08.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 08:31:33 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:31:31 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH 08/10] clocksource/drivers/hyper-v: Handle sched_clock
+ differences inline
+Message-ID: <20210204163131.4i63wpyyauvcsdpc@liuwe-devbox-debian-v2>
+References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
+ <1611779025-21503-9-git-send-email-mikelley@microsoft.com>
+ <20210201185513.or4eilecqhmxqjme@liuwe-devbox-debian-v2>
+ <MWHPR21MB159351D13368615E9E3A8C46D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB159351D13368615E9E3A8C46D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rule of list walk has gone since:
+On Thu, Feb 04, 2021 at 04:28:38PM +0000, Michael Kelley wrote:
+> From: Wei Liu <wei.liu@kernel.org> Sent: Monday, February 1, 2021 10:55 AM
+> > 
+> > On Wed, Jan 27, 2021 at 12:23:43PM -0800, Michael Kelley wrote:
+> > [...]
+> > > +/*
+> > > + * Reference to pv_ops must be inline so objtool
+> > > + * detection of noinstr violations can work correctly.
+> > > + */
+> > > +static __always_inline void hv_setup_sched_clock(void *sched_clock)
+> > 
+> > sched_clock_register is not trivial. Having __always_inline here is
+> > going to make the compiled object bloated.
+> > 
+> > Given this is a static function, I don't think we need to specify any
+> > inline keyword. The compiler should be able to determine whether this
+> > function should be inlined all by itself.
+> > 
+> > Wei.
+> 
+> There was an explicit request from Peter Zijlstra and Thomas Gleixner
+> to force it inline.  See https://lore.kernel.org/patchwork/patch/1283635/ and
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/include/asm/mshyperv.h?id=b9d8cf2eb3ceecdee3434b87763492aee9e28845
 
- commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
+Oh. noinstr. I failed to notice the comment. Sorry for the noise.
 
-So remove the strange comment and replace the loop with a
-list_for_each_entry().
-
-There is only one caller of the uncharge_list(). So just fold it into
-mem_cgroup_uncharge_list() and remove it.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
-v2:
- - Fold uncharge_list() to mem_cgroup_uncharge_list().
-
- mm/memcontrol.c | 35 ++++++++---------------------------
- 1 file changed, 8 insertions(+), 27 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ed5cc78a8dbf..8c035846c7a4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6862,31 +6862,6 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 	css_put(&ug->memcg->css);
- }
- 
--static void uncharge_list(struct list_head *page_list)
--{
--	struct uncharge_gather ug;
--	struct list_head *next;
--
--	uncharge_gather_clear(&ug);
--
--	/*
--	 * Note that the list can be a single page->lru; hence the
--	 * do-while loop instead of a simple list_for_each_entry().
--	 */
--	next = page_list->next;
--	do {
--		struct page *page;
--
--		page = list_entry(next, struct page, lru);
--		next = page->lru.next;
--
--		uncharge_page(page, &ug);
--	} while (next != page_list);
--
--	if (ug.memcg)
--		uncharge_batch(&ug);
--}
--
- /**
-  * mem_cgroup_uncharge - uncharge a page
-  * @page: page to uncharge
-@@ -6918,11 +6893,17 @@ void mem_cgroup_uncharge(struct page *page)
-  */
- void mem_cgroup_uncharge_list(struct list_head *page_list)
- {
-+	struct uncharge_gather ug;
-+	struct page *page;
-+
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	if (!list_empty(page_list))
--		uncharge_list(page_list);
-+	uncharge_gather_clear(&ug);
-+	list_for_each_entry(page, page_list, lru)
-+		uncharge_page(page, &ug);
-+	if (ug.memcg)
-+		uncharge_batch(&ug);
- }
- 
- /**
--- 
-2.11.0
-
+Wei.
