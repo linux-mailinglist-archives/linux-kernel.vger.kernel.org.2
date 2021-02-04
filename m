@@ -2,78 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CD430F8D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0206130F8E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238025AbhBDQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:58:42 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:52900 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238051AbhBDQn2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:43:28 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 328A120B6C4C;
-        Thu,  4 Feb 2021 08:42:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 328A120B6C4C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612456927;
-        bh=uiVKYIseEHzpQAjyAsk8T0lirRa8mLfkMkwkmqOk4tQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lbu5gALoRgSaXReMmtPcycRst+kL6XMr8NCDjD9KeRWNhr9UXJB2S1F1dC0AX+ZwE
-         mbPSbHP7zSwcNeP6caabCZ/EMH6OHIoksvIeXV7gCOHmPSpUS1zaANS2XVLDNyZgLg
-         TiUGogEtj8sWY8DArojhIs8p59z4uPsvhxDnQaZ8=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v16 12/12] arm64: Enable passing IMA log to next kernel on kexec
-Date:   Thu,  4 Feb 2021 08:41:35 -0800
-Message-Id: <20210204164135.29856-13-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204164135.29856-1-nramas@linux.microsoft.com>
-References: <20210204164135.29856-1-nramas@linux.microsoft.com>
+        id S238255AbhBDQ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:59:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:33412 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237943AbhBDQm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:42:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BE411D4;
+        Thu,  4 Feb 2021 08:42:08 -0800 (PST)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFDA33F718;
+        Thu,  4 Feb 2021 08:42:06 -0800 (PST)
+Date:   Thu, 4 Feb 2021 16:41:46 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: [PATCH 1/3] arm64/ptrace: don't clobber task registers on
+ syscall entry/exit traps
+Message-ID: <20210204164145.GB21837@arm.com>
+References: <20210201194012.524831-1-avagin@gmail.com>
+ <20210201194012.524831-2-avagin@gmail.com>
+ <20210204152334.GA21058@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204152334.GA21058@willie-the-truck>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
-is enabled, to indicate that the IMA measurement log information is
-present in the device tree for ARM64.
+On Thu, Feb 04, 2021 at 03:23:34PM +0000, Will Deacon wrote:
+> On Mon, Feb 01, 2021 at 11:40:10AM -0800, Andrei Vagin wrote:
+> > ip/r12 for AArch32 and x7 for AArch64 is used to indicate whether or not
+> > the stop has been signalled from syscall entry or syscall exit. This
+> > means that:
+> > 
+> > - Any writes by the tracer to this register during the stop are
+> >   ignored/discarded.
+> > 
+> > - The actual value of the register is not available during the stop,
+> >   so the tracer cannot save it and restore it later.
+> > 
+> > Right now, these registers are clobbered in tracehook_report_syscall.
+> > This change moves the logic to gpr_get and compat_gpr_get where
+> > registers are copied into a user-space buffer.
+> > 
+> > This will allow to change these registers and to introduce a new
+> > ptrace option to get the full set of registers.
+> > 
+> > Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> > ---
+> >  arch/arm64/include/asm/ptrace.h |   5 ++
+> >  arch/arm64/kernel/ptrace.c      | 104 ++++++++++++++++++++------------
+> >  2 files changed, 69 insertions(+), 40 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
+> > index e58bca832dff..0a9552b4f61e 100644
+> > --- a/arch/arm64/include/asm/ptrace.h
+> > +++ b/arch/arm64/include/asm/ptrace.h
+> > @@ -170,6 +170,11 @@ static inline unsigned long pstate_to_compat_psr(const unsigned long pstate)
+> >  	return psr;
+> >  }
+> >  
+> > +enum ptrace_syscall_dir {
+> > +	PTRACE_SYSCALL_ENTER = 0,
+> > +	PTRACE_SYSCALL_EXIT,
+> > +};
+> > +
+> >  /*
+> >   * This struct defines the way the registers are stored on the stack during an
+> >   * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
+> > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> > index 8ac487c84e37..39da03104528 100644
+> > --- a/arch/arm64/kernel/ptrace.c
+> > +++ b/arch/arm64/kernel/ptrace.c
+> > @@ -40,6 +40,7 @@
+> >  #include <asm/syscall.h>
+> >  #include <asm/traps.h>
+> >  #include <asm/system_misc.h>
+> > +#include <asm/ptrace.h>
+> >  
+> >  #define CREATE_TRACE_POINTS
+> >  #include <trace/events/syscalls.h>
+> > @@ -561,7 +562,31 @@ static int gpr_get(struct task_struct *target,
+> >  		   struct membuf to)
+> >  {
+> >  	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
+> > -	return membuf_write(&to, uregs, sizeof(*uregs));
+> > +	unsigned long saved_reg;
+> > +	int ret;
+> > +
+> > +	/*
+> > +	 * We have some ABI weirdness here in the way that we handle syscall
+> > +	 * exit stops because we indicate whether or not the stop has been
+> > +	 * signalled from syscall entry or syscall exit by clobbering the general
+> > +	 * purpose register x7.
+> > +	 */
+> 
+> When you move a comment, please don't truncate it!
+> 
+> > +	saved_reg = uregs->regs[7];
+> > +
+> > +	switch (target->ptrace_message) {
+> > +	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
+> > +		uregs->regs[7] = PTRACE_SYSCALL_ENTER;
+> > +		break;
+> > +	case PTRACE_EVENTMSG_SYSCALL_EXIT:
+> > +		uregs->regs[7] = PTRACE_SYSCALL_EXIT;
+> > +		break;
+> > +	}
+> 
+> I'm wary of checking target->ptrace_message here, as I seem to recall the
+> regset code also being used for coredumps. What guarantees we don't break
+> things there?
 
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+For a coredump, is there any way to know whether a given thread was
+inside a traced syscall when the coredump was generated?  If so, x7 in
+the dump may already unreliable and we only need to make best efforts to
+get it "right".
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 05e17351e4f3..8a93573cebb6 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1093,6 +1093,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC if IMA
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
--- 
-2.30.0
+Since triggering of the coredump and death of other threads all require
+dequeueing of some signal, I think all threads must always outside the
+syscall-enter...syscall-exit path before any of the coredump runs anyway,
+in which case the above should never matter...  Though somone else ought
+to eyeball the coredump code before we agree on that.
 
+ptrace_message doesn't seem absolutely the wrong thing to check, but
+we'd need to be sure that it can't be stale (say, left over from some
+previous trap).
+
+
+Out of interest, where did this arm64 ptrace feature come from?  Was it
+just pasted from 32-bit and thinly adapted?  It looks like an
+arch-specific attempt to do what PTRACE_O_TRACESYSGOOD does, in which
+case it may have been obsolete even before it was upstreamed.  I wonder
+whether anyone is actually relying on it at all...  
+
+Doesn't mean we can definitely fix it safely, but it's annoying.
+
+[...]
+
+Cheers
+---Dave
