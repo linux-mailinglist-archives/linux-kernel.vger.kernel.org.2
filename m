@@ -2,83 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B0330F5D1
+	by mail.lfdr.de (Postfix) with ESMTP id 5506D30F5D0
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236975AbhBDPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237042AbhBDPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:00:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E1864F60;
-        Thu,  4 Feb 2021 14:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612450711;
-        bh=Gkl5QjMLL9cstN7D689exW6RO9F/yfq6ZQ1XMZN1V+k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r1FvdF0heZuFmuqdo0dHu3sLr8/I8cmWlT2CSDUdGkPM/JF0RyifSAFkwLaPLumqI
-         4sOOu4MH1lODcMRT4j5Ncjve0F5oGTNNamwSzKrdbYhzmd0K+5Dpc3nIuqaGI3OSpI
-         B4/xOw4I5xKsdGR9v6dqRwSDaPIPO2cNTrO9aZPONvd6sS+ksHXU56ovqPJk8Xqz4Y
-         9xuDQiz32W/CoLoiLjgOEBiuyUQOGW9A32jKRkPor9SCx9+Pw67Gs8PhhwKgifCOVy
-         RYyy7eTRduNvneoqUyJui+ZV1Jm2w2TNAJ+N+Nd2FbmMIKndRxSup9Fr7QAzNh8+Ga
-         AdXSDhTqCNbtA==
-Date:   Thu, 4 Feb 2021 16:58:23 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Stefan Berger <stefanb@linux.ibm.com>,
-        Saulo Alessandre <saulo.alessandre@gmail.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v7 1/4] crypto: Add support for ECDSA signature
- verification
-Message-ID: <YBwLj+8kHIHMA3xH@kernel.org>
-References: <20210201151910.1465705-1-stefanb@linux.ibm.com>
- <20210201151910.1465705-2-stefanb@linux.ibm.com>
- <20210204052738.GA7086@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204052738.GA7086@gondor.apana.org.au>
+        id S237133AbhBDPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237089AbhBDO7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:59:15 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA3FC061786;
+        Thu,  4 Feb 2021 06:58:35 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id r12so5773175ejb.9;
+        Thu, 04 Feb 2021 06:58:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fTTiHduwnoXqR6b8TrKcHrHm61227F3QjrDLKsXeD7I=;
+        b=SrYxamP4i+r8UNU02W7Z9zvldd7UYJ2fiJBl9hxzhqZ4/TOSWE6QqAMs5FgeZRvFMc
+         DZFihkjaIBZ5fdvMG0bsmxkwHGnBhB48wX7LtRVQTaI4jL/RI+Zo0XVIgTfBA49IX1au
+         thd9RR7Obc6ty0QQpY/oJsahU/Jj8/vfn0OuHbSMklMHJr/u935Wk2laCjaRjMFvEa6T
+         RJLoz7UK2o4WSRqvnuj595rI5U4iPAsrk1x/nGj0hP7Sfv1/SnR1ghnO1eQ53N2OM6SN
+         F/sIwUKUNsVlx75Sf+7OsG/qdnrTi2t13qPSavim+cihmCVf8yYGYOT5Nl/MeimrOnjl
+         kWLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fTTiHduwnoXqR6b8TrKcHrHm61227F3QjrDLKsXeD7I=;
+        b=mk9+JFLNHDRMm7Xyp5hORGPMHFb4cZA3JDTcs9sWMBLC/ZhgYW3t3/zvNJ+upmYtLo
+         hJk51wE6s6xvrJWTuw9Bpj3bANsSXgTRKQ7kIedMFWTy/BNl3g8FGZvpbIsshR1cAWUK
+         QNp0X2VYQ/wlGhT39o8MZGS8QfLzTTfnEa2xsSZ9C9ISY6czjtW/YuqIL0/yyoVLi3gv
+         ZW5DjGPC+t7GnbsX1ZzeYx7s7VNWmhKtsP4MzT6GAAEym1uOagxhiTd1YIhA8N9wm+6F
+         C5XKimHBqoJmQpi9+MuVjuFDW5CNFPb57N2xjhzK2pg49kdzAk9ZisuXr9J2rRjVv/n+
+         +Gow==
+X-Gm-Message-State: AOAM533cfKQxIz2mFpOQ+Idm8RJaO4OzN8c1xWNA3M1ufVDZb303aPok
+        aOH3kq8C+oXjBFgyuz0xgsw=
+X-Google-Smtp-Source: ABdhPJxUzoQqufvj3OQgO85FemOV70JYaabYPzt7rEoWKyi722zVpTRCn2XzVNwW2Yct/PbfAjP8Xw==
+X-Received: by 2002:a17:906:494c:: with SMTP id f12mr8463064ejt.56.1612450713780;
+        Thu, 04 Feb 2021 06:58:33 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
+        by smtp.googlemail.com with ESMTPSA id qx8sm2565695ejb.48.2021.02.04.06.58.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Feb 2021 06:58:32 -0800 (PST)
+Message-ID: <372c6dbbda18cccdcf2b053ee87f2ada9640e2b8.camel@gmail.com>
+Subject: Re: [PATCH 3/4] scsi: ufs-debugfs: Add user-defined
+ exception_event_mask
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Date:   Thu, 04 Feb 2021 15:58:31 +0100
+In-Reply-To: <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
+References: <20210119141542.3808-1-adrian.hunter@intel.com>
+         <20210119141542.3808-4-adrian.hunter@intel.com>
+         <85b6cbb805e97081a676aeb30fe76f059eba192e.camel@gmail.com>
+         <b7a812ed-8965-76cf-3d05-be2486fcaed2@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 04:27:39PM +1100, Herbert Xu wrote:
-> On Mon, Feb 01, 2021 at 10:19:07AM -0500, Stefan Berger wrote:
-> > Add support for parsing the parameters of a NIST P256 or NIST P192 key.
-> > Enable signature verification using these keys. The new module is
-> > enabled with CONFIG_ECDSA:
-> >   Elliptic Curve Digital Signature Algorithm (NIST P192, P256 etc.)
-> >   is A NIST cryptographic standard algorithm. Only signature verification
-> >   is implemented.
+On Wed, 2021-02-03 at 11:56 +0200, Adrian Hunter wrote:
 > > 
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: linux-crypto@vger.kernel.org
-> > ---
-> >  crypto/Kconfig               |  10 +
-> >  crypto/Makefile              |   6 +
-> >  crypto/ecc.c                 |  13 +-
-> >  crypto/ecc.h                 |  28 +++
-> >  crypto/ecdsa.c               | 361 +++++++++++++++++++++++++++++++++++
-> >  crypto/ecdsasignature.asn1   |   4 +
-> >  crypto/testmgr.c             |  12 ++
-> >  crypto/testmgr.h             | 267 ++++++++++++++++++++++++++
-> >  include/linux/oid_registry.h |   4 +
-> >  9 files changed, 694 insertions(+), 11 deletions(-)
-> >  create mode 100644 crypto/ecdsa.c
-> >  create mode 100644 crypto/ecdsasignature.asn1
+> > Hallo Adrian
+> 
+> Hi Bean
+> 
+> Thanks for the review
+> 
+> > 
+> > Would you like sharing the advantage of this debugfs node comparing
+> > to
+> > sysfs node "attributes/exception_event_control(if it is writable)"?
+> 
+> Primarily this is being done as a debug interface, but the user's
+> exception
+> events also need to be kept separate from the driver's ones.
+> 
+> > what is the value of this?
+> 
+> To be able to determine if the UFS device is being affected by
+> exception events.
+> 
+> > Also, now I can disable/enable UFS event over ufs-bsg.
+> 
+> That will be overwritten by the driver when it updates the e.g. bkops
+> control, or sometimes also suspend/resume.
+
+Hi Adrian
+yes, I saw that, they are not tracked by driver.
+
+I have one question that why "exception_event_mask" cannot represent
+the current QUERY_ATTR_IDN_EE_CONTROL value? only after writing it.
 
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+thanks,
+Bean
 
-Great, ECDSA has been lacking for a way too long. Just wanted to
-acknowledge support for this, I just now also skimmed the change
-from patchwrok (way too quickly for reviewed-by but well enough
-for ack).
 
-/Jarkko
+
+
