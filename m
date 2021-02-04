@@ -2,148 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA8930F14D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB9730F14F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhBDKz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:55:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:55882 "EHLO foss.arm.com"
+        id S235461AbhBDK4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:56:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234873AbhBDKz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:55:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C2DBD6E;
-        Thu,  4 Feb 2021 02:54:41 -0800 (PST)
-Received: from [10.57.60.124] (unknown [10.57.60.124])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95B653F73B;
-        Thu,  4 Feb 2021 02:54:37 -0800 (PST)
-Subject: Re: [PATCH v2 5/7] perf cs-etm: Add helper cs_etm__get_pid_fmt()
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210202163842.134734-1-leo.yan@linaro.org>
- <20210202163842.134734-6-leo.yan@linaro.org>
- <51a1e845-f9a4-3c6e-88a2-c105f5b5adfe@arm.com>
- <20210204034743.GE11059@leoy-ThinkPad-X240s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <afb60e3b-697d-4503-a8de-11cd1a0bf97d@arm.com>
-Date:   Thu, 4 Feb 2021 10:54:24 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S235378AbhBDK4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:56:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB3864F72
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612436124;
+        bh=iVOYJyr/gInCGMuwQ7LepyUha9WX21AN5d8OqnfR7uU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qOtWVjpEAiUSSLXsoyrSjnKcWA56wnfg5Z7L2v++SB2a/rhBNl35GlYhtDkYPZjJs
+         7nNyhWIpMTk/fZicthRrKes4oM5F0J6Y9h3laweFtq3sMd9y9eVUTp7Jj7eZUaLsIQ
+         OngZ53jrn6HBCpW89NXpIViLkoUR/Rfz2oWZ3RoffC8E4CoKwZGqHVxWQh4I6f8JKV
+         LDQb09+nmK5gwOQ3daMw7Zo+JhfmemRyN7J/IQfjSFMLqtoG4qmfhN06tWoXV857nY
+         y0YZDJ3rIBwEoTrHDx/whsFqIEKBybxM1pV2OpfXjqvy5+JJn8FJ42pOHaX2hBWkvn
+         ODr4iHhIVY2ig==
+Received: by mail-oi1-f171.google.com with SMTP id u66so1329548oig.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:55:24 -0800 (PST)
+X-Gm-Message-State: AOAM530ey3b3zl6GdAkwfLjOK53kxfXUsXi1WvGHWTmMLaCIdi4v7uJF
+        nUzVPppC1+NgZK5ISPcY96+7CnugfZd6FIhC9CI=
+X-Google-Smtp-Source: ABdhPJw4JbNRArUMkqNa7P08Ruf3Tr/UdRMkHpqxhSV9cSbnh0Qa9NdrQXiRZyzMr7GGmJreApH8hXm7DEY/6Qfy3lc=
+X-Received: by 2002:aca:ea0b:: with SMTP id i11mr4914161oih.33.1612436123393;
+ Thu, 04 Feb 2021 02:55:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204034743.GE11059@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <601b773a.1c69fb81.9f381.a32a@mx.google.com> <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk> <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <20210204104714.GU1463@shell.armlinux.org.uk>
+In-Reply-To: <20210204104714.GU1463@shell.armlinux.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 4 Feb 2021 11:55:12 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
+Message-ID: <CAMj1kXF6SLXN3HQAG3SyOujX5MPCSrLG-k82iNz=61HjaiEEVw@mail.gmail.com>
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 3:47 AM, Leo Yan wrote:
-> On Tue, Feb 02, 2021 at 11:19:22PM +0000, Suzuki Kuruppassery Poulose wrote:
->> On 2/2/21 4:38 PM, Leo Yan wrote:
->>> This patch adds helper function cs_etm__get_pid_fmt(), by passing
->>> parameter "traceID", it returns the PID format.
->>>
->>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->>> ---
->>>    tools/perf/util/cs-etm.c | 43 ++++++++++++++++++++++++++++++++++++++++
->>>    tools/perf/util/cs-etm.h |  1 +
->>>    2 files changed, 44 insertions(+)
->>>
->>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->>> index a2a369e2fbb6..8194ddbd01e5 100644
->>> --- a/tools/perf/util/cs-etm.c
->>> +++ b/tools/perf/util/cs-etm.c
->>> @@ -7,6 +7,7 @@
->>>     */
->>>    #include <linux/bitops.h>
->>> +#include <linux/coresight-pmu.h>
->>>    #include <linux/err.h>
->>>    #include <linux/kernel.h>
->>>    #include <linux/log2.h>
->>> @@ -156,6 +157,48 @@ int cs_etm__get_cpu(u8 trace_chan_id, int *cpu)
->>>    	return 0;
->>>    }
->>> +/*
->>> + * The returned PID format is presented by two bits:
->>> + *
->>> + *   Bit ETM_OPT_CTXTID: CONTEXTIDR or CONTEXTIDR_EL1 is traced;
->>> + *   Bit ETM_OPT_CTXTID2: CONTEXTIDR_EL2 is traced.
->>> + *
->>> + * It's possible that these two bits are set together, this means the tracing
->>> + * contains PIDs for both CONTEXTIDR_EL1 and CONTEXTIDR_EL2.
->>
->> This is a bit confusing. If both the bits are set, the session
->> was run on an EL2 kernel. Thus, the PID is always in CONTEXTIDR_EL2.
-> 
-> Sorry for confusion.  I'd like to rephrase as:
-> 
-> It's possible that the two bits ETM_OPT_CTXTID and ETM_OPT_CTXTID2 are
-> enabled at the same time when the session runs on an EL2 kernel.  This
-> means the CONTEXTIDR_EL1 and CONTEXTIDR_EL2 both will be recorded in
-> the trace data, the tool will selectively use CONTEXTIDR_EL2 as PID.
-> 
->>> + */
->>> +int cs_etm__get_pid_fmt(u8 trace_chan_id, u64 *pid_fmt)
->>> +{
->>> +	struct int_node *inode;
->>> +	u64 *metadata, val;
->>> +
->>> +	inode = intlist__find(traceid_list, trace_chan_id);
->>> +	if (!inode)
->>> +		return -EINVAL;
->>> +
->>> +	metadata = inode->priv;
->>> +
->>> +	if (metadata[CS_ETM_MAGIC] == __perf_cs_etmv3_magic) {
->>> +		val = metadata[CS_ETM_ETMCR];
->>> +		/* CONTEXTIDR is traced */
->>> +		if (val & BIT(ETM_OPT_CTXTID))
->>> +			*pid_fmt = BIT(ETM_OPT_CTXTID);
->>> +	} else {
->>> +		val = metadata[CS_ETMV4_TRCCONFIGR];
->>> +
->>> +		*pid_fmt = 0;
->>> +
->>> +		/* CONTEXTIDR_EL2 is traced */
->>> +		if (val & (BIT(ETM4_CFG_BIT_VMID) | BIT(ETM4_CFG_BIT_VMID_OPT)))
->>> +			*pid_fmt = BIT(ETM_OPT_CTXTID2);
->>> +
->>> +		/* CONTEXTIDR_EL1 is traced */
->>> +		if (val & BIT(ETM4_CFG_BIT_CTXTID))
->>
->> I haven't looked at how this gets used. But, Shouldn't this be :
->>
->> 		else if (val & BIT(ETM4_CFG_BIT_CTXTID)) ?
-> 
-> Actually it's deliberately to set both bits ETM_OPT_CTXTID2 and
-> ETM_OPT_CTXTID if user has enable configs "contextid1" and
-> "contextid2".  So this is exactly the reversed flow in the
-> function cs_etmv4_get_config().
+(cc Marc)
 
-The point is, we don't care if the user selected both options. What we
-care is, where can we find the PID. CONTEXTIDR_EL1 or CONTEXTIDR_EL2.
-As such, get_pid_fmt simply should make that decision and pass it on.
-So, if the CONTEXTIDR_EL2 is selected (which can only be done successfully
-on an EL2 kernel), thats our pid.
+On Thu, 4 Feb 2021 at 11:48, Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Thu, Feb 04, 2021 at 11:27:16AM +0100, Ard Biesheuvel wrote:
+> > Hi Russell,
+> >
+> > If Guillaume is willing to do the experiment, and it fixes the issue,
+> > it proves that rk3288 is relying on the flush before the MMU is
+> > disabled, and so in that case, the fix is trivial, and we can just
+> > apply it.
+> >
+> > If the experiment fails (which would mean rk3288 does not tolerate the
+> > cache maintenance being performed after cache off), it is going to be
+> > hairy, and so it will definitely take more time.
+> >
+> > So in the latter case (or if Guillaume does not get back to us), I
+> > think reverting my queued fix is the only sane option. But in that
+> > case, may I suggest that we queue the revert of the original by-VA
+> > change for v5.12 so it gets lots of coverage in -next, and allows us
+> > an opportunity to come up with a proper fix in the same timeframe, and
+> > backport the revert and the subsequent fix as a pair? Otherwise, we'll
+> > end up in the situation where v5.10.x until today has by-va, v5.10.x-y
+> > has set/way, and v5.10y+ has by-va again. (I don't think we care about
+> > anything before that, given that v5.4 predates any of this)
+>
+> I'm suggesting dropping your fix (9052/1) and reverting
+> "ARM: decompressor: switch to by-VA cache maintenance for v7 cores"
+> which gets us to a point where _both_ regressions are fixed.
+>
 
-So we should return the format for the PID here. i.e
-  ETM_OPT_CTXTID2 OR ETM_OPT_CTXTID. But not both.
+I understand, but we don't know whether doing so might regress other
+platforms that were added in the mean time.
 
-Cheers
-Suzuki
+> I'm of the opinion that the by-VA patch was incorrect when it was
+> merged (it caused a regression), and it's only a performance
+> improvement.
+
+It is a correctness improvement, not a performance improvement.
+
+Without that change, the 32-bit ARM kernel cannot boot bare metal on
+platforms with a system cache such as 8040 or SynQuacer, and can only
+boot under KVM on such systems because of the special handling of
+set/way instructions by the host.
+
+The performance issue related to set/way ops under KVM was already
+fixed by describing data and unified caches as 1 set and 1 way when
+running in 32-bit mode.
+
+
+> Our attempts so far to fix it are just causing other
+> regressions. So, I think it is reasonable to revert both back to a
+> known good point which has worked over a decade. If doing so causes
+> regressions (which I think is unlikely), then that would be unfortunate
+> but alas is a price that's worth paying to get back to a known good
+> point - since then we're not stacking regression fixes on top of other
+> regression fixes.
+>
+
+This is exactly why I am proposing to queue the revert of the original
+patch for v5.12, and only backport it to v5.10 and v5.11 once we are
+sure it does not break anything else.
