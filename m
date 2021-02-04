@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD81830FDCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD9530FD8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbhBDUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239475AbhBDT4q (ORCPT
+        id S239939AbhBDUBW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 15:01:22 -0500
+Received: from wildebeest.demon.nl ([212.238.236.112]:37446 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239790AbhBDT46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:56:46 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A784C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:56:06 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id cl8so2324369pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cREe4mpEbDVYUgSGHck86DN+09/T0KggeVpHRB6Lhw0=;
-        b=eup2LSndCOmk227ViA0qGpuq32ZePmfrdzCY9BJdFC59+1KRofF3eCXZSHAMPm05xc
-         smyKEebKiEPOW6lcePOHYKqr7MKFsxuF4MVbe6hb2jY5oFL9Dg+Zz432FzpHpYW5RFhf
-         T202G8LNBQ7ucEp8j31zZxbtM+sQUqQBUGtI0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cREe4mpEbDVYUgSGHck86DN+09/T0KggeVpHRB6Lhw0=;
-        b=T0mdt/4pIksPe9pDKnKPHzdhDAqZqaV66kfkI+lfKr1qjTm0Jblqk++6r2m/vHyF56
-         9D7qvFgtxDKtQ6TuSrXIFXPlJEjOj7aRjqbEVA/StqeJhRIyk3HuSQTscaDlOhOzQFIn
-         HRm8WwqM8+aTxq8i1FuFGYI6N4GXH4Y/ldivsVqH+ORqMMT6Wh2vR+6JerGbZj2qse1Q
-         fkEVXCLEvsuLWH1RRFvY7OEwZ10BHenLO8e5podigoi5ZKaaIHLH4TfZzWO3rOkYWtII
-         d9i56SR5ULfc1qcmTRLYLV9WOFw7oY6VarldTWzgqVATLVpQVX9ieJ+94tMPl5sP0ciP
-         29zw==
-X-Gm-Message-State: AOAM531bBQZFuAzNX46VK0RLlXfQfKyVQ8Bohy5CcOgBwd3XEUAwDVq6
-        hVJAqlTRuOGM6daSxHnN5rxhSg==
-X-Google-Smtp-Source: ABdhPJypiZ3aY6ToskYJVpLPmwjx1SQOOmTLh/FTIa/eMU4kbyKkSkLf+aRvyBCJP/3DAOQZoSKViw==
-X-Received: by 2002:a17:902:f688:b029:da:a817:1753 with SMTP id l8-20020a170902f688b02900daa8171753mr746883plg.76.1612468565931;
-        Thu, 04 Feb 2021 11:56:05 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d88sm6889445pjk.23.2021.02.04.11.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 11:56:04 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:56:03 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v19 02/25] x86/cet/shstk: Add Kconfig option for
- user-mode control-flow protection
-Message-ID: <202102041154.F0264AC33@keescook>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-3-yu-cheng.yu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203225547.32221-3-yu-cheng.yu@intel.com>
+        Thu, 4 Feb 2021 14:56:58 -0500
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id DA19930278CD;
+        Thu,  4 Feb 2021 20:56:05 +0100 (CET)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id 880BF40C9DA3; Thu,  4 Feb 2021 20:56:05 +0100 (CET)
+Message-ID: <20fdd20fe067dba00b349407c4a0128c97c1a707.camel@klomp.org>
+Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
+From:   Mark Wielaard <mark@klomp.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>
+Date:   Thu, 04 Feb 2021 20:56:05 +0100
+In-Reply-To: <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+         <20210130004401.2528717-2-ndesaulniers@google.com>
+         <20210204103946.GA14802@wildebeest.org>
+         <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:55:24PM -0800, Yu-cheng Yu wrote:
-> Shadow Stack provides protection against function return address
-> corruption.  It is active when the processor supports it, the kernel has
-> CONFIG_X86_CET enabled, and the application is built for the feature.
-> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
-> non-Shadow Stack applications continue to work, but without protection.
+On Thu, 2021-02-04 at 11:18 -0800, Nick Desaulniers wrote:
+> On Thu, Feb 4, 2021 at 2:41 AM Mark Wielaard <mark@klomp.org> wrote:
+> > On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
+> > > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
+> > > the default. Does so in a way that's forward compatible with existing
+> > > configs, and makes adding future versions more straightforward.
+> > > 
+> > > GCC since ~4.8 has defaulted to this DWARF version implicitly.
+> > 
+> > And since GCC 11 it defaults to DWARF version 5.
+> > 
+> > It would be better to set the default to the DWARF version that the
+> > compiler generates. So if the user doesn't select any version then it
+> > should default to just -g (or -gdwarf).
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
->  arch/x86/Kconfig           | 22 ++++++++++++++++++++++
->  arch/x86/Kconfig.assembler |  5 +++++
->  2 files changed, 27 insertions(+)
+> I disagree.
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 21f851179ff0..074b3c0e6bf6 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1951,6 +1951,28 @@ config X86_SGX
->  
->  	  If unsure, say N.
->  
-> +config ARCH_HAS_SHADOW_STACK
-> +	def_bool n
-> +
-> +config X86_CET
-> +	prompt "Intel Control-flow protection for user-mode"
-> +	def_bool n
-> +	depends on X86_64
-> +	depends on AS_WRUSS
-> +	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select ARCH_HAS_SHADOW_STACK
+> https://lore.kernel.org/lkml/CAKwvOdk0zxewEOaFuqK0aSMz3vKNzDOgmez=-Dae4+bodsSg5w@mail.gmail.com/
+> """
+> I agree that this patch takes away the compiler vendor's choice as to
+> what the implicit default choice is for dwarf version for the kernel.
+> (We, the Linux kernel, do so already for implicit default -std=gnuc*
+> as well). ...
+> But I'm
+> going to suggest we follow the Zen of Python: explicit is better than
+> implicit.
+> """
+> We have a number of in tree and out of tree DWARF consumers that
+> aren't ready for DWARF v5.  Kernel developers need a way to disable
+> DWARF v5 until their dependencies are deployed or more widely
+> available.
 
-This seems backwards to me? Shouldn't 'config X86_64' do the 'select
-ARCH_HAS_SHADOW_STACK' and 'config X86_CET' do a 'depends on
-ARCH_HAS_SHADOW_STACK' instead?
+I agree with Jakub. Now that GCC has defaulted to DWARF5 all the tools
+have adopted to the new default version. And DWARF5 has been out for
+more than 4 years already. It isn't unreasonable to assume that people
+using GCC11 will also be using the rest of the toolchain that has moved
+on. Which DWARF consumers are you concerned about not being ready for
+GCC defaulting to DWARF5 once GCC11 is released?
 
-> +	help
-> +	  Control-flow protection is a set of hardware features which place
-> +	  additional restrictions on indirect branches.  These help
-> +	  mitigate ROP attacks.  Applications must be enabled to use it,
-> +	  and old userspace does not get protection "for free".
-> +	  Support for this feature is present on Tiger Lake family of
-> +	  processors released in 2020 or later.  Enabling this feature
-> +	  increases kernel text size by 3.7 KB.
-> +	  See Documentation/x86/intel_cet.rst for more information.
-> +
-> +	  If unsure, say N.
-> +
->  config EFI
->  	bool "EFI runtime service support"
->  	depends on ACPI
-> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
-> index 26b8c08e2fc4..00c79dd93651 100644
-> --- a/arch/x86/Kconfig.assembler
-> +++ b/arch/x86/Kconfig.assembler
-> @@ -19,3 +19,8 @@ config AS_TPAUSE
->  	def_bool $(as-instr,tpause %ecx)
->  	help
->  	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
-> +
-> +config AS_WRUSS
-> +	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
-> +	help
-> +	  Supported by binutils >= 2.31 and LLVM integrated assembler
-> -- 
-> 2.21.0
-> 
+Thanks,
 
--- 
-Kees Cook
+Mark
