@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F58E30F6E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E1C30F6F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237529AbhBDPzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:55:51 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49260 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237231AbhBDPyP (ORCPT
+        id S237638AbhBDP40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237655AbhBDPyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:54:15 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id EF8D01F463D3
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com>
- <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk>
- <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
- <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
- <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com>
-Date:   Thu, 4 Feb 2021 15:53:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 4 Feb 2021 10:54:39 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01715C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 07:53:57 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id g15so2378856pgu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 07:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=12TvnDbFoHozjXEBq3jhYOc5BE9nWZn0P3eT299I/9M=;
+        b=NinYrz5HwaCb0qq/rEnNwOPx6QmtQi63UUzFzsXFLnUBHeZC1H0vd4gdNitL8ljpn7
+         JgbnHSKWmW8zBYdCVeLnOw62uOaK2xAOYM5qaGXVX2cObM96tsJwsghylpKX5J2JmCEp
+         zRZWWXLSEb3bhPr4fAPlOfAWOKx0lAIs3W3L/cAwvOWXKLWBeEF8oDrsB5jh89QZs1ha
+         zUttQr9P5McciU0O78xQjpF+8TJWdQuJSktoRmHxX2bKbS+oXsw9MGpdGrIvcgmuK6J6
+         /DcDhIkd+cjexFi1QS9deq9KnoqL3e7307opKt+JWr3j7i+Ax6lbN3bP3zMbx4Lso8hf
+         HEkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=12TvnDbFoHozjXEBq3jhYOc5BE9nWZn0P3eT299I/9M=;
+        b=avJcqbX7mpItl9MJO7cQgANciTANN6N5u9Hs/eVPOytbrT4/RLE17YMWynY1pp1wEp
+         34c9Lici2yBakh1Aw8gkYYT7JBiTlhH6TdNCAw5b+YTY47siOVsKBFbxdwUIEsj5IJIC
+         WzaV4zkbr/kW9d6i+YDsqzucVJlU89KeIaTE5T2GusjkpVgRJQBy+K9AmycY2Mr1o+7E
+         joSEC96I8ZiE0DXbe0MwOArjoGcFDcdIvovjfVlIMzjQZmocQ45q0vcQbLXij2z6rKMl
+         O7cQeBeHxcG+p0YvKU+fGvo/+SOUh0Yecw3eDmQhqP/z6nd+9Fv6a64C5x/W9wib3W//
+         kO9Q==
+X-Gm-Message-State: AOAM533AnBKSa4y71kmgT+DkrEfZd3g6bGPBmXmhJ6tWPCqEtsX4dAAM
+        by4xon+PA2TcbnTjo3OhKlA=
+X-Google-Smtp-Source: ABdhPJxBXdR4q9H553UCiCPpdlcKwZ6b4yXIEmQNTn2cfq/9NXQmnXeoTexpuI1RuIEGOoKpWIvuPw==
+X-Received: by 2002:a63:105e:: with SMTP id 30mr9541231pgq.24.1612454036561;
+        Thu, 04 Feb 2021 07:53:56 -0800 (PST)
+Received: from localhost.localdomain (61-230-45-44.dynamic-ip.hinet.net. [61.230.45.44])
+        by smtp.gmail.com with ESMTPSA id 16sm5580890pjc.28.2021.02.04.07.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 07:53:55 -0800 (PST)
+From:   Lecopzer Chen <lecopzer@gmail.com>
+To:     will@kernel.org
+Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
+        aryabinin@virtuozzo.com, broonie@kernel.org,
+        catalin.marinas@arm.com, dan.j.williams@intel.com,
+        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
+        lecopzer@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-mm@kvack.org, linux@roeck-us.net, robin.murphy@arm.com,
+        rppt@kernel.org, tyhicks@linux.microsoft.com,
+        vincenzo.frascino@arm.com, yj.chiang@mediatek.com
+Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
+Date:   Thu,  4 Feb 2021 23:53:46 +0800
+Message-Id: <20210204155346.88028-1-lecopzer@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210204124914.GC20468@willie-the-truck>
+References: <20210204124914.GC20468@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/2021 15:42, Ard Biesheuvel wrote:
-> On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
-> <guillaume.tucker@collabora.com> wrote:
->>
->> On 04/02/2021 10:33, Guillaume Tucker wrote:
->>> On 04/02/2021 10:27, Ard Biesheuvel wrote:
->>>> On Thu, 4 Feb 2021 at 11:06, Russell King - ARM Linux admin
->>>> <linux@armlinux.org.uk> wrote:
->>>>>
->>>>> On Thu, Feb 04, 2021 at 10:07:58AM +0100, Ard Biesheuvel wrote:
->>>>>> On Thu, 4 Feb 2021 at 09:43, Guillaume Tucker
->>>>>> <guillaume.tucker@collabora.com> wrote:
->>>>>>>
->>>>>>> Hi Ard,
->>>>>>>
->>>>>>> Please see the bisection report below about a boot failure on
->>>>>>> rk3288 with next-20210203.  It was also bisected on
->>>>>>> imx6q-var-dt6customboard with next-20210202.
->>>>>>>
->>>>>>> Reports aren't automatically sent to the public while we're
->>>>>>> trialing new bisection features on kernelci.org but this one
->>>>>>> looks valid.
->>>>>>>
->>>>>>> The kernel is most likely crashing very early on, so there's
->>>>>>> nothing in the logs.  Please let us know if you need some help
->>>>>>> with debugging or trying a fix on these platforms.
->>>>>>>
->>>>>>
->>>>>> Thanks for the report.
->>>>>
->>>>> Ard,
->>>>>
->>>>> I want to send my fixes branch today which includes your regression
->>>>> fix that caused this regression.
->>>>>
->>>>> As this is proving difficult to fix, I can only drop your fix from
->>>>> my fixes branch - and given that this seems to be problematical, I'm
->>>>> tempted to revert the original change at this point which should fix
->>>>> both of these regressions - and then we have another go at getting rid
->>>>> of the set/way instructions during the next cycle.
->>>>>
->>>>> Thoughts?
->>>>>
->>>>
->>>> Hi Russell,
->>>>
->>>> If Guillaume is willing to do the experiment, and it fixes the issue,
->>>
->>> Yes, I'm running some tests with that fix now and should have
->>> some results shortly.
->>
->> Yes it does fix the issue:
->>
->>   https://lava.collabora.co.uk/scheduler/job/3173819
->>
->> with Ard's fix applied to this test branch:
->>
->>   https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210203-ard-fix/
->>
->>
->> +clang +Nick
->>
->> It's worth mentioning that the issue only happens with kernels
->> built with Clang.  As you can see there are several other arm
->> platforms failing with clang-11 builds but booting fine with
->> gcc-8:
->>
->>   https://kernelci.org/test/job/next/branch/master/kernel/next-20210203/plan/baseline/
->>
->> Here's a sample build log:
->>
->>   https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/build.log
->>
->> Essentially:
->>
->>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
->>
->> I believe it should be using the GNU assembler as LLVM_IAS=1 is
->> not defined, but there may be something more subtle about it.
->>
+> On Sat, Jan 09, 2021 at 06:32:48PM +0800, Lecopzer Chen wrote:
+> > Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> > ("kasan: support backing vmalloc space with real shadow memory")
+> > 
+> > Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> > but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> > by not to populate the vmalloc area except for kimg address.
 > 
-> 
-> Do you have a link for a failing zImage built from multi_v7_defconfig?
+> The one thing I've failed to grok from your series is how you deal with
+> vmalloc allocations where the shadow overlaps with the shadow which has
+> already been allocated for the kernel image. Please can you explain?
 
-Sure, this one was built from a plain next-20210203:
 
-  http://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-33/arm/multi_v7_defconfig/clang-11/zImage
+The most key point is we don't map anything in the vmalloc shadow address.
+So we don't care where the kernel image locate inside vmalloc area.
 
-You can also find the dtbs, modules and other things in that same
-directory.
+  kasan_map_populate(kimg_shadow_start, kimg_shadow_end,...)
 
-For the record, here's the test job that used it:
+Kernel image was populated with real mapping in its shadow address.
+I `bypass' the whole shadow of vmalloc area, the only place you can find
+about vmalloc_shadow is
+	kasan_populate_early_shadow((void *)vmalloc_shadow_end,
+			(void *)KASAN_SHADOW_END);
 
-  https://lava.collabora.co.uk/scheduler/job/3173792
+	-----------  vmalloc_shadow_start
+ |           |
+ |           | 
+ |           | <= non-mapping
+ |           |
+ |           |
+ |-----------|
+ |///////////|<- kimage shadow with page table mapping.
+ |-----------|
+ |           |
+ |           | <= non-mapping
+ |           |
+ ------------- vmalloc_shadow_end
+ |00000000000|
+ |00000000000| <= Zero shadow
+ |00000000000|
+ ------------- KASAN_SHADOW_END
 
-Guillaume
+vmalloc shadow will be mapped 'ondemend', see kasan_populate_vmalloc()
+in mm/vmalloc.c in detail.
+So the shadow of vmalloc will be allocated later if anyone use its va.
+
+
+BRs,
+Lecopzer
+
+
