@@ -2,116 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5F930F81F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDD830F826
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237290AbhBDQge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:36:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35628 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237152AbhBDQgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:36:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612456515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uUjLyiqQ4utGC6qodHBCUygl1CqqAiXa12iI219baz4=;
-        b=BNQK06tY3c6oPYMlrJUmoOwDwyyuPLcT9wQsvkuONAATKRqnR6IKOx+plLp6ZPu7Tjh+oM
-        2GiRxiAGJIETGsPK6Ffz+bkfC6h3+8wavXQt32yxXI/Mr8HjGkyCyPuy3TP58vz2svmjp0
-        dG61c+c0ct2JNcbGNyyZLJRbiQMCBEI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6C29AD87;
-        Thu,  4 Feb 2021 16:35:15 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 17:35:15 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field
- widths in vsscanf
-Message-ID: <YBwiQ+l6yqs+g+rr@alley>
-References: <20210203165009.6299-1-rf@opensource.cirrus.com>
- <20210203165009.6299-2-rf@opensource.cirrus.com>
- <YBr9c44Dvq1ZNrEa@smile.fi.intel.com>
+        id S237298AbhBDQiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237308AbhBDQiN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:38:13 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFFC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:37:33 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id m6so2455646pfk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nwObsRzKSVhqA/EbWV8d9m9v2JwQDreOVTF8iuaBQ+g=;
+        b=Qs76dodtfk29vh9y2oWEdTMAEgX8pR7GDXBRZt11OnuF+F3yrCFpGCfE3EUSAGkLGg
+         5jkQJMKtoXCFCFsOw41yy0P24mbEQnUU/PN1vC734l1/K39+46+VS6bbscHzj2L55Whw
+         FW22EBkyNiVCxmkNsXDYGEsP+zGH6f3LFIpXAoDhgixEHEseFXS8agAF7cSt15vBfmIu
+         sa7oQOcvJtNzr/K6/r+vpvpUh+C2Mr6l1bM36mquA5Xn9VwjHxOLJnJ4Q3BcPgr4LZ4Y
+         ey0TsDb+L/fowZ7+gofPOCsnCxtE2ihWeCgNDWMxadMu+izWumzDBNC7nofrD9894P78
+         GvUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nwObsRzKSVhqA/EbWV8d9m9v2JwQDreOVTF8iuaBQ+g=;
+        b=edbR+gW56WmKxEOhwO/bTKWEEfbGWrepjMBWifC8A7unN2AA0VPWs8r5jdC3wEtPD5
+         6CFDv8p/dahugual1Q4+Al+RmhG6PZHTYm7RP1gymci33SaF2L6ZTSOlZjASM+pverIa
+         QTKhgivSV0im7ARgD8emb0uCOyjSn0H9zXz5mgrjLZ2LMra0gVjvv3QyFvBarfHVkdUD
+         cgYF2CCple0erJT5ORNaYp4x78bj7mkjFf67usM3tb4jcTJc9dFL1r5zJO7x4Pqc/UmQ
+         lCRlONGXy0mcVQQO+WtBtGLk/zIy1aPJ+sykKbNNbfif7hyoPBj3UJeZPdnrIz130yzd
+         lCyA==
+X-Gm-Message-State: AOAM5306/GYjXtdh2IGQ9ToLw2Vu9orKIbHZM3WXepLvED0xYfMRptZ5
+        8kXN6Z/PXnoZUqbpoj+I8f8=
+X-Google-Smtp-Source: ABdhPJwYeZjRTrriYxBENEsGDiTCAauUg/JSwi9Ur6XUH/miSvOUu2eE8co0/Eh8tRvQGVqY8tG4fw==
+X-Received: by 2002:a62:e217:0:b029:1c1:59ed:ae73 with SMTP id a23-20020a62e2170000b02901c159edae73mr77195pfi.6.1612456652596;
+        Thu, 04 Feb 2021 08:37:32 -0800 (PST)
+Received: from localhost.localdomain (61-230-45-44.dynamic-ip.hinet.net. [61.230.45.44])
+        by smtp.gmail.com with ESMTPSA id 9sm2371133pgw.61.2021.02.04.08.37.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 08:37:31 -0800 (PST)
+From:   Lecopzer Chen <lecopzer@gmail.com>
+To:     will@kernel.org
+Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
+        aryabinin@virtuozzo.com, broonie@kernel.org,
+        catalin.marinas@arm.com, dan.j.williams@intel.com,
+        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
+        lecopzer@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-mm@kvack.org, linux@roeck-us.net, robin.murphy@arm.com,
+        rppt@kernel.org, tyhicks@linux.microsoft.com,
+        vincenzo.frascino@arm.com, yj.chiang@mediatek.com
+Subject: Re: [PATCH v2 1/4] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+Date:   Fri,  5 Feb 2021 00:37:21 +0800
+Message-Id: <20210204163721.91295-1-lecopzer@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210204150100.GE20815@willie-the-truck>
+References: <20210204150100.GE20815@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBr9c44Dvq1ZNrEa@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-02-03 21:45:55, Andy Shevchenko wrote:
-> On Wed, Feb 03, 2021 at 04:50:07PM +0000, Richard Fitzgerald wrote:
-> > The existing code attempted to handle numbers by doing a strto[u]l(),
-> > ignoring the field width, and then repeatedly dividing to extract the
-> > field out of the full converted value. If the string contains a run of
-> > valid digits longer than will fit in a long or long long, this would
-> > overflow and no amount of dividing can recover the correct value.
 
-> ...
-> 
-> > +	for (; max_chars > 0; max_chars--) {
-> 
-> Less fragile is to write
-> 
-> 	while (max_chars--)
+> On Thu, Feb 04, 2021 at 10:46:12PM +0800, Lecopzer Chen wrote:
+> > > On Sat, Jan 09, 2021 at 06:32:49PM +0800, Lecopzer Chen wrote:
+> > > > Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> > > > ("kasan: support backing vmalloc space with real shadow memory")
+> > > >
+> > > > Like how the MODULES_VADDR does now, just not to early populate
+> > > > the VMALLOC_START between VMALLOC_END.
+> > > > similarly, the kernel code mapping is now in the VMALLOC area and
+> > > > should keep these area populated.
+> > > >
+> > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > > > ---
+> > > >  arch/arm64/mm/kasan_init.c | 23 ++++++++++++++++++-----
+> > > >  1 file changed, 18 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> > > > index d8e66c78440e..39b218a64279 100644
+> > > > --- a/arch/arm64/mm/kasan_init.c
+> > > > +++ b/arch/arm64/mm/kasan_init.c
+> > > > @@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
+> > > >  {
+> > > >   u64 kimg_shadow_start, kimg_shadow_end;
+> > > >   u64 mod_shadow_start, mod_shadow_end;
+> > > > + u64 vmalloc_shadow_start, vmalloc_shadow_end;
+> > > >   phys_addr_t pa_start, pa_end;
+> > > >   u64 i;
+> > > >
+> > > > @@ -223,6 +224,9 @@ static void __init kasan_init_shadow(void)
+> > > >   mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
+> > > >   mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
+> > > >
+> > > > + vmalloc_shadow_start = (u64)kasan_mem_to_shadow((void *)VMALLOC_START);
+> > > > + vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
+> > > > +
+> > > >   /*
+> > > >    * We are going to perform proper setup of shadow memory.
+> > > >    * At first we should unmap early shadow (clear_pgds() call below).
+> > > > @@ -241,12 +245,21 @@ static void __init kasan_init_shadow(void)
+> > > >
+> > > >   kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
+> > > >                              (void *)mod_shadow_start);
+> > > > - kasan_populate_early_shadow((void *)kimg_shadow_end,
+> > > > -                            (void *)KASAN_SHADOW_END);
+> > > > + if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
+> > >
+> > > Do we really need yet another CONFIG option for KASAN? What's the use-case
+> > > for *not* enabling this if you're already enabling one of the KASAN
+> > > backends?
+> >
+> > As I know, KASAN_VMALLOC now only supports KASAN_GENERIC and also
+> > KASAN_VMALLOC uses more memory to map real shadow memory (1/8 of vmalloc va).
+>
+> The shadow is allocated dynamically though, isn't it?
 
-Except that the original was more obvious at least for me.
-I always prefer more readable code when the compiler might do
-the optimization easily. But this is my personal taste.
-I am fine with both variants.
+Yes, but It's still a cost.
 
-> 
-> This allows max_char to be an unsigned type.
-> 
-> Moreover...
-> 
-> > +	return _parse_integer_limit(s, base, p, INT_MAX);
-> 
-> You have inconsistency with INT_MAX vs, size_t above.
+> > There should be someone can enable KASAN_GENERIC but can't use VMALLOC
+> > due to memory issue.
+>
+> That doesn't sound particularly realistic to me. The reason I'm pushing here
+> is because I would _really_ like to move to VMAP stack unconditionally, and
+> that would effectively force KASAN_VMALLOC to be set if KASAN is in use.
+>
+> So unless there's a really good reason not to do that, please can we make
+> this unconditional for arm64? Pretty please?
 
-Ah, this was on my request. INT_MAX is already used on many other
-locations in vsnprintf() for this purpose.
+I think it's fine since we have a good reason.
+Also if someone have memory issue in KASAN_VMALLOC,
+they can use SW_TAG, right?
 
-An alternative is to fix all the other locations. We would need to
-check if it is really safe. Well, I do not want to force Richard
-to fix this historical mess. He already put a lot lot of effort
-into fixing this long term issue.
+However the SW_TAG/HW_TAG is not supported VMALLOC yet.
+So the code would be like
 
-...
+	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+		/* explain the relationship between 
+		 * KASAN_GENERIC and KASAN_VMALLOC in arm64
+		 * XXX: because we want VMAP stack....
+		 */
+		kasan_populate_early_shadow((void *)vmalloc_shadow_end,
+					    (void *)KASAN_SHADOW_END);
+	else {
+		kasan_populate_early_shadow((void *)kimg_shadow_end,
+					    (void *)KASAN_SHADOW_END);
+		if (kimg_shadow_start > mod_shadow_end)
+			kasan_populate_early_shadow((void *)mod_shadow_end,
+						    (void *)kimg_shadow_start);
+	}
 
-> > -	unsigned long long result;
-> > +	const char *cp;
-> > +	unsigned long long result = 0ULL;
-> >  	unsigned int rv;
-> >  
-> > -	cp = _parse_integer_fixup_radix(cp, &base);
-> > -	rv = _parse_integer(cp, base, &result);
-> 
-> > +	if (max_chars == 0) {
-> > +		cp = startp;
-> > +		goto out;
-> > +	}
-> 
-> It's redundant if I'm not mistaken.
+and the arch/arm64/Kconfig will add
+	select KASAN_VMALLOC if KASAN_GENERIC
 
-Also this is more obvious and less error prone from my POV.
-But I agree that it is redundant. I am not sure if this
-function is used in some fast paths.
+Is this code same as your thought?
 
-Again I am fine with both variants.
+BRs,
+Lecopzer
 
-> > +	cp = _parse_integer_fixup_radix(startp, &base);
-> > +	if ((cp - startp) >= max_chars) {
-> > +		cp = startp + max_chars;
-> > +		goto out;
-> > +	}
-> 
-> This will be exactly the same, no?
-
-Best Regards,
-Petr
