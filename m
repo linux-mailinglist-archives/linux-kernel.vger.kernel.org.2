@@ -2,156 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0206130F8E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B0F30F85A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 17:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238255AbhBDQ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 11:59:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:33412 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237943AbhBDQm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:42:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BE411D4;
-        Thu,  4 Feb 2021 08:42:08 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFDA33F718;
-        Thu,  4 Feb 2021 08:42:06 -0800 (PST)
-Date:   Thu, 4 Feb 2021 16:41:46 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: [PATCH 1/3] arm64/ptrace: don't clobber task registers on
- syscall entry/exit traps
-Message-ID: <20210204164145.GB21837@arm.com>
-References: <20210201194012.524831-1-avagin@gmail.com>
- <20210201194012.524831-2-avagin@gmail.com>
- <20210204152334.GA21058@willie-the-truck>
+        id S237720AbhBDQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 11:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238025AbhBDQnL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:43:11 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6496EC06178A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 08:42:31 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id e9so2127695pjj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 08:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EEzkB6KBykSa84B36mWQtsqm2CNIxmUYCcv/2V8Jq/g=;
+        b=SKF4eIuVg/lLzlwuixMf3U19cEbR9jy4AizAJnOQ5pIYJ6jmpBaBxa9QlsnHGf6Bgz
+         qmGU1X98u0+ztfSTetCoYS72vf1RvBZWpiewzgf2K3IlnY+Wr3rQqEcZL+VuV+//4tZd
+         yt4/4fKsA9TwIm4IKznxWjgZ5TlAIMWPfwUBC/tzb2DN+VCfketn4VHOpd3HwlhP0/kd
+         nc8S2COcuhYY7v8vAi6mVfVW/4G/zQN8to3yVEhT0R8bZj+VvjCKSoBHXhvO10S2Zo0O
+         II/pCsLZohgRnSRBiEPTg9h3krsg6mxl3q1Qh6qCb2I/x0W+pNwWtoB0szPDSZsZADRv
+         Wg+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EEzkB6KBykSa84B36mWQtsqm2CNIxmUYCcv/2V8Jq/g=;
+        b=MjNn9XmGLW77KyLkfBVtT/ZpdIVmA0mMPwOvPDxG3PR6nF0BsdZuwCEMOyR63LiU3I
+         h7/6OoBdhSKvUOumvou/cu4nb5BaUL45oSaDenzbk3n3F+PJvOv3uLIgobRnKR7v7Sy9
+         M+U1C3ZM9a9KPUY93tJFnc2xOzUoSTryJOnqzpnNI4+sIbViLShPxRAbujNs89Tdi3CX
+         6YjAO6h4L+eD1rZ64EYI+WmViItZf/1197z7MAX/LurBU8V5PQw3svEYPyOdQmupIIon
+         UP0kDFzuncS9A/ld93DMwb/RiYDkYRn00H32jkFrOnhuEVX09qy6YNVizCjf0ALWFnfz
+         ZZDg==
+X-Gm-Message-State: AOAM531A1TjxI0n1cupxoyJqBAVs2hdn2kon/WrLjXu7y3dtvSB9w630
+        rH1o0DNBXHYF52+mfcDPuC+4qg==
+X-Google-Smtp-Source: ABdhPJzGptj9+SwXd4AANgey9HMIo3kKFzOkoPCSiJ7MsS+Qu19JvRFEx9zLyryYbckkmVfA6l1iFg==
+X-Received: by 2002:a17:90b:ed0:: with SMTP id gz16mr341695pjb.7.1612456950755;
+        Thu, 04 Feb 2021 08:42:30 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:f16f:a28e:552e:abea])
+        by smtp.gmail.com with ESMTPSA id bo1sm4822871pjb.7.2021.02.04.08.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 08:42:29 -0800 (PST)
+Date:   Thu, 4 Feb 2021 08:42:23 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, jmattson@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
+ dispatch
+Message-ID: <YBwj78dE5iGZOLed@google.com>
+References: <20210203113421.5759-1-weijiang.yang@intel.com>
+ <20210203113421.5759-5-weijiang.yang@intel.com>
+ <YBsZwvwhshw+s7yQ@google.com>
+ <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210204152334.GA21058@willie-the-truck>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:23:34PM +0000, Will Deacon wrote:
-> On Mon, Feb 01, 2021 at 11:40:10AM -0800, Andrei Vagin wrote:
-> > ip/r12 for AArch32 and x7 for AArch64 is used to indicate whether or not
-> > the stop has been signalled from syscall entry or syscall exit. This
-> > means that:
+On Thu, Feb 04, 2021, Paolo Bonzini wrote:
+> On 03/02/21 22:46, Sean Christopherson wrote:
 > > 
-> > - Any writes by the tracer to this register during the stop are
-> >   ignored/discarded.
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index dbca1687ae8e..0b6dab6915a3 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
+> >                 /* VM-entry interruption-info field: deliver error code */
+> >                 should_have_error_code =
+> >                         intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
+> > -                       x86_exception_has_error_code(vector);
+> > +                       x86_exception_has_error_code(vcpu, vector);
+> >                 if (CC(has_error_code != should_have_error_code))
+> >                         return -EINVAL;
 > > 
-> > - The actual value of the register is not available during the stop,
-> >   so the tracer cannot save it and restore it later.
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 28fea7ff7a86..0288d6a364bd 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
+> >  #define EXCPT_CONTRIBUTORY     1
+> >  #define EXCPT_PF               2
 > > 
-> > Right now, these registers are clobbered in tracehook_report_syscall.
-> > This change moves the logic to gpr_get and compat_gpr_get where
-> > registers are copied into a user-space buffer.
-> > 
-> > This will allow to change these registers and to introduce a new
-> > ptrace option to get the full set of registers.
-> > 
-> > Signed-off-by: Andrei Vagin <avagin@gmail.com>
-> > ---
-> >  arch/arm64/include/asm/ptrace.h |   5 ++
-> >  arch/arm64/kernel/ptrace.c      | 104 ++++++++++++++++++++------------
-> >  2 files changed, 69 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-> > index e58bca832dff..0a9552b4f61e 100644
-> > --- a/arch/arm64/include/asm/ptrace.h
-> > +++ b/arch/arm64/include/asm/ptrace.h
-> > @@ -170,6 +170,11 @@ static inline unsigned long pstate_to_compat_psr(const unsigned long pstate)
-> >  	return psr;
-> >  }
-> >  
-> > +enum ptrace_syscall_dir {
-> > +	PTRACE_SYSCALL_ENTER = 0,
-> > +	PTRACE_SYSCALL_EXIT,
-> > +};
-> > +
-> >  /*
-> >   * This struct defines the way the registers are stored on the stack during an
-> >   * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
-> > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> > index 8ac487c84e37..39da03104528 100644
-> > --- a/arch/arm64/kernel/ptrace.c
-> > +++ b/arch/arm64/kernel/ptrace.c
-> > @@ -40,6 +40,7 @@
-> >  #include <asm/syscall.h>
-> >  #include <asm/traps.h>
-> >  #include <asm/system_misc.h>
-> > +#include <asm/ptrace.h>
-> >  
-> >  #define CREATE_TRACE_POINTS
-> >  #include <trace/events/syscalls.h>
-> > @@ -561,7 +562,31 @@ static int gpr_get(struct task_struct *target,
-> >  		   struct membuf to)
+> > -static int exception_class(int vector)
+> > +static int exception_class(struct kvm_vcpu *vcpu, int vector)
 > >  {
-> >  	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
-> > -	return membuf_write(&to, uregs, sizeof(*uregs));
-> > +	unsigned long saved_reg;
-> > +	int ret;
+> >         switch (vector) {
+> >         case PF_VECTOR:
+> >                 return EXCPT_PF;
+> > +       case CP_VECTOR:
+> > +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
+> > +                       return EXCPT_BENIGN;
+> > +               return EXCPT_CONTRIBUTORY;
+> >         case DE_VECTOR:
+> >         case TS_VECTOR:
+> >         case NP_VECTOR:
+> >         case SS_VECTOR:
+> >         case GP_VECTOR:
+> > -       case CP_VECTOR:
+
+This removal got lost when squasing.
+
+arch/x86/kvm/x86.c: In function ‘exception_class’:
+arch/x86/kvm/x86.c:455:2: error: duplicate case value
+  455 |  case CP_VECTOR:
+      |  ^~~~
+arch/x86/kvm/x86.c:446:2: note: previously used here
+  446 |  case CP_VECTOR:
+      |  ^~~~
+
+> >                 return EXCPT_CONTRIBUTORY;
+> >         default:
+> >                 break;
+> > @@ -588,8 +591,8 @@ static void kvm_multiple_exception(struct kvm_vcpu *vcpu,
+> >                 kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
+> >                 return;
+> >         }
+> > -       class1 = exception_class(prev_nr);
+> > -       class2 = exception_class(nr);
+> > +       class1 = exception_class(vcpu, prev_nr);
+> > +       class2 = exception_class(vcpu, nr);
+> >         if ((class1 == EXCPT_CONTRIBUTORY && class2 == EXCPT_CONTRIBUTORY)
+> >                 || (class1 == EXCPT_PF && class2 != EXCPT_BENIGN)) {
+> >                 /*
+> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> > index a14da36a30ed..dce756ffb577 100644
+> > --- a/arch/x86/kvm/x86.h
+> > +++ b/arch/x86/kvm/x86.h
+> > @@ -120,12 +120,16 @@ static inline bool is_la57_mode(struct kvm_vcpu *vcpu)
+> >  #endif
+> >  }
+> > 
+> > -static inline bool x86_exception_has_error_code(unsigned int vector)
+> > +static inline bool x86_exception_has_error_code(struct kvm_vcpu *vcpu,
+> > +                                               unsigned int vector)
+> >  {
+> >         static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
+> >                         BIT(NP_VECTOR) | BIT(SS_VECTOR) | BIT(GP_VECTOR) |
+> >                         BIT(PF_VECTOR) | BIT(AC_VECTOR) | BIT(CP_VECTOR);
+> > 
+> > +       if (vector == CP_VECTOR && (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET))
+> > +               return false;
 > > +
-> > +	/*
-> > +	 * We have some ABI weirdness here in the way that we handle syscall
-> > +	 * exit stops because we indicate whether or not the stop has been
-> > +	 * signalled from syscall entry or syscall exit by clobbering the general
-> > +	 * purpose register x7.
-> > +	 */
+> >         return (1U << vector) & exception_has_error_code;
+> >  }
+> > 
+> > 
+> > 
+> > 
 > 
-> When you move a comment, please don't truncate it!
+> Squashed, thanks.  I made a small change to the last hunk:
 > 
-> > +	saved_reg = uregs->regs[7];
-> > +
-> > +	switch (target->ptrace_message) {
-> > +	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-> > +		uregs->regs[7] = PTRACE_SYSCALL_ENTER;
-> > +		break;
-> > +	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-> > +		uregs->regs[7] = PTRACE_SYSCALL_EXIT;
-> > +		break;
-> > +	}
+>         if (!((1U << vector) & exception_has_error_code))
+>                 return false;
 > 
-> I'm wary of checking target->ptrace_message here, as I seem to recall the
-> regset code also being used for coredumps. What guarantees we don't break
-> things there?
+>         if (vector == CP_VECTOR)
+>                 return !(vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET);
+> 
+>         return true;
 
-For a coredump, is there any way to know whether a given thread was
-inside a traced syscall when the coredump was generated?  If so, x7 in
-the dump may already unreliable and we only need to make best efforts to
-get it "right".
-
-Since triggering of the coredump and death of other threads all require
-dequeueing of some signal, I think all threads must always outside the
-syscall-enter...syscall-exit path before any of the coredump runs anyway,
-in which case the above should never matter...  Though somone else ought
-to eyeball the coredump code before we agree on that.
-
-ptrace_message doesn't seem absolutely the wrong thing to check, but
-we'd need to be sure that it can't be stale (say, left over from some
-previous trap).
-
-
-Out of interest, where did this arm64 ptrace feature come from?  Was it
-just pasted from 32-bit and thinly adapted?  It looks like an
-arch-specific attempt to do what PTRACE_O_TRACESYSGOOD does, in which
-case it may have been obsolete even before it was upstreamed.  I wonder
-whether anyone is actually relying on it at all...  
-
-Doesn't mean we can definitely fix it safely, but it's annoying.
-
-[...]
-
-Cheers
----Dave
+Ha, I guessed wrong, that was my first pass at it :-)
