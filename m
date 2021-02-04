@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D7530FC3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23BE30FC2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239609AbhBDTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
+        id S239583AbhBDTD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:03:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239531AbhBDTB7 (ORCPT
+        with ESMTP id S239552AbhBDTCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:01:59 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35C5C061356
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:00:25 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id s77so4422711qke.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:00:25 -0800 (PST)
+        Thu, 4 Feb 2021 14:02:21 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38C2C06121E
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:00:29 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id x81so4452575qkb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:00:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=gQEKwzGNeKKGM9QBw7KGFZRHia4VbYUsBnhBruWwEdQ=;
-        b=D35KOdpBMQSjl+6ACFMu+ILDnl6aid8g7rUasGVUxtd2M8LrIzIoQ/bIsPvdfQqEJ4
-         3UETXCq0jCS3N91/SY26kd6Hx9RvdtkSBJFT0D/AuKRbbM6jPOWlOuwzb1OWU426WA+I
-         PmExL67moFfBSz/VstLs5S6BQU6xGmiUvA0QFjBIevHfbE2VeCjGWHDLbrvcabq7n7WN
-         Dc5fqoErMCw11qJ9MD3+/MHyzHAGMbVLGXUJtE8yooMyy+dRIRCVj4bQjwrveDwaZRJi
-         AQw5wOUK31A6DfDXRAHxh1XTlKn8HqyHQjGvljBdioeEL1Gs5uZqHJ8MehcQAVVljALY
-         uQAw==
+        bh=xwUaHrAY9e5uB5d1q6wUXQhrvTNEhAkgbykgjfGD8F4=;
+        b=r4iifmn2GZr3/AUv3oeaqwvvTahZHM0KtyIoAMNtNjc4ndeC6/3VBxI63sdXey+3FL
+         T5xpZQIncLFJPyaQd4adyGdXsc1dgztBkqO0qy26GL+nyHoXt/WOV9bTimwP5iGZvKXI
+         ATPDXNFOF/kzH3/7Grof9UCL3JM0wCUIBPjcZLPtRui9NB1KNd6D+rLjEMUhIwcso1qK
+         9rT/d80vP8Rl/uTUhRubnUl+q++6Wx0woOE4bCrdL1dUSaFMrMOyGBQlm0/LyqL59U3s
+         Pl/HBo2F29nB6YB7adlzPCUmUV4EIZ6cFqfvyR1+WkCa6uPqmT7ZZy8T+0vP3hYu8i3x
+         4M5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gQEKwzGNeKKGM9QBw7KGFZRHia4VbYUsBnhBruWwEdQ=;
-        b=BSqg/pb89hmAcmwIEyRHNBtYFqMJHShf6YM1GHU+xGLqWzLOGlqo1eosFeiVPyYKOV
-         ZEznXo2p+zCbMHXRF0hkDvO6YurY5G5/bJ7qdyxhZ+kzmGV7npelzfAP0FrQJCKEtwq2
-         0uClBKVI/Xv14FryrrjYP7iC2Tx1EweMfsSiFnNT2JYa/ylb61fykj4EG3dYQKlK50cV
-         5kufXguFEFGu6wFjl5g7+FHpCMFasJ5N6sNRmd/AZf7ZOskiwVdayDHFzJjuOZTFhhA8
-         5CRJKNSjVdE/zxc7gixrjNbr0y+5YoitoNJMeIETOXwdTNljGECA3qkKp69Notj81AZQ
-         ruCA==
-X-Gm-Message-State: AOAM5309NabQCCPyCKQwGe4FpnIx22dlijVe7aUSEGsg6H7c9vXnXKQ/
-        x4tpSNEJJOx0fXg/9lZm6bzVGezWWnfL3cw+6BijPQ==
-X-Google-Smtp-Source: ABdhPJzYjUJBUq3mpxZGL+CfaOdtDhDiVKASM4vPKJo+YY0v02HeiW/0YfPRcciJy87QFRxflpdpBBr7FdgS0KPUbAk=
-X-Received: by 2002:a05:620a:66c:: with SMTP id a12mr563893qkh.385.1612465224922;
- Thu, 04 Feb 2021 11:00:24 -0800 (PST)
+        bh=xwUaHrAY9e5uB5d1q6wUXQhrvTNEhAkgbykgjfGD8F4=;
+        b=qM4t4TtNxO+dz7SFhDaKxH1kufUouoleR2yO7+otH1dkZQRKBJhYD8DST0l9Kf/4aK
+         Su9PcDNR6oJJA05tLhfjI9w7IjrAZFJr+2qTxdLwA9/zTZ2Fwun56q9wVkOwOMfKVQTE
+         wo35o9TIjtgwMj3vb4Ze7BL4BzGpUm9e8iVL7h05MlN4InJN22jL9m20kO7Gy/ULRqLC
+         S9qiSGf9iaJp4bnSTTA/I/XwNwYZuTeet9po+kNeI6l1cRT42/+GUSa8xjG0JmfLT9JO
+         ztdEekXKj54MN1OsE7dUQLu0A+0wI3qX2mr6wtz3TimSK6Rvp1vCJ7Q+CvKlgS7ONype
+         +e7g==
+X-Gm-Message-State: AOAM532KANUrJuo44saMD9up4DM00zxKj4eXtbYmrjconWvPpxcWbqzc
+        IjkfY44vXExO1iP7i5MbBPrm68BqeHRrKfjsdmnl+pqZ3zaTyQ==
+X-Google-Smtp-Source: ABdhPJyVQDTEsBqxBrPfpJtGMdY/w+sZRA/kJlNJzmPC4dTSYn/+AxxxhhTd43USQ3cyoi+XkQdSF0X8ogb7D3htLPc=
+X-Received: by 2002:a05:620a:f96:: with SMTP id b22mr553601qkn.295.1612465229053;
+ Thu, 04 Feb 2021 11:00:29 -0800 (PST)
 MIME-Version: 1.0
-References: <1612253821-1148-1-git-send-email-stefanc@marvell.com> <1612253821-1148-14-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1612253821-1148-14-git-send-email-stefanc@marvell.com>
+References: <1612253821-1148-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1612253821-1148-1-git-send-email-stefanc@marvell.com>
 From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 4 Feb 2021 20:00:13 +0100
-Message-ID: <CAPv3WKeZWudzCV99Y0nnv5-7KZXBnVznCwJn40Wb86wNk7_gqA@mail.gmail.com>
-Subject: Re: [PATCH v7 net-next 13/15] net: mvpp2: add PPv23 RX FIFO flow control
+Date:   Thu, 4 Feb 2021 20:00:18 +0100
+Message-ID: <CAPv3WKcLN6iXaSLzXdbXF-CXA0R_qW9hBQFd04ytuoLj01jkGA@mail.gmail.com>
+Subject: Re: [PATCH v7 net-next 00/15] net: mvpp2: Add TX Flow Control support
 To:     Stefan Chulski <stefanc@marvell.com>
 Cc:     netdev <netdev@vger.kernel.org>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
@@ -69,163 +69,148 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-wt., 2 lut 2021 o 09:18 <stefanc@marvell.com> napisa=C5=82(a):
+
+wt., 2 lut 2021 o 09:17 <stefanc@marvell.com> napisa=C5=82(a):
 >
 > From: Stefan Chulski <stefanc@marvell.com>
 >
-> New FIFO flow control feature were added in PPv23.
+> Armada hardware has a pause generation mechanism in GOP (MAC).
+> The GOP generate flow control frames based on an indication programmed in=
+ Ports Control 0 Register. There is a bit per port.
+> However assertion of the PortX Pause bits in the ports control 0 register=
+ only sends a one time pause.
+> To complement the function the GOP has a mechanism to periodically send p=
+ause control messages based on periodic counters.
+> This mechanism ensures that the pause is effective as long as the Appropr=
+iate PortX Pause is asserted.
+>
+> Problem is that Packet Processor that actually can drop packets due to la=
+ck of resources not connected to the GOP flow control generation mechanism.
+> To solve this issue Armada has firmware running on CM3 CPU dedicated for =
+Flow Control support.
+> Firmware monitors Packet Processor resources and asserts XON/XOFF by writ=
+ing to Ports Control 0 Register.
+>
+> MSS shared SRAM memory used to communicate between CM3 firmware and PP2 d=
+river.
+> During init PP2 driver informs firmware about used BM pools, RXQs, conges=
+tion and depletion thresholds.
+>
+> The pause frames are generated whenever congestion or depletion in resour=
+ces is detected.
+> The back pressure is stopped when the resource reaches a sufficient level=
+.
+> So the congestion/depletion and sufficient level implement a hysteresis t=
+hat reduces the XON/XOFF toggle frequency.
+>
+> Packet Processor v23 hardware introduces support for RX FIFO fill level m=
+onitor.
+> Patch "add PPv23 version definition" to differ between v23 and v22 hardwa=
+re.
+> Patch "add TX FC firmware check" verifies that CM3 firmware supports Flow=
+ Control monitoring.
+>
+> v6 --> v7
+> - Reduce patch set from 18 to 15 patches
+>  - Documentation change combined into a single patch
+>  - RXQ and BM size change combined into a single patch
+>  - Ring size change check moved into "add RXQ flow control configurations=
+" commit
+>
+> v5 --> v6
+> - No change
+>
+> v4 --> v5
+> - Add missed Signed-off
+> - Fix warnings in patches 3 and 12
+> - Add revision requirement to warning message
+> - Move mss_spinlock into RXQ flow control configurations patch
+> - Improve FCA RXQ non occupied descriptor threshold commit message
+>
+> v3 --> v4
+> - Remove RFC tag
+>
+> v2 --> v3
+> - Remove inline functions
+> - Add PPv2.3 description into marvell-pp2.txt
+> - Improve mvpp2_interrupts_mask/unmask procedure
+> - Improve FC enable/disable procedure
+> - Add priv->sram_pool check
+> - Remove gen_pool_destroy call
+> - Reduce Flow Control timer to x100 faster
+>
+> v1 --> v2
+> - Add memory requirements information
+> - Add EPROBE_DEFER if of_gen_pool_get return NULL
+> - Move Flow control configuration to mvpp2_mac_link_up callback
+> - Add firmware version info with Flow control support
+>
+> Konstantin Porotchkin (1):
+>   dts: marvell: add CM3 SRAM memory to cp115 ethernet device tree
+>
+> Stefan Chulski (14):
+>   doc: marvell: add cm3-mem and PPv2.3 description
+>   net: mvpp2: add CM3 SRAM memory map
+>   net: mvpp2: add PPv23 version definition
+>   net: mvpp2: always compare hw-version vs MVPP21
+>   net: mvpp2: increase BM pool and RXQ size
+>   net: mvpp2: add FCA periodic timer configurations
+>   net: mvpp2: add FCA RXQ non occupied descriptor threshold
+>   net: mvpp2: enable global flow control
+>   net: mvpp2: add RXQ flow control configurations
+>   net: mvpp2: add ethtool flow control configuration support
+>   net: mvpp2: add BM protection underrun feature support
+>   net: mvpp2: add PPv23 RX FIFO flow control
+>   net: mvpp2: set 802.3x GoP Flow Control mode
+>   net: mvpp2: add TX FC firmware check
+>
+>  Documentation/devicetree/bindings/net/marvell-pp2.txt |   4 +-
+>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi         |  10 +
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2.h            | 128 ++++-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c       | 563 ++++++++++++=
+++++++--
+>  4 files changed, 655 insertions(+), 50 deletions(-)
+>
 
-s/were/was/
+I tested the latest version on CN9132-DB with 2 10G ports bridged and
+connected to the packet generator. Under load the interfaces were
+capable of generating the pause frames, so all seems to work as
+expected. There is also no regression neither with the feature
+disabled, nor on Armada boards (I checked MacchiatoBin and Armada 7040
+DB).
 
-Thanks,
+I added my comments in the patches.
+
+BTW for that I had to enable the ports in device tree:
+
+diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dts
+b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+index 79020e6d2792..9b248e3a1a34 100644
+--- a/arch/arm64/boot/dts/marvell/cn9130-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+@@ -129,7 +129,7 @@ &cp0_ethernet {
+
+ /* SLM-1521-V2, CON9 */
+ &cp0_eth0 {
+-       status =3D "disabled";
++       status =3D "okay";
+        phy-mode =3D "10gbase-kr";
+        /* Generic PHY, providing serdes lanes */
+        phys =3D <&cp0_comphy4 0>;
+diff --git a/arch/arm64/boot/dts/marvell/cn9131-db.dts
+b/arch/arm64/boot/dts/marvell/cn9131-db.dts
+index 3c975f98b2a3..5c081d68941d 100644
+--- a/arch/arm64/boot/dts/marvell/cn9131-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9131-db.dts
+@@ -85,7 +85,7 @@ &cp1_ethernet {
+
+ /* CON50 */
+ &cp1_eth0 {
+-       status =3D "disabled";
++       status =3D "okay";
+        phy-mode =3D "10gbase-kr";
+        /* Generic PHY, providing serdes lanes */
+        phys =3D <&cp1_comphy4 0>;
+
+Best regards,
 Marcin
-
-
-> PPv2 FIFO polled by HW and trigger pause frame if FIFO
-> fill level is below threshold.
-> FIFO HW flow control enabled with CM3 RXQ&BM flow
-> control with ethtool.
-> Current  FIFO thresholds is:
-> 9KB for port with maximum speed 10Gb/s port
-> 4KB for port with maximum speed 5Gb/s port
-> 2KB for port with maximum speed 1Gb/s port
->
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 15 ++++++
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 53 +++++++++++++++++++=
-+
->  2 files changed, 68 insertions(+)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/eth=
-ernet/marvell/mvpp2/mvpp2.h
-> index 1967493..9947385 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -770,6 +770,18 @@
->  #define MVPP2_TX_FIFO_THRESHOLD(kb)    \
->                 ((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
->
-> +/* RX FIFO threshold in 1KB granularity */
-> +#define MVPP23_PORT0_FIFO_TRSH (9 * 1024)
-> +#define MVPP23_PORT1_FIFO_TRSH (4 * 1024)
-> +#define MVPP23_PORT2_FIFO_TRSH (2 * 1024)
-> +
-> +/* RX Flow Control Registers */
-> +#define MVPP2_RX_FC_REG(port)          (0x150 + 4 * (port))
-> +#define     MVPP2_RX_FC_EN             BIT(24)
-> +#define     MVPP2_RX_FC_TRSH_OFFS      16
-> +#define     MVPP2_RX_FC_TRSH_MASK      (0xFF << MVPP2_RX_FC_TRSH_OFFS)
-> +#define     MVPP2_RX_FC_TRSH_UNIT      256
-> +
->  /* MSS Flow control */
->  #define MSS_SRAM_SIZE                  0x800
->  #define MSS_FC_COM_REG                 0
-> @@ -1502,6 +1514,8 @@ struct mvpp2_bm_pool {
->
->  void mvpp2_dbgfs_cleanup(struct mvpp2 *priv);
->
-> +void mvpp23_rx_fifo_fc_en(struct mvpp2 *priv, int port, bool en);
-> +
->  #ifdef CONFIG_MVPP2_PTP
->  int mvpp22_tai_probe(struct device *dev, struct mvpp2 *priv);
->  void mvpp22_tai_tstamp(struct mvpp2_tai *tai, u32 tstamp,
-> @@ -1534,4 +1548,5 @@ static inline bool mvpp22_rx_hwtstamping(struct mvp=
-p2_port *port)
->  {
->         return IS_ENABLED(CONFIG_MVPP2_PTP) && port->rx_hwtstamp;
->  }
-> +
->  #endif
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
-t/ethernet/marvell/mvpp2/mvpp2_main.c
-> index f153060..06d3239 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -6537,6 +6537,8 @@ static void mvpp2_mac_link_up(struct phylink_config=
- *config,
->                         mvpp2_bm_pool_update_fc(port, port->pool_long, tx=
-_pause);
->                         mvpp2_bm_pool_update_fc(port, port->pool_short, t=
-x_pause);
->                 }
-> +               if (port->priv->hw_version =3D=3D MVPP23)
-> +                       mvpp23_rx_fifo_fc_en(port->priv, port->id, tx_pau=
-se);
->         }
->
->         mvpp2_port_enable(port);
-> @@ -7005,6 +7007,55 @@ static void mvpp22_rx_fifo_init(struct mvpp2 *priv=
-)
->         mvpp2_write(priv, MVPP2_RX_FIFO_INIT_REG, 0x1);
->  }
->
-> +/* Configure Rx FIFO Flow control thresholds */
-> +static void mvpp23_rx_fifo_fc_set_tresh(struct mvpp2 *priv)
-> +{
-> +       int port, val;
-> +
-> +       /* Port 0: maximum speed -10Gb/s port
-> +        *         required by spec RX FIFO threshold 9KB
-> +        * Port 1: maximum speed -5Gb/s port
-> +        *         required by spec RX FIFO threshold 4KB
-> +        * Port 2: maximum speed -1Gb/s port
-> +        *         required by spec RX FIFO threshold 2KB
-> +        */
-> +
-> +       /* Without loopback port */
-> +       for (port =3D 0; port < (MVPP2_MAX_PORTS - 1); port++) {
-> +               if (port =3D=3D 0) {
-> +                       val =3D (MVPP23_PORT0_FIFO_TRSH / MVPP2_RX_FC_TRS=
-H_UNIT)
-> +                               << MVPP2_RX_FC_TRSH_OFFS;
-> +                       val &=3D MVPP2_RX_FC_TRSH_MASK;
-> +                       mvpp2_write(priv, MVPP2_RX_FC_REG(port), val);
-> +               } else if (port =3D=3D 1) {
-> +                       val =3D (MVPP23_PORT1_FIFO_TRSH / MVPP2_RX_FC_TRS=
-H_UNIT)
-> +                               << MVPP2_RX_FC_TRSH_OFFS;
-> +                       val &=3D MVPP2_RX_FC_TRSH_MASK;
-> +                       mvpp2_write(priv, MVPP2_RX_FC_REG(port), val);
-> +               } else {
-> +                       val =3D (MVPP23_PORT2_FIFO_TRSH / MVPP2_RX_FC_TRS=
-H_UNIT)
-> +                               << MVPP2_RX_FC_TRSH_OFFS;
-> +                       val &=3D MVPP2_RX_FC_TRSH_MASK;
-> +                       mvpp2_write(priv, MVPP2_RX_FC_REG(port), val);
-> +               }
-> +       }
-> +}
-> +
-> +/* Configure Rx FIFO Flow control thresholds */
-> +void mvpp23_rx_fifo_fc_en(struct mvpp2 *priv, int port, bool en)
-> +{
-> +       int val;
-> +
-> +       val =3D mvpp2_read(priv, MVPP2_RX_FC_REG(port));
-> +
-> +       if (en)
-> +               val |=3D MVPP2_RX_FC_EN;
-> +       else
-> +               val &=3D ~MVPP2_RX_FC_EN;
-> +
-> +       mvpp2_write(priv, MVPP2_RX_FC_REG(port), val);
-> +}
-> +
->  static void mvpp22_tx_fifo_set_hw(struct mvpp2 *priv, int port, int size=
-)
->  {
->         int threshold =3D MVPP2_TX_FIFO_THRESHOLD(size);
-> @@ -7156,6 +7207,8 @@ static int mvpp2_init(struct platform_device *pdev,=
- struct mvpp2 *priv)
->         } else {
->                 mvpp22_rx_fifo_init(priv);
->                 mvpp22_tx_fifo_init(priv);
-> +               if (priv->hw_version =3D=3D MVPP23)
-> +                       mvpp23_rx_fifo_fc_set_tresh(priv);
->         }
->
->         if (priv->hw_version =3D=3D MVPP21)
-> --
-> 1.9.1
->
