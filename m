@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC62230EF57
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006F030EF53
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhBDJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234784AbhBDJKh (ORCPT
+        id S234663AbhBDJLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:11:25 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1066 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235010AbhBDJIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:10:37 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28A6C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 01:09:56 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id v5so1245640lft.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 01:09:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jKRtqN4LyI5vSCsg0G87EdlBEQs3S6TQSvakMi0odts=;
-        b=q7AcSIFv9JBL/B3IcYoITI6si2ga2zH9eZuiw0hiHHncAeQQ/IXSbqKAK4aaVVOJB2
-         4J2s+1KaXB7bXY+o1Paku/1W+bgdqdrp0hw4z0aArSqVlZoqoAJcCP+os1LMdBR8yT/J
-         ARI6Tq4nr2AXZhtL8e6ZCJTxXir31obUzbnjar3Z1VFfhfetjC2zzlj8zy4zYawnCgAe
-         aZheci6q3EwvVifT0E2WZekY62gzW8u0+LNSDWi0OO3bL/xIiegCgmHFOhXYp/Y0Ba+H
-         A8OUZ2MNY5ft+W9R9K5jhvNZh9z6dKCEYFApTA6YRyZPGJgFXUSO6IdUajMhh9Nd8MnM
-         LWHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jKRtqN4LyI5vSCsg0G87EdlBEQs3S6TQSvakMi0odts=;
-        b=E1Iope5K5lzNWTPDav+R07awU19fsdwFSt+Bh98TLV/t3wFWldGF7Y3asa93YLRslQ
-         mybrSuj+xgsu6vvXEO1n44kPTX0XHGWxSStqdRBEqisIbVjY4sjrB6pKNZXAzDstYSKf
-         wx4Og+DMtzIrhXZxxqUXx62ce0ZXJVNgg51Qwk73jjdL+l+C6Tgl+ZKv4/b6ee+Py17L
-         KCMlaul41LHq0+/aTgcbaB8N1ETLd3lU2sncAjzOJSg/ExvKAZNXNY7TKIusUb82v5C0
-         QiZjTnbq2/h3R0sDsGycmJo3gM+VEdurOKRw4Am4hMp88CjnPK0CgGOBqNUkPC9dap61
-         2ZTg==
-X-Gm-Message-State: AOAM530NuD7EG3yhN09LXOUQr7nWm19RsP5yNfkmI33WmpwmGugEe5GE
-        I9yZUbLnFneDUEVGxKlIxlxOTvJYEyqKrhIRN7w=
-X-Google-Smtp-Source: ABdhPJwLUMPd4IwIK/s2+6SL+zJ7h/+2JHdTEWHqKE2Reh7Efw451sy4s7dzX8I5FRjPKMbyVg7VWjAXBBaNo2sFczk=
-X-Received: by 2002:a05:6512:2004:: with SMTP id a4mr4080024lfb.212.1612429795359;
- Thu, 04 Feb 2021 01:09:55 -0800 (PST)
+        Thu, 4 Feb 2021 04:08:47 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11496o5L023295;
+        Thu, 4 Feb 2021 04:08:06 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36dbud5gw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 04:08:05 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 114984qw013140
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 4 Feb 2021 04:08:04 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 4 Feb 2021 04:08:03 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Thu, 4 Feb 2021 04:08:03 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 4 Feb 2021 04:08:03 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 114982l3001727;
+        Thu, 4 Feb 2021 04:08:02 -0500
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
+Subject: [PATCH 0/2] iio: adc: ad7124: allow 16 channels
+Date:   Thu, 4 Feb 2021 11:10:43 +0200
+Message-ID: <20210204091045.4175-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210129082726.19406-1-ruifeng.zhang0110@gmail.com> <CAJZ5v0iS92CN5MKHu8tOpQR6mOWu=4=PLqN84qXG+v+64Ro99Q@mail.gmail.com>
-In-Reply-To: <CAJZ5v0iS92CN5MKHu8tOpQR6mOWu=4=PLqN84qXG+v+64Ro99Q@mail.gmail.com>
-From:   Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Date:   Thu, 4 Feb 2021 17:09:17 +0800
-Message-ID: <CAG7+-3PuA3CdZAL5_m9aEuEdw7yaguXCFvasLjk==P9URNZ4QA@mail.gmail.com>
-Subject: Re: [PATCH] RFC syscore: add suspend type to syscore
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ruifeng.zhang1@unisoc.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_05:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 clxscore=1011 suspectscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rafael J. Wysocki <rafael@kernel.org> =E4=BA=8E2021=E5=B9=B41=E6=9C=8829=E6=
-=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=889:50=E5=86=99=E9=81=93=EF=BC=9A
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
->
-> On Fri, Jan 29, 2021 at 9:27 AM Ruifeng Zhang
-> <ruifeng.zhang0110@gmail.com> wrote:
-> >
-> > From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
-> >
-> > Suspend type contains s2ram and s2idle, but syscore is only
-> > available for S2RAM.
-> >
-> > S2idle requires a similar feature,
->
-> No, it doesn't.
-Why s2idle don't requires this feature ?
-I'm need use it for vendor watchdog driver.
+AD7124-8 can have up to 16 pseudo-differential channels
+enabled simultaneously and only 8 configurations. In this
+scenario we cannot assign one configuration per channel,
+some channels will have to share configurations like, ODR,
+gain and filter parameters.
 
-Rafael J. Wysocki <rafael@kernel.org> =E4=BA=8E2021=E5=B9=B41=E6=9C=8829=E6=
-=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=889:50=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Fri, Jan 29, 2021 at 9:27 AM Ruifeng Zhang
-> <ruifeng.zhang0110@gmail.com> wrote:
-> >
-> > From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
-> >
-> > Suspend type contains s2ram and s2idle, but syscore is only
-> > available for S2RAM.
-> >
-> > S2idle requires a similar feature,
->
-> No, it doesn't.
+Allow the user to specify channels and configurations
+separately in device-tree and assign, if needed, the same
+configuration to multiple channels.
+
+If two channels share the configuration changing the
+sampling rate of one will change the sampling rate of the
+other too.
+
+Alexandru Tachici (2):
+  iio: adc: ad7124: allow 16 channels
+  dt-bindings: iio: adc: ad7124: add config nodes
+
+ .../bindings/iio/adc/adi,ad7124.yaml          |  72 +++++--
+ drivers/iio/adc/ad7124.c                      | 196 +++++++++++-------
+ 2 files changed, 179 insertions(+), 89 deletions(-)
+
+-- 
+2.20.1
+
