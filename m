@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1382C3100BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042F63100C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 00:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhBDXao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 18:30:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
+        id S230263AbhBDXbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 18:31:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhBDXa2 (ORCPT
+        with ESMTP id S230221AbhBDXaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 18:30:28 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2F2C0617A9
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 15:30:13 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id 70so4156448qkh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 15:30:13 -0800 (PST)
+        Thu, 4 Feb 2021 18:30:39 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772D6C061794
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 15:29:59 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id n81so4856764ybg.20
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 15:29:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=+DMZQSm/uaEUXJw9EFN7NIYygzQ6mIPslbKoTBQUvsQ=;
-        b=WiPF6RbkD/Zm7dcNkPvnl02p57tzN9cu7c9cNHJG1mmc9lGt7Z0/nB7zndD/gk4np6
-         K7Knd7DIOUPQQKVSo9sQT1kQ1Ggydy/VBFeXlwnNaJHBtZCBXhaxCn6ealEFq/igVY0e
-         mVLER0rjGQAI9zK3qxTZJc5fv57Y9+vjW+ARS+hfIuFhBgTxQUezL7XmkIJxjWBMUKav
-         E1jdUPerE/x4HE1ZuHvkOzho9FTcCj5dK3y8OwL3yR6WyZRLcwRUrWTwLIu/qP4ha47n
-         +PlyqcV1VXzedm4o4MT5Ss2bGyDATHCeszcD7hdlBC5vzDHxIPBbNrCayImbF5uwe1r4
-         QWZQ==
+        h=sender:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=DDQzxO36o6mrG/7K72IGYqFtZmZCZagcSZoIJct7BXY=;
+        b=lKA+G8wZwzc3KJjfEbk4USd/5AVvIdDVeMqb73oE9zBHWMZoft6gFKDOCePms0HPGp
+         IpnAmcQPaJqYzhqs4VxxZC2o6/RZ/j5MJHU506eq+wz0Kr/o5Bqyr8NtakeP4tNzVayK
+         i4uqXx2mJwpp7gFTlPgCqkmcAAnU1hJ5Od8hNOtrD2rvM4Bv5eQodRsQ3Nbv41EYSlj6
+         QIkP+5XgiBOggGll6NMhjXYbeQvpSVtgbaWyekgEHyE8uT0kDLBHzAO8Q2g0J/qrcZqc
+         4I6ra63n/sjej0sFgwE/GkqMywm97NzAFEwHafPA+4J8xTPVBMHAUXrR3IlMDzqYSjeR
+         6m0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=+DMZQSm/uaEUXJw9EFN7NIYygzQ6mIPslbKoTBQUvsQ=;
-        b=Qc70NchfDJliHUhp63KlxlVS6uDw5z+l1gSNIOCJFhWZXHOkhsIwWu1v1UwHyx2XbN
-         DbqBu0YXChyy/1R76pKRs8l/xZfc6MttwB7xNXLzCmpTxFeKvWlWHKhwzLb9/C9hBYbn
-         A7FnOuJ3Nu+m93AVS3/k0xKE27/FymSR3ZeWLScx5pVqo+Ssr1chll8NnL3++T6M8wlt
-         7o9FKWwPe7zziW66qLK6iZ8rYRTMcEewAH8XVbCO13GO9W1AgzPnC0q/RHgfdkLiOOPV
-         Yx6AziRqVnV1XeBIADG6kzoPUnNrjyiG9YFI7oVamvShmD91Pn65PwH+Vm0lpKT5EkWn
-         E2lw==
-X-Gm-Message-State: AOAM531OCnV8jg9c9APU8DBotk0Xa8QzM9sSI6UQGbmu2nP5ynsGEvMT
-        fKoXgNevJ804VNIUeNg/5eiubU9AjTj1jwyV8A==
-X-Google-Smtp-Source: ABdhPJx3kg9I/fA5bBDYRFvfPdVTeyCfD6xE3qxRlCYQfUGKmYYfcWiSsJ3nZEdsX8iZC/R5fjsrlL6fZPjSx22Y7g==
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc:content-transfer-encoding;
+        bh=DDQzxO36o6mrG/7K72IGYqFtZmZCZagcSZoIJct7BXY=;
+        b=DOKQybd6SSRR3nfk4DJfiW0WDuwoHi/T4CLx/nFcqAzDIGcQBBLolA7ZFlk7IRvHoF
+         ysZ9RcOFGAOQ83PtFC6UvvA3r7e2kcF3ccjIcLNM0uVbRo8e2DiChwtC4pH0S64NaTEZ
+         7xwSF6JvuWxPCf2Ysez6+Gl7D58VV3/Bm+72A+A1TeS4537KoPBuzvgTi88OQKIJEL1N
+         agkV7PKy2pFRjt163+oFfdPmUJ9nEVjAgmnmbCCK7qowi8+sibWWC6c/LBEK0Yt/0XIN
+         rxRFGxKkXzvGhdZcn8S+TrgIA0ABRAAD0nxO46Ggm3iES9kkT2sMIFqMy2091YMNb30P
+         9VJA==
+X-Gm-Message-State: AOAM533eew/BBEWa5mqwaPt6J8bWeoP44wzmt9ZRCPrGKX/0Q5WN3lo5
+        Q6nCocQlRCO+DM4jAF02mKfEvB1rRZh61lGS6w==
+X-Google-Smtp-Source: ABdhPJxuX5H3dPiFCh9g9xC89BwbDPdhdkk9a69MMrBZXYzdZFIf3f0iRjx/t1FkfEnOk7GPoDaKkXJi/cFoZs5jWQ==
 Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
 X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:ad4:5be9:: with SMTP id
- k9mr1715632qvc.18.1612481412377; Thu, 04 Feb 2021 15:30:12 -0800 (PST)
-Date:   Thu,  4 Feb 2021 23:28:50 +0000
-In-Reply-To: <20210204232854.451676-1-kaleshsingh@google.com>
-Message-Id: <20210204232854.451676-2-kaleshsingh@google.com>
+ (user=kaleshsingh job=sendgmr) by 2002:a25:450:: with SMTP id
+ 77mr162814ybe.39.1612481398666; Thu, 04 Feb 2021 15:29:58 -0800 (PST)
+Date:   Thu,  4 Feb 2021 23:28:49 +0000
+Message-Id: <20210204232854.451676-1-kaleshsingh@google.com>
 Mime-Version: 1.0
-References: <20210204232854.451676-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
+Subject: [PATCH v2 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
 From:   Kalesh Singh <kaleshsingh@google.com>
 Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
         surenb@google.com, minchan@kernel.org, hridya@google.com,
@@ -63,6 +61,7 @@ Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Michel Lespinasse <walken@google.com>,
         Bernd Edlinger <bernd.edlinger@hotmail.de>,
         Andrei Vagin <avagin@gmail.com>,
@@ -72,39 +71,124 @@ Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
         linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a FD refers to a DMA buffer add the DMA buffer inode number to
-/proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
+Android captures per-process system memory state when certain low memory
+events (e.g a foreground app kill) occur, to identify potential memory
+hoggers. In order to measure how much memory a process actually consumes,
+it is necessary to include the DMA buffer sizes for that process in the
+memory accounting. Since the handle to DMA buffers are raw FDs, it is
+important to be able to identify which processes have FD references to
+a DMA buffer.
 
-The dmabuf inode number allows userspace to uniquely identify the buffer
-and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
-DMA buffer sizes.
+Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+/proc/<pid>/fdinfo -- both are only readable by the process owner,
+as follows:
+  1. Do a readlink on each FD.
+  2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
+  3. stat the file to get the dmabuf inode number.
+  4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
 
+Accessing other processes=E2=80=99 fdinfo requires root privileges. This li=
+mits
+the use of the interface to debugging environments and is not suitable
+for production builds.  Granting root privileges even to a system process
+increases the attack surface and is highly undesirable.
+
+Since fdinfo doesn't permit reading process memory and manipulating
+process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
+
+Suggested-by: Jann Horn <jannh@google.com>
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 ---
 
-Changes in v2: 
+Changes in v2:
   - Update patch desciption
 
- drivers/dma-buf/dma-buf.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/proc/base.c |  4 ++--
+ fs/proc/fd.c   | 15 ++++++++++++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 9ad6397aaa97..d869099ede83 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -414,6 +414,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index b3422cda2a91..a37f9de7103f 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3160,7 +3160,7 @@ static const struct pid_entry tgid_base_stuff[] =3D {
+ 	DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, proc_task_=
+operations),
+ 	DIR("fd",         S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_oper=
+ations),
+ 	DIR("map_files",  S_IRUSR|S_IXUSR, proc_map_files_inode_operations, proc_=
+map_files_operations),
+-	DIR("fdinfo",     S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdi=
+nfo_operations),
++	DIR("fdinfo",     S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdi=
+nfo_operations),
+ 	DIR("ns",	  S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_op=
+erations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_op=
+erations),
+@@ -3504,7 +3504,7 @@ static const struct inode_operations proc_tid_comm_in=
+ode_operations =3D {
+  */
+ static const struct pid_entry tid_base_stuff[] =3D {
+ 	DIR("fd",        S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_opera=
+tions),
+-	DIR("fdinfo",    S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdin=
+fo_operations),
++	DIR("fdinfo",    S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdin=
+fo_operations),
+ 	DIR("ns",	 S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_ope=
+rations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_op=
+erations),
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index cb51763ed554..585e213301f9 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -6,6 +6,7 @@
+ #include <linux/fdtable.h>
+ #include <linux/namei.h>
+ #include <linux/pid.h>
++#include <linux/ptrace.h>
+ #include <linux/security.h>
+ #include <linux/file.h>
+ #include <linux/seq_file.h>
+@@ -72,6 +73,18 @@ static int seq_show(struct seq_file *m, void *v)
+=20
+ static int seq_fdinfo_open(struct inode *inode, struct file *file)
  {
- 	struct dma_buf *dmabuf = file->private_data;
- 
-+	seq_printf(m, "dmabuf_inode_no:\t%lu\n", file_inode(file)->i_ino);
- 	seq_printf(m, "size:\t%zu\n", dmabuf->size);
- 	/* Don't count the temporary reference taken inside procfs seq_show */
- 	seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
--- 
++	bool allowed =3D false;
++	struct task_struct *task =3D get_proc_task(inode);
++
++	if (!task)
++		return -ESRCH;
++
++	allowed =3D ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
++	put_task_struct(task);
++
++	if (!allowed)
++		return -EACCES;
++
+ 	return single_open(file, seq_show, inode);
+ }
+=20
+@@ -307,7 +320,7 @@ static struct dentry *proc_fdinfo_instantiate(struct de=
+ntry *dentry,
+ 	struct proc_inode *ei;
+ 	struct inode *inode;
+=20
+-	inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUSR);
++	inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUGO);
+ 	if (!inode)
+ 		return ERR_PTR(-ENOENT);
+=20
+--=20
 2.30.0.365.g02bc693789-goog
 
