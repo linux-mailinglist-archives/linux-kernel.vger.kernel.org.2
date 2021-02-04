@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2549E30EEEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6495130EECC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhBDIrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:47:55 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48710 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235172AbhBDIrf (ORCPT
+        id S235063AbhBDIq1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Feb 2021 03:46:27 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3003 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhBDIqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:47:35 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1148hBSl031731;
-        Thu, 4 Feb 2021 09:46:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=CRnSbQdFwvKmyMc039keRokTHONUmSL8dsL/yTFkE0w=;
- b=ePxY2HbPMpCuB8kddpwEm6Emz4/cYsmwvRWwohDT1FctlKzcBD2op2D6/H90Wi2mr3VI
- Lpwrut+VYD1RLsRaQ5lAAdccXY4aiT7xg9l0n3b/YfDWG3BpkP3qGnHYwVQxnWBhxahz
- 1DCwGqAjZ71BhXyPiJY/pMZ9UtsF1zBeAmOCoUyXoo8OQjsbQoIki9Z+U+geqOyRs/ra
- +L5/qRuva1epfkhkJ05j0/8ee3vxZYUE56VEmHxJtJlR9FVsJo2w5lLvFGCtxGx+rZ36
- 6H+zkb6yMyAere215uFYUEg+4yhcpDllh8lSWpK9ijXP1n5M8zNbIe+Pos8xWJBIwpsI Bw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36e7x16f1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Feb 2021 09:46:48 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D5E9310002A;
-        Thu,  4 Feb 2021 09:46:47 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C7FF622AE4F;
-        Thu,  4 Feb 2021 09:46:47 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb 2021 09:46:47
- +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v3 15/15] rpmsg: char: return an error if device already open
-Date:   Thu, 4 Feb 2021 09:45:34 +0100
-Message-ID: <20210204084534.10516-16-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210204084534.10516-1-arnaud.pouliquen@foss.st.com>
-References: <20210204084534.10516-1-arnaud.pouliquen@foss.st.com>
+        Thu, 4 Feb 2021 03:46:25 -0500
+Received: from dggeme705-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DWXCx6g35zRB4X;
+        Thu,  4 Feb 2021 16:44:29 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ dggeme705-chm.china.huawei.com (10.1.199.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 4 Feb 2021 16:45:41 +0800
+Received: from dggeme758-chm.china.huawei.com ([10.6.80.69]) by
+ dggeme758-chm.china.huawei.com ([10.6.80.69]) with mapi id 15.01.2106.006;
+ Thu, 4 Feb 2021 16:45:41 +0800
+From:   "Wanghongzhe (Hongzhe, EulerOS)" <wanghongzhe@huawei.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     "luto@amacapital.net" <luto@amacapital.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "wad@chromium.org" <wad@chromium.org>, "yhs@fb.com" <yhs@fb.com>
+Subject: RE: [PATCH v1 1/1] Firstly, as Andy mentioned, this should be
+ smp_rmb() instead of rmb(). considering that TSYNC is a cross-thread
+ situation, and rmb() is a mandatory barrier which should not be used to
+ control SMP effects, since mandatory barriers imp...
+Thread-Topic: [PATCH v1 1/1] Firstly, as Andy mentioned, this should be
+ smp_rmb() instead of rmb(). considering that TSYNC is a cross-thread
+ situation, and rmb() is a mandatory barrier which should not be used to
+ control SMP effects, since mandatory barriers imp...
+Thread-Index: AQHW+ZYNG0ZM5IaKEU+toWEn31X/L6pGJRPg
+Date:   Thu, 4 Feb 2021 08:45:41 +0000
+Message-ID: <0cf4c1e8bfd140aba69cfd36a0dac048@huawei.com>
+References: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
+ <1612260787-28015-1-git-send-email-wanghongzhe@huawei.com>
+ <202102021100.DB383A44@keescook>
+In-Reply-To: <202102021100.DB383A44@keescook>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.177.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_03:2021-02-04,2021-02-04 signatures=0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rpmsg_create_ept function is invoked when the device is opened.
-As only one endpoint must be created per device. It is not possible to
-open the same device twice. But there is nothing to prevent multi open.
-Return -EBUSY when device is already opened to have a generic error
-instead of relying on the back-end to potentially detect the error.
+> Let's start with a patch that just replaces rmb() with smp_rmb() and then work
+> on optimizing. Can you provide performance numbers that show
+> rmb() (and soon smp_rmb()) is causing actual problems here?
+Ok, I will send a patch that just replaces rmb() with smp_rmb() and give performance numbers.
 
-Without this patch for instance the GLINK driver return -EBUSY while
-the virtio bus return -ENOSPC.
+> BUG() should never be used[1]. This is a recoverable situation, I think, and
+> should be handled as such.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 3 +++
- 1 file changed, 3 insertions(+)
+I just follow the default case behind. Let's discuss this issue in next patches. 
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 0b0a6b7c0c9a..2eacddb83e29 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -116,6 +116,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 	struct device *dev = &eptdev->dev;
- 	u32 addr = eptdev->chinfo.src;
- 
-+	if (eptdev->ept)
-+		return -EBUSY;
-+
- 	get_device(dev);
- 
- 	/*
 -- 
-2.17.1
-
+wanghongzhe
