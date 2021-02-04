@@ -2,460 +2,1049 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBDC30F92A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4156530F92D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbhBDRIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:08:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:33900 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238299AbhBDRBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:01:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 028AE1396;
-        Thu,  4 Feb 2021 09:00:28 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B8A93F73B;
-        Thu,  4 Feb 2021 09:00:26 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        cristian.marussi@arm.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, robh@kernel.org
-Subject: [PATCH v5 3/3] firmware: arm_scmi: add SCMI System Power Control driver
-Date:   Thu,  4 Feb 2021 16:59:13 +0000
-Message-Id: <20210204165913.42582-4-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210204165913.42582-1-cristian.marussi@arm.com>
-References: <20210204165913.42582-1-cristian.marussi@arm.com>
+        id S237576AbhBDRJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:09:00 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2496 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238294AbhBDRBL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:01:11 -0500
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DWl874hCGz67kPG;
+        Fri,  5 Feb 2021 00:56:55 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 4 Feb 2021 18:00:27 +0100
+Received: from localhost (10.47.65.115) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 4 Feb 2021
+ 17:00:26 +0000
+Date:   Thu, 4 Feb 2021 16:59:40 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jyoti Bhayana <jbhayana@google.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>
+Subject: Re: [RFC PATCH v4 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210204165940.00005fc3@Huawei.com>
+In-Reply-To: <CA+=V6c27bGnba-c5wNd8Nwt7dBCgcozKOHKJzZ+EkOLmNf2L2Q@mail.gmail.com>
+References: <20210129221818.3540620-1-jbhayana@google.com>
+        <20210129221818.3540620-2-jbhayana@google.com>
+        <20210131131141.468f1cc2@archlinux>
+        <CA+=V6c27bGnba-c5wNd8Nwt7dBCgcozKOHKJzZ+EkOLmNf2L2Q@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.65.115]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an SCMI System Power control driver to handle platform's requests
-carried by SYSTEM_POWER_STATE_NOTIFIER notifications: such platform
-requested system-wide power state transitions are handled accordingly,
-gracefully or forcefully, depending on the notifications' message flags.
+On Mon, 1 Feb 2021 22:53:18 -0800
+Jyoti Bhayana <jbhayana@google.com> wrote:
 
-Graceful requests are relayed to userspace using the same Kernel API used
-to handle ACPI Shutdown bus events.
+> Hi Jonathan,
+> 
+> I wanted to clarify a few things before I upload the next version of
+> the patch. Can you please help provide some more details regarding the
+> following questions?
+> 
+> 1) You mentioned that
+>       > perhaps we just need to do the maths in here rather than rely  
+> on core handling of IIO_VAL_FRACTIONAL.
+>        > That would give us a greater potential range"  
+> 
+>         Can you please clarify with some examples of how I can use
+> IIO_VAL_INT_PLUS_MICRO to represent a range which is larger than 32
+> bits without changing the sensor scale?
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-v4 --> v5
-- rebased on SCMI Modules v5 series to use new SCMI protocols interface
-- removed signal based shutdown/reboot
-- removed all module parameters
-- added 60secs fixed timeout to shutdwon/reboot requests
-- make it modularizable to cope with SCMI core modularization
-- refactored all data config structs
-- using dev_* instead of pr_*
+Sorry I wasn't clear on what I meant here.
+Instead of using the read_avail callback (which I'd normally much prefer)
+you can just do what lots of drivers in IIO do (predate the callback) and
+provide your own implementation of the attribute.  Then you can do
+whatever precision of maths you like to generate the string that is
+printed.   Any userspace code reading more decimal places than they
+expect to see (using 32 bit float perhaps rather than a double) will
+just round it I think.
 
-v3 --> v4
-- rebased v5.11-rc2
-- removed unneeded ugly usage of atomics and barriers
-- simplfied SysPower shutdown state machine
-- split out macro definition to different patch
+> 
+> 2)  > #define ilog10(x) (ilog2(x) / const_ilog2(10))
+>      > That feels like it's probably not great for precision"  
+>  I am only using this calculation to get the power of 10 multiplier
+> used when setting the scmi sensor update interval, so the exact
+> precision after the decimal point is not necessary.  I am only using
+> at one place in the code, so either I can remove the #define and
+> directly use it in the function or change the name of the #define.
+> Please let me know what you think
+Put it inline as we probably don't want an ilog10 macro.
+Sooner or later someone will add one to a generic header with resulting
+confusion.
 
-v2 --> v3
-- rebased
-- some minor cleanup in codestyle and commit message
+> 
+> 3)
+> > +#define UHZ_PER_HZ 1000000UL
+> > +#define ODR_EXPAND(odr, uodr) (((odr) * 1000000ULL) + (uodr))  
+> 
+> >Prefix these if driver specific.
+> >For those that aren't perhaps we can think about putting them in
+> >generic headers  
+> 
+> UHZ_PER_HZ is generic and not driver specific. Either I can use
+> USEC_PER_SEC which is already defined in include/linux/time64.h or we
+> can put UHZ_PER_HZ in a generic header instead. Please let me know
+> your preference and also which header file you think it needs to be
+> added in case of generic header.
 
-v1 --> v2
-- split out of SCMI System Power Protocol series now merged
----
- drivers/firmware/Kconfig                      |  12 +
- drivers/firmware/arm_scmi/Makefile            |   1 +
- .../firmware/arm_scmi/scmi_power_control.c    | 347 ++++++++++++++++++
- 3 files changed, 360 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
+It's only used in two places, I'd be tempted to just use the numeric
+value.  Or perhaps define it locally to them.
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 3f14dffb9669..73e27925f1e3 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
- 	  will be called scmi_pm_domain. Note this may needed early in boot
- 	  before rootfs may be available.
- 
-+config ARM_SCMI_POWER_CONTROL
-+	tristate "SCMI system power control driver"
-+	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-+	help
-+	  This enables System Power control logic which binds system shutdown or
-+	  reboot actions to SCMI System Power notifications generated by SCP
-+	  firmware.
-+
-+	  This driver can also be built as a module.  If so, the module will be
-+	  called scmi_power_control. Note this may needed early in boot to catch
-+	  early shutdown/reboot SCMI requests.
-+
- config ARM_SCPI_PROTOCOL
- 	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
- 	depends on ARM || ARM64 || COMPILE_TEST
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 6a2ef63306d6..ddddb4636ebd 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -9,3 +9,4 @@ scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
- obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
-+obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
-diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
-new file mode 100644
-index 000000000000..60d976c2facc
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/scmi_power_control.c
-@@ -0,0 +1,347 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * SCMI Generic SystemPower Control driver.
-+ *
-+ * Copyright (C) 2020-2021 ARM Ltd.
-+ */
-+/**
-+ * In order to handle platform originated SCMI SystemPower requests (like
-+ * shutdowns or cold/warm resets) we register an SCMI Notification notifier
-+ * block to react when such SCMI SystemPower events are emitted by platform.
-+ *
-+ * Once such a notification is received we act accordingly to perform the
-+ * required system transition depending on the kind of request.
-+ *
-+ * Graceful requests are routed to userspace through the same API methods
-+ * (orderly_poweroff/reboot()) used by ACPI when handling ACPI Shutdown bus
-+ * events.
-+ *
-+ * Forceful requests, instead, will simply cause an immediate emergency_sync()
-+ * (only if this driver was not built as a module) and subsequent Kernel-only
-+ * shutdown/reboot.
-+ *
-+ * Additionally, graceful requests are allowed a maximum amount of time to
-+ * complete, after which they are converted to forceful ones: the assumption
-+ * here is that even graceful requests can be upper-bound by a maximum final
-+ * timeout strictly enforced by the platform itself which can ultimately cut
-+ * the power off at will anytime; in order to avoid such extreme scenario, we
-+ * track progress of graceful requests through the means of a reboot notifier
-+ * converting timed-out graceful requests to forceful ones, so at least we
-+ * perform a clean sync and shutdown/restart before the power is cut.
-+ *
-+ * Given the peculiar nature of SCMI SystemPower protocol, that is being in
-+ * charge of triggering system wide shutdown/reboot events, there should be
-+ * only one SCMI platform actively emitting SystemPower events.
-+ *
-+ * For this reason the SCMI core takes care to enforce the creation of one
-+ * single unique device associated to the SCMI System Power protocol; no matter
-+ * how many SCMI platforms are defined on the system, only one can be designated
-+ * to support System Power: as a consequence this driver will never be probed
-+ * more than once.
-+ *
-+ * For similar reasons as soon as the first valid SystemPower is received by
-+ * this driver and the shutdown/reboot is started, any further notification
-+ * possibly emitted by the platform will be ignored.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/printk.h>
-+#include <linux/reboot.h>
-+#include <linux/scmi_protocol.h>
-+#include <linux/slab.h>
-+#include <linux/time64.h>
-+#include <linux/timer.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
-+#ifndef MODULE
-+#include <linux/fs.h>
-+#endif
-+
-+#define SCMI_GRACEFUL_REQ_TMO_MS	(60 * MSEC_PER_SEC)
-+
-+enum scmi_syspower_state {
-+	SCMI_SYSPOWER_IDLE,
-+	SCMI_SYSPOWER_IN_PROGRESS,
-+	SCMI_SYSPOWER_REBOOTING
-+};
-+
-+/**
-+ * struct scmi_syspower_conf  -  Common configuration
-+ *
-+ * @dev: A reference device
-+ * @state: Current SystemPower state
-+ * @state_mtx: @state related mutex
-+ * @required_transition: The requested transition as decribed in the received
-+ *			 SCMI SystemPower notification
-+ * @userspace_nb: The notifier_block registered against the SCMI SystemPower
-+ *		  notification to start the needed userspace interactions.
-+ * @reboot_nb: A notifier_block optionally used to track reboot progress
-+ * @request_timer: A timer optionally used to detect late/unresponsive userspace
-+ * @forceful_work: A worker used to trigger a forceful transition once a
-+ *		   graceful has timed out.
-+ */
-+static struct scmi_syspower_conf {
-+	struct device *dev;
-+	enum scmi_syspower_state state;
-+	/* Protect access to state */
-+	struct mutex state_mtx;
-+	enum scmi_system_events required_transition;
-+
-+	struct notifier_block userspace_nb;
-+	struct notifier_block reboot_nb;
-+
-+	struct timer_list request_timer;
-+	struct work_struct forceful_work;
-+} *sc;
-+
-+/**
-+ * scmi_reboot_notifier  - A reboot notifier to catch an ongoing successful
-+ * system transition
-+ * @nb: Reference to the related notifier block
-+ * @reason: The reason for the ongoing reboot
-+ * @__unused: The cmd being executed on a restart request (unused)
-+ *
-+ * When an ongoing system transition is detected, compatible with the one
-+ * requested by SCMI, cancel the timer work.
-+ *
-+ * Return: NOTIFY_OK in any case
-+ */
-+static int scmi_reboot_notifier(struct notifier_block *nb,
-+				unsigned long reason, void *__unused)
-+{
-+	mutex_lock(&sc->state_mtx);
-+	switch (reason) {
-+	case SYS_HALT:
-+	case SYS_POWER_OFF:
-+		if (sc->required_transition == SCMI_SYSTEM_SHUTDOWN)
-+			sc->state = SCMI_SYSPOWER_REBOOTING;
-+		break;
-+	case SYS_RESTART:
-+		if (sc->required_transition == SCMI_SYSTEM_COLDRESET ||
-+		    sc->required_transition == SCMI_SYSTEM_WARMRESET)
-+			sc->state = SCMI_SYSPOWER_REBOOTING;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (sc->state == SCMI_SYSPOWER_REBOOTING) {
-+		dev_dbg(sc->dev, "Reboot in progress...cancel timer.\n");
-+		del_timer_sync(&sc->request_timer);
-+	}
-+	mutex_unlock(&sc->state_mtx);
-+
-+	return NOTIFY_OK;
-+}
-+
-+/**
-+ * scmi_request_forceful_transition  - Request forceful SystemPower transition
-+ *
-+ * Initiates the required SystemPower transition without involving userspace:
-+ * just trigger the action at the kernel level after issuing an emergency
-+ * sync. (if possible at all)
-+ */
-+static void scmi_request_forceful_transition(void)
-+{
-+	dev_dbg(sc->dev, "Serving forceful request:%d\n",
-+		sc->required_transition);
-+
-+#ifndef MODULE
-+	emergency_sync();
-+#endif
-+	switch (sc->required_transition) {
-+	case SCMI_SYSTEM_SHUTDOWN:
-+		kernel_power_off();
-+		break;
-+	case SCMI_SYSTEM_COLDRESET:
-+	case SCMI_SYSTEM_WARMRESET:
-+		kernel_restart(NULL);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void scmi_forceful_work_func(struct work_struct *work)
-+{
-+	if (system_state > SYSTEM_RUNNING)
-+		return;
-+
-+	mutex_lock(&sc->state_mtx);
-+	/* avoid deadlock by unregistering reboot notifier first */
-+	unregister_reboot_notifier(&sc->reboot_nb);
-+	if (sc->state == SCMI_SYSPOWER_IN_PROGRESS)
-+		scmi_request_forceful_transition();
-+	mutex_unlock(&sc->state_mtx);
-+}
-+
-+/**
-+ * scmi_request_timeout  - On timeout trigger a forceful transition
-+ * @t: The timer reference
-+ *
-+ * Actual work is deferred out of the timer IRQ context since shutdown/reboot
-+ * code do not play well when !in_task().
-+ */
-+static void scmi_request_timeout(struct timer_list *t)
-+{
-+	dev_dbg(sc->dev, "Graceful request timed out...forcing !\n");
-+
-+	schedule_work(&sc->forceful_work);
-+}
-+
-+/**
-+ * scmi_request_graceful_transition  - Request graceful SystemPower transition
-+ *
-+ * Initiates the required SystemPower transition, requesting userspace
-+ * co-operation: it uses the same orderly_ methods used by ACPI Shutdown event
-+ * processing.
-+ *
-+ * Takes care also to register a reboot notifier and a timer callback in order
-+ * to detect if userspace actions are taking too long and in such a case falls
-+ * back to a forceful transition.
-+ */
-+static void scmi_request_graceful_transition(void)
-+{
-+	int ret;
-+
-+	sc->reboot_nb.notifier_call = &scmi_reboot_notifier;
-+	ret = register_reboot_notifier(&sc->reboot_nb);
-+	if (!ret) {
-+		INIT_WORK(&sc->forceful_work, scmi_forceful_work_func);
-+		sc->request_timer.expires = jiffies +
-+			msecs_to_jiffies(SCMI_GRACEFUL_REQ_TMO_MS);
-+		timer_setup(&sc->request_timer,
-+			    scmi_request_timeout, 0);
-+		add_timer(&sc->request_timer);
-+	} else {
-+		/* Carry on best effort even without a reboot notifier */
-+		dev_warn(sc->dev, "Cannot register reboot notifier !\n");
-+	}
-+
-+	dev_dbg(sc->dev,
-+		"Serving graceful request: %d (timeout_ms:%ld)\n",
-+		sc->required_transition, SCMI_GRACEFUL_REQ_TMO_MS);
-+
-+	switch (sc->required_transition) {
-+	case SCMI_SYSTEM_SHUTDOWN:
-+		/*
-+		 * When triggered early at boot-time the 'orderly' call will
-+		 * partially fail due to the lack of userspace itself, but
-+		 * the force=true argument will start anyway a successful
-+		 * forced shutdown.
-+		 */
-+		orderly_poweroff(true);
-+		break;
-+	case SCMI_SYSTEM_COLDRESET:
-+	case SCMI_SYSTEM_WARMRESET:
-+		orderly_reboot();
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+/**
-+ * scmi_userspace_notifier  - Notifier callback to act on SystemPower
-+ * Notifications
-+ * @nb: Reference to the related notifier block
-+ * @event: The SystemPower notification event id
-+ * @data: The SystemPower event report
-+ *
-+ * This callback is in charge of decoding the received SystemPower report
-+ * and act accordingly triggering a graceful or forceful system transition.
-+ *
-+ * Note that once a valid SCMI SystemPower event starts being served, any
-+ * other following SystemPower notification received from the same SCMI
-+ * instance (handle) will be ignored.
-+ *
-+ * Return: NOTIFY_OK once a valid SystemPower event has been successfully
-+ * processed.
-+ */
-+static int scmi_userspace_notifier(struct notifier_block *nb,
-+				   unsigned long event, void *data)
-+{
-+	struct scmi_system_power_state_notifier_report *er = data;
-+
-+	if (er->system_state >= SCMI_SYSTEM_POWERUP) {
-+		dev_err(sc->dev, "Ignoring invalid request: %d\n",
-+			er->system_state);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/*
-+	 * Bail out if system is already shutting down or an SCMI SystemPower
-+	 * requested is already being served.
-+	 */
-+	if (system_state > SYSTEM_RUNNING)
-+		return NOTIFY_DONE;
-+	mutex_lock(&sc->state_mtx);
-+	if (sc->state != SCMI_SYSPOWER_IDLE) {
-+		dev_dbg(sc->dev,
-+			"Transition already in progress...ignore.\n");
-+		mutex_unlock(&sc->state_mtx);
-+		return NOTIFY_DONE;
-+	}
-+	sc->state = SCMI_SYSPOWER_IN_PROGRESS;
-+	mutex_unlock(&sc->state_mtx);
-+
-+	sc->required_transition = er->system_state;
-+
-+	/* Leaving a trace in logs of who triggered the shutdown/reboot. */
-+	dev_info(sc->dev, "Serving shutdown/reboot request: %d\n",
-+		 sc->required_transition);
-+
-+	if (SCMI_SYSPOWER_IS_REQUEST_GRACEFUL(er->flags))
-+		scmi_request_graceful_transition();
-+	else
-+		scmi_request_forceful_transition();
-+
-+	return NOTIFY_OK;
-+}
-+
-+static int scmi_syspower_probe(struct scmi_device *sdev)
-+{
-+	int ret;
-+	struct scmi_handle *handle = sdev->handle;
-+
-+	if (!handle)
-+		return -ENODEV;
-+
-+	ret = handle->devm_acquire_protocol(sdev, SCMI_PROTOCOL_SYSTEM);
-+	if (ret)
-+		return ret;
-+
-+	sc = devm_kzalloc(&sdev->dev, sizeof(*sc), GFP_KERNEL);
-+	if (!sc)
-+		return -ENOMEM;
-+
-+	sc->state = SCMI_SYSPOWER_IDLE;
-+	mutex_init(&sc->state_mtx);
-+	sc->required_transition = SCMI_SYSTEM_MAX;
-+	sc->userspace_nb.notifier_call = &scmi_userspace_notifier;
-+	sc->dev = &sdev->dev;
-+
-+	return handle->notify_ops->devm_register_event_notifier(sdev,
-+							   SCMI_PROTOCOL_SYSTEM,
-+					 SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
-+						       NULL, &sc->userspace_nb);
-+}
-+
-+static const struct scmi_device_id scmi_id_table[] = {
-+	{ SCMI_PROTOCOL_SYSTEM, "syspower" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(scmi, scmi_id_table);
-+
-+static struct scmi_driver scmi_system_power_driver = {
-+	.name = "scmi-system-power",
-+	.probe = scmi_syspower_probe,
-+	.id_table = scmi_id_table,
-+};
-+module_scmi_driver(scmi_system_power_driver);
-+
-+MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
-+MODULE_DESCRIPTION("ARM SCMI SystemPower Control driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+> ODR_EXPAND is only used in one place in the code, and I can remove the
+> #define and use it directly in the function. Let me know if that will
+> be fine with you,
+That's fine.
+> 
+> Thanks,
+> Jyoti
+> 
+> 
+> 
+> 
+> 
+> 
+> On Sun, Jan 31, 2021 at 5:11 AM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Fri, 29 Jan 2021 22:18:18 +0000
+> > Jyoti Bhayana <jbhayana@google.com> wrote:
+> >  
+> > > This change provides ARM SCMI Protocol based IIO device.
+> > > This driver provides support for Accelerometer and Gyroscope using
+> > > SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+> > >
+> > > Signed-off-by: Jyoti Bhayana <jbhayana@google.com>  
+> >
+> > A few minor things noticed on a fresh read through, but mostly I think
+> > we are down to figuring out how to deal with the range (as discussed
+> > in the thread continuing on v3).
+> >
+> > On another note, probably time to drop the RFC or give a bit more detail
+> > on why you think this isn't ready to be applied.
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> > > ---
+> > >  MAINTAINERS                                |   6 +
+> > >  drivers/iio/common/Kconfig                 |   1 +
+> > >  drivers/iio/common/Makefile                |   1 +
+> > >  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+> > >  drivers/iio/common/scmi_sensors/Makefile   |   5 +
+> > >  drivers/iio/common/scmi_sensors/scmi_iio.c | 742 +++++++++++++++++++++
+> > >  6 files changed, 773 insertions(+)
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index b516bb34a8d5..ccf37d43ab41 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -8567,6 +8567,12 @@ S:     Maintained
+> > >  F:   Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
+> > >  F:   drivers/iio/multiplexer/iio-mux.c
+> > >
+> > > +IIO SCMI BASED DRIVER
+> > > +M:   Jyoti Bhayana <jbhayana@google.com>
+> > > +L:   linux-iio@vger.kernel.org
+> > > +S:   Maintained
+> > > +F:   drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > +
+> > >  IIO SUBSYSTEM AND DRIVERS
+> > >  M:   Jonathan Cameron <jic23@kernel.org>
+> > >  R:   Lars-Peter Clausen <lars@metafoo.de>
+> > > diff --git a/drivers/iio/common/Kconfig b/drivers/iio/common/Kconfig
+> > > index 2b9ee9161abd..0334b4954773 100644
+> > > --- a/drivers/iio/common/Kconfig
+> > > +++ b/drivers/iio/common/Kconfig
+> > > @@ -6,5 +6,6 @@
+> > >  source "drivers/iio/common/cros_ec_sensors/Kconfig"
+> > >  source "drivers/iio/common/hid-sensors/Kconfig"
+> > >  source "drivers/iio/common/ms_sensors/Kconfig"
+> > > +source "drivers/iio/common/scmi_sensors/Kconfig"
+> > >  source "drivers/iio/common/ssp_sensors/Kconfig"
+> > >  source "drivers/iio/common/st_sensors/Kconfig"
+> > > diff --git a/drivers/iio/common/Makefile b/drivers/iio/common/Makefile
+> > > index 4bc30bb548e2..fad40e1e1718 100644
+> > > --- a/drivers/iio/common/Makefile
+> > > +++ b/drivers/iio/common/Makefile
+> > > @@ -11,5 +11,6 @@
+> > >  obj-y += cros_ec_sensors/
+> > >  obj-y += hid-sensors/
+> > >  obj-y += ms_sensors/
+> > > +obj-y += scmi_sensors/
+> > >  obj-y += ssp_sensors/
+> > >  obj-y += st_sensors/
+> > > diff --git a/drivers/iio/common/scmi_sensors/Kconfig b/drivers/iio/common/scmi_sensors/Kconfig
+> > > new file mode 100644
+> > > index 000000000000..67e084cbb1ab
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/Kconfig
+> > > @@ -0,0 +1,18 @@
+> > > +#
+> > > +# IIO over SCMI
+> > > +#
+> > > +# When adding new entries keep the list in alphabetical order
+> > > +
+> > > +menu "IIO SCMI Sensors"
+> > > +
+> > > +config IIO_SCMI
+> > > +     tristate "IIO SCMI"
+> > > +        depends on ARM_SCMI_PROTOCOL
+> > > +        select IIO_BUFFER
+> > > +        select IIO_KFIFO_BUF
+> > > +     help
+> > > +          Say yes here to build support for IIO SCMI Driver.
+> > > +          This provides ARM SCMI Protocol based IIO device.
+> > > +          This driver provides support for accelerometer and gyroscope
+> > > +          sensors available on SCMI based platforms.
+> > > +endmenu
+> > > diff --git a/drivers/iio/common/scmi_sensors/Makefile b/drivers/iio/common/scmi_sensors/Makefile
+> > > new file mode 100644
+> > > index 000000000000..f13140a2575a
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/Makefile
+> > > @@ -0,0 +1,5 @@
+> > > +# SPDX - License - Identifier : GPL - 2.0 - only
+> > > +#
+> > > +# Makefile for the IIO over SCMI
+> > > +#
+> > > +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
+> > > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > new file mode 100644
+> > > index 000000000000..331ffaffd06f
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > @@ -0,0 +1,742 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +/*
+> > > + * System Control and Management Interface(SCMI) based IIO sensor driver
+> > > + *
+> > > + * Copyright (C) 2020 Google LLC  
+> > Probably want to include 2021 given you are still making substantial changes ;)
+> >  
+> > > + */
+> > > +
+> > > +#include <linux/delay.h>
+> > > +#include <linux/err.h>
+> > > +#include <linux/iio/buffer.h>
+> > > +#include <linux/iio/iio.h>
+> > > +#include <linux/iio/kfifo_buf.h>
+> > > +#include <linux/iio/sysfs.h>
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/kthread.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/scmi_protocol.h>
+> > > +#include <linux/time.h>
+> > > +#include <linux/types.h>
+> > > +
+> > > +#define ilog10(x) (ilog2(x) / const_ilog2(10))  
+> >
+> > That feels like it's probably not great for precision.
+> >  
+> > > +#define UHZ_PER_HZ 1000000UL
+> > > +#define ODR_EXPAND(odr, uodr) (((odr) * 1000000ULL) + (uodr))  
+> >
+> > Prefix these if driver specific.
+> > For those that aren't perhaps we can think about putting them in
+> > generic headers.
+> >
+> >  
+> > > +#define MAX_NUM_OF_CHANNELS 4
+> > > +#define H32(x) (FIELD_GET(GENMASK_ULL(63, 32), (x)))
+> > > +#define L32(x) (FIELD_GET(GENMASK_ULL(31, 0), (x)))  
+> >
+> > Can we use upper_32_bits() etc in stead of these?
+> >  
+> > > +
+> > > +struct scmi_iio_priv {
+> > > +     struct scmi_handle *handle;
+> > > +     const struct scmi_sensor_info *sensor_info;
+> > > +     struct iio_dev *indio_dev;
+> > > +     long long iio_buf[MAX_NUM_OF_CHANNELS];
+> > > +     struct notifier_block sensor_update_nb;
+> > > +     u32 *freq_avail;
+> > > +     /*
+> > > +      * range_avail = [minRange resolution maxRange]
+> > > +      * with IIO val type as IIO_VAL_FRACTIONAL.
+> > > +      * Hence, array of size 6.
+> > > +      */
+> > > +     int range_avail[6];
+> > > +};
+> > > +
+> > > +static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+> > > +                                  unsigned long event, void *data)
+> > > +{
+> > > +     struct scmi_sensor_update_report *sensor_update = data;
+> > > +     struct iio_dev *scmi_iio_dev;
+> > > +     struct scmi_iio_priv *sensor;
+> > > +     s8 tstamp_scale;
+> > > +     u64 time, time_ns;
+> > > +     int i;
+> > > +
+> > > +     if (sensor_update->readings_count == 0)
+> > > +             return NOTIFY_DONE;
+> > > +
+> > > +     sensor = container_of(nb, struct scmi_iio_priv, sensor_update_nb);
+> > > +
+> > > +     for (i = 0; i < sensor_update->readings_count; i++)
+> > > +             sensor->iio_buf[i] = sensor_update->readings[i].value;
+> > > +
+> > > +     if (!sensor->sensor_info->timestamped) {
+> > > +             time_ns = sensor_update->timestamp;
+> > > +     } else {
+> > > +             /*
+> > > +              * All the axes are supposed to have the same value for timestamp.
+> > > +              *  We are just using the values from the Axis 0 here.  
+> >
+> > Slightly odd indenting of comment here.
+> >  
+> > > +              */
+> > > +             time = sensor_update->readings[0].timestamp;
+> > > +
+> > > +             /*
+> > > +              *  Timestamp returned by SCMI is in seconds and is equal to
+> > > +              *  time * power-of-10 multiplier(tstamp_scale) seconds.
+> > > +              *  Converting the timestamp to nanoseconds below.
+> > > +              */
+> > > +             tstamp_scale = sensor->sensor_info->tstamp_scale +
+> > > +                               ilog10(NSEC_PER_SEC);
+> > > +             if (tstamp_scale < 0)
+> > > +                     time_ns = div64_u64(time,
+> > > +                                         int_pow(10, abs(tstamp_scale)));
+> > > +             else
+> > > +                     time_ns = time * int_pow(10, tstamp_scale);
+> > > +     }
+> > > +
+> > > +     scmi_iio_dev = sensor->indio_dev;
+> > > +     iio_push_to_buffers_with_timestamp(scmi_iio_dev, sensor->iio_buf,
+> > > +                                        time_ns);
+> > > +     return NOTIFY_OK;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u32 sensor_id = sensor->sensor_info->id;
+> > > +     u32 sensor_config;
+> > > +     int err;
+> > > +
+> > > +     if (sensor->sensor_info->timestamped)
+> > > +             sensor_config |= FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,
+> > > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
+> > > +
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > +                                 SCMI_SENS_CFG_SENSOR_ENABLE);
+> > > +
+> > > +     err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+> > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > +                     &sensor_id, &sensor->sensor_update_nb);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in registering sensor update notifier for sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > > +                     sensor->sensor_info->id, sensor_config);
+> > > +     if (err) {
+> > > +             sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > +                     &sensor_id, &sensor->sensor_update_nb);
+> > > +             dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +     }
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u32 sensor_id = sensor->sensor_info->id;
+> > > +     u32 sensor_config = 0;
+> > > +     int err;
+> > > +
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > +                                 SCMI_SENS_CFG_SENSOR_DISABLE);
+> > > +
+> > > +     err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > +                     &sensor_id, &sensor->sensor_update_nb);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in unregistering sensor update notifier for sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+> > > +                                                  sensor_config);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in disabling sensor %s with err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +     }
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static const struct iio_buffer_setup_ops scmi_iio_buffer_ops = {
+> > > +     .preenable = scmi_iio_buffer_preenable,
+> > > +     .postdisable = scmi_iio_buffer_postdisable,
+> > > +};
+> > > +
+> > > +static int scmi_iio_read_avail(struct iio_dev *iio_dev,
+> > > +                            struct iio_chan_spec const *chan,
+> > > +                            const int **vals, int *type, int *length,
+> > > +                            long mask)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +
+> > > +     switch (mask) {
+> > > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > > +             *vals = sensor->freq_avail;
+> > > +             *type = IIO_VAL_INT_PLUS_MICRO;
+> > > +             *length = sensor->sensor_info->intervals.count * 2;
+> > > +             if (sensor->sensor_info->intervals.segmented)
+> > > +                     return IIO_AVAIL_RANGE;
+> > > +             else
+> > > +                     return IIO_AVAIL_LIST;
+> > > +     case IIO_CHAN_INFO_RAW:
+> > > +             *vals = sensor->range_avail;
+> > > +             *type = IIO_VAL_FRACTIONAL;
+> > > +             *length = ARRAY_SIZE(sensor->range_avail);
+> > > +             return IIO_AVAIL_RANGE;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}
+> > > +
+> > > +static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u64 sec, mult, uHz;
+> > > +     u32 sensor_config;
+> > > +
+> > > +     int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> > > +                     sensor->sensor_info->id, &sensor_config);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in getting sensor config for sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     uHz = ODR_EXPAND(val, val2);
+> > > +
+> > > +     /*
+> > > +      * The seconds field in the sensor interval in SCMI is 16 bits long
+> > > +      * Therefore seconds  = 1/Hz <= 0xFFFF. As floating point calculations are
+> > > +      * discouraged in the kernel driver code, to calculate the scale factor (sf)
+> > > +      * (1* 1000000 * sf)/uHz <= 0xFFFF. Therefore, sf <= (uHz * 0xFFFF)/1000000
+> > > +      */
+> > > +     mult = ilog10(((u64)uHz * 0xFFFF) / UHZ_PER_HZ);
+> > > +
+> > > +     sec = div64_u64(int_pow(10, mult) * UHZ_PER_HZ, uHz);
+> > > +     if (sec == 0) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Trying to set invalid sensor update value for sensor %s",
+> > > +                     sensor->sensor_info->name);
+> > > +             return -EINVAL;
+> > > +     }
+> > > +
+> > > +     sensor_config &= ~SCMI_SENS_CFG_UPDATE_SECS_MASK;
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_UPDATE_SECS_MASK, sec);
+> > > +     sensor_config &= ~SCMI_SENS_CFG_UPDATE_EXP_MASK;
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_UPDATE_EXP_MASK, -mult);
+> > > +
+> > > +     if (sensor->sensor_info->timestamped) {
+> > > +             sensor_config &= ~SCMI_SENS_CFG_TSTAMP_ENABLED_MASK;
+> > > +             sensor_config |= FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,
+> > > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
+> > > +     }
+> > > +
+> > > +     sensor_config &= ~SCMI_SENS_CFG_ROUND_MASK;
+> > > +     sensor_config |=
+> > > +             FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
+> > > +
+> > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > > +                     sensor->sensor_info->id, sensor_config);
+> > > +     if (err)
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in setting sensor update interval for sensor %s value %u err %d",
+> > > +                     sensor->sensor_info->name, sensor_config, err);
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static int scmi_iio_write_raw(struct iio_dev *iio_dev,
+> > > +                           struct iio_chan_spec const *chan, int val,
+> > > +                           int val2, long mask)
+> > > +{
+> > > +     int err;
+> > > +
+> > > +     switch (mask) {
+> > > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > > +             mutex_lock(&iio_dev->mlock);
+> > > +             err = scmi_iio_set_odr_val(iio_dev, val, val2);
+> > > +             mutex_unlock(&iio_dev->mlock);
+> > > +             return err;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}
+> > > +
+> > > +static u64 scmi_iio_convert_interval_to_ns(u32 val)
+> > > +{
+> > > +     u64 sensor_update_interval =
+> > > +             SCMI_SENS_INTVL_GET_SECS(val) * NSEC_PER_SEC;
+> > > +     u64 sensor_interval_mult;
+> > > +     int mult;
+> > > +
+> > > +     mult = SCMI_SENS_INTVL_GET_EXP(val);
+> > > +     if (mult < 0) {
+> > > +             sensor_interval_mult = int_pow(10, abs(mult));
+> > > +             sensor_update_interval =
+> > > +                     sensor_update_interval / sensor_interval_mult;
+> > > +     } else {
+> > > +             sensor_interval_mult = int_pow(10, mult);
+> > > +             sensor_update_interval =
+> > > +                     sensor_update_interval * sensor_interval_mult;
+> > > +     }
+> > > +     return sensor_update_interval;
+> > > +}
+> > > +
+> > > +static void convert_ns_to_freq(u64 interval_ns, u64 *hz, u64 *uhz)
+> > > +{
+> > > +     u64 rem;
+> > > +
+> > > +     *hz = div64_u64_rem(NSEC_PER_SEC, interval_ns, &rem);
+> > > +     *uhz = (rem * 1000000UL) / interval_ns;
+> > > +}
+> > > +
+> > > +static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+> > > +{
+> > > +     u64 sensor_update_interval, sensor_interval_mult, hz, uhz;
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u32 sensor_config;
+> > > +     int mult;
+> > > +
+> > > +     int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> > > +                     sensor->sensor_info->id, &sensor_config);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in getting sensor config for sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     sensor_update_interval =
+> > > +             SCMI_SENS_CFG_GET_UPDATE_SECS(sensor_config) * NSEC_PER_SEC;
+> > > +
+> > > +     mult = SCMI_SENS_CFG_GET_UPDATE_EXP(sensor_config);
+> > > +     if (mult < 0) {
+> > > +             sensor_interval_mult = int_pow(10, abs(mult));
+> > > +             sensor_update_interval =
+> > > +                     sensor_update_interval / sensor_interval_mult;
+> > > +     } else {
+> > > +             sensor_interval_mult = int_pow(10, mult);
+> > > +             sensor_update_interval =
+> > > +                     sensor_update_interval * sensor_interval_mult;
+> > > +     }
+> > > +
+> > > +     convert_ns_to_freq(sensor_update_interval, &hz, &uhz);
+> > > +     *val = hz;
+> > > +     *val2 = uhz;
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+> > > +                          struct iio_chan_spec const *ch, int *val,
+> > > +                          int *val2, long mask)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     s8 scale;
+> > > +     int ret;
+> > > +
+> > > +     switch (mask) {
+> > > +     case IIO_CHAN_INFO_SCALE:
+> > > +             scale = sensor->sensor_info->axis[ch->scan_index].scale;
+> > > +             if (scale < 0) {
+> > > +                     *val = 1;
+> > > +                     *val2 = int_pow(10, abs(scale));
+> > > +                     return IIO_VAL_FRACTIONAL;
+> > > +             }
+> > > +             *val = int_pow(10, scale);
+> > > +             return IIO_VAL_INT;
+> > > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > > +             ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+> > > +             return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}
+> > > +
+> > > +static const struct iio_info scmi_iio_info = {
+> > > +     .read_raw = scmi_iio_read_raw,
+> > > +     .read_avail = scmi_iio_read_avail,
+> > > +     .write_raw = scmi_iio_write_raw,
+> > > +};
+> > > +
+> > > +static void scmi_iio_set_timestamp_channel(struct iio_chan_spec *iio_chan,
+> > > +                                        int scan_index)
+> > > +{
+> > > +     iio_chan->type = IIO_TIMESTAMP;
+> > > +     iio_chan->channel = -1;
+> > > +     iio_chan->scan_index = scan_index;
+> > > +     iio_chan->scan_type.sign = 'u';
+> > > +     iio_chan->scan_type.realbits = 64;
+> > > +     iio_chan->scan_type.storagebits = 64;
+> > > +}
+> > > +
+> > > +static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+> > > +                                   enum iio_chan_type type,
+> > > +                                   enum iio_modifier mod, int scan_index)
+> > > +{
+> > > +     iio_chan->type = type;
+> > > +     iio_chan->modified = 1;
+> > > +     iio_chan->channel2 = mod;
+> > > +     iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> > > +     iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> > > +     iio_chan->info_mask_shared_by_type_available =
+> > > +             BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_RAW);
+> > > +     iio_chan->scan_index = scan_index;
+> > > +     iio_chan->scan_type.sign = 's';
+> > > +     iio_chan->scan_type.realbits = 64;
+> > > +     iio_chan->scan_type.storagebits = 64;
+> > > +     iio_chan->scan_type.endianness = IIO_LE;
+> > > +}
+> > > +
+> > > +static int scmi_iio_get_chan_modifier(const char *name,
+> > > +                                   enum iio_modifier *modifier)
+> > > +{
+> > > +     char *pch, mod;
+> > > +
+> > > +     if (!name)
+> > > +             return -EINVAL;
+> > > +
+> > > +     pch = strrchr(name, '_');
+> > > +     if (!pch)
+> > > +             return -EINVAL;
+> > > +
+> > > +     mod = *(pch + 1);
+> > > +     switch (mod) {
+> > > +     case 'X':
+> > > +             *modifier = IIO_MOD_X;
+> > > +             return 0;
+> > > +     case 'Y':
+> > > +             *modifier = IIO_MOD_Y;
+> > > +             return 0;
+> > > +     case 'Z':
+> > > +             *modifier = IIO_MOD_Z;
+> > > +             return 0;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}
+> > > +
+> > > +static int scmi_iio_get_chan_type(u8 scmi_type, enum iio_chan_type *iio_type)
+> > > +{
+> > > +     switch (scmi_type) {
+> > > +     case METERS_SEC_SQUARED:
+> > > +             *iio_type = IIO_ACCEL;
+> > > +             return 0;
+> > > +     case RADIANS_SEC:
+> > > +             *iio_type = IIO_ANGL_VEL;
+> > > +             return 0;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}
+> > > +
+> > > +static int scmi_iio_get_sensor_max_range(struct iio_dev *iio_dev, int *val,
+> > > +                                      int *val2)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     int max_range_high, max_range_low;
+> > > +     long long max_range;
+> > > +
+> > > +     /*
+> > > +      * All the axes are supposed to have the same value for max range.
+> > > +      * We are just using the values from the Axis 0 here.
+> > > +      */
+> > > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > > +             max_range = sensor->sensor_info->axis[0].attrs.max_range;
+> > > +             max_range_high = H32(max_range);
+> > > +             max_range_low = L32(max_range);
+> > > +
+> > > +             /*
+> > > +              * As IIO Val types have no provision for 64 bit values,
+> > > +              * this driver only supports sensors whose maximum range
+> > > +              * reported by the SCMI Platform fits within lower 32 bits
+> > > +              */
+> > > +             if (max_range_high != 0)
+> > > +                     return -EINVAL;
+> > > +
+> > > +             *val = max_range_low;
+> > > +             *val2 = 1;
+> > > +     }
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static void scmi_iio_get_sensor_resolution(struct iio_dev *iio_dev, int *val,
+> > > +                                        int *val2)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +
+> > > +     /*
+> > > +      * All the axes are supposed to have the same value for resolution
+> > > +      * and exponent. We are just using the values from the Axis 0 here.
+> > > +      */
+> > > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > > +             uint resolution = sensor->sensor_info->axis[0].resolution;
+> > > +             s8 exponent = sensor->sensor_info->axis[0].exponent;
+> > > +             s8 scale = sensor->sensor_info->axis[0].scale;
+> > > +
+> > > +             /*
+> > > +              * To provide the raw value for the resolution to the userspace,
+> > > +              * need to divide the resolution exponent by the sensor scale
+> > > +              */
+> > > +             exponent = exponent - scale;
+> > > +             if (exponent >= 0) {
+> > > +                     *val = resolution * int_pow(10, exponent);
+> > > +                     *val2 = 1;
+> > > +             } else {
+> > > +                     *val = resolution;
+> > > +                     *val2 = int_pow(10, abs(exponent));
+> > > +             }
+> > > +     }
+> > > +}
+> > > +
+> > > +static int scmi_iio_get_sensor_min_range(struct iio_dev *iio_dev, int *val,
+> > > +                                      int *val2)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     int min_range_high, min_range_low;
+> > > +     long long min_range;
+> > > +
+> > > +     /*
+> > > +      * All the axes are supposed to have the same value for min range.
+> > > +      * We are just using the values from the Axis 0 here.
+> > > +      */
+> > > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > > +             min_range = sensor->sensor_info->axis[0].attrs.min_range;
+> > > +             min_range_high = H32(min_range);
+> > > +             min_range_low = L32(min_range);
+> > > +
+> > > +             /*
+> > > +              * As IIO Val types have no provision for 64 bit values,
+> > > +              * this driver only supports sensors whose minimum range
+> > > +              * reported by SCMI Platform fits within lower 32 bits
+> > > +              */  
+> >
+> > As discussed in previous thread (after you sent this!) perhaps we just
+> > need to do the maths in here rather than rely on core handling of IIO_VAL_FRACTIONAL.
+> > That would give us a greater potential range.  There may still be values
+> > we can't represent, but it should be less restrictive that this
+> > assumption. (pity as this was neater!)
+> >  
+> > > +             if (min_range_high != 0xFFFFFFFF)
+> > > +                     return -EINVAL;
+> > > +
+> > > +             *val = min_range_low;
+> > > +             *val2 = 1;
+> > > +     }
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int scmi_iio_set_sensor_range_avail(struct iio_dev *iio_dev)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     int ret;
+> > > +
+> > > +     ret = scmi_iio_get_sensor_min_range(iio_dev, &sensor->range_avail[0],
+> > > +                                         &sensor->range_avail[1]);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     scmi_iio_get_sensor_resolution(iio_dev, &sensor->range_avail[2],
+> > > +                                    &sensor->range_avail[3]);
+> > > +     ret = scmi_iio_get_sensor_max_range(iio_dev, &sensor->range_avail[4],
+> > > +                                         &sensor->range_avail[5]);
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
+> > > +{
+> > > +     u64 cur_interval_ns, low_interval_ns, high_interval_ns, step_size_ns,
+> > > +             hz, uhz;
+> > > +     unsigned int cur_interval, low_interval, high_interval, step_size;
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     int i;
+> > > +
+> > > +     sensor->freq_avail = devm_kzalloc(&iio_dev->dev,
+> > > +                                       sizeof(u32) * (sensor->sensor_info->intervals.count * 2),  
+> >
+> > Slight preference for sizeof(*sensor->freq_avail) *...
+> > as saves reviewer having to go check types match up.
+> >  
+> > > +                                       GFP_KERNEL);
+> > > +     if (!sensor->freq_avail)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     if (sensor->sensor_info->intervals.segmented) {
+> > > +             low_interval = sensor->sensor_info->intervals
+> > > +                                    .desc[SCMI_SENS_INTVL_SEGMENT_LOW];
+> > > +             low_interval_ns = scmi_iio_convert_interval_to_ns(low_interval);
+> > > +             convert_ns_to_freq(low_interval_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[0] = hz;
+> > > +             sensor->freq_avail[1] = uhz;
+> > > +
+> > > +             step_size = sensor->sensor_info->intervals
+> > > +                                 .desc[SCMI_SENS_INTVL_SEGMENT_STEP];
+> > > +             step_size_ns = scmi_iio_convert_interval_to_ns(step_size);
+> > > +             convert_ns_to_freq(step_size_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[2] = hz;
+> > > +             sensor->freq_avail[3] = uhz;
+> > > +
+> > > +             high_interval = sensor->sensor_info->intervals
+> > > +                                     .desc[SCMI_SENS_INTVL_SEGMENT_HIGH];
+> > > +             high_interval_ns =
+> > > +                     scmi_iio_convert_interval_to_ns(high_interval);
+> > > +             convert_ns_to_freq(high_interval_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[4] = hz;
+> > > +             sensor->freq_avail[5] = uhz;
+> > > +     } else {
+> > > +             for (i = 0; i < sensor->sensor_info->intervals.count; i++) {
+> > > +                     cur_interval = sensor->sensor_info->intervals.desc[i];
+> > > +                     cur_interval_ns = scmi_iio_convert_interval_to_ns(cur_interval);
+> > > +                     convert_ns_to_freq(cur_interval_ns, &hz, &uhz);
+> > > +                     sensor->freq_avail[i * 2] = hz;
+> > > +                     sensor->freq_avail[i * 2 + 1] = uhz;
+> > > +             }
+> > > +     }
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> > > +{
+> > > +     struct iio_buffer *buffer;
+> > > +
+> > > +     buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+> > > +     if (!buffer)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     iio_device_attach_buffer(scmi_iiodev, buffer);
+> > > +     scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
+> > > +     scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int scmi_alloc_iiodev(struct device *dev, struct scmi_handle *handle,
+> > > +                          const struct scmi_sensor_info *sensor_info,
+> > > +                          struct iio_dev **scmi_iio_dev)  
+> >
+> > Perhaps it would be nice to use PTR_ERR etc and have this function just return
+> > the struct iio_dev.   That would fit with more common form for allocation functions.
+> >  
+> > > +{
+> > > +     struct iio_chan_spec *iio_channels;
+> > > +     struct scmi_iio_priv *sensor;
+> > > +     enum iio_modifier modifier;
+> > > +     enum iio_chan_type type;
+> > > +     struct iio_dev *iiodev;
+> > > +     int i, ret;
+> > > +
+> > > +     iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> > > +     if (!iiodev)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     iiodev->modes = INDIO_DIRECT_MODE;
+> > > +     iiodev->dev.parent = dev;
+> > > +     sensor = iio_priv(iiodev);
+> > > +     sensor->handle = handle;
+> > > +     sensor->sensor_info = sensor_info;
+> > > +     sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+> > > +     sensor->indio_dev = iiodev;
+> > > +
+> > > +     /* adding one additional channel for timestamp */
+> > > +     iiodev->num_channels = sensor_info->num_axis + 1;
+> > > +     iiodev->name = sensor_info->name;
+> > > +     iiodev->info = &scmi_iio_info;
+> > > +
+> > > +     iio_channels =
+> > > +             devm_kzalloc(dev,
+> > > +                          sizeof(*iio_channels) * (iiodev->num_channels),
+> > > +                          GFP_KERNEL);
+> > > +     if (!iio_channels)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     scmi_iio_set_sampling_freq_avail(iiodev);
+> > > +
+> > > +     ret = scmi_iio_set_sensor_range_avail(iiodev);
+> > > +     if (ret) {
+> > > +             dev_err(dev, "Error while setting the sensor %s range %d",
+> > > +                     sensor_info->name, ret);
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     for (i = 0; i < sensor_info->num_axis; i++) {
+> > > +             ret = scmi_iio_get_chan_type(sensor_info->axis[i].type, &type);
+> > > +             if (ret < 0)
+> > > +                     return ret;
+> > > +
+> > > +             ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
+> > > +                                              &modifier);
+> > > +             if (ret < 0)
+> > > +                     return ret;
+> > > +
+> > > +             scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
+> > > +                                       sensor_info->axis[i].id);
+> > > +     }
+> > > +
+> > > +     scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> > > +     iiodev->channels = iio_channels;
+> > > +     *scmi_iio_dev = iiodev;
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> > > +{
+> > > +     const struct scmi_sensor_info *sensor_info;
+> > > +     struct scmi_handle *handle = sdev->handle;
+> > > +     struct device *dev = &sdev->dev;
+> > > +     struct iio_dev *scmi_iio_dev;
+> > > +     u16 nr_sensors;
+> > > +     int err, i;
+> > > +
+> > > +     if (!handle || !handle->sensor_ops) {
+> > > +             dev_err(dev, "SCMI device has no sensor interface\n");  
+> > I'm going to guess we can't actually get here because the registration
+> > would't have happened if either of those are true?
+> > If so perhaps drop the error message.
+> >  
+> > > +             return -EINVAL;
+> > > +     }
+> > > +
+> > > +     nr_sensors = handle->sensor_ops->count_get(handle);
+> > > +     if (!nr_sensors) {
+> > > +             dev_dbg(dev, "0 sensors found via SCMI bus\n");  
+> > -ENODEV maybe?  
+> > > +             return -EINVAL;
+> > > +     }
+> > > +
+> > > +     dev_dbg(dev, "%d sensors found via SCMI bus\n", nr_sensors);  
+> >
+> > Clear out any debug prints out that don't provide info that can't be obtained
+> > farily easily from elsewhere.  In this case they will either be registered
+> > or not and we'll get error messages.
+> > These sort of prints bitrot over time so we want to limit them to the truely
+> > useful.
+> >  
+> > > +
+> > > +     for (i = 0; i < nr_sensors; i++) {
+> > > +             sensor_info = handle->sensor_ops->info_get(handle, i);
+> > > +             if (!sensor_info) {
+> > > +                     dev_err(dev, "SCMI sensor %d has missing info\n", i);
+> > > +                     return -EINVAL;
+> > > +             }
+> > > +
+> > > +             /* Skipping scalar sensor,as this driver only supports accel and gyro */
+> > > +             if (sensor_info->num_axis == 0)
+> > > +                     continue;  
+> >
+> > So there is a situation where this driver never creates anything?  In that path I'd
+> > like to see an -ENODEV error return.
+> >  
+> > > +
+> > > +             err = scmi_alloc_iiodev(dev, handle, sensor_info,
+> > > +                                     &scmi_iio_dev);
+> > > +             if (err < 0) {
+> > > +                     dev_err(dev,
+> > > +                             "failed to allocate IIO device for sensor %s: %d\n",
+> > > +                             sensor_info->name, err);
+> > > +                     return err;
+> > > +             }
+> > > +
+> > > +             err = scmi_iio_buffers_setup(scmi_iio_dev);
+> > > +             if (err < 0) {
+> > > +                     dev_err(dev,
+> > > +                             "IIO buffer setup error at sensor %s: %d\n",
+> > > +                             sensor_info->name, err);
+> > > +                     return err;
+> > > +             }
+> > > +
+> > > +             err = devm_iio_device_register(dev, scmi_iio_dev);
+> > > +             if (err) {
+> > > +                     dev_err(dev,
+> > > +                             "IIO device registration failed at sensor %s: %d\n",
+> > > +                             sensor_info->name, err);
+> > > +                     return err;
+> > > +             }
+> > > +     }
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static const struct scmi_device_id scmi_id_table[] = {
+> > > +     { SCMI_PROTOCOL_SENSOR, "iiodev" },  
+> >
+> > I'm curious on this.  What actually causes a match on that
+> > iiodev?  From digging around the scmi core am I right in thinking
+> > that this iiodev id needs to be explicitly listed?
+> >
+> > It would be good to include any changes needed there in this
+> > series.
+> >  
+> > > +     {},
+> > > +};
+> > > +
+> > > +MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > > +
+> > > +static struct scmi_driver scmi_iiodev_driver = {
+> > > +     .name = "scmi-sensor-iiodev",
+> > > +     .probe = scmi_iio_dev_probe,
+> > > +     .id_table = scmi_id_table,
+> > > +};
+> > > +
+> > > +module_scmi_driver(scmi_iiodev_driver);
+> > > +
+> > > +MODULE_AUTHOR("Jyoti Bhayana <jbhayana@google.com>");
+> > > +MODULE_DESCRIPTION("SCMI IIO Driver");
+> > > +MODULE_LICENSE("GPL v2");  
+> >  
 
