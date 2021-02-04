@@ -2,118 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F237A32B77B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9372632BAB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357601AbhCCLLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:11:04 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13111 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240148AbhCCBZ7 (ORCPT
+        id S1351918AbhCCLuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:50:37 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:47913 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350292AbhCCEoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 20:25:59 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dqx8h5ljDz16FRB;
-        Wed,  3 Mar 2021 09:23:32 +0800 (CST)
-Received: from [10.67.110.237] (10.67.110.237) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 3 Mar 2021 09:25:05 +0800
-Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
- arm64_is_fake_mcount()
-To:     Steven Rostedt <rostedt@goodmis.org>
-References: <20210225140747.10818-1-lihuafei1@huawei.com>
- <20210225094426.7729b9cc@gandalf.local.home>
- <20210225160116.GA13604@willie-the-truck>
- <20210302173058.28fd3d36@gandalf.local.home>
-From:   Li Huafei <lihuafei1@huawei.com>
-CC:     <will@kernel.org>, <gregory.herrero@oracle.com>,
-        <catalin.marinas@arm.com>, <christophe.leroy@csgroup.eu>,
-        <linux-kernel@vger.kernel.org>,
-        Zhangjinhao <zhangjinhao2@huawei.com>, <yangjihong1@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>, <chenjun102@huawei.com>
-Message-ID: <54eb164c-695d-57c5-6bcd-51483b7998d3@huawei.com>
-Date:   Wed, 3 Mar 2021 09:25:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 2 Mar 2021 23:44:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614746654; x=1646282654;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=6+P1/Oc2V0WUGem54Xh+yKAWMD28OSRmha300sJabfk=;
+  b=rbGb09qhAdjvjSspv6KEToGzCKBuEwaVryywSzPmMjGQb9Pdq0OubikC
+   55nMaWFJcFDcUoYKki2qN2u17IRbDbV0nuKjb/rKUQt1StU62xhjYTk/L
+   W4cvvEyDgLcDi9MzgkoSsxBEb91pmpdSGx7Nsgu1muhTdooZzS4t0pgey
+   M=;
+X-IronPort-AV: E=Sophos;i="5.81,219,1610409600"; 
+   d="scan'208";a="108771440"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 04 Feb 2021 15:35:35 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id C5920A374E;
+        Thu,  4 Feb 2021 15:35:20 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.146) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 4 Feb 2021 15:35:03 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v24 10/14] mm/damon/dbgfs: Support multiple contexts
+Date:   Thu, 4 Feb 2021 16:31:46 +0100
+Message-ID: <20210204153150.15948-11-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210204153150.15948-1-sjpark@amazon.com>
+References: <20210204153150.15948-1-sjpark@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302173058.28fd3d36@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.237]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.146]
+X-ClientProxiedBy: EX13D18UWA001.ant.amazon.com (10.43.160.11) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: SeongJae Park <sjpark@amazon.de>
 
+In some use cases, users would want to run multiple monitoring context.
+For example, if a user wants a high precision monitoring and dedicating
+multiple CPUs for the job is ok, because DAMON creates one monitoring
+thread per one context, the user can split the monitoring target regions
+into multiple small regions and create one context for each region.  Or,
+someone might want to simultaneously monitor different address spaces,
+e.g., both virtual address space and physical address space.
 
-On 2021/3/3 6:30, Steven Rostedt wrote:
-> On Thu, 25 Feb 2021 16:01:17 +0000
-> Will Deacon <will@kernel.org> wrote:
-> 
->> On Thu, Feb 25, 2021 at 09:44:26AM -0500, Steven Rostedt wrote:
->>> This requires an acked-by from one of the ARM64 maintainers.
->>>
->>> -- Steve
->>>
->>>
->>> On Thu, 25 Feb 2021 22:07:47 +0800
->>> Li Huafei <lihuafei1@huawei.com> wrote:
->>>    
->>>> When cross-compiling the kernel, the endian of the target machine and
->>>> the local machine may not match, at this time the recordmcount tool
->>>> needs byte reversal when processing elf's variables to get the correct
->>>> value. w* callback function is used to solve this problem, w is used for
->>>> 4-byte variable processing, while w8 is used for 8-byte.
->>>>
->>>> arm64_is_fake_mcount() is used to filter '_mcount' relocations that are
->>>> not used by ftrace. In arm64_is_fake_mcount(), rp->info is 8 bytes in
->>>> size, but w is used. This causes arm64_is_fake_mcount() to get the wrong
->>>> type of relocation when we cross-compile the arm64_be kernel image on an
->>>> x86_le machine, and all valid '_mcount' is filtered out. The
->>>> recordmcount tool does not collect any mcount function call locations.
->>>> At kernel startup, the following ftrace log is seen:
->>>>
->>>> 	ftrace: No functions to be traced?
->>>>
->>>> and thus ftrace cannot be used.
->>>>
->>>> Using w8 to get the value of rp->r_info will fix the problem.
->>>>
->>>> Fixes: ea0eada45632 ("recordmcount: only record relocation of type
->>>> R_AARCH64_CALL26 on arm64")
->>>> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
->>>> ---
->>>>   scripts/recordmcount.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
->>>> index b9c2ee7ab43f..cce12e1971d8 100644
->>>> --- a/scripts/recordmcount.c
->>>> +++ b/scripts/recordmcount.c
->>>> @@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
->>>>   
->>>>   static int arm64_is_fake_mcount(Elf64_Rel const *rp)
->>>>   {
->>>> -	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
->>>> +	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
->>
->> Acked-by: Will Deacon <will@kernel.org>
->>
->> But you know you could avoid these sorts of problems by moving to little
->> endian along with everybody else? ;)
->>
-> 
-> I just realized that I received this patch twice, and thought it was the
-> same patch! Chen was three days ahead of you, so he get's the credit ;-)
-> 
->   https://lore.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
-> 
-> -- Steve
-> .
-> 
+The DAMON's API allows such usage, but 'damon-dbgfs' does not.
+Therefore, only kernel space DAMON users can do multiple contexts
+monitoring.
 
-That's fine, thanks Steve and Will!
+This commit allows the user space DAMON users to use multiple contexts
+monitoring by introducing two new 'damon-dbgfs' debugfs files,
+'mk_context' and 'rm_context'.  Users can create a new monitoring
+context by writing the desired name of the new context to 'mk_context'.
+Then, a new directory with the name and having the files for setting of
+the context ('attrs', 'target_ids' and 'record') will be created under
+the debugfs directory.  Writing the name of the context to remove to
+'rm_context' will remove the related context and directory.
 
-Huafei
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ mm/damon/dbgfs.c | 215 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 212 insertions(+), 3 deletions(-)
+
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 4b9ac2043e99..68edfd4d3b41 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -29,6 +29,7 @@ struct dbgfs_recorder {
+ static struct damon_ctx **dbgfs_ctxs;
+ static int dbgfs_nr_ctxs;
+ static struct dentry **dbgfs_dirs;
++static DEFINE_MUTEX(damon_dbgfs_lock);
+ 
+ /*
+  * Returns non-empty string on success, negarive error code otherwise.
+@@ -495,6 +496,13 @@ static void dbgfs_write_record_header(struct damon_ctx *ctx)
+ 	dbgfs_write_rbuf(ctx, &recfmt_ver, sizeof(recfmt_ver));
+ }
+ 
++static void dbgfs_free_recorder(struct dbgfs_recorder *recorder)
++{
++	kfree(recorder->rbuf);
++	kfree(recorder->rfile_path);
++	kfree(recorder);
++}
++
+ static unsigned int nr_damon_targets(struct damon_ctx *ctx)
+ {
+ 	struct damon_target *t;
+@@ -561,7 +569,7 @@ static struct damon_ctx *dbgfs_new_ctx(void)
+ {
+ 	struct damon_ctx *ctx;
+ 
+-	ctx = damon_new_ctx(DAMON_ADAPTIVE_TARGET);
++	ctx = damon_new_ctx();
+ 	if (!ctx)
+ 		return NULL;
+ 
+@@ -577,6 +585,195 @@ static struct damon_ctx *dbgfs_new_ctx(void)
+ 	return ctx;
+ }
+ 
++static void dbgfs_destroy_ctx(struct damon_ctx *ctx)
++{
++	dbgfs_free_recorder(ctx->callback.private);
++	damon_destroy_ctx(ctx);
++}
++
++/*
++ * Make a context of @name and create a debugfs directory for it.
++ *
++ * This function should be called while holding damon_dbgfs_lock.
++ *
++ * Returns 0 on success, negative error code otherwise.
++ */
++static int dbgfs_mk_context(char *name)
++{
++	struct dentry *root, **new_dirs, *new_dir;
++	struct damon_ctx **new_ctxs, *new_ctx;
++	int err;
++
++	if (damon_nr_running_ctxs())
++		return -EBUSY;
++
++	new_ctxs = krealloc(dbgfs_ctxs, sizeof(*dbgfs_ctxs) *
++			(dbgfs_nr_ctxs + 1), GFP_KERNEL);
++	if (!new_ctxs)
++		return -ENOMEM;
++
++	new_dirs = krealloc(dbgfs_dirs, sizeof(*dbgfs_dirs) *
++			(dbgfs_nr_ctxs + 1), GFP_KERNEL);
++	if (!new_dirs) {
++		kfree(new_ctxs);
++		return -ENOMEM;
++	}
++
++	dbgfs_ctxs = new_ctxs;
++	dbgfs_dirs = new_dirs;
++
++	root = dbgfs_dirs[0];
++	if (!root)
++		return -ENOENT;
++
++	new_dir = debugfs_create_dir(name, root);
++	if (IS_ERR(new_dir))
++		return PTR_ERR(new_dir);
++	dbgfs_dirs[dbgfs_nr_ctxs] = new_dir;
++
++	new_ctx = dbgfs_new_ctx();
++	if (!new_ctx) {
++		debugfs_remove(new_dir);
++		dbgfs_dirs[dbgfs_nr_ctxs] = NULL;
++		return -ENOMEM;
++	}
++	dbgfs_ctxs[dbgfs_nr_ctxs] = new_ctx;
++
++	err = dbgfs_fill_ctx_dir(dbgfs_dirs[dbgfs_nr_ctxs],
++			dbgfs_ctxs[dbgfs_nr_ctxs]);
++	if (err)
++		return err;
++
++	dbgfs_nr_ctxs++;
++	return 0;
++}
++
++static ssize_t dbgfs_mk_context_write(struct file *file,
++		const char __user *buf, size_t count, loff_t *ppos)
++{
++	char *kbuf;
++	char *ctx_name;
++	ssize_t ret = count;
++	int err;
++
++	kbuf = user_input_str(buf, count, ppos);
++	if (IS_ERR(kbuf))
++		return PTR_ERR(kbuf);
++	ctx_name = kmalloc(count + 1, GFP_KERNEL);
++	if (!ctx_name) {
++		kfree(kbuf);
++		return -ENOMEM;
++	}
++
++	/* Trim white space */
++	if (sscanf(kbuf, "%s", ctx_name) != 1) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	mutex_lock(&damon_dbgfs_lock);
++	err = dbgfs_mk_context(ctx_name);
++	if (err)
++		ret = err;
++	mutex_unlock(&damon_dbgfs_lock);
++
++out:
++	kfree(kbuf);
++	kfree(ctx_name);
++	return ret;
++}
++
++/*
++ * Remove a context of @name and its debugfs directory.
++ *
++ * This function should be called while holding damon_dbgfs_lock.
++ *
++ * Return 0 on success, negative error code otherwise.
++ */
++static int dbgfs_rm_context(char *name)
++{
++	struct dentry *root, *dir, **new_dirs;
++	struct damon_ctx **new_ctxs;
++	int i, j;
++
++	if (damon_nr_running_ctxs())
++		return -EBUSY;
++
++	root = dbgfs_dirs[0];
++	if (!root)
++		return -ENOENT;
++
++	dir = debugfs_lookup(name, root);
++	if (!dir)
++		return -ENOENT;
++
++	new_dirs = kmalloc_array(dbgfs_nr_ctxs - 1, sizeof(*dbgfs_dirs),
++			GFP_KERNEL);
++	if (!new_dirs)
++		return -ENOMEM;
++
++	new_ctxs = kmalloc_array(dbgfs_nr_ctxs - 1, sizeof(*dbgfs_ctxs),
++			GFP_KERNEL);
++	if (!new_ctxs) {
++		kfree(new_dirs);
++		return -ENOMEM;
++	}
++
++	for (i = 0, j = 0; i < dbgfs_nr_ctxs; i++) {
++		if (dbgfs_dirs[i] == dir) {
++			debugfs_remove(dbgfs_dirs[i]);
++			dbgfs_destroy_ctx(dbgfs_ctxs[i]);
++			continue;
++		}
++		new_dirs[j] = dbgfs_dirs[i];
++		new_ctxs[j++] = dbgfs_ctxs[i];
++	}
++
++	kfree(dbgfs_dirs);
++	kfree(dbgfs_ctxs);
++
++	dbgfs_dirs = new_dirs;
++	dbgfs_ctxs = new_ctxs;
++	dbgfs_nr_ctxs--;
++
++	return 0;
++}
++
++static ssize_t dbgfs_rm_context_write(struct file *file,
++		const char __user *buf, size_t count, loff_t *ppos)
++{
++	char *kbuf;
++	ssize_t ret = count;
++	int err;
++	char *ctx_name;
++
++	kbuf = user_input_str(buf, count, ppos);
++	if (IS_ERR(kbuf))
++		return PTR_ERR(kbuf);
++	ctx_name = kmalloc(count + 1, GFP_KERNEL);
++	if (!ctx_name) {
++		kfree(kbuf);
++		return -ENOMEM;
++	}
++
++	/* Trim white space */
++	if (sscanf(kbuf, "%s", ctx_name) != 1) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	mutex_lock(&damon_dbgfs_lock);
++	err = dbgfs_rm_context(ctx_name);
++	if (err)
++		ret = err;
++	mutex_unlock(&damon_dbgfs_lock);
++
++out:
++	kfree(kbuf);
++	kfree(ctx_name);
++	return ret;
++}
++
+ static ssize_t dbgfs_monitor_on_read(struct file *file,
+ 		char __user *buf, size_t count, loff_t *ppos)
+ {
+@@ -619,6 +816,16 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+ 	return ret;
+ }
+ 
++static const struct file_operations mk_contexts_fops = {
++	.owner = THIS_MODULE,
++	.write = dbgfs_mk_context_write,
++};
++
++static const struct file_operations rm_contexts_fops = {
++	.owner = THIS_MODULE,
++	.write = dbgfs_rm_context_write,
++};
++
+ static const struct file_operations monitor_on_fops = {
+ 	.owner = THIS_MODULE,
+ 	.read = dbgfs_monitor_on_read,
+@@ -628,8 +835,10 @@ static const struct file_operations monitor_on_fops = {
+ static int __init __damon_dbgfs_init(void)
+ {
+ 	struct dentry *dbgfs_root;
+-	const char * const file_names[] = {"monitor_on"};
+-	const struct file_operations *fops[] = {&monitor_on_fops};
++	const char * const file_names[] = {"mk_contexts", "rm_contexts",
++		"monitor_on"};
++	const struct file_operations *fops[] = {&mk_contexts_fops,
++		&rm_contexts_fops, &monitor_on_fops};
+ 	int i;
+ 
+ 	dbgfs_root = debugfs_create_dir("damon", NULL);
+-- 
+2.17.1
+
