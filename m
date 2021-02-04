@@ -2,149 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B83330FB7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CF430FB82
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239083AbhBDSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:30:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38352 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238990AbhBDS2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:28:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7B15DAC45;
-        Thu,  4 Feb 2021 18:27:59 +0000 (UTC)
-To:     Colin King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210204181756.109549-1-colin.king@canonical.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH] drm/mgag200: make a const array static, makes object
- smaller
-Message-ID: <9e979113-1b38-66e5-efe7-8bef22087117@suse.de>
-Date:   Thu, 4 Feb 2021 19:27:58 +0100
+        id S239142AbhBDSbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:31:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36590 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239113AbhBDS3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:29:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612463299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CaVqlNIeecJeWkJVHOtZ7cF2n5I5GFK1T6qxrN1YZuw=;
+        b=BStYMAVXwjLwSBTdaen4TxCvlbLE/fBjZZ7xj54ty9ufMXC0oShHW1fFCcuiaolbLC2Fh8
+        BEJ0zz60C/6oXQWnPgXqQvofTziSrKz1HcDP9gujCwxBOrVgVVPZazUTtxfx2g8SvDmDgp
+        k3qmxh3ObINsb3ZS5d5HRfEUVyqDJhQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-iKe9NrqqNJazKStnln7cpQ-1; Thu, 04 Feb 2021 13:28:18 -0500
+X-MC-Unique: iKe9NrqqNJazKStnln7cpQ-1
+Received: by mail-ej1-f71.google.com with SMTP id aq28so3287924ejc.20
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:28:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CaVqlNIeecJeWkJVHOtZ7cF2n5I5GFK1T6qxrN1YZuw=;
+        b=McbqA0+VBrxqNerTJiwv77dRrCzw4AjvWZJ9PC6yN50vTPj6o6hOuBay82Eru8oevH
+         oU91iUfv/dtLtePwjk6HW1jTLfcw0IbCJIfLx2j/dcIZxxTlRcnJU6SP3wO2i6K5u1Y4
+         dP1Tgp6c5E8JvuyjdmJGqkGiQvRJ5INHKpRTnJ3G3IVlm60H60f+hc3zOGkSaAKOWZOY
+         PS3c5zSvt2LP3+ebsTNeTaUKnVTc8ecAHb9VmPcaCcEelHq5jt+0Uv1XkyUxr3GTkymK
+         eeNO1WpV2Cporx+kvlgvDyXsHeHWsoNlNoZypD0lBHbelb4Jnqwp3ucxb/GGqA96oBca
+         KqOg==
+X-Gm-Message-State: AOAM533DnY45GeysMYSZXudH8+Wno6UZ+AJEeU9iRZ3HKnU0Np1wItwp
+        3D0q15n3QS8cWggJIahMzDJEblSRz83mizvBTbHG9yTKEQXaTnEvoBY/6vEtQiNuw13HLduKoTe
+        T1y/14DIvcVgWyXjfJNo17EAD
+X-Received: by 2002:aa7:d912:: with SMTP id a18mr266832edr.73.1612463296960;
+        Thu, 04 Feb 2021 10:28:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxJit3RA361GGIbkrhupm2QXbd2R/rovt+bOJ5mYd7RLF6Oubm7j2cvKzbl9CnfN3h6XSyL8Q==
+X-Received: by 2002:aa7:d912:: with SMTP id a18mr266814edr.73.1612463296692;
+        Thu, 04 Feb 2021 10:28:16 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id l13sm2835655eji.49.2021.02.04.10.28.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 10:28:16 -0800 (PST)
+Subject: Re: [PATCH v3 3/5] ACPI: button: Clean up printing messages
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Hanjun Guo <guohanjun@huawei.com>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+ <1961054.9MKZ8ejxOh@kreacher> <5061782.uJCyLE8JBt@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f2a42f94-3990-8c0d-1826-4bc75a97ce53@redhat.com>
+Date:   Thu, 4 Feb 2021 19:28:15 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210204181756.109549-1-colin.king@canonical.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw"
+In-Reply-To: <5061782.uJCyLE8JBt@kreacher>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw
-Content-Type: multipart/mixed; boundary="I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Colin King <colin.king@canonical.com>, Dave Airlie <airlied@redhat.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <9e979113-1b38-66e5-efe7-8bef22087117@suse.de>
-Subject: Re: [PATCH] drm/mgag200: make a const array static, makes object
- smaller
-References: <20210204181756.109549-1-colin.king@canonical.com>
-In-Reply-To: <20210204181756.109549-1-colin.king@canonical.com>
+Hi,
 
---I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 2/3/21 7:46 PM, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Replace the ACPI_DEBUG_PRINT() instance in button.c with an
+> acpi_handle_debug() call, drop the _COMPONENT and ACPI_MODULE_NAME()
+> definitions that are not used any more, drop the no longer needed
+> ACPI_BUTTON_COMPONENT definition from the headers and update the
+> documentation accordingly.
+> 
+> While at it, replace the direct printk() invocations with pr_info()
+> (that changes the excessive log level for some of them too) and drop
+> the unneeded PREFIX sybmbol definition from battery.c.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
-Hi
+Thanks, patch looks good to me:
 
-Am 04.02.21 um 19:17 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Don't populate the const array m_div_val on the stack but instead make
-> it static. Makes the object code smaller by 29 bytes:
->=20
-> Before:
->     text	   data	  bss   dec    hex filename
->    34736	   4552	    0 39288   9978 drivers/gpu/drm/mgag200/mgag200_mod=
-e.o
->=20
-> After:
->     text	   data	  bss   dec    hex filename
->    34625	   4616	    0 39241   9949 drivers/gpu/drm/mgag200/mgag200_mod=
-e.o
->=20
-> (gcc version 10.2.0)
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Very nice. I'm actually surprised that the compiler doesn't figure this=20
-out automatically. When I once tested this (in userspace) it did so.=20
-Maybe the kernel is different?
+Regards,
 
-For style reasons, I would have moved the static definition to the top=20
-of the function; before the variable declarations. In any case:
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-If I don't here from you, I'll merge the patch soonish.
-
-Best regards
-Thomas
+Hans
 
 > ---
->   drivers/gpu/drm/mgag200/mgag200_mode.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/m=
-gag200/mgag200_mode.c
-> index 1dfc42170059..27f33af09798 100644
-> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
-> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
-> @@ -712,7 +712,7 @@ static int mga_g200er_set_plls(struct mga_device *m=
-dev, long clock)
->   	unsigned int p, m, n;
->   	unsigned int computed, vco;
->   	int tmp;
-> -	const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
-> +	static const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
->  =20
->   	m =3D n =3D p =3D 0;
->   	vcomax =3D 1488000;
->=20
+> 
+> v2 -> v3: Add R-by tag.
+> 
+> v1 -> v2: Changelog update.
+> 
+> ---
+>  Documentation/firmware-guide/acpi/debug.rst |    1 -
+>  drivers/acpi/button.c                       |   15 +++++----------
+>  drivers/acpi/sysfs.c                        |    1 -
+>  include/acpi/acpi_drivers.h                 |    1 -
+>  4 files changed, 5 insertions(+), 13 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/button.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/button.c
+> +++ linux-pm/drivers/acpi/button.c
+> @@ -21,8 +21,6 @@
+>  #include <linux/dmi.h>
+>  #include <acpi/button.h>
+>  
+> -#define PREFIX "ACPI: "
+> -
+>  #define ACPI_BUTTON_CLASS		"button"
+>  #define ACPI_BUTTON_FILE_STATE		"state"
+>  #define ACPI_BUTTON_TYPE_UNKNOWN	0x00
+> @@ -54,9 +52,6 @@ static const char * const lid_init_state
+>  	[ACPI_BUTTON_LID_INIT_DISABLED]		= "disabled",
+>  };
+>  
+> -#define _COMPONENT		ACPI_BUTTON_COMPONENT
+> -ACPI_MODULE_NAME("button");
+> -
+>  MODULE_AUTHOR("Paul Diefenbaugh");
+>  MODULE_DESCRIPTION("ACPI Button Driver");
+>  MODULE_LICENSE("GPL");
+> @@ -285,7 +280,7 @@ static int acpi_button_add_fs(struct acp
+>  		return 0;
+>  
+>  	if (acpi_button_dir || acpi_lid_dir) {
+> -		printk(KERN_ERR PREFIX "More than one Lid device found!\n");
+> +		pr_info("More than one Lid device found!\n");
+>  		return -EEXIST;
+>  	}
+>  
+> @@ -434,8 +429,8 @@ static void acpi_button_notify(struct ac
+>  		}
+>  		break;
+>  	default:
+> -		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+> -				  "Unsupported event [0x%x]\n", event));
+> +		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
+> +				  event);
+>  		break;
+>  	}
+>  }
+> @@ -523,7 +518,7 @@ static int acpi_button_add(struct acpi_d
+>  			ACPI_BUTTON_CLASS, ACPI_BUTTON_SUBCLASS_LID);
+>  		input->open = acpi_lid_input_open;
+>  	} else {
+> -		printk(KERN_ERR PREFIX "Unsupported hid [%s]\n", hid);
+> +		pr_info("Unsupported hid [%s]\n", hid);
+>  		error = -ENODEV;
+>  		goto err_free_input;
+>  	}
+> @@ -567,7 +562,7 @@ static int acpi_button_add(struct acpi_d
+>  	}
+>  
+>  	device_init_wakeup(&device->dev, true);
+> -	printk(KERN_INFO PREFIX "%s [%s]\n", name, acpi_device_bid(device));
+> +	pr_info("%s [%s]\n", name, acpi_device_bid(device));
+>  	return 0;
+>  
+>   err_remove_fs:
+> Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+> ===================================================================
+> --- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
+> +++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+> @@ -52,7 +52,6 @@ shows the supported mask values, current
+>      ACPI_CA_DISASSEMBLER            0x00000800
+>      ACPI_COMPILER                   0x00001000
+>      ACPI_TOOLS                      0x00002000
+> -    ACPI_BUTTON_COMPONENT           0x00080000
+>      ACPI_SBS_COMPONENT              0x00100000
+>      ACPI_FAN_COMPONENT              0x00200000
+>      ACPI_PCI_COMPONENT              0x00400000
+> Index: linux-pm/drivers/acpi/sysfs.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/sysfs.c
+> +++ linux-pm/drivers/acpi/sysfs.c
+> @@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
+>  	ACPI_DEBUG_INIT(ACPI_COMPILER),
+>  	ACPI_DEBUG_INIT(ACPI_TOOLS),
+>  
+> -	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
+>  	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+>  	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
+>  	ACPI_DEBUG_INIT(ACPI_PCI_COMPONENT),
+> Index: linux-pm/include/acpi/acpi_drivers.h
+> ===================================================================
+> --- linux-pm.orig/include/acpi/acpi_drivers.h
+> +++ linux-pm/include/acpi/acpi_drivers.h
+> @@ -15,7 +15,6 @@
+>   * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
+>   * if you add to this list.
+>   */
+> -#define ACPI_BUTTON_COMPONENT		0x00080000
+>  #define ACPI_SBS_COMPONENT		0x00100000
+>  #define ACPI_FAN_COMPONENT		0x00200000
+>  #define ACPI_PCI_COMPONENT		0x00400000
+> 
+> 
+> 
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---I99QvtZ93b7MT1gv8uK1TeHqhr6sWOiWb--
-
---FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAcPK4FAwAAAAAACgkQlh/E3EQov+Cx
-zhAAqVcT8R0Tx8DNGHI0CEr7QmJbo4UmV/vUC5eGo8TG1JAwZ9hmk++WTZa9yU8/aQnBvKcOg5vJ
-zHNs9VJ7eb9NKAsXMbLFK4wv9HLhpeqVMJvawKSFpvgWopyVl8kqSiTVrIqjwdI0vHRifw7d5IPB
-VGJwkwqx8tyhKzE7q5G7si3UcN/soYi/4O8DC9n8v5K01T2hKJCLH0cargbjFzCDKsn/cGw61W5w
-FEVPHZO1R5r3MtE0r6Kg5dNQ9hq/dMgONWU8ss4N8fsbq7sNx4S9YIPQqAdsT2SRgPQH+1JlX/0W
-sHLfNqxeXhZjoM4RefrG2ZiDF3XNPcAaZ9wC1T9Ie8GdqPLJhcyKbVSo0z5PpOxhUYk8XswPtdg0
-tzTjGWk638JjvU85nE5g4y0+sF0mYntp2/JrsuSc9A8O8XgJDS/KumwZ/tppGQ5JomnL7fOao9Iw
-x2HslwW1bsps1EJ/g+UlJCau4F791l2hQx3JQXE7Dp1cnWJwh4dxHpEMo01D0RcqM3XcGuC1id+B
-P2FRIjH9A8ElTUgT4zCKZHvLS1czTtw6741st3FKXPT0PdFwtfhPFwtzt+Q8nVV3RcaOTWZRseG/
-ONM5aptTefpTmAavlhGvwJjoNfV5limnekXDXvf9dnhE5wnVIF1VF/6XT6Zw2ebwu75Zuqi72/xp
-dRM=
-=Ppb5
------END PGP SIGNATURE-----
-
---FpOESbSdYx0dqA2LtKG8SO3T02tTbekVw--
