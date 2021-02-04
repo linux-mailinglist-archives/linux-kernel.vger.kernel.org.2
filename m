@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B637B30EAD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA1B30EAD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhBDDSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        id S234439AbhBDDTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbhBDDSH (ORCPT
+        with ESMTP id S229601AbhBDDTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:18:07 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948D8C061573;
-        Wed,  3 Feb 2021 19:17:27 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c1so1493344qtc.1;
-        Wed, 03 Feb 2021 19:17:27 -0800 (PST)
+        Wed, 3 Feb 2021 22:19:33 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEB1C061573;
+        Wed,  3 Feb 2021 19:18:53 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id j5so1693493iog.11;
+        Wed, 03 Feb 2021 19:18:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XIF2R1gf7/D55jJobbj4vCUVH6wlL3iIiTcu/eGTGlA=;
-        b=i2FwZ6V50UJ95FjGqmx6etQnqbrSDDKDox0Q+OfrN7gwRLADB/v1b6IUOEyMakk76I
-         RvARaT6B7babk+JWXswixYR7r5d6PDivVOj2CJmhP8tuxNS+3rLZVgOZbTYmHeVOgxW6
-         MI69iHJM/GNSD4sTmoch4YI9ynTqlXENFeWZifwrLWa9XaF9/4t5qMEqlM6LRbIKZ9zv
-         S862qcx7eHsqOTW0DJqUWOmTLPqGCRaygq42i+3bwKBGNmqDPeG2J/jyTzGJJo/pPJV/
-         mzP4JziGSKzbGeQEmwCFZaxsBWKH6c89HRQX47ecIGLK1zurZF3AFai+KM7mu7n48nvE
-         pIrQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DZiFYdS72YXSF/YcGe+WmP/kvp/Q5JIvKaSw7pcHJWA=;
+        b=hH6n317tODhtW1eRiw0q6H0BcGIlYcbBt8e4FRq2vp5JHlhLTnWrH82VZR7jnSXyA6
+         5UOKoKnnfc5XEgNSJ3owPgQnppne7gFAnl8/8vs9jYRsdDyRjd/tt/iauK+6fSli3Dlp
+         R9U0Bnggmj7z/QcLYisWXTMeYBRZCADdTygmtuXM9I9kDJm7UCGn3GCKZtRHFxWgXySl
+         fd1RSPgWL2i3kRmFmckrXEnzdzU5oINDAlS5uNq1vV1sdKcgudsgMT+26ZjOIT/bxdPG
+         F0tbP/0OUxgvtoTn7xCLJTwC5S8LGC5MUMo4tHWKdxhJGST7IJ9NRhb78pZ+ug5gVHty
+         cMkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XIF2R1gf7/D55jJobbj4vCUVH6wlL3iIiTcu/eGTGlA=;
-        b=pYEzG9N5NiOYqJo4W8M687NOSuecO1t7D9a9/APTCM/QUUcq3RHm/BIOCTXrpH4yG9
-         rDXisOuO76SmDeIM7E8LCVH6aaq92N/7CBq2wsb6xuD6ZXo5x1nucvi73ldUv+h7wMyQ
-         edarVOOuF2+uNR8rHs+0ej1qn2xrVHzR/oI9ja+wxcR2RoCjW0NVTvY2z1BVt9cdVWLH
-         cjdLo9Og1D+msph9n1fmGsthh7vcw3KkbWUa+4IC9ez9O9CHn/70ZiPMPYDXiAP23M7t
-         jOgkUEhWocUT/bfG6aWE9QqhxhTVTBHVOsAccIaIZBj9fU1u5r9f7Gss3gVoXu8r1wUV
-         d8ow==
-X-Gm-Message-State: AOAM530zLx4zh8lm6/FYYHRxI9hvqvGTa6HTLjl7Z6+dZr2LjoVOVonC
-        o63cKpqM8bqC54wTO+9/p08=
-X-Google-Smtp-Source: ABdhPJxpeu3KwM+f74V1GHy2bWEkRqBGuCu6LVPTjbh9blqOXkpJTt1ryGH7zmnJr+GWBq4SBdrlfg==
-X-Received: by 2002:ac8:7453:: with SMTP id h19mr5421463qtr.354.1612408646846;
-        Wed, 03 Feb 2021 19:17:26 -0800 (PST)
-Received: from localhost.localdomain ([138.199.13.179])
-        by smtp.gmail.com with ESMTPSA id s129sm3846469qkh.37.2021.02.03.19.17.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 19:17:25 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V3] drivers: net: ethernet: i825xx: Fix couple of spellings in the file ether1.c
-Date:   Thu,  4 Feb 2021 08:46:48 +0530
-Message-Id: <20210204031648.27300-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DZiFYdS72YXSF/YcGe+WmP/kvp/Q5JIvKaSw7pcHJWA=;
+        b=iD/66i0UKsrB7ZiMTjLie658ITjwPa5w5o2FRs4ln19k5SMe9hqCY8cNs8u/ky16oJ
+         gxCnE9zo0CXIe2y2/YKdIo5qIJHdJir/IM+Hl0TlT/Yp1nRA5bHrABpFZbrcoUhTZ19O
+         U2CztpWhcIsqXutP6dS+gERO7nB7VjjTCDDBbzfVaJDl7eUc5egy+lDveYgPZubwK/X3
+         EGLFf3KSzVayWBk928BB7PMBeG0J4NvU6BQRPIyxGOnzZp15iRfBkGQLoMS51OYKaCXc
+         4WKM6qBJO04cmKiTnxC5+27pTwHsY+JGCjSCxc8oov+8zYj9F1V5eMYD2pg0772Fp5tC
+         RxkA==
+X-Gm-Message-State: AOAM531xKDnEEFynkt7ylSRFxy+vTllRAbVW5CABOiEngmsw4MtSKh+l
+        KWiyh4jO7i8RF5moZwya2N5M5cXCv6sAodt1jZU=
+X-Google-Smtp-Source: ABdhPJxbxiBXBnRWIlSF2MVAG+Lc4eNFMSRSxXep/mfEYl/G3WZThA77PSJaoeG4ONXxqjQkCICKjiim+guzwid5Ng4=
+X-Received: by 2002:a05:6638:35a3:: with SMTP id v35mr6064046jal.36.1612408732602;
+ Wed, 03 Feb 2021 19:18:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210203090727.789939-1-zhang.lyra@gmail.com> <20210203090727.789939-3-zhang.lyra@gmail.com>
+ <eb55a1de-2816-9029-b642-b3067e311417@infradead.org>
+In-Reply-To: <eb55a1de-2816-9029-b642-b3067e311417@infradead.org>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Thu, 4 Feb 2021 11:18:16 +0800
+Message-ID: <CAAfSe-sKqzub08kBgYNimBwbaf5s-Ed=Ef3PcMvA_8YTYsDwUw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] iommu: add Unisoc iommu basic driver
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 4 Feb 2021 at 01:44, Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 2/3/21 1:07 AM, Chunyan Zhang wrote:
+> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > index 192ef8f61310..99e7712f3903 100644
+> > --- a/drivers/iommu/Kconfig
+> > +++ b/drivers/iommu/Kconfig
+> > @@ -408,4 +408,16 @@ config VIRTIO_IOMMU
+> >
+> >         Say Y here if you intend to run this kernel as a guest.
+> >
+> > +config SPRD_IOMMU
+> > +     tristate "Unisoc IOMMU Support"
+> > +     depends on ARCH_SPRD || COMPILE_TEST
+> > +     select IOMMU_API
+> > +     help
+> > +       Support for IOMMU on Unisoc's SoCs, this iommu can be used by
+>
+>         s/iommu/IOMMU/ please
 
+Sure, thanks.
 
-s/initialsation/initialisation/
-s/specifiing/specifying/
+Chunyan
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Changes from V2:
-   Adjust and make changes which are obvious as per Randy's suggestions
-
- drivers/net/ethernet/i825xx/ether1.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
-index a0bfb509e002..c612ef526d16 100644
---- a/drivers/net/ethernet/i825xx/ether1.c
-+++ b/drivers/net/ethernet/i825xx/ether1.c
-@@ -20,7 +20,7 @@
-  * 1.02	RMK	25/05/1997	Added code to restart RU if it goes not ready
-  * 1.03	RMK	14/09/1997	Cleaned up the handling of a reset during the TX interrupt.
-  *				Should prevent lockup.
-- * 1.04 RMK	17/09/1997	Added more info when initialsation of chip goes wrong.
-+ * 1.04 RMK	17/09/1997	Added more info when initialisation of chip goes wrong.
-  *				TDR now only reports failure when chip reports non-zero
-  *				TDR time-distance.
-  * 1.05	RMK	31/12/1997	Removed calls to dev_tint for 2.1
-@@ -117,7 +117,7 @@ ether1_outw_p (struct net_device *dev, unsigned short val, int addr, int svflgs)
-  * Some inline assembler to allow fast transfers on to/off of the card.
-  * Since this driver depends on some features presented by the ARM
-  * specific architecture, and that you can't configure this driver
-- * without specifiing ARM mode, this is not a problem.
-+ * without specifying ARM mode, this is not a problem.
-  *
-  * This routine is essentially an optimised memcpy from the card's
-  * onboard RAM to kernel memory.
---
-2.26.2
-
+>
+> > +       Unisoc's multimedia devices, such as display, Image codec(jpeg)
+> > +       and a few signal processors, including VSP(video), GSP(graphic),
+> > +       ISP(image), and CPP(camera pixel processor), etc.
+> > +
+> > +       Say Y here if you want to use the multimedia devices listed above.
+>
+>
+> --
+> ~Randy
