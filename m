@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8022B30ED5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF730ED5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhBDH3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:29:37 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12417 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhBDH3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:29:33 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DWVWQ1qWlzj94x;
-        Thu,  4 Feb 2021 15:27:46 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Feb 2021 15:28:41 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
-        <yoshfuji@linux-ipv6.org>, <kuba@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] ipv6: Return the correct errno code
-Date:   Thu, 4 Feb 2021 15:29:39 +0800
-Message-ID: <20210204072939.17892-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S234474AbhBDHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:30:39 -0500
+Received: from verein.lst.de ([213.95.11.211]:54722 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232977AbhBDHaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:30:35 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DD16068AFE; Thu,  4 Feb 2021 08:29:47 +0100 (CET)
+Date:   Thu, 4 Feb 2021 08:29:47 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, nouveau@lists.freedesktop.org,
+        x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+        akpm@linux-foundation.org, benh@kernel.crashing.org,
+        bskeggs@redhat.com, bhelgaas@google.com, bp@alien8.de,
+        boris.ostrovsky@oracle.com, hch@lst.de, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, hpa@zytor.com, mingo@kernel.org,
+        mingo@redhat.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, jgross@suse.com,
+        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        matthew.auld@intel.com, mpe@ellerman.id.au, rppt@kernel.org,
+        paulus@samba.org, peterz@infradead.org, robin.murphy@arm.com,
+        rodrigo.vivi@intel.com, sstabellini@kernel.org,
+        bauerman@linux.ibm.com, tsbogend@alpha.franken.de,
+        tglx@linutronix.de, ulf.hansson@linaro.org, joe.jin@oracle.com,
+        thomas.lendacky@amd.com, Claire Chang <tientzu@chromium.org>
+Subject: Re: [PATCH RFC v1 2/6] swiotlb: convert variables to arrays
+Message-ID: <20210204072947.GA29812@lst.de>
+References: <20210203233709.19819-1-dongli.zhang@oracle.com> <20210203233709.19819-3-dongli.zhang@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203233709.19819-3-dongli.zhang@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
+On Wed, Feb 03, 2021 at 03:37:05PM -0800, Dongli Zhang wrote:
+> This patch converts several swiotlb related variables to arrays, in
+> order to maintain stat/status for different swiotlb buffers. Here are
+> variables involved:
+> 
+> - io_tlb_start and io_tlb_end
+> - io_tlb_nslabs and io_tlb_used
+> - io_tlb_list
+> - io_tlb_index
+> - max_segment
+> - io_tlb_orig_addr
+> - no_iotlb_memory
+> 
+> There is no functional change and this is to prepare to enable 64-bit
+> swiotlb.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- net/ipv6/addrconf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 8b6eb384bac7..347b95bc00fd 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -6943,7 +6943,7 @@ static int __addrconf_sysctl_register(struct net *net, char *dev_name,
- free:
- 	kfree(table);
- out:
--	return -ENOBUFS;
-+	return -ENOMEM;
- }
- 
- static void __addrconf_sysctl_unregister(struct net *net,
--- 
-2.22.0
-
+Claire Chang (on Cc) already posted a patch like this a month ago,
+which looks much better because it actually uses a struct instead
+of all the random variables. 
