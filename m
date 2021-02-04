@@ -2,130 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B045030FB2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2B530FB28
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238924AbhBDSS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:18:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238389AbhBDRU2 (ORCPT
+        id S238782AbhBDSS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:18:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23650 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238351AbhBDRYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:20:28 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CA0C06178B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 09:19:47 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id t13so2603537plg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:19:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
-        b=cO/etlrrEAzH/g1dbDSHauc4EzO7fZ2R+6UmMcdpjUQej4vTfKrqsHKiRkmb4iK3ZW
-         GtQk37rbrYe46Cdbulsuekq+yF2V0ZCBgqq+USJ4prDmtt2w5mJqItMEst8FW+U6cJom
-         NBgsvmwUFUntRGhS+4iNmG6cgHvxhb43Ic6+jOr2AqQFfNriCikLrwXnFdrQmyYA2Rao
-         Cl/BcoImBY71li6bW5mqQcY9CNEIOxbGPl1yqTXYsL0NmARWtAohBoiQ7MNSMMeaqxvR
-         h09dSOPBRJ0LArGSc/u3oD59FIhQ07ZkmYvYqWajGzfICETSyVEMFxFoCL//DxvONIfJ
-         Q0Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=GkV/UHW40ojQINSJGLSD5pRuP03bJ/Yv3/kf3sMMqUY=;
-        b=ag2+Hiez616v4gU6PKA7PVidvfd9RyEJsIK1qLNApSOXSs4Wsakw8i0O4rRxopJUhr
-         UtOCHJsqWP2tMNntREQgdjL+b9N0jFeUqZpn5TrAvPcwUmI3INFbv3obQv3N/vkQDh3l
-         0zOBr05wZ5W6CnZJhdw4RfEC7cpm1p871z5BClC3cQ+2h4sWnXNGmzowYkiOd4GV1AZO
-         IxXW84yWLAoRyOxDx6DQ7zMoEpmdN6rtEzsabAoYmTSgij5/QP41TOKHQ8DqmERIrEcr
-         KIp30NxpCNc083Jn3894ZrKMohM+mv9kZB23HUe7+NR4iSwnFI+ih1Adyo6Bf5X6usa/
-         R3mA==
-X-Gm-Message-State: AOAM531qumtaG8RQldAdkzwUSmn9LmdT9Z09h28b/yWDHDQd0nrJBFGb
-        kZnOysoMSb2+LZKjqZObgNBS4v4hBUlv
-X-Google-Smtp-Source: ABdhPJwZaUPMg1NyBgDgtgmMlUvddCN80MhfXCBqI3DFZkywijVbuzNalDMOpxzEr6D7+EXxD41EvAbqHBiR
-Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
-X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:a17:90a:6288:: with SMTP id
- d8mr494508pjj.49.1612459186925; Thu, 04 Feb 2021 09:19:46 -0800 (PST)
-Date:   Thu,  4 Feb 2021 17:19:42 +0000
-In-Reply-To: <20210204171942.469883-1-brianvv@google.com>
-Message-Id: <20210204171942.469883-2-brianvv@google.com>
-Mime-Version: 1.0
-References: <20210204171942.469883-1-brianvv@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH net-next 2/2] net: fix building errors on powerpc when
- CONFIG_RETPOLINE is not set
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 4 Feb 2021 12:24:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612459366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=047Q+kHFTMwlZxZSB0OK+gVEKt1Ugj8Uih+TOE9Lvzk=;
+        b=fHmZDTQ2Xd4g31bgq5hcf/r51s0lF0UEGmBkETrFUCunX3Zr6wWbcF2QfdIwIKxM8VI01d
+        /e/xlNvQpLy37/k2oIoY+OOuZ+zJ3swocGy717gzdhhZbrB9YC49YSNIwGDtxD8v1NJxo9
+        gRSYXJvm+XdZxIg5yGQebFln2dQdmUs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213--jZMEXo_PJWxMi2IZZYKFA-1; Thu, 04 Feb 2021 12:22:44 -0500
+X-MC-Unique: -jZMEXo_PJWxMi2IZZYKFA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67ACA107ACC7;
+        Thu,  4 Feb 2021 17:22:42 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-213.ams2.redhat.com [10.36.113.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 448A31A26A;
+        Thu,  4 Feb 2021 17:22:40 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 01/13] vdpa_sim: use iova module to allocate IOVA addresses
+Date:   Thu,  4 Feb 2021 18:22:18 +0100
+Message-Id: <20210204172230.85853-2-sgarzare@redhat.com>
+In-Reply-To: <20210204172230.85853-1-sgarzare@redhat.com>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes the errores reported when building for powerpc:
+The identical mapping used until now created issues when mapping
+different virtual pages with the same physical address.
+To solve this issue, we can use the iova module, to handle the IOVA
+allocation.
+For simplicity we use an IOVA allocator with byte granularity.
 
- ERROR: modpost: "ip6_dst_check" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ipv4_dst_check" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ipv4_mtu" [vmlinux] is a static EXPORT_SYMBOL
- ERROR: modpost: "ip6_mtu" [vmlinux] is a static EXPORT_SYMBOL
+We add two new functions, vdpasim_map_range() and vdpasim_unmap_range(),
+to handle the IOVA allocation and the registration into the IOMMU/IOTLB.
+These functions are used by dma_map_ops callbacks.
 
-Fixes: f67fbeaebdc0 ("net: use indirect call helpers for dst_mtu")
-Fixes: bbd807dfbf20 ("net: indirect call helpers for ipv4/ipv6 dst_check functions")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Brian Vazquez <brianvv@google.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- net/ipv4/route.c | 4 ++--
- net/ipv6/route.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+v2:
+- used ULONG_MAX instead of ~0UL [Jason]
+- fixed typos in comment and patch description [Jason]
+---
+ drivers/vdpa/vdpa_sim/vdpa_sim.h |   2 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 108 +++++++++++++++++++------------
+ drivers/vdpa/Kconfig             |   1 +
+ 3 files changed, 69 insertions(+), 42 deletions(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 9e6537709794..be31e2446470 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1206,7 +1206,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
- 		return NULL;
- 	return dst;
- }
--EXPORT_SYMBOL(ipv4_dst_check);
-+EXPORT_INDIRECT_CALLABLE(ipv4_dst_check);
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
+index 6d75444f9948..cd58e888bcf3 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
+@@ -6,6 +6,7 @@
+ #ifndef _VDPA_SIM_H
+ #define _VDPA_SIM_H
  
- static void ipv4_send_dest_unreach(struct sk_buff *skb)
++#include <linux/iova.h>
+ #include <linux/vringh.h>
+ #include <linux/vdpa.h>
+ #include <linux/virtio_byteorder.h>
+@@ -57,6 +58,7 @@ struct vdpasim {
+ 	/* virtio config according to device type */
+ 	void *config;
+ 	struct vhost_iotlb *iommu;
++	struct iova_domain iova;
+ 	void *buffer;
+ 	u32 status;
+ 	u32 generation;
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index d5942842432d..2183a833fcf4 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -17,6 +17,7 @@
+ #include <linux/vringh.h>
+ #include <linux/vdpa.h>
+ #include <linux/vhost_iotlb.h>
++#include <linux/iova.h>
+ 
+ #include "vdpa_sim.h"
+ 
+@@ -128,30 +129,57 @@ static int dir_to_perm(enum dma_data_direction dir)
+ 	return perm;
+ }
+ 
++static dma_addr_t vdpasim_map_range(struct vdpasim *vdpasim, phys_addr_t paddr,
++				    size_t size, unsigned int perm)
++{
++	struct iova *iova;
++	dma_addr_t dma_addr;
++	int ret;
++
++	/* We set the limit_pfn to the maximum (ULONG_MAX - 1) */
++	iova = alloc_iova(&vdpasim->iova, size, ULONG_MAX - 1, true);
++	if (!iova)
++		return DMA_MAPPING_ERROR;
++
++	dma_addr = iova_dma_addr(&vdpasim->iova, iova);
++
++	spin_lock(&vdpasim->iommu_lock);
++	ret = vhost_iotlb_add_range(vdpasim->iommu, (u64)dma_addr,
++				    (u64)dma_addr + size - 1, (u64)paddr, perm);
++	spin_unlock(&vdpasim->iommu_lock);
++
++	if (ret) {
++		__free_iova(&vdpasim->iova, iova);
++		return DMA_MAPPING_ERROR;
++	}
++
++	return dma_addr;
++}
++
++static void vdpasim_unmap_range(struct vdpasim *vdpasim, dma_addr_t dma_addr,
++				size_t size)
++{
++	spin_lock(&vdpasim->iommu_lock);
++	vhost_iotlb_del_range(vdpasim->iommu, (u64)dma_addr,
++			      (u64)dma_addr + size - 1);
++	spin_unlock(&vdpasim->iommu_lock);
++
++	free_iova(&vdpasim->iova, iova_pfn(&vdpasim->iova, dma_addr));
++}
++
+ static dma_addr_t vdpasim_map_page(struct device *dev, struct page *page,
+ 				   unsigned long offset, size_t size,
+ 				   enum dma_data_direction dir,
+ 				   unsigned long attrs)
  {
-@@ -1337,7 +1337,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ipv4_mtu(const struct dst_entry *dst)
+ 	struct vdpasim *vdpasim = dev_to_sim(dev);
+-	struct vhost_iotlb *iommu = vdpasim->iommu;
+-	u64 pa = (page_to_pfn(page) << PAGE_SHIFT) + offset;
+-	int ret, perm = dir_to_perm(dir);
++	phys_addr_t paddr = page_to_phys(page) + offset;
++	int perm = dir_to_perm(dir);
  
- 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+ 	if (perm < 0)
+ 		return DMA_MAPPING_ERROR;
+ 
+-	/* For simplicity, use identical mapping to avoid e.g iova
+-	 * allocator.
+-	 */
+-	spin_lock(&vdpasim->iommu_lock);
+-	ret = vhost_iotlb_add_range(iommu, pa, pa + size - 1,
+-				    pa, dir_to_perm(dir));
+-	spin_unlock(&vdpasim->iommu_lock);
+-	if (ret)
+-		return DMA_MAPPING_ERROR;
+-
+-	return (dma_addr_t)(pa);
++	return vdpasim_map_range(vdpasim, paddr, size, perm);
  }
--EXPORT_SYMBOL(ipv4_mtu);
-+EXPORT_INDIRECT_CALLABLE(ipv4_mtu);
  
- static void ip_del_fnhe(struct fib_nh_common *nhc, __be32 daddr)
+ static void vdpasim_unmap_page(struct device *dev, dma_addr_t dma_addr,
+@@ -159,12 +187,8 @@ static void vdpasim_unmap_page(struct device *dev, dma_addr_t dma_addr,
+ 			       unsigned long attrs)
  {
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 8d9e053dc071..0d1784b0d65d 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -2644,7 +2644,7 @@ INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
+ 	struct vdpasim *vdpasim = dev_to_sim(dev);
+-	struct vhost_iotlb *iommu = vdpasim->iommu;
  
- 	return dst_ret;
+-	spin_lock(&vdpasim->iommu_lock);
+-	vhost_iotlb_del_range(iommu, (u64)dma_addr,
+-			      (u64)dma_addr + size - 1);
+-	spin_unlock(&vdpasim->iommu_lock);
++	vdpasim_unmap_range(vdpasim, dma_addr, size);
  }
--EXPORT_SYMBOL(ip6_dst_check);
-+EXPORT_INDIRECT_CALLABLE(ip6_dst_check);
  
- static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
+ static void *vdpasim_alloc_coherent(struct device *dev, size_t size,
+@@ -172,27 +196,22 @@ static void *vdpasim_alloc_coherent(struct device *dev, size_t size,
+ 				    unsigned long attrs)
  {
-@@ -3115,7 +3115,7 @@ INDIRECT_CALLABLE_SCOPE unsigned int ip6_mtu(const struct dst_entry *dst)
+ 	struct vdpasim *vdpasim = dev_to_sim(dev);
+-	struct vhost_iotlb *iommu = vdpasim->iommu;
+-	void *addr = kmalloc(size, flag);
+-	int ret;
++	phys_addr_t paddr;
++	void *addr;
  
- 	return mtu - lwtunnel_headroom(dst->lwtstate, mtu);
+-	spin_lock(&vdpasim->iommu_lock);
++	addr = kmalloc(size, flag);
+ 	if (!addr) {
+ 		*dma_addr = DMA_MAPPING_ERROR;
+-	} else {
+-		u64 pa = virt_to_phys(addr);
+-
+-		ret = vhost_iotlb_add_range(iommu, (u64)pa,
+-					    (u64)pa + size - 1,
+-					    pa, VHOST_MAP_RW);
+-		if (ret) {
+-			*dma_addr = DMA_MAPPING_ERROR;
+-			kfree(addr);
+-			addr = NULL;
+-		} else
+-			*dma_addr = (dma_addr_t)pa;
++		return NULL;
++	}
++
++	paddr = virt_to_phys(addr);
++
++	*dma_addr = vdpasim_map_range(vdpasim, paddr, size, VHOST_MAP_RW);
++	if (*dma_addr == DMA_MAPPING_ERROR) {
++		kfree(addr);
++		return NULL;
+ 	}
+-	spin_unlock(&vdpasim->iommu_lock);
+ 
+ 	return addr;
  }
--EXPORT_SYMBOL(ip6_mtu);
-+EXPORT_INDIRECT_CALLABLE(ip6_mtu);
+@@ -202,14 +221,10 @@ static void vdpasim_free_coherent(struct device *dev, size_t size,
+ 				  unsigned long attrs)
+ {
+ 	struct vdpasim *vdpasim = dev_to_sim(dev);
+-	struct vhost_iotlb *iommu = vdpasim->iommu;
  
- /* MTU selection:
-  * 1. mtu on route is locked - use it
+-	spin_lock(&vdpasim->iommu_lock);
+-	vhost_iotlb_del_range(iommu, (u64)dma_addr,
+-			      (u64)dma_addr + size - 1);
+-	spin_unlock(&vdpasim->iommu_lock);
++	vdpasim_unmap_range(vdpasim, dma_addr, size);
+ 
+-	kfree(phys_to_virt((uintptr_t)dma_addr));
++	kfree(vaddr);
+ }
+ 
+ static const struct dma_map_ops vdpasim_dma_ops = {
+@@ -271,6 +286,13 @@ struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
+ 	for (i = 0; i < dev_attr->nvqs; i++)
+ 		vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu);
+ 
++	ret = iova_cache_get();
++	if (ret)
++		goto err_iommu;
++
++	/* For simplicity we use an IOVA allocator with byte granularity */
++	init_iova_domain(&vdpasim->iova, 1, 0);
++
+ 	vdpasim->vdpa.dma_dev = dev;
+ 
+ 	return vdpasim;
+@@ -541,6 +563,8 @@ static void vdpasim_free(struct vdpa_device *vdpa)
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+ 
+ 	cancel_work_sync(&vdpasim->work);
++	put_iova_domain(&vdpasim->iova);
++	iova_cache_put();
+ 	kvfree(vdpasim->buffer);
+ 	if (vdpasim->iommu)
+ 		vhost_iotlb_free(vdpasim->iommu);
+diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+index ffd1e098bfd2..21a23500f430 100644
+--- a/drivers/vdpa/Kconfig
++++ b/drivers/vdpa/Kconfig
+@@ -14,6 +14,7 @@ config VDPA_SIM
+ 	depends on RUNTIME_TESTING_MENU && HAS_DMA
+ 	select DMA_OPS
+ 	select VHOST_RING
++	select IOMMU_IOVA
+ 	help
+ 	  Enable this module to support vDPA device simulators. These devices
+ 	  are used for testing, prototyping and development of vDPA.
 -- 
-2.30.0.365.g02bc693789-goog
+2.29.2
 
