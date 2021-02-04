@@ -2,106 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6DE30F50F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1FA30F509
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhBDOdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236124AbhBDOT2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:19:28 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35510C061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:18:46 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id u14so3721942wri.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1A5jaGMH8v+8RmdU0UTE1kbhV4vjjan/ogFcu70QFBM=;
-        b=kRbGsvSTuji0iv5YtpH4MYYQqNnFddgufEy4QsAH7R2fLfOK7onqaAUtIbALHOKYnc
-         NAEQ9am67BI4JNDLRDj0tSJ5nfUszcCN6tSuhpwWcque/KXCX4cfDO0U8JK43+dsj+vx
-         1Y2kxvNZSdfgt2n4gKlVaxpCgAK0iZg3HekpS3oJRCfDdxiInXL1wH/eS5ZTRCsd5C47
-         zoHUZ9lKr0b9hqj1r4cvMY40hRG5umkYAWcWVgdL1nqFt4TxFku5KNI0DDFSqHDOJQ29
-         ENRRELa3ERiq5FgRUFXRNakDuEhpvvsXdHWHvn6eCuVv5LdB57u6hIYKryT8KZJ0fgD4
-         sj1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1A5jaGMH8v+8RmdU0UTE1kbhV4vjjan/ogFcu70QFBM=;
-        b=QihJDFwrcUzSsucIUIDPDtLpob8VrWqDEZu+76znGHuOZTNvDCMEnFRvJcuIG7US2i
-         coB+EbIh18RxWBIfFa6zKCVuM6FeLf5vPnO2ChCxqUJETddbaSUveAgucMRq2v/DVssw
-         C4m/zaxuL+2SjuNv2uAkwlTo9DwN+mmexWMUe6hbdzh3d8vimgFlCx/HT9hEu6hkZEXf
-         RM5xc3tImgiEwvU5PHvAAz1penkQ8ebP1l+WdkpmL27xsXZLEH/4P3lWTxKscYCavUhZ
-         cu/4BT+5QLzWFgDH+CT6szTI1KYbvfDpP7tqdi5wRLM/oAxg3KKv7dqB+hx+BT6JM0mc
-         EAyA==
-X-Gm-Message-State: AOAM5321kAIFzsGf37dq6EChl1LxXjUsSn9lwHQZrLFqjhIK9VXqvUF/
-        Q5ltpBYFy9WemX+yA9amgRCD/g==
-X-Google-Smtp-Source: ABdhPJwmxlEADo2pamrd4+uG+uA5gIHQiPMR8XnPrPRMCr82leKGAKYaVIlc3piIwQdzJpEdnxUfkQ==
-X-Received: by 2002:adf:9148:: with SMTP id j66mr10034560wrj.28.1612448324809;
-        Thu, 04 Feb 2021 06:18:44 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id 35sm9159761wrn.42.2021.02.04.06.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 06:18:43 -0800 (PST)
-Date:   Thu, 4 Feb 2021 14:18:41 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 23/26] KVM: arm64: Refactor __populate_fault_info()
-Message-ID: <YBwCQVi2JUxKUy9Y@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-24-qperret@google.com>
- <20210203155831.GG18974@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203155831.GG18974@willie-the-truck>
+        id S236758AbhBDOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:32:21 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:11763 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236703AbhBDOXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:23:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612448586; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=0oqLiRY2zSPbdH99XRMVDIldv0zDnjyDqx5ulcH4+g8=; b=gdtuC1W9hEFBnn8v/irqRjswzUIyDn5W8gTvg5a+au0QD3hCDtaDLp0J6KI6Nnx+z/IpsXF0
+ kP9M68V+IvI1fe/+Ne8rEeWzLPKER5mQuSxif23YHD2XrlRzaDHlzDO6KO1CFmtijpK32haT
+ /OBpRnpqitQ03WKwRnKNLmAj4fo=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 601c0320f112b7872c0a041b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Feb 2021 14:22:24
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B3AF2C43464; Thu,  4 Feb 2021 14:22:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FAABC43461;
+        Thu,  4 Feb 2021 14:22:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5FAABC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v6 2/4] soc: qcom: Add SoC sleep stats driver
+Date:   Thu,  4 Feb 2021 19:51:46 +0530
+Message-Id: <1612448508-9179-3-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org>
+References: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 03 Feb 2021 at 15:58:32 (+0000), Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 12:15:21PM +0000, Quentin Perret wrote:
-> > Refactor __populate_fault_info() to introduce __get_fault_info() which
-> > will be used once the host is wrapped in a stage 2.
-> > 
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/include/hyp/switch.h | 36 +++++++++++++++----------
-> >  1 file changed, 22 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
-> > index 84473574c2e7..e9005255d639 100644
-> > --- a/arch/arm64/kvm/hyp/include/hyp/switch.h
-> > +++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
-> > @@ -157,19 +157,9 @@ static inline bool __translate_far_to_hpfar(u64 far, u64 *hpfar)
-> >  	return true;
-> >  }
-> >  
-> > -static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
-> > +static inline bool __get_fault_info(u64 esr, u64 *far, u64 *hpfar)
-> 
-> Could this take a pointer to a struct kvm_vcpu_fault_info instead?
+From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
 
-The disr_el1 field will be unused in this case, but yes, that should
-work.
+Let's add a driver to read the stats from remote processor and
+export to debugfs.
 
-Cheers,
-Quentin
+The driver creates "qcom_sleep_stats" directory in debugfs and
+adds files for various low power mode available. Below is sample
+output with command
+
+cat /sys/kernel/debug/qcom_sleep_stats/ddr
+count = 0
+Last Entered At = 0
+Last Exited At = 0
+Accumulated Duration = 0
+
+Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+[mkshah: add subsystem sleep stats, create one file for each stat]
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+ drivers/soc/qcom/Kconfig           |  10 ++
+ drivers/soc/qcom/Makefile          |   1 +
+ drivers/soc/qcom/soc_sleep_stats.c | 258 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 269 insertions(+)
+ create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
+
+diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+index 79b568f..e80b63a 100644
+--- a/drivers/soc/qcom/Kconfig
++++ b/drivers/soc/qcom/Kconfig
+@@ -190,6 +190,16 @@ config QCOM_SOCINFO
+ 	 Say yes here to support the Qualcomm socinfo driver, providing
+ 	 information about the SoC to user space.
+ 
++config QCOM_SOC_SLEEP_STATS
++	tristate "Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver"
++	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
++	depends on QCOM_SMEM
++	help
++	  Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver to read
++	  the shared memory exported by the remote processor related to
++	  various SoC level low power modes statistics and export to debugfs
++	  interface.
++
+ config QCOM_WCNSS_CTRL
+ 	tristate "Qualcomm WCNSS control driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
+diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+index ad675a6..5f30d74 100644
+--- a/drivers/soc/qcom/Makefile
++++ b/drivers/soc/qcom/Makefile
+@@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+ obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+ obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
++obj-$(CONFIG_QCOM_SOC_SLEEP_STATS)	+= soc_sleep_stats.o
+ obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+ obj-$(CONFIG_QCOM_APR) += apr.o
+ obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
+new file mode 100644
+index 0000000..66df638
+--- /dev/null
++++ b/drivers/soc/qcom/soc_sleep_stats.c
+@@ -0,0 +1,258 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
++ */
++
++#include <linux/debugfs.h>
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/seq_file.h>
++
++#include <linux/soc/qcom/smem.h>
++#include <clocksource/arm_arch_timer.h>
++
++#define STAT_TYPE_ADDR		0x0
++#define COUNT_ADDR		0x4
++#define LAST_ENTERED_AT_ADDR	0x8
++#define LAST_EXITED_AT_ADDR	0x10
++#define ACCUMULATED_ADDR	0x18
++#define CLIENT_VOTES_ADDR	0x1c
++
++#define STAT_OFFSET(record_no, type) (((record_no)*(sizeof(struct sleep_stats))) + (type))
++#define APPENDED_STAT_OFFSET(record_no) ((record_no)*(sizeof(struct appended_stats)))
++
++struct subsystem_data {
++	const char *name;
++	u32 smem_item;
++	u32 pid;
++};
++
++static const struct subsystem_data subsystems[] = {
++	{ "modem", 605, 1 },
++	{ "adsp", 606, 2 },
++	{ "cdsp", 607, 5 },
++	{ "slpi", 608, 3 },
++	{ "gpu", 609, 0 },
++	{ "display", 610, 0 },
++	{ "adsp_island", 613, 2 },
++	{ "slpi_island", 613, 3 },
++};
++
++struct stats_config {
++	u32 offset_addr;
++	u32 num_records;
++	bool appended_stats_avail;
++};
++
++struct stats_prv_data {
++	bool appended_stats_avail;
++	void __iomem *reg;
++};
++
++struct sleep_stats {
++	u32 stat_type;
++	u32 count;
++	u64 last_entered_at;
++	u64 last_exited_at;
++	u64 accumulated;
++};
++
++struct appended_stats {
++	u32 client_votes;
++	u32 reserved[3];
++};
++
++static void print_sleep_stats(struct seq_file *s, const struct sleep_stats *stat)
++{
++	u64 accumulated = stat->accumulated;
++	/*
++	 * If a subsystem is in sleep when reading the sleep stats adjust
++	 * the accumulated sleep duration to show actual sleep time.
++	 */
++	if (stat->last_entered_at > stat->last_exited_at)
++		accumulated += arch_timer_read_counter()
++			       - stat->last_entered_at;
++
++	seq_printf(s, "Count = %u\n", stat->count);
++	seq_printf(s, "Last Entered At = %llu\n", stat->last_entered_at);
++	seq_printf(s, "Last Exited At = %llu\n", stat->last_exited_at);
++	seq_printf(s, "Accumulated Duration = %llu\n", accumulated);
++}
++
++static int subsystem_sleep_stats_show(struct seq_file *s, void *d)
++{
++	struct subsystem_data *subsystem = s->private;
++	struct sleep_stats *stat;
++
++	/*
++	 * Saving this pointer during probe may not help in cases like
++	 * subsystem restart, beside not each subsystem is a remote processor
++	 * for e.g display for which we can get start and stop notification
++	 *
++	 * Lookup smem pointer each time to keep it simple.
++	 */
++	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
++	if (IS_ERR(stat))
++		return PTR_ERR(stat);
++
++	print_sleep_stats(s, stat);
++
++	return 0;
++}
++
++static int soc_sleep_stats_show(struct seq_file *s, void *d)
++{
++	struct stats_prv_data *prv_data = s->private;
++	void __iomem *reg = prv_data->reg;
++	struct sleep_stats stat;
++
++	stat.count = readl(reg + COUNT_ADDR);
++	stat.last_entered_at = readq(reg + LAST_ENTERED_AT_ADDR);
++	stat.last_exited_at = readq(reg + LAST_EXITED_AT_ADDR);
++	stat.accumulated = readq(reg + ACCUMULATED_ADDR);
++
++	print_sleep_stats(s, &stat);
++
++	if (prv_data->appended_stats_avail) {
++		struct appended_stats app_stat;
++
++		app_stat.client_votes = readl(reg + CLIENT_VOTES_ADDR);
++		seq_printf(s, "Client_votes = %#x\n", app_stat.client_votes);
++	}
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(soc_sleep_stats);
++DEFINE_SHOW_ATTRIBUTE(subsystem_sleep_stats);
++
++static struct dentry *create_debugfs_entries(void __iomem *reg,
++					     struct stats_prv_data *prv_data,
++					     u32 num_records)
++{
++	struct dentry *root;
++	struct sleep_stats *stat;
++	char stat_type[sizeof(u32)] = {0};
++	u32 offset, type;
++	int i;
++
++	root = debugfs_create_dir("qcom_sleep_stats", NULL);
++
++	for (i = 0; i < num_records; i++) {
++		offset = STAT_OFFSET(i, STAT_TYPE_ADDR);
++
++		if (prv_data[i].appended_stats_avail)
++			offset += APPENDED_STAT_OFFSET(i);
++
++		prv_data[i].reg = reg + offset;
++
++		type = readl(prv_data[i].reg);
++		memcpy_fromio(stat_type, &type, sizeof(u32));
++		strim(stat_type);
++		debugfs_create_file(stat_type, 0400, root,
++				    &prv_data[i],
++				    &soc_sleep_stats_fops);
++	}
++
++	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
++		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item,
++				     NULL);
++		if (IS_ERR(stat))
++			continue;
++
++		debugfs_create_file(subsystems[i].name, 0400, root,
++				    (void *)&subsystems[i],
++				    &subsystem_sleep_stats_fops);
++	}
++
++	return root;
++}
++
++static int soc_sleep_stats_probe(struct platform_device *pdev)
++{
++	struct resource *res;
++	void __iomem *reg;
++	void __iomem *offset_addr;
++	phys_addr_t stats_base;
++	resource_size_t stats_size;
++	struct dentry *root;
++	const struct stats_config *config;
++	struct stats_prv_data *prv_data;
++	int i;
++
++	config = device_get_match_data(&pdev->dev);
++	if (!config)
++		return -ENODEV;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return PTR_ERR(res);
++
++	offset_addr = ioremap(res->start + config->offset_addr, sizeof(u32));
++	if (IS_ERR(offset_addr))
++		return PTR_ERR(offset_addr);
++
++	stats_base = res->start | readl_relaxed(offset_addr);
++	stats_size = resource_size(res);
++	iounmap(offset_addr);
++
++	reg = devm_ioremap(&pdev->dev, stats_base, stats_size);
++	if (!reg)
++		return -ENOMEM;
++
++	prv_data = devm_kcalloc(&pdev->dev, config->num_records,
++				sizeof(struct stats_prv_data), GFP_KERNEL);
++	if (!prv_data)
++		return -ENOMEM;
++
++	for (i = 0; i < config->num_records; i++)
++		prv_data[i].appended_stats_avail = config->appended_stats_avail;
++
++	root = create_debugfs_entries(reg, prv_data, config->num_records);
++	platform_set_drvdata(pdev, root);
++
++	return 0;
++}
++
++static int soc_sleep_stats_remove(struct platform_device *pdev)
++{
++	struct dentry *root = platform_get_drvdata(pdev);
++
++	debugfs_remove_recursive(root);
++
++	return 0;
++}
++
++static const struct stats_config rpm_data = {
++	.offset_addr = 0x14,
++	.num_records = 2,
++	.appended_stats_avail = true,
++};
++
++static const struct stats_config rpmh_data = {
++	.offset_addr = 0x4,
++	.num_records = 3,
++	.appended_stats_avail = false,
++};
++
++static const struct of_device_id soc_sleep_stats_table[] = {
++	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
++	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
++	{ }
++};
++
++static struct platform_driver soc_sleep_stats_driver = {
++	.probe = soc_sleep_stats_probe,
++	.remove = soc_sleep_stats_remove,
++	.driver = {
++		.name = "soc_sleep_stats",
++		.of_match_table = soc_sleep_stats_table,
++	},
++};
++module_platform_driver(soc_sleep_stats_driver);
++
++MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
++MODULE_LICENSE("GPL v2");
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
