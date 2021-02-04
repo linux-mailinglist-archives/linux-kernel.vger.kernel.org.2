@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095F330FA19
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BF430F9C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbhBDRqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:46:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238572AbhBDRaw (ORCPT
+        id S238619AbhBDRcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:32:10 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44648 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238484AbhBDRab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:30:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612459765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gFpHt7ahtiWyI8hSPQbU/qGuLyn4UFc9M7zanW3r47A=;
-        b=U3ERHe76RucETXQzAIqDO0iroIefYh+apdH/Rq++rzvyV7ZLGNYGUI8RrShc83Uj/BUYUr
-        kk9tcG7ZRkzhQeGwMER/tqWrYl/9I2xj9R/A2w4h08O/ibxSHpPh+AVSJfSQy30oF5SwzM
-        9xqetVRT4z+onF+3lrzY8TX6O8YSKdk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-eDWqDoaLMxChig-PECTsyw-1; Thu, 04 Feb 2021 12:29:21 -0500
-X-MC-Unique: eDWqDoaLMxChig-PECTsyw-1
-Received: by mail-ed1-f71.google.com with SMTP id f4so3432126eds.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 09:29:21 -0800 (PST)
+        Thu, 4 Feb 2021 12:30:31 -0500
+Received: by mail-ot1-f44.google.com with SMTP id e70so4132402ote.11;
+        Thu, 04 Feb 2021 09:30:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gFpHt7ahtiWyI8hSPQbU/qGuLyn4UFc9M7zanW3r47A=;
-        b=NMO/mcVQLzdNGutreP5u6asfLONYgmWdrqIUNgpGdSPTKs4Rc+ebsiElGnqx+o3nr4
-         7mwHsjt0wA6xEB5sabLF6T6r04HunHHUygmce8+eCdbJkdv9QHzL2oj1oDJccliHT1Ew
-         qhd3a8+3btDwcqMSQHNhlq7wZt2Jtx7WbN28M3laqo1aOSD6p47hRD2x9XglzfzqjMiP
-         8iuicPRkjoVrAh9L9OKUdOFCOhFllui+iV92+mATOPrE1FtelwGNfbLMN9vCjAYEm4sN
-         Z1lmxPpUsxTZB97cYOdJqx9Zd1iUhmWA542/r2FL27h+gRP/FoSTMRzo4CT9FEQkMtKl
-         Vl4w==
-X-Gm-Message-State: AOAM532T4NB7o9Zt8G63Uun+ZtQb7UqGN5jRWwTFvU3x2i/EbxffHa9o
-        5GJBgIXkUyTK75X7s+TkL8UbRvTZAgM1JcH+3bsrDzmXXtHksnDSTt5W+famxgElsa2jsLZMOsK
-        H7Cv24qJzexvcS0m1G7+Vz8cG
-X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr61170edt.160.1612459760716;
-        Thu, 04 Feb 2021 09:29:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJztaTv2pVAyoYOPJ3kepgWu3iCSAzPutECTPP0Bi8bIM7i7j9sdJUrZNJqP2AyGVilMDYxYkw==
-X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr61158edt.160.1612459760554;
-        Thu, 04 Feb 2021 09:29:20 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y8sm2728387eje.37.2021.02.04.09.29.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 09:29:19 -0800 (PST)
-Subject: Re: [PATCH v15 04/14] KVM: x86: Add #CP support in guest exception
- dispatch
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, jmattson@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yu.c.zhang@linux.intel.com
-References: <20210203113421.5759-1-weijiang.yang@intel.com>
- <20210203113421.5759-5-weijiang.yang@intel.com> <YBsZwvwhshw+s7yQ@google.com>
- <5b822165-9eff-bfa9-000f-ae51add59320@redhat.com>
- <YBwj78dE5iGZOLed@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <aaf2c197-6122-3214-a0f1-d9a763c12439@redhat.com>
-Date:   Thu, 4 Feb 2021 18:29:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VABDqQO4SCCxw9n6VdMjP3tpI9MOBd0XV0ilXTl4TqU=;
+        b=bXZsNUSAr9FCbeJcIlPQ3E82Ruq35nNAKUkkToEQlsWSGZmyEy24aI6FZXVfkZmY+G
+         TF64rW4JYqJAajQypMzpzuxFvGkH4UakP7wEiHaKO7fQ+LPvUFbBO10X2nVwuDFt9jDU
+         WpWAUdKvKSk2cJL1POhx0EL5NA+qJcCkdxz389/pT9YODDrZXxM2r9HMeXiwPaF9cRh3
+         HhdM7swoTdodw0GT3qbA0Gcs9fU6TyT0fuvqVJSxRa7kiM1Q00vKUKCQRmtFjwe+nDfp
+         xhgZPRp1tT+Hc2oyZ7fz/6ZhMb/FRyzu2e5MyxixLIia+jHSg27SFf2bcn00RLu4Aayd
+         OSiw==
+X-Gm-Message-State: AOAM532L9rSKQC/tT7al+O6vDAOpNpIJ+0wGtsDOismZW9B3mOXzT7cF
+        gZzIrfwKSvohs7mLbRi3qA==
+X-Google-Smtp-Source: ABdhPJyRucRa6WFuTvsk3abTvCXMHWztBy5ONKR24Bi/EstX7fiI57+Du8n2gQUyyz1NuIk23MVq1Q==
+X-Received: by 2002:a9d:1c9a:: with SMTP id l26mr331207ota.316.1612459788720;
+        Thu, 04 Feb 2021 09:29:48 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z10sm1238418otk.8.2021.02.04.09.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 09:29:47 -0800 (PST)
+Received: (nullmailer pid 682797 invoked by uid 1000);
+        Thu, 04 Feb 2021 17:29:45 -0000
+Date:   Thu, 4 Feb 2021 11:29:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Andy Gross <agross@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-samsung-soc@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-kernel@axis.com, Richard Zhu <hongxing.zhu@nxp.com>,
+        linux-arm-msm@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pci@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        linux-tegra@vger.kernel.org, Jonathan Chocron <jonnyc@amazon.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 01/13] doc: bindings: pci: designware-pcie.txt: convert
+ it to yaml
+Message-ID: <20210204172945.GA662023@robh.at.kernel.org>
+References: <cover.1612271903.git.mchehab+huawei@kernel.org>
+ <706e684f571e142362d7be74eb1dcee2c8558052.1612271903.git.mchehab+huawei@kernel.org>
+ <1612287895.001149.3887347.nullmailer@robh.at.kernel.org>
+ <20210203074900.6d581153@coco.lan>
 MIME-Version: 1.0
-In-Reply-To: <YBwj78dE5iGZOLed@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203074900.6d581153@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/21 17:42, Sean Christopherson wrote:
-> On Thu, Feb 04, 2021, Paolo Bonzini wrote:
->> On 03/02/21 22:46, Sean Christopherson wrote:
->>>
->>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->>> index dbca1687ae8e..0b6dab6915a3 100644
->>> --- a/arch/x86/kvm/vmx/nested.c
->>> +++ b/arch/x86/kvm/vmx/nested.c
->>> @@ -2811,7 +2811,7 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
->>>                  /* VM-entry interruption-info field: deliver error code */
->>>                  should_have_error_code =
->>>                          intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
->>> -                       x86_exception_has_error_code(vector);
->>> +                       x86_exception_has_error_code(vcpu, vector);
->>>                  if (CC(has_error_code != should_have_error_code))
->>>                          return -EINVAL;
->>>
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index 28fea7ff7a86..0288d6a364bd 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -437,17 +437,20 @@ EXPORT_SYMBOL_GPL(kvm_spurious_fault);
->>>   #define EXCPT_CONTRIBUTORY     1
->>>   #define EXCPT_PF               2
->>>
->>> -static int exception_class(int vector)
->>> +static int exception_class(struct kvm_vcpu *vcpu, int vector)
->>>   {
->>>          switch (vector) {
->>>          case PF_VECTOR:
->>>                  return EXCPT_PF;
->>> +       case CP_VECTOR:
->>> +               if (vcpu->arch.cr4_guest_rsvd_bits & X86_CR4_CET)
->>> +                       return EXCPT_BENIGN;
->>> +               return EXCPT_CONTRIBUTORY;
->>>          case DE_VECTOR:
->>>          case TS_VECTOR:
->>>          case NP_VECTOR:
->>>          case SS_VECTOR:
->>>          case GP_VECTOR:
->>> -       case CP_VECTOR:
+On Wed, Feb 03, 2021 at 07:49:00AM +0100, Mauro Carvalho Chehab wrote:
+> Hi Rob,
 > 
-> This removal got lost when squasing.
+> Em Tue, 02 Feb 2021 11:44:54 -0600
+> Rob Herring <robh@kernel.org> escreveu:
 > 
-> arch/x86/kvm/x86.c: In function ‘exception_class’:
-> arch/x86/kvm/x86.c:455:2: error: duplicate case value
->    455 |  case CP_VECTOR:
->        |  ^~~~
-> arch/x86/kvm/x86.c:446:2: note: previously used here
->    446 |  case CP_VECTOR:
->        |  ^~~~
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > yamllint warnings/errors:
+> > 
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
+> > 	'type' is a required property
+> > 	Additional properties are not allowed ('$ref' was unexpected)
+> > 	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: properties:snps,enable-cdm-check: 'oneOf' conditional failed, one must be fixed:
+> > 		'enum' is a required property
+> > 		'const' is a required property
+> > 	'/schemas/types.yaml#definitions/flag' does not match 'types.yaml#/definitions/'
 
-Well, it shows that I haven't even started including those 
-unlikely-for-5.12 patches (CET and #DB bus lock) in my builds, since 
-today I was focusing on getting a kvm/next push done.
+You need a '/' between '#' and 'definitions'.
 
-I'll probably push all those to kvm/intel-queue and remove them from 
-everyone's view, for now.
 
-Paolo
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,pcie.yaml: ignoring, error in schema: properties: snps,enable-cdm-check
+> > warning: no schema found in file: ./Documentation/devicetree/bindings/pci/snps,pcie.yaml
+> > 
+> > See https://patchwork.ozlabs.org/patch/1434686
+> > 
+> > This check can fail if there are any dependencies. The base for a patch
+> > series is generally the most recent rc1.
+> > 
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> > 
+> > pip3 install dtschema --upgrade
+> > 
+> > Please check and re-submit.
+> 
+> I've no idea why the bot is hitting those. My tree is based on
+> staging-testing[1], as I need the regulator patches merged there.
+> Such tree is based on v5.11-rc5.
+> 
+> There, dt_binding_check doesn't get any warnings on this schema:
+> 
+> $ pip3 install dtschema --upgrade --user
+> Requirement already up-to-date: dtschema in /home/mchehab/.local/lib/python3.9/site-packages (2020.12)
 
+This particular check is in master, but not yet a release on pypi. I'll 
+be tagging a release soon.
+
+I've got this problem that adding new meta-schema checks like this one 
+requires fixing up all the existing in tree schemas first. So I give 
+some amount of time before adding them to a tagged release. However, I 
+want to start testing new schemas right away. I haven't come up with a 
+better solution short of importing the meta-schema into the kernel tree 
+or separately versioning them.
+
+Rob
