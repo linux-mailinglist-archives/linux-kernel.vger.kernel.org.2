@@ -2,205 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A1730FB7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C347130FB78
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhBDS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:29:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239081AbhBDS1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:27:53 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F06664D9A;
-        Thu,  4 Feb 2021 18:27:12 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 13:27:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] tracepoints: Code clean up
-Message-ID: <20210204132710.00fdce4f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239103AbhBDS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:28:49 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:41761 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238980AbhBDS2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:28:08 -0500
+Received: by mail-oi1-f177.google.com with SMTP id m13so4694120oig.8;
+        Thu, 04 Feb 2021 10:27:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O++Ni8S6CV3MVdO8ZTSo7Rk4YCUFt3D0XWVU9XGT+a8=;
+        b=OhvX5VCmd9zqE54QVuBZUOXNhvwbNZEc0t3MXEsz79gE1WFCOqzyxWwuAAJwVmx8Cn
+         340nXLrIv4VE8xYm9A6kHjQYyw0Wqu/8rp6R7m2Mw1jP/UBsIyVkuff3IUqGoMu452Sa
+         fDsnmP5UV6ieJCNzvSA1sod5kcRKM/swVKcep898pPIUFj+7Gyz8/53sBpYXk6M5pcGr
+         8APu8YhSqcQkX8yMfXqhfP9hxTX5/1MD7FA/6LZdyA8UXKh+BVQ5BZJV2ZP/x0dWqNbr
+         AI2LRqYDJZfEPw4UfuJJ+NG8hAB4cs7+RvJV2MCEB6rjEXygb2xggSWQ2/TLZGlFma9S
+         fpGA==
+X-Gm-Message-State: AOAM531ab3JkBe5vHq2Ww6Mv899Tkx619ms8TBhstf61v6IylFhsYzWW
+        TpTyHQBFZX/KZCeI7AV3cSqFIx3OT0N4Odkp2us=
+X-Google-Smtp-Source: ABdhPJxkhKYk4oXkJeTKUtjMr66fakUbvZ+6flWoKUE4tBqAvByzPRwDVWs4bapr1CEIe0d2dayBEHB5xmsWwJ+pEuE=
+X-Received: by 2002:aca:308a:: with SMTP id w132mr529264oiw.69.1612463247909;
+ Thu, 04 Feb 2021 10:27:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <bed6bc7e15c3ed398dd61b8f3968049f1f16b1b6.1612244449.git.viresh.kumar@linaro.org>
+In-Reply-To: <bed6bc7e15c3ed398dd61b8f3968049f1f16b1b6.1612244449.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Feb 2021 19:27:16 +0100
+Message-ID: <CAJZ5v0hFFXKnnTdkc3SHoSNPO06pDAWjudvxSjxQ6eOOnuXq_A@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Remove unused flag CPUFREQ_PM_NO_WARN
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Tue, Feb 2, 2021 at 6:42 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> This flag is set by one of the drivers but it isn't used in the code
+> otherwise. Remove the unused flag and update the driver.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Restructure the code a bit to make it simpler, fix some formatting problems
-and add READ_ONCE/WRITE_ONCE to make sure there's no compiler tear downs on
-changes to variables that can be accessed across CPUs.
+Applied as 5.12 material, thanks!
 
-Started with Mathieu Desnoyers's patch:
-
-  Link: https://lore.kernel.org/lkml/20210203175741.20665-1-mathieu.desnoyers@efficios.com/
-
-And will keep his signature, but I will take the responsibility of this
-being correct, and keep the authorship.
-
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/linux/tracepoint.h |  2 +-
- kernel/tracepoint.c        | 92 +++++++++++++++-----------------------
- 2 files changed, 37 insertions(+), 57 deletions(-)
-
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 966ed8980327..dc1d4c612cc3 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -309,7 +309,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
- 		if (it_func_ptr) {					\
- 			do {						\
--				it_func = (it_func_ptr)->func;		\
-+				it_func = READ_ONCE((it_func_ptr)->func); \
- 				__data = (it_func_ptr)->data;		\
- 				((void(*)(void *, proto))(it_func))(__data, args); \
- 			} while ((++it_func_ptr)->func);		\
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index e8f20ae29c18..4b9de79bb927 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -136,9 +136,9 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 	 int prio)
- {
- 	struct tracepoint_func *old, *new;
--	int nr_probes = 0;
--	int stub_funcs = 0;
--	int pos = -1;
-+	int iter_probes;	/* Iterate over old probe array. */
-+	int nr_probes = 0;	/* Counter for probes */
-+	int pos = -1;		/* New position */
- 
- 	if (WARN_ON(!tp_func->func))
- 		return ERR_PTR(-EINVAL);
-@@ -147,54 +147,39 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 	old = *funcs;
- 	if (old) {
- 		/* (N -> N+1), (N != 0, 1) probes */
--		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
--			/* Insert before probes of lower priority */
--			if (pos < 0 && old[nr_probes].prio < prio)
--				pos = nr_probes;
--			if (old[nr_probes].func == tp_func->func &&
--			    old[nr_probes].data == tp_func->data)
-+		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
-+			if (old[iter_probes].func == tp_stub_func)
-+				continue;	/* Skip stub functions. */
-+			if (old[iter_probes].func == tp_func->func &&
-+			    old[iter_probes].data == tp_func->data)
- 				return ERR_PTR(-EEXIST);
--			if (old[nr_probes].func == tp_stub_func)
--				stub_funcs++;
-+			nr_probes++;
- 		}
- 	}
--	/* + 2 : one for new probe, one for NULL func - stub functions */
--	new = allocate_probes(nr_probes + 2 - stub_funcs);
-+	/* + 2 : one for new probe, one for NULL func */
-+	new = allocate_probes(nr_probes + 2);
- 	if (new == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (old) {
--		if (stub_funcs) {
--			/* Need to copy one at a time to remove stubs */
--			int probes = 0;
--
--			pos = -1;
--			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
--				if (old[nr_probes].func == tp_stub_func)
--					continue;
--				if (pos < 0 && old[nr_probes].prio < prio)
--					pos = probes++;
--				new[probes++] = old[nr_probes];
--			}
--			nr_probes = probes;
--			if (pos < 0)
--				pos = probes;
--			else
--				nr_probes--; /* Account for insertion */
--
--		} else if (pos < 0) {
--			pos = nr_probes;
--			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
--		} else {
--			/* Copy higher priority probes ahead of the new probe */
--			memcpy(new, old, pos * sizeof(struct tracepoint_func));
--			/* Copy the rest after it. */
--			memcpy(new + pos + 1, old + pos,
--			       (nr_probes - pos) * sizeof(struct tracepoint_func));
-+		pos = -1;
-+		nr_probes = 0;
-+		for (iter_probes = 0; old[iter_probes].func; iter_probes++) {
-+			if (old[iter_probes].func == tp_stub_func)
-+				continue;
-+			/* Insert before probes of lower priority */
-+			if (pos < 0 && old[iter_probes].prio < prio)
-+				pos = nr_probes++;
-+			new[nr_probes++] = old[iter_probes];
- 		}
--	} else
-+		if (pos < 0)
-+			pos = nr_probes++;
-+		/* nr_probes now points to the end of the new array */
-+	} else {
- 		pos = 0;
-+		nr_probes = 1; /* must point at end of array */
-+	}
- 	new[pos] = *tp_func;
--	new[nr_probes + 1].func = NULL;
-+	new[nr_probes].func = NULL;
- 	*funcs = new;
- 	debug_print_probes(*funcs);
- 	return old;
-@@ -237,11 +222,12 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		/* + 1 for NULL */
- 		new = allocate_probes(nr_probes - nr_del + 1);
- 		if (new) {
--			for (i = 0; old[i].func; i++)
--				if ((old[i].func != tp_func->func
--				     || old[i].data != tp_func->data)
--				    && old[i].func != tp_stub_func)
-+			for (i = 0; old[i].func; i++) {
-+				if ((old[i].func != tp_func->func ||
-+				     old[i].data != tp_func->data) &&
-+				    old[i].func != tp_stub_func)
- 					new[j++] = old[i];
-+			}
- 			new[nr_probes - nr_del].func = NULL;
- 			*funcs = new;
- 		} else {
-@@ -249,17 +235,11 @@ static void *func_remove(struct tracepoint_func **funcs,
- 			 * Failed to allocate, replace the old function
- 			 * with calls to tp_stub_func.
- 			 */
--			for (i = 0; old[i].func; i++)
-+			for (i = 0; old[i].func; i++) {
- 				if (old[i].func == tp_func->func &&
--				    old[i].data == tp_func->data) {
--					old[i].func = tp_stub_func;
--					/* Set the prio to the next event. */
--					if (old[i + 1].func)
--						old[i].prio =
--							old[i + 1].prio;
--					else
--						old[i].prio = -1;
--				}
-+				    old[i].data == tp_func->data)
-+					WRITE_ONCE(old[i].func, tp_stub_func);
-+			}
- 			*funcs = old;
- 		}
- 	}
--- 
-2.25.4
-
+> ---
+> Rebased over:
+>
+> https://lore.kernel.org/lkml/a59bb322b22c247d570b70a8e94067804287623b.1612241683.git.viresh.kumar@linaro.org/
+>
+>  drivers/cpufreq/pmac32-cpufreq.c |  3 +--
+>  include/linux/cpufreq.h          | 13 +++++--------
+>  2 files changed, 6 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/cpufreq/pmac32-cpufreq.c b/drivers/cpufreq/pmac32-cpufreq.c
+> index 73621bc11976..4f20c6a9108d 100644
+> --- a/drivers/cpufreq/pmac32-cpufreq.c
+> +++ b/drivers/cpufreq/pmac32-cpufreq.c
+> @@ -439,8 +439,7 @@ static struct cpufreq_driver pmac_cpufreq_driver = {
+>         .init           = pmac_cpufreq_cpu_init,
+>         .suspend        = pmac_cpufreq_suspend,
+>         .resume         = pmac_cpufreq_resume,
+> -       .flags          = CPUFREQ_PM_NO_WARN |
+> -                         CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
+> +       .flags          = CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
+>         .attr           = cpufreq_generic_attr,
+>         .name           = "powermac",
+>  };
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index c8e40e91fe9b..353969c7acd3 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -398,8 +398,11 @@ struct cpufreq_driver {
+>  /* loops_per_jiffy or other kernel "constants" aren't affected by frequency transitions */
+>  #define CPUFREQ_CONST_LOOPS                    BIT(1)
+>
+> -/* don't warn on suspend/resume speed mismatches */
+> -#define CPUFREQ_PM_NO_WARN                     BIT(2)
+> +/*
+> + * Set by drivers that want the core to automatically register the cpufreq
+> + * driver as a thermal cooling device.
+> + */
+> +#define CPUFREQ_IS_COOLING_DEV                 BIT(2)
+>
+>  /*
+>   * This should be set by platforms having multiple clock-domains, i.e.
+> @@ -431,12 +434,6 @@ struct cpufreq_driver {
+>   */
+>  #define CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING      BIT(6)
+>
+> -/*
+> - * Set by drivers that want the core to automatically register the cpufreq
+> - * driver as a thermal cooling device.
+> - */
+> -#define CPUFREQ_IS_COOLING_DEV                 BIT(7)
+> -
+>  int cpufreq_register_driver(struct cpufreq_driver *driver_data);
+>  int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
+>
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
