@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B8E30E83B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6DE30E833
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 01:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhBDAEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 19:04:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S234216AbhBDAC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 19:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbhBDACw (ORCPT
+        with ESMTP id S234084AbhBDACk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:02:52 -0500
+        Wed, 3 Feb 2021 19:02:40 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE54C061355
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 16:01:47 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id k7so1525416ybm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 16:01:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA72C06121C
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 16:01:50 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id l197so1524359ybf.17
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 16:01:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=KVbXCJbK0fJijUMIx8v2OVwCZqQe15lsxZFi3EGecaw=;
-        b=opyX1IcsdheLOecVRr/E17VB+hX2+bRSNpQU2AKEc75rEOAphJBR1E1zZy11OX5E8D
-         MOTT02kX8RMf1rsG08QGYhs16gYkz9lFqyJk8+BOPm8+Fnsym4JEIPdCulxfA3/o6hOO
-         Oy2BwhKqbLF9w41MIN6AzwhHKh5OEqYySOdgTcqIwdS7nUhb2tZxvHkSmShe3Gj8RluJ
-         ZDJPPvN+CHnmO/xr0U1BwVrx5baf5SYStCy5+yecsF8hrnw7+COuLPAi8sNn4eAEp03b
-         O1fv9qtQrbty3PKFo5Ou+01ZLLblZAEs/V/LxPfsw/fR3nl8V66vPOO4NSXle1B1I4La
-         Ha2g==
+        bh=Z9PY+ha0iNe1qhtrrDXpdGIAQqM4NawdTmEQfVlKh0A=;
+        b=uXPdQJNCax4ScHsyNG6CuYomNtv/cKnz/pychbfxxThSndPFgZ1ZfDnm52ODAY/qGn
+         09VhZi3QLmQmrscRMGiymFL2+iaw+pc0tf012Je5T97qs5kob1Gwbg0XGFhcxttGDB2l
+         MH5ssPdPA8WcYGOSqHLidXVEnKdYbvPFz1rJ5zNHOWLpuEt8Z08zpRtVHwl4VK+NwOyD
+         9YVXYHf5oakMsgvWDfsdGhQpGwZqdKdstc2ty32rzfb7yCd/KLBDvWlgaKACZ6I185ev
+         j3iMmMY9+sBsDzjqGM9r1HN8OW/B+Wz11NkP5cPgr5v8/s6LMs642cBx3efzJycb1OKz
+         7NYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=KVbXCJbK0fJijUMIx8v2OVwCZqQe15lsxZFi3EGecaw=;
-        b=Pt5cXDaYkrrKo74Ah0eytKuqn1abisqyP7yP2bbsmxQhfhJSx1k6UY3vNRt1I/AOce
-         bj6N1etCbZqByfiSPQE7zOBpJoxfXmYAeaqcPm1VRaEIfP2P9RHlyelk7Mon4gOXmZJv
-         ezkLWSPFAQ0iCtaekk0O21PB7KvHEsaWI22ZbRDsdVjlE6UpfaeWUboUU6mK3cWwX3xZ
-         TyahEz7xVU91Vp8wggMTbX4qxZaxy5TrFGgOGH/Wpr7OT3J1rOs37WD0TK88UUusRC5p
-         07/JgKBhByFEHoILKz07MGwTI9kU92CrjwDuDWkJEP7X4t4oc9BSinZCqqdBc/5zTRIH
-         vj1Q==
-X-Gm-Message-State: AOAM5329ZQwBfM3AenCQ5oPXPBtJKzah4z5cEmO1S8KlCWGr4AGdsN2B
-        OAmyqc9GTqHW2o9UmQVk0ygHrm+mTD0=
-X-Google-Smtp-Source: ABdhPJxipC1uw+bK0spQZBfo0QAzIqcG0dWoBMYMahZvik96ZGpn2SfwdWjogVk+rzl+XSv5RRPwRYioj3Q=
+        bh=Z9PY+ha0iNe1qhtrrDXpdGIAQqM4NawdTmEQfVlKh0A=;
+        b=rfI6aCG2Fi/A1ZrRMRf4mua78YTwuajH5/pXCgiTAMFqxDs1fdlE7/q1FTdI0tC7s3
+         DeXbN4SWHsUozDaKgWWeq6j7U4DU3/bgMb+7cz6rzEa/4Av4XpRncjAeDwcW7xV7sd5N
+         RLEFoPLcWMKhJYR1FvbUgwjoDGv9VmUPYBmOApKVgbQpiTmoxJYSqhzjotxhsiDwCKuN
+         dr8J7lu6SIeJW1lnm9emxapY9u02p8u0KQ/3fdeBJV3zsvFM9oBBQM0M3JDm104F68TA
+         nazEvc3IsCqm0XPSlCmoq5ljjeiY5DPWcKo7OHek30K0Bvj17kcnDPHKCU2v+ziIpYbM
+         516g==
+X-Gm-Message-State: AOAM530tmcmbWHHkrD8VoyBpuO4IrL3GTX3BkMBHSqqPY0Ve5hDOhACj
+        zGqqgXtIBNJEHSk9/tTrk9HUApLNySY=
+X-Google-Smtp-Source: ABdhPJwvmeMkJuxwu9FcSp7HWHK7vMfbcCJ+yABiDBg9vCaI2ywrOt7JzIJcO4BVv1b3p08eAK1OQ5inVEY=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:a9a0:e924:d161:b6cb])
- (user=seanjc job=sendgmr) by 2002:a25:a527:: with SMTP id h36mr8036454ybi.400.1612396907131;
- Wed, 03 Feb 2021 16:01:47 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:c04d:: with SMTP id c74mr7510990ybf.102.1612396909482;
+ Wed, 03 Feb 2021 16:01:49 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  3 Feb 2021 16:01:14 -0800
+Date:   Wed,  3 Feb 2021 16:01:15 -0800
 In-Reply-To: <20210204000117.3303214-1-seanjc@google.com>
-Message-Id: <20210204000117.3303214-10-seanjc@google.com>
+Message-Id: <20210204000117.3303214-11-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210204000117.3303214-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH 09/12] KVM: x86/mmu: Add helper to generate mask of reserved
- HPA bits
+Subject: [PATCH 10/12] KVM: x86: Add helper to consolidate "raw" reserved GPA
+ mask calculations
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -71,66 +71,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a helper to generate the mask of reserved PA bits in the host.
+Add a helper to generate the mask of reserved GPA bits _without_ any
+adjustments for repurposed bits, and use it to replace a variety of
+open coded variants in the MTRR and APIC_BASE flows.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ arch/x86/kvm/cpuid.c | 12 +++++++++++-
+ arch/x86/kvm/cpuid.h |  1 +
+ arch/x86/kvm/mtrr.c  | 12 ++++++------
+ arch/x86/kvm/x86.c   |  4 ++--
+ 4 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d462db3bc742..86af58294272 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4123,6 +4123,11 @@ static void reset_rsvds_bits_mask_ept(struct kvm_vcpu *vcpu,
- 				    vcpu->arch.reserved_gpa_bits, execonly);
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index d313b1804278..dd9406450696 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -188,7 +188,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	kvm_update_pv_runtime(vcpu);
+ 
+ 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+-	vcpu->arch.reserved_gpa_bits = rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
++	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 
+ 	kvm_pmu_refresh(vcpu);
+ 	vcpu->arch.cr4_guest_rsvd_bits =
+@@ -242,6 +242,16 @@ int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
+ 	return 36;
  }
  
-+static inline u64 reserved_hpa_bits(void)
++/*
++ * This "raw" version returns the reserved GPA bits without any adjustments for
++ * encryption technologies that usurp bits.  The raw mask should be used if and
++ * only if hardware does _not_ strip the usurped bits, e.g. in virtual MTRRs.
++ */
++u64 kvm_vcpu_reserved_gpa_bits_raw(struct kvm_vcpu *vcpu)
 +{
-+	return rsvd_bits(shadow_phys_bits, 63);
++	return rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
 +}
 +
- /*
-  * the page table on host is the shadow page table for the page
-  * table in guest or amd nested guest, its mmu features completely
-@@ -4142,7 +4147,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
- 	 */
- 	shadow_zero_check = &context->shadow_zero_check;
- 	__reset_rsvds_bits_mask(vcpu, shadow_zero_check,
--				rsvd_bits(shadow_phys_bits, 63),
-+				reserved_hpa_bits(),
- 				context->shadow_root_level, uses_nx,
- 				guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES),
- 				is_pse(vcpu), true);
-@@ -4179,14 +4184,13 @@ reset_tdp_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
+ /* when an old userspace process fills a new kernel module */
+ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+ 			     struct kvm_cpuid *cpuid,
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index f673f45bdf52..2a0c5064497f 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -30,6 +30,7 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
+ 	       u32 *ecx, u32 *edx, bool exact_only);
  
- 	if (boot_cpu_is_amd())
- 		__reset_rsvds_bits_mask(vcpu, shadow_zero_check,
--					rsvd_bits(shadow_phys_bits, 63),
-+					reserved_hpa_bits(),
- 					context->shadow_root_level, false,
- 					boot_cpu_has(X86_FEATURE_GBPAGES),
- 					true, true);
- 	else
- 		__reset_rsvds_bits_mask_ept(shadow_zero_check,
--					    rsvd_bits(shadow_phys_bits, 63),
--					    false);
-+					    reserved_hpa_bits(), false);
+ int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu);
++u64 kvm_vcpu_reserved_gpa_bits_raw(struct kvm_vcpu *vcpu);
  
- 	if (!shadow_me_mask)
- 		return;
-@@ -4206,7 +4210,7 @@ reset_ept_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
- 				struct kvm_mmu *context, bool execonly)
+ static inline int cpuid_maxphyaddr(struct kvm_vcpu *vcpu)
  {
- 	__reset_rsvds_bits_mask_ept(&context->shadow_zero_check,
--				    rsvd_bits(shadow_phys_bits, 63), execonly);
-+				    reserved_hpa_bits(), execonly);
- }
+diff --git a/arch/x86/kvm/mtrr.c b/arch/x86/kvm/mtrr.c
+index f472fdb6ae7e..a8502e02f479 100644
+--- a/arch/x86/kvm/mtrr.c
++++ b/arch/x86/kvm/mtrr.c
+@@ -75,7 +75,7 @@ bool kvm_mtrr_valid(struct kvm_vcpu *vcpu, u32 msr, u64 data)
+ 	/* variable MTRRs */
+ 	WARN_ON(!(msr >= 0x200 && msr < 0x200 + 2 * KVM_NR_VAR_MTRR));
  
- #define BYTE_MASK(access) \
+-	mask = (~0ULL) << cpuid_maxphyaddr(vcpu);
++	mask = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 	if ((msr & 1) == 0) {
+ 		/* MTRR base */
+ 		if (!valid_mtrr_type(data & 0xff))
+@@ -351,14 +351,14 @@ static void set_var_mtrr_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data)
+ 	if (var_mtrr_range_is_valid(cur))
+ 		list_del(&mtrr_state->var_ranges[index].node);
+ 
+-	/* Extend the mask with all 1 bits to the left, since those
+-	 * bits must implicitly be 0.  The bits are then cleared
+-	 * when reading them.
++	/*
++	 * Set all illegal GPA bits in the mask, since those bits must
++	 * implicitly be 0.  The bits are then cleared when reading them.
+ 	 */
+ 	if (!is_mtrr_mask)
+ 		cur->base = data;
+ 	else
+-		cur->mask = data | (-1LL << cpuid_maxphyaddr(vcpu));
++		cur->mask = data | kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 
+ 	/* add it to the list if it's enabled. */
+ 	if (var_mtrr_range_is_valid(cur)) {
+@@ -426,7 +426,7 @@ int kvm_mtrr_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata)
+ 		else
+ 			*pdata = vcpu->arch.mtrr_state.var_ranges[index].mask;
+ 
+-		*pdata &= (1ULL << cpuid_maxphyaddr(vcpu)) - 1;
++		*pdata &= ~kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 82a70511c0d3..28fea7ff7a86 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -408,7 +408,7 @@ int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ {
+ 	enum lapic_mode old_mode = kvm_get_apic_mode(vcpu);
+ 	enum lapic_mode new_mode = kvm_apic_mode(msr_info->data);
+-	u64 reserved_bits = ((~0ULL) << cpuid_maxphyaddr(vcpu)) | 0x2ff |
++	u64 reserved_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu) | 0x2ff |
+ 		(guest_cpuid_has(vcpu, X86_FEATURE_X2APIC) ? 0 : X2APIC_ENABLE);
+ 
+ 	if ((msr_info->data & reserved_bits) != 0 || new_mode == LAPIC_MODE_INVALID)
+@@ -10089,7 +10089,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 	fx_init(vcpu);
+ 
+ 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+-	vcpu->arch.reserved_gpa_bits = rsvd_bits(cpuid_maxphyaddr(vcpu), 63);
++	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 
+ 	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
+ 
 -- 
 2.30.0.365.g02bc693789-goog
 
