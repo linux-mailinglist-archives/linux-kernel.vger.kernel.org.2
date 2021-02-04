@@ -2,195 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F85B30FCFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC18E30FD0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhBDTgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:36:00 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60952 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236942AbhBDTfn (ORCPT
+        id S239358AbhBDTis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:38:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238242AbhBDTii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:35:43 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 114JSjmb003247;
-        Thu, 4 Feb 2021 11:34:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=vAffmpZQSZNrq9QlG5aecpm2gnNvWjPrGoPsXJRkgRY=;
- b=MFZV4JLz00hWFA3G/+ecMdD737xMxwnjlEEXpCBEkd3dOUfDdXAoNhOSNix7kxu62DfI
- 1+E0iMQWNY9T8BdU7XNJWjhDSuohnWlNVeFBuBKcn6yXRnSfpB1o/7ZXWD9FmB7F9sGP
- HmX2+XV2Lt5ipiZeVC4B3ClbB4SlyTQi07E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36fcs64tng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 04 Feb 2021 11:34:55 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 4 Feb 2021 11:34:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KMwQNHz46nZc1P0kqo+kCzi6eDHzjs/6o5WyfrEY5WS7BFJl6n+ouk7sEKxNabMvAq0Rzndn7AldUPE528vk538Y+XMILnqeE4phUiK9i3SMeDpp1oZwqC+ybncMxX0oIducXmJcb3/6Lwokl4SYbA8wdNDc0id3n8mduizkZ1G2vBmdN6TBgzCXbAbJ2k9WzNWx55yGucucJkvCBSwDP984p6KrdTugN4nO7ZBEOsPaDjgyI2kUO5NGQMHu0Kl3g3v/oWfX6DX2Qalc9RZ9tGypPQiDsxqcVqfvfHRGWoIwl+znre17w2gYBU9O6Hl3WvdttJfBpYyVMOuSCwhGZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vAffmpZQSZNrq9QlG5aecpm2gnNvWjPrGoPsXJRkgRY=;
- b=NyIsFYGNhPt6p8DreEtbb4F3iMoj/6+d59Msr0jL2T4AfYgEsA3lGWF7a6iAEbMtvjD2JpMlOr70q/q7mqk0DKrEB8G7VRm4BFlj///C6j7DRPsa3mrM1lksaAJE/6vhMlvdjLn1X/5Vgg8dqKJvdIQsln8AUG+iLpzjDHtlT5mpu1I3equUN5Z8WBV0AtLqbaXqFny9okI5ONXxddFid/xOaZOJJIHMNCvAEgYfFG+Fyac3v3zhkLuPSALW7MB+Y2Bhmq57Wo/G/HR/HcXdspnEbRrps6zuhJdJovQGbKnSGhpe6/PniWlBIgVRtOpZRgUpTiXKtCts3BeypK951g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vAffmpZQSZNrq9QlG5aecpm2gnNvWjPrGoPsXJRkgRY=;
- b=PE8df40JP374yTZYXAk7s3nOKmD2toOX2gTditTCdevBTV74iEby9lwVSgiVwoAwExpZY0k62S5UiVEjt6dTHkJC//R4IGvoLHSLyVumXq+yde6e+4FaTvNTJ6R6I2E0hqzAr18uOG5SruhMMS/9jCqIfkthumjoJLOjBLHwsJs=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB4134.namprd15.prod.outlook.com (2603:10b6:a03:9a::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Thu, 4 Feb
- 2021 19:34:49 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
- 19:34:49 +0000
-Date:   Thu, 4 Feb 2021 11:34:46 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
-Message-ID: <20210204193446.GA2053875@carbon.dhcp.thefacebook.com>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-2-hannes@cmpxchg.org>
- <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
- <20210203022853.GG1812008@carbon.dhcp.thefacebook.com>
- <YBxLNZJ/83P7H8+H@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBxLNZJ/83P7H8+H@cmpxchg.org>
-X-Originating-IP: [2620:10d:c090:400::5:910]
-X-ClientProxiedBy: SJ0PR05CA0147.namprd05.prod.outlook.com
- (2603:10b6:a03:33d::32) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Thu, 4 Feb 2021 14:38:38 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96746C0613D6;
+        Thu,  4 Feb 2021 11:37:57 -0800 (PST)
+Date:   Thu, 04 Feb 2021 19:37:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612467474;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=unTbX9DkV91+E94tIlqsuxju0szg0vnESRuI78Z46es=;
+        b=YLgBWwvPjUD+7CUz4xRENIGrNudHxJsHCA7fn72uLp2ZvwkoN6K9LOH0vUr7BlcIN/eoMf
+        V503PZca7JOL+hYTKUTVOC+XtbtWcXLrOrgK23a0vxWN0uaMtH+BZ50lnA/A/RpTmHOAn5
+        o0gIOlLpKheoib9YXFE5xCjlTLFe/SOFPtopaHCxxtAAgkq/binc2Nx2kVMXiGp1KCIpxZ
+        aY1Y9kjCwhJr57jlfGoWWJLcIt1cEkWAaGleYHY9esHWgJaXpFUagkvmGDZaK+kCG3D9dz
+        cQ77NqwacG9TQ/pvrcErqlhMQ7+jW0PICe7UoYCRxIn4MBg34Xq3IJhfi1MPDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612467474;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=unTbX9DkV91+E94tIlqsuxju0szg0vnESRuI78Z46es=;
+        b=+RpMN1A4RdjW+xbShd5kTTY0Pi/Nk8XgZ4AdLeDtxWAv00TyHOhF5OUtdfiYIZjlsZoUNJ
+        bib0dELuTw38LfBg==
+From:   "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/apic: Add extra serialization for non-serializing MSRs
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200305174708.F77040DD@viggo.jf.intel.com>
+References: <20200305174708.F77040DD@viggo.jf.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:910) by SJ0PR05CA0147.namprd05.prod.outlook.com (2603:10b6:a03:33d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.15 via Frontend Transport; Thu, 4 Feb 2021 19:34:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e17d10d2-164d-4273-40a3-08d8c943ef9b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4134:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4134E749969130D006435C5EBEB39@BYAPR15MB4134.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JwlLMO1TkWo+k9rdSGRlX+HkrAKh+2e5EeFisTglxt19ZvDK3J1sur/pChRjgPeYLoaEwWgCUbzTt6MLtIyYYTlIdWECRKFwLZyWGzaRKCUO9HJ3p+62i6sYdeVma+1MsljlAaep20RtSXm26Heu7GkaYoUNhNmFggomzAQqweCHHE0A2BcvqJ9rs9fUlF7sFIY6MFOqbV78sHEnL7w1zurW/eHefWQcxGWL67KBW6SnEmsVf0z+gEp6r85t+8URtIdTfCCs6kZVaMt9JId4/6eWwbhIM0loh0hzECafvm7IQ/bNfW7lBsmwIQVybPkuBGbiwvbD8d9F0A67sp/ZH9sxVkBshvxYS+1r730eP69zd4fL+WUY7yC53uacp8OW0/9U/tJ+oJkEy77UqOAhl0MabXlRvypx7p4DwdW+XjlYh3j+bIqhC6KKJS1zeTBoR5n48HGFuPPPSrhSVccn3zS9slnj0R/kImsLYhaqX9X95SiJhNsfD1Zwex9gevYW+0UNJJImZj+sDAwwuup1sQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39860400002)(136003)(396003)(4326008)(1076003)(54906003)(5660300002)(52116002)(8676002)(7696005)(316002)(55016002)(6506007)(33656002)(66556008)(66476007)(9686003)(86362001)(16526019)(478600001)(2906002)(186003)(6916009)(8936002)(83380400001)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uqdYx0zyVNbUNYuZniwoh7BC3SxnndLzJeABzgUKiqYi49ayg/VkYO4Nq7ql?=
- =?us-ascii?Q?SCEda4AN3YZHqJDlxJD5D2V8Il6jNTrVk8ZHzxK5maXUNPUBMCcYxXwOzRaP?=
- =?us-ascii?Q?nMM+1SYeX0HtgrMiQA867DF0Cj1LVFAVOb4S+xEw4By2FFcRklqL6ukCLXJD?=
- =?us-ascii?Q?G7CM32oVA7XMVNHQovcUUEXizX72oVPhFo8b+9IKovIr1j5w0A+NL9jtjwLl?=
- =?us-ascii?Q?rZlLaMN3CYSviUmEbrUfiR0DLYVV1JBWmQ2Znno3PB5sEqyD/8X7onCX6bF+?=
- =?us-ascii?Q?oauJ3XTYnSIEbcZJz1fU4zmdN+9aYs9gOVA2vStxAEwOL1KmJeCnyBv06V3o?=
- =?us-ascii?Q?CQSo5yb+8D7iYxPvT7sa7haFja6mxybozpTPUVmKQC/4vc87P3AvumBEIyOa?=
- =?us-ascii?Q?I6NPLtwCZw9UKMV37SdPG9oAVa0MAlMbdcdG/ItPljYrNMdcxgHaTIaoMqbN?=
- =?us-ascii?Q?yq3bbjDLswzl4Mg0KasRw4ByEH/uaw4hpzvEWXA42JVGNC2zhBC3Gq9VfbTW?=
- =?us-ascii?Q?Azudc3Qx/Hz4kJBmJn3cVYWHVzSYdtWntEJCMoBdZ9lEnaQyFAgYeUJzWf5u?=
- =?us-ascii?Q?vhnl3tOvKK6rKJujXKBe//orrnP1dLVIACqnP8AAAkQ8QjQqysOujd3puUPU?=
- =?us-ascii?Q?eW9cM7/DTu1G4Wvj4v/enlUuHTqs0tK2EC8kjSjT+N7+UNwth57h88yacSmw?=
- =?us-ascii?Q?pURfxQHqMsYV5DKXWi46sleE4f0KNrz1iw+7gCmLvFY1hwjV9WdiK9R43W22?=
- =?us-ascii?Q?VbO80/zoOykCBX/JMuYnLHX3f+x1S8lblwqxVXvwfHjNeOyJZ6R5ZE7rLEa9?=
- =?us-ascii?Q?jkwp9CLuHVASGbdghpapNsZ7tp58Ewj2/4KqF/NjdK9oAdECGAThVtubpuJe?=
- =?us-ascii?Q?2aZ7Ab9UxDTwr7PmzFzPPcEKVUb533mAXuDDYu4L9Aq9zVlHAaUo36LMLeIq?=
- =?us-ascii?Q?rQbaJSFaA6/klA4a5zFIBQzfNZ7At1GZ3YLm0ePQHrePNrseN7JHAFoiThgx?=
- =?us-ascii?Q?dnnr4bn4Sk86H4zUtJimC3tgNOB/+47K4CKQ3OWdrcuU8+NZnxuFBNQcTFVE?=
- =?us-ascii?Q?iJ26Ji6fxwkNlxurOsxhp9s7zdTAPDNcvQQfNt5ABXpxfz+vizo=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e17d10d2-164d-4273-40a3-08d8c943ef9b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 19:34:49.4635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uV2C4Y7Yhx2djH31EkSP4rA5fz7h7p3Plh3qa39EejPRSQKHBvn2x3df++Musl2F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4134
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-04_10:2021-02-04,2021-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 phishscore=0 impostorscore=0
- clxscore=1015 mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040118
-X-FB-Internal: deliver
+Message-ID: <161246747348.23325.3048620311121031887.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 02:29:57PM -0500, Johannes Weiner wrote:
-> On Tue, Feb 02, 2021 at 06:28:53PM -0800, Roman Gushchin wrote:
-> > On Tue, Feb 02, 2021 at 03:07:47PM -0800, Roman Gushchin wrote:
-> > > On Tue, Feb 02, 2021 at 01:47:40PM -0500, Johannes Weiner wrote:
-> > > > The memcg hotunplug callback erroneously flushes counts on the local
-> > > > CPU, not the counts of the CPU going away; those counts will be lost.
-> > > > 
-> > > > Flush the CPU that is actually going away.
-> > > > 
-> > > > Also simplify the code a bit by using mod_memcg_state() and
-> > > > count_memcg_events() instead of open-coding the upward flush - this is
-> > > > comparable to how vmstat.c handles hotunplug flushing.
-> > > 
-> > > To the whole series: it's really nice to have an accurate stats at
-> > > non-leaf levels. Just as an illustration: if there are 32 CPUs and
-> > > 1000 sub-cgroups (which is an absolutely realistic number, because
-> > > often there are many dying generations of each cgroup), the error
-> > > margin is 3.9GB. It makes all numbers pretty much random and all
-> > > possible tests extremely flaky.
-> > 
-> > Btw, I was just looking into kmem kselftests failures/flakiness,
-> > which is caused by exactly this problem: without waiting for the
-> > finish of dying cgroups reclaim, we can't make any reliable assumptions
-> > about what to expect from memcg stats.
-> 
-> Good point about the selftests. I gave them a shot, and indeed this
-> series makes test_kmem work again:
-> 
-> vanilla:
-> ok 1 test_kmem_basic
-> memory.current = 8810496
-> slab + anon + file + kernel_stack = 17074568
-> slab = 6101384
-> anon = 946176
-> file = 0
-> kernel_stack = 10027008
-> not ok 2 test_kmem_memcg_deletion
-> ok 3 test_kmem_proc_kpagecgroup
-> ok 4 test_kmem_kernel_stacks
-> ok 5 test_kmem_dead_cgroups
-> ok 6 test_percpu_basic
-> 
-> patched:
-> ok 1 test_kmem_basic
-> ok 2 test_kmem_memcg_deletion
-> ok 3 test_kmem_proc_kpagecgroup
-> ok 4 test_kmem_kernel_stacks
-> ok 5 test_kmem_dead_cgroups
-> ok 6 test_percpu_basic
+The following commit has been merged into the x86/urgent branch of tip:
 
-Nice! Thanks for checking.
+Commit-ID:     25a068b8e9a4eb193d755d58efcb3c98928636e0
+Gitweb:        https://git.kernel.org/tip/25a068b8e9a4eb193d755d58efcb3c98928636e0
+Author:        Dave Hansen <dave.hansen@linux.intel.com>
+AuthorDate:    Thu, 05 Mar 2020 09:47:08 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 04 Feb 2021 19:36:31 +01:00
 
-> 
-> It even passes with a reduced margin in the patched kernel, since the
-> percpu drift - which this test already tried to account for - is now
-> only on the page_counter side (whereas memory.stat is always precise).
-> 
-> I'm going to include that data in the v2 changelog, as well as a patch
-> to update test_kmem.c to the more stringent error tolerances.
+x86/apic: Add extra serialization for non-serializing MSRs
 
-Hm, I'm not sure it's a good idea to  unconditionally lower the error tolerance:
-it's convenient to be able to run the same test on older kernels.
+Jan Kiszka reported that the x2apic_wrmsr_fence() function uses a plain
+MFENCE while the Intel SDM (10.12.3 MSR Access in x2APIC Mode) calls for
+MFENCE; LFENCE.
+
+Short summary: we have special MSRs that have weaker ordering than all
+the rest. Add fencing consistent with current SDM recommendations.
+
+This is not known to cause any issues in practice, only in theory.
+
+Longer story below:
+
+The reason the kernel uses a different semantic is that the SDM changed
+(roughly in late 2017). The SDM changed because folks at Intel were
+auditing all of the recommended fences in the SDM and realized that the
+x2apic fences were insufficient.
+
+Why was the pain MFENCE judged insufficient?
+
+WRMSR itself is normally a serializing instruction. No fences are needed
+because the instruction itself serializes everything.
+
+But, there are explicit exceptions for this serializing behavior written
+into the WRMSR instruction documentation for two classes of MSRs:
+IA32_TSC_DEADLINE and the X2APIC MSRs.
+
+Back to x2apic: WRMSR is *not* serializing in this specific case.
+But why is MFENCE insufficient? MFENCE makes writes visible, but
+only affects load/store instructions. WRMSR is unfortunately not a
+load/store instruction and is unaffected by MFENCE. This means that a
+non-serializing WRMSR could be reordered by the CPU to execute before
+the writes made visible by the MFENCE have even occurred in the first
+place.
+
+This means that an x2apic IPI could theoretically be triggered before
+there is any (visible) data to process.
+
+Does this affect anything in practice? I honestly don't know. It seems
+quite possible that by the time an interrupt gets to consume the (not
+yet) MFENCE'd data, it has become visible, mostly by accident.
+
+To be safe, add the SDM-recommended fences for all x2apic WRMSRs.
+
+This also leaves open the question of the _other_ weakly-ordered WRMSR:
+MSR_IA32_TSC_DEADLINE. While it has the same ordering architecture as
+the x2APIC MSRs, it seems substantially less likely to be a problem in
+practice. While writes to the in-memory Local Vector Table (LVT) might
+theoretically be reordered with respect to a weakly-ordered WRMSR like
+TSC_DEADLINE, the SDM has this to say:
+
+  In x2APIC mode, the WRMSR instruction is used to write to the LVT
+  entry. The processor ensures the ordering of this write and any
+  subsequent WRMSR to the deadline; no fencing is required.
+
+But, that might still leave xAPIC exposed. The safest thing to do for
+now is to add the extra, recommended LFENCE.
+
+ [ bp: Massage commit message, fix typos, drop accidentally added
+   newline to tools/arch/x86/include/asm/barrier.h. ]
+
+Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200305174708.F77040DD@viggo.jf.intel.com
+---
+ arch/x86/include/asm/apic.h           | 10 ----------
+ arch/x86/include/asm/barrier.h        | 18 ++++++++++++++++++
+ arch/x86/kernel/apic/apic.c           |  4 ++++
+ arch/x86/kernel/apic/x2apic_cluster.c |  6 ++++--
+ arch/x86/kernel/apic/x2apic_phys.c    |  9 ++++++---
+ 5 files changed, 32 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 34cb3c1..412b51e 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -197,16 +197,6 @@ static inline bool apic_needs_pit(void) { return true; }
+ #endif /* !CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef CONFIG_X86_X2APIC
+-/*
+- * Make previous memory operations globally visible before
+- * sending the IPI through x2apic wrmsr. We need a serializing instruction or
+- * mfence for this.
+- */
+-static inline void x2apic_wrmsr_fence(void)
+-{
+-	asm volatile("mfence" : : : "memory");
+-}
+-
+ static inline void native_apic_msr_write(u32 reg, u32 v)
+ {
+ 	if (reg == APIC_DFR || reg == APIC_ID || reg == APIC_LDR ||
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 7f828fe..4819d5e 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -84,4 +84,22 @@ do {									\
+ 
+ #include <asm-generic/barrier.h>
+ 
++/*
++ * Make previous memory operations globally visible before
++ * a WRMSR.
++ *
++ * MFENCE makes writes visible, but only affects load/store
++ * instructions.  WRMSR is unfortunately not a load/store
++ * instruction and is unaffected by MFENCE.  The LFENCE ensures
++ * that the WRMSR is not reordered.
++ *
++ * Most WRMSRs are full serializing instructions themselves and
++ * do not require this barrier.  This is only required for the
++ * IA32_TSC_DEADLINE and X2APIC MSRs.
++ */
++static inline void weak_wrmsr_fence(void)
++{
++	asm volatile("mfence; lfence" : : : "memory");
++}
++
+ #endif /* _ASM_X86_BARRIER_H */
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 6bd20c0..7f4c081 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -41,6 +41,7 @@
+ #include <asm/perf_event.h>
+ #include <asm/x86_init.h>
+ #include <linux/atomic.h>
++#include <asm/barrier.h>
+ #include <asm/mpspec.h>
+ #include <asm/i8259.h>
+ #include <asm/proto.h>
+@@ -477,6 +478,9 @@ static int lapic_next_deadline(unsigned long delta,
+ {
+ 	u64 tsc;
+ 
++	/* This MSR is special and need a special fence: */
++	weak_wrmsr_fence();
++
+ 	tsc = rdtsc();
+ 	wrmsrl(MSR_IA32_TSC_DEADLINE, tsc + (((u64) delta) * TSC_DIVISOR));
+ 	return 0;
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index df6adc5..f4da9bb 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -29,7 +29,8 @@ static void x2apic_send_IPI(int cpu, int vector)
+ {
+ 	u32 dest = per_cpu(x86_cpu_to_logical_apicid, cpu);
+ 
+-	x2apic_wrmsr_fence();
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
+ 	__x2apic_send_IPI_dest(dest, vector, APIC_DEST_LOGICAL);
+ }
+ 
+@@ -41,7 +42,8 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
+ 	unsigned long flags;
+ 	u32 dest;
+ 
+-	x2apic_wrmsr_fence();
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
+ 	local_irq_save(flags);
+ 
+ 	tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
+diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
+index 0e4e819..6bde05a 100644
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -43,7 +43,8 @@ static void x2apic_send_IPI(int cpu, int vector)
+ {
+ 	u32 dest = per_cpu(x86_cpu_to_apicid, cpu);
+ 
+-	x2apic_wrmsr_fence();
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
+ 	__x2apic_send_IPI_dest(dest, vector, APIC_DEST_PHYSICAL);
+ }
+ 
+@@ -54,7 +55,8 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
+ 	unsigned long this_cpu;
+ 	unsigned long flags;
+ 
+-	x2apic_wrmsr_fence();
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
+ 
+ 	local_irq_save(flags);
+ 
+@@ -125,7 +127,8 @@ void __x2apic_send_IPI_shorthand(int vector, u32 which)
+ {
+ 	unsigned long cfg = __prepare_ICR(which, vector, 0);
+ 
+-	x2apic_wrmsr_fence();
++	/* x2apic MSRs are special and need a special fence: */
++	weak_wrmsr_fence();
+ 	native_x2apic_icr_write(cfg, 0);
+ }
+ 
