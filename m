@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3357130ED7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E6130ED80
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234685AbhBDHhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:37:12 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12000 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234667AbhBDHhG (ORCPT
+        id S234102AbhBDHib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:38:31 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61226 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233516AbhBDHi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:37:06 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601ba3f90001>; Wed, 03 Feb 2021 23:36:25 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 07:36:25 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 4 Feb 2021 07:36:23 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>, <si-wei.liu@oracle.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lulu@redhat.com>, <elic@nvidia.com>
-Subject: [PATCH v1] vdpa/mlx5: Restore the hardware used index after change map
-Date:   Thu, 4 Feb 2021 09:36:18 +0200
-Message-ID: <20210204073618.36336-1-elic@nvidia.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 4 Feb 2021 02:38:26 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1147WVCh081037;
+        Thu, 4 Feb 2021 02:36:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject : to
+ : cc : references : from : message-id : date : mime-version : in-reply-to
+ : content-type : content-transfer-encoding; s=pp1;
+ bh=TJR3Tk1aFST8qdXh/a914iqptdMPK9i2vtz1+sNSTJc=;
+ b=bqURimFFPWmJdO5/psTrw+95u7nP8DNE6ZhMmH5Zza6NscSMkKV+tjhQM00fLY4mgPuH
+ AfhiMg7LcHVprwQvWiRjJf4NrMaOcQqBtBiC70VRxIahqD1yy7TZ6gImcJSSBOmHZEx4
+ xqCQzyxFqWbJodFpQxt3Q5mUPtm5i5Yvsn7jp2Zj67KYJVJBYryS03LFHrIqk/gC9ob8
+ VBb1J6g3g0uPWubYteb7sZEyYgVnMSCdqdl7Z4zBJYjd/I4VZsD305/ILQXBKxveeWWG
+ nR3av80yZ5xuJAv/IG7G4VK1fYWKQVzdYdNHwSM9JkrCzCtlwIi9YKU3OgM7H0mvzVy5 NQ== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36gcd0re53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 02:36:28 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1147W88c004759;
+        Thu, 4 Feb 2021 07:36:28 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03dal.us.ibm.com with ESMTP id 36f3kvkjr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 07:36:28 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1147aRo912583308
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 07:36:27 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 491B1AC05F;
+        Thu,  4 Feb 2021 07:36:27 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D95ABAC05B;
+        Thu,  4 Feb 2021 07:36:24 +0000 (GMT)
+Received: from [9.85.93.213] (unknown [9.85.93.213])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Feb 2021 07:36:24 +0000 (GMT)
+Reply-To: ananth@linux.ibm.com
+Subject: Re: [PATCH] kprobes: Warn if the kprobe is reregistered
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Cheng Jian <cj.chengjian@huawei.com>,
+        linux-kernel@vger.kernel.org
+References: <161236436734.194052.4058506306336814476.stgit@devnote2>
+From:   Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+Organization: IBM
+Message-ID: <c2b78276-1083-5cd3-909f-b2478b195d47@linux.ibm.com>
+Date:   Thu, 4 Feb 2021 13:06:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612424185; bh=SQJLeoiHUDk7V48beRRwq4hOUrhyW2x2dXNvzrQW7Hs=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding:Content-Type;
-        b=mtLFjXzEdtPhOYfQyQLLAHTISl53x6edyTxNUdEHBw5bCaJpoRKXyxmoIGptWGxL+
-         TOkvy0/6t/VrmaD7vXI+Fk3AID0zbUW/BbQOioHfE3iek3MtTflCrRmy9T3gv8aOr7
-         MuxxFsOeV6IGu03iX7Q1CoXZoDyF2q6rHDGJbqwCnZNNtCFHKuOllwoGTSY7+LCINv
-         wOHUSkXfEc1tRql4d9KT/VoUoeQ943NI63UVzWMvZbaqHjzoLfsKwZQKODKxVbJjqB
-         LLpjjgCFZB2ZECqXPOFZKU+iLMCh7B9K+Vx/yASURHIZXZneek3y3/SxWeGBBaLBtC
-         vEanq4vG/LXFA==
+In-Reply-To: <161236436734.194052.4058506306336814476.stgit@devnote2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_03:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ mlxlogscore=876 malwarescore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a change of memory map occurs, the hardware resources are destroyed
-and then re-created again with the new memory map. In such case, we need
-to restore the hardware available and used indices. The driver failed to
-restore the used index which is added here.
+On 2/3/21 8:29 PM, Masami Hiramatsu wrote:
+> Warn if the kprobe is reregistered, since there must be
+> a software bug (actively used resource must not be re-registered)
+> and caller must be fixed.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Also, since the driver also fails to reset the available and used
-indices upon device reset, fix this here to avoid regression caused by
-the fact that used index may not be zero upon device reset.
-
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices=
-")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
-v0 -> v1:
-Clear indices upon device reset
-
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index 88dde3455bfd..b5fe6d2ad22f 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
- 	u64 device_addr;
- 	u64 driver_addr;
- 	u16 avail_index;
-+	u16 used_index;
- 	bool ready;
- 	struct vdpa_callback cb;
- 	bool restore;
-@@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
- 	u32 virtq_id;
- 	struct mlx5_vdpa_net *ndev;
- 	u16 avail_idx;
-+	u16 used_idx;
- 	int fw_state;
-=20
- 	/* keep last in the struct */
-@@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev,=
- struct mlx5_vdpa_virtque
-=20
- 	obj_context =3D MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
- 	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail=
-_idx);
-+	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
- 	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
- 		 get_features_12_3(ndev->mvdev.actual_features));
- 	vq_ctx =3D MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_contex=
-t);
-@@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, st=
-ruct mlx5_vdpa_virtqueue *m
- struct mlx5_virtq_attr {
- 	u8 state;
- 	u16 available_index;
-+	u16 used_index;
- };
-=20
- static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_vi=
-rtqueue *mvq,
-@@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev=
-, struct mlx5_vdpa_virtqueu
- 	memset(attr, 0, sizeof(*attr));
- 	attr->state =3D MLX5_GET(virtio_net_q_object, obj_context, state);
- 	attr->available_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_a=
-vailable_index);
-+	attr->used_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_used_i=
-ndex);
- 	kfree(out);
- 	return 0;
-=20
-@@ -1535,6 +1540,16 @@ static void teardown_virtqueues(struct mlx5_vdpa_net=
- *ndev)
- 	}
- }
-=20
-+static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
-+{
-+	int i;
-+
-+	for (i =3D ndev->mvdev.max_vqs - 1; i >=3D 0; i--) {
-+		ndev->vqs[i].avail_idx =3D 0;
-+		ndev->vqs[i].used_idx =3D 0;
-+	}
-+}
-+
- /* TODO: cross-endian support */
- static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev *mvdev)
- {
-@@ -1610,6 +1625,7 @@ static int save_channel_info(struct mlx5_vdpa_net *nd=
-ev, struct mlx5_vdpa_virtqu
- 		return err;
-=20
- 	ri->avail_index =3D attr.available_index;
-+	ri->used_index =3D attr.used_index;
- 	ri->ready =3D mvq->ready;
- 	ri->num_ent =3D mvq->num_ent;
- 	ri->desc_addr =3D mvq->desc_addr;
-@@ -1654,6 +1670,7 @@ static void restore_channels_info(struct mlx5_vdpa_ne=
-t *ndev)
- 			continue;
-=20
- 		mvq->avail_idx =3D ri->avail_index;
-+		mvq->used_idx =3D ri->used_index;
- 		mvq->ready =3D ri->ready;
- 		mvq->num_ent =3D ri->num_ent;
- 		mvq->desc_addr =3D ri->desc_addr;
-@@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *=
-vdev, u8 status)
- 	if (!status) {
- 		mlx5_vdpa_info(mvdev, "performing device reset\n");
- 		teardown_driver(ndev);
-+		clear_virtqueues(ndev);
- 		mlx5_vdpa_destroy_mr(&ndev->mvdev);
- 		ndev->mvdev.status =3D 0;
- 		ndev->mvdev.mlx_features =3D 0;
---=20
-2.29.2
-
+Acked-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
