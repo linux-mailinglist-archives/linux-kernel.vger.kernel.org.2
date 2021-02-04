@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4F030FD6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5B030FD71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239657AbhBDT4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        id S239585AbhBDT4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236559AbhBDTvv (ORCPT
+        with ESMTP id S239446AbhBDTwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:51:51 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A68C06121D
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:50:17 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o7so2882976pgl.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:50:17 -0800 (PST)
+        Thu, 4 Feb 2021 14:52:06 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28215C061226
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:50:28 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id j12so2752231pfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:50:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xVfkuBJxoMHahNTAuzjMVwQ5V275LoCHtWLRN4+qRmA=;
-        b=SMhMJ0y1hFFkybLoK6RuX6W/uHtQZL/bYx1Vgct5XlRDHsQX7hEStJhU3muUb4fbEv
-         hiUTrOqPhcz1pfUb97munHXmjX0c8gXGZ3hYDWbcMqclDY0sjxLOb8ku8yWr5/G0SoNh
-         WUrWnsUWQvaHO1lagOpKt+BD5lQaiuCJGoC+s=
+        bh=OW1TYFUhOfJJmljC0tgdXjB4AwIvTk03EU9GC1Jo7to=;
+        b=QoxWWC9a3Ab+eHwwlog/KFHh6xEgiviG8pkcW0WJCAuIG4eYSJu8/B7NXRIWJmgr/t
+         hyxGThp1cc1Ii4JEYpapAJjbUkKqULFin3Dslivyt3QMDqzmj0E0jgteLfoXBlscp1vX
+         2S3uThPW1Blf2iX9nEAmO0GbaVBUe5fG+j89I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xVfkuBJxoMHahNTAuzjMVwQ5V275LoCHtWLRN4+qRmA=;
-        b=I3sYEUvCF7bq1H8BrHJugGX6I0+1u4WPDHpqQOHzEhzQunuIP7e/Wtgdoj6fyCe/ms
-         IGtyGMdo/Lo+onZZx6ROOnOoMm+dEtpTq+vsSU4PbfKOfpHVMO9kK9gxCWsFQDzws1pn
-         JB56x5jJC0nwWCWRqc5/pnSa3Q2w5eJV0UTEsQJA9fy/XB/CFeZtgh6+Q769JAJ6dRxp
-         j4zCwY6M5Ye8eSiBdTkINBXRQWq7GEsMLV2gzN2fKFXVTae6MOWTGl2w48Uue9W8S6sP
-         CwGQ05e1gJxrMOHIokiipOKlpSAI6FvC/StfbQtUIUGxoNgPAurfoMy6qXqzItXyknLO
-         KDNA==
-X-Gm-Message-State: AOAM531Gof3uOLetbJOytW81Kml1tGw5kSm/nRrVipRFKvk8owYdJKGY
-        ZPivzKH+iZn8Eh8Ks3iEdJj16Q==
-X-Google-Smtp-Source: ABdhPJzOajMVaIDiSuI0Zs6A72FQUA7Xr4U1otuUXAtASSA9xiRUczq+mdvc5mt1TaWo3NxHiyLjQw==
-X-Received: by 2002:a62:7d03:0:b029:1bb:5919:6dec with SMTP id y3-20020a627d030000b02901bb59196decmr766097pfc.76.1612468217541;
-        Thu, 04 Feb 2021 11:50:17 -0800 (PST)
+        bh=OW1TYFUhOfJJmljC0tgdXjB4AwIvTk03EU9GC1Jo7to=;
+        b=cX6DTnB0994leLn1z0puaLYaVpDnq4XYo1YJ/onZmdkmlY51m/avZh5jBE9Fjl8LfT
+         mvRkQF80oAufyVJ8RVrQHMWod1obieBafnqH9scS6UulUoSben4I7flR4IM0JcMgbLHf
+         YMzDo96U9yzfcTfg/lXHhYD3SNm7OAGgXCkL9gi9gmtceEy0Y0rPFGdpqWnqaZn8xJr3
+         tJSETlrM6gckmF0eKuZS73M95mEWNEw1jDNDeqQBZH2fFzvJ/OqbHeFvVWNRxG269tOP
+         zUqost1bTo2FCaP1vOcg/425HKfsat15jaTwT/+HTW9hETytNdBb7esiq3scg/WBIvEr
+         cttQ==
+X-Gm-Message-State: AOAM531xyF8Db4CasA0musVz4vw2fU/06qtzvupYtUB92OryE92o18f3
+        LcJ3ZHQmdI40t1gTAlf7U52OkQ==
+X-Google-Smtp-Source: ABdhPJyCzApM7SxOD6qLE24HP6u9ZmMb9IkUQpy5EIL4mvYrNsyM5e0/drq5Jw9qkh7PfEPXvFnWOA==
+X-Received: by 2002:a62:b410:0:b029:1a4:7868:7e4e with SMTP id h16-20020a62b4100000b02901a478687e4emr1077767pfn.62.1612468227717;
+        Thu, 04 Feb 2021 11:50:27 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y16sm7231723pfb.83.2021.02.04.11.50.16
+        by smtp.gmail.com with ESMTPSA id f127sm1167563pgc.48.2021.02.04.11.50.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 11:50:16 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:50:15 -0800
+        Thu, 04 Feb 2021 11:50:26 -0800 (PST)
+Date:   Thu, 4 Feb 2021 11:50:26 -0800
 From:   Kees Cook <keescook@chromium.org>
 To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
 Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
@@ -73,25 +73,25 @@ Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Dave Martin <Dave.Martin@arm.com>,
         Weijiang Yang <weijiang.yang@intel.com>,
         Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v19 4/7] x86/cet/ibt: Update ELF header parsing for
- Indirect Branch Tracking
-Message-ID: <202102041150.191C2FC@keescook>
+Subject: Re: [PATCH v19 6/7] x86/vdso/32: Add ENDBR32 to __kernel_vsyscall
+ entry point
+Message-ID: <202102041150.C7BC3B6@keescook>
 References: <20210203225902.479-1-yu-cheng.yu@intel.com>
- <20210203225902.479-5-yu-cheng.yu@intel.com>
+ <20210203225902.479-7-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203225902.479-5-yu-cheng.yu@intel.com>
+In-Reply-To: <20210203225902.479-7-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 02:58:59PM -0800, Yu-cheng Yu wrote:
-> An ELF file's .note.gnu.property indicates features the file supports.
-> The property is parsed at loading time and passed to arch_setup_elf_
-> property().  Update it for Indirect Branch Tracking.
+On Wed, Feb 03, 2021 at 02:59:01PM -0800, Yu-cheng Yu wrote:
+> From: "H.J. Lu" <hjl.tools@gmail.com>
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Add ENDBR32 to __kernel_vsyscall entry point.
+> 
+> Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
