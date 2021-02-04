@@ -2,165 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440C730F415
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308F130F417
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 14:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236376AbhBDNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 08:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S236355AbhBDNor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 08:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236324AbhBDNma (ORCPT
+        with ESMTP id S236325AbhBDNnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:42:30 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB39CC061573;
-        Thu,  4 Feb 2021 05:41:49 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id q5so2560860ilc.10;
-        Thu, 04 Feb 2021 05:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FcwGwCNpcpd+qkLWuVWx4j+sB84HP58bIF6W3jSzKOw=;
-        b=OwCcrEz34nwaoYgHVhYEuXLUxN8RsVj2AxTD/T++bzASAocHN6OCmydkROHqxhktJ5
-         sz3z7SuApibMd7eQmd4xure6C8lCmXKZ/eEzi70plH7RHOgHYxE6vvNbOWnQ6iNcWoVj
-         +2F13KRS4/cf/3nPwnGNBEkdSpQEWBDbfVwVgNnLneIlb5+nz59xHpy3lv/sWEco+xzz
-         7xJgRhcKcL+Ojf42FcjoXILfFKdKzKZ8b69nuXb8OjhLBljz72vYnyhVv92PJ17p4M8Z
-         jofF6+KxapcXk7914r4cxtm5dCA7165gGVYZqe8vh19cSri8alc71d/nyciiqMxE1BtE
-         v+Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FcwGwCNpcpd+qkLWuVWx4j+sB84HP58bIF6W3jSzKOw=;
-        b=mxbKEbEnWWsWnsFt/3UOYnq05wfuWFbMpds5eZ2FlPX6Qrzw1tpcxpdbAqYbzuvGC4
-         lj4bXh/gYzsum5Gyz6IfWPAU/VgbMG2M8IEmia2a+dg3jb5rZjt5y0MbfBB6at9xNMPQ
-         Gxfywune01ywGqf8VKEzikFHqaTj7wjWyRCfRCcl1Y+uxszKhcXl2ynpvF2bV0h+X6k0
-         FPxlAZWZa1ZOnFff3WCF6OU5RtHjdCnfFVHVdb3BwYbIwuP2+M9am7LdfdmKYs+4zkAM
-         UGe9v1H/mlE6zleE3ddSfyrMZmrJDKmjoN3H2oRHl/XBQsW6CZhZ54IRzQN5wnok7BIN
-         6tHg==
-X-Gm-Message-State: AOAM531jlW9wwL2xMhl/QixjyuFMDkyYLNMOLk1bDFS+7ZNhaPYCqfD8
-        0lEYro180xbdCx+xJJr6TZELfmu7jh/LzBcAa027mKCpEQY=
-X-Google-Smtp-Source: ABdhPJxX3tx631C9/WljgQULwuwYchT/xtMMxnMCZXMpmx6EZW8w6PdFEfGKQbSsOeASSpuPvY/REB6IUOez0hVWFeI=
-X-Received: by 2002:a05:6e02:138f:: with SMTP id d15mr6968376ilo.303.1612446109179;
- Thu, 04 Feb 2021 05:41:49 -0800 (PST)
+        Thu, 4 Feb 2021 08:43:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C8C061786;
+        Thu,  4 Feb 2021 05:42:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=esfcV78RrU8nXrE72X9LckMx7X5reL/P0pwhKEpoq3w=; b=EEFa99xE3ECGRhB28SI4ZjY4Yi
+        2zi2lbL6t/w3MDJsqbSTTXxUCdkmZqMCffLyoGa4IXzIkJUDPq7rHzsGvE1/JYKmPObvd6XPxTjHK
+        f+DJOdmlIuE9n6P33PTnV3QEg5Z3a+ZlgO1dCIsog9ISzdkaPbj7f0DfcTU4AooM6CflEI1pOZQAn
+        J76NZlxMOEMnWAvW1L0hycrU6rlq+RaSYTZOBqJYv3/WVZ8mpCOpDuAO2yA58ifD+umhnRBTmNAc3
+        leFwjnf15NZFu8n4wCvXpHg28KOKHhyARfSXOvPz6P1do77EDtYVz4dwaVqihgV7O6m3QUjbvepck
+        KlC815Ug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7etV-000vze-JP; Thu, 04 Feb 2021 13:42:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BBD83003D8;
+        Thu,  4 Feb 2021 14:42:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1E4752C0034C0; Thu,  4 Feb 2021 14:42:00 +0100 (CET)
+Date:   Thu, 4 Feb 2021 14:42:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexey Klimov <aklimov@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
+        qais.yousef@arm.com, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+Message-ID: <YBv5qDBdb/VAq0Vw@hirez.programming.kicks-ass.net>
+References: <20210204010157.1823669-1-aklimov@redhat.com>
+ <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
+ <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
- <20210201145105.20459-7-alexandru.ardelean@analog.com> <CAHp75VcTk-Lv_Hr0VHnd-r2XoVeRHEocwVyg6kKdWYrkHnf0gg@mail.gmail.com>
-In-Reply-To: <CAHp75VcTk-Lv_Hr0VHnd-r2XoVeRHEocwVyg6kKdWYrkHnf0gg@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Thu, 4 Feb 2021 15:41:37 +0200
-Message-ID: <CA+U=Dso4zosunKgqb64+EwepUwcrpJN0ANwvFXnsz5KxVhOG-w@mail.gmail.com>
-Subject: Re: [PATCH v3 06/11] iio: core: merge buffer/ & scan_elements/ attributes
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 12:04 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Feb 1, 2021 at 5:28 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
+On Thu, Feb 04, 2021 at 12:50:34PM +0000, Alexey Klimov wrote:
+> On Thu, Feb 4, 2021 at 9:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > With this change, we create a new directory for the IIO device called
-> > buffer0, under which both the old buffer/ and scan_elements/ are stored.
+> > On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
+> > > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+> > >       err = _cpu_up(cpu, 0, target);
+> > >  out:
+> > >       cpu_maps_update_done();
+> > > +
+> > > +     /* To avoid out of line uevent */
+> > > +     if (!err)
+> > > +             cpuset_wait_for_hotplug();
+> > > +
+> > >       return err;
+> > >  }
+> > >
 > >
-> > This is done to simplify the addition of multiple IIO buffers per IIO
-> > device. Otherwise we would need to add a bufferX/ and scan_elementsX/
-> > directory for each IIO buffer.
-> > With the current way of storing attribute groups, we can't have directories
-> > stored under each other (i.e. scan_elements/ under buffer/), so the best
-> > approach moving forward is to merge their attributes.
+> > > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
+> > >       struct device *dev = get_cpu_device(cpu);
+> > >
+> > >       dev->offline = false;
+> > > -     /* Tell user space about the state change */
+> > > -     kobject_uevent(&dev->kobj, KOBJ_ONLINE);
+> > >  }
+> > >
 > >
-> > The old/legacy buffer/ & scan_elements/ groups are not stored on the opaque
-> > IIO device object. This way the IIO buffer can have just a single
-> > attribute_group object, saving a bit of memory when adding multiple IIO
-> > buffers.
->
-> ...
->
-> > +static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
-> > +                                                  struct attribute **buffer_attrs,
-> > +                                                  int buffer_attrcount,
-> > +                                                  int scan_el_attrcount)
-> > +{
-> > +       struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > +       struct attribute_group *group;
-> > +       int ret;
-> > +
-> > +       group = &iio_dev_opaque->legacy_buffer_group;
->
-> > +       group->attrs = kcalloc(buffer_attrcount + 1,
-> > +                              sizeof(struct attribute *), GFP_KERNEL);
-> > +       if (!group->attrs)
-> > +               return -ENOMEM;
-> > +
-> > +       memcpy(group->attrs, buffer_attrs,
-> > +              buffer_attrcount * sizeof(struct attribute *));
->
-> kmemdup() ?
-> Perhaps introduce kmemdup_array().
+> > One concequence of this is that you'll now get a bunch of notifications
+> > across things like suspend/hybernate.
+> 
+> The patch doesn't change the number of kobject_uevent()s. The
+> userspace will get the same number of uevents as before the patch (at
+> least if I can rely on my eyes).
 
-doesn't add much benefit from what i can tell;
-and it complicates things with the fact that we need to add the extra
-null terminator element;
-[1] if we kmemdup(buffer_attrcount + 1) , the copy an extra element we
-don't need, which needs to be null-ed
+bringup_hibernate_cpu() didn't used to generate an event, it does now.
+Same for bringup_nonboot_cpus().
 
->
-> > +       group->name = "buffer";
-> > +
-> > +       ret = iio_device_register_sysfs_group(indio_dev, group);
-> > +       if (ret)
-> > +               goto error_free_buffer_attrs;
-> > +
-> > +       group = &iio_dev_opaque->legacy_scan_el_group;
->
-> > +       group->attrs = kcalloc(scan_el_attrcount + 1,
-> > +                              sizeof(struct attribute *), GFP_KERNEL);
-> > +       if (!group->attrs) {
-> > +               ret = -ENOMEM;
-> > +               goto error_free_buffer_attrs;
-> > +       }
-> > +
-> > +       memcpy(group->attrs, &buffer_attrs[buffer_attrcount],
-> > +              scan_el_attrcount * sizeof(struct attribute *));
->
-> Ditto.
+Also, looking again, you don't seem to be reinstating the OFFLINE event
+you took out.
 
-continuing from [1]
-here it may be worse, because kmemdup() would copy 1 element from
-undefined memory;
 
->
-> > +       group->name = "scan_elements";
-> > +
-> > +       ret = iio_device_register_sysfs_group(indio_dev, group);
-> > +       if (ret)
-> > +               goto error_free_scan_el_attrs;
-> > +
-> > +       return 0;
-> > +
-> > +error_free_buffer_attrs:
-> > +       kfree(iio_dev_opaque->legacy_buffer_group.attrs);
-> > +error_free_scan_el_attrs:
-> > +       kfree(iio_dev_opaque->legacy_scan_el_group.attrs);
-> > +
-> > +       return ret;
-> > +}
->
-> --
-> With Best Regards,
-> Andy Shevchenko
