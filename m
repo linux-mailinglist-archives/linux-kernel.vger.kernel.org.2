@@ -2,118 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A30830ED28
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4B430ED30
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhBDHTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:19:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232926AbhBDHT1 (ORCPT
+        id S234271AbhBDHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:20:20 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10198 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234165AbhBDHUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:19:27 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA88C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:18:46 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id j2so1518291pgl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=2eRuV+MXnwPgq49jF42geq/0UwpntOjcJgm9XMP9CAg=;
-        b=SLMDsE4y0FhDbfD2z7XAMkH8WPSB/nV94IxlWnVjQn726xDeAQXW2Hsadl8591l66S
-         RSDITY6xHDiPuO2zpDHQq36N5MK4G+YHDQcx2+astVGW/GRZKLFuyMveXkAB6zu1IbZv
-         OR7I2t8hqik4CUPYX9fOzvadOod0HDyxalU+rH0ZcbBJ7gS3npq+RW4PlUUoJx8/UUem
-         su6IDcfNwrznXjwq6v5ddUzh5Q4VndIHMj9h1cf0TIqUFMsgoC2yn35BKW9SNHF6PfLI
-         2ZZYzJIr/yKsnPqqAaPKKWDZHlPrzUBUaS95mohvSMrMhYwMdbHzsRRbNHuVpI9UGSAF
-         a0+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=2eRuV+MXnwPgq49jF42geq/0UwpntOjcJgm9XMP9CAg=;
-        b=CcRSQz12sPgG4QIjqmT1gJxDANxuG4rLK/JMXA4s6lL+IuQK+DhRSjcP6Lop61emLF
-         /sPV2IKCTTMnp1pNDGInuURNcW2gojsGbDNfncy3N+w+/g/PSDiLwgNNGNPrlihSYF/o
-         e6eei6SsPTwwadV7zTAt4vQ0fkvis5qgcaALytdFuWg8GPXUE64MK/2aRkVzs2346MDc
-         7f19RpC6y+bUenlDKx4F/TlM6IojvK4GR+pcrpWGE0bviLqRlatsTb4/1+eqZ3k03K7r
-         EEBMrgDxV++LnnFgV37a8KrMsTWjwm79jHBBvIXkyr4kZfDDbwRFvQVZCyu/mv6tGkMg
-         2d6A==
-X-Gm-Message-State: AOAM532an2dM94/2r3EAx4dP4cSpLD8IazA1Ei49tSVree0R0BKO0Jhe
-        Pl3fNRWGh+sd9jOoYxWSSCTRBoy2CtYayw==
-X-Google-Smtp-Source: ABdhPJzvlmRt84/scknRPGOoIfunryBXyEpNMmzROMAU9TTEX5OhtIM2izr8j3fiavxrxXgOdEUybQ==
-X-Received: by 2002:a62:7b90:0:b029:1be:9e89:1db5 with SMTP id w138-20020a627b900000b02901be9e891db5mr6677190pfc.35.1612423125170;
-        Wed, 03 Feb 2021 23:18:45 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:5cde:5545:a9de:114f])
-        by smtp.gmail.com with ESMTPSA id 30sm5238128pgl.77.2021.02.03.23.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 23:18:43 -0800 (PST)
-Date:   Wed, 3 Feb 2021 23:18:38 -0800
-From:   Benson Leung <bleung@google.com>
-To:     linux-kernel@vger.kernel.org,
-        Prashant Malani <pmalani@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Utkarsh Patel <utkarsh.h.patel@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>, bleung@chromium.org
-Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec: Import Type C control
- command
-Message-ID: <161242303435.1051580.1469403981857153644.b4-ty@chromium.org>
+        Thu, 4 Feb 2021 02:20:02 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601b9ff90001>; Wed, 03 Feb 2021 23:19:21 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Thu, 4 Feb 2021 07:19:19 +0000
+Date:   Thu, 4 Feb 2021 09:19:15 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Si-Wei Liu <siwliu.kernel@gmail.com>
+CC:     Si-Wei Liu <si-wei.liu@oracle.com>, <mst@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>
+Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change
+ map
+Message-ID: <20210204071915.GA84219@mtl-vdi-166.wap.labs.mlnx>
+References: <20210202142901.7131-1-elic@nvidia.com>
+ <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
+ <20210203064812.GA33072@mtl-vdi-166.wap.labs.mlnx>
+ <CAPWQSg0OptdAstG10e+zMvD2ZHbHdS+o2ppUxZyM0kJsd34FdA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s8Wck68FOGenQAW8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210203021539.745239-1-pmalani@chromium.org>
+In-Reply-To: <CAPWQSg0OptdAstG10e+zMvD2ZHbHdS+o2ppUxZyM0kJsd34FdA@mail.gmail.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612423161; bh=qXil4DVR+JNtZdJhYnjwoBi2C3SmZ4RSHdznLAfLqAM=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=UlEQn9p9Nk1JojpSH6PXd8MKt0dOxRKYw8iMGMZBuHBwDud4T1iZ2IvxmKHCzf7CG
+         APZk7f+plmsURiPTbOGQ+fTMkfuYdLBLFczwUgncJ3ZpcXxdYaJD+rl0UClAoD0+U6
+         Ds5BfR2e0Ogf/wu9MrixpFGvRigSfH8hJ1cQAd8Y3ZVXEmtN4A9iK2YSOmzCNbYgrZ
+         6Nb7/2ndMaM26lDpPrkl5BTiHTjkcJSkq0UV+vbBPxzH3penIQ7189LFEva0PTVV1F
+         wpKaRmTuXrINw9yAs2iGhx9Ox/+R1xGltj0GoCYagCheaM7p6sCNaWuy8e2QzroAvu
+         TOKOjnSHevD8Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 03, 2021 at 12:33:26PM -0800, Si-Wei Liu wrote:
+> On Tue, Feb 2, 2021 at 10:48 PM Eli Cohen <elic@nvidia.com> wrote:
+> >
+> > On Tue, Feb 02, 2021 at 09:14:02AM -0800, Si-Wei Liu wrote:
+> > > On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
+> > > >
+> > > > When a change of memory map occurs, the hardware resources are destroyed
+> > > > and then re-created again with the new memory map. In such case, we need
+> > > > to restore the hardware available and used indices. The driver failed to
+> > > > restore the used index which is added here.
+> > > >
+> > > > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > ---
+> > > > This patch is being sent again a single patch the fixes hot memory
+> > > > addtion to a qemy process.
+> > > >
+> > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > >
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > index 88dde3455bfd..839f57c64a6f 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+> > > >         u64 device_addr;
+> > > >         u64 driver_addr;
+> > > >         u16 avail_index;
+> > > > +       u16 used_index;
+> > > >         bool ready;
+> > > >         struct vdpa_callback cb;
+> > > >         bool restore;
+> > > > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+> > > >         u32 virtq_id;
+> > > >         struct mlx5_vdpa_net *ndev;
+> > > >         u16 avail_idx;
+> > > > +       u16 used_idx;
+> > > >         int fw_state;
+> > > >
+> > > >         /* keep last in the struct */
+> > > > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+> > > >
+> > > >         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+> > > >         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+> > > > +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+> > >
+> > > The saved indexes will apply to the new virtqueue object whenever it
+> > > is created. In virtio spec, these indexes will reset back to zero when
+> > > the virtio device is reset. But I don't see how it's done today. IOW,
+> > > I don't see where avail_idx and used_idx get cleared from the mvq for
+> > > device reset via set_status().
+> > >
+> >
+> > Right, but this is not strictly related to this patch. I will post
+> > another patch to fix this.
+> 
+> Better to post these two patches in a series.Or else it may cause VM
+> reboot problem as that is where the device gets reset. The avail_index
+> did not as the correct value will be written to by driver right after,
+> but used_idx introduced by this patch is supplied by device hence this
+> patch alone would introduce regression.
+> 
 
---s8Wck68FOGenQAW8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thinking it over, I think this should be all fixed in a single patch.
+This fix alone introduces a regerssion as you pointed and there's no
+point in fixing it in another patch.
 
-Hi Prashant,
-
-On Tue, 2 Feb 2021 18:15:37 -0800, Prashant Malani wrote:
-> This command is used to communicate with the Chrome Embedded Controller
-> (EC) regarding USB Type C events and state.
->=20
-> These header updates are included in the latest Chrome OS EC headers [1]
->=20
-> [1]
-> https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/mai=
-n/include/ec_commands.h
-
-Applied, thanks!
-
-[1/2] platform/chrome: cros_ec: Import Type C control command
-      commit: 3ec28d3673362076444e290bdb0d94ec6432dc09
-[2/2] platform/chrome: cros_ec_typec: Clear Type C disc events
-      commit: d521119c8b0d70b91971d632430ec1143e5d2e26
-
-Best regards,
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---s8Wck68FOGenQAW8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBufzgAKCRBzbaomhzOw
-wj2uAP49ietv5xNfS66ocvls3D80NF2Tn5tE2b+8lv8nqLwsBQD/aUezNyrvbt3B
-u1W2dP6hbipw3/VxwdG9O6iAQOX9VAw=
-=YdQv
------END PGP SIGNATURE-----
-
---s8Wck68FOGenQAW8--
+> >
+> > BTW, can you describe a secnario that would cause a reset (through
+> > calling set_status()) that happens after the VQ has been used?
+> 
+> You can try reboot the guest, that'll be the easy way to test.
+> 
+> -Siwei
+> 
+> >
+> > > -Siwei
+> > >
+> > >
+> > > >         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+> > > >                  get_features_12_3(ndev->mvdev.actual_features));
+> > > >         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+> > > > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+> > > >  struct mlx5_virtq_attr {
+> > > >         u8 state;
+> > > >         u16 available_index;
+> > > > +       u16 used_index;
+> > > >  };
+> > > >
+> > > >  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+> > > > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+> > > >         memset(attr, 0, sizeof(*attr));
+> > > >         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+> > > >         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+> > > > +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+> > > >         kfree(out);
+> > > >         return 0;
+> > > >
+> > > > @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+> > > >                 return err;
+> > > >
+> > > >         ri->avail_index = attr.available_index;
+> > > > +       ri->used_index = attr.used_index;
+> > > >         ri->ready = mvq->ready;
+> > > >         ri->num_ent = mvq->num_ent;
+> > > >         ri->desc_addr = mvq->desc_addr;
+> > > > @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+> > > >                         continue;
+> > > >
+> > > >                 mvq->avail_idx = ri->avail_index;
+> > > > +               mvq->used_idx = ri->used_index;
+> > > >                 mvq->ready = ri->ready;
+> > > >                 mvq->num_ent = ri->num_ent;
+> > > >                 mvq->desc_addr = ri->desc_addr;
+> > > > --
+> > > > 2.29.2
+> > > >
