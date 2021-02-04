@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2413530ED12
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBAA30ED19
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhBDHOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S232762AbhBDHPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhBDHOn (ORCPT
+        with ESMTP id S230252AbhBDHO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:14:43 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279E5C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:14:03 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id s3so2823023edi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:14:03 -0800 (PST)
+        Thu, 4 Feb 2021 02:14:58 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4820DC061786;
+        Wed,  3 Feb 2021 23:14:18 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id x9so1275716plb.5;
+        Wed, 03 Feb 2021 23:14:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=m4Svsks4F1WJxXzmQuHWNGVoFSZ6gcnQj15bvC/Ooz0=;
-        b=gMJ2xTHUNIpcuu/J7Ya68NOeZt8o6s5Bm08ruKNPXOLhlWPlMOvYXz8LPxzMvU6L2S
-         LvI9BCHyUYNmsUX6Rzw8OYCjGHNevqWkTFeuypfGy8utzB6L8Ojv0k3D/espzd4LnVaR
-         /3I6K8ccbFwphf19PdJuVENBaf8TXRk5AWWehZqAkEQSC5yBtdigfVMm5wiB2C9+rd8t
-         UCxKjEUjdi3AHCbtT3mNDhosYNFVHMTuJOaGqeui72nWtkJOk9Z2ryOkhL17y5uLypUQ
-         AbzxoZ2u0YBHzUZqlWKIIfKL7OMlBJGCOlBa/XpyotPIdYdWe2q1uE6vSuYECNYuTMCg
-         lVhA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cITwC79ldFMQgyusgEuHXGzdOsMzB7KooQOa1cAsbsI=;
+        b=e3Lx4YFecALYTc75eXFh0jJT2hLv/Ecj8VjgNwcJqJlk7r/Ibtsq4muJXPwemL2DaH
+         aPznsk5ijZg6NTjCW31k7YCfokLRHxii24uVWm35lN9hqROee0DQX8hpZRTrmp07i3Iy
+         OAy7J5TrebcmL0zLvQLVKtExkXUwUIW7p+JKSbdvyRzZDrSCFP0zJGzJ4ZETTc+I86R0
+         xMj+r3VDQ+THnMS8Y/+wZHjDSDMh7wO2Ygxi6d3ww0El7SwntaHvFxAWDtKUhj+XRKbw
+         cKGncdr3fSNv8cIVz+E2IkL+Xhk4W5YRAQNwPLJFvBLm7plzqum1w9DkcWke5spNhhzg
+         rjPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=m4Svsks4F1WJxXzmQuHWNGVoFSZ6gcnQj15bvC/Ooz0=;
-        b=rpRWz0f8d2HpGXXB5PYTBwDf3zED23cgE504fwnC+jIhF0jphGM18ARmsL/ayDdhFv
-         SGfgRQX+Hwq68BCRdjQCPxVnsYOrMAccZIHK9XyKVgaknpafIWWLLMJZ3jkgEPJYGk/Y
-         IqWTFkP1Sga/Ux1m/N0tlmcvRoEPHJb3UdBiP5GhmOImyPVYM8nKUKggPKCXohGquc+g
-         illVUFx7onfwf34Nz9T6+t1crlJs+Ah2dj4Xk06t5pSByAecv+iYACVSUqiZoNDkyvWv
-         1UIRThX6vxc8HHmPJL1vkL4iVtx1DS5AWpZW/+ZXx1Ds2xLtdZx4QB5YHuTlSMHm8Vay
-         uaaA==
-X-Gm-Message-State: AOAM530M5qOAaf7B9dAJm+T4srEx5WhtI6GboDv/+UB2dExKJoy2iazy
-        fd+oqRd27efZo2iDaEHAJGL6EmFYMfRUvjFMKAJig5pPvTPinoQ7
-X-Google-Smtp-Source: ABdhPJyYwBxPZZFNMfZ6eK3qbEHv7r/5IBUDsRkUWrmY0fAIbVrg23GHDeCz0j6nrUS+TJpHNk46L0SMENrXvYa0CB0=
-X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr6736383edd.365.1612422841623;
- Wed, 03 Feb 2021 23:14:01 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cITwC79ldFMQgyusgEuHXGzdOsMzB7KooQOa1cAsbsI=;
+        b=if6cqTd39W/MEhvUYQ+U0I5CYwVxUQxFrtIqoFVEg4EpKfGuU6QXSHA1m0aoh+ledy
+         9Ms8ymEsqT+UzXIkQEydIzPl3B69M2pUBRi9u6Id6F2e+tFsZ6+a0IAwctm69yxm64hc
+         DB1MQ3y8gbwdNNeCtP/6dzG0z4pZYHlS3vYx6OClkn0NQPBK7T2tMKGiiLdEMB59O+pB
+         luBBvNVZ4a9f/i/7siK2jJ2abhoSB6oA2F0pK0xujsYDZhl3f4WzEyhPQ6CDSmLOEx5+
+         71n6r7sBCqc0jbkxlGcMkVzN13yumEz+WkFMcU6+VAw8BWF2Ra7f3kgis2/axnTIesm8
+         R3Og==
+X-Gm-Message-State: AOAM5328IP94g4SdqPd/R+M0OUNVFcWe1keSGvbRd/slRavuF2R1DtRX
+        8fh/i3oEvPXYhVGeBTG7Y+Q=
+X-Google-Smtp-Source: ABdhPJxfYQJ5QrlYlB4H/jE8kCSwX4bQXMNS5VhU1kvbCqCw53ncVd7SVkgYhkKa7g2RZEUJ3hMWkQ==
+X-Received: by 2002:a17:902:bf07:b029:e1:763e:b3a3 with SMTP id bi7-20020a170902bf07b02900e1763eb3a3mr7112363plb.39.1612422857763;
+        Wed, 03 Feb 2021 23:14:17 -0800 (PST)
+Received: from ubt.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id h4sm4578855pfo.187.2021.02.03.23.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 23:14:16 -0800 (PST)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: [PATCH v4 0/2] Add Unisoc IOMMU basic driver
+Date:   Thu,  4 Feb 2021 15:14:02 +0800
+Message-Id: <20210204071404.891098-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 4 Feb 2021 12:43:50 +0530
-Message-ID: <CA+G9fYsDsB5WNs5hjQiOY-NH0B8HdzqCyju7Xg1UXi-BvPfj6g@mail.gmail.com>
-Subject: [next] Unable to handle kernel NULL pointer dereference at - pc : gpiodevice_release
-To:     linux-gpio@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While running kselftest gpio mockup test case on qualcomm dragonboard 410c
-the following kernel crash reported on Linux next tag 20210203.
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-# selftests: gpio: gpio-mockup.sh
-# 1.  Module load tests
-# 1.1.  dynamic allocation of gpio
-# ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
-# test failed: line value is 127 when 1 was expected
-# GPIO gpio-mockup test FAIL
-[  124.539778] Unable to handle kernel NULL pointer dereference at
-virtual address 00000000000005a8
-[  124.539864] Mem abort info:
-[  124.547998]   ESR = 0x96000006
-[  124.550188]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  124.553473]   SET = 0, FnV = 0
-[  124.558926]   EA = 0, S1PTW = 0
-[  124.561646] Data abort info:
-[  124.564863]   ISV = 0, ISS = 0x00000006
-[  124.567933]   CM = 0, WnR = 0
-[  124.571507] user pgtable: 4k pages, 48-bit VAs, pgdp=000000008b721000
-[  124.574694] [00000000000005a8] pgd=0000000091cd2003,
-p4d=0000000091cd2003, pud=00000000917ac003, pmd=0000000000000000
-[  124.581396] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[  124.591499] Modules linked in: gpio_mockup(-) snd_soc_hdmi_codec
-adv7511 cec rfkill snd_soc_msm8916_analog qcom_spmi_temp_alarm
-qcom_pon rtc_pm8xxx msm snd_soc_lpass_apq8016 snd_soc_lpass_cpu
-snd_soc_lpass_platform snd_soc_msm8916_digital qcom_camss
-videobuf2_dma_sg snd_soc_apq8016_sbc v4l2_fwnode snd_soc_qcom_common
-videobuf2_memops videobuf2_v4l2 mdt_loader videobuf2_common
-drm_kms_helper qnoc_msm8916 qcom_rng i2c_qcom_cci icc_smd_rpm
-crct10dif_ce socinfo rmtfs_mem display_connector drm qrtr ns fuse
-[  124.619092] CPU: 0 PID: 5055 Comm: modprobe Not tainted
-5.11.0-rc6-next-20210203 #1
-[  124.641324] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[  124.648877] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-[  124.655819] pc : gpiodevice_release+0x38/0x80
-[  124.661806] lr : device_release+0x3c/0x98
-[  124.666058] sp : ffff800013f23b30
-[  124.670051] x29: ffff800013f23b30 x28: ffff0000157baf80
-[  124.673351] x27: 0000000000000000 x26: 0000000000000000
-[  124.678734] x25: 0000000000000045 x24: ffff00000b5d6cd0
-[  124.684029] x23: ffff800013f23c88 x22: 0000000000000000
-[  124.689324] x21: ffff00000fb5f080 x20: ffff000002334e00
-[  124.694619] x19: 0000000000000000 x18: ffff800012dd6a50
-[  124.699914] x17: 0000000000000000 x16: 0000000000000000
-[  124.705210] x15: 00000000000694e0 x14: 00000000ffffffff
-[  124.710512] x13: 0000000000000001 x12: 000000000000e107
-[  124.715799] x11: 000000000000e10a x10: ffff800012d34a50
-[  124.721096] x9 : ffff80001344a000 x8 : 00000000512c1926
-[  124.726391] x7 : 000000000cb44760 x6 : ffff800013f23a40
-[  124.731685] x5 : dead000000000100 x4 : dead000000000122
-[  124.736981] x3 : ffff800012891000 x2 : 2be62a0e7519e400
-[  124.742275] x1 : ffff800010829ad0 x0 : ffff800012a694e0
-[  124.747571] Call trace:
-[  124.752862]  gpiodevice_release+0x38/0x80
-[  124.755035]  device_release+0x3c/0x98
-[  124.759201]  kobject_put+0x90/0x220
-[  124.762846]  put_device+0x24/0x30
-[  124.766145]  gpiochip_remove+0xf4/0x120
-[  124.769618]  devm_gpio_chip_release+0x20/0x30
-[  124.773263]  devm_action_release+0x20/0x30
-[  124.777777]  release_nodes+0x150/0x248
-[  124.781771]  devres_release_all+0x3c/0x60
-[  124.785503]  device_release_driver_internal+0x128/0x1f0
-[  124.789584]  driver_detach+0x5c/0xe8
-[  124.794618]  bus_remove_driver+0x64/0x118
-[  124.798439]  driver_unregister+0x34/0x60
-[  124.802344]  platform_driver_unregister+0x20/0x30
-[  124.806339]  gpio_mockup_exit+0x30/0x3d0 [gpio_mockup]
-[  124.810939]  __arm64_sys_delete_module+0x1c8/0x2b8
-[  124.815973]  el0_svc_common+0x88/0x1b8
-[  124.820745]  do_el0_svc+0x38/0x90
-[  124.824478]  el0_svc+0x1c/0x28
-[  124.827864]  el0_sync_handler+0x8c/0xb0
-[  124.830815]  el0_sync+0x13c/0x140
-[  124.834555] Code: f2fbd5a4 90011200 91124000 91014000 (f942d663)
-[  124.838029] ---[ end trace 15e9a0840604e538 ]---
+Changes since v3:
+* Rebased on iommu/next, and fixed compile error reported by kernel test robot <lkp@intel.com>;
+* %s/iommu/IOMMU/ properly in the whole patchset.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Changes since v2:
+* Added a WARN and return 0 if an invalid iova was passed to sprd_iommu_iova_to_phys();
+* Changed the name of sprd_iommu_write();
+* Revised CONFIG_SPRD_IOMMU help graph in Kconfig.
+* Revised comments for the struct sprd_iommu_device;
+* Converted to use "GPL" instread of "GPL v2", they are same as license-rules.rst shows.
 
-full test log link,
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210203/testrun/3878290/suite/linux-log-parser/test/check-kernel-oops-2224485/log
+Changes since v1:
+* Fixed compile errors reported by kernel test robot <lkp@intel.com>.
+* Changed to use syscon to get mapped registers for iommu and media devices to avoid double map issue.
+* Addressed Robin's comments:
+- Added including offset in the returned physical address if the input virtual address isn't page-aligned;
+- Added platform_device_put() after calling of_find_device_by_node();
+- Removed iommu register offset from driver, it will be defined as the cell of DT reference to syscon phandle;
+- Removed multi compatible strings which are not needed;
+- Added comments for the function sprd_iommu_clk_enable();
+- Added clocks property in bindings;
+- Set device_driver.suppress_bind_attrs to disable unbind the devices via sysfs;
+- A few trivial fixes.
 
-metadata:
-  git branch: master
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-  git describe: next-20210203
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/952/config
-  build: http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/952/
-vmlinux: http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/952/vmlinux
+Changes since RFC v2:
+* Addressed Robin's comments:
+- Add COMPILE_TEST support;
+- Use DMA allocator for PTE;
+- Revised to avoid resource leak issue;
+- Added ->iotlb_sync implemented;
+- Moved iommu group allocation to probe;
+- Changed some function names to make them sprd specific;
+* Added support for more iommu instance;
 
+Changes since RFC v1:
+* Rebased on v5.11-rc1;
+* Changed sprd-iommu to tristate;
+* Removed check for args_count of iommu OF node, since there's no args
+  for sprd-iommu device node;
+* Added another IP version (i.e. vau);
+* Removed unnecessary configs selection from CONFIG_SPRD_IOMMU;
+* Changed to get zeroed pages.
+
+Chunyan Zhang (2):
+  dt-bindings: iommu: add bindings for sprd IOMMU
+  iommu: add Unisoc IOMMU basic driver
+
+ .../devicetree/bindings/iommu/sprd,iommu.yaml |  72 +++
+ drivers/iommu/Kconfig                         |  12 +
+ drivers/iommu/Makefile                        |   1 +
+ drivers/iommu/sprd-iommu.c                    | 599 ++++++++++++++++++
+ 4 files changed, 684 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+ create mode 100644 drivers/iommu/sprd-iommu.c
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.25.1
+
