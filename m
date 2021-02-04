@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE223101EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8454D3101F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhBEA6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        id S232297AbhBEA7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhBEA6f (ORCPT
+        with ESMTP id S232363AbhBEA6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:58:35 -0500
+        Thu, 4 Feb 2021 19:58:37 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F139DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:57:54 -0800 (PST)
-Message-Id: <20210204211154.410462790@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04B8C061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:57:56 -0800 (PST)
+Message-Id: <20210204211154.618389756@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612486672;
+        s=2020; t=1612486675;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ec7qT5feaQJD+vqNR+Inh5MykR8KVU7uTCahPRakOBM=;
-        b=PNdNBJKALw6C4fqsd3wbRy1LudCNnQcGWCbsn8kaKPHQqZQqMnT6SliLj03bFHjP3J1gTv
-        G+fu8LEOCtfNs3Q8QS5Uv8c5MVtlJCeb0UkpXmceU4tSHBCxPInHH9z4ky6+iH4dljpxns
-        OyR0EY4HJiuPMsFroF7vRGc79pMSHLRRDGIivdfqw/KN/DGE8te5C7+EGDBe0XXaRf8FpA
-        icT16aVJHSYjcqSX3Xu2iTDybeKOkXNHhe4IhspFRJ80dOZUmVkPHsNTzODBk8iz1OhEzZ
-        0wtdSDhoTp4C1C6oLEbTadY/FOVbx/HvaDkAug5ZGl7tCIhHltSAmcNiyQvLGA==
+        bh=jke4TwRXh62mH29B7wn3fp0JhLdsZH/gMuh47aaWxh4=;
+        b=r5ui5ypEo4HhJeiWIT4672ZvHiQUhOVLBrrPN4Rc2Npa2pLvOOFSCyIct4RdWEPWtvqg9G
+        7/moHgVQTT0phkjQAbF9Ai1oH1tY66Rr5Yx2K4WRvKyvdjxdt5+dQlp+5vYOVLt+gTSWYC
+        KcCNifBdXfqe89gC+polINfe7A6rYHpeA29jduZrzhWZkCME0awN+8pLLG/3n1e8+EtNz0
+        /TcDiZvroWhgEl6IEhJuI4BDvkdna3NXxobiQP3BwZtgyt5e8KKDdmIitNiVk6/0DgdAMh
+        YC5o/acJWiN1r7zvEl8YOu2kkN7P37cBGYDzKFNM9W1wV3tnxIk++1o+dGMLSg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612486672;
+        s=2020e; t=1612486675;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ec7qT5feaQJD+vqNR+Inh5MykR8KVU7uTCahPRakOBM=;
-        b=iTfhpPhHyMvXsuvxWosq6xps0kLLswmAwAxb8ZYoHTvFfnTgJf9J+PMqXoRKaYnfGMzqha
-        IXYjrNBBwEhx76BQ==
-Date:   Thu, 04 Feb 2021 21:49:06 +0100
+        bh=jke4TwRXh62mH29B7wn3fp0JhLdsZH/gMuh47aaWxh4=;
+        b=neR5x4ELI0dDBO/qyT62WJonHc21iN6MIHLPeOlXewQbQe68ROxDoTS+bp5BVqe/91n0a4
+        8YusluTWtbCi5iCA==
+Date:   Thu, 04 Feb 2021 21:49:08 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [patch 03/12] x86/irq/64: Adjust the per CPU irq stack pointer by 8
+Subject: [patch 05/12] x86/irq: Provide macro for inlining irq stack switching
 References: <20210204204903.350275743@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,171 +49,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The per CPU hardirq_stack_ptr contains the pointer to the irq stack in the
-form that it is ready to be assigned to [ER]SP so that the first push ends
-up on the top entry of the stack.
+The effort to make the ASM entry code slim and unified moved the irq stack
+switching out of the low level ASM code so that the whole return from
+interrupt work and state handling can be done in C and the ASM code just
+handles the low level details of entry and exit.
 
-But the stack switching on 64 bit has the following rules:
+This ended up being a suboptimal implementation for various reasons
+(including tooling). The main pain points are:
 
-    1) Store the current stack pointer (RSP) in the top most stack entry
-       to allow the unwinder to link back to the previous stack
+ - The indirect call which is expensive thanks to retpoline
 
-    2) Set RSP to the top most stack entry
+ - The inability to stay on the irq stack for softirq processing on return
+   from interrupt
 
-    3) Invoke functions on the irq stack
+ - The fact that the stack switching code ends up being an easy to target
+   exploit gadget.
 
-    4) Pop RSP from the top most stack entry (stored in #1) so it's back
-       to the original stack.
+Prepare for inlining the stack switching logic into the C entry points by
+providing a ASM macro which contains the guts of the switching mechanism:
 
-That requires all stack switching code to decrement the stored pointer by 8
-in order to be able to store the current RSP and then set RSP to that
-location. That's a pointless exercise.
+  1) Store RSP at the top of the irq stack
+  2) Switch RSP to the irq stack
+  3) Invoke code
+  4) Pop the original RSP back
 
-Do the -8 adjustment right when storing the pointer and make the data type
-a void pointer to avoid confusion vs. the struct irq_stack data type which
-is on 64bit only used to declare the backing store. Move the definition
-next to the inuse flag so they end up in the same cache line.
+Document the unholy asm() logic while at it to reduce the amount of head
+scratching required a half year from now.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/irq_stack.h |    6 +++---
- arch/x86/include/asm/processor.h |    7 +++----
- arch/x86/kernel/cpu/common.c     |    2 +-
- arch/x86/kernel/dumpstack_64.c   |   22 ++++++++++++++++------
- arch/x86/kernel/irq_64.c         |    6 ++++--
- 5 files changed, 27 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/irq_stack.h |  104 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
 --- a/arch/x86/include/asm/irq_stack.h
 +++ b/arch/x86/include/asm/irq_stack.h
-@@ -23,7 +23,7 @@ static __always_inline void __run_on_irq
- 	void *tos = __this_cpu_read(hardirq_stack_ptr);
+@@ -7,6 +7,110 @@
+ #include <asm/processor.h>
  
- 	__this_cpu_write(hardirq_stack_inuse, true);
--	asm_call_on_stack(tos - 8, func, NULL);
-+	asm_call_on_stack(tos, func, NULL);
- 	__this_cpu_write(hardirq_stack_inuse, false);
- }
- 
-@@ -34,7 +34,7 @@ static __always_inline void
- 	void *tos = __this_cpu_read(hardirq_stack_ptr);
- 
- 	__this_cpu_write(hardirq_stack_inuse, true);
--	asm_call_sysvec_on_stack(tos - 8, func, regs);
-+	asm_call_sysvec_on_stack(tos, func, regs);
- 	__this_cpu_write(hardirq_stack_inuse, false);
- }
- 
-@@ -45,7 +45,7 @@ static __always_inline void
- 	void *tos = __this_cpu_read(hardirq_stack_ptr);
- 
- 	__this_cpu_write(hardirq_stack_inuse, true);
--	asm_call_irq_on_stack(tos - 8, func, desc);
-+	asm_call_irq_on_stack(tos, func, desc);
- 	__this_cpu_write(hardirq_stack_inuse, false);
- }
- 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -426,8 +426,6 @@ struct irq_stack {
- 	char		stack[IRQ_STACK_SIZE];
- } __aligned(IRQ_STACK_SIZE);
- 
--DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
--
- #ifdef CONFIG_X86_32
- DECLARE_PER_CPU(unsigned long, cpu_current_top_of_stack);
- #else
-@@ -454,6 +452,7 @@ static inline unsigned long cpu_kernelmo
- 	return (unsigned long)per_cpu(fixed_percpu_data.gs_base, cpu);
- }
- 
-+DECLARE_PER_CPU(void *, hardirq_stack_ptr);
- DECLARE_PER_CPU(bool, hardirq_stack_inuse);
- extern asmlinkage void ignore_sysret(void);
- 
-@@ -473,9 +472,9 @@ struct stack_canary {
- };
- DECLARE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
- #endif
--/* Per CPU softirq stack pointer */
-+DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
- DECLARE_PER_CPU(struct irq_stack *, softirq_stack_ptr);
--#endif	/* X86_64 */
-+#endif	/* !X86_64 */
- 
- extern unsigned int fpu_kernel_xstate_size;
- extern unsigned int fpu_user_xstate_size;
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1739,7 +1739,7 @@ DEFINE_PER_CPU(struct task_struct *, cur
- 	&init_task;
- EXPORT_PER_CPU_SYMBOL(current_task);
- 
--DEFINE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
-+DEFINE_PER_CPU(void *, hardirq_stack_ptr);
- DEFINE_PER_CPU(bool, hardirq_stack_inuse);
- 
- DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
---- a/arch/x86/kernel/dumpstack_64.c
-+++ b/arch/x86/kernel/dumpstack_64.c
-@@ -128,12 +128,21 @@ static __always_inline bool in_exception
- 
- static __always_inline bool in_irq_stack(unsigned long *stack, struct stack_info *info)
- {
--	unsigned long *end   = (unsigned long *)this_cpu_read(hardirq_stack_ptr);
--	unsigned long *begin = end - (IRQ_STACK_SIZE / sizeof(long));
-+	unsigned long *end = (unsigned long *)this_cpu_read(hardirq_stack_ptr);
-+	unsigned long *begin;
- 
- 	/*
--	 * This is a software stack, so 'end' can be a valid stack pointer.
--	 * It just means the stack is empty.
-+	 * @end points directly to the top most stack entry to avoid a -8
-+	 * adjustment in the stack switch hotpath. Adjust it back before
-+	 * calculating @begin.
-+	 */
-+	end++;
-+	begin = end - (IRQ_STACK_SIZE / sizeof(long));
+ #ifdef CONFIG_X86_64
 +
-+	/*
-+	 * Due to the switching logic RSP can never be == @end because the
-+	 * final operation is 'popq %rsp' which means after that RSP points
-+	 * to the original stack and not to @end.
- 	 */
- 	if (stack < begin || stack >= end)
- 		return false;
-@@ -143,8 +152,9 @@ static __always_inline bool in_irq_stack
- 	info->end	= end;
- 
- 	/*
--	 * The next stack pointer is the first thing pushed by the entry code
--	 * after switching to the irq stack.
-+	 * The next stack pointer is stored at the top of the irq stack
-+	 * before switching to the irq stack. Actual stack entries are all
-+	 * below that.
- 	 */
- 	info->next_sp = (unsigned long *)*(end - 1);
- 
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -48,7 +48,8 @@ static int map_irq_stack(unsigned int cp
- 	if (!va)
- 		return -ENOMEM;
- 
--	per_cpu(hardirq_stack_ptr, cpu) = va + IRQ_STACK_SIZE;
-+	/* Store actual TOS to avoid adjustment in the hotpath */
-+	per_cpu(hardirq_stack_ptr, cpu) = va + IRQ_STACK_SIZE - 8;
- 	return 0;
- }
- #else
-@@ -60,7 +61,8 @@ static int map_irq_stack(unsigned int cp
++#ifdef CONFIG_UNWINDER_FRAME_POINTER
++# define IRQSTACK_CALL_CONSTRAINT	, ASM_CALL_CONSTRAINT
++#else
++# define IRQSTACK_CALL_CONSTRAINT
++#endif
++
++/*
++ * Macro to inline switching to an interrupt stack and invoking function
++ * calls from there. The following rules apply:
++ *
++ * - Ordering:
++ *
++ *   1. Write the stack pointer content into the top most place of
++ *	the irq stack. This ensures that the various unwinders can
++ *	link back to the original stack.
++ *
++ *   2. Switch the stack pointer to the top of the irq stack.
++ *
++ *   3. Invoke whatever needs to be done (@asm_call argument)
++ *
++ *   4. Pop the original stack pointer from the top of the irq stack
++ *	which brings it back to the original stack where it left off.
++ *
++ * - Function invocation:
++ *
++ *   To allow flexible usage of the macro, the actual function code including
++ *   the store of the arguments in the call ABI registers is handed in via
++ *   the @asm_call argument.
++ *
++ * - Local variables:
++ *
++ *   @tos:
++ *	The @tos variable holds a pointer to the top of the irq stack and
++ *	_must_ be allocated in a non-callee saved register as this is a
++ *	restriction coming from objtool.
++ *
++ *	Note, that (tos) is both in input and output constraints to ensure
++ *	that the compiler does not assume that R11 is left untouched in
++ *	case this macro is used in some place where the per cpu interrupt
++ *	stack pointer is used again afterwards
++ *
++ * - Function arguments:
++ *        The function argument(s) if any have to be defined in register
++ *	  variables at the place where this is invoked. Storing the
++ *	  argument(s) in the proper register(s) is part of the @asm_call
++ *
++ * - Constraints:
++ *
++ *   The constraints have to be done very carefully because the compiler
++ *   does not know about the assembly call.
++ *
++ *   output:
++ *     As documented already above the @tos variable is required to be in
++ *     the output constraints to make the compiler aware that R11 cannot be
++ *     reused after the asm() statement.
++ *
++ *     For builds with CONFIG_UNWIND_FRAME_POINTER ASM_CALL_CONSTRAINT is
++ *     required as well as this prevents certain creative GCC variants from
++ *     misplacing the ASM code.
++ *
++ *  input:
++ *    - func:
++ *	  Immediate, which tells the compiler that the function is referenced.
++ *
++ *    - tos:
++ *	  Register. The actual register is defined by the variable declaration.
++ *
++ *    - function arguments:
++ *	  The constraints are handed in via the 'argconstr' argument list. They
++ *	  describe the register arguments which are used in @asm_call.
++ *
++ *  clobbers:
++ *     Function calls can clobber anything except the callee-saved
++ *     registers. Tell the compiler.
++ */
++#define __call_on_irqstack(func, asm_call, constr...)			\
++{									\
++	register void *tos asm("r11");					\
++									\
++	tos = ((void *)__this_cpu_read(hardirq_stack_ptr));		\
++									\
++	asm_inline volatile(						\
++	"movq	%%rsp, (%[__tos])			\n"		\
++	"movq	%[__tos], %%rsp				\n"		\
++									\
++	asm_call							\
++									\
++	"popq	%%rsp					\n"		\
++									\
++	: "+r" (tos) IRQSTACK_CALL_CONSTRAINT				\
++	: [__func] "i" (func), [__tos] "r" (tos) constr			\
++	: "cc", "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10",	\
++	  "memory"							\
++	);								\
++}
++
++/* Macros to assert type correctness for run_*_on_irqstack macros */
++#define assert_function_type(func, proto)				\
++	static_assert(__builtin_types_compatible_p(typeof(&func), proto))
++
++#define assert_arg_type(arg, proto)					\
++	static_assert(__builtin_types_compatible_p(typeof(arg), proto))
++
+ static __always_inline bool irqstack_active(void)
  {
- 	void *va = per_cpu_ptr(&irq_stack_backing_store, cpu);
- 
--	per_cpu(hardirq_stack_ptr, cpu) = va + IRQ_STACK_SIZE;
-+	/* Store actual TOS to avoid adjustment in the hotpath */
-+	per_cpu(hardirq_stack_ptr, cpu) = va + IRQ_STACK_SIZE - 8;
- 	return 0;
- }
- #endif
+ 	return __this_cpu_read(hardirq_stack_inuse);
 
