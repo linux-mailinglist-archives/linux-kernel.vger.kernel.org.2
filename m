@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA62430EF49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7FC30EF42
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 10:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhBDJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 04:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234475AbhBDJDP (ORCPT
+        id S234947AbhBDJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 04:07:28 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:47645 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234799AbhBDJFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:03:15 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B334C0613D6;
-        Thu,  4 Feb 2021 01:02:35 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id r23so578939ljh.1;
-        Thu, 04 Feb 2021 01:02:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/TSLfTImrRe23/NrG2l7vYhOdNAwie8O/O5xzxImUdU=;
-        b=aG7+gHoq99GRCPDOwzPcfhr8S30YhEU4o8OfSI3+lqtqJizRr+J4xUM03W/Zpow0Up
-         wtp+D2JmFy9cydwabTgGXXL6H2Hcd1dsHJpz3KOVhheLHGHZpyeqErMXCppLckjb8mcV
-         VOLfdfVSkhCNSzP3g5RobY+5ANGIyj7+iecEXo+PENz83Yt4YPPMVNcy9owZqL62iIs7
-         fNyUSMnuaOLCJrfn3+Jhz64W2Cj/NqxX5Vm/9RNe7boHVI2ph1e1Vxz2y+TAsret2gBj
-         8wbppLU/33jziFOhjSigLtGHH1FxiYhV/dyL1EJRvdk692+1hUfH6fUQWk6K8eJs+xan
-         K8aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/TSLfTImrRe23/NrG2l7vYhOdNAwie8O/O5xzxImUdU=;
-        b=acs8yaJWrR7QY+ey6mJ9WDhHwnF/PBIkdTQeDdF87Bs4p047aDFddFwS0NStKwW7Ws
-         Esa0ZJDiq6ZV21eMeZQkFYM7YsHmoqNjRhK+zO6IH2KEyUxelVlu8/U2+T4/ldsOm2G6
-         /7jGZgLVfBVSNMKLTmB4oP2fjdxLLXWQ2SHZfGWZkeRUdbdQBffUQ0GNNSkGDMDuB/Tu
-         /1t8QQ09euulZ+gF98WzpxyFiyR+Tn9S1aYOQo/FK0FTp8QF5rFDcpevAInX+mLz8KhU
-         ZkwO1Q0MFpSxo+wiu0XergvAir16W0SArLVA59OZptS36Lz4cqlJ0J665geKxTaxFeRt
-         GSkw==
-X-Gm-Message-State: AOAM532TeEQ52oLAKPebnIhsfK0CLcI1pIqPFiT37v5y0h0C6TLLyxPj
-        kDLMU/2SpMrg7ECQF4AydrU=
-X-Google-Smtp-Source: ABdhPJxdCYKvUeTjW+84dAsnfdjxULW94PrUvOI4idUHZpRhBUNMIF77CoMBIjMEMqNeF43srEasYg==
-X-Received: by 2002:a2e:7a18:: with SMTP id v24mr4132393ljc.55.1612429353981;
-        Thu, 04 Feb 2021 01:02:33 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.224])
-        by smtp.googlemail.com with ESMTPSA id m78sm533479lfa.270.2021.02.04.01.02.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 01:02:33 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, snovitoll@gmail.com,
-        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
-Subject: [PATCH] net/qrtr: replaced useless kzalloc with kmalloc in qrtr_tun_write_iter()
-Date:   Thu,  4 Feb 2021 15:02:30 +0600
-Message-Id: <20210204090230.1794169-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210203162846.56a90288@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210203162846.56a90288@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Thu, 4 Feb 2021 04:05:11 -0500
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 470C7240018;
+        Thu,  4 Feb 2021 09:04:09 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 10:04:08 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
+ unavailable
+Message-ID: <20210204100408.6eb053d8@xps13>
+In-Reply-To: <20210204095945.51ef0c33@collabora.com>
+References: <20210202041614.GA840@work>
+        <20210202091459.0c41a769@xps13>
+        <AFD0F5A6-7876-447B-A089-85091225BE11@linaro.org>
+        <20210203110522.12f2b326@xps13>
+        <EBDAB319-549F-4CB1-8CE3-9DFA99DBFBC0@linaro.org>
+        <20210203111914.1c2f68f6@collabora.com>
+        <8A2468D5-B435-4923-BA4F-7BF7CC0FF207@linaro.org>
+        <20210203122422.6963b0ed@collabora.com>
+        <F55F9D7B-0542-448E-A711-D1035E467ACA@linaro.org>
+        <20210204091336.1406ca3b@xps13>
+        <20210204085221.GB8235@thinkpad>
+        <20210204095945.51ef0c33@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaced kzalloc() with kmalloc(), there is no need for zeroed-out
-memory for simple void *kbuf.
+Hi Boris,
 
->For potential, separate clean up - this is followed 
->by copy_from_iter_full(len) kzalloc() can probably 
->be replaced by kmalloc()?
->
->>  	if (!kbuf)
->>  		return -ENOMEM;
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Thu, 4 Feb
+2021 09:59:45 +0100:
 
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
- net/qrtr/tun.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Thu, 4 Feb 2021 14:22:21 +0530
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> 
+> > On Thu, Feb 04, 2021 at 09:13:36AM +0100, Miquel Raynal wrote:  
+> > > Hi Manivannan,
+> > > 
+> > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
+> > > 03 Feb 2021 17:11:31 +0530:
+> > >     
+> > > > On 3 February 2021 4:54:22 PM IST, Boris Brezillon <boris.brezillon@collabora.com> wrote:    
+> > > > >On Wed, 03 Feb 2021 16:22:42 +0530
+> > > > >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > > > >      
+> > > > >> On 3 February 2021 3:49:14 PM IST, Boris Brezillon      
+> > > > ><boris.brezillon@collabora.com> wrote:      
+> > > > >> >On Wed, 03 Feb 2021 15:42:02 +0530
+> > > > >> >Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > > > >> >        
+> > > > >> >> >> 
+> > > > >> >> >> I got more information from the vendor, Telit. The access to      
+> > > > >the        
+> > > > >> >3rd          
+> > > > >> >> >partition is protected by Trustzone and any access in non      
+> > > > >privileged      
+> > > > >> >> >mode (where Linux kernel runs) causes kernel panic and the device
+> > > > >> >> >reboots.         
+> > > > >> >
+> > > > >> >Out of curiosity, is it a per-CS-line thing or is this section
+> > > > >> >protected on all CS?
+> > > > >> >        
+> > > > >> 
+> > > > >> Sorry, I didn't get your question.       
+> > > > >
+> > > > >The qcom controller can handle several chips, each connected through a
+> > > > >different CS (chip-select) line, right? I'm wondering if the firmware
+> > > > >running in secure mode has the ability to block access for a specific
+> > > > >CS line or if all CS lines have the same constraint. That will impact
+> > > > >the way you describe it in your DT (in one case the secure-region
+> > > > >property should be under the controller node, in the other case it
+> > > > >should be under the NAND chip node).      
+> > > > 
+> > > > Right. I believe the implementation is common to all NAND chips so the property should be in the controller node.     
+> > > 
+> > > Looks weird: do you mean that each of the chips will have a secure area?    
+> > 
+> > I way I said is, the "secure-region" property will be present in the controller
+> > node and not in the NAND chip node since this is not related to the device
+> > functionality.
+> > 
+> > But for referencing the NAND device, the property can have the phandle as below:
+> > 
+> > secure-region = <&nand0 0xffff>;  
+> 
+> My question was really what happens from a functional PoV. If you have
+> per-chip protection at the FW level, this property should be under the
+> NAND node. OTH, if the FW doesn't look at the selected chip before
+> blocking the access, it should be at the controller level. So, you
+> really have to understand what the secure FW does.
 
-diff --git a/net/qrtr/tun.c b/net/qrtr/tun.c
-index b238c40a9984..9b607c7614de 100644
---- a/net/qrtr/tun.c
-+++ b/net/qrtr/tun.c
-@@ -86,7 +86,7 @@ static ssize_t qrtr_tun_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (len > KMALLOC_MAX_SIZE)
- 		return -ENOMEM;
- 
--	kbuf = kzalloc(len, GFP_KERNEL);
-+	kbuf = kmalloc(len, GFP_KERNEL);
- 	if (!kbuf)
- 		return -ENOMEM;
- 
--- 
-2.25.1
+I'm not so sure actually, that's why I like the phandle to nand0 -> in
+any case it's not a property of the NAND chip itself, it's kind of a
+host constraint, so I don't get why the property should be at the
+NAND node level?
 
+Also, we should probably support several secure regions (which could be
+a way to express the fact that the FW does not look at the CS)?
