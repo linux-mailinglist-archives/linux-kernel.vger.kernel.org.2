@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBFC30FEB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4616630FEB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 21:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBDUn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 15:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S229931AbhBDUoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 15:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhBDUly (ORCPT
+        with ESMTP id S229650AbhBDUlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 15:41:54 -0500
+        Thu, 4 Feb 2021 15:41:55 -0500
 Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A468C06178B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60679C06178C
         for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 12:41:09 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id E83B34285D;
-        Thu,  4 Feb 2021 20:40:48 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 48E7442860;
+        Thu,  4 Feb 2021 20:40:52 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     Hector Martin <marcan@marcan.st>, soc@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org,
         Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
         Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: [PATCH 13/18] arm64: ioremap: use nGnRnE mappings on platforms that require it
-Date:   Fri,  5 Feb 2021 05:39:46 +0900
-Message-Id: <20210204203951.52105-14-marcan@marcan.st>
+Subject: [PATCH 14/18] dt-bindings: interrupt-controller: Add DT bindings for apple-aic
+Date:   Fri,  5 Feb 2021 05:39:47 +0900
+Message-Id: <20210204203951.52105-15-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210204203951.52105-1-marcan@marcan.st>
 References: <20210204203951.52105-1-marcan@marcan.st>
@@ -40,110 +40,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This follows from the fixmap patch, but relates to the general case.
-This is a hack, and incomplete. Read on for discussion.
-
-The problem: on Apple ARM platforms, SoC MMIO needs to use nGnRnE
-mappings: writes using nGnRE are blackholed. This seems to be by design,
-and there doesn't seem to be any fabric configuration or other bit we
-can flip to make the problem go away.
-
-As an additional confounding factor, reportedly PCIe MMIO BAR mappings
-conversely *do* need to use nGnRE to work properly. So we can't even get
-away with a single ioremap setting, but need to discriminate based on
-what bus the device is in. Since these devices have Thunderbolt, all PCI
-devices in the tree are potentially in scope. Ugh.
-
-Ideas:
-
-(1) Set up some devicetree property to default to nGnRnE at the platform
-    level, and then make PCI drivers use nGnRE.
-
-    This will require changing the PCI code to make pci_ioremap_bar do
-    something other than a plain ioremap().
-
-    Unfortunately, of the ~630 PCI drivers in the tree, only ~90 use
-    pci_ioremap_bar(). This would require a tree-wide cleanup to
-    introduce something akin to pci_ioremap(), and make all PCI
-    drivers use it instead of naked ioremap().
-
-    Currently there are three ioremap variants:
-
-    ioremap()
-    ioremap_wc()
-    ioremap_uc() (not normally used on arm64)
-
-    None of these really capture the nGnRE vs nGnRnE distinction. If
-    a new variant is introduced in common code, we'd have to provide
-    a default implementation that falls back to regular ioremap() on
-    other arches. Something like ioremap() vs. ioremap_np() (nonposted)?
-
-(2) The converse of (1): keep the nGnRE default, but introduce special
-    casing to the OF binding code to use nGnRnE when instructed to do so
-    on these platforms. This means of_iomap() needs changing.
-
-    The advantage of this approach is that the set of possible non-PCI
-    drivers that are useful on these SoCs is bounded, so not all drivers
-    that don't go through that path need to be fixed.
-
-    Additionally, this could take advantage of the OF address
-    translation stuff to be smarter about deciding to use nGnRnE, e.g.
-    doing it based on a property of the parent bus node.
-
-    Of note, some devices (like samsung_tty) go through the platform
-    device framework, which eventually goes into devm code. So
-    of_address_to_resource would need to set some flag on the struct
-    resource, that can then be used by both of_iomap() and
-    devm_ioremap_resource() and friends to eventually call the right
-    ioremap variant.
-
-    The ioremap considerations from (1) apply here too.
-
-(3) Do it at a lower level, in ioremap() itself. This requires that
-    ioremap() somehow discriminates based on address range to pick what
-    kind of mapping to make.
-
-    Declaring these address ranges would be an issue. Options:
-
-    a) An out of band list in a DT node, a la /reserved-memory
-
-    b) Something based on the existing DT hierarchy, where we can scan
-       bus ranges and locate buses with a property that says "nGnRnE" or
-       "nGnRE" and dynamically build the list based on that.
-
-    The advantage of this option is that it doesn't touch non-arch code.
-    The disadvantage is that it adds a complete new bespoke mechanism to
-    the DT, and that it does not let device drivers actually select the
-    IO mode, which might be desirable in the future anyway for some
-    devices.
-
-All discussion and additional ideas welcome.
+AIC is the Apple Interrupt Controller found on Apple ARM SoCs, such as
+the M1.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- arch/arm64/include/asm/io.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ .../interrupt-controller/AAPL,aic.yaml        | 88 +++++++++++++++++++
+ MAINTAINERS                                   |  2 +
+ .../interrupt-controller/apple-aic.h          | 14 +++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+ create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
 
-diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-index 5ea8656a2030..f2609a4f5019 100644
---- a/arch/arm64/include/asm/io.h
-+++ b/arch/arm64/include/asm/io.h
-@@ -167,7 +167,14 @@ extern void __iomem *__ioremap(phys_addr_t phys_addr, size_t size, pgprot_t prot
- extern void iounmap(volatile void __iomem *addr);
- extern void __iomem *ioremap_cache(phys_addr_t phys_addr, size_t size);
- 
--#define ioremap(addr, size)		__ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRE))
-+/*
-+ * Some platforms require nGnRnE for MMIO.
-+ */
-+extern bool arm64_use_ne_io;
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+new file mode 100644
+index 000000000000..7e119614275a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/AAPL,aic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#define ioremap(addr, size)		__ioremap((addr), (size), \
-+						  arm64_use_ne_io ? __pgprot(PROT_DEVICE_nGnRnE) \
-+								  : __pgprot(PROT_DEVICE_nGnRE))
- #define ioremap_wc(addr, size)		__ioremap((addr), (size), __pgprot(PROT_NORMAL_NC))
++title: Apple Interrupt Controller
++
++maintainers:
++  - Hector Martin <marcan@marcan.st>
++
++description: |
++  The Apple Interrupt Controller is a simple interrupt controller present on
++  Apple ARM SoC platforms, including various iPhone and iPad devices and the
++  "Apple Silicon" M1 Macs.
++
++  It provides the following features:
++
++  - Level-triggered hardware IRQs wired to SoC blocks
++    - Single mask bit per IRQ
++    - Per-IRQ affinity setting
++    - Automatic masking on event delivery (auto-ack)
++    - Software triggering (ORed with hw line)
++  - 2 per-CPU IPIs (meant as "self" and "other", but they are interchangeable
++    if not symmetric)
++  - Automatic prioritization (single event/ack register per CPU, lower IRQs =
++    higher priority)
++  - Automatic masking on ack
++  - Default "this CPU" register view and explicit per-CPU views
++
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
++
++properties:
++  compatible:
++    contains:
++      enum:
++        - AAPL,aic
++        - AAPL,m1-aic
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 3
++    description: |
++      The 1st cell contains the interrupt type:
++        - 0: Hardware IRQ
++        - 1: FIQ
++        - 2: IPI
++
++      The 2nd cell contains the interrupt number.
++        - HW IRQs: interrupt number
++        - FIQs:
++          - 0: physical timer
++          - 1: virtual timer
++        - IPIs:
++          - 0: normal/"other" IPI (used interanlly for virtual IPIs)
++          - 1: self IPI (normally unused)
++
++      The 3rd cell contains the interrupt flags. This is normally
++      IRQ_TYPE_LEVEL_HIGH (4).
++
++  reg:
++    description: |
++      Specifies base physical address and size of the AIC registers.
++    maxItems: 1
++
++required:
++  - compatible
++  - '#interrupt-cells'
++  - interrupt-controller
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        aic: interrupt-controller@23b100000 {
++            compatible = "AAPL,m1-aic", "AAPL,aic";
++            #interrupt-cells = <3>;
++            interrupt-controller;
++            reg = <0x2 0x3b100000 0x0 0x8000>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 91a7b33834ac..f3d4661731c8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1634,6 +1634,8 @@ B:	https://github.com/AsahiLinux/linux/issues
+ C:	irc://chat.freenode.net/asahi-dev
+ T:	git https://github.com/AsahiLinux/linux.git
+ F:	Documentation/devicetree/bindings/arm/AAPL.yaml
++F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
++F:	include/dt-bindings/interrupt-controller/apple-aic.h
  
- /*
+ ARM/ARTPEC MACHINE SUPPORT
+ M:	Jesper Nilsson <jesper.nilsson@axis.com>
+diff --git a/include/dt-bindings/interrupt-controller/apple-aic.h b/include/dt-bindings/interrupt-controller/apple-aic.h
+new file mode 100644
+index 000000000000..f54dc0cd6e9a
+--- /dev/null
++++ b/include/dt-bindings/interrupt-controller/apple-aic.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
++#ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
++#define _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
++
++#include <dt-bindings/interrupt-controller/irq.h>
++
++#define AIC_IRQ 0
++#define AIC_FIQ 1
++#define AIC_IPI 2
++
++#define AIC_TMR_PHYS 0
++#define AIC_TMR_VIRT 1
++
++#endif
 -- 
 2.30.0
 
