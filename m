@@ -2,200 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA8D30FD7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7821E30FD7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 20:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237944AbhBDT61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 14:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239517AbhBDTw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 14:52:57 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE24C061786
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 11:51:57 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id p21so6340412lfu.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 11:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FToFoRW57QEfMw0vp233PBaMzzSywEYZZwEWphiSDG8=;
-        b=ABi2tO0tBxJZnGfCaPaqkq/u8P+eQGwDQnVphpXksukz3TmQZt9E9TiVZy1p7uj66y
-         qQEVgjjAEjFyh66Updzzpfz9STCrXpmifd8ycnk8KZx2pG0geKmzXEC5/BqnRise+H5l
-         xdEH+CYmH0wGBFhNHE+1aDgoEUqbGI2T6aBYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FToFoRW57QEfMw0vp233PBaMzzSywEYZZwEWphiSDG8=;
-        b=fVoQrTOQh6t2/IhYU557Dn57WBzCGTFCDacbiSD9a3L0WyziJGqlK/JeOVaVn3rpS2
-         QO5X7vj+5TnbDwMyuK34pDQAujbGeZT5eh8rLHSFKPVSCz7+sj9CiZUoNTMrV2vW2HCl
-         ZiEugLFS8wBB+3o+hjdjmA+eOYH6N7IvYQmEZsNhABv2M4lrzRVgNvaT1qmcBYwows3G
-         oBhHqcFDcVBO1WDuTnlmfeY6NBB4xe+xiwkFNThI5Gf2Jx8dYI97EwKpq18RRK7bG1Mw
-         HMLibHuFEL/dPBvCEruFEEgdoqIKsOJ+g4J605z5eZOBp4bghWGtjD77S0lmsbijK6eK
-         Yjhg==
-X-Gm-Message-State: AOAM533ESiscky7INuRSuXtBdjY2gQAzQjTUJfev9f9v5anFPzuMS2Z0
-        DcyklXml0mmyFiepi7NLxPIzl6KbaVPEtNEYn9RGPQ==
-X-Google-Smtp-Source: ABdhPJw6yc26ixa+BNP3THtxCTWaeQD524mnhSMrIKSYnAhxtWx3VpBmUou9Z3mhYHUs2DgfYkVuuxjVCVG8de8YSi0=
-X-Received: by 2002:a05:6512:3904:: with SMTP id a4mr526525lfu.340.1612468315961;
- Thu, 04 Feb 2021 11:51:55 -0800 (PST)
+        id S238800AbhBDT5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 14:57:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:36632 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239516AbhBDTwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 14:52:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AE28143B;
+        Thu,  4 Feb 2021 11:52:04 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 668693F73B;
+        Thu,  4 Feb 2021 11:52:01 -0800 (PST)
+Subject: Re: [RFC PATCH 05/11] iommu/arm-smmu-v3: Merge a span of page to
+ block descriptor
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-6-zhukeqian1@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <af03aa13-9fd1-d7d1-6e55-fd59ff9d0688@arm.com>
+Date:   Thu, 4 Feb 2021 19:52:00 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
- <20210203190518.nlwghesq75enas6n@treble> <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
- <20210203232735.nw73kugja56jp4ls@treble> <CABWYdi1zd51Jb35taWeGC-dR9SChq-4ixvyKms3KOKgV0idfPg@mail.gmail.com>
- <20210204001700.ry6dpqvavcswyvy7@treble>
-In-Reply-To: <20210204001700.ry6dpqvavcswyvy7@treble>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Thu, 4 Feb 2021 11:51:44 -0800
-Message-ID: <CABWYdi2GsFW9ExXAQ55tvr+K86eY15T1XFoZDDBro9hJK5Gpqg@mail.gmail.com>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128151742.18840-6-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 4:17 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Wed, Feb 03, 2021 at 03:30:35PM -0800, Ivan Babrou wrote:
-> > > > > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
-> > > > > It will spit out a bunch of stack data.
-> > > >
-> > > > Here's the three I'm building:
-> > > >
-> > > > * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
-> > > >
-> > > > It contains:
-> > > >
-> > > > * v5.9 tag as the base
-> > > > * static_call-2020-10-12 tag
-> > > > * dm-crypt patches to reproduce the issue with KASAN
-> > > > * x86/unwind: Add 'unwind_debug' cmdline option
-> > > > * tracepoint: Fix race between tracing and removing tracepoint
-> > > >
-> > > > The very same issue can be reproduced on 5.10.11 with no patches,
-> > > > but I'm going with 5.9, since it boils down to static call changes.
-> > > >
-> > > > Here's the decoded stack from the kernel with unwind debug enabled:
-> > > >
-> > > > * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
-> > > >
-> > > > See my first email for the exact commands that trigger this.
-> > >
-> > > Thanks.  Do you happen to have the original dmesg, before running it
-> > > through the post-processing script?
-> >
-> > Yes, here it is:
-> >
-> > * https://gist.github.com/bobrik/8c13e6a02555fb21cadabb74cdd6f9ab
->
-> It appears the unwinder is getting lost in crypto code.  No idea what
-> this has to do with static calls though.  Or maybe you're seeing
-> multiple issues.
->
-> Does this fix it?
->
->
-> diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-> index a31de0c6ccde..36c55341137c 100644
-> --- a/arch/x86/crypto/Makefile
-> +++ b/arch/x86/crypto/Makefile
-> @@ -2,7 +2,14 @@
->  #
->  # x86 crypto algorithms
->
-> -OBJECT_FILES_NON_STANDARD := y
-> +OBJECT_FILES_NON_STANDARD_sha256-avx2-asm.o            := y
-> +OBJECT_FILES_NON_STANDARD_sha512-ssse3-asm.o           := y
-> +OBJECT_FILES_NON_STANDARD_sha512-avx-asm.o             := y
-> +OBJECT_FILES_NON_STANDARD_sha512-avx2-asm.o            := y
-> +OBJECT_FILES_NON_STANDARD_crc32c-pcl-intel-asm_64.o    := y
-> +OBJECT_FILES_NON_STANDARD_camellia-aesni-avx2-asm_64.o := y
-> +OBJECT_FILES_NON_STANDARD_sha1_avx2_x86_64_asm.o       := y
-> +OBJECT_FILES_NON_STANDARD_sha1_ni_asm.o                        := y
->
->  obj-$(CONFIG_CRYPTO_GLUE_HELPER_X86) += glue_helper.o
->
-> diff --git a/arch/x86/crypto/aesni-intel_avx-x86_64.S b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> index 5fee47956f3b..59c36b88954f 100644
-> --- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> +++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> @@ -237,8 +237,8 @@ define_reg j %j
->  .noaltmacro
->  .endm
->
-> -# need to push 4 registers into stack to maintain
-> -STACK_OFFSET = 8*4
-> +# need to push 5 registers into stack to maintain
-> +STACK_OFFSET = 8*5
->
->  TMP1 =   16*0    # Temporary storage for AAD
->  TMP2 =   16*1    # Temporary storage for AES State 2 (State 1 is stored in an XMM register)
-> @@ -257,6 +257,8 @@ VARIABLE_OFFSET = 16*8
->
->  .macro FUNC_SAVE
->          #the number of pushes must equal STACK_OFFSET
-> +       push    %rbp
-> +       mov     %rsp, %rbp
->          push    %r12
->          push    %r13
->          push    %r14
-> @@ -271,12 +273,14 @@ VARIABLE_OFFSET = 16*8
->  .endm
->
->  .macro FUNC_RESTORE
-> +        add     $VARIABLE_OFFSET, %rsp
->          mov     %r14, %rsp
->
->          pop     %r15
->          pop     %r14
->          pop     %r13
->          pop     %r12
-> +       pop     %rbp
->  .endm
->
->  # Encryption of a single block
->
+On 2021-01-28 15:17, Keqian Zhu wrote:
+> From: jiangkunkun <jiangkunkun@huawei.com>
+> 
+> When stop dirty log tracking, we need to recover all block descriptors
+> which are splited when start dirty log tracking. This adds a new
+> interface named merge_page in iommu layer and arm smmuv3 implements it,
+> which reinstall block mappings and unmap the span of page mappings.
+> 
+> It's caller's duty to find contiuous physical memory.
+> 
+> During merging page, other interfaces are not expected to be working,
+> so race condition does not exist. And we flush all iotlbs after the merge
+> procedure is completed to ease the pressure of iommu, as we will merge a
+> huge range of page mappings in general.
 
-This patch seems to fix the following warning:
+Again, I think we need better reasoning than "race conditions don't 
+exist because we don't expect them to exist".
 
-[  147.995699][    C0] WARNING: stack going in the wrong direction? at
-glue_xts_req_128bit+0x21f/0x6f0 [glue_helper]
+> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+> ---
+>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 20 ++++++
+>   drivers/iommu/io-pgtable-arm.c              | 78 +++++++++++++++++++++
+>   drivers/iommu/iommu.c                       | 75 ++++++++++++++++++++
+>   include/linux/io-pgtable.h                  |  2 +
+>   include/linux/iommu.h                       | 10 +++
+>   5 files changed, 185 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 5469f4fca820..2434519e4bb6 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -2529,6 +2529,25 @@ static size_t arm_smmu_split_block(struct iommu_domain *domain,
+>   	return ops->split_block(ops, iova, size);
+>   }
+>   
+> +static size_t arm_smmu_merge_page(struct iommu_domain *domain, unsigned long iova,
+> +				  phys_addr_t paddr, size_t size, int prot)
+> +{
+> +	struct io_pgtable_ops *ops = to_smmu_domain(domain)->pgtbl_ops;
+> +	struct arm_smmu_device *smmu = to_smmu_domain(domain)->smmu;
+> +
+> +	if (!(smmu->features & (ARM_SMMU_FEAT_BBML1 | ARM_SMMU_FEAT_BBML2))) {
+> +		dev_err(smmu->dev, "don't support BBML1/2 and merge page\n");
+> +		return 0;
+> +	}
+> +
+> +	if (!ops || !ops->merge_page) {
+> +		pr_err("don't support merge page\n");
+> +		return 0;
+> +	}
+> +
+> +	return ops->merge_page(ops, iova, paddr, size, prot);
+> +}
+> +
+>   static int arm_smmu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>   {
+>   	return iommu_fwspec_add_ids(dev, args->args, 1);
+> @@ -2629,6 +2648,7 @@ static struct iommu_ops arm_smmu_ops = {
+>   	.domain_get_attr	= arm_smmu_domain_get_attr,
+>   	.domain_set_attr	= arm_smmu_domain_set_attr,
+>   	.split_block		= arm_smmu_split_block,
+> +	.merge_page		= arm_smmu_merge_page,
+>   	.of_xlate		= arm_smmu_of_xlate,
+>   	.get_resv_regions	= arm_smmu_get_resv_regions,
+>   	.put_resv_regions	= generic_iommu_put_resv_regions,
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index f3b7f7115e38..17390f258eb1 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -800,6 +800,83 @@ static size_t arm_lpae_split_block(struct io_pgtable_ops *ops,
+>   	return __arm_lpae_split_block(data, iova, size, lvl, ptep);
+>   }
+>   
+> +static size_t __arm_lpae_merge_page(struct arm_lpae_io_pgtable *data,
+> +				    unsigned long iova, phys_addr_t paddr,
+> +				    size_t size, int lvl, arm_lpae_iopte *ptep,
+> +				    arm_lpae_iopte prot)
+> +{
+> +	arm_lpae_iopte pte, *tablep;
+> +	struct io_pgtable *iop = &data->iop;
+> +	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+> +
+> +	if (WARN_ON(lvl == ARM_LPAE_MAX_LEVELS))
+> +		return 0;
+> +
+> +	ptep += ARM_LPAE_LVL_IDX(iova, lvl, data);
+> +	pte = READ_ONCE(*ptep);
+> +	if (WARN_ON(!pte))
+> +		return 0;
+> +
+> +	if (size == ARM_LPAE_BLOCK_SIZE(lvl, data)) {
+> +		if (iopte_leaf(pte, lvl, iop->fmt))
+> +			return size;
+> +
+> +		/* Race does not exist */
+> +		if (cfg->bbml == 1) {
+> +			prot |= ARM_LPAE_PTE_NT;
+> +			__arm_lpae_init_pte(data, paddr, prot, lvl, ptep);
+> +			io_pgtable_tlb_flush_walk(iop, iova, size,
+> +						  ARM_LPAE_GRANULE(data));
+> +
+> +			prot &= ~(ARM_LPAE_PTE_NT);
+> +			__arm_lpae_init_pte(data, paddr, prot, lvl, ptep);
+> +		} else {
+> +			__arm_lpae_init_pte(data, paddr, prot, lvl, ptep);
+> +		}
+> +
+> +		tablep = iopte_deref(pte, data);
+> +		__arm_lpae_free_pgtable(data, lvl + 1, tablep);
+> +		return size;
+> +	} else if (iopte_leaf(pte, lvl, iop->fmt)) {
+> +		/* The size is too small, already merged */
+> +		return size;
+> +	}
+> +
+> +	/* Keep on walkin */
+> +	ptep = iopte_deref(pte, data);
+> +	return __arm_lpae_merge_page(data, iova, paddr, size, lvl + 1, ptep, prot);
+> +}
+> +
+> +static size_t arm_lpae_merge_page(struct io_pgtable_ops *ops, unsigned long iova,
+> +				  phys_addr_t paddr, size_t size, int iommu_prot)
+> +{
+> +	struct arm_lpae_io_pgtable *data = io_pgtable_ops_to_data(ops);
+> +	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+> +	arm_lpae_iopte *ptep = data->pgd;
+> +	int lvl = data->start_level;
+> +	arm_lpae_iopte prot;
+> +	long iaext = (s64)iova >> cfg->ias;
+> +
+> +	/* If no access, then nothing to do */
+> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+> +		return size;
+> +
+> +	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+> +		return 0;
+> +
+> +	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1)
+> +		iaext = ~iaext;
+> +	if (WARN_ON(iaext || paddr >> cfg->oas))
+> +		return 0;
+> +
+> +	/* If it is smallest granule, then nothing to do */
+> +	if (size == ARM_LPAE_BLOCK_SIZE(ARM_LPAE_MAX_LEVELS - 1, data))
+> +		return size;
+> +
+> +	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+> +	return __arm_lpae_merge_page(data, iova, paddr, size, lvl, ptep, prot);
+> +}
+> +
+>   static void arm_lpae_restrict_pgsizes(struct io_pgtable_cfg *cfg)
+>   {
+>   	unsigned long granule, page_sizes;
+> @@ -879,6 +956,7 @@ arm_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg)
+>   		.unmap		= arm_lpae_unmap,
+>   		.iova_to_phys	= arm_lpae_iova_to_phys,
+>   		.split_block	= arm_lpae_split_block,
+> +		.merge_page	= arm_lpae_merge_page,
+>   	};
+>   
+>   	return data;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 7dc0850448c3..f1261da11ea8 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2747,6 +2747,81 @@ size_t iommu_split_block(struct iommu_domain *domain, unsigned long iova,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_split_block);
+>   
+> +static size_t __iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
+> +				 phys_addr_t paddr, size_t size, int prot)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	unsigned int min_pagesz;
+> +	size_t pgsize, merged_size;
+> +	size_t merged = 0;
+> +
+> +	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
+> +
+> +	if (!IS_ALIGNED(iova | paddr | size, min_pagesz)) {
+> +		pr_err("unaligned: iova 0x%lx pa %pa size 0x%zx min_pagesz 0x%x\n",
+> +			iova, &paddr, size, min_pagesz);
+> +		return 0;
+> +	}
+> +
+> +	if (!ops || !ops->merge_page) {
+> +		pr_err("don't support merge page\n");
+> +		return 0;
+> +	}
+> +
+> +	while (size) {
+> +		pgsize = iommu_pgsize(domain, iova | paddr, size);
+> +
+> +		merged_size = ops->merge_page(domain, iova, paddr, pgsize, prot);
+> +
+> +		pr_debug("merged: iova 0x%lx pa %pa size 0x%zx\n", iova, &paddr,
+> +			 merged_size);
+> +		iova += merged_size;
+> +		paddr += merged_size;
+> +		size -= merged_size;
+> +		merged += merged_size;
+> +
+> +		if (merged_size != pgsize)
+> +			break;
+> +	}
+> +
+> +	return merged;
+> +}
+> +
+> +size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
+> +			size_t size, int prot)
+> +{
+> +	phys_addr_t phys;
+> +	dma_addr_t p, i;
+> +	size_t cont_size, merged_size;
+> +	size_t merged = 0;
+> +
+> +	while (size) {
+> +		phys = iommu_iova_to_phys(domain, iova);
+> +		cont_size = PAGE_SIZE;
+> +		p = phys + cont_size;
+> +		i = iova + cont_size;
+> +
+> +		while (cont_size < size && p == iommu_iova_to_phys(domain, i)) {
+> +			p += PAGE_SIZE;
+> +			i += PAGE_SIZE;
+> +			cont_size += PAGE_SIZE;
+> +		}
+> +
+> +		merged_size = __iommu_merge_page(domain, iova, phys, cont_size,
+> +				prot);
 
-Or at least I cannot see it anymore when combined with your other
-patch, not sure if it did the trick by itself.
+This is incredibly silly. The amount of time you'll spend just on 
+walking the tables in all those iova_to_phys() calls is probably 
+significantly more than it would take the low-level pagetable code to do 
+the entire operation for itself. At this level, any knowledge of how 
+mappings are actually constructed is lost once __iommu_map() returns, so 
+we just don't know, and for this operation in particular there seems 
+little point in trying to guess - the driver backend still has to figure 
+out whether something we *think* might me mergeable actually is, so it's 
+better off doing the entire operation in a single pass by itself.
 
-This sounds like a good reason to send them both.
+There's especially little point in starting all this work *before* 
+checking that it's even possible...
+
+Robin.
+
+> +		iova += merged_size;
+> +		size -= merged_size;
+> +		merged += merged_size;
+> +
+> +		if (merged_size != cont_size)
+> +			break;
+> +	}
+> +	iommu_flush_iotlb_all(domain);
+> +
+> +	return merged;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_merge_page);
+> +
+>   void iommu_get_resv_regions(struct device *dev, struct list_head *list)
+>   {
+>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index b87c6f4ecaa2..754b62a1bbaf 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -164,6 +164,8 @@ struct io_pgtable_ops {
+>   				    unsigned long iova);
+>   	size_t (*split_block)(struct io_pgtable_ops *ops, unsigned long iova,
+>   			      size_t size);
+> +	size_t (*merge_page)(struct io_pgtable_ops *ops, unsigned long iova,
+> +			     phys_addr_t phys, size_t size, int prot);
+>   };
+>   
+>   /**
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index abeb811098a5..ac2b0b1bce0f 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -260,6 +260,8 @@ struct iommu_ops {
+>   			       enum iommu_attr attr, void *data);
+>   	size_t (*split_block)(struct iommu_domain *domain, unsigned long iova,
+>   			      size_t size);
+> +	size_t (*merge_page)(struct iommu_domain *domain, unsigned long iova,
+> +			     phys_addr_t phys, size_t size, int prot);
+>   
+>   	/* Request/Free a list of reserved regions for a device */
+>   	void (*get_resv_regions)(struct device *dev, struct list_head *list);
+> @@ -513,6 +515,8 @@ extern int iommu_domain_set_attr(struct iommu_domain *domain, enum iommu_attr,
+>   				 void *data);
+>   extern size_t iommu_split_block(struct iommu_domain *domain, unsigned long iova,
+>   				size_t size);
+> +extern size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
+> +			       size_t size, int prot);
+>   
+>   /* Window handling function prototypes */
+>   extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
+> @@ -913,6 +917,12 @@ static inline size_t iommu_split_block(struct iommu_domain *domain,
+>   	return 0;
+>   }
+>   
+> +static inline size_t iommu_merge_page(struct iommu_domain *domain,
+> +				      unsigned long iova, size_t size, int prot)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+>   static inline int  iommu_device_register(struct iommu_device *iommu)
+>   {
+>   	return -ENODEV;
+> 
