@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F199230FACD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9333030FAA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238841AbhBDSJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S238886AbhBDSFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:05:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236925AbhBDSC1 (ORCPT
+        with ESMTP id S238716AbhBDSB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:02:27 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8374C061786;
-        Thu,  4 Feb 2021 10:01:24 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a9so6985828ejr.2;
-        Thu, 04 Feb 2021 10:01:24 -0800 (PST)
+        Thu, 4 Feb 2021 13:01:58 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7997EC06178C
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:01:17 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id c12so4591434wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:01:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ycqCB5lhDgOyExViWx7c2qxoC1Oozd3PzC9HlvqUzOA=;
-        b=IhpDb14KzDrahZay4bo/I64oiTqq2UGZcjApRkcDjKxTSGeVEPJOaHd7z04YVHVSdd
-         JBcwMEuqpF6QfMFEOTfKPZOzp0AH+0uEfiXjT791DzHXQudOWrfUCGznD1LzTtl1XRAI
-         IRGEvO3d3KZ/LOzvAKSt+uhRMmhjipcumlkLe2Vvd30OxXI32HO3OOYAi4tKOsXRjGPT
-         O5X7qXWQPOFvUGYGuouAWp2ZfE5fhM16rqrqhPpcE3Lg3prB8IsrI+040fd+QyHxJlng
-         0CiZh9kVkHGQLF7AulZyI1GJvgTBtq1pVjbGLXoXQ0odqgFBwXiSo2mNg+WWBqkzMghq
-         pxaA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sgNBgGYoMlIjzXJS7k+uTJr90AGrN8C+0QKMchqVgEw=;
+        b=Sge4JAbgrFLOizl11w9D9oQSAmAxwysJJW+ccrQVWH3ezom8wIwM6z9XWUlzOfNRhC
+         Jiz/Z0fwGZlSo+kWjB2iV8VlRI25x/wqVzkaVWFrDTrJLatKYfuN8jzaHg7RCdkDaqE5
+         VKKxtZNvMbU6xv1PrGxNgfs24F1XOAtvlS9QjdUgxxt0D6WrAVj8qoUhNoxMQ0JIEGRi
+         jm32ZYSURfxm7Bbxf95Qa4KEt5B3gzPag9r32O6cMQusXyCbiODFioaUjENYLWWWP+Tb
+         YbDAdDPDq8CFjHTGCe1PVUYpFrmKe/cvt2yMg6pVlCCnPTMOFH/igkbptVPNcYEO4OqS
+         OrGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ycqCB5lhDgOyExViWx7c2qxoC1Oozd3PzC9HlvqUzOA=;
-        b=hrpT2CsRxvSVnaLi474DCZM8pG76U6aF7iguKh1/sXF14M+r8vtT13buAJQk0vaMPr
-         MOaYomjHB+IYcO32oB41W4UoOjnM4l+jUYumU93cJrcoZqb2t/6UYHTYjbSnsdGeJleo
-         /56g0lZKwIvNBnbtB/velWHtnLoTGLbB300lVlEW6KnyLDZ3lXvcklNoqLyy4khZ4DMP
-         f0lWt2PVz3QT1n/sCap1ISAUIBRmPYUk6C3yqdNCisEHjAopvcVOHigODRUN+YGl6f8c
-         rqTiVAHcmfRUO9QLvHc8IVagyqueyGbun/bX0/thntLicQrG+7pHk6HqKBTf+ej7nqZc
-         goDw==
-X-Gm-Message-State: AOAM533AXtF1XzUfixOo6ldCPEJzxmMRSFWdzWe/Rv4WrDejSs0oX18A
-        pdYeIi7Y2CqOYe4khuqoips=
-X-Google-Smtp-Source: ABdhPJxS8B1brEDZbFjn1Q5Sc9mnoYzFebnjExRT7ZoMbr5//AHwGfGlQZM4EGYghO/uKqSeb1UE/Q==
-X-Received: by 2002:a17:907:948d:: with SMTP id dm13mr246401ejc.545.1612461683532;
-        Thu, 04 Feb 2021 10:01:23 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2de7:9900:24e0:4d40:c49:5282])
-        by smtp.gmail.com with ESMTPSA id bo24sm2810326edb.51.2021.02.04.10.01.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sgNBgGYoMlIjzXJS7k+uTJr90AGrN8C+0QKMchqVgEw=;
+        b=R8FMGFCSs1doo8jafWYCQjoWtzvjXJM8QQtFjHg0G/3ibZuaSd1v7DKl/9Hy5MLMpP
+         mawkDXwBQgWhztU6OKDjZHO+salQMFfveBYVFFots4VI0EVVKE4PVVwqXAiuOUub9Oy6
+         LKateqBxF/EXoaY8ZnrElcJyTqsGdKask+wx602WDbFtOKGzmwSETsm/YFko9lmztcu6
+         hoMf4ofQbPZKX5My8lOarYV1ZR4UXjRM6s8Vz/9NZcTAw2O4JaADY3yuiMjJFq9Zs1My
+         HzMX8rzj2szEKPbXya3alnHJji9FV9uhKFhWSjIJC3UoDYE0jRh0J+6Bi4Lsrq6z0EKC
+         nLqQ==
+X-Gm-Message-State: AOAM5303Kov/+P4HnqAd57eIgruKOJ/ntVMp9+tbovfv2uEsfwA8mdRA
+        HnSU5shTRwa7CypWzpx2Hwb3Xw==
+X-Google-Smtp-Source: ABdhPJxzVwJVmeoEOZDZT5PwvHVmhUwJ0gSawClAAnwU0xD6ZtCQJxYDI7bHVG6gBHJ0ToO7Ntu4zQ==
+X-Received: by 2002:adf:b749:: with SMTP id n9mr534156wre.267.1612461676095;
+        Thu, 04 Feb 2021 10:01:16 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id t18sm8959891wrr.56.2021.02.04.10.01.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 10:01:22 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 5/5] fs: update kernel-doc for new mnt_userns argument
-Date:   Thu,  4 Feb 2021 19:00:59 +0100
-Message-Id: <20210204180059.28360-6-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210204180059.28360-1-lukas.bulwahn@gmail.com>
-References: <20210204180059.28360-1-lukas.bulwahn@gmail.com>
+        Thu, 04 Feb 2021 10:01:15 -0800 (PST)
+Date:   Thu, 4 Feb 2021 18:01:12 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
+ allocator
+Message-ID: <YBw2aIr/Ktx1dsOT@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-13-qperret@google.com>
+ <20210202181307.GA17311@willie-the-truck>
+ <YBrsep4xK1F4YRWb@google.com>
+ <20210204143106.GA20792@willie-the-truck>
+ <YBwKRM3uHDMC9S0U@google.com>
+ <20210204174849.GA21303@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204174849.GA21303@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 549c7297717c ("fs: make helpers idmap mount aware") and commit
-c7c7a1a18af4 ("xattr: handle idmapped mounts") refactor the inode methods
-with mount-user-namespace arguments, but did not adjust the kernel-doc of
-some functions.
+On Thursday 04 Feb 2021 at 17:48:49 (+0000), Will Deacon wrote:
+> On Thu, Feb 04, 2021 at 02:52:52PM +0000, Quentin Perret wrote:
+> > On Thursday 04 Feb 2021 at 14:31:08 (+0000), Will Deacon wrote:
+> > > On Wed, Feb 03, 2021 at 06:33:30PM +0000, Quentin Perret wrote:
+> > > > On Tuesday 02 Feb 2021 at 18:13:08 (+0000), Will Deacon wrote:
+> > > > > On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
+> > > > > > + *   __find_buddy(pool, page 0, order 0) => page 1
+> > > > > > + *   __find_buddy(pool, page 0, order 1) => page 2
+> > > > > > + *   __find_buddy(pool, page 1, order 0) => page 0
+> > > > > > + *   __find_buddy(pool, page 2, order 0) => page 3
+> > > > > > + */
+> > > > > > +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
+> > > > > > +				     unsigned int order)
+> > > > > > +{
+> > > > > > +	phys_addr_t addr = hyp_page_to_phys(p);
+> > > > > > +
+> > > > > > +	addr ^= (PAGE_SIZE << order);
+> > > > > > +	if (addr < pool->range_start || addr >= pool->range_end)
+> > > > > > +		return NULL;
+> > > > > 
+> > > > > Are these range checks only needed because the pool isn't required to be
+> > > > > an exact power-of-2 pages in size? If so, maybe it would be more
+> > > > > straightforward to limit the max order on a per-pool basis depending upon
+> > > > > its size?
+> > > > 
+> > > > More importantly, it is because pages outside of the pool are not
+> > > > guaranteed to be covered by the hyp_vmemmap, so I really need to make
+> > > > sure I don't dereference them.
+> > > 
+> > > Wouldn't having a per-pool max order help with that?
+> > 
+> > The issue is, I have no alignment guarantees for the pools, so I may end
+> > up with max_order = 0 ...
+> 
+> Yeah, so you would still need the range tracking,
 
-Hence, make htmldocs warns:
+Hmm actually I don't think I would, but that would essentially mean the
+'buddy' allocator is now turned into a free list of single pages
+(because we cannot create pages of order 1).
 
-  ./fs/libfs.c:498: warning: Function parameter or member 'mnt_userns' not described in 'simple_setattr'
-  ./fs/xattr.c:257: warning: Function parameter or member 'mnt_userns' not described in '__vfs_setxattr_locked'
-  ./fs/xattr.c:485: warning: Function parameter or member 'mnt_userns' not described in '__vfs_removexattr_locked'
+> but it would at least help
+> to reduce HYP_MAX_ORDER failed searches each time. Still, we can always do
+> that later.
 
-Copy the existing kernel-doc description for that new argument from
-__vfs_setxattr_noperm() to the other functions as well.
+Sorry but I am not following. In which case do we have HYP_MAX_ORDER
+failed searches?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- fs/libfs.c | 1 +
- fs/xattr.c | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/fs/libfs.c b/fs/libfs.c
-index e2de5401abca..61c684014392 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -481,6 +481,7 @@ EXPORT_SYMBOL(simple_rename);
- 
- /**
-  * simple_setattr - setattr for simple filesystem
-+ * @mnt_userns: user namespace of the mount the inode was found from
-  * @dentry: dentry
-  * @iattr: iattr structure
-  *
-diff --git a/fs/xattr.c b/fs/xattr.c
-index b3444e06cded..57f47f0caf22 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -242,6 +242,7 @@ int __vfs_setxattr_noperm(struct user_namespace *mnt_userns,
-  * __vfs_setxattr_locked - set an extended attribute while holding the inode
-  * lock
-  *
-+ *  @mnt_userns: user namespace of the mount the inode was found from
-  *  @dentry: object to perform setxattr on
-  *  @name: xattr name to set
-  *  @value: value to set @name to
-@@ -473,6 +474,7 @@ EXPORT_SYMBOL(__vfs_removexattr);
-  * __vfs_removexattr_locked - set an extended attribute while holding the inode
-  * lock
-  *
-+ *  @mnt_userns: user namespace of the mount the inode was found from
-  *  @dentry: object to perform setxattr on
-  *  @name: name of xattr to remove
-  *  @delegated_inode: on return, will contain an inode pointer that
--- 
-2.17.1
-
+Thanks,
+Quentin
