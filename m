@@ -2,55 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2784C30F4FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC73730F50D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbhBDObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236699AbhBDO1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:27:45 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2342C06178B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:26:39 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id t142so1123042wmt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:26:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WHxuqsEXEN4au8FdhV49UEllGtCSQh/DCdcron9InCc=;
-        b=Pg47DSWBlJxWDTyOy0uhMGzKVxdYFLXQWQS0K5+zxLWQojmzL5h6ffmzz8z8JphFg+
-         GGQnNvn4zYaBYDPyC6oVULe1wxqtXA5XmivtJVmAw1gi3hAHI9cxbYJ8QeLjDxBqhN2z
-         sfjDy3JiEEXoc6s37Q0mTdakrkoM5BHiSvuWBi3o11isnRp8muh/HasfGTLX1h7INMPE
-         eu5FT15vPLlyQyL95luBYGKr7scOfYg8dDnnK/YcunKE0eaIWI/fCuGuv0YDlc808WV5
-         I+uMW4rSIiz6w0P13aivINkdIWrIx32dUc9bZPEOpmtG5xjHFd+ejnKzad1gnP1Q9wvP
-         8ztg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WHxuqsEXEN4au8FdhV49UEllGtCSQh/DCdcron9InCc=;
-        b=h1YARs9PZq0Vx4FfFpEcK1LuU3F+S24Brxn2SI2iUnoUnZtoZwbXQ/6nQUVoD8i/Kf
-         6Oclb5zwmK4sf1EW27y9EsG+3RwgVKgBUo+0BqMGYT+Hd3+Lgnbwl9skpjpvb2cViiPL
-         f0Kp7xmzrh9LD1ntIG1ZAUvyOPcZVOjC8nOKfeYN0g8rnktrv/70lEGPV+v0/HAMCre2
-         CZedu/wCXkSOQ0U9dxG5sfHyqDIF/3zhphAqE0g2DSFb7BdpzfByA22NbMmGCe3T3xPp
-         UvfphT8P/be7r03Hy2O+8uSVgXynlhsFEb33ViCl5Ug0+Q5PC043904l93GKvpEr/Th0
-         yWLA==
-X-Gm-Message-State: AOAM5322/WxvGLYZHodgvZHygJ3nr3UKE3Wk8wPB1newAqJlZEV/8yDN
-        rnqCjC8E3Ak4+KnrLNNIkpnWuQ==
-X-Google-Smtp-Source: ABdhPJz8JyfdFBQ/Eq1UMUYtaCSGJYG+KqzKASSPlnHSKDldVsKHnk3I1lXTriVT3KNvdGryo6FBXw==
-X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr7619926wmq.70.1612448798327;
-        Thu, 04 Feb 2021 06:26:38 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id u3sm9286516wre.54.2021.02.04.06.26.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 06:26:37 -0800 (PST)
-Date:   Thu, 4 Feb 2021 14:26:35 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
+        id S236737AbhBDOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236658AbhBDOb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:31:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F6F564DDD;
+        Thu,  4 Feb 2021 14:31:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612449074;
+        bh=Q3tSj3k5RgYOiGbv7iOvJxUQ4L1+b07VOWx7Yec4fvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDwGuOreW092lBC4s22o/u/Ou7dzP5kXPOcjuc/uEmPD0+dKb01WWUDchmpaYgf+l
+         ucvAb+KoWg19k6IB4/71zGDBzCLu065P9vDjbJiYRccdPp3C+Wb2ylir8ejqoAtU0E
+         8B29egoR1qiIUCUuJxZv/2JNmH2mnSKtF3OKV2L5AlYp1PZAiCtgFd+B6qtSAjNLQa
+         wHzG8rydoLlYFfSZ+puE/2qfx0ihpVkDYX1VbIieI7rIETSjhYZxmLIXdjqa71xIxe
+         /7ErNUVL2gN24XCOsmJUik9XTtOhKJsZ/1RylLAZPsS13KbJ4o2y1lX030Igy78GyE
+         +GxQ0S/63GbGg==
+Date:   Thu, 4 Feb 2021 14:31:08 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
@@ -64,65 +39,94 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Fuad Tabba <tabba@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
         David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 26/26] KVM: arm64: Wrap the host with a stage 2
-Message-ID: <YBwEGx1tv8hob9ho@google.com>
+Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
+ allocator
+Message-ID: <20210204143106.GA20792@willie-the-truck>
 References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-27-qperret@google.com>
- <20210203161146.GJ18974@willie-the-truck>
+ <20210108121524.656872-13-qperret@google.com>
+ <20210202181307.GA17311@willie-the-truck>
+ <YBrsep4xK1F4YRWb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203161146.GJ18974@willie-the-truck>
+In-Reply-To: <YBrsep4xK1F4YRWb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 03 Feb 2021 at 16:11:47 (+0000), Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 12:15:24PM +0000, Quentin Perret wrote:
-> > When KVM runs in protected nVHE mode, make use of a stage 2 page-table
-> > to give the hypervisor some control over the host memory accesses. At
-> > the moment all memory aborts from the host will be instantly idmapped
-> > RWX at stage 2 in a lazy fashion. Later patches will make use of that
-> > infrastructure to implement access control restrictions to e.g. protect
-> > guest memory from the host.
+On Wed, Feb 03, 2021 at 06:33:30PM +0000, Quentin Perret wrote:
+> On Tuesday 02 Feb 2021 at 18:13:08 (+0000), Will Deacon wrote:
+> > On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
+> > > + *   __find_buddy(pool, page 0, order 0) => page 1
+> > > + *   __find_buddy(pool, page 0, order 1) => page 2
+> > > + *   __find_buddy(pool, page 1, order 0) => page 0
+> > > + *   __find_buddy(pool, page 2, order 0) => page 3
+> > > + */
+> > > +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
+> > > +				     unsigned int order)
+> > > +{
+> > > +	phys_addr_t addr = hyp_page_to_phys(p);
+> > > +
+> > > +	addr ^= (PAGE_SIZE << order);
+> > > +	if (addr < pool->range_start || addr >= pool->range_end)
+> > > +		return NULL;
 > > 
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  arch/arm64/include/asm/kvm_cpufeature.h       |   2 +
-> >  arch/arm64/kernel/image-vars.h                |   3 +
-> >  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  33 +++
-> >  arch/arm64/kvm/hyp/nvhe/Makefile              |   2 +-
-> >  arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   1 +
-> >  arch/arm64/kvm/hyp/nvhe/hyp-main.c            |   6 +
-> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 191 ++++++++++++++++++
-> >  arch/arm64/kvm/hyp/nvhe/setup.c               |   6 +
-> >  arch/arm64/kvm/hyp/nvhe/switch.c              |   7 +-
-> >  arch/arm64/kvm/hyp/nvhe/tlb.c                 |   4 +-
-> >  10 files changed, 248 insertions(+), 7 deletions(-)
-> >  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> >  create mode 100644 arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > Are these range checks only needed because the pool isn't required to be
+> > an exact power-of-2 pages in size? If so, maybe it would be more
+> > straightforward to limit the max order on a per-pool basis depending upon
+> > its size?
 > 
-> [...]
-> 
-> > +void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
-> > +{
-> > +	enum kvm_pgtable_prot prot;
-> > +	u64 far, hpfar, esr, ipa;
-> > +	int ret;
-> > +
-> > +	esr = read_sysreg_el2(SYS_ESR);
-> > +	if (!__get_fault_info(esr, &far, &hpfar))
-> > +		hyp_panic();
-> > +
-> > +	prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W | KVM_PGTABLE_PROT_X;
-> > +	ipa = (hpfar & HPFAR_MASK) << 8;
-> > +	ret = host_stage2_map(ipa, PAGE_SIZE, prot);
-> 
-> Can we try to put down a block mapping if the whole thing falls within
-> memory?
+> More importantly, it is because pages outside of the pool are not
+> guaranteed to be covered by the hyp_vmemmap, so I really need to make
+> sure I don't dereference them.
 
-Yes we can! And in fact we can do that outside of memory too. It's
-queued for v3 already, so stay tuned ... :)
+Wouldn't having a per-pool max order help with that?
 
-Thanks,
-Quentin
+> > > +	return hyp_phys_to_page(addr);
+> > > +}
+> > > +
+> > > +static void __hyp_attach_page(struct hyp_pool *pool,
+> > > +			      struct hyp_page *p)
+> > > +{
+> > > +	unsigned int order = p->order;
+> > > +	struct hyp_page *buddy;
+> > > +
+> > > +	p->order = HYP_NO_ORDER;
+> > 
+> > Why is this needed?
+> 
+> If p->order is say 3, I may be able to coalesce with the buddy of order
+> 3 to form a higher order page of order 4. And that higher order page
+> will be represented by the 'first' of the two order-3 pages (let's call
+> it the head), and the other order 3 page (let's say the tail) will be
+> assigned 'HYP_NO_ORDER'.
+> 
+> And basically at this point I don't know if 'p' is going be the head or
+> the tail, so I set it to HYP_NO_ORDER a priori so I don't have to think
+> about this in the loop below. Is that helping?
+> 
+> I suppose this could use more comments as well ...
+
+Comments would definitely help, but perhaps even having a simple function to
+do the coalescing, which you could call from the loop body and which would
+deal with marking the tail pages as HYP_NO_ORDER?
+
+> > > +	for (; order < HYP_MAX_ORDER; order++) {
+> > > +		/* Nothing to do if the buddy isn't in a free-list */
+> > > +		buddy = __find_buddy(pool, p, order);
+> > > +		if (!buddy || list_empty(&buddy->node) || buddy->order != order)
+> > 
+> > Could we move the "buddy->order" check into __find_buddy()?
+> 
+> I think might break __hyp_extract_page() below. The way I think about
+> __find_buddy() is as a low level function which gives you the buddy page
+> blindly if it exists in the hyp_vmemmap, and it's up to the callers to
+> decide whether the buddy is in the right state for their use or not.
+
+Just feels a bit backwards having __find_buddy() take an order parameter,
+yet then return a page of the wrong order! __hyp_extract_page() always
+passes the p->order as the order, so I think it would be worth having a
+separate function that just takes the pool and the page for that.
+
+Will
