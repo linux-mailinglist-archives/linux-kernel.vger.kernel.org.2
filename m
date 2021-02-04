@@ -2,67 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C5930ED27
+	by mail.lfdr.de (Postfix) with ESMTP id 8A30830ED28
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhBDHSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:18:43 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:42028 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231791AbhBDHSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:18:39 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-01 (Coremail) with SMTP id qwCowABnbpaVnxtgKuhBAQ--.48462S2;
-        Thu, 04 Feb 2021 15:17:41 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: host: ehci: remove casting dma_alloc_coherent
-Date:   Thu,  4 Feb 2021 07:17:38 +0000
-Message-Id: <20210204071738.84222-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowABnbpaVnxtgKuhBAQ--.48462S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw15CFWUWFW7uFy3Cr17KFg_yoWxuwc_Cr
-        W5JrsF93srKF1qkryDJFy3ZFZ7tws5XF48Z3WvgryfKa4qqr4rXF93Zr1kJ3W3Cws5JrZ0
-        k3s8XrWSgw4xujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j7pnQUUUUU=
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCggCA1z4jWK-QAAAs3
+        id S234019AbhBDHTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232926AbhBDHT1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:19:27 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA88C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:18:46 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id j2so1518291pgl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:18:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=2eRuV+MXnwPgq49jF42geq/0UwpntOjcJgm9XMP9CAg=;
+        b=SLMDsE4y0FhDbfD2z7XAMkH8WPSB/nV94IxlWnVjQn726xDeAQXW2Hsadl8591l66S
+         RSDITY6xHDiPuO2zpDHQq36N5MK4G+YHDQcx2+astVGW/GRZKLFuyMveXkAB6zu1IbZv
+         OR7I2t8hqik4CUPYX9fOzvadOod0HDyxalU+rH0ZcbBJ7gS3npq+RW4PlUUoJx8/UUem
+         su6IDcfNwrznXjwq6v5ddUzh5Q4VndIHMj9h1cf0TIqUFMsgoC2yn35BKW9SNHF6PfLI
+         2ZZYzJIr/yKsnPqqAaPKKWDZHlPrzUBUaS95mohvSMrMhYwMdbHzsRRbNHuVpI9UGSAF
+         a0+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=2eRuV+MXnwPgq49jF42geq/0UwpntOjcJgm9XMP9CAg=;
+        b=CcRSQz12sPgG4QIjqmT1gJxDANxuG4rLK/JMXA4s6lL+IuQK+DhRSjcP6Lop61emLF
+         /sPV2IKCTTMnp1pNDGInuURNcW2gojsGbDNfncy3N+w+/g/PSDiLwgNNGNPrlihSYF/o
+         e6eei6SsPTwwadV7zTAt4vQ0fkvis5qgcaALytdFuWg8GPXUE64MK/2aRkVzs2346MDc
+         7f19RpC6y+bUenlDKx4F/TlM6IojvK4GR+pcrpWGE0bviLqRlatsTb4/1+eqZ3k03K7r
+         EEBMrgDxV++LnnFgV37a8KrMsTWjwm79jHBBvIXkyr4kZfDDbwRFvQVZCyu/mv6tGkMg
+         2d6A==
+X-Gm-Message-State: AOAM532an2dM94/2r3EAx4dP4cSpLD8IazA1Ei49tSVree0R0BKO0Jhe
+        Pl3fNRWGh+sd9jOoYxWSSCTRBoy2CtYayw==
+X-Google-Smtp-Source: ABdhPJzvlmRt84/scknRPGOoIfunryBXyEpNMmzROMAU9TTEX5OhtIM2izr8j3fiavxrxXgOdEUybQ==
+X-Received: by 2002:a62:7b90:0:b029:1be:9e89:1db5 with SMTP id w138-20020a627b900000b02901be9e891db5mr6677190pfc.35.1612423125170;
+        Wed, 03 Feb 2021 23:18:45 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:5cde:5545:a9de:114f])
+        by smtp.gmail.com with ESMTPSA id 30sm5238128pgl.77.2021.02.03.23.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 23:18:43 -0800 (PST)
+Date:   Wed, 3 Feb 2021 23:18:38 -0800
+From:   Benson Leung <bleung@google.com>
+To:     linux-kernel@vger.kernel.org,
+        Prashant Malani <pmalani@chromium.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>, bleung@chromium.org
+Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec: Import Type C control
+ command
+Message-ID: <161242303435.1051580.1469403981857153644.b4-ty@chromium.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s8Wck68FOGenQAW8"
+Content-Disposition: inline
+In-Reply-To: <20210203021539.745239-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove casting the values returned by dma_alloc_coherent.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/usb/host/ehci-mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--s8Wck68FOGenQAW8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/usb/host/ehci-mem.c b/drivers/usb/host/ehci-mem.c
-index 6361d81272bc..769329032257 100644
---- a/drivers/usb/host/ehci-mem.c
-+++ b/drivers/usb/host/ehci-mem.c
-@@ -185,7 +185,7 @@ static int ehci_mem_init (struct ehci_hcd *ehci, gfp_t flags)
- 	}
- 
- 	/* Hardware periodic table */
--	ehci->periodic = 
-+	ehci->periodic =
- 		dma_alloc_coherent(ehci_to_hcd(ehci)->self.sysdev,
- 			ehci->periodic_size * sizeof(__le32),
- 			&ehci->periodic_dma, flags);
--- 
-2.17.1
+Hi Prashant,
 
+On Tue, 2 Feb 2021 18:15:37 -0800, Prashant Malani wrote:
+> This command is used to communicate with the Chrome Embedded Controller
+> (EC) regarding USB Type C events and state.
+>=20
+> These header updates are included in the latest Chrome OS EC headers [1]
+>=20
+> [1]
+> https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/mai=
+n/include/ec_commands.h
+
+Applied, thanks!
+
+[1/2] platform/chrome: cros_ec: Import Type C control command
+      commit: 3ec28d3673362076444e290bdb0d94ec6432dc09
+[2/2] platform/chrome: cros_ec_typec: Clear Type C disc events
+      commit: d521119c8b0d70b91971d632430ec1143e5d2e26
+
+Best regards,
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--s8Wck68FOGenQAW8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBufzgAKCRBzbaomhzOw
+wj2uAP49ietv5xNfS66ocvls3D80NF2Tn5tE2b+8lv8nqLwsBQD/aUezNyrvbt3B
+u1W2dP6hbipw3/VxwdG9O6iAQOX9VAw=
+=YdQv
+-----END PGP SIGNATURE-----
+
+--s8Wck68FOGenQAW8--
