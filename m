@@ -2,109 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3773F30EA2F
+	by mail.lfdr.de (Postfix) with ESMTP id A6F5930EA30
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhBDC3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:29:01 -0500
-Received: from smtp.uniroma2.it ([160.80.6.16]:47085 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232762AbhBDC27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:28:59 -0500
-Received: from smtpauth-2019-1.uniroma2.it (smtpauth.uniroma2.it [160.80.5.46])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 1142RWaa010460;
-        Thu, 4 Feb 2021 03:27:37 +0100
-Received: from lubuntu-18.04 (unknown [160.80.103.126])
-        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 9388512287D;
-        Thu,  4 Feb 2021 03:27:27 +0100 (CET)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
-        s=ed201904; t=1612405648; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S234019AbhBDC3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:29:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232762AbhBDC3S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:29:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612405672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BBzNtFmeR8mXuxoqjeFWbcuolAywphiZEEztgpv3tK8=;
-        b=YHMRh3qCcMMur84PeqRWUt4FBxoMcJJ6Gs8Agi2OaitoubZErgfTdkpTsXyBO+S4JQg7Nd
-        EC9JZ81jKUtzvrBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
-        t=1612405648; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BBzNtFmeR8mXuxoqjeFWbcuolAywphiZEEztgpv3tK8=;
-        b=fp5tyQWiYjxfPSHnNp85GtpIUMD8dI62n/3W9gKQNL4F0zTmoTCkjr4YhtFc3+2X2Z8PGI
-        Mx5JLdP1AHrrGznDBxGzgMAju28ucknmH1vKmS0OVB27mH5S8dhqpZK/ZnMCSQIWjlbh24
-        +rzUQMbN1BVNdPepWwgpJo5dfLakBlfFqODZMdjqo96YnF+oYV1MwP3cKZpDoozDcIoVwU
-        x1wvuc3Nlbljgvc8sv8C3yKWc1tCakjyLdz+km/nJ4uolaIy4emho1MLHibhOjzUxBVWhy
-        EWsSftTGQC7ezh+OrYklu2iZHB+2P4TED69rIh91hJ2jMleO92DZGm/rYluGdg==
-Date:   Thu, 4 Feb 2021 03:27:27 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: Re: [PATCH net-next] seg6: fool-proof the processing of SRv6
- behavior attributes
-Message-Id: <20210204032727.ffd2c1ae3410147ba7598d78@uniroma2.it>
-In-Reply-To: <6fe3beb2-4306-11cd-83ce-66072db81346@gmail.com>
-References: <20210202185648.11654-1-andrea.mayer@uniroma2.it>
-        <6fe3beb2-4306-11cd-83ce-66072db81346@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+        bh=lPtm3r8zd3MZ312457p/Epm6xNVI8yDRJXR45ftqPr4=;
+        b=MeFVP9RP2Th0JZ9tk50FsUchX/nNNwwUbS5WIpsUj2Xr3GOrYCuYgfztPLPT3ujCwhLyh+
+        N/10XgcK3VuKPGIdKAWA9QmFXTXrntiGaiu8dO6XjB4+ERnsCMy6ZlyQ0P/6T0ZXnwBBjB
+        u8+zfK3uOdoKVT/d/vQHxCbYzfEGiMU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-XeKJzsjfPlOxCcDA-M4cYA-1; Wed, 03 Feb 2021 21:27:50 -0500
+X-MC-Unique: XeKJzsjfPlOxCcDA-M4cYA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9BE18030B4;
+        Thu,  4 Feb 2021 02:27:49 +0000 (UTC)
+Received: from T590 (ovpn-13-173.pek2.redhat.com [10.72.13.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9971F7770F;
+        Thu,  4 Feb 2021 02:27:44 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 10:27:40 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     David Jeffery <djeffery@redhat.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org,
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH] block: recalculate segment count for multi-segment
+ discard requests correctly
+Message-ID: <20210204022740.GB1108591@T590>
+References: <20210201164850.391332-1-djeffery@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201164850.391332-1-djeffery@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-thanks for your time.
-
-On Wed, 3 Feb 2021 08:59:40 -0700
-David Ahern <dsahern@gmail.com> wrote:
-
-> On 2/2/21 11:56 AM, Andrea Mayer wrote:
-> > diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-> > index b07f7c1c82a4..7cc50d506902 100644
-> > --- a/net/ipv6/seg6_local.c
-> > +++ b/net/ipv6/seg6_local.c
-> > @@ -31,6 +31,9 @@
-> >  #include <linux/etherdevice.h>
-> >  #include <linux/bpf.h>
-> >  
-> > +#define SEG6_F_ATTR(i)		BIT(i)
-> > +#define SEG6_LOCAL_MAX_SUPP	32
-> > +
+On Mon, Feb 01, 2021 at 11:48:50AM -0500, David Jeffery wrote:
+> When a stacked block device inserts a request into another block device
+> using blk_insert_cloned_request, the request's nr_phys_segments field gets
+> recalculated by a call to blk_recalc_rq_segments in
+> blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+> handle multi-segment discards. For disk types which can handle
+> multi-segment discards like nvme, this results in discard requests which
+> claim a single segment when it should report several, triggering a warning
+> in nvme and causing nvme to fail the discard from the invalid state.
 > 
-> SEG6_LOCAL_MAX_SUPP should not be needed; it can be derived from the type:
+>  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+>  ...
+>  nvme_setup_cmd+0x217/0x270 [nvme_core]
+>  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+>  __blk_mq_try_issue_directly+0xe7/0x1b0
+>  blk_mq_request_issue_directly+0x41/0x70
+>  ? blk_account_io_start+0x40/0x50
+>  dm_mq_queue_rq+0x200/0x3e0
+>  blk_mq_dispatch_rq_list+0x10a/0x7d0
+>  ? __sbitmap_queue_get+0x25/0x90
+>  ? elv_rb_del+0x1f/0x30
+>  ? deadline_remove_request+0x55/0xb0
+>  ? dd_dispatch_request+0x181/0x210
+>  __blk_mq_do_dispatch_sched+0x144/0x290
+>  ? bio_attempt_discard_merge+0x134/0x1f0
+>  __blk_mq_sched_dispatch_requests+0x129/0x180
+>  blk_mq_sched_dispatch_requests+0x30/0x60
+>  __blk_mq_run_hw_queue+0x47/0xe0
+>  __blk_mq_delay_run_hw_queue+0x15b/0x170
+>  blk_mq_sched_insert_requests+0x68/0xe0
+>  blk_mq_flush_plug_list+0xf0/0x170
+>  blk_finish_plug+0x36/0x50
+>  xlog_cil_committed+0x19f/0x290 [xfs]
+>  xlog_cil_process_committed+0x57/0x80 [xfs]
+>  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+>  xlog_ioend_work+0x2f/0x80 [xfs]
+>  process_one_work+0x1b6/0x350
+>  worker_thread+0x53/0x3e0
+>  ? process_one_work+0x350/0x350
+>  kthread+0x11b/0x140
+>  ? __kthread_bind_mask+0x60/0x60
+>  ret_from_fork+0x22/0x30
 > 
-
-Yes, we can avoid the SEG6_LOCAL_MAX_SUPP. Using the BITS_PER_TYPE macro seems
-better to me and it avoids nailing the value 32 as the limit. At compile time,
-the kernel build will fail if the total number of SRv6 attributes will exceed
-the number of bits available in the unsigned long bitmap (whatever is the
-reference architecture). Therefore, I'm going to follow your suggestion!
-
->     BUILD_BUG_ON(BITS_PER_TYPE(unsigned long) > SEG6_LOCAL_MAX)
+> This patch fixes blk_recalc_rq_segments to be aware of devices which can
+> have multi-segment discards. It calculates the correct discard segment
+> count by counting the number of bio as each discard bio is considered its
+> own segment.
 > 
+> Signed-off-by: David Jeffery <djeffery@redhat.com>
+> Tested-by: Laurence Oberman <loberman@redhat.com>
+> ---
+>  block/blk-merge.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/block/blk-merge.c b/block/blk-merge.c
+> index 808768f6b174..fe7358bd5d09 100644
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+>  
+>  	switch (bio_op(rq->bio)) {
+>  	case REQ_OP_DISCARD:
+> +		if (queue_max_discard_segments(rq->q) > 1) {
+> +			struct bio *bio = rq->bio;
+> +			for_each_bio(bio)
+> +				nr_phys_segs++;
+> +			return nr_phys_segs;
+> +		}
+> +		/* fall through */
+>  	case REQ_OP_SECURE_ERASE:
+>  	case REQ_OP_WRITE_ZEROES:
+>  		return 0;
 
-I think there is an issue here because BITS_PER_TYPE(unsigned long) is greater
-than the SEG6_LOCAL_MAX (currently = 9).
+blk_rq_nr_discard_segments() always returns >=1 segments, so no similar
+issue in case of single range discard.
 
-I think it should be like this:
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
- BUILD_BUG_ON(SEG6_LOCAL_MAX + 1 > BITS_PER_TYPE(unsigned long))
+And it can be thought as:
 
-I will send a v2 with the changes discussed so far.
+Fixes: 1e739730c5b9 ("block: optionally merge discontiguous discard bios into a single request")
 
-Thank you,
-Andrea
+
+-- 
+Ming
+
