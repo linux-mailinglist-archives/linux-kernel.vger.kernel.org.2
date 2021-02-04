@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE36330F074
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CCB30F086
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbhBDKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhBDKVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:21:05 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D4CC061573
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:20:25 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id cl8so1442897pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dteaa9WctumlnSF4vEfWhEQww005qkrMHIV+0A4eBtA=;
-        b=kwLnqVciucPAvi368GbGCaKJIsQwuQIBTaogGyWd0a6U86Tmba/Lnh/wP3ljFnAZuW
-         RSLLJ+I6y4nNtYR8dJDzWHrSGIfPKJf4xOwwP4cH/7ZNsZ6ebREEnMmgMdTIKKJuDRUd
-         Ir07V0gipzM4YFutoUHoYWInTioInsXMGcpicGH20GbHvP182bp82TurfdG01QRt+Y+D
-         le1JEhB5IGJFNrblIPXQ3ogX2bkK3DxucdxhWYZY++siZ8pbHzGMTY1Nl1hTct1R8+Iw
-         NSlcnx6u6xoBEFmjs9HWY9WKzJUGgqU0zlKJjaoKtQAHQhUd/MOrANqoVfxjdM4TpEmp
-         oLVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dteaa9WctumlnSF4vEfWhEQww005qkrMHIV+0A4eBtA=;
-        b=iYecqqsECzXYEYelt6VvX09+M9ic6IPFcP6Ypp5WZlahoqwIxFM23aJfFyKOpNRxPZ
-         0m8UmxzKb6il0JlmGjrWEdPmB+yhtPbM5ZaYi/SmfYuRcGSouNnHT1H+gbuKbApTdV9X
-         4zbpcjGskBQwKMWvGdd8xcg/5lHpPKVvOqOE1ElnhbqpeNmxSFtOL1KEraJ86u5grh25
-         biKZtQ6WbfrJbfdSoJ+fIDn5uEnrJB3gYtZLf5UqHhqM0Fel2fmkw316LxMJV8b/70zS
-         mhavhfM6PMuT2wlX0OeMMpdQtPF233QO9EHFTVRjh7Ta3P0PZR6dDT0e7ts36ZRT3wxv
-         nPtw==
-X-Gm-Message-State: AOAM5316AM6iJVfdvl4O2GMN8GsOzWbfPK1Cq+buT+qtQsqC97xsEMQW
-        YOZg45kMuWe/7nbN5zTaSBY=
-X-Google-Smtp-Source: ABdhPJytPD0e3m8uJApCH5wpc6GGtPnocqhzzMPZav3VL1HXp/ePH9jXZmTeBVcMH6RyeuiZTbWEAw==
-X-Received: by 2002:a17:902:ea0f:b029:de:5fd5:abb9 with SMTP id s15-20020a170902ea0fb02900de5fd5abb9mr7327223plg.46.1612434024703;
-        Thu, 04 Feb 2021 02:20:24 -0800 (PST)
-Received: from localhost (121-45-171-254.tpgi.com.au. [121.45.171.254])
-        by smtp.gmail.com with ESMTPSA id 123sm5363785pfd.91.2021.02.04.02.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 02:20:23 -0800 (PST)
-Date:   Thu, 4 Feb 2021 21:20:20 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Weiping Zhang <zwp10758@gmail.com>
-Cc:     sblbir@amazon.com, davem@davemloft.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2] taskstats: add /proc/taskstats to fetch pid/tgid
- status
-Message-ID: <20210204102020.GA286763@balbir-desktop>
-References: <20201217170009.GA29186@192.168.3.9>
- <CAA70yB6O2on1tpoA8TpT+Hp03iu_Xrpaa_d0HjVa75UFMTA4yg@mail.gmail.com>
- <CAA70yB5evFpMSy-D9txv91NNHTguXsSVstAFQ3sYTTkDMy6F=A@mail.gmail.com>
- <20210127111346.GB59838@balbir-desktop>
- <CAA70yB6P4_JsZnCrBkYg=7eyT5KW0XucUY+Y7T8YYMnXj6iVXA@mail.gmail.com>
+        id S235411AbhBDKYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:24:39 -0500
+Received: from relay.sw.ru ([185.231.240.75]:60854 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235342AbhBDKYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:24:34 -0500
+Received: from [192.168.15.247]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l7bn1-001fia-Ri; Thu, 04 Feb 2021 13:23:07 +0300
+Subject: Re: [v6 PATCH 11/11] mm: vmscan: shrink deferred objects proportional
+ to priority
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-12-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <8c11f94a-bd1a-3311-2160-0f2c83994a53@virtuozzo.com>
+Date:   Thu, 4 Feb 2021 13:23:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA70yB6P4_JsZnCrBkYg=7eyT5KW0XucUY+Y7T8YYMnXj6iVXA@mail.gmail.com>
+In-Reply-To: <20210203172042.800474-12-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 05:16:47PM +0800, Weiping Zhang wrote:
-> On Wed, Jan 27, 2021 at 7:13 PM Balbir Singh <bsingharora@gmail.com> wrote:
-> >
-> > On Fri, Jan 22, 2021 at 10:07:50PM +0800, Weiping Zhang wrote:
-> > > Hello Balbir Singh,
-> > >
-> > > Could you help review this patch, thanks
-> > >
-> > > On Mon, Dec 28, 2020 at 10:10 PM Weiping Zhang <zwp10758@gmail.com> wrote:
-> > > >
-> > > > Hi David,
-> > > >
-> > > > Could you help review this patch ?
-> > > >
-> > > > thanks
-> > > >
-> > > > On Fri, Dec 18, 2020 at 1:24 AM Weiping Zhang
-> > > > <zhangweiping@didiglobal.com> wrote:
-> > > > >
-> > > > > If a program needs monitor lots of process's status, it needs two
-> > > > > syscalls for every process. The first one is telling kernel which
-> > > > > pid/tgid should be monitored by send a command(write socket) to kernel.
-> > > > > The second one is read the statistics by read socket. This patch add
-> > > > > a new interface /proc/taskstats to reduce two syscalls to one ioctl.
-> > > > > The user just set the target pid/tgid to the struct taskstats.ac_pid,
-> > > > > then kernel will collect statistics for that pid/tgid.
-> > > > >
-> > > > > Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-> >
-> > Could you elaborate on the overhead your seeing for the syscalls? I am not
-> > in favour of adding new IOCTL's.
-> >
-> > Balbir Singh.
+On 03.02.2021 20:20, Yang Shi wrote:
+> The number of deferred objects might get windup to an absurd number, and it
+> results in clamp of slab objects.  It is undesirable for sustaining workingset.
 > 
-> Hello Balbir Singh,
+> So shrink deferred objects proportional to priority and cap nr_deferred to twice
+> of cache items.
 > 
-> Sorry for late reply,
+> The idea is borrowed fron Dave Chinner's patch:
+> https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
 > 
-> I do a performance test between netlink mode and ioctl mode,
-> monitor 1000 and 10000 sleep processes,
-> the netlink mode cost more time than ioctl mode, that is to say
-> ioctl mode can save some cpu resource and has a quickly reponse
-> especially when monitor lot of process.
+> Tested with kernel build and vfs metadata heavy workload in our production
+> environment, no regression is spotted so far.
 > 
-> proccess-count    netlink         ioctl
-> ---------------------------------------------
-> 1000              0.004446851     0.001553733
-> 10000             0.047024986     0.023290664
-> 
-> you can get the test demo code from the following link
-> https://github.com/dublio/tools/tree/master/c/taskstat
->
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Let me try it out, I am opposed to adding the new IOCTL interface
-you propose. How frequently do you monitor this data and how much
-time in spent in making decision on the data? I presume the data
-mentioned is the cost per call in seconds?
+For some time I was away from this do_shrink_slab() magic formulas and recent changes,
+so I hope somebody else, who is being in touch with this, can review.
 
-Balbir Singh
- 
+> ---
+>  mm/vmscan.c | 40 +++++-----------------------------------
+>  1 file changed, 5 insertions(+), 35 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 574d920c4cab..d0a86170854b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -649,7 +649,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	 */
+>  	nr = count_nr_deferred(shrinker, shrinkctl);
+>  
+> -	total_scan = nr;
+>  	if (shrinker->seeks) {
+>  		delta = freeable >> priority;
+>  		delta *= 4;
+> @@ -663,37 +662,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  		delta = freeable / 2;
+>  	}
+>  
+> +	total_scan = nr >> priority;
+>  	total_scan += delta;
+> -	if (total_scan < 0) {
+> -		pr_err("shrink_slab: %pS negative objects to delete nr=%ld\n",
+> -		       shrinker->scan_objects, total_scan);
+> -		total_scan = freeable;
+> -		next_deferred = nr;
+> -	} else
+> -		next_deferred = total_scan;
+> -
+> -	/*
+> -	 * We need to avoid excessive windup on filesystem shrinkers
+> -	 * due to large numbers of GFP_NOFS allocations causing the
+> -	 * shrinkers to return -1 all the time. This results in a large
+> -	 * nr being built up so when a shrink that can do some work
+> -	 * comes along it empties the entire cache due to nr >>>
+> -	 * freeable. This is bad for sustaining a working set in
+> -	 * memory.
+> -	 *
+> -	 * Hence only allow the shrinker to scan the entire cache when
+> -	 * a large delta change is calculated directly.
+> -	 */
+> -	if (delta < freeable / 4)
+> -		total_scan = min(total_scan, freeable / 2);
+> -
+> -	/*
+> -	 * Avoid risking looping forever due to too large nr value:
+> -	 * never try to free more than twice the estimate number of
+> -	 * freeable entries.
+> -	 */
+> -	if (total_scan > freeable * 2)
+> -		total_scan = freeable * 2;
+> +	total_scan = min(total_scan, (2 * freeable));
+>  
+>  	trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
+>  				   freeable, delta, total_scan, priority);
+> @@ -732,10 +703,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  		cond_resched();
+>  	}
+>  
+> -	if (next_deferred >= scanned)
+> -		next_deferred -= scanned;
+> -	else
+> -		next_deferred = 0;
+> +	next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
+> +	next_deferred = min(next_deferred, (2 * freeable));
+> +
+>  	/*
+>  	 * move the unused scan count back into the shrinker in a
+>  	 * manner that handles concurrent updates.
+
+Thanks
+
