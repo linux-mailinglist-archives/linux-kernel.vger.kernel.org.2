@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB9330EA46
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBA830EA48
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhBDCgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233760AbhBDCgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:36:21 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7269C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 18:35:40 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id k141so1944631ybf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 18:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=+Rhoed1XQepPnJf3F6uh773jLZ78lN8W7AVU2qB258o=;
-        b=hyYr9tldNB35f9XCt4oiqOeUSNLxT3NzdiZyYRqw2VWSCllNgj7jm86k+RuoZo3WKC
-         Q4U6sRpqW1+G9vn2tlCUnmHvyT5H+18d2QWAzl+Wr05TzOvImbvKjxLjMLjanHNltUBv
-         Vlv//0aK+8HssbdNw2hanUTO9l8zEJupWTSUKoB2OcElbV4Q1j+sLzlK1ZmBrQwQYYPP
-         UsaC1/czjkdIps5Xd7KXfnryrTz+4GuQZT8OuBP1TvjNj6NHkVQYjp0/MmdJ0JKrCuM4
-         YMzNqdvDMd13Y7OwjUVX1lvwHxdiKQTWvtvXQ5eGLsgnzmbVykh/0Aj1aFFOh/ZBsP+M
-         BPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=+Rhoed1XQepPnJf3F6uh773jLZ78lN8W7AVU2qB258o=;
-        b=DLgtLvIDfFTVgtKv0mdmTWGw6qkv1hrhKXIPK/zzmIzTfymQ54mxXRVHhTx9UgiT/C
-         eQ7/QEmbJqofkSdPXE9xBdQ+ulSt3djoUoFUSjrdNA5fvDH5dZArcTrkVMdBDnFVkxJC
-         96qR2e9204FFsBKF1rhxnMUGLya3FSbB0bne+GqbMsrbrzWIDTKzyHOGHFiAZUurbY6q
-         knyW12Mgf0j0aGo6IdVbnnEq8BPvkTvyHxWSHiDyi+y6xeiycjN8tVTskt2uWhNcsEkm
-         z+VYZnJYRRte68iHGh4cVoJBtpzA29xtkpnLEJC7Gkoqe+LItdK2xanYcIZi5993TJvY
-         OsWQ==
-X-Gm-Message-State: AOAM532IOAGSS+uVWBuvBb/d3/Pv6zAhlPcXCb+XhLFAWeoBargbpGe8
-        4MrMBJeX1Zf2bDPwvXUbKz88O0ZTXW8=
-X-Google-Smtp-Source: ABdhPJz31YtwdDoZ04CvFBL+71M8C0dpug36wp8GedSEwyhOz06UH9fTvuGaPWWibtMV0aUW3dA9nSUivBU=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:a9a0:e924:d161:b6cb])
- (user=seanjc job=sendgmr) by 2002:a25:4e07:: with SMTP id c7mr8588817ybb.288.1612406140095;
- Wed, 03 Feb 2021 18:35:40 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  3 Feb 2021 18:35:36 -0800
-Message-Id: <20210204023536.3397005-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] KVM: SVM: Remove bogus WARN and emulation if guest #GPs with EFER.SVME=1
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bandan Das <bsd@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234624AbhBDChd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:37:33 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35282 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233517AbhBDCh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 21:37:28 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxadS2XRtg+ikDAA--.3874S3;
+        Thu, 04 Feb 2021 10:36:39 +0800 (CST)
+Subject: Re: [PATCH] selftests: breakpoints: Fix wrong argument of ptrace()
+ when single step
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>
+References: <1612341547-22225-1-git-send-email-yangtiezhu@loongson.cn>
+ <f91f1e69-310e-5256-de6e-9bceeaa7b205@linuxfoundation.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <d560a99f-be45-c03f-e729-56ccdbc9a131@loongson.cn>
+Date:   Thu, 4 Feb 2021 10:36:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <f91f1e69-310e-5256-de6e-9bceeaa7b205@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxadS2XRtg+ikDAA--.3874S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFyfZF1kJr4kZFW7Zry7Jrb_yoW8KFWxpF
+        WfZr1ktFs3try5K3ZrX3yqvF1fGrs7ZFWxA34rJ34avr18tws3Jw1xKF4UKFy3u395X3sY
+        y3Z7GF4rua4UXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU8mZX5UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Immediately reinject #GP (if intercepted) if the VMware backdoor is
-disabled and the instruction is not affected by the erratum that causes
-bogus #GPs on SVM instructions.  It is completely reasonable for the
-guest to take a #GP(0) with EFER.SVME=1, e.g. when probing an MSR, and
-attempting emulation on an unknown instruction is obviously not good.
+On 02/04/2021 02:30 AM, Shuah Khan wrote:
+> On 2/3/21 1:39 AM, Tiezhu Yang wrote:
+>> According to the error message, the first argument of ptrace() should be
+>> PTRACE_SINGLESTEP instead of PTRACE_CONT when ptrace single step.
+>>
+>> Fixes: f43365ee17f8 ("selftests: arm64: add test for 
+>> unaligned/inexact watchpoint handling")
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   tools/testing/selftests/breakpoints/breakpoint_test_arm64.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git 
+>> a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c 
+>> b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+>> index ad41ea6..2f4d4d6 100644
+>> --- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+>> +++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+>> @@ -143,7 +143,7 @@ static bool run_test(int wr_size, int wp_size, 
+>> int wr, int wp)
+>>       if (!set_watchpoint(pid, wp_size, wp))
+>>           return false;
+>>   -    if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
+>> +    if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) < 0) {
+>>           ksft_print_msg(
+>>               "ptrace(PTRACE_SINGLESTEP) failed: %s\n",
+>>               strerror(errno));
+>>
+>
+> Right before this it does a set_watchpoint(). PTRACE_CONT is what
+> makes sense to me. Error might be the one that is incorrect here?
 
-Fixes: b3f4e11adc7d ("KVM: SVM: Add emulation support for #GP triggered by SVM instructions")
-Cc: Bandan Das <bsd@redhat.com>
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+What do you think the following change? If it is OK, I will send v2 soon.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index f53e6377a933..707a2f85bcc6 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2263,7 +2263,8 @@ static int gp_interception(struct vcpu_svm *svm)
- 	opcode = svm_instr_opcode(vcpu);
- 
- 	if (opcode == NONE_SVM_INSTR) {
--		WARN_ON_ONCE(!enable_vmware_backdoor);
-+		if (!enable_vmware_backdoor)
-+			goto reinject;
- 
- 		/*
- 		 * VMware backdoor emulation on #GP interception only handles
--- 
-2.30.0.365.g02bc693789-goog
+diff --git a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c 
+b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+index ad41ea6..e704181 100644
+--- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
++++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+@@ -145,7 +145,7 @@ static bool run_test(int wr_size, int wp_size, int 
+wr, int wp)
+
+         if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
+                 ksft_print_msg(
+-                       "ptrace(PTRACE_SINGLESTEP) failed: %s\n",
++                       "ptrace(PTRACE_CONT) failed: %s\n",
+                         strerror(errno));
+                 return false;
+         }
+@@ -159,7 +159,7 @@ static bool run_test(int wr_size, int wp_size, int 
+wr, int wp)
+         }
+         alarm(0);
+         if (WIFEXITED(status)) {
+-               ksft_print_msg("child did not single-step\n");
++               ksft_print_msg("child exited prematurely\n");
+                 return false;
+         }
+         if (!WIFSTOPPED(status)) {
+
+Thanks,
+Tiezhu
+
+>
+> thanks,
+> -- Shuah
 
