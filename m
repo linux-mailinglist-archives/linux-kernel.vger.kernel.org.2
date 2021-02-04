@@ -2,151 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36A330EAC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054F130EAC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 04:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbhBDDOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 22:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhBDDOa (ORCPT
+        id S234209AbhBDDPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 22:15:40 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60160 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231177AbhBDDPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:14:30 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C49C061786
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 19:13:49 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id b145so1201824pfb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 19:13:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GaD6sGrh13jKf92b5i6r6S0mLTiP02KjIFA6/14apQ4=;
-        b=q3o8eGlIqp5+a/uK8OG6mfLFZt66d5ZgADuOg2NItU1LhvOO5aBYFbKRxeG4pSIQjZ
-         p+/HbdCY46Ir4A8ECIJjeVmLZFLUm07l3eZ34KBQs2zvpykBPJVfbvKJ0CqlMAY+VcIT
-         2Y0B6gzYCY8X/SplzgZT+t0DthmH2ADwzetQGNu+YIzn3/bDOiaSn3N9PT/NTVWydFhK
-         AxTSG+WIjw62xmDpwdICrz2Aj1eVJNovjN0MdNGjpDS/YHkZ90mSGtokL9IVyM7hbgMZ
-         0GrW9bMed2Wm8mucE4MFgNy56dqP00lYiZJrvMxKq+5/ERqj7w0MK7NQWwpxxM5hWJn8
-         VRVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GaD6sGrh13jKf92b5i6r6S0mLTiP02KjIFA6/14apQ4=;
-        b=ZMd+fmbbbRLtqDo5skcqxzK1vTMVk+5okYUu7shAoGMLLvnUntGH/6OCEuU9URsNME
-         do1z1O6cqzz1NjJz3z5GyR1b1+9IEkZDVo9H3XxHQXDsdNTnAQ+HfjJ2R+4iAd4HOFM6
-         GCZAw+M93Ab6XYqp1K1wfynGVrjb0aHpmbkgvbkL7kHjGErhyVCaJp8mHjBn0YwMGSDz
-         //nHvXW6jQRNJxpPthJIvE9bzKFk4cbTNwhv9XCDe4mc2hIw1yaiyPWRK+L5MfnO04Z3
-         u17tF1sujJA+v+eWmhiwaYB2taNBQFJyJGFsPjoQiG6LlEANiEyXZ6ymAQl1QupOn5MN
-         nsVA==
-X-Gm-Message-State: AOAM532SkJ27lgji8IzKQXCme8VRHc2Z9TapqGwEXEUtlwOKZVfYP8HQ
-        HNOoKVWyT1dvhw4BCRejtEk8NgUxyd+bT1MnrvMIOQ==
-X-Google-Smtp-Source: ABdhPJxw+Ouh0oumywhHaNdIDk3+/XTrZhogFr3Hf/FwMSKTttSmCmHb2KYldu+cjEk6OsgpvXnVx6agqWUPUWR4q5o=
-X-Received: by 2002:a63:7e10:: with SMTP id z16mr6908717pgc.263.1612408429056;
- Wed, 03 Feb 2021 19:13:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
- <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com> <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 3 Feb 2021 19:13:36 -0800
-Message-ID: <CAKwvOdmrVdxbEHdOFA8x+Q2yDWOfChZzBc6nR3rdaM8R3LsxfQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Feb 2021 22:15:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNozVIY_1612408478;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNozVIY_1612408478)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Feb 2021 11:14:52 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     hca@linux.ibm.com
+Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] s390: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Thu,  4 Feb 2021 11:14:37 +0800
+Message-Id: <1612408477-27437-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 6:58 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 3, 2021 at 5:31 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Sun, Jan 17, 2021 at 12:14 PM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
-> > > >
-> > > >
-> > > > On 1/15/21 3:34 PM, Nick Desaulniers wrote:
-> > > > > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
-> > > > > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
-> > > > > > > CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
-> > > > >
-> > > > > Can you privately send me your configs that repro? Maybe I can isolate
-> > > > > it to a set of configs?
-> > > > >
-> > > > > >
-> > > > > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > It is not there before and adding this may suddenly break some users.
-> > > > > >
-> > > > > > If certain combination of gcc/llvm does not work for
-> > > > > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
-> > > > > > should fix.
-> > > > >
-> > > > > Is there a place I should report bugs?
-> > > >
-> > > > You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
-> > > > dwarves@vger.kernel.org and bpf@vger.kernel.org.
-> > >
-> > > I'm coming back from vacation, will try to read the messages and see if
-> > > I can fix this.
-> >
-> > IDK about DWARF v4; that seems to work for me.  I was previously observing
-> > https://bugzilla.redhat.com/show_bug.cgi?id=1922698
-> > with DWARF v5.  I just re-pulled the latest pahole, rebuilt, and no
-> > longer see that warning.
-> >
-> > I now observe a different set.  I plan on attending "BPF office hours
-> > tomorrow morning," but if anyone wants a sneak peak of the errors and
-> > how to reproduce:
-> > https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
-> >
->
-> Is there another (easy) way to get your patch set without the b4 tool?
-> Is your patch set present in some patchworks instance, so that I can
-> download it in mbox format, for example?
+Fix the following coccicheck warning:
 
-$ wget https://lore.kernel.org/lkml/20210130004401.2528717-2-ndesaulniers@google.com/raw
--O - | git am
-$ wget https://lore.kernel.org/lkml/20210130004401.2528717-3-ndesaulniers@google.com/raw
--O - | git am
+./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or
+sprintf.
 
-If you haven't tried b4 yet, it's quite nice.  Hard to go back.  Lore
-also has mbox.gz links.  Not sure about patchwork.
+./drivers/s390/char/raw3270.c:1058:8-16: WARNING: use scnprintf or
+sprintf.
 
->
-> >
-> > (FWIW: some other folks are hitting issues now with kernel's lack of
-> > DWARF v5 support: https://bugzilla.redhat.com/show_bug.cgi?id=1922707)
+./drivers/s390/char/raw3270.c:1050:8-16: WARNING: use scnprintf or
+sprintf.
 
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/s390/char/raw3270.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/s390/char/raw3270.c b/drivers/s390/char/raw3270.c
+index 646ec796..5d23e49 100644
+--- a/drivers/s390/char/raw3270.c
++++ b/drivers/s390/char/raw3270.c
+@@ -1047,24 +1047,21 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_model_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
+-			((struct raw3270 *) dev_get_drvdata(dev))->model);
++	return sysfs_emit(buf, "%i\n", ((struct raw3270 *) dev_get_drvdata(dev))->model);
+ }
+ static DEVICE_ATTR(model, 0444, raw3270_model_show, NULL);
+ 
+ static ssize_t
+ raw3270_rows_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
+-			((struct raw3270 *) dev_get_drvdata(dev))->rows);
++	return sysfs_emit(buf, "%i\n", ((struct raw3270 *) dev_get_drvdata(dev))->rows);
+ }
+ static DEVICE_ATTR(rows, 0444, raw3270_rows_show, NULL);
+ 
+ static ssize_t
+ raw3270_columns_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
+-			((struct raw3270 *) dev_get_drvdata(dev))->cols);
++	return sysfs_emit(buf, "%i\n", ((struct raw3270 *) dev_get_drvdata(dev))->cols);
+ }
+ static DEVICE_ATTR(columns, 0444, raw3270_columns_show, NULL);
+ 
 -- 
-Thanks,
-~Nick Desaulniers
+1.8.3.1
+
