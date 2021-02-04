@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C682230EE8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E17C30EE88
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhBDIeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:34:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43082 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234935AbhBDIeE (ORCPT
+        id S234924AbhBDIeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:34:03 -0500
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:43366 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhBDId6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:34:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612427558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K5a/vTcjLzOjEP+uctbeny3ZIbf8QS7zvppeT9pC6J4=;
-        b=MM4LH8YdOehSsheed4/fYyuQtmaDZ9Taz/g9azei0b3vUSBx9UnFJLvnfkYMFOAkaAp+bC
-        1x0AYlegAkJBYcrQdSRaafuoHnQFdUpvjPpNtWZyyQYN7VpDe6+I330UnHeQPL4hRRAEUj
-        n6/W4KVtU4EaMxVtjNuuWvphdrMjgAk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-JJJZ8yjsN9yydDpelZ4wdg-1; Thu, 04 Feb 2021 03:32:36 -0500
-X-MC-Unique: JJJZ8yjsN9yydDpelZ4wdg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C5C3192CC4C;
-        Thu,  4 Feb 2021 08:32:35 +0000 (UTC)
-Received: from gondolin (ovpn-113-130.ams2.redhat.com [10.36.113.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EFC5010013C1;
-        Thu,  4 Feb 2021 08:32:29 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 09:32:27 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <kvm@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <borntraeger@de.ibm.com>,
-        <frankja@linux.ibm.com>, <david@redhat.com>,
-        <imbrenda@linux.ibm.com>, <hca@linux.ibm.com>, <gor@linux.ibm.com>
-Subject: Re: [PATCH -next] KVM: s390: Return the correct errno code
-Message-ID: <20210204093227.3f088c8a.cohuck@redhat.com>
-In-Reply-To: <20210204080523.18943-1-zhengyongjun3@huawei.com>
-References: <20210204080523.18943-1-zhengyongjun3@huawei.com>
-Organization: Red Hat GmbH
+        Thu, 4 Feb 2021 03:33:58 -0500
+Received: by mail-pf1-f176.google.com with SMTP id q131so1650249pfq.10;
+        Thu, 04 Feb 2021 00:33:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6i67hzmhIyWLTSUgjOoxI09dTzDeKdwAjKDGK5dJYk0=;
+        b=uj9ELWyoITYJtt/+HI089jQrhZYAQYRk9JNDTAjf7pRsy4KFYSFYLTf50C2LsjSBdD
+         0/u0NWuWzO4CaNe8kutovBetTdAO71xm6pESl5MbhpLOPKVFmYc2/X1xX08DljCW2cOv
+         hRwoKwkmmhSmNWZI+izHuH4mJLwX9CkDyYQ/Bo/78DoZwUruSsCPytCs/Qr+OcJe0cn6
+         s3DY8h6Dwe8rD/uvby+nb3+x5QCbvk5hShAjpdnCVH8M9vmfCfvc1acUMLfK2qJ9CJOs
+         hLLgSxVN7/rUKa8wDerC8JXB4VW/xBvlgGZS0tdC5q0/drNR7ylEpc8O9XtzV/y9VT0u
+         rY7w==
+X-Gm-Message-State: AOAM532hzTuAy6CVBSkUAE2kYBL1YngzS7yVCcjcuVR1qMl5rJWBTxtS
+        5Lh8HBAmGnB6AfWQSIi+n8w=
+X-Google-Smtp-Source: ABdhPJzLUKlQ2HaGyCgmVdPlvVhA/Kf8+d64Cq5dnxQ8mNlKljneYGC6PHyXxSDT9tn1V8P2VypItA==
+X-Received: by 2002:aa7:9d1a:0:b029:1c8:8148:a89d with SMTP id k26-20020aa79d1a0000b02901c88148a89dmr6998297pfp.66.1612427597869;
+        Thu, 04 Feb 2021 00:33:17 -0800 (PST)
+Received: from localhost (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id x8sm4626952pjf.55.2021.02.04.00.33.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 00:33:16 -0800 (PST)
+From:   You-Sheng Yang <vicamo.yang@canonical.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
+Date:   Thu,  4 Feb 2021 16:33:15 +0800
+Message-Id: <20210204083315.122952-1-vicamo.yang@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 16:05:23 +0800
-Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+Added Tiger Lake H PCI device ID to the supported device list.
 
-> When valloc failed, should return ENOMEM rather than ENOBUF.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  arch/s390/kvm/interrupt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-> index 2f177298c663..6b7acc27cfa2 100644
-> --- a/arch/s390/kvm/interrupt.c
-> +++ b/arch/s390/kvm/interrupt.c
-> @@ -2252,7 +2252,7 @@ static int get_all_floating_irqs(struct kvm *kvm, u8 __user *usrbuf, u64 len)
->  	 */
->  	buf = vzalloc(len);
->  	if (!buf)
-> -		return -ENOBUFS;
-> +		return -ENOMEM;
->  
->  	max_irqs = len / sizeof(struct kvm_s390_irq);
->  
+Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
+---
+ drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-This breaks a user space interface (see the comment right above the
-vzalloc).
+diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+index 1fb294ca463e..21b0e6123754 100644
+--- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
++++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+@@ -27,6 +27,7 @@
+ #define CMP_H_DEVICE_ID		0x06FC
+ #define EHL_Ax_DEVICE_ID	0x4BB3
+ #define TGL_LP_DEVICE_ID	0xA0FC
++#define TGL_H_DEVICE_ID		0x43FC
+ 
+ #define	REVISION_ID_CHT_A0	0x6
+ #define	REVISION_ID_CHT_Ax_SI	0x0
+diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+index c6d48a8648b7..6dea657b7b15 100644
+--- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
++++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+@@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
++	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
+ 	{0, }
+ };
+ MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
+-- 
+2.29.2
 
