@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6B630F502
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278D630F4FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbhBDObn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:31:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236606AbhBDO0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:26:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2050F64F51;
-        Thu,  4 Feb 2021 14:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612448737;
-        bh=Gr4b/J785GlPvzDdYWqYJ53aK/gX7CDc6tMbxuNI4LY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N+FbCqoimT9jtDMtjua4RPdqP0nWGCIuu7oOg8Bg8hwORSJ9qJLEZpcoWxyGkr0Ui
-         tfi0B/xDWHGFkGEZES4uK+GyTQCGPyDEgf6VpsINGQyQOLEDXF0TgTaTRPWVS8g9d/
-         R8eNIvxR4e/kUNcpL7+nILOp9OKSlh9Sai3AbRN7/xrsidExk34/cAGcBMS0LSXOOZ
-         /Vj2D1KXMKbwNtVpiIpILqdCIyHu5vKH0Gw9xOlMKvHlJMtwZysuh+bfxtXGVWjWBI
-         9BrdmM44NY8WdIJ61kZ41RLhdLziq3gi2wW/Q+AIxqG+oNLEDhaZDp6rmaPWT2V6Ju
-         iYzfwu0vru/mg==
-Received: by mail-ej1-f51.google.com with SMTP id b9so5515916ejy.12;
-        Thu, 04 Feb 2021 06:25:37 -0800 (PST)
-X-Gm-Message-State: AOAM531ZTUL6YTcJ4V8Gh2dOiBm8NTgkMtE3PGYvb8jJ+HoRVtQpZYnD
-        a+p7aJMlmjVojsB4tmlPujSnvri4Z7SYlm9YPQ==
-X-Google-Smtp-Source: ABdhPJw0ZvhHzSy2d7rADwFFVVYmHHpeI+dqVFEn7EHEW7VDQrK6kxdxSd1A1FMKHqv9FS3gOGNpvzuHIo2PPfq1Vew=
-X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr8217803ejb.359.1612448735635;
- Thu, 04 Feb 2021 06:25:35 -0800 (PST)
+        id S236725AbhBDOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:31:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236719AbhBDO0o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:26:44 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48451C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:26:02 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id u14so3751254wri.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 06:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=f+Kn5O5ZpiyxGVryHYtP1dHvnCa/0Doj6DjufSQG6+s=;
+        b=YS4z1atagIUMZKBbTg3QsyHjE/1Ce1TAm1g38OcbL+DaaCudgKyGyJ92SJH42zsX4o
+         pSaOnLZdh0aj4jek4bosFfEUVg6E42JOGYzdVhr5bvcRepLuke37hPevPn4XOOToG2/Y
+         54ftMvYMIxT77t56wHCgSvn1hhZdn8mvnZVL5IL8lSDlnUUGC8UdOMTCgC5YmDBrszY2
+         XthJ0EO+zWAKUpMU/7mMiR2j4tafLHb+NNFL/vTg5PM69hkH8l67NWOfmNo0veQkoxSj
+         fK4CwX0Xn3y0uYQuqfsIqiDJ09MbceOStRnmrN9S4/up5ra85FU1FbncX15gvjVK8/eS
+         uc9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f+Kn5O5ZpiyxGVryHYtP1dHvnCa/0Doj6DjufSQG6+s=;
+        b=s6u+d7S8p2CWQE6M5WtTgj++tdPh7XDUIHQznCO58Vf5so3M7eZLzQSk4z5PiVIWab
+         Z5X+FV1DM6eJ6ecCuBe+6Sc8Lku8FyJv6FaRcXDZzhlBzbh+FVSCs7fG529Y8U5rbs+q
+         WJDoVbI19l6LnkrVL9Dt5c9cwTbaiPfNpdkV8m4H6e0QmRMgXcnZzvHeHPyR6I3+8dmV
+         ceQWdqSvtT0neY/hPbDe9Mjfo+wUu3pS7tx5YQXDpu7LazENtvFyyEBA/n5a7tDOhemh
+         Aa8cPaSK63Ty4Qwj206FhzJ0fZ7FXCPR1P5aPxBzltfcJm6KldEUh1BHIbXSxSyUFXBo
+         sH5Q==
+X-Gm-Message-State: AOAM533olayornrC36PH3FQhAtgZlv7Yvd82nxHB+h1hMneiaR6V6FAJ
+        XaR5qGLvbRR5vGiqExKcIJ2LdfO3b0L1/g==
+X-Google-Smtp-Source: ABdhPJy3YVPTtEMFX+kbmWAPhOQGMRkTso3UENHpJVHtcB2KmShXPEyR2Eaalgda73n4/ohX3xkeGA==
+X-Received: by 2002:adf:df0a:: with SMTP id y10mr9655161wrl.214.1612448761048;
+        Thu, 04 Feb 2021 06:26:01 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id y11sm8062875wrh.16.2021.02.04.06.25.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 06:26:00 -0800 (PST)
+Subject: Re: [RESEND PATCH] nvmem: qcom-spmi-sdam: Fix uninitialized pdev
+ pointer
+To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <1612376126-31001-1-git-send-email-subbaram@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <b369ae3e-38d5-7e41-1380-982a8fe66660@linaro.org>
+Date:   Thu, 4 Feb 2021 14:25:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <cover.1610431620.git.viresh.kumar@linaro.org> <74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com>
- <20210120051740.yph4v7zldvs7szdz@vireshk-i7> <20210122063455.GE4400@yekko.fritz.box>
- <83242f56-19a5-6d32-c050-8d9f63ac1e47@gmail.com> <20210201040748.GB2251@yekko.fritz.box>
-In-Reply-To: <20210201040748.GB2251@yekko.fritz.box>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 4 Feb 2021 08:25:23 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJjR7EknfnbA7RKckUtYVu9jmjf7L_DC=LmF=jMGfThgQ@mail.gmail.com>
-Message-ID: <CAL_JsqJjR7EknfnbA7RKckUtYVu9jmjf7L_DC=LmF=jMGfThgQ@mail.gmail.com>
-Subject: Re: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1612376126-31001-1-git-send-email-subbaram@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 10:39 PM David Gibson
-<david@gibson.dropbear.id.au> wrote:
->
-> On Mon, Jan 25, 2021 at 09:42:21PM -0600, Frank Rowand wrote:
-> > Hi David,
-> >
-> > On 1/22/21 12:34 AM, David Gibson wrote:
-> > > On Wed, Jan 20, 2021 at 10:47:40AM +0530, Viresh Kumar wrote:
-> > >> +David.
-> > >>
-> > >> On 19-01-21, 11:12, Frank Rowand wrote:
-> > >>> On 1/12/21 2:28 AM, Viresh Kumar wrote:
-> > >>>> We will start building overlays for platforms soon in the kernel and
-> > >>>> would need fdtoverlay tool going forward. Lets start fetching and
-> > >>>> building it.
-> > >>>>
-> > >>>> While at it, also remove fdtdump.c file, which isn't used by the kernel.
-> > >>>>
-> > >>>> V4:
-> > >>>> - Don't fetch and build fdtdump.c
-> > >>>> - Remove fdtdump.c
-> > >>>>
-> > >>>> Viresh Kumar (3):
-> > >>>>   scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
-> > >>>>   scripts: dtc: Build fdtoverlay tool
-> > >>>>   scripts: dtc: Remove the unused fdtdump.c file
-> > >>>>
-> > >>>>  scripts/dtc/Makefile             |   6 +-
-> > >>>>  scripts/dtc/fdtdump.c            | 163 -------------------------------
-> > >>>>  scripts/dtc/update-dtc-source.sh |   6 +-
-> > >>>>  3 files changed, 8 insertions(+), 167 deletions(-)
-> > >>>>  delete mode 100644 scripts/dtc/fdtdump.c
-> > >>>>
-> > >>>
-> > >>> My first inclination was to accept fdtoverlay, as is, from the upstream
-> > >>> project.
-> > >>>
-> > >>> But my experiences debugging use of fdtoverlay against the existing
-> > >>> unittest overlay files has me very wary of accepting fdtoverlay in
-> > >>> it's current form.
-> > >>>
-> > >>> As an exmple, adding an overlay that fails to reply results in the
-> > >>> following build messages:
-> > >>>
-> > >>>    linux--5.11-rc> make zImage
-> > >>>    make[1]: Entering directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
-> > >>>      GEN     Makefile
-> > >>>      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/checksyscalls.sh
-> > >>>      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/atomic/check-atomics.sh
-> > >>>      CHK     include/generated/compile.h
-> > >>>      FDTOVERLAY drivers/of/unittest-data/static_test.dtb
-> > >>>
-> > >>>    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
-> > >>>    make[4]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/drivers/of/unittest-data/Makefile:96: drivers/of/unittest-data/static_test.dtb] Error 1
-> > >>>    make[3]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of/unittest-data] Error 2
-> > >>>    make[2]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/scripts/Makefile.build:496: drivers/of] Error 2
-> > >>>    make[1]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/Makefile:1805: drivers] Error 2
-> > >>>    make[1]: Leaving directory '/local/frowand_nobackup/src/git_linus/build/dragon_linus_5.11-rc'
-> > >>>    make: *** [Makefile:185: __sub-make] Error 2
-> > >>>
-> > >>>
-> > >>> The specific error message (copied from above) is:
-> > >>>
-> > >>>    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTFOUND
-> > >>>
-> > >>> which is cryptic and does not even point to the location in the overlay that
-> > >>> is problematic.  If you look at the source of fdtoverlay / libfdt, you will
-> > >>> find that FDT_ERR_NOTFOUND may be generated in one of many places.
-> > >>>
-> > >>> I do _not_ want to do a full review of fdtoverlay, but I think that it is
-> > >>> reasonable to request enhancing fdtoverlay in the parent project to generate
-> > >>> usable error messages before enabling fdtoverlay in the Linux kernel tree.
-> > >
-> >
-> > > That's... actually much harder than it sounds.  fdtoverlay is
-> > > basically a trivial wrapper around the fdt_overlay_apply() function in
-> > > libfdt.  Matching the conventions of the rest of the library, really
-> > > it's only way to report errors is a single error code.
-> > >
-> > > Returning richer errors is not an easy problem in a C library,
-> > > especially one designed to be usable in embedded systems, without an
-> > > allocator or much else available.
-> > >
-> > > Of course it would be possible to write a friendly command line tool
-> > > specifically for applying overlays, which could give better errors.
-> > > fdtoverlay as it stands isn't really that - it was pretty much written
-> > > just to invoke fdt_overlay_apply() in testcases.
-> >
-> > Thank you for providing that context.
-> >
-> > I do not know if there is a way to enable the code that is currently in libfdt
-> > to both be useful as an embedded library (for example, U-boot seems to often
-> > have a need to keep memory usage very small) and also be part of a tool with
-> > effective warning and error messages.
->
-> Yeah, I don't know either.
->
-> > Before having looked at libfdt only at a cursory level while debugging the proposed
-> > use of fdtoverlay in Linux, my first thought was that maybe it would be possible
-> > to add warning and error messages within "#ifdef" blocks, or other ways that
-> > cause the error code to _not_ be compiled as part of library version of libfdt,
-> > but only be compiled as part of fdtoverlay _when built in the Linux kernel_
-> > (noting that the proposed Linux patch builds the libfdt files as part of
-> > the fdtoverlay compile instead of as a discrete library).  After looking at
-> > the libfdt source a tiny bit more carefully, I would probably shoot down this
-> > suggestion, as it makes the source code uglier and harder to understand and
-> > maintain for the primary purpose of being an embedded library.
->
-> Oof.  That sounds really ugly, but maybe it could be pulled off.
->
-> > Do you have any thoughts on how warning and error messages could be added,
-> > or if it is even possible?  Or maybe your suggestion of writing a "friendly
-> > command line tool specifically for applying overlays" is the path that
-> > Viresh should pursue?
->
-> I think at this stage it's a matter of trying a few approaches and
-> seeing what works out.
 
-Another way would be applying overlays to dtc's live tree. This could
-apply overlays from dts in addition to dtb. It could be a plug-in if
-we ever get that finished up.
 
-The downside of this is not testing libfdt's code and possible
-differences between 2 implementations.
+On 03/02/2021 18:15, Subbaraman Narayanamurthy wrote:
+> "sdam->pdev" is uninitialized and it is used to print error logs.
+> Fix it. Since device pointer can be used from sdam_config, use it
+> directly thereby removing pdev pointer.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+> ---
 
-Rob
+Applied thanks,
+
+--srini
+
+>   drivers/nvmem/qcom-spmi-sdam.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
+> index a72704c..f6e9f96 100644
+> --- a/drivers/nvmem/qcom-spmi-sdam.c
+> +++ b/drivers/nvmem/qcom-spmi-sdam.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /*
+> - * Copyright (c) 2017, 2020 The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2017, 2020-2021, The Linux Foundation. All rights reserved.
+>    */
+>   
+>   #include <linux/device.h>
+> @@ -18,7 +18,6 @@
+>   #define SDAM_PBS_TRIG_CLR		0xE6
+>   
+>   struct sdam_chip {
+> -	struct platform_device		*pdev;
+>   	struct regmap			*regmap;
+>   	struct nvmem_config		sdam_config;
+>   	unsigned int			base;
+> @@ -65,7 +64,7 @@ static int sdam_read(void *priv, unsigned int offset, void *val,
+>   				size_t bytes)
+>   {
+>   	struct sdam_chip *sdam = priv;
+> -	struct device *dev = &sdam->pdev->dev;
+> +	struct device *dev = sdam->sdam_config.dev;
+>   	int rc;
+>   
+>   	if (!sdam_is_valid(sdam, offset, bytes)) {
+> @@ -86,7 +85,7 @@ static int sdam_write(void *priv, unsigned int offset, void *val,
+>   				size_t bytes)
+>   {
+>   	struct sdam_chip *sdam = priv;
+> -	struct device *dev = &sdam->pdev->dev;
+> +	struct device *dev = sdam->sdam_config.dev;
+>   	int rc;
+>   
+>   	if (!sdam_is_valid(sdam, offset, bytes)) {
+> 
