@@ -2,117 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D011030ED3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF7B30ED3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234371AbhBDHW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S234293AbhBDHWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbhBDHWx (ORCPT
+        with ESMTP id S233803AbhBDHWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:22:53 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EF8C0613D6;
-        Wed,  3 Feb 2021 23:22:13 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id p15so1670525ilq.8;
-        Wed, 03 Feb 2021 23:22:13 -0800 (PST)
+        Thu, 4 Feb 2021 02:22:49 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DF6C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 23:22:09 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id g10so2896771eds.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 23:22:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=J0Hhokg7bb4w32rTwE6DeGStp3ax7fi3VK+om+D8gps=;
-        b=vMbwPTWjoKKn4UtoCX2tY5RiZb8B7vThyDlUBBZW7TE26y4IOifKk7KPkgxvbmOHO0
-         6KVYtzuqS5f9z6GpXiY8YOl4ZaIAegheScHkXqduRs1pZGUOuzPljUxOlDkx02Uf44WK
-         HB6eqZPFkS5u7kveVWMZQWdgXOnOdxLw835vb/fgHoP4AJKZ8adYhcHOoqa5YCPvChIM
-         eXYUUNnNs4QxbES6nKSm3fCRYDzT3CptnNPL7wzUrIVi+q2jabNksuyTiIo0AHz+O55i
-         9/v/OIqQJ6H1fTlBqtgRm8VrEzAHrniGZZxOrISnXsMbjNgS4JWc1upqYaxdYYtRGmzL
-         hJFg==
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=8NA16pgrmr+hZCZ5N/nNI47zYO39E+Z5pyXAWJADZvM=;
+        b=PcItGjwTS/37G6Az/tk9ZvGb4LiMfYQ+uLHWZqQ8V6/rQZvFLwnKvJDvmXaTVHwpD5
+         qCwGe1OhOBhkpCQb7/Vkb9EJtfb9/HwsQa1szNrNtvY/bTXym+joShlGzJQd0VIxXp7L
+         Qk8RDXYckHWpvLxyplqyn4XqaAd56I+adwzu4EMevtqJWXLePShBBfzEPwWenzWwXL72
+         6JyjhU20p94t3Rv6G8aGv8qsGxBuPgSCz9zS3FHeCsv5RYe2fQC1oICzKmT+VUaZcBEV
+         VsvYQaWNFlZ2URdsvgiCGCjsUMqhjLKWuIWQeOAIh2BREuBTRsKeZudAjVo1B0nBfn2/
+         Xy9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=J0Hhokg7bb4w32rTwE6DeGStp3ax7fi3VK+om+D8gps=;
-        b=AXUFLnMxrKlt/rKe65v6rMVdEMnTYQcpIsNziuFxgaLWFlB9JyYpMbBA8iyJfs50le
-         1Z+eEK8W7pDTOdcyXWqqW+tp20ss/iP7xqwsGWojHJ4FHLsbeT7r2NSMc6G0Vfj7fZFd
-         38h0pSulshTpAcdOsOLPoCTcvv8EuowcmjaGvaymMflseVzCi4Mpb53kz6be5wo6FGOm
-         hSnLCwCf8WplFD6gBNU6x9Ve1HtLXB6V4nCYZ6usfqExfpXe/ecvhuFghPWBw9qCxU/u
-         DWhOb5MteAhIkhuUYL2OhMO9FByaOzYPqJOuASXP525enJsoqkWYxTJ2oY+Dbae0C1+W
-         1kqw==
-X-Gm-Message-State: AOAM533OIoXMA0gN26wR351LE9snfyS+XTVeOMEO8t6AR0y05HrdxkP/
-        NP87JBbS9Jj6SGQ1B+jPUwAHdtJFbT4Y3q0q+nU=
-X-Google-Smtp-Source: ABdhPJy/vmxig/W9Nw0gIHMoujn1aKGJuGQ4ghVxjXftdO9e/CK0p+9mzgPsiVHUi0Ph+DK34s+6mm6T4lDcs7oFmng=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr5831856ilm.215.1612423333162;
- Wed, 03 Feb 2021 23:22:13 -0800 (PST)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=8NA16pgrmr+hZCZ5N/nNI47zYO39E+Z5pyXAWJADZvM=;
+        b=HlJv/1FPPq5pkficO415xsvRlYJj7CnGf/7mfgEWZupLu5tErscjwtrvtEuUOjHIN+
+         LUS1dSAukLcMRcWwAWIx/xsszflNJnUSvYV/yhMpZznX090RRh/vf9nNnck4pvFyTB5X
+         bSv8QdZBsRE/UqgEEndff1QdUGPuJwXJUDtm/PFEEjzi1GyCFrGFuICRyxspjLVmWJiW
+         X9/Hh/RdvMT6DpWbi1nQPh6HltQ/D4CFMoVjUIvX6CVTQp8kz/Nbtcl0DvbqlX4mf8Ml
+         QPWO9SPE2odUCkoh32X0R15M3Sh6BuLDKAU6nt5n+Nwmpo/DgsM6Ci5OSkFy7YtVid2n
+         ejmg==
+X-Gm-Message-State: AOAM532s85Pk02mUL9ch3SCZfzF2crjx0b1uU4VPasG300pdNM9iBVcz
+        3YcpShQkKlP9ecwSnf/PON7nacXXNryrx1bPVOU=
+X-Google-Smtp-Source: ABdhPJxJfWqlLNHR5ISdl8b41n0Reuy1brMDjD/9op562cXjuhxbXDlUizK+AjF43QwSlV9Ftj/qwgTq1J4yUCtQsWI=
+X-Received: by 2002:aa7:d692:: with SMTP id d18mr6790728edr.327.1612423327916;
+ Wed, 03 Feb 2021 23:22:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111180609.713998-1-natechancellor@gmail.com>
- <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
- <20210111193400.GA1343746@ubuntu-m3-large-x86> <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
- <20210111200010.GA3635011@ubuntu-m3-large-x86> <CAEf4BzaL18a2+j3EYaD7jcnbJzqwG2MuBxXR2iRZ3KV9Jwrj6w@mail.gmail.com>
- <CAEf4Bzbv6nrJNxbZAvFx4Djvf1zbWnrV_i90vPGHtV-W7Tz=bQ@mail.gmail.com> <20210113230739.GA22747@Ryzen-9-3900X.localdomain>
-In-Reply-To: <20210113230739.GA22747@Ryzen-9-3900X.localdomain>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Feb 2021 08:22:01 +0100
-Message-ID: <CA+icZUVfznOpAQK=6GWoF6XmzHyXjdUgNG5HeoQw3Dwb4wW9uA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+Received: by 2002:a17:906:1959:0:0:0:0 with HTTP; Wed, 3 Feb 2021 23:22:07
+ -0800 (PST)
+In-Reply-To: <CABb+yY3P_iFnKamY=7z5rnNW+BQW4-vAbeS=S33BpqCKR1Rhuw@mail.gmail.com>
+References: <1608022118-29993-1-git-send-email-yaohaidong369@gmail.com>
+ <CA+kUaCeebDNXi12-nNpw4i_auZbM+JQUC5uNhEzXxqa7=W4LnQ@mail.gmail.com> <CABb+yY3P_iFnKamY=7z5rnNW+BQW4-vAbeS=S33BpqCKR1Rhuw@mail.gmail.com>
+From:   Yao Haidong <yaohaidong369@gmail.com>
+Date:   Thu, 4 Feb 2021 15:22:07 +0800
+Message-ID: <CA+kUaCeJ_o4kdEtYP4MaDs7X87tCQK5UxQDj5f8EqGqxTPkvQg@mail.gmail.com>
+Subject: Re: [PATCH] add chan->cl check in mbox_chan_received_data()
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     natechancellor@gmail.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        clang-built-linux@googlegroups.com,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 12:07 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+ Oh, I see, thank you
+
+2021-02-01 14:28 GMT+08:00, Jassi Brar <jassisinghbrar@gmail.com>:
+> On Thu, Jan 7, 2021 at 5:53 AM haidong yao <yaohaidong369@gmail.com> wrote:
+>>
+>> Hi Jassi Brar
+>>
+>> Thank you very much for your reply.
+>>
+>> Look at the function sprd_mbox_outbox_isr .
+>>
+>> Chan is !NULL.
+>>
+>> chan->cl is NULL when the client driver not loaded, the controller
+>> driver don't know the client driver loaded successfully, so, I do not
+>> use mbox_free_channel.
+>>
+>> Here,How do you know chan->cl is ok?
+>>
+> The channel is supposed to get/send data _only_ if it is being used by a
+> client.
+> Which you can mark in .startup() and .shutdown().
 >
-> On Wed, Jan 13, 2021 at 02:38:27PM -0800, Andrii Nakryiko wrote:
-> > Hm.. Just saw Linus proposing using $(error-if) in Kconfig for an
-> > unrelated issue ([0]). If we can make this work, then it would catch
-> > such issue early on, yet won't have any downsides of hiding
-> > CONFIG_DEBUG_INFO_BTF if pahole is too old. WDYT?
-> >
-> >   [0] https://lore.kernel.org/lkml/CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com/
+> Checking for chan->cl will make your symptoms disappear but that is
+> not the right fix for the issue.
+> The right fix is to EITHER not cause Rx/Tx interrupt on a channel not
+> being used, OR not send it to upper layers.
 >
-> Yes, I think that would be exactly what we want because DEBUG_INFO_BTF
-> could cause the build to error if PAHOLE_VERSION is not >= 116. I will
-> try to keep an eye on that thread to see how it goes then respin this
-> based on anything that comes from it.
+> thanks.
 >
-
-For BPF/pahole testing (see [1]) with CONFIG_DEBUG_INFO_DWARF5=y I did:
-
-$ git diff
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index b0840d192e95..f15b37143165 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -272,7 +272,7 @@ config DEBUG_INFO_DWARF5
-       bool "Generate DWARF Version 5 debuginfo"
-       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-       depends on CC_IS_GCC ||
-$(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC)
-$(CLANG_FLAGS))
--       depends on !DEBUG_INFO_BTF
-+       depends on !DEBUG_INFO_BTF || (DEBUG_INFO_BTF && PAHOLE_VERSION >= 120)
-       help
-         Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
-         5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-
-Thanks again for that patch.
-
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=tmp.1.20
