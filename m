@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9929430FABF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8B230FACF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhBDSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238783AbhBDSHA (ORCPT
+        id S238703AbhBDSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:10:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238741AbhBDSJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:07:00 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69249C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 10:06:20 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id u11so2157956plg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 10:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WDOXCpI6LRDhCjEBnTMAPXA3jx1S5SnX36Tq38QJKqc=;
-        b=vQn1IKJ8SHiqalhUxz9gd8Ce9r8txR6E1S8stHIC0r1yCfteGAaKCVwBcEY4gq73gD
-         WSAtlc+DE4yudPwpEsRr3TvsT/jT7UFzoTZ/7eVzaU2jRj8RLcZlot3YsxNNOUmsM6vk
-         MY9zPWp69ktWPALeVea+AHdabsu32iteadgOHqlvRSh52kpXVL8YvtW7lM2xWPsRJSS/
-         52c0eoziCn66QGF1C1F67WUeMtOjjbSOi6FB2bJcpjHimZ7mJEd0uCRwv2/mNUeVkCpu
-         DNUrPczpw0qTLSsBgsNIqgQat0ilgnrc5tdMzq9z77uiFexuQuE/XThy15IoF/z8bKG4
-         1Ixw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WDOXCpI6LRDhCjEBnTMAPXA3jx1S5SnX36Tq38QJKqc=;
-        b=EWyxWipaLPxLUUG+w2ePIt3KpLJJVsF25kBzEVf6MMa6YZLgwoHV5jInBTrips6tS9
-         MitYIlUbze9xpZgQC6PzfdjpQ0oxQzhthcnpvHwDmoX7glzXrGf+f0Fn+AMypjJgxJGK
-         tK2NkVvF/wutceIS1Z0P0t3BWJdzuvLxZN3FyANrnD1V4kox9IeM65Da78TWnhQNBrYE
-         jbZIRQxHfsgKA9RbwAscDYxaeOPi9P018XTQ2N0r43b2RqCEz7ymA40g4kWKkGF4V+Lb
-         3lP52/Z6B6qjSboKuo1gka8xJbGYlpFwVdrj3w6LTLU64rClodbB5KSxK1ktPnwK7Q7y
-         rF5w==
-X-Gm-Message-State: AOAM5325zOZ5C/atvvqatLHiLsCwi+fQGIHBjH+RXXe0HFi8Kewy5Tyx
-        m8J1Fot7luk9JIBtacsPQoVs0n+m3Vog1CYOtmPdCA==
-X-Google-Smtp-Source: ABdhPJzcuEq6hEtGp/RuA1WuUUG66DlnCD5yVofYabzLuUce6XNWRGFHcbfZ4lO45gClZ9SymdQU9MCXPdAEiXr1pYI=
-X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
- 97-20020a170902026ab02900daaf4777c7mr579374plc.10.1612461979711; Thu, 04 Feb
- 2021 10:06:19 -0800 (PST)
+        Thu, 4 Feb 2021 13:09:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612462069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2uqBOHayoK9VQ4lj587O369rpP5nIS/wiQsdo323rcY=;
+        b=dGW0YRNsIkH+PnIJlBQfpq85jRjdsR+ZRrdi234dSe3w8zjBXgtmL9gt9C+2O57HxnVdnR
+        JgloQAFVozuNmkrWe/oJc6259jdGKh7S1oMUlmm3+Q3I2rCaUuXMfal5D4DFez7l9wtwPU
+        Bp85CI5kBYP/HHpn3LACXT0F2hfIHBA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-J5Es6aY6Pd6KUIxbGUP8_w-1; Thu, 04 Feb 2021 13:07:47 -0500
+X-MC-Unique: J5Es6aY6Pd6KUIxbGUP8_w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1AE7801960;
+        Thu,  4 Feb 2021 18:07:45 +0000 (UTC)
+Received: from bfoster (ovpn-114-23.rdu2.redhat.com [10.10.114.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3394760C05;
+        Thu,  4 Feb 2021 18:07:42 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 13:07:39 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dave Chinner <dchinner@redhat.com>,
+        Gao Xiang <hsiangkao@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xfs: fix unused variable warning
+Message-ID: <20210204180739.GD3721376@bfoster>
+References: <20210204160427.2303504-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <601b773a.1c69fb81.9f381.a32a@mx.google.com> <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
- <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
- <20210204100601.GT1463@shell.armlinux.org.uk> <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
- <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com> <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
- <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
- <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com> <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 4 Feb 2021 10:06:08 -0800
-Message-ID: <CAKwvOd=ziPWHmBiPtW3h2VYLZ-CTMp4=aEonmMLM7c=Y0SeG1Q@mail.gmail.com>
-Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204160427.2303504-1-arnd@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 8:02 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 4 Feb 2021 at 16:53, Guillaume Tucker
-> <guillaume.tucker@collabora.com> wrote:
-> >
-> > On 04/02/2021 15:42, Ard Biesheuvel wrote:
-> > > On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
-> > > <guillaume.tucker@collabora.com> wrote:
-> > >>
-> > >> Essentially:
-> > >>
-> > >>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+On Thu, Feb 04, 2021 at 05:03:44PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When debugging is disabled, the ASSERT() is left out and
+> the 'log' variable becomes unused:
+> 
+> fs/xfs/xfs_log.c:1111:16: error: unused variable 'log' [-Werror,-Wunused-variable]
+> 
+> Remove the variable declaration and open-code it inside
+> of the assertion.
+> 
+> Fixes: 303591a0a947 ("xfs: cover the log during log quiesce")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-This command should link with BFD (and assemble with GAS; it's only
-using clang as the compiler.
+I sent basically the same patch[1] about a week ago, but either one is
+fine with me:
 
->
-> To be honest, I am slightly annoyed that a change that works fine with
-> GCC but does not work with Clang version
->
-> 11.1.0-++20210130110826+3a8282376b6c-1~exp1~20210130221445.158
->
-> (where exp means experimental, I suppose) is the reason for this
-> discussion, especially because the change is in asm code. Is it
-> possible to build with Clang but use the GNU linker?
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 
-rk3288 might be the last 32b ARM platform ChromeOS uses. "veyron"
--- 
-Thanks,
-~Nick Desaulniers
+[1] https://lore.kernel.org/linux-xfs/20210125132616.GB2047559@bfoster/
+
+>  fs/xfs/xfs_log.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+> index 58699881c100..d8b814227734 100644
+> --- a/fs/xfs/xfs_log.c
+> +++ b/fs/xfs/xfs_log.c
+> @@ -1108,12 +1108,11 @@ static int
+>  xfs_log_cover(
+>  	struct xfs_mount	*mp)
+>  {
+> -	struct xlog		*log = mp->m_log;
+>  	int			error = 0;
+>  	bool			need_covered;
+>  
+> -	ASSERT((xlog_cil_empty(log) && xlog_iclogs_empty(log) &&
+> -	        !xfs_ail_min_lsn(log->l_ailp)) ||
+> +	ASSERT((xlog_cil_empty(mp->m_log) && xlog_iclogs_empty(mp->m_log) &&
+> +	        !xfs_ail_min_lsn(mp->m_log->l_ailp)) ||
+>  	       XFS_FORCED_SHUTDOWN(mp));
+>  
+>  	if (!xfs_log_writable(mp))
+> -- 
+> 2.29.2
+> 
+
