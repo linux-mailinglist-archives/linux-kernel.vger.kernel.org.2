@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCE730ECFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB0630ED07
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 08:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhBDHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 02:07:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231791AbhBDHHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 02:07:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD14964DB2;
-        Thu,  4 Feb 2021 07:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612422397;
-        bh=5QRDZaxvUgmz/x8TzBWV4NHtMbDqLZgpxPyiZm7qrSk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ck4N8q0c+Of6x8T1Y8hujBVe5Rx6hl5QQMEQ36fgCEAEjO6AGANgqjzRr/A4xQsU5
-         gIPAfygokvrSYXHlZwWeyP+KkRak6ILKqFei1XYdveHcbWBvFdV2jEZmLPUGsAzQES
-         YScjlEuxzvtTWCnrxk7Ptd59mok3w15nDS2HTikS5lAMGAUQmOCX7GlUgBTiG28Irg
-         WsRohlnoJyZCaDuYA4/3OHNKnVNTAAPPOP1wj/9lVfs/a9djXAx5OT1o7+iD56r5Ip
-         cbMqIw7KeZDgs9IsNEA8A7pVu6bzqDqu03Aa5jUjFXJHgXHMS4hdVMojWzhllDJTk5
-         M4nxl8KBMPGOQ==
-Date:   Thu, 4 Feb 2021 12:36:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add SC8180X USB phy
-Message-ID: <20210204070633.GC3079@vkoul-mobl.Dlink>
-References: <20210121014339.1612525-1-bjorn.andersson@linaro.org>
+        id S233789AbhBDHKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 02:10:45 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12124 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234206AbhBDHKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 02:10:25 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DWV536Q3Bz162SJ;
+        Thu,  4 Feb 2021 15:08:23 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Feb 2021 15:09:33 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <rric@kernel.org>, <ulf.hansson@linaro.org>, <rmfrfs@gmail.com>,
+        <linus.walleij@linaro.org>
+CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH] mmc: cavium: Replace spin_lock_irqsave with spin_lock in hard IRQ
+Date:   Thu, 4 Feb 2021 15:07:18 +0800
+Message-ID: <1612422438-32525-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121014339.1612525-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-01-21, 17:43, Bjorn Andersson wrote:
-> Add compatibles for the Qualcomm QMP PHY binding for the SuperSpeed USB
-> phys found in the SC8180x platform.
+It is redundant to do irqsave and irqrestore in hardIRQ context, where
+it has been in a irq-disabled context.
 
-Applied, thanks
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+---
+ drivers/mmc/host/cavium.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
+index c5da3aa..4bb8f28 100644
+--- a/drivers/mmc/host/cavium.c
++++ b/drivers/mmc/host/cavium.c
+@@ -436,12 +436,11 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+ {
+ 	struct cvm_mmc_host *host = dev_id;
+ 	struct mmc_request *req;
+-	unsigned long flags = 0;
+ 	u64 emm_int, rsp_sts;
+ 	bool host_done;
+ 
+ 	if (host->need_irq_handler_lock)
+-		spin_lock_irqsave(&host->irq_handler_lock, flags);
++		spin_lock(&host->irq_handler_lock);
+ 	else
+ 		__acquire(&host->irq_handler_lock);
+ 
+@@ -504,7 +503,7 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+ 		host->release_bus(host);
+ out:
+ 	if (host->need_irq_handler_lock)
+-		spin_unlock_irqrestore(&host->irq_handler_lock, flags);
++		spin_unlock(&host->irq_handler_lock);
+ 	else
+ 		__release(&host->irq_handler_lock);
+ 	return IRQ_RETVAL(emm_int != 0);
 -- 
-~Vinod
+2.8.1
+
