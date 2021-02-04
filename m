@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B30C30F4C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B85630F4CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236482AbhBDOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:18:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236632AbhBDORZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:17:25 -0500
-Received: from smtp-bc08.mail.infomaniak.ch (smtp-bc08.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc08])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0442C061788
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 06:16:29 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DWgZy0krkzMq77N;
-        Thu,  4 Feb 2021 15:16:26 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DWgZx1Jz4zlh8TH;
-        Thu,  4 Feb 2021 15:16:25 +0100 (CET)
-Subject: Re: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings
- from COND_SYSCALL()
-To:     Masahiro Yamada <masahiroy@kernel.org>, linux-arch@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
- <20210128005110.2613902-3-masahiroy@kernel.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <41f7ad59-6ee7-db95-0e56-861c61e8318f@digikod.net>
-Date:   Thu, 4 Feb 2021 15:16:29 +0100
-User-Agent: 
+        id S236590AbhBDOUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:20:07 -0500
+Received: from mga12.intel.com ([192.55.52.136]:58183 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236541AbhBDOTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:19:02 -0500
+IronPort-SDR: PUVi+kWwbLf8HR+Hc6Myvybs0HEN4MXQhS5GWOp4yyyeHYDsJL6Eh7/ouq40LM3ObOjul9+UFJ
+ 7UeFOl3OA/ug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160410013"
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="160410013"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 06:17:13 -0800
+IronPort-SDR: la72V9P5+yXesPGNQ4AS6+gToQhZG77ubAEPui2BDRK7SUU/C9EpsSu8KuMSQfNEcwC+km1h3V
+ aBxDwjRQoVSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
+   d="scan'208";a="483254604"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Feb 2021 06:17:11 -0800
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH v2 0/6] usb: Handle device properties with software node API
+Date:   Thu,  4 Feb 2021 17:17:05 +0300
+Message-Id: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210128005110.2613902-3-masahiroy@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 28/01/2021 01:50, Masahiro Yamada wrote:
-> Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
-> warnings.
-> 
-> $ make W=1 kernel/sys_ni.o
->   [ snip ]
->   CC      kernel/sys_ni.o
-> In file included from kernel/sys_ni.c:10:
-> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
->    83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
->       |              ^~
-> ./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
->   100 |  __COND_SYSCALL(x64, sys_##name)
->       |  ^~~~~~~~~~~~~~
-> ./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
->   256 |  __X64_COND_SYSCALL(name)     \
->       |  ^~~~~~~~~~~~~~~~~~
-> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
->    39 | COND_SYSCALL(io_setup);
->       | ^~~~~~~~~~~~
-> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
->    83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
->       |              ^~
-> ./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
->   120 |  __COND_SYSCALL(ia32, sys_##name)
->       |  ^~~~~~~~~~~~~~
-> ./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
->   257 |  __IA32_COND_SYSCALL(name)
->       |  ^~~~~~~~~~~~~~~~~~~
-> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
->    39 | COND_SYSCALL(io_setup);
->       | ^~~~~~~~~~~~
->   ...
-> 
-> __SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
-> declarations. Let's do likewise for __COND_SYSCALL() to fix the
-> warnings.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Tested-by: Mickaël Salaün <mic@linux.microsoft.com>
-
-Thanks to this patch we avoid multiple emails from Intel's bot when
-adding new syscalls. :)
+I've now rewritten the commit message of the first patch introducing
+the new function device_create_managed_software_node(). It should now
+explanation why we need that function in more detail. I think
+that is what Rafael wanted. Also, everything should now compile.
 
 
-> ---
-> 
->  arch/x86/include/asm/syscall_wrapper.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-> index a84333adeef2..80c08c7d5e72 100644
-> --- a/arch/x86/include/asm/syscall_wrapper.h
-> +++ b/arch/x86/include/asm/syscall_wrapper.h
-> @@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
->  	}
->  
->  #define __COND_SYSCALL(abi, name)					\
-> +	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
->  	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
->  	{								\
->  		return sys_ni_syscall();				\
-> 
+v1 cover letter:
+
+Currently it is not possible to take full advantage of software
+fwnodes in the drivers because device_del() is calling
+device_remove_properties() (that removes the software node attached to
+the device) unconditionally which prevents the software nodes from
+being reused or shared, and because subsystems are dealing with device
+properties instead of software nodes which in many cases prevents the
+drivers from using software nodes at all.
+
+To fix the situation, the device_remove_properties() call in
+device_del() has to be removed, and later the subsystems need to be
+converted so that they deal with software nodes instead of just device
+properties. But before that can be done, the drivers must be prepared
+for those changes. These patches do that for the USB drivers.
+
+The first patch introduces device_create_managed_software_node()
+function that can be used as a drop-in replacement for
+device_add_properties(). The rest of the patches simply use that
+function, or convert the drivers in some other way to use software
+nodes instead of just the device properties in them.
+
+thanks,
+
+Heikki Krogerus (6):
+  software node: Provide replacement for device_add_properties()
+  usb: dwc2: pci: Drop the empty quirk function
+  usb: dwc3: haps: Constify the software node
+  usb: dwc3: qcom: Constify the software node
+  usb: dwc3: host: Use software node API with the properties
+  xhci: ext-caps: Use software node API with the properties
+
+ drivers/base/swnode.c            | 43 ++++++++++++++++++++++++++++++++
+ drivers/usb/dwc2/pci.c           | 18 -------------
+ drivers/usb/dwc3/dwc3-haps.c     |  8 +++++-
+ drivers/usb/dwc3/dwc3-qcom.c     | 12 ++++++---
+ drivers/usb/dwc3/host.c          |  2 +-
+ drivers/usb/host/xhci-ext-caps.c |  3 ++-
+ include/linux/property.h         |  4 +++
+ 7 files changed, 66 insertions(+), 24 deletions(-)
+
+-- 
+2.30.0
+
