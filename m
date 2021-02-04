@@ -2,172 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F85630E91A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DACF30E959
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 02:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhBDBAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 20:00:46 -0500
-Received: from mga17.intel.com ([192.55.52.151]:18140 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234476AbhBDBAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 20:00:30 -0500
-IronPort-SDR: nOT0sMqXTCGVM2VTlplczWvdeozs7Uw26krNFHJ0n+iGfAe6MeHehpmj0CXcVX8v9yNj2xFbrH
- pXaDU5Lpsr7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160905784"
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="160905784"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 16:59:43 -0800
-IronPort-SDR: EEloAjSSKm981up7084LA9lMIkFYqpTru5pXdqkBuIiVEfCuVQ1qwp3/kxXba+TqP+OMBFpCeL
- 3NYycMJ0WOXw==
-X-IronPort-AV: E=Sophos;i="5.79,399,1602572400"; 
-   d="scan'208";a="392850295"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 16:59:39 -0800
-Subject: Re: [PATCH v2 4/4] KVM: x86: Expose Architectural LBR CPUID and its
- XSAVES bit
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-References: <20210203135714.318356-1-like.xu@linux.intel.com>
- <20210203135714.318356-5-like.xu@linux.intel.com>
- <8321d54b-173b-722b-ddce-df2f9bd7abc4@redhat.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <219d869b-0eeb-9e52-ea99-3444c6ab16a3@intel.com>
-Date:   Thu, 4 Feb 2021 08:59:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233860AbhBDBSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 20:18:30 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:28943 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233171AbhBDBS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Feb 2021 20:18:28 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210204011743epoutp01d31b5bfa0d6b59b183cac82cc349ef34~gZpako9NA2565325653epoutp01e
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 01:17:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210204011743epoutp01d31b5bfa0d6b59b183cac82cc349ef34~gZpako9NA2565325653epoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612401463;
+        bh=ok7IJjIXz6xGgJxQYwq++bBOaNrRRQtln/5yQX/Ab8E=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=NDxVyQkskiIXpsZdN5eHiieRm6hHvG17IdUkmaiOilFtPsd7eVwN7wpwIHALoGGe3
+         Nd4i8VYHeJ0LyjvbP3eggRGXL85gPceLOcC9WTKUVObX9ljr/zaBj0QDAQlGp/ZxWm
+         Efa5RbEHvteKgu90yD0d43Jjp1dpqE/bwpMSnQaI=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210204011742epcas1p3073e2d76ccc10d36b4943328f8d4681d~gZpZrHRc51044210442epcas1p3Z;
+        Thu,  4 Feb 2021 01:17:42 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DWLJP2Dlmz4x9Ps; Thu,  4 Feb
+        2021 01:17:41 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C9.02.02418.53B4B106; Thu,  4 Feb 2021 10:17:41 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210204011740epcas1p35481e568b664de42d7c5d4579f80787e~gZpXmdPYu1025810258epcas1p3M;
+        Thu,  4 Feb 2021 01:17:40 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210204011740epsmtrp1b884dc5b23824ebb690752ffd589e966~gZpXiHFhs2863728637epsmtrp1E;
+        Thu,  4 Feb 2021 01:17:40 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-04-601b4b35a4bd
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        56.A0.13470.43B4B106; Thu,  4 Feb 2021 10:17:40 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210204011740epsmtip11122738e0e35d4b978fad8040b05d5db~gZpXSv5kr0345303453epsmtip1L;
+        Thu,  4 Feb 2021 01:17:40 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     ming.lei@redhat.com, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, osandov@fb.com,
+        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com,
+        gregkh@linuxfoundation.org
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v5 1/2] bio: limit bio max size
+Date:   Thu,  4 Feb 2021 10:01:55 +0900
+Message-Id: <20210204010156.5105-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <8321d54b-173b-722b-ddce-df2f9bd7abc4@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01TbUxTVxjOube9rWyFS0V2gmxC4xbBAf2gcGaE6CTkZkDCsixOiCkXuCmM
+        0ja91Gwkc4RqGd8gy5x8bOoUmuJGVoQACYgtjCAUEkFxgHRMFh3yFQgEJYy1u5Dx73me93nf
+        57zn3CvExS4iQJitzWMMWlojIbx47Y4QaZgy4XCadGrZG9Vb2wFqflpJoMtFGxgy/dRCoKGq
+        mxgqmyvko+2SGQytz7Koe/I4GuuqJ5C9xoShq631OHrsGhYgx8wjHpq9VY2jkcFVPvrh2Sn0
+        uqkfoOXNCQF60FGDo5buV8SpQ1S1aUlAddY+FVCtllBqzGmkbNZigrrXcEdALfc8IqiKu1ZA
+        rdneoYp6S7FkrxTNySyGzmQMQYw2Q5eZrVXHSBI+UZ1RKaOksjDZByhaEqSlc5kYSVxiclh8
+        tsa9oCToAq0xuqVkmmUlEbEnDTpjHhOUpWPzYiSMPlOjl0n14Sydyxq16vAMXe4JmVQqV7qd
+        aZqsf1bb+HrHsS/Mri1eARgMLAEHhJCMhKbSl4IS4CUUkx0ALjotgCOrAJZ3LOySDQBvz3aB
+        vZaJxj8xrtAN4MqvZbtkDcDSgSrc4yLI92HF4iThKfiRbRi8MV3J9xCcfAbg+KCZ8LgOkhHQ
+        YS3GPJhHvguH2+d4HiwiT8A7dZsCLu8I/Ku8Ced0Xzh4jfPgbt3UVod7hkJyXAhvvLbuHjAO
+        PriyTnD4IJwfuLs7KAD+XWkWcA2lAJrMPwKOVAF463kjxrkUcHVtzV0QuiNCYEtXBCcHw86t
+        BsAle8Ol9TK+xwJJEfzGLOYsR+HwJRe+l/X8587diRQcHVvje7CYPA+fmMrxKnCkdt8+tfv2
+        qf0/+DrArcCf0bO5aoaV6WX7X9YG/vvSQ5UdoHpxJdwOMCGwAyjEJX4i2hyQJhZl0l/mMwad
+        ymDUMKwdKN03XI0HHMrQuX8VbZ5KppQrFAoUGRUdpVRI3hKlS/9QiUk1ncfkMIyeMez1YcID
+        AQWYcfyjb78S9cT4pF3/RbARuzDwovHyaeeLOb7vh7zte2/bV8sujKh+i7N4hexUU+ten/kd
+        225OlPY+yf5uomhqerqX2in4uKH8+FViJevz+7aU7rowNS/WunNxymlLKh6AvvFvfh/ZXzN1
+        X7aYdHasaU5/tOtxz9eB8SMNsfP5eEJHfg+THyif8RkN70s5X9v98nZQsD8ROST3a4iZdyQ9
+        NH3qlEtHmeiLVxILr7GYvz48/w31UvrCdHnZaGq/bTy19b1z3i6H5uzWq5xgbWBLakKhz2b6
+        zGKBadmS05yYmXMpfYgoPPfQ7uyrSKBcgVVO++kzv9PIYrxprpwcLD3cJ+GxWbQsFDew9L/f
+        NUQpcgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42LZdlhJTtfEWzrBYPdWSYs5q7YxWqy+289m
+        0dr+jcmiefF6NovTExYxWfQ8aWK1+Nt1j8ni68Nii723tC0u75rDZnFocjOTxfTNc5gtrt0/
+        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW6/f+ZHMQ9ZjY/I7dY+es
+        u+wem1doeVw+W+qxaVUnm8f+uWvYPd7vu8rm0bdlFaPH501yHu0HupkCuKK4bFJSczLLUov0
+        7RK4Mv592spacFijou3+b5YGxpMyXYycHBICJhLXlz1i6mLk4hAS2M0oMXndTlaIhJTE8RNv
+        gWwOIFtY4vDhYoiaj4wS3y+tYAepYRPQkeh7e4sNxBYROMokcWddHkgRs8BrRomux4tYQBLC
+        AvoSh1d1MoHYLAKqEme2PQGL8wpYSayZ/YMdYpm8xNPe5cwQcUGJkzMhapiB4s1bZzNPYOSb
+        hSQ1C0lqASPTKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4NjS0tzBuH3VB71DjEwc
+        jIcYJTiYlUR4E9ukEoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgST
+        ZeLglGpgqmtysch5/WGazJPXPXbfPy6USr+5pWqJqMn9n7XvNr/bGCTs+9x15bL77D/+LLH9
+        sm2VSerk42rmK7KnSn64YGo85/cMLZFnvybKC09erKCSGHr/UURtCLt05xymwkdq/GZGkzbk
+        LHP9+vfphFePGlPKnTYsandMkWWZ1uVoc0l1fsVH9o87qxkmikU5bqm8M/vGRVN1u+Z4sbkL
+        ZX9NeuR7p0CFpb+GbzNPppHKhrmR2heUNm0JmfUqxUng6Z6bdgctF66S6PGYVynHzdvRrs27
+        6MdGH9mVb8qCtfz/hX5f2Trpxq2NHLGJv0xnTGXruV5kOOvRfcOndT9qCxIPrmII0DmRPddU
+        t3LenCeickosxRmJhlrMRcWJACiPNakcAwAA
+X-CMS-MailID: 20210204011740epcas1p35481e568b664de42d7c5d4579f80787e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210204011740epcas1p35481e568b664de42d7c5d4579f80787e
+References: <CGME20210204011740epcas1p35481e568b664de42d7c5d4579f80787e@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/3 22:37, Paolo Bonzini wrote:
-> On 03/02/21 14:57, Like Xu wrote:
->> If CPUID.(EAX=07H, ECX=0):EDX[19] is exposed to 1, the KVM supports Arch
->> LBRs and CPUID leaf 01CH indicates details of the Arch LBRs capabilities.
->> As the first step, KVM only exposes the current LBR depth on the host for
->> guest, which is likely to be the maximum supported value on the host.
->>
->> If KVM supports XSAVES, the CPUID.(EAX=0DH, ECX=1):EDX:ECX[bit 15]
->> is also exposed to 1, which means the availability of support for Arch
->> LBR configuration state save and restore. When available, guest software
->> operating at CPL=0 can use XSAVES/XRSTORS manage supervisor state
->> component Arch LBR for own purposes once IA32_XSS [bit 15] is set.
->> XSAVE support for Arch LBRs is enumerated in CPUID.(EAX=0DH, ECX=0FH).
->>
->> Signed-off-by: Like Xu <like.xu@linux.intel.com>
->> ---
->>   arch/x86/kvm/cpuid.c   | 23 +++++++++++++++++++++++
->>   arch/x86/kvm/vmx/vmx.c |  2 ++
->>   arch/x86/kvm/x86.c     | 10 +++++++++-
->>   3 files changed, 34 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 944f518ca91b..900149eec42d 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -778,6 +778,29 @@ static inline int __do_cpuid_func(struct 
->> kvm_cpuid_array *array, u32 function)
->>               entry->edx = 0;
->>           }
->>           break;
->> +    /* Architectural LBR */
->> +    case 0x1c:
->> +    {
->> +        u64 lbr_depth_mask = 0;
->> +
->> +        if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR)) {
->> +            entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
->> +            break;
->> +        }
->> +
->> +        /*
->> +         * KVM only exposes the maximum supported depth,
->> +         * which is also the fixed value used on the host.
->> +         *
->> +         * KVM doesn't allow VMM user sapce to adjust depth
->> +         * per guest, because the guest LBR emulation depends
->> +         * on the implementation of the host LBR driver.
->> +         */
->> +        lbr_depth_mask = 1UL << fls(entry->eax & 0xff);
->> +        entry->eax &= ~0xff;
->> +        entry->eax |= lbr_depth_mask;
->> +        break;
->> +    }
->>       /* Intel PT */
->>       case 0x14:
->>           if (!kvm_cpu_cap_has(X86_FEATURE_INTEL_PT)) {
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 9ddf0a14d75c..c22175d9564e 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7498,6 +7498,8 @@ static __init void vmx_set_cpu_caps(void)
->>           kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
->>       if (vmx_pt_mode_is_host_guest())
->>           kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
->> +    if (cpu_has_vmx_arch_lbr())
->> +        kvm_cpu_cap_check_and_set(X86_FEATURE_ARCH_LBR);
->>         if (vmx_umip_emulated())
->>           kvm_cpu_cap_set(X86_FEATURE_UMIP);
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 667d0042d0b7..107f2e72f526 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -10385,8 +10385,16 @@ int kvm_arch_hardware_setup(void *opaque)
->>         if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
->>           supported_xss = 0;
->> -    else
->> +    else {
->>           supported_xss &= host_xss;
->> +        /*
->> +         * The host doesn't always set ARCH_LBR bit to hoss_xss since this
->> +         * Arch_LBR component is used on demand in the Arch LBR driver.
->> +         * Check e649b3f0188f "Support dynamic supervisor feature for 
->> LBR".
->> +         */
->> +        if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
->> +            supported_xss |= XFEATURE_MASK_LBR;
->> +    }
->>         /* Update CET features now that supported_xss is finalized. */
->>       if (!kvm_cet_supported()) {
->>
->
-> This requires some of the XSS patches that Weijang posted for CET, right?
+bio size can grow up to 4GB when muli-page bvec is enabled.
+but sometimes it would lead to inefficient behaviors.
+in case of large chunk direct I/O, - 32MB chunk read in user space -
+all pages for 32MB would be merged to a bio structure if the pages
+physical addresses are contiguous. it makes some delay to submit
+until merge complete. bio max size should be limited to a proper size.
 
-Yes, at least we need three of them for Arch LBR:
+When 32MB chunk read with direct I/O option is coming from userspace,
+kernel behavior is below now in do_direct_IO() loop. it's timeline.
 
-3009dfd6d61f KVM: x86: Load guest fpu state when accessing MSRs managed by 
-XSAVES
-d39b0a16ad1f KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS
-e98bf65e51c9 KVM: x86: Report XSS as an MSR to be saved if there are 
-supported features
+ | bio merge for 32MB. total 8,192 pages are merged.
+ | total elapsed time is over 2ms.
+ |------------------ ... ----------------------->|
+                                                 | 8,192 pages merged a bio.
+                                                 | at this time, first bio submit is done.
+                                                 | 1 bio is split to 32 read request and issue.
+                                                 |--------------->
+                                                  |--------------->
+                                                   |--------------->
+                                                              ......
+                                                                   |--------------->
+                                                                    |--------------->|
+                          total 19ms elapsed to complete 32MB read done from device. |
 
->
-> Also, who takes care of saving/restoring the MSRs, if the host has not 
-> added XFEATURE_MASK_LBR to MSR_IA32_XSS?
+If bio max size is limited with 1MB, behavior is changed below.
 
-I may not understand your concern on this. Let me try to explain:
+ | bio merge for 1MB. 256 pages are merged for each bio.
+ | total 32 bio will be made.
+ | total elapsed time is over 2ms. it's same.
+ | but, first bio submit timing is fast. about 100us.
+ |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+      | 256 pages merged a bio.
+      | at this time, first bio submit is done.
+      | and 1 read request is issued for 1 bio.
+      |--------------->
+           |--------------->
+                |--------------->
+                                      ......
+                                                 |--------------->
+                                                  |--------------->|
+        total 17ms elapsed to complete 32MB read done from device. |
 
-The guest Arch LBR driver will save the origin host_xss and
-mark the LBR bit only in the XSS and then save/restore MSRs
-in the extra specified guest memory, and restore the origin host_xss.
+As a result, read request issue timing is faster if bio max size is limited.
+Current kernel behavior with multipage bvec, super large bio can be created.
+And it lead to delay first I/O request issue.
 
-On the host side, the same thing happens to vcpu thread
-due to the help of guest LBR event created by the vPMU
-and the hardware LBR MSRs are saved/restored in a exclusive way.
+Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+---
+ block/bio.c            | 13 ++++++++++++-
+ include/linux/bio.h    |  2 +-
+ include/linux/blkdev.h |  3 +++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
->
-> Thanks,
->
-> Paolo
->
+diff --git a/block/bio.c b/block/bio.c
+index 1f2cc1fbe283..c528e1f944c7 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+ }
+ EXPORT_SYMBOL(bio_init);
+ 
++unsigned int bio_max_size(struct bio *bio)
++{
++	struct request_queue *q = bio->bi_disk->queue;
++
++	if (blk_queue_limit_bio_size(q))
++		return blk_queue_get_max_sectors(q, bio_op(bio))
++			<< SECTOR_SHIFT;
++
++	return UINT_MAX;
++}
++
+ /**
+  * bio_reset - reinitialize a bio
+  * @bio:	bio to reset
+@@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+ 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+ 
+ 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+-			if (bio->bi_iter.bi_size > UINT_MAX - len) {
++			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+ 				*same_page = false;
+ 				return false;
+ 			}
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 1edda614f7ce..13b6f6562a5b 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+ 	if (bio->bi_vcnt >= bio->bi_max_vecs)
+ 		return true;
+ 
+-	if (bio->bi_iter.bi_size > UINT_MAX - len)
++	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+ 		return true;
+ 
+ 	return false;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index f94ee3089e01..3aeab9e7e97b 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -621,6 +621,7 @@ struct request_queue {
+ #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+ #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+ #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
++#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
+ 
+ #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+ 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+@@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+ #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+ #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+ #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
++#define blk_queue_limit_bio_size(q)	\
++	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
+ 
+ extern void blk_set_pm_only(struct request_queue *q);
+ extern void blk_clear_pm_only(struct request_queue *q);
+-- 
+2.28.0
 
