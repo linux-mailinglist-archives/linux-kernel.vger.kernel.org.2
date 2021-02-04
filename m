@@ -2,139 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F5930EA30
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E8130EA40
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 03:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhBDC3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 21:29:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232762AbhBDC3S (ORCPT
+        id S234616AbhBDCdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 21:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233760AbhBDCdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 21:29:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612405672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lPtm3r8zd3MZ312457p/Epm6xNVI8yDRJXR45ftqPr4=;
-        b=MeFVP9RP2Th0JZ9tk50FsUchX/nNNwwUbS5WIpsUj2Xr3GOrYCuYgfztPLPT3ujCwhLyh+
-        N/10XgcK3VuKPGIdKAWA9QmFXTXrntiGaiu8dO6XjB4+ERnsCMy6ZlyQ0P/6T0ZXnwBBjB
-        u8+zfK3uOdoKVT/d/vQHxCbYzfEGiMU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-XeKJzsjfPlOxCcDA-M4cYA-1; Wed, 03 Feb 2021 21:27:50 -0500
-X-MC-Unique: XeKJzsjfPlOxCcDA-M4cYA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9BE18030B4;
-        Thu,  4 Feb 2021 02:27:49 +0000 (UTC)
-Received: from T590 (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9971F7770F;
-        Thu,  4 Feb 2021 02:27:44 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 10:27:40 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     David Jeffery <djeffery@redhat.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org,
-        Laurence Oberman <loberman@redhat.com>
-Subject: Re: [PATCH] block: recalculate segment count for multi-segment
- discard requests correctly
-Message-ID: <20210204022740.GB1108591@T590>
-References: <20210201164850.391332-1-djeffery@redhat.com>
+        Wed, 3 Feb 2021 21:33:35 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81829C0613ED;
+        Wed,  3 Feb 2021 18:32:55 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id a12so1965690qkh.10;
+        Wed, 03 Feb 2021 18:32:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MJioKdNVOEvo/KsyqvjYGpC+hN5xTn7omYEUx0bMXvA=;
+        b=pHBuobSKILbJhuLLcc/3hth4BHKUubli9fuZUhZC+rObDP8cZ8bgoJmT3tzjw2EIg8
+         epntF8Yw9jYjZ0p3PZ8Aub5vPEkryWi29byJhQzH8Fn6PVBgQTIh5Iia20YZDOEs+udO
+         WelxyU/fEXLkjepwX1O4YkQUvFUErIANe2fGgIWWrimjEE1Qen3bLyvdHvFAoSyVKNXe
+         uwikz2zf6rUJvOrsRDPYUQMxbK/DcPK9+q34NsRcDDzpmZuzlM+AsIF8b10yNWpCzHdL
+         4kRKJPGbw+gQXjiiQCX9iulrmlR+Lr8OmjGRy8YeGGZemxroN9bKnm/im9h2PUzPWqb8
+         8BaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=MJioKdNVOEvo/KsyqvjYGpC+hN5xTn7omYEUx0bMXvA=;
+        b=dn5EZauf6o/zmDZevH4vGS3sXpQVeS4GX3qJFfNUOl/5y19XEETT0uD6S/hHm/irlo
+         /mmYFv8rTjNu3e4E/BZoTETCl6zOgNfbtR5F8+Vbznsrl1IuKIpsK3Pzv+8vWwWF71Bx
+         Php5fdN2Q+zcyYVUQKzpE2uXftQKMDcY/iCnMvLgcS3TkwnWfa727d2xL7bEAO2IemY4
+         JY0Cjc4ZL7k4+ZjmZwV9JjQkv3h8ZkdTer5O7o3oASRfWF7J6Fbwi2tv//Ldjlm4yoZj
+         Eh91ht9jk6u15iwIJAauuuJk9fCFAqtUSqigtU5F2fISnrGOX8rg6Hgq76Q/eoX35v98
+         rXRA==
+X-Gm-Message-State: AOAM532gs6+R8d2z1zCGkUIbPNtQ1nRelkTYia+laWG66LswWJg/QUU5
+        p//27IiYQAlMvZNslOlVGeQ=
+X-Google-Smtp-Source: ABdhPJx8lCqzRhCNeQl1whuWue+5WRmG99XC7j3zoNvxdquVVyaGP6f4KGPx5SJ4mJazMH/jozA0bQ==
+X-Received: by 2002:a05:620a:2239:: with SMTP id n25mr5605909qkh.46.1612405974819;
+        Wed, 03 Feb 2021 18:32:54 -0800 (PST)
+Received: from Gentoo ([138.199.13.179])
+        by smtp.gmail.com with ESMTPSA id n78sm3818564qkn.22.2021.02.03.18.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Feb 2021 18:32:53 -0800 (PST)
+Date:   Thu, 4 Feb 2021 08:02:43 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] drivers: net: ethernet: i825xx: Fix couple of
+ spellings and get rid of blank lines too in the file ether1.c
+Message-ID: <YBtcy8WPPSz6wCfO@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210204011821.18356-1-unixbhaskar@gmail.com>
+ <bea4f9c4-b1bb-eab6-3125-bfe69938fa5b@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Dz9hAsEg3MNNcKsb"
 Content-Disposition: inline
-In-Reply-To: <20210201164850.391332-1-djeffery@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <bea4f9c4-b1bb-eab6-3125-bfe69938fa5b@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:48:50AM -0500, David Jeffery wrote:
-> When a stacked block device inserts a request into another block device
-> using blk_insert_cloned_request, the request's nr_phys_segments field gets
-> recalculated by a call to blk_recalc_rq_segments in
-> blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
-> handle multi-segment discards. For disk types which can handle
-> multi-segment discards like nvme, this results in discard requests which
-> claim a single segment when it should report several, triggering a warning
-> in nvme and causing nvme to fail the discard from the invalid state.
-> 
->  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
->  ...
->  nvme_setup_cmd+0x217/0x270 [nvme_core]
->  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
->  __blk_mq_try_issue_directly+0xe7/0x1b0
->  blk_mq_request_issue_directly+0x41/0x70
->  ? blk_account_io_start+0x40/0x50
->  dm_mq_queue_rq+0x200/0x3e0
->  blk_mq_dispatch_rq_list+0x10a/0x7d0
->  ? __sbitmap_queue_get+0x25/0x90
->  ? elv_rb_del+0x1f/0x30
->  ? deadline_remove_request+0x55/0xb0
->  ? dd_dispatch_request+0x181/0x210
->  __blk_mq_do_dispatch_sched+0x144/0x290
->  ? bio_attempt_discard_merge+0x134/0x1f0
->  __blk_mq_sched_dispatch_requests+0x129/0x180
->  blk_mq_sched_dispatch_requests+0x30/0x60
->  __blk_mq_run_hw_queue+0x47/0xe0
->  __blk_mq_delay_run_hw_queue+0x15b/0x170
->  blk_mq_sched_insert_requests+0x68/0xe0
->  blk_mq_flush_plug_list+0xf0/0x170
->  blk_finish_plug+0x36/0x50
->  xlog_cil_committed+0x19f/0x290 [xfs]
->  xlog_cil_process_committed+0x57/0x80 [xfs]
->  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
->  xlog_ioend_work+0x2f/0x80 [xfs]
->  process_one_work+0x1b6/0x350
->  worker_thread+0x53/0x3e0
->  ? process_one_work+0x350/0x350
->  kthread+0x11b/0x140
->  ? __kthread_bind_mask+0x60/0x60
->  ret_from_fork+0x22/0x30
-> 
-> This patch fixes blk_recalc_rq_segments to be aware of devices which can
-> have multi-segment discards. It calculates the correct discard segment
-> count by counting the number of bio as each discard bio is considered its
-> own segment.
-> 
-> Signed-off-by: David Jeffery <djeffery@redhat.com>
-> Tested-by: Laurence Oberman <loberman@redhat.com>
-> ---
->  block/blk-merge.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/block/blk-merge.c b/block/blk-merge.c
-> index 808768f6b174..fe7358bd5d09 100644
-> --- a/block/blk-merge.c
-> +++ b/block/blk-merge.c
-> @@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
->  
->  	switch (bio_op(rq->bio)) {
->  	case REQ_OP_DISCARD:
-> +		if (queue_max_discard_segments(rq->q) > 1) {
-> +			struct bio *bio = rq->bio;
-> +			for_each_bio(bio)
-> +				nr_phys_segs++;
-> +			return nr_phys_segs;
-> +		}
-> +		/* fall through */
->  	case REQ_OP_SECURE_ERASE:
->  	case REQ_OP_WRITE_ZEROES:
->  		return 0;
 
-blk_rq_nr_discard_segments() always returns >=1 segments, so no similar
-issue in case of single range discard.
+--Dz9hAsEg3MNNcKsb
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+On 18:09 Wed 03 Feb 2021, Randy Dunlap wrote:
+>On 2/3/21 5:18 PM, Bhaskar Chowdhury wrote:
+>>
+>> s/initialsation/initialisation/
+>> s/specifiing/specifying/
+>>
+>> Plus get rid of few blank lines.
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>> Changes from V1:
+>>    Fix typo in the subject line
+>>    Give explanation of all the changes in changelog text
+>>
+>>  drivers/net/ethernet/i825xx/ether1.c | 9 +++------
+>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/i825xx/ether1.c b/drivers/net/ethernet/i825xx/ether1.c
+>> index a0bfb509e002..850ea32091ed 100644
+>> --- a/drivers/net/ethernet/i825xx/ether1.c
+>> +++ b/drivers/net/ethernet/i825xx/ether1.c
+>
+>a. don't delete the blank lines
+>b. the change below is not described and does not change any whitespace AFAICT.
+>   I.e., DDT [don't do that].
+>
+But what do you do when things getting automatically inducted in the
+patch???(You got to believe me)
 
-And it can be thought as:
+I haven't had touch that bloody function with my keystroke and it gets it on
+its own! Bemusing!
 
-Fixes: 1e739730c5b9 ("block: optionally merge discontiguous discard bios into a single request")
+Those blank lines too inducted from the fresh file(means in pristine form) ,so
+thought pruning would be good..hence the decision to get rid of those.
 
+Wondering what the fuck is going on....
 
--- 
-Ming
+>> @@ -1047,7 +1044,7 @@ static void ether1_remove(struct expansion_card *ec)
+>>  {
+>>  	struct net_device *dev = ecard_get_drvdata(ec);
+>>
+>> -	ecard_set_drvdata(ec, NULL);
+>> +	ecard_set_drvdata(ec, NULL);
+>>
+>>  	unregister_netdev(dev);
+>>  	free_netdev(dev);
+>
+>
+>--
+>~Randy
+>
 
+--Dz9hAsEg3MNNcKsb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAbXMcACgkQsjqdtxFL
+KRXE3wgA08qhl3UlYZ5F03/kEOuJVrzbjZ27P2zjgZmen5iEaTN2Jlc/VjMe/tI0
+B97nAdg8pPmTtBpSS0e7Fc7W0t5y3/FOazlV/86V7fiEov3grjhJl+tzt4NfwxXL
+Mlhn3+8aL0Kui1YEKqKJuwYFwRO+ZaiqOFVi28VyT7ZcZDscXOXDmyR2tzfNFLl/
+HtPl6rO8nXBpoI6Af0hl2pcNFIP0WDKXsy6lOiCNLHPMEHZLceVpuzuFupx4eXXg
+qfZPnWDEA6MOGIt1INSdI/yZndi2eRnTVjPnRD6fRp+J4kiNyQrmnlnxLyJWZRF1
+5pwZRSn3pCRybvO+htN137Yi86zLsw==
+=gNBU
+-----END PGP SIGNATURE-----
+
+--Dz9hAsEg3MNNcKsb--
