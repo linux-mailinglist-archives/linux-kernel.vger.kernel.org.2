@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1712B30FBDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D7030FBE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 19:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239357AbhBDSq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 13:46:59 -0500
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:55381 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239347AbhBDSnz (ORCPT
+        id S239372AbhBDSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 13:48:03 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:8537 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239366AbhBDSoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:43:55 -0500
-Received: by mail-wm1-f53.google.com with SMTP id f16so4006207wmq.5;
-        Thu, 04 Feb 2021 10:43:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hAXu9lZgOGKgsgAF3qBaSgL6tziuKPxThr6otN2BFf0=;
-        b=fr9AK1BAlkJ7xSeutHaTMQLpCQ9bqNZTh0zPlxLTr2lmsl8Z7NC0chv4dQkDP0gQVq
-         Pu+pBOKYtDTu7HtqAJa4uYoThjYJDzglOcUYy9fOOq9aVoQHXWJLGzJ7z3pyyn5XXP6C
-         L9nzUXoSReT0LUnjn2IVmtlOw6IYLJCWRzW8+JMvz0Q9IsXVrn9KCkGZWFDH5nWR6dEw
-         hGOaau49MnGJdqQX7nTcJ2laKTH0rwwTDA1lrKDViUAXh8pFXq56MjrRRZoLkdn/zqiS
-         qVjy9aVBqoHgU3g65cfV3x6lrTNhkgl7KH+Gpxnt8rfDPL/1JTyCE/wj01JVvoSAjpSB
-         MG/g==
-X-Gm-Message-State: AOAM533yEQCahiRVxEP7qdHTOx8yEfpTYnWioM5AlpGfMu1qxK89nOgd
-        rMyySXBaB29Jrk1rZyRYAGY=
-X-Google-Smtp-Source: ABdhPJwNq5pTrvkb8cEoO5L+yzFW8L7fJZR1eb3ywR9i2LZYnIP2TJJiRqIM7Jf8Stq9KkYDhHWMCw==
-X-Received: by 2002:a1c:4106:: with SMTP id o6mr446359wma.165.1612464193112;
-        Thu, 04 Feb 2021 10:43:13 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z4sm8993349wrw.38.2021.02.04.10.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 10:43:12 -0800 (PST)
-Date:   Thu, 4 Feb 2021 18:43:11 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v6 15/16] x86/hyperv: implement an MSI domain for root
- partition
-Message-ID: <20210204184311.xuqlrenlth2vi236@liuwe-devbox-debian-v2>
-References: <20210203150435.27941-1-wei.liu@kernel.org>
- <20210203150435.27941-16-wei.liu@kernel.org>
- <MWHPR21MB15932010E9CF5975EBAD1EDAD7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210204175641.pzonxqrqlo7uvvze@liuwe-devbox-debian-v2>
- <MWHPR21MB15934AD184476EF14CF4C732D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Thu, 4 Feb 2021 13:44:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612464295; x=1644000295;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bLTbvpLrEHxq5RI+rYCa3j+E1tXZ1nPttjCvTxH1lBo=;
+  b=nigY+C90r0EymCjua+vR3S7rP9qTdssPISrRYRCH/l0/rceGsfydVdkT
+   mO3mnu7TipSokIbltfNB/0VzKp9CogFKQyEDsjeCdBj3gCBehh/cV1kjJ
+   +9ulfsfkZ26lmyHl0TQaKABpG5d1vAxfcuLaYVt1WFfI1Y5l+qJVZjpOO
+   kySnm9LJZtxfGbAUqcw9KTNVRT+ekocFfBkJUA1v0nT8Q0bKfYYJkk6+r
+   xpmnSZOt/B+d5luPDl8nNJncqVGxaN/XYtLO5PmclXMi62l+nAhH5l/wQ
+   I2rGG85eR8TS5lMxB5h83uihOl1urub4/+9JhyPZvlUBJpjsc/0teZIFF
+   g==;
+IronPort-SDR: eBql+5flRwgc+oDmGTlZF9RKUq4v1KWEeMtbEx4ZXLcJYkkofIYtx8AbnPU149a+52HFeWaWwy
+ OqBtCZt5W4f1jRgAmbNCHQC+wTEf2qeuymTAJifC63KzX4wNqZcu6UOj9wiNc21lveeu/tVp0S
+ TqiLjvljRimti5Iv/prihHIgIy3TCgs+d5XlrjQDhNAtwz3lxJFwRS1LJfTV0NFwcLHnj5qRWx
+ hvZJs0Dz01fO8ix3KL4Wk4UOpSLcNWW/ev5F4CXRda1DSXWQLAYqtDTU7WeJ52A+Ecoelw//yH
+ mEU=
+X-IronPort-AV: E=Sophos;i="5.81,153,1610434800"; 
+   d="scan'208";a="102622916"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Feb 2021 11:43:37 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 4 Feb 2021 11:43:37 -0700
+Received: from [10.171.246.84] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 4 Feb 2021 11:43:33 -0700
+Subject: Re: [PATCH] ARM: at91: use proper asm syntax in pm_suspend
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+CC:     <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        <clang-built-linux@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210204160129.2249394-1-arnd@kernel.org>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <d5cc7f4f-ef4a-dbe6-6f87-918a1d96603e@microchip.com>
+Date:   Thu, 4 Feb 2021 19:43:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15934AD184476EF14CF4C732D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210204160129.2249394-1-arnd@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 06:40:55PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Thursday, February 4, 2021 9:57 AM
-[...]
-> > I've got the following diff to fix both issues. If you're happy with the
-> > changes, can you give your Reviewed-by? That saves a round of posting.
-> > 
-> > diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-> > index 0cabc9aece38..fa71db798465 100644
-> > --- a/arch/x86/hyperv/irqdomain.c
-> > +++ b/arch/x86/hyperv/irqdomain.c
-> > @@ -1,7 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> > 
-> >  /*
-> > - * for Linux to run as the root partition on Microsoft Hypervisor.
-> > + * Irqdomain for Linux to run as the root partition on Microsoft Hypervisor.
-> >   *
-> >   * Authors:
-> >   *  Sunil Muthuswamy <sunilmut@microsoft.com>
-> > @@ -20,7 +20,7 @@ static int hv_map_interrupt(union hv_device_id device_id, bool level,
-> >         struct hv_device_interrupt_descriptor *intr_desc;
-> >         unsigned long flags;
-> >         u64 status;
-> > -       cpumask_t mask = CPU_MASK_NONE;
-> > +       const cpumask_t *mask;
-> >         int nr_bank, var_size;
-> > 
-> >         local_irq_save(flags);
-> > @@ -41,10 +41,10 @@ static int hv_map_interrupt(union hv_device_id device_id, bool
-> > level,
-> >         else
-> >                 intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-> > 
-> > -       cpumask_set_cpu(cpu, &mask);
-> > +       mask = cpumask_of(cpu);
-> >         intr_desc->target.vp_set.valid_bank_mask = 0;
-> >         intr_desc->target.vp_set.format = HV_GENERIC_SET_SPARSE_4K;
-> > -       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), &mask);
-> > +       nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), mask);
+On 04/02/2021 at 17:01, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Can you just do the following and get rid of the 'mask' local entirely?
+> Compiling with the clang integrated assembler warns about
+> a recently added instruction:
 > 
-> nr_bank = cpumask_to_vpset(&(intr_desc->target.vp_set), cpumask_of(cpu));
-
-Sure. That can be done.
-
+> <instantiation>:14:13: error: unknown token in expression
+>   ldr tmp1, =#0x00020010UL
+> arch/arm/mach-at91/pm_suspend.S:542:2: note: while in macro instantiation
+>   at91_plla_enable
 > 
-> Either way,
+> Remove the extra '#' character that is not used for the 'ldr'
+> instruction when doing an indirect load of a constant.
 > 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Fixes: 4fd36e458392 ("ARM: at91: pm: add plla disable/enable support for sam9x60")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thank you.
+Looks good to me:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Wei.
+Thanks!
+
+Best regards,
+   Nicolas
+
+> ---
+>   arch/arm/mach-at91/pm_suspend.S | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
+> index 909856c8a8c6..0d467cc40129 100644
+> --- a/arch/arm/mach-at91/pm_suspend.S
+> +++ b/arch/arm/mach-at91/pm_suspend.S
+> @@ -446,7 +446,7 @@ ENDPROC(at91_backup_mode)
+>          str     tmp1, [pmc, #AT91_PMC_PLL_UPDT]
+> 
+>          /* step 2. */
+> -       ldr     tmp1, =#AT91_PMC_PLL_ACR_DEFAULT_PLLA
+> +       ldr     tmp1, =AT91_PMC_PLL_ACR_DEFAULT_PLLA
+>          str     tmp1, [pmc, #AT91_PMC_PLL_ACR]
+> 
+>          /* step 3. */
+> --
+> 2.29.2
+> 
+
+
+-- 
+Nicolas Ferre
