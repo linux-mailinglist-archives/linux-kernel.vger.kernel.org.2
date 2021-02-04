@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCCE30F142
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 11:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE7630F15C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235511AbhBDKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 05:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
+        id S235488AbhBDK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 05:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbhBDKwp (ORCPT
+        with ESMTP id S235463AbhBDK47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 05:52:45 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33233C061573;
-        Thu,  4 Feb 2021 02:52:05 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c7e00dc348a22cc2c06fb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7e00:dc34:8a22:cc2c:6fb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A80071EC00F8;
-        Thu,  4 Feb 2021 11:52:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612435921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=x+q7M5BysVCq0z73BCA5GL6K1zhxLeh9Ep6YuQ1rvpw=;
-        b=NkbeH0s9FBLOV+Wse/Y6c3Vc6CDqAD5AEy6ZGsLflQepqjqCjWV3lxVgMi6lbhBpftYVew
-        9QtP+ljkKRefd9fZoY1dFln9/Q9e2nFNnzMC/0s/gZU154j1HyoOWlWHrCTQqsJfebf8Q9
-        FrVVybE3qHTptJdYnKQsjd6ae3frQgg=
-Date:   Thu, 4 Feb 2021 11:51:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210204105155.GA32255@zn.tnic>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
- <20210203185148.GA1711888@localhost>
- <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
+        Thu, 4 Feb 2021 05:56:59 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD700C061573
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 02:56:19 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id r38so1796911pgk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 02:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
+        b=meRFeoFABKNahcTD5pEZi9cJb0xVYtEo0jR+vAzCdEludgjz8sf1Qlv2/xeRPDfibp
+         /MMKS0gDIAcIwS+spfwSSxSYmiHHlYLXKz78sdAEln7aHWvn0QsCJNlPvKVOmygR7EfF
+         nSWXTdN5o2V9xWtAhYeJgMlGZE86yc7er/RVSRnjuvKWa6RjgUQXsVKFyMLzh72oLILh
+         ZefaeRzKTsudfYwco8W1CE1Vr2eIFb+VxUGIitkSeo2UM5YS+/bx7Xwr9TH4t1EkX+rc
+         uS0RLOQkFJ07jRmOC12Y7X8c6oWiSWepD2xx1ceyRtqiYop3Hqiqt9lcpsOK7wc4pLM+
+         sZlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
+        b=qBBuN9ErbiT+UsDP2ocdZr/0w6/QN8EC+M+qCQ/Gz5PurZwI0IhzgvEwI5CbTNAjJT
+         JzMzr2ctzr9kuwLuEGmLgp0ocl0OUytKBIPKaB243PzI/AZvR4q5+KZGK4UJQDozpoki
+         3JDP+OgOETPgx9r9jK26haJjQa+VZ0YWqaUJb0c5889wuz39f7upyHedo+W6hp2fCFk9
+         LOhl9qmH9UKI1R08Ee3n6D4pAz092oNheF3F3jn9RGv29EUUpa6Ngn4ShZM54H+a5Q8n
+         ZPfTqk3N/FiJ06wcUGfrDw5Et/6toq+1qC5WKyIH4p7t5P7SvLx/P+IylqQMjmhxOCon
+         YW4A==
+X-Gm-Message-State: AOAM533Xy09sti+FQz3TUO/TaFs2Zz/LPxAXxRvOpmanuNOHS24GQHN8
+        t+fgnbEOigIjHfFjUnd51KZpCg==
+X-Google-Smtp-Source: ABdhPJxUgUArlXg8y2yW1BuiqYJ2lzKT+G+NfzP6TzP4jp5cEnjoQAINnZWIf/miYy7OqREs06CHgA==
+X-Received: by 2002:a63:375d:: with SMTP id g29mr4490430pgn.226.1612436179150;
+        Thu, 04 Feb 2021 02:56:19 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id z15sm2043493pjz.41.2021.02.04.02.56.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 02:56:18 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: replace the loop with a list_for_each_entry()
+Date:   Thu,  4 Feb 2021 18:53:20 +0800
+Message-Id: <20210204105320.46072-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 09:29:18PM +0100, Ard Biesheuvel wrote:
-> I think we have agreement on the approach but it is unclear who is
-> going to write the patch.
+The rule of list walk has gone since:
 
-How's that below?
+ commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
 
-And frankly, I'd even vote for removing those assertions altogether. If
-somehow the EFI pgd lands somewhere else, the kernel will crash'n'burn
-spectacularly and quickly so it's not like we won't catch it...
+So remove the strange comment and replace the loop with a
+list_for_each_entry().
 
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 91ac10654570..b6be19c09841 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -156,8 +156,8 @@ extern unsigned int ptrs_per_p4d;
- #define CPU_ENTRY_AREA_PGD	_AC(-4, UL)
- #define CPU_ENTRY_AREA_BASE	(CPU_ENTRY_AREA_PGD << P4D_SHIFT)
- 
--#define EFI_VA_START		( -4 * (_AC(1, UL) << 30))
--#define EFI_VA_END		(-68 * (_AC(1, UL) << 30))
-+#define EFI_VA_START		( -4UL * (_AC(1, UL) << 30))
-+#define EFI_VA_END		(-68UL * (_AC(1, UL) << 30))
- 
- #define EARLY_DYNAMIC_PAGE_TABLES	64
- 
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index e1e8d4e3a213..56fdc0bbb554 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -123,9 +123,7 @@ void efi_sync_low_kernel_mappings(void)
- 	 * only span a single PGD entry and that the entry also maps
- 	 * other important kernel regions.
- 	 */
--	MAYBE_BUILD_BUG_ON(pgd_index(EFI_VA_END) != pgd_index(MODULES_END));
--	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) !=
--			(EFI_VA_END & PGDIR_MASK));
-+	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) != PGDIR_MASK);
- 
- 	pgd_efi = efi_pgd + pgd_index(PAGE_OFFSET);
- 	pgd_k = pgd_offset_k(PAGE_OFFSET);
-@@ -137,8 +135,7 @@ void efi_sync_low_kernel_mappings(void)
- 	 * As with PGDs, we share all P4D entries apart from the one entry
- 	 * that covers the EFI runtime mapping space.
- 	 */
--	BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
--	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
-+	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != P4D_MASK);
- 
- 	pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
- 	pgd_k = pgd_offset_k(EFI_VA_END);
+ mm/memcontrol.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6c7f1ea3955e..43341bd7ea1c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6891,24 +6891,11 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+ static void uncharge_list(struct list_head *page_list)
+ {
+ 	struct uncharge_gather ug;
+-	struct list_head *next;
++	struct page *page;
+ 
+ 	uncharge_gather_clear(&ug);
+-
+-	/*
+-	 * Note that the list can be a single page->lru; hence the
+-	 * do-while loop instead of a simple list_for_each_entry().
+-	 */
+-	next = page_list->next;
+-	do {
+-		struct page *page;
+-
+-		page = list_entry(next, struct page, lru);
+-		next = page->lru.next;
+-
++	list_for_each_entry(page, page_list, lru)
+ 		uncharge_page(page, &ug);
+-	} while (next != page_list);
+-
+ 	uncharge_batch(&ug);
+ }
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.11.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
