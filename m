@@ -2,69 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D23330F5E7
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB6C30F5E8
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbhBDPLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:11:54 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52999 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236984AbhBDPAu (ORCPT
+        id S237183AbhBDPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:12:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237155AbhBDPIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:00:50 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l7g6z-0005kW-QQ; Thu, 04 Feb 2021 15:00:01 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] iommu/mediatek: Fix unsigned domid comparison with less than zero
-Date:   Thu,  4 Feb 2021 15:00:01 +0000
-Message-Id: <20210204150001.102672-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 4 Feb 2021 10:08:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612451194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nN/FJ7/vfiKKu0V0ZsPlNW24BqROSQkdzOLQ5ffuIwM=;
+        b=UENhhiQCKDg0gyMW2Mjgt+eHpnb/HapNvxOZmLUjupMYk+lnAoeERNUND72oiIOWrrvx8W
+        ytZNgZO65DUJYAL7ZNdDDrNId0RX12pxOKGKkEHaIhZRXJxYjy4Q/9xHgDYg5BD0yqe0Ps
+        1J2os5BMfWL+bhcGEl5OEFWtt1nqFdg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-rTIVjuKkOb6uvmKjfm8srA-1; Thu, 04 Feb 2021 10:06:32 -0500
+X-MC-Unique: rTIVjuKkOb6uvmKjfm8srA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8059A1014E77;
+        Thu,  4 Feb 2021 15:06:30 +0000 (UTC)
+Received: from krava (unknown [10.40.194.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D89E9100F494;
+        Thu,  4 Feb 2021 15:06:27 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 16:06:27 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Alexei Budankov <abudankov@huawei.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 09/24] perf daemon: Add signalfd support
+Message-ID: <YBwNc/0H8/J6v77c@krava>
+References: <20210129134855.195810-1-jolsa@redhat.com>
+ <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-10-jolsa@kernel.org>
+ <20210203212409.GW854763@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203212409.GW854763@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Feb 03, 2021 at 06:24:09PM -0300, Arnaldo Carvalho de Melo wrote:
 
-Currently the check for domid < 0 is always false because domid
-is unsigned. Fix this by casting domid to an int before making
-the comparison.
+SNIP
 
-Addresses-Coverity: ("Unsigned comparison against 0")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
+> > @@ -351,6 +355,103 @@ static int session__run(struct session *session, struct daemon *daemon)
+> >  	return -1;
+> >  }
+> >  
+> > +static pid_t handle_signalfd(struct daemon *daemon)
+> > +{
+> > +	struct signalfd_siginfo si;
+> > +	struct session *session;
+> > +	ssize_t err;
+> > +	int status;
+> > +	pid_t pid;
+> > +
+> > +	err = read(daemon->signal_fd, &si, sizeof(struct signalfd_siginfo));
+> 
+> 
+> I saw these and recalled we have a readn() function, shouldn't we be
+> usint it in this series?
 
-V2: cast domid rather than making it an int. Replace L with : in
-    the commit message.
+right, but the read call in here needs to succeed with the data
+size otherwise it's an error
 
----
- drivers/iommu/mtk_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+but perhaps we could use it later for the control descriptor
+read/write, I'll check
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 0ad14a7604b1..1f262621ef19 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -645,7 +645,7 @@ static void mtk_iommu_get_resv_regions(struct device *dev,
- 	struct iommu_resv_region *region;
- 	int prot = IOMMU_WRITE | IOMMU_READ;
- 
--	if (domid < 0)
-+	if ((int)domid < 0)
- 		return;
- 	curdom = data->plat_data->iova_region + domid;
- 	for (i = 0; i < data->plat_data->iova_region_nr; i++) {
--- 
-2.29.2
+> 
+> Its even in tools/lib/perf/lib.c
+> 
+> > +	if (err != sizeof(struct signalfd_siginfo))
+> > +		return -1;
+> > +
+> > +	list_for_each_entry(session, &daemon->sessions, list) {
+> > +
+> > +		if (session->pid != (int) si.ssi_pid)
+> > +			continue;
+> > +
+> > +		pid = waitpid(session->pid, &status, 0);
+> > +		if (pid == session->pid) {
+> > +			if (WIFEXITED(status)) {
+> > +				pr_info("session '%s' exited, status=%d\n",
+> > +					session->name, WEXITSTATUS(status));
+> > +			} else if (WIFSIGNALED(status)) {
+> > +				pr_info("session '%s' killed (signal %d)\n",
+> > +					session->name, WTERMSIG(status));
+> > +			} else if (WIFSTOPPED(status)) {
+> > +				pr_info("session '%s' stopped (signal %d)\n",
+> > +					session->name, WSTOPSIG(status));
+> > +			} else {
+> > +				pr_info("session '%s' Unexpected status (0x%x)\n",
+> > +					session->name, status);
+> > +			}
+> > +		}
+> > +
+> > +		session->state = SESSION_STATE__KILL;
+> > +		session->pid = -1;
+> > +		return pid;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int session__wait(struct session *session, struct daemon *daemon, int secs)
+> > +{
+> > +	struct pollfd pollfd = {
+> > +		.fd	= daemon->signal_fd,
+> > +		.events	= POLLIN,
+> > +	};
+> > +	pid_t wpid = 0, pid = session->pid;
+> > +	time_t start;
+> > +
+> > +	start = time(NULL);
+> 
+> 
+> 	time_t start = time(NULL);
+> > +
+> > +	do {
+> > +		if (poll(&pollfd, 1, 1000))
+> > +			wpid = handle_signalfd(daemon);
+> 
+> Shouldn't we check for -1 and handle that differently?
+
+ah right, check for error, will add
+
+> 
+> > +
+> > +		if (start + secs < time(NULL))
+> > +			return -1;
+> > +	} while (wpid != pid);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static bool daemon__has_alive_session(struct daemon *daemon)
+> > +{
+> > +	struct session *session;
+> > +
+> > +	list_for_each_entry(session, &daemon->sessions, list) {
+> > +		if (session->pid != -1)
+> > +			return true;
+> > +	}
+> > +
+> > +	return false;
+> > +}
+> > +
+> > +static int daemon__wait(struct daemon *daemon, int secs)
+> > +{
+> > +	struct pollfd pollfd = {
+> > +		.fd	= daemon->signal_fd,
+> > +		.events	= POLLIN,
+> > +	};
+> > +	time_t start;
+> > +
+> > +	start = time(NULL);
+> > +
+> > +	do {
+> > +		if (poll(&pollfd, 1, 1000))
+> > +			handle_signalfd(daemon);
+> 
+> ditto
+
+ok
+
+thanks,
+jirka
 
