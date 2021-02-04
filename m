@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC90130FFA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E2C30FFA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhBDVt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhBDVtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:49:02 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E39FC061786;
-        Thu,  4 Feb 2021 13:48:22 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7800E4CD5;
-        Thu,  4 Feb 2021 21:48:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7800E4CD5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1612475302; bh=0Cefb0gsobi/X7QNTiuzllg5VsAycXRpNJvVDxfmWBY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NDUJ2y0AkrD5a+Fa7SKOVvGOCp8y1ZVJgeGENOY+X5LBKPP3YyjFQdg0pJm0+FReA
-         RB/Zndnf9KWxYBr3/Nwx2pAdAiUszVklLAxJkrhdfg/ihibIix3JZm3ClY+VgdBa2j
-         fT0iUJ/35jLwC/zMtcgxHA9GqULXjoKmBi83+OOPtxsvSeVpYh+WWtuU/7gooGvmKZ
-         DQNJCZaiPuhiGkWhJDcIDPC+83kJ+NUblw4Adb9gdA5BtJRKq9Ry1wWhA1DLZKu77Q
-         NDnOCo4DfwqG7+QsUMQ1kXiu9adWa4nn29oEVUPfQ/BZ3hBb+Vev83ig8ZCEmCynQ4
-         DimHVOuVFFoYA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?And?= =?utf-8?Q?r=C3=A9?= Almeida 
-        <andrealmeid@collabora.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: Re: [PATCH 1/2] docs: Make syscalls' helpers naming consistent
-In-Reply-To: <20210130014547.123006-1-andrealmeid@collabora.com>
-References: <20210130014547.123006-1-andrealmeid@collabora.com>
-Date:   Thu, 04 Feb 2021 14:48:20 -0700
-Message-ID: <874kirfqsb.fsf@meer.lwn.net>
+        id S230310AbhBDVuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:50:07 -0500
+Received: from mga14.intel.com ([192.55.52.115]:4838 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhBDVti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:49:38 -0500
+IronPort-SDR: pY+Nr6jAgIxyBSpAvvvsgXOwo2hNItuw9siAkK7SOvOxAnkVR0xZ2PX5iO24yXStyRd4G6C3S7
+ yUGldeJTw3/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="180557971"
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="180557971"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 13:48:49 -0800
+IronPort-SDR: myV1KE9j7kkbr5D5pXV2bGsPNu9vv8X5WxtJ9c2sz4znxzOvH794zrs0zwYjGwOu0gcq//xvG6
+ PNYTZBCr3OEg==
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="393459920"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.100.6]) ([10.209.100.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 13:48:34 -0800
+Subject: Re: [PATCH v19 12/25] mm: Introduce VM_SHSTK for shadow stack memory
+To:     Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-13-yu-cheng.yu@intel.com> <20210204204636.GH2172@grain>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <44f18779-efdb-e3f9-55d4-b46fb35d60cd@intel.com>
+Date:   Thu, 4 Feb 2021 13:48:34 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204204636.GH2172@grain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andr=C3=A9 Almeida <andrealmeid@collabora.com> writes:
+On 2/4/2021 12:46 PM, Cyrill Gorcunov wrote:
+> On Wed, Feb 03, 2021 at 02:55:34PM -0800, Yu-cheng Yu wrote:
+>>   
+>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>> index 602e3a52884d..59623dcd92bb 100644
+>> --- a/fs/proc/task_mmu.c
+>> +++ b/fs/proc/task_mmu.c
+>> @@ -661,6 +661,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>>   		[ilog2(VM_PKEY_BIT4)]	= "",
+>>   #endif
+>>   #endif /* CONFIG_ARCH_HAS_PKEYS */
+>> +#ifdef CONFIG_X86_CET
+>> +		[ilog2(VM_SHSTK)]	= "ss",
+>> +#endif
+>>   	};
+> 
+> IIRC we've these abbreviations explained in documentaion
+> (proc.rst file). Could you please update it once time
+> permit? I think it can be done on top of the series.
+> 
 
-> The documentation explains the need to create internal syscalls' helpers,
-> and that they should be called `kern_xyzzy()`. However, the comment at
-> include/linux/syscall.h says that they should be named as
-> `ksys_xyzzy()`, and so are all the helpers declared bellow it. Change the
-> documentation to reflect this.
->
-> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-> Fixes: 819671ff849b ("syscalls: define and explain goal to not call sysca=
-lls in the kernel")
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-> ---
->  Documentation/process/adding-syscalls.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-I've applied both patches thanks (also did s/syscall.h/syscalls.h in the
-above changelog).
-
-jon
+I will add that.  Thanks!
