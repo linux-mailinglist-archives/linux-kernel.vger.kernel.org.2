@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B88730EEB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9132B30EEB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 09:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhBDInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 03:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhBDInF (ORCPT
+        id S235043AbhBDIn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 03:43:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8680 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235031AbhBDInX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:43:05 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D45C061573;
-        Thu,  4 Feb 2021 00:42:25 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id z18so1836504ile.9;
-        Thu, 04 Feb 2021 00:42:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=oQO+dQVEX2nOVug2QIeMZE1dpbuWM/CVbjcmZ9bpCUE=;
-        b=Z7Xo2oAA5nuPR5Cu+jm+MS1yDW+liykjtfrBoJkHljt4zOURA9hxqGB7s/5x+14a73
-         I5xL09vs/4So6S3YzS4GPbBLYbtg+gpHiPTRz9HFfI9QkyEr6VayNEnIwQCsarRuIl9Y
-         CeMlk8lY8vg/l88Dg/hGuh2DY/qY9IzQgDBODHRhqAsFpAvTqRKFDFPO2ksd/0hY41LX
-         HBzgCYxxBuxs9lcBpV66kaufKBYNtLWGBls9ayUivCeGfZWsQeJKOXpXd1umrSvt2oFF
-         LoxGX5OQpM2OJysfobtG+nm7qVLAwdY1NVplB5rwZ4ObOgIYvM5u27aQ0Fv1KkvWTLzN
-         D+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=oQO+dQVEX2nOVug2QIeMZE1dpbuWM/CVbjcmZ9bpCUE=;
-        b=ImvTsKq35TLHJ8xzt29CDHhennv5DBQbOTgWPXMq14AhPJ1GDfQA2IIxHV9qKiKJil
-         CgbuMd8aKecXnIH/M9ssQFMid1dElqunfpIZ5W2Mi2GZU3EUTUKrKvBimKohmZQI6njC
-         lbX7GmC+br5CLDRzWw6520zWcaUfcMLZ1SH4rU0xVIjV1RZUTYsz/QzK80exfE/1+qCr
-         zcyhVS9Bsx8yeSYquxec4jiDfzFKtJF6J+tk9w3GKD7qTeD3MCF4q3MFTXjFTPfx8l/d
-         N9DkxGyOklRruanObHDOogp+IGVdt5xaLlJf4Gg65vnesx0LZ9vSq+RV9sjzeMJpBS4j
-         xIpg==
-X-Gm-Message-State: AOAM532MGE0v+MUS6jlQ+SuASduQ13GTI5ykFOWp151hQFwRFipuEJko
-        SjmLosv6x3ALmVKY+pBuIm02/ZPdTSEkHChRTIM=
-X-Google-Smtp-Source: ABdhPJwPjBdke0BPHIreGsISS0Ms+a10HPCcQOSFItEwDHcq+us+v49rU7LGR1/qqkmMz9riZmCipmR/HBsTC7PWCS8=
-X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr6059065ilq.112.1612428144646;
- Thu, 04 Feb 2021 00:42:24 -0800 (PST)
+        Thu, 4 Feb 2021 03:43:23 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1148WmlD122981;
+        Thu, 4 Feb 2021 03:42:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Lvf79ttOY7+ByvpR6bUQS+gP98gtUqv4tfoGlSsubvk=;
+ b=SToaCB9b5YlCgtAePPaWnFMaObp+R7h7eFVSV8Otuqa2Pdg2qBqIK6bqmC3+A1QCFdvS
+ CfRFLu+sMFGiYMPPmimS+XeF5TVkwZYaEA/doFta9Iq309LEpJzBIf4KMuvCwVhrq/A7
+ xE6b52atPU8HkcPcBV71GtO3hHYNl1snP5REO4yoZ/l7mxwtriVvsFvrf2Ih6wo2+Amt
+ 9ipXlbDwie6LyuYvz+noSlcjFgV7jjsO5WBRHJXNA8KMhzBd/l52zbhTTn7ZecHaGKmI
+ DHz3aKQ8r4t/b0D+XoDbMdshaF+pIfZIuQzjGs9+nv0VrqazvMTbSmscsfnSue0kqUKz Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36gd7krrnn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 03:42:34 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1148YO73128292;
+        Thu, 4 Feb 2021 03:42:34 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36gd7krrmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 03:42:34 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1148am47020269;
+        Thu, 4 Feb 2021 08:42:31 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 36cy38af0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 08:42:31 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1148gIjK36634890
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Feb 2021 08:42:18 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 80D5EA4054;
+        Thu,  4 Feb 2021 08:42:27 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE39CA405B;
+        Thu,  4 Feb 2021 08:42:26 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.45.97])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Feb 2021 08:42:26 +0000 (GMT)
+Subject: Re: [PATCH -next] KVM: s390: Return the correct errno code
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, frankja@linux.ibm.com,
+        david@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <20210204080523.18943-1-zhengyongjun3@huawei.com>
+ <20210204093227.3f088c8a.cohuck@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <267785c5-527d-3294-cc7e-670d49d87082@de.ibm.com>
+Date:   Thu, 4 Feb 2021 09:42:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
- <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com> <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Feb 2021 09:42:13 +0100
-Message-ID: <CA+icZUW2omV581KN0Qv=nGsk=6a-GG2Cm2OYeRxETrZP_obwEQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204093227.3f088c8a.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_03:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0 clxscore=1011
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 3:58 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-...
->
-> Is there another (easy) way to get your patch set without the b4 tool?
-> Is your patch set present in some patchworks instance, so that I can
-> download it in mbox format, for example?
->
+On 04.02.21 09:32, Cornelia Huck wrote:
+> On Thu, 4 Feb 2021 16:05:23 +0800
+> Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+> 
+>> When valloc failed, should return ENOMEM rather than ENOBUF.
+>>
+>> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+>> ---
+>>  arch/s390/kvm/interrupt.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
+>> index 2f177298c663..6b7acc27cfa2 100644
+>> --- a/arch/s390/kvm/interrupt.c
+>> +++ b/arch/s390/kvm/interrupt.c
+>> @@ -2252,7 +2252,7 @@ static int get_all_floating_irqs(struct kvm *kvm, u8 __user *usrbuf, u64 len)
+>>  	 */
+>>  	buf = vzalloc(len);
+>>  	if (!buf)
+>> -		return -ENOBUFS;
+>> +		return -ENOMEM;
+>>  
+>>  	max_irqs = len / sizeof(struct kvm_s390_irq);
+>>  
+> 
+> This breaks a user space interface (see the comment right above the
+> vzalloc).
 
-Just to promote the b4 tool - we have some cool wiki in [1].
 
-Personally, I got in touch with b4 when dealing with the
-ClangBuiltLinux project.
-
-Note: Sometimes it takes a bit for the patch(set) to be available from
-the LORE link.
-
-- Sedat -
-
-[1] https://github.com/ClangBuiltLinux/linux/wiki/Command-line-tips-and-tricks#fetching-a-single-patch-or-series-from-lkml
+Right. Please do not send (generated?) patches without looking at the code
+that you are patching.
