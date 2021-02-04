@@ -2,212 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC7430EC13
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8330EC15
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 06:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhBDFdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 00:33:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39992 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhBDFdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:33:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612416754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7bOPQvy7qTInyB9wYQ9IL2fnW0fKtEjyxYEe1vYqV0c=;
-        b=Hi8wPm5pIzWzXmj5NK+rF+oJbT/b2+PtaRhTiXfHfgTJfcncJB2ngC2gblQQ+UlJDKjA6U
-        CHZAYXOeQmqs2CBkbHEiGWKGL51DEt+JrhuhjLB0DwK6KguPPHTWUQD26pv1uDqNCSdw40
-        X6zsvPzYwLsYdBde0wCHKwQNNwb7FRk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DE6EBAD37;
-        Thu,  4 Feb 2021 05:32:33 +0000 (UTC)
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Druzhinin <igor.druzhinin@citrix.com>,
-        stable@vger.kernel.org
-References: <20210202070938.7863-1-jgross@suse.com>
- <20210203154800.4c6959d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <f6fa1533-0646-e8b1-b7f8-51ad70691cae@suse.com>
-Date:   Thu, 4 Feb 2021 06:32:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231367AbhBDFeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 00:34:06 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:38827 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhBDFd7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 00:33:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612416838; x=1643952838;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=20GUJPs0xyqN+1X8CUwsioLenuUNs3sUWwKF/m/Mk9Y=;
+  b=p4yaqB2PxgzGYeWbUZxufrfBz7e1OeBZ9RJBJexX1wHnWGm/YYbeFScl
+   d6F61RIIrSFciNdM6Qmx/f8urloQQKB4s7Z5PZw6+KlKfBacRC5Vh1788
+   v+jvgFFGh6V6znBz2qsw75lfsM4dNOfJyRD3gV4hV2mNCnIl1lcwtz+fe
+   0AANyQ3W1RS6NXZjECIL4i6EXdR+chgGUIcvEYTRa7bfy1AFkFZ5IUK1t
+   w/ZapTXQfKH1DslkYFmXkRqHJ83UnorO+VM2p/z7sOeM0jVtCGcTsO1nr
+   JuDdw3oP8P8ACIbddcfBqn0mzF1TWsuh6VpMiWmJy8FT8uiuaypPaif9w
+   g==;
+IronPort-SDR: seXQQEioeE7HRMTe6vg8MmP5TuN9qB8sRCqrHzhXOEeKKhek8gz6T9WccNDOFRWlA2gZomWTQS
+ FE8wS4nzzPkDbjav87WRsdlR878ndj84OEiMjHlOHke4SFDKtqWA5R1y9TTmaS2WnwSgMQUR06
+ 36ShjSarMcGPHAsTA/d8TrDfT7CjyyEK+iIbDsDEmhDpEKN8fXjRunzsQStttaKuuCkYs2Br1C
+ S44JPX4J/2bF39J2uvly7Imk00V1NiQFtTlvdtSKDwWmgWQR1CeJAmem46oXgw19epqtMJKQoy
+ tlo=
+X-IronPort-AV: E=Sophos;i="5.79,400,1602518400"; 
+   d="scan'208";a="159086429"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Feb 2021 13:32:53 +0800
+IronPort-SDR: 73oREEvUI6kSAfKFCfpaLH+9dS0vfMqpSFHJw6yYQauYgEaS5bvGbau9Ay01zs2y8r19rM1O9k
+ ub9n4xYxB8xKHD1xsXaJaGtwrbfRemxISTjrMrz6yvwzkdA3TFLBZRUXBkcB8SGofqgx2k+Dm/
+ vVlxF17t2ezOUABxdwokkJk1+6FRLP85oj3Ndt88eNokfJTjAv2hRbUbmxoFV/xu+3khIXJsDv
+ TjrQ32t7cCth2+WlRVHcY7X8svnEhwOhbjSOUJelRTpQz+GIBljYrxznjE+xdddAcmeVyqgcWV
+ qigmNXFp1xeFh5VsDdxNNH1Q
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 21:16:53 -0800
+IronPort-SDR: /PPwS0VvJF+wkXfdg85sqhiMnov/J2WUM+ZcZeMpj7Oy/VR1taKs8zTdU2Zgkbp0Qpag7T8Efe
+ /FCe9i/YXycJ9hbVk3o2oJsLfVpqZTukVrhD8tCO9JxVV42JfdN/FK/GmODHyqo97074r/3K2L
+ qdRk2b0AEUEWkl7JUuNHSiHNjmPAG0bK5ucvPOIV1by4hoQkxyQzc73hN38QAob/H18LO1n8nb
+ fNzv9cMCSTcaUSbVKmYCbm46fkqNhD4uJLR7UYrnOVF4F4RNo2aeJZwhHLc1/2ZYq17W/oR8+f
+ RTY=
+WDCIronportException: Internal
+Received: from cnf008142.ad.shared (HELO jedi-01.hgst.com) ([10.86.63.165])
+  by uls-op-cesaip02.wdc.com with ESMTP; 03 Feb 2021 21:32:53 -0800
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [PATCH v2 0/6] Add SBI v0.2 support for KVM
+Date:   Wed,  3 Feb 2021 21:32:33 -0800
+Message-Id: <20210204053239.1609558-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210203154800.4c6959d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="mHapG4vhTCP36nbTdrhUC7cqDD240Fsgi"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mHapG4vhTCP36nbTdrhUC7cqDD240Fsgi
-Content-Type: multipart/mixed; boundary="3tMIMW2EI4iG1ylfu3D1bWpPCgMh1TUEY";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
- Paul Durrant <paul@xen.org>, "David S. Miller" <davem@davemloft.net>,
- Igor Druzhinin <igor.druzhinin@citrix.com>, stable@vger.kernel.org
-Message-ID: <f6fa1533-0646-e8b1-b7f8-51ad70691cae@suse.com>
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-References: <20210202070938.7863-1-jgross@suse.com>
- <20210203154800.4c6959d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210203154800.4c6959d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+The Supervisor Binary Interface(SBI) specification[1] now defines a
+base extension that provides extendability to add future extensions
+while maintaining backward compatibility with previous versions.
+The new version is defined as 0.2 and older version is marked as 0.1.
 
---3tMIMW2EI4iG1ylfu3D1bWpPCgMh1TUEY
-Content-Type: multipart/mixed;
- boundary="------------0650DBEFF4F58FCE9BE6C4D9"
-Content-Language: en-US
+This series adds following features to RISC-V Linux KVM.
+1. Adds support for SBI v0.2 in KVM
+2. SBI Hart state management extension (HSM) in KVM
+3. Ordered booting of guest vcpus in guest Linux
+4. SBI Reset extension in KVM
 
-This is a multi-part message in MIME format.
---------------0650DBEFF4F58FCE9BE6C4D9
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+This series depends on the base kvm support series v16[2].
 
-On 04.02.21 00:48, Jakub Kicinski wrote:
-> On Tue,  2 Feb 2021 08:09:38 +0100 Juergen Gross wrote:
->> Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding"=
-)
->> xenvif_rx_ring_slots_available() is no longer called only from the rx
->> queue kernel thread, so it needs to access the rx queue with the
->> associated queue held.
->>
->> Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
->> Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->=20
-> Should we route this change via networking trees? I see the bug did not=
+Guest kernel needs to also support SBI v0.2 and HSM extension in Kernel
+to boot multiple vcpus. Linux kernel supports both starting v5.7.
+In absense of that, guest can only boot 1 vcpu.
 
-> go through networking :)
->=20
+Changes from v1->v2:
+1. Sent the patch 1 separately as it can merged independently.
+2. Added Reset extension functionality.
 
-I'm fine with either networking or the Xen tree. It should be included
-in 5.11, though. So if you are willing to take it, please do so.
+Tested on Qemu and FPGA with Rocket core design.
 
+[1] https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc
+[2] http://lists.infradead.org/pipermail/linux-riscv/2021-January/004251.html
 
-Juergen
+Atish Patra (6):
+RISC-V: Mark the existing SBI v0.1 implementation as legacy
+RISC-V: Reorganize SBI code by moving legacy SBI to its own file
+RISC-V: Add SBI v0.2 base extension
+RISC-V: Add v0.1 replacement SBI extensions defined in v02
+RISC-V: Add SBI HSM extension in KVM
+RISC-V: Add SBI RESET extension in KVM
 
---------------0650DBEFF4F58FCE9BE6C4D9
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+arch/riscv/include/asm/kvm_vcpu_sbi.h |  33 +++++
+arch/riscv/include/asm/sbi.h          |   9 ++
+arch/riscv/kvm/Makefile               |   4 +-
+arch/riscv/kvm/vcpu.c                 |  19 +++
+arch/riscv/kvm/vcpu_sbi.c             | 189 +++++++++++++-------------
+arch/riscv/kvm/vcpu_sbi_base.c        |  73 ++++++++++
+arch/riscv/kvm/vcpu_sbi_hsm.c         | 109 +++++++++++++++
+arch/riscv/kvm/vcpu_sbi_legacy.c      | 114 ++++++++++++++++
+arch/riscv/kvm/vcpu_sbi_replace.c     | 180 ++++++++++++++++++++++++
+9 files changed, 635 insertions(+), 95 deletions(-)
+create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi.h
+create mode 100644 arch/riscv/kvm/vcpu_sbi_base.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_legacy.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_replace.c
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+--
+2.25.1
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------0650DBEFF4F58FCE9BE6C4D9--
-
---3tMIMW2EI4iG1ylfu3D1bWpPCgMh1TUEY--
-
---mHapG4vhTCP36nbTdrhUC7cqDD240Fsgi
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAbhvAFAwAAAAAACgkQsN6d1ii/Ey+E
-Uwf+JIObFNlFrVyuHtDT+OqNp02a0vcUZ8IKMz8XFYYcfdtdav0EZnV00K6OwsrnBd8bhwUrIoxz
-DkrxX5HfAqIUn1y1djZg7Abh0RGnGPACceKkr77Cjxi43nw1+UQxRdoHDvAj2xHzijp2fLdolK34
-RtPlDFV0N29+qoyRv1Mhe3d5RvL4nSSMuxtOEvOnn5JAWqC95UUS32RymaLzdWIaz21MBzlpsa9s
-AbGGcJZikD6wvIB81Py/CYj00R5fWI+o5ztTTfh1YKOjQuAr7GFWDSPF9KWaPFkUt48mrIzvkJ9V
-Sqnjj4uQN9tD4WhouG8EKl9FyXDrtwt773lKKvpaPg==
-=ujiM
------END PGP SIGNATURE-----
-
---mHapG4vhTCP36nbTdrhUC7cqDD240Fsgi--
