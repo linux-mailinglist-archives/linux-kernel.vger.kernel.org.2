@@ -2,109 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D899230F698
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9FA30F6B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 16:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237497AbhBDPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 10:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59230 "EHLO mail.kernel.org"
+        id S237485AbhBDPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 10:47:47 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52342 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237167AbhBDPhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 10:37:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE2064F3C;
-        Thu,  4 Feb 2021 15:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612452980;
-        bh=V2+LJ8z1KQnNgpVRjLeJbDwIcI5psNklwq0UR+e71Wo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jlhYQNe7yZFHun18Iv/OtdC4lYOA60k12RugBYQGdC4Tj78W9V84V84pyZZmTGs12
-         9ZjhJIaW4p1uqsuoNshWx4ZtTcrNi8EXT/XDAbcDXA/2yavrKD47ZSFItuKSnU+9o9
-         G1NN7Rbex/GdwzlhEXOjnUTxXtGKSXFEmd/4g/iSUbVQPfm3c+SaxlaFKfzysmFNo2
-         Of3a527jfeyY0PVkAHafTs69zccRXsa4rMaRcxnXkVLLtQkJ++yhy44bmvw8EHAG6q
-         Q0w7yrU9JyeRlids1I3QvQkUxAti3EcHLWtEtg0jZdkjZ3Fmcf6Wf2L0aeh3AW/4pl
-         JqVavM4fpD1Mw==
-Date:   Thu, 4 Feb 2021 15:36:15 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: [PATCH 2/3] arm64/ptrace: introduce PTRACE_O_ARM64_RAW_REGS
-Message-ID: <20210204153615.GB21058@willie-the-truck>
-References: <20210201194012.524831-1-avagin@gmail.com>
- <20210201194012.524831-3-avagin@gmail.com>
+        id S237499AbhBDPjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:39:21 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l7giJ-00066e-00; Thu, 04 Feb 2021 16:38:35 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id F2437C0D5A; Thu,  4 Feb 2021 16:36:23 +0100 (CET)
+Date:   Thu, 4 Feb 2021 16:36:23 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] MIPS: relocatable: Use __kaslr_offset in
+ show_kernel_relocation
+Message-ID: <20210204153623.GA14818@alpha.franken.de>
+References: <1612348510-29569-1-git-send-email-hejinyang@loongson.cn>
+ <1612348510-29569-2-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201194012.524831-3-avagin@gmail.com>
+In-Reply-To: <1612348510-29569-2-git-send-email-hejinyang@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:40:11AM -0800, Andrei Vagin wrote:
-> We have some ABI weirdness in the way that we handle syscall
-> exit stops because we indicate whether or not the stop has been
-> signalled from syscall entry or syscall exit by clobbering a general
-> purpose register (ip/r12 for AArch32, x7 for AArch64) in the tracee
-> and restoring its old value after the stop.
+On Wed, Feb 03, 2021 at 06:35:10PM +0800, Jinyang He wrote:
+> The type of the VMLINUX_LOAD_ADDRESS macro is the (unsigned long long)
+> in 32bits kernel but (unsigned long) in the 64-bit kernel. Although there
+> is no error here, avoid using it to calculate kaslr_offset. And here we
+> may need is that the address of __kaslr_offset rather than (void *)offset.
 > 
-> This behavior was inherited from ARM and it isn't common for other
-> architectures. Now, we have PTRACE_GET_SYSCALL_INFO that gives all
-> required information about system calls, so the hack with clobbering
-> registers isn't needed anymore.
-> 
-> This change adds the new ptrace option PTRACE_O_ARM64_RAW_REGS.  If it
-> is set, PTRACE_GETREGSET returns values of all registers without
-> clobbering r12 or x7 and PTRACE_SETREGSE sets all registers even if a
-> process has been stopped in syscall-enter or syscall-exit.
-> 
-> Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 > ---
->  arch/arm64/include/uapi/asm/ptrace.h |  4 ++
->  arch/arm64/kernel/ptrace.c           | 70 ++++++++++++++++------------
->  include/linux/ptrace.h               |  1 +
->  include/uapi/linux/ptrace.h          |  9 +++-
->  4 files changed, 52 insertions(+), 32 deletions(-)
+>  arch/mips/kernel/relocate.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+> index 95abb9c..52018a3 100644
+> --- a/arch/mips/kernel/relocate.c
+> +++ b/arch/mips/kernel/relocate.c
+> @@ -430,13 +430,9 @@ void *__init relocate_kernel(void)
+>   */
+>  static void show_kernel_relocation(const char *level)
+>  {
+> -	unsigned long offset;
+> -
+> -	offset = __pa_symbol(_text) - __pa_symbol(VMLINUX_LOAD_ADDRESS);
+> -
+> -	if (IS_ENABLED(CONFIG_RELOCATABLE) && offset > 0) {
+> +	if (__kaslr_offset > 0) {
+>  		printk(level);
+> -		pr_cont("Kernel relocated by 0x%pK\n", (void *)offset);
+> +		pr_cont("Kernel relocated by 0x%pK\n", &__kaslr_offset);
 
-Please split this up so that the arm64-specific changes are separate to
-the core changes.
+are you sure ? I would have expected (void *)__kaslr_offset here.
 
-> diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-> index 83ee45fa634b..bcc8c362ddd9 100644
-> --- a/include/uapi/linux/ptrace.h
-> +++ b/include/uapi/linux/ptrace.h
-> @@ -7,6 +7,7 @@
->  /* has the defines to get at the registers. */
->  
->  #include <linux/types.h>
-> +#include <asm/ptrace.h>
->  
->  #define PTRACE_TRACEME		   0
->  #define PTRACE_PEEKTEXT		   1
-> @@ -137,8 +138,14 @@ struct ptrace_syscall_info {
->  #define PTRACE_O_EXITKILL		(1 << 20)
->  #define PTRACE_O_SUSPEND_SECCOMP	(1 << 21)
->  
-> +/* (1<<28) is reserved for arch specific options. */
-> +#ifndef _PTRACE_O_ARCH_OPTIONS
-> +#define _PTRACE_O_ARCH_OPTIONS 0
-> +#endif
+Thomas.
 
-It seems a bit fragile to rely on a comment here to define the user ABI;
-why not define _PTRACE_O_ARCH_OPTIONS to the right value unconditionally?
-
-Also, it seems as though we immediately burn this bit on arm64, so if we
-ever wanted another option we'd have to come back here and allocate another
-bit. Could we do better, e.g. by calling into an arch hook
-(arch_ptrace_setoptions()) and passing the 'addr' parameter?
-
-How do other architectures manage this sort of thing? I'm wondering whether
-a separate regset containing just "real x7" and orig_x0 would be preferable
-after all...
-
-Will
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
