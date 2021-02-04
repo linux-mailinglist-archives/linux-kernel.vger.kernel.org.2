@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC07310054
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241B8310056
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 23:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBDWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229876AbhBDWwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 17:52:23 -0500
+Received: from ozlabs.org ([203.11.71.1]:45635 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhBDWwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 17:52:21 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40230 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBDWwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:52:19 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6B3AC1C0B77; Thu,  4 Feb 2021 23:51:37 +0100 (CET)
-Date:   Thu, 4 Feb 2021 23:51:36 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        john.ogness@linutronix.de, akinobu.mita@gmail.com
-Subject: Re: [PATCH] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-Message-ID: <20210204225136.GC13103@amd>
-References: <20210202201846.716915-1-timur@kernel.org>
- <20210204204835.GA7529@amd>
- <20210204155423.2864bf4f@gandalf.local.home>
- <20210204214944.GA13103@amd>
- <873d7e08-7a70-a1a3-f486-882d1d515965@kernel.org>
- <20210204221143.GB13103@amd>
- <202102041415.D9093ED6@keescook>
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWv1R1yX5z9sXG;
+        Fri,  5 Feb 2021 09:51:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612479099;
+        bh=Qmcs7wXaK/oiVBstKKQx3GA71VxIeBSpvxwpqhN+qvg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=okKSkFUqaBnQOaM3pY4rY3XWgNEV74EE5ca6If+DIof/ycddM7elj1RmQ6gTSjVDq
+         wrhKKmuIPh/2mST4RSRsiHCZpoLWBUdmCQd9pjJMynQ+fmrdCmPOBiBS/7LrZrpsQy
+         0nMdlDXi9EyWxj8VWG0wJUJKPh/nXNZUKwSCeCiuysgwsaCgt4nJj5pq17+JW4a0Lv
+         5CleyvGMxxsD7s0Olpi3Ug4Fav5dMjGqHDkmwMgrXLuFYW/qv7Toj7KN3G0VhOFir6
+         yV8NrOxSn45odbcDrnwxzAh1yF7Gz+NliZC7yMHQbqY5Ph5BE3EL3TQ5/FbTmu6EWr
+         gCUFM9m6tY5yA==
+Date:   Fri, 5 Feb 2021 09:51:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the cifs tree
+Message-ID: <20210205095138.317922cb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
-Content-Disposition: inline
-In-Reply-To: <202102041415.D9093ED6@keescook>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: multipart/signed; boundary="Sig_/HRuqvG8r_mQd+PPpTzVyH_F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---lCAWRPmW1mITcIfM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/HRuqvG8r_mQd+PPpTzVyH_F
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Thu 2021-02-04 14:17:13, Kees Cook wrote:
-> On Thu, Feb 04, 2021 at 11:11:43PM +0100, Pavel Machek wrote:
-> > On Thu 2021-02-04 15:59:21, Timur Tabi wrote:
-> > > On 2/4/21 3:49 PM, Pavel Machek wrote:
-> > > >This machine is insecure. Yet I don't see ascii-art *** all around..
-> > > >
-> > > >"Kernel memory addresses are exposed, which is bad for security."
-> > >=20
-> > > I'll use whatever wording everyone can agree on, but I really don't s=
-ee much
-> > > difference between "which may compromise security on your system" and=
- "which
-> > > is bad for security".  "may compromise" doesn't see any more alarmist=
- than
-> > > "bad".  Frankly, "bad" is a very generic term.
-> >=20
-> > Well, I agree that "bad" is vague.... but original wording is simply
-> > untrue, as printing addresses decreases robustness but can't introduce
-> > security problem on its own.
-> >=20
-> > Being alarmist is not my complaint; being untrue is.
->=20
-> It's just semantics. Printing addresses DOES weaken the security of a
-> system, especially when we know attackers have and do use stuff from dmesg
-> to tune their attacks. How about "reduces the security of your system"?
+Hi all,
 
-"reduces" sounds okay to me.
+After merging the cifs tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
 
-You should not have attackers on your system. That reduces your security.
+fs/cifs/file.c:4290:13: warning: 'cifs_is_cache_enabled' defined but not us=
+ed [-Wunused-function]
+ 4290 | static bool cifs_is_cache_enabled(struct inode *inode)
+      |             ^~~~~~~~~~~~~~~~~~~~~
 
-You should not have users reading dmesg. Again that reduces your
-security.
+Introduced by commit
 
-You should not have bugs in your kernel. That reduces your security.
-
-But you really can't have attackers patching your kernel. That
-compromises your security completely.
-
-Best regards,
-								Pavel
+  6941febc7309 ("cifs: add new helper function for fscache conversion")
 
 --=20
-http://www.livejournal.com/~pavelmachek
+Cheers,
+Stephen Rothwell
 
---lCAWRPmW1mITcIfM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--Sig_/HRuqvG8r_mQd+PPpTzVyH_F
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAmAcengACgkQMOfwapXb+vLwIQCggID0EEu00qFUtoLk+ZKgVWU4
-lFEAnilwNvaSM1ZHIQg883HlE7F3ptDc
-=FGY9
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAcenoACgkQAVBC80lX
+0GyB2gf+O1hhydmt4EtK1N/61FDlC/EP11uMSsvoAIobjKPi7ZMoim3C9DytcFt7
+Wo45GFABqoNNoIEl212tfQsXEgtU+mWwTr/VzDL19aBCHfsO78t308Q6vjLQvrP1
+hqQIU8hKA8alwcY9OdeMxm+m0M0HPA33ECdStnLuCJ4GZIwqWPeN02taQoLbuzVX
+BCUl7v6JszAUfrKDiI/8YEDPFLVeqCznEv5Mb1XXt1vxXEjUHDsnqMoooVc/MGMy
+SMwuooq9b0S3uSaCkYGQ2vD3ibQrHsaRFOpuNU7ogz0KlYatbXBE9ypIm30LXn5I
+u/PvzBIBEOtcZJgFugQ/cR5z0T9oxQ==
+=UMMb
 -----END PGP SIGNATURE-----
 
---lCAWRPmW1mITcIfM--
+--Sig_/HRuqvG8r_mQd+PPpTzVyH_F--
