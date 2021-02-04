@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B5A30EB65
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7305B30EB6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 05:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhBDEIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Feb 2021 23:08:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S231580AbhBDEKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Feb 2021 23:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhBDEIg (ORCPT
+        with ESMTP id S231499AbhBDEKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Feb 2021 23:08:36 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4B1C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 20:07:55 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o16so1230144pgg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 20:07:55 -0800 (PST)
+        Wed, 3 Feb 2021 23:10:03 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8DFC061788
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Feb 2021 20:09:23 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id y11so2183305otq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Feb 2021 20:09:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fOA87upY96wx5CXAVS9O4APStVDrdyQiHwsnXM+mTec=;
-        b=sa59R/OzxkpnEIbtqjhQL5jTExM8FKCANWqyFCslWMkMYwBSZWDj4d1mAcRw8R7xn7
-         isiwAAhKC31uEQSIjaYGr5EMoFAg+rIo/s0b8dQV82uqYwtZ8InKg9q8sjR7+6afEOb3
-         SqsGALoM3Pa3yE9c8TQNhE0fRilA8LEBFltrujA3xzmyFjdVtRY8QnHSnNl6gFfxJahm
-         wXXE2KSG4t0F5IIqSf70vxO6dwQDb+jdGgmbmcwsB1sVQov05cu/znMNuqq6ZhxDop51
-         AZkb7laPpVi27NYfr8uhNjTea+XaDNUT4d3m7PDAzOwoZuZ6WCn0YTzl7GVFNvDtQKah
-         Llrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/aRsTf5r3vSnsChGjvywC+Rom9SLmJFnNQZY7Xwx4AI=;
+        b=bKpJK55OP76JeJW0uaw1nOMSa3+jWZRrjnZvyMmllRNGFr91Q1AJLLm9Q+V1wxEaYT
+         uLXaaaA2j7ks0baGuJYcT7CKh1Mw9TikKYk5qskkmP3ZNYGJMvJ4dCt8++7ac/n8VLLm
+         6Nk2N2EJnLhnTI3AA0HQYZiHqfMM9OkPEvfZekfdIN3U/YhRZujRvL6MbhoJ8T8vdhx+
+         Lbw35y6mWowovPGZE7Br2T/kuJnkB+eqoVQUd2xRlKPw2dww4YWP0mEapMGlokt7gDqY
+         dSFofes+H2Tg7qYP1keHm49EpQVj87s+fB5aoFGIxzqgnmo1Evxhrx4EwtCKm/SoQuK/
+         k7jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fOA87upY96wx5CXAVS9O4APStVDrdyQiHwsnXM+mTec=;
-        b=nY/dfSay2SSgvtNi68j06GvlVgIyPokzqzoz8hU/hJachZBvBqBmobf/Rh9zIXtCfg
-         CdvbfLJXKqj8lVnH4MACZpJmNV3b1hmIHUTU/YI8LUWG7P2tACM2GtdcNwrWDwLob+nt
-         2Q8HlSjkWWzVqjk/070ucDwyfDe8YaoIO4Ffer3GCGu+k3Xulr7F6niBLVSpc8vVAjBy
-         gixuYrOshzVe/Fjl/Z2PqBs+9ShfyRNej68uAULVysaUJ/CCuhglxCStIGFV7Zvl+ZYb
-         +/O4ASkwRqcF2fUDyKkIblrR4hdmp8WmvH7IvkBCVCeU9U4VRF44xyralZldnqo2EtF+
-         Tjlw==
-X-Gm-Message-State: AOAM532zt3Ks5M+Sbiy3p0ZSGUvEiG9uW7l5yeqXiHpDR80MhwNFjt9v
-        cx86v/WL37zrN2StwLNkDDm+
-X-Google-Smtp-Source: ABdhPJy467GxfvHn3Ve+OONVt2FbgC7gDKGno9kW/cY2dEIbXI24laqwCf54pVWRUEvz4zrvZuASrQ==
-X-Received: by 2002:a62:bd05:0:b029:1ab:6d2:5edf with SMTP id a5-20020a62bd050000b02901ab06d25edfmr6267487pff.32.1612411675035;
-        Wed, 03 Feb 2021 20:07:55 -0800 (PST)
-Received: from thinkpad ([2409:4072:502:e1e4:2c42:3883:f540:5b9c])
-        by smtp.gmail.com with ESMTPSA id j3sm3435456pjs.50.2021.02.03.20.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 20:07:54 -0800 (PST)
-Date:   Thu, 4 Feb 2021 09:37:46 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <20210204040746.GA8235@thinkpad>
-References: <YBGDng3VhE1Yw6zt@kroah.com>
- <20210201105549.GB108653@thinkpad>
- <YBfi573Bdfxy0GBt@kroah.com>
- <20210201121322.GC108653@thinkpad>
- <20210202042208.GB840@work>
- <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
- <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
- <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/aRsTf5r3vSnsChGjvywC+Rom9SLmJFnNQZY7Xwx4AI=;
+        b=TtjXmTiaemGmQ5vKphPpsHXQsqVqASM3xAC80ZgT2lrbHpx5UZnNqSpcR7qQfx+PAg
+         hl9FGCs3E7O6RUQpY9VqMY/4/B94tQvS3WaCSejs2/MbAYNZfvRYQ5iZyifId8rabbYP
+         yPQFzfJqGOXb70QEMSw4PQmjw/Gjbb14h4pVHyXVegDaMzXUSiH5f9gbvdtIzvNHrVLk
+         yunvb0AZPh81sHu1iayEktoIvurDlsOmK/pQR4f+zbQiNqd93LajBfmaYpFcKQWdhAIv
+         S8TWAqCyC9sk4Cd3X8sFK3Dg49kZhlHlfcljcRG1fHjnp16AlkMcmqr4udrACchjonxr
+         xiEA==
+X-Gm-Message-State: AOAM530o5vwLSkGx27muEmsBmcmDL3LDqFXZWF/bdETAFn9qKRoc0Rp9
+        FD/8WK5wzZPgTF0DAetrVLsCEjIvw18ddKcl23WBKA==
+X-Google-Smtp-Source: ABdhPJztfbblDWJAum0rp2kx4kxYhaBZ/GB/+ARxgQUfogt2/BIgaLUBWRGQB4yqZy5S64oLU9+m7vICK8xHFUU22I4=
+X-Received: by 2002:a9d:4544:: with SMTP id p4mr4171854oti.368.1612411762147;
+ Wed, 03 Feb 2021 20:09:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201201213019.1558738-1-furquan@google.com> <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
+ <CAJZ5v0jhniqG43F6hCqXdxQiQZRc67GdkdP0BXcRut=P7k7BVQ@mail.gmail.com>
+ <X/2fzghPXnuDNBPU@kroah.com> <CAEGmHFEpPTuRuWFt0ba022BmGfaDmSTAgEApW9EzAa5CitmtbA@mail.gmail.com>
+ <b4a931cf-5974-64d0-fdf2-693e418f3110@gmail.com> <CAAd53p6PtdCRe50PFdn35S1mXHBACKUpmVVcE2qfZgVT3MKj5Q@mail.gmail.com>
+In-Reply-To: <CAAd53p6PtdCRe50PFdn35S1mXHBACKUpmVVcE2qfZgVT3MKj5Q@mail.gmail.com>
+From:   Furquan Shaikh <furquan@google.com>
+Date:   Wed, 3 Feb 2021 20:09:05 -0800
+Message-ID: <CAEGmHFG-XXfhcO2ZJU0HwSmTAsYC-04F6by5td3+Ax4GbYLy+g@mail.gmail.com>
+Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 10:40:28AM -0800, Jakub Kicinski wrote:
-> On Wed, 3 Feb 2021 19:28:28 +0100 Loic Poulain wrote:
-> > On Wed, 3 Feb 2021 at 19:05, Jakub Kicinski <kuba@kernel.org> wrote:
-> > > On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:  
-> > > > The current patchset only supports QMI channel so I'd request you to
-> > > > review the chardev node created for it. The QMI chardev node created
-> > > > will be unique for the MHI bus and the number of nodes depends on the
-> > > > MHI controllers in the system (typically 1 but not limited).  
-> > >
-> > > If you want to add a MHI QMI driver, please write a QMI-only driver.
-> > > This generic "userspace client interface" driver is a no go. Nobody will
-> > > have the time and attention to police what you throw in there later.  
-> > 
-> > Think it should be seen as filtered userspace access to MHI bus
-> > (filtered because not all channels are exposed), again it's not
-> > specific to MHI, any bus in Linux offers that (i2c, spi, usb, serial,
-> > etc...). It will not be specific to QMI, since we will also need it
-> > for MBIM (modem control path), AT commands, and GPS (NMEA frames), all
-> > these protocols are usually handled by userspace tools and not linked
-> > to any internal Linux framework, so it would be better not having a
-> > dedicated chardev for each of them.
-> 
-> The more people argue for this backdoor interface the more distrustful
-> of it we'll become. Keep going at your own peril.
+On Wed, Feb 3, 2021 at 6:37 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Hi Furquan,
+>
+> On Wed, Jan 13, 2021 at 10:31 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> [snipped]
+> > Thank you all for addressing this problem!
+>
+> Are you still working on the alternate solution?
 
-Sorry, I do not want this to go towards rant... But I don't think this is anyway
-near a backdoor interface. There are userspace tools available to evaluate the
-chardev node and whatever this driver supports and going to support in the
-future is part of the Qualcomm modems. The fact that we can't add a separate
-driver for MHI QMI is due to the code duplication as the underlying interface is
-same it is just the channel which differs.
+Yes, it is in my pipeline, but I have been distracted because of some
+other high priority tasks. I plan to push something for review in ~3-4
+weeks.
 
-And I got your point in doing everything in the chardev'ish way here. But we
-don't have any standard mechanism (QMI, MBIM, firmware/crash dump download).
-And lot of people argued that we are too far away from creating a WWAN
-subsystem. And the usecase we are dealing here is specific to Qualcomm. So IMO
-we should go ahead with the current interface this driver offers.
-
-Thanks,
-Mani
-
+> This patch can
+> address S5 power consumption issue for some laptops:
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
+>
+> Kai-Heng
