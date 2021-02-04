@@ -2,803 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412B830F241
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399F930F268
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 12:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhBDLbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 06:31:45 -0500
-Received: from [1.6.215.26] ([1.6.215.26]:14491 "EHLO hyd1soter2"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235872AbhBDL2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:28:01 -0500
-Received: from hyd1soter2.caveonetworks.com (localhost [127.0.0.1])
-        by hyd1soter2 (8.15.2/8.15.2/Debian-3) with ESMTP id 114BR2x5052107;
-        Thu, 4 Feb 2021 16:57:02 +0530
-Received: (from geetha@localhost)
-        by hyd1soter2.caveonetworks.com (8.15.2/8.15.2/Submit) id 114BR0gc052106;
-        Thu, 4 Feb 2021 16:57:00 +0530
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        sbhatta@marvell.com, hkelam@marvell.com, bbrezillon@kernel.org,
-        arno@natisbad.org, schalla@marvell.com,
-        Geetha sowjanya <gakula@marvell.com>
-Subject: [net-next v3 07/14] octeontx2-pf: cn10k: Use LMTST lines for NPA/NIX operations
-Date:   Thu,  4 Feb 2021 16:56:59 +0530
-Message-Id: <1612438019-52066-1-git-send-email-gakula@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        id S235998AbhBDLgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 06:36:51 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:59178 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235889AbhBDL2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:28:18 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BOqor054831;
+        Thu, 4 Feb 2021 11:27:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=mNkZs/xKZ7kNjQffXI8q4oh1lHXA34BoyX70feGNRxM=;
+ b=MNNGJBg/W8x8gIA/nPmkt7R2lqTA509SydTGPTICKN541WB0z+HBmLyN4ebjVHBXGF5e
+ +LQH6S+w9+UBwVZvGn0BIu2TOoOs1rWkyQCmaNhgvfnm2j+aIrkDV7sWrCbgLR27LFe6
+ ad0C7+vuDbx4F1h0v16AJ6O3eXtzVl1tq1QnGZvrFlDqIfrfptwE0PH1zkAO+ji/DOzD
+ /m0R+K2D/0u2Qzu3ofgDZdhBrT178tzQG+lEQI376mZp2zlhFj2UO4vgznNTqpOcBt5+
+ JphkulCR+U/EKbzzJPAcZuhNaUsst7QgZLRR8+DibG3EG9DN7wcUvac41iydgnssOAlB XA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36cxvr7g7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 11:27:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114BL8DD148584;
+        Thu, 4 Feb 2021 11:27:23 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
+        by aserp3020.oracle.com with ESMTP id 36dhc2j6yv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 11:27:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P9B9DMCN/NtP7YlChK0AAOjP3IKWqC105hkeZxMkw+I4C57dPSYTuY9/kDuBs/5qsKyDEDnoQxcPZhkP7FIxV56B1itgzWVDtj6BvCI6MPgbCd+QWbCIDCBr149MiXTs1IvkcDO3f49KALwocRRyOYRoB3jFBhBFTEn9r0x/g+m4F0xrmWVzhp0gwkUii6NkH/Ts/SXBxbp2q6zxA7WDTbnYYd5wsHEn6WF5KyzOo/QwdKBZq+/dbjcjrxGZFM4lyHrV0Up7dfJwOLearBRlbbbquySOsm+IOgO/0vhJFIIY/GRS5zs3AMVNsKiZPwAjf9NTClK1SnF2eO7M/srd8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mNkZs/xKZ7kNjQffXI8q4oh1lHXA34BoyX70feGNRxM=;
+ b=ax/iVBvmjdz3B8Dusj2yirLfcBz2s1jNecfeW8ZCKoUkKCZsJPdpcq2Zq6FOThDBRZ0ei73G3TJgZ8AH1q0aLrY7+Bh1OzLeJK0IcTkvf8+Q2TNCjYreFSSsiE7rJwMpDrFgZqmqQu0hDCU/FNHa+Elw/QJWPr7l2ahWS3gh32d3bwufm+NsTjjXKb+p07q2UNr+ht4nDNgehWLD2cekC40FPaGRmMgEQZ9kAi9jhLSHJcqBL3Oq2YUZGTQhLYOcLjv72UuUZ0oUS76eakGQ7rl9oZaRBtbGjk5S4EGKIy6Nmgw92Lf+/qzKTtPDBaSQ06DH5X2nakXH2etQogGy8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mNkZs/xKZ7kNjQffXI8q4oh1lHXA34BoyX70feGNRxM=;
+ b=QqmHGgFf3V4U38fDisGVOa/LfKmLpytA1Y4t1Qtz6k/5+y0Hm0XjsLQVazwAK392O8Gh5MVpnloXe+iiwuUWspctxf/jg5PlXIaEtI8PAr+anCJoFgqk5SJvkWo08e+Bep0Yd+0TGE7jvif+/AiVmmy8wyThTSI4LsjSJ6FgyZg=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by BY5PR10MB3970.namprd10.prod.outlook.com (2603:10b6:a03:1ff::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 4 Feb
+ 2021 11:27:20 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Thu, 4 Feb 2021
+ 11:27:20 +0000
+Subject: Re: [PATCH 1/4] mm/gup: add compound page list iterator
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+References: <20210203220025.8568-1-joao.m.martins@oracle.com>
+ <20210203220025.8568-2-joao.m.martins@oracle.com>
+ <955dbe68-7302-a8bc-f0b5-e9032d7f190e@nvidia.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <fd4b981c-cf25-dc04-7f10-549ea16bf644@oracle.com>
+Date:   Thu, 4 Feb 2021 11:27:12 +0000
+In-Reply-To: <955dbe68-7302-a8bc-f0b5-e9032d7f190e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LNXP265CA0022.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5e::34) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.67] (94.61.1.144) by LNXP265CA0022.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5e::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Thu, 4 Feb 2021 11:27:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c0813d52-e220-424a-9864-08d8c8ffd58a
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3970:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3970308DFBE837049829ED7EBBB39@BY5PR10MB3970.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WBl5smSlxU2P4Nky1WArsTE3Bb1/ClFX0nj2s851ds1ahKMDzBozr0YmwbZaozXIulFxKHu6Fo+P23jPa4CmTKMw54k9rX7r2ejTm2Q5r4gOTG7I1NgC6z4LObnuSXjI112aDOYS0Pj1Eysmj1XZUV8s3mc3qF//hU8i1g+iojyRG3X8MCr8x9nEhtG151uOA9EyY5DZh/wq2VwXEPEFP6HF5LHutDE573v1PbDlVX5jwpL83edDJ9/QGTC0iKjeY5kLEDw5Iaw+HI4aRh+cQfM5pON437bqlnlwaLNBbQuLYFBF5FYUIELIL0VeGfWJDScLHmlAeHcz/ADvW2r0HbD2+peuFj9NRB37px7EA2vKgr1gCLgOAz0FCCxMNz3o22tkXmYjyg4PEpWqBjz6CS0LsCBHAvRslfS+At3g3QaA7AlLDQMuCpzzFVqCtWrNPeIJDuB/poS6kzqFnPSjTOP5+E/rC2FAMkvMnGSCPCpUbxrEYkJEPkiw1kbt4IvPvjjkAFJBr35rtUBJ5LrQCGViXIw1ZqNYCRoo8rXecX5KPUXg/RfzECOnnqktZ+6tC6IQolfEd1FLFI892PbnxA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39860400002)(36756003)(5660300002)(16576012)(6916009)(4326008)(66476007)(66556008)(83380400001)(26005)(66946007)(31686004)(478600001)(186003)(2616005)(956004)(53546011)(2906002)(316002)(31696002)(6666004)(86362001)(8936002)(54906003)(6486002)(8676002)(16526019)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UWJzc1RqSDRxTWMyOXV1TnN3d3RHQnFGdE5jazh6SnRJZlUzVi9EZ3FIU2Y2?=
+ =?utf-8?B?UWc5Zms1RmxRakpuM3F0eEppNFNzM0tjUHg0enAzQTcvdmFRNkExMHBHRFpo?=
+ =?utf-8?B?RG1wWDN6d3dScEoxWEk5NDFwazFPQUxnK2pjN2ZFbFhpTmVGVWM4N0J6dTk5?=
+ =?utf-8?B?R1FSdUhpK3VxcTdrMFRLb1dZaFNyVjVVUnNMRHZobmN3eExmNDJTY3RLRm5I?=
+ =?utf-8?B?SzdjSjIwQkpnUHMwSlRiSWhRNFBFTW1HRXVpUnRVbzM4enhpYmRycWtHQ3ZM?=
+ =?utf-8?B?cDJJQjlmbkNQbUMwWXBMWVRzdkVsdFRLWnN0MVRBeWpsVGNKUW50dlhyQUVR?=
+ =?utf-8?B?WDkyL0NNTno4NTJLYWI1V3Y3WCtiZy9lTitITWdTeW1VV1dPUmNwUklrZEtl?=
+ =?utf-8?B?UHZYVXdpUWxhUUtKYURGTFFEN3h5eFRPQ1A3ckV2cWxlNnE4QUM3Y29WMkgz?=
+ =?utf-8?B?cGdJWXZKS2ZVZjJTYjNvQXZoQ3RxSlpXSnFZNkQ0TkZEZHFQZmFuMm92TFNp?=
+ =?utf-8?B?NTUreHJtamI4NzZtV0RTRThrWnJtU2pObUUyYW1oWVpWdWhSUEoyRC9Ydjhq?=
+ =?utf-8?B?QlpNTWQ5MnVjNzIxeURuNDRMSlBBVFl1Q1ZrMkRHaVdnemQxYzRSNlBPNUZn?=
+ =?utf-8?B?TFF5U1BpZDV5YUJiQVU4bldCZjF3c3NDY1FxWmw5bjg0TXJuQWN3Q3B4OWNB?=
+ =?utf-8?B?dHhhRzZ4MzdIdjlkNjZGQnZ2T3N6NnhFbDRWdVI1MjRRdi85S1ZBWVFZYVNH?=
+ =?utf-8?B?aE5GTzhrWVhydWlvK0xxQ3hzOGVLQzI5NzZXRzhJSkFpSEZXdXpDNnJnMy9K?=
+ =?utf-8?B?Ti9jZG9TTDkxc01VSkdIdkdEaWNydFlsMXNOYm5qMWpLc3RUTEdRTEVMMGZG?=
+ =?utf-8?B?WVRlQ3BBODc2NnpkQkd6cVlCV3FodzFZS2FuYXpoQkgxMkVuRER6MWVLcFVP?=
+ =?utf-8?B?YkcwZThIenAvRWpjanRrY2R2bEhuQkpxVGNYTGRKOWN4RUhGdjNBdDQ1SEE2?=
+ =?utf-8?B?M011MnNHbE5WNVZPMVRsRG9KcHVCNWZONkt4T3ZNSFlsa1M1dkdhNmF0bU15?=
+ =?utf-8?B?aEFqL1Q5dEJVY29CUGNKQitINWpqVW1zTy8zM1VlRUlUcVF4cGtnRnBIOG9W?=
+ =?utf-8?B?TkIzLzRDeWkwbjFSS21RVGpPUThSSDZUTDJXYmpCQ3pkNjFIRnJ6QmhneGRW?=
+ =?utf-8?B?MExCYkg5dWpUYStXeUlRUXNTUTd3VVd6ODNQdms0VjYzakxHSWphY2JPZUdR?=
+ =?utf-8?B?NVlwWkJQTFVuWW9jNmRZQU9vVkhudi9pVnJvZFQvbTM4Tk9UcHA5Nk1CVjBw?=
+ =?utf-8?B?SzR3MDk4d1dzUWlUQTV4ZlR2UzEvSzIvNmlyOHo3bE14c0tHRVJjNFRRcTRt?=
+ =?utf-8?B?UktobXZaSmI4SXJ6YUxZSVJRYmIrWWM4L3UzUmFHQWlidmc1ZmQrQklVZC91?=
+ =?utf-8?Q?4DDiUgo4?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0813d52-e220-424a-9864-08d8c8ffd58a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 11:27:19.9929
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Sjxwoo2erZenRJuXuO6GZhlxYC2n+5LnQbAx+XC+RWIyfpl/Of+n/69rTOxqmaWqfH4+Q6w/6afdd1BMHS+tSsaqf+ThNbZQO4SHpwSI+s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3970
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040071
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support to use new LMTST lines for NPA batch free
-and burst SQE flush. Adds new dev_hw_ops structure to hold platform
-specific functions and create new files cn10k.c and cn10k.h.
+On 2/3/21 11:00 PM, John Hubbard wrote:
+> On 2/3/21 2:00 PM, Joao Martins wrote:
+>> Add an helper that iterates over head pages in a list of pages. It
+>> essentially counts the tails until the next page to process has a
+>> different head that the current. This is going to be used by
+>> unpin_user_pages() family of functions, to batch the head page refcount
+>> updates once for all passed consecutive tail pages.
+>>
+>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>> ---
+>>   mm/gup.c | 29 +++++++++++++++++++++++++++++
+>>   1 file changed, 29 insertions(+)
+>>
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index d68bcb482b11..4f88dcef39f2 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
+>>   }
+>>   EXPORT_SYMBOL(unpin_user_page);
+>>   
+>> +static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
+> 
+> Silly naming nit: could we please name this function count_pagetails()? count_ntails
+> is a bit redundant, plus slightly less clear.
+> 
+Hmm, pagetails is also a tiny bit redundant. Perhaps count_subpages() instead?
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/nic/Makefile    |   2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c | 182 +++++++++++++++++++++
- drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h |  17 ++
- .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  81 ++++-----
- .../ethernet/marvell/octeontx2/nic/otx2_common.h   |  61 ++++++-
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |  36 +---
- .../net/ethernet/marvell/octeontx2/nic/otx2_reg.h  |   1 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |  38 ++---
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h |   7 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |  28 +---
- include/linux/soc/marvell/octeontx2/asm.h          |   8 +
- 11 files changed, 330 insertions(+), 131 deletions(-)
- create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
- create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
+count_ntails is meant to be 'count number of tails' i.e. to align terminology with head +
+tails which was also suggested over the other series.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
-index 29c82b9..745aa8a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
-@@ -7,7 +7,7 @@ obj-$(CONFIG_OCTEONTX2_PF) += rvu_nicpf.o
- obj-$(CONFIG_OCTEONTX2_VF) += rvu_nicvf.o
- 
- rvu_nicpf-y := otx2_pf.o otx2_common.o otx2_txrx.o otx2_ethtool.o \
--		     otx2_ptp.o otx2_flows.o
-+		     otx2_ptp.o otx2_flows.o cn10k.o
- rvu_nicvf-y := otx2_vf.o
- 
- ccflags-y += -I$(srctree)/drivers/net/ethernet/marvell/octeontx2/af
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-new file mode 100644
-index 0000000..70548d1
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Marvell OcteonTx2 RVU Physcial Function ethernet driver
-+ *
-+ * Copyright (C) 2020 Marvell.
-+ */
-+
-+#include "cn10k.h"
-+#include "otx2_reg.h"
-+#include "otx2_struct.h"
-+
-+static struct dev_hw_ops	otx2_hw_ops = {
-+	.sq_aq_init = otx2_sq_aq_init,
-+	.sqe_flush = otx2_sqe_flush,
-+	.aura_freeptr = otx2_aura_freeptr,
-+	.refill_pool_ptrs = otx2_refill_pool_ptrs,
-+};
-+
-+static struct dev_hw_ops cn10k_hw_ops = {
-+	.sq_aq_init = cn10k_sq_aq_init,
-+	.sqe_flush = cn10k_sqe_flush,
-+	.aura_freeptr = cn10k_aura_freeptr,
-+	.refill_pool_ptrs = cn10k_refill_pool_ptrs,
-+};
-+
-+int cn10k_pf_lmtst_init(struct otx2_nic *pf)
-+{
-+	int size, num_lines;
-+	u64 base;
-+
-+	if (!test_bit(CN10K_LMTST, &pf->hw.cap_flag)) {
-+		pf->hw_ops = &otx2_hw_ops;
-+		return 0;
-+	}
-+
-+	pf->hw_ops = &cn10k_hw_ops;
-+	base = pci_resource_start(pf->pdev, PCI_MBOX_BAR_NUM) +
-+		       (MBOX_SIZE * (pf->total_vfs + 1));
-+
-+	size = pci_resource_len(pf->pdev, PCI_MBOX_BAR_NUM) -
-+	       (MBOX_SIZE * (pf->total_vfs + 1));
-+
-+	pf->hw.lmt_base = ioremap(base, size);
-+
-+	if (!pf->hw.lmt_base) {
-+		dev_err(pf->dev, "Unable to map PF LMTST region\n");
-+		return -ENOMEM;
-+	}
-+
-+	/* FIXME: Get the num of LMTST lines from LMT table */
-+	pf->tot_lmt_lines = size / LMT_LINE_SIZE;
-+	num_lines = (pf->tot_lmt_lines - NIX_LMTID_BASE) /
-+			    pf->hw.tx_queues;
-+	/* Number of LMT lines per SQ queues */
-+	pf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
-+
-+	pf->nix_lmt_size = pf->nix_lmt_lines * LMT_LINE_SIZE;
-+	return 0;
-+}
-+
-+int cn10k_vf_lmtst_init(struct otx2_nic *vf)
-+{
-+	int size, num_lines;
-+
-+	if (!test_bit(CN10K_LMTST, &vf->hw.cap_flag)) {
-+		vf->hw_ops = &otx2_hw_ops;
-+		return 0;
-+	}
-+
-+	vf->hw_ops = &cn10k_hw_ops;
-+	size = pci_resource_len(vf->pdev, PCI_MBOX_BAR_NUM);
-+	vf->hw.lmt_base = ioremap_wc(pci_resource_start(vf->pdev,
-+							PCI_MBOX_BAR_NUM),
-+				     size);
-+	if (!vf->hw.lmt_base) {
-+		dev_err(vf->dev, "Unable to map VF LMTST region\n");
-+		return -ENOMEM;
-+	}
-+
-+	vf->tot_lmt_lines = size / LMT_LINE_SIZE;
-+	/* LMTST lines per SQ */
-+	num_lines = (vf->tot_lmt_lines - NIX_LMTID_BASE) /
-+			    vf->hw.tx_queues;
-+	vf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
-+	vf->nix_lmt_size = vf->nix_lmt_lines * LMT_LINE_SIZE;
-+	return 0;
-+}
-+EXPORT_SYMBOL(cn10k_vf_lmtst_init);
-+
-+int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
-+{
-+	struct nix_cn10k_aq_enq_req *aq;
-+	struct otx2_nic *pfvf = dev;
-+	struct otx2_snd_queue *sq;
-+
-+	sq = &pfvf->qset.sq[qidx];
-+	sq->lmt_addr = (__force u64 *)((u64)pfvf->hw.nix_lmt_base +
-+			       (qidx * pfvf->nix_lmt_size));
-+
-+	/* Get memory to put this msg */
-+	aq = otx2_mbox_alloc_msg_nix_cn10k_aq_enq(&pfvf->mbox);
-+	if (!aq)
-+		return -ENOMEM;
-+
-+	aq->sq.cq = pfvf->hw.rx_queues + qidx;
-+	aq->sq.max_sqe_size = NIX_MAXSQESZ_W16; /* 128 byte */
-+	aq->sq.cq_ena = 1;
-+	aq->sq.ena = 1;
-+	/* Only one SMQ is allocated, map all SQ's to that SMQ  */
-+	aq->sq.smq = pfvf->hw.txschq_list[NIX_TXSCH_LVL_SMQ][0];
-+	/* FIXME: set based on NIX_AF_DWRR_RPM_MTU*/
-+	aq->sq.smq_rr_weight = OTX2_MAX_MTU;
-+	aq->sq.default_chan = pfvf->hw.tx_chan_base;
-+	aq->sq.sqe_stype = NIX_STYPE_STF; /* Cache SQB */
-+	aq->sq.sqb_aura = sqb_aura;
-+	aq->sq.sq_int_ena = NIX_SQINT_BITS;
-+	aq->sq.qint_idx = 0;
-+	/* Due pipelining impact minimum 2000 unused SQ CQE's
-+	 * need to maintain to avoid CQ overflow.
-+	 */
-+	aq->sq.cq_limit = ((SEND_CQ_SKID * 256) / (pfvf->qset.sqe_cnt));
-+
-+	/* Fill AQ info */
-+	aq->qidx = qidx;
-+	aq->ctype = NIX_AQ_CTYPE_SQ;
-+	aq->op = NIX_AQ_INSTOP_INIT;
-+
-+	return otx2_sync_mbox_msg(&pfvf->mbox);
-+}
-+
-+#define NPA_MAX_BURST 16
-+void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
-+{
-+	struct otx2_nic *pfvf = dev;
-+	u64 ptrs[NPA_MAX_BURST];
-+	int num_ptrs = 1;
-+	s64 bufptr;
-+
-+	/* Refill pool with new buffers */
-+	while (cq->pool_ptrs) {
-+		bufptr = otx2_alloc_buffer(pfvf, cq);
-+		if (unlikely(bufptr <= 0)) {
-+			if (num_ptrs--)
-+				__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
-+						     num_ptrs,
-+						     cq->rbpool->lmt_addr);
-+			break;
-+		}
-+		cq->pool_ptrs--;
-+		ptrs[num_ptrs] = (u64)bufptr + OTX2_HEAD_ROOM;
-+		num_ptrs++;
-+		if (num_ptrs == NPA_MAX_BURST || cq->pool_ptrs == 0) {
-+			__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
-+					     num_ptrs,
-+					     cq->rbpool->lmt_addr);
-+			num_ptrs = 1;
-+		}
-+	}
-+}
-+
-+void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx)
-+{
-+	struct otx2_nic *pfvf = dev;
-+	int lmt_id = NIX_LMTID_BASE + (qidx * pfvf->nix_lmt_lines);
-+	u64 val = 0, tar_addr = 0;
-+
-+	/* FIXME: val[0:10] LMT_ID.
-+	 * [12:15] no of LMTST - 1 in the burst.
-+	 * [19:63] data size of each LMTST in the burst except first.
-+	 */
-+	val = (lmt_id & 0x7FF);
-+	/* Target address for LMTST flush tells HW how many 128bit
-+	 * words are present.
-+	 * tar_addr[6:4] size of first LMTST - 1 in units of 128b.
-+	 */
-+	tar_addr |= sq->io_addr | (((size / 16) - 1) & 0x7) << 4;
-+	dma_wmb();
-+	memcpy(sq->lmt_addr, sq->sqe_base, size);
-+	cn10k_lmt_flush(val, tar_addr);
-+
-+	sq->head++;
-+	sq->head &= (sq->sqe_cnt - 1);
-+}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
-new file mode 100644
-index 0000000..e0bc595
---- /dev/null
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ * Marvell OcteonTx2 RVU Ethernet driver
-+ *
-+ * Copyright (C) 2020 Marvell.
-+ */
-+
-+#ifndef CN10K_H
-+#define CN10K_H
-+
-+#include "otx2_common.h"
-+
-+void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
-+void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx);
-+int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
-+int cn10k_pf_lmtst_init(struct otx2_nic *pf);
-+int cn10k_vf_lmtst_init(struct otx2_nic *vf);
-+#endif /* CN10K_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 0ae2c0a..fe62bfd 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -15,6 +15,7 @@
- #include "otx2_reg.h"
- #include "otx2_common.h"
- #include "otx2_struct.h"
-+#include "cn10k.h"
- 
- static void otx2_nix_rq_op_stats(struct queue_stats *stats,
- 				 struct otx2_nic *pfvf, int qidx)
-@@ -513,6 +514,25 @@ static dma_addr_t otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool)
- 	return addr;
- }
- 
-+s64 otx2_alloc_buffer(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
-+{
-+	s64 bufptr;
-+
-+	bufptr = __otx2_alloc_rbuf(pfvf, cq->rbpool);
-+	if (unlikely(bufptr <= 0)) {
-+		struct refill_work *work;
-+		struct delayed_work *dwork;
-+
-+		work = &pfvf->refill_wrk[cq->cq_idx];
-+		dwork = &work->pool_refill_work;
-+		/* Schedule a task if no other task is running */
-+		if (!cq->refill_task_sched) {
-+			cq->refill_task_sched = true;
-+			schedule_delayed_work(dwork, msecs_to_jiffies(100));
-+		}
-+	}
-+	return bufptr;
-+}
- void otx2_tx_timeout(struct net_device *netdev, unsigned int txq)
- {
- 	struct otx2_nic *pfvf = netdev_priv(netdev);
-@@ -715,9 +735,6 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
- #define RQ_PASS_LVL_AURA (255 - ((95 * 256) / 100)) /* RED when 95% is full */
- #define RQ_DROP_LVL_AURA (255 - ((99 * 256) / 100)) /* Drop when 99% is full */
- 
--/* Send skid of 2000 packets required for CQ size of 4K CQEs. */
--#define SEND_CQ_SKID	2000
--
- static int otx2_rq_init(struct otx2_nic *pfvf, u16 qidx, u16 lpb_aura)
- {
- 	struct otx2_qset *qset = &pfvf->qset;
-@@ -751,45 +768,14 @@ static int otx2_rq_init(struct otx2_nic *pfvf, u16 qidx, u16 lpb_aura)
- 	return otx2_sync_mbox_msg(&pfvf->mbox);
- }
- 
--static int cn10k_sq_aq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
--{
--	struct nix_cn10k_aq_enq_req *aq;
--
--	/* Get memory to put this msg */
--	aq = otx2_mbox_alloc_msg_nix_cn10k_aq_enq(&pfvf->mbox);
--	if (!aq)
--		return -ENOMEM;
--
--	aq->sq.cq = pfvf->hw.rx_queues + qidx;
--	aq->sq.max_sqe_size = NIX_MAXSQESZ_W16; /* 128 byte */
--	aq->sq.cq_ena = 1;
--	aq->sq.ena = 1;
--	/* Only one SMQ is allocated, map all SQ's to that SMQ  */
--	aq->sq.smq = pfvf->hw.txschq_list[NIX_TXSCH_LVL_SMQ][0];
--	/* FIXME: set based on NIX_AF_DWRR_RPM_MTU*/
--	aq->sq.smq_rr_weight = OTX2_MAX_MTU;
--	aq->sq.default_chan = pfvf->hw.tx_chan_base;
--	aq->sq.sqe_stype = NIX_STYPE_STF; /* Cache SQB */
--	aq->sq.sqb_aura = sqb_aura;
--	aq->sq.sq_int_ena = NIX_SQINT_BITS;
--	aq->sq.qint_idx = 0;
--	/* Due pipelining impact minimum 2000 unused SQ CQE's
--	 * need to maintain to avoid CQ overflow.
--	 */
--	aq->sq.cq_limit = ((SEND_CQ_SKID * 256) / (pfvf->qset.sqe_cnt));
--
--	/* Fill AQ info */
--	aq->qidx = qidx;
--	aq->ctype = NIX_AQ_CTYPE_SQ;
--	aq->op = NIX_AQ_INSTOP_INIT;
--
--	return otx2_sync_mbox_msg(&pfvf->mbox);
--}
--
--static int otx2_sq_aq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
-+int otx2_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
- {
-+	struct otx2_nic *pfvf = dev;
-+	struct otx2_snd_queue *sq;
- 	struct nix_aq_enq_req *aq;
- 
-+	sq = &pfvf->qset.sq[qidx];
-+	sq->lmt_addr = (__force u64 *)(pfvf->reg_base + LMT_LF_LMTLINEX(qidx));
- 	/* Get memory to put this msg */
- 	aq = otx2_mbox_alloc_msg_nix_aq_enq(&pfvf->mbox);
- 	if (!aq)
-@@ -860,16 +846,12 @@ static int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
- 	sq->sqe_thresh = ((sq->num_sqbs * sq->sqe_per_sqb) * 10) / 100;
- 	sq->aura_id = sqb_aura;
- 	sq->aura_fc_addr = pool->fc_addr->base;
--	sq->lmt_addr = (__force u64 *)(pfvf->reg_base + LMT_LF_LMTLINEX(qidx));
- 	sq->io_addr = (__force u64)otx2_get_regaddr(pfvf, NIX_LF_OP_SENDX(0));
- 
- 	sq->stats.bytes = 0;
- 	sq->stats.pkts = 0;
- 
--	if (is_dev_otx2(pfvf->pdev))
--		return otx2_sq_aq_init(pfvf, qidx, sqb_aura);
--	else
--		return cn10k_sq_aq_init(pfvf, qidx, sqb_aura);
-+	return pfvf->hw_ops->sq_aq_init(pfvf, qidx, sqb_aura);
- 
- }
- 
-@@ -1219,6 +1201,11 @@ static int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 
- 	pool->rbsize = buf_size;
- 
-+	/* Set LMTST addr for NPA batch free */
-+	if (test_bit(CN10K_LMTST, &pfvf->hw.cap_flag))
-+		pool->lmt_addr = (__force u64 *)((u64)pfvf->hw.npa_lmt_base +
-+						 (pool_id * LMT_LINE_SIZE));
-+
- 	/* Initialize this pool's context via AF */
- 	aq = otx2_mbox_alloc_msg_npa_aq_enq(&pfvf->mbox);
- 	if (!aq) {
-@@ -1308,7 +1295,7 @@ int otx2_sq_aura_pool_init(struct otx2_nic *pfvf)
- 			bufptr = otx2_alloc_rbuf(pfvf, pool);
- 			if (bufptr <= 0)
- 				return bufptr;
--			otx2_aura_freeptr(pfvf, pool_id, bufptr);
-+			pfvf->hw_ops->aura_freeptr(pfvf, pool_id, bufptr);
- 			sq->sqb_ptrs[sq->sqb_count++] = (u64)bufptr;
- 		}
- 	}
-@@ -1359,8 +1346,8 @@ int otx2_rq_aura_pool_init(struct otx2_nic *pfvf)
- 			bufptr = otx2_alloc_rbuf(pfvf, pool);
- 			if (bufptr <= 0)
- 				return bufptr;
--			otx2_aura_freeptr(pfvf, pool_id,
--					  bufptr + OTX2_HEAD_ROOM);
-+			pfvf->hw_ops->aura_freeptr(pfvf, pool_id,
-+						   bufptr + OTX2_HEAD_ROOM);
- 		}
- 	}
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 80f892f..b6bdc6f 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -50,6 +50,9 @@ enum arua_mapped_qtypes {
- #define NIX_LF_ERR_VEC				0x81
- #define NIX_LF_POISON_VEC			0x82
- 
-+/* Send skid of 2000 packets required for CQ size of 4K CQEs. */
-+#define SEND_CQ_SKID	2000
-+
- /* RSS configuration */
- struct otx2_rss_ctx {
- 	u8  ind_tbl[MAX_RSS_INDIR_TBL_SIZE];
-@@ -273,9 +276,18 @@ struct otx2_flow_config {
- 	struct list_head	flow_list;
- };
- 
-+struct dev_hw_ops {
-+	int	(*sq_aq_init)(void *dev, u16 qidx, u16 sqb_aura);
-+	void	(*sqe_flush)(void *dev, struct otx2_snd_queue *sq,
-+			     int size, int qidx);
-+	void	(*refill_pool_ptrs)(void *dev, struct otx2_cq_queue *cq);
-+	void	(*aura_freeptr)(void *dev, int aura, s64 buf);
-+};
-+
- struct otx2_nic {
- 	void __iomem		*reg_base;
- 	struct net_device	*netdev;
-+	struct dev_hw_ops	*hw_ops;
- 	void			*iommu_domain;
- 	u16			max_frs;
- 	u16			rbsize; /* Receive buffer size */
-@@ -509,6 +521,47 @@ static inline u64 otx2_atomic64_add(u64 incr, u64 *ptr)
- #define otx2_atomic64_add(incr, ptr)		({ *ptr += incr; })
- #endif
- 
-+static inline void __cn10k_aura_freeptr(struct otx2_nic *pfvf, u64 aura,
-+					u64 *ptrs, u64 num_ptrs,
-+					u64 *lmt_addr)
-+{
-+	u64 size = 0, count_eot = 0;
-+	u64 tar_addr, val = 0;
-+
-+	tar_addr = (__force u64)otx2_get_regaddr(pfvf, NPA_LF_AURA_BATCH_FREE0);
-+	/* LMTID is same as AURA Id */
-+	val = (aura & 0x7FF) | BIT_ULL(63);
-+	/* Set if [127:64] of last 128bit word has a valid pointer */
-+	count_eot = (num_ptrs % 2) ? 0ULL : 1ULL;
-+	/* Set AURA ID to free pointer */
-+	ptrs[0] = (count_eot << 32) | (aura & 0xFFFFF);
-+	/* Target address for LMTST flush tells HW how many 128bit
-+	 * words are valid from NPA_LF_AURA_BATCH_FREE0.
-+	 *
-+	 * tar_addr[6:4] is LMTST size-1 in units of 128b.
-+	 */
-+	if (num_ptrs > 2) {
-+		size = (sizeof(u64) * num_ptrs) / 16;
-+		if (!count_eot)
-+			size++;
-+		tar_addr |=  ((size - 1) & 0x7) << 4;
-+	}
-+	memcpy(lmt_addr, ptrs, sizeof(u64) * num_ptrs);
-+	/* Perform LMTST flush */
-+	cn10k_lmt_flush(val, tar_addr);
-+}
-+
-+static inline void cn10k_aura_freeptr(void *dev, int aura, s64 buf)
-+{
-+	struct otx2_nic *pfvf = dev;
-+	struct otx2_pool *pool;
-+	u64 ptrs[2];
-+
-+	pool = &pfvf->qset.pool[aura];
-+	ptrs[1] = (u64)buf;
-+	__cn10k_aura_freeptr(pfvf, aura, ptrs, 2, pool->lmt_addr);
-+}
-+
- /* Alloc pointer from pool/aura */
- static inline u64 otx2_aura_allocptr(struct otx2_nic *pfvf, int aura)
- {
-@@ -520,9 +573,10 @@ static inline u64 otx2_aura_allocptr(struct otx2_nic *pfvf, int aura)
- }
- 
- /* Free pointer to a pool/aura */
--static inline void otx2_aura_freeptr(struct otx2_nic *pfvf,
--				     int aura, s64 buf)
-+static inline void otx2_aura_freeptr(void *dev, int aura, s64 buf)
- {
-+	struct otx2_nic *pfvf = dev;
-+
- 	otx2_write128((u64)buf, (u64)aura | BIT_ULL(63),
- 		      otx2_get_regaddr(pfvf, NPA_LF_AURA_OP_FREE0));
- }
-@@ -678,6 +732,9 @@ void otx2_ctx_disable(struct mbox *mbox, int type, bool npa);
- int otx2_nix_config_bp(struct otx2_nic *pfvf, bool enable);
- void otx2_cleanup_rx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
- void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
-+int otx2_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
-+int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
-+s64 otx2_alloc_buffer(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
- 
- /* RSS configuration APIs*/
- int otx2_rss_init(struct otx2_nic *pfvf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 997d137..8b6a012 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -22,6 +22,7 @@
- #include "otx2_txrx.h"
- #include "otx2_struct.h"
- #include "otx2_ptp.h"
-+#include "cn10k.h"
- #include <rvu_trace.h>
- 
- #define DRV_NAME	"rvu_nicpf"
-@@ -46,39 +47,6 @@ enum {
- static int otx2_config_hw_tx_tstamp(struct otx2_nic *pfvf, bool enable);
- static int otx2_config_hw_rx_tstamp(struct otx2_nic *pfvf, bool enable);
- 
--static int cn10k_lmtst_init(struct otx2_nic *pf)
--{
--	int size, num_lines;
--	u64 base;
--
--	if (!test_bit(CN10K_LMTST, &pf->hw.cap_flag))
--		return 0;
--
--	base = pci_resource_start(pf->pdev, PCI_MBOX_BAR_NUM) +
--		       (MBOX_SIZE * (pf->total_vfs + 1));
--
--	size = pci_resource_len(pf->pdev, PCI_MBOX_BAR_NUM) -
--	       (MBOX_SIZE * (pf->total_vfs + 1));
--
--	pf->hw.lmt_base = ioremap(base, size);
--
--	if (!pf->hw.lmt_base) {
--		dev_err(pf->dev, "Unable to map PF LMTST region\n");
--		return -ENOMEM;
--	}
--
--	/* FIXME: Get the num of LMTST lines from LMT table */
--	pf->tot_lmt_lines = size / LMT_LINE_SIZE;
--	num_lines = (pf->tot_lmt_lines - NIX_LMTID_BASE) /
--			    pf->hw.tx_queues;
--	/* Number of LMT lines per SQ queues */
--	pf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
--
--	pf->nix_lmt_size = pf->nix_lmt_lines * LMT_LINE_SIZE;
--
--	return 0;
--}
--
- static int otx2_change_mtu(struct net_device *netdev, int new_mtu)
- {
- 	bool if_up = netif_running(netdev);
-@@ -2401,7 +2369,7 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (err)
- 		goto err_detach_rsrc;
- 
--	err = cn10k_lmtst_init(pf);
-+	err = cn10k_pf_lmtst_init(pf);
- 	if (err)
- 		goto err_detach_rsrc;
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-index 1e052d7..21b811c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
-@@ -94,6 +94,7 @@
- #define NPA_LF_QINTX_INT_W1S(a)         (NPA_LFBASE | 0x318 | (a) << 12)
- #define NPA_LF_QINTX_ENA_W1S(a)         (NPA_LFBASE | 0x320 | (a) << 12)
- #define NPA_LF_QINTX_ENA_W1C(a)         (NPA_LFBASE | 0x330 | (a) << 12)
-+#define NPA_LF_AURA_BATCH_FREE0         (NPA_LFBASE | 0x400)
- 
- /* NIX LF registers */
- #define	NIX_LFBASE			(BLKTYPE_NIX << RVU_FUNC_BLKADDR_SHIFT)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index a7eb5ea..cdae83c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -17,6 +17,7 @@
- #include "otx2_struct.h"
- #include "otx2_txrx.h"
- #include "otx2_ptp.h"
-+#include "cn10k.h"
- 
- #define CQE_ADDR(CQ, idx) ((CQ)->cqe_base + ((CQ)->cqe_size * (idx)))
- 
-@@ -199,7 +200,7 @@ static void otx2_free_rcv_seg(struct otx2_nic *pfvf, struct nix_cqe_rx_s *cqe,
- 		sg = (struct nix_rx_sg_s *)start;
- 		seg_addr = &sg->seg_addr;
- 		for (seg = 0; seg < sg->segs; seg++, seg_addr++)
--			otx2_aura_freeptr(pfvf, qidx, *seg_addr & ~0x07ULL);
-+			pfvf->hw_ops->aura_freeptr(pfvf, qidx, *seg_addr & ~0x07ULL);
- 		start += sizeof(*sg);
- 	}
- }
-@@ -304,7 +305,6 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
- {
- 	struct nix_cqe_rx_s *cqe;
- 	int processed_cqe = 0;
--	s64 bufptr;
- 
- 	while (likely(processed_cqe < budget)) {
- 		cqe = (struct nix_cqe_rx_s *)CQE_ADDR(cq, cq->cq_head);
-@@ -330,29 +330,24 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
- 
- 	if (unlikely(!cq->pool_ptrs))
- 		return 0;
-+	pfvf->hw_ops->refill_pool_ptrs(pfvf, cq);
-+
-+	return processed_cqe;
-+}
-+
-+void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
-+{
-+	struct otx2_nic *pfvf = dev;
-+	s64 bufptr;
- 
- 	/* Refill pool with new buffers */
- 	while (cq->pool_ptrs) {
--		bufptr = __otx2_alloc_rbuf(pfvf, cq->rbpool);
--		if (unlikely(bufptr <= 0)) {
--			struct refill_work *work;
--			struct delayed_work *dwork;
--
--			work = &pfvf->refill_wrk[cq->cq_idx];
--			dwork = &work->pool_refill_work;
--			/* Schedule a task if no other task is running */
--			if (!cq->refill_task_sched) {
--				cq->refill_task_sched = true;
--				schedule_delayed_work(dwork,
--						      msecs_to_jiffies(100));
--			}
-+		bufptr = otx2_alloc_buffer(pfvf, cq);
-+		if (unlikely(bufptr <= 0))
- 			break;
--		}
- 		otx2_aura_freeptr(pfvf, cq->cq_idx, bufptr + OTX2_HEAD_ROOM);
- 		cq->pool_ptrs--;
- 	}
--
--	return processed_cqe;
- }
- 
- static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
-@@ -439,7 +434,8 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 	return workdone;
- }
- 
--static void otx2_sqe_flush(struct otx2_snd_queue *sq, int size)
-+void otx2_sqe_flush(void *dev, struct otx2_snd_queue *sq,
-+		    int size, int qidx)
- {
- 	u64 status;
- 
-@@ -797,7 +793,7 @@ static void otx2_sq_append_tso(struct otx2_nic *pfvf, struct otx2_snd_queue *sq,
- 		sqe_hdr->sizem1 = (offset / 16) - 1;
- 
- 		/* Flush SQE to HW */
--		otx2_sqe_flush(sq, offset);
-+		pfvf->hw_ops->sqe_flush(pfvf, sq, offset, qidx);
- 	}
- }
- 
-@@ -916,7 +912,7 @@ bool otx2_sq_append_skb(struct net_device *netdev, struct otx2_snd_queue *sq,
- 	netdev_tx_sent_queue(txq, skb->len);
- 
- 	/* Flush SQE to HW */
--	otx2_sqe_flush(sq, offset);
-+	pfvf->hw_ops->sqe_flush(pfvf, sq, offset, qidx);
- 
- 	return true;
- }
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index 73af156..d2b26b3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -114,6 +114,7 @@ struct otx2_cq_poll {
- struct otx2_pool {
- 	struct qmem		*stack;
- 	struct qmem		*fc_addr;
-+	u64			*lmt_addr;
- 	u16			rbsize;
- };
- 
-@@ -156,4 +157,10 @@ static inline u64 otx2_iova_to_phys(void *iommu_domain, dma_addr_t dma_addr)
- int otx2_napi_handler(struct napi_struct *napi, int budget);
- bool otx2_sq_append_skb(struct net_device *netdev, struct otx2_snd_queue *sq,
- 			struct sk_buff *skb, u16 qidx);
-+void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq,
-+		     int size, int qidx);
-+void otx2_sqe_flush(void *dev, struct otx2_snd_queue *sq,
-+		    int size, int qidx);
-+void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
-+void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
- #endif /* OTX2_TXRX_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-index 9ed850b..31e0325 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-@@ -7,6 +7,7 @@
- 
- #include "otx2_common.h"
- #include "otx2_reg.h"
-+#include "cn10k.h"
- 
- #define DRV_NAME	"rvu_nicvf"
- #define DRV_STRING	"Marvell RVU NIC Virtual Function Driver"
-@@ -27,31 +28,6 @@ enum {
- 	RVU_VF_INT_VEC_MBOX = 0x0,
- };
- 
--static int cn10k_lmtst_init(struct otx2_nic *vf)
--{
--	int size, num_lines;
--
--	if (!test_bit(CN10K_LMTST, &vf->hw.cap_flag))
--		return 0;
--
--	size = pci_resource_len(vf->pdev, PCI_MBOX_BAR_NUM);
--	vf->hw.lmt_base = ioremap_wc(pci_resource_start(vf->pdev,
--							PCI_MBOX_BAR_NUM),
--				     size);
--	if (!vf->hw.lmt_base) {
--		dev_err(vf->dev, "Unable to map VF LMTST region\n");
--		return -ENOMEM;
--	}
--
--	vf->tot_lmt_lines = size / LMT_LINE_SIZE;
--	/* LMTST lines per SQ */
--	num_lines = (vf->tot_lmt_lines - NIX_LMTID_BASE) /
--			    vf->hw.tx_queues;
--	vf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
--	vf->nix_lmt_size = vf->nix_lmt_lines * LMT_LINE_SIZE;
--	return 0;
--}
--
- static void otx2vf_process_vfaf_mbox_msg(struct otx2_nic *vf,
- 					 struct mbox_msghdr *msg)
- {
-@@ -585,7 +561,7 @@ static int otx2vf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (err)
- 		goto err_detach_rsrc;
- 
--	err = cn10k_lmtst_init(vf);
-+	err = cn10k_vf_lmtst_init(vf);
- 	if (err)
- 		goto err_detach_rsrc;
- 
-diff --git a/include/linux/soc/marvell/octeontx2/asm.h b/include/linux/soc/marvell/octeontx2/asm.h
-index ae2279f..56ebd16 100644
---- a/include/linux/soc/marvell/octeontx2/asm.h
-+++ b/include/linux/soc/marvell/octeontx2/asm.h
-@@ -22,8 +22,16 @@
- 			 : [rs]"r" (ioaddr));           \
- 	(result);                                       \
- })
-+#define cn10k_lmt_flush(val, addr)			\
-+({							\
-+	__asm__ volatile(".cpu  generic+lse\n"		\
-+			 "steor %x[rf],[%[rs]]"		\
-+			 : [rf]"+r"(val)		\
-+			 : [rs]"r"(addr));		\
-+})
- #else
- #define otx2_lmt_flush(ioaddr)          ({ 0; })
-+#define cn10k_lmt_flush(val, addr)	({ 0; })
- #endif
- 
- #endif /* __SOC_OTX2_ASM_H */
--- 
-2.7.4
+>> +{
+>> +	struct page *head = compound_head(pages[0]);
+>> +	unsigned int ntails;
+>> +
+>> +	for (ntails = 1; ntails < npages; ntails++) {
+>> +		if (compound_head(pages[ntails]) != head)
+>> +			break;
+>> +	}
+>> +
+>> +	return ntails;
+>> +}
+>> +
+>> +static inline void compound_next(unsigned long i, unsigned long npages,
+>> +				 struct page **list, struct page **head,
+>> +				 unsigned int *ntails)
+>> +{
+>> +	if (i >= npages)
+>> +		return;
+>> +
+>> +	*ntails = count_ntails(list + i, npages - i);
+>> +	*head = compound_head(list[i]);
+>> +}
+>> +
+>> +#define for_each_compound_head(i, list, npages, head, ntails) \
+> 
+> When using macros, which are dangerous in general, you have to worry about
+> things like name collisions. I really dislike that C has forced this unsafe
+> pattern upon us, but of course we are stuck with it, for iterator helpers.
+> 
+/me nods
 
+> Given that we're stuck, you should probably use names such as __i, __list, etc,
+> in the the above #define. Otherwise you could stomp on existing variables.
+
+Will do.
+
+	Joao
