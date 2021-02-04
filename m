@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3630FF4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFAF30FF53
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 22:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhBDV3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 16:29:55 -0500
-Received: from ms.lwn.net ([45.79.88.28]:50788 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhBDV3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:29:52 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6B3401E77;
-        Thu,  4 Feb 2021 21:29:12 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6B3401E77
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1612474152; bh=GFyluLyYpm71JlUqgZ+l8ppi2lbAHdwfP7WaQL5guyk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=gDrRsGEUODNmGU4l085LpPPzL1lusZn03TLZxnAQrBUOkKfTTOe6rDcKKeVCEJIWP
-         9RyHCr7HQbrAJNXnkoCXZ3GGIiyv6a6AWftYHO4vKTXd1nJ+WBuWvOPnzvihp9UhM5
-         6w7jijvrMxV0y+CkOQ6JW4851G+1V6PZ/tsL6Y+cRwcq3m9N+v598Kd2vNXpikZMLa
-         VRVJ0xQK+B9ZxPz01575yG7upQnLZY8T+4p2J6QhHtEeT8droHfauemD8n7MB5Of58
-         bmdvSiNel7r7KGcWCWh12IjafzWLsB0Z1sJWe9ngJniRR1Z4z38P+gPH1Dr0rcQEIu
-         lS0tZV45bfxiw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
-        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH v2 1/5] docs: arm: marvell: drop some dead links
-In-Reply-To: <20210203235305.506528-2-lkundrak@v3.sk>
-References: <20210203235305.506528-1-lkundrak@v3.sk>
- <20210203235305.506528-2-lkundrak@v3.sk>
-Date:   Thu, 04 Feb 2021 14:29:11 -0700
-Message-ID: <87pn1ffro8.fsf@meer.lwn.net>
+        id S229915AbhBDVbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 16:31:51 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52406 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhBDVbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:31:50 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 43D251F4648D
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk>
+ <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com>
+ <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
+ <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
+ <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com>
+ <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
+ <CAKwvOd=ziPWHmBiPtW3h2VYLZ-CTMp4=aEonmMLM7c=Y0SeG1Q@mail.gmail.com>
+ <20210204181216.GB2989696@localhost>
+ <CAKwvOd=UYuKPp6rO7aWGFEsc9yLa_UCLnAL-vwqzi_5sZg7O3g@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <253b2987-c8e9-fcb6-c1b9-81e765c0cc2a@collabora.com>
+Date:   Thu, 4 Feb 2021 21:31:06 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAKwvOd=UYuKPp6rO7aWGFEsc9yLa_UCLnAL-vwqzi_5sZg7O3g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lubomir Rintel <lkundrak@v3.sk> writes:
+On 04/02/2021 18:23, Nick Desaulniers wrote:
+> On Thu, Feb 4, 2021 at 10:12 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> On Thu, Feb 04, 2021 at 10:06:08AM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
+>>> On Thu, Feb 4, 2021 at 8:02 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>>>>
+>>>> On Thu, 4 Feb 2021 at 16:53, Guillaume Tucker
+>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>
+>>>>> On 04/02/2021 15:42, Ard Biesheuvel wrote:
+>>>>>> On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
+>>>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>>>
+>>>>>>> Essentially:
+>>>>>>>
+>>>>>>>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+>>>
+>>> This command should link with BFD (and assemble with GAS; it's only
+>>> using clang as the compiler.
+>>
+>> I think you missed the 'LLVM=1' before CC="ccache clang". That should
+>> use all of the LLVM utilities minus the integrated assembler while
+>> wrapping clang with ccache.
+> 
+> You're right, I missed `LLVM=1`. Adding `LD=ld.bfd` I think should
+> permit fallback to BFD.
 
-> Just remove these; there's good chance there wasn't anything useful
-> there anyway.
->
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
->
-> ---
-> Changes since v1:
-> - Adjust for removal of "[PATCH 1/5] docs: arm: marvell: turn the automatic
->   links into labels"
-> - Split off the hunk that fixes 38x functional spec link
->
->  Documentation/arm/marvel.rst | 25 -------------------------
->  1 file changed, 25 deletions(-)
->
-> diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
-> index 16ab2eb085b86..502a1b89a2c85 100644
-> --- a/Documentation/arm/marvel.rst
-> +++ b/Documentation/arm/marvel.rst
-> @@ -63,8 +63,6 @@ Kirkwood family
->                  - Product Brief  : http://www.marvell.com/embedded-processors/kirkwood/assets/88F6281-004_ver1.pdf
->                  - Hardware Spec  : http://www.marvell.com/embedded-processors/kirkwood/assets/HW_88F6281_OpenSource.pdf
->                  - Functional Spec: http://www.marvell.com/embedded-processors/kirkwood/assets/FS_88F6180_9x_6281_OpenSource.pdf
-> -  Homepage:
-> -	http://www.marvell.com/embedded-processors/kirkwood/
->    Core:
->  	Feroceon 88fr131 ARMv5 compatible
->    Linux kernel mach directory:
-> @@ -126,7 +124,6 @@ EBU Armada family
->  	- 88F6820 Armada 385
->  	- 88F6828 Armada 388
->  
-> -    - Product infos:   http://www.marvell.com/embedded-processors/armada-38x/
+That was close, except we're cross-compiling with GCC for arm.
+So I've now built a plain next-20210203 (without Ard's fix) using
+this command line:
 
-So these URLs do still exist in the Wayback machine; the above is
-https://web.archive.org/web/20180829171124/http://www.marvell.com/embedded-processors/armada-38x/
-for example.  If we delete the links, we make it harder for any
-interested person to ever find them.  Assuming that we want to keep
-information about these product families in the documentation at all,
-I'd think that we would want to have the online information as well.  So
-I'd replace these with wayback links, or else just leave them as they
-are so that sufficiently motivated people can look them up themselves...
+    make LD=arm-linux-gnueabihf-ld.bfd -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
 
-Make sense?
+I'm using a modified Docker image gtucker/kernelci-build-clang-11
+with the very latest LLVM 11 and gcc-8-arm-linux-gnueabihf
+packages added to be able to use the GNU linker.  BTW I guess we
+should enable this kind of hybrid build setup on kernelci.org as
+well.
 
-Thanks,
+Full build log + kernel binaries can be found here:
 
-jon
+    https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-41/arm/multi_v7_defconfig/clang-11/
+
+And this booted fine, which confirms it's really down to how
+ld.lld puts together the kernel image.  Does it actually solve
+the debate whether this is an issue to fix in the assembly code
+or at link time?
+
+Full test job details for the record:
+
+    https://lava.collabora.co.uk/scheduler/job/3176004
+
+Hope that helps,
+Guillaume
