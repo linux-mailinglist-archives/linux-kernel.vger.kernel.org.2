@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CCE30F4DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218A930F4D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 15:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhBDOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 09:23:38 -0500
-Received: from mga12.intel.com ([192.55.52.136]:58183 "EHLO mga12.intel.com"
+        id S236627AbhBDOUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 09:20:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58368 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236678AbhBDOWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:22:00 -0500
-IronPort-SDR: ROWpQx2NDfP1pKgf4WBxwXEdyXCr/URNQ+Z992m6vzplAREUrTC1KRlvotu4A7MUduzLnbyqoC
- AAO/MzNeW6hA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160410070"
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="160410070"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 06:17:27 -0800
-IronPort-SDR: wbn8oW9ljhi3GNHscqDpHK/2X4DTPFc3AhM9TopNZT0zlR7XleMXKcYF83OnRKSPXkYDZbH+14
- XY3EYnowlEjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,401,1602572400"; 
-   d="scan'208";a="483254647"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Feb 2021 06:17:25 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH v2 6/6] xhci: ext-caps: Use software node API with the properties
-Date:   Thu,  4 Feb 2021 17:17:11 +0300
-Message-Id: <20210204141711.53775-7-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
-References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+        id S236639AbhBDOUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:20:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612448358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uNjcnDnZXUPYHHuK46oDIL84tyY2kS2LkC6T9yyAPCU=;
+        b=FpVLR3O5yTTiyeAwG18zs+GsUc9KTxfWONmuisoWJ5R5Qc+/oEzDmE8bSbH18CXTe6sjcR
+        iIb3W1B+PoapI11EyyaUQ6YIBmeGMGWmyFSi1EW3GHcp6M4GA6Qx4SolDI790FtL20ziY2
+        ZigN/iwMkJ+cKFNvY3YBp5715do75N0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A88CEB176;
+        Thu,  4 Feb 2021 14:19:18 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 15:19:17 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
+Message-ID: <YBwCZYWsQOFAGUar@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-7-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202184746.119084-7-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This replaces the platform_device_add_properties() call with
-the safer device_create_managed_software_node() that does
-exactly the same, but can also guarantee that the lifetime
-of the node that is created for the device is tied to the
-lifetime of device itself.
+On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
+> Replace the memory controller's custom hierarchical stats code with
+> the generic rstat infrastructure provided by the cgroup core.
+> 
+> The current implementation does batched upward propagation from the
+> write side (i.e. as stats change). The per-cpu batches introduce an
+> error, which is multiplied by the number of subgroups in a tree. In
+> systems with many CPUs and sizable cgroup trees, the error can be
+> large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
+> subgroups results in an error of up to 128M per stat item). This can
+> entirely swallow allocation bursts inside a workload that the user is
+> expecting to see reflected in the statistics.
+> 
+> In the past, we've done read-side aggregation, where a memory.stat
+> read would have to walk the entire subtree and add up per-cpu
+> counts. This became problematic with lazily-freed cgroups: we could
+> have large subtrees where most cgroups were entirely idle. Hence the
+> switch to change-driven upward propagation. Unfortunately, it needed
+> to trade accuracy for speed due to the write side being so hot.
+> 
+> Rstat combines the best of both worlds: from the write side, it
+> cheaply maintains a queue of cgroups that have pending changes, so
+> that the read side can do selective tree aggregation. This way the
+> reported stats will always be precise and recent as can be, while the
+> aggregation can skip over potentially large numbers of idle cgroups.
+> 
+> This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
+> NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
+> aggregation. It removes 3 words from the per-cpu data. It eliminates
+> memcg_exact_page_state(), since memcg_page_state() is now exact.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/usb/host/xhci-ext-caps.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I am still digesting details and need to look deeper into how rstat
+works but removing our own stats is definitely a good plan. Especially
+when there are existing limitations and problems that would need fixing.
 
-diff --git a/drivers/usb/host/xhci-ext-caps.c b/drivers/usb/host/xhci-ext-caps.c
-index 3351d07c431f1..7a4c2c4ad50e8 100644
---- a/drivers/usb/host/xhci-ext-caps.c
-+++ b/drivers/usb/host/xhci-ext-caps.c
-@@ -54,7 +54,8 @@ static int xhci_create_intel_xhci_sw_pdev(struct xhci_hcd *xhci, u32 cap_offset)
- 	}
- 
- 	if (pci->device == PCI_DEVICE_ID_INTEL_CHERRYVIEW_XHCI) {
--		ret = platform_device_add_properties(pdev, role_switch_props);
-+		ret = device_create_managed_software_node(&pdev->dev, role_switch_props,
-+							  NULL);
- 		if (ret) {
- 			dev_err(dev, "failed to register device properties\n");
- 			platform_device_put(pdev);
+Just to check that my high level understanding is correct. The
+transition is effectivelly removing a need to manually sync counters up
+the hierarchy and partially outsources that decision to rstat core. The
+controller is responsible just to tell the core how that syncing is done
+(e.g. which specific counters etc). Excplicit flushes are needed when
+you want an exact value (e.g. when values are presented to the
+userspace). I do not see any flushes to be done by the core pro-actively
+except for clean up on a release.
+
+Is the above correct understanding?
 -- 
-2.30.0
-
+Michal Hocko
+SUSE Labs
