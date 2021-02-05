@@ -2,149 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FD1311728
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E02311738
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBEXdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhBEOWu (ORCPT
+        id S230334AbhBEXjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:39:10 -0500
+Received: from mail.efficios.com ([167.114.26.124]:35742 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhBEOUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:22:50 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0323BC061225
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:47:41 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612539942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zZFsX6vz/JnEik3OiWf55qYmEOWIraRnD0UqUzEqWqo=;
-        b=qCJfwtg8/Gj9LUjSo4664j+UYF9sdTsdRIKudrpOhrUAaUvkPMcsW80LJdkoN0+8WvkTT7
-        KKUph2CNu/PZ0afk3ZOSiyaQrogp85i3+T7CFruAG0sEF9i75bE4X+JKbSZsqB3MIdU88+
-        Sdk8xJkvWZ0dMZ0u/PdSWPhPLoybIbjcUsmnK4TaU6H2KaYr4J7RkoKV8lgq85ZHeeJ+7f
-        FV7T+D3rNhhu1WwGYozskaeRKO7ZhRd6t6UprMWhu//gMy/glQfkl/axGfkPbGsk7GgcRY
-        w/mX225VB1ofOEszwaqMJhIc5oV/O0lZdjIk9nTS7ETt/hXTgfrwxyYl0Z9quA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612539942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zZFsX6vz/JnEik3OiWf55qYmEOWIraRnD0UqUzEqWqo=;
-        b=OGUZgCPiXeEvia+qYoPilbqzJQlcFa7hb/ZrJl21052E6hVPAtGbOEAUUlN6zP4U7b4Mvj
-        fZrBepQMTBSAgzAw==
-To:     Mikael Beckius <mikael.beckius@windriver.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [PATCH] hrtimer: Interrupt storm on clock_settime
-In-Reply-To: <20210128140208.30264-1-mikael.beckius@windriver.com>
-References: <20210128140208.30264-1-mikael.beckius@windriver.com>
-Date:   Fri, 05 Feb 2021 16:45:42 +0100
-Message-ID: <87r1lu8qmx.fsf@nanos.tec.linutronix.de>
+        Fri, 5 Feb 2021 09:20:11 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 741BA2F5596;
+        Fri,  5 Feb 2021 10:47:24 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 3ZcViJeHTbM7; Fri,  5 Feb 2021 10:47:24 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 2F9D82F525A;
+        Fri,  5 Feb 2021 10:47:24 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2F9D82F525A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1612540044;
+        bh=ZXtGfhUUpSW4u0bX1WooGA5Q3gzcpG1PUwkvcXyaLTU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=p+4bYaWCdwfak1HNYVCsqSpeNWi5ovhrvVkrlQteUQRPMq/26Q77BnCjX2vOcLX7r
+         tg35CZviuorDXS+TgFx54FbO1+81gltqXsoEx9sRLGKX1xbxdXBU+cixGHtu1/ZGGk
+         YyKuANv10Eye4N4yHttkG0eMvF9zBOk+abfMwMQNoXUB4Oi03+A1+vuSt/Ki+e72JF
+         zNd0KAxwHStPXfP1FEfE2b1OVnL//uE9wjOERQOHVM4dyHqDzBgJ2LeFHBQ473hpeI
+         SBRRAslWj1gF/0TpKnv1uPTKoHWQp7J3W92SW279rzxUHu84HicwEV8b1sf/XfQDsJ
+         rPu0YtPdhaS7A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kfv6S17tFsoc; Fri,  5 Feb 2021 10:47:24 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 1B1DD2F5252;
+        Fri,  5 Feb 2021 10:47:24 -0500 (EST)
+Date:   Fri, 5 Feb 2021 10:47:23 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Brendan Jackman <jackmanb@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Kees Cook <keescook@chromium.org>, thgarnie@chromium.org,
+        kpsingh@google.com,
+        paul renauld epfl <paul.renauld.epfl@gmail.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        rostedt <rostedt@goodmis.org>
+Message-ID: <47845502.8614.1612540043986.JavaMail.zimbra@efficios.com>
+In-Reply-To: <YB1m2i6bUM0LO5wS@hirez.programming.kicks-ass.net>
+References: <20200820164753.3256899-1-jackmanb@chromium.org> <20210205150926.GA12608@localhost> <YB1m2i6bUM0LO5wS@hirez.programming.kicks-ass.net>
+Subject: Re: [RFC] security: replace indirect calls with static calls
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3996)
+Thread-Topic: security: replace indirect calls with static calls
+Thread-Index: RuVbmUup0iOFmIVlAbpninCycfmfRw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28 2021 at 15:02, Mikael Beckius wrote:
+----- On Feb 5, 2021, at 10:40 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-> During clock_settime absolute realtime timers may get updated to expire
-> sooner in absolute monotonic time but if hrtimer_force_reprogram is
-> called as part of a clock_settime and the next hard hrtimer expires
-> before the next soft hrtimer softirq_expires_next will not be updated
-> to reflect this change (assuming the realtime timer is a soft timer).
->
-> This means that if the next soft hrtimer expires before
-> softirq_expires_next but after now no soft hrtimer interrupt will be
-> raised in hrtimer_interrupt which will instead retry tick_program_event
-> three times before forcing a tick_program_event using a very short delay
-> entering hrtimer_interrupt again almost immediately repeating the
-> process over and over again until now exceeds softirq_expires_next and a
-> soft hrtimer interrupt is finally raised.
+> On Fri, Feb 05, 2021 at 10:09:26AM -0500, Mathieu Desnoyers wrote:
+>> Then we should be able to generate the following using static keys as a
+>> jump table and N static calls:
+>> 
+>>   jump <static key label target>
+>> label_N:
+>>   stack setup
+>>   call
+>> label_N-1:
+>>   stack setup
+>>   call
+>> label_N-2:
+>>   stack setup
+>>   call
+>>   ...
+>> label_0:
+>>   jump end
+>> label_fallback:
+>>   <iteration and indirect calls>
+>> end:
+>> 
+>> So the static keys would be used to jump to the appropriate label (using
+>> a static branch, which has pretty much 0 overhead). Static calls would
+>> be used to implement each of the calls.
+>> 
+>> Thoughts ?
+> 
+> At some point I tried to extend the static_branch infra to do multiple
+> targets and while the low level plumbing is trivial, I ran into trouble
+> trying to get a sane C level API for it.
 
-Duh.
-
-> This patch aims to solve this by always updating softirq_expires_next if
-> a soft hrtimer exists.
-
-  git grep 'This patch' Documentation/process/
-
-> Signed-off-by: Mikael Beckius <mikael.beckius@windriver.com>
-> ---
->  kernel/time/hrtimer.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-> index 743c852e10f2..e4c233f404b1 100644
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -633,7 +633,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
->  	 */
->  	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
->  
-> -	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
-> +	if (cpu_base->softirq_next_timer) {
-
->  		/*
->  		 * When the softirq is activated, hrtimer has to be
->  		 * programmed with the first hard hrtimer because soft
-> @@ -643,7 +643,8 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
->  			expires_next = __hrtimer_get_next_event(cpu_base,
->  								HRTIMER_ACTIVE_HARD);
->  		else
-> -			cpu_base->softirq_expires_next = expires_next;
-> +			cpu_base->softirq_expires_next = __hrtimer_get_next_event(cpu_base,
-> +								HRTIMER_ACTIVE_SOFT);
-
-That works, but we can spare the double scan completely and make the
-code understandable. See below.
+Did you try doing an API for a variable number of targets, or was it for
+a specific number of targets ? It might be easier to just duplicate some
+of the API code for number of targets between 2 and 12, and let the
+users code choose the maximum number of targets they want to accelerate.
 
 Thanks,
 
-        tglx
----
+Mathieu
 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -626,26 +626,25 @@ static inline int hrtimer_hres_active(vo
- static void
- hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
- {
--	ktime_t expires_next;
-+	ktime_t expires_next, soft = KTIME_MAX;
- 
- 	/*
--	 * Find the current next expiration time.
-+	 * If soft interrupt has already been activated, ignore the soft
-+	 * base. It will be handled in the already raised soft interrupt.
- 	 */
--	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
--
--	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
-+	if (!cpu_base->softirq_activated) {
-+		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
- 		/*
--		 * When the softirq is activated, hrtimer has to be
--		 * programmed with the first hard hrtimer because soft
--		 * timer interrupt could occur too late.
-+		 * Update the soft expiry time. clock_settime() might have
-+		 * affected it.
- 		 */
--		if (cpu_base->softirq_activated)
--			expires_next = __hrtimer_get_next_event(cpu_base,
--								HRTIMER_ACTIVE_HARD);
--		else
--			cpu_base->softirq_expires_next = expires_next;
-+		cpu_base->softirq_expires_next = soft;
- 	}
- 
-+	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
-+	if (expires_next > soft)
-+		expires_next = soft;
-+
- 	if (skip_equal && expires_next == cpu_base->expires_next)
- 		return;
- 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
