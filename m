@@ -2,192 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD903111D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E65BC311212
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhBESUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:20:04 -0500
-Received: from mga17.intel.com ([192.55.52.151]:42608 "EHLO mga17.intel.com"
+        id S229777AbhBESda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:33:30 -0500
+Received: from relay.sw.ru ([185.231.240.75]:46752 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232452AbhBEPTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:19:38 -0500
-IronPort-SDR: CstROw2xO1WR2jYOMrK1KZUi/ul6pcijF8aApzhl3srw6TrsK6qVLfTMd0YQHQS81HUzaH2V4S
- Olc3S8ULqpwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161192999"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="161192999"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:35:38 -0800
-IronPort-SDR: Te6/yHKGi58ml9zaavQnWeakGzwTWv9qMSigRkELf5iAkxc9CM3RZqyjnJCBieJYx4DRkib4Pq
- DB0PVL94HgPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="408957342"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Feb 2021 06:35:38 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Feb 2021 06:35:38 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Fri, 5 Feb 2021 06:35:38 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 5 Feb 2021 06:35:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dgkibnfv6Yix4TfGfQmva9OnDg1bPSROGHUbUi0kg0YrK/dzjHgpFXO8R8r8yxl+7k1lFqDM3+yrC4QYmdh1OcJcUzVr6tttOO5P3F+1fkPqDHs676Xi6UdwxIdGYKoM5DDMxooQyzttSvS38oQDHNOPhnI//ThUhTpqXEcl3ud7P3dIrAuDnzxM4pt7uLIqUyMQCE7pttCXRp3Yi32R11mRFSwCdotN0tGPUwiiILhrdklljOwtoPtOpNLw5MhpfTXVp8A5xXmcQrZillT294k6Y1qBvaomznQNGANihWldFoiINtpiJd0eMmFiYdeO2PckgG0/IiJYPpgafhoImQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wop3J8/Ybjl/+uTLGmPiStKGCI6njlJqtmiAylxDSTE=;
- b=R/MS3e+bMdQTcmazAcqS05B8DdqyPKHxe487Xx46epe5+RDZrDvHsVloui6ngfvQ5VwI5RNcQr0pi0EORZJp+Dvr/UZLxF3SvKDQWWUDOSGQFerRgRc3GhBvdX7M71bE21gQtACega1cndS64XFEuD/ioZOzHmeCHmq6ZK55RiiNCkNW3nSaW35agqf1tt0V9fMTv+rXyLwCKxnmBfhaY00Cr/IOUzhN/E/upFCqUJQZHn1fKDrd4ZhqWxbSGU/pQqzD9o3pB0AXwdVohNldB1vhj/n0l536ZdM9r3uHY3fy1QJjfX1/+CHm/P0tQsNwcvsU/Iq/lXt4Xb+B3wV++w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wop3J8/Ybjl/+uTLGmPiStKGCI6njlJqtmiAylxDSTE=;
- b=Y9wKNeCxcoOHCheruDWVUQ+6yLC/5KnZ4XeIFGT3fK628fweyAu26287iz2M9yTwO3heWnlG9MPHU6cZfrXG7xsw+uTS6WYPlXLGswmtWFW9C0D77wj+6dv5zFIoe1MEJffISgXIrOWEJlYsiJ7puiT5ETaqWuhKkTeP1FuSov0=
-Received: from SN6PR11MB3055.namprd11.prod.outlook.com (2603:10b6:805:dc::18)
- by SA2PR11MB4842.namprd11.prod.outlook.com (2603:10b6:806:f8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Fri, 5 Feb
- 2021 14:35:36 +0000
-Received: from SN6PR11MB3055.namprd11.prod.outlook.com
- ([fe80::d4a0:9ff0:15b8:cd76]) by SN6PR11MB3055.namprd11.prod.outlook.com
- ([fe80::d4a0:9ff0:15b8:cd76%7]) with mapi id 15.20.3825.020; Fri, 5 Feb 2021
- 14:35:36 +0000
-From:   "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
-To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "Murphy, Declan" <declan.murphy@intel.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH 06/20] crypto: keembay: ocs-hcu: Fix incorrectly named
- functions/structs
-Thread-Topic: [PATCH 06/20] crypto: keembay: ocs-hcu: Fix incorrectly named
- functions/structs
-Thread-Index: AQHW+uZZ/ghhe+tLN0qICeiOprWDg6pIR4aAgAARMACAAUnOgA==
-Date:   Fri, 5 Feb 2021 14:35:36 +0000
-Message-ID: <6d4323733e689026ed89deeb6fde15cc6e772756.camel@intel.com>
-References: <20210204111000.2800436-1-lee.jones@linaro.org>
-         <20210204111000.2800436-7-lee.jones@linaro.org>
-         <b8425f8b292e0ca268a2f575e9053ed408bc4c6e.camel@intel.com>
-         <20210204185508.GQ2789116@dell>
-In-Reply-To: <20210204185508.GQ2789116@dell>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.151.44]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a2623017-d497-4b95-10d2-08d8c9e34d89
-x-ms-traffictypediagnostic: SA2PR11MB4842:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB4842D399D64453A92B7A074AF2B29@SA2PR11MB4842.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:619;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zh3ffp2EGrdlGMJFD4LFBWjDL2hd90abSx1f9pr7DG9uZiuVFEa0GwWpwLMIEHe1JnnNa5zHcYieB2FjH0vrUgz9BsJ52G24/CT7jS8fiWY6UoMvKIjhL0sTg12oJeCxx+bIIzbO2xIZ94Dem+jcIUHOxrbjlTMEzOsle1ndC5l4UehS96plrWGLQMU267Cym9tTpVYvujFzV4hUFVRAY1Hw7CvxEr9+cz55LhtBnXzOHypZbj4zj9Iv6UftXrmrNQ3IiCpFCYzhi0AvMez2dwhnppdIQjN3+5UHLzipH7le0N6Y4KfYcmUGAFF+hMSR+qIP5EETHJjqR8A4LMMxjWHhZtNyzapwHq+ut6iHCZ15mIKpm0/Ropwc7BMTcRRVkfCyTkb/gd3fCRiwNx+K6DfyVINxa0+sNqQq8uiYXWMsD7YcTW0AU+8aCFE8bOS9CZcda737KMKKQAxxoaqht+I/aDaGlfEtLsVyBhm0PseKg7uVfKqR8zVmyhZ1mys24K8VC8Tvx7MYAJqepw9m8A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3055.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(366004)(346002)(376002)(8936002)(83380400001)(71200400001)(8676002)(4326008)(5660300002)(76116006)(91956017)(2616005)(478600001)(66446008)(66556008)(66476007)(2906002)(26005)(64756008)(6486002)(6506007)(186003)(66946007)(6512007)(316002)(54906003)(86362001)(6916009)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?eEdNTVIxT3Nlcjd2cWVaRldwSm9lV1Q2TERhUCsrWWJXL000aVF0dVNZMW40?=
- =?utf-8?B?VnlwMXRDcXI0WS8zc1pldmZaS29kWXNNVXFTWmR0eTI5NHdtRytYcUs4ZjU2?=
- =?utf-8?B?YWdpaUZMVzVCb0tWZk1wb3ozcWtqSHd1Z3JHQ0dwZ0V4YUQvdDRTN2NoaFBm?=
- =?utf-8?B?MHZpamJsR2lSYmRWRlMwRU12bEVtVVBDYVFvNTB1VjVNckk4clhnY0RKR1Zn?=
- =?utf-8?B?NzVOV1ZlNElRQXd4cU53M1MyN1VLYTJ3dDhNM3MvNFV6WjRueUkveklkUS9R?=
- =?utf-8?B?QTlBajVOSHIraWZnNVlwSWhwZG9LbDdNYkpVdTM1eURGYXpSMDdNWFd5WnVl?=
- =?utf-8?B?b0hsMEkzbTZuQnBlSnFLbHV2VS8vWjlpMXZDS2pVd2dvbHExeER3SE5uWTRY?=
- =?utf-8?B?dDBYTW92QjBrSFZ4VUdXbWRkblh0QW5LY1RIOEVzN2pqT1NmRVZZSEJDK3U4?=
- =?utf-8?B?bnA2bXFTaWcxVlhRNFJJYjBFMkh4aXFDakFYOExnZnhEOTB0K0xHZ3ZOblRG?=
- =?utf-8?B?cEdWR3ZITXdCaWdUVFBNMEFPOGg4a3Urd2JnVHFqTWVFbFdNR0VPc2tBVk1N?=
- =?utf-8?B?dkxMN2g3djVvT083T3lGYWdhOUEyVmNST2NFUFZXMlc3ZjdmUHNnRUowQkI5?=
- =?utf-8?B?Wnp4dGtDNUFEWER6bnkwZ2JNR2JCR0xxbEIwc1NmVmVITmY0MHFlaS9WdWp0?=
- =?utf-8?B?THhiVmJqc3NrREkyY0hIb1IxdnJDR0Jta0xaNGx1SENBZEtQa2hOaXRBZE5h?=
- =?utf-8?B?TU8rQ0ppSGRuaFM0NWZhaHBGWnFGSWtUdml6TjdkSXpRVVZpRG83TW1BelpU?=
- =?utf-8?B?SWhja3ltUDN5eklxRFB1Z29GOUh4QXUrUHFUTVhQNytOdEVzQjMrMUxrNmdw?=
- =?utf-8?B?SThMSy85Q2RNdGMzdER1VnFFMGdMM09UMS9mbGg4QUZ5ZE1MY2tiUS80VVhY?=
- =?utf-8?B?V2FZeTFRZHBtMnA4VVI3dDdhTUt5bUFwWWtGOVRyMzZ0UGN2Y2IveHlRazVW?=
- =?utf-8?B?dzJHeERub2o4MVNaVmRCYmVkelVlMk1rQ2VHbEJpaHVJMFU5d3NlMnZQTll3?=
- =?utf-8?B?bzFsY0F6VjEybUF2UUFQdUtKRmhzTExaaUYrNnhnNmFzTFF1M1g3NThNdHE3?=
- =?utf-8?B?R2RPSDZLelVtK2V4eE9QQ2ROOTJiN3lwbHZ4UTBkaVZUNUt2MkZJNTBLMWtU?=
- =?utf-8?B?d0huV2twdU9yZjNHNnl1QVAxQmV1bEpJQTl4V1pYemx2MUh5eDJEblkzQ2Ry?=
- =?utf-8?B?ODJMVkRzQVFnMWtMVTk0ZGdTdDVYL3BucXowUkErNmRMbEY2QjFXb1NPazF4?=
- =?utf-8?B?U2hQL2NIVzdocVk0R3lSTGljT3pkU0dLOWo3SHlKTDRoa0s1RVBHTFFwWHJ5?=
- =?utf-8?B?MHZxcDNoRFVqNXYySGlDWFdCckYxQ0xYNlZDdWUrdnllbjlxZnl4Z1VVQlF1?=
- =?utf-8?B?OUNaOHN1Vm9VaEIzTUFERkZtNkZWYnA5dlVsMWN5eDFFWVJORUhTandaRUVm?=
- =?utf-8?B?Q1lEelRSVzhLVzVuZ24yTUpRMXNzdG5YSmMvRFI2WWV2bWErUnNJS1NiYTlB?=
- =?utf-8?B?L2lLQlBkbHBjRXNINjhIZkdSN0YydWJrQlgrZ2dpMFhWQy9ielpPMXlldmJO?=
- =?utf-8?B?MkJTOEx0cVVDWm5PNDNYUDFXanRDekpSQmlUL01KaEdZSEE3VjFWL0Z4UFVw?=
- =?utf-8?B?WDcwRHp4UStObjh5TjQxZ1Bza2ZNUGpOYU0yekhQQ2FsenlTV0ZBMkRBYm0v?=
- =?utf-8?B?MmNyeGNZUEtpU0c1ZE1Yck0wOEdNSlp6RDVBd1VEOUwwU1A4NWZaNFNzVG1i?=
- =?utf-8?B?K2hZa3EvTnJpbmhuMGduZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6C437C1C386BE04D9BE63C35411B6EDD@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S233137AbhBEPLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:11:12 -0500
+Received: from [192.168.15.95]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l82F0-001mZz-RT; Fri, 05 Feb 2021 17:37:46 +0300
+Subject: Re: [v6 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210203172042.800474-1-shy828301@gmail.com>
+ <20210203172042.800474-8-shy828301@gmail.com>
+ <374a5513-9e80-f240-ef82-ef35c13931c1@virtuozzo.com>
+ <CAHbLzkpSSkgiSewqu2ie8N7yESqkoGtAOmQrZYFEb-2CRBCWiQ@mail.gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <9d6862c2-15a6-93ab-057d-512cb2a6af2b@virtuozzo.com>
+Date:   Fri, 5 Feb 2021 17:37:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3055.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2623017-d497-4b95-10d2-08d8c9e34d89
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2021 14:35:36.7033
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MVU1S21MZgn0BMuGdOFyBM10ub9Sp741IYKOyHjIx1OeG7OarV4LR6MGTBHqFeudhTYUy+o7k8Oz/YpsO2FD6xtKdHfkkJvGa96z5zvxVx0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4842
-X-OriginatorOrg: intel.com
+In-Reply-To: <CAHbLzkpSSkgiSewqu2ie8N7yESqkoGtAOmQrZYFEb-2CRBCWiQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAyLTA0IGF0IDE4OjU1ICswMDAwLCBMZWUgSm9uZXMgd3JvdGU6DQo+IE9u
-IFRodSwgMDQgRmViIDIwMjEsIEFsZXNzYW5kcmVsbGksIERhbmllbGUgd3JvdGU6DQo+IA0KPiA+
-IE9uIFRodSwgMjAyMS0wMi0wNCBhdCAxMTowOSArMDAwMCwgTGVlIEpvbmVzIHdyb3RlOg0KPiA+
-ID4gRml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2VybmVsIGJ1aWxkIHdhcm5pbmcocyk6DQo+ID4g
-PiANCj4gPiA+ICBkcml2ZXJzL2NyeXB0by9rZWVtYmF5L29jcy1oY3UuYzoxMDc6IHdhcm5pbmc6
-IGV4cGVjdGluZyBwcm90b3R5cGUgZm9yIHN0cnVjdCBvY3NfaGN1X2RtYV9saXN0LiBQcm90b3R5
-cGUgd2FzIGZvciBzdHJ1Y3Qgb2NzX2hjdV9kbWFfZW50cnkgaW5zdGVhZA0KPiA+ID4gIGRyaXZl
-cnMvY3J5cHRvL2tlZW1iYXkvb2NzLWhjdS5jOjEyNzogd2FybmluZzogZXhwZWN0aW5nIHByb3Rv
-dHlwZSBmb3Igc3RydWN0IG9jc19kbWFfbGlzdC4gUHJvdG90eXBlIHdhcyBmb3Igc3RydWN0IG9j
-c19oY3VfZG1hX2xpc3QgaW5zdGVhZA0KPiA+ID4gIGRyaXZlcnMvY3J5cHRvL2tlZW1iYXkvb2Nz
-LWhjdS5jOjYxMDogd2FybmluZzogZXhwZWN0aW5nIHByb3RvdHlwZSBmb3Igb2NzX2hjdV9kaWdl
-c3QoKS4gUHJvdG90eXBlIHdhcyBmb3Igb2NzX2hjdV9oYXNoX3VwZGF0ZSgpIGluc3RlYWQNCj4g
-PiA+ICBkcml2ZXJzL2NyeXB0by9rZWVtYmF5L29jcy1oY3UuYzo2NDg6IHdhcm5pbmc6IGV4cGVj
-dGluZyBwcm90b3R5cGUgZm9yIG9jc19oY3VfaGFzaF9maW5hbCgpLiBQcm90b3R5cGUgd2FzIGZv
-ciBvY3NfaGN1X2hhc2hfZmludXAoKSBpbnN0ZWFkDQo+ID4gPiANCj4gPiA+IENjOiBEYW5pZWxl
-IEFsZXNzYW5kcmVsbGkgPGRhbmllbGUuYWxlc3NhbmRyZWxsaUBpbnRlbC5jb20+DQo+ID4gPiBD
-YzogRGVjbGFuIE11cnBoeSA8ZGVjbGFuLm11cnBoeUBpbnRlbC5jb20+DQo+ID4gPiBDYzogSGVy
-YmVydCBYdSA8aGVyYmVydEBnb25kb3IuYXBhbmEub3JnLmF1Pg0KPiA+ID4gQ2M6ICJEYXZpZCBT
-LiBNaWxsZXIiIDxkYXZlbUBkYXZlbWxvZnQubmV0Pg0KPiA+ID4gQ2M6IGxpbnV4LWNyeXB0b0B2
-Z2VyLmtlcm5lbC5vcmcNCj4gPiA+IFNpZ25lZC1vZmYtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVz
-QGxpbmFyby5vcmc+DQo+ID4gPiAtLS0NCj4gPiANCj4gPiBBY2tlZC1ieTogRGFuaWVsZSBBbGVz
-c2FuZHJlbGxpIDxkYW5pZWxlLmFsZXNzYW5kcmVsbGlAaW50ZWwuY29tPg0KPiA+IA0KPiA+IA0K
-PiA+IFRoYW5rcyBmb3IgZml4aW5nIHRoZXNlLg0KPiA+IA0KPiA+IEZvciBzb21lIHJlYXNvbiwg
-aWYgdGhlIGlzc3VlcyBhcmUgdGhlcmUsIEkgZG9uJ3QgZ2V0IHRob3NlIHdhcm5pbmdzDQo+ID4g
-d2hlbiBjb21waWxpbmcgd2l0aCBXPTE7IHRoZSBjb21tYW5kIEkgcnVuIGlzOg0KPiA+IA0KPiA+
-ICAgIG1ha2UgQ1JPU1NfQ09NUElMRT08YXJtLWNvbXBpbGVyPiBBUkNIPWFybTY0IC1qNSBXPTQg
-TT1kcml2ZXJzL2NyeXB0by9rZWVtYmF5DQo+IA0KPiBOb3Qgc3VyZSB3aGF0IHdvdWxkIGhhcHBl
-biB3aXRoICdXPTQnLg0KDQpTb3JyeSB0aGF0IHdhcyBhIHR5cG8gKEkgbWVhbnQgdG8gd3JpdGUg
-Vz0xKSA6Lw0KDQo+IA0KPiBQcm9iYWJseSBub3RoaW5nLCBhcyBpdCBvbmx5IGdvZXMgdXAgdG8g
-MyBbMF0uDQo+IA0KPiA+IFdoaWNoIGNvbW1hbmQgYXJlIHlvdSBydW5uaW5nIGV4YWN0bHk/IEkn
-bGwgdXNlIGl0IGZvciBteSBuZXh0DQo+ID4gc3VibWlzc2lvbnMuDQo+IA0KPiAgcm0gLXJmIC4u
-L2J1aWxkcy9idWlsZC1hcm02NC9kcml2ZXJzL2NyeXB0by8NCj4gIG1ha2UgLWYgTWFrZWZpbGUg
-LWoyNCAtLXF1aWV0IEFSQ0g9YXJtNjQgQ1JPU1NfQ09NUElMRT1hYXJjaDY0LWxpbnV4LWdudS0g
-S0JVSUxEX09VVFBVVD0uLi9idWlsZHMvYnVpbGQtYXJtNjQgYWxsbW9kY29uZmlnDQo+ICBtYWtl
-IC1mIE1ha2VmaWxlIC1qMjQgLS1xdWlldCBBUkNIPWFybTY0IENST1NTX0NPTVBJTEU9YWFyY2g2
-NC1saW51eC1nbnUtIEtCVUlMRF9PVVRQVVQ9Li4vYnVpbGRzL2J1aWxkLWFybTY0ICBXPTEgZHJp
-dmVycy9jcnlwdG8vDQo+IA0KPiBIb3BlIHRoYXQgaGVscHMuDQoNClRoYW5rcyBmb3IgcHJvdmlk
-aW5nIHlvdXIgY29tbWFuZHMuIFVuZm9ydHVuYXRlbHksIGV2ZW4gaWYgSSBydW4gdGhlbSBJDQpk
-b24ndCBnZXQgdGhlIGFib3ZlIHdhcm5pbmdzLg0KDQpJIHdvbmRlciBpZiB0aGUgaXNzdWUgaXMg
-aW4gbXkgdmVyc2lvbiBvZiBzY3JpcHRzL2tlcm5lbC1kb2MgKHdoaWNoDQpzZWVtcyB0byBiZSB0
-aGUgc2NyaXB0IGNhbGxlZCBieSB0aGUgTWFrZWZpbGUgdG8gdG8gY2hlY2sgdGhlIGtlcm5lbC0N
-CmRvYykuDQoNCkknbGwga2VlcCBpbnZlc3RpZ2F0aW5nIHRoaXMuIFRoYW5rcyBhZ2FpbiENCg0K
-PiANCj4gWzBdIHNjcmlwdHMvTWFrZWZpbGUuZXh0cmF3YXJuDQo+IA0K
+On 04.02.2021 20:17, Yang Shi wrote:
+> On Thu, Feb 4, 2021 at 12:31 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>
+>> On 03.02.2021 20:20, Yang Shi wrote:
+>>> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+>>> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+>>>
+>>> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+>>> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+>>> may suffer from over shrink, excessive reclaim latency, etc.
+>>>
+>>> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+>>> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+>>> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+>>>
+>>> We observed this hit in our production environment which was running vfs heavy workload
+>>> shown as the below tracing log:
+>>>
+>>> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+>>> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+>>> cache items 246404277 delta 31345 total_scan 123202138
+>>> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+>>> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+>>> last shrinker return val 123186855
+>>>
+>>> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+>>> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+>>>
+>>> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+>>> better isolation.
+>>>
+>>> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+>>> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+>>>
+>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>>> ---
+>>>  include/linux/memcontrol.h |  7 +++---
+>>>  mm/vmscan.c                | 45 ++++++++++++++++++++++++--------------
+>>>  2 files changed, 33 insertions(+), 19 deletions(-)
+>>>
+>>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>>> index 4c9253896e25..c457fc7bc631 100644
+>>> --- a/include/linux/memcontrol.h
+>>> +++ b/include/linux/memcontrol.h
+>>> @@ -93,12 +93,13 @@ struct lruvec_stat {
+>>>  };
+>>>
+>>>  /*
+>>> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+>>> - * which have elements charged to this memcg.
+>>> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+>>> + * shrinkers, which have elements charged to this memcg.
+>>>   */
+>>>  struct shrinker_info {
+>>>       struct rcu_head rcu;
+>>> -     unsigned long map[];
+>>> +     atomic_long_t *nr_deferred;
+>>> +     unsigned long *map;
+>>>  };
+>>>
+>>>  /*
+>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>> index dc0d69e081b0..d9126f12890f 100644
+>>> --- a/mm/vmscan.c
+>>> +++ b/mm/vmscan.c
+>>> @@ -196,10 +196,12 @@ static void free_shrinker_info_rcu(struct rcu_head *head)
+>>>  }
+>>>
+>>>  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>>> -                                int size, int old_size)
+>>> +                                 int m_size, int d_size,
+>>> +                                 int old_m_size, int old_d_size)
+>>>  {
+>>>       struct shrinker_info *new, *old;
+>>>       int nid;
+>>> +     int size = m_size + d_size;
+>>>
+>>>       for_each_node(nid) {
+>>>               old = rcu_dereference_protected(
+>>> @@ -212,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>>>               if (!new)
+>>>                       return -ENOMEM;
+>>>
+>>> -             /* Set all old bits, clear all new bits */
+>>> -             memset(new->map, (int)0xff, old_size);
+>>> -             memset((void *)new->map + old_size, 0, size - old_size);
+>>> +             new->nr_deferred = (atomic_long_t *)(new + 1);
+>>> +             new->map = (void *)new->nr_deferred + d_size;
+>>> +
+>>> +             /* map: set all old bits, clear all new bits */
+>>> +             memset(new->map, (int)0xff, old_m_size);
+>>> +             memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
+>>> +             /* nr_deferred: copy old values, clear all new values */
+>>> +             memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
+>>> +             memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
+>>>
+>>>               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+>>>               call_rcu(&old->rcu, free_shrinker_info_rcu);
+>>> @@ -229,9 +237,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>>>       struct shrinker_info *info;
+>>>       int nid;
+>>>
+>>> -     if (mem_cgroup_is_root(memcg))
+>>> -             return;
+>>> -
+>>>       for_each_node(nid) {
+>>>               pn = mem_cgroup_nodeinfo(memcg, nid);
+>>>               info = rcu_dereference_protected(pn->shrinker_info, true);
+>>> @@ -244,12 +249,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>>>  {
+>>>       struct shrinker_info *info;
+>>>       int nid, size, ret = 0;
+>>> -
+>>> -     if (mem_cgroup_is_root(memcg))
+>>> -             return 0;
+>>> +     int m_size, d_size = 0;
+>>>
+>>>       down_write(&shrinker_rwsem);
+>>> -     size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+>>> +     m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+>>> +     d_size = shrinker_nr_max * sizeof(atomic_long_t);
+>>> +     size = m_size + d_size;
+>>> +
+>>>       for_each_node(nid) {
+>>>               info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+>>>               if (!info) {
+>>> @@ -257,6 +263,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>>>                       ret = -ENOMEM;
+>>>                       break;
+>>>               }
+>>> +             info->nr_deferred = (atomic_long_t *)(info + 1);
+>>> +             info->map = (void *)info->nr_deferred + d_size;
+>>>               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+>>>       }
+>>>       up_write(&shrinker_rwsem);
+>>> @@ -268,10 +276,16 @@ static int expand_shrinker_info(int new_id)
+>>>  {
+>>>       int size, old_size, ret = 0;
+>>>       int new_nr_max = new_id + 1;
+>>> +     int m_size, d_size = 0;
+>>> +     int old_m_size, old_d_size = 0;
+>>>       struct mem_cgroup *memcg;
+>>>
+>>> -     size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
+>>> -     old_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+>>> +     m_size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
+>>> +     d_size = new_nr_max * sizeof(atomic_long_t);
+>>> +     size = m_size + d_size;
+>>> +     old_m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+>>> +     old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
+>>> +     old_size = old_m_size + old_d_size;
+>>>       if (size <= old_size)
+>>>               goto out;
+>>
+>> Before this patch we used to allocate shrinker_info with BITS_PER_LONG batching.
+>> So, first registered shrinker used to allocate a map of unsigned long size, and
+>> we could to allocate 63 more shrinkers without maps expanding.
+>>
+>> After this patch we will expand maps on every shrinker registration, won't we?
+> 
+> Yes, I'm supposed "maps" means "info".I'm supposed the most shrinkers
+> should be registered at boot time, and typically very few memcgs are
+> created at boot time so I didn't treat it as a hot path.
+
+Not so. Every mount adds at least one shrinker, so they can actively be added
+during normal system work.
+
+E.g., on our production system (containers) several thousand shrinkers
+is not a rare situation.
+
+>> What do you think about batching here?
+> 
+> Just off the top of my head, we could allocate, for example, 64
+> nr_deferred (64 * sizeof(atomic_long_t)) so that we just need to
+> expand info for every 64 shrinker registrations. Maybe define it
+> depends on the machine (64 bit - 64, 32 bit - 32).
+> 
+> Why 64? Basically a magic number. And when I was investigating that
+> list_lru reparent race issue
+> (https://lore.kernel.org/linux-mm/20201202171749.264354-1-shy828301@gmail.com/)
+> I happened to notice that there are at most 64 shrinkers registered in
+> our production environment (a typical data center configuration).
+> 
+> How do you think about it?
+
+I think 64 is OK for now. We may use some #define to set this value, so we will
+be able to change it easily in the future.
+
+>>>
+>>> @@ -280,9 +294,8 @@ static int expand_shrinker_info(int new_id)
+>>>
+>>>       memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>>>       do {
+>>> -             if (mem_cgroup_is_root(memcg))
+>>> -                     continue;
+>>> -             ret = expand_one_shrinker_info(memcg, size, old_size);
+>>> +             ret = expand_one_shrinker_info(memcg, m_size, d_size,
+>>> +                                            old_m_size, old_d_size);
+>>>               if (ret) {
+>>>                       mem_cgroup_iter_break(NULL, memcg);
+>>>                       goto out;
+>>>
+>>
+>>
+
