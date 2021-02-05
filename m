@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC55310B02
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A367310B0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhBEMYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:24:01 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54607 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231934AbhBEMUa (ORCPT
+        id S231325AbhBEM1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhBEMXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:20:30 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115CCNU0017758;
-        Fri, 5 Feb 2021 13:19:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=TgkwKl2BECy0Q+4thRnTns/kLvVDeFiR+zC2ZUA0n98=;
- b=ZaGbZ3WnKyL+34zPpozlCxSsS1fDB+i8+Jne3JsCO7zziBNZjFyM8lUk9Lsu/WWFKuyt
- 4uBOmwiOufLR+SuB2/GAJJPgb6tF5hEHQNLdp2X0fg4s3L40YJnAC7DNmRUf4Ro/bBdK
- BRtHkH0h4yhVzqHtt/w0M3MGTqUdkraDptCN/Sn0ubB/BFBr56gykoa1xarY2yzef7cj
- yQS5+Acm8l2hifU7r2hjsdSCsxmf5WU2/y6+L6A435wMcesa93KPa2ePYQ4vZw+pbCOa
- SPNMRfqeTSLq3sQxkIKFZImibAilqCV+U1Uhdc80q2mkG6Z4KKjizNcccxTKIHq4k9ZR Ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36d0fsen70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 13:19:34 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D8A7B10002A;
-        Fri,  5 Feb 2021 13:19:33 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AF04122FF07;
-        Fri,  5 Feb 2021 13:19:33 +0100 (CET)
-Received: from lmecxl0504.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 13:19:33 +0100
-Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <ludovic.barre@foss.st.com>,
-        =?UTF-8?Q?Marek_Va=c5=a1ut?= <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-2-yann.gautier@foss.st.com>
- <CAPDyKFqdtK33HSW_AM0s9172V=cBM6wnKuHubXSOGCVqJ8nzFg@mail.gmail.com>
-From:   Yann GAUTIER <yann.gautier@foss.st.com>
-Message-ID: <e31df871-ae1a-7c80-d741-0813f90532c7@foss.st.com>
-Date:   Fri, 5 Feb 2021 13:19:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 5 Feb 2021 07:23:31 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740F4C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:22:49 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id q2so8622984edi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:22:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Lw/znXvFSVyy9RpJZDySvtEr6oJORuBhhFt4eQjE6g=;
+        b=NnHjxWJQ9K9qnXP+r7MinGrS46yeObSlFp2IeIDSpivDKFuWg3TAwrs6E3cfEMsoy8
+         aTcJV46dvuOpGhjfjHvOZLAPu3r4sqXEGBUTdFiwGtG6HkBmSxKvBIm7SgmvIgvpyb3e
+         2pHiQ10fPPpA+FaHkjWJp2pW1tf5wZtMJ7jucVk03ee4eVD2qYhQ1VYJu1y0UZj2g30Q
+         khMmiiZQaTAwdWMHix4Y6mgfufuvASni+vYBXTfpHqfj10fawe8lMffgLEyND9h4dNKY
+         AEQGqlJphySYys0EFvsOXKHik5uQBEFkvlOmntKeUcorsCx7BtwNBRXRj1qno7tuQZwe
+         2j/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Lw/znXvFSVyy9RpJZDySvtEr6oJORuBhhFt4eQjE6g=;
+        b=IRKauUo9fedW6RTYY1MElWiwi50+MFWgnJ7ItumwLDKSeDVokG09wzPsiPavvqpCun
+         D39FkDvr9xYDSo6X7R6ADNMgZST8GfFWL1frDUTeTNGRhubSOciRYznifzyvvFJV30ap
+         3lDnjT7xGkTB+0yFKXXEAYaKK4pYKyoKiTEKAYRipe3R7JsElv0u5Cy+eWxXc24u+AnA
+         03NFr+5nkM0sTAsqR3NAttv4Hi6kZrSeLAfZxqInzrCqS7YW3lGwuvJ5ML275uajYxfz
+         u8ZrLTuUqENqU0zk13pZXd5GldpJBi5OKqGD0V3A/DregLozsI/5T3srk9PcC6wFL5/H
+         B73g==
+X-Gm-Message-State: AOAM531pfKkn0MVuk0CM1GK85KX7s6ec6rYuoHxMsxEFI9FoQCLdS9eE
+        cTMcXjvfZdpShw==
+X-Google-Smtp-Source: ABdhPJyD3O+6IBdsWzPsKAncBTf9+J0u+k2QhIOzMjfeXGV8PfjDrzfykCFcucsE2k6Pb+GW9yTU2g==
+X-Received: by 2002:a05:6402:323:: with SMTP id q3mr3266062edw.115.1612527767980;
+        Fri, 05 Feb 2021 04:22:47 -0800 (PST)
+Received: from md2k7s8c.ad001.siemens.net ([2a02:810d:9040:4c1f:e0b6:d0e7:64d2:f3a0])
+        by smtp.gmail.com with ESMTPSA id f6sm1177590edr.72.2021.02.05.04.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 04:22:47 -0800 (PST)
+From:   Andreas Oetken <ennoerlangen@googlemail.com>
+X-Google-Original-From: Andreas Oetken <ennoerlangen@gmail.com>
+To:     Ley Foon Tan <ley.foon.tan@intel.com>, linux-kernel@vger.kernel.org
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Oetken <ennoerlangen@gmail.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>
+Subject: [PATCH] nios2: Don't use _end for calculating min_low_pfn
+Date:   Fri,  5 Feb 2021 13:22:43 +0100
+Message-Id: <20210205122243.1059897-1-ennoerlangen@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqdtK33HSW_AM0s9172V=cBM6wnKuHubXSOGCVqJ8nzFg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_07:2021-02-05,2021-02-05 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 10:53 AM, Ulf Hansson wrote:
-> - trimmed cc-list
-> 
-> On Thu, 4 Feb 2021 at 13:08, <yann.gautier@foss.st.com> wrote:
->>
->> From: Yann Gautier <yann.gautier@foss.st.com>
->>
->> To properly manage commands awaiting R1B responses, the capability
->> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
->> manage busy detection.
->> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
->> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
-> 
-> Would it be possible for you to share a little bit more about the
-> problem? Like under what circumstances does things screw up?
-> 
-> Is the issue only occurring when the cmd->busy_timeout becomes larger
-> than host->max_busy_timeout. Or even in other cases?
-> 
->>
->> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
->> ---
->>   drivers/mmc/host/mmci.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
->> index 1bc674577ff9..bf6971fdd1a6 100644
->> --- a/drivers/mmc/host/mmci.c
->> +++ b/drivers/mmc/host/mmci.c
->> @@ -2148,7 +2148,7 @@ static int mmci_probe(struct amba_device *dev,
->>                  if (variant->busy_dpsm_flag)
->>                          mmci_write_datactrlreg(host,
->>                                                 host->variant->busy_dpsm_flag);
->> -               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->> +               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | MMC_CAP_NEED_RSP_BUSY;
-> 
-> This isn't correct as the ux500 (and likely also other legacy
-> variants) don't need this. I have tried it in the past and it works
-> fine for ux500 without MMC_CAP_NEED_RSP_BUSY.
-> 
-> The difference is rather that the busy detection for stm32 variants
-> needs a corresponding HW busy timeout to be set (its
-> variant->busy_timeout flag is set). Perhaps we can use that
-> information instead?
-> 
-> Note that, MMC_CAP_NEED_RSP_BUSY, means that cmd->busy_timeout will
-> not be set by the core for erase commands, CMD5 and CMD6.
-> 
-> By looking at the code in mmci_start_command(), it looks like we will
-> default to a timeout of 10s, when cmd->busy_timeout isn't set. At
-> least for some erase requests, that won't be sufficient. Would it be
-> possible to disable the HW busy timeout in some way - and maybe use a
-> software timeout instead? Maybe I already asked Ludovic about this?
-> :-)
-> 
-> BTW, did you check that the MMCIDATATIMER does get the correct value
-> set for the timer in mmci_start_command() and if
-> host->max_busy_timeout gets correctly set in
-> mmci_set_max_busy_timeout()?
-> 
-> [...]
-> 
-> Kind regards
-> Uffe
-> 
+From: Andreas Oetken <andreas.oetken@siemens.com>
 
-Hi Ulf,
+If there is a initramfs linked into the kernel which will be
+freed later on there is free memory somewhere between _etext
+and _end, thus using _end for min_low_pfn is not correct.
+This may lead to issues in dma_capable when checking
+'min(addr, end) < phys_to_dma(dev, PFN_PHYS(min_low_pfn)))'
+as the address addr might be below min_low_pfn. Picked
+find_limits from architecture arm for applying min_low_pfn and
+max_low_pfn. Maybe using _etext for min_low_pfn would be
+fine too.
 
-Thanks for the hints.
-I'll check all of that and get back with updated patches.
+Signed-off-by: Andreas Oetken <andreas.oetken@siemens.com>
+---
+ arch/nios2/kernel/setup.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-As I tried to explain in the cover letter and in reply to Adrian, I saw
-a freeze (BUSYD0) in test 37 during MMC_ERASE command  with 
-SECURE_ERASE_ARG, when running this test just after test 36 (or any 
-other write test). But maybe, as you said that's mostly a incorrect 
-timeout issue.
+diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
+index 3c6e3c813a0b..d2f21957e99c 100644
+--- a/arch/nios2/kernel/setup.c
++++ b/arch/nios2/kernel/setup.c
+@@ -32,8 +32,6 @@ EXPORT_SYMBOL(memory_start);
+ unsigned long memory_end;
+ EXPORT_SYMBOL(memory_end);
+ 
+-unsigned long memory_size;
+-
+ static struct pt_regs fake_regs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ 					0, 0, 0, 0, 0, 0,
+ 					0};
+@@ -141,16 +139,22 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
+ 	parse_early_param();
+ }
+ 
++static void __init find_limits(unsigned long *min, unsigned long *max_low,
++			       unsigned long *max_high)
++{
++	*max_low = PFN_DOWN(memblock_get_current_limit());
++	*min = PFN_UP(memblock_start_of_DRAM());
++	*max_high = PFN_DOWN(memblock_end_of_DRAM());
++}
++
+ void __init setup_arch(char **cmdline_p)
+ {
+ 	int dram_start;
+ 
+ 	console_verbose();
+ 
+-	dram_start = memblock_start_of_DRAM();
+-	memory_size = memblock_phys_mem_size();
+-	memory_start = PAGE_ALIGN((unsigned long)__pa(_end));
+-	memory_end = (unsigned long) CONFIG_NIOS2_MEM_BASE + memory_size;
++	memory_start = memblock_start_of_DRAM();
++	memory_end = memblock_end_of_DRAM();
+ 
+ 	init_mm.start_code = (unsigned long) _stext;
+ 	init_mm.end_code = (unsigned long) _etext;
+@@ -161,11 +165,10 @@ void __init setup_arch(char **cmdline_p)
+ 	/* Keep a copy of command line */
+ 	*cmdline_p = boot_command_line;
+ 
+-	min_low_pfn = PFN_UP(memory_start);
+-	max_low_pfn = PFN_DOWN(memory_end);
++	find_limits(&min_low_pfn, &max_low_pfn, &max_pfn);
+ 	max_mapnr = max_low_pfn;
+ 
+-	memblock_reserve(dram_start, memory_start - dram_start);
++	memblock_reserve(__pa_symbol(_stext), _end - _stext);
+ #ifdef CONFIG_BLK_DEV_INITRD
+ 	if (initrd_start) {
+ 		memblock_reserve(virt_to_phys((void *)initrd_start),
+-- 
+2.30.0
 
-Regards,
-Yann
