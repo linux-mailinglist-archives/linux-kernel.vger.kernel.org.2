@@ -2,167 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65064311070
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770DA31106D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhBERNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbhBEQC5 (ORCPT
+        id S233433AbhBERMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:12:33 -0500
+Received: from mail.micronovasrl.com ([212.103.203.10]:35984 "EHLO
+        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231725AbhBEQFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:02:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2D9C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:44:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WTOYkO8xgxh6+cxoqHMXLP73u+ngAcUFQvBQ799Oj4I=; b=RSNnrU0eDb+nkyop/RJYh1yq1s
-        peyU7BTzC9ITvPQQBDL31Tke2qqMDigbOuL5WKhxq8DF8ON1BYvGea5/Np8jHXuCw8HxTJ43ULF2l
-        mm+kXn+Ro148GTzgf4gliQYYH5YIFIRSvluiOaliXxgTQ4OZmy3h73oQkmBvsaBFM4dvBnnca5IE2
-        QXIWD2K2otw7bj+BVJW7/Bvf7+7B2I9R/Yqo6wmiHIOJQu6WJfSDRrc6CAMFZsT0M4Kv2nWyPnpfE
-        85dF3V/C5CcL98iS5eM7sSCwoJsO1xeKsXrjtJsfnVROy07cqYB3Rq4/M14oBX6rlH+41U5nHE59L
-        zmEMsTrA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l859l-002aCD-0l; Fri, 05 Feb 2021 17:44:33 +0000
-Date:   Fri, 5 Feb 2021 17:44:33 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>,
-        Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: INFO: task can't die in shrink_inactive_list (2)
-Message-ID: <20210205174433.GJ308988@casper.infradead.org>
-References: <0000000000000340a105b49441d3@google.com>
- <20201123195452.8ecd01b1fc2ce287dfd6a0d5@linux-foundation.org>
- <alpine.LSU.2.11.2012211128480.2302@eggly.anvils>
- <20201221203344.GG874@casper.infradead.org>
+        Fri, 5 Feb 2021 11:05:22 -0500
+Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
+        by mail.micronovasrl.com (Postfix) with ESMTP id A4101B04882
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:46:57 +0100 (CET)
+Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
+         h=content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:user-agent:date:date
+        :message-id:from:from:references:to:subject:subject; s=dkim; t=
+        1612547217; x=1613411218; bh=7P00f57/9R26tDFzPR1XDObGA+7xrXtFmKh
+        cUybzuJE=; b=LzS6wXA7WSiR0I5PyBEXL5yqRYwU5fn+FbYWzuvod758TF1ubSe
+        8pzWApqcKcWVu9pT+NnHWLoBTIg+bE11wvMwN/iFWEY4jxRW4/UUxRlDUukmy1jP
+        3wjbu3ACRtkWzZbPCEPZn4i4Qvz4wHmUN9Wjm3q2s3imbZVEKwP3iZvU=
+X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.085
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.085 tagged_above=-10 required=4.5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001,
+        MONEY_NOHTML=1.144, NICE_REPLY_A=-0.33]
+        autolearn=no autolearn_force=no
+Received: from mail.micronovasrl.com ([127.0.0.1])
+        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id bEksrtJp9Z5D for <linux-kernel@vger.kernel.org>;
+        Fri,  5 Feb 2021 18:46:57 +0100 (CET)
+Received: from [192.168.50.85] (146-241-184-239.dyn.eolo.it [146.241.184.239])
+        by mail.micronovasrl.com (Postfix) with ESMTPSA id 507F9B04671;
+        Fri,  5 Feb 2021 18:46:56 +0100 (CET)
+Subject: Re: [PATCH v3 5/5] serial: 8250_dw: add em485 support
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, gregkh@linuxfoundation.org,
+        jslaby@suse.com, matwey.kornilov@gmail.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+References: <20200517215610.2131618-1-heiko@sntech.de>
+ <20200517215610.2131618-6-heiko@sntech.de>
+ <20200518152103.GI1634618@smile.fi.intel.com>
+ <1f7881b5-f900-dbbe-3f8d-f990d2bdf5a7@micronovasrl.com>
+ <YBk14xJhIyqTNH/k@smile.fi.intel.com>
+From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
+Message-ID: <9b2a7c4c-2ef1-5198-9aae-83f9fec00289@micronovasrl.com>
+Date:   Fri, 5 Feb 2021 18:46:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221203344.GG874@casper.infradead.org>
+In-Reply-To: <YBk14xJhIyqTNH/k@smile.fi.intel.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: it
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 02/02/2021 12:22, Andy Shevchenko ha scritto:
+> On Tue, Feb 02, 2021 at 01:31:17AM +0100, Giulio Benetti wrote:
+>> Il 18/05/2020 17:21, Andy Shevchenko ha scritto:
+>>> On Sun, May 17, 2020 at 11:56:10PM +0200, Heiko Stuebner wrote:
+>>>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>>>
+>>>> Need to use rs485 transceiver so let's use existing em485 485 emulation
+>>>> layer on top of 8250.
+>>>>
+>>>> Add rs485_config callback to port and uses the standard em485 start and
+>>>> stop helpers.
+>>>
+>>> Would it prevent to use native RS485 support?
+>>
+>> 8250_dw doesn't have a native RS485 support, do you mean using hardware
+>> RTS assertion? Anyway at the moment it's not present. This would be the
+>> first rs485 support added to 8250_dw.
+> 
+> DW v4.0+ has it.
 
-Hugh, did you get a chance to test this?
+I have access to datasheet of DW v3, and I don't have access to hardware
+with DW v4.0v Uart.
+But I could add rs485emu for only UART version < 4.0 and I can find Uart
+version by reading UCV register, would it be acceptable?
 
-On Mon, Dec 21, 2020 at 08:33:44PM +0000, Matthew Wilcox wrote:
-> On Mon, Dec 21, 2020 at 11:56:36AM -0800, Hugh Dickins wrote:
-> > On Mon, 23 Nov 2020, Andrew Morton wrote:
-> > > On Fri, 20 Nov 2020 17:55:22 -0800 syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com> wrote:
-> > > 
-> > > > Hello,
-> > > > 
-> > > > syzbot found the following issue on:
-> > > > 
-> > > > HEAD commit:    03430750 Add linux-next specific files for 20201116
-> > > > git tree:       linux-next
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
-> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
-> > > 
-> > > Alex, your series "per memcg lru lock" changed the vmscan code rather a
-> > > lot.  Could you please take a look at that reproducer?
-> > 
-> > Andrew, I promised I'd take a look at this syzreport too (though I think
-> > we're agreed by now that it has nothing to do with per-memcg lru_lock).
-> > 
-> > I did try, but (unlike Alex) did not manage to get the reproducer to
-> > reproduce it.  No doubt I did not try hard enough: I did rather lose
-> > interest after seeing that it appears to involve someone with
-> > CAP_SYS_ADMIN doing an absurdly large ioctl(BLKFRASET) on /dev/nullb0
-> > ("Null test block driver" enabled via CONFIG_BLK_DEV_NULL_BLK=y: that I
-> > did enable) and faulting from it: presumably triggering an absurd amount
-> > of readahead.
-> > 
-> > Cc'ing Matthew since he has a particular interest in readahead, and
-> > might be inspired to make some small safe change that would fix this,
-> > and benefit realistic cases too; but on the whole it didn't look worth
-> > worrying about - or at least not by me.
-> 
-> Oh, interesting.  Thanks for looping me in, I hadn't looked at this one
-> at all.  Building on the debugging you did, this is the interesting
-> part of the backtrace to me:
-> 
-> > > >  try_to_free_pages+0x29f/0x720 mm/vmscan.c:3264
-> > > >  __perform_reclaim mm/page_alloc.c:4360 [inline]
-> > > >  __alloc_pages_direct_reclaim mm/page_alloc.c:4381 [inline]
-> > > >  __alloc_pages_slowpath.constprop.0+0x917/0x2510 mm/page_alloc.c:4785
-> > > >  __alloc_pages_nodemask+0x5f0/0x730 mm/page_alloc.c:4995
-> > > >  alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
-> > > >  alloc_pages include/linux/gfp.h:547 [inline]
-> > > >  __page_cache_alloc mm/filemap.c:977 [inline]
-> > > >  __page_cache_alloc+0x2ce/0x360 mm/filemap.c:962
-> > > >  page_cache_ra_unbounded+0x3a1/0x920 mm/readahead.c:216
-> > > >  do_page_cache_ra+0xf9/0x140 mm/readahead.c:267
-> > > >  do_sync_mmap_readahead mm/filemap.c:2721 [inline]
-> > > >  filemap_fault+0x19d0/0x2940 mm/filemap.c:2809
-> 
-> So ra_pages has been set to something ridiculously large, and as
-> a result, we call do_page_cache_ra() asking to read more memory than
-> is available in the machine.  Funny thing, we actually have a function
-> to prevent this kind of situation, and it's force_page_cache_ra().
-> 
-> So this might fix the problem.  I only tested that it compiles.  I'll
-> be happy to write up a proper changelog and sign-off for it if it works ...
-> it'd be good to get it some soak testing on a variety of different
-> workloads; changing this stuff is enormously subtle.
-> 
-> As a testament to that, I think Fengguang got it wrong in commit
-> 2cbea1d3ab11 -- async_size should have been 3 * ra_pages / 4, not ra_pages
-> / 4 (because we read-behind by half the range, so we're looking for a
-> page fault to happen a quarter of the way behind this fault ...)
-> 
-> This is partially Roman's fault, see commit 600e19afc5f8.
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d5e7c2029d16..43fe0f0ae3bb 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2632,7 +2632,7 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->  	ra->size = ra->ra_pages;
->  	ra->async_size = ra->ra_pages / 4;
->  	ractl._index = ra->start;
-> -	do_page_cache_ra(&ractl, ra->size, ra->async_size);
-> +	force_page_cache_ra(&ractl, ra, ra->size);
->  	return fpin;
->  }
->  
-> diff --git a/mm/internal.h b/mm/internal.h
-> index c43ccdddb0f6..5664b4b91340 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -49,8 +49,6 @@ void unmap_page_range(struct mmu_gather *tlb,
->  			     unsigned long addr, unsigned long end,
->  			     struct zap_details *details);
->  
-> -void do_page_cache_ra(struct readahead_control *, unsigned long nr_to_read,
-> -		unsigned long lookahead_size);
->  void force_page_cache_ra(struct readahead_control *, struct file_ra_state *,
->  		unsigned long nr);
->  static inline void force_page_cache_readahead(struct address_space *mapping,
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index c5b0457415be..f344c894c26a 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -246,7 +246,7 @@ EXPORT_SYMBOL_GPL(page_cache_ra_unbounded);
->   * behaviour which would occur if page allocations are causing VM writeback.
->   * We really don't want to intermingle reads and writes like that.
->   */
-> -void do_page_cache_ra(struct readahead_control *ractl,
-> +static void do_page_cache_ra(struct readahead_control *ractl,
->  		unsigned long nr_to_read, unsigned long lookahead_size)
->  {
->  	struct inode *inode = ractl->mapping->host;
-> 
+Best regards
+-- 
+Giulio Benetti
+CTO
+
+MICRONOVA SRL
+Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
+Tel. 049/8931563 - Fax 049/8931346
+Cod.Fiscale - P.IVA 02663420285
+Capitale Sociale ¤ 26.000 i.v.
+Iscritta al Reg. Imprese di Padova N. 02663420285
+Numero R.E.A. 258642
