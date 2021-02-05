@@ -2,47 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287CD311069
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40A031106B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhBERLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:11:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
+        id S233337AbhBERLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:11:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233243AbhBERLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:11:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C369064DA5;
-        Fri,  5 Feb 2021 18:52:55 +0000 (UTC)
+        id S233265AbhBERLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:11:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E576E64F0D;
+        Fri,  5 Feb 2021 18:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612551178;
-        bh=UeP4cWGv5rtK74a32jB0nnmkJoxUA5+l9zruHAQr0i0=;
+        s=k20201202; t=1612551181;
+        bh=arhgr6HZwMx+KwiMC93iN9wOeWnIuRyleMpKIV7Zng0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sk6gYymuBeNW7XBVuQHMHqgxAlaFkA4j0HFbg4nH56hKHWer1QF0JyMixJF3tCWcd
-         ETEpO1yrULexe4dX+6BJb1gGPpgc9KfLNu2pYT8tT4mh9BZb6Jz5iQFeOtLk8ZgTEF
-         /xVTc9UfsS1YyW6q+Zv8S0NbtKQk5jAgLILQhcp6ZWOpv8KKCx21hgZqWtsA8dadnI
-         e6m8Wn/QVJPe850XR9FT90wrzD0+JKOaqRWF4U9F9lJ2C5DOb6zj1iJ7AWVVETfqB2
-         LjE6x+EoPXK4ycik3IyL5gIBy8y/KZXMrAR3/rJY8+E4aRj0TTOO6vpQUuC7NTNHx1
-         IaZDC3CeNapKQ==
+        b=S212N52uWmFWIN66TCZww6h6k3uqoLbsWDtrv5h5r7q1lfRYioskV1F5OZPp4sykl
+         8me8HveCHgDu1fxB5zq6S9hov3/mWs2h+d78KpzVI5z/CRJWT3fw1q4OXLCZ0v4xjt
+         ch3F3mqJvzlJdPz5dmeV1cBcejw3MjNdTc3e4G+CkViCWwrlMg04ytw1Mg6NJzMge0
+         DiozwkadLkWL8/9IwieLvVT0nHYc9hWoT3s+bO43CKXO8/9+Z1PDFF1MvJy3/Unva0
+         k+X0yG8bRIQBlHU7oXecRqDZmgXvR891LP6uDMP1IcEMvwE8GQSEnO8H/5zjer5gzd
+         UGNhMBrElIXlw==
 From:   Will Deacon <will@kernel.org>
-To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH V2 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Date:   Fri,  5 Feb 2021 18:52:50 +0000
-Message-Id: <161254816916.731861.2448215186785582734.b4-ty@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>, catalin.marinas@arm.com
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        andreyknvl@google.com, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, pcc@google.com,
+        linux-arm-kernel@lists.infradead.org, peterx@redhat.com,
+        elver@google.com
+Subject: Re: [PATCH] mm/arm64: Correct obsolete comment in do_page_fault()
+Date:   Fri,  5 Feb 2021 18:52:51 +0000
+Message-Id: <161255062810.1453555.15259323279738372740.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
-References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20210205090919.63382-1-linmiaohe@huawei.com>
+References: <20210205090919.63382-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -50,22 +44,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 09:41:52 +0530, Anshuman Khandual wrote:
-> This series fixes pfn_valid() for ZONE_DEVICE based memory and also improves
-> its performance for normal hotplug memory. While here, it also reorganizes
-> pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.11-rc6.
-> 
-> Question - should pfn_section_valid() be tested both for boot and non boot
-> memory as well ?
-> 
-> [...]
+On Fri, 5 Feb 2021 04:09:19 -0500, Miaohe Lin wrote:
+> commit d8ed45c5dcd4 ("mmap locking API: use coccinelle to convert mmap_sem
+> rwsem call sites") has convertd down_read_trylock() to mmap_read_trylock().
+> But it forgot to update the relevant comment.
 
-Applied to arm64 (for-next/mm), thanks!
+Applied to arm64 (for-next/cosmetic), thanks!
 
-[1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-      https://git.kernel.org/arm64/c/fccf0a3dfeaf
-[2/2] arm64/mm: Reorganize pfn_valid()
-      https://git.kernel.org/arm64/c/387f3531116e
+[1/1] mm/arm64: Correct obsolete comment in do_page_fault()
+      https://git.kernel.org/arm64/c/abd4737f67d7
 
 Cheers,
 -- 
