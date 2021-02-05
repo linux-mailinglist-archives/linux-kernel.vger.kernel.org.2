@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14BA31153C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F99311616
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhBEWZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:25:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44988 "EHLO mail.kernel.org"
+        id S231580AbhBEWud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:50:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232856AbhBEOyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8555F650A2;
-        Fri,  5 Feb 2021 14:14:09 +0000 (UTC)
+        id S232297AbhBEOqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:46:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 940BB650A6;
+        Fri,  5 Feb 2021 14:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534450;
-        bh=EEAfMC++y4ap500raPhjinSbwnP9yMeloiQp2YQhUd0=;
+        s=korg; t=1612534453;
+        bh=f9HnJlx8Ydx0o3nuPmJvAbSPMqI+d07aH4Z9ucNyuqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mpeEHJArfbSB0eDOA892jqzQabbYTp3tAVkiaDWFGEgD5DjNvrAHHsyatnr2bGO+f
-         SJgSZv+TBhJsCHTG+aMGXKGaa285AH/T2xwZcm7liUAjGux1fzsTPUHH4c/g//xVTq
-         RaQSH3jnIeS0ZtSOrvaknVNQSD3wD1++JyTrvPtk=
+        b=xEsFiBv34pCgZPyH+QoXHXHSNQ8zBZpFig5ctIZXF0+gJAH2WISegRFYDrY+3KAJW
+         CMRW6rpC7E3eoZ/l/tj4PucGcQ1H6QZu7zgoq09Qk3EFGbzGPM0FWIilSO3WfeGL2Y
+         F57uFyZdX4Bg1s8ehVN4/vUXL+r4af7KA3sVUxS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Arnold Gozum <arngozum@gmail.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/17] platform/x86: touchscreen_dmi: Add swap-x-y quirk for Goodix touchscreen on Estar Beauty HD tablet
-Date:   Fri,  5 Feb 2021 15:08:01 +0100
-Message-Id: <20210205140650.115033807@linuxfoundation.org>
+Subject: [PATCH 4.19 08/17] platform/x86: intel-vbtn: Support for tablet mode on Dell Inspiron 7352
+Date:   Fri,  5 Feb 2021 15:08:02 +0100
+Message-Id: <20210205140650.154725961@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
 References: <20210205140649.825180779@linuxfoundation.org>
@@ -41,82 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Arnold Gozum <arngozum@gmail.com>
 
-[ Upstream commit 46c54cf2706122c37497896d56d67b0c0aca2ede ]
+[ Upstream commit fcd38f178b785623c0325958225744f0d8a075c0 ]
 
-The Estar Beauty HD (MID 7316R) tablet uses a Goodix touchscreen,
-with the X and Y coordinates swapped compared to the LCD panel.
+The Dell Inspiron 7352 is a 2-in-1 model that has chassis-type "Notebook".
+Add this model to the dmi_switches_allow_list.
 
-Add a touchscreen_dmi entry for this adding a "touchscreen-swapped-x-y"
-device-property to the i2c-client instantiated for this device before
-the driver binds.
-
-This is the first entry of a Goodix touchscreen to touchscreen_dmi.c,
-so far DMI quirks for Goodix touchscreen's have been added directly
-to drivers/input/touchscreen/goodix.c. Currently there are 3
-DMI tables in goodix.c:
-1. rotated_screen[] for devices where the touchscreen is rotated
-   180 degrees vs the LCD panel
-2. inverted_x_screen[] for devices where the X axis is inverted
-3. nine_bytes_report[] for devices which use a non standard touch
-   report size
-
-Arguably only 3. really needs to be inside the driver and the other
-2 cases are better handled through the generic touchscreen DMI quirk
-mechanism from touchscreen_dmi.c, which allows adding device-props to
-any i2c-client. Esp. now that goodix.c is using the generic
-touchscreen_properties code.
-
-Alternative to the approach from this patch we could add a 4th
-dmi_system_id table for devices with swapped-x-y axis to goodix.c,
-but that seems undesirable.
-
-Cc: Bastien Nocera <hadess@hadess.net>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Arnold Gozum <arngozum@gmail.com>
+Link: https://lore.kernel.org/r/20201226205307.249659-1-arngozum@gmail.com
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201224135158.10976-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/touchscreen_dmi.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/platform/x86/intel-vbtn.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index cb204f9734913..f122a0263a1ba 100644
---- a/drivers/platform/x86/touchscreen_dmi.c
-+++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -163,6 +163,16 @@ static const struct ts_dmi_data digma_citi_e200_data = {
- 	.properties	= digma_citi_e200_props,
- };
- 
-+static const struct property_entry estar_beauty_hd_props[] = {
-+	PROPERTY_ENTRY_BOOL("touchscreen-swapped-x-y"),
-+	{ }
-+};
-+
-+static const struct ts_dmi_data estar_beauty_hd_data = {
-+	.acpi_name	= "GDIX1001:00",
-+	.properties	= estar_beauty_hd_props,
-+};
-+
- static const struct property_entry gp_electronic_t701_props[] = {
- 	PROPERTY_ENTRY_U32("touchscreen-size-x", 960),
- 	PROPERTY_ENTRY_U32("touchscreen-size-y", 640),
-@@ -501,6 +511,14 @@ static const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index f5774372c3871..cf8587f96fc45 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -203,6 +203,12 @@ static const struct dmi_system_id dmi_switches_allow_list[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Switch SA5-271"),
  		},
  	},
 +	{
-+		/* Estar Beauty HD (MID 7316R) */
-+		.driver_data = (void *)&estar_beauty_hd_data,
 +		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Estar"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "eSTAR BEAUTY HD Intel Quad core"),
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 7352"),
 +		},
 +	},
- 	{
- 		/* GP-electronic T701 */
- 		.driver_data = (void *)&gp_electronic_t701_data,
+ 	{} /* Array terminator */
+ };
+ 
 -- 
 2.27.0
 
