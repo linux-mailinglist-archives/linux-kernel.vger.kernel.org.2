@@ -2,174 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B11310E4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F182310E8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhBEPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbhBEPFW (ORCPT
+        id S233324AbhBEPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:40:40 -0500
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:37307
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233301AbhBEPeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:05:22 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EC3C06178C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:42:51 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id h16so5365207qth.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l6bMebmyF7buTXvOysPq9zxDkYGESwfJ+0swCeCd7qY=;
-        b=SLM0C0UtOrbH5D6Y12E44XNcLTp5In6MXuIIDpnaG6XfEdHOyzT/poNGK0J4014eSk
-         hf8G3B9Ibe/inStw2s/Hs8eXX9iyzLaoUFLD5FSmTAzj2WRU+XG+1b7TI8RUech0Uo8E
-         LiAZcHUmS4URAHi0S4uH/vFIvgDvjslnOw/Fk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l6bMebmyF7buTXvOysPq9zxDkYGESwfJ+0swCeCd7qY=;
-        b=aEHatizZqRWDPn6uJiZ9/iREaLNyjMUKGbMT4lPpBasfncImxSMSfwsXAciot+Vdjy
-         VdXE1OG8Ux9eKQ/zGnh1FoepNnhGLpi5Rx310W5jvVXOI34S4IDC2KEeGdM724AS6VpM
-         0odQZOxpFF+De16/plsGuukm3i0onu7+hwZKCEbkc+QS45koH6mjiScV59owrHuHan/i
-         dnW87EhNBecmgeGeR5ONKl3H/JkDT+XuFKF1UNMlk9ohHDEof45c55d05Q/DeeRkpBm1
-         X9tXDGoBm091rhwDGUmIXtC0R5zDULVmeCyOKz0qR0m1ylygweMkQrV4PSX65Jfd0HWX
-         MNQQ==
-X-Gm-Message-State: AOAM533f/tLgW/7D/0Z1CP0AUZD3Mi0DMy4UpPgZDVIGc4mS2oW/Se/u
-        K+KkdrKZtWqhXbz8OqkLbLcqpA==
-X-Google-Smtp-Source: ABdhPJzpEMIMdDQrKEN0KuwLjSGPEKvKGCfFKihudOnFN41anZ7SJ/VY75puRM8ZI8fDPNXq37GzfA==
-X-Received: by 2002:ac8:554d:: with SMTP id o13mr5106886qtr.55.1612543370667;
-        Fri, 05 Feb 2021 08:42:50 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:7d0b:8b50:779:2056])
-        by smtp.gmail.com with ESMTPSA id q6sm9446577qkd.41.2021.02.05.08.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:42:49 -0800 (PST)
-Date:   Fri, 5 Feb 2021 11:42:49 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YB11iXuitK96KbCO@google.com>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
- <YBrUgxLfjcpjwgo6@hirez.programming.kicks-ass.net>
- <YBv93iXqI8UTw9tD@hirez.programming.kicks-ass.net>
+        Fri, 5 Feb 2021 10:34:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612545371; bh=LGQ2+Oq5r94j/3FnA4uP6fw1KLX7JE1Bzu43eSjT32U=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=dy37tqjOqSV7On8FDcyzKcDMD9uOTV19V1iXKrfOOEuWFSm96QIsjQCb7una2mzX7JZHd+5gtbtEPWs/k0Sk9NgTllSDVw+aldj7X9oR/Ubo8d/jrpxdx1iytnHWxfHPeeihML2IbDoMtYvIFPA2xGjsbQref8QLpWfX4rKYQO4kidCcVa84vai5AQEbEGzgvdeSG5/I5Yy3qv9t3rQtyuvyIe+czINaEcCiZsTVOhXMB7U//AY2uYoIGPNmWFBJLU9vQAAvBP+gxMa5LaAq1Rs/TaMwVm4NjkympVkSj0E0r2tcdOfay6BttZqrBKTiQuZZ9xNOhs7S/IFFMKZznQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612545371; bh=qhrJfhr3DG5Yo5yoUYwZHkLme8fW0XZ03fT5A7uW48o=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=lobEPb+px2NqVkZb3x42Ic07gM+GJJmBnFjwulamzsidl9wcNdPTgB853/BG1fMZLcz6J8FZLzNv9r99FV5MLaHwwaYGghKeajTGbORB/53aA5PY6CgwYBlQffhKn+RcG29sbyceWCGbXSxsr4asY6Pe7DUnmxMHCPzkJDpZ6b8S2URWCptPpOpUrzcgvk6q/v5G7oixilXWBBZmVyPWqGBwQz8I1n1L7x7psIX2G/cBmGNw/W4BtGPBekL2wL5L9lxsUzl054Cfpxd3R3AlW+PEiLyO7Wv7A4Hok3hO3Lj5vtRrNNXpCP/M8xUEnycPF/uN7IuxqTWf7cLm0nOoNg==
+X-YMail-OSG: 4vk6bXoVM1neecdW7wnU5zezuyUc1WRLeXhj8yQJQhIu2KtYXYd28tosTbxPxcR
+ UrgCw4yaZH5U2lQXeyB9yBAIy0rwxN.rJT7pbFlH_AtqnBxj5cnG.H9NPOSFe2OYuI09WiNvdbs2
+ V6ZsZxSe3NZzYQRE7aW.q6amUOkLgLhxcE_N.xJeCoCw5THeoyAbRpRfhoKFsgQ0f_S_zuCP9pDI
+ iv6SkEhIIox2X22.afQptbIGBFMhynIZszfNjOEp4CPeD2QNd..SisHA6FZhKn4DFjwxKWNpuVDZ
+ kWp72CtdaPSsz.yy60I3Q7PjqASg88FlCVRugf6EIWFMfjX2svZD99rHJXWA76xvhClPoJ4h8jzs
+ VbGg9sZe1veNCX2IseMxYvjPG7TS3iAlyFGNJDyZDS2ROlmXKJseGrEmJLhHdK_f1wyNhWYenTFL
+ p.vEWU0FCkk485OYQkxSsIySjwJX3HziHXBljQ67Da8Go2VDDbuaTLqDYoeNKozFXtDebTutEuKS
+ m4R6sugwHTlIHmNHLMUEB4MukcGtof6AJxK6hVFrY2_Z_usb.vKDoGspF.miOiXIkkpyKF.VW_lb
+ HFQgz10VobTqp67nFY7ziF6wqrpnlfnTjDCaoxZMEvPEIvByqPYn1Js8OqcEyszo5ER8GXPMjSQu
+ .5pbKyQXJVDAw7qTUH8sfqAVUxyhpp6SFZoVTA34ZinQD5lM4yaCex7SVzd6MPX7ZtNqjStXWRjA
+ 3gVrp5mkhLCJQf5373a.KVjzC21kcSmwG2iffGadZ6IBEad1A_03oWU6F_pohXulRE9DNDrM6VLF
+ UKGovhVSlImQQwSuWhTh6Lmq6dCeOhbfHAQL14zpjpcAwJi9ZMM3ZyPzN3aeIwolZ64JG2Ltcnxk
+ zTaQkylzVdKB8ucf3x8citpTKu6Nh4NX1o0ER.iTzjmOzJTtldfismsgGS8qN58xgBZi9_QfLhmq
+ BREiYMUUbc.Beqb_JZ9e.hZST5SfMx_OaduvFd77wWJ7lj_0ahrKLBcAQ999bLD5ZK.zewlgxLkP
+ Y0QYpw_.Df9skZxay_VhOgAiZWqBpE01nSxNR4DA.B7d0OoZL_kQW2Yne3hzqOTtSMijAx6HGMnV
+ uRnpV_cB74ovP0roDKjwKs7VHMbUOVJ8.kdXABWnakvCEpdRzQ7QdtQFIIxrYAcuJo0h0DX2N1Yl
+ SKQoDR.5nv5Yw8j705V4sSsa4TQy25DV8XKjZ3KDzRa2gP1k9fL5nhHWE5IUcxupy5Qia4WTKEZ6
+ WcZeInLwPzs4mtVXjfEUwaXxr1gF4d2nOGgNFdcU9hmRHpZEyIX9gFSxgS3hO6MsFhebz4ammkdH
+ nTLC9xxBSsmhbt7jUEk7LXTjoqAKXW3fl1T_uQxkfrnlctFWhXYNXljJe62H8.hubANX4nChN6BD
+ CF6hkABc2X6LT8mr0c5yjOuH5twGJIxj5xwx6aPlZDegHKLF3hp8DlheLlSlfrstu_3U7QE_8ncb
+ yvTDN20SvcJWlyCRNoHmcX5cW02KFFlMNOA.XoSFHTIyrE5OXKsGsMfpsG2sr0R4iHmJmUD_kzzx
+ Y3XLexSfhtTQYgc392fpmJMZmvYHu44aG22h1Dqub3.3ZbAPioptx.h.1A7x4xHbWxF0eB.gQZe3
+ iOjewLa1BzcuyGSDaE6jPBIRg3NQLmO6idWF_Mm8h0y4hmNYHkiOM7NQntJ1TT._NiWPcO6pcvco
+ GW_6kSfSCv_WMG9z.Oy8RpevcEV1PWUtDyGEoNnltM66ZioWI3BhpD67MzNaFgU0RwlJn2RSjHXM
+ dlrYGVHQlpIKAVt1kIaWiXtJf47uCyLyFYM2qbkfYPCZE7chkdX2FfVpENhZqES786vW1gBRJkwb
+ UT_xbrRyZbtrtexASkXzRrpcIaxOafRHAE6a5AIUTisU.ymZJ0Kx.3A_nm.Q.rmA4AIpBIWnRUnP
+ 9T_u.Sfla279vVfjU1.nTx8NkOhfLM_dsOSyck3.ugMwaa.GpwPRdLcM_FAOtNKbUtJmfWI1m.6_
+ UCggP9jn7dDyrtrBInYBJSWaw149dnBOoBxrbA6jR2NJpig8N8b3crUpHvpMFeeeLimbTSweEHXz
+ 40eytbATLle5Lr4lg4BbT6OryZfNaeQA5dlTXfE2aKtexKp.BK_Mrg3ol8h307sT2YjIGNJbTVM6
+ ZjDbouOn5rmeP2Ow9pBCmRS2.aG3PrOGdY0DtcD.rPpaI7XM2grCMtVUYqfOy9nRBuj6OmXrvPI9
+ r9.4rWaDK6Y6BEMqc5of.DnNoVG13zV3FLfAmJADOdR1xcb7P7bkPcKHMY6qQaHhFSGe0nKep3Fd
+ UTSkGH68egJUeP5g73tRe_AyNtLU.Ehkh.Pr_9RChFWr5bnB9hATgvjz_RKnpDjcPtjkXe1YLtSZ
+ qrb6T0ULSROP0UhNH4CCR5JOEr5uRGhp2d9XH70Lt7adSWeck1nbNcP5MZCVGseJ08y4MaRjMB.H
+ pEl_hGwogZz3JgYzELYE6HQaXsNTejvtZNsoUpxpIPZFGLvuclLZLUgmOp4UVudq0eQrQmstgZ5L
+ csMHj8Nqt7HvG9Lg972uTdm_l238fMjwFXi7QbgefiGQ_x4hbkj9HuW3QaCxG1YvihRDvsO3ZPal
+ vjpAZon2p21ONztpiCwJ5Qbl9wAKxfY4FbXUS_bYbZ6TsQenl6aKLVp_hEBBBS5.Ns_PbJjQXQy1
+ XdvLDEprDx13fijlXZgUjRqFk3s19fl6FP96nRoRdsM4ou83TCPV8G9.iyXOe8prjAnj8im3Mf7d
+ g7Z_haPpc9jy4tEXW9B3qrAnA0SFgI4Vr0QoQlb4eBQcs2AU9oBqz2YoOf5uOwfrDuUEjJtQAaJ7
+ 1aS6ztYb8P.3lJ4G_5jzRQzN3R.dv0vOU8wYdFPH6bgNk.fcZDG.oXFiSD8ZNcEAMF1O5szuecOz
+ ubhWC7klruGOUByCHEOLu5G5IAmmoGqEFY5kD.bRt1sg85bDdga.09x5UsJ1iTNpUt7cRr6JeE7t
+ jns5ufY86Upn3G5RytK7MBwPAd2Im9nGsix3wxLqywZEQEqGfPCb5Hxgs.DO16ge1BtOo6CcOYUi
+ qzDYTQYe2PxSUDNoXui.b0OlFcohRJ8HPZMJ4tvhcrENlW7MOjMIlRHf7Rl7Soajft9fSUx_cQwE
+ UW_tfMThJgYk0hh.nQxyatYeq_aiImolN5sKmPQHcdohBJuOvsWPmp.hfMHDDB4P5gUEBCR0D6i7
+ 032.Tkzme5KEjw_HN0_xdtfLleGGskWHL_Kgh84qmt2aYqxl2Mvvv4hbmoPhYnQfGJQ.esw78tvz
+ lpD6k.RyVllO3GP.9udSefpKfb0zpmihyxKkDZCiiG6Yq_WXKQ30weM6XvccpZxN6kRoACK.OJKt
+ ZVC8ivzMNFwRI0y3_5TwaABWt3mCG4tVrFoOXskhasGd7eYB9yQ1SjJoeWE43iWU9E63fSeEIeR.
+ GaeaLCkyYyWwajOjGiRXyrDuKsdplMdvph1UVKx18o0PpedHbTiUaTVCgesF5H70JcJ3QzoweW6U
+ TMdzmG4Dn73nF6LC10W4GYclcCioswdpxT2nQ_Ghu4E93KC7CwO9OrC2uf8uc_LP4XPIQHhSWEER
+ 1q.BDXXoovU5eNr7dAcnyLM9jUlVBjSQSiDmBHe_ZQs1EysOyQKG9nNpPv9ofuq5CLkPTOHkzJcV
+ Lb4RmNeS9NacMDTLkG9nMGFRbpqSasr890GQK9pz8dMT66NXq3iMMsKuJhx_p4RxxjLlIhb7xDwg
+ kWK5u35AstbxTHWdOj7S8o6CmRC2d6t_yGK2DCRoG28hfO0Xsr.UHRDt32PHhHmkIaBW9a41qKwp
+ JdIk1SIhJF.P.7kwtMoLk9t.bx4c0.xG5rAUtJOnn94XD0snqDeknD5vK7YtxrnK58Is5f01Ppti
+ FLDAFMQdGwXSmpLUGwWE1l514TxghjlILmOCZzSnXICRNZXZQ1BXVcwuHhN7Ohj6.e.4gZZozxfm
+ _0qNrzSoOl4pqCtPbct0o1N_5gi.V7jsNTwExH1MBiTdouY8zW_NJhF5CjgbO4vNLIh72gBsosXy
+ SbN_oJqWf5Xoa9KgKGLaLhDacKKaO_RvBVGKbzjEaC_1Smv1WGcjjfBenb4GkN20Kne4mCpTqz1R
+ hIrpyVpVeS5LiT94.tYjEGKD1dG3QR1ZB7Rv_BD2Gmxp_pPGYQUxut9cEUs1Pitl9V.6w0wMzefb
+ BHB.4dwr00aShdirSPJwo1z08wDKfi9lzvUC1IQ8.wHl4LW6Ek_MBo1ApzHrkhrakVdFJAkkF9yr
+ rP7ALgOoJEePXmpg1iqXBq1VV2opUvaY.DQcZsE3d06FzKDjI1MAIVKTjrwAqCajLzhWIci0kbV6
+ 1QZiFwXKZQvON0RnQvz14mhzaokJf0tBnH7G40wr3vR3bBWPk1BPSChm4trk0wqilJdNEO0eTSiq
+ dHHwzCCWXV2N1mUihfIyUHZ0LQq8GcgR.9PT3rKBEu3.wh.6o0gWA6SkenGvTBWhpU.3aKrBLjCL
+ abZkg4OZhoFTUqP6A1IiIPxx9ep3ykt8ITmBEnX0V7XC4QLPZjhxOm7m3BVZ4Ka5IgYgzKH8yuLD
+ eaQmy2dQsU0KF
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Fri, 5 Feb 2021 17:16:11 +0000
+Received: by smtp419.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 68f140bfc5e1e85057f24de192666647;
+          Fri, 05 Feb 2021 16:51:38 +0000 (UTC)
+Subject: Re: [PATCH v28 05/12] LSM: Infrastructure management of the
+ superblock
+To:     "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210202162710.657398-1-mic@digikod.net>
+ <20210202162710.657398-6-mic@digikod.net>
+ <20210205141749.GB17981@mail.hallyn.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <cb3f290b-e4e6-44b9-9c0d-4f892cc90767@schaufler-ca.com>
+Date:   Fri, 5 Feb 2021 08:51:35 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBv93iXqI8UTw9tD@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210205141749.GB17981@mail.hallyn.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.17648 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 2/5/2021 6:17 AM, Serge E. Hallyn wrote:
+> On Tue, Feb 02, 2021 at 05:27:03PM +0100, Micka=C3=ABl Sala=C3=BCn wrot=
+e:
+>> From: Casey Schaufler <casey@schaufler-ca.com>
+>>
+>> Move management of the superblock->sb_security blob out of the
+>> individual security modules and into the security infrastructure.
+>> Instead of allocating the blobs from within the modules, the modules
+>> tell the infrastructure how much space is required, and the space is
+>> allocated there.
+>>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: John Johansen <john.johansen@canonical.com>
+>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+>> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+>> Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Acked-by: Serge Hallyn <serge@hallyn.com>
+>
+> I wonder how many out of tree modules this will impact :)
 
-On Thu, Feb 04, 2021 at 02:59:58PM +0100, Peter Zijlstra wrote:
-> On Wed, Feb 03, 2021 at 05:51:15PM +0100, Peter Zijlstra wrote:
-> > 
-> > I'm slowly starting to go through this...
-> > 
-> > On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> > > +static bool sched_core_empty(struct rq *rq)
-> > > +{
-> > > +	return RB_EMPTY_ROOT(&rq->core_tree);
-> > > +}
-> > > +
-> > > +static struct task_struct *sched_core_first(struct rq *rq)
-> > > +{
-> > > +	struct task_struct *task;
-> > > +
-> > > +	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
-> > > +	return task;
-> > > +}
-> > 
-> > AFAICT you can do with:
-> > 
-> > static struct task_struct *sched_core_any(struct rq *rq)
-> > {
-> > 	return rb_entry(rq->core_tree.rb_node, struct task_struct, code_node);
-> > }
-> > 
-> > > +static void sched_core_flush(int cpu)
-> > > +{
-> > > +	struct rq *rq = cpu_rq(cpu);
-> > > +	struct task_struct *task;
-> > > +
-> > > +	while (!sched_core_empty(rq)) {
-> > > +		task = sched_core_first(rq);
-> > > +		rb_erase(&task->core_node, &rq->core_tree);
-> > > +		RB_CLEAR_NODE(&task->core_node);
-> > > +	}
-> > > +	rq->core->core_task_seq++;
-> > > +}
-> > 
-> > However,
-> > 
-> > > +	for_each_possible_cpu(cpu) {
-> > > +		struct rq *rq = cpu_rq(cpu);
-> > > +
-> > > +		WARN_ON_ONCE(enabled == rq->core_enabled);
-> > > +
-> > > +		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
-> > > +			/*
-> > > +			 * All active and migrating tasks will have already
-> > > +			 * been removed from core queue when we clear the
-> > > +			 * cgroup tags. However, dying tasks could still be
-> > > +			 * left in core queue. Flush them here.
-> > > +			 */
-> > > +			if (!enabled)
-> > > +				sched_core_flush(cpu);
-> > > +
-> > > +			rq->core_enabled = enabled;
-> > > +		}
-> > > +	}
-> > 
-> > I'm not sure I understand. Is the problem that we're still schedulable
-> > during do_exit() after cgroup_exit() ?
+There are several blobs that have already been converted
+to infrastructure management. Not a peep from out-of-tree
+module developers/maintainers. I can only speculate that
+OOT modules are either less common than we may think, using
+alternative data management models (as does eBPF) or
+sticking with very old kernels. It's also possible that
+they're suffering in silence, which would be sad because
+every module that's worth having should be in the tree.
 
-Yes, exactly. Tim had written this code in the original patches and it
-carried (I was not involved at that time). IIRC, the issue is the exit will
-race with core scheduling being disabled. Even after core sched is disabled,
-it will still exist in the core rb tree and needs to be removed. Otherwise it
-causes crashes.
+> Actually
+> if some new incoming module does an rcu callback to free the
+> sb_security, then the security_sb_free will need an update, but
+> that seems unlikely.
 
-> It could be argued that when we
-> > leave the cgroup there, we should definitely leave the tag group too.
-> 
-> That is, did you forget to implement cpu_cgroup_exit()?
+We're already doing that for the inode blob, so it's
+really just a small matter of cut-n-paste and s/inode/sb/
+to make that happen.
 
-Yes, I think it is better to implement it in cpu_cgroup_exit().
-
-thanks,
-
- - Joel
 
