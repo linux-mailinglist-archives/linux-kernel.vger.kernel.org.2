@@ -2,192 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5665E311282
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2C331128C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhBESrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:47:52 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:46634 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhBESqF (ORCPT
+        id S233142AbhBESv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhBEStl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:46:05 -0500
-Received: by mail-oi1-f170.google.com with SMTP id k25so8815270oik.13;
-        Fri, 05 Feb 2021 12:28:15 -0800 (PST)
+        Fri, 5 Feb 2021 13:49:41 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0BCC06174A;
+        Fri,  5 Feb 2021 12:31:25 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id q9so7038986ilo.1;
+        Fri, 05 Feb 2021 12:31:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=llZvMxl3ggWpC3s9VreNgdoWO96LK0zC9XkR4+niUk4=;
+        b=YUpYhEhGYjPp4sgYrRUjxRYzVqfKTwTrnre9rM9HeKjA+43ou1hd+dRUBvzFma7hT2
+         wlGy598bKhjGg7rNP2fP4cnPQi18kbKoEZQSUY0gpcELZRVLHNnJd7xgy2qW0wqRyWu8
+         0nHqo4cVSJKgZ8TZFW6eTcSjrGK36ui7DwSiw7UJVXetzp2ZjYlLLyfy/sGNHkg91Vk/
+         hBwrl5ASsKF5sFRivViTe/EwZAftauYVvej0tSckzBPgk+n/Ll2iCIVGPYmbaQ9xoujZ
+         u4HaEDremMFJpwS3uTVYPO7ljvufNG1pHcbinYLkG507YAKq4IfvBVLfNuY43ub8rGDE
+         xSXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jX/IDqbyvll8w6wyZZ4Cj2yRz+uUuRNKbkr2Ni7Gh1A=;
-        b=sPWDBDOboVtgz7L6+2wMX3yxMcRic20z0HxEh4rheyWS5nREb2wU2RCrnD2AiNrPJP
-         JUgt/lDRG61cjiBk4K5NE3lL729DAdt4tvt4gzFpwpzHghQFPTagMGUBv5Nr6FshP4Y1
-         7eHeKCDvU6M9E33S1QUt1zMrRvRuOeeHoKk82wWzox+Wx9cqIQ+oUnyIxMOnUNFdKvOS
-         LepKMesD1qzyRlVMtdlSK7YaCHH7CdWBs3Rr6/m+zmO22RcWoqk/uMXeT8Jzr2ncW9pv
-         /US6TM+OALEuw5TJDvXiwBWGcuAscw24nGgPCNgzh7N779/fokCIBxkEBGgIyzhcBfbs
-         kUsw==
-X-Gm-Message-State: AOAM53008rG7fixeVIrgMN7Lu6TgLXHGM+p0YbThnMeZIahk9Z/Nhuby
-        q73R3astt1iF4y8ZheMRzQ==
-X-Google-Smtp-Source: ABdhPJz8CUi5+i96guoIgJKUCUhhGLrPNUElr8USXuQmVUt0ogKvxivHEPBFlzbi0C4QhUI2PZOt5g==
-X-Received: by 2002:a05:6808:918:: with SMTP id w24mr4326260oih.20.1612556869753;
-        Fri, 05 Feb 2021 12:27:49 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l12sm1995301oov.37.2021.02.05.12.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 12:27:48 -0800 (PST)
-Received: (nullmailer pid 3669209 invoked by uid 1000);
-        Fri, 05 Feb 2021 20:27:47 -0000
-Date:   Fri, 5 Feb 2021 14:27:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com
-Subject: Re: [PATCH V9 01/10] dt-bindings: remoteproc: convert imx rproc
- bindings to json-schema
-Message-ID: <20210205202747.GA3664957@robh.at.kernel.org>
-References: <1611191015-22584-1-git-send-email-peng.fan@nxp.com>
- <1611191015-22584-2-git-send-email-peng.fan@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=llZvMxl3ggWpC3s9VreNgdoWO96LK0zC9XkR4+niUk4=;
+        b=Q5aVlgeN4m4NlRKx8yYHhMvWxLNCRWznSIL2z4WYUn3Btv7C+/OBM512zP9YxA7slt
+         +mRc09Jim2d6fhrM/tju0xadpFxVX+Ulg/UyRAqTfQN/54x9w6cJxvuWJgSMdcrSSJLw
+         kzqm/6lcAHqj1O++An5zUE+dqv//clU/wz1UneWVxPVPn51nGWgdP9NngbVXKMuA7Qui
+         YxURn4jdmLX88Tj5j+A+dbiuDwy4x9OBKLd936yyLoSXLDTVUAnLp8akXlqJ1FjFkkWJ
+         SZanzjM7n6hTa39D+IOqWkSOGNIvyDCny1Z7UaQ2z/b51KBPwiNDT2ZPdEbejQxjrEf0
+         LnUg==
+X-Gm-Message-State: AOAM533zEkemqkwHfvzbv6gClOPVJTecLZ3uw39v0Vmh/xt6LKEYnTAb
+        glrRtNXnsTifhc9ERAD5D1OZRYfYTHHwYRdkzxw=
+X-Google-Smtp-Source: ABdhPJxWv0SwvCVq5P+poPayg/twsZ3ZMuJAZdpJv4jSUTItpIgIKQfUPBRM4GRfsIotCe3XcVScWZJEysoBBzj4gtE=
+X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr5395474ilq.112.1612557085349;
+ Fri, 05 Feb 2021 12:31:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611191015-22584-2-git-send-email-peng.fan@nxp.com>
+References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+ <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
+ <20210205152823.GD920417@kernel.org> <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
+ <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
+ <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
+ <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com> <20210205192446.GH920417@kernel.org>
+ <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
+In-Reply-To: <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 5 Feb 2021 21:31:14 +0100
+Message-ID: <CA+icZUUcjJASPN8NVgWNp+2h=WO-PT4Su3-yHZpynNHCrHEb-w@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 09:03:26AM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Convert the imx rproc binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/remoteproc/fsl,imx-rproc.yaml    | 59 +++++++++++++++++++
->  .../bindings/remoteproc/imx-rproc.txt         | 33 -----------
->  2 files changed, 59 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> new file mode 100644
-> index 000000000000..bce6ccfe1538
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/remoteproc/fsl,imx-rproc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: NXP iMX6SX/iMX7D Co-Processor Bindings
-> +
-> +description:
-> +  This binding provides support for ARM Cortex M4 Co-processor found on some NXP iMX SoCs.
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx7d-cm4
-> +      - fsl,imx6sx-cm4
-> +
-> +  clocks:
-> +    description:
-> +      Clock for co-processor (See ../clock/clock-bindings.txt)
+On Fri, Feb 5, 2021 at 9:03 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/5/21 11:24 AM, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Feb 05, 2021 at 11:10:08AM -0800, Yonghong Song escreveu:
+> >> On 2/5/21 11:06 AM, Sedat Dilek wrote:
+> >>> On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >>> Grepping through linux.git/tools I guess some BTF tools/libs need to
+> >>> know what BTF_INT_UNSIGNED is?
+> >
+> >> BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
+> >> ignore this for now until kernel infrastructure is ready.
+> >
+> > Yeah, I thought about doing that.
+> >
+> >> Not sure whether this information will be useful or not
+> >> for BTF. This needs to be discussed separately.
+> >
+> > Maybe search for the rationale for its introduction in DWARF.
+>
+> In LLVM, we have:
+>    uint8_t BTFEncoding;
+>    switch (Encoding) {
+>    case dwarf::DW_ATE_boolean:
+>      BTFEncoding = BTF::INT_BOOL;
+>      break;
+>    case dwarf::DW_ATE_signed:
+>    case dwarf::DW_ATE_signed_char:
+>      BTFEncoding = BTF::INT_SIGNED;
+>      break;
+>    case dwarf::DW_ATE_unsigned:
+>    case dwarf::DW_ATE_unsigned_char:
+>      BTFEncoding = 0;
+>      break;
+>
+> I think DW_ATE_unsigned can be ignored in pahole since
+> the default encoding = 0. A simple comment is enough.
+>
 
-Drop description. You need to define how many clocks (maxItems: 1)
+Yonghong Son, do you have a patch/diff for me?
+Thanks.
 
-> +
-> +  syscon:
-> +    description:
-> +      Phandle to syscon block which provide access to System Reset Controller
-
-type ref
-
-> +
-> +  memory-region:
-> +    description:
-> +      list of phandels to the reserved memory regions.
-> +      (see ../reserved-memory/reserved-memory.txt)
-
-Don't need a generic description for a common property.
-
-How many and what is each one.
-
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - syscon
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx7d-clock.h>
-> +    m4_reserved_sysmem1: cm4@80000000 {
-> +      reg = <0x80000000 0x80000>;
-> +    };
-> +
-> +    m4_reserved_sysmem2: cm4@81000000 {
-> +      reg = <0x81000000 0x80000>;
-> +    };
-> +
-> +    imx7d-cm4 {
-> +      compatible	= "fsl,imx7d-cm4";
-> +      memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-> +      syscon		= <&src>;
-> +      clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt b/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> deleted file mode 100644
-> index fbcefd965dc4..000000000000
-> --- a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -NXP iMX6SX/iMX7D Co-Processor Bindings
-> -----------------------------------------
-> -
-> -This binding provides support for ARM Cortex M4 Co-processor found on some
-> -NXP iMX SoCs.
-> -
-> -Required properties:
-> -- compatible		Should be one of:
-> -				"fsl,imx7d-cm4"
-> -				"fsl,imx6sx-cm4"
-> -- clocks		Clock for co-processor (See: ../clock/clock-bindings.txt)
-> -- syscon		Phandle to syscon block which provide access to
-> -			System Reset Controller
-> -
-> -Optional properties:
-> -- memory-region		list of phandels to the reserved memory regions.
-> -			(See: ../reserved-memory/reserved-memory.txt)
-> -
-> -Example:
-> -	m4_reserved_sysmem1: cm4@80000000 {
-> -		reg = <0x80000000 0x80000>;
-> -	};
-> -
-> -	m4_reserved_sysmem2: cm4@81000000 {
-> -		reg = <0x81000000 0x80000>;
-> -	};
-> -
-> -	imx7d-cm4 {
-> -		compatible	= "fsl,imx7d-cm4";
-> -		memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-> -		syscon		= <&src>;
-> -		clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> -	};
-> -- 
-> 2.28.0
-> 
+- Sedat -
