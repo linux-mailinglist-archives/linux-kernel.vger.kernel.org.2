@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0542310F4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E290C310F2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhBEQRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:17:16 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29986 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233493AbhBEQNR (ORCPT
+        id S233561AbhBEQMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233499AbhBEQIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:13:17 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 115Hnk0G016547;
-        Fri, 5 Feb 2021 12:54:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=MkTtb8AxGX0Eg0bz77reDlk0J1S2Tf6kAiFAdoE4lX4=;
- b=UdKLWkO48alodEvS6p4Gco2/tegZqyk3IDN/2895lEDPKuwQ5PsWfR8i1/EkUi3UsaiS
- 1FYDnlPnk7M5m0r6x3cpcCXRL4d+oOwVaLI/VVYJinU2UIiu98TiUPC0JbuLqAX+eh/2
- A1EAmSJ6AUMwBqiW2eo8o+gTqY7aGELCTFZDvR+PaX3RrAC9MEGh36aaLYCFtZG0WHt2
- /aS3pBkCHo+MKgNK/ciZ2lap9nd7OfEWXb1PEZl8Ip5fJzq+D7ie4M21ONz5x5RxCFrZ
- K5cqaniuzvdxcKK46HPG5S2ZtMmHkmaPcHZ/+XznJTdXbxudQD/WnmLnHl1B5QHIznWY xA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36haf28mt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 12:54:50 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 115HnpoI017387;
-        Fri, 5 Feb 2021 12:54:50 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36haf28mq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 12:54:49 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 115HgZpu016897;
-        Fri, 5 Feb 2021 17:49:46 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 36cy38b7de-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 17:49:46 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 115HniPJ37355996
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Feb 2021 17:49:44 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62C1911C04C;
-        Fri,  5 Feb 2021 17:49:44 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25C9811C04A;
-        Fri,  5 Feb 2021 17:49:42 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.9.149])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Feb 2021 17:49:41 +0000 (GMT)
-Message-ID: <6a5b7a1767265122d21f185c81399692d12191f4.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] ima: Free IMA measurement buffer on error
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     bauerman@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        ebiederm@xmission.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 05 Feb 2021 12:49:41 -0500
-In-Reply-To: <7000d128-272e-3654-8480-e46bf7dfad74@linux.microsoft.com>
-References: <20210204174951.25771-1-nramas@linux.microsoft.com>
-         <YB0YdqbbdAdbEOQw@kroah.com>
-         <7000d128-272e-3654-8480-e46bf7dfad74@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_10:2021-02-05,2021-02-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 clxscore=1011 priorityscore=1501 mlxlogscore=861
- bulkscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050107
+        Fri, 5 Feb 2021 11:08:34 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EB6C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:50:16 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id j13so3830940qvu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:50:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YE/YQGTHwZ7gbs66msaBXwH+40vFYJVzTcKrkbmzw0I=;
+        b=IVvwgK3FTWbjgP5nm2j9BXlUlBzZ1hTRtXk/4fib3jzaTm1sVv7WdBvZvfPD2jKDUa
+         khdknLUh6qENaXt8+w9ONS1Gu3Mm3HlFqtPsNS11qBVaQI/GtdJnxSCYwe3+1nHILCej
+         0BRSBSa3l5/AgXY1OxiHgJsINK+yfsx4V6yMLTh8CQndgAhldR0OKcFwtH1X2Z2MkHh3
+         6y9mkW3fa6UldKMrsp0IbaRUP+9vFdq/WRDG1KDLDncCT+2z6GzAZmCVzFxBdhcW5aRp
+         Llr5FFaJEbG/2Z/I2K0Dxv6rB5qT3Fx8r6CY+SuqmO0W8Ta9j3DakS+/MsLgCRSzuBvZ
+         Kp1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YE/YQGTHwZ7gbs66msaBXwH+40vFYJVzTcKrkbmzw0I=;
+        b=Z+CBSph+Yi/eKW45gmtCW+dqB6hszM6APESbvPr2YRU+bEog2c9gpNHvF2rYJ8OL0r
+         XxKOOGJSozbU91zw8ye8xsRo5Cml/qSt8QgrGDeiVIBAPO7EgGipxfPuFh8k3SPQNniX
+         /yJuA8hnxXEgNJwn2Gj96wFqB10AA8nVRDlPI0xMSlmbEJNxVZ1AgNHd/LW2J56VuvUp
+         RU4nGXIO3egEuS1zqiKeUOwCtvRXzWoyjeaGwq2WQ38JG3Cw8R8CfG+3H5OipCoN1QpK
+         ZMHMUwpeE6KF5eKh8JhBYMYiFZEnkRxWZ/dyd+YPv0/JAmT2sCdLIlhCnpaIgSssh/iq
+         CraQ==
+X-Gm-Message-State: AOAM5310nAnfsd0wxxmj/LnpRYD+LWjmpfb/fEK0g/a3PZ+Wy3hYFSix
+        Vd4hXlObosC9gXHDTjTkv8SiIQ==
+X-Google-Smtp-Source: ABdhPJwpLT2XDEM2BHa1u0r4wr8mb4qNEO20aAMdaZgJk+O5jPLsJ6mVjFrgKTOBGo1myjVSET2obg==
+X-Received: by 2002:a0c:b912:: with SMTP id u18mr5365334qvf.2.1612547415282;
+        Fri, 05 Feb 2021 09:50:15 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 2sm9864869qkf.97.2021.02.05.09.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 09:50:14 -0800 (PST)
+Date:   Fri, 5 Feb 2021 12:50:13 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+Message-ID: <YB2FVc7tNL2RUNm0@cmpxchg.org>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-2-hannes@cmpxchg.org>
+ <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
+ <20210203022853.GG1812008@carbon.dhcp.thefacebook.com>
+ <YBxLNZJ/83P7H8+H@cmpxchg.org>
+ <20210204193446.GA2053875@carbon.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204193446.GA2053875@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 09:39 -0800, Lakshmi Ramasubramanian wrote:
-> On 2/5/21 2:05 AM, Greg KH wrote:
-> > On Thu, Feb 04, 2021 at 09:49:50AM -0800, Lakshmi Ramasubramanian wrote:
-> >> IMA allocates kernel virtual memory to carry forward the measurement
-> >> list, from the current kernel to the next kernel on kexec system call,
-> >> in ima_add_kexec_buffer() function.  In error code paths this memory
-> >> is not freed resulting in memory leak.
-> >>
-> >> Free the memory allocated for the IMA measurement list in
-> >> the error code paths in ima_add_kexec_buffer() function.
-> >>
-> >> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> >> Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> >> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
-> >> ---
-> >>   security/integrity/ima/ima_kexec.c | 1 +
-> >>   1 file changed, 1 insertion(+)
+On Thu, Feb 04, 2021 at 11:34:46AM -0800, Roman Gushchin wrote:
+> On Thu, Feb 04, 2021 at 02:29:57PM -0500, Johannes Weiner wrote:
+> > It even passes with a reduced margin in the patched kernel, since the
+> > percpu drift - which this test already tried to account for - is now
+> > only on the page_counter side (whereas memory.stat is always precise).
 > > 
-> > <formletter>
-> > 
-> > This is not the correct way to submit patches for inclusion in the
-> > stable kernel tree.  Please read:
-> >      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > for how to do this properly.
-> > 
-> > </formletter>
-> > 
+> > I'm going to include that data in the v2 changelog, as well as a patch
+> > to update test_kmem.c to the more stringent error tolerances.
 > 
-> Thanks for the info Greg.
-> 
-> I will re-submit the two patches in the proper format.
+> Hm, I'm not sure it's a good idea to  unconditionally lower the error tolerance:
+> it's convenient to be able to run the same test on older kernels.
 
-No need.  I'm testing these patches now.  I'm not exactly sure what the
-problem is.  Stable wasn't Cc'ed.  Is it that you sent the patch
-directly to Greg or added "Fixes"?
-
-thanks,
-
-Mimi
-
+Well, an older version of the kernel will have an older version of the
+test that is tailored towards that kernel's specific behavior. That's
+sort of the point of tracking code and tests in the same git tree: to
+have meaningful, effective and precise tests of an ever-changing
+implementation. Trying to be backward compatible will lower the test
+signal and miss regressions, when a backward compatible version is at
+most one git checkout away.
