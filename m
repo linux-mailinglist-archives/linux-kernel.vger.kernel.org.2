@@ -2,179 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013F2311765
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FD1311728
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBEXpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:45:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:61340 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232487AbhBEORn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:17:43 -0500
-IronPort-SDR: Z+Cwj4BZ7/DZOQNu6Q/5l9GF0mmt23Ikm8ciq7Nv7Kt9YzJCoJQU3DZ/9HfBB73eAZi+gl7lvH
- JXC059Xwdx0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177942713"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="177942713"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:45:38 -0800
-IronPort-SDR: wtwkrxB8blwaWY8JtjN8FHYIZpSAyZ88za/ZhKb51whEC0c8gTM4HDAZY178b+0tSXLNi7ewZi
- zLwwNAMMzppw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="416234276"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Feb 2021 07:45:38 -0800
-Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 1EB6258087A;
-        Fri,  5 Feb 2021 07:45:37 -0800 (PST)
-Subject: Re: [PATCH 2/9] perf tools: Support the auxiliary event
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
- <1612296553-21962-3-git-send-email-kan.liang@linux.intel.com>
- <CAM9d7cjDYALhR-xd2n2vaL5cPBiMz8RukziQqsfqqYwqBc87yA@mail.gmail.com>
- <33221095-5ef6-bec8-136e-34dc14ae7adb@linux.intel.com>
- <20210205152648.GC920417@kernel.org>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <238b21d6-a32c-53d7-b498-b7c6e14a4974@linux.intel.com>
-Date:   Fri, 5 Feb 2021 10:45:35 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230202AbhBEXdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232563AbhBEOWu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:22:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0323BC061225
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:47:41 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612539942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zZFsX6vz/JnEik3OiWf55qYmEOWIraRnD0UqUzEqWqo=;
+        b=qCJfwtg8/Gj9LUjSo4664j+UYF9sdTsdRIKudrpOhrUAaUvkPMcsW80LJdkoN0+8WvkTT7
+        KKUph2CNu/PZ0afk3ZOSiyaQrogp85i3+T7CFruAG0sEF9i75bE4X+JKbSZsqB3MIdU88+
+        Sdk8xJkvWZ0dMZ0u/PdSWPhPLoybIbjcUsmnK4TaU6H2KaYr4J7RkoKV8lgq85ZHeeJ+7f
+        FV7T+D3rNhhu1WwGYozskaeRKO7ZhRd6t6UprMWhu//gMy/glQfkl/axGfkPbGsk7GgcRY
+        w/mX225VB1ofOEszwaqMJhIc5oV/O0lZdjIk9nTS7ETt/hXTgfrwxyYl0Z9quA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612539942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zZFsX6vz/JnEik3OiWf55qYmEOWIraRnD0UqUzEqWqo=;
+        b=OGUZgCPiXeEvia+qYoPilbqzJQlcFa7hb/ZrJl21052E6hVPAtGbOEAUUlN6zP4U7b4Mvj
+        fZrBepQMTBSAgzAw==
+To:     Mikael Beckius <mikael.beckius@windriver.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH] hrtimer: Interrupt storm on clock_settime
+In-Reply-To: <20210128140208.30264-1-mikael.beckius@windriver.com>
+References: <20210128140208.30264-1-mikael.beckius@windriver.com>
+Date:   Fri, 05 Feb 2021 16:45:42 +0100
+Message-ID: <87r1lu8qmx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210205152648.GC920417@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28 2021 at 15:02, Mikael Beckius wrote:
 
+> During clock_settime absolute realtime timers may get updated to expire
+> sooner in absolute monotonic time but if hrtimer_force_reprogram is
+> called as part of a clock_settime and the next hard hrtimer expires
+> before the next soft hrtimer softirq_expires_next will not be updated
+> to reflect this change (assuming the realtime timer is a soft timer).
+>
+> This means that if the next soft hrtimer expires before
+> softirq_expires_next but after now no soft hrtimer interrupt will be
+> raised in hrtimer_interrupt which will instead retry tick_program_event
+> three times before forcing a tick_program_event using a very short delay
+> entering hrtimer_interrupt again almost immediately repeating the
+> process over and over again until now exceeds softirq_expires_next and a
+> soft hrtimer interrupt is finally raised.
 
-On 2/5/2021 10:26 AM, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Feb 05, 2021 at 09:13:34AM -0500, Liang, Kan escreveu:
->>
->>
->> On 2/5/2021 5:52 AM, Namhyung Kim wrote:
->>> On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
->>>>
->>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>>
->>>> On the Intel Sapphire Rapids server, an auxiliary event has to be
->>>> enabled simultaneously with the load latency event to retrieve complete
->>>> Memory Info.
->>>>
->>>> Add X86 specific perf_mem_events__name() to handle the auxiliary event.
->>>> - Users are only interested in the samples of the mem-loads event.
->>>>     Sample read the auxiliary event.
->>>> - The auxiliary event must be in front of the load latency event in a
->>>>     group. Assume the second event to sample if the auxiliary event is the
->>>>     leader.
->>>> - Add a weak is_mem_loads_aux_event() to check the auxiliary event for
->>>>     X86. For other ARCHs, it always return false.
->>>>
->>>> Parse the unique event name, mem-loads-aux, for the auxiliary event.
->>>>
->>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->>>> ---
->>>>    tools/perf/arch/x86/util/Build        |  1 +
->>>>    tools/perf/arch/x86/util/mem-events.c | 44 +++++++++++++++++++++++++++++++++++
->>>>    tools/perf/util/evsel.c               |  3 +++
->>>>    tools/perf/util/mem-events.c          |  5 ++++
->>>>    tools/perf/util/mem-events.h          |  2 ++
->>>>    tools/perf/util/parse-events.l        |  1 +
->>>>    tools/perf/util/record.c              |  5 +++-
->>>>    7 files changed, 60 insertions(+), 1 deletion(-)
->>>>    create mode 100644 tools/perf/arch/x86/util/mem-events.c
->>>>
->>>> diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
->>>> index 347c39b..d73f548 100644
->>>> --- a/tools/perf/arch/x86/util/Build
->>>> +++ b/tools/perf/arch/x86/util/Build
->>>> @@ -6,6 +6,7 @@ perf-y += perf_regs.o
->>>>    perf-y += topdown.o
->>>>    perf-y += machine.o
->>>>    perf-y += event.o
->>>> +perf-y += mem-events.o
->>>>
->>>>    perf-$(CONFIG_DWARF) += dwarf-regs.o
->>>>    perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
->>>> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
->>>> new file mode 100644
->>>> index 0000000..11b8469
->>>> --- /dev/null
->>>> +++ b/tools/perf/arch/x86/util/mem-events.c
->>>> @@ -0,0 +1,44 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +#include "util/pmu.h"
->>>> +#include "map_symbol.h"
->>>> +#include "mem-events.h"
->>>> +
->>>> +static char mem_loads_name[100];
->>>> +static bool mem_loads_name__init;
->>>> +
->>>> +#define MEM_LOADS_AUX          0x8203
->>>> +#define MEM_LOADS_AUX_NAME     "{cpu/mem-loads-aux/,cpu/mem-loads,ldlat=%u/pp}:S"
->>>> +
->>>> +bool is_mem_loads_aux_event(struct evsel *leader)
->>>> +{
->>>> +       if (!pmu_have_event("cpu", "mem-loads-aux"))
->>>> +               return false;
->>>> +
->>>> +       return leader->core.attr.config == MEM_LOADS_AUX;
->>>> +}
->>>> +
->>>> +char *perf_mem_events__name(int i)
->>>> +{
->>>> +       struct perf_mem_event *e = perf_mem_events__ptr(i);
->>>> +
->>>> +       if (!e)
->>>> +               return NULL;
->>>> +
->>>> +       if (i == PERF_MEM_EVENTS__LOAD) {
->>>> +               if (mem_loads_name__init)
->>>> +                       return mem_loads_name;
->>>> +
->>>> +               mem_loads_name__init = true;
->>>> +
->>>> +               if (pmu_have_event("cpu", "mem-loads-aux")) {
->>>> +                       scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
->>>> +                                 MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
->>>
->>> It changes "%u" to an actual latency value, right?
->>> What if the value takes 3 or more digits?
->>> I'm not sure scnprintf() will handle it properly.
->>>
->>
->> Yes, you are right. We should use the sizeof(mem_loads_name) as below.
->> I will submit a patch to fix it.
->>
->> diff --git a/tools/perf/arch/x86/util/mem-events.c
->> b/tools/perf/arch/x86/util/mem-events.c
->> index 11b8469..588110f 100644
->> --- a/tools/perf/arch/x86/util/mem-events.c
->> +++ b/tools/perf/arch/x86/util/mem-events.c
->> @@ -31,7 +31,7 @@ char *perf_mem_events__name(int i)
->>   		mem_loads_name__init = true;
->>
->>   		if (pmu_have_event("cpu", "mem-loads-aux")) {
->> -			scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
->> +			scnprintf(mem_loads_name, sizeof(mem_loads_name),
->>   				  MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
->>   		} else {
->>   			scnprintf(mem_loads_name, sizeof(mem_loads_name),
-> 
-> I'll fold this in the relevant cset.
-> 
+Duh.
 
-Thanks!
+> This patch aims to solve this by always updating softirq_expires_next if
+> a soft hrtimer exists.
 
-Kan
+  git grep 'This patch' Documentation/process/
+
+> Signed-off-by: Mikael Beckius <mikael.beckius@windriver.com>
+> ---
+>  kernel/time/hrtimer.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+> index 743c852e10f2..e4c233f404b1 100644
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -633,7 +633,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+>  	 */
+>  	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
+>  
+> -	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
+> +	if (cpu_base->softirq_next_timer) {
+
+>  		/*
+>  		 * When the softirq is activated, hrtimer has to be
+>  		 * programmed with the first hard hrtimer because soft
+> @@ -643,7 +643,8 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+>  			expires_next = __hrtimer_get_next_event(cpu_base,
+>  								HRTIMER_ACTIVE_HARD);
+>  		else
+> -			cpu_base->softirq_expires_next = expires_next;
+> +			cpu_base->softirq_expires_next = __hrtimer_get_next_event(cpu_base,
+> +								HRTIMER_ACTIVE_SOFT);
+
+That works, but we can spare the double scan completely and make the
+code understandable. See below.
+
+Thanks,
+
+        tglx
+---
+
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -626,26 +626,25 @@ static inline int hrtimer_hres_active(vo
+ static void
+ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ {
+-	ktime_t expires_next;
++	ktime_t expires_next, soft = KTIME_MAX;
+ 
+ 	/*
+-	 * Find the current next expiration time.
++	 * If soft interrupt has already been activated, ignore the soft
++	 * base. It will be handled in the already raised soft interrupt.
+ 	 */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
+-
+-	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
++	if (!cpu_base->softirq_activated) {
++		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
+ 		/*
+-		 * When the softirq is activated, hrtimer has to be
+-		 * programmed with the first hard hrtimer because soft
+-		 * timer interrupt could occur too late.
++		 * Update the soft expiry time. clock_settime() might have
++		 * affected it.
+ 		 */
+-		if (cpu_base->softirq_activated)
+-			expires_next = __hrtimer_get_next_event(cpu_base,
+-								HRTIMER_ACTIVE_HARD);
+-		else
+-			cpu_base->softirq_expires_next = expires_next;
++		cpu_base->softirq_expires_next = soft;
+ 	}
+ 
++	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
++	if (expires_next > soft)
++		expires_next = soft;
++
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+ 
