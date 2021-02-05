@@ -2,241 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612B431102B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09AB311035
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhBERAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:00:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S233572AbhBERBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233498AbhBEQ5h (ORCPT
+        with ESMTP id S233289AbhBEQ77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:57:37 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84D4C061574;
-        Fri,  5 Feb 2021 10:39:19 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 1A1F41F46981
-Subject: Re: [RFC PATCH v6 00/11] media: v4l2: Add extended fmt and buffer
- ioctls
-From:   Helen Koike <helen.koike@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, hans.verkuil@cisco.com,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
-        boris.brezillon@collabora.com, hiroh@chromium.org,
-        nicolas@ndufresne.ca, Brian.Starkey@arm.com, kernel@collabora.com,
-        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
-        frkoenig@chromium.org, stanimir.varbanov@linaro.org,
-        tfiga@chromium.org
-References: <20210114180738.1758707-1-helen.koike@collabora.com>
-Message-ID: <2e2fc518-9c71-b82c-4630-7985bbdc544a@collabora.com>
-Date:   Fri, 5 Feb 2021 15:39:08 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 5 Feb 2021 11:59:59 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50285C06174A;
+        Fri,  5 Feb 2021 10:41:41 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id n10so5144904pgl.10;
+        Fri, 05 Feb 2021 10:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hC/UygB6GdsZ6eOraCnag63BwEncrG0x9BtmpVb+yMo=;
+        b=TjRy+eWKEXJUVeK/Gsejs2eaRhnLYsV0zq1vBr7NEsVAkz0F+cLP8n/qyRJhBd8RJ0
+         i8caCeYZvMwSx3PQRy3U8AhfRs5hqucvRhRetp4ZmWtJqjCOW0HJAW/NTdqZ1mGGjoCW
+         mIDuyz974q+SPxzrjIL9HI522rILrBeWl/abgB2nqB3DVt//140xaEpCbIlXkGgtwBp4
+         pRbM8YhcnK6Rse+YEa49mhHgDHPaRCcJ0j2reS9o0w+LjupolZFbMeYnVPAkjymxt/QN
+         mZ0Ruc/wh3S1ut7QZM8Czq4QjJFDsUQE6xbH/ei2zIONU8XfkXbOtixcQmkWIaNFQf97
+         1/pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hC/UygB6GdsZ6eOraCnag63BwEncrG0x9BtmpVb+yMo=;
+        b=rhGvD0CSuvE+LuR7zxAg/J5myooHeVfr84Iu3ZuG6IJhAT747gyBiUw0/NR1zb5LwJ
+         YA93cFMQBL/q1/5ZZdHHq3aAkhAqOtc1aGVRpXzXEBL2bDmtCsmC6W/eZGLfDhzlRV6l
+         Bmh8hA0iiyCBre1awY3ipwbXNtqEAiUd+MVBAohyH1MOK4oCjJiuNx9jjR//j3SG0LTD
+         JSyAu57CN8UeuFN/YWA9aN4Ge70vi8C7dZMwPsxeoJs3YdGe1FlnmC0AiGMEIjxQal4Q
+         KDSv/1vSjhNd3wbjxYEEt/EsvGRYspJFCGQribOBmy4eGaKXpJqDxhDt2KMdZlUARWlZ
+         oxjg==
+X-Gm-Message-State: AOAM532z53Ukecx25pkz8Uuyt2Io+BHYS6f6sJ9VCmULuf26MAp+Iwt/
+        fk5AT7D46d82HKX3KD7kgM8OdbjILOWd6vA17NU=
+X-Google-Smtp-Source: ABdhPJwrOVLtit11sVA7UUmR/FA4HIEYLB0s09rOj5SXdwwlTMX4WOOCacRZCmMo1dZ+2GRXJIpGMQMAWYw6VULr1Og=
+X-Received: by 2002:a63:e50:: with SMTP id 16mr5569002pgo.74.1612550500873;
+ Fri, 05 Feb 2021 10:41:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210114180738.1758707-1-helen.koike@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
+ <20210122154300.7628-8-calvin.johnson@oss.nxp.com> <20210205172518.GA18214@lsv03152.swis.in-blr01.nxp.com>
+ <CAHp75VdX2gZbt-eYp31wg0r+yih8omGxcTf6cMyhxjMZZYzFuQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdX2gZbt-eYp31wg0r+yih8omGxcTf6cMyhxjMZZYzFuQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 5 Feb 2021 20:41:24 +0200
+Message-ID: <CAHp75VdEjNhj5oQTqnnOhnibBAa2CoHf1PAvJi57X0d-6LC3NQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v4 07/15] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 5, 2021 at 8:25 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Feb 5, 2021 at 7:25 PM Calvin Johnson
+> <calvin.johnson@oss.nxp.com> wrote:
+> > On Fri, Jan 22, 2021 at 09:12:52PM +0530, Calvin Johnson wrote:
+>
+> ...
+>
+> > > +     rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
+> > With ACPI, I'm facing some problem with fwnode_property_match_string(). It is
+> > unable to detect the compatible string and returns -EPROTO.
+> >
+> > ACPI node for PHY4 is as below:
+> >
+> >  Device(PHY4) {
+> >     Name (_ADR, 0x4)
+> >     Name(_CRS, ResourceTemplate() {
+> >     Interrupt(ResourceConsumer, Level, ActiveHigh, Shared)
+> >     {
+> >       AQR_PHY4_IT
+> >     }
+> >     }) // end of _CRS for PHY4
+> >     Name (_DSD, Package () {
+> >       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> >         Package () {
 
-On 1/14/21 3:07 PM, Helen Koike wrote:
-> Hello,
-> 
-> This is v6 of the Extended API for formats and buffers (see below the new API).
-> 
-> The new API comes for free for old drivers through the conversion layer, which
-> is independent of vb2.
-> 
-> I completly refactored several patches. I would like to request comments not
-> only in the uAPI, but also the kAPI for drivers, and I would appreciate any
-> ideas on improving the quality of the code (in short: please review everything).
-> 
-> NOTE: The Ext API wans't tested yet. My next step is to patch v4l2-compliance.
+> >           Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
 
-I implemented on libcamera to test it, please check:
+I guess converting this to
+           Package () {"compatible", Package() {"ethernet-phy-ieee802.3-c45"}}
+will solve it.
 
-    https://lists.libcamera.org/pipermail/libcamera-devel/2021-February/017169.html
+> >        }
 
-Thanks,
-Helen
+> >     })
+> >   } // end of PHY4
+> >
+> >  What is see is that in acpi_data_get_property(),
+> > propvalue->type = 0x2(ACPI_TYPE_STRING) and type = 0x4(ACPI_TYPE_PACKAGE).
+> >
+> > Any help please?
+> >
+> > fwnode_property_match_string() works fine for DT.
+>
+> Can you show the DT node which works and also input for the
+> )match_string() (i.o.w what exactly you are trying to match with)?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-> 
-> Regression tests - v4l2-compliance with test-media script:
-> 	vivid: http://ix.io/2M0G - Final Summary: 1856, Succeeded: 1856, Failed: 0, Warnings: 0)
-> 	vimc: http://ix.io/2M0I - Final Summary: 488, Succeeded: 488, Failed: 0, Warnings: 0
-> 
-> Git: https://gitlab.collabora.com/koike/linux/-/tree/v4l2/ext-api/v6
-> 
-> v5: https://patchwork.linuxtv.org/project/linux-media/cover/20200804192939.2251988-1-helen.koike@collabora.com/
-> v4: https://patchwork.linuxtv.org/project/linux-media/cover/20200717115435.2632623-1-helen.koike@collabora.com/
-> v3: https://patchwork.linuxtv.org/cover/59345/
-> v2: https://patchwork.kernel.org/project/linux-media/list/?series=101153
-> v1: https://patchwork.kernel.org/project/linux-media/list/?series=93707
-> 
-> Conversion layer:
-> =================
-> 
-> * Old drivers implementing only ops->vidioc_*_fmt_vid_cap supports
->   VIDIOC_*_EXT_PIX_FMT automatically with limitations[1].
-> 
-> * New drivers implementing only ops->vidioc_*_ext_pix_fmt_vid_cap supports
->   VIDIOC_*_FMT automatically.
-> 
-> * Old drivers implementing only ops->vidioc_*buf support
->   VIDIOC_EXT_*BUF automatically with limitations[2].
-> 
-> * New drivers should implement both ops->vidioc_*buf and ops->vidioc_*buf
->   to overcome limitations[2] and support both APIs.
->   Which is easy with vb2:
->      static const struct v4l2_ioctl_ops ioctl_ops = {
->      ...
->      +      .vidioc_ext_qbuf = vb2_ioctl_ext_qbuf,
->      +      .vidioc_ext_dqbuf = vb2_ioctl_ext_dqbuf,
->      ...
->      }
->      ...
->      +      /* Inform vb2 how to split the memory buffer in case a single one is used */
->      +      vb2_set_pixelformat(dev->pixelformat)
-> 
-> [1] There are some limitations in the conversion such as modifiers that are
->     ignored when converting v4l2_ext_pix_format to v4l_format
-> 
-> [2] Ext API allows a single buffer with planes placed in random locations,
->     which is not possible with v4l2_buffer.
-> 
-> 
-> Major changes in v6:
-> ====================
-> 
-> Fixed color planes vs memory planes handling.
-> 
-> Removed VIDIOC_EXT_PREPARE_BUF, since this is an optimization, it doesn't blocks
-> the API, we can add it later (my goal was to simplify this patchset).
-> 
-> Removed VIDIOC_EXT_CREATE_BUFS, since this is useful only to MMAP (thus low priority)
-> with the new format.
-> Classic VIDIOC_CREATE_BUFS and VIDIOC_REQBUFS can still be used.
-> 
-> Reformulated conversion layer as per above.
-> 
-> Removed conversions in vb2, it is easier to add hooks to drivers.
-> 
-> Fixed vb2 to allow Ext API only to Video types.
-> 
-> API updates:
-> * remove buffer and plane lengths
-> * move `memory` field to v4l2_ext_buffer instead of v4l2_ext_plane
-> * remove struct v4l2_plane_ext_pix_format
-> * reordering
-> 
-> Make Ext API valid only for Video types, and not for touch, vbi, meta, etc.
-> 
-> Sereval code refactoring, simplification, fixes and applied suggestions from v5.
-> 
-> New API (for convenience):
-> ==========================
-> 
-> int ioctl(int fd, VIDIOC_G_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp)
-> int ioctl(int fd, VIDIOC_S_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp)
-> int ioctl(int fd, VIDIOC_TRY_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp)
-> int ioctl(int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp)
-> int ioctl(int fd, VIDIOC_EXT_DQBUF, struct v4l2_ext_buffer *argp)
-> 
-> struct v4l2_ext_pix_format {
-> 	__u32 type;
-> 	__u32 width;
-> 	__u32 height;
-> 	__u32 field;
-> 	struct v4l2_plane_pix_format plane_fmt[VIDEO_MAX_PLANES];
-> 	__u32 pixelformat;
-> 	__u64 modifier;
-> 	__u32 colorspace;
-> 	__u32 xfer_func;
-> 	union {
-> 		__u32 ycbcr_enc;
-> 		__u32 hsv_enc;
-> 	};
-> 	__u32 quantization;
-> 	__u32 reserved[9];
-> };
-> 
-> struct v4l2_ext_buffer {
-> 	__u32 index;
-> 	__u32 type;
-> 	__u32 field;
-> 	__u32 sequence;
-> 	__u64 flags;
-> 	__u64 timestamp;
-> 	__u32 memory;
-> 	__s32 request_fd;
-> 	struct v4l2_ext_plane planes[VIDEO_MAX_PLANES];
-> 	__u32 reserved[10];
-> };
-> 
-> struct v4l2_ext_plane {
-> 	__u32 offset;
-> 	__u32 bytesused;
-> 	union {
-> 		__u32 mmap_offset;
-> 		__u64 userptr;
-> 		__s32 dmabuf_fd;
-> 	} m;
-> 	__u32 reserved[6];
-> };
-> 
-> Helen Koike (11):
->   media: v4l2-common: add normalized pixelformat field to struct
->     v4l2_format_info
->   media: v4l2: Extend pixel formats to unify single/multi-planar
->     handling (and more)
->   media: v4l2: Add extended buffer (de)queue operations for video types
->   media: videobuf2-v4l2: reorganize flags handling
->   media: videobuf2: Expose helpers for Ext qbuf/dqbuf
->   media: vivid: use vb2_ioctls_ext_{d}qbuf hooks
->   media: vimc: use vb2_ioctls_ext_{d}qbuf hooks
->   media: mediabus: Add helpers to convert a ext_pix format to/from a
->     mbus_fmt
->   media: vivid: Convert to v4l2_ext_pix_format
->   media: vimc: Convert to v4l2_ext_pix_format
->   media: docs: add documentation for the Extended API
-> 
->  .../userspace-api/media/v4l/buffer.rst        |   5 +
->  .../userspace-api/media/v4l/common.rst        |   1 +
->  .../userspace-api/media/v4l/dev-capture.rst   |   6 +
->  .../userspace-api/media/v4l/dev-output.rst    |   6 +
->  .../userspace-api/media/v4l/ext-api.rst       |  89 +++
->  .../userspace-api/media/v4l/format.rst        |  18 +-
->  .../userspace-api/media/v4l/user-func.rst     |   5 +
->  .../media/v4l/vidioc-ext-qbuf.rst             | 188 +++++
->  .../media/v4l/vidioc-g-ext-pix-fmt.rst        | 116 +++
->  .../userspace-api/media/v4l/vidioc-qbuf.rst   |   2 +-
->  .../media/common/videobuf2/videobuf2-core.c   |  46 +-
->  .../media/common/videobuf2/videobuf2-v4l2.c   | 500 +++++++++---
->  .../media/test-drivers/vimc/vimc-capture.c    |  57 +-
->  drivers/media/test-drivers/vimc/vimc-common.c |   6 +-
->  drivers/media/test-drivers/vimc/vimc-common.h |   2 +-
->  drivers/media/test-drivers/vivid/vivid-core.c | 209 ++---
->  .../media/test-drivers/vivid/vivid-vid-cap.c  | 203 ++---
->  .../media/test-drivers/vivid/vivid-vid-cap.h  |  15 +-
->  .../media/test-drivers/vivid/vivid-vid-out.c  | 198 ++---
->  .../media/test-drivers/vivid/vivid-vid-out.h  |  15 +-
->  drivers/media/v4l2-core/v4l2-common.c         |  16 +-
->  drivers/media/v4l2-core/v4l2-dev.c            |  31 +-
->  drivers/media/v4l2-core/v4l2-ioctl.c          | 722 +++++++++++++++++-
->  include/media/v4l2-common.h                   |   3 +
->  include/media/v4l2-ioctl.h                    |  36 +
->  include/media/v4l2-mediabus.h                 |  42 +
->  include/media/videobuf2-core.h                |  33 +-
->  include/media/videobuf2-v4l2.h                |   8 +-
->  include/uapi/linux/videodev2.h                |  96 +++
->  29 files changed, 2131 insertions(+), 543 deletions(-)
->  create mode 100644 Documentation/userspace-api/media/v4l/ext-api.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
->  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
-> 
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
