@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB8131188E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D50311889
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhBFCk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:40:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        id S231458AbhBFCkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhBFCcf (ORCPT
+        with ESMTP id S230133AbhBFCca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:32:35 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B17C061A32
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:11:13 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id a16so7245325ilq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:11:13 -0800 (PST)
+        Fri, 5 Feb 2021 21:32:30 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C002C061B3F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:11:14 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id d6so7242635ilo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H+XXRPtcVhqL4SZA2xE4JtYQXLSPRWqhEcRZvJyBubQ=;
-        b=hTPgVLNSODjoqc0f730U8vWV6C1asXWCeoeebQj6gmhDd8uSqKl34FprhHSqFK7U8F
-         /CjjYvFGEyvpnzroIhG4B/OMmGP2DAVJzu2moXWhrShwr3Z4WVzoj9mGBFpGFCOOI4AT
-         XX1C9Q56mUd9ODIanu0zKNcFPEetMHD0zZtTsFh8k9DRP1LuCPqRrl0q1Zm7wbIQVjHS
-         Rv78RTBj38saLCFEPQne/ksBqXlscyHglmBf1gbr3yVE4MH85zI57tOdJdEK0LJXVuHv
-         qmhaLQsHaNh4aTmR7QCjVhc9SZOsuHRAcHym+FuTzy+dKCwuRo88j/VHXXe96E1KyyEr
-         7NNA==
+        bh=ktpO/jSmoOx5RVisI52DM6PeD/6jBsQ5/HisJypSEHU=;
+        b=ozvSvOes+inyPBHz80LRvVrFcsrJMzQcACU5LKGFx08VpOGwelVCRaOGmPRhfUgQCf
+         N5rqnPRhUMvCvkCVIkkyaPXJ6xaVQ/AoMuGpi6zk8CwVLjaQ8KbMscdkjSWapEY8O8EQ
+         vTLjdqs+t2mXJMIP4Npaiv16vWRmN36xVdMJ4i2sw+Z7elNhC6x42O+YvahqLGUDv4MG
+         ZgH5Tvs3PWP03HWf/1e1H5C2npvac6I6W8e3OFf/HvHaDiP5UVgRq7nf46JLwL0C9bA2
+         DmaKbWBsP/apTInIRbWEwjExMmiDJ7MFjsv85P9AJ/Z2bNfoC3UqxoxSbfNrFgd34dD4
+         uExQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H+XXRPtcVhqL4SZA2xE4JtYQXLSPRWqhEcRZvJyBubQ=;
-        b=VLJ2zlcq3Fg0Vo5oZKuPfB36y7JoundqXWdEiTdZrQFFEy7yOa01+N02gCkriNeQWu
-         Z7KYyUuALpH0zd6fJDn7nrIJ3jsBWeiCWBOsoClsDxFEMShn9C9TeOctAqzhnmzjwus+
-         xviJv3stlrppokHcMSrfuvIB+LmNcp2mUczNxX2kCfcGXNjPXYIYTxFjn4rYb3bSW3PP
-         yu58yAuiSxNbB6XqhEzDyjfkvH0jww+0igVML+6HqvMO3n0qCXWG5jUSX2mJrKb6amIu
-         B2bSmgH7U6T/FhAGSoOr6fJH2V6GpxkDk4P1h5aIG6QbsSwHasSWZskl5zl464YF4vFf
-         xs4A==
-X-Gm-Message-State: AOAM5330doP/MOlK7uZKoB6b6nnUeDS0/cJEJ4FDWtknVgOd04YdpYsw
-        p7L6thLnjuPTB9MGXdaHzmMjPw==
-X-Google-Smtp-Source: ABdhPJx2jF/j7ZztSAjV9hX8HZSZ1DtLl1lJVXJfLPIpaHxzn7hkDIGtvyJCmDuDOKduWRhJLYxFIQ==
-X-Received: by 2002:a92:8e42:: with SMTP id k2mr6121493ilh.250.1612563072586;
-        Fri, 05 Feb 2021 14:11:12 -0800 (PST)
+        bh=ktpO/jSmoOx5RVisI52DM6PeD/6jBsQ5/HisJypSEHU=;
+        b=YKk4/Ibt6jBqMFyvvb1zaBRJjyd7qyT4ZU0tzn3OvTdps848n/+b9bfQFBcIo0Kpuq
+         fiyYTxZAUbXFriGHwRaBJHootEXGnjlUZClWH/71/xLw86t1OqKqVdrqeFhJDNqn/Z64
+         8Di5h8HNgLYVB34CU4MPUoBzrLgC/66aSOdO4w/JzlZpW76aAAOmCL8oxJ1MGPcHn/o2
+         Go8AupRmTIec5M9YEqsEhOrvgf11oqdlpQM2CAhAsHNBFvdgehmkPwcC3rglyc/J99Ki
+         odWzjl880ipmN2wmntCO2/ej/V5OjJwZBkIwS3KyOh0qKHbOvJBii+bAPyBjv/kH8koa
+         Qyzw==
+X-Gm-Message-State: AOAM5305YLFk778deHvffBSQkGLGUEB6V7z34+6xLlFC3XZ6c+ZP2AOB
+        FIDpzyTXjGKpVbtJxCRFsNF2eQ==
+X-Google-Smtp-Source: ABdhPJxC0bJgCkwEtZG6d2RJ3paGFc9aTLxSS6YQQ28hdw4p7jc/JS4xelRiLwvAYsVfxkek60BtmA==
+X-Received: by 2002:a92:2e05:: with SMTP id v5mr6146744ile.241.1612563073683;
+        Fri, 05 Feb 2021 14:11:13 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id m15sm4647171ilh.6.2021.02.05.14.11.11
+        by smtp.gmail.com with ESMTPSA id m15sm4647171ilh.6.2021.02.05.14.11.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 14:11:12 -0800 (PST)
+        Fri, 05 Feb 2021 14:11:13 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 5/7] net: ipa: use a Boolean rather than count when replenishing
-Date:   Fri,  5 Feb 2021 16:10:58 -0600
-Message-Id: <20210205221100.1738-6-elder@linaro.org>
+Subject: [PATCH net-next v2 6/7] net: ipa: get rid of status size constraint
+Date:   Fri,  5 Feb 2021 16:10:59 -0600
+Message-Id: <20210205221100.1738-7-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210205221100.1738-1-elder@linaro.org>
 References: <20210205221100.1738-1-elder@linaro.org>
@@ -65,106 +65,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The count argument to ipa_endpoint_replenish() is only ever 0 or 1,
-and always will be (because we always handle each receive buffer in
-a single transaction).  Rename the argument to be add_one and change
-it to be Boolean.
-
-Update the function description to reflect the current code.
+There is a build-time check that the packet status structure is a
+multiple of 4 bytes in size.  It's not clear where that constraint
+comes from, but the structure defines what hardware provides so its
+definition won't change.  Get rid of the check; it adds no value.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 35 ++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+ drivers/net/ipa/ipa_endpoint.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 7a46c790afbef..bff5d6ffd1186 100644
+index bff5d6ffd1186..7209ee3c31244 100644
 --- a/drivers/net/ipa/ipa_endpoint.c
 +++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1020,31 +1020,34 @@ static int ipa_endpoint_replenish_one(struct ipa_endpoint *endpoint)
- }
+@@ -174,9 +174,6 @@ static bool ipa_endpoint_data_valid(struct ipa *ipa, u32 count,
+ 	enum ipa_endpoint_name name;
+ 	u32 limit;
  
- /**
-- * ipa_endpoint_replenish() - Replenish the Rx packets cache.
-+ * ipa_endpoint_replenish() - Replenish endpoint receive buffers
-  * @endpoint:	Endpoint to be replenished
-- * @count:	Number of buffers to send to hardware
-+ * @add_one:	Whether this is replacing a just-consumed buffer
-  *
-- * Allocate RX packet wrapper structures with maximal socket buffers
-- * for an endpoint.  These are supplied to the hardware, which fills
-- * them with incoming data.
-+ * The IPA hardware can hold a fixed number of receive buffers for an RX
-+ * endpoint, based on the number of entries in the underlying channel ring
-+ * buffer.  If an endpoint's "backlog" is non-zero, it indicates how many
-+ * more receive buffers can be supplied to the hardware.  Replenishing for
-+ * an endpoint can be disabled, in which case requests to replenish a
-+ * buffer are "saved", and transferred to the backlog once it is re-enabled
-+ * again.
-  */
--static void ipa_endpoint_replenish(struct ipa_endpoint *endpoint, u32 count)
-+static void ipa_endpoint_replenish(struct ipa_endpoint *endpoint, bool add_one)
- {
- 	struct gsi *gsi;
- 	u32 backlog;
- 
- 	if (!endpoint->replenish_enabled) {
--		if (count)
--			atomic_add(count, &endpoint->replenish_saved);
-+		if (add_one)
-+			atomic_inc(&endpoint->replenish_saved);
- 		return;
- 	}
- 
+-	/* Not sure where this constraint come from... */
+-	BUILD_BUG_ON(sizeof(struct ipa_status) % 4);
 -
- 	while (atomic_dec_not_zero(&endpoint->replenish_backlog))
- 		if (ipa_endpoint_replenish_one(endpoint))
- 			goto try_again_later;
--	if (count)
--		atomic_add(count, &endpoint->replenish_backlog);
-+	if (add_one)
-+		atomic_inc(&endpoint->replenish_backlog);
- 
- 	return;
- 
-@@ -1052,8 +1055,8 @@ static void ipa_endpoint_replenish(struct ipa_endpoint *endpoint, u32 count)
- 	/* The last one didn't succeed, so fix the backlog */
- 	backlog = atomic_inc_return(&endpoint->replenish_backlog);
- 
--	if (count)
--		atomic_add(count, &endpoint->replenish_backlog);
-+	if (add_one)
-+		atomic_inc(&endpoint->replenish_backlog);
- 
- 	/* Whenever a receive buffer transaction completes we'll try to
- 	 * replenish again.  It's unlikely, but if we fail to supply even
-@@ -1080,7 +1083,7 @@ static void ipa_endpoint_replenish_enable(struct ipa_endpoint *endpoint)
- 	/* Start replenishing if hardware currently has no buffers */
- 	max_backlog = gsi_channel_tre_max(gsi, endpoint->channel_id);
- 	if (atomic_read(&endpoint->replenish_backlog) == max_backlog)
--		ipa_endpoint_replenish(endpoint, 0);
-+		ipa_endpoint_replenish(endpoint, false);
- }
- 
- static void ipa_endpoint_replenish_disable(struct ipa_endpoint *endpoint)
-@@ -1099,7 +1102,7 @@ static void ipa_endpoint_replenish_work(struct work_struct *work)
- 
- 	endpoint = container_of(dwork, struct ipa_endpoint, replenish_work);
- 
--	ipa_endpoint_replenish(endpoint, 0);
-+	ipa_endpoint_replenish(endpoint, false);
- }
- 
- static void ipa_endpoint_skb_copy(struct ipa_endpoint *endpoint,
-@@ -1300,7 +1303,7 @@ static void ipa_endpoint_rx_complete(struct ipa_endpoint *endpoint,
- {
- 	struct page *page;
- 
--	ipa_endpoint_replenish(endpoint, 1);
-+	ipa_endpoint_replenish(endpoint, true);
- 
- 	if (trans->cancelled)
- 		return;
+ 	if (count > IPA_ENDPOINT_COUNT) {
+ 		dev_err(dev, "too many endpoints specified (%u > %u)\n",
+ 			count, IPA_ENDPOINT_COUNT);
 -- 
 2.20.1
 
