@@ -2,92 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388D431169E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE840311693
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhBEXH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:07:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232027AbhBEOfO (ORCPT
+        id S232134AbhBEXFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232740AbhBEOfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:35:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612541552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3TsJGd0+8Rr5FyrVFN0YQ1LVOoJ9uc/e+iMpGoDsN6c=;
-        b=EAdzdZqAMZOP8xdDPHP5YEiKva4TlKW0xFgjcsgAkjGx/UifIOi6CH019ex8TYKwaiAAcG
-        b56xob6BH31UEpYc718x0C1Pbdnst2kCK/2plyIdV3NtfNx9+sXzlPgzBHMC8SrfyiOeLx
-        RAeC/3kiSDSwGXjK3UI07U4ybBazk2Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-h5tM4UstNoKPRL5aLC_cUg-1; Fri, 05 Feb 2021 11:12:30 -0500
-X-MC-Unique: h5tM4UstNoKPRL5aLC_cUg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 888EF80402C;
-        Fri,  5 Feb 2021 16:12:29 +0000 (UTC)
-Received: from [10.36.113.156] (ovpn-113-156.ams2.redhat.com [10.36.113.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D86919C47;
-        Fri,  5 Feb 2021 16:12:28 +0000 (UTC)
-Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to simplify the
- hugetlb_vm_op_pagesize()
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210205092209.16024-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <2743477c-a256-0295-884d-5354c634508d@redhat.com>
-Date:   Fri, 5 Feb 2021 17:12:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 5 Feb 2021 09:35:54 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45919C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:14:00 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id z21so4874298pgj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tgToZXIcR//slb37mMxyXMF6K319Gf4e4xqtIkg5mSQ=;
+        b=vi1eZTDGn0s+c7nDc/UcaxmiZ8SO8djhd8YKp6I27b2SvO+LfWMsqNulS/rqad1/EE
+         zti94jrpclnDbtIra0/SF7oO933+vtLmvQh0LOlXgTtUA/Ys9pWpCzEJCP/8EeKnN7RY
+         KpnRSlevGccsTyUxdhwrPyWiJ1Hac/O8fH2AVQtrKbP/z2fQG58C63wBM+0nDMC0Ynvk
+         4eOqfX54/u8Ei+AiBWg43xL9oUa8Xrf8Zjdlyh5mAdzbTEcTH01mFIo52cFaP8k0nK7Z
+         Q4Y7yFF8vBMHXuXjyC1YB7Zwja6igzBF2grNPDY3PHAeLebuziRPFkGYUNNyVT7trndg
+         fTZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tgToZXIcR//slb37mMxyXMF6K319Gf4e4xqtIkg5mSQ=;
+        b=OydTzKKm9kJ7fut0kkqsd0vHW2gOp6A5/PPKCuGedxoKy7UJ5f3eNTnji1/JNQetcs
+         3YDx9iBXbD+UOrBP19+B+T5Ou2e9iS8xtIomJ1WXAg4UoXFBTNhMZ8959BKqGOELAkg7
+         mfcA+3N+Eh5wsfOXAly/Sz8Knen0gvcKUqZnjWpD3EaM40nzpE4Yrhv466WcSEdPDF7o
+         yF9YAPyiiAfiYNhKIPjlmSqGcu+oDJysTPOkFkVVEay5drU4lscJ4AEO5r4AIR0S2hMZ
+         jWwuq2a3fE/15lseJZ/IZzTCtGCPFHBmie3eLmUEyfrGr1NOXiC4oSkf/g1XxbRo8nYD
+         ChiA==
+X-Gm-Message-State: AOAM533uVOPM0VJuH1wW174bIfQaTgKv8niU9FTcpZVHCKiYE3QNVexC
+        OCFvr/7N9sYv2JxyR4PrChub+CXbtcSg34Af1QpWEA==
+X-Google-Smtp-Source: ABdhPJwkirrFi8xuKWL/S5D2cKkWHr8/viSsyFvrNlI047a1E3Q16PWtG8tYxcyd1lVj1EuEzbAYJyMFxhtmMXc0PgQ=
+X-Received: by 2002:a62:1b93:0:b029:1cb:4985:623b with SMTP id
+ b141-20020a621b930000b02901cb4985623bmr5289599pfb.59.1612541639757; Fri, 05
+ Feb 2021 08:13:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205092209.16024-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210204035043.36609-1-songmuchun@bytedance.com> <a14113c5-08ae-2819-7e24-3d2687ef88da@oracle.com>
+In-Reply-To: <a14113c5-08ae-2819-7e24-3d2687ef88da@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 6 Feb 2021 00:13:22 +0800
+Message-ID: <CAMZfGtXyWkeO9gGKGpEXYA9DA75mMZUaHboTXH6dGxZgEHvMpA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v14 0/8] Free some vmemmap pages of HugeTLB page
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.02.21 10:22, Miaohe Lin wrote:
-> We can use helper huge_page_size() to get the size of the pages allocated
-> when backing a VMA directly to make the code more simplified.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/hugetlb.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 18628f8dbfb0..3eea2a34d9f5 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
->   
->   static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
->   {
-> -	struct hstate *hstate = hstate_vma(vma);
-> -
-> -	return 1UL << huge_page_shift(hstate);
-> +	return huge_page_size(hstate_vma(vma));
->   }
+On Sat, Feb 6, 2021 at 12:01 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>
+> On 2/4/21 3:50 AM, Muchun Song wrote:
+> > Hi all,
+> >
+>
+> [...]
+>
+> > When a HugeTLB is freed to the buddy system, we should allocate 6 pages for
+> > vmemmap pages and restore the previous mapping relationship.
+> >
+> > Apart from 2MB HugeTLB page, we also have 1GB HugeTLB page. It is similar
+> > to the 2MB HugeTLB page. We also can use this approach to free the vmemmap
+> > pages.
+> >
+> > In this case, for the 1GB HugeTLB page, we can save 4094 pages. This is a
+> > very substantial gain. On our server, run some SPDK/QEMU applications which
+> > will use 1024GB hugetlbpage. With this feature enabled, we can save ~16GB
+> > (1G hugepage)/~12GB (2MB hugepage) memory.
+> >
+> > Because there are vmemmap page tables reconstruction on the freeing/allocating
+> > path, it increases some overhead. Here are some overhead analysis.
+>
+> [...]
+>
+> > Although the overhead has increased, the overhead is not significant. Like Mike
+> > said, "However, remember that the majority of use cases create hugetlb pages at
+> > or shortly after boot time and add them to the pool. So, additional overhead is
+> > at pool creation time. There is no change to 'normal run time' operations of
+> > getting a page from or returning a page to the pool (think page fault/unmap)".
+> >
+>
+> Despite the overhead and in addition to the memory gains from this series ...
+> there's an additional benefit there isn't talked here with your vmemmap page
+> reuse trick. That is page (un)pinners will see an improvement and I presume because
+> there are fewer memmap pages and thus the tail/head pages are staying in cache more
+> often.
+>
+> Out of the box I saw (when comparing linux-next against linux-next + this series)
+> with gup_test and pinning a 16G hugetlb file (with 1G pages):
+>
+>         get_user_pages(): ~32k -> ~9k
+>         unpin_user_pages(): ~75k -> ~70k
+>
+> Usually any tight loop fetching compound_head(), or reading tail pages data (e.g.
+> compound_head) benefit a lot. There's some unpinning inefficiencies I am fixing[0], but
+> with that in added it shows even more:
+>
+>         unpin_user_pages(): ~27k -> ~3.8k
+>
+> FWIW, I was also seeing that with devdax and the ZONE_DEVICE vmemmap page reuse equivalent
+> series[1] but it was mixed with other numbers.
 
-Maybe it makes sense to squash all of these individual patches you send 
-that do the same things/perform the same cleanups. Shouldn't be to hard 
-to identify all these cases using simple "git grep".
-
-Makes life of reviewers and maintainers easier ...
+It's really a surprise. Thank you very much for the test data.
+Very nice. Thanks again.
 
 
--- 
-Thanks,
-
-David / dhildenb
-
+>
+> Anyways, JFYI :)
+>
+>         Joao
+>
+> [0] https://lore.kernel.org/linux-mm/20210204202500.26474-1-joao.m.martins@oracle.com/
+> [1] https://lore.kernel.org/linux-mm/20201208172901.17384-1-joao.m.martins@oracle.com/
