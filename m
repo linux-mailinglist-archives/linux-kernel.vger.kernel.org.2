@@ -2,254 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CB4311249
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6727131123B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBESij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:38:39 -0500
-Received: from relay.sw.ru ([185.231.240.75]:46752 "EHLO relay.sw.ru"
+        id S233003AbhBESht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:37:49 -0500
+Received: from mga17.intel.com ([192.55.52.151]:42539 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhBEPIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:08:38 -0500
-Received: from [192.168.15.95]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1l82Ie-001maZ-UR; Fri, 05 Feb 2021 17:41:33 +0300
-Subject: Re: [v6 PATCH 08/11] mm: vmscan: use per memcg nr_deferred of
- shrinker
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210203172042.800474-1-shy828301@gmail.com>
- <20210203172042.800474-9-shy828301@gmail.com>
- <44cc18d2-5a47-91d0-dad2-599c251a3a8b@virtuozzo.com>
- <CAHbLzkqysaU9WGUeeCFLHdnRiRm7uPXf6ikm7-TkRetRZyMLfg@mail.gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <ea64b512-863a-da37-f925-09ba07d621e6@virtuozzo.com>
-Date:   Fri, 5 Feb 2021 17:41:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S233106AbhBEPKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:10:21 -0500
+IronPort-SDR: 763rtp2EEfcCfRPvcBVvB6GodoOrSHibdvLrgacgy/k4zvKsUzgoL5zngwktV4iBqC31EwZZWI
+ 473smzJLkNGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161198903"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="161198903"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:44 -0800
+IronPort-SDR: EibHNiZ91C0Tmq4y4iB9oIR3gazpluwVlvsuKvYkTvjDhuWIpGSlZWr58fZ1ftAigaHF5a4k8v
+ ZMErmyBea09g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="358274755"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Feb 2021 07:16:41 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id CB8B92A7; Fri,  5 Feb 2021 17:16:40 +0200 (EET)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [RFC 3/9] x86: CPUID and CR3/CR4 flags for Linear Address Masking
+Date:   Fri,  5 Feb 2021 18:16:24 +0300
+Message-Id: <20210205151631.43511-5-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkqysaU9WGUeeCFLHdnRiRm7uPXf6ikm7-TkRetRZyMLfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.02.2021 20:23, Yang Shi wrote:
-> On Thu, Feb 4, 2021 at 12:42 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->>
->> On 03.02.2021 20:20, Yang Shi wrote:
->>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
->>> will be used in the following cases:
->>>     1. Non memcg aware shrinkers
->>>     2. !CONFIG_MEMCG
->>>     3. memcg is disabled by boot parameter
->>>
->>> Signed-off-by: Yang Shi <shy828301@gmail.com>
->>> ---
->>>  mm/vmscan.c | 94 +++++++++++++++++++++++++++++++++++++++++++----------
->>>  1 file changed, 77 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>> index d9126f12890f..545422d2aeec 100644
->>> --- a/mm/vmscan.c
->>> +++ b/mm/vmscan.c
->>> @@ -190,6 +190,13 @@ static int shrinker_nr_max;
->>>  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
->>>       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
->>>
->>> +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
->>> +                                                  int nid)
->>> +{
->>> +     return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
->>> +                                      lockdep_is_held(&shrinker_rwsem));
->>> +}
->>
->> Thanks for the helper. Why not to introduce and become to use it in old places
->> in a separate patch?
-> 
-> What do you mean about "old places"? Where was it introduced in v5 (in
-> patch #10)?
+Enumerate Linear Address Masking and provide defines for CR3 and CR4
+flags.
 
-I mean existing places touched by this patch, which became to use the new helper
-in this patch: free_shrinker_info(), expand_one_shrinker_info(), shrink_slab_memcg().
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h          | 1 +
+ arch/x86/include/uapi/asm/processor-flags.h | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
->>
->>> +
->>>  static void free_shrinker_info_rcu(struct rcu_head *head)
->>>  {
->>>       kvfree(container_of(head, struct shrinker_info, rcu));
->>> @@ -204,8 +211,7 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
->>>       int size = m_size + d_size;
->>>
->>>       for_each_node(nid) {
->>> -             old = rcu_dereference_protected(
->>> -                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
->>> +             old = shrinker_info_protected(memcg, nid);
->>>               /* Not yet online memcg */
->>>               if (!old)
->>>                       return 0;
->>> @@ -239,7 +245,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
->>>
->>>       for_each_node(nid) {
->>>               pn = mem_cgroup_nodeinfo(memcg, nid);
->>> -             info = rcu_dereference_protected(pn->shrinker_info, true);
->>> +             info = shrinker_info_protected(memcg, nid);
->>>               kvfree(info);
->>>               rcu_assign_pointer(pn->shrinker_info, NULL);
->>>       }
->>> @@ -358,6 +364,25 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
->>>       up_write(&shrinker_rwsem);
->>>  }
->>>
->>> +
->>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
->>> +                                 struct mem_cgroup *memcg)
->>> +{
->>> +     struct shrinker_info *info;
->>> +
->>> +     info = shrinker_info_protected(memcg, nid);
->>> +     return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
->>> +}
->>> +
->>> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
->>> +                               struct mem_cgroup *memcg)
->>> +{
->>> +     struct shrinker_info *info;
->>> +
->>> +     info = shrinker_info_protected(memcg, nid);
->>> +     return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
->>> +}
->>
->> Names confuse me a little bit. What about xchg_nr_deferred_memcg() and add_nr_deferred_memcg()?
-> 
-> add_nr_deferred_memcg() sounds more self-explained to me.
-> 
->>
->>>  static bool cgroup_reclaim(struct scan_control *sc)
->>>  {
->>>       return sc->target_mem_cgroup;
->>> @@ -396,6 +421,18 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
->>>  {
->>>  }
->>>
->>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
->>> +                                 struct mem_cgroup *memcg)
->>> +{
->>> +     return 0;
->>> +}
->>> +
->>> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
->>> +                               struct mem_cgroup *memcg)
->>> +{
->>> +     return 0;
->>> +}
->>> +
->>>  static bool cgroup_reclaim(struct scan_control *sc)
->>>  {
->>>       return false;
->>> @@ -407,6 +444,39 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->>>  }
->>>  #endif
->>>
->>> +static long count_nr_deferred(struct shrinker *shrinker,
->>> +                           struct shrink_control *sc)
->>> +{
->>> +     int nid = sc->nid;
->>> +
->>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
->>> +             nid = 0;
->>> +
->>> +     if (sc->memcg &&
->>> +         (shrinker->flags & SHRINKER_MEMCG_AWARE))
->>> +             return count_nr_deferred_memcg(nid, shrinker,
->>> +                                            sc->memcg);
->>> +
->>> +     return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
->>> +}
->>> +
->>> +
->>> +static long set_nr_deferred(long nr, struct shrinker *shrinker,
->>> +                         struct shrink_control *sc)
->>> +{
->>> +     int nid = sc->nid;
->>> +
->>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
->>> +             nid = 0;
->>> +
->>> +     if (sc->memcg &&
->>> +         (shrinker->flags & SHRINKER_MEMCG_AWARE))
->>> +             return set_nr_deferred_memcg(nr, nid, shrinker,
->>> +                                          sc->memcg);
->>> +
->>> +     return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
->>> +}
->>> +
->>>  /*
->>>   * This misses isolated pages which are not accounted for to save counters.
->>>   * As the data only determines if reclaim or compaction continues, it is
->>> @@ -539,14 +609,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->>>       long freeable;
->>>       long nr;
->>>       long new_nr;
->>> -     int nid = shrinkctl->nid;
->>>       long batch_size = shrinker->batch ? shrinker->batch
->>>                                         : SHRINK_BATCH;
->>>       long scanned = 0, next_deferred;
->>>
->>> -     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
->>> -             nid = 0;
->>> -
->>>       freeable = shrinker->count_objects(shrinker, shrinkctl);
->>>       if (freeable == 0 || freeable == SHRINK_EMPTY)
->>>               return freeable;
->>> @@ -556,7 +622,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->>>        * and zero it so that other concurrent shrinker invocations
->>>        * don't also do this scanning work.
->>>        */
->>> -     nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
->>> +     nr = count_nr_deferred(shrinker, shrinkctl);
->>>
->>>       total_scan = nr;
->>>       if (shrinker->seeks) {
->>> @@ -647,14 +713,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->>>               next_deferred = 0;
->>>       /*
->>>        * move the unused scan count back into the shrinker in a
->>> -      * manner that handles concurrent updates. If we exhausted the
->>> -      * scan, there is no need to do an update.
->>> +      * manner that handles concurrent updates.
->>>        */
->>> -     if (next_deferred > 0)
->>> -             new_nr = atomic_long_add_return(next_deferred,
->>> -                                             &shrinker->nr_deferred[nid]);
->>> -     else
->>> -             new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
->>> +     new_nr = set_nr_deferred(next_deferred, shrinker, shrinkctl);
->>>
->>>       trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
->>>       return freed;
->>> @@ -674,8 +735,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->>>       if (!down_read_trylock(&shrinker_rwsem))
->>>               return 0;
->>>
->>> -     info = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
->>> -                                      true);
->>> +     info = shrinker_info_protected(memcg, nid);
->>>       if (unlikely(!info))
->>>               goto unlock;
->>>
->>>
->>
->>
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index dad350d42ecf..3ae25d88216e 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -293,6 +293,7 @@
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
+ #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
++#define X86_FEATURE_LAM			(12*32+26) /* Linear Address Masking */
+ 
+ /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
+ #define X86_FEATURE_CLZERO		(13*32+ 0) /* CLZERO instruction */
+diff --git a/arch/x86/include/uapi/asm/processor-flags.h b/arch/x86/include/uapi/asm/processor-flags.h
+index bcba3c643e63..f2a4a53308e2 100644
+--- a/arch/x86/include/uapi/asm/processor-flags.h
++++ b/arch/x86/include/uapi/asm/processor-flags.h
+@@ -82,6 +82,10 @@
+ #define X86_CR3_PCID_BITS	12
+ #define X86_CR3_PCID_MASK	(_AC((1UL << X86_CR3_PCID_BITS) - 1, UL))
+ 
++#define X86_CR3_LAM_U48_BIT	61 /* Activate LAM for userspace, 62:48 bits masked */
++#define X86_CR3_LAM_U48		_BITULL(X86_CR3_LAM_U48_BIT)
++#define X86_CR3_LAM_U57_BIT	62 /* Activate LAM for userspace, 62:57 bits masked */
++#define X86_CR3_LAM_U57		_BITULL(X86_CR3_LAM_U57_BIT)
+ #define X86_CR3_PCID_NOFLUSH_BIT 63 /* Preserve old PCID */
+ #define X86_CR3_PCID_NOFLUSH    _BITULL(X86_CR3_PCID_NOFLUSH_BIT)
+ 
+@@ -130,6 +134,8 @@
+ #define X86_CR4_SMAP		_BITUL(X86_CR4_SMAP_BIT)
+ #define X86_CR4_PKE_BIT		22 /* enable Protection Keys support */
+ #define X86_CR4_PKE		_BITUL(X86_CR4_PKE_BIT)
++#define X86_CR4_LAM_SUP_BIT	28 /* LAM for supervisor pointers */
++#define X86_CR4_LAM_SUP		_BITUL(X86_CR4_LAM_SUP_BIT)
+ 
+ /*
+  * x86-64 Task Priority Register, CR8
+-- 
+2.26.2
 
