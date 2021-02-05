@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D942A310DA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1381310DBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbhBEO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 09:29:55 -0500
-Received: from mga04.intel.com ([192.55.52.120]:16255 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232065AbhBEOSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:18:54 -0500
-IronPort-SDR: Md9gHOWmaXCgIfNFCHnB1TbIL75Hsw5CNCDn9kt6rZGAOrA9ZjRt8pfQyT7lUQZ0+qiMihwoKC
- sDWTYffNQtzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="178879683"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="178879683"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:38:07 -0800
-IronPort-SDR: 227D2ET+ba/qRbtZ+yCKwyHqYwI5MZcMZwAvT9sFy8iXgQmSs5kk0hAs2jkJLiQLAixIIQbQ1R
- CU7DuqsYQ5SQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="508557741"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 05 Feb 2021 06:38:06 -0800
-Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 8C4AF580689;
-        Fri,  5 Feb 2021 06:38:05 -0800 (PST)
-Subject: Re: [PATCH 6/9] perf report: Support instruction latency
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
- <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
- <CAM9d7chGxZc0MA4nqVeJRDXLEzWsQ-ceJ+xgMVmEbQbDVDf72w@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <a1e837a6-9c6a-c613-d7b9-8e6547dfcf67@linux.intel.com>
-Date:   Fri, 5 Feb 2021 09:38:04 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232723AbhBEOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 09:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231912AbhBEOcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:32:25 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C1CC061797
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:10:30 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id z21so4867467pgj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:10:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kxUeKVVNjUYZDEFlDXz16lYFbO6uGbZz83MJ+yrq+To=;
+        b=MHKCxzmuwmO3/oZLWZYANCeI3dBbjZKs52DNYS2+XYmT7KjDFmHyFR0nnq0A+ugEQZ
+         drQjc5ZdJ6R1GWFpepq9BrE1iwWYD8dEOnJsRriHpru3d31kRDiamI8d810//keKACbk
+         MO0ri9erP1Bd+gzSnYdtozR7ml1kcSxE/WjN5YhbMEcrqRDZZWkR4wOFZdLiwD45o+mJ
+         jJjPDeLSlmCuTTX8ce31NMP4bnZyf/hhxlW7sQANGcGk7Gif/Y55RMnb11PHc3jWyXL7
+         1AV54PW0fGx89ViXdBD1qS4Ghmn8ZaIKpZZbeJGkuW/4cSgbLE924TKrcNLLkkDt2HBP
+         GbPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kxUeKVVNjUYZDEFlDXz16lYFbO6uGbZz83MJ+yrq+To=;
+        b=SPNUsi7i/HBj7fE15VXr26SRD9tnI/+p6bq4FTeE10awf/HYBah7CVokXJ37Z86YJ9
+         1lPmvmrLQS2YiBILo4BpR6csIW4IHP5L2tubPeZXbrTfOIVtEj1Fnr+/XvtAwHGV9ZUF
+         1gXGqk4UM3HSTNypT+/KTNJepKooGqB3k/67poqgbNk/4qBiKy2Zb1gn1yEH+OvB6MFZ
+         mKKbr4uVERq1MatAmASjbvpFc2r0XhK4xif2nG/Q8Xo8woWGTB7fS9vb3FIpku3fniuf
+         HUsyb1ZN+3FKffMtcu/76Cy8CTIj+glaQ5Ids8dyhGUpOG/2UUMtia5Lek4iy2wK392g
+         VmEQ==
+X-Gm-Message-State: AOAM533RM0bhFISiWg+1Yw1/Q73UWwFulD9SOOV0UBoppfYtlRKnaEER
+        R50b/xVgDnPs7nlGhvdd78tqsDKTVYMkCg==
+X-Google-Smtp-Source: ABdhPJyN6tsNpizr/AS1lySXfiAP3FkWN+sGHt/OQ4uLybMXNhsf6SJ+WQxiPheahYUcmEaQREjJhw==
+X-Received: by 2002:a92:3306:: with SMTP id a6mr4036757ilf.55.1612535915555;
+        Fri, 05 Feb 2021 06:38:35 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id h9sm4136882ili.43.2021.02.05.06.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:38:35 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 2/7] net: ipa: synchronize NAPI only for suspend
+Date:   Fri,  5 Feb 2021 08:38:24 -0600
+Message-Id: <20210205143829.16271-3-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210205143829.16271-1-elder@linaro.org>
+References: <20210205143829.16271-1-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7chGxZc0MA4nqVeJRDXLEzWsQ-ceJ+xgMVmEbQbDVDf72w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When stopping a channel, gsi_channel_stop() will ensure NAPI
+polling is complete when it calls napi_disable().  So there is no
+need to call napi_synchronize() in that case.
 
+Move the call to napi_synchronize() out of __gsi_channel_stop()
+and into gsi_channel_suspend(), so it's only used where needed.
 
-On 2/5/2021 6:08 AM, Namhyung Kim wrote:
-> On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
->>
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> The instruction latency information can be recorded on some platforms,
->> e.g., the Intel Sapphire Rapids server. With both memory latency
->> (weight) and the new instruction latency information, users can easily
->> locate the expensive load instructions, and also understand the time
->> spent in different stages. The users can optimize their applications
->> in different pipeline stages.
->>
->> The 'weight' field is shared among different architectures. Reusing the
->> 'weight' field may impacts other architectures. Add a new field to store
->> the instruction latency.
->>
->> Like the 'weight' support, introduce a 'ins_lat' for the global
->> instruction latency, and a 'local_ins_lat' for the local instruction
->> latency version.
-> 
-> Could you please clarify the difference between the global latency
-> and the local latency?
->
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v2: - Return early to avoid blocks of indented code
 
-The global means the total latency.
-The local means average latency, aka total / number of samples.
+ drivers/net/ipa/gsi.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-Thanks,
-Kan
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index f0432c965168c..60eb765c53647 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -939,13 +939,7 @@ static int __gsi_channel_stop(struct gsi_channel *channel, bool stop)
+ 
+ 	mutex_unlock(&gsi->mutex);
+ 
+-	if (ret)
+-		return ret;
+-
+-	/* Ensure NAPI polling has finished. */
+-	napi_synchronize(&channel->napi);
+-
+-	return 0;
++	return ret;
+ }
+ 
+ /* Stop a started channel */
+@@ -987,8 +981,16 @@ void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool doorbell)
+ int gsi_channel_suspend(struct gsi *gsi, u32 channel_id, bool stop)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
++	int ret;
+ 
+-	return __gsi_channel_stop(channel, stop);
++	ret = __gsi_channel_stop(channel, stop);
++	if (ret)
++		return ret;
++
++	/* Ensure NAPI polling has finished. */
++	napi_synchronize(&channel->napi);
++
++	return 0;
+ }
+ 
+ /* Resume a suspended channel (starting will be requested if STOPPED) */
+-- 
+2.20.1
+
