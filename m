@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50FA311289
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E557531129C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhBESuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:50:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        id S231455AbhBESzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:55:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233086AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233087AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 10:04:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7681664DA8;
-        Fri,  5 Feb 2021 16:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612542152;
-        bh=2FOXgrVvrtQQwxzm4Wfix8cnVUh7IkUdTTu1De+bjtU=;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F20B64DE9;
+        Fri,  5 Feb 2021 16:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612542326;
+        bh=wZa558YC1SAZ7XJtB8o9xQzpfnkrZ2VFUyJz20LiKZU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KfFDSzcVzjJbQYJ7meo6+XLjz46z89rptPO7r0cjN61WrYRyEN3XrG1sLfkaa43Ud
-         ExG/AI741QCRdc2A3z0dnPK65OJTg2MFRTlWFMlkLM7X9XtAOfKjQzqhv0OqXyG8pr
-         tgMWAaKQ8D5iEAfl3J+c1jPNT7ZfVcyr1oRM+yq0=
-Date:   Fri, 5 Feb 2021 17:22:29 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     kishon@ti.com, mturquette@baylibre.com, sboyd@kernel.org,
-        JC Kuo <jckuo@nvidia.com>, robh@kernel.org,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v7 00/14] Tegra XHCI controller ELPG support
-Message-ID: <YB1wxazg/QpRSJz6@kroah.com>
-References: <20210120073414.69208-1-jckuo@nvidia.com>
- <YB1vGTt0ufzsYBgo@ulmo>
+        b=mqpHAakw7ZlUGpi0XalD4Wc7yxsm2VtJdHUpbKGx6CWCwdEnd4SH+GF77k2NesFg4
+         nYNAkcRai83QCBXlZvHEVreJeTIEd7sfzbVhzMvcTsKvwOgY1fGh/esJnx/FuXgbcd
+         yEBh36DB0eWpiGCzEchPp2ypEGxMHXfwiFum3u45UkttDky4D/yIPs2z2qLhcdMRVM
+         Jqn1DTrrPAiIe7cwrjVKycv573tsO8L2jtfxVimDDSoso1CQV0Mh3LFK5kPW4RIfi2
+         +YAjF1OdxjCCibURdFRZsgfV9BKNla+mzPHPiZAjv0ug6+2c1W6GLp86Dr9BjJSi1I
+         4AOsQ0jIyyVsQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 247D240513; Fri,  5 Feb 2021 13:25:23 -0300 (-03)
+Date:   Fri, 5 Feb 2021 13:25:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+Message-ID: <20210205162523.GF920417@kernel.org>
+References: <20210204220741.GA920417@kernel.org>
+ <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
+ <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com>
+ <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
+ <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YB1vGTt0ufzsYBgo@ulmo>
+In-Reply-To: <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 05:15:21PM +0100, Thierry Reding wrote:
-> On Wed, Jan 20, 2021 at 03:34:00PM +0800, JC Kuo wrote:
-> > Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
-> > state for power saving when all of the connected USB devices are in
-> > suspended state. This patch series includes clk, phy and pmc changes
-> > that are required for properly place controller in ELPG and bring
-> > controller out of ELPG.
-> > 
-> > JC Kuo (14):
-> >   clk: tegra: Add PLLE HW power sequencer control
-> >   clk: tegra: Don't enable PLLE HW sequencer at init
-> >   phy: tegra: xusb: Move usb3 port init for Tegra210
-> >   phy: tegra: xusb: Rearrange UPHY init on Tegra210
-> >   phy: tegra: xusb: Add Tegra210 lane_iddq operation
-> >   phy: tegra: xusb: Add sleepwalk and suspend/resume
-> >   soc/tegra: pmc: Provide USB sleepwalk register map
-> >   arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
-> >   dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
-> >   phy: tegra: xusb: Add wake/sleepwalk for Tegra210
-> >   phy: tegra: xusb: Tegra210 host mode VBUS control
-> >   phy: tegra: xusb: Add wake/sleepwalk for Tegra186
-> >   usb: host: xhci-tegra: Unlink power domain devices
-> >   xhci: tegra: Enable ELPG for runtime/system PM
-> > 
-> >  .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
-> >  arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    1 +
-> >  drivers/clk/tegra/clk-pll.c                   |   12 -
-> >  drivers/clk/tegra/clk-tegra210.c              |   53 +-
-> >  drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
-> >  drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++----
-> >  drivers/phy/tegra/xusb.c                      |   92 +-
-> >  drivers/phy/tegra/xusb.h                      |   22 +-
-> >  drivers/soc/tegra/pmc.c                       |   94 +
-> >  drivers/usb/host/xhci-tegra.c                 |  613 ++++--
-> >  include/linux/clk/tegra.h                     |    4 +-
-> >  include/linux/phy/tegra/xusb.h                |   10 +-
-> >  12 files changed, 2784 insertions(+), 565 deletions(-)
-> > 
-> > v5 "phy: tegra: xusb: tegra210: Do not reset UPHY PLL" is moved
-> > into v6 "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
-> 
-> Mike, Stephen,
-> 
-> could you guys take a look at the two clk patches here and give an
-> Acked-by? There's build-time dependencies throughout the series, so it'd
-> be good if they can all go through either the PHY or USB trees.
-> 
-> Kishon, Greg,
-> 
-> any comments on these patches? Unfortunately, the USB patches in this
-> series have a build-time dependency on the PHY patches, so this should
-> all go through one tree. Since this all culminates in the XHCI driver,
-> merging this through the USB tree might be best, provided that Kishon
-> provides his Acked-by on the PHY patches.
-> 
-> Alternatively, I can create a set of branches with the correct
-> dependencies and send out pull requests for the three subsystems if
-> that's preferrable.
+Em Fri, Feb 05, 2021 at 06:33:43AM -0300, Arnaldo Carvalho de Melo escreveu:
+> On February 5, 2021 4:39:47 AM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo ><arnaldo.melo@gmail.com> wrote:
+> >> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko
+> ><andrii.nakryiko@gmail.com> wrote:
+> >> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de
+> >Melo><acme@kernel.org> wrote:
+> >> >>         The v1.20 release of pahole and its friends is out, mostly
+> >> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> >> >> available at the usual places:
 
-I have no objection for the usb patches to go through your tree as they
-are hardware-specific.
+> >> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
 
-thanks,
+> >> It's in rawhide already, I'll do it for f33, f32 later,
 
-greg k-h
+> >Do you have a link? I tried to find it, but only see 1.19 so far.
+ 
+> https://koji.fedoraproject.org/koji/buildinfo?buildID=1703678
+
+And now for Fedora 33, waiting for karma bumps at:
+
+https://bodhi.fedoraproject.org/updates/FEDORA-2021-804e7a572c
+
+fedpkg buidling for f32 now.
+
+- Arnaldo
