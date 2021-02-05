@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D203113E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3F33113EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhBEVtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBEVtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 16:49:08 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17409C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 13:48:28 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id k25so6224365otb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 13:48:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Myi+FPtqdhmCRGtvUQRPlV0jT+RrPtESC3AjeVRvbg=;
-        b=eC9kB4a0zNfmjxF2GTa7/iPip18RksRG3N5wWZ5SO1JQZe9K/wF4qqPray7ex919OI
-         t+tp9kXmieLVbXRxK2+JkQQDfBQ7qrCcDPjv892pP0Pm9Opne2wsFWOgNQ9fiIbaKohg
-         74D35sOMSr9T35Hijh1VZY9iv0qSmYcBVjy6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Myi+FPtqdhmCRGtvUQRPlV0jT+RrPtESC3AjeVRvbg=;
-        b=JXbWDxG3johkzIVF1tP4Tty2NzzlyInUu8rFiPObT420NybzBKLH3ceuzKuqkCqDU4
-         G686n5EupR0yAnPxn0yASaua/u/3I/h80Do8ScGAfnmAg4Z6+mJ+mRaSXFUM+FlEZwX1
-         FZtRWQrlNfKskLmKhRbSlQ0OFhMR35WNE0IAQNK2fnJx0Qj+Y+RSuFhZY5cJYCaHIRk2
-         X0XTL47oQg2rRzQBofrGQp6Btv9/2TfcADGM4Evr0f8kXYDnfakdxtfGWY9MdE0ErN5Q
-         J+zj15SbtYjntZDS2KaPHbcC2qFGWkwKWedwLcH3E5kJA2BXEjuxyRLJS9jMFynyBeNB
-         LeeQ==
-X-Gm-Message-State: AOAM533n3AUjVDiFb3vcqSIlM9PlhpKrbZK63P8bDUF6JQ3lo9fEdr2O
-        GJJDTmkW4HAhXLyOH2+EufWOJqYx1IVaujFg00DF5GMNq+Tx+g==
-X-Google-Smtp-Source: ABdhPJzO4wsgNsPeCXBIM+TjlTPuvZslxQG5o19ZlJ38I+bykaN07telVVm1okiylG5taJfGzcXqFg1phGT31X4akVA=
-X-Received: by 2002:a9d:b85:: with SMTP id 5mr4982641oth.281.1612561707504;
- Fri, 05 Feb 2021 13:48:27 -0800 (PST)
+        id S231728AbhBEVwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:52:20 -0500
+Received: from mout.gmx.net ([212.227.15.15]:38133 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230038AbhBEVv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 16:51:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612561807;
+        bh=ML2q4g4mzki1+bGinziqhHSPPvaG79ZS+7tvrsuX1oI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=LfIPjfUIHz9GLocJUf0jLFyYjCmkbDrZYEn8UOeegb1yTLiJHAKkgv1Q4/oCI1Vp1
+         NfLqP7xBqU0jKwmEmM58m0VNEQRt5bqv4ofJ+sFu53CvrCMHLo4lf+UMZdU+9m+obm
+         QohcM+ZIF6wM9TT05xu7C0BkFBLIB/26gaXFtNL8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtwZ4-1lvYiB1kwG-00uGAU; Fri, 05
+ Feb 2021 22:50:07 +0100
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     peterhuewe@gmx.de, jarkko@kernel.org, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
+ <20210205130511.GI4718@ziepe.ca>
+ <3b821bf9-0f54-3473-d934-61c0c29f8957@kunbus.com>
+ <20210205151511.GM4718@ziepe.ca>
+ <f6e5dd7d-30df-26d9-c712-677c127a8026@kunbus.com>
+ <20210205155808.GO4718@ziepe.ca>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <db7c90c3-d86a-65c9-81a2-be1527b47e11@gmx.de>
+Date:   Fri, 5 Feb 2021 22:50:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
- <20210205210610.29837-1-chris@chris-wilson.co.uk> <161255976138.12021.9385501710085642237@build.alporthouse.com>
- <202102051319.E5D8B4528D@keescook> <161256053234.12021.17815864250035077266@build.alporthouse.com>
-In-Reply-To: <161256053234.12021.17815864250035077266@build.alporthouse.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 5 Feb 2021 22:48:16 +0100
-Message-ID: <CAKMK7uHmG-WaYrLyHfcbJJ_LhKA2dOdvBAYKaAyD-s6W0TgRjg@mail.gmail.com>
-Subject: Re: [PATCH v2] kernel: Expose SYS_kcmp by default
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210205155808.GO4718@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Dc+DyMFu83Fre0D6v74WAtZQa6sRGXtjxhfcs6BuCMcFJ4VAv2d
+ 4DhriDvPrW1+ZOyKVRTo2fsxFhwZjC3b7HcDV8ylKpNwrdpqfyMI/w+jQfSWYHp7m0evBUr
+ bLMsdci80ThI8GzE3vijiGfgEpz9PkX0jQmMcnYwcNdPXuWM6uleFCKtJ+yY2tuMyMTxYPP
+ 5tPFakeWEMw8w7b0gmYlg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R0bB3hGyUPo=:k4HkKdMep4QkVXmo5xW4/o
+ P4WuCtr9KKEe8CZ21M0/grJHF1pwQHg+8T2ADxWicmuJL/PjiAMOynm57BiiDcjJkV7kLF++S
+ aaMCLZ5DNGRcUcgcSL2Yn1PUp1m6yPFkOM7ALbeOVuI103wuL0KhsAtfto57BMkdHY64/OVT2
+ 1VSwGDoHgoZV+I7ehO5RSvE4sRnEhrx0828HMSPnS8mj/OPNQPrZdQTdw2mSw5PztEvbtQU2M
+ V3BOhfL1QPuZpr+TYLf9wGssHMlAF1ICpIRnBQ16EOBV0O3Ls5zJk7DTxwS1Fd1MLEQU4U6p3
+ uv3wDiP/grsMcYhcIYYguLOslSdhjt3mI/YZHUpIBI8GIoO0wD/NwfkWWbbsm8I0jaaM2wJCy
+ hBANeI0Y+q3CWPsZBa0oz13cOagxLtIcz65uWf8V5bJiuuifWow7vMVyXl9a0xLNh0UNTdDeq
+ RN20zEwqOpAE9wd/8hSzU/YOJ6nGi8bWdZ6giKnagn7G7/b3A1Pz1Mz+YGCgJpMKjjbF+0GUO
+ DIzdOFEL4xIKgynVcNEHiDK5ZwGlXU02iKr/9s34rZxzOG6Cgp4c/KpsBVyuiNXzg0GAhtayW
+ 4uHj5Klsl/YZPh7EKxLrkSNg6ciyY8/4dclfPkqAfWqY1+atxK36Ia99pGOYfg1vuoCGvq5ZI
+ OKQBYaTRKjK8Uh6gov3qQns6ilrYuKZQ0xttoJYiOHAzs+o3x9fEqKB+UXe/3Xxu3/UH6Q1qv
+ NX/DghukkKLUolh+Cjckbr31cjhZgdNU87RVG1icQ4tV2pOVEpbx6tSFnMgDDyYNgGEa5vuxi
+ o37aYpS3H3WPi32aoDQJlMAFume0Y7w2WBqpchqNIRjAZDPF5UQIK53EMye9l+yo2Tv04nR9w
+ X7aFUyUSi44wCngC35zA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:28 PM Chris Wilson <chris@chris-wilson.co.uk> wrote:
+On 05.02.21 at 16:58, Jason Gunthorpe wrote:
+eference in the first place).
 >
-> Quoting Kees Cook (2021-02-05 21:20:33)
-> > On Fri, Feb 05, 2021 at 09:16:01PM +0000, Chris Wilson wrote:
-> > > The subject should of course be changed, as it is no longer being
-> > > enabled by default.
-> >
-> > "default n" is redundant.
+> No, they are all chained together because they are all in the same
+> struct:
 >
-> I thought being explicit would be preferred. There are a few other
-> default n, so at least it's not the odd-one-out!
+> struct tpm_chip {
+> 	struct device dev;
+> 	struct device devs;
+> 	struct cdev cdev;
+> 	struct cdev cdevs;
 >
-> > I thought Daniel said CONFIG_DRM needed to
-> > "select" it too, though?
+> dev holds the refcount on memory, when it goes 0 the whole thing is
+> kfreed.
 >
-> Yes. We will need to select it for any DRM driver so that the Vulkan/GL
-> stacks can rely on having SYS_kcmp. That deserves to be handled and
-> explain within drm/Kconfig, and as they are already shipping with calls
-> to SYS_kcmp we may have to ask for a stable backport.
+> The rule is dev's refcount can't go to zero while any other refcount
+> is !=3D 0.
+>
+> For instance devs holds a get on dev that is put back only when devs
+> goes to 0:
+>
+> static void tpm_devs_release(struct device *dev)
+> {
+> 	struct tpm_chip *chip =3D container_of(dev, struct tpm_chip, devs);
+>
+> 	/* release the master device reference */
+> 	put_device(&chip->dev);
+> }
+>
+> Both cdev elements do something similar inside the cdev layer.
 
-Oh I dreamed and thought it's part of this patch already. So v3 with
-matching subject to enabled it for drm?
--Daniel
+Well this chaining is exactly what does not work nowadays and what the pat=
+ch is supposed
+to fix: currently we dont ever take the extra ref (not even in TPM 2 case,=
+ note that
+TPM_CHIP_FLAG_TMP2 is never set), so
 
+-	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+-		get_device(&chip->dev);
++	get_device(&chip->dev);
+
+
+and tpm_devs_release() is never called, since there is nothing that ever p=
+uts devs, so
+
+
++	rc =3D devm_add_action_or_reset(pdev,
++				      (void (*)(void *)) put_device,
++				      &chip->devs);
+
+
+The race with only get_device()/putdevice() in tpm_common_open()/tpm_commo=
+n_release() is:
+
+1. tpm chip is allocated with dev refcount =3D 1, devs refcount =3D 1
+2. /dev/tpmrm is opened but before we get the ref to dev in tpm_common() a=
+nother thread
+rmmmods the chip driver:
+3. the chip is unregistered, dev is put with refcount =3D 0 and the whole =
+chip struct is freed
+3. Now open() proceeds, tries to grab the extra ref chip->dev from a chip =
+that has already
+been deallocated and the system crashes.
+
+As I already wrote, that approach was my first thought, too, but since the=
+ result crashed due to the
+race condition, I chose the approach in patch 1.
+
+Regards,
+Lino
+
+> The net result is during any open() the tpm_chip is guarenteed to have
+> a positive refcount.
 >
-> > Otherwise, yeah, this looks good. Was the
-> > export due to the 0-day bot failure reports?
->
-> Yes.
-> -Chris
 
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
