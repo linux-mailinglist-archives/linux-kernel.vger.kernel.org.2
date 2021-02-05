@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15B531112E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA0531113C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhBERp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:45:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56410 "EHLO mail.kernel.org"
+        id S233727AbhBERt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:49:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233403AbhBERnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:43:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E95164DDD;
-        Fri,  5 Feb 2021 19:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612553090;
-        bh=Wkmdeu84GqsJBxdIKescV+S5TnRP000aL5aQE0iDgkM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F0piSSUG09Rg5VbPykiphfcgLW5uZlIwNSsVKEHVTKoRYslMmzbPRdlB9LYGqVcXj
-         n2gSnUf78Q5LL2ojCeQfBlBOZ8RpK350oV+z38Af3bFRwxYVp2q+P2wKPejewW83oS
-         hzZDMsZ1cbHIqsRVN14A/dXCch7rhJs6EhO3f2s8mEvvF0M1CcFV3KgKT62m8eATie
-         oG6Cg4HF9LGaWfS0S+VqS1E/04zrs2NV3j1Rh9nfNf1gB9M82PuF5pJb/l8RYVzogS
-         hdO98xV267PbqMSj66hUDaFBmGRAm9Z8Qyn2Dlf0BS2BaNrryOrL2s1RGJ4karf5C4
-         9kybbTER1Svqg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DE33940513; Fri,  5 Feb 2021 16:24:46 -0300 (-03)
-Date:   Fri, 5 Feb 2021 16:24:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     sedat.dilek@gmail.com,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
-Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
-Message-ID: <20210205192446.GH920417@kernel.org>
-References: <20210204220741.GA920417@kernel.org>
- <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
- <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
- <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
- <20210205152823.GD920417@kernel.org>
- <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
- <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
- <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
- <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com>
+        id S233344AbhBEPyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:54:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 419236502C;
+        Fri,  5 Feb 2021 14:11:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612534287;
+        bh=Gn6px7AxTK0LfiiaMAPzDSLUDUl4XdQcRx2RH3s/lCw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eTxb8JV0e586uBEy/KHvgR+1vVVLrhue4fPV7+t4kMg52aGgW+G0RxLMYb/Mf29+b
+         Ts0CKdr1KYODX4Ca/Rvv2fi1vHl6aAjtRkBifO3zlZsS0EmWbeGztPLjjHPd2zIfyu
+         ulPppd5i/7B4mQwpOpv/zy56SFIxkrKKbXx4Q+DQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 55/57] x86/cpu: Add another Alder Lake CPU to the Intel family
+Date:   Fri,  5 Feb 2021 15:07:21 +0100
+Message-Id: <20210205140658.346346145@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
+References: <20210205140655.982616732@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Feb 05, 2021 at 11:10:08AM -0800, Yonghong Song escreveu:
-> On 2/5/21 11:06 AM, Sedat Dilek wrote:
-> > On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > Grepping through linux.git/tools I guess some BTF tools/libs need to
-> > know what BTF_INT_UNSIGNED is?
+From: Gayatri Kammela <gayatri.kammela@intel.com>
+
+[ Upstream commit 6e1239c13953f3c2a76e70031f74ddca9ae57cd3 ]
+
+Add Alder Lake mobile CPU model number to Intel family.
+
+Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210121215004.11618-1-tony.luck@intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/x86/include/asm/intel-family.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 5e658ba2654a7..9abe842dbd843 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -97,6 +97,7 @@
  
-> BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
-> ignore this for now until kernel infrastructure is ready.
+ #define	INTEL_FAM6_LAKEFIELD		0x8A
+ #define INTEL_FAM6_ALDERLAKE		0x97
++#define INTEL_FAM6_ALDERLAKE_L		0x9A
+ 
+ /* "Small Core" Processors (Atom) */
+ 
+-- 
+2.27.0
 
-Yeah, I thought about doing that.
 
-> Not sure whether this information will be useful or not
-> for BTF. This needs to be discussed separately.
 
-Maybe search for the rationale for its introduction in DWARF.
-
-- ARnaldo
