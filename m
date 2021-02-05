@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA79310930
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907DB310916
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhBEKeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:34:04 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12855 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhBEKQD (ORCPT
+        id S231315AbhBEK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:29:37 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12138 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhBEKQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:16:03 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DXB8l50HSz7h4T;
-        Fri,  5 Feb 2021 18:13:59 +0800 (CST)
+        Fri, 5 Feb 2021 05:16:06 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXB8r30HKz164xS;
+        Fri,  5 Feb 2021 18:14:04 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
  14.3.498.0; Fri, 5 Feb 2021 18:15:13 +0800
@@ -22,9 +22,9 @@ From:   Weili Qian <qianweili@huawei.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 3/6] crypto: hisilicon/qm - fix the value of 'QM_SQC_VFT_BASE_MASK_V2'
-Date:   Fri, 5 Feb 2021 18:12:55 +0800
-Message-ID: <1612519978-33340-4-git-send-email-qianweili@huawei.com>
+Subject: [PATCH 4/6] crypto: hisilicon/qm - update irqflag
+Date:   Fri, 5 Feb 2021 18:12:56 +0800
+Message-ID: <1612519978-33340-5-git-send-email-qianweili@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
 References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
@@ -36,28 +36,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the size of base number is 16 bits, update the value of
-'QM_SQC_VFT_BASE_MASK_V2' as 'GENMASK(15, 0)'.
+From: Sihang Chen <chensihang1@hisilicon.com>
 
+There is no need to share IRQ among several devices,
+and set 'irqflag' as 0.
+
+Signed-off-by: Sihang Chen <chensihang1@hisilicon.com>
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/hisilicon/qm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 108fc0e..908a13f 100644
+index 908a13f..ec7d068 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -120,7 +120,7 @@
- #define QM_CQC_VFT_VALID		(1ULL << 28)
+@@ -3978,21 +3978,20 @@ static int qm_irq_register(struct hisi_qm *qm)
+ 	int ret;
  
- #define QM_SQC_VFT_BASE_SHIFT_V2	28
--#define QM_SQC_VFT_BASE_MASK_V2		GENMASK(5, 0)
-+#define QM_SQC_VFT_BASE_MASK_V2		GENMASK(15, 0)
- #define QM_SQC_VFT_NUM_SHIFT_V2		45
- #define QM_SQC_VFT_NUM_MASK_v2		GENMASK(9, 0)
+ 	ret = request_irq(pci_irq_vector(pdev, QM_EQ_EVENT_IRQ_VECTOR),
+-			  qm_irq, IRQF_SHARED, qm->dev_name, qm);
++			  qm_irq, 0, qm->dev_name, qm);
+ 	if (ret)
+ 		return ret;
  
+ 	if (qm->ver != QM_HW_V1) {
+ 		ret = request_irq(pci_irq_vector(pdev, QM_AEQ_EVENT_IRQ_VECTOR),
+-				  qm_aeq_irq, IRQF_SHARED, qm->dev_name, qm);
++				  qm_aeq_irq, 0, qm->dev_name, qm);
+ 		if (ret)
+ 			goto err_aeq_irq;
+ 
+ 		if (qm->fun_type == QM_HW_PF) {
+ 			ret = request_irq(pci_irq_vector(pdev,
+ 					  QM_ABNORMAL_EVENT_IRQ_VECTOR),
+-					  qm_abnormal_irq, IRQF_SHARED,
+-					  qm->dev_name, qm);
++					  qm_abnormal_irq, 0, qm->dev_name, qm);
+ 			if (ret)
+ 				goto err_abonormal_irq;
+ 		}
 -- 
 2.8.1
 
