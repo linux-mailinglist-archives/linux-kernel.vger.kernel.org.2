@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C753931141D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A313114D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhBEWAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:00:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44974 "EHLO mail.kernel.org"
+        id S232964AbhBEWPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233002AbhBEO70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:59:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A3A65044;
-        Fri,  5 Feb 2021 14:11:55 +0000 (UTC)
+        id S232947AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 484DF65008;
+        Fri,  5 Feb 2021 14:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534316;
-        bh=0Y+Ws3COArS+NyJ+wxC+vkH7w0LMbrLFHRB07k5dsik=;
+        s=korg; t=1612534233;
+        bh=Xx1E0OToD1LOcnM9o3BZfsKZYtXxWkDt3JP/pCT2x8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HEw8Cqcxtznv0NSDPg3664bw/emxMilOEKq0pa+j7zxJGOjEaL5ZlYsPvRhflHOU2
-         nlVxRfgF2cUsl2IfJScSdPyf7N44p41ZhS+os0j522zizdPJy3SWtXTs6O8cIj4EBl
-         X0EWZx+fRZHdh7LpNbhcW84YO9r1L2nPKAwK1fiw=
+        b=fS8XWQO6J09z2UPIHyqADeg7upzWyROAiVnWhUqaBnxe5wI1WYaf3Vi7+xnDSU0Wn
+         E90pGu7cOmpH8vE8iQ6Jy4hEExbdlVIqJjdWEhr5GTLxwa2FB0R5nwPoYAH2OJI9js
+         L2MMXqVV4zuPJ1GjzJxC+gmWPZqGUhoRM1QXK4xg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karan Tilak Kumar <kartilak@cisco.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 28/57] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-Date:   Fri,  5 Feb 2021 15:06:54 +0100
-Message-Id: <20210205140657.181239841@linuxfoundation.org>
+Subject: [PATCH 5.10 29/57] ASoC: SOF: Intel: hda: Resume codec to do jack detection
+Date:   Fri,  5 Feb 2021 15:06:55 +0100
+Message-Id: <20210205140657.218213304@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -41,56 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit d6e3ae76728ccde49271d9f5acfebbea0c5625a3 ]
+[ Upstream commit bcd7059abc19e6ec5b2260dff6a008fb99c4eef9 ]
 
-When ioread32() returns 0xFFFFFFFF, we should execute cleanup functions
-like other error handling paths before returning.
+Instead of queueing jackpoll_work, runtime resume the codec to let it
+use different jack detection methods based on jackpoll_interval.
 
-Link: https://lore.kernel.org/r/20201225083520.22015-1-dinghao.liu@zju.edu.cn
-Acked-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+This partially matches SOF driver's behavior with commit a6e7d0a4bdb0
+("ALSA: hda: fix jack detection with Realtek codecs when in D3"), the
+difference is SOF unconditionally resumes the codec.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20210112181128.1229827-1-kai.heng.feng@canonical.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/vnic_dev.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/fnic/vnic_dev.c b/drivers/scsi/fnic/vnic_dev.c
-index a2beee6e09f06..5988c300cc82e 100644
---- a/drivers/scsi/fnic/vnic_dev.c
-+++ b/drivers/scsi/fnic/vnic_dev.c
-@@ -444,7 +444,8 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 	fetch_index = ioread32(&vdev->devcmd2->wq.ctrl->fetch_index);
- 	if (fetch_index == 0xFFFFFFFF) { /* check for hardware gone  */
- 		pr_err("error in devcmd2 init");
--		return -ENODEV;
-+		err = -ENODEV;
-+		goto err_free_wq;
- 	}
- 
- 	/*
-@@ -460,7 +461,7 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 	err = vnic_dev_alloc_desc_ring(vdev, &vdev->devcmd2->results_ring,
- 			DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
- 	if (err)
--		goto err_free_wq;
-+		goto err_disable_wq;
- 
- 	vdev->devcmd2->result =
- 		(struct devcmd2_result *) vdev->devcmd2->results_ring.descs;
-@@ -481,8 +482,9 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 
- err_free_desc_ring:
- 	vnic_dev_free_desc_ring(vdev, &vdev->devcmd2->results_ring);
--err_free_wq:
-+err_disable_wq:
- 	vnic_wq_disable(&vdev->devcmd2->wq);
-+err_free_wq:
- 	vnic_wq_free(&vdev->devcmd2->wq);
- err_free_devcmd2:
- 	kfree(vdev->devcmd2);
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 8b0ddc4b8227b..8d65004c917a1 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -93,8 +93,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
+ 		 * has been recorded in STATESTS
+ 		 */
+ 		if (codec->jacktbl.used)
+-			schedule_delayed_work(&codec->jackpoll_work,
+-					      codec->jackpoll_interval);
++			pm_request_resume(&codec->core.dev);
+ }
+ #else
+ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
 -- 
 2.27.0
 
