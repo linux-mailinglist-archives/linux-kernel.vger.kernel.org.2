@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAA5311A5C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C874311A52
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhBFDl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:41:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhBFCbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:31:55 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BF9C08ED7F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:33:01 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id s15so4333971plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:33:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s6dnZT0AcF3u1j3oEwTbCmRj7PTLoCDXEB/52wfg7Ko=;
-        b=BW2izEZ8LP+1njzJY9aNjX5evbtE58IbhhK7JSi0xeTGnONbNRFM9ZCWsUjmxn/m13
-         x0f7/Mx2WizyC82kCsYi2JOw7KVDbA22TMEOQCIxNiVpMuH5KZiRR+Fdfm1k/cifJP/t
-         FTtR8+pIl96NDvTamKCO3EVv3II5bc4DIHCD1xLQ4gdrWgVOQexL7kkMQnxtlxlaiyIh
-         KzOIazyT6wK5RAYDBQIdbyHr/OLCOrHge7x3RaU7oRB2qTe/H7baPdXHgdVb/xxUSntW
-         HNytB27A/n5xi1BuBtHgaxvAQQRZARz5XTqoHnps2kp4K0+4Pg4zZ23tHpB9ba83IFDA
-         5+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s6dnZT0AcF3u1j3oEwTbCmRj7PTLoCDXEB/52wfg7Ko=;
-        b=KswasoEK7o6i7mXWdUSzFrPtdScbGwnxj2gVL2EK0+gXsi6vacKQDOwuKqz8swbbaT
-         oKIu3I2G/GA59JcPDQK49vj7gx+1tjW3EG6//5qZ4HTKXN7LmYAbn6P6VCkb3H5LzSqj
-         CmMrI0cp+uxFkjjn2rsir0fTjnQXBpTuym+0lkmJJxkdO749cBV+YbYms41cN/zuqMQh
-         5XrYvfA9tNGXKRgiuMYgDd94+pD/eb08EqM0LLw9MPZ2S9ctFwfQEUrJ5KCqeCtXvsAL
-         sSkvL7C52/teWmNhTyHbt/RXuGuKf5N2eE7cUd3sechxmQfWWcZDyTigPlV4Zmyj/nX4
-         Ibtw==
-X-Gm-Message-State: AOAM5320EjG1bc9LvQngLNDRDpBi016iRlLv7aetCVkSiyXZXXNw7XKb
-        tNWG7UhD/b/pryl36nqi4e558OKidfiW0Ckg+q0m+g==
-X-Google-Smtp-Source: ABdhPJzezklMQ5JVyDwFXrgTNeuU6Mw9vXbgWRfxYmJ7hYKLCmebTxO1DfQbl2kNTd6DNLmZB8gX07Bk6lHb/YK/VZU=
-X-Received: by 2002:a17:902:f686:b029:de:18c7:41f8 with SMTP id
- l6-20020a170902f686b02900de18c741f8mr6235898plg.65.1612567980954; Fri, 05 Feb
- 2021 15:33:00 -0800 (PST)
+        id S231700AbhBFDjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:39:46 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27740 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231481AbhBFCkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:40:32 -0500
+IronPort-SDR: NUGktOea8d6OUVxcLl8S9OuXyfTvFNNr2nM3VVjNUvz2pfVlVMzRCZ8h8Qp3vdrzSyKalXeFWI
+ y/eTj+0iUMYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181650762"
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="181650762"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:17 -0800
+IronPort-SDR: H04b4hwdRKCyvow1fyg+DtTxt3m0hvCxdGBglzy13iOA+aimoR9eyHsH4L/dhJhxSJKTxXHD4S
+ 5Klc3InBRUYg==
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="416183984"
+Received: from mdhake-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.53.25])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:16 -0800
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v1 24/26] x86/tdx: Add helper to do MapGPA TDVMALL
+Date:   Fri,  5 Feb 2021 15:38:41 -0800
+Message-Id: <4a85f938ca1f445870d72a99f1719b8cd3edf771.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20210125185333.3337463-1-dlatypov@google.com>
-In-Reply-To: <20210125185333.3337463-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 5 Feb 2021 15:32:50 -0800
-Message-ID: <CAFd5g477HrqPzh38QdbOMvRr3=kvDBnxpx1QjbnUN4hkvCyt7w@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: add tips.rst for small examples
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:53 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> ./usage.rst contains fairly long examples and explanations of things
-> like how to fake a class and how to use parameterized tests (and how you
-> could do table-driven tests yourself).
->
-> It's not exactly necessary information, so we add a new page with more
-> digestible tips like "use kunit_kzalloc() instead of kzalloc() so you
-> don't have to worry about calling kfree() yourself" and the like.
->
-> Change start.rst to point users to this new page first and let them know
-> that usage.rst is more of optional further reading.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+MapGPA TDVMCALL requests the host VMM to map a GPA range as private or
+shared memory mappings. Shared GPA mappings can be used for
+communication beteen TD guest and host VMM, for example for
+paravirtualized IO.
+
+The new helper tdx_map_gpa() provides access to the operation.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+ arch/x86/include/asm/tdx.h |  2 ++
+ arch/x86/kernel/tdx.c      | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 9bbfe6520ea4..efffdef35c78 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -105,5 +105,7 @@ long tdx_kvm_hypercall4(unsigned int nr, unsigned long p1, unsigned long p2,
+ 		unsigned long p3, unsigned long p4);
+ 
+ phys_addr_t tdx_shared_mask(void);
++
++int tdx_map_gpa(phys_addr_t gpa, int numpages, bool private);
+ #endif
+ #endif /* _ASM_X86_TDX_H */
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 9681f4a0b4e0..f99fe54b4f88 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -14,6 +14,8 @@
+ #include "tdx-kvm.c"
+ #endif
+ 
++#define TDVMCALL_MAP_GPA	0x10001
++
+ static struct {
+ 	unsigned int gpa_width;
+ 	unsigned long attributes;
+@@ -66,6 +68,32 @@ static void tdx_get_info(void)
+ 	physical_mask &= ~tdx_shared_mask();
+ }
+ 
++int tdx_map_gpa(phys_addr_t gpa, int numpages, bool private)
++{
++	register long r10 asm("r10") = TDVMCALL_STANDARD;
++	register long r11 asm("r11") = TDVMCALL_MAP_GPA;
++	register long r12 asm("r12") = gpa;
++	register long r13 asm("r13") = PAGE_SIZE * numpages;
++	register long rcx asm("rcx");
++	long ret;
++
++	if (!private)
++		r12 |= tdx_shared_mask();
++
++	/* Allow to pass R10, R11, R12 and R13 down to the VMM */
++	rcx = BIT(10) | BIT(11) | BIT(12) | BIT(13);
++
++	asm volatile(TDCALL
++			: "=a"(ret), "=r"(r10)
++			: "a"(TDVMCALL), "r"(rcx), "r"(r10), "r"(r11), "r"(r12),
++			  "r"(r13)
++			: );
++
++	// Host kernel doesn't implement it yet.
++	// WARN_ON(ret || r10);
++	return ret || r10 ? -EIO : 0;
++}
++
+ static __cpuidle void tdx_halt(void)
+ {
+ 	register long r10 asm("r10") = TDVMCALL_STANDARD;
+-- 
+2.25.1
+
