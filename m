@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9E2310666
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA959310668
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhBEIMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbhBEIHH (ORCPT
+        id S230221AbhBEINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:13:09 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:43226 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhBEIHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 03:07:07 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8535FC061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:06:26 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id j2so4028818pgl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:06:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zKwoaw8bdzrF/FhsWPWtgeGzPvNKHujT195hYCj6ZCs=;
-        b=K0THtBNlTDmpc3F2F9qo3PXiSflivANjFuhFHO0/w0OQkh9BJFI2DLfQCg3umFdPRT
-         9DU5VNc7SfomsN45a3Kb9J3ZAcxuU/PcFTQaVK8roWSeawag+xcKSAwCs5/MQo8f2H3d
-         viFJJrrovEHFzeIeEu8FqgsGG29CWEPTETHs3GBuUPsPi0L7kJqZ/1FRq6mEPCH/5VDb
-         6V9juYaeCpzq6xCPRvBkXCRT98zvQdGItcWAQezWayHIaKbLl7aAMecJp3C2A6Upcqfq
-         CHJNQWQRiVgDzfcgpmshCIoa3TqUQKF+dkdYVW/++YTotTS02mqYGn3sGt4SqKPViMJ0
-         ULZQ==
+Received: by mail-oo1-f49.google.com with SMTP id x19so1411722ooj.10;
+        Fri, 05 Feb 2021 00:06:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zKwoaw8bdzrF/FhsWPWtgeGzPvNKHujT195hYCj6ZCs=;
-        b=SvQI6JmFpNHn8sOKdsO/QK87Y/qNci6MEKoL/wE/Bj++zDwNGdZUT8CbFpGqH3baK7
-         JZ/cTgLR4rgcwkpObGyYO3PHJnp1hRnHwAKltVCbiW2Ku2N6T2cVbWdO/h8yfnvg7J9u
-         cey1F/wsnECy10sObogTzlsiBkifW+XImcjAvFYCwPOYQ4Upc+D2TLGa5SGXaRJR+yD1
-         O6taXeSKhbRjFIaYQOnLuX4IXAwO5Ja7Bm4+i4M67ehPXupY8T1B5PzQXPYTpDp/acOJ
-         B6wYRq984g7rBNsoSPKcoilGsN3867VUvv1U1daHvCQeAEWlvyIN5rzSCJlV0qKiLJtL
-         s26Q==
-X-Gm-Message-State: AOAM531J0k0yX17A4gs+P+SUzsh3gshdld9+x4PobhxrJlmK0XK83t6x
-        4ZmcHbujPVpwzcP6F6aPq/52RBbNioLbxw==
-X-Google-Smtp-Source: ABdhPJyRH2+aPnRrC0zh854reLPDhJihnNvupmtnylhjqPZmslPnqqJCsTysj9OXBE675MNHWcjGGA==
-X-Received: by 2002:a63:bc02:: with SMTP id q2mr3217163pge.198.1612512385535;
-        Fri, 05 Feb 2021 00:06:25 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id 32sm9520070pgq.80.2021.02.05.00.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 00:06:24 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH v6 0/7] Generic page pool & deferred freeing for system dmabuf heap
-Date:   Fri,  5 Feb 2021 08:06:14 +0000
-Message-Id: <20210205080621.3102035-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i1sbeZYAOwBKv6wE1Ckk+wE5naRJCnZ4LL+AW39A3/w=;
+        b=MEMDy3CefHLQJtqvpW2KmzN64CMLgGkkPyiiFndtyX7fZPZkXJD3SpwvnjvAubFsez
+         j+BlWlGN4OS87n9DJGOmoPA7u3ajKPCJvYSJMsD6xNW3QMuH2XlF8RDEGdJHlaEL9CEJ
+         CUiA+YDlTO/Y4l+Czc34vGiEWPZ13vqHCuzbANYKMSEhbmfP3g3Yr5z2aaN9AiVrZM+L
+         rtTRw1QZtSDUqJf+rbF3NfhMERYgF6RQTnbnYcE2WCmDesA8F/Vl9fFicXk7yTCSh59v
+         MaoZG/LODDdEVd+M+rO9gAeN+K7T8/Vg2RAgrXjJLkuEaISTaLuTGWJPMRA/pbnvO5s5
+         sfOA==
+X-Gm-Message-State: AOAM533aKSRYcxT8dZukZoK9DmeRDMFP+EpyHU1pTahCkdr9+WXu/aSC
+        xkdTfCrHcjQri4s/hOGiYtFU7ke2p5GbGCmgy8M=
+X-Google-Smtp-Source: ABdhPJz46bJWsBPHyZM+AgT9VAN4FHCddLasieW1kdal/35EqalLOcrmu9pCZYE0c0KUJ5WVnwvWVR8uTRoL/Ix6xdQ=
+X-Received: by 2002:a4a:96b3:: with SMTP id s48mr2624067ooi.11.1612512386119;
+ Fri, 05 Feb 2021 00:06:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com> <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com>
+In-Reply-To: <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Feb 2021 09:06:14 +0100
+Message-ID: <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is starting to get long, so I figured I'd add a
-short cover letter for context.
+Hi Marek,
 
-The point of this series is trying to add both deferred-freeing
-logic as well as a page pool to the DMA-BUF system heap.
+On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> On 04.02.2021 22:31, Saravana Kannan wrote:
+> > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> > <m.szyprowski@samsung.com> wrote:
+> >> On 21.01.2021 23:57, Saravana Kannan wrote:
+> >>> This allows fw_devlink to create device links between consumers of an
+> >>> interrupt and the supplier of the interrupt.
+> >>>
+> >>> Cc: Marc Zyngier <maz@kernel.org>
+> >>> Cc: Kevin Hilman <khilman@baylibre.com>
+> >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> >> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> > I grepped around and it looks like the final board file is this or
+> > whatever includes it?
+> > arch/arm64/boot/dts/arm/juno-base.dtsi
+> The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> > This patch just finds the interrupt-parent and then tries to use that
+> > as a supplier if "interrupts" property is listed. But the only
+> > interrupt parent I can see is:
+> >          gic: interrupt-controller@2c010000 {
+> >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> >
+> > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> > a NOP since those suppliers are never devices and are ignored.
+> > $ git grep "arm,gic-400" -- drivers/
+> > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> >
+> > This doesn't make any sense. Am I looking at the right files? Am I
+> > missing something?
+>
+> Okay, I've added displaying a list of deferred devices when mounting
+> rootfs fails and got following items:
+>
+> Deferred devices:
+> 18000000.ethernet        platform: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 1c050000.mmci    amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 1c1d0000.gpio    amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 2b600000.iommu   platform: probe deferral - wait for supplier
+> scpi-power-domains
+> 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> 1c060000.kmi     amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 1c070000.kmi     amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 1c170000.rtc     amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> 1c0f0000.wdt     amba: probe deferral - supplier
+> bus@8000000:motherboard-bus not ready
+> gpio-keys
+> Kernel panic - not syncing: VFS: Unable to mount root fs on
+> unknown-block(0,0)
+>
+> I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> list, so it looks that device core added a link to something that is not
+> a platform device...
 
-This is desired, as the combination of deferred freeing along
-with the page pool allows us to offload page-zeroing out of
-the allocation hot path. This was done originally with ION
-and this patch series allows the DMA-BUF system heap to match
-ION's system heap allocation performance in a simple
-microbenchmark [1] (ION re-added to the kernel for comparision,
-running on an x86 vm image):
+Lemme guess: bus@8000000 is a simple bus, but it has an
+interrupt-map, and the devlink code doesn't follow the mapping?
 
-./dmabuf-heap-bench -i 0 1 system                     
-Testing dmabuf system vs ion heaptype 0 (flags: 0x1)
----------------------------------------------
-dmabuf heap: alloc 4096 bytes 5000 times in 86572223 ns          17314 ns/call
-ion heap:    alloc 4096 bytes 5000 times in 97442526 ns          19488 ns/call
-dmabuf heap: alloc 1048576 bytes 5000 times in 196635057 ns      39327 ns/call
-ion heap:    alloc 1048576 bytes 5000 times in 357323629 ns      71464 ns/call
-dmabuf heap: alloc 8388608 bytes 5000 times in 3165445534 ns     633089 ns/call
-ion heap:    alloc 8388608 bytes 5000 times in 3699591271 ns     739918 ns/call
-dmabuf heap: alloc 33554432 bytes 5000 times in 13327402517 ns   2665480 ns/call
-ion heap:    alloc 33554432 bytes 5000 times in 15292352796 ns   3058470 ns/call
+Gr{oetje,eeting}s,
 
-Daniel didn't like earlier attempts to re-use the network
-page-pool code to achieve this, and suggested the ttm_pool be
-used instead. This required pulling the fairly tightly knit
-ttm_pool logic apart, but after many failed attmempts I think
-I found a workable abstraction to split out shared logic.
-
-So this series contains a new generic drm_page_pool helper
-library, converts the ttm_pool to use it, and then adds the
-dmabuf deferred freeing and adds support to the dmabuf system
-heap to use both deferred freeing and the new drm_page_pool.
-
-Input would be greatly appreciated. Testing as well, as I don't
-have any development hardware that utilizes the ttm pool.
-
-thanks
--john
-
-[1] https://android.googlesource.com/platform/system/memory/libdmabufheap/+/refs/heads/master/tests/dmabuf_heap_bench.c
-
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-
-John Stultz (7):
-  drm: Add a sharable drm page-pool implementation
-  drm: ttm_pool: Rename the ttm_pool_dma structure to ttm_pool_page_dat
-  drm: ttm_pool: Rework ttm_pool_free_page to allow us to use it as a
-    function pointer
-  drm: ttm_pool: Rework ttm_pool to use drm_page_pool
-  dma-buf: heaps: Add deferred-free-helper library code
-  dma-buf: system_heap: Add drm pagepool support to system heap
-  dma-buf: system_heap: Add deferred freeing to the system heap
-
- drivers/dma-buf/heaps/Kconfig                |   5 +
- drivers/dma-buf/heaps/Makefile               |   1 +
- drivers/dma-buf/heaps/deferred-free-helper.c | 145 ++++++++++
- drivers/dma-buf/heaps/deferred-free-helper.h |  55 ++++
- drivers/dma-buf/heaps/system_heap.c          |  77 ++++-
- drivers/gpu/drm/Kconfig                      |   5 +
- drivers/gpu/drm/Makefile                     |   1 +
- drivers/gpu/drm/page_pool.c                  | 220 +++++++++++++++
- drivers/gpu/drm/ttm/ttm_pool.c               | 278 ++++++-------------
- include/drm/page_pool.h                      |  54 ++++
- include/drm/ttm/ttm_pool.h                   |  23 +-
- 11 files changed, 639 insertions(+), 225 deletions(-)
- create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.c
- create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.h
- create mode 100644 drivers/gpu/drm/page_pool.c
- create mode 100644 include/drm/page_pool.h
+                        Geert
 
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
