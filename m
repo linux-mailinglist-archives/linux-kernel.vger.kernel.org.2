@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C283104D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6993104CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhBEF7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhBEF7b (ORCPT
+        id S230394AbhBEF6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:58:09 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12465 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230258AbhBEF6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:59:31 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3136C06178B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 21:58:50 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id k193so5879960qke.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 21:58:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SZ0GQLJipF2hQIt0oYg/b3YND75QYohdSOPgCgGvmtI=;
-        b=oPGsTQx7+FdG6LRGl1TD3o+RbriHfudMdPEUWdoVcGtiFVzJyADmDY4/qjjG1+UIcy
-         wjKL99cqQfoIL+mWKhEojF7j3xy7b/FwNrgzFcnaC4VE2BI5tBDFbEYcfnximoQpd7Bo
-         foetOy+pvkseCt44S1+fCOI+yg3iGoGzvmkUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SZ0GQLJipF2hQIt0oYg/b3YND75QYohdSOPgCgGvmtI=;
-        b=jiL+KGOOpfrGW1ltdFIbtHerFqvI4licC166/ZbkwWxecR5OEcpSc6wgpUc8p4d0Fn
-         E8d2JFyJRJZe/viA+Mc2WYePWPtZK+0e5EZfVC2HPyLbH9ceTuu3KZe0aY9HCSIlUYNL
-         I24Shi0qT1mtAHVvbbWPQYtgf443ISh1B+uylUQt1VKlxFEIclQuMRfaaJTrHIf70YTB
-         Dxn5fmW6Y6FD1d+h/BfMgnjA1RFJOIYxpZe36D16BTLKRGCCXXwLftN0rwR6/IQ/RjtO
-         9pn9Y5lRLKgamNCDS8CFFZTwVXbsRffTnntMKgdBhvEGT9Q8PzU3dCRN5vSSvWAwNZHk
-         Ya+w==
-X-Gm-Message-State: AOAM533Gy0bS4sBGcd6YAnKZWo9i2sP6vCm0qxXtECKyFtUuH00r+Uvg
-        JOrMVe17Xwai1FWWKM0c1S4sAjsDEQSGGdUJQECPpQ==
-X-Google-Smtp-Source: ABdhPJwYA73lftjBriOP+37YGUdH+MFOawlYakwpkyiHcFfBQsl9Chfbewfaer8b9y41czh2lCGjkNZ6cshLgPPsL0I=
-X-Received: by 2002:a37:73c3:: with SMTP id o186mr2728785qkc.194.1612504730031;
- Thu, 04 Feb 2021 21:58:50 -0800 (PST)
+        Fri, 5 Feb 2021 00:58:07 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DX4R65g6czjKd5;
+        Fri,  5 Feb 2021 13:56:02 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Fri, 5 Feb 2021
+ 13:57:17 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <peterhuewe@gmx.de>, <jarkko@kernel.org>, <jgg@ziepe.ca>
+CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] tpm_tis_spi_main: set cs_change = 0 when timesout
+Date:   Fri, 5 Feb 2021 14:42:05 +0800
+Message-ID: <1612507325-2621-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-References: <20210128060515.1732758-1-stevensd@google.com> <c01b01dc-c636-1d1b-fb42-df718e23d20a@redhat.com>
-In-Reply-To: <c01b01dc-c636-1d1b-fb42-df718e23d20a@redhat.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Fri, 5 Feb 2021 14:58:38 +0900
-Message-ID: <CAD=HUj5sKKnckSqBjjR8paGegLfSujk03C5uDwzfh=PAaj5BZA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] KVM: x86/mmu: Skip mmu_notifier changes when possible
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Stevens <stevensd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches might be responsible for some instability in one of our
-stress tests. I'll send an update once I figure out what's going on.
+when i reach TPM_RETRY, the cs cannot  change back to 'high'.
+So the TPM chips thinks this communication is not over.
+And next times communication cannot be effective because
+the communications mixed up with the last time.
 
-Thanks,
-David
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ drivers/char/tpm/tpm_tis_spi_main.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-On Thu, Jan 28, 2021 at 9:48 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 28/01/21 07:05, David Stevens wrote:
-> > These patches reduce how often mmu_notifier updates block guest page
-> > faults. The primary benefit of this is the reduction in the likelihood
-> > of extreme latency when handling a page fault due to another thread
-> > having been preempted while modifying host virtual addresses.
-> >
-> > v2 -> v3:
-> >   - Added patch to skip check for MMIO page faults
-> >   - Style changes
-> >
-> > David Stevens (1):
-> >    KVM: x86/mmu: Consider the hva in mmu_notifier retry
-> >
-> > Sean Christopherson (1):
-> >    KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page fault
-> >
-> >   arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
-> >   arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
-> >   arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++------
-> >   arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
-> >   include/linux/kvm_host.h               | 25 +++++++++++++++++++++-
-> >   virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
-> >   6 files changed, 65 insertions(+), 16 deletions(-)
-> >
->
-> Queued, thanks.
->
-> Paolo
->
+diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
+index 3856f6ebcb34..6c52cbb28881 100644
+--- a/drivers/char/tpm/tpm_tis_spi_main.c
++++ b/drivers/char/tpm/tpm_tis_spi_main.c
+@@ -64,8 +64,18 @@ static int tpm_tis_spi_flow_control(struct tpm_tis_spi_phy *phy,
+ 				break;
+ 		}
+ 
+-		if (i == TPM_RETRY)
++		if (i == TPM_RETRY) {
++			/* change back to 'high',
++			 * So the TPM chips thinks the last communication
++			 * is done.
++			 */
++			spi_xfer.cs_change = 0;
++			spi_xfer->len = 1;
++			spi_message_init(&m);
++			spi_message_add_tail(spi_xfer, &m);
++			ret = spi_sync_locked(phy->spi_device, &m);
+ 			return -ETIMEDOUT;
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.19.1
+
