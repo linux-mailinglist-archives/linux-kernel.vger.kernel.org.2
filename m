@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EE4310386
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D950310388
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhBEDYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:24:02 -0500
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:40890 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhBEDXu (ORCPT
+        id S230086AbhBEDYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:24:23 -0500
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:39667 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhBEDYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:23:50 -0500
-Received: by mail-lf1-f49.google.com with SMTP id v24so7832277lfr.7;
-        Thu, 04 Feb 2021 19:23:33 -0800 (PST)
+        Thu, 4 Feb 2021 22:24:17 -0500
+Received: by mail-lf1-f41.google.com with SMTP id h7so7844205lfc.6;
+        Thu, 04 Feb 2021 19:24:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tH2dcjVQVPFUlZ3icB7ec2l1YXyIMMEv/uggANC4SPw=;
-        b=Av0fJLWO+C+C9j4A5M/sXlXOQiyWPGCCXOFs7oMOpotVplYk6kPYPLj7z6XaVBWP6V
-         fYy5mR73v6Kcvl7NeEI8Z/iqr9Kvsj5KJUrhbFBJJl9wZtLOyQxA5diJ9re0ucVy5eii
-         RZd17yLDV9Uy8h/wn6nPYn2IPhUjVRhct3zxlGHeR703fC582r1Lj1O+fF2D7atftDEG
-         jXacNTvoawxa8xwwPUmw0/fQ6YUPlVm5aDE0op5DQWHmeUy4Ux1umVLAhxNl9h/QLVJM
-         02z0h8zEoG91iM9MOFW7Of3IaHUwcHhmWbSsY733r9QJOQPHEdLQRbt2T1V88yrFQTDK
-         O+Kg==
-X-Gm-Message-State: AOAM533v8TVi5Qbu2y82qFszsq0+dqxfClhZzRywhPpKVtGiGMrszTiU
-        oB1Vxc8QkXguMh0EbBRDqZdfXspqmmq7ag==
-X-Google-Smtp-Source: ABdhPJw2NdfZjrn7qChoR8+chKWNlpS/HKXD74iyJ4NfsZUyp20KtzCUFSu1KA+JACz5qenqDjbSSw==
-X-Received: by 2002:a19:c217:: with SMTP id l23mr1365244lfc.263.1612495387485;
-        Thu, 04 Feb 2021 19:23:07 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id z2sm829635lfd.142.2021.02.04.19.23.06
+        bh=lBhQgpWYfLW4RX9Ru6N2PlBwZejRwOZ4EQOVez/Xssg=;
+        b=hUgnqTFEgz6c9Md7pD01PBTa2M+pzZb115r6ykNUNdL4Msji6h2CZnr/XKBjODtasB
+         MIHOm0qHURkcyyb62J//FJMHCjB1Ib9ZzbVvxoKwKihqO79B6zKc05Gb4KkD/P8UwsfR
+         F8M4FsS7VItWotM+c8ascaHO1RJHpU6jzSyLLblyCF4VbVOUCzj0xLJI1/riMtIWKmqY
+         g3iNqBn477CNS/GXXYeZe4x62zHmK0y/3Czf9t/jvnpkt7s/qEQD9DV2zZTrl9Ub2Mx2
+         AZFecBk+pRSYnNDDmrQFsqtXm96bjbTfIgZSFQC+mIpnlX2De/LaWIFcxMJ32X6AHwfb
+         p0og==
+X-Gm-Message-State: AOAM531B9Hil2YPOKSJqQze6lQ1BbS4XNzFPw5omwTdBBLPs4N4A3LQG
+        HK/9uK5EVUUYdLLBGO9AP89emLOODZT6Tw==
+X-Google-Smtp-Source: ABdhPJwf0Fy/99hSyFPNtSBBqFnO+jBpTdKMFXKbG6XwOkNvuRpeQCp3htlpTWBEJrRNTGsHuOy0aw==
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr1348404lfu.40.1612495414961;
+        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id s8sm871434ljm.71.2021.02.04.19.23.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 19:23:07 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id f19so6065896ljn.5;
-        Thu, 04 Feb 2021 19:23:06 -0800 (PST)
-X-Received: by 2002:a2e:88c1:: with SMTP id a1mr1543946ljk.74.1612495386836;
- Thu, 04 Feb 2021 19:23:06 -0800 (PST)
+        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id t8so6029381ljk.10;
+        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
+X-Received: by 2002:a2e:9890:: with SMTP id b16mr1389484ljj.488.1612495414322;
+ Thu, 04 Feb 2021 19:23:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-5-jernej.skrabec@siol.net>
-In-Reply-To: <20210204184710.1880895-5-jernej.skrabec@siol.net>
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-6-jernej.skrabec@siol.net>
+In-Reply-To: <20210204184710.1880895-6-jernej.skrabec@siol.net>
 From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Fri, 5 Feb 2021 11:22:56 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
-Message-ID: <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH 4/5] drm/sun4i: Fix H6 HDMI PHY configuration
+Date:   Fri, 5 Feb 2021 11:23:24 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65VauNZaxWgayp0BdGxm=Kbb3LF-YXarx9gFZmPYP8B-g@mail.gmail.com>
+Message-ID: <CAGb2v65VauNZaxWgayp0BdGxm=Kbb3LF-YXarx9gFZmPYP8B-g@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH 5/5] drm/sun4i: dw-hdmi: Fix max. frequency
+ for H6
 To:     Jernej Skrabec <jernej.skrabec@siol.net>
 Cc:     Maxime Ripard <mripard@kernel.org>,
         Mike Turquette <mturquette@baylibre.com>,
@@ -65,9 +66,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
 >
-> cpce value for 594 MHz is set differently in BSP driver. Fix that.
+> It turns out that reasoning for lowering max. supported frequency is
+> wrong. Scrambling works just fine. Several now fixed bugs prevented
+> proper functioning, even with rates lower than 340 MHz. Issues were just
+> more pronounced with higher frequencies.
 >
-> Fixes: c71c9b2fee17 ("drm/sun4i: Add support for Synopsys HDMI PHY")
+> Fix that by allowing max. supported frequency in HW and fix the comment.
+>
+> Fixes: cd9063757a22 ("drm/sun4i: DW HDMI: Lower max. supported rate for H6")
 > Tested-by: Andre Heider <a.heider@gmail.com>
 > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
