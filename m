@@ -2,124 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591B6311732
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862B5311725
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhBEXgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:36:24 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51310 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232549AbhBEOVB (ORCPT
+        id S229821AbhBEXbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232558AbhBEOWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:21:01 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115EofUK000447;
-        Fri, 5 Feb 2021 15:59:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Kmqf4H36jwosTyKxq7uvwp2sNs+1+ieQgvhe5qhxId4=;
- b=4mcLAf1tErID1vGA1tO01tiMTaOWZAAOTPbbfYAU8tP4Me1+VBOLlL2DxCxtS0pclT+S
- zTlJ/ied1CpzmUzuwXkdXdUqjHgE4LkcvCLZ8rJVg+tnWcrWp/FWhiHT79CHkWfOEHtt
- LlnvQiTmYXqaUrzoam/LrfPhD2DihB0X6DFDjXxUcAHL8BcUEKKDllIfdMmN5sbPihJa
- J51oi4QvmYP6udtt5vT/YQ25JwNmeJplbuTZf340LO3aqMGxyO77cComD0MkMZiKJ4Yx
- 2D9hb2Ops4csVpDGVV6aFIY30KeZCleETkmcTWrcJQxPyn66b27W1Txa9sA8ILdoOjsq wQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36ey7hh1v3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 15:59:46 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 85A0210002A;
-        Fri,  5 Feb 2021 15:59:46 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6E66C2402BC;
-        Fri,  5 Feb 2021 15:59:46 +0100 (CET)
-Received: from lmecxl1060.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 15:59:44 +0100
-Subject: Re: [PATCH 5/5] i2c: stm32f7: indicate the address being accessed on
- errors
-To:     Alain Volmat <alain.volmat@foss.st.com>, <wsa@kernel.org>,
-        <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
-References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
- <1612515104-838-6-git-send-email-alain.volmat@foss.st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Message-ID: <7b614b4e-2bea-2002-0be3-4b3a0d15a4e9@foss.st.com>
-Date:   Fri, 5 Feb 2021 15:59:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1612515104-838-6-git-send-email-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        Fri, 5 Feb 2021 09:22:50 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDFBC06121D;
+        Fri,  5 Feb 2021 07:59:55 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id r23so6438334ljh.1;
+        Fri, 05 Feb 2021 07:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Zd+c4ooltVhxeT02OwlGyOjUnE2GSWiTDPcIAPn3MYU=;
+        b=f+TJ3QX7m2SC6ZcxPUEQuDp7gpWX8I1nwRTbb7DIxswh6QjKWXMw9kp3enzvUMNxCg
+         CJSSs72MqVDOe0yVAYjIfwbVYTp5eQF5tpthO+qQSoVcKwXGSq4p4iJQ8DhDLi6w6Mdj
+         aGPQadAu1eo6e77bOFH923cMdfIrqkcCW3teZIgiugtr99d3ODgKDh323ZPmj03jiNoc
+         1LcCPVjjRFy66QJn6exOGkqhcHvIehLsF3dWTdz0xQnQBnucIstsSq3Y5LKhzGI7Gno3
+         xuouxbKrsDiKECNo5olldx9hr6MXoPPMlIeJhQZoGjEy3je98EYxL9Zuo+GJCj51jgYU
+         7AIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Zd+c4ooltVhxeT02OwlGyOjUnE2GSWiTDPcIAPn3MYU=;
+        b=XPNy7tWxM0nF5cBgtQeF63MkvL0hsfHlTsATtfN2/Yt2co0lXe3izzO8Y4q/b1iDzk
+         MzX1mVOloaMw4kyGFFHW9qnob95d+ASRyXqqdR8zH7wXuNztF4aLSk7z+DSh2GnLNNgO
+         sfHwN0yr2Vqq0aJCnwGTXViGc4xMGS/SW+sS7Q6BG2B1ddH1gB8+UV7wdfjdpXryh3jO
+         8l705mlxTvlZHHxMNxtIdu5NQvNOFWkA978L2Ov5AveP4+VkjcsSLyJIsdIxtRP1xf8o
+         L6jZnndM7JCgKiIKtUV6i20kDBSJWFFIEQ+ofU4QFxTHGq5X6w9dmf/0UZRIxVIL+iu/
+         mRkQ==
+X-Gm-Message-State: AOAM532OfqzHJkqnYrv46FETiDdLqvslwODizNdmP/xhpVt9c/NFpa/F
+        frsgO5/qKj2gtrVyzSg7EWTbz0RDmVg=
+X-Google-Smtp-Source: ABdhPJwrL5Zjc4u4TQJo0V9hVIq8fGvpnCC64MSTWzWFflLgGHJx9AMxShyGN3O/7tuZCuDtjX+xvg==
+X-Received: by 2002:a50:bacb:: with SMTP id x69mr3908359ede.39.1612537715856;
+        Fri, 05 Feb 2021 07:08:35 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
+        by smtp.googlemail.com with ESMTPSA id g3sm4219086edk.75.2021.02.05.07.08.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 05 Feb 2021 07:08:34 -0800 (PST)
+Message-ID: <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
+Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached
+ sub-region
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Date:   Fri, 05 Feb 2021 16:08:31 +0100
+In-Reply-To: <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+         <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+         <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+         <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
+         <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
+         <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_09:2021-02-05,2021-02-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all
-
-Looks good to me
-
-Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-
-Regards
-
-On 2/5/21 9:51 AM, Alain Volmat wrote:
-> To help debugging issues, add the address of the slave being
-> accessed when getting an error.
+On Fri, 2021-02-05 at 14:06 +0000, Avri Altman wrote:
+> > > > +     put_unaligned_be64(ppn, &cdb[6]);
+> > > 
+> > > You are assuming the HPB entries read out by "HPB Read Buffer"
+> > > cmd
+> > > are
+> > > in Little
+> > > Endian, which is why you are using put_unaligned_be64 here.
+> > > However,
+> > > this assumption
+> > > is not right for all the other flash vendors - HPB entries read
+> > > out
+> > > by
+> > > "HPB Read Buffer"
+> > > cmd may come in Big Endian, if so, their random read performance
+> > > are
+> > > screwed.
+> > 
+> > For this question, it is very hard to make a correct format since
+> > the
+> > Spec doesn't give a clear definition. Should we have a default
+> > format,
+> > if there is conflict, and then add quirk or add a vendor-specific
+> > table?
+> > 
+> > Hi Avri
+> > Do you have a good idea?
 > 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-> index f77cd6512a86..ef642fe1eb2c 100644
-> --- a/drivers/i2c/busses/i2c-stm32f7.c
-> +++ b/drivers/i2c/busses/i2c-stm32f7.c
-> @@ -1602,7 +1602,8 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
->  
->  	/* Bus error */
->  	if (status & STM32F7_I2C_ISR_BERR) {
-> -		dev_err(dev, "<%s>: Bus error\n", __func__);
-> +		dev_err(dev, "<%s>: Bus error accessing addr 0x%x\n",
-> +			__func__, f7_msg->addr);
->  		writel_relaxed(STM32F7_I2C_ICR_BERRCF, base + STM32F7_I2C_ICR);
->  		stm32f7_i2c_release_bus(&i2c_dev->adap);
->  		f7_msg->result = -EIO;
-> @@ -1610,13 +1611,15 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
->  
->  	/* Arbitration loss */
->  	if (status & STM32F7_I2C_ISR_ARLO) {
-> -		dev_dbg(dev, "<%s>: Arbitration loss\n", __func__);
-> +		dev_dbg(dev, "<%s>: Arbitration loss accessing addr 0x%x\n",
-> +			__func__, f7_msg->addr);
->  		writel_relaxed(STM32F7_I2C_ICR_ARLOCF, base + STM32F7_I2C_ICR);
->  		f7_msg->result = -EAGAIN;
->  	}
->  
->  	if (status & STM32F7_I2C_ISR_PECERR) {
-> -		dev_err(dev, "<%s>: PEC error in reception\n", __func__);
-> +		dev_err(dev, "<%s>: PEC error in reception accessing addr 0x%x\n",
-> +			__func__, f7_msg->addr);
->  		writel_relaxed(STM32F7_I2C_ICR_PECCF, base + STM32F7_I2C_ICR);
->  		f7_msg->result = -EINVAL;
->  	}
+> I don't know.  Better let Daejun answer this.
+> This was working for me for both Galaxy S20 (Exynos) as well as
+> Xiaomi Mi10 (8250).
 > 
 
--- 
---
-~ Py MORDRET
---
+Thanks, I tested Daejun's patchset before, it is also ok (I don't know
+which version patchset). maybe we can keep current implementation as
+default, then if there is conflict, and submit the quirk.
+
+Thanks,
+Bean
+
+> Thanks,
+> Avri
+
