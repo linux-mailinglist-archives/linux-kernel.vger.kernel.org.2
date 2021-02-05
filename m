@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A972F31176D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE41311778
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBEXro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:47:44 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:25012 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232160AbhBEORE (ORCPT
+        id S229650AbhBEXxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbhBEOOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:17:04 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-51-InJ3Dwu4O4qYU7J-rkKpYw-1; Fri, 05 Feb 2021 15:23:47 +0000
-X-MC-Unique: InJ3Dwu4O4qYU7J-rkKpYw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 5 Feb 2021 15:23:46 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 5 Feb 2021 15:23:46 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Shevchenko' <andy.shevchenko@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-CC:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Shuah Khan <shuah@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>
-Subject: RE: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field widths
- in vsscanf
-Thread-Topic: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field
- widths in vsscanf
-Thread-Index: AQHW+76k9HEDtLN2E0S7ghaNw2D2r6pJrWNA
-Date:   Fri, 5 Feb 2021 15:23:46 +0000
-Message-ID: <82696a371fe447c2b201fc812e5a4560@AcuMS.aculab.com>
-References: <20210203165009.6299-1-rf@opensource.cirrus.com>
- <20210203165009.6299-2-rf@opensource.cirrus.com>
- <YBr9c44Dvq1ZNrEa@smile.fi.intel.com> <YBwiQ+l6yqs+g+rr@alley>
- <5bfefab6-7a1b-6f5f-319c-8897dbb79a5b@opensource.cirrus.com>
- <CAHp75VcARyR4YvnWoVk1gnR8v7u_YJPnV0x3Mbe7iLMrvpbSAQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcARyR4YvnWoVk1gnR8v7u_YJPnV0x3Mbe7iLMrvpbSAQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 5 Feb 2021 09:14:46 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA74C061A2A;
+        Fri,  5 Feb 2021 07:50:49 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id p15so6191118ilq.8;
+        Fri, 05 Feb 2021 07:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=kiM8WMFjST9dsy9zDah68/XyOF2KBPOv5W+GYkbdeSU=;
+        b=ZhDvtHxZgtHTeY5fyZvbph2aXejeBONUjk0laSyWHs/QDFG5LJ9yIUTaOXQcYVmy1/
+         WS2CJ0uUMJMdBwp2t4lWN2kSj7CHRJYMY0sCM23/kj5OZH6cDxo7YmwkWXjiK02SLu0Z
+         JVwInYdwgJmkye65iGmTfoKn4kplizy4wl5YdYgk0LAsSJbI2La/jY2qjYlo8UZcKqVl
+         Xz2SWjCKHDly+bUkdmUAx7IrxoQw4Yf1lMf1tRarksR+aM9oWtJFFNMumodtfZXEWP2S
+         JUKXCicBRJQOYYWT0+MBQ7+X1QkKoZihCQ3tRVs212ww4K5xzs+SsxWedJpwe70fOl2q
+         smQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=kiM8WMFjST9dsy9zDah68/XyOF2KBPOv5W+GYkbdeSU=;
+        b=dR2SwLukGrJS3jjm7A3niy3higIPOv5dRpigFJTzRqWylgLjjZU2awnX0SaP2jlD1I
+         FhznNpVeHuYn4xKafYKbC85LzLDQjUqcHzT8BVRPEHkP33XAYb+ut+vO+Ep7uM1zjNPI
+         j/dfCixLQygnXDvAlUUw4OdqzOfMKD2OOQXvxsFJ1YDHS+3qmjaG0zBr3G/vx/HAav3P
+         dpET5wRoULyaMcBKfP4QAwffJBq23DitHMzLR54tbvEvRNH0nbHif5GuQ37zEp/pj8zN
+         t+Hb/wP+l4KSKCAw46GgHfyaWuCJ2QVYDW6X5WlSz44SX+Omn6q96EQ8w/LG98QROFig
+         2AdA==
+X-Gm-Message-State: AOAM5322IBGtzyH++M+Ag16BaMe5pTjIX1GUJSUr3MrSOo/ZLlDMlup8
+        6QvcF5FZziLZBWhHg+jNH8wpMY+KLLZOI429YA+VJHYCfHTXGYcS
+X-Google-Smtp-Source: ABdhPJw1QvaGYTrK47b0MkpUdbTRZaKI08TYAO8wf7udS7POZDrIiJ5UECvfvMWbmJe7zrApyTMXW7qOfbFwoG8G4Qw=
+X-Received: by 2002:a92:ce46:: with SMTP id a6mr4531229ilr.10.1612538650788;
+ Fri, 05 Feb 2021 07:24:10 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+In-Reply-To: <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 5 Feb 2021 16:23:59 +0100
+Message-ID: <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBTaGV2Y2hlbmtvDQo+IFNlbnQ6IDA1IEZlYnJ1YXJ5IDIwMjEgMTI6NTENCj4g
-DQo+IE9uIEZyaSwgRmViIDUsIDIwMjEgYXQgMTozNSBQTSBSaWNoYXJkIEZpdHpnZXJhbGQNCj4g
-PHJmQG9wZW5zb3VyY2UuY2lycnVzLmNvbT4gd3JvdGU6DQo+ID4gT24gMDQvMDIvMjAyMSAxNjoz
-NSwgUGV0ciBNbGFkZWsgd3JvdGU6DQo+ID4gPiBPbiBXZWQgMjAyMS0wMi0wMyAyMTo0NTo1NSwg
-QW5keSBTaGV2Y2hlbmtvIHdyb3RlOg0KPiA+ID4+IE9uIFdlZCwgRmViIDAzLCAyMDIxIGF0IDA0
-OjUwOjA3UE0gKzAwMDAsIFJpY2hhcmQgRml0emdlcmFsZCB3cm90ZToNCj4gDQo+IC4uLg0KPiAN
-Cj4gPiA+Pj4gKyAgIGZvciAoOyBtYXhfY2hhcnMgPiAwOyBtYXhfY2hhcnMtLSkgew0KPiA+ID4+
-DQo+ID4gPj4gTGVzcyBmcmFnaWxlIGlzIHRvIHdyaXRlDQo+ID4gPj4NCj4gPiA+PiAgICAgIHdo
-aWxlIChtYXhfY2hhcnMtLSkNCj4gPiA+DQo+ID4gPiBFeGNlcHQgdGhhdCB0aGUgb3JpZ2luYWwg
-d2FzIG1vcmUgb2J2aW91cyBhdCBsZWFzdCBmb3IgbWUuDQo+ID4gPiBJIGFsd2F5cyBwcmVmZXIg
-bW9yZSByZWFkYWJsZSBjb2RlIHdoZW4gdGhlIGNvbXBpbGVyIG1pZ2h0IGRvDQo+ID4gPiB0aGUg
-b3B0aW1pemF0aW9uIGVhc2lseS4gQnV0IHRoaXMgaXMgbXkgcGVyc29uYWwgdGFzdGUuDQo+ID4g
-PiBJIGFtIGZpbmUgd2l0aCBib3RoIHZhcmlhbnRzLg0KPiANCj4gSSAqc2xpZ2h0bHkqIHByZWZl
-ciB3aGlsZS1sb29wICppbiB0aGlzIGNhc2UqIGR1ZSB0byBsZXNzIGNoYXJhY3RlcnMNCj4gdG8g
-cGFyc2UgdG8gdW5kZXJzdGFuZCB0aGUgbG9naWMuDQoNClRoZSB0d28gbG9vcHMgYXJlIGFsc28g
-aGF2ZSBkaWZmZXJlbnQgdmFsdWVzIGZvciAnbWF4X2NoYXJzJw0KaW5zaWRlIHRoZSBsb29wIGJv
-ZHkuDQoNCklmICdtYXhfY2hhcnMnIGlzIGtub3duIHRvIGJlIG5vbi16ZXJvIHRoZSBkbyAuLi4g
-d2hpbGUgKC0tbWF4X2NoYXJzKTsNCmxvb3Agd2lsbCBwcm9iYWJsZSBnZW5lcmF0ZSBiZXR0ZXIg
-Y29kZS4NCkJ1dCB0aGVyZSBpcyBubyBhY2NvdW50aW5nIGZvciBqdXN0IGhvdyBvZGQgc29tZSBk
-ZWNpc2lvbnMgZ2NjDQptYWtlcyBhcmUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > Hi,
+> >
+> > when building with pahole v1.20 and binutils v2.35.2 plus Clang
+> > v12.0.0-rc1 and DWARF-v5 I see:
+> > ...
+> > + info BTF .btf.vmlinux.bin.o
+> > + [  != silent_ ]
+> > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
+> >  BTF     .btf.vmlinux.bin.o
+> > + LLVM_OBJCOPY=/opt/binutils/bin/objcopy /opt/pahole/bin/pahole -J
+> > .tmp_vmlinux.btf
+> > [115] INT DW_ATE_unsigned_1 Error emitting BTF type
+> > Encountered error while encoding BTF.
+>
+> Grepping the pahole sources:
+>
+> $ git grep DW_ATE
+> dwarf_loader.c:         bt->is_bool = encoding == DW_ATE_boolean;
+> dwarf_loader.c:         bt->is_signed = encoding == DW_ATE_signed;
+>
+> Missing DW_ATE_unsigned encoding?
+>
 
+Checked the LLVM sources:
+
+clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+llvm::dwarf::DW_ATE_unsigned_char;
+clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding = llvm::dwarf::DW_ATE_unsigned;
+clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+llvm::dwarf::DW_ATE_unsigned_fixed;
+clang/lib/CodeGen/CGDebugInfo.cpp:
+  ? llvm::dwarf::DW_ATE_unsigned
+...
+lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT_encoding
+ (DW_ATE_unsigned)
+
+So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
+
+- Sedat -
