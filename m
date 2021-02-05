@@ -2,170 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978A23108F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BF43108F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhBEKYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:24:18 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:39363 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhBEKVc (ORCPT
+        id S230281AbhBEKYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:24:02 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:42929 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhBEKVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:21:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612520492; x=1644056492;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=tcfAJDncwohmiRretyO/wet4EMTaW11wNI2LIzAPShA=;
-  b=nAkzLheDk7RvK8yHfRPfWPPCYwUpemW7ihCckkFLFUL0z8rayaXH8i5q
-   CAKPH3eiSrfXImgCW5FY7Z3Wfd8kVG+f/innpBAboD1hjc7W9iyLMHIff
-   spTRZM0/KLCnNLB8wZV1gpDRouFvR2lGeRwsKX4G/b8ggac/1o3am2MMW
-   B64CAJC2Xq1IQg0GQ+B/DLHxY1lQAfyVVQFRs4rbbi9li/BnMvrZ2Y7WX
-   U3PMGmjjFexUvKp8AVoX5zmtgaWSsEDNL9FZl3wGOI9mbt61zexp8MGql
-   rDJobLjcGpMNnAnV0yuQAlpJtsm4iJ19//S5zKvmxf4OzXBQyUeZKJYo6
-   A==;
-IronPort-SDR: yVQIjDFOHIoeWNbWhQPOTZ1acGzmBi/5v3P24pah9rB/W2zGZhGoTxfq4Nl4pkPqdxI2CprCox
- UCBxbqNHjWsaCiy9fL6WKtYibHxCFb3WOP7yExv0aHFPWxZpWSKmEKZBiuNf8RjS05z4MADZvJ
- UPT7Izkt4T29iTk3ob7weadRAjBMB6Sy9ov0MORQmK0KfyjraLcwBSYQgj2EGl2VxXaZHvn6Rs
- DINw92d/ZEIcHr1i8siDqVVDrDsSNheHyJAx7NX0w2zCElScrgKTILKWZHp1pKXZ9qasJiCDni
- WWo=
-X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; 
-   d="scan'208";a="108141749"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Feb 2021 03:20:16 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 5 Feb 2021 03:20:14 -0700
-Received: from [10.12.68.39] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 5 Feb 2021 03:20:13 -0700
-Subject: Re: [PATCH] ARM: configs: at91: enable drivers for sam9x60
-To:     Tudor Ambarus - M18064 <Tudor.Ambarus@microchip.com>,
-        "Claudiu Beznea - M18063" <Claudiu.Beznea@microchip.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches - M43218 <Ludovic.Desroches@microchip.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <1612518871-9311-1-git-send-email-claudiu.beznea@microchip.com>
- <56ee9cda-7943-2f5e-c068-51eff7b021b3@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <225500e7-d3c8-f2bf-dd8c-4704c663493d@microchip.com>
-Date:   Fri, 5 Feb 2021 11:20:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 5 Feb 2021 05:21:19 -0500
+Received: by mail-ot1-f53.google.com with SMTP id f6so6371557ots.9;
+        Fri, 05 Feb 2021 02:21:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W3RF2C/PA6a6ba6a9kvICkFlC1q6hnsnECE3kSeEdlo=;
+        b=HJFofwczRVQAvLnj9wcxvk5wu3JM879AeQV1XQ9cArUXMFMukGQYp1hALPhmM/XgeD
+         heaw8uCO88gni6htNwpAxIrrW7oXGIEO1ts6lWx8MrHmpgIK1IHXYb8FKNjwtwoTUHyT
+         b7u5dG3Dyy9DFSJu7lyHyRXGuN6U+PTNcFcTYeENGglMLWZWClryWV1e/Y8vtWNDVg6F
+         t8S7MG0Sdf87srY44mb1YyX/p/+TS1/0ZDFhNQlKxRuo+GLhufRTwArRTTN66UpwPWUc
+         z/MuOl2iB0Y0UJdGJoap+CPYf74g9OPJVAmf1FvRHuNwseMkNsKBGqkAhag1eyE2hinM
+         PujA==
+X-Gm-Message-State: AOAM531Xi8g9KGTnREZahRG1aOKNm1SMlAlkDvlk9n0ECkpDfkNEh+3V
+        1/Lkip2NE1Xgnb3985VZ6HbYhK0ht7Jhm9WKGrw=
+X-Google-Smtp-Source: ABdhPJxaAzP865Vmnvr1fq9k8jVK1cEEm2Qir3RiFDzwCxIrZEbUN97VUFhB9QV4+y8tU2656HDzFkvuQjfME2sklqE=
+X-Received: by 2002:a9d:3604:: with SMTP id w4mr2857988otb.107.1612520437777;
+ Fri, 05 Feb 2021 02:20:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <56ee9cda-7943-2f5e-c068-51eff7b021b3@microchip.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
+ <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+ <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+In-Reply-To: <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Feb 2021 11:20:26 +0100
+Message-ID: <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 at 11:12, Tudor Ambarus - M18064 wrote:
-> On 2/5/21 11:54 AM, Claudiu Beznea wrote:
->> Enable drivers for sam9x60/sam9x60-ek:
->> - shutdown controller
->> - CAN
->> - AT24 EEPROM (present on SAM9X60-EK)
->> - MCP23S08 (present on SAM9X60-EK)
->> - AES, TDES, SHA
-> 
-> Crypto IPs are present only sam9x60. Should we have them as modules?
+Hi Saravana,
 
-That's fine with me if we keep them as built-in.
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+> > <m.szyprowski@samsung.com> wrote:
+> > > On 04.02.2021 22:31, Saravana Kannan wrote:
+> > > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> > > > <m.szyprowski@samsung.com> wrote:
+> > > >> On 21.01.2021 23:57, Saravana Kannan wrote:
+> > > >>> This allows fw_devlink to create device links between consumers of an
+> > > >>> interrupt and the supplier of the interrupt.
+> > > >>>
+> > > >>> Cc: Marc Zyngier <maz@kernel.org>
+> > > >>> Cc: Kevin Hilman <khilman@baylibre.com>
+> > > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> > > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> > > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> > > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> > > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> > > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> > > > I grepped around and it looks like the final board file is this or
+> > > > whatever includes it?
+> > > > arch/arm64/boot/dts/arm/juno-base.dtsi
+> > > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> > > > This patch just finds the interrupt-parent and then tries to use that
+> > > > as a supplier if "interrupts" property is listed. But the only
+> > > > interrupt parent I can see is:
+> > > >          gic: interrupt-controller@2c010000 {
+> > > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> > > >
+> > > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> > > > a NOP since those suppliers are never devices and are ignored.
+> > > > $ git grep "arm,gic-400" -- drivers/
+> > > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> > > >
+> > > > This doesn't make any sense. Am I looking at the right files? Am I
+> > > > missing something?
+> > >
+> > > Okay, I've added displaying a list of deferred devices when mounting
+> > > rootfs fails and got following items:
+> > >
+> > > Deferred devices:
+> > > 18000000.ethernet        platform: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 1c050000.mmci    amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 1c1d0000.gpio    amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 2b600000.iommu   platform: probe deferral - wait for supplier
+> > > scpi-power-domains
+> > > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > 1c060000.kmi     amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 1c070000.kmi     amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 1c170000.rtc     amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > 1c0f0000.wdt     amba: probe deferral - supplier
+> > > bus@8000000:motherboard-bus not ready
+> > > gpio-keys
+> > > Kernel panic - not syncing: VFS: Unable to mount root fs on
+> > > unknown-block(0,0)
+> > >
+> > > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> > > list, so it looks that device core added a link to something that is not
+> > > a platform device...
+>
+> Probe deferred devices (even platform devices) not showing up in that
+> list is not unusual. That's because devices end up on that list only
+> after a driver for them is matched and then it fails.
+>
+> > Lemme guess: bus@8000000 is a simple bus, but it has an
+> > interrupt-map, and the devlink code doesn't follow the mapping?
+> >
+>
+> No, what's happening is that (and this is something I just learned)
+> that if a parent has an "#interrupt-cells" property, it becomes your
+> interrupt parent. In this case, the motherboard-bus (still a platform
+> device) is the parent, but it never probes (because it's simple-bus
+> and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
+> this mmci device is marked as a consumer of this bus (while still a
+> grand-child). Yeah, I'm working on patches (multiple rewrites) to take
+> care of cases like this.
 
-Regards,
-   Nicolas
+One more reason to scrap the different handling of "simple-bus" and
+"simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
+platform device driver, for both? (like I originally intended ;-)
 
->> And use "make savedefconfig".
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> 
-> With or without the Crypto IPs as modules:
-> 
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
->> ---
->>   arch/arm/configs/at91_dt_defconfig | 12 +++++++-----
->>   1 file changed, 7 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
->> index 5f3415c743ec..e274f8c492d2 100644
->> --- a/arch/arm/configs/at91_dt_defconfig
->> +++ b/arch/arm/configs/at91_dt_defconfig
->> @@ -17,8 +17,6 @@ CONFIG_SOC_SAM9X60=y
->>   # CONFIG_ATMEL_CLOCKSOURCE_PIT is not set
->>   CONFIG_AEABI=y
->>   CONFIG_UACCESS_WITH_MEMCPY=y
->> -CONFIG_ZBOOT_ROM_TEXT=0x0
->> -CONFIG_ZBOOT_ROM_BSS=0x0
->>   CONFIG_ARM_APPENDED_DTB=y
->>   CONFIG_ARM_ATAG_DTB_COMPAT=y
->>   CONFIG_CMDLINE="console=ttyS0,115200 initrd=0x21100000,25165824 root=/dev/ram0 rw"
->> @@ -38,6 +36,8 @@ CONFIG_IP_PNP_BOOTP=y
->>   CONFIG_IP_PNP_RARP=y
->>   # CONFIG_INET_DIAG is not set
->>   CONFIG_IPV6_SIT_6RD=y
->> +CONFIG_CAN=y
->> +CONFIG_CAN_AT91=y
->>   CONFIG_CFG80211=y
->>   CONFIG_MAC80211=y
->>   CONFIG_DEVTMPFS=y
->> @@ -58,6 +58,7 @@ CONFIG_BLK_DEV_RAM=y
->>   CONFIG_BLK_DEV_RAM_COUNT=4
->>   CONFIG_BLK_DEV_RAM_SIZE=8192
->>   CONFIG_ATMEL_SSC=y
->> +CONFIG_EEPROM_AT24=m
->>   CONFIG_SCSI=y
->>   CONFIG_BLK_DEV_SD=y
->>   # CONFIG_SCSI_LOWLEVEL is not set
->> @@ -91,7 +92,6 @@ CONFIG_RT2800USB_UNKNOWN=y
->>   CONFIG_RTL8187=m
->>   CONFIG_RTL8192CU=m
->>   # CONFIG_RTLWIFI_DEBUG is not set
->> -CONFIG_INPUT_POLLDEV=y
->>   CONFIG_INPUT_JOYDEV=y
->>   CONFIG_INPUT_EVDEV=y
->>   # CONFIG_KEYBOARD_ATKBD is not set
->> @@ -111,8 +111,8 @@ CONFIG_I2C_GPIO=y
->>   CONFIG_SPI=y
->>   CONFIG_SPI_ATMEL=y
->>   CONFIG_SPI_ATMEL_QUADSPI=y
->> +CONFIG_PINCTRL_MCP23S08=m
->>   CONFIG_POWER_RESET=y
->> -# CONFIG_POWER_RESET_AT91_SAMA5D2_SHDWC is not set
->>   CONFIG_POWER_SUPPLY=y
->>   # CONFIG_HWMON is not set
->>   CONFIG_WATCHDOG=y
->> @@ -208,7 +208,9 @@ CONFIG_NLS_UTF8=y
->>   CONFIG_CRYPTO_ECB=y
->>   CONFIG_CRYPTO_USER_API_HASH=m
->>   CONFIG_CRYPTO_USER_API_SKCIPHER=m
->> -# CONFIG_CRYPTO_HW is not set
->> +CONFIG_CRYPTO_DEV_ATMEL_AES=y
->> +CONFIG_CRYPTO_DEV_ATMEL_TDES=y
->> +CONFIG_CRYPTO_DEV_ATMEL_SHA=y
->>   CONFIG_CRC_CCITT=y
->>   CONFIG_FONTS=y
->>   CONFIG_FONT_8x8=y
->> --
->> 2.7.4
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
 
 -- 
-Nicolas Ferre
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
