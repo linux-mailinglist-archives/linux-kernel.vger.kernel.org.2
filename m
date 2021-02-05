@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A7C310EFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DFF310EF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbhBEQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S233489AbhBEQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhBEPxS (ORCPT
+        with ESMTP id S233380AbhBEPxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:53:18 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3BEC061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:34:59 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id d7so5742668wri.23
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:34:59 -0800 (PST)
+        Fri, 5 Feb 2021 10:53:19 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954EEC061788
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:35:01 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id u15so5734219wrn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:35:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=tljlSxhBzcxqidAVSdVdhM6oUJ+nJ3d1xitEmX2Ppf0=;
-        b=EooVbzbfAmq8G1bWgvLByZcRTJzsGaZsM+gbsnttAHt59SZ03efBEYHdViNV3NOcBb
-         AIV9WF6XYYWGw3mRwID1biNz4Xd/YnW9mVfWF3MqcCeTu8ZEhARSrRcHYLM1RcDt/U8i
-         v3YvXKISbDMp6LV5R+hWQKWdH3XDXXiz6Y8YegizUaUeJw9yV1lF2WpCyTeZiZQMLUSY
-         laKMOHx3s2jUXdJJtzLun9LBT3MD0Y52b8M44RMyqTJV6KG7pYS+FryEe+WFupRVaQW6
-         nT3pdbQDrilZswBy/TGLAEBB7NbLJO0EwX6HQFv7HTOCg1BW07zGmBMyOMgF1P3Aima1
-         hypg==
+        bh=p2PHZd2SW9nz4o7+ZB1C3vkb9xhx8DH7M49Qc2p69KA=;
+        b=CHtaYiFloTo1h3fJ4zIwrdm8kH9MlR88HYI0/PTh1ZWy7A7CwjuDxNrv9Gx69/d5EU
+         /uH5wwsCw9lrcu3UgF0woJeX8LvF46mbIjl1UXDMCFstkACeUmi7LjrhuV3m6VC1O4FA
+         kLqgo4s84+U9SrE4Ij3D8TumUHcGxjFAg+UvRisEMQ4KFqgiuA/0irNBtFKpJm7Y2yvr
+         rv5nooR3qty/BvdTJILjp8ZF4GmyrzIoPmJkwuLqIJMGj3IC94nPtvOTvoNrBK4XD6v9
+         DrdflvRnrv/sqjoyw4HnrP0YYgEVd4PzvqCF+NE7zyq5KY/kgr+v0ibadQ+YFmPfzDvT
+         14Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=tljlSxhBzcxqidAVSdVdhM6oUJ+nJ3d1xitEmX2Ppf0=;
-        b=k+giXJhuPS+KMPv3dVmF2JEAh/SMfGN+alzPNSrgZ+OjAVywpxPomEYHuscjJxDsil
-         dp1kIEL1JTmVxOnkMJtGoYF7ZJbb3dRTG0/DeNJXtFNArTAZKhrMsA9VlESgHKurLe7L
-         zQVgynm62FHgljEUOpZ/EH5suN1/gvBPBOn7DCbaQIr8wE1iDfMnUxWQareaoqLzaO4I
-         wKlFg58SOlpQ/bWlCDxWe4pMMBLFKta3mxbA/Cv/b0Lc6OaaJxG7EwSkNoGrfpafoouB
-         wQ05dN+cFCRfxBBjR430Oyyr8cHYK7yIyvheHgL+wNifrmNuWA8QYXZNyf6Ts9+pdEpd
-         O7UA==
-X-Gm-Message-State: AOAM531w/ZJWVuxl6z6KRWgMm6ZX1yGAU3cHzxmQf8SWCeHk8xv+f0pj
-        lDGmXLxklIgUB9f67CtC7N+quvRuT7kaR+jG
-X-Google-Smtp-Source: ABdhPJwsjA/F6RHWX96VY6maj/IIDJ50rvRshw+Hr4yR+j1mTxQLGy8N+h/cCmJm78A4s33ZYOd8+8tTyP3YonbL
+        bh=p2PHZd2SW9nz4o7+ZB1C3vkb9xhx8DH7M49Qc2p69KA=;
+        b=kuVCX+2V1Frq90wPTuhfcdkBMfLZB2Q9bINZ65CjN0XJHgoQWi7msVJ/y0KWm2zPf1
+         DHhgH/pBAqD694L88aQjE8fDEwab67b4IEeYIgfGHERGgl+ZiwVf/q8xIpCRRrf+dI13
+         0gT7xagV3q5S7QyMg4D0cR3IOnjRt/zpwqabsQHuXWcLpSTUs10lN/rYjpySNK4y0yRd
+         4f1o+qTUvDdCDkMcnb6BsU7vzNX4NKm1BnKDsZLHC9/MM83OKWtzwfQqXtgMifqSETFG
+         PfCnNrixx6omfexuqEHQVtNjibfmyHRutM5udLQ26ncO+oRkmG5hkKON8WM6ZupZ3Kkg
+         p2Vw==
+X-Gm-Message-State: AOAM533g+lgEJw8MhqqiYYlvkcv6omERD+Hv6aeGPi5mQCF1jHR6/tij
+        bln14kDdZBv5LRN5Cwp2gg1nPV9WgtOetwnm
+X-Google-Smtp-Source: ABdhPJwIwsTCSScqaKOmzq93PUblNEb3imIDP3qjpFcJgdUvxRfwSWqIL28ID41mG6cwO7YBgmA2OyAuujnKhGSd
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:edb8:b79c:2e20:e531])
- (user=andreyknvl job=sendgmr) by 2002:a5d:53c3:: with SMTP id
- a3mr6032044wrw.43.1612546497774; Fri, 05 Feb 2021 09:34:57 -0800 (PST)
-Date:   Fri,  5 Feb 2021 18:34:37 +0100
+ (user=andreyknvl job=sendgmr) by 2002:adf:800b:: with SMTP id
+ 11mr4807938wrk.322.1612546500193; Fri, 05 Feb 2021 09:35:00 -0800 (PST)
+Date:   Fri,  5 Feb 2021 18:34:38 +0100
 In-Reply-To: <cover.1612546384.git.andreyknvl@google.com>
-Message-Id: <33dee5aac0e550ad7f8e26f590c9b02c6129b4a3.1612546384.git.andreyknvl@google.com>
+Message-Id: <f838e249be5ab5810bf54a36ef5072cfd80e2da7.1612546384.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1612546384.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 mm 03/13] kasan: optimize large kmalloc poisoning
+Subject: [PATCH v3 mm 04/13] kasan: clean up setting free info in kasan_slab_free
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,58 +74,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to kasan_kmalloc(), kasan_kmalloc_large() doesn't need
-to unpoison the object as it as already unpoisoned by alloc_pages()
-(or by ksize() for krealloc()).
+Put kasan_stack_collection_enabled() check and kasan_set_free_info()
+calls next to each other.
 
-This patch changes kasan_kmalloc_large() to only poison the redzone.
+The way this was previously implemented was a minor optimization that
+relied of the the fact that kasan_stack_collection_enabled() is always
+true for generic KASAN. The confusion that this brings outweights saving
+a few instructions.
 
 Reviewed-by: Marco Elver <elver@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/common.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ mm/kasan/common.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 00edbc3eb32e..f2a6bae13053 100644
+index f2a6bae13053..da24b144d46c 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -494,7 +494,6 @@ EXPORT_SYMBOL(__kasan_kmalloc);
- void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
- 						gfp_t flags)
- {
--	struct page *page;
- 	unsigned long redzone_start;
- 	unsigned long redzone_end;
+@@ -350,13 +350,11 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
  
-@@ -504,12 +503,23 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
- 	if (unlikely(ptr == NULL))
- 		return NULL;
+ 	kasan_poison(object, cache->object_size, KASAN_KMALLOC_FREE);
  
--	page = virt_to_page(ptr);
-+	/*
-+	 * The object has already been unpoisoned by kasan_alloc_pages() for
-+	 * alloc_pages() or by ksize() for krealloc().
-+	 */
-+
-+	/*
-+	 * The redzone has byte-level precision for the generic mode.
-+	 * Partially poison the last object granule to cover the unaligned
-+	 * part of the redzone.
-+	 */
-+	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
-+		kasan_poison_last_granule(ptr, size);
-+
-+	/* Poison the aligned part of the redzone. */
- 	redzone_start = round_up((unsigned long)(ptr + size),
- 				KASAN_GRANULE_SIZE);
--	redzone_end = (unsigned long)ptr + page_size(page);
+-	if (!kasan_stack_collection_enabled())
+-		return false;
 -
--	kasan_unpoison(ptr, size);
-+	redzone_end = (unsigned long)ptr + page_size(virt_to_page(ptr));
- 	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
- 		     KASAN_PAGE_REDZONE);
+ 	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
+ 		return false;
  
+-	kasan_set_free_info(cache, object, tag);
++	if (kasan_stack_collection_enabled())
++		kasan_set_free_info(cache, object, tag);
+ 
+ 	return kasan_quarantine_put(cache, object);
+ }
 -- 
 2.30.0.365.g02bc693789-goog
 
