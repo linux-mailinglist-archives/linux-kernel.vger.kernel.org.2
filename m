@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB64310762
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A27310767
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBEJLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:11:14 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58036 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhBEJHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:07:52 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 223F61C0B79; Fri,  5 Feb 2021 10:07:00 +0100 (CET)
-Date:   Fri, 5 Feb 2021 10:06:59 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Jari Ruusu <jariruusu@protonmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        masahiroy@kernel.org
-Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
-Message-ID: <20210205090659.GA22517@amd>
-References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
- <YBuSJqIG+AeqDuMl@kroah.com>
- <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
- <YBu1d0+nfbWGfMtj@kroah.com>
+        id S229979AbhBEJLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:11:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229742AbhBEJJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:09:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98A5264FC5;
+        Fri,  5 Feb 2021 09:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612516139;
+        bh=RS2Nxh+BIHk70SPCLHvH3UHMEVYoRMyAH5V4+gpwaFo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wi3JO5qF/iD6hWWPJclYRvpw0zeikX7qaL+FUPqwt1VQQ6Lj9Mxos9UHNh5zF7W9y
+         NFJQIQiUWNYSz+rP0zrQRhYKvw9bn6EjXfN1CkfHL5ssfnTDhaYgLf3Rm9eYs3rLBm
+         kK6xd5KKpKTEK+mafWe35arr3qi6e8L3GlS3F0sY=
+Date:   Fri, 5 Feb 2021 10:08:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 1/6] software node: Provide replacement for
+ device_add_properties()
+Message-ID: <YB0LI3S63Od8er2d@kroah.com>
+References: <20210204141711.53775-1-heikki.krogerus@linux.intel.com>
+ <20210204141711.53775-2-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0j+fTG4rw6Z9XU9h=UFSObT5s2a=EY21g5YYyk9BDNtsQ@mail.gmail.com>
+ <YBwdEKPIDbbYWAbR@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBu1d0+nfbWGfMtj@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <YBwdEKPIDbbYWAbR@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 04, 2021 at 05:13:04PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 04, 2021 at 05:06:53PM +0100, Rafael J. Wysocki wrote:
+> > On Thu, Feb 4, 2021 at 3:17 PM Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com> wrote:
+> > >
+> > > At the moment the function device_del() is calling
+> > > device_remove_properties() unconditionally. That will result into the
+> > > reference count of the software node attached to the device being
+> > > decremented, and in most cases it will hit 0 at that point. So in
+> > > practice device_del() will unregister the software node attached to
+> > > the device, even if that was not the intention of the caller. Right
+> > > now software nodes can not be reused or shared because of that.
+> > >
+> > > So device_del() can not unregister the software nodes unconditionally
+> > > like that. Unfortunately some of the users of device_add_properties()
+> > > are now relying on this behaviour. Because of that, and also in
+> > > general, we do need a function that can offer similar behaviour where
+> > > the lifetime of the software node is bound to the lifetime of the
+> > > device. But it just has to be a separate function so the behaviour is
+> > > optional. We can not remove the device_remove_properties() call from
+> > > device_del() before we have that new function, and before we have
+> > > replaced device_add_properties() calls with it in all the places that
+> > > require that behaviour.
+> > >
+> > > This adds function device_create_managed_software_node() that can be
+> > > used for exactly that purpose. Software nodes created with it are
+> > > declared "managed", and separate handling for those nodes is added to
+> > > the software node code. The reference count of the "managed" nodes is
+> > > decremented when the device they are attached to is removed. This will
+> > > not affect the other nodes that are not declared "managed".
+> > >
+> > > The function device_create_managed_software_node() has also one
+> > > additional feature that device_add_properties() does not have. It
+> > > allows the software nodes created with it to be part of a node
+> > > hierarchy by taking also an optional parent node as parameter.
+> > >
+> > > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > 
+> > The rationale is clear now, so
+> > 
+> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > 
+> > and I'm assuming that this will be routed via the USB tree.
+> 
+> Yes, I will do so, thanks.
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Now queued up, thanks!
 
-On Thu 2021-02-04 09:51:03, Greg Kroah-Hartman wrote:
-> On Thu, Feb 04, 2021 at 08:26:04AM +0100, Jiri Slaby wrote:
-> > On 04. 02. 21, 7:20, Greg Kroah-Hartman wrote:
-> > > On Thu, Feb 04, 2021 at 05:59:42AM +0000, Jari Ruusu wrote:
-> > > > Greg,
-> > > > I hope that your linux kernel release scripts are
-> > > > implemented in a way that understands that PATCHLEVEL=3D and
-> > > > SUBLEVEL=3D numbers in top-level linux Makefile are encoded
-> > > > as 8-bit numbers for LINUX_VERSION_CODE and
-> > > > KERNEL_VERSION() macros, and must stay in range 0...255.
-> > > > These 8-bit limits are hardcoded in both kernel source and
-> > > > userspace ABI.
-> > > >=20
-> > > > After 4.9.255 and 4.4.255, your scripts should be
-> > > > incrementing a number in EXTRAVERSION=3D in top-level
-> > > > linux Makefile.
-> > >=20
-> > > Should already be fixed in linux-next, right?
-> >=20
-> > I assume you mean:
-> > commit 537896fabed11f8d9788886d1aacdb977213c7b3
-> > Author: Sasha Levin <sashal@kernel.org>
-> > Date:   Mon Jan 18 14:54:53 2021 -0500
-> >=20
-> >     kbuild: give the SUBLEVEL more room in KERNEL_VERSION
-> >=20
-> > That would IMO break userspace as definition of kernel version has chan=
-ged.
-> > And that one is UAPI/ABI (see include/generated/uapi/linux/version.h) as
-> > Jari writes. For example will glibc still work:
-> > http://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/unix/sysv=
-/linux/configure.ac;h=3D13abda0a51484c5951ffc6d718aa36b72f3a9429;hb=3DHEAD#=
-l14
-> >=20
-> > ? Or gcc 10 (11 will have this differently):
-> > https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/bpf/bpf.c;=
-hb=3Dee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l165
-> >=20
-> > and
-> >=20
-> > https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/bpf/bpf-he=
-lpers.h;hb=3Dee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l53
->=20
-> Ugh, I thought this was an internal representation, not an external one
-> :(
->=20
-> > It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + =
-Z)
-> > assumptions all around the world. So this doesn't look like a good idea.
->=20
-> Ok, so what happens if we "wrap"?  What will break with that?  At first
-> glance, I can't see anything as we keep the padding the same, and our
-> build scripts seem to pick the number up from the Makefile and treat it
-> like a string.
->=20
-> It's only the crazy out-of-tree kernel stuff that wants to do minor
-> version checks that might go boom.  And frankly, I'm not all that
-> concerned if they have problems :)
->=20
-> So, let's leave it alone and just see what happens!
-
-Yeah, stable is a great place to do the experiments. Not that this is
-the first time :-(.
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAdCrMACgkQMOfwapXb+vLjngCaAjjD5mUF+Nb1LcxkIk7LgvKS
-A7EAoI2Ulw6+CpcR2hYtxNEtEBLeN6Te
-=NBbj
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
+greg k-h
