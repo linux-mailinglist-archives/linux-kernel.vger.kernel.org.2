@@ -2,71 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8F5311A79
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EA2311A5D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhBFDtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:49:36 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:34249 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhBFCux (ORCPT
+        id S231744AbhBFDm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhBFCpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:50:53 -0500
-Received: from relay10.mail.gandi.net (unknown [217.70.178.230])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 2636C3BB49C;
-        Fri,  5 Feb 2021 23:53:49 +0000 (UTC)
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id B0787240003;
-        Fri,  5 Feb 2021 23:52:41 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>, a.zummo@towertech.it
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH 0/6] spin lock usage optimization for RTC drivers
-Date:   Sat,  6 Feb 2021 00:52:41 +0100
-Message-Id: <161256915201.6581.7995599057134934177.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <1612355981-6764-1-git-send-email-tanxiaofei@huawei.com>
-References: <1612355981-6764-1-git-send-email-tanxiaofei@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 5 Feb 2021 21:45:49 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778ACC08ED9A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:53:11 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id e2so6223700pgg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Z0L4KRAp/unRkOGmt9I23plvEx27DzuKEm7py6O/w2c=;
+        b=Q/ylOrtnRFmhjo9UCHitPuV4px2gXSP3MyCkyK+8+ls84iMRRS8OSAZT7cH2+oiC85
+         hK620e8iS574lWbuv5JxnZ7APAJf4nZAIWEd43/p/6pAsI/fo1+SAr+zUO2u0laRWBYx
+         y2c09NYhhLhhAUKC5VGZI8rQ36+17Mnd62CbFTQ5/8u2Nh47Y9pw49hdyWrKmhfeSWw5
+         MbTQc1z+guqOHAqgsPk5cC5eSMkaN/+FhOkN/Cjbnv4tNCqtAeNF1Xe7P00pWgCkToVQ
+         zz1WuEZcm1oz39irvTQl2BBHGYwaYsv/lVQnwBKhRBMOEH14m8b9lM/DHYrm2mQ7Jjh/
+         3cLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Z0L4KRAp/unRkOGmt9I23plvEx27DzuKEm7py6O/w2c=;
+        b=WerMKfj/1eqSalEljpl/SEITgIM59/9Q1uPPNzlVCjWFCUCAUrKqkVdTmewrE/dT4R
+         +jVxFUyQygvymZWRArex96Uw2490r2Yp28/QUhL/GEeRao0K8EUlSO1AWz3aJZGV3pNk
+         SFbGdY3U9Ge6LTVgDmvR8b3Dlyr+y5NZHFWn3Mx+c0B/cSvK6x6/4EjCW1SwV0ilywc6
+         2dEJ5PMcuZVGXBoICdGcjI74iMLjIMHjsY9UCAbu4a0lJxBA8zQqikk1LSLt3eBkli3p
+         NCIWYHe4zvf8SM7XbiPNuSisWYyWFQ7FBN0sraFqrUUcQroXxTMC6Skwq/KRlbHD2M6g
+         ACew==
+X-Gm-Message-State: AOAM530dt9zoDNMq1D/u3jKfPx+sW/DUHEoUiCuTagEw9fqTOHIqd/NF
+        5XsDnGzQuIhDrtzJQ40qrgAGp7RtF3Agyw==
+X-Google-Smtp-Source: ABdhPJxBzkKo3NS6X7dAHuQXnMT2IDWsDkdxHihebGkVGPdwlTmzXlj0sYtK7nI74cpy2BCyLE0UvHjzAmgA5w==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
+ (user=dlatypov job=sendgmr) by 2002:a17:902:ab83:b029:e1:6021:dd19 with SMTP
+ id f3-20020a170902ab83b02900e16021dd19mr6174824plr.40.1612569190908; Fri, 05
+ Feb 2021 15:53:10 -0800 (PST)
+Date:   Fri,  5 Feb 2021 15:53:01 -0800
+In-Reply-To: <20210205235302.2022784-1-dlatypov@google.com>
+Message-Id: <20210205235302.2022784-2-dlatypov@google.com>
+Mime-Version: 1.0
+References: <20210205235302.2022784-1-dlatypov@google.com>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v2 1/2] kunit: support failure from dynamic analysis tools
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     alan.maguire@oracle.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        Uriel Guajardo <urielguajardo@google.com>,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Feb 2021 20:39:35 +0800, Xiaofei Tan wrote:
-> Replace spin_lock_irqsave with spin_lock in hard IRQ of RTC drivers.
-> There is no function changes, but may speed up if interrupt happen
-> too often.
-> 
-> Xiaofei Tan (6):
->   rtc: cmos: Replace spin_lock_irqsave with spin_lock in hard IRQ
->   rtc: pm8xxx: Replace spin_lock_irqsave with spin_lock in hard IRQ
->   rtc: r7301: Replace spin_lock_irqsave with spin_lock in hard IRQ
->   rtc: tegra: Replace spin_lock_irqsave with spin_lock in hard IRQ
->   rtc: mxc: Replace spin_lock_irqsave with spin_lock in hard IRQ
->   rtc: mxc_v2: Replace spin_lock_irqsave with spin_lock in hard IRQ
-> 
-> [...]
+From: Uriel Guajardo <urielguajardo@google.com>
 
-Applied, thanks!
+Add a kunit_fail_current_test() function to fail the currently running
+test, if any, with an error message.
 
-[1/6] rtc: cmos: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: 6950d046eb6eabbc271fda416460c05f7a85698a
-[2/6] rtc: pm8xxx: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: 51317975565329ee50e52d0fffce50566b43cc2d
-[3/6] rtc: r7301: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: be3df3f85897e36163bfb764549acc69ec9b7afa
-[4/6] rtc: tegra: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: 669022c29af672205aaf53b76fd594dad2661ffe
-[5/6] rtc: mxc: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: 3f2d30184773e408c4e6f9e15c350828e482480c
-[6/6] rtc: mxc_v2: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      commit: 0c1095d334dafda22463454b0519c926447b555e
+This is largely intended for dynamic analysis tools like UBSAN and for
+fakes.
+E.g. say I had a fake ops struct for testing and I wanted my `free`
+function to complain if it was called with an invalid argument, or
+caught a double-free. Most return void and have no normal means of
+signalling failure (e.g. super_operations, iommu_ops, etc.).
 
-Best regards,
+Key points:
+* Always update current->kunit_test so anyone can use it.
+  * commit 83c4e7a0363b ("KUnit: KASAN Integration") only updated it for
+  CONFIG_KASAN=y
+
+* Create a new header <kunit/test-bug.h> so non-test code doesn't have
+to include all of <kunit/test.h> (e.g. lib/ubsan.c)
+
+* Forward the file and line number to make it easier to track down
+failures
+
+* Declare it as a function for nice __printf() warnings about mismatched
+format strings even when KUnit is not enabled.
+
+Example output from kunit_fail_current_test("message"):
+[15:19:34] [FAILED] example_simple_test
+[15:19:34]     # example_simple_test: initializing
+[15:19:34]     # example_simple_test: lib/kunit/kunit-example-test.c:24: message
+[15:19:34]     not ok 1 - example_simple_test
+
+Co-developed-by: Daniel Latypov <dlatypov@google.com>
+Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ include/kunit/test-bug.h | 30 ++++++++++++++++++++++++++++++
+ lib/kunit/test.c         | 36 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 62 insertions(+), 4 deletions(-)
+ create mode 100644 include/kunit/test-bug.h
+
+diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
+new file mode 100644
+index 000000000000..4963ed52c2df
+--- /dev/null
++++ b/include/kunit/test-bug.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * KUnit API allowing dynamic analysis tools to interact with KUnit tests
++ *
++ * Copyright (C) 2020, Google LLC.
++ * Author: Uriel Guajardo <urielguajardo@google.com>
++ */
++
++#ifndef _KUNIT_TEST_BUG_H
++#define _KUNIT_TEST_BUG_H
++
++#define kunit_fail_current_test(fmt, ...) \
++	_kunit_fail_current_test(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
++
++#if IS_ENABLED(CONFIG_KUNIT)
++
++extern __printf(3, 4) void _kunit_fail_current_test(const char *file, int line,
++						    const char *fmt, ...);
++
++#else
++
++static __printf(3, 4) void _kunit_fail_current_test(const char *file, int line,
++						    const char *fmt, ...)
++{
++}
++
++#endif
++
++
++#endif /* _KUNIT_TEST_BUG_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index ec9494e914ef..7b16aae0ccae 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <kunit/test.h>
++#include <kunit/test-bug.h>
+ #include <linux/kernel.h>
+ #include <linux/kref.h>
+ #include <linux/sched/debug.h>
+@@ -16,6 +17,37 @@
+ #include "string-stream.h"
+ #include "try-catch-impl.h"
+ 
++/*
++ * Fail the current test and print an error message to the log.
++ */
++void _kunit_fail_current_test(const char *file, int line, const char *fmt, ...)
++{
++	va_list args;
++	int len;
++	char *buffer;
++
++	if (!current->kunit_test)
++		return;
++
++	kunit_set_failure(current->kunit_test);
++
++	/* kunit_err() only accepts literals, so evaluate the args first. */
++	va_start(args, fmt);
++	len = vsnprintf(NULL, 0, fmt, args) + 1;
++	va_end(args);
++
++	buffer = kunit_kmalloc(current->kunit_test, len, GFP_KERNEL);
++	if (!buffer)
++		return;
++
++	va_start(args, fmt);
++	vsnprintf(buffer, len, fmt, args);
++	va_end(args);
++
++	kunit_err(current->kunit_test, "%s:%d: %s", file, line, buffer);
++	kunit_kfree(current->kunit_test, buffer);
++}
++
+ /*
+  * Append formatted message to log, size of which is limited to
+  * KUNIT_LOG_SIZE bytes (including null terminating byte).
+@@ -273,9 +305,7 @@ static void kunit_try_run_case(void *data)
+ 	struct kunit_suite *suite = ctx->suite;
+ 	struct kunit_case *test_case = ctx->test_case;
+ 
+-#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+ 	current->kunit_test = test;
+-#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT) */
+ 
+ 	/*
+ 	 * kunit_run_case_internal may encounter a fatal error; if it does,
+@@ -624,9 +654,7 @@ void kunit_cleanup(struct kunit *test)
+ 		spin_unlock(&test->lock);
+ 		kunit_remove_resource(test, res);
+ 	}
+-#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+ 	current->kunit_test = NULL;
+-#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT)*/
+ }
+ EXPORT_SYMBOL_GPL(kunit_cleanup);
+ 
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+2.30.0.478.g8a0d178c01-goog
+
