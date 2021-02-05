@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8168310F7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57E0310F96
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhBEQYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:24:54 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:39513 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbhBEQWN (ORCPT
+        id S233619AbhBEQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233658AbhBEQZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:22:13 -0500
-Received: by mail-ot1-f45.google.com with SMTP id d7so5463540otq.6;
-        Fri, 05 Feb 2021 10:04:07 -0800 (PST)
+        Fri, 5 Feb 2021 11:25:33 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D808C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:07:15 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id y14so8810640ljn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9T498taodTGcCME+4kEpXQ8GfyFgHTEmTtWV4SGhP7E=;
+        b=hkV6nHOMDRQRlIePJMWcKyuKlTTTB/EoykUOQZkZ4Z/sOmU4163tSd/QeBxyNz82pr
+         cMfp0zaBK+mUb1sCwT6V2GQqvYGI0uqKS1DRVL29EuBN62YHbNG7/nfeieuQ4jjBI/rG
+         0Oik3d7ONM/cDYdkscWp6gLmaPTE0duzFPa3k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mTp6A1qwozX0Q2N8eolLgHis2iIcQhU+LJihP8ASbJA=;
-        b=gI4LDvJH5OWgUayKUTjuxig0pTEuwdYVT9TRgkO4o8CwuK8jaPIrHfiWP9EY4ybVfX
-         fdbe8hTpy3UNWW3+vkYeStz/2svgd3S5UUSKax2rYeJ9G7+MdOlFaY4pwWgsKbDTwu57
-         4HLJwaTDjIJKt/0sB8J63nN8C5U9X20znN49jk0EUsBxvrfpOhoohJn1eZ79tB8EqmGp
-         ht1OhZnvdn+zlSLJs5aHnpQVRm6a3Uf3I8Eo6tYxV00UpKkOlS2DyWFSia6NVoKee+O+
-         Z5E4qZ9PCC2HWlCRGzZFZEjqq6IeHbP+9xHEWjEZ1gGdEQ7YoNMNSLbEqIKFD3RE+p/p
-         clog==
-X-Gm-Message-State: AOAM530w9NK+4EJPaaKXOdIhVSRd2RlvDikwFmXaZmR+nL3Eu7Jy05yM
-        eAytz3lpUYLxWzbdGwTiw3WlrTGNUA==
-X-Google-Smtp-Source: ABdhPJytB3er9J2lOXgWY854+pW1GYcoVQ9S+fZk9WlwQ0ZWHz4lx7Re0rLsDiwt6vUbaYyJJX90FQ==
-X-Received: by 2002:a9d:6383:: with SMTP id w3mr4139805otk.225.1612548221824;
-        Fri, 05 Feb 2021 10:03:41 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q7sm1808059oif.1.2021.02.05.10.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 10:03:41 -0800 (PST)
-Received: (nullmailer pid 3387050 invoked by uid 1000);
-        Fri, 05 Feb 2021 18:03:40 -0000
-Date:   Fri, 5 Feb 2021 12:03:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] leds: lp50xx: remove unused regulator
-Message-ID: <20210205180340.GA3378994@robh.at.kernel.org>
-References: <20210203083305.2434-1-schuchmann@schleissheimer.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9T498taodTGcCME+4kEpXQ8GfyFgHTEmTtWV4SGhP7E=;
+        b=ZQjOVKJCr+hXnyqZ3j5W8emfO1p4gBCrZLEEJ+IY1lLn9TLE7msqS7e5T4fpO4SCLh
+         9yr92LpHPWGSathdvywMIK1QF4YUM1mpkl2en7LKpF5ZRzGOROfWOSTfNhc7xYbV7Suy
+         4DzQhTqnff1Db5Irmgp2Y2BPfvKRjBXWIw38kNxmduOShByMfmN+bnMfzQuYtZNxna23
+         NAQWJgdoTiYQ0R+Djr8wDp/Nkzc1vAaTIMbD/mrHG8YZt9Woq5T3pQT7K7gy0mqk/AEe
+         FOjXb7128A6uDhvtDtxv6QDGAMXnpfsEzxGK+PTPUVLSbTiPCvDOA0Thu4jdo7Xhs4DC
+         5KBA==
+X-Gm-Message-State: AOAM532ToLFFGKGznFlbjGB/L1yrEmobW6X8ug/8XG7Q2SW5C/L4zMgT
+        DhiUAcmXDe9mclwoxs0sfyvIoTLtYGxOLg==
+X-Google-Smtp-Source: ABdhPJwJ8nsXCQthr7yHnAXx3dXbwtw7PWqEYW0byG5t8iViCfLtaPRpA8snqhBqQyxF5g+BquPCIw==
+X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr3375732ljn.279.1612548433523;
+        Fri, 05 Feb 2021 10:07:13 -0800 (PST)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id 64sm1087737ljj.80.2021.02.05.10.07.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 10:07:12 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id a17so8839485ljq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:07:11 -0800 (PST)
+X-Received: by 2002:a2e:850d:: with SMTP id j13mr3383636lji.507.1612548431551;
+ Fri, 05 Feb 2021 10:07:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203083305.2434-1-schuchmann@schleissheimer.de>
+References: <20210205080456.30446-1-pbonzini@redhat.com> <YB2HykY8laADI+Qm@google.com>
+In-Reply-To: <YB2HykY8laADI+Qm@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 5 Feb 2021 10:06:55 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiA_QoHP6rxK+tSWM3c_N8dGzAPohhdESyL=M7uLuKR0g@mail.gmail.com>
+Message-ID: <CAHk-=wiA_QoHP6rxK+tSWM3c_N8dGzAPohhdESyL=M7uLuKR0g@mail.gmail.com>
+Subject: Re: [GIT PULL] KVM fixes for 5.11-rc7
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Jonny Barker <jonny@jonnybarker.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 08:33:05AM +0000, Sven Schuchmann wrote:
-> The regulator for vled-supply is unused in the driver.
-> It is just assigned from DT and disabled in lp50xx_remove.
-> So the code can be removed from the driver.
+On Fri, Feb 5, 2021 at 10:00 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Ah, shoot.  Too late now, but this should have been attributed to Jonny, I was
+> just shepherding the official patch along and forgot to make Jonny the author.
 
-The binding is not a driver. Does the h/w have a 'vled' supply? If so, 
-then it should remain in the binding.
+I put a note in the merge message, fwiw..
 
-> 
-> Part 1 updates the documentation
-> Part 2 removes the code
-> 
-> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
-> 
-> ---
->  Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> index c192b5feadc7..c20a81d13bfd 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> @@ -43,9 +43,6 @@ properties:
->      maxItems: 1
->      description: GPIO pin to enable/disable the device.
->  
-> -  vled-supply:
-> -    description: LED supply.
-> -
->    '#address-cells':
->      const: 1
->  
-> -- 
-> 2.17.1
-> 
+         Linus
