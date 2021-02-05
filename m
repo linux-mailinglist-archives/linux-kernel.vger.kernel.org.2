@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728AE31199E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69C83119A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhBFDOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhBFCiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:38:25 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD930C08ED53
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:30:12 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id r38so5591563pgk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:30:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uuoZTsAa+emkzSEvsXs+jp0cxHIStdgFTDYBF0y1Zlk=;
-        b=NTIMc7RAPHbP2GpsLMJKNE5NEpWhtHXYXweLonU3exUG9mrQEI/lgsYuES3XleG1bw
-         H6l9w+gwvYXrJF9ZdVktEQ92iXFmxPl7DlrKnwyWveIQepKjR9bN+Vy3ttJ3hySBk81O
-         rAm4TA41vyNkj0TbmBwixq5dcD9Yy3rcB0acNEHGaEUKLGknNLr8H2i8iXBSNO2b/BA0
-         7BJWJDcsvBH1q/hqQmEkDDdX5LcARAtnYDyqEY+/BzQyEnwzulTCY6QnfdRYdGyxI1gb
-         ah9yPJDUuPoymKa9QFv2SZSgFiDk44WDGNvONTcu7vOC8b2ASSvpNWsqp88S0rTNpTs5
-         JEKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uuoZTsAa+emkzSEvsXs+jp0cxHIStdgFTDYBF0y1Zlk=;
-        b=kY1y0fszgxESwNV0/qCbRplp7BxYFwi9ItSkZz1xAWZOHoOXkj9Sy8n6bKiWeD0DAJ
-         uPifB+8jhjDSAL2+PcCxdTRB1fDPHCSibTwy51kxiGYr42FOYbf63xqgoSX6h22OzDc/
-         uBvso3G+pol7BWlAv3M6Ka3CY26nlFzhmX2xWWsj8XEmWDUKplZPTaEpv4dPWnQ5YT9b
-         YZx2YtQnxLQ7z2QExsWsBR4d6CtaHCK+GDbazlTRZjtxu+yOhqLF0vi6VwF+CesB7aSb
-         PLSc41BWALyaIMMFPP0Ky1dvcILI0nN2mFNArLSWF8pkumQJ5ZR8ZUuzgPlJdUEFFUsD
-         RxiQ==
-X-Gm-Message-State: AOAM5307SOpxbWNjxV3a8qF7pU/shFokTg8iJ0lWGU8TGYH0Ml7nXL3h
-        S2ishg8HePn1AJGpALNx8IW/nDqFj7n9QlsLTmsrBQ==
-X-Google-Smtp-Source: ABdhPJz7fjyjm3zP1E+EhYMfal+dyUbCIoiAkSjxIRFTTVzV+vtyVuFOVRJZrajRJRodu6bhYCLn4XUNuyE+29+NJQs=
-X-Received: by 2002:a65:4184:: with SMTP id a4mr6772997pgq.384.1612567812337;
- Fri, 05 Feb 2021 15:30:12 -0800 (PST)
+        id S231718AbhBFDPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:15:14 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27691 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhBFCjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:39:20 -0500
+IronPort-SDR: QhE8Gn3ki9kozA3prEm/ySJ+zBPD/lfPV5R9xVHnrcPAcgaXY1+HGaUNjY2OS31MLQu29ReTY0
+ ALV4P6KtfUbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181650758"
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="181650758"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:16 -0800
+IronPort-SDR: q9yB+PAiq9DaSKebnfh059O2Ix9mnBZIm4mxib6GNxxnaYoWHHh3pBuqlF+5Egoh8gK2hNOM07
+ vDTHwVKHrIsw==
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="416183981"
+Received: from mdhake-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.53.25])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:16 -0800
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v1 23/26] x86/tdx: Make pages shared in ioremap()
+Date:   Fri,  5 Feb 2021 15:38:40 -0800
+Message-Id: <33ced467eae950bc3df9e1f01284036fd560d33c.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20210119235226.93280-1-dlatypov@google.com>
-In-Reply-To: <20210119235226.93280-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 5 Feb 2021 15:30:01 -0800
-Message-ID: <CAFd5g44PkcWQG9SQdkUFjV_pttJr==6+R14w5NBOifK_hwDStw@mail.gmail.com>
-Subject: Re: [PATCH] KUnit: Docs: make start.rst example Kconfig follow style.rst
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 3:52 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> The primary change is that we want to encourage people to respect
-> KUNIT_ALL_TESTS to make it easy to run all the relevant tests for a
-> given config.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+All ioremap()ed paged that are not backed by normal memory (NONE or
+RESERVED) have to be mapped as shared.
+
+Reuse the infrastructure we have for AMD SEV.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+ arch/x86/include/asm/pgtable.h | 3 +++
+ arch/x86/mm/ioremap.c          | 8 +++++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index a02c67291cfc..a82bab48379e 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -21,6 +21,9 @@
+ #define pgprot_encrypted(prot)	__pgprot(__sme_set(pgprot_val(prot)))
+ #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
+ 
++/* Make the page accesable by VMM */
++#define pgprot_tdx_shared(prot) __pgprot(pgprot_val(prot) | tdx_shared_mask())
++
+ #ifndef __ASSEMBLY__
+ #include <asm/x86_init.h>
+ #include <asm/fpu/xstate.h>
+diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+index 9e5ccc56f8e0..a0ba760866d4 100644
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -87,12 +87,12 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+ }
+ 
+ /*
+- * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
+- * there the whole memory is already encrypted.
++ * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
++ * private in TDX case) because there the whole memory is already encrypted.
+  */
+ static unsigned int __ioremap_check_encrypted(struct resource *res)
+ {
+-	if (!sev_active())
++	if (!sev_active() && !is_tdx_guest())
+ 		return 0;
+ 
+ 	switch (res->desc) {
+@@ -244,6 +244,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+ 	prot = PAGE_KERNEL_IO;
+ 	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+ 		prot = pgprot_encrypted(prot);
++	else if (is_tdx_guest())
++		prot = pgprot_tdx_shared(prot);
+ 
+ 	switch (pcm) {
+ 	case _PAGE_CACHE_MODE_UC:
+-- 
+2.25.1
+
