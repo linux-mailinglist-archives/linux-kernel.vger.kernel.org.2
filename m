@@ -2,229 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534CD3102B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E023102BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhBECYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:24:11 -0500
-Received: from mail-eopbgr680115.outbound.protection.outlook.com ([40.107.68.115]:56224
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229816AbhBECYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:24:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PMWXzPH9FtyDUIYiuk9ronPvzuzq4exeY9k1ONYeYq4yFJvFlopfPx7sKEcc4PHE5QdVUXsBRDaiNtSNsTC9A3gN5PEVsXSGrQY/7K/sasVSIEcVXISDCFLFHGEgbxVdSzq3RqxC4l/+7s++K2YwywNpbhvVf3OcfzLPtu8OZwDkHAMXHqyaVRP3bbWgwOwOF8VB26nMLwne85k3n8pTpbx3spNdtOIx7XS4NAV/5yDGSWxbAik7yAoPuykfAFUj4vE2GvCt9XbRkxPK1spTVu5JLvw6DPxvSRrs/B2VJvUZk8D0neygKgOkW+NEwllW/B9I29uE1XfA7TKFwe/EUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2IyHSetl68LtSlm0rJ0PBLkDzogbwcmhrE/r3FLc9EY=;
- b=mkS8sqfLZ5sNaCl3NCyNM5O+Nn8nz5doE2XmIFHadvdT3vtGVxUsXqF5cbKBmIV4s+AG157DD0GTOHDQf028fUlWiOCI9QrOOF8g4fNP3zsh10YdF8q3LJy3WUMSaAEqj3oKWREREdfTPaiwu1j8sM+Tv5kB9jktCVDS4JgBkZ3roaOMFcpEwe0MrHAMdDG22eGgDS2w/eNeCuqbYdpk617red8oF9ZLthpsUiTwkTg9wfv/4XJZfqWYvZsWXDwdRp9c41Qu/bMo3d1/iHtTodojb32R+7XkQ8fxsyg6lKIotp0cZ7YIWBWsPNvj74560g1pM99Fu8Vl6Ogm3CfrMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        id S229996AbhBECYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhBECYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:24:18 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EB8C06178B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 18:23:37 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id v1so3798302qvb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 18:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2IyHSetl68LtSlm0rJ0PBLkDzogbwcmhrE/r3FLc9EY=;
- b=DX35u9MOyO/KmqaUm/NtbByOdchZgViGuKFaFZz146gaXdH4Asqy1zufl9oWzKeoJjC95sNzIwvjEYhKEXWJJWgeGW054WUM3XH9PDb/uKBcfHmINol/CCJ0q/31YcMKs+BptHgF/nmzdABcS0vRCSWJU69/QHICgFWNv6TaKBg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MWHPR01MB2493.prod.exchangelabs.com (2603:10b6:300:3e::11) by
- MW4PR01MB6324.prod.exchangelabs.com (2603:10b6:303:74::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.17; Fri, 5 Feb 2021 02:23:17 +0000
-Received: from MWHPR01MB2493.prod.exchangelabs.com
- ([fe80::65bd:45f4:7fc4:b742]) by MWHPR01MB2493.prod.exchangelabs.com
- ([fe80::65bd:45f4:7fc4:b742%5]) with mapi id 15.20.3825.021; Fri, 5 Feb 2021
- 02:23:16 +0000
-From:   Jason Tian <jason@os.amperecomputing.com>
-To:     linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, james.morse@arm.com,
-        baicar@os.amperecomputing.com
-Cc:     zwang@amperecomputing.com, jason@os.amperecomputing.com
-Subject: [PATCH v2] arm64/ras: Update code to trace out more data for ARM processor
-Date:   Fri,  5 Feb 2021 10:22:29 +0800
-Message-Id: <20210205022229.313030-1-jason@os.amperecomputing.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [180.167.209.74]
-X-ClientProxiedBy: HK2PR02CA0133.apcprd02.prod.outlook.com
- (2603:1096:202:16::17) To MWHPR01MB2493.prod.exchangelabs.com
- (2603:10b6:300:3e::11)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 127.com (180.167.209.74) by HK2PR02CA0133.apcprd02.prod.outlook.com (2603:1096:202:16::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Fri, 5 Feb 2021 02:23:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 040e118f-9efe-4186-96da-08d8c97cfecb
-X-MS-TrafficTypeDiagnostic: MW4PR01MB6324:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW4PR01MB6324AA23FE3BAAA8DB40B6BC80B29@MW4PR01MB6324.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:181;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fNHatDcBdASbV/hJQ1xzR4eQTObaFPpUVPX6zeDxz9YijDoh+Xc8tt3iE7zMjwrfmtavMXV2wOx/c1SLrAaPEtbqYAIyijgj6E2xHXFXLJODF5rmoywFc7UwNv7TsW330P+JruOHhDysHAdrn4K1Q4VMyBkK91PkNLWQVHSuaTg43cPQY435Ou1am4BHvrktWZSd8wEaaEWISZUD+tSoV8tmwwaHH6N4hd9xce8xdFzpRSpG4G9cPV4JLUEue5sPt99+GQge9PW/CrsB1rRC21GO+brQRlaLUKpi5HgczSizD1Vl/GWdNdkAVkqJEHFzryx0uExNXJ+D8h0S7uMt6mjrzpLdueDvzn39DNC1q2u0k5L7RqVh4SkbpqyWVgF67YG0gyzlC+DgbFqyp61+2C4aWUAAha7YgMwU2g6h2HEodIbX26FtnqBzF3c7H/uN3Ot3yQLPtSK3/9i3kGHhiAemRKmZTuqX63jXpUhtFKjBIuFHp/QZjM8cW7z/UWAGb1gjH8L+NxcTDtaKAUSW6c5qFB5FFohiVTYm/J5uuuWRd11KXCSJcY99DKsA8IPs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR01MB2493.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39850400004)(136003)(346002)(376002)(6666004)(16526019)(66556008)(186003)(6636002)(2616005)(66946007)(316002)(8676002)(956004)(86362001)(107886003)(2906002)(83380400001)(1076003)(478600001)(8886007)(66476007)(5660300002)(26005)(4326008)(52116002)(6486002)(6512007)(6506007)(8936002)(44966006);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?OqoTymifTN81P9LFt5OyiSI+TKbwMDxz0x3aq6JMDARwPFJDYIaU0DvTbGeq?=
- =?us-ascii?Q?SJTqi0hS8h55SPJ+EjJPRHvD27KKfGuKQsZSKGROUVjDOjyCgVcYWFHiaasf?=
- =?us-ascii?Q?Do/bivdo/T4ekg/1rZG5yl5WT1Cu7v7cWVlPZNg2/evHqCrBOh85a1P2uiiF?=
- =?us-ascii?Q?VGbyuRZ7TBfqGPozGLrDqsUwD2Ht/f9ojOleDp7MvXbXlUYW2RXbiT76xOOk?=
- =?us-ascii?Q?uVSbau0RUs+0qUKNVyUFlkND+QLubSnwjCYGanFP7VZ6VPpgNXNJ1IL3mK5e?=
- =?us-ascii?Q?HMVp3ttCTBj8YNx59Vx85aoAE2HD2V+T4vQ149KZranACU2MJj1veveAmrvT?=
- =?us-ascii?Q?oZdK4D/Z3s9BLWRduclgeu1xRlTynDZQHQRgQgTjryDp3yNLJiov057DiGPl?=
- =?us-ascii?Q?5kGpC6zw3y+oLetSwPdbVrm94+VrvcHFU4WGq4289Ys6js87uKuxJ+2lXOI9?=
- =?us-ascii?Q?WwZyeA0bUUhhtP7zrGcBImOPjcXwcZGgYKouezvJY6aCej/6ppeuxluR8im9?=
- =?us-ascii?Q?w5W51VEPGhYfSQMMpy78TUCgWk4CmFKER7sUHaHwcAj9HnrzIqm64NiCSpqr?=
- =?us-ascii?Q?MixoOmAumQDpKbKXTI2TUnMqcvdvv9E95/jlukhC0wJXIiKdIHaT3PvhV22a?=
- =?us-ascii?Q?daY3Equ0XIT44XNwCpH0pnwN2InmHNBEBpc26SCZgWYE0giimUC0mRlsIuOH?=
- =?us-ascii?Q?W0QPUOT77o7VvaILMkll6XHvDbGksDLvcz4lSNKkxSIOfwJSYB3q/bajrsS8?=
- =?us-ascii?Q?VNSB8FPIGXOqx6PCl9dW8sZIW86zx7iIoU9DEyKWOTiNHmr+wN1aeqSRdVnm?=
- =?us-ascii?Q?UkwqXwC8hHq72qGkSTDr8HqI+A2X68aYXzoc6wZJVqqHMA8nHUwePuRS+rMn?=
- =?us-ascii?Q?qnQIa/H0G/wh1HjWAPaNkAdojg1Be86P1S7ErwC/W8r3AAI/yjmwLEzh5tE0?=
- =?us-ascii?Q?UOsoH+Ghzcm110aK/VOsLTpZsXy5DrvPLAeFhiDNtp4xcw0Uwuo6j9rwfCba?=
- =?us-ascii?Q?3SD/QScPW+I9a5qw9IyofTQW9Mym5KA6OF4a2/zfqpdaNE4nf6Alvifldvae?=
- =?us-ascii?Q?jLpExiSp3wN6X6C1cExf79kt4i1x63vYsRKEni3hFAPJuOhqPg+VOURngIgN?=
- =?us-ascii?Q?lKMBMWfSXlbXoFUii7gFTEQ/YF3Lyjg9V7LZ2XbsWeN9uQDM/7RpE4hGqhk/?=
- =?us-ascii?Q?kAvIyS3oDl8LliHr4eM5vFdaJuw9zob8DGSiS3s4fE8eQJntFQcCza6GveEL?=
- =?us-ascii?Q?z3ZjpHymHaCd0Dnrq0i/G6jFQLsEb96PWYi416MFbS03VwXMXK85sXE+ndfW?=
- =?us-ascii?Q?J5AE5aWQP1I7+OZkOiQjTV6v?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 040e118f-9efe-4186-96da-08d8c97cfecb
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR01MB2493.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 02:23:16.3766
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pOl9VOzN/vr9+CqWzTRXNljnNrjs+XCAF5vzJbt2b0+wPvav8Rs9vZV8GDuRuzcLwnr84A5DODYi6C8XJdrha+uPGCZ+YIANzl6Z4SzDHk0v1fwLi4jClyCPX+CaXHG+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6324
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=w382r+buQ4Tx8FdN/ryZgjV6D4PrxeZkE7hCNPLCCTk=;
+        b=NPnaeEsHxHi/piRE30L1x8OZG9uQMUa5w0+x+UsNeCLDh53QMbkeU5Lgv6AyU09LNL
+         DvZlEMtUnBsxCDBL3yrqJy92tZ8kFjhjM6bzzE7sIcdxQ7PurT0Y5gjLSEt88GT81AYX
+         WXWOItSdEv/zp5NuWxav6asdBkP2pAw/kOD1AnK0PBVvEtmZ5Vwefg6MQI3tsn4OPMdQ
+         plwXe0QwouLzjvGwfsA8yTvslcXQXLi9bh5ko/UbSEtwbYpopaH0W1YUG2ZFACQHPL7l
+         aActAi6eUrI0CpI9j3fYhDfEmO/xw1jFkDq687flA8YUAwa0Ql6pjLhJOgq6C4n0nFdi
+         HETw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc:content-transfer-encoding;
+        bh=w382r+buQ4Tx8FdN/ryZgjV6D4PrxeZkE7hCNPLCCTk=;
+        b=qYU694fXNn2S8ndHvQKdxTv3qxVW5th7weOlwa8eOccIeBLIYoKmizGugb6xf9/KCX
+         6dgGqYwnonafR3IUxQU0MRxwDQ692wPU22HlycUoYC13c8k4Bbub/TgFn4kmXOtTS2WU
+         W3bpf7+O07l5yBWaW/Hpdy+irqXUg5HTKPoyCEpYXALrgfsrgsc55vfhzYr51Df65Yrz
+         ouhwex8sODqeaNNh/NR/eEfbJI5KwoguEPYrDzWYimOu+zZh4DhP9K8I7r/fF+JN1oCA
+         Cb8UOKgpnJrD3xu09O8SAU7bhWTQgSODhjQtYTP5n65Xz8ly6XqVOWCqGuwxC9LYOklU
+         QT1w==
+X-Gm-Message-State: AOAM533RiCAXQS1wey8p8wc6BTWxFE60O842LQ+6aMmqKGSQ9Tp/twNX
+        2rUWGnezWW7oYt2VneSKwbioyXTqE3mP0dPeSQ==
+X-Google-Smtp-Source: ABdhPJyxJEHoxHNUAnY+G03oBvTfa0zSu7hUtgPrQ8bfbdtGtODePabYUrPF86ehavcU7ZNb7W60emHq1FCLFEcRNw==
+Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a05:6214:446:: with SMTP id
+ cc6mr2447707qvb.31.1612491816769; Thu, 04 Feb 2021 18:23:36 -0800 (PST)
+Date:   Fri,  5 Feb 2021 02:23:19 +0000
+Message-Id: <20210205022328.481524-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v3 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
+        surenb@google.com, minchan@kernel.org, hridya@google.com,
+        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Anand K Mistry <amistry@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original arm_event trace code only traces out ARM processor
-error information data. According to UEFI_2_8_A_Feb14 specification
-chapter N2.4.4, the ARM processor error section includes several
-ARM processor error information, several ARM processor
-context information and several vendor specific error
-information structures.
+Android captures per-process system memory state when certain low memory
+events (e.g a foreground app kill) occur, to identify potential memory
+hoggers. In order to measure how much memory a process actually consumes,
+it is necessary to include the DMA buffer sizes for that process in the
+memory accounting. Since the handle to DMA buffers are raw FDs, it is
+important to be able to identify which processes have FD references to
+a DMA buffer.
 
-Add code to trace out all ARM processor context information and
-vendor specific error information with raw hex format.
+Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+/proc/<pid>/fdinfo -- both are only readable by the process owner,
+as follows:
+  1. Do a readlink on each FD.
+  2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
+  3. stat the file to get the dmabuf inode number.
+  4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
 
-Signed-off-by: Jason Tian <jason@os.amperecomputing.com>
+Accessing other processes=E2=80=99 fdinfo requires root privileges. This li=
+mits
+the use of the interface to debugging environments and is not suitable
+for production builds.  Granting root privileges even to a system process
+increases the attack surface and is highly undesirable.
+
+Since fdinfo doesn't permit reading process memory and manipulating
+process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
+
+Suggested-by: Jann Horn <jannh@google.com>
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 ---
- drivers/ras/ras.c       | 22 +++++++++++++++++++++-
- include/ras/ras_event.h | 41 +++++++++++++++++++++++++++++++++++------
- 2 files changed, 56 insertions(+), 7 deletions(-)
+Changes in v2:
+  - Update patch description
 
-diff --git a/drivers/ras/ras.c b/drivers/ras/ras.c
-index 95540ea8dd9d..6f3269da9476 100644
---- a/drivers/ras/ras.c
-+++ b/drivers/ras/ras.c
-@@ -23,7 +23,27 @@ void log_non_standard_event(const guid_t *sec_type, const guid_t *fru_id,
- 
- void log_arm_hw_error(struct cper_sec_proc_arm *err)
- {
--	trace_arm_event(err);
-+	u32 pei_len;
-+	u32 ctx_len;
-+	u32 vsei_len;
-+	u8 *pei_err;
-+	u8 *ctx_err;
-+	u8 *ven_err_data;
-+
-+	pei_len = sizeof(struct cper_arm_err_info) * err->err_info_num;
-+	pei_err = (u8 *) err + sizeof(struct cper_sec_proc_arm);
-+
-+	ctx_len = sizeof(struct cper_arm_ctx_info) * err->context_info_num;
-+	ctx_err = pei_err + sizeof(struct cper_arm_err_info) *
-+		err->err_info_num;
-+
-+	vsei_len = err->section_length - (sizeof(struct cper_sec_proc_arm) +
-+					  pei_len + ctx_len);
-+	ven_err_data = ctx_err + sizeof(struct cper_arm_ctx_info) *
-+					  err->context_info_num;
-+
-+	trace_arm_event(err, pei_err, pei_len, ctx_err, ctx_len,
-+			ven_err_data, vsei_len);
- }
- 
- static int __init ras_init(void)
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index 0bdbc0d17d2f..fd9201214be8 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -168,11 +168,22 @@ TRACE_EVENT(mc_event,
-  * This event is generated when hardware detects an ARM processor error
-  * has occurred. UEFI 2.6 spec section N.2.4.4.
+ fs/proc/base.c |  4 ++--
+ fs/proc/fd.c   | 15 ++++++++++++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index b3422cda2a91..a37f9de7103f 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3160,7 +3160,7 @@ static const struct pid_entry tgid_base_stuff[] =3D {
+ 	DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, proc_task_=
+operations),
+ 	DIR("fd",         S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_oper=
+ations),
+ 	DIR("map_files",  S_IRUSR|S_IXUSR, proc_map_files_inode_operations, proc_=
+map_files_operations),
+-	DIR("fdinfo",     S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdi=
+nfo_operations),
++	DIR("fdinfo",     S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdi=
+nfo_operations),
+ 	DIR("ns",	  S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_op=
+erations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_op=
+erations),
+@@ -3504,7 +3504,7 @@ static const struct inode_operations proc_tid_comm_in=
+ode_operations =3D {
   */
-+ #define APEIL "ARM Processor Err Info data len"
-+ #define APEID "ARM Processor Err Info raw data"
-+ #define APECIL "ARM Processor Err Context Info data len"
-+ #define APECID "ARM Processor Err Context Info raw data"
-+ #define VSEIL "Vendor Specific Err Info data len"
-+ #define VSEID "Vendor Specific Err Info raw data"
- TRACE_EVENT(arm_event,
- 
--	TP_PROTO(const struct cper_sec_proc_arm *proc),
-+	TP_PROTO(const struct cper_sec_proc_arm *proc, const u8 *pei_err,
-+		const u32 pei_len,
-+		const u8 *ctx_err,
-+		const u32 ctx_len,
-+		const u8 *oem,
-+		const u32 oem_len),
- 
--	TP_ARGS(proc),
-+	TP_ARGS(proc, pei_err, pei_len, ctx_err, ctx_len, oem, oem_len),
- 
- 	TP_STRUCT__entry(
- 		__field(u64, mpidr)
-@@ -180,6 +191,12 @@ TRACE_EVENT(arm_event,
- 		__field(u32, running_state)
- 		__field(u32, psci_state)
- 		__field(u8, affinity)
-+		__field(u32, pei_len)
-+		__dynamic_array(u8, buf, pei_len)
-+		__field(u32, ctx_len)
-+		__dynamic_array(u8, buf1, ctx_len)
-+		__field(u32, oem_len)
-+		__dynamic_array(u8, buf2, oem_len)
- 	),
- 
- 	TP_fast_assign(
-@@ -199,12 +216,24 @@ TRACE_EVENT(arm_event,
- 			__entry->running_state = ~0;
- 			__entry->psci_state = ~0;
- 		}
-+		__entry->pei_len = pei_len;
-+		memcpy(__get_dynamic_array(buf), pei_err, pei_len);
-+		__entry->ctx_len = ctx_len;
-+		memcpy(__get_dynamic_array(buf1), ctx_err, ctx_len);
-+		__entry->oem_len = oem_len;
-+		memcpy(__get_dynamic_array(buf2), oem, oem_len);
- 	),
- 
--	TP_printk("affinity level: %d; MPIDR: %016llx; MIDR: %016llx; "
--		  "running state: %d; PSCI state: %d",
--		  __entry->affinity, __entry->mpidr, __entry->midr,
--		  __entry->running_state, __entry->psci_state)
-+	TP_printk("affinity level: %d; MPIDR: %016llx; MIDR: %016llx; running state: %d; "
-+		"PSCI state: %d; %s: %d; %s: %s; %s: %d; %s: %s; %s: %d; %s: %s",
-+		__entry->affinity, __entry->mpidr, __entry->midr,
-+		__entry->running_state, __entry->psci_state,
-+		APEIL, __entry->pei_len, APEID,
-+		__print_hex(__get_dynamic_array(buf), __entry->pei_len),
-+		APECIL, __entry->ctx_len, APECID,
-+		__print_hex(__get_dynamic_array(buf1), __entry->ctx_len),
-+		VSEIL, __entry->oem_len, VSEID,
-+		__print_hex(__get_dynamic_array(buf2), __entry->oem_len))
- );
- 
- /*
--- 
-2.25.1
+ static const struct pid_entry tid_base_stuff[] =3D {
+ 	DIR("fd",        S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_opera=
+tions),
+-	DIR("fdinfo",    S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdin=
+fo_operations),
++	DIR("fdinfo",    S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdin=
+fo_operations),
+ 	DIR("ns",	 S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_ope=
+rations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_op=
+erations),
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index cb51763ed554..585e213301f9 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -6,6 +6,7 @@
+ #include <linux/fdtable.h>
+ #include <linux/namei.h>
+ #include <linux/pid.h>
++#include <linux/ptrace.h>
+ #include <linux/security.h>
+ #include <linux/file.h>
+ #include <linux/seq_file.h>
+@@ -72,6 +73,18 @@ static int seq_show(struct seq_file *m, void *v)
+=20
+ static int seq_fdinfo_open(struct inode *inode, struct file *file)
+ {
++	bool allowed =3D false;
++	struct task_struct *task =3D get_proc_task(inode);
++
++	if (!task)
++		return -ESRCH;
++
++	allowed =3D ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
++	put_task_struct(task);
++
++	if (!allowed)
++		return -EACCES;
++
+ 	return single_open(file, seq_show, inode);
+ }
+=20
+@@ -307,7 +320,7 @@ static struct dentry *proc_fdinfo_instantiate(struct de=
+ntry *dentry,
+ 	struct proc_inode *ei;
+ 	struct inode *inode;
+=20
+-	inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUSR);
++	inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUGO);
+ 	if (!inode)
+ 		return ERR_PTR(-ENOENT);
+=20
+--=20
+2.30.0.478.g8a0d178c01-goog
 
