@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AA5310407
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74001310405
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhBEEUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
+        id S229927AbhBEEUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:20:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhBEEUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229586AbhBEEUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Feb 2021 23:20:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4717F64FA9;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 54AD764FBF;
         Fri,  5 Feb 2021 04:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1612498807;
-        bh=dZ7oBZDsHR/8Z3anSIEZghT8NDUy4ARYKhDT508Eq30=;
+        bh=uBJWM7wgOzcUmXnF8pJlh8LtIEX/VQMOCZ4zoymwumM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qwTW9cG5DdwxTRucZ3dABeBWGR8rA6gILnUijkeh5rr98GSznZ/mPlI1coVVuZ9fO
-         4g7u+l9VRQ/MCmKtgAK3SbFziAMDzuupnwhJBDGCvQhcafQ/ypnyNBD9keCslyhbxC
-         gCsigabbjq4k1cjmqN33RQnrA01+GczMfVES4C6pJzCTi5hCQq5rVZrtgSe49Gtdro
-         zk5AuxzcbjzbNOcV4VWZRQk83O905anTnNAYt1A/7uBNhyCraIiiM991EZf5mUQ4P+
-         o7YzV6oPJ8L+/kJksdRCNawT0r1XFosls4tIYfj0Map7a8tmCvORN4tlLjqTQ5qrBU
-         a4a4K+qZABHlA==
+        b=qbe/IMBeCllPBJlVo8u+1K9ttlapIpKwBqrLSeKbcRxKI4/Y7XbWIc9+BntyFcHe2
+         CVWus60fpGCPZ9kExaTECADTz75miNECCxvq6fA2bLB7GY29/nEGChKm/eEucX0/GP
+         Te/7TJ7FAlL7KIYqxqcbYnjk9ATIAK0UVVnpkU0ZfZhEfeFdKLYUPDsX85DPuHJDw4
+         Jz5ui4bus1cnboi/1wb4LxSA1YViNpl4g1opveJMwsVp6rzV3Ul3Velj6+n+4byVdB
+         1HllG9aXF7/cqmbRlpasjWWg19z8w81NPCxlrXEcxYpDuKAMnKp3FxZChOWywt+8qA
+         WxWKbHzbKLXww==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B351609F2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 46A08609F6;
         Fri,  5 Feb 2021 04:20:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in
- netvsc_receive()
+Subject: Re: [PATCH net v2] net: ipa: set error code in gsi_channel_setup()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161249880723.20393.1705346337998765386.git-patchwork-notify@kernel.org>
+Message-Id: <161249880728.20393.13663452975147850936.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Feb 2021 04:20:07 +0000
-References: <20210203113602.558916-1-parri.andrea@gmail.com>
-In-Reply-To: <20210203113602.558916-1-parri.andrea@gmail.com>
-To:     Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
-        skarade@microsoft.com, juvazq@microsoft.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
+References: <20210204010655.15619-1-elder@linaro.org>
+In-Reply-To: <20210204010655.15619-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, dan.carpenter@oracle.com,
+        elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,25 +48,21 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Wed,  3 Feb 2021 12:36:02 +0100 you wrote:
-> Commit 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V
-> values") added validation to rndis_filter_receive_data() (and
-> rndis_filter_receive()) which introduced NVSP_STAT_FAIL-scenarios where
-> the count is not updated/reset.  Fix this omission, and prevent similar
-> scenarios from occurring in the future.
+On Wed,  3 Feb 2021 19:06:55 -0600 you wrote:
+> In gsi_channel_setup(), we check to see if the configuration data
+> contains any information about channels that are not supported by
+> the hardware.  If one is found, we abort the setup process, but
+> the error code (ret) is not set in this case.  Fix this bug.
 > 
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Fixes: 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V values")
+> Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in netvsc_receive()
-    https://git.kernel.org/netdev/net/c/12bc8dfb83b5
+  - [net,v2] net: ipa: set error code in gsi_channel_setup()
+    https://git.kernel.org/netdev/net/c/1d23a56b0296
 
 You are awesome, thank you!
 --
