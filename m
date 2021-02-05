@@ -2,161 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4764E311803
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08E6311802
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhBFA5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbhBEJy6 (ORCPT
+        id S231531AbhBFA5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:57:36 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:37308 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhBEJzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:54:58 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F53C06178B;
-        Fri,  5 Feb 2021 01:54:17 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id z9so3480322pjl.5;
-        Fri, 05 Feb 2021 01:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/X9CJlDkoOIfI0Y5y9ePsW+DeUp4U5M1t+e2JHC7CP0=;
-        b=a5hP/xTQKHmtI3ZtlvLYkzOY3kBsSZew2riwJtUsqthJhVWs6bcctqmFLeNjj0FOep
-         qBFjLotCqbAMa2G1SSmW5BNtnfQswrwcglbDgvqAttlKiI78nLogy6k5LA2mXzDfslJ0
-         +dKnFGGIAbe7HaD2dY7AA9MxlyfXzxjkOGDT6SlBlZ0Q+nL97wDpiBOyOLdhQpGa22wL
-         KuoAFXuriPms3pzgxSZjjcwX6k9yneRwo2ZvKcLcWoIAzAiZBrKoWxQT0jF4+9ecNC+c
-         nqVSyietaHUe7zIBcbEYxUnbb0/cybLdwXOeEICHQUjX/0sARWHst5KhV0Y4smlYSMPS
-         RL8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/X9CJlDkoOIfI0Y5y9ePsW+DeUp4U5M1t+e2JHC7CP0=;
-        b=qThQwLhGDh8CrPuwkBcmQBLswJZjB5XbGwN6+zYMe76tdqNuscaC0yOPbmE8EIJhdj
-         kibLA1zXSMGCg5xPOvFhYt9ow+Qx5Wg3bU4NiE58dmlc9Ju9h9SSJm1Mw50I79mh7Vwh
-         yKKyeoVa+AJYf/Mi6GRi5JOzpSMTk6UxFIEhrqMcbXA2mscEQZCagiyafD6Rk2dgn25F
-         T/GYryp8IoF7M7iq6JzB4v3G6RCxzXDJIMJ54SaS70h8zGrdJs1BNx6yra5xozwe13LK
-         JNzSsQ2/du+eBkU8sCWR2B43aq9b0lKixuHP43GCo0rX9XtyeBxgP/76kMng685BfN0/
-         lHKQ==
-X-Gm-Message-State: AOAM533byRG8hFPJj5/Wfw4ra0D2gWLKMSdjkJPBTlR/8iQPD5iaIoX8
-        ynyimXtquRimspNnljuImy37a4PwmPOOmbLUUlg=
-X-Google-Smtp-Source: ABdhPJxNMZrxFFQEf68XA/GyMuapZ8cq5r90fcNh658Gft6kTAaqIONB72alZsTZcnsJzrxb612h6J7MPwYdB3pespk=
-X-Received: by 2002:a17:902:cec3:b029:de:901b:d0be with SMTP id
- d3-20020a170902cec3b02900de901bd0bemr3453431plg.26.1612518856867; Fri, 05 Feb
- 2021 01:54:16 -0800 (PST)
+        Fri, 5 Feb 2021 04:55:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612518954; x=1644054954;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=fbPqa0i6Q55n2DwbEWA5AKIB6CBk+PVmtHr/w6ianNM=;
+  b=QZn4WvfAJgbUP+wXCDtK1e5gbfaJ0Lh9IQnci7BqjI58IhGQTxyE/6s5
+   Q+9PP3XRnIxu9zIBzUuBLrqpBKG/UEmuBTpdJE3C5IRTuEXHTyRRF+tmT
+   RkZfIS7a9aQybOWse+Q+BR8TayJZvnqSEfJtvktk+2cROakEipsMan2XC
+   //T3TuxpXCm1oGwKbu0F/0ehpM1cHsyV90AM2TDbvTrbxqg3TlRBrQDWg
+   7TaZ8iJc0XHsMoizhNUvB1hrM0VVnKvl3JX4MDfHVBSQLqi6hAkDDXUVg
+   /wJ8yRjZWKXsnYHF2AgWuOT/2dWs6qSl4wVnvnkqovExRBHCn9pFaFi8H
+   g==;
+IronPort-SDR: BhNoyOiMCVytFg6DlR+bxDYZxeqxrU1VrU1v/w2y/nJqfEH2RC4t398KluUncz95qDFGYB6p2S
+ m+H/a1c+MUOyfanZd0oJlXPG4mxPsQxVBqgq7X/J5oFuTDNqg2k8Y5LhPIq1mZ/v/KZE0S4iIG
+ vdrT+re4wgpSvrwNh6hWyWbYuE8n7zwjUZ+kakoQoputtzwFsmh7gItCs0tFrqi8j/aad5rBwF
+ CvlvOjkdLApwf+XnEeAwz5eliODX/KcRIlDSJ9WCIDqZIK2yqIq+HPMs2qaDo1/+SZaUJd90kw
+ AHI=
+X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; 
+   d="scan'208";a="108139523"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Feb 2021 02:54:36 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 5 Feb 2021 02:54:35 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 5 Feb 2021 02:54:33 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <linux@armlinux.org.uk>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] ARM: configs: at91: enable drivers for sam9x60
+Date:   Fri, 5 Feb 2021 11:54:31 +0200
+Message-ID: <1612518871-9311-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-3-balsini@android.com>
- <CAMAHBGzkfEd9-1u0iKXp65ReJQgUi_=4sMpmfkwEOaMp6Ux7pg@mail.gmail.com>
- <YBFtXqgvcXW5fFCR@google.com> <CAMAHBGwpKW+30kNQ_Apt8A-FTmr94hBOzkT21cjEHHW+t7yUMQ@mail.gmail.com>
- <YBLG+QlXqVB/bo/u@google.com>
-In-Reply-To: <YBLG+QlXqVB/bo/u@google.com>
-From:   Peng Tao <bergwolf@gmail.com>
-Date:   Fri, 5 Feb 2021 17:54:05 +0800
-Message-ID: <CA+a=Yy7gfKbpgOd3+9HPGxvyU821p8yxkjz6cbOKJd_hN5Nekg@mail.gmail.com>
-Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
- fuse device
-To:     Alessio Balsini <balsini@android.com>
-Cc:     qxy <qxy65535@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:15 PM Alessio Balsini <balsini@android.com> wrote:
->
-> Hi all,
->
-> I'm more than happy to change the interface into something that is
-> objectively better and accepted by everyone.
-> I would really love to reach the point at which we have a "stable-ish"
-> UAPI as soon as possible.
->
-> I've been thinking about a few possible approaches to fix the issue, yet
-> to preserve its flexibility. These are mentioned below.
->
->
->   Solution 1: Size
->
-> As mentioned in my previous email, one solution could be to introduce
-> the "size" field to allow the structure to grow in the future.
->
-> struct fuse_passthrough_out {
->     uint32_t        size;   // Size of this data structure
->     uint32_t        fd;
-> };
->
-> The problem here is that we are making the promise that all the upcoming
-> fields are going to be maintained forever and at the offsets they were
-> originally defined.
->
->
->   Solution 2: Version
->
-> Another solution could be to s/size/version, where for every version of
-> FUSE passthrough we reserve the right to modifying the fields over time,
-> casting them to the right data structure according to the version.
->
->
->   Solution 3: Type
->
-> Using an enumerator to define the data structure content and purpose is
-> the most flexible solution I can think of.  This would for example allow
-> us to substitute FUSE_DEV_IOC_PASSTHROUGH_OPEN with the generic
-> FUSE_DEV_IOC_PASSTHROUGH and having a single ioctl for any eventually
-> upcoming passthrough requests.
->
-> enum fuse_passthrough_type {
->     FUSE_PASSTHROUGH_OPEN
-> };
->
-> struct fuse_passthrough_out {
->     uint32_t type; /* as defined by enum fuse_passthrough_type */
->     union {
->         uint32_t fd;
->     };
-> };
->
-> This last is my favorite, as regardless the minimal logic required to
-> detect the size and content of the struct (not required now as we only
-> have a single option), it would also allow to do some kind of interface
-> versioning (e.g., in case we want to implement
-> FUSE_PASSTHROUGH_OPEN_V2).
->
-Usually a new type of ioctl will be added in such cases. If we want to
-stick to the same ioctl number, it might be easier to add a `flags`
-field to differentiate compatible passthrough ioctls. So in future, if
-a new interface is compatible with the existing one, we can use flags
-to tell it. If it is not compatible, we still need to add a new ioctl.
-wdyt?
+Enable drivers for sam9x60/sam9x60-ek:
+- shutdown controller
+- CAN
+- AT24 EEPROM (present on SAM9X60-EK)
+- MCP23S08 (present on SAM9X60-EK)
+- AES, TDES, SHA
 
-struct fuse_passthrough_out {
-    uint32_t flags;
-    union {
-        uint32_t fd;
-    };
-};
+And use "make savedefconfig".
 
-This somehow follows the "Flags as a system call API design pattern"
-(https://lwn.net/Articles/585415/).
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ arch/arm/configs/at91_dt_defconfig | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Just my two cents.
-
-Cheers,
-Tao
+diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
+index 5f3415c743ec..e274f8c492d2 100644
+--- a/arch/arm/configs/at91_dt_defconfig
++++ b/arch/arm/configs/at91_dt_defconfig
+@@ -17,8 +17,6 @@ CONFIG_SOC_SAM9X60=y
+ # CONFIG_ATMEL_CLOCKSOURCE_PIT is not set
+ CONFIG_AEABI=y
+ CONFIG_UACCESS_WITH_MEMCPY=y
+-CONFIG_ZBOOT_ROM_TEXT=0x0
+-CONFIG_ZBOOT_ROM_BSS=0x0
+ CONFIG_ARM_APPENDED_DTB=y
+ CONFIG_ARM_ATAG_DTB_COMPAT=y
+ CONFIG_CMDLINE="console=ttyS0,115200 initrd=0x21100000,25165824 root=/dev/ram0 rw"
+@@ -38,6 +36,8 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_IP_PNP_RARP=y
+ # CONFIG_INET_DIAG is not set
+ CONFIG_IPV6_SIT_6RD=y
++CONFIG_CAN=y
++CONFIG_CAN_AT91=y
+ CONFIG_CFG80211=y
+ CONFIG_MAC80211=y
+ CONFIG_DEVTMPFS=y
+@@ -58,6 +58,7 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_BLK_DEV_RAM_COUNT=4
+ CONFIG_BLK_DEV_RAM_SIZE=8192
+ CONFIG_ATMEL_SSC=y
++CONFIG_EEPROM_AT24=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ # CONFIG_SCSI_LOWLEVEL is not set
+@@ -91,7 +92,6 @@ CONFIG_RT2800USB_UNKNOWN=y
+ CONFIG_RTL8187=m
+ CONFIG_RTL8192CU=m
+ # CONFIG_RTLWIFI_DEBUG is not set
+-CONFIG_INPUT_POLLDEV=y
+ CONFIG_INPUT_JOYDEV=y
+ CONFIG_INPUT_EVDEV=y
+ # CONFIG_KEYBOARD_ATKBD is not set
+@@ -111,8 +111,8 @@ CONFIG_I2C_GPIO=y
+ CONFIG_SPI=y
+ CONFIG_SPI_ATMEL=y
+ CONFIG_SPI_ATMEL_QUADSPI=y
++CONFIG_PINCTRL_MCP23S08=m
+ CONFIG_POWER_RESET=y
+-# CONFIG_POWER_RESET_AT91_SAMA5D2_SHDWC is not set
+ CONFIG_POWER_SUPPLY=y
+ # CONFIG_HWMON is not set
+ CONFIG_WATCHDOG=y
+@@ -208,7 +208,9 @@ CONFIG_NLS_UTF8=y
+ CONFIG_CRYPTO_ECB=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+-# CONFIG_CRYPTO_HW is not set
++CONFIG_CRYPTO_DEV_ATMEL_AES=y
++CONFIG_CRYPTO_DEV_ATMEL_TDES=y
++CONFIG_CRYPTO_DEV_ATMEL_SHA=y
+ CONFIG_CRC_CCITT=y
+ CONFIG_FONTS=y
+ CONFIG_FONT_8x8=y
 -- 
-Into Sth. Rich & Strange
+2.7.4
+
