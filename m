@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2912C310131
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3107E31013E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhBEAA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:00:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S231553AbhBEACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:02:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhBEAA1 (ORCPT
+        with ESMTP id S231533AbhBEACr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:00:27 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2616AC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 15:59:47 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id i6so5006557ybq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 15:59:47 -0800 (PST)
+        Thu, 4 Feb 2021 19:02:47 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B604C06121D;
+        Thu,  4 Feb 2021 16:02:03 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id r2so4976737ybk.11;
+        Thu, 04 Feb 2021 16:02:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ajugGFTO/TRAW2sAnJSAPf8Ya7Pzauh522ocLH7i6ok=;
-        b=ohGfycmdfrxRyY1lmPjrmZyS9N6dc3YFK2yib5ANdl8uFdVdopsh9roTcJt4ov0P5y
-         xHO2VpN0aJTR09TZ0hBvwgZkSsYfhUhZTZQtgiXOXWvwazqR7Vu//O0+4cku3m7DE+oR
-         HKCEz3OQjvvpg2ZAlebzRVR8TNs6A7zesCsXE=
+        bh=RPLYbscW30uUnmFS2EtBGE+/+NamJbrbryNTpw6+TtQ=;
+        b=IkbC3NZf3mDtZwVs4vPkcHCCGrTPOi4CkAwZ1W+pDpupMPibvDoBT4z5IcNs5rUFqg
+         pYZQqLFlKlO/L5G/kCTup0yk6+q1qaafhn9JrRdhQtMzESns3rjLDkN91vmAF0T8De80
+         KAYx6paKCNjUEqLrvQYzL3JQLUrj93l0qnRDwssB2CPNu48bU3APGsHnlpjJGqDsZOpw
+         1LZsjcys514jufuZUJWJJ4joAZEMgdrcTBFe5Y2B4J6CTjkvf+6KpR6J0EYsU+ikRU5I
+         Uhgs8EN8r8JLGZygC3qYiXAtHR2sHuVyj2ElCTXqKcNtBY/lyfdsbvLnHbMJNCSY7f3j
+         2d3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ajugGFTO/TRAW2sAnJSAPf8Ya7Pzauh522ocLH7i6ok=;
-        b=XqlCmkl4zdbQvGumlLpD7G4N2rQIeDuKlzDUJm7Vw77Wq5MzKSOgA9M8WyNW6W3qIM
-         ixSNN6m4UXhLkjULdz6g0bUzXZkQIAFY3AfXj+oMQwkx8zTB7v5WjQCxMQoFucH6vvzU
-         AualvWNu6VNAQIvf7E/UJAI8jxd2GZpi0qJiZ2686kNjg8cBeAUdt5G8TkgISPpxNMzR
-         h7wa/xMx43Oef8kz9hRZxsYn+D0zs14GNpWG0j015oghSyFxmVkfBjs4RQVleebZoBfU
-         /ep+DeSdGRoOklk4G71FVVhKfZBdRpXpYzq7maDYHagjyyQon0EGg8W1EAjxvEoNY1jh
-         K7NA==
-X-Gm-Message-State: AOAM531i21k1jSit/ouTxLzmjapd+PBRtEA8N/kOzgWsmkmR4mTc7mwQ
-        LlSvASy1HkNjEeQhpSuVFFsn2Bpby6Wd4A+Vn6rNXQ==
-X-Google-Smtp-Source: ABdhPJw2rGyC8Vdna/CSOxDku9YLve+1PHezgBkzuWIEdYSJwFeii4IvU2L9spsPyc3BoeaM/6XobrMWuZNBDeHBrm4=
-X-Received: by 2002:a5b:38c:: with SMTP id k12mr2570869ybp.441.1612483186593;
- Thu, 04 Feb 2021 15:59:46 -0800 (PST)
+        bh=RPLYbscW30uUnmFS2EtBGE+/+NamJbrbryNTpw6+TtQ=;
+        b=PKFKNqmFgVdB/ZQ42F4CrNBSJXC2AJt0yNljKzjPzgvjxe6eq5I4nGtrezBIX2CaVy
+         vTX9gzzaCvD06jgOiO7B6VMjHKvp33PYfQ8k/9KNWoeIFv3CEli/ymRMlKVedkXxcdcN
+         Hahovk2hHySyqwtyUABR4rP3QNmHueeIjROjpO65K6hPjH+AOM9kMVPpfeXVhjL6PkSq
+         0Rg3aLCSQ4eCLdf3ZlZLtgAtoILfCtlCeTmOSrq1Vk7owuF17+legyRJKNtj8cn+ZHrc
+         eBJRxmrFyMRUWEE1vPFkTCf14wcRfWmCXAJjx0yAa6954sjJKKFar6Ag11crgbdiD8z3
+         d2cg==
+X-Gm-Message-State: AOAM5312w2i33ZnNG7/BmtPv0z7/M3YH7fDy155Kf3NrkG8gIgmN1RRN
+        OIQHsl3x1pXNKSWRvB5TccmN+sN5GBkfucrn9wY=
+X-Google-Smtp-Source: ABdhPJy3/NjcT0Y2DbYezgYmqrjXhztdNTW/Z5D51s82ZLlcsS/bAEpWRYQ+Xk/DI4sVSiTKGsvHf07wmg/fQ5lPSRo=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr2446517yba.403.1612483322704;
+ Thu, 04 Feb 2021 16:02:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115143555.v6.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
- <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid> <161075035048.3661239.6086252465678815045@swboyd.mtv.corp.google.com>
-In-Reply-To: <161075035048.3661239.6086252465678815045@swboyd.mtv.corp.google.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Thu, 4 Feb 2021 15:59:35 -0800
-Message-ID: <CA+cxXh=tPNRxu_XvYZ7yEBj+HdadS60amXCa7_OChhzTwRnmaQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] dt-bindings: input: Fix the keymap for LOCK key
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <20210204220741.GA920417@kernel.org>
+In-Reply-To: <20210204220741.GA920417@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 4 Feb 2021 16:01:51 -0800
+Message-ID: <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi maintainers,
-
-Friendly ping - can we actually land patch series v6?
-Or do you expect any update from me?
-
-On Fri, Jan 15, 2021 at 2:39 PM Stephen Boyd <swboyd@chromium.org> wrote:
+On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 >
-> Quoting Philip Chen (2021-01-15 14:36:17)
-> > Decouple LOCK from F13 and directly map the LOCK key (KSI3/KSO9) to
-> > KEY_SLEEP action key code.
-> >
-> > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > ---
+> Hi,
 >
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>         The v1.20 release of pahole and its friends is out, mostly
+> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> available at the usual places:
+
+Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
+
+>
+> Main git repo:
+>
+>    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+>
+> Mirror git repo:
+>
+>    https://github.com/acmel/dwarves.git
+>
+> tarball + gpg signature:
+>
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
+>
+> Best Regards,
+>
+>  - Arnaldo
+>
+
+[...]
