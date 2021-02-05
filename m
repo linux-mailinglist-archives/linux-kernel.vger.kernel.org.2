@@ -2,80 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251663108CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36607310912
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhBEKPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:15:01 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:40700 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230377AbhBEKMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:12:17 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxadXPGR1gjT0FAA--.6705S3;
-        Fri, 05 Feb 2021 18:11:28 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] MIPS: relocatable: Use __kaslr_offset in show_kernel_relocation
-Date:   Fri,  5 Feb 2021 18:11:22 +0800
-Message-Id: <1612519882-16480-2-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
-References: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9AxadXPGR1gjT0FAA--.6705S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XryrAw4kur13GFW5Ar1xuFg_yoWkWwc_G3
-        Z0qw1DGa4rt3yjkwn0vws3XFyj9w15KFWfC3WvqrWYva9xAryj9FWfJrWFgrnxXrZ5Cry3
-        Xr98uFsxKw4IkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfkYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUXVWUCwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY
-        1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4
-        xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqF1vDUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S231301AbhBEK3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:29:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12136 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhBEKQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:16:07 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXB8r2mjkz164xQ;
+        Fri,  5 Feb 2021 18:14:04 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 18:15:14 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH 5/6] crypto: hisilicon/qm - do not reset hardware when CE happens
+Date:   Fri, 5 Feb 2021 18:12:57 +0800
+Message-ID: <1612519978-33340-6-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
+References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of the VMLINUX_LOAD_ADDRESS macro is the (unsigned long long)
-in 32bits kernel but (unsigned long) in the 64-bit kernel. Although there
-is no error here, avoid using it to calculate kaslr_offset.
+There is no need to reset hardware when Corrected Error(CE) happens.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+Signed-off-by: Weili Qian <qianweili@huawei.com>
+Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 ---
- arch/mips/kernel/relocate.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  1 +
+ drivers/crypto/hisilicon/qm.c             | 23 +++++++++++++++++------
+ drivers/crypto/hisilicon/qm.h             |  1 +
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  1 +
+ drivers/crypto/hisilicon/zip/zip_main.c   |  5 ++++-
+ 5 files changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 95abb9c..52018a3 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -430,13 +430,9 @@ void *__init relocate_kernel(void)
-  */
- static void show_kernel_relocation(const char *level)
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index ef2fe4d..6681e9a 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -848,6 +848,7 @@ static const struct hisi_qm_err_ini hpre_err_ini = {
+ 		.fe			= 0,
+ 		.ecc_2bits_mask		= HPRE_CORE_ECC_2BIT_ERR |
+ 					  HPRE_OOO_ECC_2BIT_ERR,
++		.dev_ce_mask		= HPRE_HAC_RAS_CE_ENABLE,
+ 		.msi_wr_port		= HPRE_WR_MSI_PORT,
+ 		.acpi_rst		= "HRST",
+ 	}
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index ec7d068..5dbc054 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -1610,7 +1610,7 @@ static void qm_log_hw_error(struct hisi_qm *qm, u32 error_status)
+ 
+ static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
  {
--	unsigned long offset;
--
--	offset = __pa_symbol(_text) - __pa_symbol(VMLINUX_LOAD_ADDRESS);
--
--	if (IS_ENABLED(CONFIG_RELOCATABLE) && offset > 0) {
-+	if (__kaslr_offset > 0) {
- 		printk(level);
--		pr_cont("Kernel relocated by 0x%pK\n", (void *)offset);
-+		pr_cont("Kernel relocated by 0x%pK\n", (void *)__kaslr_offset);
- 		pr_cont(" .text @ 0x%pK\n", _text);
- 		pr_cont(" .data @ 0x%pK\n", _sdata);
- 		pr_cont(" .bss  @ 0x%pK\n", __bss_start);
+-	u32 error_status, tmp;
++	u32 error_status, tmp, val;
+ 
+ 	/* read err sts */
+ 	tmp = readl(qm->io_base + QM_ABNORMAL_INT_STATUS);
+@@ -1621,9 +1621,13 @@ static enum acc_err_result qm_hw_error_handle_v2(struct hisi_qm *qm)
+ 			qm->err_status.is_qm_ecc_mbit = true;
+ 
+ 		qm_log_hw_error(qm, error_status);
+-		if (error_status == QM_DB_RANDOM_INVALID) {
++		val = error_status | QM_DB_RANDOM_INVALID | QM_BASE_CE;
++		/* ce error does not need to be reset */
++		if (val == (QM_DB_RANDOM_INVALID | QM_BASE_CE)) {
+ 			writel(error_status, qm->io_base +
+ 			       QM_ABNORMAL_INT_SOURCE);
++			writel(qm->err_ini->err_info.nfe,
++			       qm->io_base + QM_RAS_NFE_ENABLE);
+ 			return ACC_ERR_RECOVERED;
+ 		}
+ 
+@@ -3302,12 +3306,19 @@ static enum acc_err_result qm_dev_err_handle(struct hisi_qm *qm)
+ 		if (err_sts & qm->err_ini->err_info.ecc_2bits_mask)
+ 			qm->err_status.is_dev_ecc_mbit = true;
+ 
+-		if (!qm->err_ini->log_dev_hw_err) {
+-			dev_err(&qm->pdev->dev, "Device doesn't support log hw error!\n");
+-			return ACC_ERR_NEED_RESET;
++		if (qm->err_ini->log_dev_hw_err)
++			qm->err_ini->log_dev_hw_err(qm, err_sts);
++
++		/* ce error does not need to be reset */
++		if ((err_sts | qm->err_ini->err_info.dev_ce_mask) ==
++		     qm->err_ini->err_info.dev_ce_mask) {
++			if (qm->err_ini->clear_dev_hw_err_status)
++				qm->err_ini->clear_dev_hw_err_status(qm,
++								err_sts);
++
++			return ACC_ERR_RECOVERED;
+ 		}
+ 
+-		qm->err_ini->log_dev_hw_err(qm, err_sts);
+ 		return ACC_ERR_NEED_RESET;
+ 	}
+ 
+diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
+index c08ffe3..6be5338 100644
+--- a/drivers/crypto/hisilicon/qm.h
++++ b/drivers/crypto/hisilicon/qm.h
+@@ -173,6 +173,7 @@ struct hisi_qm_err_info {
+ 	char *acpi_rst;
+ 	u32 msi_wr_port;
+ 	u32 ecc_2bits_mask;
++	u32 dev_ce_mask;
+ 	u32 ce;
+ 	u32 nfe;
+ 	u32 fe;
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 7db0e86..73866f2 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -752,6 +752,7 @@ static const struct hisi_qm_err_ini sec_err_ini = {
+ 				  QM_ACC_WB_NOT_READY_TIMEOUT,
+ 		.fe		= 0,
+ 		.ecc_2bits_mask	= SEC_CORE_INT_STATUS_M_ECC,
++		.dev_ce_mask	= SEC_RAS_CE_ENB_MSK,
+ 		.msi_wr_port	= BIT(0),
+ 		.acpi_rst	= "SRST",
+ 	}
+diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+index c5609f4..ca02e9c 100644
+--- a/drivers/crypto/hisilicon/zip/zip_main.c
++++ b/drivers/crypto/hisilicon/zip/zip_main.c
+@@ -66,6 +66,7 @@
+ #define HZIP_CORE_INT_STATUS_M_ECC	BIT(1)
+ #define HZIP_CORE_SRAM_ECC_ERR_INFO	0x301148
+ #define HZIP_CORE_INT_RAS_CE_ENB	0x301160
++#define HZIP_CORE_INT_RAS_CE_ENABLE	0x1
+ #define HZIP_CORE_INT_RAS_NFE_ENB	0x301164
+ #define HZIP_CORE_INT_RAS_FE_ENB        0x301168
+ #define HZIP_CORE_INT_RAS_NFE_ENABLE	0x7FE
+@@ -327,7 +328,8 @@ static void hisi_zip_hw_error_enable(struct hisi_qm *qm)
+ 	writel(HZIP_CORE_INT_MASK_ALL, qm->io_base + HZIP_CORE_INT_SOURCE);
+ 
+ 	/* configure error type */
+-	writel(0x1, qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
++	writel(HZIP_CORE_INT_RAS_CE_ENABLE,
++	       qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
+ 	writel(0x0, qm->io_base + HZIP_CORE_INT_RAS_FE_ENB);
+ 	writel(HZIP_CORE_INT_RAS_NFE_ENABLE,
+ 	       qm->io_base + HZIP_CORE_INT_RAS_NFE_ENB);
+@@ -727,6 +729,7 @@ static const struct hisi_qm_err_ini hisi_zip_err_ini = {
+ 					  QM_ACC_WB_NOT_READY_TIMEOUT,
+ 		.fe			= 0,
+ 		.ecc_2bits_mask		= HZIP_CORE_INT_STATUS_M_ECC,
++		.dev_ce_mask		= HZIP_CORE_INT_RAS_CE_ENABLE,
+ 		.msi_wr_port		= HZIP_WR_PORT,
+ 		.acpi_rst		= "ZRST",
+ 	}
 -- 
-2.1.0
+2.8.1
 
