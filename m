@@ -2,138 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6223110A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066BE3110A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbhBERTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:19:33 -0500
-Received: from mga02.intel.com ([134.134.136.20]:24891 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233564AbhBERQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:16:54 -0500
-IronPort-SDR: uXqif6S7nFNP1YbwXUbPJGKLg83JpJKf+fKoBGiS3T6/UlSQ2xqGCWmlLGfIhKf27wo2Gqlm+N
- +Qve09QkS3rA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="168593699"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="168593699"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:58:36 -0800
-IronPort-SDR: PKLSDoZriGTUaK7SMMGmhgy19dl1PLEvCUb5ekv5liqF4kTxmJEPaL5VV0T3jMRlLQvtxk1XlD
- jqrZlu7DH/0w==
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="357790568"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:58:34 -0800
-Subject: Re: [PATCH v19 08/25] x86/mm: Introduce _PAGE_COW
-To:     Kees Cook <keescook@chromium.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-9-yu-cheng.yu@intel.com>
- <202102041215.B54FCA552F@keescook>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <21b1e325-a17d-c859-973d-de66c1401f19@intel.com>
-Date:   Fri, 5 Feb 2021 10:58:33 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233516AbhBERUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhBERRg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:17:36 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6881AC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:59:19 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id m20so6746764ilj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:59:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=umcUJjWlYyqhcB34L7jgiVYkOGucvAbPTMYmElui7W8=;
+        b=sxvdKwLVtJjOYJactSKqj9AfcdPfdvYp/V6Mg0fIQpYbLA8SHxX0K6BJDTpBjkL4Qv
+         lmem8SOCb37UshDi2wl22+MCq4w+kmqrM8+C7BxN9ng+4g5Jv+E0D470uPlk9606zyDH
+         H6607b6EDARbFm/hZH4nW6Dllif4XUfsJJkaxtFsAX3TRZPkDxlF+Y7KwKp/p5QD8t+q
+         2l2eaEjfR86d42X3W8MESoXsYXk7D9Fsx+TGcBIGbhFOvK3Hequ+8MYg4B7JcH4CzBAu
+         xbReADtXCiPXx9Zr4+nMdp9YumSadxv6wRiu7O7zAAMyGK/+w72fe4Ti+3OysAhLZSKn
+         NTzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=umcUJjWlYyqhcB34L7jgiVYkOGucvAbPTMYmElui7W8=;
+        b=gQYRtu8fdQ94wAQXNsCr0qrCwYF/dTVrDtyTETIEtjWPF3ODBob31TvuxgeGYdWw6I
+         vyUce5YC9IDDibKI8/LFrDrL1SEKzh7a/A4Qss4n1aPN6fdDDXvQ5KNi4UnHL3luFweT
+         rzpjO341ZAbrV6w2j2EtfyMd2bI/cAQClhVJ2sngFsDwgb6jd6k36NgctMr2J6U7luKe
+         Tn2407xHCsS/FMAD/e9UiMiCEmpS5iF8S7Tcv23OwB5BSrQ8+P8s61ttMihMqJ82St2A
+         BWJMbTb2m4BQsVTFiKQJYNUXMwJsYzQscovUcFLwMl3FGuCSba9ITS9y91Izl2JZPJUg
+         /tog==
+X-Gm-Message-State: AOAM532ZSI+8D3kiVJnuWx+iza64dJmssxwxrXwT/+G2gvup7/ZYsFW+
+        yp6SpGxWfhnajqPffDQRaUX2Nl2a5iff3pUHqUdD3A==
+X-Google-Smtp-Source: ABdhPJzRjyWFdBr5HltCd4z7bm71JYdOrZsSRUuNoWy4DyikEu7SE2W8cMJ25NmgWLn8OTjw3wqbX2rnNlrxUEEX44I=
+X-Received: by 2002:a05:6e02:1be6:: with SMTP id y6mr4840036ilv.145.1612551558458;
+ Fri, 05 Feb 2021 10:59:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202102041215.B54FCA552F@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210205062719.74431-1-songmuchun@bytedance.com>
+ <YB0DnAlCaQza4Uf9@dhcp22.suse.cz> <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
+ <YB0euLiMU+T/9bMK@dhcp22.suse.cz> <YB2LTIeTPN72Xrxj@cmpxchg.org>
+In-Reply-To: <YB2LTIeTPN72Xrxj@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 5 Feb 2021 10:59:06 -0800
+Message-ID: <CALvZod6Z-C_2Dg0iAc2XA6AQTj9jHovjVuoM6QqPRUmjP3Fu=Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from get_mem_cgroup_from_page
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/2021 12:19 PM, Kees Cook wrote:
-> On Wed, Feb 03, 2021 at 02:55:30PM -0800, Yu-cheng Yu wrote:
->> There is essentially no room left in the x86 hardware PTEs on some OSes
->> (not Linux).  That left the hardware architects looking for a way to
->> represent a new memory type (shadow stack) within the existing bits.
->> They chose to repurpose a lightly-used state: Write=0, Dirty=1.
->>
->> The reason it's lightly used is that Dirty=1 is normally set by hardware
->> and cannot normally be set by hardware on a Write=0 PTE.  Software must
->> normally be involved to create one of these PTEs, so software can simply
->> opt to not create them.
->>
->> In places where Linux normally creates Write=0, Dirty=1, it can use the
->> software-defined _PAGE_COW in place of the hardware _PAGE_DIRTY.  In other
->> words, whenever Linux needs to create Write=0, Dirty=1, it instead creates
->> Write=0, Cow=1, except for shadow stack, which is Write=0, Dirty=1.  This
->> clearly separates shadow stack from other data, and results in the
->> following:
->>
->> (a) A modified, copy-on-write (COW) page: (Write=0, Cow=1)
->> (b) A R/O page that has been COW'ed: (Write=0, Cow=1)
->>      The user page is in a R/O VMA, and get_user_pages() needs a writable
->>      copy.  The page fault handler creates a copy of the page and sets
->>      the new copy's PTE as Write=0 and Cow=1.
->> (c) A shadow stack PTE: (Write=0, Dirty=1)
->> (d) A shared shadow stack PTE: (Write=0, Cow=1)
->>      When a shadow stack page is being shared among processes (this happens
->>      at fork()), its PTE is made Dirty=0, so the next shadow stack access
->>      causes a fault, and the page is duplicated and Dirty=1 is set again.
->>      This is the COW equivalent for shadow stack pages, even though it's
->>      copy-on-access rather than copy-on-write.
->> (e) A page where the processor observed a Write=1 PTE, started a write, set
->>      Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
->>      will not happen on processors that support shadow stack.
-> 
-> What happens for "e" with/without CET? It sounds like direct writes to
-> such pages will be (correctly) rejected by the MMU?
-> 
->>
->> Define _PAGE_COW and update pte_*() helpers and apply the same changes to
->> pmd and pud.
->>
->> After this, there are six free bits left in the 64-bit PTE, and no more
->> free bits in the 32-bit PTE (except for PAE) and Shadow Stack is not
->> implemented for the 32-bit kernel.
-> 
-> Are there selftests to validate this change?
-> 
+On Fri, Feb 5, 2021 at 10:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Feb 05, 2021 at 11:32:24AM +0100, Michal Hocko wrote:
+> > On Fri 05-02-21 17:14:30, Muchun Song wrote:
+> > > On Fri, Feb 5, 2021 at 4:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Fri 05-02-21 14:27:19, Muchun Song wrote:
+> > > > > The get_mem_cgroup_from_page() is called under page lock, so the page
+> > > > > memcg cannot be changed under us.
+> > > >
+> > > > Where is the page lock enforced?
+> > >
+> > > Because it is called from alloc_page_buffers(). This path is under
+> > > page lock.
+> >
+> > I do not see any page lock enforecement there. There is not even a
+> > comment requiring that. Can we grow more users where this is not the
+> > case? There is no actual relation between alloc_page_buffers and
+> > get_mem_cgroup_from_page except that the former is the only _current_
+> > existing user. I would be careful to dictate locking based solely on
+> > that.
+>
+> Since alloc_page_buffers() holds the page lock throughout the entire
+> time it uses the memcg, there is no actual reason for it to use RCU or
+> even acquire an additional reference on the css. We know it's pinned,
+> the charge pins it, and the page lock pins the charge. It can neither
+> move to a different cgroup nor be uncharged.
+>
+> So what do you say we switch alloc_page_buffers() to page_memcg()?
+>
+> And because that removes the last user of get_mem_cgroup_from_page(),
+> we can kill it off and worry about a good interface once a consumer
+> materializes for it.
 
-I have some tests to verify, for example,
+This seems like even better approach.
 
-- After clone(), shadow stack pages are indeed copy-on-write,
-- Shadow stack pages (i.e. Write=0, Dirty=1) cannot be directly written to,
-- Shadow stack guard pages exist.
+>
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 96c7604f69b3..12a10f461b81 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -847,7 +847,7 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+>         if (retry)
+>                 gfp |= __GFP_NOFAIL;
+>
+> -       memcg = get_mem_cgroup_from_page(page);
+> +       memcg = page_memcg(page);
 
-These tests are now on github, but kind of messy.  I can gradually clean 
-up them and submit as selftests separately.
+A comment explaining why page_memcg(page) is safe here and then the
+patch looks good to me.
 
-If you are asking for the detection of the potential hardware issue 
-(that Dave Hansen talked about), then maybe we need to detect it from 
-the kernel.
-
-> I think it might be useful to more clearly describe what is considered
-> "dirty" and "writeable" in comments above the pte_helpers.
-> 
-
-Yes, I will update it.  Thanks!
-
-[...]
+>         old_memcg = set_active_memcg(memcg);
+>
+>         head = NULL;
+> @@ -868,7 +868,6 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+>         }
+>  out:
+>         set_active_memcg(old_memcg);
+> -       mem_cgroup_put(memcg);
+>         return head;
+>  /*
+>   * In case anything failed, we just free everything we got.
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index a8c7a0ccc759..a44b2d51aecc 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -687,8 +687,6 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+>
+>  struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
+>
+> -struct mem_cgroup *get_mem_cgroup_from_page(struct page *page);
+> -
+>  struct lruvec *lock_page_lruvec(struct page *page);
+>  struct lruvec *lock_page_lruvec_irq(struct page *page);
+>  struct lruvec *lock_page_lruvec_irqsave(struct page *page,
+> @@ -1169,11 +1167,6 @@ static inline struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+>         return NULL;
+>  }
+>
+> -static inline struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+> -{
+> -       return NULL;
+> -}
+> -
+>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>  {
+>  }
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 490357945f2c..ff52550d2f65 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1048,29 +1048,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+>  }
+>  EXPORT_SYMBOL(get_mem_cgroup_from_mm);
+>
+> -/**
+> - * get_mem_cgroup_from_page: Obtain a reference on given page's memcg.
+> - * @page: page from which memcg should be extracted.
+> - *
+> - * Obtain a reference on page->memcg and returns it if successful. Otherwise
+> - * root_mem_cgroup is returned.
+> - */
+> -struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+> -{
+> -       struct mem_cgroup *memcg = page_memcg(page);
+> -
+> -       if (mem_cgroup_disabled())
+> -               return NULL;
+> -
+> -       rcu_read_lock();
+> -       /* Page should not get uncharged and freed memcg under us. */
+> -       if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+> -               memcg = root_mem_cgroup;
+> -       rcu_read_unlock();
+> -       return memcg;
+> -}
+> -EXPORT_SYMBOL(get_mem_cgroup_from_page);
+> -
+>  static __always_inline struct mem_cgroup *active_memcg(void)
+>  {
+>         if (in_interrupt())
