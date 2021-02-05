@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C193310508
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90340310506
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhBEGmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:42:16 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:61752 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230527AbhBEGmO (ORCPT
+        id S230506AbhBEGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:41:57 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3075 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhBEGlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:42:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612507309; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Pq6SFpYB7bZzneOPuiPx50qEYnSet0KQsUNB8GY6yTU=; b=OCXukF3MSxpQaAuW6qsFznO7xGIFY/BZYnR07avvahx9QuoqTAQfvu7n7/IxtBaS9tN/Ei53
- Aw7GuIcZ4PPMHpV6j0pb5cvlcPkzHFK4uIC8A7hOxAYdnmNDPbJSfOOPGtbzn4bvSasMiwMn
- k5BQHKLeyq3T888nPIdBYDYJHBk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 601ce8900bb8f50fb9918826 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 06:41:20
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 551BAC43462; Fri,  5 Feb 2021 06:41:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [61.1.238.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 59B2AC433CA;
-        Fri,  5 Feb 2021 06:41:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 59B2AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH] drm/msm: Fix legacy relocs path
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>,
-        Emil Velikov <emil.velikov@collabora.com>
-References: <20210204225650.1284384-1-robdclark@gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <dc2fb87e-67f0-4fa9-c920-515a6609a04d@codeaurora.org>
-Date:   Fri, 5 Feb 2021 12:11:10 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 5 Feb 2021 01:41:55 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601ce88b0001>; Thu, 04 Feb 2021 22:41:15 -0800
+Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 06:41:15 +0000
+Subject: Re: [PATCH] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <gregkh@linuxfoundation.org>, <surenb@google.com>,
+        <joaodias@google.com>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+References: <20210203155001.4121868-1-minchan@kernel.org>
+ <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
+ <YBxT9XFE6QAQ4T9N@google.com>
+ <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
+ <YByNU4Q7cc7gYwPh@google.com>
+ <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
+ <YByi/gdaGJeV/+8b@google.com>
+ <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+ <YBzU5uUbwa+QIwBQ@google.com>
+ <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
+ <YBzkjh5nnuNiGb6Q@google.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
+Date:   Thu, 4 Feb 2021 22:41:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-In-Reply-To: <20210204225650.1284384-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YBzkjh5nnuNiGb6Q@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612507275; bh=MVQPZX7CqWSAXEBpuiD9KIrZsqcSefGwB9+cJEmNR/U=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ZFByrRMHweXhGS7HmqX+9r2j16FGVfJ0523O0aw40mEjjCqf7K2AucMH+RRnQ27JC
+         +LlmYuuFNwD9ITf7dCQVWk0MJcfymXZI6xLvtraTM9qeoSG1fANpW/kXnwNYUhdeIF
+         r57DT+MF6BGpsPTF/EIBscJmobATGHQ4uHuGWmgksjIyUnrYYft9Xdt5jHNMMADFDD
+         OYJKTv1uRf3YFls9HvTopvWDcCIVngeRbJtCtPd3279I7Gn94/XkSMsqxo/hgu+G+l
+         +53SVmSbWrx4re2Zew/yDEHji6Fw2YYXxNPqL4+qJj+iFt07EtqXTy+Wz0CLKRXZ05
+         ze5dYmvkPqx7A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/2021 4:26 AM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On 2/4/21 10:24 PM, Minchan Kim wrote:
+> On Thu, Feb 04, 2021 at 09:49:54PM -0800, John Hubbard wrote:
+>> On 2/4/21 9:17 PM, Minchan Kim wrote:
+...
+>> # cat vmstat | grep -i cma
+>> nr_free_cma 261718
+>>
+>> # cat meminfo | grep -i cma
+>> CmaTotal:        1048576 kB
+>> CmaFree:         1046872 kB
+>>
+>> OK, given that CMA is already in those two locations, maybe we should put
+>> this information in one or both of those, yes?
 > 
-> In moving code around, we ended up using the same pointer to
-> copy_from_user() the relocs tables as we used for the cmd table
-> entry, which is clearly not right.  This went unnoticed because
-> modern mesa on non-ancent kernels does not actually use relocs.
-> But this broke ancient mesa on modern kernels.
+> Do you suggest something liks this, for example?
 > 
-> Reported-by: Emil Velikov <emil.velikov@collabora.com>
-> Fixes: 20224d715a88 ("drm/msm/submit: Move copy_from_user ahead of locking bos")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/msm_gem_submit.c | 2 ++
->   1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index d04c349d8112..5480852bdeda 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -198,6 +198,8 @@ static int submit_lookup_cmds(struct msm_gem_submit *submit,
->   		submit->cmd[i].idx  = submit_cmd.submit_idx;
->   		submit->cmd[i].nr_relocs = submit_cmd.nr_relocs;
->   
-> +		userptr = u64_to_user_ptr(submit_cmd.relocs);
-> +
->   		sz = array_size(submit_cmd.nr_relocs,
->   				sizeof(struct drm_msm_gem_submit_reloc));
->   		/* check for overflow: */
+> cat vmstat | grep -i cma
+> cma_a_success	125
+> cma_a_fail	25
+> cma_b_success	130
+> cma_b_fail	156
+> ..
+> cma_f_fail	xxx
 > 
 
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Yes, approximately. I was wondering if this would suffice at least as a baseline:
 
--Akhil.
+cma_alloc_success   125
+cma_alloc_failure   25
+
+...and then, to see if more is needed, some questions:
+
+a)  Do you know of an upper bound on how many cma areas there can be
+(I think Matthew also asked that)?
+
+b) Is tracking the cma area really as valuable as other possibilities? We can put
+"a few" to "several" items here, so really want to get your very favorite bits of
+information in. If, for example, there can be *lots* of cma areas, then maybe tracking
+by a range of allocation sizes is better...
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
