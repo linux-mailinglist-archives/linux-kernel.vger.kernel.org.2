@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F211311AE2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC1F311A99
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBFEaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:30:19 -0500
-Received: from mga09.intel.com ([134.134.136.24]:63380 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232432AbhBFDTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:19:21 -0500
-IronPort-SDR: uf/lD20PbJEUvAPph0bKzutY8X+S70VqadNLhjDbnrnY71b4ubi4ikFhYyehRLs3bcGOCUg8i1
- teXyTmpH1JjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181650713"
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181650713"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:05 -0800
-IronPort-SDR: bGvalxL17+5//YyhKmU5p3ve6Giy7z041c9mrfSDfk5nTSsz9TufMc6fUpr24XaxMnTHx924Op
- OB1lw7NZZrPQ==
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="416183872"
-Received: from mdhake-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.53.25])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:05 -0800
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v1 04/26] x86/tdx: Get TD execution environment information via TDINFO
-Date:   Fri,  5 Feb 2021 15:38:21 -0800
-Message-Id: <a5757dafc54932a6661fc94f51e413467b61fecf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S230282AbhBFEAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:00:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26135 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231962AbhBFC62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:58:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612580221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oKm0Ja8X4Ojgn+JREDsvj+rdNkNRQb5M2c2kSDsJ3+k=;
+        b=HyDuj76Ikis6YLHqvmTA+kvsMK3Yr04CcrT6DrkMwnlCvcDS3FS9og7S5I6sB3vb7nD2FB
+        Q//3HvOTV7QeJ3j9Kv/38hytl7La8yTVd65tjMCJ0kiDrdBTdwDi1FfwQWKUhUVjXKNGcT
+        9Ydn/9xIa2baodKqQ4r098MK/zNgc+8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-bQvA3uDcNlmQDUcWV15c6A-1; Fri, 05 Feb 2021 18:45:25 -0500
+X-MC-Unique: bQvA3uDcNlmQDUcWV15c6A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D468484E241;
+        Fri,  5 Feb 2021 23:45:23 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-116-79.rdu2.redhat.com [10.10.116.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D724819727;
+        Fri,  5 Feb 2021 23:45:21 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Dave Airlie <airlied@gmail.com>, greg.depoire@gmail.com,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC v3 01/10] drm/nouveau/kms/nv40-/backlight: Assign prop type once
+Date:   Fri,  5 Feb 2021 18:45:05 -0500
+Message-Id: <20210205234515.1216538-2-lyude@redhat.com>
+In-Reply-To: <20210205234515.1216538-1-lyude@redhat.com>
+References: <20210205234515.1216538-1-lyude@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-
-Per Guest-Host-Communication Interface (GHCI) for Intel Trust
-Domain Extensions (Intel TDX) specification, sec 2.4.2,
-TDCALL[TDINFO] provides basic TD execution environment information, not
-provided by CPUID.
-
-Call TDINFO during early boot to be used for following system
-initialization.
-
-The call provides info on which bit in pfn is used to indicate that the
-page is shared with the host and attributes of the TD, such as debug.
-
-We don't save information about the number of cpus as there's no users
-so far.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: greg.depoire@gmail.com
 ---
- arch/x86/include/asm/tdx.h |  9 +++++++++
- arch/x86/kernel/tdx.c      | 27 +++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ drivers/gpu/drm/nouveau/nouveau_backlight.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 0b9d571b1f95..f8cdc8eb1046 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -7,6 +7,15 @@
+diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+index 72f35a2babcb..42b498e7e2bf 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
++++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+@@ -106,7 +106,6 @@ nv40_backlight_init(struct nouveau_encoder *encoder,
+ 	if (!(nvif_rd32(device, NV40_PMC_BACKLIGHT) & NV40_PMC_BACKLIGHT_MASK))
+ 		return -ENODEV;
  
- #ifdef CONFIG_INTEL_TDX_GUEST
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 31;
+ 	*ops = &nv40_bl_ops;
+ 	return 0;
+@@ -212,7 +211,6 @@ nv50_backlight_init(struct nouveau_encoder *nv_encoder,
+ 	else
+ 		*ops = &nva3_bl_ops;
  
-+/*
-+ * TDCALL instruction is newly added in TDX architecture,
-+ * used by TD for requesting the host VMM to provide
-+ * (untrusted) services.
-+ */
-+#define TDCALL	".byte 0x66,0x0f,0x01,0xcc"
-+
-+#define TDINFO		1
-+
- /* Common API to check TDX support in decompression and common kernel code. */
- bool is_tdx_guest(void);
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 100;
  
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index e44e55d1e519..13303bfdfdd1 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -3,6 +3,14 @@
+ 	return 0;
+@@ -226,7 +224,7 @@ nouveau_backlight_init(struct drm_connector *connector)
+ 	struct nouveau_encoder *nv_encoder = NULL;
+ 	struct nvif_device *device = &drm->client.device;
+ 	char backlight_name[BL_NAME_SIZE];
+-	struct backlight_properties props = {0};
++	struct backlight_properties props = { .type = BACKLIGHT_RAW, 0 };
+ 	const struct backlight_ops *ops;
+ 	int ret;
  
- #include <asm/tdx.h>
- #include <asm/cpufeature.h>
-+#include <linux/cpu.h>
-+#include <asm/tdx.h>
-+#include <asm/vmx.h>
-+
-+static struct {
-+	unsigned int gpa_width;
-+	unsigned long attributes;
-+} td_info __ro_after_init;
- 
- static inline bool cpuid_has_tdx_guest(void)
- {
-@@ -26,6 +34,23 @@ bool is_tdx_guest(void)
- }
- EXPORT_SYMBOL_GPL(is_tdx_guest);
- 
-+static void tdx_get_info(void)
-+{
-+	register long rcx asm("rcx");
-+	register long rdx asm("rdx");
-+	register long r8 asm("r8");
-+	long ret;
-+
-+	asm volatile(TDCALL
-+		     : "=a"(ret), "=c"(rcx), "=r"(rdx), "=r"(r8)
-+		     : "a"(TDINFO)
-+		     : "r9", "r10", "r11", "memory");
-+	BUG_ON(ret);
-+
-+	td_info.gpa_width = rcx & GENMASK(5, 0);
-+	td_info.attributes = rdx;
-+}
-+
- void __init tdx_early_init(void)
- {
- 	if (!cpuid_has_tdx_guest())
-@@ -33,5 +58,7 @@ void __init tdx_early_init(void)
- 
- 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
- 
-+	tdx_get_info();
-+
- 	pr_info("TDX guest is initialized\n");
- }
 -- 
-2.25.1
+2.29.2
 
