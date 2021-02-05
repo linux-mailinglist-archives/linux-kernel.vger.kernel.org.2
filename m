@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE36311A66
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD3D311A80
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhBFDoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S232420AbhBFDva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhBFCsK (ORCPT
+        with ESMTP id S230525AbhBFCx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:48:10 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F923C08EC28
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:27:10 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 78so5101600ybn.14
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=0bK1cCqgN588qufpQS/jjMkFLqvM+XaA6lencJh5Esw=;
-        b=pd0J5a0Gj6OJSYp7XH9+FNQHPBJdLZKzDSYwPK5u1ibnaAHv+7CWag8ijunOE9TunY
-         rfH4kJBJkTaXTV9oJb29EtaGVzAhamAsrUpD9WxBP9zdpVN+VSy75zOwQ8X3ZfAdhLMe
-         mDKrHkXJdOvKIScsXP0LwxtmU+0Z8CAngf3uWgzTxFHgVYCjuL8rAz4Vsox/6LUAxzW5
-         MRcdF+4usBPhWiIaGf4NAtDC1+btGYzFBfT9G0+ShzhkBywErl48rl5a4pOA+2aiWGVY
-         8M7h6tRlVXuW8kVZ+qFMkd2OawDjkeFzk26X1oEdg4TO44R/lohfBKQybn9mqBUar5JT
-         uqIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=0bK1cCqgN588qufpQS/jjMkFLqvM+XaA6lencJh5Esw=;
-        b=cACPBBaQCAv8nsNwPUi0CJAtUa1MDfzqyjV128I2nxGAo25+yV3EkfxEC1YByOgkC0
-         7XPqxzJdJp1QSksFu/kxGP6jXZa6eKub3GjulzG5hJnsXEdD+gtJ7/8V9NY1bkWbBJ0v
-         aMAsXgTpTbVTa5zr2AiSzC1oGZRYNjgNaNOSZIsHj6+dQxsqNtuQNB6HmqWB7nxzbFvt
-         Q3ZPXxaE8W1+w/3QsDEFYLBBj6pq7famhSFhru+e8qV7m0a+iQGbs4uOGk5NggyrnZQD
-         qnonNBPwgZmjPnlgUz1RjuS3ne5gKEC7exP+B1erpqBO6rhW0ySiN0wTX0BOclRXqDx9
-         HjKA==
-X-Gm-Message-State: AOAM530xlB76tB83gKJ1U+5/JfMnjhgHQcZvmHO6wiUb3jVYYSSEzoBL
-        ln97AIXerJ5Kq0hjQClLctC/gGAqPw6RI+E=
-X-Google-Smtp-Source: ABdhPJw99YDc8d0ycmQvA2pScnXjqnl/G4/xLF7whBdxq6B/zNO/ve0DpZDnU/PkkiSIcO/DWD8tNvRuJW0clJs=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6d36:b798:55d7:f5c5])
- (user=saravanak job=sendgmr) by 2002:a25:743:: with SMTP id
- 64mr8649867ybh.333.1612564029679; Fri, 05 Feb 2021 14:27:09 -0800 (PST)
-Date:   Fri,  5 Feb 2021 14:26:44 -0800
-In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
-Message-Id: <20210205222644.2357303-9-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v4 8/8] clk: Mark fwnodes when their clock provider is added/removed
-From:   Saravana Kannan <saravanak@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 5 Feb 2021 21:53:28 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD08C03BFFC;
+        Fri,  5 Feb 2021 14:27:01 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612564020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VadslTTd+2N1rTvdy4wdiu4OS+/fi59Fn5i0loWcZCI=;
+        b=cvaRnSQfaldfyTZrh9hwF4XpLuxM42vLwC92tAfeOnixBjonYDcx61OsV9PTWWQ1ZHB26y
+        aGbDu6J4PkF0/+xJwYytkbbisJwoJowJeNEsoRhDo1wBvWYNL5ENg8ydDZ9NN//SiSw3z/
+        iWGpSWN4IJtBn1u7/EQhn8Ql9Bd7TpVYeo1dgESYtrgV0bO8yhpCGha4pwktRNCNt1aS6l
+        kujYc9is12XLVgHf+LhdQeASkxkF5vJPqb88MBlNd8dvfYb27HQ82/lt+Jz0kxGhNn5C12
+        M6x+8u/bF7t5E18DsC/v+iXeDiOUbaj0sQpiCc9b5RCt/6tbOnevYngEvUzN0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612564020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VadslTTd+2N1rTvdy4wdiu4OS+/fi59Fn5i0loWcZCI=;
+        b=Vu8aiJ5kKikjvjrDFS2pX1/kUhU60dKVlhHqMlfKorK2VmvnQ6tvI+jqLJICrsVeVgxZ24
+        JU7asqv0T7JfaMBA==
+To:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, frederic@kernel.org,
+        juri.lelli@redhat.com, abelits@marvell.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping CPUs
+In-Reply-To: <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+References: <20200625223443.2684-1-nitesh@redhat.com> <20200625223443.2684-2-nitesh@redhat.com> <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com> <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de> <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de> <20210204181546.GA30113@fuller.cnet> <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com> <20210204190647.GA32868@fuller.cnet> <d8884413-84b4-b204-85c5-810342807d21@redhat.com> <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 05 Feb 2021 23:26:59 +0100
+Message-ID: <87v9b66tho.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows fw_devlink to recognize clock provider drivers that don't
-use the device-driver model to initialize the device. fw_devlink will
-use this information to make sure consumers of such clock providers
-aren't indefinitely blocked from probing, waiting for the power domain
-device to appear and bind to a driver.
+On Fri, Feb 05 2021 at 23:23, Thomas Gleixner wrote:
+> On Thu, Feb 04 2021 at 14:17, Nitesh Narayan Lal wrote:
+>> On 2/4/21 2:06 PM, Marcelo Tosatti wrote:
+>>>>> How about adding a new flag for isolcpus instead?
+>>>>>
+>>>> Do you mean a flag based on which we can switch the affinity mask to
+>>>> housekeeping for all the devices at the time of IRQ distribution?
+>>> Yes a new flag for isolcpus. HK_FLAG_IRQ_SPREAD or some better name.
+>>
+>> Does sounds like a nice idea to explore, lets see what Thomas thinks about it.
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/clk/clk.c | 3 +++
- 1 file changed, 3 insertions(+)
+<.SNIP.>
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 8c1d04db990d..27ff90eacb1f 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4555,6 +4555,8 @@ int of_clk_add_provider(struct device_node *np,
- 	if (ret < 0)
- 		of_clk_del_provider(np);
- 
-+	fwnode_dev_initialized(&np->fwnode, true);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(of_clk_add_provider);
-@@ -4672,6 +4674,7 @@ void of_clk_del_provider(struct device_node *np)
- 	list_for_each_entry(cp, &of_clk_providers, link) {
- 		if (cp->node == np) {
- 			list_del(&cp->link);
-+			fwnode_dev_initialized(&np->fwnode, false);
- 			of_node_put(cp->node);
- 			kfree(cp);
- 			break;
--- 
-2.30.0.478.g8a0d178c01-goog
+> So I'm going to revert this commit because it _IS_ broken _AND_ useless
+> and does not solve anything it claims to solve.
 
+And no. HK_FLAG_IRQ_SPREAD is not going to solve anything either.
+
+Thanks,
+
+        tglx
