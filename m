@@ -2,89 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7BE3116F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AFF311696
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbhBEXVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbhBEO0c (ORCPT
+        id S232395AbhBEXGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:06:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20427 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232734AbhBEOfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:26:32 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ECDC0617AA;
-        Fri,  5 Feb 2021 08:04:09 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id sa23so12787095ejb.0;
-        Fri, 05 Feb 2021 08:04:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
-        b=l/dzw7ifuNU24tZ6TXySAhV2vGO0CPg+7/Et9s1SxjCL4d9Nl33+Rw0jIimvXgRn+z
-         zDakgbxfwnjVO3AwcCqEc3VarFa1CBpq5/P0OsYi1NBVx3qXExOIxjGFSHtYSh68gMS4
-         Eve2H+tgiVQbHqWXyFfi3uzMbDy53BMdiIwFAM+0v+dlumZp9R1MMb3nhMwQy0vpGujS
-         XfYem9f7CG3lpYESGx0xVQntrt2mQJ0F3+TEJdhIE3p+HR0bH9ssiG73G4bSAgPKHh8H
-         ZbTkH5qjthgrh3GTKmk+WU7bLOFin0A79HZVM2SjlxTKJyBvvlxZEV42Lz++2tgyy7er
-         /Ajg==
+        Fri, 5 Feb 2021 09:35:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612541582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5zJF7iuXnudexlnvrDsie00riA//JRoTFejPvAO5inY=;
+        b=bIAk64PQL1192TyrX9iqSZ+5lpks9a7axEBrGUG6I7dHuLp9ZAN1LjKsIpd95qyzAslvIc
+        lEAeYFDg87N3/WNmD39QrtIjQr6dXtSF1ZDmEmQl+TQ0lY+vLQEYATnarCOJBSE7Cz/1ec
+        XwZZFBgQqzVyVCwU0B2fKBK8mFkcN+Q=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-NYP2C6oCMpuewEmkpMzhcA-1; Fri, 05 Feb 2021 09:11:32 -0500
+X-MC-Unique: NYP2C6oCMpuewEmkpMzhcA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5so3031490wmq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 06:11:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
-        b=hTOWdfSc2sD5DZwdhYXs1Wbe+/4radVG2F+MUH2s839umyGTO7vVMSaLDwzFAjR3Ne
-         vyOiZIlf8N8pR49WwB/8Pko//PRmyi8XNh+0lj16wDrV0hclPnXBKAHk/ozgsA2ERSWc
-         urJC+sCkr91B/ehw91F1IDHJ+RU1i5rJktvk2PBDZALhsK+A4srHpdpLFoie0MWNoqsv
-         oWk0sy7SCUaK/kan+1uvVSP1RkQVHuzEin/ls/z16BPi9ohzvuAK/fw/BcIQrz6v1yoy
-         OMCQn6fWS6062xHekG0lFrvDjEIwv0VFGuYHan3j7yai8gYevOTYfyc0Qb55tqvoUQWW
-         qXJg==
-X-Gm-Message-State: AOAM531sooMTf0Dp85/BYWrQp+CSwST4vJN4lUkBUT2AbNZzJe9Jwf8C
-        ZIJzj7TOV9pRwpo+c1jPMewuTo3Txg3cELNsvrexevSE
-X-Google-Smtp-Source: ABdhPJz4c68iFt9emmCQCVE0NR6e5E0nuYYE7jDU6v3EZxjkge8aiiZNM7kql3sdPgVZ3CNhBKMRjiUgediRb51E9+U=
-X-Received: by 2002:a5d:60c6:: with SMTP id x6mr5108680wrt.85.1612534053076;
- Fri, 05 Feb 2021 06:07:33 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5zJF7iuXnudexlnvrDsie00riA//JRoTFejPvAO5inY=;
+        b=oZz+kYVr9tD6bkDyDbmsVucGGNJtJOQJQCAplcsbtEnPsvoFXryBN9B09MJdP+v2jH
+         WvIxlQShBkIv63l5OB30/1BkoY7dIzqSbB9MEWN+xExCO39RZ8hcgmRkAsx02gmjepDn
+         XIpq/5qwaOP70ZWEsYN00kiFjnHiN0Ur8fdvmUk3GC2HfiAycm8LSZLYaEcaIgZgawW2
+         RpfKdsaPisxsStJ6mODhvOlUpdMzlvuuU1rNu3w1eHAJruK7zPB8U4XfwLXp7UStSs3r
+         tpVK+NVWVGgKrVGA/TCPLd1eQd3TWEGo8KAhCTQf4ErI1mBSHTIOXInkp1VcKNaH3/cv
+         R+0Q==
+X-Gm-Message-State: AOAM533V42fz6taq20BaYxAw7IMt20iA96MJliau6qKwXaPkZ6sL1iQh
+        enOMz2V5cu8fqr10ctzu6IYfi6Z/xSTRA2nKLryS2ywmBl8aX/qReFl0g9ZX5jXQSk6RnybjrDQ
+        w6leyZLLue0Tuyg6P73jU8bXX
+X-Received: by 2002:a1c:2ed4:: with SMTP id u203mr3822673wmu.45.1612534291424;
+        Fri, 05 Feb 2021 06:11:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzSg+HHzDXB2BGX+TaLFCEKbGu1PNRXWRqnpd7Z4UyG/TKgPiXwo7pDwidZbOFLUx261YnLyg==
+X-Received: by 2002:a1c:2ed4:: with SMTP id u203mr3822642wmu.45.1612534291150;
+        Fri, 05 Feb 2021 06:11:31 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id a16sm12668023wrr.89.2021.02.05.06.11.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:11:30 -0800 (PST)
+Date:   Fri, 5 Feb 2021 09:11:26 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 08/13] vdpa: add return value to get_config/set_config
+ callbacks
+Message-ID: <20210205091123-mutt-send-email-mst@kernel.org>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+ <20210204172230.85853-9-sgarzare@redhat.com>
+ <fe6d02be-b6f9-b07f-a86b-97912dddffdc@redhat.com>
+ <20210205084847.d4pkqq2sbqs3p53r@steredhat>
 MIME-Version: 1.0
-References: <20210129195240.31871-2-TheSven73@gmail.com> <20210205124419.8575-1-sbauer@blackbox.su>
-In-Reply-To: <20210205124419.8575-1-sbauer@blackbox.su>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 5 Feb 2021 09:07:22 -0500
-Message-ID: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
- w/o dma cache snooping
-To:     Sergej Bauer <sbauer@blackbox.su>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Markus.Elfring@web.de,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        "maintainer:MICROCHIP LAN743X ETHERNET DRIVER" 
-        <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:MICROCHIP LAN743X ETHERNET DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210205084847.d4pkqq2sbqs3p53r@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergej,
+On Fri, Feb 05, 2021 at 09:48:47AM +0100, Stefano Garzarella wrote:
+> Adding Eli in the loop.
+> 
+> On Fri, Feb 05, 2021 at 11:20:11AM +0800, Jason Wang wrote:
+> > 
+> > On 2021/2/5 上午1:22, Stefano Garzarella wrote:
+> > > All implementations of these callbacks already validate inputs.
+> > > 
+> > > Let's return an error from these callbacks, so the caller doesn't
+> > > need to validate the input anymore.
+> > > 
+> > > We update all implementations to return -EINVAL in case of invalid
+> > > input.
+> > > 
+> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > > ---
+> > >  include/linux/vdpa.h              | 18 ++++++++++--------
+> > >  drivers/vdpa/ifcvf/ifcvf_main.c   | 24 ++++++++++++++++--------
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 17 +++++++++++------
+> > >  drivers/vdpa/vdpa_sim/vdpa_sim.c  | 16 ++++++++++------
+> > >  4 files changed, 47 insertions(+), 28 deletions(-)
+> > > 
+> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > > index 4ab5494503a8..0e0cbd5fb41b 100644
+> > > --- a/include/linux/vdpa.h
+> > > +++ b/include/linux/vdpa.h
+> > > @@ -157,6 +157,7 @@ struct vdpa_iova_range {
+> > >   *				@buf: buffer used to read to
+> > >   *				@len: the length to read from
+> > >   *				configuration space
+> > > + *				Returns integer: success (0) or error (< 0)
+> > >   * @set_config:			Write to device specific configuration space
+> > >   *				@vdev: vdpa device
+> > >   *				@offset: offset from the beginning of
+> > > @@ -164,6 +165,7 @@ struct vdpa_iova_range {
+> > >   *				@buf: buffer used to write from
+> > >   *				@len: the length to write to
+> > >   *				configuration space
+> > > + *				Returns integer: success (0) or error (< 0)
+> > >   * @get_generation:		Get device config generation (optional)
+> > >   *				@vdev: vdpa device
+> > >   *				Returns u32: device generation
+> > > @@ -231,10 +233,10 @@ struct vdpa_config_ops {
+> > >  	u32 (*get_vendor_id)(struct vdpa_device *vdev);
+> > >  	u8 (*get_status)(struct vdpa_device *vdev);
+> > >  	void (*set_status)(struct vdpa_device *vdev, u8 status);
+> > > -	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
+> > > -			   void *buf, unsigned int len);
+> > > -	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+> > > -			   const void *buf, unsigned int len);
+> > > +	int (*get_config)(struct vdpa_device *vdev, unsigned int offset,
+> > > +			  void *buf, unsigned int len);
+> > > +	int (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+> > > +			  const void *buf, unsigned int len);
+> > >  	u32 (*get_generation)(struct vdpa_device *vdev);
+> > >  	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
+> > > @@ -329,8 +331,8 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> > >  }
+> > > -static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
+> > > -				   void *buf, unsigned int len)
+> > > +static inline int vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
+> > > +				  void *buf, unsigned int len)
+> > >  {
+> > >          const struct vdpa_config_ops *ops = vdev->config;
+> > > @@ -339,8 +341,8 @@ static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
+> > >  	 * If it does happen we assume a legacy guest.
+> > >  	 */
+> > >  	if (!vdev->features_valid)
+> > > -		vdpa_set_features(vdev, 0);
+> > > -	ops->get_config(vdev, offset, buf, len);
+> > > +		return vdpa_set_features(vdev, 0);
+> > > +	return ops->get_config(vdev, offset, buf, len);
+> > >  }
+> > >  /**
+> > > diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> > > index 7c8bbfcf6c3e..f5e6a90d8114 100644
+> > > --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> > > +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> > > @@ -332,24 +332,32 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
+> > >  	return IFCVF_QUEUE_ALIGNMENT;
+> > >  }
+> > > -static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
+> > > -				  unsigned int offset,
+> > > -				  void *buf, unsigned int len)
+> > > +static int ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
+> > > +				 unsigned int offset,
+> > > +				 void *buf, unsigned int len)
+> > >  {
+> > >  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> > > -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
+> > > +	if (offset + len > sizeof(struct virtio_net_config))
+> > > +		return -EINVAL;
+> > > +
+> > >  	ifcvf_read_net_config(vf, offset, buf, len);
+> > > +
+> > > +	return 0;
+> > >  }
+> > > -static void ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
+> > > -				  unsigned int offset, const void *buf,
+> > > -				  unsigned int len)
+> > > +static int ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
+> > > +				 unsigned int offset, const void *buf,
+> > > +				 unsigned int len)
+> > >  {
+> > >  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> > > -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
+> > > +	if (offset + len > sizeof(struct virtio_net_config))
+> > > +		return -EINVAL;
+> > > +
+> > >  	ifcvf_write_net_config(vf, offset, buf, len);
+> > > +
+> > > +	return 0;
+> > >  }
+> > >  static void ifcvf_vdpa_set_config_cb(struct vdpa_device *vdpa_dev,
+> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > index 029822060017..9323b5ff7988 100644
+> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > @@ -1796,20 +1796,25 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+> > >  	ndev->mvdev.status |= VIRTIO_CONFIG_S_FAILED;
+> > >  }
+> > > -static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
+> > > -				 unsigned int len)
+> > > +static int mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
+> > > +				unsigned int len)
+> > >  {
+> > >  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > >  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > -	if (offset + len < sizeof(struct virtio_net_config))
+> > > -		memcpy(buf, (u8 *)&ndev->config + offset, len);
+> > > +	if (offset + len > sizeof(struct virtio_net_config))
+> > > +		return -EINVAL;
+> > 
+> > 
+> > It looks to me we should use ">=" here?
+> 
+> 
+> Ehmm, I think it was wrong before this patch. If 'offset + len' is equal to
+> 'sizeof(struct virtio_net_config)', should be okay to copy, no?
+> 
+> I think it's one of the rare cases where the copy and paste went well :-)
+> 
+> Should I fix this in a separate patch?
+> 
+> Thanks,
+> Stefano
 
-On Fri, Feb 5, 2021 at 7:44 AM Sergej Bauer <sbauer@blackbox.su> wrote:
->
-> Hi Sven
-> I can confirm great stability improvement after your patch
-> "lan743x: boost performance on cpu archs w/o dma cache snooping".
->
-> Test machine is Intel Pentium G4560 3.50GHz
-> lan743x with rejected virtual phy 'inside'
+Sure.
 
-Interesting, so the speed boost patch seems to improve things even on Intel...
-
-Would you be able to apply and test the multi-buffer patch as well?
-To do that, you can simply apply patches [2/6] and [3/6] on top of
-what you already have.
-
-Keeping in mind that Bryan has identified an issue with the above
-patch, which will get fixed in v2. So YMMV.
