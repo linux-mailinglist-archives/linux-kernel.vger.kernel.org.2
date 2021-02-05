@@ -2,112 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC14310FAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C784310FAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhBEQbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:31:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
+        id S233691AbhBEQaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233346AbhBEQMt (ORCPT
+        with ESMTP id S233436AbhBEQOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:12:49 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C785C0613D6;
-        Fri,  5 Feb 2021 09:54:31 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id F3B1A1280710;
-        Fri,  5 Feb 2021 09:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612547671;
-        bh=PE2KsD5qLssJPf2TOCMDQXfom48gfBf0PZCJ8+JzFRI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=wF8YwJT/b7g2SVeBvvLJKFESDGEizeKVxIAIxmHBnIT0QFk4QS9fny6G51iG6LSSw
-         7zt+d8VZltbAq49nitSKEoNscSgqJYRHg5v8/LWRcIfLITMAyezfceRTkcoxiKkiOS
-         hFnNqxO+1g7HXqrFOWeQkG9AU2TFglCMfUKWG2WE=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WWDtKxxITTrK; Fri,  5 Feb 2021 09:54:30 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 5A9F312806FA;
-        Fri,  5 Feb 2021 09:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612547670;
-        bh=PE2KsD5qLssJPf2TOCMDQXfom48gfBf0PZCJ8+JzFRI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=uPHJZTPKFy1jq3i18W1/GpQwkxEDJ0ACwi2RbhJpptBO25WnDNxX2wj9Q22E/6jg8
-         Am85OBURiNgmgQV9lpPQOgVYw803pGqO8cp8122hNdAA2gN7VW6KMf1lNFb5kO6RMB
-         LEqbKkpuEz1Kn/HcLr1gxk6IgZ8vgftAbDNGfFQE=
-Message-ID: <89892a6152826e89276126fd2688b7c767484f41.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is
- still valid
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Date:   Fri, 05 Feb 2021 09:54:29 -0800
-In-Reply-To: <20210205172528.GP4718@ziepe.ca>
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
-         <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
-         <7308e5e9f51501bd92cced8f28ff6130c976b3ed.camel@HansenPartnership.com>
-         <YByrCnswkIlz1w1t@kernel.org>
-         <ee4adfbb99273e1bdceca210bc1fa5f16a50c415.camel@HansenPartnership.com>
-         <20210205172528.GP4718@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 5 Feb 2021 11:14:03 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0826CC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:55:44 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id r2so7532283ybk.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:55:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oV4/QNdvW7WFTevTUWsONkMbG/ycxO7GQ/aS51Zg8gI=;
+        b=adzhAHp1dsOLvAToCUa9H3O72uB2seSUhl2fvtC3P9AKpBJntZskib7NOxh7/US4Ar
+         TbGM8tZyB3VWlSSuVZGy2JyJpSTsF++ax7cK2JCd1wEX3YsVI9Lw11mU0e2Myrud7cm9
+         32VCGpuZ1DgxehxU/6uTwkYkKcdOnYJw/sCCAJYUvCScXTs2G7X2D+SH4de2HAcbAj9M
+         /aeFHpWIk0++7ckD4hgif5vb59uRYxwWmRj/6mpS7blv+B+0EVVkN1/3RA9HVVg5hvBy
+         UYfEKWtZxmWwVtJ/P7LSuaqvB36HtSXCxZ/p16V4Q57//EPmhthEHAPtSDRNH0MWnNtr
+         Vq4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oV4/QNdvW7WFTevTUWsONkMbG/ycxO7GQ/aS51Zg8gI=;
+        b=LmR2lODExreXEeuck/DevoQcJXpf+tafRHdFGlIY6DF3I/Za4R7wpmTcCxid31b1G0
+         /yViZ1HwwMO3R/9zKQYzG0YX8SIpf2TejjsZDPc72dW6Nu4+trJ3HC3Y+wpgoLXn/6Lu
+         Li28eT5dPvBFK2PTVDoOYpWFHV8ixqui4MYtHlgeIHqBbKhhbp3EH9s5Oop+5dtsUgKX
+         jNGUZ+n2qEH0Q88B0Hpp9NH8BCITthP5U52qkQbYqNMbWfqvjD5mcWlkM95T8EpoGIpH
+         0aYEGEHSpw3LrWxoa7yZHUw9cUjiAb11PTM7F+z6vwIXZ0XuuOebkGLI5tVl0H1jfpmy
+         WcQQ==
+X-Gm-Message-State: AOAM531EkF1iTPDqDT48M51MwhRw+CxvSOIirYf4JlV9HCEi/8IQ687Z
+        a8dFDXtsITotK6t9EsqCAZ3woxlF85VbyJA8JCaykA==
+X-Google-Smtp-Source: ABdhPJyNX34LAxLksXePsh3ybjrClbTuxGsgWuv66hGN2ejer/+KOBK502MCRpGNzAJPlJgDlkTg+3zqgyze5osAMvI=
+X-Received: by 2002:a25:718b:: with SMTP id m133mr8509524ybc.412.1612547744089;
+ Fri, 05 Feb 2021 09:55:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
+ <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+ <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+ <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com>
+ <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com> <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 5 Feb 2021 09:55:08 -0800
+Message-ID: <CAGETcx93cee=aH+cOyf-xmYGSHcn6AfBHC=fOw7By6=8JzT56Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 13:25 -0400, Jason Gunthorpe wrote:
-> On Fri, Feb 05, 2021 at 08:48:11AM -0800, James Bottomley wrote:
-> > > Thanks for pointing this out. I'd strongly support Jason's
-> > > proposal:
-> > > 
-> > > https://lore.kernel.org/linux-integrity/20201215175624.GG5487@ziepe.ca/
-> > > 
-> > > It's the best long-term way to fix this.
-> > 
-> > Really, no it's not.  It introduces extra mechanism we don't need.
-> > To recap the issue: character devices already have an automatic
-> > mechanism which holds a reference to the struct device while the
-> > character node is open so the default is to release resources on
-> > final
-> > put of the struct device.
-> 
-> The refcount on the struct device only keeps the memory alive, it
-> doesn't say anything about the ops. We still need to lock and check
-> the ops each and every time they are used.
+On Fri, Feb 5, 2021 at 9:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Fri, Feb 5, 2021 at 6:20 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Fri, Feb 5, 2021 at 2:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+> > > > > <m.szyprowski@samsung.com> wrote:
+> > > > > > On 04.02.2021 22:31, Saravana Kannan wrote:
+> > > > > > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> > > > > > > <m.szyprowski@samsung.com> wrote:
+> > > > > > >> On 21.01.2021 23:57, Saravana Kannan wrote:
+> > > > > > >>> This allows fw_devlink to create device links between consumers of an
+> > > > > > >>> interrupt and the supplier of the interrupt.
+> > > > > > >>>
+> > > > > > >>> Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > >>> Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > > > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > > >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> > > > > > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> > > > > > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> > > > > > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> > > > > > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> > > > > > > I grepped around and it looks like the final board file is this or
+> > > > > > > whatever includes it?
+> > > > > > > arch/arm64/boot/dts/arm/juno-base.dtsi
+> > > > > > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> > > > > > > This patch just finds the interrupt-parent and then tries to use that
+> > > > > > > as a supplier if "interrupts" property is listed. But the only
+> > > > > > > interrupt parent I can see is:
+> > > > > > >          gic: interrupt-controller@2c010000 {
+> > > > > > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> > > > > > >
+> > > > > > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> > > > > > > a NOP since those suppliers are never devices and are ignored.
+> > > > > > > $ git grep "arm,gic-400" -- drivers/
+> > > > > > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> > > > > > >
+> > > > > > > This doesn't make any sense. Am I looking at the right files? Am I
+> > > > > > > missing something?
+> > > > > >
+> > > > > > Okay, I've added displaying a list of deferred devices when mounting
+> > > > > > rootfs fails and got following items:
+> > > > > >
+> > > > > > Deferred devices:
+> > > > > > 18000000.ethernet        platform: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 1c050000.mmci    amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 1c1d0000.gpio    amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 2b600000.iommu   platform: probe deferral - wait for supplier
+> > > > > > scpi-power-domains
+> > > > > > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > > > > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > > > > 1c060000.kmi     amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 1c070000.kmi     amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 1c170000.rtc     amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > 1c0f0000.wdt     amba: probe deferral - supplier
+> > > > > > bus@8000000:motherboard-bus not ready
+> > > > > > gpio-keys
+> > > > > > Kernel panic - not syncing: VFS: Unable to mount root fs on
+> > > > > > unknown-block(0,0)
+> > > > > >
+> > > > > > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> > > > > > list, so it looks that device core added a link to something that is not
+> > > > > > a platform device...
+> > > >
+> > > > Probe deferred devices (even platform devices) not showing up in that
+> > > > list is not unusual. That's because devices end up on that list only
+> > > > after a driver for them is matched and then it fails.
+> > > >
+> > > > > Lemme guess: bus@8000000 is a simple bus, but it has an
+> > > > > interrupt-map, and the devlink code doesn't follow the mapping?
+> > > > >
+> > > >
+> > > > No, what's happening is that (and this is something I just learned)
+> > > > that if a parent has an "#interrupt-cells" property, it becomes your
+> > > > interrupt parent. In this case, the motherboard-bus (still a platform
+> > > > device) is the parent, but it never probes (because it's simple-bus
+> > > > and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
+> > > > this mmci device is marked as a consumer of this bus (while still a
+> > > > grand-child). Yeah, I'm working on patches (multiple rewrites) to take
+> > > > care of cases like this.
+> > >
+> > > One more reason to scrap the different handling of "simple-bus" and
+> > > "simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
+> > > platform device driver, for both? (like I originally intended ;-)
+> >
+> > I'm not sure if this will cause more issues since people are used to
+> > simple-bus not needing a driver. I'm afraid to open that pandora's
+> > box. Maybe last resort if I don't have any other options.
+> >
+> > But keeping that aside, I'm confused how interrupts are even working
+> > if the parent is a DT node with no driver (let alone a device). Any
+> > ideas on what's going on or what I'm misunderstanding?
+>
+> No driver is needed, as the interrupts are just translated by the map,
+> and passed to another interrupt controller, which does have a driver.
+>
+> Cfr. Section 2.4.3 "Interrupt Nexus Properties" in the DeviceTree
+> Specification (https://www.devicetree.org/).
+>
 
-I think this is the crux of our disagreement: I think the ops doesn't
-matter because to call try_get_ops you have to have a chip structure
-and the only way you get a chip structure is if you hold a device
-containing it, in which case the device hold guarantees the chip can't
-be freed.  Or if you pass in TPM_ANY_NUM to an operation which calls 
-tpm_chip_find_get() which iterates the idr to find a chip under the idr
-lock.  If you find a chip device at the idr, you're guaranteed it
-exists, because elimination of it is the first thing the release does
-and if you find a dying dev (i.e. the release routine blocks on the idr
-mutex trying to kill the chip attachment), try_get_ops() fails because
-the ops are already NULL.
+Yeah, I need to add interrupt-map support. Sigh. Only so many things I
+can fix at a time. Let me know if you want to help.
 
-In either case, I think you get returned a device to which you hold a
-reference.  Is there any other case where you can get a chip without
-also getting a device reference?
-
-I'll answer the other point in a separate email, but I think the
-principle sounds OK: we could do the final put right after we del the
-char devices because that's called in the module release routine and
-thus not have to rely on the devm actions which, as you say, are an
-annoying complication.
-
-James
-
-
+-Saravana
