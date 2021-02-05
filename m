@@ -2,63 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C40310E6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D91B310E5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbhBEPck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        id S233264AbhBEP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhBEP1h (ORCPT
+        with ESMTP id S229725AbhBEP1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:27:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF96C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:09:18 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612544856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gQFB7dmw4+3vdRIHDm/XbDrP844LNmQuHfHCy0vCXm8=;
-        b=ceEePKsGTssihu7M/4TE++AHEHeVu24gYxGrOsl0LMMhMcWiYpR7h0BGBGO0klDyWqvJdI
-        Lhx/JZBnz91zgqE3C3Ce50beu1VwlAnL8Bv8DZA0Q8geShvgMDWdgVulTGL2N9oH2S8Ph8
-        RAopcdemQNhU/NRlCMCEJBZ0xD0FHCltp4KtH/yIvZ0lp9BqVYUoFn7SWq4XC2ViTJJODZ
-        XyhGFczUAACH34sY/bo1jSbl+rv2aart7CqbEyguMAE7JrSdZ6QaJFacBxh6YJlZ+bU3v3
-        l2btkjgpEQWuPMwf5TrTEgCOBHaJhkDzavYy78MWbNsI8M4RzUrT8C/4nRaaTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612544856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gQFB7dmw4+3vdRIHDm/XbDrP844LNmQuHfHCy0vCXm8=;
-        b=wM0sajUxZgHRLiJtsFCMwL/CxlynMJNfle78OWeSxk1mPb0j/5XzSyUJ/saZdlwgZoyoW/
-        yJT4Zhw4MFC8ZvDg==
-To:     Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org
-Subject: Re: [PATCH] alarmtimer: Do not mess with an enqueued hrtimer
-In-Reply-To: <1609997600-13503-1-git-send-email-lirongqing@baidu.com>
-References: <1609997600-13503-1-git-send-email-lirongqing@baidu.com>
-Date:   Fri, 05 Feb 2021 18:07:35 +0100
-Message-ID: <87o8gy8mug.fsf@nanos.tec.linutronix.de>
+        Fri, 5 Feb 2021 10:27:12 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CECC0617A9
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:08:12 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id RV8B2400K4C55Sk06V8BMq; Fri, 05 Feb 2021 18:08:11 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l84aZ-003VXF-9p; Fri, 05 Feb 2021 18:08:11 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l84aY-008D0v-FS; Fri, 05 Feb 2021 18:08:10 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Greg Kroah-Hartman <gregkh@suse.de>,
+        Henk Vergonet <Henk.Vergonet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] uapi: map_to_7segment: Update example in documentation
+Date:   Fri,  5 Feb 2021 18:08:09 +0100
+Message-Id: <20210205170809.1956606-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07 2021 at 13:33, Li RongQing wrote:
-> when an hrtimer is enqueued already, its expires should be not
-> changed, otherwise, this will corrupts the ordering of the
-> timerqueue RB tree, if other hrtimer is enqueued before this
-> hrtimer is restarted, whole RB tree is completely hosed
->
-> Fixes: 6cffe00f7d4e ("alarmtimer: Add functions for timerfd support")
+The device_attribute .show() and .store() methods gained an extra
+parameter in v2.6.13, but the example in the documentation for the
+7-segment header file was never updated.  Add the missing parameters.
 
-I can't see what this fixes. alarm_restart() is only invoked when the
-alarm has expired which means that the timer _cannot_ be queued.
+While at it, get rid of the (misspelled) deprecated symbolic
+permissions, and switch to DEVICE_ATTR_RW(), which was introduced in
+v3.11
 
-Thanks,
+Fixes: 54b6f35c99974e99 ("[PATCH] Driver core: change device_attribute callbacks")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ include/uapi/linux/map_to_7segment.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-        tglx
+diff --git a/include/uapi/linux/map_to_7segment.h b/include/uapi/linux/map_to_7segment.h
+index 13a06e5e966e53d2..8b02088f96e3733e 100644
+--- a/include/uapi/linux/map_to_7segment.h
++++ b/include/uapi/linux/map_to_7segment.h
+@@ -45,17 +45,22 @@
+  * In device drivers it is recommended, if required, to make the char map
+  * accessible via the sysfs interface using the following scheme:
+  *
+- * static ssize_t show_map(struct device *dev, char *buf) {
++ * static ssize_t map_seg7_show(struct device *dev,
++ *				struct device_attribute *attr, char *buf)
++ * {
+  *	memcpy(buf, &map_seg7, sizeof(map_seg7));
+  *	return sizeof(map_seg7);
+  * }
+- * static ssize_t store_map(struct device *dev, const char *buf, size_t cnt) {
++ * static ssize_t map_seg7_store(struct device *dev,
++ *				 struct device_attribute *attr, const char *buf,
++ *				 size_t cnt)
++ * {
+  *	if(cnt != sizeof(map_seg7))
+  *		return -EINVAL;
+  *	memcpy(&map_seg7, buf, cnt);
+  *	return cnt;
+  * }
+- * static DEVICE_ATTR(map_seg7, PERMS_RW, show_map, store_map);
++ * static DEVICE_ATTR_RW(map_seg7);
+  *
+  * History:
+  * 2005-05-31	RFC linux-kernel@vger.kernel.org
+-- 
+2.25.1
+
