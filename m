@@ -2,196 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CCA311392
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5777B3113B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhBEV3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:29:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhBEV2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 16:28:44 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E40C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 13:28:04 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id a16so4218794plh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 13:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aQuIxt4qvPi4mU+J/H3ohYCdk1Zq8+c6bt8dGfJG8Pw=;
-        b=M9KAfYqjvDgDhmLxL0xXu4CVhni6pxxAvxd2v/ELKrGswp12IARwV/uqMEHWiEwctn
-         Izw+OFc+zwt+12exGttKFso8ieX4K6alWxxAopLLyM874U+RevfvNJ7utSQcOvxDFuCM
-         MOcEoB28MErvU5zMoJetH3EthkYgUxs8jtvQIbsnBkxhUVJoJz9ZMjU/NB5qrIgn1Izg
-         A3BHLhozns7v1shEh7o0iFytEA8rbyw5DbiRkLFMaU+iQFOQifHGKy3YPZpn2Wm0lKxx
-         fFoV6C8KpgGiBmbHthZppBN1+I5vi/QVPoWQ4BGhs12I6AaqMnQylfZndH2csiUinspA
-         vLVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aQuIxt4qvPi4mU+J/H3ohYCdk1Zq8+c6bt8dGfJG8Pw=;
-        b=AQw8bkgLuc0TnvPnKufUiG8mZSl7TIsIec45OvMl9dyymGIqjTowQtSQO93E4DvPxg
-         luvVaRQQ+a5EviaUsSEY90kJU0lUapQCgbFZB9Vg+NBMoBZwJkSCdnkaiCxdZo6D8IHb
-         wy04DxI34J7aqyHITRnDEqME/cC6l2921MTJ7I3oUw2axojk5D5h706i/isug222p2o6
-         rZ36EVu0KT0JUub21MjGY5VcJnUd08nqIwefvR6tNdmTnbR6Gf6s78OeTdHrADv8cHOP
-         LnW3ClCDAFuKzN1APHUnb3eyTak10g29erSG1XR++7jAJ8n+JRxPpEvH32YzXS5Hmxo3
-         vTXg==
-X-Gm-Message-State: AOAM530YWfGTqbCzqC7aavdOL964V8im3xWTcdn1PrazPZueWue4SpuJ
-        2XubrTeT9ijm3a/BqiL9TNQ=
-X-Google-Smtp-Source: ABdhPJxWa/XKCsQ50GPbzWeDivRtcPtlEhfVXNu8HGKJCYoRqfZo4ZqWMGJJwtOseHuRLIQJpaVWvQ==
-X-Received: by 2002:a17:90b:4ad2:: with SMTP id mh18mr5749448pjb.137.1612560483852;
-        Fri, 05 Feb 2021 13:28:03 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:708b:34cf:3e70:176d])
-        by smtp.gmail.com with ESMTPSA id k31sm12256798pgi.5.2021.02.05.13.28.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 13:28:02 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 5 Feb 2021 13:28:01 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: cma: support sysfs
-Message-ID: <YB24YXMJOjwokDb5@google.com>
-References: <YByNU4Q7cc7gYwPh@google.com>
- <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
- <YByi/gdaGJeV/+8b@google.com>
- <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
- <YBzU5uUbwa+QIwBQ@google.com>
- <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
- <YBzkjh5nnuNiGb6Q@google.com>
- <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
- <YB1vIrgI9S/5CDxL@google.com>
- <269689b7-3b6d-55dc-9044-fbf2984089ab@nvidia.com>
+        id S229537AbhBEVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:41:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232771AbhBEO77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:59:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65B5B64FE3;
+        Fri,  5 Feb 2021 14:10:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612534222;
+        bh=Ri1yv9FwCj2BY3UclfkYxKrTZcSB8oBr6UKVF41Fx04=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=n0oNGBawf/gv7rS0W8MZrZQcqXO1YdKXYQIy5SIonr1Pf480wdTJjlmO+atihc63J
+         SrXdCGtWF2DMxHY7s4pzLJNpobRdObkJyCM5fFVg1h/XoJ6+hTYkQscb8qSEQAU492
+         CRIaDznjcmEJIhZram5gVO+KfwBA8FUYDEcCDkVg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 07/57] net: dsa: bcm_sf2: put device node before return
+Date:   Fri,  5 Feb 2021 15:06:33 +0100
+Message-Id: <20210205140656.290041582@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
+References: <20210205140655.982616732@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <269689b7-3b6d-55dc-9044-fbf2984089ab@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:25:52PM -0800, John Hubbard wrote:
-> On 2/5/21 8:15 AM, Minchan Kim wrote:
-> ...
-> > > Yes, approximately. I was wondering if this would suffice at least as a baseline:
-> > > 
-> > > cma_alloc_success   125
-> > > cma_alloc_failure   25
-> > 
-> > IMO, regardless of the my patch, it would be good to have such statistics
-> > in that CMA was born to replace carved out memory with dynamic allocation
-> > ideally for memory efficiency ideally so failure should regard critical
-> > so admin could notice it how the system is hurt.
-> 
-> Right. So CMA failures are useful for the admin to see, understood.
-> 
-> > 
-> > Anyway, it's not enough for me and orthgonal with my goal.
-> > 
-> 
-> OK. But...what *is* your goal, and why is this useless (that's what
-> orthogonal really means here) for your goal?
+From: Pan Bian <bianpan2016@163.com>
 
-As I mentioned, the goal is to monitor the failure from each of CMA
-since they have each own purpose.
+commit cf3c46631e1637582f517a574c77cd6c05793817 upstream.
 
-Let's have an example.
+Put the device node dn before return error code on failure path.
 
-System has 5 CMA area and each CMA is associated with each
-user scenario. They have exclusive CMA area to avoid
-fragmentation problem.
+Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210121123343.26330-1-bianpan2016@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/dsa/bcm_sf2.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-CMA-1 depends on bluetooh
-CMA-2 depends on WIFI
-CMA-3 depends on sensor-A
-CMA-4 depends on sensor-B
-CMA-5 depends on sensor-C
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -509,15 +509,19 @@ static int bcm_sf2_mdio_register(struct
+ 	/* Find our integrated MDIO bus node */
+ 	dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
+ 	priv->master_mii_bus = of_mdio_find_bus(dn);
+-	if (!priv->master_mii_bus)
++	if (!priv->master_mii_bus) {
++		of_node_put(dn);
+ 		return -EPROBE_DEFER;
++	}
+ 
+ 	get_device(&priv->master_mii_bus->dev);
+ 	priv->master_mii_dn = dn;
+ 
+ 	priv->slave_mii_bus = devm_mdiobus_alloc(ds->dev);
+-	if (!priv->slave_mii_bus)
++	if (!priv->slave_mii_bus) {
++		of_node_put(dn);
+ 		return -ENOMEM;
++	}
+ 
+ 	priv->slave_mii_bus->priv = priv;
+ 	priv->slave_mii_bus->name = "sf2 slave mii";
 
-With this, we could catch which module was affected but with global failure,
-I couldn't find who was affected.
 
-> 
-> Also, would you be willing to try out something simple first,
-> such as providing indication that cma is active and it's overall success
-> rate, like this:
-> 
-> /proc/vmstat:
-> 
-> cma_alloc_success   125
-> cma_alloc_failure   25
-> 
-> ...or is the only way to provide the more detailed items, complete with
-> per-CMA details, in a non-debugfs location?
-> 
-> 
-> > > 
-> > > ...and then, to see if more is needed, some questions:
-> > > 
-> > > a)  Do you know of an upper bound on how many cma areas there can be
-> > > (I think Matthew also asked that)?
-> > 
-> > There is no upper bound since it's configurable.
-> > 
-> 
-> OK, thanks,so that pretty much rules out putting per-cma details into
-> anything other than a directory or something like it.
-> 
-> > > 
-> > > b) Is tracking the cma area really as valuable as other possibilities? We can put
-> > > "a few" to "several" items here, so really want to get your very favorite bits of
-> > > information in. If, for example, there can be *lots* of cma areas, then maybe tracking
-> > 
-> > At this moment, allocation/failure for each CMA area since they have
-> > particular own usecase, which makes me easy to keep which module will
-> > be affected. I think it is very useful per-CMA statistics as minimum
-> > code change so I want to enable it by default under CONFIG_CMA && CONFIG_SYSFS.
-> > 
-> > > by a range of allocation sizes is better...
-> > 
-> > I takes your suggestion something like this.
-> > 
-> > [alloc_range] could be order or range by interval
-> > 
-> > /sys/kernel/mm/cma/cma-A/[alloc_range]/success
-> > /sys/kernel/mm/cma/cma-A/[alloc_range]/fail
-> > ..
-> > ..
-> > /sys/kernel/mm/cma/cma-Z/[alloc_range]/success
-> > /sys/kernel/mm/cma/cma-Z/[alloc_range]/fail
-> 
-> Actually, I meant, "ranges instead of cma areas", like this:
-> 
-> /<path-to-cma-data/[alloc_range_1]/success
-> /<path-to-cma-data/[alloc_range_1]/fail
-> /<path-to-cma-data/[alloc_range_2]/success
-> /<path-to-cma-data/[alloc_range_2]/fail
-> ...
-> /<path-to-cma-data/[alloc_range_max]/success
-> /<path-to-cma-data/[alloc_range_max]/fail
-> 
-> The idea is that knowing the allocation sizes that succeeded
-> and failed is maybe even more interesting and useful than
-> knowing the cma area that contains them.
-
-Understand your point but it would make hard to find who was
-affected by the failure. That's why I suggested to have your
-suggestion under additional config since per-cma metric with
-simple sucess/failure are enough.
-
-> 
-> > 
-> > I agree it would be also useful but I'd like to enable it under
-> > CONFIG_CMA_SYSFS_ALLOC_RANGE as separate patchset.
-> > 
-> 
-> I will stop harassing you very soon, just want to bottom out on
-> understanding the real goals first. :)
-> 
-
-I hope my example makes the goal more clear for you.
