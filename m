@@ -2,150 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464C33110C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DBA31109C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhBER1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:27:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233529AbhBEROn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:14:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C40E64DDD;
-        Fri,  5 Feb 2021 18:56:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612551385;
-        bh=OkkSvVZU2knJ4p+uUP/pF7UlAvILdapZPwTt6d0nZJs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f2VckE1ZDvWkIdIrvbOurhCnBuCidDOT4RIjd/B0eLV8lyPiyDbvneMsAXhrzPasR
-         78UfPWR7ac7eyLIJe9WQzjEsZyaMx3ZzeNV/Wdlf5jW4LaZkv0zOvqydcDrG1hkEry
-         Yu6pfbjMKab6rwlZRziI9FUaprMrLKFEavyXwlIiQTTAlqZAt8nGB2WIuKOgOAWbDv
-         HqUf2ArcgxA2+WPpkT7vj5g+340q/VrxbQ4tLqdZinaCk/3N5ut3LrW9X6e5RAUtx1
-         AB+X0HeUgeSVTYFi6ufpDVMGpPWZZfIteVilCbeH+BEZPbb9jEo3Z+9JnzNVlOpnfh
-         ExfAZnGHY91SA==
-Date:   Fri, 5 Feb 2021 11:56:22 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
+        id S233646AbhBERSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:18:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49558 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhBERQW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:16:22 -0500
+Date:   Fri, 05 Feb 2021 18:58:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612551483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ThxGWeqsK4d0OgDaQKX6wTkCCqd4OEQOPXa8W7M8KMI=;
+        b=lmqkb90yslJwUq6k9d3C+9W1tAXghnftslInu/5XiO8mSL66QnyNsDeaxtMcLuut3yE2BG
+        b6ocl4nR1cNYikicFujClRmLmXiJ7eMO0tORE4iot8hB0d3T37quGS7cr3RmdHVqVdpNaY
+        kYEu6vDUqoeF4D592bJBlgstNz3Ib6XpN5rnwnZeI1Xm1m989RNGQ2+DsRGBAPjHZsm2cp
+        yKuUsTC8vCj7leduNosct5NWv94SAvv3LATIVvX5t9nw7O6gZuexFhZgpTQsnpBgsnxKq6
+        38K2mI/tdXwmSLKeA5asLRAhpZqwh2rIHLS2FUD42uxTs8KsfwBrNSNjCPEK+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612551483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ThxGWeqsK4d0OgDaQKX6wTkCCqd4OEQOPXa8W7M8KMI=;
+        b=OmJcRQZ3u5CW2iQZG78S78PCvQhgme65eshriqGTihyxxXDHJwdiCXCpMohF8gFMszjVj3
+        lp4TohkwvcVOuxCg==
+From:   "tip-bot2 for Anand K Mistry" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/Kconfig: Remove HPET_EMULATE_RTC depends on RTC
+Cc:     Anand K Mistry <amistry@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86/efi: Remove EFI PGD build time checks
-Message-ID: <20210205185622.GA461042@localhost>
-References: <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
- <20210203185148.GA1711888@localhost>
- <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
- <20210204105155.GA32255@zn.tnic>
- <YBxqnosGDroAnpio@rani.riverdale.lan>
- <20210204221318.GI32255@zn.tnic>
- <YByMdh/qDEwreq6S@rani.riverdale.lan>
- <20210205113930.GD17488@zn.tnic>
+        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210204183205.1.If5c6ded53a00ecad6a02a1e974316291cc0239d1@changeid>
+References: <20210204183205.1.If5c6ded53a00ecad6a02a1e974316291cc0239d1@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205113930.GD17488@zn.tnic>
+Message-ID: <161255148297.23325.11250667185160852143.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:39:30PM +0100, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> With CONFIG_X86_5LEVEL, CONFIG_UBSAN and CONFIG_UBSAN_UNSIGNED_OVERFLOW
-> enabled, clang fails the build with
-> 
->   x86_64-linux-ld: arch/x86/platform/efi/efi_64.o: in function `efi_sync_low_kernel_mappings':
->   efi_64.c:(.text+0x22c): undefined reference to `__compiletime_assert_354'
-> 
-> which happens due to -fsanitize=unsigned-integer-overflow being enabled:
-> 
->   -fsanitize=unsigned-integer-overflow: Unsigned integer overflow, where
->   the result of an unsigned integer computation cannot be represented
->   in its type. Unlike signed integer overflow, this is not undefined
->   behavior, but it is often unintentional. This sanitizer does not check
->   for lossy implicit conversions performed before such a computation
->   (see -fsanitize=implicit-conversion).
-> 
-> and that fires when the (intentional) EFI_VA_START/END defines overflow
-> an unsigned long, leading to the assertion expressions not getting
-> optimized away (on GCC they do)...
-> 
-> However, those checks are superfluous: the runtime services mapping
-> code already makes sure the ranges don't overshoot EFI_VA_END as the
-> EFI mapping range is hardcoded. On each runtime services call, it is
-> switched to the EFI-specific PGD and even if mappings manage to escape
-> that last PGD, this won't remain unnoticed for long.
-> 
-> So rip them out.
-> 
-> See https://github.com/ClangBuiltLinux/linux/issues/256 for more info.
-> 
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Link: http://lkml.kernel.org/r/20210107223424.4135538-1-arnd@kernel.org
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+Commit-ID:     3228e1dc80983ee1f5d2e533d010b3bd8b50f0e2
+Gitweb:        https://git.kernel.org/tip/3228e1dc80983ee1f5d2e533d010b3bd8b50f0e2
+Author:        Anand K Mistry <amistry@google.com>
+AuthorDate:    Thu, 04 Feb 2021 18:32:32 +11:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 19:56:35 +01:00
 
-> ---
->  arch/x86/platform/efi/efi_64.c | 19 -------------------
->  1 file changed, 19 deletions(-)
-> 
-> diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-> index e1e8d4e3a213..8efd003540ca 100644
-> --- a/arch/x86/platform/efi/efi_64.c
-> +++ b/arch/x86/platform/efi/efi_64.c
-> @@ -115,31 +115,12 @@ void efi_sync_low_kernel_mappings(void)
->  	pud_t *pud_k, *pud_efi;
->  	pgd_t *efi_pgd = efi_mm.pgd;
->  
-> -	/*
-> -	 * We can share all PGD entries apart from the one entry that
-> -	 * covers the EFI runtime mapping space.
-> -	 *
-> -	 * Make sure the EFI runtime region mappings are guaranteed to
-> -	 * only span a single PGD entry and that the entry also maps
-> -	 * other important kernel regions.
-> -	 */
-> -	MAYBE_BUILD_BUG_ON(pgd_index(EFI_VA_END) != pgd_index(MODULES_END));
-> -	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) !=
-> -			(EFI_VA_END & PGDIR_MASK));
-> -
->  	pgd_efi = efi_pgd + pgd_index(PAGE_OFFSET);
->  	pgd_k = pgd_offset_k(PAGE_OFFSET);
->  
->  	num_entries = pgd_index(EFI_VA_END) - pgd_index(PAGE_OFFSET);
->  	memcpy(pgd_efi, pgd_k, sizeof(pgd_t) * num_entries);
->  
-> -	/*
-> -	 * As with PGDs, we share all P4D entries apart from the one entry
-> -	 * that covers the EFI runtime mapping space.
-> -	 */
-> -	BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
-> -	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
-> -
->  	pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
->  	pgd_k = pgd_offset_k(EFI_VA_END);
->  	p4d_efi = p4d_offset(pgd_efi, 0);
-> -- 
-> 2.29.2
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+x86/Kconfig: Remove HPET_EMULATE_RTC depends on RTC
+
+The RTC config option was removed in commit f52ef24be21a ("rtc/alpha:
+remove legacy rtc driver")
+
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20210204183205.1.If5c6ded53a00ecad6a02a1e974316291cc0239d1@changeid
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7b6dd10..865c1e7 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -889,7 +889,7 @@ config HPET_TIMER
+ 
+ config HPET_EMULATE_RTC
+ 	def_bool y
+-	depends on HPET_TIMER && (RTC=y || RTC=m || RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
++	depends on HPET_TIMER && (RTC_DRV_CMOS=m || RTC_DRV_CMOS=y)
+ 
+ config APB_TIMER
+ 	def_bool y if X86_INTEL_MID
