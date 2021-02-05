@@ -2,74 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697E7310362
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 022B4310366
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhBEDOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:14:35 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3004 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhBEDOb (ORCPT
+        id S229841AbhBEDR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhBEDRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:14:31 -0500
-Received: from dggeme710-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DX0pX0lsfzRBMc;
-        Fri,  5 Feb 2021 11:12:36 +0800 (CST)
-Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
- dggeme710-chm.china.huawei.com (10.1.199.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 5 Feb 2021 11:13:48 +0800
-Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
- dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2106.006;
- Fri, 5 Feb 2021 11:13:48 +0800
-From:   zhengyongjun <zhengyongjun3@huawei.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIG5ldC1uZXh0XSBuZXQ6IGNvcmU6IFJlbW92ZSBleHRy?=
- =?gb2312?Q?a_spaces?=
-Thread-Topic: [PATCH net-next] net: core: Remove extra spaces
-Thread-Index: AQHW+qKyM4DTJWHTB0+ygz3kUjqsCqpIW+AAgACIKSA=
-Date:   Fri, 5 Feb 2021 03:13:48 +0000
-Message-ID: <0617c92cb1bb41d0a5dc889df716d7b1@huawei.com>
-References: <20210204030639.14965-1-zhengyongjun3@huawei.com>
- <20210204190434.0771aa83@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210204190434.0771aa83@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.249]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 4 Feb 2021 22:17:24 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9A7C0613D6;
+        Thu,  4 Feb 2021 19:16:44 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id n15so5641156qkh.8;
+        Thu, 04 Feb 2021 19:16:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8WTNk9Xbw6EghApIXQgl/ogYtRuCwBqSCPnWZ2LdagU=;
+        b=kl220autwj+PrnjrQxTlb2/j43lozhddaVtEdxeo3Eb1olxxUNrgM27SIT2VuHAEbQ
+         UtZypHI/rURy1bC9zu6yyd6rgCtEaseSa8e/f8tSCV9L/AvOaA6Q1NquI0/7bcwOBvo/
+         n/Br77ExjxcR1sTUsdJL1mY9250CfUvUypKT4l50J0xQYcfMF4ezP8p3Sho80IY07Unz
+         dVX9H9NNI1dk35W20/lmJlEqpF19WFZQSdg7MBDLXFq0gnskmB8iH/spt3+RF0wOmCfd
+         LMEiRVaQbuURxJ5lxjaIywwxstP2rNwlDJd/ij7rSS/AKPWJxIsfEXzpynwp1jSAsYA5
+         YTTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8WTNk9Xbw6EghApIXQgl/ogYtRuCwBqSCPnWZ2LdagU=;
+        b=ArGB/OMvKF/grLkMx0TP6dNYfZ+sxX0eaY+qMbRpDVFWjQs92p1PZZqHGQ6AOAbvPr
+         nRDQdrBB5HeHbfIiPLONwjebNJ+vq1dkyyYIPSaqNyhG7MiggWvUBwChftN67DmLQI3y
+         QOs370aFu93XrjYNI85bKy4DoQI6LhNgqIqvYiE9Kb9/5I3VuHCEwL3VU9cEdDigcC7D
+         PyCmOXIc/mPWHTpNOC0VpDZK+EVI5IDyGT/cfFuTPJ2+q8D+138k2nZj3uWqUse0O/Zn
+         Llzjwk/GrxNUtuQ3GvfmlD0+gNklywVSkeBEHrARIH2z15f3n4D0WCAr0ilywOpm/ZEP
+         QPpA==
+X-Gm-Message-State: AOAM531PxAUvpsQhcr0zqctDzVmCOF3poUH/UIWdcRUntV+69tte6WGR
+        ujvxGEvN/HEKb4i7AmGsr08=
+X-Google-Smtp-Source: ABdhPJzquNM+md70FmybygGiqQluF5m3/Rm/hLyrOyr5Kt5Vk91Zinjx4QN+Nlm3uwB6RKvlBAe5dw==
+X-Received: by 2002:a37:455:: with SMTP id 82mr2590683qke.490.1612495003118;
+        Thu, 04 Feb 2021 19:16:43 -0800 (PST)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com (186-249-147-196.dynamic.desktop.com.br. [186.249.147.196])
+        by smtp.gmail.com with ESMTPSA id o45sm6842587qto.91.2021.02.04.19.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 19:16:42 -0800 (PST)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Gustavo Romero <gromero@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     Leonardo Bras <leobras.c@gmail.com>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] powerpc/kvm: Save Timebase Offset to fix sched_clock() while running guest code.
+Date:   Fri,  5 Feb 2021 00:16:24 -0300
+Message-Id: <20210205031623.222730-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmsgeW91LCBJIHdpbGwgZG8gdGhpcyBjb2RlIHN0eWxlIGNsZWFudXAgaW4gYCBuZXQvY29y
-ZS9uZWlnaGJvdXIuY2AgdG8gZml4IHRoZSB3b3JzZSBzdHlsZSBpc3N1ZXMgeW91IHNhaWQgOikN
-Cg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IEpha3ViIEtpY2luc2tpIFttYWlsdG86a3Vi
-YUBrZXJuZWwub3JnXSANCreiy83KsbzkOiAyMDIxxOoy1MI1yNUgMTE6MDUNCsrVvP7Iyzogemhl
-bmd5b25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQqzrcvNOiBkYXZlbUBkYXZlbWxv
-ZnQubmV0OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnDQrW98ziOiBSZTogW1BBVENIIG5ldC1uZXh0XSBuZXQ6IGNvcmU6IFJlbW92ZSBleHRyYSBz
-cGFjZXMNCg0KT24gVGh1LCA0IEZlYiAyMDIxIDExOjA2OjM5ICswODAwIFpoZW5nIFlvbmdqdW4g
-d3JvdGU6DQo+IERvIGNvZGluZ3N0eWxlIGNsZWFuIHVwIHRvIHJlbW92ZSBleHRyYSBzcGFjZXMu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBaaGVuZyBZb25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdl
-aS5jb20+DQo+IC0tLQ0KPiAgbmV0L2NvcmUvbmVpZ2hib3VyLmMgfCAyICstDQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQg
-YS9uZXQvY29yZS9uZWlnaGJvdXIuYyBiL25ldC9jb3JlL25laWdoYm91ci5jIGluZGV4IA0KPiA5
-NTAwZDI4YTQzYjAuLjcyZWE5NGVjOGM0YSAxMDA2NDQNCj4gLS0tIGEvbmV0L2NvcmUvbmVpZ2hi
-b3VyLmMNCj4gKysrIGIvbmV0L2NvcmUvbmVpZ2hib3VyLmMNCj4gQEAgLTE2MTgsNyArMTYxOCw3
-IEBAIHN0cnVjdCBuZWlnaF9wYXJtcyAqbmVpZ2hfcGFybXNfYWxsb2Moc3RydWN0IA0KPiBuZXRf
-ZGV2aWNlICpkZXYsDQo+ICANCj4gIAlwID0ga21lbWR1cCgmdGJsLT5wYXJtcywgc2l6ZW9mKCpw
-KSwgR0ZQX0tFUk5FTCk7DQo+ICAJaWYgKHApIHsNCj4gLQkJcC0+dGJsCQkgID0gdGJsOw0KPiAr
-CQlwLT50YmwgPSB0Ymw7DQo+ICAJCXJlZmNvdW50X3NldCgmcC0+cmVmY250LCAxKTsNCj4gIAkJ
-cC0+cmVhY2hhYmxlX3RpbWUgPQ0KDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Xg0KDQpJdCdzIGFsaWduZWQgd2l0aCB0aGUgYXNzaWdubWVudCB0byByZWFjaGFibGVfdGltZS4N
-Cg0KSSBkb24ndCBmaW5kIHRoaXMgcGFydGljdWxhcmx5IG9mZmVuc2l2ZSwgdGhlcmUgYXJlIHdv
-cnNlIHN0eWxlIGlzc3VlcyBpbiB0aGlzIGZ1bmN0aW9uLg0KDQo+ICAJCQkJbmVpZ2hfcmFuZF9y
-ZWFjaF90aW1lKE5FSUdIX1ZBUihwLCBCQVNFX1JFQUNIQUJMRV9USU1FKSk7DQoNCg==
+Before guest entry, TBU40 register is changed to reflect guest timebase.
+After exitting guest, the register is reverted to it's original value.
+
+If one tries to get the timestamp from host between those changes, it
+will present an incorrect value.
+
+An example would be trying to add a tracepoint in
+kvmppc_guest_entry_inject_int(), which depending on last tracepoint
+acquired could actually cause the host to crash.
+
+Save the Timebase Offset to PACA and use it on sched_clock() to always
+get the correct timestamp.
+
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+---
+ arch/powerpc/include/asm/kvm_book3s_asm.h | 1 +
+ arch/powerpc/kernel/asm-offsets.c         | 1 +
+ arch/powerpc/kernel/time.c                | 3 ++-
+ arch/powerpc/kvm/book3s_hv.c              | 2 ++
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S   | 2 ++
+ 5 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/include/asm/kvm_book3s_asm.h b/arch/powerpc/include/asm/kvm_book3s_asm.h
+index 078f4648ea27..e2c12a10eed2 100644
+--- a/arch/powerpc/include/asm/kvm_book3s_asm.h
++++ b/arch/powerpc/include/asm/kvm_book3s_asm.h
+@@ -131,6 +131,7 @@ struct kvmppc_host_state {
+ 	u64 cfar;
+ 	u64 ppr;
+ 	u64 host_fscr;
++	u64 tb_offset;		/* Timebase offset: keeps correct timebase while on guest */
+ #endif
+ };
+ 
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index b12d7c049bfe..0beb8fdc6352 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -706,6 +706,7 @@ int main(void)
+ 	HSTATE_FIELD(HSTATE_CFAR, cfar);
+ 	HSTATE_FIELD(HSTATE_PPR, ppr);
+ 	HSTATE_FIELD(HSTATE_HOST_FSCR, host_fscr);
++	HSTATE_FIELD(HSTATE_TB_OFFSET, tb_offset);
+ #endif /* CONFIG_PPC_BOOK3S_64 */
+ 
+ #else /* CONFIG_PPC_BOOK3S */
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index 67feb3524460..adf6648e3572 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -699,7 +699,8 @@ EXPORT_SYMBOL_GPL(tb_to_ns);
+  */
+ notrace unsigned long long sched_clock(void)
+ {
+-	return mulhdu(get_tb() - boot_tb, tb_to_ns_scale) << tb_to_ns_shift;
++	return mulhdu(get_tb() - boot_tb - local_paca->kvm_hstate.tb_offset, tb_to_ns_scale)
++			<< tb_to_ns_shift;
+ }
+ 
+ 
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index b3731572295e..c08593c63353 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3491,6 +3491,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
+ 		if ((tb & 0xffffff) < (new_tb & 0xffffff))
+ 			mtspr(SPRN_TBU40, new_tb + 0x1000000);
+ 		vc->tb_offset_applied = vc->tb_offset;
++		local_paca->kvm_hstate.tb_offset = vc->tb_offset;
+ 	}
+ 
+ 	if (vc->pcr)
+@@ -3594,6 +3595,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
+ 		if ((tb & 0xffffff) < (new_tb & 0xffffff))
+ 			mtspr(SPRN_TBU40, new_tb + 0x1000000);
+ 		vc->tb_offset_applied = 0;
++		local_paca->kvm_hstate.tb_offset = 0;
+ 	}
+ 
+ 	mtspr(SPRN_HDEC, 0x7fffffff);
+diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+index b73140607875..8f7a9f7f4ee6 100644
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -632,6 +632,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
+ 	cmpdi	r8,0
+ 	beq	37f
+ 	std	r8, VCORE_TB_OFFSET_APPL(r5)
++	std	r8, HSTATE_TB_OFFSET(r13)
+ 	mftb	r6		/* current host timebase */
+ 	add	r8,r8,r6
+ 	mtspr	SPRN_TBU40,r8	/* update upper 40 bits */
+@@ -1907,6 +1908,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+ 	beq	17f
+ 	li	r0, 0
+ 	std	r0, VCORE_TB_OFFSET_APPL(r5)
++	std	r0, HSTATE_TB_OFFSET(r13)
+ 	mftb	r6			/* current guest timebase */
+ 	subf	r8,r8,r6
+ 	mtspr	SPRN_TBU40,r8		/* update upper 40 bits */
+-- 
+2.29.2
+
