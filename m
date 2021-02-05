@@ -2,159 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFE53106FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A503106FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhBEIrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:47:14 -0500
-Received: from mail-co1nam11on2051.outbound.protection.outlook.com ([40.107.220.51]:6752
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S229698AbhBEIsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:48:01 -0500
+Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:56480
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229500AbhBEIrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:47:12 -0500
+        id S229651AbhBEIr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:47:57 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=czWrJET4FGyOE++y621eTdbkVeezUulCgcsOaBliFJztKEmW2IIqqXaDQSk1mPUN2pA+wdcUMqoVD9glB0x9qk4AbgCIV1TckjGEosoldaLDfhGARqN86wure0YZY9QXuIyWKJEF1D1y+K3aLgEvEG3mkbR/iJ8zd9UmKg2Efdk9r+Xr7FB4X0wGLUUfTT+x3wd/57bQt7eEAyHtDxQ/bxDMlBZpamOu1hEStTveqOavBfah22Zc0iVU7GuK3ZCIaVav9WzYvPz955WY0q7pQII3u23tq1R2Qu5h3TZ4xu6Drlysf3usTlzL3+SmrPZCF17m9vMYRaOlCV2HW6lZqQ==
+ b=VE20xaYq5Kz1w5oxaMvxP9A0oS9CK+p8kruHevjhcZyskfSSmrbLcMjx7934SdnAvkhx5JQGtmApwvhuFGw8VUE3YFFJrw9PedmbUSYdeyFDj6b8rUDMXcRQhj7dpZf40sfW8kTwbEqIohzfMJqmmf+PAmeiYpSzHww7lCvUPygtEpvMwIfOf5vxVVESViGZK9WRYDWM846FtloHjg01yGf7aIDGUf0S+NkLMucUF7DZvD+b84k6912Sdplu8FQ4vRAoCfRpwXVd5wUmwc7q7mF3EBpXtau2irSvW83vFXOk0IDvMdvbvnABAtFrPoOgAYT5EQfPq+zDRJADS9B/qw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EP6pq4CItDZtzXTFWszUmDr0o3zIPFdiXlIyEMlHxlM=;
- b=JB5UeUYgfa2tdQO1nlTSdr2TKtOe4+2aDN3Y1AplWXuADBn6v529B2ohJumzU/VKcqtQv3xyC7EMEyPHET4PEcxWJ2jCQl2+pfTIkoogzpIfNZt0v9/fTsrQni+2RueIc55QlNRza/FkA7opob9lTicVVMU8dCn+oCh745pwANcNOsZQumdVjdmEf/Z7ALx5EmLBgBH8Q/WCYmvTfj4N6wTSPdwk+N2fK5dE1JrBDrulZsAS2MCr4NO9hziSGwIsFHQOYrVEIxmxyv+iIvlg9pffqDGisJGoPPmcBQDc/o3IZMNRhFShXEA/Xc8N3pxXOhtccaxyhAwwCUB+iNqUEQ==
+ bh=PVnwuWvSaJi7gKWNowvjs6bBtf98dxvM09LldPsbdFM=;
+ b=ifVmW4XXH4CHiPP0L6/pEaxU+1tf5eTmRoLZh0fPP354DFEqh0TJ9Cc/jthU+BrGMfFBcfDFiTLV5MVKOu8OV4FaVRUqeEqD1fJdhSeC+Bk3y3a0XXl6z8OrJJ3QYvAAfXUUmFWD4UNBDoV9ARE7qintyKAA1UO8WkqasykVuOSMNRlNfV4zLA75BxFV5mFA7pbCB+yl1GNAqOhIjkAKxlx4Be21tbDm01Yj2+yMb0vexqAoC8JujqHEg1CE7Jq3fa9JtTw7hgnTO2uB+nrDg8eioUP93k3FJiHaDShteMt2YacqndYt062hoGtTncHg3QT7dl2MowtEThYNBPz+ZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EP6pq4CItDZtzXTFWszUmDr0o3zIPFdiXlIyEMlHxlM=;
- b=OA99V7VnWPrc0e9GPqLV0s+aZxVZafO6WktoHggwHgZVAJ6D09Xb6cHdXq+d1dmp4DtStzW3xpvGElFOvvR+657PG9hiy4uLxkU+v7GGMIcr5xpU2KZDYv0ph6jLAmz/TJ8JRFDNX0gW/3lw1yRI/TBsh5qdyEfKLmAhHxiEY/0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM5PR11MB1898.namprd11.prod.outlook.com (2603:10b6:3:114::10)
- by DM6PR11MB3689.namprd11.prod.outlook.com (2603:10b6:5:143::19) with
+ bh=PVnwuWvSaJi7gKWNowvjs6bBtf98dxvM09LldPsbdFM=;
+ b=4cgzdVQ7P1B3d8O6MZ1aa4MvLQXJWjHgmkcwrZ4mqgnL58kVdaXiAev7TB48H9xccxWREPFhcYd8l9QH9cnCKk8eb33qixKiXk8Obz3u71BSe36SDedEB1WMwfI/HbEIkN2eo6S58aaJ239Kvl9J4S4aRaGdDCbT2CAMi9Msd84=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2419.namprd12.prod.outlook.com (2603:10b6:207:44::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Fri, 5 Feb
- 2021 08:46:24 +0000
-Received: from DM5PR11MB1898.namprd11.prod.outlook.com
- ([fe80::d4c5:af6f:ddff:a34d]) by DM5PR11MB1898.namprd11.prod.outlook.com
- ([fe80::d4c5:af6f:ddff:a34d%8]) with mapi id 15.20.3825.024; Fri, 5 Feb 2021
- 08:46:24 +0000
-Subject: Re: [PATCH 2/2] can: m_can: m_can_class_allocate_dev(): remove
- impossible error return judgment
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     wg@grandegger.com, dmurphy@ti.com, sriram.dash@samsung.com,
-        kuba@kernel.org, davem@davemloft.net, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xulinsun@gmail.com
-References: <20210205072559.13241-1-xulin.sun@windriver.com>
- <20210205072559.13241-2-xulin.sun@windriver.com>
- <20210205081911.4xvabbzdtkvkpplq@hardanger.blackshift.org>
-From:   Xulin Sun <xulin.sun@windriver.com>
-Message-ID: <9cae961a-881d-8678-6ec3-0fd00c74c8ad@windriver.com>
-Date:   Fri, 5 Feb 2021 16:46:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-In-Reply-To: <20210205081911.4xvabbzdtkvkpplq@hardanger.blackshift.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Fri, 5 Feb
+ 2021 08:47:01 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3825.023; Fri, 5 Feb 2021
+ 08:47:01 +0000
+Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool
+ implementation
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=c3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
+ <20210205080621.3102035-2-john.stultz@linaro.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
+Date:   Fri, 5 Feb 2021 09:46:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210205080621.3102035-2-john.stultz@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR06CA0003.apcprd06.prod.outlook.com
- (2603:1096:202:2e::15) To DM5PR11MB1898.namprd11.prod.outlook.com
- (2603:10b6:3:114::10)
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR02CA0018.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::31) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.221] (60.247.85.82) by HK2PR06CA0003.apcprd06.prod.outlook.com (2603:1096:202:2e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 08:46:21 +0000
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR02CA0018.eurprd02.prod.outlook.com (2603:10a6:208:3e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 08:46:59 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd1eb4a9-679f-4226-286f-08d8c9b284f5
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3689:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB36891CB4D8C2855777FB369DFBB29@DM6PR11MB3689.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 354ff368-24c6-42c4-41c8-08d8c9b29af4
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2419:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB241949DF191D0078E06BEBA883B29@BL0PR12MB2419.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zc7B/kzDKHMWzC4/lugK16v7Rl58iWNG72Sqls6NwnRokhDW4MuVC2+qKzlx2tcZzfoOyD8LVE8/9HRatLnGb/jrGFAmmO5chDzNRaaDDl+zvpxFhcJW9+cExx804ETibuBk85kQWJ+lznIhSGPv6zcYDap5wxBOjU8n+yqoDZoZMCqvuba93tHrLyUhPVz+hJr5CCaMO3Tv+o5yCgr0j1rFCiQH1vJeuf5rzsL2NifieNxtjBi3sHFxXHDvrfIVNSvMzhuvL7iGXBMkL258zzgYSzjJ2Sy1zGsUTOO+0HSxiiUXuH9jpQCcNKof6Mj9coDhFX4LQY/InGvzR4pOjVCERUKUShcr36dk/3/deixiLZwNFfCdzLqLhFv4YT+SN+OMBOXoA5ulO+IKK9g2RuJLI1PYwBh2B/03oO26DXbbA/NQmapW30WgeBTSXWAI8jDKQOEUCiwcWvK+zfGb2RgK3Ggk5mcmhAwEubG7KQ0JEPMb8/Q5+Acj/86zJNSk9bV14FPbhY1jxxAijwPPLoxUWuZiCV0cn4whem7kFT9Eeq7+5duxn+jXxexGiODs4DM62tNC4IRgwsmbKWHE2+ITw9Rkr0/KcM2CdSNeVQUiMHjMeMX0wRwW4cb+D1dP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1898.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39850400004)(136003)(16576012)(66476007)(8676002)(66556008)(2906002)(6916009)(8936002)(6666004)(316002)(5660300002)(86362001)(26005)(186003)(52116002)(66946007)(6486002)(16526019)(956004)(2616005)(4326008)(44832011)(36756003)(478600001)(31696002)(7416002)(53546011)(6706004)(31686004)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cGJGQlIrUUFualZyY0wyZmpkNHpkeHhFa2dtMVpQNDFkNkczemcwSTltTkxn?=
- =?utf-8?B?ZUVVZlBpK0s3RVBQU1dUa3owaFkxcXlQVE05M3I5eDNwbXlCUnR2aTU3OWZ5?=
- =?utf-8?B?UHVIMTFNUzcwUHBzbVhyVHp5T0JmU2daS3Q0MHpSNXJ5ekJMNFRzWkJMWnUx?=
- =?utf-8?B?Qk03RWN3WUxmZDVRU1luQytleGhxU2paVVgrbzRvdDQxM2NCUWNsek1zV1Jw?=
- =?utf-8?B?V3lvYmYyekJFRXFpS3hpMWI1TDhacWVCRmR1d1VDMjByZU1ETnEwMzF0WEFW?=
- =?utf-8?B?QThjVVlNMWxNVU8ySFNLc1RxWUlRWUsvTEVCQU1pZWZaRFcwdkJ1OGZrMUk2?=
- =?utf-8?B?VG9qM0p2VDBEaHBsTy9BY0p1ZzA1bmc3ZWNydEo4TFRzNUdtek5BNWpDVXBa?=
- =?utf-8?B?Tk9CbHZheE1tWWpVNjAxSHFKZ0licDJwSUc1eEljV0VvQUVicndJMUNKWUIw?=
- =?utf-8?B?SWNsRkd3cEJYWFNiVXRnMEtPeCt3RFY3dVVWTmpuKzIxS3UzVWpCbXBST0Vk?=
- =?utf-8?B?cG5lZmR5ME9udkpaMFZ0cEt1SXorWlc1SmJRS05EMlYrTW9lQWNvclBlSGZ5?=
- =?utf-8?B?ZlYva3JHLzYycjFRQy84bEtlZjB4c1Y3ajEza2Rnbk45NmJieEpuZDhTczR0?=
- =?utf-8?B?T1liTVBpV0pRN3RBbldNWjdEdjNCQlJSMXFVZXQvSW9QOHpBVnZyWHhkVUxY?=
- =?utf-8?B?REwrdTJmUjlGU1dMYXlWd3ZYQmRYSElrM1B1MUs4WmM3OGptdFNOaURLNEE3?=
- =?utf-8?B?M0Y2WWNCOW0vT2V2ODRvQkV5K0Q3UmJuUWJqRkhhekdXNWdmMVhOeE0rU1ZL?=
- =?utf-8?B?clZBZDlBWTlSODJ3Vm1hbktnajZZb0VLQi9aelZhVVg2VkdBbjIwejNzbnRa?=
- =?utf-8?B?Q1Nodkk5ZDBEamd6OWNpMURvaFhLOUpTNFRsM2NUYlBOUWhOWFBZK2ZPU2RP?=
- =?utf-8?B?b2RKeVlpQlZnc2hHS015UFptdGc5T0VVQ3pYMGNaS1l2SXpqYVRhQS8wNlhk?=
- =?utf-8?B?d3N0NlFsODhsaWxNVnNYZXlrYlM3MHU5cCtKWWhDclppeU85VlBrQzdMeStB?=
- =?utf-8?B?eHU4ZzFMRGZOTUdjaHVWSWs4K216OGh6b2pLTnRmQnBGQmQ4Q3VpVTNjamh0?=
- =?utf-8?B?c3JPdG0weUFYdkJGZys4YksxdkJqRzc3Z21jZHp2Y0MzaHc1RDdyMjVnWDE4?=
- =?utf-8?B?UzkxQ05DR0dwc29jUFBFRjNVZkNiN3ZDRUcrbjJYa2pIc1l3OVIvU1hyVktk?=
- =?utf-8?B?TmE1MHhHclBWK3V3ZHVIekVHWkZRZDV2NXY5TXVoUDdwZFRpTEtzZ3o5bHJi?=
- =?utf-8?B?WkRpbTI2Rktxa0FEWlRtSVo4SktqdnlyWko1RnNZaFJyNUZNTjJucHFZNUJW?=
- =?utf-8?B?ZGVYY0RaOU5ydFpTVHc2Um5nWm1jTjgrWkpFRC84QzQ2TVJTQVFpdVgzODJ6?=
- =?utf-8?B?bGdwanYrd0loNHdoSithek9leE91emZ0MTYxa0FnV1d6SG9kSTJsT1ZlZUth?=
- =?utf-8?B?SmIwdEZwdTlVY3FUSytuUWVtTlFCYjV2RDhOdTRuR1hjQlZUZjB6aFM1STVU?=
- =?utf-8?B?K1RPakpDUDhiZlFnM09MeTBpK1pkQnl4ZmZ4R0hLc2Z5Sjd1c1k0Zno3UjRs?=
- =?utf-8?B?ejRZTXpaTzYvVzRkRTJFTHoyRWpKaW9RajRRL1VmYmlXQmtWZFdxRnhEWkYv?=
- =?utf-8?B?eldRZ3o3QjN3V1FJclRacGs0N1o3cW1lYVFrbXB4YlJpemdWOXRaTnBYamhw?=
- =?utf-8?Q?eDy6OD2DWwjF5Hp7rHRqH9SyWtVSHkciPsa16M7?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd1eb4a9-679f-4226-286f-08d8c9b284f5
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1898.namprd11.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: +Momtrf1jpZhr9sXMolKl8LqowZ9I9r4kScZQsl+10fuDY0zfL0AmsEH/6ud583pqMp5YCLtXusGetzToSbOGjBlYUklwGsEVEJnuLIrSvM3a5hC7Cw3FJ5pZqDg0kVB/NbGWaZCN9mPTTXY+KrBGYeolS8+tdJjt7TbIGf215WfyEsOy0fIPAuN1fn9b+/NRTFXvIWMjS81FYVCHP0n+NYb1iX7XqWElW52W0+2X2XFFfjfcy+xPO5K/yicKO6iiZ3ieWJY/7D6xQxgv8yyJwCnGqP3JW23z/3F5rLjRWk9h9NYAVxjqkNhGoNnFpdIVRcnpDvDFK91Q/PPmPCvjL+uI+5rj+x/OX1Dhu5b2StieTNJpio5LIKk7BRnfsGeKJ+5dLEWwiDHX6/ekPjyT027U+8yWaYSqKHN1CZGncZSwSnzbNqabI8o35h5zEjqeSJ2F3NPuwMtBL8U9M+nM/wuF6M/CjOdflq3o/uLSpE26+AB3ztVsgGtuKGnZ0yDLKY3seG55iyTtD08WzCb1Mp2uJ0nOPRL811RVRq4edIa2lzJsTKuHcRjsdEeSoMd9lY1xS/XjNLB097V1rwt9JXHqPhzzI8CQscRe9n8WRE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(6666004)(4326008)(8676002)(31686004)(16526019)(83380400001)(478600001)(86362001)(316002)(186003)(36756003)(66946007)(30864003)(110136005)(54906003)(66574015)(66476007)(52116002)(2906002)(6486002)(2616005)(31696002)(5660300002)(8936002)(66556008)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U1B5bm1lYWFLenpBa2NuY2JERDljUWkxVnRucEEwSERWeFhIQ1JjNFBoU1pD?=
+ =?utf-8?B?b1FoSmxuTHRNZC9mamZoSml5TzhYMWZsQ3FOdGlHa01hUEdaN1pWZnpFOE9T?=
+ =?utf-8?B?RWpJbzRFdzIvbitwbDVwL1lnRzF0RWNucW9NMUd6dWs4SlRvV0psNiswSkRr?=
+ =?utf-8?B?NHRQVDFvTWJzNWJJM2ZNeVFKVXU3MzVqWVZEdDZHRjhqbEdzVXducDlIUjFX?=
+ =?utf-8?B?SGg2UUZqOWxmY2NBMnk3SHZLVFNHa1hTcGwycUdFWStnMU4xQTRLN2I3d2dh?=
+ =?utf-8?B?TVVRVURwMTN0RkFxZVd6dENyU2w2MFZ2bDZFeW9pWGMxSFViTUJTSmkwTWd3?=
+ =?utf-8?B?VFZ4SFVqN3hJUldtSmJHUkQrZS82UW1mY2NEaCsyZnZnMHhHbVdxQk5Ecm9O?=
+ =?utf-8?B?NzYzcGc5OE1UMHlNZFd6dkpnUHF5VUx4L3BnbFdqQ3hxczhRWXF3KzNKRVQr?=
+ =?utf-8?B?TGFsVDZWT09QeHlheFJFQVA5amlXOE40bXBrajFxK2dOeFkrUG5aTXoyeG5U?=
+ =?utf-8?B?TlZEVzdqclFwRmdrSXh0RFhSSVg3TlI1SkpMc1BISmsrVkNLdjl1aHlWUW9t?=
+ =?utf-8?B?MXBJWjZrM1V6M2ZvYWpPblR4bXpCd3VBVGFLQXR2UHRlMGVTZVhnRUtZMHRL?=
+ =?utf-8?B?dUlJN2ZHL1NQeFd3VUd1RDMxR3ZUWFBFK2lNMzByL05YYUtRNVgwQWdnQThL?=
+ =?utf-8?B?SVFVRWphQlZsUWZWb0MzQTIrdUNhMnpHdjlPNWhJamdoak9hVVBpMDIzNHBy?=
+ =?utf-8?B?NkRrMFhQRVlkamZvcjUwZ0RtU29YeEU5UmkrMVUyYStOMzhMUFVQN3VNNFM1?=
+ =?utf-8?B?K0FudG5yM0JXTTQ4YUVTWWZYby8yS0IxWWh3aktKMjVxaU1UeGRXWnBKVGlH?=
+ =?utf-8?B?eG9zTjA3cmVLTmlpUGdsS2luNXA2SDVBODMyM2h6Tk5iVllnSFgrTGpPV20y?=
+ =?utf-8?B?KzNiam1tY0dRMnNLU2hybS9lL0FwY3EyYklxWTZ3MWxPcWRKWFlTSEpWQmt5?=
+ =?utf-8?B?Wkc4ZnpGaEhtc3FvSmhCTkVXcFFjZkJua2dnTWh3UitmLzFpSk9La3BvbnVY?=
+ =?utf-8?B?N3Evc0hWL0ZUWjA4K1JDUTRHRi9SR2w5VGxLMHd5M2dRWjdscFArbUowSXha?=
+ =?utf-8?B?cHJaQkpXeEozNjVBcVk2Y2JVMU1BdFJ2enlMTzBkMlAvaWVFRnN4TFo4cVAr?=
+ =?utf-8?B?Nk1yemhtNWhRenVsYXFHdk9BY1hGVy9zVlRzeXhEM1FOWEdxdW1jeXNsR0RU?=
+ =?utf-8?B?SlNMeTV6TlZQQVZybVRFVnNEbk0yMkxzME5FenVQKzRHekNRNnZBRFBGcGtE?=
+ =?utf-8?B?LzgvVGFUelkyWjBkS016TURZYUpQNUNkSGJid2twSVlkNHBuWEVRdHF2cFM2?=
+ =?utf-8?B?UnRDd2hYMUhQRVE4NnY4aUJ2SUtSWnFtK01uM0N3Y1FOcmtkK0J1U2pYcWo4?=
+ =?utf-8?B?OVA3UjF6RWRFak0xU09MYlQxVXJVODY2L0JXVEtUQXZVU25ZeWtPcTFwUk1j?=
+ =?utf-8?B?SjRtNTNzM0wycFl6dHovUGxnK01KNkRPenpmamFTbDloS1NKR3p3VXZkVzMy?=
+ =?utf-8?B?MTU2azdobnBRWExFaGY1WjhWTnk2OEc4aUZVTWdobkxPSXd2T3VQVWJPOERD?=
+ =?utf-8?B?UmtrVEdVY3VMWW0xdWJFMGgzaVRJa3gybjFURDNjNGk4bDZhMUpLSjFKNnRK?=
+ =?utf-8?B?TjlxekRyRzhnckovbHNQT3NrN1BTTks1VDByellCYll6dG90ZWs5VW5pMWN6?=
+ =?utf-8?B?WWtTVlRyS1dlUWt2VmkydndjR1ZGS0t1U0JabmprZG55VkRNRWF5aitLdUNp?=
+ =?utf-8?B?Q3ArQ1pQamk0dWxhUDBYVGw0Ui90dEhxVHltM08yVURtYi9pVkdid01pS0pL?=
+ =?utf-8?Q?PxmbTRmtMZu8O?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 354ff368-24c6-42c4-41c8-08d8c9b29af4
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 08:46:24.7185
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 08:47:01.7393
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hc+9YkPUKsP38+Cz6U6v/hfGbtY6BI0hgho2oR0T+cV4WYP2FUnyk+5rhFkZYYA7vGX4t6dR4+vBxrKJu6ptVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3689
+X-MS-Exchange-CrossTenant-UserPrincipalName: rDAdN3Qm2WkgUXbW+p5KocSClCUw/0yGnfGZ3UZdlwIWBPlrXOFWicgCPP/78xg3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2419
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/5 下午4:19, Marc Kleine-Budde wrote:
-> On 05.02.2021 15:25:59, Xulin Sun wrote:
->> If the previous can_net device has been successfully allocated, its
->> private data structure is impossible to be empty, remove this redundant
->> error return judgment. Otherwise, memory leaks for alloc_candev() will
->> be triggered.
-> Your analysis is correct, the netdev_priv() will never fail. But how
-> will this trigger a mem leak on alloc_candev()? I've removed that
-
-Hi Marc,
-
-The previous code judges the netdev_priv is empty, and then goto out. 
-The correct approach should add free_candev(net_dev) before goto.
-
-The code Like:
-
-         class_dev = netdev_priv(net_dev);
-         if (!class_dev) {
-                 dev_err(dev, "Failed to init netdev cdevate");
-+               free_candev(net_dev);
-                 goto out;
-         }
-
-Otherwise, memory leaks for alloc_candev() will be triggered.
-
-Now directly remove the impossible error return judgment to resolve the above possible issue.
-
-Thanks
-
-Xulin
-
-> statement. I'll add it back, if I've missed something.
+Am 05.02.21 um 09:06 schrieb John Stultz:
+> This adds a shrinker controlled page pool, closely
+> following the ttm_pool logic, which is abstracted out
+> a bit so it can be used by other non-ttm drivers.
 >
->> Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
-> Applied to linux-can-next/testing.
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: Ørjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>   drivers/gpu/drm/Kconfig     |   4 +
+>   drivers/gpu/drm/Makefile    |   1 +
+>   drivers/gpu/drm/page_pool.c | 220 ++++++++++++++++++++++++++++++++++++
+>   include/drm/page_pool.h     |  54 +++++++++
+>   4 files changed, 279 insertions(+)
+>   create mode 100644 drivers/gpu/drm/page_pool.c
+>   create mode 100644 include/drm/page_pool.h
 >
-> Thanks,
-> Marc
->
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 0973f408d75f..d16bf340ed2e 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -174,6 +174,10 @@ config DRM_DP_CEC
+>   	  Note: not all adapters support this feature, and even for those
+>   	  that do support this they often do not hook up the CEC pin.
+>   
+> +config DRM_PAGE_POOL
+> +	bool
+> +	depends on DRM
+> +
+>   config DRM_TTM
+>   	tristate
+>   	depends on DRM && MMU
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index fefaff4c832d..877e0111ed34 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -32,6 +32,7 @@ drm-$(CONFIG_AGP) += drm_agpsupport.o
+>   drm-$(CONFIG_PCI) += drm_pci.o
+>   drm-$(CONFIG_DEBUG_FS) += drm_debugfs.o drm_debugfs_crc.o
+>   drm-$(CONFIG_DRM_LOAD_EDID_FIRMWARE) += drm_edid_load.o
+> +drm-$(CONFIG_DRM_PAGE_POOL) += page_pool.o
+>   
+>   drm_vram_helper-y := drm_gem_vram_helper.o
+>   obj-$(CONFIG_DRM_VRAM_HELPER) += drm_vram_helper.o
+> diff --git a/drivers/gpu/drm/page_pool.c b/drivers/gpu/drm/page_pool.c
+> new file mode 100644
+> index 000000000000..2139f86e6ca7
+> --- /dev/null
+> +++ b/drivers/gpu/drm/page_pool.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+Please use a BSD/MIT compatible license if you want to copy this from 
+the TTM code.
+
+> +/*
+> + * DRM page pool system
+> + *
+> + * Copyright (C) 2020 Linaro Ltd.
+> + *
+> + * Based on the ION page pool code
+> + * Copyright (C) 2011 Google, Inc.
+> + * As well as the ttm_pool code
+> + * Copyright (C) 2020 Advanced Micro Devices, Inc.
+> + */
+> +
+> +#include <linux/freezer.h>
+> +#include <linux/list.h>
+> +#include <linux/slab.h>
+> +#include <linux/swap.h>
+> +#include <linux/sched/signal.h>
+> +#include <drm/page_pool.h>
+> +
+> +static LIST_HEAD(pool_list);
+> +static DEFINE_MUTEX(pool_list_lock);
+> +static atomic_long_t total_pages;
+> +static unsigned long page_pool_max;
+> +MODULE_PARM_DESC(page_pool_max, "Number of pages in the WC/UC/DMA pool");
+> +module_param(page_pool_max, ulong, 0644);
+> +
+> +void drm_page_pool_set_max(unsigned long max)
+> +{
+> +	/* only write once */
+> +	if (!page_pool_max)
+> +		page_pool_max = max;
+> +}
+> +
+> +unsigned long drm_page_pool_get_max(void)
+> +{
+> +	return page_pool_max;
+> +}
+> +
+> +unsigned long drm_page_pool_get_total(void)
+> +{
+> +	return atomic_long_read(&total_pages);
+> +}
+> +
+> +int drm_page_pool_get_size(struct drm_page_pool *pool)
+> +{
+> +	int ret;
+> +
+> +	spin_lock(&pool->lock);
+> +	ret = pool->count;
+> +	spin_unlock(&pool->lock);
+
+Maybe use an atomic for the count instead?
+
+> +	return ret;
+> +}
+> +
+> +static inline unsigned int drm_page_pool_free_pages(struct drm_page_pool *pool,
+> +						    struct page *page)
+> +{
+> +	return pool->free(page, pool->order);
+> +}
+> +
+> +static int drm_page_pool_shrink_one(void);
+> +
+> +void drm_page_pool_add(struct drm_page_pool *pool, struct page *page)
+> +{
+> +	spin_lock(&pool->lock);
+> +	list_add_tail(&page->lru, &pool->items);
+> +	pool->count++;
+> +	atomic_long_add(1 << pool->order, &total_pages);
+> +	spin_unlock(&pool->lock);
+> +
+> +	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
+> +			    1 << pool->order);
+
+Hui what? What should that be good for?
+
+> +
+> +	/* make sure we don't grow too large */
+> +	while (page_pool_max && atomic_long_read(&total_pages) > page_pool_max)
+> +		drm_page_pool_shrink_one();
+> +}
+> +EXPORT_SYMBOL_GPL(drm_page_pool_add);
+> +
+> +static struct page *drm_page_pool_remove(struct drm_page_pool *pool)
+> +{
+> +	struct page *page;
+> +
+> +	if (!pool->count)
+> +		return NULL;
+
+Better use list_first_entry_or_null instead of checking the count.
+
+This way you can also pull the lock into the function.
+
+> +
+> +	page = list_first_entry(&pool->items, struct page, lru);
+> +	pool->count--;
+> +	atomic_long_sub(1 << pool->order, &total_pages);
+> +
+> +	list_del(&page->lru);
+> +	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
+> +			    -(1 << pool->order));
+> +	return page;
+> +}
+> +
+> +struct page *drm_page_pool_fetch(struct drm_page_pool *pool)
+> +{
+> +	struct page *page = NULL;
+> +
+> +	if (!pool) {
+> +		WARN_ON(!pool);
+> +		return NULL;
+> +	}
+> +
+> +	spin_lock(&pool->lock);
+> +	page = drm_page_pool_remove(pool);
+> +	spin_unlock(&pool->lock);
+> +
+> +	return page;
+> +}
+> +EXPORT_SYMBOL_GPL(drm_page_pool_fetch);
+> +
+> +struct drm_page_pool *drm_page_pool_create(unsigned int order,
+> +					   int (*free_page)(struct page *p, unsigned int order))
+> +{
+> +	struct drm_page_pool *pool = kmalloc(sizeof(*pool), GFP_KERNEL);
+
+Why not making this an embedded object? We should not see much dynamic 
+pool creation.
+
+> +
+> +	if (!pool)
+> +		return NULL;
+> +
+> +	pool->count = 0;
+> +	INIT_LIST_HEAD(&pool->items);
+> +	pool->order = order;
+> +	pool->free = free_page;
+> +	spin_lock_init(&pool->lock);
+> +	INIT_LIST_HEAD(&pool->list);
+> +
+> +	mutex_lock(&pool_list_lock);
+> +	list_add(&pool->list, &pool_list);
+> +	mutex_unlock(&pool_list_lock);
+> +
+> +	return pool;
+> +}
+> +EXPORT_SYMBOL_GPL(drm_page_pool_create);
+> +
+> +void drm_page_pool_destroy(struct drm_page_pool *pool)
+> +{
+> +	struct page *page;
+> +
+> +	/* Remove us from the pool list */
+> +	mutex_lock(&pool_list_lock);
+> +	list_del(&pool->list);
+> +	mutex_unlock(&pool_list_lock);
+> +
+> +	/* Free any remaining pages in the pool */
+> +	spin_lock(&pool->lock);
+
+Locking should be unnecessary when the pool is destroyed anyway.
+
+> +	while (pool->count) {
+> +		page = drm_page_pool_remove(pool);
+> +		spin_unlock(&pool->lock);
+> +		drm_page_pool_free_pages(pool, page);
+> +		spin_lock(&pool->lock);
+> +	}
+> +	spin_unlock(&pool->lock);
+> +
+> +	kfree(pool);
+> +}
+> +EXPORT_SYMBOL_GPL(drm_page_pool_destroy);
+> +
+> +static int drm_page_pool_shrink_one(void)
+> +{
+> +	struct drm_page_pool *pool;
+> +	struct page *page;
+> +	int nr_freed = 0;
+> +
+> +	mutex_lock(&pool_list_lock);
+> +	pool = list_first_entry(&pool_list, typeof(*pool), list);
+> +
+> +	spin_lock(&pool->lock);
+> +	page = drm_page_pool_remove(pool);
+> +	spin_unlock(&pool->lock);
+> +
+> +	if (page)
+> +		nr_freed = drm_page_pool_free_pages(pool, page);
+> +
+> +	list_move_tail(&pool->list, &pool_list);
+
+Better to move this up, directly after the list_first_entry().
+
+> +	mutex_unlock(&pool_list_lock);
+> +
+> +	return nr_freed;
+> +}
+> +
+> +static unsigned long drm_page_pool_shrink_count(struct shrinker *shrinker,
+> +						struct shrink_control *sc)
+> +{
+> +	unsigned long count =  atomic_long_read(&total_pages);
+> +
+> +	return count ? count : SHRINK_EMPTY;
+> +}
+> +
+> +static unsigned long drm_page_pool_shrink_scan(struct shrinker *shrinker,
+> +					       struct shrink_control *sc)
+> +{
+> +	int to_scan = sc->nr_to_scan;
+> +	int nr_total = 0;
+> +
+> +	if (to_scan == 0)
+> +		return 0;
+> +
+> +	do {
+> +		int nr_freed = drm_page_pool_shrink_one();
+> +
+> +		to_scan -= nr_freed;
+> +		nr_total += nr_freed;
+> +	} while (to_scan >= 0 && atomic_long_read(&total_pages));
+> +
+> +	return nr_total;
+> +}
+> +
+> +static struct shrinker pool_shrinker = {
+> +	.count_objects = drm_page_pool_shrink_count,
+> +	.scan_objects = drm_page_pool_shrink_scan,
+> +	.seeks = 1,
+> +	.batch = 0,
+> +};
+> +
+> +int drm_page_pool_init_shrinker(void)
+> +{
+> +	return register_shrinker(&pool_shrinker);
+> +}
+> +module_init(drm_page_pool_init_shrinker);
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/include/drm/page_pool.h b/include/drm/page_pool.h
+> new file mode 100644
+> index 000000000000..47e240b2bc69
+> --- /dev/null
+> +++ b/include/drm/page_pool.h
+> @@ -0,0 +1,54 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+> +/*
+> + * Copyright 2020 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining a
+> + * copy of this software and associated documentation files (the "Software"),
+> + * to deal in the Software without restriction, including without limitation
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + * Authors: Christian König
+> + */
+> +
+> +#ifndef _DRM_PAGE_POOL_H_
+> +#define _DRM_PAGE_POOL_H_
+> +
+> +#include <linux/mmzone.h>
+> +#include <linux/llist.h>
+> +#include <linux/spinlock.h>
+> +
+> +struct drm_page_pool {
+> +	int count;
+> +	struct list_head items;
+> +
+> +	int order;
+> +	int (*free)(struct page *p, unsigned int order);
+> +
+> +	spinlock_t lock;
+> +	struct list_head list;
+> +};
+> +
+> +void drm_page_pool_set_max(unsigned long max);
+> +unsigned long drm_page_pool_get_max(void);
+> +unsigned long drm_page_pool_get_total(void);
+> +int drm_page_pool_get_size(struct drm_page_pool *pool);
+> +struct page *drm_page_pool_fetch(struct drm_page_pool *pool);
+> +void drm_page_pool_add(struct drm_page_pool *pool, struct page *page);
+> +struct drm_page_pool *drm_page_pool_create(unsigned int order,
+> +					   int (*free_page)(struct page *p, unsigned int order));
+> +void drm_page_pool_destroy(struct drm_page_pool *pool);
+> +
+> +#endif
+
