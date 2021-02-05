@@ -2,81 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BCE310BF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B468D310BF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhBENik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:38:40 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:45431 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBENdC (ORCPT
+        id S230383AbhBENjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:39:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42662 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230191AbhBENe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:33:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612531981; x=1644067981;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TJ1Xni7oqhJicMe/bn1BWlaG9kF212vvJiz63NgX33g=;
-  b=tV5uSzXJ2drJK+PqdfI0KSlcV4Dnk3mjHtOyAqIuBcVlbdWQKWNC4Eo2
-   hD1evorZ+4eheN8vjGC7b3Ec43lmZ43T1+TvltEqAJ8UK2/A7EDcPJy3X
-   BRZiQgq1m37IQCC4suBFK2kjYsuBbXr7v6D+MHUqrCeVyjr5ineefKVzx
-   /HIcOx94RfaNjEZhUddE0BQ1zv9Pcrmjh5Fz2rqTPakDUhVa09uS+GNq3
-   BUR/CHvTkJA+mpIlwrtM4HiCZhPIfPCi3for+2dbgVEbesXa4VOJNJ32z
-   AYKJlD/44a0+G8sli321FosKOaNcQwibQMoPPQUncGcMBWsLfctApkvOa
-   w==;
-IronPort-SDR: 8SPAgU3YWjpaUOym2T/H2rY69Knb4on0rW6QdWhP1OFUe7mz2ZNNoHtqnqDyKsIjjgrX2Nfy6t
- EDWRsWggWMJWPkxIbKPOobSH9O+BmKVZvXx86M4fNAOJtRM5NhjwW6kRYuABndCi+KTUsUE7um
- MW4PevwyCMvoynRyE4Ugf4+/cFHBOXiuuCjBazaKEm0QyVnmw50+fhUgQilC9LZfViCgULVaqx
- dqWsrpR39nzUMHLS8k64FcDfUBmNEdcPkEB2cc2gncy/BibuixtRXK3KMMRqMMhK6a4azYTZFx
- PKU=
-X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; 
-   d="scan'208";a="43072524"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Feb 2021 06:31:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 5 Feb 2021 06:31:40 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 5 Feb 2021 06:31:38 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
-        <p.yadav@ti.com>, <michael@walle.cc>
-CC:     <richard@nod.at>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
-        <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Add Global Block Unlock command
-Date:   Fri, 5 Feb 2021 15:31:33 +0200
-Message-ID: <161253178923.670759.16987268553514371903.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210121110546.382633-1-tudor.ambarus@microchip.com>
-References: <20210121110546.382633-1-tudor.ambarus@microchip.com>
+        Fri, 5 Feb 2021 08:34:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612531963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUMsU3NGZgFC5JmllXsuFgXrYMXysZpJsQ4q9x7smF0=;
+        b=JP/P++tDZdFAgwhgP9oSNUxxpsOnE9C+UtVBYlXdQSZZjLHkpUluC9LK1eVGiXMQhsE46t
+        RlnX4Wya45wu7qkLjmAKVn8Yx+Ns9P8x/uwWS/0y9TzuuN2mT/dStlmOHEwVuys6Sxtc6x
+        Lus8BRexh0GeECRHoHXCpTX6S6sMAdM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-GS9-UV3vMc6u4Iowr8f-kA-1; Fri, 05 Feb 2021 08:32:42 -0500
+X-MC-Unique: GS9-UV3vMc6u4Iowr8f-kA-1
+Received: by mail-wr1-f72.google.com with SMTP id n18so5380745wrm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:32:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cUMsU3NGZgFC5JmllXsuFgXrYMXysZpJsQ4q9x7smF0=;
+        b=ecF1QRkSU0wUO1nyKs1/D+BA8Y+Qc1rX76L0VelBYwmlj1M3Sa5MK+uBL6vFWa4jyW
+         SKSglz17H+QB86H9nZBd98lHRA8iLgvWC5SxKY6O8g4t2RdFml+fWfPdKGeclKJCpry/
+         Dux4i2nlILfKU5DaZGnjIjSF4OgFEssG9VTAK+gDS/HCuQT4S4HlIvQu+q0vqxPPCvwh
+         s92BPhmUoc2gXzPAbcoN9ND9DDVVSwxxxXEX44IqOJdAF+ZVcT40rbPw6ILbhnvjsQEV
+         7DMbhGecdbX7cPoPxS0qkBdw2JmKSHVwynyOl/ts/XfbiyEE3zhtJ9xZAo5Qj6BAY4/x
+         Q6Sg==
+X-Gm-Message-State: AOAM530RcjXkssx0VtYVMuago4lXMWJ7XeeqQWtbCepRFYcxGieEObNu
+        /IXRA6G6xsLFG4tf1HndZCiItrGhJuQZ19qPeFRBQSGImHgFZ82jeEfebaaYg2hzASJoZZo90e5
+        HbqTnA0HRIU5ZQ/LNk/xXmz8z
+X-Received: by 2002:a1c:4e13:: with SMTP id g19mr3652561wmh.55.1612531960865;
+        Fri, 05 Feb 2021 05:32:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrXwq8EuygZ5k8QiHexM1uR2jRBlALztPICjodh6e2JfoV9w4ZW4+vGzj9tQPGab0c1bYgbQ==
+X-Received: by 2002:a1c:4e13:: with SMTP id g19mr3652548wmh.55.1612531960678;
+        Fri, 05 Feb 2021 05:32:40 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id t197sm18819401wmt.3.2021.02.05.05.32.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 05:32:40 -0800 (PST)
+Date:   Fri, 5 Feb 2021 08:32:37 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/13] vhost/vdpa: remove vhost_vdpa_config_validate()
+Message-ID: <20210205083108-mutt-send-email-mst@kernel.org>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+ <20210204172230.85853-10-sgarzare@redhat.com>
+ <6919d2d4-cc8e-2b67-2385-35803de5e38b@redhat.com>
+ <20210205091651.xfcdyuvwwzew2ufo@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210205091651.xfcdyuvwwzew2ufo@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 13:05:45 +0200, Tudor Ambarus wrote:
-> The Global Block Unlock command has different names depending
-> on the manufacturer, but always the same command value: 0x98.
-> Macronix's MX25U12835F names it Gang Block Unlock, Winbond's
-> W25Q128FV names it Global Block Unlock and Microchip's
-> SST26VF064B names it Global Block Protection Unlock.
+On Fri, Feb 05, 2021 at 10:16:51AM +0100, Stefano Garzarella wrote:
+> On Fri, Feb 05, 2021 at 11:27:32AM +0800, Jason Wang wrote:
+> > 
+> > On 2021/2/5 上午1:22, Stefano Garzarella wrote:
+> > > get_config() and set_config() callbacks in the 'struct vdpa_config_ops'
+> > > usually already validated the inputs. Also now they can return an error,
+> > > so we don't need to validate them here anymore.
+> > > 
+> > > Let's use the return value of these callbacks and return it in case of
+> > > error in vhost_vdpa_get_config() and vhost_vdpa_set_config().
+> > > 
+> > > Originally-by: Xie Yongji <xieyongji@bytedance.com>
+> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > > ---
+> > >  drivers/vhost/vdpa.c | 41 +++++++++++++----------------------------
+> > >  1 file changed, 13 insertions(+), 28 deletions(-)
+> > > 
+> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > > index ef688c8c0e0e..d61e779000a8 100644
+> > > --- a/drivers/vhost/vdpa.c
+> > > +++ b/drivers/vhost/vdpa.c
+> > > @@ -185,51 +185,35 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+> > >  	return 0;
+> > >  }
+> > > -static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
+> > > -				      struct vhost_vdpa_config *c)
+> > > -{
+> > > -	long size = 0;
+> > > -
+> > > -	switch (v->virtio_id) {
+> > > -	case VIRTIO_ID_NET:
+> > > -		size = sizeof(struct virtio_net_config);
+> > > -		break;
+> > > -	}
+> > > -
+> > > -	if (c->len == 0)
+> > > -		return -EINVAL;
+> > > -
+> > > -	if (c->len > size - c->off)
+> > > -		return -E2BIG;
+> > > -
+> > > -	return 0;
+> > > -}
+> > > -
+> > >  static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+> > >  				  struct vhost_vdpa_config __user *c)
+> > >  {
+> > >  	struct vdpa_device *vdpa = v->vdpa;
+> > >  	struct vhost_vdpa_config config;
+> > >  	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+> > > +	long ret;
+> > >  	u8 *buf;
+> > >  	if (copy_from_user(&config, c, size))
+> > >  		return -EFAULT;
+> > > -	if (vhost_vdpa_config_validate(v, &config))
+> > > +	if (config.len == 0)
+> > >  		return -EINVAL;
+> > >  	buf = kvzalloc(config.len, GFP_KERNEL);
+> > 
+> > 
+> > Then it means usersapce can allocate a very large memory.
 > 
-> Used in the Individual Block Protection mode, which is mutually
-> exclusive with the Block Protection mode (BP0-3).
+> Good point.
+> 
+> > 
+> > Rethink about this, we should limit the size here (e.g PAGE_SIZE) or
+> > fetch the config size first (either through a config ops as you
+> > suggested or a variable in the vdpa device that is initialized during
+> > device creation).
+> 
+> Maybe PAGE_SIZE is okay as a limit.
+> 
+> If instead we want to fetch the config size, then better a config ops in my
+> opinion, to avoid adding a new parameter to __vdpa_alloc_device().
+> 
+> I vote for PAGE_SIZE, but it isn't a strong opinion.
+> 
+> What do you and @Michael suggest?
+> 
+> Thanks,
+> Stefano
 
-Applied to spi-nor/next, thanks!
+Devices know what the config size is. Just have them provide it.
 
-[1/2] mtd: spi-nor: Add Global Block Unlock command
-      https://git.kernel.org/mtd/c/a7a5acba0e06
-[2/2] mtd: spi-nor: sst: Add support for Global Unlock on sst26vf
-      https://git.kernel.org/mtd/c/75386810d3a6
-
-Best regards,
 -- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+MST
+
