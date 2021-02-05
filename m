@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138D13110D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32488311109
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbhBERar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:30:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54096 "EHLO mail.kernel.org"
+        id S233712AbhBERkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:40:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233469AbhBEP7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:59:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08EC66509F;
-        Fri,  5 Feb 2021 14:14:03 +0000 (UTC)
+        id S233443AbhBEP5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:57:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF51265090;
+        Fri,  5 Feb 2021 14:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534444;
-        bh=kUnAg6V5E2T857tT9YrWFkoF886SW64QHozO3tsBKgE=;
+        s=korg; t=1612534425;
+        bh=8eU1kZakRpD69eguGY0XAU41DgXoTE2EH38U74TnHSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rZoQqqn2GgSKy9S2LC3PnKFfcLNy5cb78iAkFcR0FQ8Eyr2hf0ZQWfDK+HFUj3eU7
-         wud8Yrof5PIKak+gOGzegLHd330d8dkoUQKFShqMOUX/wayG/6i83i8VRnSpf5J9B1
-         8GeKUlOi2SS8khs3lruXdWwEcWZEHtZqf2709xxQ=
+        b=TYkff4pvXYOyVbCkENnw4nOlbJF2O629Gw4HvLORzofXyTJmomxxnB6uDYnrUGS/H
+         TgTXru9iOEIhWrX/R2h/l8Ugm494LCY9gVJHUAKjIe8WnegnFRBrPKIQUGWQwmGan5
+         Hh2gImgcXtiO5e00jCcHS5z64HMpvLR5p6t0EXpE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 05/17] net_sched: gen_estimator: support large ewma log
-Date:   Fri,  5 Feb 2021 15:07:59 +0100
-Message-Id: <20210205140650.039666853@linuxfoundation.org>
+        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 14/17] selftests/powerpc: Only test lwm/stmw on big endian
+Date:   Fri,  5 Feb 2021 15:08:08 +0100
+Message-Id: <20210205140650.385701195@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
 References: <20210205140649.825180779@linuxfoundation.org>
@@ -41,90 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit dd5e073381f2ada3630f36be42833c6e9c78b75e upstream
+[ Upstream commit dd3a44c06f7b4f14e90065bf05d62c255b20005f ]
 
-syzbot report reminded us that very big ewma_log were supported in the past,
-even if they made litle sense.
+Newer binutils (>= 2.36) refuse to assemble lmw/stmw when building in
+little endian mode. That breaks compilation of our alignment handler
+test:
 
-tc qdisc replace dev xxx root est 1sec 131072sec ...
+  /tmp/cco4l14N.s: Assembler messages:
+  /tmp/cco4l14N.s:1440: Error: `lmw' invalid when little-endian
+  /tmp/cco4l14N.s:1814: Error: `stmw' invalid when little-endian
+  make[2]: *** [../../lib.mk:139: /output/kselftest/powerpc/alignment/alignment_handler] Error 1
 
-While fixing the bug, also add boundary checks for ewma_log, in line
-with range supported by iproute2.
+These tests do pass on little endian machines, as the kernel will
+still emulate those instructions even when running little
+endian (which is arguably a kernel bug).
 
-UBSAN: shift-out-of-bounds in net/core/gen_estimator.c:83:38
-shift exponent -1 is negative
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- est_timer.cold+0xbb/0x12d net/core/gen_estimator.c:83
- call_timer_fn+0x1a5/0x710 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers.part.0+0x692/0xa80 kernel/time/timer.c:1731
- __run_timers kernel/time/timer.c:1712 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1744
- __do_softirq+0x2bc/0xa77 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:226 [inline]
- __irq_exit_rcu+0x17f/0x200 kernel/softirq.c:420
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:432
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:169 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+But we don't really need to test that case, so ifdef those
+instructions out to get the alignment test building again.
 
-Fixes: 1c0d32fde5bd ("net_sched: gen_estimator: complete rewrite of rate estimators")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Link: https://lore.kernel.org/r/20210114181929.1717985-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Libor Pechacek <lpechacek@suse.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Tested-by: Libor Pechacek <lpechacek@suse.com>
+Link: https://lore.kernel.org/r/20210119041800.3093047-1-mpe@ellerman.id.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/gen_estimator.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ .../testing/selftests/powerpc/alignment/alignment_handler.c  | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/net/core/gen_estimator.c
-+++ b/net/core/gen_estimator.c
-@@ -84,11 +84,11 @@ static void est_timer(struct timer_list
- 	u64 rate, brate;
- 
- 	est_fetch_counters(est, &b);
--	brate = (b.bytes - est->last_bytes) << (10 - est->ewma_log - est->intvl_log);
--	brate -= (est->avbps >> est->ewma_log);
-+	brate = (b.bytes - est->last_bytes) << (10 - est->intvl_log);
-+	brate = (brate >> est->ewma_log) - (est->avbps >> est->ewma_log);
- 
--	rate = (u64)(b.packets - est->last_packets) << (10 - est->ewma_log - est->intvl_log);
--	rate -= (est->avpps >> est->ewma_log);
-+	rate = (u64)(b.packets - est->last_packets) << (10 - est->intvl_log);
-+	rate = (rate >> est->ewma_log) - (est->avpps >> est->ewma_log);
- 
- 	write_seqcount_begin(&est->seq);
- 	est->avbps += brate;
-@@ -147,6 +147,9 @@ int gen_new_estimator(struct gnet_stats_
- 	if (parm->interval < -2 || parm->interval > 3)
- 		return -EINVAL;
- 
-+	if (parm->ewma_log == 0 || parm->ewma_log >= 31)
-+		return -EINVAL;
+diff --git a/tools/testing/selftests/powerpc/alignment/alignment_handler.c b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+index 169a8b9719fb9..4f8335e0c9858 100644
+--- a/tools/testing/selftests/powerpc/alignment/alignment_handler.c
++++ b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+@@ -384,7 +384,6 @@ int test_alignment_handler_integer(void)
+ 	LOAD_DFORM_TEST(ldu);
+ 	LOAD_XFORM_TEST(ldx);
+ 	LOAD_XFORM_TEST(ldux);
+-	LOAD_DFORM_TEST(lmw);
+ 	STORE_DFORM_TEST(stb);
+ 	STORE_XFORM_TEST(stbx);
+ 	STORE_DFORM_TEST(stbu);
+@@ -403,7 +402,11 @@ int test_alignment_handler_integer(void)
+ 	STORE_XFORM_TEST(stdx);
+ 	STORE_DFORM_TEST(stdu);
+ 	STORE_XFORM_TEST(stdux);
 +
- 	est = kzalloc(sizeof(*est), GFP_KERNEL);
- 	if (!est)
- 		return -ENOBUFS;
++#ifdef __BIG_ENDIAN__
++	LOAD_DFORM_TEST(lmw);
+ 	STORE_DFORM_TEST(stmw);
++#endif
+ 
+ 	return rc;
+ }
+-- 
+2.27.0
+
 
 
