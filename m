@@ -2,169 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DD13116A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6823E3116F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhBEXJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbhBEOfE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:35:04 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0D3C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:13:08 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id sa23so12831124ejb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:13:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ohOPEsSKEP0GCWWX7v/qRRrbSKEpWn4YzdHdUQhESQ=;
-        b=TRjzKOJkIVdlSFdHXnpB07jVA3KURe4PKO3JmFvut7V2SzacsFLpOa4PEi9aHjHYUA
-         35ty3thuwzyDfniBc9ws+voB0V8Y6Orj4pAlqsYgN6609M83LoeE94AcZ6Gsykc0XDc1
-         Uqcb4TlbPWQ34ANiVrp2GPi3/taiEKzcvdzLbmqEJ8LhYaifNktBCEZgueJjgO8Eigp1
-         OYLrThqikxRteYWe4y/Kla/LJ9+0IvamhwziKC1XXf0ruBRFnAoFuJOssL3Jzc8yZrvm
-         btZrDCkDzIoeQL8tUNBY0EIcVY5hb+5Ybdmw0av3cq1P7RU0uYktpw/0FIuAynrMDiNA
-         CQig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ohOPEsSKEP0GCWWX7v/qRRrbSKEpWn4YzdHdUQhESQ=;
-        b=V+DrPoGXlk8pB7rQNMf9oUHy0B+aK39zxhXYYDBPyHvuaYRF19eh9VkLIsbePzNGge
-         9adoM9JdDoHrRBkbJZVheGT50KNQoEpuys6tkplEkCqWxwDOwaz6aGKkAfvobJdiKMCa
-         7/EGEO7aCQRJrhZR5dTOW7WaqOnl8jhnkVWdsYdrrgiVAVj6XE8KmuVKzz6N9dRJBgvm
-         9gCcbX2T08/YAkoQFIl4X6MTL3IENXqhNJ9gcy22vIxJw1qNeNTPYUoysy0d+lyseQJ7
-         CFfeJPE5VDO8Ow1rpGF1rrB0pM1g3Gw8uYpUZEzOVq41ATfqDeLDzVhT6hRT4WTo07Fk
-         BV9g==
-X-Gm-Message-State: AOAM530yG+8gXb4UlvmHmfJeOEKPydUXXkn5gAjsXHjax+ZdN59up57O
-        0sFEsARuILTDjD36pQvyl+tpAdpLuGHGja0S7hxkjwoOSVaMhw==
-X-Google-Smtp-Source: ABdhPJyYMUaEIEFwJUr/vUsZHo2uOslmdlRzC2D90q+qYNhivg2Nd7usM3rpi/4Ckrcd/jnFf6ECc3gfqh0LL0IF054=
-X-Received: by 2002:ac2:5232:: with SMTP id i18mr2727983lfl.277.1612535478969;
- Fri, 05 Feb 2021 06:31:18 -0800 (PST)
+        id S232094AbhBEXVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:21:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48730 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232613AbhBEOZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:25:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D031EACBA;
+        Fri,  5 Feb 2021 14:43:45 +0000 (UTC)
+Subject: Re: [PATCH][V2] drm/mgag200: make a const array static, makes object
+ smaller
+To:     Colin King <colin.king@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210204191156.110778-1-colin.king@canonical.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <c9dd8c05-93cf-f74c-48a0-e512f2e2ed9b@suse.de>
+Date:   Fri, 5 Feb 2021 15:43:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-4-valentin.schneider@arm.com>
-In-Reply-To: <20210128183141.28097-4-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 5 Feb 2021 15:31:07 +0100
-Message-ID: <CAKfTPtADn0X8=ENfvG5dhzM1KbTD+JCCoOm-i8=bVkh0ZBM2Xg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] sched/fair: Tweak misfit-related capacity checks
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204191156.110778-1-colin.king@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="iIYPSx0lbNbPQSd7MPbsqFdxlsweQNlMx"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> During load-balance, groups classified as group_misfit_task are filtered
-> out if they do not pass
->
->   group_smaller_max_cpu_capacity(<candidate group>, <local group>);
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iIYPSx0lbNbPQSd7MPbsqFdxlsweQNlMx
+Content-Type: multipart/mixed; boundary="tYKCTmFoO52fIfy9sx49pj0Ydixv7HwHo";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Colin King <colin.king@canonical.com>, Dave Airlie <airlied@redhat.com>,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <c9dd8c05-93cf-f74c-48a0-e512f2e2ed9b@suse.de>
+Subject: Re: [PATCH][V2] drm/mgag200: make a const array static, makes object
+ smaller
+References: <20210204191156.110778-1-colin.king@canonical.com>
+In-Reply-To: <20210204191156.110778-1-colin.king@canonical.com>
 
-group_smaller_max_cpu_capacity and  group_smaller_max_cpu_capacity are
-removed in the next patch. Merge this and the next and directly remove
-them
+--tYKCTmFoO52fIfy9sx49pj0Ydixv7HwHo
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->
-> which itself employs fits_capacity() to compare the sgc->max_capacity of
-> both groups.
->
-> Due to the underlying margin, fits_capacity(X, 1024) will return false for
-> any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-> {261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-> CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-> higher capacity due to the aforementioned margin.
->
-> One may argue the 20% margin of fits_capacity() is excessive in the advent
-> of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-> is that fits_capacity() is meant to compare a utilization value to a
-> capacity value, whereas here it is being used to compare two capacity
-> values. As CPU capacity and task utilization have different dynamics, a
-> sensible approach here would be to add a new helper dedicated to comparing
-> CPU capacities.
->
-> Introduce capacity_greater(), which uses a 5% margin. Use it to replace the
-> existing capacity checks. Note that check_cpu_capacity() uses yet another
-> margin (sd->imbalance_pct), and is left alone for now.
->
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Merged.
+
+Am 04.02.21 um 20:11 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Don't populate the const array m_div_val on the stack but instead make
+> it static. Makes the object code smaller by 29 bytes:
+>=20
+> Before:
+>     text	   data	  bss   dec    hex filename
+>    34736	   4552	    0 39288   9978 drivers/gpu/drm/mgag200/mgag200_mod=
+e.o
+>=20
+> After:
+>     text	   data	  bss   dec    hex filename
+>    34625	   4616	    0 39241   9949 drivers/gpu/drm/mgag200/mgag200_mod=
+e.o
+>=20
+> (gcc version 10.2.0)
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 > ---
->  kernel/sched/fair.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 7d01fa0bfc7e..58ce0b22fcb0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
->   */
->  #define fits_capacity(cap, max)        ((cap) * 1280 < (max) * 1024)
->
-> +/*
-> + * The margin used when comparing CPU capacities.
-> + * is 'cap' noticeably greater than 'ref'
-> + *
-> + * (default: ~5%)
-> + */
-> +#define capacity_greater(cap, ref) ((ref) * 1078 < (cap) * 1024)
->  #endif
->
->  #ifdef CONFIG_CFS_BANDWIDTH
-> @@ -8253,7 +8260,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
->  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
->  {
->         return rq->misfit_task_load &&
-> -               (rq->cpu_capacity_orig < rq->rd->max_cpu_capacity ||
-> +               (capacity_greater(rq->rd->max_cpu_capacity, rq->cpu_capacity_orig) ||
+>=20
+> V2: move static declaration to the top of the declarations
+>=20
+> ---
+>   drivers/gpu/drm/mgag200/mgag200_mode.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/m=
+gag200/mgag200_mode.c
+> index 1dfc42170059..c3dfde8cad25 100644
+> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
+> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+> @@ -706,13 +706,13 @@ static int mga_g200eh_set_plls(struct mga_device =
+*mdev, long clock)
+>  =20
+>   static int mga_g200er_set_plls(struct mga_device *mdev, long clock)
+>   {
+> +	static const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
+>   	unsigned int vcomax, vcomin, pllreffreq;
+>   	unsigned int delta, tmpdelta;
+>   	int testr, testn, testm, testo;
+>   	unsigned int p, m, n;
+>   	unsigned int computed, vco;
+>   	int tmp;
+> -	const unsigned int m_div_val[] =3D { 1, 2, 4, 8 };
+>  =20
+>   	m =3D n =3D p =3D 0;
+>   	vcomax =3D 1488000;
+>=20
 
-Why do you add a margin here whereas there was no margin before ?
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
->                  check_cpu_capacity(rq, sd));
->  }
->
-> @@ -8352,7 +8359,7 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
->  static inline bool
->  group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
->  {
-> -       return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
-> +       return capacity_greater(ref->sgc->min_capacity, sg->sgc->min_capacity);
->  }
->
->  /*
-> @@ -8362,7 +8369,7 @@ group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
->  static inline bool
->  group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
->  {
-> -       return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
-> +       return capacity_greater(ref->sgc->max_capacity, sg->sgc->max_capacity);
->  }
->
->  static inline enum
-> @@ -9421,7 +9428,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                  * average load.
->                  */
->                 if (sd_has_asym_cpucapacity(env->sd) &&
-> -                   capacity_of(env->dst_cpu) < capacity &&
-> +                   !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
 
-same here
+--tYKCTmFoO52fIfy9sx49pj0Ydixv7HwHo--
 
->                     nr_running == 1)
->                         continue;
->
-> --
-> 2.27.0
->
+--iIYPSx0lbNbPQSd7MPbsqFdxlsweQNlMx
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAdWaAFAwAAAAAACgkQlh/E3EQov+CW
+7A/+NovrsdcN0AX8UJln3uk/CiH43FmwEWUjtLjlOnSQRIx95ecS6gZ/ZXWlZAfBP9iu9cqcZnN7
+ycJbGDWeSixB1tPKLEIHL+Pv5kqGKdpea4recuxZ22uU+ZziWqVvpXabE6o5+7CE0i64NxbUVyS6
+ylKq7WJ6u4M8Xm9m1YZuM70j3kgZpWseDRySTpJU5SSqzLAcaRqe+q1bOaF979PYPbwaCgBrd0KG
+m/grVtRLRV0OHKmzgqdbCGrCsQjQ3SY3ckebSVNIxmuhvDBjc8mZEosADu5+jBdpj+C1WUtcKjA6
+SOG/pkpdh/UylTRFOvwKdaKKLOv7XmekEbMT8xisWGWp/TqDwz+DvPIzAhKI2EV1aM5sF3lwXWol
+ICk2/0IqwZUR7etUYgXJhXAvb/CzZpmNYvVh6uwsk9YbdpFxW7gZAagbOgsH8+ZOH4Ce/srrqFM5
+9TwdBJNTs6Nvp+TxbyBVaHilMZiVpSc1L5fYOjxy/xrOdo7ZCTV3Bl+hZXA3uJ4a729+cluvdXpr
+5EoHqqXdKRvigmcHIbJfbvbAPRN4aS4aSjpHMImmlcgb11HdNbQgB38T+h+IMbhM4YE7eN9EjlOT
+DAQcUdeI9PnkMk5Ucr9sIwPTCcgvRq2Qqki6lW+mMSLdh1GC0yCgkCr3QEwbC28cf7qovKedoG2j
+GLM=
+=v0Sv
+-----END PGP SIGNATURE-----
+
+--iIYPSx0lbNbPQSd7MPbsqFdxlsweQNlMx--
