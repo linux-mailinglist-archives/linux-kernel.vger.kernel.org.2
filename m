@@ -2,153 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A69F311AF4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FBD311AF8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBFEga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        id S229621AbhBFEh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:37:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhBFCbc (ORCPT
+        with ESMTP id S229650AbhBFCbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:31:32 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED4AC0617AB;
-        Fri,  5 Feb 2021 14:06:57 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id fa16so3947568pjb.1;
-        Fri, 05 Feb 2021 14:06:57 -0800 (PST)
+        Fri, 5 Feb 2021 21:31:19 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89398C06121C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:14:19 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w4so8739225ybc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:14:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7jKvL0mVSUY7WhiJXE1najP+8YOEz8EBBJDLKRLoFS4=;
-        b=C9N3z9t9x+VqFqqULcHfI0HKUSmkux2p3uVXqU6wlYTYMEQi0mGvcNv1GJFB7f0Ozm
-         7lRszzUs5AqnJLCMdvI5U3/VsoI3yWTu9i1WKgYBpP8ZF0caE0RRKGQz8bqa3YZatnbA
-         dxdOB7wd17N8oPS2o9vg5s6rtWYTB5udHqTuJLigyuLdCs8F3uF1PAWxA9VaxlL51e9r
-         zX5JTOggxRB7At4JIjwhW/mDENIfn8pEVhmZGoBGLe/wUvlKM3veunprJzK34xCXDCaz
-         q+UMf7owhg0Hgs4LdEfcPt+rhcFfP/OHvgkcFQAxvaTFhMSSivA0ANTfZ9Mbp6xY7uKd
-         Ko6w==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=d5RIDWJchB5lEhG7XVyqeqKAvmcYq4cH2DHTaZwx5/0=;
+        b=FpnhHFz3tKFPWcMnsP3l/yAb+F4xtDN9a+EPKrp039W814ze9LgPS2QUt1bLmcn4Bx
+         fjWAOs18xxnAHyRbu5jwp5G1XqxPNDGXsCCvAejg73f5vbMd0k1iKljPB2pOTJL+Wewv
+         Fa4Fg2soTqDYR6ReE5M3CvB/4t3V2WiYPdNb8xORG7fNtAwge8iisF7XdNoPn/RN/V/y
+         hzJND4ecNGC/Xu5xf21WqIcn8LIHawkKlNXC1NxGZy72QVzNdxCxcyfMfkZ74rg1U29m
+         p/OKFrWOrTDBpLVDnLSpY0TxTAfhq+PmRP1rZygdoLUIxCcusgjx687xUkRQiTWOWpe7
+         ZL4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7jKvL0mVSUY7WhiJXE1najP+8YOEz8EBBJDLKRLoFS4=;
-        b=cFbmriHeweyuTdZulk6/gpZj/opAuB1EUEYKR04JsTz+6jIASmTnt2/Ult587lBaxv
-         Pk6sMTiEimZNADRPFkxJ3Kt0xr/qbu1L9bbQ0aSwT/vJAeNFcfQ/nllt6SdyfSaRZyPo
-         BpajEMAH2I0PliHwvkpNTujGUb1axbxbVDlIU8/bz16bgD29/Kbe04XZFghGtFf6E8/j
-         GSwGmf7zDWjmZQq1GOwHCVGj9XSf1Fb3zaAcl8OuOVvmHSJXsuf8JyiuV3FJYXHHeh+m
-         I5YA8e8JBdA7L3VayjsBZH77s6gtpRH7k8DL6iXB73fnZ8iIfb1hVecqBnXADrI+qxIX
-         fypQ==
-X-Gm-Message-State: AOAM532CdgB5uUntmApPIVwzLyIARw7GrwuzrGGZxUpYhN1ZJZbwBWKX
-        Daiq5rzbLkNWh7d95UB1FtGci7TBWVkNBw==
-X-Google-Smtp-Source: ABdhPJwG++Ub96OHLDZvOnJ1HJyqed82R3DNnY3tzrSKJnsB9+8132bKNesmv9fGoedQYNG5ei72oQ==
-X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr6086550pjb.102.1612562817117;
-        Fri, 05 Feb 2021 14:06:57 -0800 (PST)
-Received: from amypc-samantha.home ([47.145.126.51])
-        by smtp.gmail.com with ESMTPSA id s13sm5771676pgq.40.2021.02.05.14.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 14:06:56 -0800 (PST)
-From:   Amy Parker <enbyamy@gmail.com>
-To:     schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
-        tsbogend@alpha.franken.de
-Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amy Parker <enbyamy@gmail.com>
-Subject: [PATCH] ia64: Fix style guide breakage
-Date:   Fri,  5 Feb 2021 14:06:18 -0800
-Message-Id: <20210205220618.611388-1-enbyamy@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=d5RIDWJchB5lEhG7XVyqeqKAvmcYq4cH2DHTaZwx5/0=;
+        b=fgEU+RVP60ZRzu9xF4yoyUk3xrUU3nH1FO76833m3YdnfKSYvXo2o3gHIBvuKFyN5G
+         f0jYFGQ6Q8aoAAP8tatE/ArpXGLGS5FtZSZqY2be1Da+ooUoze3nlN3wUs+VOHH/ZLZe
+         ZB1sjSy0iQMuRCumktQ4zklxDzVT3wfzgAMHddYarg5qOWCO0XLD9sqBIuMF42GlzUFA
+         IE0PbzwFLSLIerSeMnIHR0/dbQAPURVBJCo4R/GlZiRph3i1BJC/VMw506wNviSJjJqM
+         T7DVVSJCdhqumnWROcX98kjqNE76Jfrb8F0J2bf7gZAZskWFkDTuKcDArNtOG5ZcM5UL
+         ajDg==
+X-Gm-Message-State: AOAM533y0oJ1Loph83rQDUN+FkfEDCOjXIsdW07e9TsOW5jrHAKPIJ8h
+        KLzYnJoU6HOKDqYg1zKWy2BaNzXhzA92fQ==
+X-Google-Smtp-Source: ABdhPJwk/6GhpV3JsaR0hXqo38EkN4pxUz/+JPdF8gqRWCLxuGx+icVaRM8CuR2CMOLE7N24F6uDjzSxY4FCFQ==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
+ (user=dlatypov job=sendgmr) by 2002:a25:21d4:: with SMTP id
+ h203mr9010706ybh.290.1612563258804; Fri, 05 Feb 2021 14:14:18 -0800 (PST)
+Date:   Fri,  5 Feb 2021 14:14:09 -0800
+Message-Id: <20210205221409.1962881-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v2] kunit: don't show `1 == 1` in failed assertion messages
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some statements do not have proper spacing between their C
-keywords (commonly if and for) throughout files in the ia64 tree.
-This patch corrects this to follow the kernel code style guide.
+Currently, given something (fairly dystopian) like
+> KUNIT_EXPECT_EQ(test, 2 + 2, 5)
 
-Signed-off-by: Amy Parker <enbyamy@gmail.com>
+KUnit will prints a failure message like this.
+>  Expected 2 + 2 == 5, but
+>      2 + 2 == 4
+>      5 == 5
+
+With this patch, the output just becomes
+>  Expected 2 + 2 == 5, but
+>      2 + 2 == 4
+
+This patch is slightly hacky, but it's quite common* to compare an
+expression to a literal integer value, so this can make KUnit less
+chatty in many cases. (This patch also fixes variants like
+KUNIT_EXPECT_GT, LE, et al.).
+
+It also allocates an additional string briefly, but given this only
+happens on test failures, it doesn't seem too bad a tradeoff.
+Also, in most cases it'll realize the lengths are unequal and bail out
+before the allocation.
+
+We could save the result of the formatted string to avoid wasting this
+extra work, but it felt cleaner to leave it as-is.
+
+Edge case: for something silly and unrealistic like
+> KUNIT_EXPECT_EQ(test, 4, 5);
+
+It'll generate this message with a trailing "but"
+>  Expected 4 == 5, but
+>  <next line of normal output>
+
+It didn't feel worth adding a check up-front to see if both sides are
+literals to handle this better.
+
+*A quick grep suggests 100+ comparisons to an integer literal as the
+right hand side.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Tested-by: David Gow <davidgow@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- arch/ia64/hp/common/sba_iommu.c  | 6 +++---
- arch/ia64/kernel/machine_kexec.c | 2 +-
- arch/ia64/kernel/palinfo.c       | 6 +++---
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ lib/kunit/assert.c | 39 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 33 insertions(+), 6 deletions(-)
 
-diff --git a/arch/ia64/hp/common/sba_iommu.c b/arch/ia64/hp/common/sba_iommu.c
-index 9148ddbf02e5..84a410f3e68f 100644
---- a/arch/ia64/hp/common/sba_iommu.c
-+++ b/arch/ia64/hp/common/sba_iommu.c
-@@ -139,7 +139,7 @@
- 
- #ifdef ASSERT_PDIR_SANITY
- #define ASSERT(expr) \
--        if(!(expr)) { \
-+        if (!(expr)) { \
-                 printk( "\n" __FILE__ ":%d: Assertion " #expr " failed!\n",__LINE__); \
-                 panic(#expr); \
-         }
-@@ -510,7 +510,7 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
- 
- 	if (likely(bits_wanted == 1)) {
- 		unsigned int bitshiftcnt;
--		for(; res_ptr < res_end ; res_ptr++) {
-+		for (; res_ptr < res_end ; res_ptr++) {
- 			if (likely(*res_ptr != ~0UL)) {
- 				bitshiftcnt = ffz(*res_ptr);
- 				*res_ptr |= (1UL << bitshiftcnt);
-@@ -538,7 +538,7 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
- 		mask = base_mask << bitshiftcnt;
- 
- 		DBG_RES("%s() o %ld %p", __func__, o, res_ptr);
--		for(; res_ptr < res_end ; res_ptr++)
-+		for (; res_ptr < res_end ; res_ptr++)
- 		{ 
- 			DBG_RES("    %p %lx %lx\n", res_ptr, mask, *res_ptr);
- 			ASSERT(0 != mask);
-diff --git a/arch/ia64/kernel/machine_kexec.c b/arch/ia64/kernel/machine_kexec.c
-index efc9b568401c..8de286450578 100644
---- a/arch/ia64/kernel/machine_kexec.c
-+++ b/arch/ia64/kernel/machine_kexec.c
-@@ -137,7 +137,7 @@ void machine_kexec(struct kimage *image)
- {
- 	BUG_ON(!image);
- 	unw_init_running(ia64_machine_kexec, image);
--	for(;;);
-+	for (;;);
+diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
+index 33acdaa28a7d..e0ec7d6fed6f 100644
+--- a/lib/kunit/assert.c
++++ b/lib/kunit/assert.c
+@@ -85,6 +85,29 @@ void kunit_ptr_not_err_assert_format(const struct kunit_assert *assert,
  }
+ EXPORT_SYMBOL_GPL(kunit_ptr_not_err_assert_format);
  
- void arch_crash_save_vmcoreinfo(void)
-diff --git a/arch/ia64/kernel/palinfo.c b/arch/ia64/kernel/palinfo.c
-index 78fa6579c9ea..ec2ff3e510c0 100644
---- a/arch/ia64/kernel/palinfo.c
-+++ b/arch/ia64/kernel/palinfo.c
-@@ -155,7 +155,7 @@ static void bitregister_process(struct seq_file *m, u64 *reg_info, int max)
- 
- 	value >>= i = begin = ffs(value) - 1;
- 
--	for(; i < max; i++ ) {
-+	for (; i < max; i++ ) {
- 
- 		if (i != 0 && (i%64) == 0) value = *++reg_info;
- 
-@@ -523,7 +523,7 @@ static void feature_set_info(struct seq_file *m, u64 avail, u64 status, u64 cont
- 	int i;
- 
- 	vf = v = proc_features[set];
--	for(i=0; i < 64; i++, avail >>=1, status >>=1, control >>=1) {
-+	for (i=0; i < 64; i++, avail >>=1, status >>=1, control >>=1) {
- 
- 		if (!(control))		/* No remaining bits set */
- 			break;
-@@ -613,7 +613,7 @@ static int bus_info(struct seq_file *m)
- 	status  = st.pal_bus_features_val;
- 	control = ct.pal_bus_features_val;
- 
--	for(i=0; i < 64; i++, v++, avail >>=1, status >>=1, control >>=1) {
-+	for (i=0; i < 64; i++, v++, avail >>=1, status >>=1, control >>=1) {
- 		if ( ! *v )
- 			continue;
- 		seq_printf(m, "%-48s : %s%s %s\n", *v,
++/* Checks if `text` is a literal representing `value`, e.g. "5" and 5 */
++static bool is_literal(struct kunit *test, const char *text, long long value,
++		       gfp_t gfp)
++{
++	char *buffer;
++	int len;
++	bool ret;
++
++	len = snprintf(NULL, 0, "%lld", value);
++	if (strlen(text) != len)
++		return false;
++
++	buffer = kunit_kmalloc(test, len+1, gfp);
++	if (!buffer)
++		return false;
++
++	snprintf(buffer, len+1, "%lld", value);
++	ret = strncmp(buffer, text, len) == 0;
++
++	kunit_kfree(test, buffer);
++	return ret;
++}
++
+ void kunit_binary_assert_format(const struct kunit_assert *assert,
+ 				struct string_stream *stream)
+ {
+@@ -97,12 +120,16 @@ void kunit_binary_assert_format(const struct kunit_assert *assert,
+ 			  binary_assert->left_text,
+ 			  binary_assert->operation,
+ 			  binary_assert->right_text);
+-	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld\n",
+-			  binary_assert->left_text,
+-			  binary_assert->left_value);
+-	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld",
+-			  binary_assert->right_text,
+-			  binary_assert->right_value);
++	if (!is_literal(stream->test, binary_assert->left_text,
++			binary_assert->left_value, stream->gfp))
++		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld\n",
++				  binary_assert->left_text,
++				  binary_assert->left_value);
++	if (!is_literal(stream->test, binary_assert->right_text,
++			binary_assert->right_value, stream->gfp))
++		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld",
++				  binary_assert->right_text,
++				  binary_assert->right_value);
+ 	kunit_assert_print_msg(assert, stream);
+ }
+ EXPORT_SYMBOL_GPL(kunit_binary_assert_format);
+
+base-commit: 1e0d27fce010b0a4a9e595506b6ede75934c31be
 -- 
-2.29.2
+2.30.0.478.g8a0d178c01-goog
 
