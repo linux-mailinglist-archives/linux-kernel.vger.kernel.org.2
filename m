@@ -2,153 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8A2311796
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5006E3117A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhBFAEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:04:52 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47900 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbhBENsU (ORCPT
+        id S231344AbhBFAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:08:10 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:57677 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229565AbhBENsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:48:20 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 115DkRuB093953;
-        Fri, 5 Feb 2021 07:46:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612532787;
-        bh=cB0WfTEJ3j7OEluhrKCZveupuzZyWbr/N7XfkmnBgmY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=n/tLzFscrErJMCS0yYLR15tgBOTcIO/+yQiXgLgOtd8bDCXK3T68yhJa3Xz5TKyik
-         d/LXwQsdss99IlzmzzU0Zg9064h7E/rvIlo8/pp6ZnX1ZOS7N03w1m4bSuFk5imJEe
-         5St5bMdL/N7ZruQGgjb3TKilT6pFQhEh/ygdOTAs=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 115DkRQK039984
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 5 Feb 2021 07:46:27 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Feb
- 2021 07:46:26 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 5 Feb 2021 07:46:26 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 115DkQ0M067702;
-        Fri, 5 Feb 2021 07:46:26 -0600
-Date:   Fri, 5 Feb 2021 19:16:25 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Get rid of duplicated argument in
- spi_nor_parse_sfdp()
-Message-ID: <20210205134625.6zmeit7ecqtzwyin@ti.com>
-References: <20210204174507.593419-1-tudor.ambarus@microchip.com>
+        Fri, 5 Feb 2021 08:48:11 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id 81RclTJVeFFpm81RglH0Uh; Fri, 05 Feb 2021 14:46:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1612532809; bh=eeIQ3lc6028oLMlea4AHNdLl0tt2BQ1HMogC4rAypDI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=QXVUNaAT1tII5aFDk+cPR8pJYdtQgXYC6klZDolwlsOsOcOtMcYruZwvaYPoLxCp3
+         bfZGWpZWYMLUa1r+Vkit1r45mKmGycy0z9+BChbGO1uFFzTrsugaZQy5UkmiDPzfkN
+         Qx4EL0yU37Li6HA4uSZQz+Lp8L0PcwHSrwMhaIiYhnoC5cqLFeiOMEYnIICROjpjGC
+         mXwY9uy+oPn+F17WWxDL/TYwwwP74y1uMwirFXg0PJ6pw/TkooBsLoxhcQ0yDa0vZ6
+         CyTlMqKIIJzmQEE35EygcZKFXjLxs8GChTlgkmbENglKUl9CAHKsO57ZCuuKQUp+Nw
+         aO13Xc+6FR7bw==
+Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Sam McNally <sammc@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        dri-devel@lists.freedesktop.org
+References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+ <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
+ <YBh9HvbIRF4zd+AK@intel.com> <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
+ <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
+ <YB1HBDEB5/fefQzi@intel.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <c577f417-b6c2-6714-8c97-ec6d636bb3a7@xs4all.nl>
+Date:   Fri, 5 Feb 2021 14:46:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210204174507.593419-1-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YB1HBDEB5/fefQzi@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfF/2LkHUBR6Sj5FcCmtu5nSjDtH0gXnDX48kOwSB2540xv2DzasTmniuBdVtNsBlQec0ezWIItZKJZVotxicsO8IKSyPnZpsIJauJsqzAvJDL62upT2c
+ 3nEQGLoRVxVe9PS4j5SXwaaEbtesNJksIRkjsdC5LZGKs80/IRoVWTdRzXRqtn2cD3f/1dbCwaVvWXNzv2G9EYv0e2mO4A7RgBwkncLqWc8W+/y+0gpFFk1E
+ xCzTOOpZtwXm5xDH+kRAhQW9OesbT9rSKmjZU1rkPu3YPzYsb2X4b6T02rq8YwQk3lKLzwX8LjLcf4QvJVeyQOTKfXRS9KNt+wfvhcVJHpl3UpszBFZVjA+G
+ 6hT1EtSnM959b3M6T6cKpeY6jAbejDWyDJDOuDUWEOaHTu1/B7OT+vFTpHBpmizJS8NzussN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/21 07:45PM, Tudor Ambarus wrote:
-> spi_nor_parse_sfdp(nor, nor->params);
-> passes for the second argument a member within the first argument.
-> Drop the second argument and obtain it directly from the first,
-> and do it across all the children functions. This is a follow up for
-> 'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
+On 05/02/2021 14:24, Ville Syrjälä wrote:
+> On Fri, Feb 05, 2021 at 04:17:51PM +1100, Sam McNally wrote:
+>> On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>>
+>>> On 01/02/2021 23:13, Ville Syrjälä wrote:
+>>>> On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
+>>>>> From: Hans Verkuil <hans.verkuil@cisco.com>
+>>>>>
+>>>>> For adapters behind an MST hub use the correct AUX channel.
+>>>>>
+>>>>> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+>>>>> [sammc@chromium.org: rebased, removing redundant changes]
+>>>>> Signed-off-by: Sam McNally <sammc@chromium.org>
+>>>>> ---
+>>>>>
+>>>>> (no changes since v1)
+>>>>>
+>>>>>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 +++++++++++++++++++++++++++
+>>>>>  1 file changed, 36 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+>>>>> index 15b6cc39a754..0d753201adbd 100644
+>>>>> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+>>>>> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+>>>>> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_mst_topology_mgr *mgr,
+>>>>>      drm_dp_mst_topology_put_port(port);
+>>>>>  }
+>>>>>
+>>>>> +static ssize_t
+>>>>> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg);
+>>>>> +
+>>>>>  static struct drm_dp_mst_port *
+>>>>>  drm_dp_mst_add_port(struct drm_device *dev,
+>>>>>                  struct drm_dp_mst_topology_mgr *mgr,
+>>>>> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
+>>>>>      port->port_num = port_number;
+>>>>>      port->mgr = mgr;
+>>>>>      port->aux.name = "DPMST";
+>>>>> +    mutex_init(&port->aux.hw_mutex);
+>>>>> +    mutex_init(&port->aux.cec.lock);
+>>>>>      port->aux.dev = dev->dev;
+>>>>>      port->aux.is_remote = true;
+>>>>>
+>>>>> +    port->aux.transfer = drm_dp_mst_aux_transfer;
+>>>>> +
+>>>>
+>>>> This was supposed to be handled via higher levels checking for
+>>>> is_remote==true.
+>>>
+>>> Ah, I suspect this patch can be dropped entirely: it predates commit 2f221a5efed4
+>>> ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
+>>>
+>>> It looks like that commit basically solved what this older patch attempts to do
+>>> as well.
+>>>
+>>> Sam, can you test if it works without this patch?
+>>
+>> It almost just works; drm_dp_cec uses whether aux.transfer is non-null
+>> to filter out non-DP connectors. Using aux.is_remote as another signal
+>> indicating a DP connector seems plausible. We can drop this patch.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c     | 10 ++--
->  drivers/mtd/spi-nor/core.h     |  6 +--
->  drivers/mtd/spi-nor/issi.c     |  3 +-
->  drivers/mtd/spi-nor/macronix.c |  3 +-
->  drivers/mtd/spi-nor/sfdp.c     | 87 +++++++++++++---------------------
->  drivers/mtd/spi-nor/sfdp.h     |  3 +-
->  drivers/mtd/spi-nor/spansion.c | 12 ++---
->  drivers/mtd/spi-nor/winbond.c  |  3 +-
->  8 files changed, 49 insertions(+), 78 deletions(-)
-> 
-[...]
-> @@ -945,13 +935,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
->   * @nor:		pointer to a 'struct spi_nor'.
->   * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
->   *			the 4-Byte Address Instruction Table length and version.
-> - * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
->   *
->   * Return: 0 on success, -errno otherwise.
->   */
->  static int spi_nor_parse_4bait(struct spi_nor *nor,
-> -			       const struct sfdp_parameter_header *param_header,
-> -			       struct spi_nor_flash_parameter *params)
-> +			       const struct sfdp_parameter_header *param_header)
->  {
->  	static const struct sfdp_4bait reads[] = {
->  		{ SNOR_HWCAPS_READ,		BIT(0) },
-> @@ -975,8 +963,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->  		{ 0u /* not used */,		BIT(11) },
->  		{ 0u /* not used */,		BIT(12) },
->  	};
-> -	struct spi_nor_pp_command *params_pp = params->page_programs;
-> -	struct spi_nor_erase_map *map = &params->erase_map;
-> +	struct spi_nor_pp_command *params_pp = nor->params->page_programs;
-> +	struct spi_nor_erase_map *map = &nor->params->erase_map;
->  	struct spi_nor_erase_type *erase_type = map->erase_type;
->  	u32 *dwords;
->  	size_t len;
-> @@ -1013,7 +1001,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->  		const struct sfdp_4bait *read = &reads[i];
->  
->  		discard_hwcaps |= read->hwcaps;
-> -		if ((params->hwcaps.mask & read->hwcaps) &&
-> +		if ((nor->params->hwcaps.mask & read->hwcaps) &&
->  		    (dwords[0] & read->supported_bit))
->  			read_hwcaps |= read->hwcaps;
->  	}
-> @@ -1029,8 +1017,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->  		/*
->  		 * The 4 Byte Address Instruction (Optional) Table is the only
->  		 * SFDP table that indicates support for Page Program Commands.
-> -		 * Bypass the params->hwcaps.mask and consider 4BAIT the biggest
-> -		 * authority for specifying Page Program support.
-> +		 * Bypass the nor->params->hwcaps.mask and consider 4BAIT the
-> +		 * biggest authority for specifying Page Program support.
->  		 */
->  		discard_hwcaps |= program->hwcaps;
->  		if (dwords[0] & program->supported_bit)
-> @@ -1064,12 +1052,12 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->  	 * Discard all operations from the 4-byte instruction set which are
->  	 * not supported by this memory.
->  	 */
-> -	params->hwcaps.mask &= ~discard_hwcaps;
-> -	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
-> +	nor->params->hwcaps.mask &= ~discard_hwcaps;
-> +	nor->params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
->  
->  	/* Use the 4-byte address instruction set. */
->  	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
-> -		struct spi_nor_read_command *read_cmd = &params->reads[i];
-> +		struct spi_nor_read_command *read_cmd = &nor->params->reads[i];
+> Why would anyone even call this stuff on a non-DP connector?
+> And where did they even get the struct drm_dp_aux to do so?
 
-Nitpick: 'nor->params' is used in multiple places in this function. 
-Might be worth it to make it a local variable.
+This check came in with commit 5ce70c799ac2 ("drm_dp_cec: check that aux
+has a transfer function"). It seems nouveau and amdgpu specific.
 
-Either way,
+A better approach would be to fix those drivers to only call these cec
+functions for DP outputs. I think I moved the test to drm_dp_cec.c primarily
+for robustness (i.e. do nothing if called for a non-DP output). But that
+might not be the right approach after all.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
->  
->  		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
->  	}
-[...]
-
--- 
 Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+
+	Hans
+
+> 
+>> Thanks all!
+>>>
+>>> Regards,
+>>>
+>>>         Hans
+>>>
+>>>>
+>>>>>      /* initialize the MST downstream port's AUX crc work queue */
+>>>>>      drm_dp_remote_aux_init(&port->aux);
+>>>>>
+>>>>> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_dp_mst_topology_mgr *mgr,
+>>>>>      return 0;
+>>>>>  }
+>>>>>
+>>>>> +static ssize_t
+>>>>> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>>>>> +{
+>>>>> +    struct drm_dp_mst_port *port =
+>>>>> +            container_of(aux, struct drm_dp_mst_port, aux);
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
+>>>>> +    case DP_AUX_NATIVE_WRITE:
+>>>>> +    case DP_AUX_I2C_WRITE:
+>>>>> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
+>>>>> +            ret = drm_dp_send_dpcd_write(port->mgr, port, msg->address,
+>>>>> +                                         msg->size, msg->buffer);
+>>>>
+>>>> That doesn't make sense to me. I2c writes and DPCD writes
+>>>> are definitely not the same thing.
+>>>>
+>>>> aux->transfer is a very low level thing. I don't think it's the
+>>>> correct level of abstraction for sideband.
+>>>>
+>>>>> +            break;
+>>>>> +
+>>>>> +    case DP_AUX_NATIVE_READ:
+>>>>> +    case DP_AUX_I2C_READ:
+>>>>> +            ret = drm_dp_send_dpcd_read(port->mgr, port, msg->address,
+>>>>> +                                        msg->size, msg->buffer);
+>>>>> +            break;
+>>>>> +
+>>>>> +    default:
+>>>>> +            ret = -EINVAL;
+>>>>> +            break;
+>>>>> +    }
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
+>>>>>  {
+>>>>>      if (dp_link_bw == 0 || dp_link_count == 0)
+>>>>> --
+>>>>> 2.28.0.681.g6f77f65b4e-goog
+>>>>>
+>>>>> _______________________________________________
+>>>>> dri-devel mailing list
+>>>>> dri-devel@lists.freedesktop.org
+>>>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>>>
+>>>
+> 
+
