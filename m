@@ -2,156 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414EE310C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1747C310C34
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBENvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:51:19 -0500
-Received: from muru.com ([72.249.23.125]:57646 "EHLO muru.com"
+        id S231524AbhBENwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:52:07 -0500
+Received: from mga05.intel.com ([192.55.52.43]:15641 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhBENq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:46:26 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 17B7F81A7;
-        Fri,  5 Feb 2021 13:45:55 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH 2/4] thermal: ti-soc-thermal: Fix stuck sensor with continuous mode for 4430
-Date:   Fri,  5 Feb 2021 15:45:32 +0200
-Message-Id: <20210205134534.49200-3-tony@atomide.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205134534.49200-1-tony@atomide.com>
-References: <20210205134534.49200-1-tony@atomide.com>
+        id S231449AbhBENsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:48:14 -0500
+IronPort-SDR: VhsCdSkz5nl2OhlnVTwR6p1AxrMnCskjHnyx/grJ5Y0W4CUjxZSu9EWENgqv90/fnfLB2oPTqU
+ ZiwC52/bVjKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="266261858"
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="266261858"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:46:02 -0800
+IronPort-SDR: DoTquzvhTq1CvAtbZbu34YKcrxqL0urd3JEIlGJA+/8eofvvXYPZly4DXny7ENvBwEsC49H7Bc
+ P5Mw3hx2nZ1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="373396890"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 05 Feb 2021 05:46:01 -0800
+Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 703AB580689;
+        Fri,  5 Feb 2021 05:46:00 -0800 (PST)
+Subject: Re: [PATCH V3 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Yao Jin <yao.jin@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, maddy@linux.vnet.ibm.com
+References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+ <1611873611-156687-2-git-send-email-kan.liang@linux.intel.com>
+ <b970c739-6783-34d6-8676-44632c7c9428@linux.intel.com>
+ <CAM9d7chzwnmSeKydv0Fb_iopcuMZxRsx2mZ66uVwcu_RMw+Vyg@mail.gmail.com>
+ <4723a1de-9caa-e192-7b0d-8aced00b8f50@linux.intel.com>
+ <CAM9d7ciaCgebmGd98GrngY-he6LGwKeFKJeCqyTBnJ30-tSghQ@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <8d8b7323-7e99-b8c6-fbc1-813ecff0e844@linux.intel.com>
+Date:   Fri, 5 Feb 2021 08:45:59 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7ciaCgebmGd98GrngY-he6LGwKeFKJeCqyTBnJ30-tSghQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At least for 4430, trying to use the single conversion mode eventually
-hangs the thermal sensor. This can be quite easily seen with errors:
 
-thermal thermal_zone0: failed to read out thermal zone (-5)
 
-Also, trying to read the temperature shows a stuck value with:
+On 2/5/2021 5:43 AM, Namhyung Kim wrote:
+> On Fri, Feb 5, 2021 at 12:24 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>
+>> On 2/4/2021 9:00 AM, Namhyung Kim wrote:
+>>> Hi Kan,
+>>>
+>>> On Sat, Jan 30, 2021 at 2:25 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>> [SNIP]
+>>>> diff --git a/include/uapi/linux/perf_event.h
+>>>> b/include/uapi/linux/perf_event.h
+>>>> index b15e344..c50718a 100644
+>>>> --- a/include/uapi/linux/perf_event.h
+>>>> +++ b/include/uapi/linux/perf_event.h
+>>>> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
+>>>>           PERF_SAMPLE_CGROUP                      = 1U << 21,
+>>>>           PERF_SAMPLE_DATA_PAGE_SIZE              = 1U << 22,
+>>>>           PERF_SAMPLE_CODE_PAGE_SIZE              = 1U << 23,
+>>>> +       PERF_SAMPLE_WEIGHT_STRUCT               = 1U << 24,
+>>>>
+>>>> -       PERF_SAMPLE_MAX = 1U << 24,             /* non-ABI */
+>>>> +       PERF_SAMPLE_MAX = 1U << 25,             /* non-ABI */
+>>>>
+>>>>           __PERF_SAMPLE_CALLCHAIN_EARLY           = 1ULL << 63, /* non-ABI; internal use */
+>>>>     };
+>>>>
+>>>> +#define PERF_SAMPLE_WEIGHT_TYPE        (PERF_SAMPLE_WEIGHT |
+>>>> PERF_SAMPLE_WEIGHT_STRUCT)
+>>>
+>>> I'm not sure you want to expose it in the uapi header as it's not
+>>> intended to be used IMHO.
+>>>
+>>
+>> I'm not sure I understood, but it's indeed used in the tool patch set.
+>>
+>> https://lore.kernel.org/lkml/1612296553-21962-6-git-send-email-kan.liang@linux.intel.com/
+> 
+> Well, it's not a big deal.. but I just worried if some users might do
+> 
+>    event.attr.sample_type = PERF_SAMPLE_WEIGHT_TYPE;
+> 
 
-$ while true; do cat /sys/class/thermal/thermal_zone0/temp; done
+Yes, it's possible. For this case, Kernel returns -EINVAL.
 
-Where the temperature is not rising at all with the busy loop.
+Actually, even without the macro, users may still set PERF_SAMPLE_WEIGHT 
+| PERF_SAMPLE_WEIGHT_STRUCT manually. We cannot control what a user 
+sets. I don't think it's a problem as long as the kernel can handle it 
+properly.
 
-Additionally, the EOCZ (end of conversion) bit is not rising on 4430 in
-single conversion mode while it works fine in continuous conversion mode.
-It is also possible that the hung temperature sensor can affect the
-thermal shutdown alert too.
-
-Let's fix the issue by adding TI_BANDGAP_FEATURE_CONT_MODE_ONLY flag and
-use it for 4430.
-
-Note that we also need to add udelay to for the EOCZ (end of conversion)
-bit polling as otherwise we have it time out too early on 4430. We'll be
-changing the loop to use iopoll in the following clean-up patch.
-
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Eduardo Valentin <edubezval@gmail.com>
-Cc: H. Nikolaus Schaller <hns@goldelico.com>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/thermal/ti-soc-thermal/omap4-thermal-data.c |  3 ++-
- drivers/thermal/ti-soc-thermal/ti-bandgap.c         | 13 ++++++++++---
- drivers/thermal/ti-soc-thermal/ti-bandgap.h         |  2 ++
- 3 files changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
---- a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
-+++ b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
-@@ -58,7 +58,8 @@ omap4430_adc_to_temp[OMAP4430_ADC_END_VALUE - OMAP4430_ADC_START_VALUE + 1] = {
- const struct ti_bandgap_data omap4430_data = {
- 	.features = TI_BANDGAP_FEATURE_MODE_CONFIG |
- 			TI_BANDGAP_FEATURE_CLK_CTRL |
--			TI_BANDGAP_FEATURE_POWER_SWITCH,
-+			TI_BANDGAP_FEATURE_POWER_SWITCH |
-+			TI_BANDGAP_FEATURE_CONT_MODE_ONLY,
- 	.fclock_name = "bandgap_fclk",
- 	.div_ck_name = "bandgap_fclk",
- 	.conv_table = omap4430_adc_to_temp,
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-@@ -15,6 +15,7 @@
- #include <linux/kernel.h>
- #include <linux/interrupt.h>
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/err.h>
-@@ -605,9 +606,13 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
- 	struct temp_sensor_registers *tsr = bgp->conf->sensors[id].registers;
- 	u32 counter;
- 
--	/* Select single conversion mode */
--	if (TI_BANDGAP_HAS(bgp, MODE_CONFIG))
--		RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 0);
-+	/* Select continuous or single conversion mode */
-+	if (TI_BANDGAP_HAS(bgp, MODE_CONFIG)) {
-+		if (TI_BANDGAP_HAS(bgp, CONT_MODE_ONLY))
-+			RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 1);
-+		else
-+			RMW_BITS(bgp, id, bgap_mode_ctrl, mode_ctrl_mask, 0);
-+	}
- 
- 	/* Set Start of Conversion if available */
- 	if (tsr->bgap_soc_mask) {
-@@ -619,6 +624,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
- 			if (ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
- 			    tsr->bgap_eocz_mask)
- 				break;
-+			udelay(1);
- 		}
- 
- 		/* Clear Start of Conversion if available */
-@@ -631,6 +637,7 @@ ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id)
- 		if (!(ti_bandgap_readl(bgp, tsr->temp_sensor_ctrl) &
- 		      tsr->bgap_eocz_mask))
- 			break;
-+		udelay(1);
- 	}
- 
- 	return 0;
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
-@@ -280,6 +280,7 @@ struct ti_temp_sensor {
-  *	has Errata 814
-  * TI_BANDGAP_FEATURE_UNRELIABLE - used when the sensor readings are too
-  *	inaccurate.
-+ * TI_BANDGAP_FEATURE_CONT_MODE_ONLY - used when single mode hangs the sensor
-  * TI_BANDGAP_HAS(b, f) - macro to check if a bandgap device is capable of a
-  *      specific feature (above) or not. Return non-zero, if yes.
-  */
-@@ -295,6 +296,7 @@ struct ti_temp_sensor {
- #define TI_BANDGAP_FEATURE_HISTORY_BUFFER	BIT(9)
- #define TI_BANDGAP_FEATURE_ERRATA_814		BIT(10)
- #define TI_BANDGAP_FEATURE_UNRELIABLE		BIT(11)
-+#define TI_BANDGAP_FEATURE_CONT_MODE_ONLY	BIT(12)
- #define TI_BANDGAP_HAS(b, f)			\
- 			((b)->conf->features & TI_BANDGAP_FEATURE_ ## f)
- 
--- 
-2.30.0
+Thanks,
+Kan
