@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB13116DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7BE3116F0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhBEXRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:17:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhBEO2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 160946500F;
-        Fri,  5 Feb 2021 14:10:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534250;
-        bh=6J9ZmvFEAaG3oGT7LvaoN/qHHjKYIo5xf1ysxtlon+g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SrTiQfe5pYXFCP1jhUjQZfv1rFvtIDi4l9ebg0jjGOCSenvJAlobmG2MypcH+78nc
-         ed3UPoTME1xQ0z5r9ob5lV7eutOGzD18CfGrrBeHfOsfh+fdH8qzw1cg8d/Rxk0uIB
-         L/X7ZwyL2G4LJ54R0OH6y9PY5//avcdgJN6IADpY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 43/57] nvmet: set right status on error in id-ns handler
-Date:   Fri,  5 Feb 2021 15:07:09 +0100
-Message-Id: <20210205140657.824234483@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-References: <20210205140655.982616732@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231866AbhBEXVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232579AbhBEO0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:26:32 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ECDC0617AA;
+        Fri,  5 Feb 2021 08:04:09 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id sa23so12787095ejb.0;
+        Fri, 05 Feb 2021 08:04:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
+        b=l/dzw7ifuNU24tZ6TXySAhV2vGO0CPg+7/Et9s1SxjCL4d9Nl33+Rw0jIimvXgRn+z
+         zDakgbxfwnjVO3AwcCqEc3VarFa1CBpq5/P0OsYi1NBVx3qXExOIxjGFSHtYSh68gMS4
+         Eve2H+tgiVQbHqWXyFfi3uzMbDy53BMdiIwFAM+0v+dlumZp9R1MMb3nhMwQy0vpGujS
+         XfYem9f7CG3lpYESGx0xVQntrt2mQJ0F3+TEJdhIE3p+HR0bH9ssiG73G4bSAgPKHh8H
+         ZbTkH5qjthgrh3GTKmk+WU7bLOFin0A79HZVM2SjlxTKJyBvvlxZEV42Lz++2tgyy7er
+         /Ajg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
+        b=hTOWdfSc2sD5DZwdhYXs1Wbe+/4radVG2F+MUH2s839umyGTO7vVMSaLDwzFAjR3Ne
+         vyOiZIlf8N8pR49WwB/8Pko//PRmyi8XNh+0lj16wDrV0hclPnXBKAHk/ozgsA2ERSWc
+         urJC+sCkr91B/ehw91F1IDHJ+RU1i5rJktvk2PBDZALhsK+A4srHpdpLFoie0MWNoqsv
+         oWk0sy7SCUaK/kan+1uvVSP1RkQVHuzEin/ls/z16BPi9ohzvuAK/fw/BcIQrz6v1yoy
+         OMCQn6fWS6062xHekG0lFrvDjEIwv0VFGuYHan3j7yai8gYevOTYfyc0Qb55tqvoUQWW
+         qXJg==
+X-Gm-Message-State: AOAM531sooMTf0Dp85/BYWrQp+CSwST4vJN4lUkBUT2AbNZzJe9Jwf8C
+        ZIJzj7TOV9pRwpo+c1jPMewuTo3Txg3cELNsvrexevSE
+X-Google-Smtp-Source: ABdhPJz4c68iFt9emmCQCVE0NR6e5E0nuYYE7jDU6v3EZxjkge8aiiZNM7kql3sdPgVZ3CNhBKMRjiUgediRb51E9+U=
+X-Received: by 2002:a5d:60c6:: with SMTP id x6mr5108680wrt.85.1612534053076;
+ Fri, 05 Feb 2021 06:07:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210129195240.31871-2-TheSven73@gmail.com> <20210205124419.8575-1-sbauer@blackbox.su>
+In-Reply-To: <20210205124419.8575-1-sbauer@blackbox.su>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 5 Feb 2021 09:07:22 -0500
+Message-ID: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+To:     Sergej Bauer <sbauer@blackbox.su>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Markus.Elfring@web.de,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        "maintainer:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Hi Sergej,
 
-[ Upstream commit bffcd507780ea614b5543c66f2e37ce0d55cd449 ]
+On Fri, Feb 5, 2021 at 7:44 AM Sergej Bauer <sbauer@blackbox.su> wrote:
+>
+> Hi Sven
+> I can confirm great stability improvement after your patch
+> "lan743x: boost performance on cpu archs w/o dma cache snooping".
+>
+> Test machine is Intel Pentium G4560 3.50GHz
+> lan743x with rejected virtual phy 'inside'
 
-The function nvmet_execute_identify_ns() doesn't set the status if call
-to nvmet_find_namespace() fails. In that case we set the status of the
-request to the value return by the nvmet_copy_sgl().
+Interesting, so the speed boost patch seems to improve things even on Intel...
 
-Set the status to NVME_SC_INVALID_NS and adjust the code such that
-request will have the right status on nvmet_find_namespace() failure.
+Would you be able to apply and test the multi-buffer patch as well?
+To do that, you can simply apply patches [2/6] and [3/6] on top of
+what you already have.
 
-Without this patch :-
-NVME Identify Namespace 3:
-nsze    : 0
-ncap    : 0
-nuse    : 0
-nsfeat  : 0
-nlbaf   : 0
-flbas   : 0
-mc      : 0
-dpc     : 0
-dps     : 0
-nmic    : 0
-rescap  : 0
-fpi     : 0
-dlfeat  : 0
-nawun   : 0
-nawupf  : 0
-nacwu   : 0
-nabsn   : 0
-nabo    : 0
-nabspf  : 0
-noiob   : 0
-nvmcap  : 0
-mssrl   : 0
-mcl     : 0
-msrc    : 0
-nsattr	: 0
-nvmsetid: 0
-anagrpid: 0
-endgid  : 0
-nguid   : 00000000000000000000000000000000
-eui64   : 0000000000000000
-lbaf  0 : ms:0   lbads:0  rp:0 (in use)
-
-With this patch-series :-
-feb3b88b501e (HEAD -> nvme-5.11) nvmet: remove extra variable in identify ns
-6302aa67210a nvmet: remove extra variable in id-desclist
-ed57951da453 nvmet: remove extra variable in smart log nsid
-be384b8c24dc nvmet: set right status on error in id-ns handler
-
-NVMe status: INVALID_NS: The namespace or the format of that namespace is invalid(0xb)
-
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/target/admin-cmd.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-cmd.c
-index dca34489a1dc9..92ca23bc8dbfc 100644
---- a/drivers/nvme/target/admin-cmd.c
-+++ b/drivers/nvme/target/admin-cmd.c
-@@ -487,8 +487,10 @@ static void nvmet_execute_identify_ns(struct nvmet_req *req)
- 
- 	/* return an all zeroed buffer if we can't find an active namespace */
- 	ns = nvmet_find_namespace(ctrl, req->cmd->identify.nsid);
--	if (!ns)
-+	if (!ns) {
-+		status = NVME_SC_INVALID_NS;
- 		goto done;
-+	}
- 
- 	nvmet_ns_revalidate(ns);
- 
-@@ -541,7 +543,9 @@ static void nvmet_execute_identify_ns(struct nvmet_req *req)
- 		id->nsattr |= (1 << 0);
- 	nvmet_put_namespace(ns);
- done:
--	status = nvmet_copy_to_sgl(req, 0, id, sizeof(*id));
-+	if (!status)
-+		status = nvmet_copy_to_sgl(req, 0, id, sizeof(*id));
-+
- 	kfree(id);
- out:
- 	nvmet_req_complete(req, status);
--- 
-2.27.0
-
-
-
+Keeping in mind that Bryan has identified an issue with the above
+patch, which will get fixed in v2. So YMMV.
