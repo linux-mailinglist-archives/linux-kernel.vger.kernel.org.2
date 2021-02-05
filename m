@@ -2,178 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC28310A2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD235310A38
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhBELXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbhBELQZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:16:25 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7E6C06178A;
-        Fri,  5 Feb 2021 03:15:43 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id b9so11271474ejy.12;
-        Fri, 05 Feb 2021 03:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xGy6QPSyFqGl2apBoSDjOXH0DYYBflQ0iXGm5zmDxkc=;
-        b=vKx78CoBsYFL2sQWSF7KF162QYkAF+sOldJiHNphzx0P1zSGrzWeETems+cfpntWyx
-         JNPnflSZvYVpw3Q0QCYtjKjrJgSKBpzI8FJgrW3wtk5ohLPnMAdFanxsunHEKHberI/P
-         fXhjSNEjFG9fd4RA58P5Hl5vSYjswkreYPRRo6ZDEORDSLb5t6kC6oe8nZN+wycYkwrI
-         SZfOAVNnmTBGgiLlf/cxvJ8+HBpOH65b7QNbYqwE/GouuaxCdD7oASQNu67DJCa7/Zrl
-         G+HyUCMlUrvrkSSv5mIvrw3AIBafhqLGKzUT3UjJdVafHo8cLxfDRy+AQ7UGDLrGpyyz
-         ntDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xGy6QPSyFqGl2apBoSDjOXH0DYYBflQ0iXGm5zmDxkc=;
-        b=Pi5SNjh1S5fFqL+bLngmxeYO35mWgN55w/HB2itmDanM0srNY7xFAFCBs4wUw7BMoX
-         wS2gmU+Qhuudq3kqnK+SyAIUOcbKoajYkO+P8FpB50RV7EtA4FXhaQzcmGIN2t2dktzm
-         XKIJ+Ohc0ZQShFjwMRTPNOz02zRlwWp1Oe7JVpICoklElwwktf+J3WSBwEBZ5500BFhd
-         386E6R5o4yws7UXbNmuhabR25gndsEzRztTvcKKpWUHgV9+qekC2/c0SGjVWAB/h2nCM
-         dSS5mWrSlo/pzEN8qMdAKxmUb25GvDJMosjfHm5RC4d4N3QFGKnEjRcDT1xx6pGs1JZL
-         zDgA==
-X-Gm-Message-State: AOAM531E0imM7AAfIyZuFoaice7c3lY+kooo5TlNTY1lrmTNV+zEa1C9
-        6YboUJF28w8AvVt2niGg+twRjI6bWI4=
-X-Google-Smtp-Source: ABdhPJyms+hJzmTMnNhN6Va3fknGEV52K1mnhH8ndJRj5B9dAKOC26O1142JBLiX2CiemAEK7GSZsw==
-X-Received: by 2002:a17:906:b09a:: with SMTP id x26mr3607767ejy.199.1612523742471;
-        Fri, 05 Feb 2021 03:15:42 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id t19sm3758856ejc.62.2021.02.05.03.15.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Feb 2021 03:15:41 -0800 (PST)
-Message-ID: <218be362c71a9cdb8312f6d8156a0935985aae04.camel@gmail.com>
-Subject: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Date:   Fri, 05 Feb 2021 12:15:39 +0100
-In-Reply-To: <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-         <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p3>
-         <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S231350AbhBEL0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:26:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231269AbhBELUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:20:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA91164DB2;
+        Fri,  5 Feb 2021 11:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612523969;
+        bh=rm+DO8jRG9vXb505ghtG8o6BLLgA2frdzJnefVazWtA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TVK/pTsxIGKrL2Rz+z/51yT19TZeajQ+aLcfVitT1Fqz5q/iMvcQQyu8ESXGfjgqv
+         ecxqDKAe9VHSgFoSOogOoqySVc3g5WUTu3Qhngd0P66a/4eroS5CiS96qn6Oi+cPTh
+         xOCpwNInjgkQ7Hp5XTXsjGwD342+UMQAslRNTx1KKkaygNZo41zS1uC8vi2AWUKgma
+         S3jfqQyd6pu4wKBjeOInrk/2Rs+sygNeh6Dvv7Bqb/Enq8GsotJX3pCY5Cclr8JC0d
+         y/E8Mp1XhsE0lqRnqolLBbGfazddNLImalbB55ElDEW1Dd7AQMsvtO07TCKBsRBruz
+         /9qyn1GHLifpw==
+Date:   Fri, 5 Feb 2021 11:19:22 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, netdev@vger.kernel.org,
+        yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de,
+        pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com,
+        jianyong.wu@arm.com, kernel-team@android.com
+Subject: Re: [PATCH v17 1/7] arm/arm64: Probe for the presence of KVM
+ hypervisor
+Message-ID: <20210205111921.GA22109@willie-the-truck>
+References: <20210202141204.3134855-1-maz@kernel.org>
+ <20210202141204.3134855-2-maz@kernel.org>
+ <d5765ade-7199-2d1e-6d59-d3de6a52c6ce@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5765ade-7199-2d1e-6d59-d3de6a52c6ce@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-29 at 14:30 +0900, Daejun Park wrote:
-> +static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
-> +                                          int srgn_idx, int
-> srgn_mem_size)
-> +{
-> +       cdb[0] = UFSHPB_READ_BUFFER;
-> +       cdb[1] = UFSHPB_READ_BUFFER_ID;
-> +
-> +       put_unaligned_be16(rgn_idx, &cdb[2]);
-> +       put_unaligned_be16(srgn_idx, &cdb[4]);
-> +       put_unaligned_be24(srgn_mem_size, &cdb[6]);
-> +
-> +       cdb[9] = 0x00;
-> +}
-> +
-> +static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
-> +                                 struct ufshpb_req *map_req)
-> +{
-> +       struct request_queue *q;
-> +       struct request *req;
-> +       struct scsi_request *rq;
-> +       int ret = 0;
-> +       int i;
-> +
-> +       q = hpb->sdev_ufs_lu->request_queue;
-> +       for (i = 0; i < hpb->pages_per_srgn; i++) {
-> +               ret = bio_add_pc_page(q, map_req->bio, map_req->mctx-
-> >m_page[i],
-> +                                     PAGE_SIZE, 0);
-> +               if (ret != PAGE_SIZE) {
-> +                       dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +                                  "bio_add_pc_page fail %d - %d\n",
-> +                                  map_req->rgn_idx, map_req-
-> >srgn_idx);
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       req = map_req->req;
-> +
-> +       blk_rq_append_bio(req, &map_req->bio);
-> +
-> +       req->end_io_data = map_req;
-> +
-> +       rq = scsi_req(req);
-> +       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
-> +                               map_req->srgn_idx, hpb-
-> >srgn_mem_size);
+On Fri, Feb 05, 2021 at 09:11:00AM +0000, Steven Price wrote:
+> On 02/02/2021 14:11, Marc Zyngier wrote:
+> > diff --git a/drivers/firmware/smccc/kvm_guest.c b/drivers/firmware/smccc/kvm_guest.c
+> > new file mode 100644
+> > index 000000000000..23ce1ded88b4
+> > --- /dev/null
+> > +++ b/drivers/firmware/smccc/kvm_guest.c
+> > @@ -0,0 +1,51 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#define pr_fmt(fmt) "smccc: KVM: " fmt
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/arm-smccc.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/string.h>
+> > +
+> > +static DECLARE_BITMAP(__kvm_arm_hyp_services, ARM_SMCCC_KVM_NUM_FUNCS) __ro_after_init = { };
+> > +
+> > +void __init kvm_init_hyp_services(void)
+> > +{
+> > +	int i;
+> > +	struct arm_smccc_res res;
+> > +
+> > +	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
+> > +		return;
+> > +
+> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID, &res);
+> > +	if (res.a0 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0 ||
+> > +	    res.a1 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1 ||
+> > +	    res.a2 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2 ||
+> > +	    res.a3 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3)
+> > +		return;
+> > +
+> > +	memset(&res, 0, sizeof(res));
+> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
+> > +	for (i = 0; i < 32; ++i) {
+> > +		if (res.a0 & (i))
+> > +			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
+> > +		if (res.a1 & (i))
+> > +			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
+> > +		if (res.a2 & (i))
+> > +			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
+> > +		if (res.a3 & (i))
+> > +			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
+> 
+> The bit shifts are missing, the tests should be of the form:
+> 
+> 	if (res.a0 & (1 << i))
+> 
+> Or indeed using a BIT() macro.
 
-Hi Daejun
+Maybe even test_bit()?
 
-Thanks for your hard-working on the HPB driver.
-
-I found you didn't take into account of allocation Length of the last
-sub-region of the last region.
-
-UFS HPB spec: 
-
-"If the requested field of the HPB Region or HPB Sub-Region is out of
-range, then the device shall terminate the command by sending RESPONSE
-UPIU with CHECK CONDITION status, with the SENSE KEY set to ILLEGAL
-REQUEST, and the additional sense code set to INVALID FIELD IN CDB"
-
-
-Below codes are from my RFC HPB patchset:
-
-https://patchwork.kernel.org/project/linux-scsi/patch/20200504142032.16619-6-beanhuo@micron.com/
-
-+	alloc_len = hpb->hba->hpb_geo.subregion_entry_sz;
-+	/*
-+	 * HPB Sub-Regions are equally sized except for the last one
-which is
-+	 * smaller if the last hpb Region is not an integer multiple of
-+	 * bHPBSubRegionSize.
-+	 */
-+	if (map_req->region == (hpb->lu_region_cnt - 1) &&
-+	    map_req->subregion == (hpb->subregions_in_last_region - 1))
-+		alloc_len = hpb->last_subregion_entry_size;
-+
-+	ufshpb_prepare_read_buf_cmd(ureq->cmd, map_req->region,
-+				    map_req->subregion, alloc_len);
-+	if (!ureq->req) {
-+		ureq->req = blk_get_request(q, REQ_OP_SCSI_IN, 0);
-+		if (IS_ERR(ureq->req)) {
-+			ret =  PTR_ERR(ureq->req);
-+			goto free_mem;
-+		}
-+	}
-
-please fix it in your next version patch. thanks.
-
-
-Kind regards,
-Bean
-
-
-
+Will
