@@ -2,178 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB53C31038F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C489310394
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBED3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:29:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhBED3O (ORCPT
+        id S230174AbhBEDas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:30:48 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:64177 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230094AbhBEDaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:29:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612495667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6n+ZLbkq+mLCc6aBqP6EMe2QS0ih77l0I/R5zi2Q/k=;
-        b=LfdOAVLyXLfWPbqHY6Ghg+KmAczp7R47J/NHlGH34JhiUCT9SCVcdU8eZUmGZdx6rl0FAz
-        Nzoy1nH8HlvDOCMzwD7jr1d3BMKEdIfX9miw1n+NJqgrM8uy8MBxGNZB1J+knEATTZ/UqC
-        PU1pIiqBannsa1VLX/X1CGU5g6z3WIY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-GXHq2iLTMEGLcKpW42pIgQ-1; Thu, 04 Feb 2021 22:27:45 -0500
-X-MC-Unique: GXHq2iLTMEGLcKpW42pIgQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 4 Feb 2021 22:30:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612495821; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7de4pU8VCrgKgb2uIrThFD75eGaIhnDm2vVGX2AEyBs=;
+ b=ILAViHSEl778s7TRffDWLz/xZGa8OshKyUzvvLWIcxSRAP9KUnXtVwOBnbvYwgo4/llsSW4i
+ YUFn53fcAJg1+j4aOke/D95Ljb4VCZFVnxP66SKtiHwUjyVEEflMYReJJ+WaW38fdm6lj2vz
+ O+ctXgcBTO/2XeFRI2SVZhJERd4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 601cbbb081f6c45dcec6a17e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 03:29:52
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D3E46C43469; Fri,  5 Feb 2021 03:29:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 171DE195D560;
-        Fri,  5 Feb 2021 03:27:44 +0000 (UTC)
-Received: from [10.72.12.112] (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 90BAA60937;
-        Fri,  5 Feb 2021 03:27:33 +0000 (UTC)
-Subject: Re: [PATCH v3 09/13] vhost/vdpa: remove vhost_vdpa_config_validate()
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210204172230.85853-1-sgarzare@redhat.com>
- <20210204172230.85853-10-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6919d2d4-cc8e-2b67-2385-35803de5e38b@redhat.com>
-Date:   Fri, 5 Feb 2021 11:27:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92099C433CA;
+        Fri,  5 Feb 2021 03:29:48 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210204172230.85853-10-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Feb 2021 11:29:48 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        huobean@gmail.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
+In-Reply-To: <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+ <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+Message-ID: <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/2/5 上午1:22, Stefano Garzarella wrote:
-> get_config() and set_config() callbacks in the 'struct vdpa_config_ops'
-> usually already validated the inputs. Also now they can return an error,
-> so we don't need to validate them here anymore.
->
-> Let's use the return value of these callbacks and return it in case of
-> error in vhost_vdpa_get_config() and vhost_vdpa_set_config().
->
-> Originally-by: Xie Yongji <xieyongji@bytedance.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+On 2021-01-29 13:30, Daejun Park wrote:
+> This patch changes the read I/O to the HPB read I/O.
+> 
+> If the logical address of the read I/O belongs to active sub-region, 
+> the
+> HPB driver modifies the read I/O command to HPB read. It modifies the 
+> UPIU
+> command of UFS instead of modifying the existing SCSI command.
+> 
+> In the HPB version 1.0, the maximum read I/O size that can be converted 
+> to
+> HPB read is 4KB.
+> 
+> The dirty map of the active sub-region prevents an incorrect HPB read 
+> that
+> has stale physical page number which is updated by previous write I/O.
+> 
+> Reviewed-by: Can Guo <cang@codeaurora.org>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> Acked-by: Avri Altman <Avri.Altman@wdc.com>
+> Tested-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 > ---
->   drivers/vhost/vdpa.c | 41 +++++++++++++----------------------------
->   1 file changed, 13 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index ef688c8c0e0e..d61e779000a8 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -185,51 +185,35 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
->   	return 0;
->   }
->   
-> -static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
-> -				      struct vhost_vdpa_config *c)
-> -{
-> -	long size = 0;
-> -
-> -	switch (v->virtio_id) {
-> -	case VIRTIO_ID_NET:
-> -		size = sizeof(struct virtio_net_config);
-> -		break;
-> -	}
-> -
-> -	if (c->len == 0)
-> -		return -EINVAL;
-> -
-> -	if (c->len > size - c->off)
-> -		return -E2BIG;
-> -
-> -	return 0;
-> -}
-> -
->   static long vhost_vdpa_get_config(struct vhost_vdpa *v,
->   				  struct vhost_vdpa_config __user *c)
->   {
->   	struct vdpa_device *vdpa = v->vdpa;
->   	struct vhost_vdpa_config config;
->   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
-> +	long ret;
->   	u8 *buf;
->   
->   	if (copy_from_user(&config, c, size))
->   		return -EFAULT;
-> -	if (vhost_vdpa_config_validate(v, &config))
-> +	if (config.len == 0)
->   		return -EINVAL;
->   	buf = kvzalloc(config.len, GFP_KERNEL);
+>  drivers/scsi/ufs/ufshcd.c |   2 +
+>  drivers/scsi/ufs/ufshpb.c | 234 ++++++++++++++++++++++++++++++++++++++
+>  drivers/scsi/ufs/ufshpb.h |   2 +
+>  3 files changed, 238 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 52e48de8d27c..37cb343e9ec1 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -2653,6 +2653,8 @@ static int ufshcd_queuecommand(struct Scsi_Host
+> *host, struct scsi_cmnd *cmd)
+> 
+>  	lrbp->req_abort_skip = false;
+> 
+> +	ufshpb_prep(hba, lrbp);
+> +
+>  	ufshcd_comp_scsi_upiu(hba, lrbp);
+> 
+>  	err = ufshcd_map_sg(hba, lrbp);
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index 48edfdd0f606..73e7b3ed04a4 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -31,6 +31,29 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
+>  	return !(hba->ufshpb_dev.hpb_disabled);
+>  }
+> 
+> +static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
+> +			     struct ufshpb_subregion *srgn)
+> +{
+> +	return rgn->rgn_state != HPB_RGN_INACTIVE &&
+> +		srgn->srgn_state == HPB_SRGN_VALID;
+> +}
+> +
+> +static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
+> +{
+> +	return req_op(cmd->request) == REQ_OP_READ;
+> +}
+> +
+> +static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
+> +{
+> +	return op_is_write(req_op(cmd->request)) ||
+> +	       op_is_discard(req_op(cmd->request));
+> +}
+> +
+> +static bool ufshpb_is_support_chunk(int transfer_len)
+> +{
+> +	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
+> +}
+> +
+>  static bool ufshpb_is_general_lun(int lun)
+>  {
+>  	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+> @@ -98,6 +121,217 @@ static void ufshpb_set_state(struct ufshpb_lu
+> *hpb, int state)
+>  	atomic_set(&hpb->hpb_state, state);
+>  }
+> 
+> +static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
+> +			     int srgn_idx, int srgn_offset, int cnt)
+> +{
+> +	struct ufshpb_region *rgn;
+> +	struct ufshpb_subregion *srgn;
+> +	int set_bit_len;
+> +	int bitmap_len = hpb->entries_per_srgn;
+> +
+> +next_srgn:
+> +	rgn = hpb->rgn_tbl + rgn_idx;
+> +	srgn = rgn->srgn_tbl + srgn_idx;
+> +
+> +	if ((srgn_offset + cnt) > bitmap_len)
+> +		set_bit_len = bitmap_len - srgn_offset;
+> +	else
+> +		set_bit_len = cnt;
+> +
+> +	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
+> +	    srgn->srgn_state == HPB_SRGN_VALID)
+> +		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
+> +
+> +	srgn_offset = 0;
+> +	if (++srgn_idx == hpb->srgns_per_rgn) {
+> +		srgn_idx = 0;
+> +		rgn_idx++;
+> +	}
+> +
+> +	cnt -= set_bit_len;
+> +	if (cnt > 0)
+> +		goto next_srgn;
+> +
+> +	WARN_ON(cnt < 0);
+> +}
+> +
+> +static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
+> +				   int srgn_idx, int srgn_offset, int cnt)
+> +{
+> +	struct ufshpb_region *rgn;
+> +	struct ufshpb_subregion *srgn;
+> +	int bitmap_len = hpb->entries_per_srgn;
+> +	int bit_len;
+> +
+> +next_srgn:
+> +	rgn = hpb->rgn_tbl + rgn_idx;
+> +	srgn = rgn->srgn_tbl + srgn_idx;
+> +
+> +	if (!ufshpb_is_valid_srgn(rgn, srgn))
+> +		return true;
+> +
+> +	/*
+> +	 * If the region state is active, mctx must be allocated.
+> +	 * In this case, check whether the region is evicted or
+> +	 * mctx allcation fail.
+> +	 */
+> +	WARN_ON(!srgn->mctx);
+> +
+> +	if ((srgn_offset + cnt) > bitmap_len)
+> +		bit_len = bitmap_len - srgn_offset;
+> +	else
+> +		bit_len = cnt;
+> +
+> +	if (find_next_bit(srgn->mctx->ppn_dirty,
+> +			  bit_len, srgn_offset) >= srgn_offset)
+> +		return true;
+> +
+> +	srgn_offset = 0;
+> +	if (++srgn_idx == hpb->srgns_per_rgn) {
+> +		srgn_idx = 0;
+> +		rgn_idx++;
+> +	}
+> +
+> +	cnt -= bit_len;
+> +	if (cnt > 0)
+> +		goto next_srgn;
+> +
+> +	return false;
+> +}
+> +
+> +static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
+> +			  struct ufshpb_map_ctx *mctx, int pos, int *error)
+> +{
+> +	u64 *ppn_table;
+> +	struct page *page;
+> +	int index, offset;
+> +
+> +	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +
+> +	page = mctx->m_page[index];
+> +	if (unlikely(!page)) {
+> +		*error = -ENOMEM;
+> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +			"error. cannot find page in mctx\n");
+> +		return 0;
+> +	}
+> +
+> +	ppn_table = page_address(page);
+> +	if (unlikely(!ppn_table)) {
+> +		*error = -ENOMEM;
+> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +			"error. cannot get ppn_table\n");
+> +		return 0;
+> +	}
+> +
+> +	return ppn_table[offset];
+> +}
+> +
+> +static void
+> +ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int 
+> *rgn_idx,
+> +			int *srgn_idx, int *offset)
+> +{
+> +	int rgn_offset;
+> +
+> +	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
+> +	rgn_offset = lpn & hpb->entries_per_rgn_mask;
+> +	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
+> +	*offset = rgn_offset & hpb->entries_per_srgn_mask;
+> +}
+> +
+> +static void
+> +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb 
+> *lrbp,
+> +				  u32 lpn, u64 ppn,  unsigned int transfer_len)
+> +{
+> +	unsigned char *cdb = lrbp->cmd->cmnd;
+> +
+> +	cdb[0] = UFSHPB_READ;
+> +
+> +	put_unaligned_be64(ppn, &cdb[6]);
 
+You are assuming the HPB entries read out by "HPB Read Buffer" cmd are 
+in Little
+Endian, which is why you are using put_unaligned_be64 here. However, 
+this assumption
+is not right for all the other flash vendors - HPB entries read out by 
+"HPB Read Buffer"
+cmd may come in Big Endian, if so, their random read performance are 
+screwed.
 
-Then it means usersapce can allocate a very large memory.
+Actually, I have seen at least two flash vendors acting so. I had to 
+modify this line
+to get the code work properly on my setups.
 
-Rethink about this, we should limit the size here (e.g PAGE_SIZE) or 
-fetch the config size first (either through a config ops as you 
-suggested or a variable in the vdpa device that is initialized during 
-device creation).
+Meanwhile, in your cover letter, you mentioned that the performance data 
+is collected
+on a UFS2.1 device. Please re-collect the data on a real UFS3.1 device 
+and let me
+know the part number. Otherwise, the data is not quite convincing to us.
 
-Thanks
+Regards,
+Can Guo.
 
->   	if (!buf)
->   		return -ENOMEM;
->   
-> -	vdpa_get_config(vdpa, config.off, buf, config.len);
-> +	ret = vdpa_get_config(vdpa, config.off, buf, config.len);
-> +	if (ret)
-> +		goto out;
->   
->   	if (copy_to_user(c->buf, buf, config.len)) {
-> -		kvfree(buf);
-> -		return -EFAULT;
-> +		ret = -EFAULT;
-> +		goto out;
->   	}
->   
-> +out:
->   	kvfree(buf);
-> -	return 0;
-> +	return ret;
->   }
->   
->   static long vhost_vdpa_set_config(struct vhost_vdpa *v,
-> @@ -239,21 +223,22 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
->   	const struct vdpa_config_ops *ops = vdpa->config;
->   	struct vhost_vdpa_config config;
->   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
-> +	long ret;
->   	u8 *buf;
->   
->   	if (copy_from_user(&config, c, size))
->   		return -EFAULT;
-> -	if (vhost_vdpa_config_validate(v, &config))
-> +	if (config.len == 0)
->   		return -EINVAL;
->   
->   	buf = vmemdup_user(c->buf, config.len);
->   	if (IS_ERR(buf))
->   		return PTR_ERR(buf);
->   
-> -	ops->set_config(vdpa, config.off, buf, config.len);
-> +	ret = ops->set_config(vdpa, config.off, buf, config.len);
->   
->   	kvfree(buf);
-> -	return 0;
-> +	return ret;
->   }
->   
->   static long vhost_vdpa_get_features(struct vhost_vdpa *v, u64 __user *featurep)
-
+> +	cdb[14] = transfer_len;
+> +
+> +	lrbp->cmd->cmd_len = UFS_CDB_SIZE;
+> +}
+> +
+> +/*
+> + * This function will set up HPB read command using host-side L2P map 
+> data.
+> + * In HPB v1.0, maximum size of HPB read command is 4KB.
+> + */
+> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> +{
+> +	struct ufshpb_lu *hpb;
+> +	struct ufshpb_region *rgn;
+> +	struct ufshpb_subregion *srgn;
+> +	struct scsi_cmnd *cmd = lrbp->cmd;
+> +	u32 lpn;
+> +	u64 ppn;
+> +	unsigned long flags;
+> +	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
+> +	int err = 0;
+> +
+> +	hpb = ufshpb_get_hpb_data(cmd->device);
+> +	if (!hpb)
+> +		return;
+> +
+> +	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
+> +		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> +			   "%s: ufshpb state is not PRESENT", __func__);
+> +		return;
+> +	}
+> +
+> +	if (!ufshpb_is_write_or_discard_cmd(cmd) &&
+> +	    !ufshpb_is_read_cmd(cmd))
+> +		return;
+> +
+> +	transfer_len = sectors_to_logical(cmd->device, 
+> blk_rq_sectors(cmd->request));
+> +	if (unlikely(!transfer_len))
+> +		return;
+> +
+> +	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
+> +	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
+> +	rgn = hpb->rgn_tbl + rgn_idx;
+> +	srgn = rgn->srgn_tbl + srgn_idx;
+> +
+> +	/* If command type is WRITE or DISCARD, set bitmap as drity */
+> +	if (ufshpb_is_write_or_discard_cmd(cmd)) {
+> +		spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+> +		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+> +				 transfer_len);
+> +		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +		return;
+> +	}
+> +
+> +	if (!ufshpb_is_support_chunk(transfer_len))
+> +		return;
+> +
+> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+> +	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+> +				   transfer_len)) {
+> +		hpb->stats.miss_cnt++;
+> +		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +		return;
+> +	}
+> +
+> +	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
+> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +	if (unlikely(err)) {
+> +		/*
+> +		 * In this case, the region state is active,
+> +		 * but the ppn table is not allocated.
+> +		 * Make sure that ppn table must be allocated on
+> +		 * active state.
+> +		 */
+> +		WARN_ON(true);
+> +		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
+> +		return;
+> +	}
+> +
+> +	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
+> +
+> +	hpb->stats.hit_cnt++;
+> +}
+> +
+>  static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+>  					     struct ufshpb_subregion *srgn)
+>  {
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index e40b016971ac..2c43a03b66b6 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -198,6 +198,7 @@ struct ufs_hba;
+>  struct ufshcd_lrb;
+> 
+>  #ifndef CONFIG_SCSI_UFS_HPB
+> +static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) 
+> {}
+>  static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb 
+> *lrbp) {}
+>  static void ufshpb_resume(struct ufs_hba *hba) {}
+>  static void ufshpb_suspend(struct ufs_hba *hba) {}
+> @@ -211,6 +212,7 @@ static bool ufshpb_is_allowed(struct ufs_hba *hba)
+> { return false; }
+>  static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
+>  static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
+>  #else
+> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
+>  void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
+>  void ufshpb_resume(struct ufs_hba *hba);
+>  void ufshpb_suspend(struct ufs_hba *hba);
