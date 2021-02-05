@@ -2,225 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1259A311160
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CE4311168
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhBER6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:58:03 -0500
-Received: from mga03.intel.com ([134.134.136.65]:32227 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233297AbhBERzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:55:16 -0500
-IronPort-SDR: xb0O8Yd1UhAxN9qVhZ8+JMZWm9YZphtTeyt5+1GNoIQ72G2cSSPSGJQ8AutCYKEOY/Qyr96nFV
- uUjB4cjwBi5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181543892"
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181543892"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 11:36:58 -0800
-IronPort-SDR: Z3JIA+i3JSl2/K+KkBh1IFLkm0sJOn06pShD9CiAogQqBFVESZtE3IXnlnXxcEtnd85X1eh3jc
- YW37RCXUzXEg==
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="434577302"
-Received: from arwatson-mobl1.amr.corp.intel.com (HELO [10.212.10.204]) ([10.212.10.204])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 11:36:58 -0800
-Subject: Re: [PATCH 2/2] x86/sgx: Maintain encl->refcount for each
- encl->mm_list entry
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20210205182840.2260-1-jarkko@kernel.org>
- <20210205182840.2260-2-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com>
-Date:   Fri, 5 Feb 2021 11:36:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233691AbhBESAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:00:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233660AbhBER4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:56:32 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBAFC061756;
+        Fri,  5 Feb 2021 11:38:15 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id o7so2355074ils.2;
+        Fri, 05 Feb 2021 11:38:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=mwLxkFVe03MmkYCBahpI6SDm01fTcoo2tni0W+8JeQM=;
+        b=H0iLDSiQ8Iwg935LoplXA3JbMGkpM7Bklp5o2oHgXxTIMnvSg4fBSEtd0kEZNEsNVC
+         0zKkH/m4lXBAVubqaQce0i/K6nDjcOt7MNZHC6ZzjMiZSeKe3Y7RnMnKnyuuO7xF9vn3
+         QsXOALugo1iicDU0ZqzEMIaA4Oqz/nUBxSJ3JrJtcXKDXxsS87eD/5MnOVT+g4zCXCiu
+         +pCH7yVdWFFj3dMEVJ+PserRZv3MU7aLrpRG+TVO2WeqsK3M1nXicWcR4+Z/zhOL1+Nz
+         m7p2LHnsWA1JD8wlyCddFfAgsmwUIGYxql9KWnghHb1p787TY1S3ptg45pKCfIV0qMZa
+         m+RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=mwLxkFVe03MmkYCBahpI6SDm01fTcoo2tni0W+8JeQM=;
+        b=cDOlYLF2LHROQieUzb6ZP3tyzcH9uVvwVT9XrpIPdI6C3E024kd9e/nkF/Mc6fXW7c
+         mAJP9MIL5+53TdJK2GxPjoSVtjckbSWVYXOHwR1O75ezZgHDWh+FGA/nDReAD3JG0qNO
+         9ogMUvnRaXbSuBzXz4W0tfWUrS7sz4kkPK+8Vlbr1vJEhWQ4wkiozcO0zhi8JGUIRfqS
+         FGde2IHdAHELLqMOgpHY2T55EfgMgzugUXV4t9BAU+cGq15JJH4cgcW3Oo9KbVAwtqk4
+         asdrYltSLo8JzPOO2q+DUxQ8jTqBpMDqSplj6SOF1S5j9UafbtTrpAep/JxqyoE5Ji6h
+         7MtQ==
+X-Gm-Message-State: AOAM533oy8o4VgvOE0YmjnS7U9Pl8BwBfPUlAwWzXIpJ0pcUN94rBdeS
+        3GWU+ipTVmshfDlh3sjtoqLaDqh5ihgMAaXz8ws=
+X-Google-Smtp-Source: ABdhPJw57shqvvmx+O7lrnu6U36RfiPujtlnSJdMtudr7FP3riZyQecDvbV53UaagO+sOq0er0baxkNymqLSrNi2WK0=
+X-Received: by 2002:a92:58ce:: with SMTP id z75mr5430151ilf.209.1612553895279;
+ Fri, 05 Feb 2021 11:38:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205182840.2260-2-jarkko@kernel.org>
-Content-Type: multipart/mixed;
- boundary="------------AD3EC73A5ABF674974E52A08"
-Content-Language: en-US
+References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+ <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
+ <20210205152823.GD920417@kernel.org> <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
+ <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
+ <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
+ <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com> <CA+icZUWESAQxWb6fvhOY0CxngLY3z4kOiZS2vPtSD5tDaSve-g@mail.gmail.com>
+ <CA+icZUVGXxEGy7KYqHvw-iSb1HqDNzjXwAn=VEJaAbTjLCKDFQ@mail.gmail.com> <CAFP8O3KA6uR5Q29UGXqxahHmfn6V6GSeKzCsBiD3838WEAGO3Q@mail.gmail.com>
+In-Reply-To: <CAFP8O3KA6uR5Q29UGXqxahHmfn6V6GSeKzCsBiD3838WEAGO3Q@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 5 Feb 2021 20:38:04 +0100
+Message-ID: <CA+icZUVBHJ2eTxtt_3uCd=b4_i7WgJm5p2KpPvo=3AMd606w2g@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------AD3EC73A5ABF674974E52A08
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+On Fri, Feb 5, 2021 at 8:30 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google=
+.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 11:21 AM Sedat Dilek <sedat.dilek@gmail.com> wrote=
+:
+> >
+> > On Fri, Feb 5, 2021 at 8:15 PM Sedat Dilek <sedat.dilek@gmail.com> wrot=
+e:
+> > >
+> > > On Fri, Feb 5, 2021 at 8:10 PM Yonghong Song <yhs@fb.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 2/5/21 11:06 AM, Sedat Dilek wrote:
+> > > > > On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com=
+> wrote:
+> > > > >>
+> > > > >> On Fri, Feb 5, 2021 at 6:48 PM Sedat Dilek <sedat.dilek@gmail.co=
+m> wrote:
+> > > > >>>
+> > > > >>> On Fri, Feb 5, 2021 at 4:28 PM Arnaldo Carvalho de Melo
+> > > > >>> <arnaldo.melo@gmail.com> wrote:
+> > > > >>>>
+> > > > >>>> Em Fri, Feb 05, 2021 at 04:23:59PM +0100, Sedat Dilek escreveu=
+:
+> > > > >>>>> On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail=
+.com> wrote:
+> > > > >>>>>>
+> > > > >>>>>> On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmai=
+l.com> wrote:
+> > > > >>>>>>>
+> > > > >>>>>>> Hi,
+> > > > >>>>>>>
+> > > > >>>>>>> when building with pahole v1.20 and binutils v2.35.2 plus C=
+lang
+> > > > >>>>>>> v12.0.0-rc1 and DWARF-v5 I see:
+> > > > >>>>>>> ...
+> > > > >>>>>>> + info BTF .btf.vmlinux.bin.o
+> > > > >>>>>>> + [  !=3D silent_ ]
+> > > > >>>>>>> + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
+> > > > >>>>>>>   BTF     .btf.vmlinux.bin.o
+> > > > >>>>>>> + LLVM_OBJCOPY=3D/opt/binutils/bin/objcopy /opt/pahole/bin/=
+pahole -J
+> > > > >>>>>>> .tmp_vmlinux.btf
+> > > > >>>>>>> [115] INT DW_ATE_unsigned_1 Error emitting BTF type
+> > > > >>>>>>> Encountered error while encoding BTF.
+> > > > >>>>>>
+> > > > >>>>>> Grepping the pahole sources:
+> > > > >>>>>>
+> > > > >>>>>> $ git grep DW_ATE
+> > > > >>>>>> dwarf_loader.c:         bt->is_bool =3D encoding =3D=3D DW_A=
+TE_boolean;
+> > > > >>>>>> dwarf_loader.c:         bt->is_signed =3D encoding =3D=3D DW=
+_ATE_signed;
+> > > > >>>>>>
+> > > > >>>>>> Missing DW_ATE_unsigned encoding?
+> > > > >>>>>>
+> > > > >>>>>
+> > > > >>>>> Checked the LLVM sources:
+> > > > >>>>>
+> > > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D
+> > > > >>>>> llvm::dwarf::DW_ATE_unsigned_char;
+> > > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D llvm::dwar=
+f::DW_ATE_unsigned;
+> > > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D
+> > > > >>>>> llvm::dwarf::DW_ATE_unsigned_fixed;
+> > > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:
+> > > > >>>>>    ? llvm::dwarf::DW_ATE_unsigned
+> > > > >>>>> ...
+> > > > >>>>> lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT=
+_encoding
+> > > > >>>>>   (DW_ATE_unsigned)
+> > > > >>>>>
+> > > > >>>>> So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
+> > > > >>>>
+> > > > >>>> Thanks for the research, probably your conclusion is correct, =
+can you go
+> > > > >>>> the next step and add that part and check if the end result is=
+ the
+> > > > >>>> expected one?
+> > > > >>>>
+> > > > >>>
+> > > > >>> Still building...
+> > > > >>>
+> > > > >>> Can you give me a hand on what has to be changed in dwarves/pah=
+ole?
+> > > > >>>
+> > > > >>> I guess switching from ld.bfd to ld.lld will show the same ERRO=
+R.
+> > > > >>>
+> > > > >>
+> > > > >> This builds successfully - untested:
+> > > > >>
+> > > > >> $ git diff
+> > > > >> diff --git a/btf_loader.c b/btf_loader.c
+> > > > >> index ec286f413f36..a39edd3362db 100644
+> > > > >> --- a/btf_loader.c
+> > > > >> +++ b/btf_loader.c
+> > > > >> @@ -107,6 +107,7 @@ static struct base_type *base_type__new(stri=
+ngs_t
+> > > > >> name, uint32_t attrs,
+> > > > >>                 bt->bit_size =3D size;
+> > > > >>                 bt->is_signed =3D attrs & BTF_INT_SIGNED;
+> > > > >>                 bt->is_bool =3D attrs & BTF_INT_BOOL;
+> > > > >> +               bt->is_unsigned =3D attrs & BTF_INT_UNSIGNED;
+> > > > >>                 bt->name_has_encoding =3D false;
+> > > > >>                 bt->float_type =3D float_type;
+> > > > >>         }
+> > > > >> diff --git a/ctf.h b/ctf.h
+> > > > >> index 25b79892bde3..9e47c3c74677 100644
+> > > > >> --- a/ctf.h
+> > > > >> +++ b/ctf.h
+> > > > >> @@ -100,6 +100,7 @@ struct ctf_full_type {
+> > > > >> #define CTF_TYPE_INT_CHAR      0x2
+> > > > >> #define CTF_TYPE_INT_BOOL      0x4
+> > > > >> #define CTF_TYPE_INT_VARARGS   0x8
+> > > > >> +#define CTF_TYPE_INT_UNSIGNED  0x16
+> > > > >>
+> > > > >> #define CTF_TYPE_FP_ATTRS(VAL)         ((VAL) >> 24)
+> > > > >> #define CTF_TYPE_FP_OFFSET(VAL)                (((VAL) >> 16) & =
+0xff)
+> > > > >> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > > > >> index b73d7867e1e6..79d40f183c24 100644
+> > > > >> --- a/dwarf_loader.c
+> > > > >> +++ b/dwarf_loader.c
+> > > > >> @@ -473,6 +473,7 @@ static struct base_type *base_type__new(Dwar=
+f_Die
+> > > > >> *die, struct cu *cu)
+> > > > >>                 bt->is_bool =3D encoding =3D=3D DW_ATE_boolean;
+> > > > >>                 bt->is_signed =3D encoding =3D=3D DW_ATE_signed;
+> > > > >>                 bt->is_varargs =3D false;
+> > > > >> +               bt->is_unsigned =3D encoding =3D=3D DW_ATE_unsig=
+ned;
+> > > > >>                 bt->name_has_encoding =3D true;
+> > > > >>         }
+> > > > >>
+> > > > >> diff --git a/dwarves.h b/dwarves.h
+> > > > >> index 98caf1abc54d..edf32d2e6f80 100644
+> > > > >> --- a/dwarves.h
+> > > > >> +++ b/dwarves.h
+> > > > >> @@ -1261,6 +1261,7 @@ struct base_type {
+> > > > >>         uint8_t         is_signed:1;
+> > > > >>         uint8_t         is_bool:1;
+> > > > >>         uint8_t         is_varargs:1;
+> > > > >> +       uint8_t         is_unsigned:1;
+> > > > >>         uint8_t         float_type:4;
+> > > > >> };
+> > > > >>
+> > > > >> diff --git a/lib/bpf b/lib/bpf
+> > > > >> --- a/lib/bpf
+> > > > >> +++ b/lib/bpf
+> > > > >> @@ -1 +1 @@
+> > > > >> -Subproject commit 5af3d86b5a2c5fecdc3ab83822d083edd32b4396
+> > > > >> +Subproject commit 5af3d86b5a2c5fecdc3ab83822d083edd32b4396-dirt=
+y
+> > > > >> diff --git a/libbtf.c b/libbtf.c
+> > > > >> index 9f7628304495..a0661a7bbed9 100644
+> > > > >> --- a/libbtf.c
+> > > > >> +++ b/libbtf.c
+> > > > >> @@ -247,6 +247,8 @@ static const char *
+> > > > >> btf_elf__int_encoding_str(uint8_t encoding)
+> > > > >>                 return "CHAR";
+> > > > >>         else if (encoding =3D=3D BTF_INT_BOOL)
+> > > > >>                 return "BOOL";
+> > > > >> +       else if (encoding =3D=3D BTF_INT_UNSIGNED)
+> > > > >> +               return "UNSIGNED";
+> > > > >>         else
+> > > > >>                 return "UNKN";
+> > > > >> }
+> > > > >> @@ -379,6 +381,8 @@ int32_t btf_elf__add_base_type(struct btf_el=
+f
+> > > > >> *btfe, const struct base_type *bt,
+> > > > >>                 encoding =3D BTF_INT_SIGNED;
+> > > > >>         } else if (bt->is_bool) {
+> > > > >>                 encoding =3D BTF_INT_BOOL;
+> > > > >> +       } else if (bt->is_unsigned) {
+> > > > >> +               encoding =3D BTF_INT_UNSIGNED;
+> > > > >>         } else if (bt->float_type) {
+> > > > >>                 fprintf(stderr, "float_type is not supported\n")=
+;
+> > > > >>                 return -1;
+> > > > >>
+> > > > >> Additionally - I cannot see it with `git diff`:
+> > > > >>
+> > > > >> [ lib/bpf/include/uapi/linux/btf.h ]
+> > > > >>
+> > > > >> /* Attributes stored in the BTF_INT_ENCODING */
+> > > > >> #define BTF_INT_SIGNED (1 << 0)
+> > > > >> #define BTF_INT_CHAR (1 << 1)
+> > > > >> #define BTF_INT_BOOL (1 << 2)
+> > > > >> #define BTF_INT_UNSIGNED (1 << 3)
+> > > > >>
+> > > > >> Comments?
+> > > > >>
+> > > > >
+> > > > > Hmmm...
+> > > > >
+> > > > > + info BTF .btf.vmlinux.bin.o
+> > > > > + [  !=3D silent_ ]
+> > > > > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
+> > > > >   BTF     .btf.vmlinux.bin.o
+> > > > > + LLVM_OBJCOPY=3Dllvm-objcopy /opt/pahole/bin/pahole -J .tmp_vmli=
+nux.btf
+> > > > > [2] INT long unsigned int Error emitting BTF type
+> > > > > Encountered error while encoding BTF.
+> > > > > + llvm-objcopy --only-section=3D.BTF --set-section-flags
+> > > > > .BTF=3Dalloc,readonly --strip-all .tmp_vmlinux.btf .btf.vmlinux.b=
+in.o
+> > > > > ...
+> > > > > + info BTFIDS vmlinux
+> > > > > + [  !=3D silent_ ]
+> > > > > + printf   %-7s %s\n BTFIDS vmlinux
+> > > > >   BTFIDS  vmlinux
+> > > > > + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> > > > > FAILED: load BTF from vmlinux: Invalid argument
+> > > > > + on_exit
+> > > > > + [ 255 -ne 0 ]
+> > > > > + cleanup
+> > > > > + rm -f .btf.vmlinux.bin.o
+> > > > > + rm -f .tmp_System.map
+> > > > > + rm -f .tmp_vmlinux.btf .tmp_vmlinux.kallsyms1
+> > > > > .tmp_vmlinux.kallsyms1.S .tmp_vmlinux.kallsyms1.o
+> > > > > .tmp_vmlinux.kallsyms2 .tmp_vmlinux.kallsyms2.S .tmp_vmlinux.kall=
+syms
+> > > > > 2.o
+> > > > > + rm -f System.map
+> > > > > + rm -f vmlinux
+> > > > > + rm -f vmlinux.o
+> > > > > make[3]: *** [Makefile:1166: vmlinux] Error 255
+> > > > >
+> > > > > Grepping through linux.git/tools I guess some BTF tools/libs need=
+ to
+> > > > > know what BTF_INT_UNSIGNED is?
+> > > >
+> > > > BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
+> > > > ignore this for now until kernel infrastructure is ready.
+> > > > Not sure whether this information will be useful or not
+> > > > for BTF. This needs to be discussed separately.
+> > > >
+> > >
+> > > [ CC Fangrui ]
+> > >
+> > > How can I teach pahole to ignore BTF_INT_UNSIGNED?
+> > >
+> > > Another tryout might be to use "-fbinutils-version=3D..." which is
+> > > available for LLVM-12 according to Fangrui?
+> > > Fangrui, which binutils versions can I pass and how?
+> > >
+> >
+> > OK, I checked LLVM-12 sources:
+> >
+> > clang/docs/ReleaseNotes.rst:101:- New option ``-fbinutils-version=3D``
+> > specifies the targeted binutils version.
+> > clang/docs/ReleaseNotes.rst:102:  For example,
+> > ``-fbinutils-version=3D2.35`` means compatibility with GNU as/ld
+> > clang/docs/ReleaseNotes.rst-103-  before 2.35 is not needed: new
+> > features can be used and there is no need to
+> > clang/docs/ReleaseNotes.rst-104-  work around old GNU as/ld bugs.
+> >
+> > Can I pass (also patchlevel) like 2.35.2?
+> > Here I have Debian's v2.35.1 and a selfmade v2.35.2?
+> >
+> > - Sedat -
+> >
+> > - Sedat -
+>
+> Answering specifically this question:
+>
+> clang -help displays:
+> ...
+>   -fbinutils-version=3D<major.minor>
+>                           Produced object files can use all ELF
+> features supported by this binutils version and newer. If
+> -fno-integrated-as is specified, the generated assembly will consider
+> GNU as support. 'none' means that all ELF features can be used,
+> regardless of binutils support. Defaults to 2.26.
+>
+> The option was introduced in  https://reviews.llvm.org/D85474
+> major.minor.patch is not supported. In reality, very few features are
+> gated by this option, currently just SHF_MERGE and a pending
+> SHF_LINK_ORDER PGO patch.
+> I think we will be conservative. If a 2.37 fix is back ported to
+> 2.35.2 and 2.36.1, we will ignore that and will use the feature only
+> if -fbinutils-version=3D2.37 or above is specified.
+>
 
-On 2/5/21 10:28 AM, Jarkko Sakkinen wrote:
-> This has been shown in tests:
-> 
-> [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
-> 
-> There are two functions that drain encl->mm_list:
-> 
-> - sgx_release() (i.e. VFS release) removes the remaining mm_list entries.
-> - sgx_mmu_notifier_release() removes mm_list entry for the registered
->   process, if it still exists.
+Binutils v2.35.2 has DWARF-5 fixes which are not in vanilla v2.36 - I
+might be wrong, please correct me.
 
-Jarkko, I like your approach.  This actually has the potential to be a
-lot more understandable than the fix we settled on before.
+So what shall I pass now to -fbinutils-version=3D ?
 
-But I think the explanation needs some tweaking, and I think I can take
-it a step further to make it even more straightforward.  The issue here
-isn't *really* mm_list, it's this:
-
-	encl_mm->encl = encl;
-
-That literally establishes a encl_mm to encl reference and needs a
-reference count.  That reference remains until 'encl_mm' is freed.  I
-don't think mm_list needs to even be taken into account.
-
-The most straightforward way to fix this is to take a refcount at
-"encl_mm->encl = encl" and release it at kfree(encl_mm).  That makes a
-*lot* of logical sense to me, and it's also trivial to audit.
-
-Totally untested patch attached (adapted directly from yours).
-
---------------AD3EC73A5ABF674974E52A08
-Content-Type: text/x-patch; charset=UTF-8;
- name="raw.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="raw.patch"
-
-
-
-This has been shown in tests:
-
-[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 clea=
-nup_srcu_struct+0xed/0x100
-
-This is essentially a use-after free, although SRCU notices it as
-an SRCU cleanup in an invalid context.
-
-=3D=3D Background =3D=3D
-
-SGX has a data structure (struct sgx_encl_mm) which keeps per-mm SGX
-metadata.  This is separate from 'struct sgx_encl' because, in theory,
-an enclave can be mapped from more than one mm.  sgx_encl_mm includes
-a pointer back to the sgx_encl.
-
-This means that sgx_encl must have a longer lifetime than all of the
-sgx_encl_mm's that point to it.  That's usually the case: sgx_encl_mm
-is freed only after the mmu_notifier is unregistered in sgx_release().
-
-However, there's a race.  If the process is exiting,
-sgx_mmu_notifier_release() can be called in parallel with sgx_release()
-instead of being called *by* it.  The mmu_notifier path keeps encl_mm
-alive past when sgx_encl can be freed.  This inverts the lifetime rules
-and means that sgx_mmu_notifier_release() can access a freed sgx_encl.
-
-=3D=3D Fix =3D=3D
-
-Increase encl->refcount when encl_mm->encl is established. Release
-this reference encl_mm is freed.  This ensures that 'encl' outlives
-'encl_mm'.
-
-
-Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-Cc: Dave Hansen <dave.hansen@linux.intel.com
-Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-
- b/arch/x86/kernel/cpu/sgx/driver.c |    3 +++
- b/arch/x86/kernel/cpu/sgx/encl.c   |    5 +++++
- 2 files changed, 8 insertions(+)
-
-diff -puN arch/x86/kernel/cpu/sgx/driver.c~raw arch/x86/kernel/cpu/sgx/dr=
-iver.c
---- a/arch/x86/kernel/cpu/sgx/driver.c~raw	2021-02-05 10:52:47.484545869 =
--0800
-+++ b/arch/x86/kernel/cpu/sgx/driver.c	2021-02-05 10:59:06.497544923 -080=
-0
-@@ -72,6 +72,9 @@ static int sgx_release(struct inode *ino
- 		synchronize_srcu(&encl->srcu);
- 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
- 		kfree(encl_mm);
-+
-+		/* 'encl_mm' is gone, put encl_mm->encl reference: */
-+		kref_put(&encl->refcount, sgx_encl_release);
- 	}
-=20
- 	kref_put(&encl->refcount, sgx_encl_release);
-diff -puN arch/x86/kernel/cpu/sgx/encl.c~raw arch/x86/kernel/cpu/sgx/encl=
-=2Ec
---- a/arch/x86/kernel/cpu/sgx/encl.c~raw	2021-02-05 10:52:47.486545869 -0=
-800
-+++ b/arch/x86/kernel/cpu/sgx/encl.c	2021-02-05 11:23:06.674541332 -0800
-@@ -481,6 +481,9 @@ static void sgx_mmu_notifier_free(struct
- {
- 	struct sgx_encl_mm *encl_mm =3D container_of(mn, struct sgx_encl_mm, mm=
-u_notifier);
-=20
-+	/* 'encl_mm' is goin away, put encl_mm->encl reference: */
-+	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
-+
- 	kfree(encl_mm);
- }
-=20
-@@ -534,6 +537,8 @@ int sgx_encl_mm_add(struct sgx_encl *enc
- 	if (!encl_mm)
- 		return -ENOMEM;
-=20
-+	/* Grab a refcount for the encl_mm->encl reference: */
-+	kref_get(&encl->refcount);
- 	encl_mm->encl =3D encl;
- 	encl_mm->mm =3D mm;
- 	encl_mm->mmu_notifier.ops =3D &sgx_mmu_notifier_ops;
-_
-
---------------AD3EC73A5ABF674974E52A08--
+- Sedat -
