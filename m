@@ -2,98 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6323103F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C5D3103FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhBEEIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:08:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhBEEIL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:08:11 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C4BC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 20:07:30 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id t17so4163674qtq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 20:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ohk/C5oFiMM+Cgctb+9cVBX5KjZwpMPY1LRWrhVM8c=;
-        b=vyxicpSlUPsEl6l5LRz1yPe/qzaA1irn4iqjmpwBOJby/PIu0RSE95qGOI3ZFOURqB
-         4jGPT7Wj/r6Bps8JTWJ78VFjfrHPPrtWxJlPnYfXXXzeO6KsbzfFebXjuXDqIvfUc1qt
-         degfQf7jXZw52VJ5FrvwNjJfTfs4JiPu3T0gC0PnNBTnPuqwpAn8y6LHe3A4DvdPKGuU
-         8gauJND+bMO8+h3MAiBhK1M2qkWvsOlaw6DT5VNk/uq9/Ls5AG33axnFzVclCVaO18Ja
-         YYtg3h3RE0fwX7WNegtg172Oo/2IiC9Kuas/4umX/NIcnugPzuI8i5EjcvbdrY1IVhVJ
-         GcNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ohk/C5oFiMM+Cgctb+9cVBX5KjZwpMPY1LRWrhVM8c=;
-        b=rSXz5pqRHsD/CEjT+dRNKp0BCX0Q9a/NGg0RTi6fM3Sv7jPlFS0TB1FMMScOId//+y
-         SqguxTruDxH+uEF7RoDyskJOOoArbwor7GT39BQ9F1cQ7sDE7P1arp93E9cQZ8TD9dFM
-         uZn7sgL2JTbTz+v8YrOsmRftWaxtGZTPqjoPlhn1Dl1eXBvZEUyFKywcCtbkrUgsNW+V
-         IzV0b7ZPSup5mlzjffIuEjay7/XyVYq4bNQKosRQ8619/+6xG/v2MBoXnhVBd/JoqVR1
-         weWQMFoeMDhJ2sv2aJDyat4YzKJySxOrgxFJHLpedhe8vHTn/fmeAO9C5BGX/mI7iiMi
-         EqDg==
-X-Gm-Message-State: AOAM530cCB3HNEuEuWKyMz4JJfGRr1wsHBykcbnr80HjCCTFgqnFSOp+
-        oPMXfPNlyOkbNN/9kC/BT66m7v510I3iZS9yDKyaVw==
-X-Google-Smtp-Source: ABdhPJz5lfup8LlrNrVU4+brmUupz23YGginL0sbtzeDArJX36dPhprF9+i6BUTizu+x8ifV+iJCp56DAbhn9r5p6j4=
-X-Received: by 2002:ac8:7654:: with SMTP id i20mr2800547qtr.143.1612498049828;
- Thu, 04 Feb 2021 20:07:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org> <YBwGRpnISmwkJ2i8@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBwGRpnISmwkJ2i8@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 4 Feb 2021 20:07:18 -0800
-Message-ID: <CABk29NukDGbO3V4MW8MMSkevjsbUfii0Scc9mpXsi+yRQmWxMA@mail.gmail.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core scheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
+        id S229997AbhBEEL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:11:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:46486 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229872AbhBEELZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:11:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14A69ED1;
+        Thu,  4 Feb 2021 20:10:39 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.93.198])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CBB903F719;
+        Thu,  4 Feb 2021 20:10:33 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/memtest: Add ARCH_USE_MEMTEST
+Date:   Fri,  5 Feb 2021 09:40:42 +0530
+Message-Id: <1612498242-31579-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 6:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> refcount_dec_and_lock() avoids that complication.
+early_memtest() does not get called from all architectures. Hence enabling
+CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
+option might not trigger the memory pattern tests as would be expected in
+normal circumstances. This situation is misleading.
 
-There isn't currently an interface for raw_spin_locks. Certainly could
-add a new interface in a separate patch as part of this series, but
-doesn't seem that bad to do the locking inline.
+The change here prevents the above mentioned problem after introducing a
+new config option ARCH_USE_MEMTEST that should be subscribed on platforms
+that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
+Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
+not be tested anyway.
+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mips@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This patch applies on v5.11-rc6 and has been tested on arm64 platform. But
+it has been just build tested on all other platforms.
+
+ arch/arm/Kconfig     | 1 +
+ arch/arm64/Kconfig   | 1 +
+ arch/mips/Kconfig    | 1 +
+ arch/powerpc/Kconfig | 1 +
+ arch/x86/Kconfig     | 1 +
+ arch/xtensa/Kconfig  | 1 +
+ lib/Kconfig.debug    | 9 ++++++++-
+ 7 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 138248999df7..a63b53c568df 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -32,6 +32,7 @@ config ARM
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index c4acf8230f20..dfee5831d876 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -70,6 +70,7 @@ config ARM64
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_USE_SYM_ANNOTATIONS
++	select ARCH_USE_MEMTEST
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+ 	select ARCH_SUPPORTS_MEMORY_FAILURE
+ 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 0a17bedf4f0d..1b21d8e53e6b 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -16,6 +16,7 @@ config MIPS
+ 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BUILDTIME_TABLE_SORT
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 107bb4319e0e..9935343a8750 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -151,6 +151,7 @@ config PPC
+ 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
+ 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..90545348db1b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -100,6 +100,7 @@ config X86
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_USE_SYM_ANNOTATIONS
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+ 	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
+ 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 37ce1489364e..8eb61fcdfc7f 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -9,6 +9,7 @@ config XTENSA
+ 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BUILDTIME_TABLE_SORT
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..6dd25b755a82 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2469,11 +2469,18 @@ config TEST_FPU
+ 
+ endif # RUNTIME_TESTING_MENU
+ 
++config ARCH_USE_MEMTEST
++	bool
++	help
++	  An architecture should select this when it uses early_memtest()
++	  during boot process.
++
+ config MEMTEST
+ 	bool "Memtest"
++	depends on ARCH_USE_MEMTEST
+ 	help
+ 	  This option adds a kernel parameter 'memtest', which allows memtest
+-	  to be set.
++	  to be set and executed.
+ 	        memtest=0, mean disabled; -- default
+ 	        memtest=1, mean do 1 test pattern;
+ 	        ...
+-- 
+2.20.1
+
