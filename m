@@ -2,169 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A1531128D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199FA3112AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhBESwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:52:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233090AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:04:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5406D64EA1;
-        Fri,  5 Feb 2021 16:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612542928;
-        bh=u1co/FGUat5HAI0yiGhQV5noHY+wEidod999P0y8ViM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MsQqI2OprR5K8XBTnraMicQl74H5xko+0MMnyykPyvgI9YrKYFCMFR/RtXsed/BzW
-         SXFgRKhNWXw95Eottebxi8Ys+xK+Un6T+rySi2SADXZkfJ17awPDHIum6UkEx2KPyt
-         XV38tn5MTx/hI14KD2VQ115CqZ7ZM2O2BQ1UiGxg+303PJncao1khjzgecRuAD1s0f
-         w9zp6SkM4B3keN4/XtsmmrgzhZskd8LXV9Q8Zd+8dHU6iH7Ec1kTLjBWKr7z0BQ/GK
-         4nKiMN7r+Yx8pK2Frh3LJSDnqhawCmXJAYzb/UUg8EqSneIZQtgoo4ywTiFGPX89WF
-         lbdNOWOrgjWlw==
-Date:   Fri, 5 Feb 2021 16:35:21 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 12/21] arm64: cpufeature: Add an early command-line
- cpufeature override facility
-Message-ID: <20210205163521.GA22665@willie-the-truck>
-References: <20210201115637.3123740-1-maz@kernel.org>
- <20210201115637.3123740-13-maz@kernel.org>
+        id S233186AbhBES61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:58:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233076AbhBEPDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:03:02 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A956C061574;
+        Fri,  5 Feb 2021 08:41:08 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id s5so9484902edw.8;
+        Fri, 05 Feb 2021 08:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hPAfhUCESjqYxvhklcWSyjS56rINMVKFprAe6haqawU=;
+        b=rXFe1jhCZeNcdBQhuNY4eZo7BsFOPNT9L/SeY1Il1LFvC5cRCZno6NhfHj7FJU2/aS
+         ZpkOyBQA83Gzvr1roqPK0C2VPfPJ4P7qzogYHxGTJIZjX6wo1n6A976sQTd4nnodQXdi
+         Neu1bYFA/oBqHSlCbsgJFj/24TLw/FKc9fl7FNiZHJ6qUfqFW8aXyiDf3M82QMWfDwKx
+         ao9TgB3qk6EnVHolvpvVHjynOdD8FrAII075zLTP6CA6pkQ2uezXZFTPhdo4JRpeXrOo
+         hXCGpadCpsTRD5r5Wv9Ohzv24WPMmNzlgqmV2sshp4+i0NTR09Iz64N9XvJX/p/hQAiV
+         3CfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hPAfhUCESjqYxvhklcWSyjS56rINMVKFprAe6haqawU=;
+        b=pWWCMQj97zwC3g4ndy0eAnfqQgG8xetFVpmt2R8PfHv6RCW8kbeZNlhwduXDELxPQN
+         pPaziHDDJTZ23mJXBgN+L/TUqelaI3qG1yGEh6xzKDFsfPK6f+ZshRBBeDuc3ySIsK+b
+         h8qry1fgo0aXD+6CZsK+YyC90ivB4eZ7W2S/hG0KsqEonpxYUtjvxF17Zv9bCToCqv5F
+         MFGrrueIEEKnuSj9prWD5ZpdjLt0cMR2kZ46jI0MbJbI3oswkKrK+lV1SWy2Xvm4XNdl
+         SZr4Fb2yZfxrRyb+mCm9YCEGRGhsc1yQuRpuZAKy4jdklzmowVGouhud+fXM4P9HD0Px
+         mUdw==
+X-Gm-Message-State: AOAM530Rg6CeOrXzBowLUHWOwfC5KrpIPdIcUzwlx6UsNubiADUAw2t5
+        s6FhtzBxtYnGWWPJvWUsO0VPKafoZq6Nr0dI08M=
+X-Google-Smtp-Source: ABdhPJy01/k0tVwbX+Xs5TBFDIZkLFpNMKVuWBQrv7nsSZ6X7Y8KqfscMem94WPBqFn4/q4K4rcTUioRNWEiI2HImYc=
+X-Received: by 2002:a05:6402:3069:: with SMTP id bs9mr2945760edb.151.1612543266826;
+ Fri, 05 Feb 2021 08:41:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201115637.3123740-13-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-9-shy828301@gmail.com>
+ <44cc18d2-5a47-91d0-dad2-599c251a3a8b@virtuozzo.com> <CAHbLzkqysaU9WGUeeCFLHdnRiRm7uPXf6ikm7-TkRetRZyMLfg@mail.gmail.com>
+ <ea64b512-863a-da37-f925-09ba07d621e6@virtuozzo.com>
+In-Reply-To: <ea64b512-863a-da37-f925-09ba07d621e6@virtuozzo.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 5 Feb 2021 08:40:55 -0800
+Message-ID: <CAHbLzkptDuAckKB_GCY8ct2U_6FjLHJt7FKhU1qfg7G-RmbBSQ@mail.gmail.com>
+Subject: Re: [v6 PATCH 08/11] mm: vmscan: use per memcg nr_deferred of shrinker
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:56:28AM +0000, Marc Zyngier wrote:
-> In order to be able to override CPU features at boot time,
-> let's add a command line parser that matches options of the
-> form "cpureg.feature=value", and store the corresponding
-> value into the override val/mask pair.
-> 
-> No features are currently defined, so no expected change in
-> functionality.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Acked-by: David Brazdil <dbrazdil@google.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> ---
->  arch/arm64/kernel/Makefile         |   2 +-
->  arch/arm64/kernel/head.S           |   1 +
->  arch/arm64/kernel/idreg-override.c | 164 +++++++++++++++++++++++++++++
->  3 files changed, 166 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kernel/idreg-override.c
-> 
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index 86364ab6f13f..2262f0392857 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -17,7 +17,7 @@ obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
->  			   return_address.o cpuinfo.o cpu_errata.o		\
->  			   cpufeature.o alternative.o cacheinfo.o		\
->  			   smp.o smp_spin_table.o topology.o smccc-call.o	\
-> -			   syscall.o proton-pack.o
-> +			   syscall.o proton-pack.o idreg-override.o
->  
->  targets			+= efi-entry.o
->  
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index d74e5f84042e..3243e3ae9bd8 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -435,6 +435,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
->  
->  	mov	x0, x21				// pass FDT address in x0
->  	bl	early_fdt_map			// Try mapping the FDT early
-> +	bl	init_feature_override
->  	bl	switch_to_vhe
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->  	bl	kasan_early_init
-> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> new file mode 100644
-> index 000000000000..d8d0d3b25bc3
-> --- /dev/null
-> +++ b/arch/arm64/kernel/idreg-override.c
-> @@ -0,0 +1,164 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Early cpufeature override framework
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + * Author: Marc Zyngier <maz@kernel.org>
-> + */
-> +
-> +#include <linux/ctype.h>
-> +#include <linux/kernel.h>
-> +#include <linux/libfdt.h>
-> +
-> +#include <asm/cacheflush.h>
-> +#include <asm/setup.h>
-> +
-> +#define FTR_DESC_NAME_LEN	20
-> +#define FTR_DESC_FIELD_LEN	10
-> +
-> +struct ftr_set_desc {
-> +	char 				name[FTR_DESC_NAME_LEN];
-> +	struct arm64_ftr_override	*override;
-> +	struct {
-> +		char			name[FTR_DESC_FIELD_LEN];
-> +		u8			shift;
-> +	} 				fields[];
-> +};
-> +
-> +static const struct ftr_set_desc * const regs[] __initconst = {
-> +};
-> +
-> +static char *cmdline_contains_option(const char *cmdline, const char *option)
-> +{
-> +	char *str = strstr(cmdline, option);
-> +
-> +	if ((str == cmdline || (str > cmdline && isspace(*(str - 1)))))
-> +		return str;
-> +
-> +	return NULL;
-> +}
-> +
-> +static int __init find_field(const char *cmdline,
-> +			     const struct ftr_set_desc *reg, int f, u64 *v)
-> +{
-> +	char opt[FTR_DESC_NAME_LEN + FTR_DESC_FIELD_LEN + 2], *str;
-> +	size_t len;
-> +
-> +	snprintf(opt, ARRAY_SIZE(opt), "%s.%s=", reg->name, reg->fields[f].name);
-> +
-> +	str = cmdline_contains_option(cmdline, opt);
-> +	if (!str)
-> +		return -1;
-> +
-> +	str += strlen(opt);
-> +	len = strcspn(str, " ");
+On Fri, Feb 5, 2021 at 6:42 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>
+> On 04.02.2021 20:23, Yang Shi wrote:
+> > On Thu, Feb 4, 2021 at 12:42 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+> >>
+> >> On 03.02.2021 20:20, Yang Shi wrote:
+> >>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+> >>> will be used in the following cases:
+> >>>     1. Non memcg aware shrinkers
+> >>>     2. !CONFIG_MEMCG
+> >>>     3. memcg is disabled by boot parameter
+> >>>
+> >>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> >>> ---
+> >>>  mm/vmscan.c | 94 +++++++++++++++++++++++++++++++++++++++++++----------
+> >>>  1 file changed, 77 insertions(+), 17 deletions(-)
+> >>>
+> >>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >>> index d9126f12890f..545422d2aeec 100644
+> >>> --- a/mm/vmscan.c
+> >>> +++ b/mm/vmscan.c
+> >>> @@ -190,6 +190,13 @@ static int shrinker_nr_max;
+> >>>  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
+> >>>       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
+> >>>
+> >>> +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> >>> +                                                  int nid)
+> >>> +{
+> >>> +     return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> >>> +                                      lockdep_is_held(&shrinker_rwsem));
+> >>> +}
+> >>
+> >> Thanks for the helper. Why not to introduce and become to use it in old places
+> >> in a separate patch?
+> >
+> > What do you mean about "old places"? Where was it introduced in v5 (in
+> > patch #10)?
+>
+> I mean existing places touched by this patch, which became to use the new helper
+> in this patch: free_shrinker_info(), expand_one_shrinker_info(), shrink_slab_memcg().
 
-I'm absolutely terrified of string parsing in C, but just wondering why you
-only ignore literal spaces here. I _think_ the full-fat cmdline parsing uses
-isspace() to delimit the options.
+Aha, I see. So, you mean add the helper before in a separate patch.
+Right after patch #5 (which rename shrinker_map to shrinker_info)
+should be a good place.
 
-Would it be possible to reuse any of the logic over in parse_args() to avoid
-having to roll this ourselves?
-
-Will
+>
+> >>
+> >>> +
+> >>>  static void free_shrinker_info_rcu(struct rcu_head *head)
+> >>>  {
+> >>>       kvfree(container_of(head, struct shrinker_info, rcu));
+> >>> @@ -204,8 +211,7 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> >>>       int size = m_size + d_size;
+> >>>
+> >>>       for_each_node(nid) {
+> >>> -             old = rcu_dereference_protected(
+> >>> -                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
+> >>> +             old = shrinker_info_protected(memcg, nid);
+> >>>               /* Not yet online memcg */
+> >>>               if (!old)
+> >>>                       return 0;
+> >>> @@ -239,7 +245,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+> >>>
+> >>>       for_each_node(nid) {
+> >>>               pn = mem_cgroup_nodeinfo(memcg, nid);
+> >>> -             info = rcu_dereference_protected(pn->shrinker_info, true);
+> >>> +             info = shrinker_info_protected(memcg, nid);
+> >>>               kvfree(info);
+> >>>               rcu_assign_pointer(pn->shrinker_info, NULL);
+> >>>       }
+> >>> @@ -358,6 +364,25 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+> >>>       up_write(&shrinker_rwsem);
+> >>>  }
+> >>>
+> >>> +
+> >>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> >>> +                                 struct mem_cgroup *memcg)
+> >>> +{
+> >>> +     struct shrinker_info *info;
+> >>> +
+> >>> +     info = shrinker_info_protected(memcg, nid);
+> >>> +     return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
+> >>> +}
+> >>> +
+> >>> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> >>> +                               struct mem_cgroup *memcg)
+> >>> +{
+> >>> +     struct shrinker_info *info;
+> >>> +
+> >>> +     info = shrinker_info_protected(memcg, nid);
+> >>> +     return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
+> >>> +}
+> >>
+> >> Names confuse me a little bit. What about xchg_nr_deferred_memcg() and add_nr_deferred_memcg()?
+> >
+> > add_nr_deferred_memcg() sounds more self-explained to me.
+> >
+> >>
+> >>>  static bool cgroup_reclaim(struct scan_control *sc)
+> >>>  {
+> >>>       return sc->target_mem_cgroup;
+> >>> @@ -396,6 +421,18 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+> >>>  {
+> >>>  }
+> >>>
+> >>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> >>> +                                 struct mem_cgroup *memcg)
+> >>> +{
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>> +static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> >>> +                               struct mem_cgroup *memcg)
+> >>> +{
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>>  static bool cgroup_reclaim(struct scan_control *sc)
+> >>>  {
+> >>>       return false;
+> >>> @@ -407,6 +444,39 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+> >>>  }
+> >>>  #endif
+> >>>
+> >>> +static long count_nr_deferred(struct shrinker *shrinker,
+> >>> +                           struct shrink_control *sc)
+> >>> +{
+> >>> +     int nid = sc->nid;
+> >>> +
+> >>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> >>> +             nid = 0;
+> >>> +
+> >>> +     if (sc->memcg &&
+> >>> +         (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> >>> +             return count_nr_deferred_memcg(nid, shrinker,
+> >>> +                                            sc->memcg);
+> >>> +
+> >>> +     return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
+> >>> +}
+> >>> +
+> >>> +
+> >>> +static long set_nr_deferred(long nr, struct shrinker *shrinker,
+> >>> +                         struct shrink_control *sc)
+> >>> +{
+> >>> +     int nid = sc->nid;
+> >>> +
+> >>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> >>> +             nid = 0;
+> >>> +
+> >>> +     if (sc->memcg &&
+> >>> +         (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> >>> +             return set_nr_deferred_memcg(nr, nid, shrinker,
+> >>> +                                          sc->memcg);
+> >>> +
+> >>> +     return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
+> >>> +}
+> >>> +
+> >>>  /*
+> >>>   * This misses isolated pages which are not accounted for to save counters.
+> >>>   * As the data only determines if reclaim or compaction continues, it is
+> >>> @@ -539,14 +609,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >>>       long freeable;
+> >>>       long nr;
+> >>>       long new_nr;
+> >>> -     int nid = shrinkctl->nid;
+> >>>       long batch_size = shrinker->batch ? shrinker->batch
+> >>>                                         : SHRINK_BATCH;
+> >>>       long scanned = 0, next_deferred;
+> >>>
+> >>> -     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> >>> -             nid = 0;
+> >>> -
+> >>>       freeable = shrinker->count_objects(shrinker, shrinkctl);
+> >>>       if (freeable == 0 || freeable == SHRINK_EMPTY)
+> >>>               return freeable;
+> >>> @@ -556,7 +622,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >>>        * and zero it so that other concurrent shrinker invocations
+> >>>        * don't also do this scanning work.
+> >>>        */
+> >>> -     nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
+> >>> +     nr = count_nr_deferred(shrinker, shrinkctl);
+> >>>
+> >>>       total_scan = nr;
+> >>>       if (shrinker->seeks) {
+> >>> @@ -647,14 +713,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >>>               next_deferred = 0;
+> >>>       /*
+> >>>        * move the unused scan count back into the shrinker in a
+> >>> -      * manner that handles concurrent updates. If we exhausted the
+> >>> -      * scan, there is no need to do an update.
+> >>> +      * manner that handles concurrent updates.
+> >>>        */
+> >>> -     if (next_deferred > 0)
+> >>> -             new_nr = atomic_long_add_return(next_deferred,
+> >>> -                                             &shrinker->nr_deferred[nid]);
+> >>> -     else
+> >>> -             new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
+> >>> +     new_nr = set_nr_deferred(next_deferred, shrinker, shrinkctl);
+> >>>
+> >>>       trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
+> >>>       return freed;
+> >>> @@ -674,8 +735,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+> >>>       if (!down_read_trylock(&shrinker_rwsem))
+> >>>               return 0;
+> >>>
+> >>> -     info = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> >>> -                                      true);
+> >>> +     info = shrinker_info_protected(memcg, nid);
+> >>>       if (unlikely(!info))
+> >>>               goto unlock;
+> >>>
+> >>>
+> >>
+> >>
+>
+>
