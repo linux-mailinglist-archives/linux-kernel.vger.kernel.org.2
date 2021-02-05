@@ -2,128 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020D6310FC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E701310FD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbhBEQgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:36:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60661 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233699AbhBEQdU (ORCPT
+        id S233370AbhBEQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233709AbhBEQeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:33:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612548855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b+b6OD3StrUZhviTTkgah8uKJMjMpGgyYUl7CSN7rcs=;
-        b=HCfVOdRqXo+n3sgTEPC6PfoLoHQz52UilSj/iQuabA3PVquLfGwb2oZK01wXOg0n4iw/td
-        1qlVpt8c8+w2Pjyje7mjmhPAqq3Mg61njKaQENQH+sL3y08iFZAHd+CJugydzJhjXmOiNm
-        7ND/r7vKwiJ0DE3gjU661HjQui6mJe0=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-ks0CfC7YNrOw5RZGTTrvFA-1; Fri, 05 Feb 2021 13:14:14 -0500
-X-MC-Unique: ks0CfC7YNrOw5RZGTTrvFA-1
-Received: by mail-qt1-f197.google.com with SMTP id j14so5890747qtv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:14:14 -0800 (PST)
+        Fri, 5 Feb 2021 11:34:04 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0E5C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:15:42 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z32so5627373qtd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:15:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XIgSkeXWHW1iLdxhmfSy4vGDVypEJJKaTvz/+TUywfw=;
+        b=h3S3h+C3rXQ+iT7q44q8ThSjMNuxNz+xsM6CGSL6Hj4noskqYapqnJM+rdc1eRECvH
+         YkiJQTBjKNdep/452yExfB/n2Ii3ypd4q5ygcUoCf6F9MqWu+QhyTOLVwBaD0wn9Tgmr
+         RAl69uYMB36ucKfSVfiJ9xaRs8GnZ08lcc/Dt+lxnxmsHDKs2qNvtekBQiFaNA1arh/+
+         d8Vi0Y9FC0tl7fLu7RewHBz+sKCM4lmOo79AayMW2O46Bv+Jp9OsX+yHzqITi+ATTrTG
+         IxVYgTLTp6yp60AJUZ3IQwBltqRHOtugETh+kS/2HwuFjfXHCPsxmasmaoTlXfIZXn6c
+         P0Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=b+b6OD3StrUZhviTTkgah8uKJMjMpGgyYUl7CSN7rcs=;
-        b=CJrGPnXSUM8eEKPC3lloWcNWB+PPpd4Oi8lhTPPbJTr8/191BLUlwk0Dd+5mbhwY3H
-         qDWSzxYAmFP4Q9oX90cnbPiHduxlDTPrWS6D25qg/jPxSsOQPy1WiWEwjP3rjbXg1PsM
-         Pmb9wTlCqrvyDv/JmGDALinKvRV6u0j+3pmjyq3uLavbTdyNK7GwDSG2Eg/v383W/o1q
-         +BPTOZVCnd+wW7mEBYLApeBm/nGFVPmj/Z4WgfR9Q0bjvf9/j5XBzJiGQloquugQY1Us
-         w4oaS/elwm1dZkBDGFlJ2gkB0hBTrz1WPoYyxu2bC7rCFcN8XokzAwxa0mBjqmCxyJZe
-         tiwg==
-X-Gm-Message-State: AOAM533Hq2Kor/c9HOzrOYWf2IfmA7v28NHV0fjNrz6wX9Kdkck24EWF
-        DKhJwFsrNtRNWI7beDTBCy+vBmOma2ZgjbMYWIoyyXhxbRwC69pMr2fiGyQIuzQnc7NBXDewZ3D
-        GcsCuJU37dQBhr/HQ9td9KAQV
-X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5623530qkh.136.1612548853758;
-        Fri, 05 Feb 2021 10:14:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw2dxqnZovOeKuwXlYA9ZoMH6h3WcLq3ydNuPij1rSRR/WcmyfdGA897c3rYVPJ5YdnoImrSg==
-X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5623516qkh.136.1612548853537;
-        Fri, 05 Feb 2021 10:14:13 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id i65sm9921618qkf.105.2021.02.05.10.14.11
+        bh=XIgSkeXWHW1iLdxhmfSy4vGDVypEJJKaTvz/+TUywfw=;
+        b=o+LyPPAiSTh33+K5aiAE9c7uDQZBl0+4jn1N3f83YmxT0PlZOK2/6C2H/uk+tbAJjO
+         sAUEzTYl6GzygRdG3AIR014GAVccRrkNxOzUFdAjyDLu1OP1JPcuCw7f2pccNwM+vMtz
+         siIawaOdcVM3qO3byxDsh8SSPiVmMpSTod5qxKZa9Jizc0TJl2eTMh+5LFe5hrC03pex
+         qwTvYeja9F/+/CAptCsTSIUh366ejkOEe1DFTCQK/aZVPlLX5A8lAo+/7hDDVvCS44lo
+         G13A/nJEGFNqoVG2l6PwyaXi4ys1jEU46g54noMVxRw5BRoEow8owtfQNtTL6vfnHvDd
+         v4rA==
+X-Gm-Message-State: AOAM533gSFCxusNRmQ8r3bfBrJJuu12VQYisNgsFB7zdKK0MAKc4dW/S
+        TEhEQdpmeUkdmhJxLa8lzaCEbg==
+X-Google-Smtp-Source: ABdhPJynku4WsNlWNkLqPPMEO+1WL/Aj8gCdIhU0G1o/UHEQQuwkMIOX7PU1QvPU2jXKenGmJv5YYA==
+X-Received: by 2002:ac8:480b:: with SMTP id g11mr5306250qtq.290.1612548941572;
+        Fri, 05 Feb 2021 10:15:41 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id x62sm5248278qkd.1.2021.02.05.10.15.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 10:14:12 -0800 (PST)
-Date:   Fri, 5 Feb 2021 13:14:11 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgg@ziepe.ca,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        dan.j.williams@intel.com
-Subject: Re: [PATCH 0/2] KVM: do not assume PTE is writable after follow_pfn
-Message-ID: <20210205181411.GB3195@xz-x1>
-References: <20210205103259.42866-1-pbonzini@redhat.com>
+        Fri, 05 Feb 2021 10:15:40 -0800 (PST)
+Date:   Fri, 5 Feb 2021 13:15:40 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from
+ get_mem_cgroup_from_page
+Message-ID: <YB2LTIeTPN72Xrxj@cmpxchg.org>
+References: <20210205062719.74431-1-songmuchun@bytedance.com>
+ <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
+ <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
+ <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205103259.42866-1-pbonzini@redhat.com>
+In-Reply-To: <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 05:32:57AM -0500, Paolo Bonzini wrote:
-> This series is the first step towards fixing KVM's usage of follow_pfn.
-> The immediate fix here is that KVM is not checking the writability of
-> the PFN, which actually dates back to way before the introduction of
-> follow_pfn in commit add6a0cd1c5b ("KVM: MMU: try to fix up page faults
-> before giving up", 2016-07-05).  There are more changes needed to
-> invalidate gfn-to-pfn caches from MMU notifiers, but this issue will
-> be tackled later.
+On Fri, Feb 05, 2021 at 11:32:24AM +0100, Michal Hocko wrote:
+> On Fri 05-02-21 17:14:30, Muchun Song wrote:
+> > On Fri, Feb 5, 2021 at 4:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 05-02-21 14:27:19, Muchun Song wrote:
+> > > > The get_mem_cgroup_from_page() is called under page lock, so the page
+> > > > memcg cannot be changed under us.
+> > >
+> > > Where is the page lock enforced?
+> > 
+> > Because it is called from alloc_page_buffers(). This path is under
+> > page lock.
 > 
-> A more fundamental issue however is that the follow_pfn function is
-> basically impossible to use correctly.  Almost all users for example
-> are assuming that the page is writable; KVM was not alone in this
-> mistake.  follow_pte, despite not being exported for modules, is a
-> far saner API.  Therefore, patch 1 simplifies follow_pte a bit and
-> makes it available to modules.
-> 
-> Please review and possibly ack for inclusion in the KVM tree,
-> thanks!
+> I do not see any page lock enforecement there. There is not even a
+> comment requiring that. Can we grow more users where this is not the
+> case? There is no actual relation between alloc_page_buffers and
+> get_mem_cgroup_from_page except that the former is the only _current_
+> existing user. I would be careful to dictate locking based solely on
+> that.
 
-FWIW, the patches look correct to me (if with patch 2 report fixed):
+Since alloc_page_buffers() holds the page lock throughout the entire
+time it uses the memcg, there is no actual reason for it to use RCU or
+even acquire an additional reference on the css. We know it's pinned,
+the charge pins it, and the page lock pins the charge. It can neither
+move to a different cgroup nor be uncharged.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+So what do you say we switch alloc_page_buffers() to page_memcg()?
 
-But I do have a question on why dax as the only user needs to pass in the
-notifier to follow_pte() for initialization.
+And because that removes the last user of get_mem_cgroup_from_page(),
+we can kill it off and worry about a good interface once a consumer
+materializes for it.
 
-Indeed there're a difference on start/end init of the notifier depending on
-whether it's a huge pmd but since there's the pmdp passed over too so I assume
-the caller should know how to init the notifier anyways.
-
-The thing is at least in current code we could send meaningless notifiers,
-e.g., in follow_pte():
-
-	if (range) {
-		mmu_notifier_range_init(range, MMU_NOTIFY_CLEAR, 0, NULL, mm,
-					address & PAGE_MASK,
-					(address & PAGE_MASK) + PAGE_SIZE);
-		mmu_notifier_invalidate_range_start(range);
-	}
-	ptep = pte_offset_map_lock(mm, pmd, address, ptlp);
-	if (!pte_present(*ptep))
-		goto unlock;
-	*ptepp = ptep;
-	return 0;
-unlock:
-	pte_unmap_unlock(ptep, *ptlp);
-	if (range)
-		mmu_notifier_invalidate_range_end(range);
-
-The notify could be meaningless if we do the "goto unlock" path.
-
-Ideally it seems we can move the notifier code to caller (as what most mmu
-notifier users do) and we can also avoid doing that if follow_pte returned
--EINVAL.
-
-Thanks,
-
--- 
-Peter Xu
-
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 96c7604f69b3..12a10f461b81 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -847,7 +847,7 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+ 	if (retry)
+ 		gfp |= __GFP_NOFAIL;
+ 
+-	memcg = get_mem_cgroup_from_page(page);
++	memcg = page_memcg(page);
+ 	old_memcg = set_active_memcg(memcg);
+ 
+ 	head = NULL;
+@@ -868,7 +868,6 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+ 	}
+ out:
+ 	set_active_memcg(old_memcg);
+-	mem_cgroup_put(memcg);
+ 	return head;
+ /*
+  * In case anything failed, we just free everything we got.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index a8c7a0ccc759..a44b2d51aecc 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -687,8 +687,6 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
+ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
+ 
+-struct mem_cgroup *get_mem_cgroup_from_page(struct page *page);
+-
+ struct lruvec *lock_page_lruvec(struct page *page);
+ struct lruvec *lock_page_lruvec_irq(struct page *page);
+ struct lruvec *lock_page_lruvec_irqsave(struct page *page,
+@@ -1169,11 +1167,6 @@ static inline struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+ 	return NULL;
+ }
+ 
+-static inline struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+-{
+-	return NULL;
+-}
+-
+ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+ {
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 490357945f2c..ff52550d2f65 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1048,29 +1048,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+ }
+ EXPORT_SYMBOL(get_mem_cgroup_from_mm);
+ 
+-/**
+- * get_mem_cgroup_from_page: Obtain a reference on given page's memcg.
+- * @page: page from which memcg should be extracted.
+- *
+- * Obtain a reference on page->memcg and returns it if successful. Otherwise
+- * root_mem_cgroup is returned.
+- */
+-struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+-{
+-	struct mem_cgroup *memcg = page_memcg(page);
+-
+-	if (mem_cgroup_disabled())
+-		return NULL;
+-
+-	rcu_read_lock();
+-	/* Page should not get uncharged and freed memcg under us. */
+-	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+-		memcg = root_mem_cgroup;
+-	rcu_read_unlock();
+-	return memcg;
+-}
+-EXPORT_SYMBOL(get_mem_cgroup_from_page);
+-
+ static __always_inline struct mem_cgroup *active_memcg(void)
+ {
+ 	if (in_interrupt())
