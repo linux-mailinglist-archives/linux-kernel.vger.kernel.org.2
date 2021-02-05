@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413D3310293
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86836310287
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBECH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:07:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12400 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhBECHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:07:20 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DWzJp5XJzz7g2w;
-        Fri,  5 Feb 2021 10:05:14 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 10:06:23 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <bhelgaas@google.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <sean.v.kelley@intel.com>, <Jonathan.Cameron@huawei.com>,
-        <refactormyself@gmail.com>
-CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2] PCI/AER: Change to use helper pcie_aer_is_native() in some places
-Date:   Fri, 5 Feb 2021 10:04:08 +0800
-Message-ID: <1612490648-44817-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S229774AbhBECFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:05:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhBECFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:05:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB18064F8C;
+        Fri,  5 Feb 2021 02:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612490667;
+        bh=a5SkZ9ToIlPVKBvkHANzaTJxWRyFUM3+72lidawO2FY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X3ATyfTJrUwcqOdjrKuEuX5MLQcxkUZ3biRRym+9vVyHOfWnfwDhKgS9g3AXpT4fn
+         04EKJ9iY8MRWsD1twEOxYn9oigEYG1ZGNQuktOIsoXPculhwKciwqWRbB11FdKnpt3
+         4TMzk5kexC+uax+jT6zOQ5RmxA5oJmsY3HRTDEo4gxTeiiLrXXeazS+RbI6hZX0mCm
+         tN88+Wvtcn/Or92HO4Pc5SBjJJE0gZcNsYnGVs+JKrq4oiQFxJoGEJfHyf0bscwxQe
+         rqUhsorSQDuA/rCIq1tSu55ji8hFm+xa3YV6KEvphU1mUWn27+JVa80neTkjXxTlZ7
+         3+onlWT6k3vkQ==
+Date:   Fri, 5 Feb 2021 04:04:18 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tpm/ppi: Constify static struct attribute_group
+Message-ID: <YBynopNwhIhGBXv/@kernel.org>
+References: <20210204215427.49047-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204215427.49047-1-rikard.falkeborn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use helper function pcie_aer_is_native() in some places to keep
-the code tidy. No function changes.
+On Thu, Feb 04, 2021 at 10:54:27PM +0100, Rikard Falkeborn wrote:
+> The only usage of ppi_attr_grp is to put its address in an array of
+> pointers to const struct attribute_group. Make it const to allow the
+> compiler to put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Thanks.
 
----
-Changes from v1 to v2:
-- Add the fix suggested by Krzysztof.
----
- drivers/pci/pcie/aer.c          | 4 ++--
- drivers/pci/pcie/err.c          | 2 +-
- drivers/pci/pcie/portdrv_core.c | 3 +--
- 3 files changed, 4 insertions(+), 5 deletions(-)
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 77b0f2c..03212d0 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1397,7 +1397,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 	 */
- 	aer = root ? root->aer_cap : 0;
- 
--	if ((host->native_aer || pcie_ports_native) && aer) {
-+	if (pcie_aer_is_native(dev) && aer) {
- 		/* Disable Root's interrupt in response to error messages */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
- 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-@@ -1417,7 +1417,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
- 	}
- 
--	if ((host->native_aer || pcie_ports_native) && aer) {
-+	if (pcie_aer_is_native(dev) && aer) {
- 		/* Clear Root Error Status */
- 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
- 		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 510f31f..1d6cfb9 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -237,7 +237,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	 * this status.  In that case, the signaling device may not even be
- 	 * visible to the OS.
- 	 */
--	if (host->native_aer || pcie_ports_native) {
-+	if (pcie_aer_is_native(dev)) {
- 		pcie_clear_device_status(bridge);
- 		pci_aer_clear_nonfatal_status(bridge);
- 	}
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index e1fed664..3b3743e 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -221,8 +221,7 @@ static int get_port_device_capability(struct pci_dev *dev)
- 	}
- 
- #ifdef CONFIG_PCIEAER
--	if (dev->aer_cap && pci_aer_available() &&
--	    (pcie_ports_native || host->native_aer)) {
-+	if (pci_aer_available() && pcie_aer_is_native(dev)) {
- 		services |= PCIE_PORT_SERVICE_AER;
- 
- 		/*
--- 
-2.8.1
+/Jarkko
 
+> ---
+>  drivers/char/tpm/tpm_ppi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/tpm/tpm_ppi.c b/drivers/char/tpm/tpm_ppi.c
+> index b2dab941cb7f..40018a73b3cb 100644
+> --- a/drivers/char/tpm/tpm_ppi.c
+> +++ b/drivers/char/tpm/tpm_ppi.c
+> @@ -358,7 +358,7 @@ static struct attribute *ppi_attrs[] = {
+>  	&dev_attr_tcg_operations.attr,
+>  	&dev_attr_vs_operations.attr, NULL,
+>  };
+> -static struct attribute_group ppi_attr_grp = {
+> +static const struct attribute_group ppi_attr_grp = {
+>  	.name = "ppi",
+>  	.attrs = ppi_attrs
+>  };
+> -- 
+> 2.30.0
+> 
+> 
