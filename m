@@ -2,135 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B512F310DBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501E2310DA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhBEOkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 09:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
+        id S231749AbhBEOcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 09:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbhBEOet (ORCPT
+        with ESMTP id S231810AbhBEOTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:34:49 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DB4C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:12:55 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id m20so6248352ilj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:12:55 -0800 (PST)
+        Fri, 5 Feb 2021 09:19:17 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DD8C0617AA
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:46:41 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id s24so7538892iob.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:46:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8+ck2H8Pw6wgSCqXl5lp8F6E+5zNs1S9ypztUefo5vE=;
-        b=uRg8k3YjUU6IsLiiIhlzn9AWCPcV4/IAp/ZEAfeGG+ImCWMygj0IZBfQ7gVH70CLSH
-         97ff0J7fH6wSURs2K965ZD6sWg1r4c5xVlMhWrDaAgJjON6Xb+1mK0m9hDi+LId4DfvW
-         aInXRjPS/iCQusA4QlP7fzT/hcKqUrfXNq2O2geCzmCbg6h9XpjkdBu/TH6oxmTeW3E6
-         vsztOYoSdXZumasBlAH/6/TFmVsyvBrxCsoDWJO56ItgtXo8z3BaDFtVrpBvZIE7vLrs
-         oBGKZGLb6jgjEmtxr8bxia0AhrARBVDRtjkgAWwS43xSeddxvq+tBk5CrHCV4KAyTpiA
-         q7yQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uaau4sgQ9hT4TilyNvussNtYWDpCQq4C5pX2PL2MkbA=;
+        b=RQiutqdV9uKt5WpY7LmQnqOyik8QlV/xIC11t47Cxy6iPhsjdv7Kgt4t0vvK0ioHfm
+         evdTtgL4mXNsmg2lYfDsBg0vDtJuclK/YKze5J5lernt3k/bnB7sosOWua7eWz5n3xFd
+         Y9T09TOUDCpONnIP8oi8aST0SHKdlM7bsgcVwdzBVRwXa4+ypaC8v7qimmBPM/XVG0AH
+         6eeSMwZmJAYY73o5aDxUKihBsBtIdgCDSRiH35nqLpdz9zwJ34Pztdz4ltqVTgpzQEMI
+         Tqna40GWas6ybMNlVQ9D1coNYLz0CBr+9t8ic2Siyy66vvOie3xSqZPi5Kq7wjUtOV6h
+         tcjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8+ck2H8Pw6wgSCqXl5lp8F6E+5zNs1S9ypztUefo5vE=;
-        b=FFru29EzTz+Eai4ETyAwwmV01bk15NrVUsmhm4SduVakuJDyvDtsImxX04UUN/HNAE
-         ekKUw7S3BTUJwg0cWIl0xkf9pDNqqcJncT1k3Sg5Rp9QJ00RmxZTCeqZxOmXMKO10D2S
-         WsJy2rvEKfvXvFbstsO2JJ0g+VA2nC2FPwTage+qXqs6LvTsZaWXZU46R/rjIFE2L9Ce
-         FFrg4bMVLMH0UGWpF5UwzANRmE4so4HViGB8jR1MZGcRe50mbapPm3BQFm2Z1UFeOqcc
-         SlSkTWmnTmHdqx73Pl2idB/G4KonV3XxySZlpYvkmtIkRhjslLawb6xJrFvmsvdQTo2v
-         WWlQ==
-X-Gm-Message-State: AOAM531VvZnGxyzcAqxC94NKxXQRa2yyjt0eBcE6O0OO6oKV6vau1bu7
-        iw336q/cP3D9U3jVAPMqj2iMW6rF2wKoEQ==
-X-Google-Smtp-Source: ABdhPJxDtf0c+ed0u2t7JMLZjtqoLdm3/SJWfOMF1H0Mi0q45y7CyLLK/VMMb0DlqB6xpgRJEp//pw==
-X-Received: by 2002:a05:6602:154e:: with SMTP id h14mr4291585iow.1.1612535921035;
-        Fri, 05 Feb 2021 06:38:41 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id h9sm4136882ili.43.2021.02.05.06.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 06:38:40 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 7/7] net: ipa: avoid field overflow
-Date:   Fri,  5 Feb 2021 08:38:29 -0600
-Message-Id: <20210205143829.16271-8-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210205143829.16271-1-elder@linaro.org>
-References: <20210205143829.16271-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uaau4sgQ9hT4TilyNvussNtYWDpCQq4C5pX2PL2MkbA=;
+        b=hpO0w/K7ij8evQtnLa+gnuv+SCr4r/2NF8uF23duIL5AUmhj21dWluuW6onBJlhN9p
+         tg/QPxSEmzKs3urdSlDFyY7cfarNhbvqLsEsWXphvPTgTxbK3wys+52TgPg3qUEuTk9V
+         HN6h4QRo4Bj2f0OpdxcOeUtaollStXbAHYoH3+QO1PAlKyL3DRXRpIT/PH9DM3dgrtip
+         e8YmW2l7ZQoLk3oX3V+6h7haIsNjk6vlLFvTRzmr6IbuzA++wgmGYqStA/8+ToQ7/7Uc
+         35uRTOqBC5MAeyVptDJd9tlj6L6AYMQquFdx8VgPOmcshcjT/qQmipt7p30Zne8a7ksc
+         W56g==
+X-Gm-Message-State: AOAM531/s2qr+63yKw0wUvo/+u46Y+s+BrKPWGYhHfMX2N0Vdrb91qKr
+        W4Ei1DLZI6VSM9qVEV1vkKoPo2n76E8BSuwkPfZIh5sYz7tbKQ==
+X-Google-Smtp-Source: ABdhPJw/KUgUzSu9HyWsw7w094KKGV8UazdOBjJhfXTEooNN4RSJLHuY9UsurqCqtD67VvrC4YI+d1km2qWrSXarE8o=
+X-Received: by 2002:a63:5309:: with SMTP id h9mr4691610pgb.19.1612538034909;
+ Fri, 05 Feb 2021 07:13:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205022328.481524-1-kaleshsingh@google.com>
+ <20210205022328.481524-2-kaleshsingh@google.com> <df97ba85-2291-487a-8af0-84398f9e8188@amd.com>
+In-Reply-To: <df97ba85-2291-487a-8af0-84398f9e8188@amd.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Fri, 5 Feb 2021 10:13:43 -0500
+Message-ID: <CAC_TJvfZ4G8oL1c6kgBVvmjeXYPpf3ziRp+BEWqiEKYK1mhbDg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Anand K Mistry <amistry@google.com>,
+        NeilBrown <neilb@suse.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible that the length passed to ipa_header_size_encoded()
-is larger than what can be represented by the HDR_LEN field alone
-(starting with IPA v4.5).  If we attempted that, u32_encode_bits()
-would trigger a build-time error.
+On Fri, Feb 5, 2021 at 2:56 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+> Am 05.02.21 um 03:23 schrieb Kalesh Singh:
+> > If a FD refers to a DMA buffer add the DMA buffer inode number to
+> > /proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
+> >
+> > The dmabuf inode number allows userspace to uniquely identify the buffe=
+r
+> > and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
+> > DMA buffer sizes.
+>
+> BTW: Why do we make this DMA-buf specific? Couldn't we always print the
+> inode number for all fds?
 
-Avoid this problem by masking off high-order bits of the value
-encoded as the lower portion of the header length.
+Good point. We can make this a common field instead of DMA buf
+specific. I will update in the next version.
 
-The same sort of problem exists in ipa_metadata_offset_encoded(),
-so implement the same fix there.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_reg.h | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_reg.h b/drivers/net/ipa/ipa_reg.h
-index e6b0827a244ec..732e691e9aa62 100644
---- a/drivers/net/ipa/ipa_reg.h
-+++ b/drivers/net/ipa/ipa_reg.h
-@@ -408,15 +408,18 @@ enum ipa_cs_offload_en {
- static inline u32 ipa_header_size_encoded(enum ipa_version version,
- 					  u32 header_size)
- {
-+	u32 size = header_size & field_mask(HDR_LEN_FMASK);
- 	u32 val;
- 
--	val = u32_encode_bits(header_size, HDR_LEN_FMASK);
--	if (version < IPA_VERSION_4_5)
-+	val = u32_encode_bits(size, HDR_LEN_FMASK);
-+	if (version < IPA_VERSION_4_5) {
-+		/* ipa_assert(header_size == size); */
- 		return val;
-+	}
- 
- 	/* IPA v4.5 adds a few more most-significant bits */
--	header_size >>= hweight32(HDR_LEN_FMASK);
--	val |= u32_encode_bits(header_size, HDR_LEN_MSB_FMASK);
-+	size = header_size >> hweight32(HDR_LEN_FMASK);
-+	val |= u32_encode_bits(size, HDR_LEN_MSB_FMASK);
- 
- 	return val;
- }
-@@ -425,15 +428,18 @@ static inline u32 ipa_header_size_encoded(enum ipa_version version,
- static inline u32 ipa_metadata_offset_encoded(enum ipa_version version,
- 					      u32 offset)
- {
-+	u32 off = offset & field_mask(HDR_OFST_METADATA_FMASK);
- 	u32 val;
- 
--	val = u32_encode_bits(offset, HDR_OFST_METADATA_FMASK);
--	if (version < IPA_VERSION_4_5)
-+	val = u32_encode_bits(off, HDR_OFST_METADATA_FMASK);
-+	if (version < IPA_VERSION_4_5) {
-+		/* ipa_assert(offset == off); */
- 		return val;
-+	}
- 
- 	/* IPA v4.5 adds a few more most-significant bits */
--	offset >>= hweight32(HDR_OFST_METADATA_FMASK);
--	val |= u32_encode_bits(offset, HDR_OFST_METADATA_MSB_FMASK);
-+	off = offset >> hweight32(HDR_OFST_METADATA_FMASK);
-+	val |= u32_encode_bits(off, HDR_OFST_METADATA_MSB_FMASK);
- 
- 	return val;
- }
--- 
-2.20.1
-
+Thanks,
+Kalesh
+>
+> Regards,
+> Christian.
+>
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > ---
+> > Changes in v3:
+> >    - Add documentation in proc.rst
+> > Changes in v2:
+> >    - Update patch description
+> >
+> >   Documentation/filesystems/proc.rst | 17 +++++++++++++++++
+> >   drivers/dma-buf/dma-buf.c          |  1 +
+> >   2 files changed, 18 insertions(+)
+> >
+> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesys=
+tems/proc.rst
+> > index 2fa69f710e2a..fdd38676f57f 100644
+> > --- a/Documentation/filesystems/proc.rst
+> > +++ b/Documentation/filesystems/proc.rst
+> > @@ -2031,6 +2031,23 @@ details]. 'it_value' is remaining time until the=
+ timer expiration.
+> >   with TIMER_ABSTIME option which will be shown in 'settime flags', but=
+ 'it_value'
+> >   still exhibits timer's remaining time.
+> >
+> > +DMA Buffer files
+> > +~~~~~~~~~~~~~~~~
+> > +
+> > +::
+> > +
+> > +     pos:    0
+> > +     flags:  04002
+> > +     mnt_id: 9
+> > +     dmabuf_inode_no: 63107
+> > +     size:   32768
+> > +     count:  2
+> > +     exp_name:  system-heap
+> > +
+> > +where 'dmabuf_inode_no' is the unique inode number of the DMA buffer f=
+ile.
+> > +'size' is the size of the DMA buffer in bytes. 'count' is the file cou=
+nt of
+> > +the DMA buffer file. 'exp_name' is the name of the DMA buffer exporter=
+.
+> > +
+> >   3.9 /proc/<pid>/map_files - Information about memory mapped files
+> >   ---------------------------------------------------------------------
+> >   This directory contains symbolic links which represent memory mapped =
+files
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index 9ad6397aaa97..d869099ede83 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -414,6 +414,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m,=
+ struct file *file)
+> >   {
+> >       struct dma_buf *dmabuf =3D file->private_data;
+> >
+> > +     seq_printf(m, "dmabuf_inode_no:\t%lu\n", file_inode(file)->i_ino)=
+;
+> >       seq_printf(m, "size:\t%zu\n", dmabuf->size);
+> >       /* Don't count the temporary reference taken inside procfs seq_sh=
+ow */
+> >       seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
+>
