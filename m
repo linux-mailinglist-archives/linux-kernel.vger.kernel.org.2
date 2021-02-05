@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ABC31021A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40723310224
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbhBEBJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:09:35 -0500
-Received: from mga09.intel.com ([134.134.136.24]:30707 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhBEBJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:09:30 -0500
-IronPort-SDR: UlNY7Xq9Ryi8uj4H2WO0xTzHYU0k4maPRvuAwX/ZN9fRMhD+jUg6p+SIAlES9b/EeOkLz1rXDQ
- CTU8PASWGVHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="181505413"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="181505413"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 17:08:49 -0800
-IronPort-SDR: rSfRk5qnf8S7RAXfEShK9dRTrJv8e2F2Uvfi8eVy379xAp/EEV6qVAXAJ39lCYB+uOohpQ5kLa
- 1y52B6iOCZvg==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="393623628"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.212.188.246])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 17:08:49 -0800
-Date:   Thu, 4 Feb 2021 17:08:48 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Song Yoong Siang <yoong.siang.song@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Ong Boon Leong" <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Gomes Vinicius <vinicius.gomes@intel.com>
-Subject: Re: [PATCH net 1/1] net: stmmac: set TxQ mode back to DCB after
- disabling CBS
-Message-ID: <20210204170848.00000aff@intel.com>
-In-Reply-To: <1612447396-20351-1-git-send-email-yoong.siang.song@intel.com>
-References: <1612447396-20351-1-git-send-email-yoong.siang.song@intel.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S232579AbhBEBSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232391AbhBEBSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 20:18:24 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAA8C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:17:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=aWbUPeW4e/YPHXmZhk0OHBC71MgWJmQib6HmtXgtUSI=; b=B57r30Sk2A4BI/uT4ufexN7BQz
+        b079z/nyi0m84xGaEmKivDb7OowJcUGG+8hMZ0x7lX+9PYqdbRD9Q/iE8niHPihuOb2RKbsSU/Iae
+        TS4DMlyYm7e0A6OoRExgS3A5brdHy4btuk0hHjdiMOq901JjD+sPuGn1pWoqNFirq5hnh9qZsr7eY
+        qvSWC4aULQUFYwJI6yHJM5SuuJdP46/zqzRjqYE/U2o92UX+AHSI2ohjjn8NmynmLdykPbpl9mk/l
+        NBnHl4ULYdoVSVJj+FeAyRhp4Q8hz9xu0lZ9sbg0Rmj6t8r2ZKBnzq7qVh3YGBfp6MXFaWyrNRdLQ
+        YySsyufw==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7pkk-0003cT-23; Fri, 05 Feb 2021 01:17:42 +0000
+Subject: Re: [PATCH] lib: crc-itu-t: Fix typo in comment
+To:     David Mosberger-Tang <davidm@egauge.net>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <0e0976ef-42a1-880d-2ec0-d22632004ff9@infradead.org>
+ <20210205010232.478567-1-davidm@egauge.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <503ed4ec-2386-4bf9-2614-fd0cce268ff9@infradead.org>
+Date:   Thu, 4 Feb 2021 17:17:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210205010232.478567-1-davidm@egauge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Song Yoong Siang wrote:
+On 2/4/21 5:02 PM, David Mosberger-Tang wrote:
+> Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
 
-> From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-> 
-> When disable CBS, mode_to_use parameter is not updated even the operation
-> mode of Tx Queue is changed to Data Centre Bridging (DCB). Therefore,
-> when tc_setup_cbs() function is called to re-enable CBS, the operation
-> mode of Tx Queue remains at DCB, which causing CBS fails to work.
-> 
-> This patch updates the value of mode_to_use parameter to MTL_QUEUE_DCB
-> after operation mode of Tx Queue is changed to DCB in stmmac_dma_qmode()
-> callback function.
-> 
-> Fixes: 1f705bc61aee ("net: stmmac: Add support for CBS QDISC")
-> Suggested-by: Gomes, Vinicius <vinicius.gomes@intel.com>
-> Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-> Signed-off-by: Song, Yoong Siang <yoong.siang.song@intel.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Thanks.
+
+> ---
+>  lib/crc-itu-t.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
+> index 1974b355c148..1d26a1647da5 100644
+> --- a/lib/crc-itu-t.c
+> +++ b/lib/crc-itu-t.c
+> @@ -7,7 +7,7 @@
+>  #include <linux/module.h>
+>  #include <linux/crc-itu-t.h>
+>  
+> -/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
+> +/* CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
+>  const u16 crc_itu_t_table[256] = {
+>  	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
+>  	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
+> 
+
+
+-- 
+~Randy
