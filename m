@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2043310973
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CAF310970
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhBEKsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhBEKoy (ORCPT
+        id S231652AbhBEKrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:47:14 -0500
+Received: from mail-qv1-f54.google.com ([209.85.219.54]:40806 "EHLO
+        mail-qv1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhBEKoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:44:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A41C061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:44:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AZTrsdIgEHD7KFjMJJWY83JzN98tigxEzZxfCzeUzSI=; b=L3nRt+3TAeaRteiVZDzGWTUV8h
-        7v0OHOuv/hp1rSAtqPpcvda/thx4Kk4sy5tSZXPFbZ0f+9YjyXwZxTBVUYF3jvAnm5icdYINefK6C
-        1mqKuOqODiTDEYZ3sOOrzr51DqaFj3cIgwlFdLTQYZcDJCXSDitLtJs+/bZK6pgSvsdz9HlOR1ZEP
-        bGhM4qA6VYrsVm/UYLm7qE9qlKIqGzXkw4D2jBAWZ83p0mqswUPrCop92bWPUuw+M+5uQKWwHItvv
-        PyD4GNpkz7x4Et+7y4Zgjfz/nmTMPQ+yxDBxCrr0kcOwriYnGNwEMJTPTtLtsJxL4Aay8UfJ4XBqg
-        U4mope0g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7yZx-0001nm-K0; Fri, 05 Feb 2021 10:43:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9FBCD3013E5;
-        Fri,  5 Feb 2021 11:43:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7DC112BBE1CB0; Fri,  5 Feb 2021 11:43:03 +0100 (CET)
-Date:   Fri, 5 Feb 2021 11:43:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chris Hyser <chris.hyser@oracle.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-Message-ID: <YB0hN5XG5dB0xiBh@hirez.programming.kicks-ass.net>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
- <YBv9Uy1dyv8E2LAz@hirez.programming.kicks-ass.net>
- <94bb9424-008e-6d3c-dff6-a1329c16551f@oracle.com>
+        Fri, 5 Feb 2021 05:44:44 -0500
+Received: by mail-qv1-f54.google.com with SMTP id u20so3181115qvx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:44:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hOGsFRkken9J2+ZbCvl0mBH8sLwFif//a+Scmq0+cME=;
+        b=hO8VmuTVt++aWHpHYhwCIMZ7adbUgMSDu7i+c+1IA+NlRDGjJmLYwfgy4gX9saE3fY
+         w/C6h4FBMa/H7/18aZX4NP4O3ZWHqT0VLBwhlXxIdjTiuZYpUyANpRXOEQXvTgxyf0PH
+         MAKj/flikiZ3CgTbPEpgP3/ySX2Acnil3vfH5Bzmaq2nzPwxLKBLh9AVW+7t6HOaX2r7
+         xl83Wm3yJRdqxH3ysCOFJulIGTOtJjp3ZEnpHHbqUYGM6OiQk/XP/TrFtFlAj3hA05Pn
+         fgPo56svjW9fQI5CS0t4ofK1GLz1XW+tCVP8uR941lZjF/3AP01J+WnmPj5nVu/M0D6Q
+         BkQA==
+X-Gm-Message-State: AOAM532ii5csU4mIl4jJzbGkci1GdWpl/KmItvec3VTSOEymx6SCT0Gp
+        MyDgzrTpbtmBRxsi49voGmgZyvm2I5H55ffu73Q=
+X-Google-Smtp-Source: ABdhPJyGmWlQWYHvSHhgswwTQH0YdPedWBW/AmnV7okkAb7dMqXbUZIe0dsZSISgUfyYqoA0zyg5c+SVLcc7oSAC52U=
+X-Received: by 2002:a05:6214:21a5:: with SMTP id t5mr3490469qvc.20.1612521843402;
+ Fri, 05 Feb 2021 02:44:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94bb9424-008e-6d3c-dff6-a1329c16551f@oracle.com>
+References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+ <1611873611-156687-2-git-send-email-kan.liang@linux.intel.com>
+ <b970c739-6783-34d6-8676-44632c7c9428@linux.intel.com> <CAM9d7chzwnmSeKydv0Fb_iopcuMZxRsx2mZ66uVwcu_RMw+Vyg@mail.gmail.com>
+ <4723a1de-9caa-e192-7b0d-8aced00b8f50@linux.intel.com>
+In-Reply-To: <4723a1de-9caa-e192-7b0d-8aced00b8f50@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 5 Feb 2021 19:43:51 +0900
+Message-ID: <CAM9d7ciaCgebmGd98GrngY-he6LGwKeFKJeCqyTBnJ30-tSghQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Yao Jin <yao.jin@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, maddy@linux.vnet.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:52:55PM -0500, Chris Hyser wrote:
+On Fri, Feb 5, 2021 at 12:24 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>
+> On 2/4/2021 9:00 AM, Namhyung Kim wrote:
+> > Hi Kan,
+> >
+> > On Sat, Jan 30, 2021 at 2:25 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> > [SNIP]
+> >> diff --git a/include/uapi/linux/perf_event.h
+> >> b/include/uapi/linux/perf_event.h
+> >> index b15e344..c50718a 100644
+> >> --- a/include/uapi/linux/perf_event.h
+> >> +++ b/include/uapi/linux/perf_event.h
+> >> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
+> >>          PERF_SAMPLE_CGROUP                      = 1U << 21,
+> >>          PERF_SAMPLE_DATA_PAGE_SIZE              = 1U << 22,
+> >>          PERF_SAMPLE_CODE_PAGE_SIZE              = 1U << 23,
+> >> +       PERF_SAMPLE_WEIGHT_STRUCT               = 1U << 24,
+> >>
+> >> -       PERF_SAMPLE_MAX = 1U << 24,             /* non-ABI */
+> >> +       PERF_SAMPLE_MAX = 1U << 25,             /* non-ABI */
+> >>
+> >>          __PERF_SAMPLE_CALLCHAIN_EARLY           = 1ULL << 63, /* non-ABI; internal use */
+> >>    };
+> >>
+> >> +#define PERF_SAMPLE_WEIGHT_TYPE        (PERF_SAMPLE_WEIGHT |
+> >> PERF_SAMPLE_WEIGHT_STRUCT)
+> >
+> > I'm not sure you want to expose it in the uapi header as it's not
+> > intended to be used IMHO.
+> >
+>
+> I'm not sure I understood, but it's indeed used in the tool patch set.
+>
+> https://lore.kernel.org/lkml/1612296553-21962-6-git-send-email-kan.liang@linux.intel.com/
 
-> A second complication was a decision that new processes (not threads) do not
-> inherit their parents cookie. Thus forking is also not a means to share a
-> cookie. Basically with a "from-only" interface, the new task would need to
-> be modified to call prctl() itself. From-only also does not allow for
-> setting a cookie on an unmodified already running task. This can be fixed by
-> providing both a "to" and "from" sharing interface that allows helper
-> programs to construct arbitrary configurations from unmodified programs.
+Well, it's not a big deal.. but I just worried if some users might do
 
-Do we really want to inhibit on fork() or would exec() be a better
-place? What about those applications that use fork() based workers?
+  event.attr.sample_type = PERF_SAMPLE_WEIGHT_TYPE;
 
-> > Also, how do I set a unique cookie on myself with this interface?
-> 
-> The v10 patch still uses the overloaded v9 mechanism (which as mentioned
-> above is if two tasks w/o cookies share a cookie they get a new shared
-> unique cookie). Yes, that is clearly an inconsistency and kludgy. The
-> mechanism is documented in the docs, but clearly not obvious from the
-
-I've not seen a document so far (also, I'm not one to actually read
-documentation, much preferring comments and Changelogs).
-
-> So based on the above, how about we add a "create" to pair with "clear" and
-> call it "create" vs "set" since we are creating a unique opaque cookie
-> versus setting a particular value. And as mentioned, because one can't
-> specify a cookie directly but only thru sharing relationships, we need both
-> "to" and "from" to make it completely usable.
-> 
-> So we end up with something like this:
->     PR_SCHED_CORE_CREATE                       -- give yourself a unique cookie
->     PR_SCHED_CORE_CLEAR                        -- clear your core sched cookie
->     PR_SCHED_CORE_SHARE_FROM <src_task>        -- get their cookie for you
->     PR_SCHED_CORE_SHARE_TO   <dest_task>       -- push your cookie to them
-
-I'm still wondering why we need _FROM/_TO. What exactly will we miss
-with just _SHARE <pid>?
-
-	current		arg_task
-	<none>		<none>		-EDAFT
-	<none>		<cookie>	current gets cookie
-	<cookie>	<none>		arg_task gets cookie
-	<cookie>	<cookie>	-EDAFTER
-
-(I have a suspicion, but I want to see it spelled out).
-
-Also, do we wants this interface to be able to work on processes? Things
-like fcntl(F_SETOWN_EX) allow you to specify a PID type.
-
-> An additional question is should the inheritability of a process' cookie be
-> configurable? The current code gives the child process their own unique
-> cookie if the parent had a cookie. That is useful in some cases, but many
-> other configurations could be made much easier with inheritance.
-
-What was the argument for not following the traditional fork() semantics
-and inheriting everything?
+Thanks,
+Namhyung
