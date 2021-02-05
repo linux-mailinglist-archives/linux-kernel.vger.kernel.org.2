@@ -2,150 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602D4310164
+	by mail.lfdr.de (Postfix) with ESMTP id D2374310165
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhBEALK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:11:10 -0500
-Received: from mga07.intel.com ([134.134.136.100]:33647 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231567AbhBEAK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:10:58 -0500
-IronPort-SDR: dcLHhzwVxGlhA6eizk0mzgYgWHL+jGH4p6IPB6bUnlIVtrBr4+bx13YGCPN5JE42rVzSM8BOWL
- J7JQ2BqAmDkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="245422593"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="245422593"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:10:16 -0800
-IronPort-SDR: FyGhBUUZHeP4fcvvfhWFvX9OftF/q5PlQTD0LPuXDJkP8OJ1TrRk/5I7SgFZh+TPiGSD+cMsTm
- 9ZdEZg3R6jTw==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="434168522"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.100.6]) ([10.209.100.6])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:10:14 -0800
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-To:     Kees Cook <keescook@chromium.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <202102041201.C2B93F8D8A@keescook>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <518c6ce4-1e6e-ef8d-ba55-fb35a828b874@intel.com>
-Date:   Thu, 4 Feb 2021 16:10:13 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231739AbhBEAMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:12:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231724AbhBEAMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:12:05 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88779C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:11:25 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id hs11so8831860ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 16:11:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uPm47aXDaAkJOoiyFqMvoPahaAOwOACl8R9iI/l8Gfg=;
+        b=x+moH5GCOt6q6DRoedjiC8hVqOTo/ZQh2l9R7P4iA6oL/LC0HzmWiEc8KtILhTjRbH
+         nrn49tGPZ8RbpcTpANAxito3Wey1EvC4qjN69Pnw2By7yi0+B5bbLyT3QzRyO/FMHU9E
+         HuPaFuqqQjwlwbp1hz01de1cO1ft2sWZHOhoFHjnpXoUs5XYsdpb/kzS5A88PqSTKMgh
+         54JEje8vjV+U1ikuluvojZMGzmZAgswE+cRFxpELhWOKRJnXodFh2acWfG5PC32syytg
+         eVeYLj74ts+DN38Jw0RyS6LzFyTHvlGpfk76RCwAKaQW2jYmOM+C5n6mJduOCu7Kl56w
+         Yc7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uPm47aXDaAkJOoiyFqMvoPahaAOwOACl8R9iI/l8Gfg=;
+        b=KTSGafvfOH1SVg29971sJyL4MD70dmRU4Z68t+PDGaSpHOzyJvouhT/35aTe/UsdUx
+         0QN5IetHvo7JwyZgAbGcaeOSQUH4PBLm+7eSeofB33DWOFA/00jjjO57n/BMspaRQ4Qz
+         0doByMhtNMtQ6MnCll9KE0ItXkSCerK3qpojFZEpbx25f1lRrBeyDZ+lMbR3+eo1pn45
+         PMNrA+uCP4pOaNfK89OgCfb8U8IoZBVfkT59stW89dS/7vb+46fyPzJBq6b6NY5I9GK6
+         q2FMBsMPM6wqsCAeH3W4ePkBrY381j1rNzPFnlA6DJeW4Kj9VucmBx9JisT3FtZbtiNJ
+         fTGQ==
+X-Gm-Message-State: AOAM530AVQp+iKajbcVaVdScXSjbOWF+Hp+ZShH+yhN034Fw63VPK9ES
+        0KrW234WDVmlBleeKC7GBzXDOBUSFh6XCqLMevCPVQ==
+X-Google-Smtp-Source: ABdhPJwJ2CJ5I3cmJPc1UqnPUHr+2X4r21lemM78lizXxg33YPm+xb1HB2qIS3KNkP2zdFFA1Ux+2j/Uz1gamPrkYQg=
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr1495765ejq.101.1612483884320;
+ Thu, 04 Feb 2021 16:11:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202102041201.C2B93F8D8A@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200305174706.0D6B8EE4@viggo.jf.intel.com> <20200305174708.F77040DD@viggo.jf.intel.com>
+ <f37ecf01-3167-f12e-d9d0-b55c44b80c29@citrix.com>
+In-Reply-To: <f37ecf01-3167-f12e-d9d0-b55c44b80c29@citrix.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Thu, 4 Feb 2021 16:11:12 -0800
+Message-ID: <CALCETrXMhe3ULF9UDc1=8CKVfKqneCxJ2wYmCdKPpntkkMNGWg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 2/2] x86: add extra serialization for non-serializing MSRs
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        "H. Peter Anvin" <h.peter.anvin@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>, X86 ML <x86@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/2021 12:09 PM, Kees Cook wrote:
-> On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
+On Thu, Feb 4, 2021 at 3:37 PM Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+>
+> On 05/03/2020 17:47, Dave Hansen wrote:
+> > Jan Kiszka reported that the x2apic_wrmsr_fence() function uses a
+> > plain "mfence" while the Intel SDM (10.12.3 MSR Access in x2APIC
+> > Mode) calls for "mfence;lfence".
+> >
+> > Short summary: we have special MSRs that have weaker ordering
+> > than all the rest.  Add fencing consistent with current SDM
+> > recommendatrions.
+> >
+> > This is not known to cause any issues in practice, only in
+> > theory.
+>
+> So, I accept that Intel have their own reasons for what is written in
+> the SDM, but "not ordered with stores" is at best misleading.
+>
+> The x2APIC (and other) MSRs, aren't serialising.  That's fine, as is the
+> fact that the WRMSR to trigger them doesn't have memory operands, and is
+> therefore not explicitly ordered with other loads and stores.
+>
+> Consider:
+>     xor %edi, %edi
+>     movb (%rdi), %dl
+>     wrmsr
+>
+> It is fine for a non-serialising wrmsr here to execute speculative in
+> terms of internal calculations, but nothing it does can escape the local
+> core until the movb has fully retired, and is therefore globally visible.
+>
+> Otherwise, I can send IPIs from non-architectural paths (in this case,
+> behind a page fault), and causality is broken.
 
-[...]
+I'm wondering if a more mild violation is possible:
 
->> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
->> index 7f5aec758f0e..f5354c35df32 100644
->> --- a/arch/x86/kernel/traps.c
->> +++ b/arch/x86/kernel/traps.c
->> @@ -606,6 +606,66 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->>   	cond_local_irq_disable(regs);
->>   }
->>   
->> +#ifdef CONFIG_X86_CET
->> +static const char * const control_protection_err[] = {
->> +	"unknown",
->> +	"near-ret",
->> +	"far-ret/iret",
->> +	"endbranch",
->> +	"rstorssp",
->> +	"setssbsy",
->> +};
->> +
->> +/*
->> + * When a control protection exception occurs, send a signal to the responsible
->> + * application.  Currently, control protection is only enabled for user mode.
->> + * This exception should not come from kernel mode.
->> + */
->> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
->> +{
->> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
->> +				      DEFAULT_RATELIMIT_BURST);
->> +	struct task_struct *tsk;
->> +
->> +	if (!user_mode(regs)) {
->> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
->> +		die("kernel control protection fault", regs, error_code);
->> +		panic("Machine halted.");
->> +	}
->> +
->> +	cond_local_irq_enable(regs);
->> +
->> +	if (!boot_cpu_has(X86_FEATURE_CET))
->> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
->> +
->> +	tsk = current;
->> +	tsk->thread.error_code = error_code;
->> +	tsk->thread.trap_nr = X86_TRAP_CP;
->> +
->> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
->> +	    __ratelimit(&rs)) {
->> +		unsigned int max_err;
->> +		unsigned long ssp;
->> +
->> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
->> +		if (error_code < 0 || error_code > max_err)
->> +			error_code = 0;
-> 
-> Do you want to mask the error_code here before printing its value?
-> 
->> +
->> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
->> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
->> +			 tsk->comm, task_pid_nr(tsk),
->> +			 regs->ip, regs->sp, ssp, error_code,
->> +			 control_protection_err[error_code]);
-> 
-> Instead, you could clamp error_code to ARRAY_SIZE(control_protection_err),
-> and add another "unknown" to the end of the strings:
-> 
-> 	control_protection_err[
-> 		array_index_nospec(error_code,
-> 				   ARRAY_SIZE(control_protection_err))]
-> 
-> Everything else looks good.
-> 
+Initialize *addr = 0.
 
-I will update it.  Thanks!
+mov $1, (addr)
+wrmsr
 
-[...]
+remote cpu's IDT vector:
+
+mov (addr), %rax
+%rax == 0!
+
+There's no speculative-execution-becoming-visible-even-if-it-doesn't-retire
+here -- there's just an ordering violation.  For Linux, this would
+presumably only manifest as a potential deadlock or confusion if the
+IPI vector code looks at the list of pending work and doesn't find the
+expected work in it.
+
+Dave?  hpa?  What is the SDM trying to tell us?
