@@ -2,175 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7469310871
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B5A310869
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhBEJyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:54:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhBEJqc (ORCPT
+        id S230098AbhBEJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:53:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229509AbhBEJux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:46:32 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11421C0617AB;
-        Fri,  5 Feb 2021 01:45:17 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id q131so3955135pfq.10;
-        Fri, 05 Feb 2021 01:45:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ij/h85oXJKLKfOyNytBFaR/zwWNpKnRCXwdnAmKNlzA=;
-        b=FyF9PPnS5DuNfyg1/r5SwuLubGJE9DhIHqi0HstEy7Q26ja32WJclNimxmWBKfmYZe
-         OOS0VirmPcRQJZU4SX+vYFm6FQ6cL3L86h8N40BvZTUq/RW5IJFLczEX4nb1ROXlkCX/
-         SZlLoOw627cl6PEB4XZXoq/eI+kicCRu9MxLL11TIB5WzAiqf0QQ2OUXKtvSrnnlJXR6
-         57DY7CMEtOGpSE0pIPa+dE20xIwHVwVoPf/H5vXWAmshPQ+iVZeFxwXu14hwIO2Hxlie
-         9IRF8WCdIqXysd7CwKv/Vbh4xkiKlFozWKfFCF8WsdFwpopJg2LNecPa9UrO9VoCEn7H
-         D4IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ij/h85oXJKLKfOyNytBFaR/zwWNpKnRCXwdnAmKNlzA=;
-        b=BF3YQ55j9b+Irb9z7hGdc99irXOaQrj9Rm790L2W2aI9uNTJJvdSIuBz40EOsZkzbg
-         FpY/wV8WGfkssftEXT7/Ijbu7l4MNtQAAMUAwivIKLLriBkrEywOLwBtbod9A7id/bYr
-         zz03iy+bhIS7z5slD94rbG3/Ri/xchFz+bRHEzHHQPeZ81mNSWJ6TfXF6m97ERvdBZi3
-         GTo0EF43ze+9qA+13ZbQ301WmQnNrQTchlJREi1lhSDqi18XSaLibL/7VSqsE/dEoH2g
-         F3OnvK2GqrS4A5gE4z6XKl/ky1Cwx/hnhOw8Cd0lzrJPhs2fHBcBpagv8clpC70fPT3U
-         /Lxg==
-X-Gm-Message-State: AOAM531nONRK34RjaQbWIG6onKkDyS7g6Up7zOWEdVRF5eKCNhsWps75
-        MWks+HS/CnmwBa79wzEW5PY=
-X-Google-Smtp-Source: ABdhPJxRaDYB7eWp5Jmy7gQItXlnWORYO0/RGgu2LTC/6884HlnPqyeaxMfAGGLIhv5B45MiK/JptQ==
-X-Received: by 2002:a62:1a06:0:b029:1bc:21e:ed47 with SMTP id a6-20020a621a060000b02901bc021eed47mr3598773pfa.40.1612518316620;
-        Fri, 05 Feb 2021 01:45:16 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id c5sm8805679pfi.5.2021.02.05.01.45.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Feb 2021 01:45:16 -0800 (PST)
-Date:   Fri, 5 Feb 2021 01:45:57 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     will@kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com,
-        joro@8bytes.org, kernel@collabora.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-Subject: Re: [PATCH RESEND v2 4/5] iommu/tegra-smmu: Rework
- tegra_smmu_probe_device()
-Message-ID: <20210205094556.GA32677@Asurada-Nvidia>
-References: <20201125101013.14953-1-nicoleotsuka@gmail.com>
- <20201125101013.14953-5-nicoleotsuka@gmail.com>
- <46a96cf9-91cc-2ad4-702a-e95ba7200375@collabora.com>
- <20210205052422.GA11329@Asurada-Nvidia>
+        Fri, 5 Feb 2021 04:50:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612518564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xjgv6TBlt1h4VM26o37et2OrO2gHmNIuStDR6rITBLU=;
+        b=czeE848EgRVHG8DfWOOpov1NTpRHZcZiyVEo3pYO3KDPT8zS8k2tx+sx46lYHS87AOgJVZ
+        1gyc59LPXKR9w3+b55e+//xOjh3Zemwalok9qSG4ZIpEuQnGW8qrP1VZw9br0xBNRuZ46q
+        0QvXRQO0ip5RY3nhckFuIKglAxusyN8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-jTsZft2DNzmCkYcDQddbkQ-1; Fri, 05 Feb 2021 04:49:23 -0500
+X-MC-Unique: jTsZft2DNzmCkYcDQddbkQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27D6D193410E;
+        Fri,  5 Feb 2021 09:49:20 +0000 (UTC)
+Received: from krava (unknown [10.40.195.59])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9167160937;
+        Fri,  5 Feb 2021 09:49:15 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 10:49:15 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Simplify the calculation of variables
+Message-ID: <YB0Um9N4rW8fd+oD@krava>
+References: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205052422.GA11329@Asurada-Nvidia>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Guillaume,
-
-On Thu, Feb 04, 2021 at 09:24:23PM -0800, Nicolin Chen wrote:
-> > Please let us know if you need any help debugging this issue or
-> > to try a fix on this platform.
+On Fri, Feb 05, 2021 at 11:54:15AM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
 > 
-> Yes, I don't have any Tegra124 platform to run. It'd be very nice
-> if you can run some debugging patch (I can provide you) and a fix
-> after I root cause the issue.
+> ./tools/perf/util/header.c:3809:18-20: WARNING !A || A && B is
+> equivalent to !A || B.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/header.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index c4ed3dc..4fe9e2a 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -3806,7 +3806,7 @@ int perf_session__read_header(struct perf_session *session)
+>  	 * check for the pipe header regardless of source.
+>  	 */
+>  	err = perf_header__read_pipe(session);
+> -	if (!err || (err && perf_data__is_pipe(data))) {
+> +	if (!err || perf_data__is_pipe(data)) {
 
-Would it be possible for you to run with the given debugging patch?
+mama mia, thanks
 
-It'd be nicer if I can get both logs of the vanilla kernel (failing)
-and the commit-reverted version (passing), each applying this patch.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Thanks in advance!
-Nicolin
+jirka
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="0001-iommu-debug-tegra-smmu.patch"
+>  		data->is_pipe = true;
+>  		return err;
+>  	}
+> -- 
+> 1.8.3.1
+> 
 
-From 80f288d7101101fca0412c5c200cea7e203a675d Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Fri, 5 Feb 2021 01:41:07 -0800
-Subject: [PATCH] iommu: debug tegra-smmu
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 4a3f095a1c26..796b7df54b8f 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -363,6 +363,7 @@ static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
- 		value |= SMMU_ASID_VALUE(asid);
- 		value |= SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		pr_alert("--------%s, swgroup %d: writing %x to reg1 %x\n", __func__, swgroup, value, group->reg);
- 	} else {
- 		pr_warn("%s group from swgroup %u not found\n", __func__,
- 				swgroup);
-@@ -379,6 +380,7 @@ static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
- 		value = smmu_readl(smmu, client->smmu.reg);
- 		value |= BIT(client->smmu.bit);
- 		smmu_writel(smmu, value, client->smmu.reg);
-+		pr_alert("--------%s, swgroup %d: writing %x to reg2 %x\n", __func__, swgroup, value, client->smmu.reg);
- 	}
- }
- 
-@@ -491,13 +493,19 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
- 	unsigned int index;
- 	int err;
- 
-+	dev_alert(dev, "-------%s: smmu %s\n", __func__, smmu ? "valid" : "NULL");
-+	dump_stack();
- 	if (!fwspec)
- 		return -ENOENT;
- 
-+	dev_alert(dev, "-------%s: fwspec->num_ids %d\n", __func__, fwspec->num_ids);
- 	for (index = 0; index < fwspec->num_ids; index++) {
- 		err = tegra_smmu_as_prepare(smmu, as);
--		if (err)
-+		if (err) {
-+			dev_err(dev, "failed to prepare as(%d) for fwspec %d",
-+				as->id, fwspec->ids[index]);
- 			goto disable;
-+		}
- 
- 		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
- 	}
-@@ -805,6 +813,8 @@ static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
- 	if (!smmu)
- 		return ERR_PTR(-ENODEV);
- 
-+	dev_alert(dev, "--------%s, %d\n", __func__, __LINE__);
-+	dump_stack();
- 	return &smmu->iommu;
- }
- 
-@@ -904,6 +914,8 @@ static int tegra_smmu_of_xlate(struct device *dev,
- 
- 	dev_iommu_priv_set(dev, mc->smmu);
- 
-+	dev_alert(dev, "-------%s: id %d", __func__, id);
-+	dump_stack();
- 	return iommu_fwspec_add_ids(dev, &id, 1);
- }
- 
--- 
-2.17.1
-
-
---EVF5PPMfhYS0aIcm--
