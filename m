@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0818310BA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763F4310B9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229466AbhBENMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:12:00 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43314 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBENJE (ORCPT
+        id S229683AbhBENNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:13:40 -0500
+Received: from antares.kleine-koenig.org ([94.130.110.236]:34562 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhBENJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:09:04 -0500
-Received: by mail-ot1-f43.google.com with SMTP id v1so6775135ott.10;
-        Fri, 05 Feb 2021 05:08:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WX8ErsF7ufGENF0dnMlQjeqhkThVBYcUlVXRDpEQYKY=;
-        b=fygE3kiSMor8zTUVrxN0TO6hoSpze5jgrgRxB2T4xYbHnLq2DOjhP/WjRGG+I8xI8D
-         5GiphqjTEN6e3eqmFt6M0hnF61cZc26OYiake4AzYXPuFXsrNSyHq6t1/CR4YwQkXshG
-         HSJ1wumQRaB19trPD7o/U07tYnm1Akst0O+Znve4+qEUCQKQXGjCYVIPzwL5C2pMxuMe
-         XtFQvQ3QBCztr1XIfx9/X0kKAgLIwVGkC6idiXPWeUjvx0AIzr0s5nQyfiHaSbJnppU+
-         q3Pap/R3oHzBCALv2Dle/TbQjumUNXP/R0T7putGoUYyd/sFGAGVy4UyzWq+gEyro5ay
-         jsRg==
-X-Gm-Message-State: AOAM530lHWePi2NxJK2YNCCrd18NkUcWIV7e4BNv0oCA4V+OmervMacy
-        Htm4zAFU0eWVjveMvUfcDQaUQ8l0sN7vDk2Jr/o=
-X-Google-Smtp-Source: ABdhPJwLLPJaUTt4hMFqS8aDV3vSP0ZLRDiuSz3VqpP3va5aV1c7z5uo4VXRXbCxxIeFG31SZhg5JfA4Vs0insAxEyQ=
-X-Received: by 2002:a9d:6acf:: with SMTP id m15mr3299035otq.260.1612530503122;
- Fri, 05 Feb 2021 05:08:23 -0800 (PST)
+        Fri, 5 Feb 2021 08:09:59 -0500
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id D67A7AED6A1; Fri,  5 Feb 2021 14:08:50 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Eric Anholt <eric@anholt.net>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Takashi Iwai <tiwai@suse.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        alsa-devel@alsa-project.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
+Subject: [PATCH] coresight: etm4x: Fix merge resolution for amba rework
+Date:   Fri,  5 Feb 2021 14:08:47 +0100
+Message-Id: <20210205130848.20009-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210205125144.1407032-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210205125144.1407032-1-unixbhaskar@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Feb 2021 14:08:09 +0100
-Message-ID: <CAJZ5v0hokLPQML9wWuo9aqcQGZeMc5k9a+fzPKs4mZe5p11_mw@mail.gmail.com>
-Subject: Re: [PATCH] drivers: cpufreq: Change a word with a word , good one in
- the file powernow-k7.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 1:55 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
->
-> s/fucked/messed/
+This was non-trivial to get right because commits
+c23bc382ef0e ("coresight: etm4x: Refactor probing routine") and
+5214b563588e ("coresight: etm4x: Add support for sysreg only devices")
+changed the code flow considerably. With this change the driver can be
+built again.
 
-I wouldn't make the changelog so explicit, just say "Use more
-appropriate language" or similar.
+Fixes: 0573d3fa4864 ("Merge branch 'devel-stable' of git://git.armlinux.org.uk/~rmk/linux-arm into char-misc-next")
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+On Fri, Feb 05, 2021 at 12:07:09PM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Feb 05, 2021 at 11:56:15AM +0100, Uwe Kleine-König wrote:
+> > I didn't compile test, but I'm willing to bet your resolution is wrong.
+> > You have no return statement in etm4_remove_dev() but its return type is
+> > int and etm4_remove_amba() still returns int but should return void.
+> 
+> Can you send a patch to fix this up?
 
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/cpufreq/powernow-k7.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/powernow-k7.c b/drivers/cpufreq/powernow-k7.c
-> index 5d515fc34836..2e114fc75e68 100644
-> --- a/drivers/cpufreq/powernow-k7.c
-> +++ b/drivers/cpufreq/powernow-k7.c
-> @@ -574,7 +574,7 @@ static int acer_cpufreq_pst(const struct dmi_system_id *d)
->  }
->
->  /*
-> - * Some Athlon laptops have really fucked PST tables.
-> + * Some Athlon laptops have really messed PST tables.
+Sure, here it comes. As I'm unsure if you want to squash it into the
+merge or want to keep it separate I crafted a commit message. If you
+prefer squashing feel free to do so.
 
-Or even "broken".
+This change corresponds to the merge resolution I suggested before.
 
->   * A BIOS update is all that can save them.
->   * Mention this, and disable cpufreq.
->   */
-> --
-> 2.30.0
->
+Best regards
+Uwe
+
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index bc55b261af23..c8ecd91e289e 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -1906,15 +1906,16 @@ static int __exit etm4_remove_dev(struct etmv4_drvdata *drvdata)
+ 	cpus_read_unlock();
+ 
+ 	coresight_unregister(drvdata->csdev);
++
++	return 0;
+ }
+ 
+-static int __exit etm4_remove_amba(struct amba_device *adev)
++static void __exit etm4_remove_amba(struct amba_device *adev)
+ {
+ 	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
+ 
+ 	if (drvdata)
+-		return etm4_remove_dev(drvdata);
+-	return 0;
++		etm4_remove_dev(drvdata);
+ }
+ 
+ static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
+-- 
+2.29.2
+
