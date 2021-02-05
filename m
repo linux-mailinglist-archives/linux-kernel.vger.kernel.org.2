@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0EB311792
+	by mail.lfdr.de (Postfix) with ESMTP id 1A59E311791
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhBFADU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:03:20 -0500
-Received: from muru.com ([72.249.23.125]:57682 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhBENqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:46:31 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 46EE181BD;
-        Fri,  5 Feb 2021 13:46:02 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH 4/4] thermal: ti-soc-thermal: Use non-inverted define for omap4
-Date:   Fri,  5 Feb 2021 15:45:34 +0200
-Message-Id: <20210205134534.49200-5-tony@atomide.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205134534.49200-1-tony@atomide.com>
-References: <20210205134534.49200-1-tony@atomide.com>
+        id S231126AbhBFADH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhBENqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:46:22 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C93EC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:45:42 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id k142so7423139oib.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=GdZ3wqqwTq6M6U3OYS2ilnHulIJB13wMNL5rfazRims=;
+        b=oabmOw+vxz543HN1asQvNnuJLGcEuXjiyoiUOyxQ3mLYQ58HD6H2VY7jbSzz5Hrvw9
+         ZYrP3CuTmyEDe+qsdqawLsLME9LqV7Hkgbc8a+Lpz+D6nQx0I2IcH+jnq3O3bRDWEIak
+         6xFC91FTbbJCV8s9ksfH319W5UFehwG5s17P9oKCOvLFW1CSbbWgS7dIrWxq9DBWtDhd
+         /CY1d6bg5I7/fS9plfkx7cWkLNEh33FiKnICEwUO5TmjLoypfi32J4Rmyc0U0PMez7rJ
+         GSkyZr+kJJt/Uj3IEkT8m/L1yT56QlgRxXWXh9hRpQ6wLn7vhU44yFEb7ScuzkZgaWag
+         Ma0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=GdZ3wqqwTq6M6U3OYS2ilnHulIJB13wMNL5rfazRims=;
+        b=HuuOO2u2eCj6/8XdUK9ZPYGzngF9pMXHj5ADh66888qRdpsoKNNmLhg5979u8pXsCd
+         NK67SHFuUvl5AEuDj3NkO4ZjomD5MOCRZoUdKciF7G3hVFAPm116Bw0p0gNA2a6M8PYc
+         /mijleHawVc2ln70BmCNdgCY44RmcNERgjYgghu5SAqlF10srauO95bcLEcKLt26Q3OH
+         IRgzaCSefZIRAyTHQp/Bnwfj+PTxqFQeR49zrfxTOlxBzNosfodF8x4j2hTvVfj/w30y
+         pVW7daom9tyPFkcsAniSfWYmFA947S8xs+DLs4s8F/oM1m9qiGzjukX0+PjGjHpvbVoG
+         qFrg==
+X-Gm-Message-State: AOAM531LqFuwGH3g2sKd2pT8807bdfpWCEwZS0i7HW1KViyKgAOFqvcr
+        zb+KxkKw6Leh7Twf6G9KLoKSNwcWE/jSAkgJ0p0=
+X-Google-Smtp-Source: ABdhPJxntFctgcNb6Cm7JMCvgvmvxPdap1lvpoN8D41qG6E5d753UGGsI1vn8zrATeki8QPJ/LXjrQSy+ccPLp7oqA8=
+X-Received: by 2002:aca:3fd5:: with SMTP id m204mr3045233oia.0.1612532741566;
+ Fri, 05 Feb 2021 05:45:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a9d:1d64:0:0:0:0:0 with HTTP; Fri, 5 Feb 2021 05:45:41 -0800 (PST)
+Reply-To: alidoualassane27@gmail.com
+From:   Alidou Alassane <sudiamed@gmail.com>
+Date:   Fri, 5 Feb 2021 14:45:41 +0100
+Message-ID: <CADoJUNHEqXftKNe_+7O9GKiBn4O1Bb9rXzuvb-1AGJv74moQEg@mail.gmail.com>
+Subject: MESSAGE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we set bit 10 high we use continuous mode and not single
-mode. Let's correct this to avoid confusion. No functional
-changes here, the code does the right thing with bit 10.
+Hello My Dear Friend,
 
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Eduardo Valentin <edubezval@gmail.com>
-Cc: H. Nikolaus Schaller <hns@goldelico.com>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/thermal/ti-soc-thermal/omap4-thermal-data.c | 4 ++--
- drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h   | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+How are you and your family? I hope everybody is fine. I am happy to
+inform you that I later by the grace of God completed the transaction
+successfully with another partner.
 
-diff --git a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
---- a/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
-+++ b/drivers/thermal/ti-soc-thermal/omap4-thermal-data.c
-@@ -24,7 +24,7 @@ omap4430_mpu_temp_sensor_registers = {
- 	.bgap_dtemp_mask = OMAP4430_BGAP_TEMP_SENSOR_DTEMP_MASK,
- 
- 	.bgap_mode_ctrl = OMAP4430_TEMP_SENSOR_CTRL_OFFSET,
--	.mode_ctrl_mask = OMAP4430_SINGLE_MODE_MASK,
-+	.mode_ctrl_mask = OMAP4430_CONTINUOUS_MODE_MASK,
- 
- 	.bgap_efuse = OMAP4430_FUSE_OPP_BGAP,
- };
-@@ -97,7 +97,7 @@ omap4460_mpu_temp_sensor_registers = {
- 	.mask_cold_mask = OMAP4460_MASK_COLD_MASK,
- 
- 	.bgap_mode_ctrl = OMAP4460_BGAP_CTRL_OFFSET,
--	.mode_ctrl_mask = OMAP4460_SINGLE_MODE_MASK,
-+	.mode_ctrl_mask = OMAP4460_CONTINUOUS_MODE_MASK,
- 
- 	.bgap_counter = OMAP4460_BGAP_COUNTER_OFFSET,
- 	.counter_mask = OMAP4460_COUNTER_MASK,
-diff --git a/drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h b/drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h
---- a/drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h
-+++ b/drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h
-@@ -40,7 +40,7 @@
- /* OMAP4430.TEMP_SENSOR bits */
- #define OMAP4430_BGAP_TEMPSOFF_MASK			BIT(12)
- #define OMAP4430_BGAP_TSHUT_MASK			BIT(11)
--#define OMAP4430_SINGLE_MODE_MASK			BIT(10)
-+#define OMAP4430_CONTINUOUS_MODE_MASK			BIT(10)
- #define OMAP4430_BGAP_TEMP_SENSOR_SOC_MASK		BIT(9)
- #define OMAP4430_BGAP_TEMP_SENSOR_EOCZ_MASK		BIT(8)
- #define OMAP4430_BGAP_TEMP_SENSOR_DTEMP_MASK		(0xff << 0)
-@@ -113,7 +113,7 @@
- #define OMAP4460_BGAP_TEMP_SENSOR_DTEMP_MASK		(0x3ff << 0)
- 
- /* OMAP4460.BANDGAP_CTRL bits */
--#define OMAP4460_SINGLE_MODE_MASK			BIT(31)
-+#define OMAP4460_CONTINUOUS_MODE_MASK			BIT(31)
- #define OMAP4460_MASK_HOT_MASK				BIT(1)
- #define OMAP4460_MASK_COLD_MASK				BIT(0)
- 
--- 
-2.30.0
+The total fund was transferred to the new partner that I presented to
+the bank. Now I am outside my country due to the urgency of my son's
+kidney transplant and for an investment project with my partner.
+However, I did not forget your past efforts and assistance to me to
+see that the funds was approved with the bank, So, I have given to my
+secretary an ATM CARD that contains the sum of usd $ 350,000.00
+
+Please, accept this token of appreciation and God blessed you.
+
+Below are the contact details of my secretary where I deposited your
+compensation fund worth usd $ 350,000.00 contact Mrs. Chiquita Labello
+immediately you receive my message to allow them to transfer it to
+you.
+
+Contact information.
+
+Name: Chiquita Labello
+Email Address: =C2=A0chiquitalabello@yahoo.com
+Telephone: +228 93 23 23 61
+
+You should contact the bank at your earliest convenience so that the
+fund can be sent to you, so that you can withdraw from your bank in
+your country.
+
+I wish you the best in all your future endeavors. I will also call you
+at my earliest convenient.
+
+Your partner,
+
+NB: Remember to put this 10- lettered word ("GRACE-77113") as the
+subject of your email so that the bank will know that you are the
+rightful beneficiary of the compensation fund.
+
+Mr. Alidou Alasane
