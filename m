@@ -2,283 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4331120A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F8F311200
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbhBESbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233145AbhBEPMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:12:35 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D770CC061574;
-        Fri,  5 Feb 2021 08:49:46 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id hs11so13002816ejc.1;
-        Fri, 05 Feb 2021 08:49:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kq0XY+Ms6gfdK8bjLjpUnlnSk7Bhm/wJzqbGXlSuwXU=;
-        b=SOI74/tVA2jgFjJy32JVSZsFRVk0wFZBNhEUBLq2Qn6WHOXf1+tkN6BGtUI2Uuq5QG
-         /6mqClkrpjCEqWF8KDTufo844cHRqRgXAuSQrrCsYzVr3fj672p4+kOYHlQ/gaIP70OQ
-         emqFsodl9XVqjdnVnai3Y9veHYmcyK7FaSJi5GZIFtkjOHN4JHFUNJHKu6hPopD63UqD
-         LiHQsQgKx8fxILSdKGNRCpGBb6u/bDMGUqHpUS/p+5/d+YFfquWIRYzhbuqFfGqiI8IQ
-         0X+BRYy8ttxCOLUj9JGorFSbXNpjY8CyuX1J7QpW1VD3zfmHFe6simw+YymxyUlva4CC
-         9OKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kq0XY+Ms6gfdK8bjLjpUnlnSk7Bhm/wJzqbGXlSuwXU=;
-        b=dsO/JkiIhjOiJQjmQaKYupyAQdgwc1nnDsvusZuqOpRp+Gk3JjM34Uf+wnsPNo/6I7
-         eMzXouUDL+WmbHyVl16k0LBfockwhDrxEUOKhBk0ngyUgor7750ZDWHuIID5nc8jrv6R
-         xMgegJENxCcxu8aCF27whdV3gWj0j6dX3wXE0fnzSbOQFsevZZkHoyo/dpT5KBh+UMHR
-         MSSFtTUm7RM4nIz4lALfKjJhLcaJwNOIghf2SKfFA0AN8t2l43cJO4nvxekcswGMpJHu
-         h0YJ1lk8pZXGD66W6Pg98E6AFn2TdnHhnMX7rLN9vi4vqRzjBAVtDDViQc2+PAZrMHxq
-         PCSA==
-X-Gm-Message-State: AOAM5319hnDX7VoyheAWLQLvbdIcvJ55BWb0wx4WryYFJG1wSOkrHUlP
-        koB0tZUNMXQG9PrWauq9sJDz3lrsITW5B/mpbZ+Uqx0bT4E=
-X-Google-Smtp-Source: ABdhPJwaldRccZNXsjcyzV8hSAn8V23I+60L9ilnYbzqF7ou7WrR6F0nSS7IW1hkP+SOr5Fw31f1LTYy1sqMmoRvpUA=
-X-Received: by 2002:a17:906:eddd:: with SMTP id sb29mr4705160ejb.383.1612543785528;
- Fri, 05 Feb 2021 08:49:45 -0800 (PST)
+        id S233358AbhBES3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:29:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233152AbhBEPNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:13:09 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AEB864EEB;
+        Fri,  5 Feb 2021 16:50:30 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l84JP-00CIPY-Vb; Fri, 05 Feb 2021 16:50:28 +0000
 MIME-Version: 1.0
-References: <20210203172042.800474-1-shy828301@gmail.com> <20210203172042.800474-8-shy828301@gmail.com>
- <374a5513-9e80-f240-ef82-ef35c13931c1@virtuozzo.com> <CAHbLzkpSSkgiSewqu2ie8N7yESqkoGtAOmQrZYFEb-2CRBCWiQ@mail.gmail.com>
- <9d6862c2-15a6-93ab-057d-512cb2a6af2b@virtuozzo.com>
-In-Reply-To: <9d6862c2-15a6-93ab-057d-512cb2a6af2b@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 5 Feb 2021 08:49:33 -0800
-Message-ID: <CAHbLzkqxW0BRbZKbokmCu2xyZ3Q2MQGRB7FJYZmxkq8AanvRTA@mail.gmail.com>
-Subject: Re: [v6 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Feb 2021 16:50:27 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>, netdev@vger.kernel.org,
+        yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de,
+        pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com,
+        jianyong.wu@arm.com, kernel-team@android.com
+Subject: Re: [PATCH v17 1/7] arm/arm64: Probe for the presence of KVM
+ hypervisor
+In-Reply-To: <20210205111921.GA22109@willie-the-truck>
+References: <20210202141204.3134855-1-maz@kernel.org>
+ <20210202141204.3134855-2-maz@kernel.org>
+ <d5765ade-7199-2d1e-6d59-d3de6a52c6ce@arm.com>
+ <20210205111921.GA22109@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <e2eefee823f6a8e448f6d477cef315d4@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, steven.price@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, suzuki.poulose@arm.com, Andre.Przywara@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 6:38 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 04.02.2021 20:17, Yang Shi wrote:
-> > On Thu, Feb 4, 2021 at 12:31 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> >>
-> >> On 03.02.2021 20:20, Yang Shi wrote:
-> >>> Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> >>> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> >>>
-> >>> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> >>> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> >>> may suffer from over shrink, excessive reclaim latency, etc.
-> >>>
-> >>> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> >>> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> >>> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> >>>
-> >>> We observed this hit in our production environment which was running vfs heavy workload
-> >>> shown as the below tracing log:
-> >>>
-> >>> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> >>> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> >>> cache items 246404277 delta 31345 total_scan 123202138
-> >>> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> >>> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> >>> last shrinker return val 123186855
-> >>>
-> >>> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> >>> This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> >>>
-> >>> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> >>> better isolation.
-> >>>
-> >>> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> >>> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> >>>
-> >>> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >>> ---
-> >>>  include/linux/memcontrol.h |  7 +++---
-> >>>  mm/vmscan.c                | 45 ++++++++++++++++++++++++--------------
-> >>>  2 files changed, 33 insertions(+), 19 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> >>> index 4c9253896e25..c457fc7bc631 100644
-> >>> --- a/include/linux/memcontrol.h
-> >>> +++ b/include/linux/memcontrol.h
-> >>> @@ -93,12 +93,13 @@ struct lruvec_stat {
-> >>>  };
-> >>>
-> >>>  /*
-> >>> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> >>> - * which have elements charged to this memcg.
-> >>> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-> >>> + * shrinkers, which have elements charged to this memcg.
-> >>>   */
-> >>>  struct shrinker_info {
-> >>>       struct rcu_head rcu;
-> >>> -     unsigned long map[];
-> >>> +     atomic_long_t *nr_deferred;
-> >>> +     unsigned long *map;
-> >>>  };
-> >>>
-> >>>  /*
-> >>> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >>> index dc0d69e081b0..d9126f12890f 100644
-> >>> --- a/mm/vmscan.c
-> >>> +++ b/mm/vmscan.c
-> >>> @@ -196,10 +196,12 @@ static void free_shrinker_info_rcu(struct rcu_head *head)
-> >>>  }
-> >>>
-> >>>  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> >>> -                                int size, int old_size)
-> >>> +                                 int m_size, int d_size,
-> >>> +                                 int old_m_size, int old_d_size)
-> >>>  {
-> >>>       struct shrinker_info *new, *old;
-> >>>       int nid;
-> >>> +     int size = m_size + d_size;
-> >>>
-> >>>       for_each_node(nid) {
-> >>>               old = rcu_dereference_protected(
-> >>> @@ -212,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> >>>               if (!new)
-> >>>                       return -ENOMEM;
-> >>>
-> >>> -             /* Set all old bits, clear all new bits */
-> >>> -             memset(new->map, (int)0xff, old_size);
-> >>> -             memset((void *)new->map + old_size, 0, size - old_size);
-> >>> +             new->nr_deferred = (atomic_long_t *)(new + 1);
-> >>> +             new->map = (void *)new->nr_deferred + d_size;
-> >>> +
-> >>> +             /* map: set all old bits, clear all new bits */
-> >>> +             memset(new->map, (int)0xff, old_m_size);
-> >>> +             memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
-> >>> +             /* nr_deferred: copy old values, clear all new values */
-> >>> +             memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
-> >>> +             memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
-> >>>
-> >>>               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> >>>               call_rcu(&old->rcu, free_shrinker_info_rcu);
-> >>> @@ -229,9 +237,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
-> >>>       struct shrinker_info *info;
-> >>>       int nid;
-> >>>
-> >>> -     if (mem_cgroup_is_root(memcg))
-> >>> -             return;
-> >>> -
-> >>>       for_each_node(nid) {
-> >>>               pn = mem_cgroup_nodeinfo(memcg, nid);
-> >>>               info = rcu_dereference_protected(pn->shrinker_info, true);
-> >>> @@ -244,12 +249,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >>>  {
-> >>>       struct shrinker_info *info;
-> >>>       int nid, size, ret = 0;
-> >>> -
-> >>> -     if (mem_cgroup_is_root(memcg))
-> >>> -             return 0;
-> >>> +     int m_size, d_size = 0;
-> >>>
-> >>>       down_write(&shrinker_rwsem);
-> >>> -     size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> >>> +     m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> >>> +     d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> >>> +     size = m_size + d_size;
-> >>> +
-> >>>       for_each_node(nid) {
-> >>>               info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
-> >>>               if (!info) {
-> >>> @@ -257,6 +263,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >>>                       ret = -ENOMEM;
-> >>>                       break;
-> >>>               }
-> >>> +             info->nr_deferred = (atomic_long_t *)(info + 1);
-> >>> +             info->map = (void *)info->nr_deferred + d_size;
-> >>>               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
-> >>>       }
-> >>>       up_write(&shrinker_rwsem);
-> >>> @@ -268,10 +276,16 @@ static int expand_shrinker_info(int new_id)
-> >>>  {
-> >>>       int size, old_size, ret = 0;
-> >>>       int new_nr_max = new_id + 1;
-> >>> +     int m_size, d_size = 0;
-> >>> +     int old_m_size, old_d_size = 0;
-> >>>       struct mem_cgroup *memcg;
-> >>>
-> >>> -     size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
-> >>> -     old_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> >>> +     m_size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
-> >>> +     d_size = new_nr_max * sizeof(atomic_long_t);
-> >>> +     size = m_size + d_size;
-> >>> +     old_m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
-> >>> +     old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> >>> +     old_size = old_m_size + old_d_size;
-> >>>       if (size <= old_size)
-> >>>               goto out;
-> >>
-> >> Before this patch we used to allocate shrinker_info with BITS_PER_LONG batching.
-> >> So, first registered shrinker used to allocate a map of unsigned long size, and
-> >> we could to allocate 63 more shrinkers without maps expanding.
-> >>
-> >> After this patch we will expand maps on every shrinker registration, won't we?
-> >
-> > Yes, I'm supposed "maps" means "info".I'm supposed the most shrinkers
-> > should be registered at boot time, and typically very few memcgs are
-> > created at boot time so I didn't treat it as a hot path.
->
-> Not so. Every mount adds at least one shrinker, so they can actively be added
-> during normal system work.
->
-> E.g., on our production system (containers) several thousand shrinkers
-> is not a rare situation.
+On 2021-02-05 11:19, Will Deacon wrote:
+> On Fri, Feb 05, 2021 at 09:11:00AM +0000, Steven Price wrote:
+>> On 02/02/2021 14:11, Marc Zyngier wrote:
+>> > diff --git a/drivers/firmware/smccc/kvm_guest.c b/drivers/firmware/smccc/kvm_guest.c
+>> > new file mode 100644
+>> > index 000000000000..23ce1ded88b4
+>> > --- /dev/null
+>> > +++ b/drivers/firmware/smccc/kvm_guest.c
+>> > @@ -0,0 +1,51 @@
+>> > +// SPDX-License-Identifier: GPL-2.0
+>> > +
+>> > +#define pr_fmt(fmt) "smccc: KVM: " fmt
+>> > +
+>> > +#include <linux/init.h>
+>> > +#include <linux/arm-smccc.h>
+>> > +#include <linux/kernel.h>
+>> > +#include <linux/string.h>
+>> > +
+>> > +static DECLARE_BITMAP(__kvm_arm_hyp_services, ARM_SMCCC_KVM_NUM_FUNCS) __ro_after_init = { };
+>> > +
+>> > +void __init kvm_init_hyp_services(void)
+>> > +{
+>> > +	int i;
+>> > +	struct arm_smccc_res res;
+>> > +
+>> > +	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
+>> > +		return;
+>> > +
+>> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID, &res);
+>> > +	if (res.a0 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0 ||
+>> > +	    res.a1 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1 ||
+>> > +	    res.a2 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2 ||
+>> > +	    res.a3 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3)
+>> > +		return;
+>> > +
+>> > +	memset(&res, 0, sizeof(res));
+>> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
+>> > +	for (i = 0; i < 32; ++i) {
+>> > +		if (res.a0 & (i))
+>> > +			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
+>> > +		if (res.a1 & (i))
+>> > +			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
+>> > +		if (res.a2 & (i))
+>> > +			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
+>> > +		if (res.a3 & (i))
+>> > +			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
+>> 
+>> The bit shifts are missing, the tests should be of the form:
+>> 
+>> 	if (res.a0 & (1 << i))
+>> 
+>> Or indeed using a BIT() macro.
+> 
+> Maybe even test_bit()?
 
-Aha, yes, I missed this point.
+Actually, maybe not doing things a-bit-at-a-time is less error prone.
+See below what I intend to fold in.
 
->
-> >> What do you think about batching here?
-> >
-> > Just off the top of my head, we could allocate, for example, 64
-> > nr_deferred (64 * sizeof(atomic_long_t)) so that we just need to
-> > expand info for every 64 shrinker registrations. Maybe define it
-> > depends on the machine (64 bit - 64, 32 bit - 32).
-> >
-> > Why 64? Basically a magic number. And when I was investigating that
-> > list_lru reparent race issue
-> > (https://lore.kernel.org/linux-mm/20201202171749.264354-1-shy828301@gmail.com/)
-> > I happened to notice that there are at most 64 shrinkers registered in
-> > our production environment (a typical data center configuration).
-> >
-> > How do you think about it?
->
-> I think 64 is OK for now. We may use some #define to set this value, so we will
-> be able to change it easily in the future.
+Thanks,
 
-BITS_PER_LONG might be better. We could reuse all the existing logic
-without adding too much new code.
+         M.
 
->
-> >>>
-> >>> @@ -280,9 +294,8 @@ static int expand_shrinker_info(int new_id)
-> >>>
-> >>>       memcg = mem_cgroup_iter(NULL, NULL, NULL);
-> >>>       do {
-> >>> -             if (mem_cgroup_is_root(memcg))
-> >>> -                     continue;
-> >>> -             ret = expand_one_shrinker_info(memcg, size, old_size);
-> >>> +             ret = expand_one_shrinker_info(memcg, m_size, d_size,
-> >>> +                                            old_m_size, old_d_size);
-> >>>               if (ret) {
-> >>>                       mem_cgroup_iter_break(NULL, memcg);
-> >>>                       goto out;
-> >>>
-> >>
-> >>
->
+diff --git a/drivers/firmware/smccc/kvm_guest.c 
+b/drivers/firmware/smccc/kvm_guest.c
+index 00bf3c7969fc..08836f2f39ee 100644
+--- a/drivers/firmware/smccc/kvm_guest.c
++++ b/drivers/firmware/smccc/kvm_guest.c
+@@ -2,8 +2,8 @@
+
+  #define pr_fmt(fmt) "smccc: KVM: " fmt
+
+-#include <linux/init.h>
+  #include <linux/arm-smccc.h>
++#include <linux/bitmap.h>
+  #include <linux/kernel.h>
+  #include <linux/string.h>
+
+@@ -13,8 +13,8 @@ static DECLARE_BITMAP(__kvm_arm_hyp_services, 
+ARM_SMCCC_KVM_NUM_FUNCS) __ro_afte
+
+  void __init kvm_init_hyp_services(void)
+  {
+-	int i;
+  	struct arm_smccc_res res;
++	u32 val[4];
+
+  	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
+  		return;
+@@ -28,16 +28,13 @@ void __init kvm_init_hyp_services(void)
+
+  	memset(&res, 0, sizeof(res));
+  	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
+-	for (i = 0; i < 32; ++i) {
+-		if (res.a0 & (i))
+-			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
+-		if (res.a1 & (i))
+-			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
+-		if (res.a2 & (i))
+-			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
+-		if (res.a3 & (i))
+-			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
+-	}
++
++	val[0] = lower_32_bits(res.a0);
++	val[1] = lower_32_bits(res.a1);
++	val[2] = lower_32_bits(res.a2);
++	val[3] = lower_32_bits(res.a3);
++
++	bitmap_from_arr32(__kvm_arm_hyp_services, val, 
+ARM_SMCCC_KVM_NUM_FUNCS);
+
+  	pr_info("hypervisor services detected (0x%08lx 0x%08lx 0x%08lx 
+0x%08lx)\n",
+  		 res.a3, res.a2, res.a1, res.a0);
+
+
+-- 
+Jazz is not dead. It just smells funny...
