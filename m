@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EB93117BE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38E33117BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhBFAVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        id S231470AbhBFAVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:21:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbhBEMrz (ORCPT
+        with ESMTP id S232277AbhBEMsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:47:55 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5764DC061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:47:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yZtaSID4IKfZtizwfG4fctsBjAHUidpBxga8TSTfwP0=; b=DJPrg52QOixXzF09sp9pUvEFlS
-        2BkMjat5ZRmhY1ak97exF7o3DLev2Wi+1lbispocZLgILGbYlByhLe+ojKZ6ORm33pHGIjH2Qa1pA
-        T/PWCx535qakBlIWZB077lmcahjuDkD8AKAYjZpt9K3Ao+1Uoy+mk+BkQZT+V9OFRAWPzw268NxAB
-        x5ZxVqapMyIh4YX1h5zyuRhCw9olHug3jgKTR7Nefv17JJt3Y8LD7wYdI1s7ZFWDSucS4znYmO3gL
-        J5EMMK+CLD/yA/mk1hrMSmHErC6eNcOu+zArt+24TFDfb7fu8+E7X8Xnra2jZ4jnYC66jVDFYNv5M
-        OkMchSaw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l80Vk-0005R5-OU; Fri, 05 Feb 2021 12:46:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24C1F30066E;
-        Fri,  5 Feb 2021 13:46:55 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0E0142BC43FF0; Fri,  5 Feb 2021 13:46:55 +0100 (CET)
-Date:   Fri, 5 Feb 2021 13:46:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 1/2] x86/hw_breakpoint: Prevent data breakpoints on
- __per_cpu_offset
-Message-ID: <YB0+P3LiduCpWctO@hirez.programming.kicks-ass.net>
-References: <20210204152708.21308-1-jiangshanlai@gmail.com>
- <CALCETrXk_xp5+tZiTOGzFLk76Pc3gGsnO80UzmHf=ZoqrUgr5w@mail.gmail.com>
- <877dnmagb1.fsf@nanos.tec.linutronix.de>
+        Fri, 5 Feb 2021 07:48:37 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67619C06178B;
+        Fri,  5 Feb 2021 04:47:56 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id t17so4833669qtq.2;
+        Fri, 05 Feb 2021 04:47:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=paJuzDYDLsC0xxweYb9BHOSqnECoSO++KQ1DWn0hxFM=;
+        b=dg7Be6vJfg1XCEnHU5587INk0mfVh3VEKMThkTPZy0vCMXLeTKooBU2VdgR5W72Vq/
+         FRm8SzWWdxWBWJACVuH4Uecs0bkfAiXAb53QhXZ/ykjG9tuTfl2BOchLCUqgRrjb2EKG
+         BD4vbqPZ5I8zCtYE6Pzztvs6WtwEDpA6VAL/tIZ0O6qjTLPFEFSwWZvg+LjduTwmy+ER
+         0Oog85nBEIQpYIOa/Y0zq0mRwIxbpC+NDBdcfYw2905Rh6eBhPFAmsvyXFJUkQdARJ9r
+         jP57s15jc9ktI6wUISJRCNvsDWZx6R3Fr7+xrxDK/sbwAKoYrw5sDb3xL1Eyo4M42+Rn
+         njvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=paJuzDYDLsC0xxweYb9BHOSqnECoSO++KQ1DWn0hxFM=;
+        b=YcVWLhEhld38q2RbKQgdpCl7uPDo2fzqt7zKfGeE63GMcwHpdz/MoAo/M2MeGnMJu+
+         YZCQXOHeoN4jr8ldD8KcpG+tBkOJDMbNjVjEf5f5pKxuCWJLZdMJo17c3P/19CnPoGsG
+         Afxzli11+1L3XZmG40djwNX5W+tv5JkE0koXFUCelaofBAhVJYwaVRfl8RytNKJtJ7ps
+         tjCbfLWAgwLhXIcCa8wHJT6KlFt45EHpeSSNVO58MyrzPaVo5kN56bCnsFbkGfvZz2hU
+         ZUqb2M1uxTuA4hlk54VK677E1EAz1CYJxuL0LtGAmB1cZWs33o3GDDwjDI0oi8D1zAQB
+         XqZA==
+X-Gm-Message-State: AOAM53264465YPNeLscyRHvO3L1uIilOOETyMfkHS0pZsqhCgeR5+nsh
+        8Ci08XAQNOMCg1D4sNMqBLk=
+X-Google-Smtp-Source: ABdhPJyTLNdaPqQSQYvNm+BBIeqysRdOTD8tf+NrNTWWPrmbpykOdQ2aHGwjMjRS20ADf7HpSLzusA==
+X-Received: by 2002:ac8:7768:: with SMTP id h8mr3953433qtu.331.1612529275723;
+        Fri, 05 Feb 2021 04:47:55 -0800 (PST)
+Received: from localhost.localdomain ([138.199.10.106])
+        by smtp.gmail.com with ESMTPSA id y186sm721035qka.121.2021.02.05.04.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 04:47:54 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, rppt@kernel.org,
+        akpm@linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: net: ethernet: sun:  Fix couple of spells in the file sunhme.c
+Date:   Fri,  5 Feb 2021 18:17:41 +0530
+Message-Id: <20210205124741.1397457-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dnmagb1.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:45:54PM +0100, Thomas Gleixner wrote:
-> On Thu, Feb 04 2021 at 16:11, Andy Lutomirski wrote:
-> > On Thu, Feb 4, 2021 at 6:26 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
-> >> When FSGSBASE is enabled, paranoid_entry() fetches the per-CPU
-> >> GSBASE value via __per_cpu_offset or pcpu_unit_offsets.
-> >>
-> >> When data breakpoint is set on __per_cpu_offset[cpu] (read-write
-> >> operation), the specific cpu will be stuck in the infinite #DB loop.
-> >> RCU will try to send NMI to the specific cpu, but it is not working
-> >> either since NMI also relies on paranoid_entry().
-> >
-> > Should we consider having a .percpu..noinstr section and having
-> > objtool enforce this?
-> 
-> I think so.
 
-I'll put it on the TODO list somewhere ...
+
+s/fuck/mess/
+s/fucking/soooo/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/net/ethernet/sun/sunhme.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/sun/sunhme.c b/drivers/net/ethernet/sun/sunhme.c
+index 54b53dbdb33c..98ff9300b5ee 100644
+--- a/drivers/net/ethernet/sun/sunhme.c
++++ b/drivers/net/ethernet/sun/sunhme.c
+@@ -982,7 +982,7 @@ static void happy_meal_poll_stop(struct happy_meal *hp, void __iomem *tregs)
+ 	ASD(("done\n"));
+ }
+
+-/* Only Sun can take such nice parts and fuck up the programming interface
++/* Only Sun can take such nice parts and mess up the programming interface
+  * like this.  Good job guys...
+  */
+ #define TCVR_RESET_TRIES       16 /* It should reset quickly        */
+@@ -2074,7 +2074,7 @@ static void happy_meal_rx(struct happy_meal *hp, struct net_device *dev)
+ 			skb = copy_skb;
+ 		}
+
+-		/* This card is _fucking_ hot... */
++		/* This card is _sooooo_ hot... */
+ 		skb->csum = csum_unfold(~(__force __sum16)htons(csum));
+ 		skb->ip_summed = CHECKSUM_COMPLETE;
+
+--
+2.30.0
+
